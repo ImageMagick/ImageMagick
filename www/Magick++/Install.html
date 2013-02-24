@@ -1,19 +1,16 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<meta name="GENERATOR" content="OpenOffice.org 1.0 (Win32)">
-<meta name="AUTHOR" content="Bob Friesenhahn">
-<meta name="CREATED" content="20020805;17455123">
-<meta name="CHANGEDBY" content="Bob Friesenhahn">
-<meta name="CHANGED" content="20020805;17485600">
-<meta name="DESCRIPTION" content="C++ API for ImageMagick">
-<link rel=stylesheet type=text/css href=../../www/magick.css>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Install Magick++</title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
 </head>
-<body lang="en-US" text="#ffffff" link="#0000EE" vlink="#551A8B" bgcolor="#fbc713">
+<body>
+<div class="doc-section">
 <h1 align="center">Installing Magick++</h1>
 <h3>General</h3>
-<p>In order to compile Magick++ you must have access to a standard C++ implementation. The author uses <a href="http://gcc.gnu.org/index.html">gcc 3.1 (GNU C++)</a> which is available under UNIX and under the <a href="http://www.cygwin.com/">Cygwin UNIX-emulation environment</a> for Windows. Standards compliant commercial C++ compilers should also work fine. Most modern C++ compilers for Microsoft Windows or the Mac should work (project files are provided for Microsoft Visual C++ 6.0).</p>
+<p>In order to compile Magick++ you must have access to a standard C++ implementation. The author uses <a href="http://gcc.gnu.org/index.html">gcc 3.4 (GNU C++)</a> which is available under UNIX and under the <a href="http://www.cygwin.com/">Cygwin UNIX-emulation environment</a> for Windows. Standards compliant commercial C++ compilers should also work fine. Most modern C++ compilers for Microsoft Windows or the Mac should work (project files are provided for Microsoft Visual C++ 8.0).</p>
 <p>It was decided that Magick++ will be around for the long-haul, so its API definition depends on valuable C++ features which should be common in all current and future C++ compilers. The compiler must support the following C++ standard features:</p>
 <ul>
 <li>
@@ -77,14 +74,14 @@
 <td>
 <p><font size="2">Intel Pentium II</font></p></td>
 <td>
-<p><font size="2">Visual C++ 6.0 Standard Edition</font></p></td></tr>
+<p><font size="2">Visual C++ 8.0 Standard Edition</font></p></td></tr>
 <tr>
 <td>
 <p><font size="2">Windows XP</font></p></td>
 <td>
 <p><font size="2">Intel Pentium IV</font></p></td>
 <td>
-<p><font size="2">Visual C++ 6.0 Standard Edition Service Pack 5</font></p></td></tr>
+<p><font size="2">Visual C++ 8.0 Standard Edition Service Pack 5</font></p></td></tr>
 <tr>
 <td>
 <p><font size="2">Windows '98 + <a href="http://www.cygwin.com/">Cygwin</a> 1.3.10</font></p></td>
@@ -121,7 +118,7 @@
 <p><b>Reported By</b></p></td></tr>
 <tr valign="top">
 <td>
-<p><font size="2">Red Hat Linux 6.0</font></p></td>
+<p><font size="2">Red Hat Linux 8.0</font></p></td>
 <td>
 <p><font size="2">i386 &amp; alpha</font></p></td>
 <td>
@@ -208,7 +205,7 @@
 <td>
 <p><font size="2">GCC 2.95.2 (apple gcc -926)</font></p></td>
 <td>
-<p><font size="2">John Cristy</font></p></td></tr></table>
+<p><font size="2">Cristy</font></p></td></tr></table>
 <p>Please let me know if you have successfully built and executed Magick++ using a different configuration so that I can add to the table of verified configurations.</p>
 <hr>
 <h3 align="center">Unix/Linux</h3>
@@ -259,12 +256,13 @@ specifies additional options to the configure script. The following table shows 
 <td width="84%">
 <p>Extra libraries (-lsomelib) required to link</p></td></tr></table>
 <h4>Installing Linux RPMs</h4>
-<p style="margin-bottom: 0cm"><a href="mailto:Alexander.Zimmermann@FMI.Uni-Passau.De">Dr. Alexander Zimmermann</a> maintains Linux RPMs of ImageMagick and Magick++. These may be downloaded from <a href="ftp://ftp.forwiss.uni-passau.de/pub/linux/local/ImageMagick/">ftp://ftp.forwiss.uni-passau.de/pub/linux/local/ImageMagick/</a>. This site is mirrored periodically to the <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/linux/">ImageMagick linux directory</a> and from there to the many ImageMagick and Linux mirror sites. Please note that the default version of the C++ compiler delivered with the system may not be sufficient to support Magick++. Use of GCC 2.95 or later is strongly recommended under Linux.</p>
+<p style="margin-bottom: 0cm">Linux RPMs of ImageMagick and Magick++ can be downloaded from <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/linux//">ftp://ftp.imagemagick.org/pub/ImageMagick/linux/</a>.</p>
 <hr>
-<h3 align="center">Windows '9X, NT, 2000, ME, &amp; XP</h3>
+<h3 align="center">Windows '9X, NT, 2003, 2008, XP, &amp; Windows 7</h3>
 <h4>Visual C++</h4>
-<p>Windows '95 through Windows XP are supported by the ImageMagick source package for NT available in the 'win2k' subdirectory of the ImageMagick ftp site (and mirrors). The ImageMagick source package for NT provides sources to ImageMagick, Magick++, add-on libraries (e.g. JPEG), and a ready-made Visual C++ 6.0 build environment. Please read the configuration and build instructions in README.txt (under the heading "Windows Win2K/95 VISUAL C++ 6.0 COMPILATION") in order to build Magick++.</p>
+<p>Windows NT through Windows Vista are supported by the ImageMagick source package for NT available in the 'win2k' subdirectory of the ImageMagick ftp site (and mirrors). The ImageMagick source package for NT provides sources to ImageMagick, Magick++, add-on libraries (e.g. JPEG), and a ready-made Visual C++ 8.0 build environment. Please read the configuration and build instructions in README.txt (under the heading "Windows Win2K/XP VISUAL C++ 8.0 COMPILATION") in order to build Magick++.</p>
 <h4>Cygwin &amp; GCC</h4>
 <p>It is possible to build both ImageMagick and Magick++ under the Cygwin Unix-emulation environment for Windows NT. Obtain and install Cgywin from <a href="http://www.cygwin.com/">http://www.cygwin.com/</a> . An X11R6 environment for Cygwin is available from <a href="http://www.cygwin.com/xfree/">http://www.cygwin.com/xfree/</a> .To build using Cygwin and GCC, follow the instructions for building under Unix.</p>
+</ul>
 </body>
 </html>

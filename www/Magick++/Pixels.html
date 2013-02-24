@@ -1,28 +1,13 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<html>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	
-  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=ibm437">
-  <title>Magick::Pixels Class</title>
-	 	
-  <meta name="GENERATOR" content="OpenOffice.org 1.0  (Win32)">
-	
-  <meta name="AUTHOR" content="Bob Friesenhahn">
-	
-  <meta name="CREATED" content="20020805;15302080">
-	
-  <meta name="CHANGEDBY" content="Bob Friesenhahn">
-	
-  <meta name="CHANGED" content="20020805;15341200">
-	
-  <meta name="DESCRIPTION" content="Class to access raw image pixels.">
-	
-  <meta name="KEYWORDS" content="ImageMagick,Pixel,Magick++">
-<link rel=stylesheet type=text/css href="magick.css">
-	
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Working with Pixels </title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
 </head>
-<body lang="en-US" text="#000000" link="#0000ff" vlink="#ff0000"
- bgcolor="#ffffff">
+<body>
+<div class="doc-section">
 <h1 align="center">Magick::Pixels</h1>
 <p>The <i>Pixels</i> class provides efficient access to raw image
 pixels. Image pixels (of type <a href="PixelPacket.html"><i>PixelPacket</i></a>)
@@ -57,117 +42,52 @@ free(). </p>
 <p style="margin-bottom: 0cm;">The pixel view is a small image in which
 the pixels may be accessed, addressed, and updated, as shown in the
 following example, which produces an image similar to the one on the
-right (minus lines and text): <br>
-<br>
-</p>
-<table width="100%" border="0" cellpadding="2" cellspacing="2">
-	<tbody>
-    <tr>
-		<td> 			
-      <p><font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			</font><font color="#ff0000">// Create base image</font></font></font>
-			<br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			Image image(Geometry(254,218), "white");</font></font></font>
-						</p>
-			
-      <p><font size="2"></font></p>
-      <p>   <font face="Courier New,Courier"><font color="#ff0000"><font
- size="-1">  // Set the image type to TrueColor DirectClass
-representation.</font></font></font><br>
-      <font size="-1"><span
- style="color: rgb(0, 0, 153); font-family: courier new,courier,monospace;"> 
- image.type(TrueColorType</span></font><font size="-1"><span
- style="color: rgb(0, 0, 153); font-family: courier new,courier,monospace;">);</span></font><br>
-			</p>
-			 			
-      <p><font size="2"><font face="Courier New, Courier">   <font
- color="#ff0000">// 			Ensure that there is only one reference to
-underlying image</font></font></font> 			<br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#ff0000">   			// If this is not done, then image pixels will
-not be modified.</font></font></font><br>
-      <font size="2"><font face="Courier New, Courier">   			<font
- color="#000099">image.modifyImage();<br>
-      </font></font></font></p>
-      <p><font size="2"><font face="Courier New, Courier"><font
- color="#000099">  			</font><font color="#ff0000"> // Allocate pixel
-view</font></font></font> 			<br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			Pixels view(image);</font></font></font> 			</p>
-			
-      <p><font size="2"><font face="Courier New, Courier"><font
- color="#000099">  			</font><font color="#ff0000"> // Set all pixels
-in region anchored 			at 38x36, with size 160x230 to green.</font></font></font> <br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			size_t columns = 196; size_t rows =
-162;</font></font></font> 			<br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			Color green("green");</font></font></font> <br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			PixelPacket *pixels =
-view.get(38,36,columns,rows);</font></font></font> 			<br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			for ( ssize_t row = 0; row &lt; rows ; ++row )</font></font></font>
-			<br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">     			for ( ssize_t column = 0; column &lt; columns ;
-++column )</font></font></font> 			<br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">       			*pixels++=green;</font></font></font> </p>
-      <p><font size="2"><font face="Courier New, Courier"><font
- color="#000099">  			</font><font color="#ff0000"> // Save changes to
-image.<br>
-      </font></font></font><font size="2"></font><font size="2"><font
- face="Courier New, Courier"><font color="#000099">   			view.sync();</font></font></font>
-			</p>
-			
-      <p><font size="2"><font face="Courier New, Courier"><font
- color="#000099">  			</font><font color="#ff0000"> // Set all pixels
-in region anchored 			at 86x72, with size 108x67 to yellow.</font></font></font> <br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			columns = 108; rows = 67;</font></font></font> <br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			Color yellow("yellow");</font></font></font> <br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			pixels = view.get(86,72,columns,rows);</font></font></font> <br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			for ( ssize_t row = 0; row &lt; rows ; ++row )</font></font></font>
-			<br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">      			for ( ssize_t column = 0; column &lt; columns ;
-++column )</font></font></font> 			<br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">         			*pixels++=yellow;</font></font></font> <br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">    			view.sync();</font></font></font> 			</p>
-			
-      <p><font size="2"><font face="Courier New, Courier"><font
- color="#000099">  			</font><font color="#ff0000"> // Set pixel at
-position 108,94 to 			red</font></font></font> <br>
-      <font size="2"><font face="Courier New, Courier"><font
- color="#000099">   			*(view.get(108,94,1,1)) = Color("red");</font></font></font> </p>
-      <p><font size="2"><font face="Courier New, Courier"><font
- color="#000099">  			</font><font color="#ff0000"> // Save changes to
-image.<br>
-      </font></font></font><font size="2"><font
- face="Courier New, Courier"><font color="#000099">   			view.sync();<br>
-      <br>
-      </font></font></font></p>
-		</td>
-		<td> 			
-      <p><img src="Cache.png" name="Graphic1" align="bottom" width="254"
- height="218" border="0"></p>
-		</td>
-	</tr>
-  </tbody>
-</table>
+right (minus lines and text): </p>
+<p class="image"><img class="icon" src="Cache.png" name="Graphic1" align="bottom" width="254" border="0"></p>
+<div class="viewport">
+ // Create base image 
+ Image image(Geometry(254,218), "white");
+
+
+   // Set the image type to TrueColor DirectClass representation.
+ image.type(TrueColorType);
+ // Ensure that there is only one reference to underlying image 
+ // If this is not done, then image pixels will not be modified.
+ image.modifyImage();
+
+ // Allocate pixel view 
+ Pixels view(image);
+
+ // Set all pixels in region anchored at 38x36, with size 160x230 to green. 
+ size_t columns = 196; size_t rows = 162; 
+ Color green("green"); 
+ PixelPacket *pixels = view.get(38,36,columns,rows); 
+ for ( ssize_t row = 0; row &lt; rows ; ++row ) 
+   for ( ssize_t column = 0; column &lt; columns ; ++column ) 
+     *pixels++=green; 
+
+ // Save changes to image.
+ view.sync();
+
+ // Set all pixels in region anchored at 86x72, with size 108x67 to yellow. 
+ columns = 108; rows = 67; 
+ Color yellow("yellow"); 
+ pixels = view.get(86,72,columns,rows); 
+ for ( ssize_t row = 0; row &lt; rows ; ++row ) 
+    for ( ssize_t column = 0; column &lt; columns ; ++column ) 
+       *pixels++=yellow; 
+  view.sync();
+
+ // Set pixel at position 108,94 to red 
+ *(view.get(108,94,1,1)) = Color("red"); 
+
+ // Save changes to image.
+ view.sync();
+</div>
 <p style="margin-bottom: 0cm;"><i>Pixels</i> supports the following
-methods: <br>
-<br>
-</p>
+methods: </p>
 <p align="center" style="margin-bottom: 0cm;"><b>Pixel Cache Methods</b></p>
-<table width="100%" border="1" cellpadding="2" cellspacing="2">
+<ul><table width="100%" border="1" cellpadding="2" cellspacing="2">
 	<tbody>
     <tr>
 		<td> 			
@@ -191,8 +111,8 @@ methods: <br>
       <p><font size="2"><a href="PixelPacket.html">PixelPacket</a>*</font></p>
 		</td>
 		<td> 			
-      <p><font size="2">const ssize_t x_, const ssize_t y_, const unsigned
-const 			int columns_, const size_t rows_</font></p>
+      <p><font size="2">const ssize_t x_, const ssize_t y_, const size_t
+columns_, const size_t rows_</font></p>
 		</td>
 		<td> 			
       <p><font size="2">Transfers read-write pixels from the image to
@@ -263,8 +183,8 @@ never be deallocated.</font></p>
 		</td>
 		<td> 			
       <p><font size="2">Returns the PsuedoColor pixel indexes
-			corresponding to the pixel region defined by the last <a href="#get">get</a>
-			, <a href="#getConst">getConst</a>, or <a href="#set">set</a>
+			corresponding to the pixel region defined by the last <a href="Pixels.html#get">get</a>
+			, <a href="Pixels.html#getConst">getConst</a>, or <a href="Pixels.html#set">set</a>
 			call. Only valid for PseudoColor and CMYKA images. The pixel
 			indexes (an array of type <i>IndexPacket</i>, which is typedef 			<i>Quantum</i>,
 which is itself typedef <i>unsigned char</i>, or 			<i>unsigned short</i>,
@@ -333,9 +253,7 @@ should never be deallocated.</font></p>
 		</td>
 	</tr>
   </tbody>
-</table>
-<p><br>
-<br>
-</p>
+</table></ul>
+</pre>
 </body>
 </html>

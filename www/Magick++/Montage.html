@@ -1,29 +1,25 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<meta name="GENERATOR" content="OpenOffice.org 1.0 (Win32)">
-<meta name="AUTHOR" content="Bob Friesenhahn">
-<meta name="CREATED" content="20020805;15244548">
-<meta name="CHANGEDBY" content="Bob Friesenhahn">
-<meta name="CHANGED" content="20020805;15294647">
-<meta name="DESCRIPTION" content="Documentation for Magick++'s montage options class.">
-<meta name="KEYWORDS" content="Magick++,montage,ImageMagick">
-<link rel=stylesheet type=text/css href=../../www/magick.css>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Montage</title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
 </head>
-<body lang="en-US" text="#ffffff" link="#0000ff" vlink="#ff0000" bgcolor="#fbc713">
+<body>
+<div class="doc-section">
 <h1 align="center">Magick::Montage Class</h1>
 <p>A montage is a single image which is composed of thumbnail images composed in a uniform grid. The size of the montage image is determined by the size of the individual thumbnails and the number of rows and columns in the grid.</p>
 <p>The following illustration shows a montage consisting of three columns and two rows of thumbnails rendered on a gray background:</p>
-<p align="center"><img src="montage-sample-framed.jpg" name="Graphic1" align="bottom" width="378" height="238" border="0"></p>
-<p>Montages may be either "plain" (undecorated thumbnails) or "framed" (decorated thumbnails). In order to more easily understand the options supplied to <a href="STL.html#montageImages"><i>MontageImages()</i></a>, montage options are supplied by two different classes: <a href="#Magick::Montage"><i>Magick::Montage</i></a> and <a href="#Magick::MontageFramed"><i>Magick::MontageFramed</i></a>.</p>
+<p class="image"><img src="montage-sample-framed.jpg" name="Graphic1" align="bottom" width="378" height="238" border="0"></p>
+<p>Montages may be either "plain" (undecorated thumbnails) or "framed" (decorated thumbnails). In order to more easily understand the options supplied to <a href="STL.html#montageImages"><i>MontageImages()</i></a>, montage options are supplied by two different classes: <a href="Montage.html#Magick::Montage"><i>Magick::Montage</i></a> and <a href="Montage.html#Magick::MontageFramed"><i>Magick::MontageFramed</i></a>.</p>
 <h3 align="center"><a name="PlainMontages"></a>Plain Montages</h3>
-<p><a name="Magick::Montage"></a><i>Magick::Montage</i> is the base class to provide montage options and provides methods to set all options required to render simple (unframed) montages. See <a href="#Magick::MontageFramed"><i>Magick::MontageFramed</i></a>if you would like to create a framed montage.</p>
+<p><a name="Magick::Montage"></a><i>Magick::Montage</i> is the base class to provide montage options and provides methods to set all options required to render simple (unframed) montages. See <a href="Montage.html#Magick::MontageFramed"><i>Magick::MontageFramed</i></a>if you would like to create a framed montage.</p>
 <p>Unframed thumbnails consist of four components: the thumbnail image, the thumbnail border, an optional thumbnail shadow, and an optional thumbnail label area.</p>
-<p align="center"><img src="thumbnail-anatomy-plain.jpg" name="Graphic2" align="middle" width="309" height="327" border="0"></p>
+<p class="image"><img src="thumbnail-anatomy-plain.jpg" name="Graphic2" align="middle" width="309" height="327" border="0"></p>
 <p style="margin-bottom: 0cm"> </p>
 <p align="center" style="margin-bottom: 0cm"><b>Montage Methods</b></p>
-<table width="100%" border="1" cellpadding="2" cellspacing="2">
+<ul><table width="100%" border="1" cellpadding="2" cellspacing="2">
 <tr>
 <td>
 <p align="center"><b>Method</b></p></td>
@@ -173,12 +169,12 @@
 <td>
 <p><font size="2">void</font></p></td>
 <td>
-<p><font size="2">unsigned int pointSize_</font></p></td>
+<p><font size="2">size_t pointSize_</font></p></td>
 <td rowspan="2">
 <p><font size="2">Specifies the thumbnail label font size.</font></p></td></tr>
 <tr>
 <td>
-<p><font size="2">unsigned int</font></p></td>
+<p><font size="2">size_t</font></p></td>
 <td>
 <p><font size="2">void</font></p></td></tr>
 <tr>
@@ -250,14 +246,14 @@
 <td>
 <p><a href="Color.html"><font size="2">Color</font></a></p></td>
 <td>
-<p><font size="2">void</font></p></td></tr></table>
+<p><font size="2">void</font></p></td></tr></table></ul>
 <h3 align="center"><a name="FramedMontages"></a>Framed Montages</h3>
 <p><a name="Magick::MontageFramed"></a><i>Magick::MontageFramed</i> provides the means to specify montage options when it is desired to have decorative frames around the image thumbnails. <i>MontageFramed</i> inherits from <i>Montage</i> and therefore provides all the methods of <i>Montage</i> as well as those shown in the table "MontageFramed Methods".</p>
 <p>Framed thumbnails consist of four components: the thumbnail image, the thumbnail frame, the thumbnail border, an optional thumbnail shadow, and an optional thumbnail label area.</p>
-<p align="center"><img src="thumbnail-anatomy-framed.jpg" name="Graphic3" align="middle" width="350" height="345" border="0"></p>
+<p class="image"><img src="thumbnail-anatomy-framed.jpg" name="Graphic3" align="middle" width="350" height="345" border="0"></p>
 <p style="margin-bottom: 0cm"> </p>
 <p align="center" style="margin-bottom: 0cm"><b>MontageFramed Methods</b></p>
-<table width="100%" border="1" cellpadding="2" cellspacing="2">
+<ul><table width="100%" border="1" cellpadding="2" cellspacing="2">
 <tr>
 <td>
 <p align="center"><b>Method</b></p></td>
@@ -295,12 +291,12 @@
 <td>
 <p><font size="2">void</font></p></td>
 <td>
-<p><font size="2">unsigned int borderWidth_</font></p></td>
+<p><font size="2">size_t borderWidth_</font></p></td>
 <td rowspan="2">
 <p><font size="2">Specifies the border (in pixels) to place between a thumbnail and its surrounding frame. This option only takes effect if thumbnail frames are enabled (via <i>frameGeometry</i>) and the thumbnail geometry specification doesn't also specify the thumbnail border width.</font></p></td></tr>
 <tr>
 <td>
-<p><font size="2">unsigned int</font></p></td>
+<p><font size="2">size_t</font></p></td>
 <td>
 <p><font size="2">void</font></p></td></tr>
 <tr>
@@ -330,7 +326,7 @@
 <td>
 <p><a href="Color.html"><font size="2">Color</font></a></p></td>
 <td>
-<p><font size="2">void</font></p></td></tr></table>
-<br>
+<p><font size="2">void</font></p></td></tr></table></ul>
+</div>
 </body>
 </html>

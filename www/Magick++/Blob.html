@@ -1,25 +1,20 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Magick::Blob</title>
-<meta name="GENERATOR" content="OpenOffice.org 1.0 (Win32)">
-<meta name="AUTHOR" content="Bob Friesenhahn">
-<meta name="CREATED" content="20020805;13502672">
-<meta name="CHANGEDBY" content="Bob Friesenhahn">
-<meta name="CHANGED" content="20020805;13521508">
-<meta name="DESCRIPTION" content="Documentation for Blob class.">
-<meta name="KEYWORDS" content="Magick++, ImageMagick, Blob">
-<link rel=stylesheet type=text/css href=../../www/magick.css>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Working with Blobs</title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
 </head>
-<body lang="en-US" text="#ffffff" link="#0000ff" vlink="#ff0000" bgcolor="#fbc713">
+<body>
+<div class="doc-section">
 <h1 align="center">Magick::Blob</h1>
-<p>Blob provides the means to contain any opaque data. It is named after the term "Binary Large OBject" commonly used to describe unstructured data (such as encoded images) which is stored in a database. While the function of Blob is very simple (store a pointer and size associated with allocated data), the Blob class provides some very useful capabilities. In particular, it is fully reference counted just like the Image class.</p>
+<p>Blob provides the means to contain any opaque data. It is named after the term "Binary Large OBject" commonly used to describe unstructured data (such as encoded images) which is stored in a database. While the function of Blob is very simple (store a pointer and and size associated with allocated data), the Blob class provides some very useful capabilities. In particular, it is fully reference counted just like the Image class.</p>
 <p>The Blob class supports value assignment while preserving any outstanding earlier versions of the object. Since assignment is via a pointer internally, Blob is efficient enough to be stored directly in an STL container or any other data structure which requires assignment. In particular, by storing a Blob in an <a href="http://www.sgi.com/tech/stl/AssociativeContainer.html">associative container</a> (such as STL's '<a href="http://www.sgi.com/tech/stl/Map.html"><i>map</i></a>') it is possible to create simple indexed in-memory "database" of Blobs.</p>
 <p>Magick++ currently uses Blob to contain encoded images (e.g. JPEG) as well as ICC and IPTC profiles. Since Blob is a general-purpose class, it may be used for other purposes as well.</p>
 <p style="margin-bottom: 0cm">The methods Blob provides are shown in the following table:</p>
 <br>
-<p align="center" style="margin-bottom: 0cm"><b>Blob Methods</b></p>
+<ul><p align="center" style="margin-bottom: 0cm"><b>Blob Methods</b></p>
 <table width="100%" border="1" cellpadding="2" cellspacing="2">
 <tr>
 <td>
@@ -40,7 +35,7 @@
 <p><font size="2">Default constructor</font></p></td></tr>
 <tr>
 <td>
-<p><font size="2">const unsigned char* data_, size_t length_</font></p></td>
+<p><font size="2">const void* data_, size_t length_</font></p></td>
 <td>
 <p><font size="2">Construct object with data, making a copy of the supplied data</font></p></td></tr>
 <tr>
@@ -63,14 +58,14 @@
 <td>
 <p><font size="2">void</font></p></td>
 <td>
-<p><font size="2">const unsigned char* data_, size_t length_</font></p></td>
+<p><font size="2">const void* data_, size_t length_</font></p></td>
 <td>
 <p><font size="2">Update object contents, making a copy of the supplied data. Any existing data in the object is deallocated.</font></p></td></tr>
 <tr>
 <td>
 <p><a name="data"></a><font size="2">data</font></p></td>
 <td>
-<p><font size="2">const unsigned char*</font></p></td>
+<p><font size="2">const void*</font></p></td>
 <td>
 <p><font size="2">void</font></p></td>
 <td>
@@ -90,9 +85,9 @@
 <td>
 <p><font size="2">void</font></p></td>
 <td>
-<p><font size="2">unsigned char* data_, size_t length_, Blob::Allocator allocator_ = Blob::NewAllocator</font></p></td>
+<p><font size="2">void* data_, size_t length_, Blob::Allocator allocator_ = Blob::NewAllocator</font></p></td>
 <td>
-<p><font size="2">Update object contents, using supplied pointer directly (no copy) Any existing data in the object is deallocated. The user must ensure that the pointer supplied is not deleted or otherwise modified after it has been supplied to this method. The optional allocator_ parameter allows the user to specify if the C (MallocAllocator) or C++ (NewAllocator) memory allocation system was used to allocate the memory. The default is to use the C++ memory allocator.</font></p></td></tr></table>
-<br>
+<p><font size="2">Update object contents, using supplied pointer directly (no copy) Any existing data in the object is deallocated. The user must ensure that the pointer supplied is not deleted or otherwise modified after it has been supplied to this method. The optional allocator_ parameter allows the user to specify if the C (MallocAllocator) or C++ (NewAllocator) memory allocation system was used to allocate the memory. The default is to use the C++ memory allocator.</font></p></td></tr></table></ul>
+</div>
 </body>
 </html>
