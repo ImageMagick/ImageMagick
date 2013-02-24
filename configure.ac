@@ -415,7 +415,7 @@ AC_ARG_WITH([includearch-dir],
                     [includearch_dir=$withval],
                     [includearch_dir=$INCLUDE_DIR])
 
-eval "eval INCLUDEARCH_DIR=$includearch_dir-$MAGICK_MAJOR_VERSION"
+eval "eval INCLUDEARCH_DIR=$includearch_dir"
 AC_SUBST(INCLUDEARCH_DIR)
 
 #
