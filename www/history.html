@@ -161,7 +161,7 @@
   //-->
   </script>
   <script type="text/javascript"
-    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    src="http://localhost/pagead/show_ads.js">
   </script>
 </div>
 
@@ -208,9 +208,9 @@ I swear by my life and my love of it that I will never live for the sake of anot
     _gaq.push(['_trackPageview']);
 
     (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      var ga = document.createElement('offline-script'); ga.type = 'text/javascript'; ga.async = true;
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      var s = document.getElementsByTagName('offline-script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
 </body>
