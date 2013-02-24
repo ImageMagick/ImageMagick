@@ -9,11 +9,11 @@
 <meta name="CHANGEDBY" content="Bob Friesenhahn">
 <meta name="CHANGED" content="20020805;14583794">
 <meta name="DESCRIPTION" content="Magick::Color class documentation">
-<link rel=stylesheet type=text/css href=../../www/magick.css>
+<link rel=stylesheet type=text/css href="magick.css">
 </head>
 <body lang="en-US" text="#ffffff" link="#0000EE" vlink="#551A8B" bgcolor="#fbc713">
 <h1 align="center">Magick::Color</h1>
-<p><a href="#Color">Color</a> is the base color class in Magick++. It is a simple container class for the pixel red, green, blue, and alpha values scaled to fit ImageMagick's Quantum size. Normally users will instantiate a class derived from Color which supports the color model that fits the needs of the application. The Color class may be constructed directly from an X11-style color string.</p>
+<p><a href="Color.html#Color">Color</a> is the base color class in Magick++. It is a simple container class for the pixel red, green, blue, and alpha values scaled to fit ImageMagick's Quantum size. Normally users will instantiate a class derived from Color which supports the color model that fits the needs of the application. The Color class may be constructed directly from an X11-style color string.</p>
 <p style="margin-bottom: 0cm">Available derived color specification classes are shown in the following table:</p>
 <p align="center" style="margin-bottom: 0cm"><b>Color Derived Classes</b></p>
 <center>
@@ -22,22 +22,22 @@
 <col width="227*">
 <tr>
 <td width="12%">
-<p><a href="#ColorRGB">ColorRGB</a></p></td>
+<p><a href="Color.html#ColorRGB">ColorRGB</a></p></td>
 <td width="88%">
 <p>Representation of RGB color with red, green, and blue specified as ratios (0 to 1)</p></td></tr>
 <tr>
 <td width="12%">
-<p><a href="#ColorGray">ColorGray</a></p></td>
+<p><a href="Color.html#ColorGray">ColorGray</a></p></td>
 <td width="88%">
 <p>Representation of <span lang="en-US">grayscale</span> RGB color (equal parts red, green, and blue) specified as a ratio (0 to 1)</p></td></tr>
 <tr>
 <td width="12%">
-<p><a href="#ColorMono">ColorMono</a></p></td>
+<p><a href="Color.html#ColorMono">ColorMono</a></p></td>
 <td width="88%">
 <p>Representation of a black/white color (true/false)</p></td></tr>
 <tr>
 <td width="12%">
-<p><a href="#ColorYUV">ColorYUV</a></p></td>
+<p><a href="Color.html#ColorYUV">ColorYUV</a></p></td>
 <td width="88%">
 <p>Representation of a color in the YUV <span lang="en-US">colorspace</span></p></td></tr></table></center>
 <p style="margin-bottom: 0cm">ImageMagick may be compiled to support 32 or 64 bit pixels of type <span lang="en-US">PixelPacket.</span> This is controlled by the value of the QuantumDepth define. The default is 64 bit pixels, which provides the best accuracy. If memory consumption and/or processing time must be minimized, then ImageMagick may be compiled with QuantumDepth=8. The following table shows the relationship between <i>QuantumDepth</i>, the type of <i>Quantum</i>, and the overall <i>PixelPacket</i> size.</p>

@@ -16,46 +16,37 @@
   <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, deprecated, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, deprecated, methods, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
   <meta name="author" content="ImageMagick Studio LLC"/>
   <meta name="revisit-after" content="2 DAYS"/>
   <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2013 ImageMagick Studio LLC"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
-  <link rel="icon" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../images/wand.png"/>
-  <link rel="shortcut icon" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../images/wand.ico"  type="images/x-icon"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
-  <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-  
-  <!-- Optionaly include easing and/or mousewheel plugins -->
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
-  
-  <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.4"></script>
-  
-  <!-- Optionaly include button and/or thumbnail helpers -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.4" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.4"></script>
-  
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.4" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.4"></script>
-  <script type="text/javascript">
-  	$(document).ready(function() {
-  		$(".fancybox").fancybox();
-  	});
-  </script>
-  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
-    @import url("../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/magick.css");
+    @import url("../../style/magick.php");
   </style>
+  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
+        'transitionIn'  : 'elastic',
+        'transitionOut' : 'elastic',
+        'overlayShow'   : false,
+        'opacity'       : true
+      });
+    });
+  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -73,12 +64,12 @@
     src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
   </script>
 </div>
-<a href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../discourse-server">
-  <img src="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../images/logo.jpg"
+<a href="../../discourse-server">
+  <img src="../../images/logo.jpg"
   alt="ImageMagick Logo"
   style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
-<a href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../index.html">
-  <img src="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../images/sprite.jpg"
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.php">
+  <img src="../../images/sprite.jpg"
   alt="ImageMagick Sprite"
   style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
@@ -86,129 +77,130 @@
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.php">About ImageMagick</a>
 </div>
 <div class="menu">
-  <a title="Binary Releases" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/binary-releases.html">Binary Releases</a>
+  <a title="Binary Releases" href="../../script/binary-releases.php">Binary Releases</a>
 </div>
 <div class="sub">
-    <a title="Binary Release: Unix" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/binary-releases.html#unix">Unix</a>
+    <a title="Binary Release: Unix" href="../../script/binary-releases.php#unix">Unix</a>
 </div>
 <div class="sub">
-    <a title="Binary Release: MacOS X" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/binary-releases.html#macosx">Mac OS X</a>
+    <a title="Binary Release: MacOS X" href="../../script/binary-releases.php#macosx">Mac OS X</a>
 </div>
 <div class="sub">
-    <a title="Binary Release: iOS" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/binary-releases.html#iOS">iOS</a>
+    <a title="Binary Release: iOS" href="../../script/binary-releases.php#iOS">iOS</a>
 </div>
 <div class="sub">
-    <a title="Binary Release: Windows" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/binary-releases.html#windows">Windows</a>
+    <a title="Binary Release: Windows" href="../../script/binary-releases.php#windows">Windows</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Command-line Tools" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/command-line-tools.html">Command-line Tools</a>
+  <a title="Command-line Tools" href="../../script/command-line-tools.php">Command-line Tools</a>
 </div>
 <div class="sub">
-    <a title="Command-line Tools: Processing" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/command-line-processing.html">Processing</a>
+    <a title="Command-line Tools: Processing" href="../../script/command-line-processing.php">Processing</a>
 </div>
 <div class="sub">
-    <a title="Command-line Tools: Options" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/command-line-options.html">Options</a>
+    <a title="Command-line Tools: Options" href="../../script/command-line-options.php">Options</a>
 </div>
 <div class="sub">
     <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
 </div>
 <div class="menu">
-  <a title="Program Interfaces" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/api.html">Program Interfaces</a>
+  <a title="Program Interfaces" href="../../script/api.php">Program Interfaces</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: MagickWand" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/magick-wand.html">MagickWand</a>
+    <a title="Program Interface: MagickWand" href="../../script/magick-wand.php">MagickWand</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: MagickCore" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/magick-core.html">MagickCore</a>
+    <a title="Program Interface: MagickCore" href="../../script/magick-core.php">MagickCore</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: PerlMagick" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/perl-magick.html">PerlMagick</a>
+    <a title="Program Interface: PerlMagick" href="../../script/perl-magick.php">PerlMagick</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: Magick++" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/magick++.html">Magick++</a>
+    <a title="Program Interface: Magick++" href="../../script/magick++.php">Magick++</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
-   <a title="Install from Source" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/install-source.html">Install from Source</a>
+   <a title="Install from Source" href="../../script/install-source.php">Install from Source</a>
 </div>
 <div class="sub">
-    <a title="Install from Source: Unix" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/install-source.html#unix">Unix</a>
+    <a title="Install from Source: Unix" href="../../script/install-source.php#unix">Unix</a>
 </div>
 <div class="sub">
-    <a title="Install from Source: Windows" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/install-source.html#windows">Windows</a>
+    <a title="Install from Source: Windows" href="../../script/install-source.php#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Resources" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/resources.html">Resources</a>
+  <a title="Resources" href="../../script/resources.php">Resources</a>
 </div>
 <div class="menu">
-  <a title="Architecture" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/architecture.html">Architecture</a>
+  <a title="Architecture" href="../../script/architecture.php">Architecture</a>
 </div>
 <div class="menu">
-  <a title="Download" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/download.html">Download</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Search" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/search.html">Search</a>
+  <a title="Download" href="../../script/download.php">Download</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Site Map" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/sitemap.html">Site Map</a>
+  <a title="Search" href="../../script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Site Map" href="../../script/sitemap.php">Site Map</a>
 </div>
 <div  class="sub">
-  <a title="Site Map: Links" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/links.html">Links</a>
+  <a title="Site Map: Links" href="../../script/links.php">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a rel="follow" title="Sponsors" href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../www/sponsors.html">Sponsors:</a>
+<div  class="menu">
+  <a rel="follow" title="Sponsors" href="../../script/sponsors.php">Sponsors:</a>
 
-  <a href="http://www.networkredux.com"> <img src="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
-  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201208010120 mickey@163... -->
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" width="140" height="31" alt="[sponsor]"
+  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: The Fastest &amp; Easiest Way to Find Images" href="http://www.graphicsfactory.com">The Fastest &amp; Easiest Way to Find Images</a><!-- 201210010270 graphicsfac... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201209010090 barsh@inter... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Werbebanner Werbeplane" href="http://www.allesbanner.de">Werbebanner Werbeplane</a><!-- 201212010450 info@druck... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Entertainment News &amp; Photos" href="http://www.zimbio.com">Entertainment News &amp; Photos</a><!-- 201211010540 bd@zimb... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: LED24" href="http://led24.de/">LED24</a><!-- 201207010270 info@led24... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Best Website Hosting" href="http://www.top-cheap-web-hosting.com">Best Website Hosting</a><!-- 201304010090 eunge.liu-->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201208010120 mickey@163... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
-</div>
-<div class="sponsor">
+<div  class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
 </div>
-<div class="sponsor">
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc... -->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
 </div>
-<div class="sponsor">
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201201010090 barsh@inter... -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2012080100030 Temurbas atlas-multimedia-->
+  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Fototapete - Tapetendruck" href="http://www.druck-expert.com/Fototapete-Tapetendruck,category,8830.html">Fototapete - Tapetendruck</a><!-- 2012100100155 info@druck-->
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Got Stripes?" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
 </div>
 </div>
 </div>
@@ -237,7 +229,7 @@
 <div class="main">
 
 <h1>Module deprecate Methods</h1>
-<p class="navigation-index">[<a href="deprecate.html#AcquireCacheViewIndexes">AcquireCacheViewIndexes</a> &bull; <a href="deprecate.html#AcquireCacheViewPixels">AcquireCacheViewPixels</a> &bull; <a href="deprecate.html#AcquireImagePixels">AcquireImagePixels</a> &bull; <a href="deprecate.html#AcquireIndexes">AcquireIndexes</a> &bull; <a href="deprecate.html#AcquireMemory">AcquireMemory</a> &bull; <a href="deprecate.html#AcquireOneCacheViewPixel">AcquireOneCacheViewPixel</a> &bull; <a href="deprecate.html#AcquireOneCacheViewVirtualPixel">AcquireOneCacheViewVirtualPixel</a> &bull; <a href="deprecate.html#AcquireOneMagickPixel">AcquireOneMagickPixel</a> &bull; <a href="deprecate.html#AcquireOnePixel">AcquireOnePixel</a> &bull; <a href="deprecate.html#AcquireOneVirtualPixel">AcquireOneVirtualPixel</a> &bull; <a href="deprecate.html#AcquirePixels">AcquirePixels</a> &bull; <a href="deprecate.html#AffinityImage">AffinityImage</a> &bull; <a href="deprecate.html#AffinityImages">AffinityImages</a> &bull; <a href="deprecate.html#AllocateImage">AllocateImage</a> &bull; <a href="deprecate.html#AllocateImageColormap">AllocateImageColormap</a> &bull; <a href="deprecate.html#AllocateNextImage">AllocateNextImage</a> &bull; <a href="deprecate.html#AllocateString">AllocateString</a> &bull; <a href="deprecate.html#AverageImages">AverageImages</a> &bull; <a href="deprecate.html#ChannelThresholdImage">ChannelThresholdImage</a> &bull; <a href="deprecate.html#ClipPathImage">ClipPathImage</a> &bull; <a href="deprecate.html#CloneImageAttributes">CloneImageAttributes</a> &bull; <a href="deprecate.html#CloneMemory">CloneMemory</a> &bull; <a href="deprecate.html#CloseCacheView">CloseCacheView</a> &bull; <a href="deprecate.html#ColorFloodfill">ColorFloodfill</a> &bull; <a href="deprecate.html#DeleteImageAttribute">DeleteImageAttribute</a> &bull; <a href="deprecate.html#DeleteImageList">DeleteImageList</a> &bull; <a href="deprecate.html#DeleteMagickRegistry">DeleteMagickRegistry</a> &bull; <a href="deprecate.html#DescribeImage">DescribeImage</a> &bull; <a href="deprecate.html#DestroyImageAttributes">DestroyImageAttributes</a> &bull; <a href="deprecate.html#DestroyImages">DestroyImages</a> &bull; <a href="deprecate.html#DestroyMagick">DestroyMagick</a> &bull; <a href="deprecate.html#DispatchImage">DispatchImage</a> &bull; <a href="deprecate.html#ExtractSubimageFromImageImage">ExtractSubimageFromImageImage</a> &bull; <a href="deprecate.html#FlattenImages">FlattenImages</a> &bull; <a href="deprecate.html#FormatImageAttribute">FormatImageAttribute</a> &bull; <a href="deprecate.html#FormatMagickString">FormatMagickString</a> &bull; <a href="deprecate.html#FormatString">FormatString</a> &bull; <a href="deprecate.html#GetConfigureBlob">GetConfigureBlob</a> &bull; <a href="deprecate.html#GetCacheView">GetCacheView</a> &bull; <a href="deprecate.html#GetCacheViewIndexes">GetCacheViewIndexes</a> &bull; <a href="deprecate.html#GetCacheViewPixels">GetCacheViewPixels</a> &bull; <a href="deprecate.html#GetImageAttribute">GetImageAttribute</a> &bull; <a href="deprecate.html#GetImageClippingPathAttribute">GetImageClippingPathAttribute</a> &bull; <a href="deprecate.html#GetImageFromMagickRegistry">GetImageFromMagickRegistry</a> &bull; <a href="deprecate.html#GetMagickRegistry">GetMagickRegistry</a> &bull; <a href="deprecate.html#GetImageGeometry">GetImageGeometry</a> &bull; <a href="deprecate.html#GetImageList">GetImageList</a> &bull; <a href="deprecate.html#GetImageListIndex">GetImageListIndex</a> &bull; <a href="deprecate.html#GetImageListSize">GetImageListSize</a> &bull; <a href="deprecate.html#GetImagePixels">GetImagePixels</a> &bull; <a href="deprecate.html#GetIndexes">GetIndexes</a> &bull; <a href="deprecate.html#GetNextImage">GetNextImage</a> &bull; <a href="deprecate.html#GetNextImageAttribute">GetNextImageAttribute</a> &bull; <a href="deprecate.html#GetNumberScenes">GetNumberScenes</a> &bull; <a href="deprecate.html#GetOnePixel">GetOnePixel</a> &bull; <a href="deprecate.html#GetPixels">GetPixels</a> &bull; <a href="deprecate.html#GetPreviousImage">GetPreviousImage</a> &bull; <a href="deprecate.html#HSLTransform">HSLTransform</a> &bull; <a href="deprecate.html#IdentityAffine">IdentityAffine</a> &bull; <a href="deprecate.html#InitializeMagick">InitializeMagick</a> &bull; <a href="deprecate.html#InterpolatePixelColor">InterpolatePixelColor</a> &bull; <a href="deprecate.html#InterpretImageAttributes">InterpretImageAttributes</a> &bull; <a href="deprecate.html#LevelImageColor">LevelImageColor</a> &bull; <a href="deprecate.html#LiberateMemory">LiberateMemory</a> &bull; <a href="deprecate.html#LiberateSemaphoreInfo">LiberateSemaphoreInfo</a> &bull; <a href="deprecate.html#MagickIncarnate">MagickIncarnate</a> &bull; <a href="deprecate.html#MagickMonitor">MagickMonitor</a> &bull; <a href="deprecate.html#MapImage">MapImage</a> &bull; <a href="deprecate.html#MapImages">MapImages</a> &bull; <a href="deprecate.html#MatteFloodfill">MatteFloodfill</a> &bull; <a href="deprecate.html#MaximumImages">MaximumImages</a> &bull; <a href="deprecate.html#MinimumImages">MinimumImages</a> &bull; <a href="deprecate.html#MedianFilterImage">MedianFilterImage</a> &bull; <a href="deprecate.html#ModeImage">ModeImage</a> &bull; <a href="deprecate.html#MosaicImages">MosaicImages</a> &bull; <a href="deprecate.html#OpaqueImage">OpaqueImage</a> &bull; <a href="deprecate.html#OpenCacheView">OpenCacheView</a> &bull; <a href="deprecate.html#OpenMagickStream">OpenMagickStream</a> &bull; <a href="deprecate.html#PaintFloodfill">PaintFloodfill</a> &bull; <a href="deprecate.html#PaintOpaqueImage">PaintOpaqueImage</a> &bull; <a href="deprecate.html#PaintTransparentImage">PaintTransparentImage</a> &bull; <a href="deprecate.html#ParseSizeGeometry">ParseSizeGeometry</a> &bull; <a href="deprecate.html#PopImageList">PopImageList</a> &bull; <a href="deprecate.html#PopImagePixels">PopImagePixels</a> &bull; <a href="deprecate.html#PostscriptGeometry">PostscriptGeometry</a> &bull; <a href="deprecate.html#PushImageList">PushImageList</a> &bull; <a href="deprecate.html#PushImagePixels">PushImagePixels</a> &bull; <a href="deprecate.html#QuantizationError">QuantizationError</a> &bull; <a href="deprecate.html#RandomChannelThresholdImage">RandomChannelThresholdImage</a> &bull; <a href="deprecate.html#ReacquireMemory">ReacquireMemory</a> &bull; <a href="deprecate.html#RecolorImage">RecolorImage</a> &bull; <a href="deprecate.html#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="deprecate.html#ResetImageAttributeIterator">ResetImageAttributeIterator</a> &bull; <a href="deprecate.html#SetCacheViewPixels">SetCacheViewPixels</a> &bull; <a href="deprecate.html#SetExceptionInfo">SetExceptionInfo</a> &bull; <a href="deprecate.html#SetImage">SetImage</a> &bull; <a href="deprecate.html#SetImageAttribute">SetImageAttribute</a> &bull; <a href="deprecate.html#SetImageList">SetImageList</a> &bull; <a href="deprecate.html#SetImagePixels">SetImagePixels</a> &bull; <a href="deprecate.html#SetMagickRegistry">SetMagickRegistry</a> &bull; <a href="deprecate.html#SetMonitorHandler">SetMonitorHandler</a> &bull; <a href="deprecate.html#ShiftImageList">ShiftImageList</a> &bull; <a href="deprecate.html#SpliceImageList">SpliceImageList</a> &bull; <a href="deprecate.html#Strip">Strip</a> &bull; <a href="deprecate.html#SyncCacheView">SyncCacheView</a> &bull; <a href="deprecate.html#SyncCacheViewPixels">SyncCacheViewPixels</a> &bull; <a href="deprecate.html#SyncImagePixels">SyncImagePixels</a> &bull; <a href="deprecate.html#TemporaryFilename">TemporaryFilename</a> &bull; <a href="deprecate.html#ThresholdImage">ThresholdImage</a> &bull; <a href="deprecate.html#ThresholdImageChannel">ThresholdImageChannel</a> &bull; <a href="deprecate.html#TransformHSL">TransformHSL</a> &bull; <a href="deprecate.html#TranslateText">TranslateText</a> &bull; <a href="deprecate.html#TransparentImage">TransparentImage</a> &bull; <a href="deprecate.html#UnshiftImageList">UnshiftImageList</a> &bull; <a href="deprecate.html#ZoomImage">ZoomImage</a>]</p>
+<p class="navigation-index">[<a href="deprecate.php#AcquireCacheViewIndexes">AcquireCacheViewIndexes</a> &bull; <a href="deprecate.php#AcquireCacheViewPixels">AcquireCacheViewPixels</a> &bull; <a href="deprecate.php#AcquireImagePixels">AcquireImagePixels</a> &bull; <a href="deprecate.php#AcquireIndexes">AcquireIndexes</a> &bull; <a href="deprecate.php#AcquireMemory">AcquireMemory</a> &bull; <a href="deprecate.php#AcquireOneCacheViewPixel">AcquireOneCacheViewPixel</a> &bull; <a href="deprecate.php#AcquireOneCacheViewVirtualPixel">AcquireOneCacheViewVirtualPixel</a> &bull; <a href="deprecate.php#AcquireOneMagickPixel">AcquireOneMagickPixel</a> &bull; <a href="deprecate.php#AcquireOnePixel">AcquireOnePixel</a> &bull; <a href="deprecate.php#AcquireOneVirtualPixel">AcquireOneVirtualPixel</a> &bull; <a href="deprecate.php#AcquirePixels">AcquirePixels</a> &bull; <a href="deprecate.php#AffinityImage">AffinityImage</a> &bull; <a href="deprecate.php#AffinityImages">AffinityImages</a> &bull; <a href="deprecate.php#AllocateImage">AllocateImage</a> &bull; <a href="deprecate.php#AllocateImageColormap">AllocateImageColormap</a> &bull; <a href="deprecate.php#AllocateNextImage">AllocateNextImage</a> &bull; <a href="deprecate.php#AllocateString">AllocateString</a> &bull; <a href="deprecate.php#AverageImages">AverageImages</a> &bull; <a href="deprecate.php#ChannelThresholdImage">ChannelThresholdImage</a> &bull; <a href="deprecate.php#ClipPathImage">ClipPathImage</a> &bull; <a href="deprecate.php#CloneImageAttributes">CloneImageAttributes</a> &bull; <a href="deprecate.php#CloneMemory">CloneMemory</a> &bull; <a href="deprecate.php#CloseCacheView">CloseCacheView</a> &bull; <a href="deprecate.php#ColorFloodfill">ColorFloodfill</a> &bull; <a href="deprecate.php#DeleteImageAttribute">DeleteImageAttribute</a> &bull; <a href="deprecate.php#DeleteImageList">DeleteImageList</a> &bull; <a href="deprecate.php#DeleteMagickRegistry">DeleteMagickRegistry</a> &bull; <a href="deprecate.php#DescribeImage">DescribeImage</a> &bull; <a href="deprecate.php#DestroyImageAttributes">DestroyImageAttributes</a> &bull; <a href="deprecate.php#DestroyImages">DestroyImages</a> &bull; <a href="deprecate.php#DestroyMagick">DestroyMagick</a> &bull; <a href="deprecate.php#DispatchImage">DispatchImage</a> &bull; <a href="deprecate.php#ExtractSubimageFromImageImage">ExtractSubimageFromImageImage</a> &bull; <a href="deprecate.php#FlattenImages">FlattenImages</a> &bull; <a href="deprecate.php#FormatImageAttribute">FormatImageAttribute</a> &bull; <a href="deprecate.php#FormatMagickString">FormatMagickString</a> &bull; <a href="deprecate.php#FormatString">FormatString</a> &bull; <a href="deprecate.php#GetConfigureBlob">GetConfigureBlob</a> &bull; <a href="deprecate.php#GetCacheView">GetCacheView</a> &bull; <a href="deprecate.php#GetCacheViewIndexes">GetCacheViewIndexes</a> &bull; <a href="deprecate.php#GetCacheViewPixels">GetCacheViewPixels</a> &bull; <a href="deprecate.php#GetImageAttribute">GetImageAttribute</a> &bull; <a href="deprecate.php#GetImageClippingPathAttribute">GetImageClippingPathAttribute</a> &bull; <a href="deprecate.php#GetImageFromMagickRegistry">GetImageFromMagickRegistry</a> &bull; <a href="deprecate.php#GetMagickRegistry">GetMagickRegistry</a> &bull; <a href="deprecate.php#GetImageGeometry">GetImageGeometry</a> &bull; <a href="deprecate.php#GetImageList">GetImageList</a> &bull; <a href="deprecate.php#GetImageListIndex">GetImageListIndex</a> &bull; <a href="deprecate.php#GetImageListSize">GetImageListSize</a> &bull; <a href="deprecate.php#GetImagePixels">GetImagePixels</a> &bull; <a href="deprecate.php#GetIndexes">GetIndexes</a> &bull; <a href="deprecate.php#GetNextImage">GetNextImage</a> &bull; <a href="deprecate.php#GetNextImageAttribute">GetNextImageAttribute</a> &bull; <a href="deprecate.php#GetNumberScenes">GetNumberScenes</a> &bull; <a href="deprecate.php#GetOnePixel">GetOnePixel</a> &bull; <a href="deprecate.php#GetPixels">GetPixels</a> &bull; <a href="deprecate.php#GetPreviousImage">GetPreviousImage</a> &bull; <a href="deprecate.php#HSLTransform">HSLTransform</a> &bull; <a href="deprecate.php#IdentityAffine">IdentityAffine</a> &bull; <a href="deprecate.php#InitializeMagick">InitializeMagick</a> &bull; <a href="deprecate.php#InterpolatePixelColor">InterpolatePixelColor</a> &bull; <a href="deprecate.php#InterpretImageAttributes">InterpretImageAttributes</a> &bull; <a href="deprecate.php#LevelImageColor">LevelImageColor</a> &bull; <a href="deprecate.php#LiberateMemory">LiberateMemory</a> &bull; <a href="deprecate.php#LiberateSemaphoreInfo">LiberateSemaphoreInfo</a> &bull; <a href="deprecate.php#MagickIncarnate">MagickIncarnate</a> &bull; <a href="deprecate.php#MagickMonitor">MagickMonitor</a> &bull; <a href="deprecate.php#MapImage">MapImage</a> &bull; <a href="deprecate.php#MapImages">MapImages</a> &bull; <a href="deprecate.php#MatteFloodfill">MatteFloodfill</a> &bull; <a href="deprecate.php#MaximumImages">MaximumImages</a> &bull; <a href="deprecate.php#MinimumImages">MinimumImages</a> &bull; <a href="deprecate.php#MedianFilterImage">MedianFilterImage</a> &bull; <a href="deprecate.php#ModeImage">ModeImage</a> &bull; <a href="deprecate.php#MosaicImages">MosaicImages</a> &bull; <a href="deprecate.php#OpaqueImage">OpaqueImage</a> &bull; <a href="deprecate.php#OpenCacheView">OpenCacheView</a> &bull; <a href="deprecate.php#OpenMagickStream">OpenMagickStream</a> &bull; <a href="deprecate.php#PaintFloodfill">PaintFloodfill</a> &bull; <a href="deprecate.php#PaintOpaqueImage">PaintOpaqueImage</a> &bull; <a href="deprecate.php#PaintTransparentImage">PaintTransparentImage</a> &bull; <a href="deprecate.php#ParseSizeGeometry">ParseSizeGeometry</a> &bull; <a href="deprecate.php#PopImageList">PopImageList</a> &bull; <a href="deprecate.php#PopImagePixels">PopImagePixels</a> &bull; <a href="deprecate.php#PostscriptGeometry">PostscriptGeometry</a> &bull; <a href="deprecate.php#PushImageList">PushImageList</a> &bull; <a href="deprecate.php#PushImagePixels">PushImagePixels</a> &bull; <a href="deprecate.php#QuantizationError">QuantizationError</a> &bull; <a href="deprecate.php#RandomChannelThresholdImage">RandomChannelThresholdImage</a> &bull; <a href="deprecate.php#ReacquireMemory">ReacquireMemory</a> &bull; <a href="deprecate.php#RecolorImage">RecolorImage</a> &bull; <a href="deprecate.php#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="deprecate.php#ResetImageAttributeIterator">ResetImageAttributeIterator</a> &bull; <a href="deprecate.php#SetCacheViewPixels">SetCacheViewPixels</a> &bull; <a href="deprecate.php#SetExceptionInfo">SetExceptionInfo</a> &bull; <a href="deprecate.php#SetImage">SetImage</a> &bull; <a href="deprecate.php#SetImageAttribute">SetImageAttribute</a> &bull; <a href="deprecate.php#SetImageList">SetImageList</a> &bull; <a href="deprecate.php#SetImagePixels">SetImagePixels</a> &bull; <a href="deprecate.php#SetMagickRegistry">SetMagickRegistry</a> &bull; <a href="deprecate.php#SetMonitorHandler">SetMonitorHandler</a> &bull; <a href="deprecate.php#ShiftImageList">ShiftImageList</a> &bull; <a href="deprecate.php#SpliceImageList">SpliceImageList</a> &bull; <a href="deprecate.php#Strip">Strip</a> &bull; <a href="deprecate.php#SyncCacheView">SyncCacheView</a> &bull; <a href="deprecate.php#SyncCacheViewPixels">SyncCacheViewPixels</a> &bull; <a href="deprecate.php#SyncImagePixels">SyncImagePixels</a> &bull; <a href="deprecate.php#TemporaryFilename">TemporaryFilename</a> &bull; <a href="deprecate.php#ThresholdImage">ThresholdImage</a> &bull; <a href="deprecate.php#ThresholdImageChannel">ThresholdImageChannel</a> &bull; <a href="deprecate.php#TransformHSL">TransformHSL</a> &bull; <a href="deprecate.php#TranslateText">TranslateText</a> &bull; <a href="deprecate.php#TransparentImage">TransparentImage</a> &bull; <a href="deprecate.php#UnshiftImageList">UnshiftImageList</a> &bull; <a href="deprecate.php#ZoomImage">ZoomImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireCacheViewIndexes">AcquireCacheViewIndexes</a></h2>
 <div class="doc-section">
@@ -3267,14 +3259,14 @@
 <div id="linkbar">
     <span id="linkbar-west">&nbsp;</span>
     <span id="linkbar-center">
-      <a href="../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../discourse-server">Discourse Server</a> &bull;
+      <a href="../../discourse-server">Discourse Server</a> &bull;
       <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2013 ImageMagick Studio LLC</span>
-    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="../../script/contact.php">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>
   <script type="text/javascript">

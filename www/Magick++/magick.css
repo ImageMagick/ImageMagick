@@ -3,8 +3,8 @@ body {
   color: black;
   margin: 0px;
   padding: 0px;
-  font-size: 0.9em;
-  line-height: 135%;
+  font-family: Candara, Sans-Serif;
+  font-size: 10pt;
 }
 
 a {
@@ -14,7 +14,7 @@ a {
   font-weight: bold;
 }
 
-a:hover {
+a[href]:hover {
   background: transparent;
   color: #991e1e;
   text-decoration: underline;
@@ -54,19 +54,12 @@ div.doc-section > p {
 }
 
 div.doc-section {
-margin: 1.33em 40px;
+  margin: 1.33em 40px;
 }
 
 div.eastbar {
-  width: 13.5%; 
-  left: 0em; 
+  right: 0.2em; 
   position: absolute; 
-  /* height: 100%; */
-  font-size: 12px;
-  border-right-style: solid;
-  border-right-color: #d0d0d0; 
-  border-right-width: 1px;
-
 }
 
 div.eqn {
@@ -74,7 +67,7 @@ div.eqn {
   }
 
 div.footer {
-  margin-left: 13.5%; 
+  margin-left: 160px; 
   background: white;
 }
 
@@ -102,7 +95,8 @@ div.main {
   padding-bottom: .75em;
   padding-top: 0px;
   padding-right: .75em;
-  margin-left:13.5%;
+  margin-left: 160px;
+  margin-right: 160px;
 }
 
 div.menu {
@@ -116,7 +110,6 @@ div.menu {
   left: 0px;
 }
 
-
 div.sep {
   background: #f5f5f5;
   color: black;
@@ -127,7 +120,6 @@ div.sep {
   left: 0px;
   font-size: 66%;
 }
-
 
 div.sponsor {
   padding-left: .5em;
@@ -172,7 +164,7 @@ div.text {
 }
 
 div.titlebar {
-  background-image: url("../../images/background.jpg");
+  background-image: url("../image/background.jpg");
   background-repeat: repeat-x;
   height: 118px;
   width: 100%;
@@ -181,6 +173,19 @@ div.titlebar {
   padding-bottom:0px;
 }
 
+div.westbar {
+  width: 160px; 
+  left: 0em; 
+  position: absolute; 
+  /* height: 100%; */
+  font-size: 9pt;
+  border-right-style: solid;
+  border-right-color: #d0d0d0; 
+  border-right-width: 1px;
+}
+
+/* These were being used per id but there were two duplicate id's each.
+   These individual properties have been moved to the images to which they were applied in titlebar.php.
 acronym, .help {
   border-bottom: 1px dashed #9999cc;
   cursor: help;
@@ -315,7 +320,7 @@ img {
 
 img.icon {
   float: left;
-  margin: 7px;
+  margin: 5px;
 }
 
 img.map {
@@ -370,6 +375,7 @@ p.crt {
   color: white;
   background: #000044;
   font-family: monospace;
+  font-size: 9pt;
   margin: 1.33em 40px; 
   padding: .66em 1.33em;
 }
@@ -637,19 +643,17 @@ th.size-norm, tr.size-norm, td.size-norm {
   z-index: 10;
 } 
 
-
 #linkbar, #navigation-bar {
   clear: both;
   background: #f5f5f5;
   color: black;
   border: solid #d0d0d0;
   border-width: 1px 0px 1px 0px;
-  padding: 5px 5px 5px 13.5%;
+  padding: 5px 5px 5px 160px;
   font-weight: bold;
   text-align: center;
   margin-left:0px; 
 }
-
 
 #linkbar-east {
   float: right;
@@ -662,8 +666,6 @@ th.size-norm, tr.size-norm, td.size-norm {
 #linkbar-west {
   float: left;
 }
-
-
 
 #margin {
   padding: 10px;
@@ -731,7 +733,7 @@ th.size-norm, tr.size-norm, td.size-norm {
 }
 
 #titlebar {
-  background-image: url("../../images/background.jpg");
+  background-image: url("../image/background.jpg");
   background-repeat: repeat-x;
   height: 118px;
 }
@@ -746,8 +748,6 @@ th.size-norm, tr.size-norm, td.size-norm {
   border-width: 1px;
 }
 
-/* These were being used per id but there were two duplicate id's each.
-   These individual properties have been moved to the images to which they were applied in titlebar.php.
 #titlebar-east {
   float: right;
 }
@@ -760,7 +760,6 @@ th.size-norm, tr.size-norm, td.size-norm {
 #www-imagemagick-org {
   background: #f5f5f5;
 }
-
 
 @media print {
   #titlebar, #navigation-bar, #linkbar, #menu, #margin { display: none }

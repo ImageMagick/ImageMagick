@@ -17,12 +17,12 @@
 </center>
 <h4> Quick Contents</h4>
 <ul>
-  <li> <a href="#BLOBs">BLOBs</a> </li>
-  <li> <a href="#Constructors">Constructors</a> </li>
-  <li> <a href="#Image%20Manipulation%20Methods">Image Manipulation
+  <li> <a href="Image.html#BLOBs">BLOBs</a> </li>
+  <li> <a href="Image.html#Constructors">Constructors</a> </li>
+  <li> <a href="Image.html#Image%20Manipulation%20Methods">Image Manipulation
 Methods</a> </li>
-  <li> <a href="#Image%20Attributes">Image Attributes</a> </li>
-  <li> <a href="#Raw%20Image%20Pixel%20Access">Low-Level Image Pixel
+  <li> <a href="Image.html#Image%20Attributes">Image Attributes</a> </li>
+  <li> <a href="Image.html#Raw%20Image%20Pixel%20Access">Low-Level Image Pixel
 Access</a> </li>
 </ul>
 <hr width="100%">Image is the primary object in Magick++ and represents
@@ -111,9 +111,9 @@ following:
 <ol>
   <li> Read master image.</li>
   <li> Assign master image to second image.</li>
-  <li> Zoom second image to the size 640x480.</li>
+  <li> Resize second image to the size 640x480.</li>
   <li> Assign master image to a third image.</li>
-  <li> Zoom third image to the size 800x600.</li>
+  <li> Resize third image to the size 800x600.</li>
   <li> Write the second image to a file.</li>
   <li> Write the third image to a file.</li>
 </ol>
@@ -128,11 +128,11 @@ following:
 master("horse.jpg");</font></tt> <br>
   <tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image second = master;</font></tt>
   <br>
-  <tt><font color="#000066">&nbsp;&nbsp;&nbsp; second.zoom("640x480");</font></tt>
+  <tt><font color="#000066">&nbsp;&nbsp;&nbsp; second.resize("640x480");</font></tt>
   <br>
   <tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image third = master;</font></tt>
   <br>
-  <tt><font color="#000066">&nbsp;&nbsp;&nbsp; third.zoom("800x600");</font></tt>
+  <tt><font color="#000066">&nbsp;&nbsp;&nbsp; third.resize("800x600");</font></tt>
   <br>
   <tt><font color="#000066">&nbsp;&nbsp;&nbsp;
 second.write("horse640x480.jpg");</font></tt> <br>
@@ -183,9 +183,9 @@ image may be initially placed in memory by reading it directly from a
 file, reading the image from a database, memory-mapped from a disk
 file, or could be written to memory by Magick++. Once the encoded image
 has been placed within a Blob, it may be read into a Magick++ Image via
-a <a href="#constructor_blob">constructor</a> or <a href="#read">read()</a>
+a <a href="Image.html#constructor_blob">constructor</a> or <a href="Image.html#read">read()</a>
 . Likewise, a Magick++ image may be written to a Blob via <a
- href="#write"> write()</a> .
+ href="Image.html#write"> write()</a> .
 <p>An example of using Image to write to a Blob follows: <br>
 &nbsp; </p>
 <blockquote><tt><font color="#000066">#include &lt;Magick++.h&gt;</font></tt>
@@ -269,8 +269,8 @@ size and color</font></td>
  href="Blob.html">Blob</a> &amp;blob_</font></td>
       <td rowspan="5"><font size="-1">Construct Image by reading from
 encoded image data contained in an in-memory <a href="Blob.html">BLOB</a>
-. Depending on the constructor arguments, the Blob <a href="#size">size</a>
-, <a href="#depth">depth</a> , <a href="#magick">magick</a> (format)
+. Depending on the constructor arguments, the Blob <a href="Image.html#size">size</a>
+, <a href="Image.html#depth">depth</a> , <a href="Image.html#magick">magick</a> (format)
 may
 also be specified. Some image formats require that size be specified.
 The default ImageMagick uses for depth depends on the compiled-in
@@ -278,7 +278,7 @@ Quantum size (8 or 16).&nbsp; If ImageMagick's Quantum size does not
 match that of the image, the depth may need to be specified.
 ImageMagick can usually automagically detect the image's format.
 When a format can't be automagically detected, the format (<a
- href="#magick">magick</a> ) must be specified.</font></td>
+ href="Image.html#magick">magick</a> ) must be specified.</font></td>
     </tr>
     <tr>
       <td><font size="-1">const <a href="Blob.html">Blob</a>
@@ -385,8 +385,8 @@ adds gaussian noise to the image file "myImage.tiff".
  size="-1">adaptiveThreshold<br>
       </font></div>
       </td>
-      <td valign="middle"><font size="-1">size_t width, unsigned
-int height, unsigned offset = 0<br>
+      <td valign="middle"><font size="-1">size_t width, size_t
+height, size_t offset = 0<br>
       </font></td>
       <td valign="top"><font size="-1">Apply adaptive thresholding to
 the image. Adaptive thresholding is useful if the ideal threshold level
@@ -543,8 +543,8 @@ subregion of image)</font></td>
       <td style="text-align: center;" rowspan="2">
       <center><a name="colorize"></a> <font size="-1">colorize</font></center>
       </td>
-      <td><font size="-1">const size_t opacityRed_, const
-size_t opacityGreen_, const size_t opacityBlue_, const
+      <td><font size="-1">const unsigned int opacityRed_, const
+unsigned int opacityGreen_, const unsigned int opacityBlue_, const
 Color &amp;penColor_</font></td>
       <td><font size="-1">Colorize image with pen color, using
 specified percent opacity for red, green, and blue quantums.</font></td>
@@ -575,9 +575,9 @@ width, height, or other&nbsp; image&nbsp; attributes by embedding <a
       <td valign="middle"><font size="-1">const Image &amp;reference_<br>
       </font></td>
       <td valign="top"><font size="-1">Compare current image with
-another image. Sets <a href="#meanErrorPerPixel">meanErrorPerPixel</a>
-, <a href="#normalizedMaxError">normalizedMaxError</a> , and <a
- href="#normalizedMeanError">normalizedMeanError</a> in the current
+another image. Sets <a href="Image.html#meanErrorPerPixel">meanErrorPerPixel</a>
+, <a href="Image.html#normalizedMaxError">normalizedMaxError</a> , and <a
+ href="Image.html#normalizedMeanError">normalizedMeanError</a> in the current
 image. False is returned if the images are identical. An ErrorOption
 exception is thrown if the reference image columns, rows, colorspace,
 or
@@ -671,7 +671,7 @@ altered. Use a copy of the original if this is a problem.</font></td>
       <td>
       <center><a name="distort"></a> <font size="-1">distort</font></center>
       </td>
-      <td><font size="-1">const DistortImageMethod method, const unsigned long number_arguments, const double *arguments, const bool bestfit = false </font></td>
+      <td><font size="-1">const DistortImageMethod method, const size_t number_arguments, const double *arguments, const bool bestfit = false </font></td>
       <td><font size="-1">Distort image.&nbsp; Applies a user-specfied
 distortion to the image.</font></td>
     </tr>
@@ -767,7 +767,7 @@ vertical direction)</font></td>
       <br>
       <font size="-1">Color</font></center>
       </td>
-      <td><font size="-1">size_t x_, size_t y_, const <a
+      <td><font size="-1">ssize_t x_, ssize_t y_, const <a
  href="Color.html"> Color</a> &amp;fillColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill color across pixels
 that match the color of the target pixel and are neighbors of the
@@ -778,7 +778,7 @@ target pixel. Uses current fuzz setting when determining color match.</font></td
 &amp;point_, const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">size_t x_, size_t y_, const <a
+      <td><font size="-1">ssize_t x_, ssize_t y_, const <a
  href="Color.html"> Color</a> &amp;fillColor_, const <a
  href="Color.html">Color</a>
 &amp;borderColor_</font></td>
@@ -794,8 +794,8 @@ const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
     <tr>
       <td style="text-align: center;"><a name="floodFillOpacity"></a> <font
  size="-1">floodFillOpacity</font></td>
-      <td><font size="-1">const long x_, const long y_, const unsigned
-int opacity_, const PaintMethod method_</font></td>
+      <td><font size="-1">const long x_, const long y_, const unsigned int
+opacity_, const PaintMethod method_</font></td>
       <td><font size="-1">Floodfill pixels matching color (within fuzz
 factor) of target pixel(x,y) with replacement opacity value using
 method.</font></td>
@@ -806,7 +806,7 @@ method.</font></td>
       <br>
       <font size="-1">Texture</font></center>
       </td>
-      <td><font size="-1">size_t x_, size_t y_,&nbsp; const
+      <td><font size="-1">ssize_t x_, ssize_t y_,&nbsp; const
 Image &amp;texture_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
 that match the color of the target pixel and are neighbors of the
@@ -817,7 +817,7 @@ target pixel. Uses current fuzz setting when determining color match.</font></td
 &amp;point_, const Image &amp;texture_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">size_t x_, size_t y_, const Image
+      <td><font size="-1">ssize_t x_, ssize_t y_, const Image
 &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
 starting at target-pixel and stopping at pixels matching specified
@@ -838,13 +838,6 @@ Color</a>
 horizontal direction)</font></td>
     </tr>
     <tr>
-      <td>
-      <center><a name="forwardFourierTransform"></a> <font size="-1">forwardFourierTransform</font></center>
-      </td>
-      <td><font size="-1">const bool magnitude</font></td>
-      <td><font size="-1">Implements the discrete Fourier transform (DFT) of the image either as a magnitude / phase or real / imaginary image pair.</font></td>
-    </tr>
-    <tr>
       <td style="text-align: center;" rowspan="2">
       <center><a name="frame"></a> <font size="-1">frame</font></center>
       </td>
@@ -854,7 +847,7 @@ horizontal direction)</font></td>
     </tr>
     <tr>
       <td><font size="-1">size_t width_, size_t height_,
-int x_, ssize_t y_, ssize_t innerBevel_ = 0, ssize_t outerBevel_ = 0</font></td>
+ssize_t x_, ssize_t y_, ssize_t innerBevel_ = 0, ssize_t outerBevel_ = 0</font></td>
     </tr>
     <tr>
       <td>
@@ -1011,8 +1004,8 @@ with this option.</font></td>
       <center><a name="matteFloodfill"></a> <font size="-1">matteFloodfill</font></center>
       </td>
       <td><font size="-1">const <a href="Color.html">Color</a>
-&amp;target_, const size_t&nbsp; opacity_, const ssize_t x_, const
-int
+&amp;target_, const unsigned int&nbsp; opacity_, const ssize_t x_, const
+ssize_t
 y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a> method_</font></td>
       <td><font size="-1">Floodfill designated area with a replacement
 opacity value.</font></td>
@@ -1097,7 +1090,7 @@ normalizing the pixel values to span the full range of color values).</font></td
       <td style="text-align: center;">
       <center><a name="opacity"></a> <font size="-1">opacity</font></center>
       </td>
-      <td><font size="-1">size_t opacity_</font></td>
+      <td><font size="-1">unsigned int opacity_</font></td>
       <td><font size="-1">Set or attenuate the opacity channel in the
 image. If the image pixels are opaque then they are set to the
 specified
@@ -1124,9 +1117,9 @@ to specified penColor_.</font></td>
       <td><font size="-1">const std::string &amp;imageSpec_</font></td>
       <td rowspan="2" nosave=""><font size="-1">Ping is similar to read
 except only enough of the image is read to determine the image columns,
-rows, and filesize.&nbsp; The <a href="#columns">columns</a> </font>,
-      <font size="-1"><a href="#rows">rows</a> , and <a
- href="#fileSize">fileSize</a>
+rows, and filesize.&nbsp; The <a href="Image.html#columns">columns</a> </font>,
+      <font size="-1"><a href="Image.html#rows">rows</a> , and <a
+ href="Image.html#fileSize">fileSize</a>
 attributes are valid after invoking ping.&nbsp; The image data is not
 valid after calling ping.</font></td>
     </tr>
@@ -1208,7 +1201,7 @@ size_t depth_</font></td>
     <tr>
       <td><font size="-1">const <a href="Blob.html">Blob</a>
 &amp;blob_, const <a href="Geometry.html">Geometry</a> &amp;size_,
-unsigned short depth_, const string &amp;magick_&nbsp;</font></td>
+size_t depth_, const string &amp;magick_&nbsp;</font></td>
     </tr>
     <tr>
       <td><font size="-1">const <a href="Blob.html">Blob</a>
@@ -1295,7 +1288,7 @@ dithering.<br>
 &amp;thresholds_, const ChannelType channel_<br>
       </small></td>
       <td style="vertical-align: middle;"><small>Random threshold an
-image channel. Similar to <a href="#randomThreshold">randomThreshold</a>()
+image channel. Similar to <a href="Image.html#randomThreshold">randomThreshold</a>()
 but restricted to the specified channel.<br>
       </small></td>
     </tr>
@@ -1363,6 +1356,14 @@ position&nbsp; of&nbsp; the light source. By default, the shading
 results as a grayscale image.. Set c<i>olorShading_</i> to <i>true</i>
 to
 shade the red, green, and blue components of the image.</font></td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">
+      <center><a name="shadow"></a> <font size="-1">shadow</font></center>
+      </td>
+      <td><font size="-1">const double percent_opacity = 80, const double sigma_
+= 0.5, const ssize_t x_ = 0, const ssize_t y_ = 0</font></td>
+      <td><font size="-1">simulate an image shadow</font></td>
     </tr>
     <tr>
       <td style="text-align: center;">
@@ -1450,7 +1451,7 @@ on second image)</font></td>
       <td>
       <center><a name="sparseColor"></a> <font size="-1">sparseColor</font></center>
       </td>
-      <td><font size="-1">const ChannelType channel, const SparseColorMethod method, const unsigned long number_arguments, const double *arguments </font></td>
+      <td><font size="-1">const ChannelType channel, const SparseColorMethod method, const size_t number_arguments, const double *arguments </font></td>
       <td><font size="-1">Sparse color image, given a set of coordinates, interpolates the colors found at those coordinates, across the whole image, using various methods.</font></td>
     </tr>
     <tr>
@@ -1584,8 +1585,8 @@ original if this is a problem.</font></td>
       <td rowspan="3"><font size="-1">Write image to a in-memory <a
  href="Blob.html"> BLOB</a> stored in <i>blob_</i>. The <i>magick</i>_
 parameter specifies the image format to write (defaults to <a
- href="#magick">magick</a> ). The depth_ parameter species the image
-depth (defaults to <a href="#depth"> depth</a> ).</font> <br>
+ href="Image.html#magick">magick</a> ). The depth_ parameter species the image
+depth (defaults to <a href="Image.html#depth"> depth</a> ).</font> <br>
       <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
 an image format is selected which is capable of supporting fewer
 colors than the original image or quantization has been requested, the
@@ -1601,8 +1602,8 @@ std::string &amp;magick_</font></td>
 std::string &amp;magick_, size_t depth_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const ssize_t x_, const ssize_t y_, const unsigned
-int columns_, const size_t rows_, const std::string &amp;map_,
+      <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
+columns_, const size_t rows_, const std::string &amp;map_,
 const StorageType type_, void *pixels_</font></td>
       <td><font size="-1">Write pixel data into a buffer you supply.
 The data is saved either as char, short int, integer, float or double
@@ -1661,11 +1662,11 @@ values and type_ parameters.</font></td>
     </tr>
     <tr>
       <td style="text-align: center;">
-      <center><a name="zoom"></a> <font size="-1">zoom</font></center>
+      <center><a name="resize"></a> <font size="-1">resize</font></center>
       </td>
       <td><font size="-1">const <a href="Geometry.html">Geometry</a>
 &amp;geometry_</font></td>
-      <td><font size="-1">Zoom image to specified size.</font></td>
+      <td><font size="-1">Resize image to specified size.</font></td>
     </tr>
   </tbody>
 </table>
@@ -1860,7 +1861,7 @@ on.</font></td>
       <td><a name="cacheThreshold"></a> <font size="-1">cacheThreshold</font></td>
       <td><font size="-1">size_t</font></td>
       <td bgcolor="#666666"><font size="-1">&nbsp;</font></td>
-      <td><font size="-1">const int</font></td>
+      <td><font size="-1">const size_t</font></td>
       <td><font size="-1">Pixel cache threshold in megabytes. Once this
 threshold is exceeded, all subsequent pixels cache operations are
 to/from disk. This is a static method and the attribute it sets is
@@ -1870,8 +1871,8 @@ shared by all Image objects.</font></td>
       <td style="vertical-align: middle;" valign="middle"><small><a
  name="channelDepth"></a>channelDepth<br>
       </small></td>
-      <td style="vertical-align: middle;" valign="middle"><small>unsigned
-int<br>
+      <td style="vertical-align: middle;" valign="middle"><small>size_t
+<br>
       </small></td>
       <td style="vertical-align: middle;" valign="middle"><small>const
 ChannelType channel_<br>
@@ -2276,8 +2277,8 @@ server. To use a TrueType font, precede the TrueType filename with an
  href="TypeMetric.html"> TypeMetric</a> *metrics</font></td>
       <td bgcolor="#666666"><font size="-1">&nbsp;</font></td>
       <td><font size="-1">Update metrics with font type metrics using
-specified <i>text</i>, and current <a href="#font">font</a> and <a
- href="#fontPointsize">fontPointSize</a> settings.</font></td>
+specified <i>text</i>, and current <a href="Image.html#font">font</a> and <a
+ href="Image.html#fontPointsize">fontPointSize</a> settings.</font></td>
     </tr>
     <tr>
       <td>
@@ -2434,14 +2435,14 @@ to true and the image has just been quantized.</font></td>
       <td style="text-align: center; vertical-align: middle;"><font
  size="-1"><a name="modulusDepth"></a>modulusDepth<br>
       </font></td>
-      <td style="text-align: left; vertical-align: middle;"><small>unsigned
-int<br>
+      <td style="text-align: left; vertical-align: middle;"><small>size_t
+<br>
       </small></td>
       <td style="text-align: left; vertical-align: middle;"><small><font
  size="-1"><small>void<br>
       </small></font></small></td>
-      <td style="text-align: left; vertical-align: middle;"><small>unsigned
-int depth_<br>
+      <td style="text-align: left; vertical-align: middle;"><small>size_t
+depth_<br>
       </small></td>
       <td style="text-align: left; vertical-align: middle;"><small>Image
 modulus depth (minimum number of bits required to support
@@ -2550,7 +2551,7 @@ canvas.</font>
       <p><font size="-1">Use this option to specify the dimensions
 and position of the Postscript page in dots per inch or a TEXT page in
 pixels. This option is typically used in concert with <i><a
- href="#density"> density</a> </i>.</font> </p>
+ href="Image.html#density"> density</a> </i>.</font> </p>
       <p><font size="-1">Page may also be used to position a GIF
 image (such as for a scene in an animation)</font></p>
       </td>
@@ -2560,8 +2561,8 @@ image (such as for a scene in an animation)</font></p>
       <center><a name="pixelColor"></a> <font size="-1">pixelColor</font></center>
       </td>
       <td><font size="-1"><a href="Color.html">Color</a> </font></td>
-      <td><font size="-1">size_t x_, size_t y_</font></td>
-      <td><font size="-1">size_t x_, size_t y_, const <a
+      <td><font size="-1">ssize_t x_, ssize_t y_</font></td>
+      <td><font size="-1">ssize_t x_, ssize_t y_, const <a
  href="Color.html"> Color</a> &amp;color_</font></td>
       <td><font size="-1">Get/set pixel color at location x &amp; y.</font></td>
     </tr>
@@ -2723,6 +2724,13 @@ also be used to affect the image size read from a multi-resolution
 format (e.g. Photo CD, JBIG, or JPEG.</font></td>
     </tr>
     <tr>
+      <td style="text-align: center;">
+      <center><a name="strip"></a> <font size="-1">strip</font></center>
+      </td>
+      <td><font size="-1">void</font></td>
+      <td><font size="-1">strips an image of all profiles and comments.</font></td>
+    </tr>
+    <tr>
       <td>
       <center><a name="strokeAntiAlias"></a> <font size="-1">strokeAntiAlias</font></center>
       </td>
@@ -2874,7 +2882,7 @@ designed to support Unicode.</small><br>
       <td>
       <center><a name="totalColors"></a> <font size="-1">totalColors</font></center>
       </td>
-      <td><font size="-1">unsigned long</font></td>
+      <td><font size="-1">size_t</font></td>
       <td><font size="-1">void</font></td>
       <td bgcolor="#666666"><font size="-1">&nbsp;</font></td>
       <td><font size="-1">Number of colors in the image</font></td>
@@ -2971,7 +2979,7 @@ stdio's gets() relates to fgets(). The <i><a href="Pixels.html"> Pixels</a>
 <p>Obtain existing image pixels via <i>getPixels()</i>. Create a new
 pixel region using <i>setPixels().</i></p>
 <p>In order to ensure that only the current generation of the image is
-modified, the Image's <a href="#modifyImage">modifyImage()</a> method
+modified, the Image's <a href="Image.html#modifyImage">modifyImage()</a> method
 should be invoked to reduce the reference count on the underlying image
 to one. If this is not done, then it is possible for a previous
 generation of the image to be modified due to the use of reference
@@ -3022,8 +3030,7 @@ red.</font></font></font> <br>
       <font face="Courier New,Courier"><font color="#000099"><font
  size="-1"> ssize_t row = 10;</font></font></font> <br>
       <font face="Courier New,Courier"><font color="#000099"><font
- size="-1"> PixelPacket *pixel =
-pixel_cache+row*columns*sizeof(PixelPacket)+column;</font></font></font>
+ size="-1"> PixelPacket *pixel = pixel_cache+row*columns+column;</font></font></font>
       <br>
       <font face="Courier New,Courier"><font color="#000099"><font
  size="-1"> *pixel = Color("red");</font></font></font> <br>
@@ -3064,8 +3071,8 @@ pixel_cache+row*columns*sizeof(PixelPacket)+column;</font></font></font>
       </td>
       <td><font size="-1">const <a href="PixelPacket.html">PixelPacket</a>
 *</font></td>
-      <td><font size="-1">const ssize_t x_, const ssize_t y_, const unsigned
-int columns_, const size_t rows_</font></td>
+      <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
+columns_, const size_t rows_</font></td>
       <td><font size="-1">Transfers pixels from the image to the pixel
 cache as defined by the specified rectangular region.&nbsp;</font><font
  size="-1">The returned pointer remains valid until the next getPixel,
@@ -3087,7 +3094,7 @@ or setPixels call and should never be deallocated by the user.</font><font
  size="-1"> Only valid for PseudoClass images or CMYKA images. The
 pixel indexes represent an array of type IndexPacket, with each entry
 corresponding to an x,y pixel position. For PseudoClass images, the
-entry's value is the offset into the colormap (see <a href="#colorMap">colorMap</a>
+entry's value is the offset into the colormap (see <a href="Image.html#colorMap">colorMap</a>
 ) for that pixel. For CMYKA images, the indexes are used to contain the
 alpha channel.</font></td>
     </tr>
@@ -3099,8 +3106,8 @@ alpha channel.</font></td>
       <td><font size="-1">void</font></td>
       <td><font size="-1">Returns a pointer to the Image pixel indexes
 corresponding to the pixel region requested by the last <a
- href="#getConstPixels">getConstPixels</a> , <a href="#getPixels">getPixels</a>
-, or <a href="#setPixels">setPixels</a> call.&nbsp;</font><font
+ href="Image.html#getConstPixels">getConstPixels</a> , <a href="Image.html#getPixels">getPixels</a>
+, or <a href="Image.html#setPixels">setPixels</a> call.&nbsp;</font><font
  size="-1">The
 returned pointer remains valid until the next getPixel, getConstPixels,
 or setPixels call and should never be deallocated by the user.</font><font
@@ -3109,7 +3116,7 @@ or
 CMYKA images. The pixel indexes represent an array of type
 IndexPacket, with each entry corresponding to a pixel x,y position. For
 PseudoClass images, the entry's value is the offset into the colormap
-(see <a href="#colorMap">colorMap</a> )&nbsp; for that pixel. For
+(see <a href="Image.html#colorMap">colorMap</a> )&nbsp; for that pixel. For
 CMYKA
 images, the indexes are used to contain the alpha channel.</font></td>
     </tr>
@@ -3118,8 +3125,8 @@ images, the indexes are used to contain the alpha channel.</font></td>
       <center><a name="getPixels"></a> <font size="-1">getPixels</font></center>
       </td>
       <td><font size="-1"><a href="PixelPacket.html">PixelPacket</a> *</font></td>
-      <td><font size="-1">const ssize_t x_, const ssize_t y_, const unsigned
-int columns_, const size_t rows_</font></td>
+      <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
+columns_, const size_t rows_</font></td>
       <td><font size="-1">Transfers pixels from the image to the pixel
 cache as defined by the specified rectangular region. Modified pixels
 may be subsequently transferred back to the image via syncPixels. </font><font
@@ -3133,8 +3140,8 @@ user.</font><font size="-1"></font></td>
       <center><a name="setPixels"></a> <font size="-1">setPixels</font></center>
       </td>
       <td><font size="-1"><a href="PixelPacket.html">PixelPacket</a> *</font></td>
-      <td><font size="-1">const ssize_t x_, const ssize_t y_, const unsigned
-int columns_, const size_t rows_</font></td>
+      <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
+columns_, const size_t rows_</font></td>
       <td><font size="-1">Allocates a pixel cache region to store image
 pixels as defined by the region rectangle.&nbsp; This area is
 subsequently transferred from the pixel cache to the image via
