@@ -1,6 +1,11 @@
+2013-02-25  6.8.3-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.3-5, SVN revision 11149.
+
 2013-02-23  6.8.3-5 Cristy  <quetzlzacatenango@image...>
   * Read the WebP extended file format (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22809).
+  * Add arch annotation to include path to distinquish ImageMagick versions
+    6 & 7.
 
 2013-02-22  6.8.3-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-4, SVN revision 11127.
