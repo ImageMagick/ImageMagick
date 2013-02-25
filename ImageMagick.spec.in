@@ -211,10 +211,10 @@ fi
 %define wordsize 32
 %endif
 
-mv %{buildroot}%{_includedir}/%{name}-*/magick/magick-config.h \
-   %{buildroot}%{_includedir}/%{name}-*/magick/magick-config-%{wordsize}.h
+mv %{buildroot}%{_includedir}/%{name}-6/magick/magick-config.h \
+   %{buildroot}%{_includedir}/%{name}-6/magick/magick-config-%{wordsize}.h
 
-cat >%{buildroot}%{_includedir}/%{name}-*/magick/magick-config.h <<EOF
+cat >%{buildroot}%{_includedir}/%{name}-6/magick/magick-config.h <<EOF
 #ifndef IMAGEMAGICK_MULTILIB
 #define IMAGEMAGICK_MULTILIB
 
@@ -269,8 +269,8 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/MagickWand*.pc
 %{_libdir}/pkgconfig/Wand*.pc
 %dir %{_includedir}/%{name}
-%{_includedir}/%{name}-*/magick
-%{_includedir}/%{name}-*/wand
+%{_includedir}/%{name}-6/magick
+%{_includedir}/%{name}-6/wand
 %{_mandir}/man1/Magick-config.*
 %{_mandir}/man1/MagickCore-config.*
 %{_mandir}/man1/Wand-config.*
