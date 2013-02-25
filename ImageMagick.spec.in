@@ -295,8 +295,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc Magick++/examples
 %{_bindir}/Magick++-config
-%{_includedir}/%{name}/Magick++
-%{_includedir}/%{name}/Magick++.h
+%{_includedir}/%{name}-6/Magick++
+%{_includedir}/%{name}-6/Magick++.h
 %{_libdir}/libMagick++*so*
 %{_libdir}/pkgconfig/Magick++*.pc
 %{_libdir}/pkgconfig/ImageMagick++*.pc
