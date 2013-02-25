@@ -1,3 +1,7 @@
+2013-02-25  6.8.2-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Relocated png_set_bKGD(), etc., after png_set_IHDR() because they
+    might depend on members of info_ptr that are set by png_set_IHDR().
+
 2013-02-25  6.8.3-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-5, SVN revision 11170.
 
