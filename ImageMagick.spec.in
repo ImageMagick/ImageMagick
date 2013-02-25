@@ -268,7 +268,7 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/ImageMagick*.pc
 %{_libdir}/pkgconfig/MagickWand*.pc
 %{_libdir}/pkgconfig/Wand*.pc
-%dir %{_includedir}/%{name}
+%dir %{_includedir}/%{name}-6
 %{_includedir}/%{name}-6/magick
 %{_includedir}/%{name}-6/wand
 %{_mandir}/man1/Magick-config.*
