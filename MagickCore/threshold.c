@@ -855,8 +855,8 @@ MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
 
   map=(ThresholdMap *)NULL;
   options=GetConfigureOptions(ThresholdsFilename,exception);
-  while ((option=(const StringInfo *) GetNextValueInLinkedList(options)) !=
-         (const StringInfo *) NULL && (map == (ThresholdMap *) NULL))
+  while (((option=(const StringInfo *) GetNextValueInLinkedList(options)) !=
+         (const StringInfo *) NULL) && (map == (ThresholdMap *) NULL))
     map=GetThresholdMapFile((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),map_id,exception);
   options=DestroyConfigureOptions(options);
@@ -893,8 +893,8 @@ MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static ThresholdMap *GetThresholdMapFile(const char *xml,
-  const char *filename,const char *map_id,ExceptionInfo *exception)
+static ThresholdMap *GetThresholdMapFile(const char *xml,const char *filename,
+  const char *map_id,ExceptionInfo *exception)
 {
   char
     *p;
@@ -1272,14 +1272,14 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   const char
     *p;
 
+  double
+    levels[CompositePixelChannel];
+
   MagickBooleanType
     status;
 
   MagickOffsetType
     progress;
-
-  double
-    levels[CompositePixelChannel];
 
   register ssize_t
     i;
@@ -1604,6 +1604,10 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   CacheView
     *image_view;
 
+  double
+    min_threshold,
+    max_threshold;
+
   GeometryInfo
     geometry_info;
 
@@ -1618,10 +1622,6 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
 
   PixelInfo
     threshold;
-
-  double
-    min_threshold,
-    max_threshold;
 
   RandomInfo
     **restrict random_info;
