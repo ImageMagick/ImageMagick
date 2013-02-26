@@ -111,6 +111,28 @@ struct _ThresholdMap
 };
 
 /*
+  Static declarations.
+*/
+static const char
+  *MinimalThresholdMap =
+    "<?xml version=\"1.0\"?>"
+    "<thresholds>"
+    "  <threshold map=\"threshold\" alias=\"1x1\">"
+    "    <description>Threshold 1x1 (non-dither)</description>"
+    "    <levels width=\"1\" height=\"1\" divisor=\"2\">"
+    "        1"
+    "    </levels>"
+    "  </threshold>"
+    "  <threshold map=\"checks\" alias=\"2x1\">"
+    "    <description>Checkerboard 2x1 (dither)</description>"
+    "    <levels width=\"2\" height=\"2\" divisor=\"3\">"
+    "       1 2"
+    "       2 1"
+    "    </levels>"
+    "  </threshold>"
+    "</thresholds>";
+
+/*
   Forward declarations.
 */
 static ThresholdMap
@@ -853,14 +875,21 @@ MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
   ThresholdMap
     *map;
 
-  map=(ThresholdMap *)NULL;
+  map=GetThresholdMapFile(MinimalThresholdMap,"built-in",map_id,exception);
+  if (map != (ThresholdMap *) NULL)
+    return(map);
   options=GetConfigureOptions(ThresholdsFilename,exception);
-  while (((option=(const StringInfo *) GetNextValueInLinkedList(options)) !=
-         (const StringInfo *) NULL) && (map == (ThresholdMap *) NULL))
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
     map=GetThresholdMapFile((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),map_id,exception);
+    if (map != (ThresholdMap *) NULL)
+      return(map);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
   options=DestroyConfigureOptions(options);
-  return(map);
+  return((ThresholdMap *) NULL);
 }
 
 /*
