@@ -3667,7 +3667,7 @@ MAGICK_PATCHLEVEL_VERSION=6
 
 MAGICK_VERSION=6.8.3-6
 
-MAGICK_SVN_REVISION=11179:11188M
+MAGICK_SVN_REVISION=11179:11191M
 
 
 # Substitute library versioning
@@ -26003,7 +26003,7 @@ fi
 
 # Assume that delegate headers reside under same directory as ImageMagick
 # installation prefix.
-MAGICK_CPPFLAGS="-I$INCLUDE_DIR/${PACKAGE_NAME}-$MAGICK_MAJOR_VERSION $MAGICK_CPPFLAGS"
+MAGICK_CPPFLAGS="-I$INCLUDE_DIR/${PACKAGE_NAME}-$MAGICK_MAJOR_VERSION.$MAGICK_MINOR_VERSION $MAGICK_CPPFLAGS"
 
 #
 # Find the X11 RGB database
@@ -31769,9 +31769,9 @@ else
 fi
 
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WebPDecodeRGB in -lwebp" >&5
-$as_echo_n "checking for WebPDecodeRGB in -lwebp... " >&6; }
-if ${ac_cv_lib_webp_WebPDecodeRGB+:} false; then :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WebPPictureInit in -lwebp" >&5
+$as_echo_n "checking for WebPPictureInit in -lwebp... " >&6; }
+if ${ac_cv_lib_webp_WebPPictureInit+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -31785,27 +31785,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char WebPDecodeRGB ();
+char WebPPictureInit ();
 int
 main ()
 {
-return WebPDecodeRGB ();
+return WebPPictureInit ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_webp_WebPDecodeRGB=yes
+  ac_cv_lib_webp_WebPPictureInit=yes
 else
-  ac_cv_lib_webp_WebPDecodeRGB=no
+  ac_cv_lib_webp_WebPPictureInit=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_webp_WebPDecodeRGB" >&5
-$as_echo "$ac_cv_lib_webp_WebPDecodeRGB" >&6; }
-if test "x$ac_cv_lib_webp_WebPDecodeRGB" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_webp_WebPPictureInit" >&5
+$as_echo "$ac_cv_lib_webp_WebPPictureInit" >&6; }
+if test "x$ac_cv_lib_webp_WebPPictureInit" = xyes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
@@ -32293,7 +32293,7 @@ fi
 #
 
 # Path to ImageMagick header files
-INCLUDE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
+INCLUDE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}.${MAGICK_MINOR_VERSION}"
 INCLUDE_PATH="${INCLUDE_DIR}/${INCLUDE_RELATIVE_PATH}"
 DEFINE_INCLUDE_PATH="${INCLUDE_DIR}/${INCLUDE_RELATIVE_PATH}/"
 case "${build_os}" in
@@ -32441,7 +32441,7 @@ _ACEOF
 
 
 # Subdirectory to place architecture-dependent configuration files
-CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
+CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}.${MAGICK_MINOR_VERSION}"
 
 cat >>confdefs.h <<_ACEOF
 #define CONFIGURE_RELATIVE_PATH "$CONFIGURE_RELATIVE_PATH"
@@ -32462,7 +32462,7 @@ _ACEOF
 
 
 # Subdirectory to place architecture-independent configuration files
-SHARE_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
+SHARE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}.${MAGICK_MINOR_VERSION}"
 
 cat >>confdefs.h <<_ACEOF
 #define SHARE_RELATIVE_PATH "$SHARE_RELATIVE_PATH"
