@@ -1268,7 +1268,7 @@ fi
 
 # Assume that delegate headers reside under same directory as ImageMagick
 # installation prefix.
-MAGICK_CPPFLAGS="-I$INCLUDE_DIR/${PACKAGE_NAME}-$MAGICK_MAJOR_VERSION $MAGICK_CPPFLAGS"
+MAGICK_CPPFLAGS="-I$INCLUDE_DIR/${PACKAGE_NAME}-$MAGICK_MAJOR_VERSION.MAGICK_MINOR_VERSION $MAGICK_CPPFLAGS"
 
 #
 # Find the X11 RGB database
@@ -2777,7 +2777,7 @@ if test "$with_webp" != 'no'; then
     failed=0
     passed=0
     AC_CHECK_HEADER(webp/decode.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(webp,WebPDecodeRGB,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(webp,WebPPictureInit,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING([if WEBP package is complete])
     if test $passed -gt 0; then
         if test $failed -gt 0; then
@@ -2955,7 +2955,7 @@ AC_SUBST(PERLMAINCC)
 #
 
 # Path to ImageMagick header files
-INCLUDE_RELATIVE_PATH="ImageMagick-${MAGICK_MAJOR_VERSION}"
+INCLUDE_RELATIVE_PATH="ImageMagick-${MAGICK_MAJOR_VERSION}.${MAGICK_MINOR_VERSION}"
 INCLUDE_PATH="${INCLUDE_DIR}/${INCLUDE_RELATIVE_PATH}"
 DEFINE_INCLUDE_PATH="${INCLUDE_DIR}/${INCLUDE_RELATIVE_PATH}/"
 case "${build_os}" in
@@ -3063,7 +3063,7 @@ AC_DEFINE_UNQUOTED(DOCUMENTATION_PATH,"$DEFINE_DOCUMENTATION_PATH",[Directory wh
 AC_SUBST(DOCUMENTATION_PATH)
 
 # Subdirectory to place architecture-dependent configuration files
-CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
+CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}.${MAGICK_MINOR_VERSION}"
 AC_DEFINE_UNQUOTED(CONFIGURE_RELATIVE_PATH,"$CONFIGURE_RELATIVE_PATH",[Subdirectory of lib where architecture-dependent configuration files live.])
 CONFIGURE_PATH="${SYSCONF_DIR}/${CONFIGURE_RELATIVE_PATH}/"
 DEFINE_CONFIGURE_PATH="${SYSCONF_DIR}/${CONFIGURE_RELATIVE_PATH}/"
@@ -3076,7 +3076,7 @@ AC_DEFINE_UNQUOTED(CONFIGURE_PATH,"$DEFINE_CONFIGURE_PATH",[Directory where arch
 AC_SUBST(CONFIGURE_PATH)
 
 # Subdirectory to place architecture-independent configuration files
-SHARE_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
+SHARE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}.${MAGICK_MINOR_VERSION}"
 AC_DEFINE_UNQUOTED(SHARE_RELATIVE_PATH,"$SHARE_RELATIVE_PATH",[Subdirectory of lib where architecture-independent configuration files live.])
 SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}"
 DEFINE_SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}/"
