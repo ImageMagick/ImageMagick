@@ -10187,6 +10187,125 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     png_set_compression_strategy(ping,
        mng_info->write_png_compression_strategy-1);
 
+  ping_interlace_method=image_info->interlace != NoInterlace;
+
+  if (mng_info->write_mng)
+    png_set_sig_bytes(ping,8);
+
+  /* Bail out if cannot meet defined png:bit-depth or png:color-type */
+
+  if (mng_info->write_png_colortype != 0)
+    {
+     if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_GRAY)
+       if (ping_have_color != MagickFalse)
+         {
+           ping_color_type = PNG_COLOR_TYPE_RGB;
+
+           if (ping_bit_depth < 8)
+             ping_bit_depth=8;
+         }
+
+     if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_GRAY_ALPHA)
+       if (ping_have_color != MagickFalse)
+         ping_color_type = PNG_COLOR_TYPE_RGB_ALPHA;
+    }
+
+  if (ping_need_colortype_warning != MagickFalse ||
+     ((mng_info->write_png_depth &&
+     (int) mng_info->write_png_depth != ping_bit_depth) ||
+     (mng_info->write_png_colortype &&
+     ((int) mng_info->write_png_colortype-1 != ping_color_type &&
+      mng_info->write_png_colortype != 7 &&
+      !(mng_info->write_png_colortype == 5 && ping_color_type == 0)))))
+    {
+      if (logging != MagickFalse)
+        {
+          if (ping_need_colortype_warning != MagickFalse)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "  Image has transparency but tRNS chunk was excluded");
+            }
+
+          if (mng_info->write_png_depth)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "  Defined png:bit-depth=%u, Computed depth=%u",
+                  mng_info->write_png_depth,
+                  ping_bit_depth);
+            }
+
+          if (mng_info->write_png_colortype)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "  Defined png:color-type=%u, Computed color type=%u",
+                  mng_info->write_png_colortype-1,
+                  ping_color_type);
+            }
+        }
+
+      png_warning(ping,
+        "Cannot write image with defined png:bit-depth or png:color-type.");
+    }
+
+  if (image_matte != MagickFalse && image->alpha_trait != BlendPixelTrait)
+    {
+      /* Add an opaque matte channel */
+      image->alpha_trait = BlendPixelTrait;
+      (void) SetImageAlpha(image,OpaqueAlpha,exception);
+
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "  Added an opaque matte channel");
+    }
+
+  if (number_transparent != 0 || number_semitransparent != 0)
+    {
+      if (ping_color_type < 4)
+        {
+           ping_have_tRNS=MagickTrue;
+           if (logging != MagickFalse)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "  Setting ping_have_tRNS=MagickTrue.");
+        }
+    }
+
+  if (logging != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  Writing PNG header chunks");
+
+  png_set_IHDR(ping,ping_info,ping_width,ping_height,
+               ping_bit_depth,ping_color_type,
+               ping_interlace_method,ping_compression_method,
+               ping_filter_method);
+
+  if (ping_color_type == 3 && ping_have_PLTE != MagickFalse)
+    {
+      png_set_PLTE(ping,ping_info,palette,number_colors);
+
+      if (logging != MagickFalse)
+        {
+          for (i=0; i< (ssize_t) number_colors; i++)
+          {
+            if (i < ping_num_trans)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "     PLTE[%d] = (%d,%d,%d), tRNS[%d] = (%d)",
+                      (int) i,
+                      (int) palette[i].red,
+                      (int) palette[i].green,
+                      (int) palette[i].blue,
+                      (int) i,
+                      (int) ping_trans_alpha[i]);
+             else
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "     PLTE[%d] = (%d,%d,%d)",
+                      (int) i,
+                      (int) palette[i].red,
+                      (int) palette[i].green,
+                      (int) palette[i].blue);
+           }
+         }
+    }
+
   /* Only write the iCCP chunk if we are not writing the sRGB chunk. */
   if (ping_exclude_sRGB != MagickFalse ||
      (!png_get_valid(ping,ping_info,PNG_INFO_sRGB)))
@@ -10307,125 +10426,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    bp.x,bp.y);
            }
         }
-    }
-
-  ping_interlace_method=image_info->interlace != NoInterlace;
-
-  if (mng_info->write_mng)
-    png_set_sig_bytes(ping,8);
-
-  /* Bail out if cannot meet defined png:bit-depth or png:color-type */
-
-  if (mng_info->write_png_colortype != 0)
-    {
-     if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_GRAY)
-       if (ping_have_color != MagickFalse)
-         {
-           ping_color_type = PNG_COLOR_TYPE_RGB;
-
-           if (ping_bit_depth < 8)
-             ping_bit_depth=8;
-         }
-
-     if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_GRAY_ALPHA)
-       if (ping_have_color != MagickFalse)
-         ping_color_type = PNG_COLOR_TYPE_RGB_ALPHA;
-    }
-
-  if (ping_need_colortype_warning != MagickFalse ||
-     ((mng_info->write_png_depth &&
-     (int) mng_info->write_png_depth != ping_bit_depth) ||
-     (mng_info->write_png_colortype &&
-     ((int) mng_info->write_png_colortype-1 != ping_color_type &&
-      mng_info->write_png_colortype != 7 &&
-      !(mng_info->write_png_colortype == 5 && ping_color_type == 0)))))
-    {
-      if (logging != MagickFalse)
-        {
-          if (ping_need_colortype_warning != MagickFalse)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "  Image has transparency but tRNS chunk was excluded");
-            }
-
-          if (mng_info->write_png_depth)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "  Defined png:bit-depth=%u, Computed depth=%u",
-                  mng_info->write_png_depth,
-                  ping_bit_depth);
-            }
-
-          if (mng_info->write_png_colortype)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "  Defined png:color-type=%u, Computed color type=%u",
-                  mng_info->write_png_colortype-1,
-                  ping_color_type);
-            }
-        }
-
-      png_warning(ping,
-        "Cannot write image with defined png:bit-depth or png:color-type.");
-    }
-
-  if (image_matte != MagickFalse && image->alpha_trait != BlendPixelTrait)
-    {
-      /* Add an opaque matte channel */
-      image->alpha_trait = BlendPixelTrait;
-      (void) SetImageAlpha(image,OpaqueAlpha,exception);
-
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "  Added an opaque matte channel");
-    }
-
-  if (number_transparent != 0 || number_semitransparent != 0)
-    {
-      if (ping_color_type < 4)
-        {
-           ping_have_tRNS=MagickTrue;
-           if (logging != MagickFalse)
-             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "  Setting ping_have_tRNS=MagickTrue.");
-        }
-    }
-
-  if (logging != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  Writing PNG header chunks");
-
-  png_set_IHDR(ping,ping_info,ping_width,ping_height,
-               ping_bit_depth,ping_color_type,
-               ping_interlace_method,ping_compression_method,
-               ping_filter_method);
-
-  if (ping_color_type == 3 && ping_have_PLTE != MagickFalse)
-    {
-      png_set_PLTE(ping,ping_info,palette,number_colors);
-
-      if (logging != MagickFalse)
-        {
-          for (i=0; i< (ssize_t) number_colors; i++)
-          {
-            if (i < ping_num_trans)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "     PLTE[%d] = (%d,%d,%d), tRNS[%d] = (%d)",
-                      (int) i,
-                      (int) palette[i].red,
-                      (int) palette[i].green,
-                      (int) palette[i].blue,
-                      (int) i,
-                      (int) ping_trans_alpha[i]);
-             else
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "     PLTE[%d] = (%d,%d,%d)",
-                      (int) i,
-                      (int) palette[i].red,
-                      (int) palette[i].green,
-                      (int) palette[i].blue);
-           }
-         }
     }
 
   if (ping_exclude_bKGD == MagickFalse)
