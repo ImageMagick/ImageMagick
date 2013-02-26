@@ -1,4 +1,5 @@
 %global VERSION  @PACKAGE_VERSION@
+%global MAJOR_VERSION  @MAGICK_MAJOR_VERSION@
 %global Patchlevel  @PACKAGE_RELEASE@
 
 Name:           @PACKAGE_NAME@
@@ -210,10 +211,10 @@ fi
 %define wordsize 32
 %endif
 
-mv %{buildroot}%{_includedir}/%{name}-7/magick/magick-config.h \
-   %{buildroot}%{_includedir}/%{name}-7/magick/magick-config-%{wordsize}.h
+mv %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config.h \
+   %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config-%{wordsize}.h
 
-cat >%{buildroot}%{_includedir}/%{name}-7/magick/magick-config.h <<EOF
+cat >%{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config.h <<EOF
 #ifndef IMAGEMAGICK_MULTILIB
 #define IMAGEMAGICK_MULTILIB
 
@@ -253,7 +254,7 @@ rm -rf %{buildroot}
 %{_mandir}/man[145]/[a-z]*
 %{_mandir}/man1/%{name}.*
 %exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
-%{_sysconfdir}/%{name}
+%{_sysconfdir}/%{name}-%{MAJOR_VERSION}
 
 
 %files devel
@@ -265,9 +266,9 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/MagickCore*.pc
 %{_libdir}/pkgconfig/ImageMagick*.pc
 %{_libdir}/pkgconfig/MagickWand*.pc
-%dir %{_includedir}/%{name}-7
-%{_includedir}/%{name}-7/MagickCore
-%{_includedir}/%{name}-7/MagickWand
+%dir %{_includedir}/%{name}-%{MAJOR_VERSION}
+%{_includedir}/%{name}-%{MAJOR_VERSION}/MagickCore
+%{_includedir}/%{name}-%{MAJOR_VERSION}/MagickWand
 %{_mandir}/man1/MagickCore-config.*
 %{_mandir}/man1/MagickWand-config.*
 
@@ -290,8 +291,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc Magick++/examples
 %{_bindir}/Magick++-config
-%{_includedir}/%{name}-7/Magick++
-%{_includedir}/%{name}-7/Magick++.h
+%{_includedir}/%{name}-%{MAJOR_VERSION}/Magick++
+%{_includedir}/%{name}-%{MAJOR_VERSION}/Magick++.h
 %{_libdir}/libMagick++*so*
 %{_libdir}/pkgconfig/Magick++*.pc
 %{_libdir}/pkgconfig/ImageMagick++*.pc

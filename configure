@@ -3671,7 +3671,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=11115:11167
+MAGICK_SVN_REVISION=11115:11187M
 
 
 # Substitute library versioning
@@ -25986,7 +25986,7 @@ fi
 
 # Assume that delegate headers reside under same directory as ImageMagick
 # installation prefix.
-MAGICK_CPPFLAGS="-I$INCLUDE_DIR/ImageMagick-$MAGICK_MAJOR_VERSION $MAGICK_CPPFLAGS"
+MAGICK_CPPFLAGS="-I$INCLUDE_DIR/${PACKAGE_NAME}-$MAGICK_MAJOR_VERSION $MAGICK_CPPFLAGS"
 
 #
 # Find the X11 RGB database
@@ -32424,7 +32424,7 @@ _ACEOF
 
 
 # Subdirectory to place architecture-dependent configuration files
-CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}"
+CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
 
 cat >>confdefs.h <<_ACEOF
 #define CONFIGURE_RELATIVE_PATH "$CONFIGURE_RELATIVE_PATH"
