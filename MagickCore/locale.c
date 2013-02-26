@@ -70,7 +70,8 @@
   Typedef declarations.
 */
 #if defined(__CYGWIN__)
-typedef struct _locale_t *locale_t;
+typedef struct _locale_t
+  *locale_t;
 #endif
 
 /*
