@@ -37,13 +37,13 @@
 
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
-#define MAGICKCORE_CONFIGURE_PATH "/usr/local/etc/ImageMagick-6/"
+#define MAGICKCORE_CONFIGURE_PATH "/usr/local/etc/ImageMagick-6.8/"
 #endif
 
 /* Subdirectory of lib where architecture-dependent configuration files live.
    */
 #ifndef MAGICKCORE_CONFIGURE_RELATIVE_PATH
-#define MAGICKCORE_CONFIGURE_RELATIVE_PATH "ImageMagick-6"
+#define MAGICKCORE_CONFIGURE_RELATIVE_PATH "ImageMagick-6.8"
 #endif
 
 /* Define if you have DJVU library */
@@ -1082,12 +1082,12 @@
 
 /* Directory where ImageMagick architecture headers live. */
 #ifndef MAGICKCORE_INCLUDEARCH_PATH
-#define MAGICKCORE_INCLUDEARCH_PATH "/usr/local/include/ImageMagick-6/"
+#define MAGICKCORE_INCLUDEARCH_PATH "/usr/local/include/ImageMagick-6.8/"
 #endif
 
 /* Directory where ImageMagick headers live. */
 #ifndef MAGICKCORE_INCLUDE_PATH
-#define MAGICKCORE_INCLUDE_PATH "/usr/local/include/ImageMagick-6/"
+#define MAGICKCORE_INCLUDE_PATH "/usr/local/include/ImageMagick-6.8/"
 #endif
 
 /* ImageMagick is formally installed under prefix */
@@ -1274,13 +1274,13 @@
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHARE_PATH
-#define MAGICKCORE_SHARE_PATH "/usr/local/share/ImageMagick-6.8.3/"
+#define MAGICKCORE_SHARE_PATH "/usr/local/share/ImageMagick-6.8/"
 #endif
 
 /* Subdirectory of lib where architecture-independent configuration files
    live. */
 #ifndef MAGICKCORE_SHARE_RELATIVE_PATH
-#define MAGICKCORE_SHARE_RELATIVE_PATH "ImageMagick-6.8.3"
+#define MAGICKCORE_SHARE_RELATIVE_PATH "ImageMagick-6.8"
 #endif
 
 /* The size of `double', as computed by sizeof. */
