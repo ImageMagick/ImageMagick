@@ -1304,7 +1304,7 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
   (void) FormatLocaleFile(file,
     "\n   Threshold Maps for Ordered Dither Operations\n");
   option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option= != (const StringInfo *) NULL)
+  while (option != (const StringInfo *) NULL)
   {
     (void) FormatLocaleFile(file,"\nPath: %s\n\n",GetStringInfoPath(option));
     status|=ListThresholdMapFile(file,(const char *) GetStringInfoDatum(option),
