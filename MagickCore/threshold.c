@@ -1229,12 +1229,13 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
   options=GetConfigureOptions(ThresholdsFilename,exception);
   (void) FormatLocaleFile(file,
     "\n   Threshold Maps for Ordered Dither Operations\n");
-  while ((option=(const StringInfo *) GetNextValueInLinkedList(options)) !=
-         (const StringInfo *) NULL)
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
   {
-    (void) FormatLocaleFile(file,"\nPATH: %s\n\n",GetStringInfoPath(option));
+    (void) FormatLocaleFile(file,"\nPath: %s\n\n",GetStringInfoPath(option));
     status|=ListThresholdMapFile(file,(const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
   return(status != 0 ? MagickTrue : MagickFalse);
@@ -1454,8 +1455,8 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PerceptibleImage() set each pixel whose value is less than |epsilon| to 
-%  epsilon or -epsilon (whichever is closer) otherwise the pixel value remains 
+%  PerceptibleImage() set each pixel whose value is less than |epsilon| to
+%  epsilon or -epsilon (whichever is closer) otherwise the pixel value remains
 %  unchanged.
 %
 %  The format of the PerceptibleImage method is:
