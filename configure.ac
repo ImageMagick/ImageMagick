@@ -289,7 +289,7 @@ AX_C___ATTRIBUTE__
 AX_GCC_ARCHFLAG([no])
 PKG_PROG_PKG_CONFIG
 
-# Check for linker script support 
+# Check for linker script support
 gl_LD_VERSION_SCRIPT
 
 #
@@ -430,7 +430,7 @@ AC_ARG_WITH([sharearch-dir],
 eval "eval SHAREARCH_DIR=$sharearch_dir"
 AC_SUBST(SHAREARCH_DIR)
 
-# Path to the pkgconfig folder 
+# Path to the pkgconfig folder
 AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=DIR],
             [Path to the pkgconfig directory @<:@LIBDIR/pkgconfig@:>@]),
             [pkgconfigdir="$withval"], [pkgconfigdir='${libdir}/pkgconfig'])
@@ -1268,7 +1268,7 @@ fi
 
 # Assume that delegate headers reside under same directory as ImageMagick
 # installation prefix.
-MAGICK_CPPFLAGS="-I$INCLUDE_DIR/ImageMagick-$MAGICK_MAJOR_VERSION $MAGICK_CPPFLAGS"
+MAGICK_CPPFLAGS="-I$INCLUDE_DIR/${PACKAGE_NAME}-$MAGICK_MAJOR_VERSION $MAGICK_CPPFLAGS"
 
 #
 # Find the X11 RGB database
@@ -3063,7 +3063,7 @@ AC_DEFINE_UNQUOTED(DOCUMENTATION_PATH,"$DEFINE_DOCUMENTATION_PATH",[Directory wh
 AC_SUBST(DOCUMENTATION_PATH)
 
 # Subdirectory to place architecture-dependent configuration files
-CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}"
+CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
 AC_DEFINE_UNQUOTED(CONFIGURE_RELATIVE_PATH,"$CONFIGURE_RELATIVE_PATH",[Subdirectory of lib where architecture-dependent configuration files live.])
 CONFIGURE_PATH="${SYSCONF_DIR}/${CONFIGURE_RELATIVE_PATH}/"
 DEFINE_CONFIGURE_PATH="${SYSCONF_DIR}/${CONFIGURE_RELATIVE_PATH}/"
