@@ -1,4 +1,5 @@
 %global VERSION  @PACKAGE_VERSION@
+%global MAJOR_VERSION  @MAGICK_MAJOR_VERSION@
 %global Patchlevel  @PACKAGE_RELEASE@
 
 Name:           @PACKAGE_NAME@
@@ -211,10 +212,10 @@ fi
 %define wordsize 32
 %endif
 
-mv %{buildroot}%{_includedir}/%{name}-6/magick/magick-config.h \
-   %{buildroot}%{_includedir}/%{name}-6/magick/magick-config-%{wordsize}.h
+mv %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config.h \
+   %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config-%{wordsize}.h
 
-cat >%{buildroot}%{_includedir}/%{name}-6/magick/magick-config.h <<EOF
+cat >%{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config.h <<EOF
 #ifndef IMAGEMAGICK_MULTILIB
 #define IMAGEMAGICK_MULTILIB
 
@@ -223,7 +224,7 @@ cat >%{buildroot}%{_includedir}/%{name}-6/magick/magick-config.h <<EOF
 #if __WORDSIZE == 32
 # include "magick-config-32.h"
 #elif __WORDSIZE == 64
-# include "magick-config-64.h"
+# include "magick-config-%{MAJOR_VERSION}4.h"
 #else
 # error "unexpected value for __WORDSIZE macro"
 #endif
@@ -254,7 +255,7 @@ rm -rf %{buildroot}
 %{_mandir}/man[145]/[a-z]*
 %{_mandir}/man1/%{name}.*
 %exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
-%{_sysconfdir}/%{name}
+%{_sysconfdir}/%{name}-%{MAJOR_VERSION}
 
 %files devel
 %defattr(-,root,root,-)
@@ -268,9 +269,9 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/ImageMagick*.pc
 %{_libdir}/pkgconfig/MagickWand*.pc
 %{_libdir}/pkgconfig/Wand*.pc
-%dir %{_includedir}/%{name}-6
-%{_includedir}/%{name}-6/magick
-%{_includedir}/%{name}-6/wand
+%dir %{_includedir}/%{name}-%{MAJOR_VERSION}
+%{_includedir}/%{name}-%{MAJOR_VERSION}/magick
+%{_includedir}/%{name}-%{MAJOR_VERSION}/wand
 %{_mandir}/man1/Magick-config.*
 %{_mandir}/man1/MagickCore-config.*
 %{_mandir}/man1/Wand-config.*
@@ -295,8 +296,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc Magick++/examples
 %{_bindir}/Magick++-config
-%{_includedir}/%{name}-6/Magick++
-%{_includedir}/%{name}-6/Magick++.h
+%{_includedir}/%{name}-%{MAJOR_VERSION}/Magick++
+%{_includedir}/%{name}-%{MAJOR_VERSION}/Magick++.h
 %{_libdir}/libMagick++*so*
 %{_libdir}/pkgconfig/Magick++*.pc
 %{_libdir}/pkgconfig/ImageMagick++*.pc

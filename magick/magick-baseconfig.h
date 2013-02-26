@@ -37,13 +37,13 @@
 
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
-#define MAGICKCORE_CONFIGURE_PATH "/usr/local/etc/ImageMagick/"
+#define MAGICKCORE_CONFIGURE_PATH "/usr/local/etc/ImageMagick-6/"
 #endif
 
 /* Subdirectory of lib where architecture-dependent configuration files live.
    */
 #ifndef MAGICKCORE_CONFIGURE_RELATIVE_PATH
-#define MAGICKCORE_CONFIGURE_RELATIVE_PATH "ImageMagick"
+#define MAGICKCORE_CONFIGURE_RELATIVE_PATH "ImageMagick-6"
 #endif
 
 /* Define if you have DJVU library */
