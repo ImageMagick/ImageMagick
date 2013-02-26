@@ -10275,7 +10275,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Setting up gAMA chunk");
 
-          printf("whee. setting gama = %f\n",image->gamma);
           png_set_gAMA(ping,ping_info,image->gamma);
         }
       }
