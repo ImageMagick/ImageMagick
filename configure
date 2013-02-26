@@ -3671,7 +3671,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=11115:11190M
+MAGICK_SVN_REVISION=11115:11194
 
 
 # Substitute library versioning
@@ -31753,9 +31753,9 @@ else
 fi
 
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WebPDecodeRGB in -lwebp" >&5
-$as_echo_n "checking for WebPDecodeRGB in -lwebp... " >&6; }
-if ${ac_cv_lib_webp_WebPDecodeRGB+:} false; then :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WebPPictureInit in -lwebp" >&5
+$as_echo_n "checking for WebPPictureInit in -lwebp... " >&6; }
+if ${ac_cv_lib_webp_WebPPictureInit+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -31769,27 +31769,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char WebPDecodeRGB ();
+char WebPPictureInit ();
 int
 main ()
 {
-return WebPDecodeRGB ();
+return WebPPictureInit ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_webp_WebPDecodeRGB=yes
+  ac_cv_lib_webp_WebPPictureInit=yes
 else
-  ac_cv_lib_webp_WebPDecodeRGB=no
+  ac_cv_lib_webp_WebPPictureInit=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_webp_WebPDecodeRGB" >&5
-$as_echo "$ac_cv_lib_webp_WebPDecodeRGB" >&6; }
-if test "x$ac_cv_lib_webp_WebPDecodeRGB" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_webp_WebPPictureInit" >&5
+$as_echo "$ac_cv_lib_webp_WebPPictureInit" >&6; }
+if test "x$ac_cv_lib_webp_WebPPictureInit" = xyes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
