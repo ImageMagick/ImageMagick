@@ -2051,6 +2051,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     ping_found_gAMA,
     ping_found_iCCP,
     ping_found_sRGB,
+    ping_found_sRGB_cHRM,
     status;
 
   PixelInfo
@@ -2154,6 +2155,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (logging != MagickFalse)
   {
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+      " Before reading:");
+
+    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
       "  image->alpha_trait=%d",(int) image->alpha_trait);
 
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2161,6 +2165,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
       "  image->colorspace=%d",(int) image->colorspace);
+
+    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  image->gamma=%f", image->gamma);
   }
   intent=Magick_RenderingIntent_to_PNG_RenderingIntent(image->rendering_intent);
 
@@ -2525,12 +2532,35 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         &image->chromaticity.blue_primary.x,
         &image->chromaticity.blue_primary.y);
 
+       if (image->chromaticity.red_primary.x>0.6399f &&
+           image->chromaticity.red_primary.x<0.6401f &&
+           image->chromaticity.red_primary.y>0.3299f &&
+           image->chromaticity.red_primary.y<0.3301f &&
+           image->chromaticity.green_primary.x>0.2999f &&
+           image->chromaticity.green_primary.x<0.3001f &&
+           image->chromaticity.green_primary.y>0.5999f &&
+           image->chromaticity.green_primary.y<0.6001f &&
+           image->chromaticity.blue_primary.x>0.1499f &&
+           image->chromaticity.blue_primary.x<0.1501f &&
+           image->chromaticity.blue_primary.y>0.0599f &&
+           image->chromaticity.blue_primary.y<0.0601f &&
+           image->chromaticity.white_point.x>0.3126f &&
+           image->chromaticity.white_point.x<0.3128f &&
+           image->chromaticity.white_point.y>0.3289f &&
+           image->chromaticity.white_point.y<0.3291f)
+          ping_found_sRGB_cHRM=MagickTrue;
+
       ping_found_cHRM=MagickTrue;
     }
 
   if (image->rendering_intent != UndefinedIntent)
     {
-      if (ping_found_sRGB != MagickTrue)
+      if (ping_found_sRGB != MagickTrue &&
+          (ping_found_gAMA != MagickTrue ||
+          image->gamma < .45 || image->gamma > .46) &&
+          (ping_found_cHRM != MagickTrue ||
+          ping_found_sRGB_cHRM == MagickTrue) &&
+          ping_found_iCCP != MagickTrue)
       {
          png_set_sRGB(ping,ping_info,
             Magick_RenderingIntent_to_PNG_RenderingIntent
@@ -2831,8 +2861,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     {
       if ((!png_get_valid(ping,ping_info,PNG_INFO_gAMA) ||
-          image->gamma == 1.0) &&
-          ping_found_cHRM != MagickTrue && ping_found_sRGB != MagickTrue)
+          image->gamma == 1.0) && ping_found_sRGB != MagickTrue)
         {
           /* Set image->gamma to 1.0, image->rendering_intent to Undefined,
            * image->colorspace to GRAY, and reset image->chromaticity.
@@ -3867,7 +3896,23 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   if ((IssRGBColorspace(image->colorspace) != MagickFalse) &&
-      ((image->gamma < .45) || (image->gamma > .46)))
+      ((image->gamma < .45) || (image->gamma > .46)) &&
+           !(image->chromaticity.red_primary.x>0.6399f &&
+           image->chromaticity.red_primary.x<0.6401f &&
+           image->chromaticity.red_primary.y>0.3299f &&
+           image->chromaticity.red_primary.y<0.3301f &&
+           image->chromaticity.green_primary.x>0.2999f &&
+           image->chromaticity.green_primary.x<0.3001f &&
+           image->chromaticity.green_primary.y>0.5999f &&
+           image->chromaticity.green_primary.y<0.6001f &&
+           image->chromaticity.blue_primary.x>0.1499f &&
+           image->chromaticity.blue_primary.x<0.1501f &&
+           image->chromaticity.blue_primary.y>0.0599f &&
+           image->chromaticity.blue_primary.y<0.0601f &&
+           image->chromaticity.white_point.x>0.3126f &&
+           image->chromaticity.white_point.x<0.3128f &&
+           image->chromaticity.white_point.y>0.3289f &&
+           image->chromaticity.white_point.y<0.3291f))
     SetImageColorspace(image,RGBColorspace,exception);
 
   if (logging != MagickFalse)
@@ -9789,16 +9834,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             */
             ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
 
-            if (mng_info->have_write_global_plte && matte == MagickFalse)
-              {
-                png_set_PLTE(ping,ping_info,NULL,0);
-
-                if (logging != MagickFalse)
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "  Setting up empty PLTE chunk");
-              }
-
-            else
+            if (!(mng_info->have_write_global_plte && matte == MagickFalse))
               {
                 for (i=0; i < (ssize_t) number_colors; i++)
                 {
@@ -10153,7 +10189,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   /* Only write the iCCP chunk if we are not writing the sRGB chunk. */
   if (ping_exclude_sRGB != MagickFalse ||
-     (image->rendering_intent == UndefinedIntent))
+     (!png_get_valid(ping,ping_info,PNG_INFO_sRGB)))
   {
     if ((ping_exclude_tEXt == MagickFalse ||
        ping_exclude_zTXt == MagickFalse) &&
@@ -10205,7 +10241,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
   if ((mng_info->have_write_global_srgb == 0) &&
-      (image->rendering_intent != UndefinedIntent))
+      (png_get_valid(ping,ping_info,PNG_INFO_sRGB)))
     {
       if (ping_exclude_sRGB == MagickFalse)
         {
@@ -10239,6 +10275,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Setting up gAMA chunk");
 
+          printf("whee. setting gama = %f\n",image->gamma);
           png_set_gAMA(ping,ping_info,image->gamma);
         }
       }
