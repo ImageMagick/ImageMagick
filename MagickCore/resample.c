@@ -216,25 +216,20 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-
-  resample_filter=(ResampleFilter *) AcquireMagickMemory(
-    sizeof(*resample_filter));
+  resample_filter=(ResampleFilter *) AcquireMagickMemory(sizeof(
+    *resample_filter));
   if (resample_filter == (ResampleFilter *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(resample_filter,0,sizeof(*resample_filter));
-
   resample_filter->exception=exception;
   resample_filter->image=ReferenceImage((Image *) image);
-  resample_filter->view=AcquireVirtualCacheView(resample_filter->image,exception);
-
+  resample_filter->view=AcquireVirtualCacheView(resample_filter->image,
+    exception);
   resample_filter->debug=IsEventLogging();
-  resample_filter->signature=MagickSignature;
-
   resample_filter->image_area=(ssize_t) (image->columns*image->rows);
-  resample_filter->average_defined = MagickFalse;
-
-  /* initialise the resampling filter settings */
-  SetResampleFilter(resample_filter, image->filter);
+  resample_filter->average_defined=MagickFalse;
+  resample_filter->signature=MagickSignature;
+  SetResampleFilter(resample_filter,image->filter);
   (void) SetResampleFilterInterpolateMethod(resample_filter,image->interpolate);
   (void) SetResampleFilterVirtualPixelMethod(resample_filter,
     GetImageVirtualPixelMethod(image));
@@ -422,9 +417,8 @@ MagickExport MagickBooleanType ResamplePixelColor(
      *
      * Should this return the users requested interpolated color?
      */
-    status=InterpolatePixelInfo(resample_filter->image,
-      resample_filter->view,IntegerInterpolatePixel,u0,v0,pixel,
-      resample_filter->exception);
+    status=InterpolatePixelInfo(resample_filter->image,resample_filter->view,
+      IntegerInterpolatePixel,u0,v0,pixel,resample_filter->exception);
     return(status);
   }
 
