@@ -75,16 +75,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ClearBounds() Clear the area specified by the bounds in an image to
-%  transparency.  This typically used to handle Background Disposal
-%  for the previous frame in an animation sequence.
+%  transparency.  This typically used to handle Background Disposal for the
+%  previous frame in an animation sequence.
 %
-%  WARNING: no bounds checks are performed, except for the null or
-%  missed image, for images that don't change. in all other cases
-%  bound must fall within the image.
+%  Warning: no bounds checks are performed, except for the null or missed
+%  image, for images that don't change. in all other cases bound must fall
+%  within the image.
 %
 %  The format is:
 %
-%      void ClearBounds(Image *image,RectangleInfo *bounds
+%      void ClearBounds(Image *image,RectangleInfo *bounds,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -143,6 +143,10 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
 %  to check if a proposed disposal method will work successfully to generate
 %  the second frame image from the first disposed form of the previous frame.
 %
+%  Warning: no bounds checks are performed, except for the null or missed
+%  image, for images that don't change. in all other cases bound must fall
+%  within the image.
+%
 %  The format is:
 %
 %      MagickBooleanType IsBoundsCleared(const Image *image1,
@@ -156,20 +160,16 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
 %
 %    o exception: return any errors or warnings in this structure.
 %
-%  WARNING: no bounds checks are performed, except for the null or
-%  missed image, for images that don't change. in all other cases
-%  bound must fall within the image.
-%
 */
 static MagickBooleanType IsBoundsCleared(const Image *image1,
   const Image *image2,RectangleInfo *bounds,ExceptionInfo *exception)
 {
-  register ssize_t
-    x;
-
   register const Quantum
     *p,
     *q;
+
+  register ssize_t
+    x;
 
   ssize_t
     y;
@@ -336,7 +336,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     /*
       If a pixel goes opaque to transparent, use background dispose.
     */
-    if (IsBoundsCleared(previous,coalesce_image,&bounds,exception))
+    if (IsBoundsCleared(previous,coalesce_image,&bounds,exception) != MagickFalse)
       coalesce_image->dispose=BackgroundDispose;
     else
       coalesce_image->dispose=NoneDispose;
@@ -358,8 +358,8 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DisposeImages() returns the coalesced frames of a GIF animation as it would
-%  appear after the GIF dispose method of that frame has been applied.  That
-%  is it returned the appearance of each frame before the next is overlaid.
+%  appear after the GIF dispose method of that frame has been applied.  That is
+%  it returned the appearance of each frame before the next is overlaid.
 %
 %  The format of the DisposeImages method is:
 %
@@ -378,12 +378,12 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
     *dispose_image,
     *dispose_images;
 
+  RectangleInfo
+    bounds;
+
   register Image
     *image,
     *next;
-
-  RectangleInfo
-    bounds;
 
   /*
     Run the image through the animation sequence
@@ -457,7 +457,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
       {
         dispose_image=DestroyImage(dispose_image);
         dispose_image=current_image;
-        current_image=(Image *)NULL;
+        current_image=(Image *) NULL;
       }
     /*
       Save the dispose image just calculated for return.
