@@ -1,3 +1,6 @@
+2013-02-28  6.8.3-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.3-6, SVN revision 11210.
+
 2013-02-25  6.8.3-6 Cristy  <quetzlzacatenango@image...>
    * Support built-in 1x1 and 2x1 threshold maps (reference
      http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22861).
