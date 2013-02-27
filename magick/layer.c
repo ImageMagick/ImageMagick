@@ -76,12 +76,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ClearBounds() Clear the area specified by the bounds in an image to
-%  transparency.  This typically used to handle Background Disposal
-%  for the previous frame in an animation sequence.
+%  transparency.  This typically used to handle Background Disposal for the
+%  previous frame in an animation sequence.
 %
-%  WARNING: no bounds checks are performed, except for the null or
-%  missed image, for images that don't change. in all other cases
-%  bound must fall within the image.
+%  Warning: no bounds checks are performed, except for the null or missed
+%  image, for images that don't change. in all other cases bound must fall
+%  within the image.
 %
 %  The format is:
 %
@@ -144,6 +144,10 @@ static void ClearBounds(Image *image,RectangleInfo *bounds)
 %  to check if a proposed disposal method will work successfully to generate
 %  the second frame image from the first disposed form of the previous frame.
 %
+%  Warning: no bounds checks are performed, except for the null or missed
+%  image, for images that don't change. in all other cases bound must fall
+%  within the image.
+%
 %  The format is:
 %
 %      MagickBooleanType IsBoundsCleared(const Image *image1,
@@ -157,31 +161,22 @@ static void ClearBounds(Image *image,RectangleInfo *bounds)
 %
 %    o exception: return any errors or warnings in this structure.
 %
-%  WARNING: no bounds checks are performed, except for the null or
-%  missed image, for images that don't change. in all other cases
-%  bound must fall within the image.
-%
 */
 static MagickBooleanType IsBoundsCleared(const Image *image1,
   const Image *image2,RectangleInfo *bounds,ExceptionInfo *exception)
 {
-  register ssize_t
-    x;
-
   register const PixelPacket
     *p,
     *q;
 
+  register ssize_t
+    x;
+
   ssize_t
     y;
 
-#if 0
-  assert(image1->matte==MagickTrue);
-  assert(image2->matte==MagickTrue);
-#endif
-
-  if ( bounds->x< 0 ) return(MagickFalse);
-
+  if (bounds->x < 0)
+    return(MagickFalse);
   for (y=0; y < (ssize_t) bounds->height; y++)
   {
     p=GetVirtualPixels(image1,bounds->x,bounds->y+y,bounds->width,1,
@@ -345,7 +340,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     /*
       If a pixel goes opaque to transparent, use background dispose.
     */
-    if (IsBoundsCleared(previous,coalesce_image,&bounds,exception))
+    if (IsBoundsCleared(previous,coalesce_image,&bounds,exception) != MagickFalse)
       coalesce_image->dispose=BackgroundDispose;
     else
       coalesce_image->dispose=NoneDispose;
@@ -367,12 +362,12 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DisposeImages() returns the coalesced frames of a GIF animation as it would
-%  appear after the GIF dispose method of that frame has been applied.  That
-%  is it returned the appearance of each frame before the next is overlaid.
+%  appear after the GIF dispose method of that frame has been applied.  That is
+%  it returned the appearance of each frame before the next is overlaid.
 %
 %  The format of the DisposeImages method is:
 %
-%      Image *DisposeImages(Image *image,ExceptionInfo *exception)
+%      Image *DisposeImages(Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -381,40 +376,41 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *DisposeImages(const Image *image,ExceptionInfo *exception)
+MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
 {
   Image
     *dispose_image,
     *dispose_images;
 
-  register Image
-    *curr;
-
   RectangleInfo
     bounds;
+
+  register Image
+    *image,
+    *next;
 
   /*
     Run the image through the animation sequence
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  curr=GetFirstImageInList(image);
-  dispose_image=CloneImage(curr,curr->page.width,curr->page.height,MagickTrue,
-    exception);
+  image=GetFirstImageInList(images);
+  dispose_image=CloneImage(image,image->page.width,image->page.height,
+    MagickTrue,exception);
   if (dispose_image == (Image *) NULL)
     return((Image *) NULL);
-  dispose_image->page=curr->page;
+  dispose_image->page=image->page;
   dispose_image->page.x=0;
   dispose_image->page.y=0;
   dispose_image->dispose=NoneDispose;
   dispose_image->background_color.opacity=(Quantum) TransparentOpacity;
   (void) SetImageBackgroundColor(dispose_image);
   dispose_images=NewImageList();
-  for ( ; curr != (Image *) NULL; curr=GetNextImageInList(curr))
+  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     Image
       *current_image;
@@ -429,17 +425,16 @@ MagickExport Image *DisposeImages(const Image *image,ExceptionInfo *exception)
         dispose_image=DestroyImage(dispose_image);
         return((Image *) NULL);
       }
-    (void) CompositeImage(current_image,curr->matte != MagickFalse ?
-      OverCompositeOp : CopyCompositeOp,curr,curr->page.x,curr->page.y);
-
+    (void) CompositeImage(current_image,next->matte != MagickFalse ?
+      OverCompositeOp : CopyCompositeOp,next,next->page.x,next->page.y);
     /*
       Handle Background dispose: image is displayed for the delay period.
     */
-    if (curr->dispose == BackgroundDispose)
+    if (next->dispose == BackgroundDispose)
       {
-        bounds=curr->page;
-        bounds.width=curr->columns;
-        bounds.height=curr->rows;
+        bounds=next->page;
+        bounds.width=next->columns;
+        bounds.height=next->rows;
         if (bounds.x < 0)
           {
             bounds.width+=bounds.x;
@@ -459,13 +454,13 @@ MagickExport Image *DisposeImages(const Image *image,ExceptionInfo *exception)
     /*
       Select the appropriate previous/disposed image.
     */
-    if (curr->dispose == PreviousDispose)
+    if (next->dispose == PreviousDispose)
       current_image=DestroyImage(current_image);
     else
       {
         dispose_image=DestroyImage(dispose_image);
         dispose_image=current_image;
-        current_image=(Image *)NULL;
+        current_image=(Image *) NULL;
       }
     /*
       Save the dispose image just calculated for return.
@@ -481,12 +476,12 @@ MagickExport Image *DisposeImages(const Image *image,ExceptionInfo *exception)
           dispose_image=DestroyImage(dispose_image);
           return((Image *) NULL);
         }
-      (void) CloneImageProfiles(dispose,curr);
-      (void) CloneImageProperties(dispose,curr);
-      (void) CloneImageArtifacts(dispose,curr);
+      (void) CloneImageProfiles(dispose,next);
+      (void) CloneImageProperties(dispose,next);
+      (void) CloneImageArtifacts(dispose,next);
       dispose->page.x=0;
       dispose->page.y=0;
-      dispose->dispose=curr->dispose;
+      dispose->dispose=next->dispose;
       AppendImageToList(&dispose_images,dispose);
     }
   }
