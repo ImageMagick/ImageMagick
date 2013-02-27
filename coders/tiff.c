@@ -1072,6 +1072,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       SetImageColorspace(image,CMYKColorspace,exception);
     if (photometric == PHOTOMETRIC_CIELAB)
       SetImageColorspace(image,LabColorspace,exception);
+    TIFFGetProfiles(tiff,image,exception);
+    TIFFGetProperties(tiff,image,exception);
+    option=GetImageOption(image_info,"tiff:exif-properties");
+    if (IfMagickTrue(IsStringNotFalse(option))) /* enabled by default */
+      TIFFGetEXIFProperties(tiff,image,exception);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
       &samples_per_pixel);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
@@ -1152,11 +1157,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
       default: image->compression=RLECompression; break;
     }
-    TIFFGetProfiles(tiff,image,exception);
-    TIFFGetProperties(tiff,image,exception);
-    option=GetImageOption(image_info,"tiff:exif-properties");
-    if (IfMagickTrue(IsStringNotFalse(option))) /* enabled by default */
-      TIFFGetEXIFProperties(tiff,image,exception);
     /*
       Allocate memory for the image and pixel buffer.
     */
