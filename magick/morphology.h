@@ -127,7 +127,6 @@ typedef struct KernelInfo
     signature;
 } KernelInfo;
 
-
 extern MagickExport KernelInfo
   *AcquireKernelInfo(const char *),
   *AcquireKernelBuiltIn(const KernelInfoType,const GeometryInfo *),
