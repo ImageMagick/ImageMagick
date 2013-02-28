@@ -83,23 +83,6 @@
 #include "magick/token.h"
 #include "magick/utility.h"
 
-
-/*
-** The following test is for special floating point numbers of value NaN (not
-** a number), that may be used within a Kernel Definition.  NaN's are defined
-** as part of the IEEE standard for floating point number representation.
-**
-** These are used as a Kernel value to mean that this kernel position is not
-** part of the kernel neighbourhood for convolution or morphology processing,
-** and thus should be ignored.  This allows the use of 'shaped' kernels.
-**
-** The special property that two NaN's are never equal, even if they are from
-** the same variable allow you to test if a value is special NaN value.
-**
-** This macro  IsNaN() is thus is only true if the value given is NaN.
-*/
-#define IsNan(a)   ((a)!=(a))
-
 /*
   Other global definitions used by module.
 */
@@ -2399,9 +2382,9 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
   /* check actual kernel values */
   for (i=0; i < (kernel1->width*kernel1->height); i++) {
     /* Test for Nan equivalence */
-    if ( IsNan(kernel1->values[i]) && !IsNan(kernel2->values[i]) )
+    if ( IsNaN(kernel1->values[i]) && !IsNaN(kernel2->values[i]) )
       return MagickFalse;
-    if ( IsNan(kernel2->values[i]) && !IsNan(kernel1->values[i]) )
+    if ( IsNaN(kernel2->values[i]) && !IsNaN(kernel1->values[i]) )
       return MagickFalse;
     /* Test actual values are equivalent */
     if ( fabs(kernel1->values[i] - kernel2->values[i]) >= MagickEpsilon )
@@ -2730,7 +2713,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             ** Convolution is simple greyscale channel operation
             */
             for (v=0; v < (ssize_t) kernel->height; v++) {
-              if ( IsNan(*k) ) continue;
+              if ( IsNaN(*k) ) continue;
               result.red     += (*k)*GetPixelRed(k_pixels);
               result.green   += (*k)*GetPixelGreen(k_pixels);
               result.blue    += (*k)*GetPixelBlue(k_pixels);
@@ -2771,7 +2754,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             count=0;
             gamma=0.0;
             for (v=0; v < (ssize_t) kernel->height; v++) {
-              if ( IsNan(*k) ) continue;
+              if ( IsNaN(*k) ) continue;
               alpha=QuantumScale*(QuantumRange-GetPixelOpacity(k_pixels));
               gamma += alpha; /* normalize alpha weights only */
               count++;        /* number of alpha values collected */
@@ -2970,7 +2953,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 */
                 for (v=0; v < (ssize_t) kernel->height; v++) {
                   for (u=0; u < (ssize_t) kernel->width; u++, k--) {
-                    if ( IsNan(*k) ) continue;
+                    if ( IsNaN(*k) ) continue;
                     result.red     += (*k)*k_pixels[u].red;
                     result.green   += (*k)*k_pixels[u].green;
                     result.blue    += (*k)*k_pixels[u].blue;
@@ -3013,7 +2996,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 gamma=0.0;
                 for (v=0; v < (ssize_t) kernel->height; v++) {
                   for (u=0; u < (ssize_t) kernel->width; u++, k--) {
-                    if ( IsNan(*k) ) continue;
+                    if ( IsNaN(*k) ) continue;
                     alpha=QuantumScale*(QuantumRange-k_pixels[u].opacity);
                     gamma += alpha;    /* normalize alpha weights only */
                     count++;           /* number of alpha values collected */
@@ -3054,7 +3037,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             k_indexes = p_indexes;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k++) {
-                if ( IsNan(*k) || (*k) < 0.5 ) continue;
+                if ( IsNaN(*k) || (*k) < 0.5 ) continue;
                 Minimize(min.red,     (double) k_pixels[u].red);
                 Minimize(min.green,   (double) k_pixels[u].green);
                 Minimize(min.blue,    (double) k_pixels[u].blue);
@@ -3086,7 +3069,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             k_indexes = p_indexes;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
-                if ( IsNan(*k) || (*k) < 0.5 ) continue;
+                if ( IsNaN(*k) || (*k) < 0.5 ) continue;
                 Maximize(max.red,     (double) k_pixels[u].red);
                 Maximize(max.green,   (double) k_pixels[u].green);
                 Maximize(max.blue,    (double) k_pixels[u].blue);
@@ -3120,7 +3103,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             k_indexes = p_indexes;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k++) {
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 if ( (*k) > 0.7 )
                 { /* minimim of foreground pixels */
                   Minimize(min.red,     (double) k_pixels[u].red);
@@ -3169,7 +3152,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             k_indexes = p_indexes;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k++) {
-                if ( IsNan(*k) || (*k) < 0.5 ) continue;
+                if ( IsNaN(*k) || (*k) < 0.5 ) continue;
                 if ( result.red == 0.0 ||
                      GetPixelIntensity(image,&(k_pixels[u])) < GetPixelIntensity(result_image,q) ) {
                   /* copy the whole pixel - no channel selection */
@@ -3199,7 +3182,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             k_indexes = p_indexes;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
-                if ( IsNan(*k) || (*k) < 0.5 ) continue; /* boolean kernel */
+                if ( IsNaN(*k) || (*k) < 0.5 ) continue; /* boolean kernel */
                 if ( result.red == 0.0 ||
                      GetPixelIntensity(image,&(k_pixels[u])) > GetPixelIntensity(result_image,q) ) {
                   /* copy the whole pixel - no channel selection */
@@ -3242,7 +3225,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             k_indexes = p_indexes;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 Minimize(result.red,     (*k)+k_pixels[u].red);
                 Minimize(result.green,   (*k)+k_pixels[u].green);
                 Minimize(result.blue,    (*k)+k_pixels[u].blue);
@@ -3497,7 +3480,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             k_indexes = p_indexes;
             for (v=0; v <= (ssize_t) offy; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 Minimize(result.red,     (*k)+k_pixels[u].red);
                 Minimize(result.green,   (*k)+k_pixels[u].green);
                 Minimize(result.blue,    (*k)+k_pixels[u].blue);
@@ -3514,7 +3497,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             k_indexes = q_indexes-offx;
               for (u=0; u < (ssize_t) offx; u++, k--) {
                 if ( x+u-offx < 0 ) continue;  /* off the edge! */
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 Minimize(result.red,     (*k)+k_pixels[u].red);
                 Minimize(result.green,   (*k)+k_pixels[u].green);
                 Minimize(result.blue,    (*k)+k_pixels[u].blue);
@@ -3536,7 +3519,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             k_indexes = p_indexes;
             for (v=0; v <= (ssize_t) offy; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 if( result.opacity > (*k)+k_pixels[u].opacity )
                   {
                     SetMagickPixelPacket(image,&k_pixels[u],&k_indexes[u],
@@ -3553,7 +3536,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             k_indexes = q_indexes-offx;
               for (u=0; u < (ssize_t) offx; u++, k--) {
                 if ( x+u-offx < 0 ) continue;  /* off the edge! */
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 if( result.opacity > (*k)+k_pixels[u].opacity )
                   {
                     SetMagickPixelPacket(image,&k_pixels[u],&k_indexes[u],
@@ -3689,7 +3672,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             k_indexes = p_indexes;
             for (v=offy; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 Minimize(result.red,     (*k)+k_pixels[u].red);
                 Minimize(result.green,   (*k)+k_pixels[u].green);
                 Minimize(result.blue,    (*k)+k_pixels[u].blue);
@@ -3706,7 +3689,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             k_indexes = q_indexes-offx;
               for (u=offx+1; u < (ssize_t) kernel->width; u++, k--) {
                 if ( (x+u-offx) >= (ssize_t)image->columns ) continue;
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 Minimize(result.red,     (*k)+k_pixels[u].red);
                 Minimize(result.green,   (*k)+k_pixels[u].green);
                 Minimize(result.blue,    (*k)+k_pixels[u].blue);
@@ -3726,7 +3709,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             k_indexes = p_indexes;
             for (v=offy; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 if( result.opacity > (*k)+k_pixels[u].opacity )
                   {
                     SetMagickPixelPacket(image,&k_pixels[u],&k_indexes[u],
@@ -3743,7 +3726,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             k_indexes = q_indexes-offx;
               for (u=offx+1; u < (ssize_t) kernel->width; u++, k--) {
                 if ( (x+u-offx) >= (ssize_t)image->columns ) continue;
-                if ( IsNan(*k) ) continue;
+                if ( IsNaN(*k) ) continue;
                 if( result.opacity > (*k)+k_pixels[u].opacity )
                   {
                     SetMagickPixelPacket(image,&k_pixels[u],&k_indexes[u],
@@ -4770,7 +4753,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   neg_scale = scaling_factor/neg_scale;
 
   for (i=0; i < (ssize_t) (kernel->width*kernel->height); i++)
-    if ( ! IsNan(kernel->values[i]) )
+    if ( ! IsNaN(kernel->values[i]) )
       kernel->values[i] *= (kernel->values[i] >= 0) ? pos_scale : neg_scale;
 
   /* convolution output range */
@@ -4853,7 +4836,7 @@ MagickExport void ShowKernelInfo(const KernelInfo *kernel)
     for (i=v=0; v < k->height; v++) {
       (void) FormatLocaleFile(stderr, "%2lu:", (unsigned long) v );
       for (u=0; u < k->width; u++, i++)
-        if ( IsNan(k->values[i]) )
+        if ( IsNaN(k->values[i]) )
           (void) FormatLocaleFile(stderr," %*s", GetMagickPrecision()+3, "nan");
         else
           (void) FormatLocaleFile(stderr," %*.*lg", GetMagickPrecision()+3,
@@ -4945,7 +4928,7 @@ MagickExport void ZeroKernelNans(KernelInfo *kernel)
     ZeroKernelNans(kernel->next);
 
   for (i=0; i < (kernel->width*kernel->height); i++)
-    if ( IsNan(kernel->values[i]) )
+    if ( IsNaN(kernel->values[i]) )
       kernel->values[i] = 0.0;
 
   return;
