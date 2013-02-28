@@ -84,7 +84,6 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 
-
 /*
   Other global definitions used by module.
 */
@@ -524,7 +523,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 
       /* Error handling -- this is not proper error handling! */
       if ( new_kernel == (KernelInfo *) NULL ) {
-        (void) FormatLocaleFile(stderr, "Failed to parse kernel number #%.20g\n",
+        (void) FormatLocaleFile(stderr,"Failed to parse kernel number #%.20g\n",
           (double) kernel_number);
         if ( kernel != (KernelInfo *) NULL )
           kernel=DestroyKernelInfo(kernel);
@@ -1085,7 +1084,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               }
             else /* limiting case - a unity (normalized Dirac) kernel */
               { (void) ResetMagickMemory(kernel->values,0, (size_t)
-                            kernel->width*kernel->height*sizeof(double));
+                  kernel->width*kernel->height*sizeof(*kernel->values));
                 kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
               }
           }
@@ -1117,7 +1116,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               }
             else /* special case - generate a unity kernel */
               { (void) ResetMagickMemory(kernel->values,0, (size_t)
-                            kernel->width*kernel->height*sizeof(double));
+                  kernel->width*kernel->height*sizeof(*kernel->values));
                 kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
               }
           }
@@ -1177,7 +1176,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* initialize */
         v = (ssize_t) (kernel->width*KernelRank-1)/2; /* start/end points to fit range */
         (void) ResetMagickMemory(kernel->values,0, (size_t)
-                     kernel->width*kernel->height*sizeof(double));
+          kernel->width*kernel->height*sizeof(*kernel->values));
         /* Calculate a Positive 1D Gaussian */
         if ( sigma > MagickEpsilon )
           { sigma *= KernelRank;               /* simplify loop expressions */
@@ -1203,7 +1202,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           }
         else /* special case - generate a unity kernel */
           { (void) ResetMagickMemory(kernel->values,0, (size_t)
-                         kernel->width*kernel->height*sizeof(double));
+              kernel->width*kernel->height*sizeof(*kernel->values));
             kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
           }
 #endif
@@ -1262,7 +1261,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 #define KernelRank 3
             v = (ssize_t) kernel->width*KernelRank; /* start/end points */
             (void) ResetMagickMemory(kernel->values,0, (size_t)
-                          kernel->width*sizeof(double));
+              kernel->width*sizeof(*kernel->values));
             sigma *= KernelRank;            /* simplify the loop expression */
             A = 1.0/(2.0*sigma*sigma);
             /* B = 1.0/(MagickSQ2PI*sigma); */
@@ -1284,7 +1283,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           }
         else /* special case - generate a unity kernel */
           { (void) ResetMagickMemory(kernel->values,0, (size_t)
-                         kernel->width*kernel->height*sizeof(double));
+              kernel->width*kernel->height*sizeof(*kernel->values));
             kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
             kernel->positive_range = 1.0;
           }
