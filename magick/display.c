@@ -1689,7 +1689,6 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   (void) SetErrorHandler((ErrorHandler) NULL);
   (void) SetWarningHandler((WarningHandler) NULL);
   argv[0]=DestroyString(argv[0]);
-  (void) XCloseDisplay(display);
   XDestroyResourceInfo(&resource_info);
   if (images->exception.severity != UndefinedException)
     return(MagickFalse);
