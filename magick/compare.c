@@ -1814,6 +1814,7 @@ MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
       similarity_image=DestroyImage(similarity_image);
       return((Image *) NULL);
     }
+  (void) SetImageAlphaChannel(similarity_image,DeactivateAlphaChannel);
   /*
     Measure similarity of reference image against image.
   */
