@@ -591,6 +591,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       if (crop_image == (Image *) NULL)
         return((Image *) NULL);
       crop_image->background_color.alpha=(Quantum) TransparentAlpha;
+      crop_image->alpha_trait=BlendPixelTrait;
       (void) SetImageBackgroundColor(crop_image,exception);
       crop_image->page=bounding_box;
       crop_image->page.x=(-1);
@@ -2510,6 +2511,7 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
       if (crop_image == (Image *) NULL)
         return((Image *) NULL);
       crop_image->background_color.alpha=(Quantum) TransparentAlpha;
+      crop_image->alpha_trait=BlendPixelTrait;
       (void) SetImageBackgroundColor(crop_image,exception);
       crop_image->page=image->page;
       crop_image->page.x=(-1);
