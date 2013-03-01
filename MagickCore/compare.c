@@ -1591,6 +1591,8 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       similarity_image=DestroyImage(similarity_image);
       return((Image *) NULL);
     }
+  (void) SetImageAlphaChannel(similarity_image,DeactivateAlphaChannel,
+    exception);
   /*
     Measure similarity of reference image against image.
   */
@@ -1656,15 +1658,19 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       }
       q+=GetPixelChannels(similarity_image);
     }
-    if (IfMagickFalse( SyncCacheViewAuthenticPixels(similarity_view,exception) ))
+    if (SyncCacheViewAuthenticPixels(similarity_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
+        MagickBooleanType
+          proceed;
+
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_SimilarityImage)
 #endif
-        if (IfMagickFalse(SetImageProgress(image,SimilarityImageTag,
-                 progress++,image->rows) ))
+        proceed=SetImageProgress(image,SimilarityImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
