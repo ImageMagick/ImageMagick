@@ -1210,8 +1210,8 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageKurtosis() returns the kurtosis and skewness of one or more
-%  image channels.
+%  GetImageKurtosis() returns the kurtosis and skewness of one or more image
+%  channels.
 %
 %  The format of the GetImageKurtosis method is:
 %
@@ -1288,14 +1288,18 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (((traits & UpdatePixelTrait) == 0) ||
-            (GetPixelMask(image,p) != 0))
+        if ((traits & UpdatePixelTrait) == 0)
           continue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_GetImageKurtosis)
@@ -1651,6 +1655,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     double
       standard_deviation;
 
+    if (channel_statistics[i].standard_deviation == 0.0)
+      continue;
     standard_deviation=PerceptibleReciprocal(
       channel_statistics[i].standard_deviation);
     channel_statistics[i].skewness=(channel_statistics[i].sum_cubed-3.0*
