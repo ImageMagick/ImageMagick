@@ -70,6 +70,7 @@
 #include "MagickCore/morphology-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/prepress.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/resource_.h"
@@ -2654,7 +2655,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         y;
 
       ssize_t
-        r;
+        center;
 
       if (status == MagickFalse)
         continue;
@@ -2667,126 +2668,100 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           status=MagickFalse;
           continue;
         }
-      /* offset to origin in 'p'. while 'q' points to it directly */
-      r = GetPixelChannels(image)*offy;
-
+      center=(ssize_t) GetPixelChannels(image)*offy;
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        PixelInfo
-          result;
-
-        register const MagickRealType
-          *restrict k;
-
-        register const Quantum
-          *restrict k_pixels;
-
         register ssize_t
-          v;
+          i;
 
-        /* Copy input image to the output image for unused channels
-        * This removes need for 'cloning' a new image every iteration
-        */
-        SetPixelRed(morphology_image,GetPixelRed(image,p+r),q);
-        SetPixelGreen(morphology_image,GetPixelGreen(image,p+r),q);
-        SetPixelBlue(morphology_image,GetPixelBlue(image,p+r),q);
-        if (image->colorspace == CMYKColorspace)
-          SetPixelBlack(morphology_image,GetPixelBlack(image,p+r),q);
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+        {
+          double
+            alpha,
+            gamma,
+            pixel;
 
-        /* Set the bias of the weighted average output */
-        result.red   =
-        result.green =
-        result.blue  =
-        result.alpha =
-        result.black = bias;
+          PixelChannel
+            channel;
 
+          PixelTrait
+            morphology_traits,
+            traits;
 
-        /* Weighted Average of pixels using reflected kernel
-        **
-        ** NOTE for correct working of this operation for asymetrical
-        ** kernels, the kernel needs to be applied in its reflected form.
-        ** That is its values needs to be reversed.
-        */
-        k = &kernel->values[ kernel->height-1 ];
-        k_pixels = p;
-        if ( (image->channel_mask != DefaultChannels) ||
-             (image->alpha_trait != BlendPixelTrait) )
-          { /* No 'Sync' involved.
-            ** Convolution is just a simple greyscale channel operation
-            */
-            for (v=0; v < (ssize_t) kernel->height; v++) {
-              if ( IsNaN(*k) ) continue;
-              result.red     += (*k)*GetPixelRed(image,k_pixels);
-              result.green   += (*k)*GetPixelGreen(image,k_pixels);
-              result.blue    += (*k)*GetPixelBlue(image,k_pixels);
-              if (image->colorspace == CMYKColorspace)
-                result.black+=(*k)*GetPixelBlack(image,k_pixels);
-              result.alpha += (*k)*GetPixelAlpha(image,k_pixels);
-              k--;
-              k_pixels+=GetPixelChannels(image);
+          register const MagickRealType
+            *restrict k;
+
+          register const Quantum
+            *restrict pixels;
+
+          register ssize_t
+            u;
+
+          ssize_t
+            v;
+
+          channel=GetPixelChannelChannel(image,i);
+          traits=GetPixelChannelTraits(image,channel);
+          morphology_traits=GetPixelChannelTraits(morphology_image,channel);
+          if ((traits == UndefinedPixelTrait) ||
+              (morphology_traits == UndefinedPixelTrait))
+            continue;
+          if (((morphology_traits & CopyPixelTrait) != 0) ||
+              (GetPixelMask(image,p) != 0))
+            {
+              SetPixelChannel(morphology_image,channel,p[center+i],q);
+              continue;
             }
-            if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-              SetPixelRed(morphology_image,ClampToQuantum(result.red),q);
-            if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-              SetPixelGreen(morphology_image,ClampToQuantum(result.green),q);
-            if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-              SetPixelBlue(morphology_image,ClampToQuantum(result.blue),q);
-            if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-                (image->colorspace == CMYKColorspace))
-              SetPixelBlack(morphology_image,ClampToQuantum(result.black),q);
-            if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-                (image->alpha_trait == BlendPixelTrait))
-              SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),q);
-          }
-        else
-          { /* Channel 'Sync' Flag, and Alpha Channel enabled.
-            ** Weight the color channels with Alpha Channel so that
-            ** transparent pixels are not part of the results.
-            */
-            double
-              gamma;  /* divisor, sum of color alpha weighting */
-
-            MagickRealType
-              alpha;  /* alpha weighting for colors : alpha  */
-
-            size_t
-              count;  /* alpha valus collected, number kernel values */
-
-            count=0;
-            gamma=0.0;
-            for (v=0; v < (ssize_t) kernel->height; v++) {
-              if ( IsNaN(*k) ) continue;
-              alpha=QuantumScale*GetPixelAlpha(image,k_pixels);
-              gamma += alpha; /* normalize alpha weights only */
-              count++;        /* number of alpha values collected */
-              alpha*=(*k);    /* include kernel weighting now */
-              result.red     += alpha*GetPixelRed(image,k_pixels);
-              result.green   += alpha*GetPixelGreen(image,k_pixels);
-              result.blue    += alpha*GetPixelBlue(image,k_pixels);
-              if (image->colorspace == CMYKColorspace)
-                result.black += alpha*GetPixelBlack(image,k_pixels);
-              result.alpha   += (*k)*GetPixelAlpha(image,k_pixels);
-              k--;
-              k_pixels+=GetPixelChannels(image);
+          k=(&kernel->values[kernel->height-1]);
+          pixels=p;
+          pixel=bias;
+          gamma=0.0;
+          if ((morphology_traits & BlendPixelTrait) == 0)
+            {
+              /*
+                No alpha blending.
+              */
+              for (v=0; v < (ssize_t) kernel->height; v++)
+              {
+                for (u=0; u < (ssize_t) kernel->width; u++)
+                {
+                  if (IsNaN(*k) != MagickFalse)
+                    continue;
+                  pixel+=(*k)*pixels[i];
+                  gamma+=(*k);
+                  k--;
+                  pixels+=GetPixelChannels(image);
+                }
+              }
+              gamma=PerceptibleReciprocal(gamma);
+              pixel*=gamma;
+              if (fabs(pixel-p[center+i]) > MagickEpsilon)
+                changed++;
+              SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
+              continue;
             }
-            /* Sync'ed channels, all channels are modified */
-            gamma=(double)count/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
-            SetPixelRed(morphology_image,ClampToQuantum(gamma*result.red),q);
-            SetPixelGreen(morphology_image,ClampToQuantum(gamma*result.green),q);
-            SetPixelBlue(morphology_image,ClampToQuantum(gamma*result.blue),q);
-            if (image->colorspace == CMYKColorspace)
-              SetPixelBlack(morphology_image,ClampToQuantum(gamma*result.black),q);
-            SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),q);
+          /*
+            Alpha blending.
+          */
+          for (v=0; v < (ssize_t) kernel->width; v++)
+          {
+            for (u=0; u < (ssize_t) kernel->width; u++)
+            {
+              if (IsNaN(*k) != MagickFalse)
+                continue;
+              alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+              pixel+=(*k)*alpha*pixels[i];
+              gamma+=(*k)*alpha;
+              k--;
+              pixels+=GetPixelChannels(image);
+            }
           }
-
-        /* Count up changed pixels */
-        if ((GetPixelRed(image,p+r) != GetPixelRed(morphology_image,q))
-            || (GetPixelGreen(image,p+r) != GetPixelGreen(morphology_image,q))
-            || (GetPixelBlue(image,p+r) != GetPixelBlue(morphology_image,q))
-            || (GetPixelAlpha(image,p+r) != GetPixelAlpha(morphology_image,q))
-            || ((image->colorspace == CMYKColorspace) &&
-                (GetPixelBlack(image,p+r) != GetPixelBlack(morphology_image,q))))
-          changed++;  /* The pixel was changed in some way! */
+          gamma=PerceptibleReciprocal(gamma);
+          pixel*=gamma;
+          if (fabs(pixel-p[center+i]) > MagickEpsilon)
+            changed++;
+          SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
+        }
         p+=GetPixelChannels(image);
         q+=GetPixelChannels(morphology_image);
       } /* y */
