@@ -185,6 +185,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
         if ((width > image->columns) && (height > image->rows))
           break;
+        if ((width > (image->columns << 1)) || (height > (image->rows << 1)))
+          break;
       }
       high=draw_info->pointsize/2.0;
       for (low=high/2.0; (high-low) > 1.0; )
