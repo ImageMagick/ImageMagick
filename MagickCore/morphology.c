@@ -2620,174 +2620,174 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       break;
   }
 
-  if ( method == ConvolveMorphology && kernel->width == 1 )
-  { /* Special handling (for speed) of vertical (blur) kernels.
-    ** This performs its handling in columns rather than in rows.
-    ** This is only done for convolve as it is the only method that
-    ** generates very large 1-D vertical kernels (such as a 'BlurKernel')
-    **
-    ** Timing tests (on single CPU laptop)
-    ** Using a vertical 1-d Blue with normal row-by-row (below)
-    **   time convert logo: -morphology Convolve Blur:0x10+90 null:
-    **      0.807u
-    ** Using this column method
-    **   time convert logo: -morphology Convolve Blur:0x10+90 null:
-    **      0.620u
-    **
-    ** Anthony Thyssen, 14 June 2010
-    */
-    register ssize_t
-      x;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,4) shared(progress,status) \
-      magick_threads(image,morphology_image,image->columns,1)
-#endif
-    for (x=0; x < (ssize_t) image->columns; x++)
+  if (method == ConvolveMorphology && kernel->width == 1)
     {
-      register const Quantum
-        *restrict p;
-
-      register Quantum
-        *restrict q;
-
       register ssize_t
-        y;
+        x;
 
-      ssize_t
-        center;
+      /*
+        Anthony Thyssen, 14 June 2010
 
-      if (status == MagickFalse)
-        continue;
-      p=GetCacheViewVirtualPixels(image_view,x,-offy,1,image->rows+
-        kernel->height-1,exception);
-      q=GetCacheViewAuthenticPixels(morphology_view,x,0,1,
-        morphology_image->rows,exception);
-      if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-        {
-          status=MagickFalse;
-          continue;
-        }
-      center=(ssize_t) GetPixelChannels(image)*offy;
-      for (y=0; y < (ssize_t) image->rows; y++)
+        Special handling (for speed) of vertical (blur) kernels.  This
+        performs its handling in columns rather than in rows.  This is
+        only done for convolve as it is the only method that generates very
+        large 1-D vertical kernels (such as a 'BlurKernel')
+       
+        Timing tests (on single CPU laptop).  Using a vertical 1-d Blue with
+        normal row-by-row (below):
+          time convert logo: -morphology Convolve Blur:0x10+90 null: 0.807u
+        Using this column method
+          time convert logo: -morphology Convolve Blur:0x10+90 null: 0.620u
+     */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+     #pragma omp parallel for schedule(static,4) shared(progress,status) \
+       magick_threads(image,morphology_image,image->columns,1)
+#endif
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
+        register const Quantum
+          *restrict p;
+
+        register Quantum
+          *restrict q;
+
         register ssize_t
-          i;
+          y;
 
-        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        {
-          double
-            alpha,
-            gamma,
-            pixel;
+        ssize_t
+          center;
 
-          PixelChannel
-            channel;
-
-          PixelTrait
-            morphology_traits,
-            traits;
-
-          register const MagickRealType
-            *restrict k;
-
-          register const Quantum
-            *restrict pixels;
-
-          register ssize_t
-            u;
-
-          ssize_t
-            v;
-
-          channel=GetPixelChannelChannel(image,i);
-          traits=GetPixelChannelTraits(image,channel);
-          morphology_traits=GetPixelChannelTraits(morphology_image,channel);
-          if ((traits == UndefinedPixelTrait) ||
-              (morphology_traits == UndefinedPixelTrait))
-            continue;
-          if (((morphology_traits & CopyPixelTrait) != 0) ||
-              (GetPixelMask(image,p) != 0))
-            {
-              SetPixelChannel(morphology_image,channel,p[center+i],q);
-              continue;
-            }
-          k=(&kernel->values[kernel->height-1]);
-          pixels=p;
-          pixel=bias;
-          gamma=0.0;
-          if ((morphology_traits & BlendPixelTrait) == 0)
-            {
-              /*
-                No alpha blending.
-              */
-              for (v=0; v < (ssize_t) kernel->height; v++)
-              {
-                for (u=0; u < (ssize_t) kernel->width; u++)
-                {
-                  if (IsNaN(*k) != MagickFalse)
-                    continue;
-                  pixel+=(*k)*pixels[i];
-                  gamma+=(*k);
-                  k--;
-                  pixels+=GetPixelChannels(image);
-                }
-              }
-              gamma=PerceptibleReciprocal(gamma);
-              pixel*=gamma;
-              if (fabs(pixel-p[center+i]) > MagickEpsilon)
-                changed++;
-              SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
-              continue;
-            }
-          /*
-            Alpha blending.
-          */
-          for (v=0; v < (ssize_t) kernel->width; v++)
+        if (status == MagickFalse)
+          continue;
+        p=GetCacheViewVirtualPixels(image_view,x,-offy,1,image->rows+
+          kernel->height-1,exception);
+        q=GetCacheViewAuthenticPixels(morphology_view,x,0,1,
+          morphology_image->rows,exception);
+        if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           {
-            for (u=0; u < (ssize_t) kernel->width; u++)
-            {
-              if (IsNaN(*k) != MagickFalse)
-                continue;
-              alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-              pixel+=(*k)*alpha*pixels[i];
-              gamma+=(*k)*alpha;
-              k--;
-              pixels+=GetPixelChannels(image);
-            }
+            status=MagickFalse;
+            continue;
           }
-          gamma=PerceptibleReciprocal(gamma);
-          pixel*=gamma;
-          if (fabs(pixel-p[center+i]) > MagickEpsilon)
-            changed++;
-          SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
-        }
-        p+=GetPixelChannels(image);
-        q+=GetPixelChannels(morphology_image);
-      } /* y */
-      if ( SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
-        status=MagickFalse;
-      if (image->progress_monitor != (MagickProgressMonitor) NULL)
+        center=(ssize_t) GetPixelChannels(image)*offy;
+        for (y=0; y < (ssize_t) image->rows; y++)
         {
-          MagickBooleanType
-            proceed;
+          register ssize_t
+            i;
+
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
+            double
+              alpha,
+              gamma,
+              pixel;
+
+            PixelChannel
+              channel;
+
+            PixelTrait
+              morphology_traits,
+              traits;
+
+            register const MagickRealType
+              *restrict k;
+
+            register const Quantum
+              *restrict pixels;
+
+            register ssize_t
+              u;
+
+            ssize_t
+              v;
+
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
+            morphology_traits=GetPixelChannelTraits(morphology_image,channel);
+            if ((traits == UndefinedPixelTrait) ||
+                (morphology_traits == UndefinedPixelTrait))
+              continue;
+            if (((morphology_traits & CopyPixelTrait) != 0) ||
+                (GetPixelMask(image,p) != 0))
+              {
+                SetPixelChannel(morphology_image,channel,p[center+i],q);
+                continue;
+              }
+            k=(&kernel->values[kernel->height-1]);
+            pixels=p;
+            pixel=bias;
+            gamma=0.0;
+            if ((morphology_traits & BlendPixelTrait) == 0)
+              {
+                /*
+                  No alpha blending.
+                */
+                for (v=0; v < (ssize_t) kernel->height; v++)
+                {
+                  for (u=0; u < (ssize_t) kernel->width; u++)
+                  {
+                    if (IsNaN(*k) != MagickFalse)
+                      continue;
+                    pixel+=(*k)*pixels[i];
+                    gamma+=(*k);
+                    k--;
+                    pixels+=GetPixelChannels(image);
+                  }
+                }
+                gamma=PerceptibleReciprocal(gamma);
+                pixel*=gamma;
+                if (fabs(pixel-p[center+i]) > MagickEpsilon)
+                  changed++;
+                SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),
+                  q);
+                continue;
+              }
+            /*
+              Alpha blending.
+            */
+            for (v=0; v < (ssize_t) kernel->width; v++)
+            {
+              for (u=0; u < (ssize_t) kernel->width; u++)
+              {
+                if (IsNaN(*k) != MagickFalse)
+                  continue;
+                alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+                pixel+=(*k)*alpha*pixels[i];
+                gamma+=(*k)*alpha;
+                k--;
+                pixels+=GetPixelChannels(image);
+              }
+            }
+            gamma=PerceptibleReciprocal(gamma);
+            pixel*=gamma;
+            if (fabs(pixel-p[center+i]) > MagickEpsilon)
+              changed++;
+            SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
+          }
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(morphology_image);
+        } /* y */
+        if (SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
+          status=MagickFalse;
+        if (image->progress_monitor != (MagickProgressMonitor) NULL)
+          {
+            MagickBooleanType
+              proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-          #pragma omp critical (MagickCore_MorphologyImage)
+            #pragma omp critical (MagickCore_MorphologyImage)
 #endif
-          proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
-          if (proceed == MagickFalse)
-            status=MagickFalse;
-        }
-    } /* x */
-    morphology_image->type=image->type;
-    morphology_view=DestroyCacheView(morphology_view);
-    image_view=DestroyCacheView(image_view);
-    return(status ? (ssize_t) changed : 0);
-  }
-
+            proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
+            if (proceed == MagickFalse)
+              status=MagickFalse;
+          }
+      }
+      morphology_image->type=image->type;
+      morphology_view=DestroyCacheView(morphology_view);
+      image_view=DestroyCacheView(image_view);
+      return(status ? (ssize_t) changed : 0);
+    }
   /*
-  ** Normal handling of horizontal or rectangular kernels (row by row)
+    Normal handling of horizontal or rectangular kernels (row by row).
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
