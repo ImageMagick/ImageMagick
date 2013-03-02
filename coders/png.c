@@ -2557,7 +2557,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     {
       if (ping_found_sRGB != MagickTrue &&
           (ping_found_gAMA != MagickTrue ||
-          image->gamma < .45 || image->gamma > .46) &&
+          (image->gamma > .45 && image->gamma < .46)) &&
           (ping_found_cHRM != MagickTrue ||
           ping_found_sRGB_cHRM == MagickTrue) &&
           ping_found_iCCP != MagickTrue)
@@ -2565,10 +2565,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          png_set_sRGB(ping,ping_info,
             Magick_RenderingIntent_to_PNG_RenderingIntent
             (image->rendering_intent));
-         png_set_gAMA(ping,ping_info,1.000f/2.200f);
+         if (ping_found_gAMA != MagickTrue)
+            png_set_gAMA(ping,ping_info,1.000f/2.200f);
          file_gamma=1.000f/2.200f;
          ping_found_sRGB=MagickTrue;
-         ping_found_cHRM=MagickTrue;
+         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "    Setting sRGB and gAMA as if in input");
       }
     }
 
