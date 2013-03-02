@@ -1,3 +1,6 @@
+2013-03-02  6.8.2-7 Glenn Randers-Pehrson <glennrp@image...>
+  * Do not replace gAMA found in input with 1/2.2
+
 2013-03-01  6.8.3-7 Cristy  <quetzlzacatenango@image...>
   * Improve performance when rendering a caption.
   * The compare 'map' image should not be transparent.
