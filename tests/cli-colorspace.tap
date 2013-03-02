@@ -18,7 +18,7 @@
 . ${srcdir}/tests/common.shi
 
 depth=`eval ${MAGICK} xc:none -format '%[fx:QuantumRange]' info:-`
-if [ "X$depth" == "X255" ]; then
+if [ "X$depth" = "X255" ]; then
   echo "1..1"
   echo "ok"
   exit 0
