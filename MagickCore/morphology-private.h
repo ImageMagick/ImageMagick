@@ -41,7 +41,7 @@ extern "C" {
 
   This macro  IsNaN() is thus is only true if the value given is NaN.
 */
-#define IsNaN(a) ((a)!=(a))
+#define IsNaN(a) ((a) != (a) ? MagickTrue : MagickFalse)
 
 extern MagickPrivate Image
   *MorphologyApply(const Image *,const MorphologyMethod,const ssize_t,
