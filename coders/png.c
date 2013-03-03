@@ -1953,6 +1953,9 @@ static int read_vpag_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
      Note that libpng has already taken care of the CRC handling.
   */
 
+  LogMagickEvent(CoderEvent,GetMagickModule(),
+     " read_vpag_chunk: found %c%c%c%c chunk",
+       chunk->name[0],chunk->name[1],chunk->name[2],chunk->name[3]);
 
   if (chunk->name[0] != 118 || chunk->name[1] != 112 ||
       chunk->name[2] != 65 ||chunk-> name[3] != 103)
@@ -2288,7 +2291,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
   /* Ignore unused chunks and all unknown chunks except for vpAg */
+#if PNG_LIBPNG_VER < 10700 /* Avoid libpng16 warning */
+  png_set_keep_unknown_chunks(ping, 2, NULL, 0);
+#else
   png_set_keep_unknown_chunks(ping, 1, NULL, 0);
+#endif
   png_set_keep_unknown_chunks(ping, 2, mng_vpAg, 1);
   png_set_keep_unknown_chunks(ping, 1, unused_chunks,
      (int)sizeof(unused_chunks)/5);
