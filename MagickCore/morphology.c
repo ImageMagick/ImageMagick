@@ -2922,7 +2922,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 }
                 gamma=PerceptibleReciprocal(gamma);
                 pixel*=gamma;
-                continue;
+                break;
               }
             /*
               Alpha blending.
