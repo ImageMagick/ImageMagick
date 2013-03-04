@@ -1,6 +1,5 @@
 %global VERSION  @PACKAGE_VERSION@
 %global MAJOR_VERSION  @MAGICK_MAJOR_VERSION@
-%global MINOR_VERSION  @MAGICK_MINOR_VERSION@
 %global Patchlevel  @PACKAGE_RELEASE@
 
 Name:           @PACKAGE_NAME@
@@ -178,7 +177,7 @@ make
 rm -rf %{buildroot}
 
 make install DESTDIR=%{buildroot} INSTALL="install -p"
-cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}
+cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{MAJOR_VERSION}
 rm %{buildroot}%{_libdir}/*.la
 
 # fix weird perl Magick.so permissions
@@ -212,10 +211,10 @@ fi
 %define wordsize 32
 %endif
 
-mv %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}/magick/magick-config.h \
-   %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}/magick/magick-config-%{wordsize}.h
+mv %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config.h \
+   %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config-%{wordsize}.h
 
-cat >%{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}/magick/magick-config.h <<EOF
+cat >%{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config.h <<EOF
 #ifndef IMAGEMAGICK_MULTILIB
 #define IMAGEMAGICK_MULTILIB
 
@@ -251,11 +250,11 @@ rm -rf %{buildroot}
 %{_libdir}/libMagickWand*so*
 %{_bindir}/[a-z]*
 %{_libdir}/%{name}-%{VERSION}
-%{_datadir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_datadir}/%{name}-%{MAJOR_VERSION}
 %{_mandir}/man[145]/[a-z]*
 %{_mandir}/man1/%{name}.*
 %exclude %{_libdir}/%{name}-%{VERSION}/modules-*/coders/djvu.*
-%{_sysconfdir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_sysconfdir}/%{name}-%{MAJOR_VERSION}
 
 
 %files devel
@@ -267,9 +266,9 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/MagickCore*.pc
 %{_libdir}/pkgconfig/ImageMagick*.pc
 %{_libdir}/pkgconfig/MagickWand*.pc
-%dir %{_includedir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}
-%{_includedir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}/MagickCore
-%{_includedir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}/MagickWand
+%dir %{_includedir}/%{name}-%{MAJOR_VERSION}
+%{_includedir}/%{name}-%{MAJOR_VERSION}/MagickCore
+%{_includedir}/%{name}-%{MAJOR_VERSION}/MagickWand
 %{_mandir}/man1/MagickCore-config.*
 %{_mandir}/man1/MagickWand-config.*
 
@@ -279,7 +278,7 @@ rm -rf %{buildroot}
 
 %files doc
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}
+%doc %{_datadir}/doc/%{name}-%{MAJOR_VERSION}
 %doc LICENSE
 
 %files c++
@@ -292,8 +291,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc Magick++/examples
 %{_bindir}/Magick++-config
-%{_includedir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}/Magick++
-%{_includedir}/%{name}-%{MAJOR_VERSION}.%{MINOR_VERSION}/Magick++.h
+%{_includedir}/%{name}-%{MAJOR_VERSION}/Magick++
+%{_includedir}/%{name}-%{MAJOR_VERSION}/Magick++.h
 %{_libdir}/libMagick++*so*
 %{_libdir}/pkgconfig/Magick++*.pc
 %{_libdir}/pkgconfig/ImageMagick++*.pc

@@ -3,7 +3,6 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
 
-
 Name: Magick++
 Version: @PACKAGE_VERSION@
 Description: Magick++ - C++ API for ImageMagick
