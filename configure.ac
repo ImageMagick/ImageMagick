@@ -1979,7 +1979,7 @@ dnl ===========================================================================
 # or -framework Ghostscript
 
 AC_ARG_WITH([gslib],
-    [AC_HELP_STRING([--without-gslib],
+    [AC_HELP_STRING([--with-gslib],
                     [enable Ghostscript library support])],
     [with_gslib=$withval],
     [with_gslib='no'])
@@ -2063,7 +2063,7 @@ dnl ===========================================================================
 #
 AC_ARG_WITH(gvc,
     [AC_HELP_STRING([--with-gvc],
-                    [disable GVC support])],
+                    [enable GVC support])],
     [with_gvc=$withval],
     [with_gvc='no'])
 
