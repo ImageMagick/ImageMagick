@@ -1,7 +1,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-includedir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@.@MAGICK_MINOR_VERSION@
+includedir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
 
 Name: ImageMagick
 Description: ImageMagick - Convert, Edit, and Compose Images (ABI @MAGICK_ABI_SUFFIX@)
