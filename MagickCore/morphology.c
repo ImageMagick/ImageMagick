@@ -3057,7 +3057,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           {
             /*
               Select pixel with minimum intensity within kernel neighbourhood.
-            
+
               The kernel is not reflected for this operation.
             */
             k=kernel->values;
@@ -3084,7 +3084,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           {
             /*
               Select pixel with maximum intensity within kernel neighbourhood.
-            
+
               The kernel is not reflected for this operation.
             */
             k=(&kernel->values[kernel->width*kernel->height-1]);
@@ -3113,21 +3113,21 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                Compute th iterative distance from black edge of a white image
                shape.  Essentually white values are decreased to the smallest
                'distance from edge' it can find.
-              
+
                It works by adding kernel values to the neighbourhood, and and
                select the minimum value found. The kernel is rotated before
                use, so kernel distances match resulting distances, when a user
                provided asymmetric kernel is applied.
-              
+
                This code is nearly identical to True GrayScale Morphology but
                not quite.
-              
+
                GreyDilate Kernel values added, maximum value found Kernel is
                rotated before use.
-              
+
                GrayErode:  Kernel values subtracted and minimum value found No
                kernel rotation used.
-              
+
                Note the the Iterative Distance method is essentially a
                GrayErode, but with negative kernel values, and kernel rotation
                applied.
@@ -3262,9 +3262,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
     register ssize_t
       x;
 
-    ssize_t
-      center;
-
     /*
       Read virtual pixels, and authentic pixels, from the same image!  We read
       using virtual to get virtual pixel handling, but write back into the same
@@ -3277,14 +3274,12 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       break;
     p=GetCacheViewVirtualPixels(image_view,-offset.x,y-offset.y,width,(size_t)
       offset.y+1,exception);
-    q=GetCacheViewAuthenticPixels(morphology_view, 0, y, image->columns, 1,
+    q=GetCacheViewAuthenticPixels(morphology_view,0,y,image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       status=MagickFalse;
     if (status == MagickFalse)
       break;
-    center=(ssize_t) GetPixelChannels(image)*width*offset.y+
-      GetPixelChannels(image)*offset.x;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
@@ -3294,9 +3289,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       {
         double
           pixel;
-
-        PixelChannel
-          channel;
 
         PixelTrait
           traits;
@@ -3313,14 +3305,13 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         ssize_t
           v;
 
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
+        traits=GetPixelChannelTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) || (GetPixelMask(image,p) != 0))
           continue;
         pixels=p;
-        pixel=(double) p[center+i];
+        pixel=(double) q[i];
         switch (method)
         {
           case DistanceMorphology:
@@ -3344,7 +3335,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             pixels=q-offset.x*GetPixelChannels(image);
             for (u=0; u < offset.x; u++)
             {
-              if ((IsNaN(*k) == MagickFalse) || ((x+u-offset.x) < 0))
+              if ((IsNaN(*k) == MagickFalse) && ((x+u-offset.x) >= 0))
                 {
                   if ((pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
@@ -3375,7 +3366,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             pixels=q-offset.x*GetPixelChannels(image);
             for (u=0; u < offset.x; u++)
             {
-              if ((IsNaN(*k) == MagickFalse) || ((x+u-offset.x) < 0))
+              if ((IsNaN(*k) == MagickFalse) && ((x+u-offset.x) >= 0))
                 {
                   if ((pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
@@ -3388,14 +3379,14 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           default:
             break;
         }
-        if (fabs(pixel-p[center+i]) > MagickEpsilon)
+        if (fabs(pixel-q[i]) > MagickEpsilon)
           changed++;
-        SetPixelChannel(image,channel,ClampToQuantum(pixel),q);
+        q[i]=ClampToQuantum(pixel);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(image);
     }
-    if ( SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -3405,14 +3396,18 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_MorphologyImage)
 #endif
-        proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
+        proceed=SetImageProgress(image,MorphologyTag,progress++,2*image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
+  morphology_view=DestroyCacheView(morphology_view);
+  image_view=DestroyCacheView(image_view);
   /*
     Do the reverse pass through the image.
   */
+  image_view=AcquireVirtualCacheView(image,exception);
+  morphology_view=AcquireAuthenticCacheView(image,exception);
   for (y=(ssize_t) image->rows-1; y >= 0; y--)
   {
     register const Quantum
@@ -3423,9 +3418,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 
     register ssize_t
       x;
-
-    ssize_t
-      center;
 
     /*
        Read virtual pixels, and authentic pixels, from the same image.  We
@@ -3438,7 +3430,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       break;
     p=GetCacheViewVirtualPixels(image_view,-offset.x,y,width,(size_t)
       kernel->y+1,exception);
-    q=GetCacheViewAuthenticPixels(morphology_view, 0, y, image->columns, 1,
+    q=GetCacheViewAuthenticPixels(morphology_view,0,y,image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       status=MagickFalse;
@@ -3446,8 +3438,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       break;
     p+=(image->columns-1)*GetPixelChannels(image);
     q+=(image->columns-1)*GetPixelChannels(image);
-    center=(ssize_t) (GetPixelChannels(image)*offset.x);
-    for (x=(ssize_t)image->columns-1; x >= 0; x--)
+    for (x=(ssize_t) image->columns-1; x >= 0; x--)
     {
       register ssize_t
         i;
@@ -3456,9 +3447,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       {
         double
           pixel;
-
-        PixelChannel
-          channel;
 
         PixelTrait
           traits;
@@ -3475,14 +3463,13 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         ssize_t
           v;
 
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
+        traits=GetPixelChannelTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) || (GetPixelMask(image,p) != 0))
           continue;
         pixels=p;
-        pixel=(double) p[center+i];
+        pixel=(double) q[i];
         switch (method)
         {
           case DistanceMorphology:
@@ -3506,8 +3493,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             pixels=q-offset.x*GetPixelChannels(image);
             for (u=offset.x+1; u < (ssize_t) kernel->width; u++)
             {
-              if ((IsNaN(*k) == MagickFalse) ||
-                  ((x+u-offset.x) >= (ssize_t)image->columns))
+              if ((IsNaN(*k) == MagickFalse) &&
+                  ((x+u-offset.x) < (ssize_t) image->columns))
                 {
                   if ((pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
@@ -3538,7 +3525,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             pixels=q-offset.x*GetPixelChannels(image);
             for (u=offset.x+1; u < (ssize_t) kernel->width; u++)
             {
-              if ((IsNaN(*k) == MagickFalse) || ((x+u-offset.x) < 0))
+              if ((IsNaN(*k) == MagickFalse) &&
+                  ((x+u-offset.x) < (ssize_t) image->columns))
                 {
                   if ((pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
@@ -3551,13 +3539,27 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           default:
             break;
         }
-        if (fabs(pixel-p[center+i]) > MagickEpsilon)
+        if (fabs(pixel-q[i]) > MagickEpsilon)
           changed++;
-        SetPixelChannel(image,channel,ClampToQuantum(pixel),q);
+        q[i]=ClampToQuantum(pixel);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(image);
+      p-=GetPixelChannels(image);
+      q-=GetPixelChannels(image);
     }
+    if (SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_MorphologyImage)
+#endif
+        proceed=SetImageProgress(image,MorphologyTag,progress++,2*image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   morphology_view=DestroyCacheView(morphology_view);
   image_view=DestroyCacheView(image_view);
