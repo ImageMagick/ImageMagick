@@ -36,7 +36,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/AdaptiveThreshold.miff',
 testFilterCompare('input.miff',  q//, 'reference/filter/Annotate.miff', 'Annotate', q/text=>'Magick',geometry=>'+0+20',font=>'Generic.ttf',fill=>'gold',gravity=>'North',pointsize=>14/, 0.005, 0.70);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Blur.miff', 'Blur', q/'5x2'/, 0.0003, 0.03);
+testFilterCompare('input.miff',  q//, 'reference/filter/Blur.miff', 'Blur', q/'5x2'/, 0.007, 0.7);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Border.miff', 'Border', q/geometry=>'6x6',color=>'gold'/, 0.0, 0.0);
@@ -60,7 +60,7 @@ testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Colorize.miff',
 testFilterCompare('input.miff',  q//, 'reference/filter/Contrast.miff', 'Contrast', q//, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Convolve.miff', 'Convolve', q/[0.0625, 0.0625, 0.0625, 0.0625, 0.5, 0.0625, 0.0625, 0.0625, 0.0625]/, 0.09, 0.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/Convolve.miff', 'Convolve', q/[0.0625, 0.0625, 0.0625, 0.0625, 0.5, 0.0625, 0.0625, 0.0625, 0.0625]/, 0.1, 0.7);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Crop.miff', 'Crop', q/geometry=>'80x80+5+10'/, 0.0, 0.0);
@@ -99,7 +99,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Frame.miff', 'Frame', q/
 testFilterCompare('input.miff',  q//, 'reference/filter/Gamma.miff', 'Gamma', q/1.6/, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/GaussianBlur.miff', 'GaussianBlur', q/'0.0x1.5'/, 0.05, 0.8);
+testFilterCompare('input.miff',  q//, 'reference/filter/GaussianBlur.miff', 'GaussianBlur', q/'0.0x1.5'/, 0.07, 0.9);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Implode.miff', 'Implode', q/0.0/, 0.0, 0.0);
@@ -198,7 +198,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Threshold.miff', 'Thresh
 testFilterCompare('input.miff',  q//, 'reference/filter/Trim.miff', 'Trim', q//, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/UnsharpMask.miff', 'UnsharpMask', q/'5x2+1'/, 0.0003, 0.3);
+testFilterCompare('input.miff',  q//, 'reference/filter/UnsharpMask.miff', 'UnsharpMask', q/'5x2+1'/, 0.0003, 0.4);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Wave.miff', 'Wave', q/'25x150'/, 0.0, 0.0);
