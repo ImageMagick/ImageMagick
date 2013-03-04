@@ -5,6 +5,7 @@
 2013-03-01  6.8.3-7 Cristy  <quetzlzacatenango@image...>
   * Improve performance when rendering a caption.
   * The compare 'map' image should not be transparent.
+  * Append minor version to include path.
 
 2013-02-28  6.8.3-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-6, SVN revision 11210.
