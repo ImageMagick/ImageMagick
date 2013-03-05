@@ -705,7 +705,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       MagickFalse,options);
                     if (colorspace < 0)
                       break;
-                    (void) SetImageColorspace(image,(ColorspaceType) colorspace,                      exception);
+                    image->colorspace=(ColorspaceType) colorspace;
                     break;
                   }
                 if (LocaleCompare(keyword,"compression") == 0)
