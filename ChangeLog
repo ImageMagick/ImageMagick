@@ -1,7 +1,7 @@
 2013-02-28  6.8.3-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-7, SVN revision 11249.
 
-2013-03-02  6.8.2-7 Glenn Randers-Pehrson <glennrp@image...>
+2013-03-02  6.8.3-7 Glenn Randers-Pehrson <glennrp@image...>
   * Do not replace gAMA found in input with 1/2.2
   * Avoid a libpng16 warning about storing unknown chunks.
 
