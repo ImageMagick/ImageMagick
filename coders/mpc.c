@@ -409,7 +409,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       MagickFalse,options);
                     if (colorspace < 0)
                       break;
-                    (void) SetImageColorspace(image,(ColorspaceType) colorspace,                      exception);
+                    image->colorspace=(ColorspaceType) colorspace;
                     break;
                   }
                 if (LocaleCompare(keyword,"compression") == 0)
