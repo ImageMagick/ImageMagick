@@ -2500,7 +2500,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
             InsertPixelList(image,pixels[i],pixel_list[id]);
             pixels+=GetPixelChannels(image);
           }
-          pixels+=image->columns*GetPixelChannels(image);
+          pixels+=(image->columns-1)*GetPixelChannels(image);
         }
         switch (type)
         {

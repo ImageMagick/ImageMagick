@@ -290,7 +290,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           channel_sum[channel]+=pixels[i];
           pixels+=GetPixelChannels(image);
         }
-        pixels+=image->columns*GetPixelChannels(image);
+        pixels+=(image->columns-1)*GetPixelChannels(image);
       }
     }
     for (x=0; x < (ssize_t) image->columns; x++)
