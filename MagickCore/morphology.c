@@ -2911,17 +2911,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   for (u=0; u < (ssize_t) kernel->width; u++)
                   {
                     if (IsNaN(*k) == MagickFalse)
-                      {
-                        pixel+=(*k)*pixels[i];
-                        gamma+=(*k);
-                      }
+                      pixel+=(*k)*pixels[i];
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
                   pixels+=(image->columns-1)*GetPixelChannels(image);
                 }
-                gamma=PerceptibleReciprocal(gamma);
-                pixel*=gamma;
                 break;
               }
             /*
