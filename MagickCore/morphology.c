@@ -3324,7 +3324,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=width*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
             pixels=q-offset.x*GetPixelChannels(image);
@@ -3355,7 +3355,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=width*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
             pixels=q-offset.x*GetPixelChannels(image);
