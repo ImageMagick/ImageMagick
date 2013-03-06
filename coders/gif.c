@@ -1051,7 +1051,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   iterations=1;
   opacity=(-1);
   image_count=0;
-  meta_image=AcquireImage(image_info,exception);  /* metadata container */
+  meta_image=AcquireImage(image_info);  /* metadata container */
   for ( ; ; )
   {
     count=ReadBlob(image,1,&c);
