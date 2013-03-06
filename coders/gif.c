@@ -971,7 +971,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define LSBFirstOrder(x,y)  (((y) << 8) | (x))
 
   Image
-    *image;
+    *image,
+    *meta_image;
 
   int
     number_extensionss=0;
@@ -1050,6 +1051,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   iterations=1;
   opacity=(-1);
   image_count=0;
+  meta_image=AcquireImage(image_info,exception);  /* metadata container */
   for ( ; ; )
   {
     count=ReadBlob(image,1,&c);
@@ -1105,7 +1107,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               header[count]='\0';
               (void) ConcatenateString(&comments,(const char *) header);
             }
-            (void) SetImageProperty(image,"comment",comments);
+            (void) SetImageProperty(meta_image,"comment",comments);
             comments=DestroyString(comments);
             break;
           }
@@ -1202,7 +1204,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     header);
                 info=(unsigned char *) RelinquishMagickMemory(info);
                 if (magick == MagickFalse)
-                  (void) SetImageProfile(image,name,profile);
+                  (void) SetImageProfile(meta_image,name,profile);
                 profile=DestroyStringInfo(profile);
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "      profile name=%s",name);
@@ -1269,6 +1271,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           global_colormap);
         ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
       }
+    CloneImageProperties(image,meta_image);
+    DestroyImageProperties(meta_image);
+    CloneImageProfiles(image,meta_image);
+    DestroyImageProfiles(meta_image);
     /*
       Inititialize colormap.
     */
@@ -1306,8 +1312,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read local colormap.
         */
-        colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
-          3*sizeof(*colormap));
+        colormap=(unsigned char *) AcquireQuantumMemory(image->colors,3*
+          sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
           {
             global_colormap=(unsigned char *) RelinquishMagickMemory(
@@ -1367,6 +1373,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (status == MagickFalse)
       break;
   }
+  meta_image=DestroyImage(meta_image);
   global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");

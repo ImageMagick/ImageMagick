@@ -1,4 +1,8 @@
-2013-02-28  6.8.3-7 Cristy  <quetzlzacatenango@image...>
+2013-03-05  6.8.3-8 Cristy  <quetzlzacatenango@image...>
+  * GIF comments are no longer displaced by 1 for animated GIFs (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22901).
+
+2013-03-03  6.8.3-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-7, SVN revision 11249.
 
 2013-03-02  6.8.3-7 Glenn Randers-Pehrson <glennrp@image...>
