@@ -2918,7 +2918,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
-                  pixels+=image->columns*GetPixelChannels(image);
+                  pixels+=(image->columns-1)*GetPixelChannels(image);
                 }
                 gamma=PerceptibleReciprocal(gamma);
                 pixel*=gamma;
@@ -2940,7 +2940,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=image->columns*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             gamma=PerceptibleReciprocal(gamma);
             pixel*=gamma;
@@ -2969,7 +2969,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k++;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=image->columns*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             break;
           }
@@ -2999,7 +2999,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=image->columns*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             break;
           }
@@ -3041,7 +3041,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k++;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=image->columns*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             pixel-=maximum;
             if (pixel < 0.0)
@@ -3076,7 +3076,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k++;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=image->columns*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             break;
           }
@@ -3103,7 +3103,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=image->columns*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             break;
           }
@@ -3145,7 +3145,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=image->columns*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             break;
           }
