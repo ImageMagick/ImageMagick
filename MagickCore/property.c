@@ -188,13 +188,12 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DefineImageProperty() associates an assignment string of the form
-%  "key=value" with per-image artifact. It is equivelent to
-%  SetImageProperity().
+%  "key=value" with per-image artifact. It is equivelent to SetImageProperty().
 %
 %  The format of the DefineImageProperty method is:
 %
-%      MagickBooleanType DefineImageProperty(Image *image,
-%        const char *property,ExceptionInfo *exception)
+%      MagickBooleanType DefineImageProperty(Image *image,const char *property,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
