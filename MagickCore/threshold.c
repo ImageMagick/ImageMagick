@@ -321,7 +321,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           channel_bias[channel]+=pixels[i];
           pixels+=(width-1)*GetPixelChannels(image);
           channel_sum[channel]+=pixels[i];
-          pixels+=(image->columns+1)*GetPixelChannels(image);
+          pixels+=(image->columns-1)*GetPixelChannels(image);
         }
         mean=(double) (channel_sum[channel]/number_pixels+bias);
         SetPixelChannel(threshold_image,channel,(Quantum) ((double)
