@@ -1068,7 +1068,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
               pixel.blue+=(*k)*kernel_pixels[u].blue;
               k++;
             }
-            kernel_pixels+=image->columns+width-1;
+            kernel_pixels+=image->columns+width;
           }
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(pixel.red));
@@ -1087,7 +1087,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                   pixel.opacity+=(*k)*kernel_pixels[u].opacity;
                   k++;
                 }
-                kernel_pixels+=image->columns+width-1;
+                kernel_pixels+=image->columns+width;
               }
               SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
             }
@@ -1106,7 +1106,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                   pixel.index+=(*k)*GetPixelIndex(kernel_indexes+u);
                   k++;
                 }
-                kernel_indexes+=image->columns+width-1;
+                kernel_indexes+=image->columns+width;
               }
               SetPixelIndex(convolve_indexes+x,ClampToQuantum(pixel.index));
             }
@@ -1130,7 +1130,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
               gamma+=(*k)*alpha;
               k++;
             }
-            kernel_pixels+=image->columns+width-1;
+            kernel_pixels+=image->columns+width;
           }
           gamma=PerceptibleReciprocal(gamma);
           if ((channel & RedChannel) != 0)
@@ -1150,7 +1150,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                   pixel.opacity+=(*k)*GetPixelOpacity(kernel_pixels+u);
                   k++;
                 }
-                kernel_pixels+=image->columns+width-1;
+                kernel_pixels+=image->columns+width;
               }
               SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
             }
@@ -1172,8 +1172,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                   pixel.index+=(*k)*alpha*GetPixelIndex(kernel_indexes+u);
                   k++;
                 }
-                kernel_pixels+=image->columns+width-1;
-                kernel_indexes+=image->columns+width-1;
+                kernel_pixels+=image->columns+width;
+                kernel_indexes+=image->columns+width;
               }
               SetPixelIndex(convolve_indexes+x,ClampToQuantum(gamma*
                 pixel.index));
@@ -1885,7 +1885,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               pixel.blue+=(*k)*kernel_pixels[u].blue;
               k++;
             }
-            kernel_pixels+=image->columns+kernel->width-1;
+            kernel_pixels+=image->columns+kernel->width;
           }
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(pixel.red));
@@ -1904,7 +1904,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
                   pixel.opacity+=(*k)*kernel_pixels[u].opacity;
                   k++;
                 }
-                kernel_pixels+=image->columns+kernel->width-1;
+                kernel_pixels+=image->columns+kernel->width;
               }
               SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
             }
@@ -1923,7 +1923,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
                   pixel.index+=(*k)*GetPixelIndex(kernel_indexes+u);
                   k++;
                 }
-                kernel_indexes+=image->columns+kernel->width-1;
+                kernel_indexes+=image->columns+kernel->width;
               }
               SetPixelIndex(filter_indexes+x,ClampToQuantum(pixel.index));
             }
@@ -1947,7 +1947,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               gamma+=(*k)*alpha;
               k++;
             }
-            kernel_pixels+=image->columns+kernel->width-1;
+            kernel_pixels+=image->columns+kernel->width;
           }
           gamma=PerceptibleReciprocal(gamma);
           if ((channel & RedChannel) != 0)
@@ -1967,7 +1967,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
                   pixel.opacity+=(*k)*GetPixelOpacity(kernel_pixels+u);
                   k++;
                 }
-                kernel_pixels+=image->columns+kernel->width-1;
+                kernel_pixels+=image->columns+kernel->width;
               }
               SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
             }
@@ -1989,8 +1989,8 @@ MagickExport Image *FilterImageChannel(const Image *image,
                   pixel.index+=(*k)*alpha*GetPixelIndex(kernel_indexes+u);
                   k++;
                 }
-                kernel_pixels+=image->columns+kernel->width-1;
-                kernel_indexes+=image->columns+kernel->width-1;
+                kernel_pixels+=image->columns+kernel->width;
+                kernel_indexes+=image->columns+kernel->width;
               }
               SetPixelIndex(filter_indexes+x,ClampToQuantum(gamma*pixel.index));
             }
