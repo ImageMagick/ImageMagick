@@ -3257,6 +3257,9 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
     register ssize_t
       x;
 
+    ssize_t
+      center;
+
     /*
       Read virtual pixels, and authentic pixels, from the same image!  We read
       using virtual to get virtual pixel handling, but write back into the same
@@ -3275,6 +3278,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       status=MagickFalse;
     if (status == MagickFalse)
       break;
+    center=(ssize_t) (GetPixelChannels(image)*width*offset.y+
+      GetPixelChannels(image)*offset.x);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
@@ -3303,10 +3308,11 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         traits=GetPixelChannelTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (((traits & CopyPixelTrait) != 0) || (GetPixelMask(image,p) != 0))
+        if (((traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p+center) != 0))
           continue;
         pixels=p;
-        pixel=(double) q[i];
+        pixel=(double) QuantumRange;
         switch (method)
         {
           case DistanceMorphology:
@@ -3414,6 +3420,9 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
     register ssize_t
       x;
 
+    ssize_t
+      center;
+
     /*
        Read virtual pixels, and authentic pixels, from the same image.  We
        read using virtual to get virtual pixel handling, but write back
@@ -3433,6 +3442,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       break;
     p+=(image->columns-1)*GetPixelChannels(image);
     q+=(image->columns-1)*GetPixelChannels(image);
+    center=(ssize_t) (offset.x*GetPixelChannels(image));
     for (x=(ssize_t) image->columns-1; x >= 0; x--)
     {
       register ssize_t
@@ -3461,10 +3471,11 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         traits=GetPixelChannelTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (((traits & CopyPixelTrait) != 0) || (GetPixelMask(image,p) != 0))
+        if (((traits & CopyPixelTrait) != 0) ||
+             (GetPixelMask(image,p+center) != 0))
           continue;
         pixels=p;
-        pixel=(double) q[i];
+        pixel=(double) QuantumRange;
         switch (method)
         {
           case DistanceMorphology:
@@ -3482,7 +3493,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=width*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             k=(&kernel->values[kernel->width*kernel->y+kernel->x-1]);
             pixels=q-offset.x*GetPixelChannels(image);
@@ -3514,7 +3525,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=width*GetPixelChannels(image);
+              pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
             pixels=q-offset.x*GetPixelChannels(image);
