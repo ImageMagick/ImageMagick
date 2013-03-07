@@ -666,7 +666,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
               count=histogram[n];
             }
         }
-        k+=(ssize_t) (linear_image->columns+width-1);
+        k+=(ssize_t) (linear_image->columns+width);
       }
       for (i=0; i < (ssize_t) GetPixelChannels(linear_image); i++)
       {
