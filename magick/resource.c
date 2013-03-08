@@ -111,8 +111,8 @@ static ResourceInfo
     MagickULLConstant(3072)*1024*1024,
     MagickResourceInfinity,
     MagickULLConstant(768),
-    MagickULLConstant(0),
     MagickULLConstant(1),
+    MagickULLConstant(0),
     MagickResourceInfinity
   };
 
