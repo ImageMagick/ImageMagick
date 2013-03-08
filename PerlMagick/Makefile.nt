@@ -38,7 +38,7 @@ WriteMakefile(
     'AUTHOR'    => 'ImageMagick Studio',
     'NAME'      => 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'      => ['-L..\VisualMagick\lib -L..\VisualMagick\bin -lCORE_RL_MagickCore_.lib -lCORE_DB_MagickCore_.lib'],
+    'LIBS'      => ['-L..\VisualMagick\lib -L..\VisualMagick\bin -lCORE_RL_magick_.lib -lCORE_DB_magick_.lib'],
     'DEFINE'    => '-D_VISUALC_ -D_WINDOWS',     # e.g., '-DHAVE_SOMETHING' 
     'INC'       => '-I.. -I..\xlib\include',
     'BINARY_LOCATION'  => 'x86/Image-Magick.tar.gz',
