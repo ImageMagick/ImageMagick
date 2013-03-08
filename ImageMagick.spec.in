@@ -211,19 +211,19 @@ fi
 %define wordsize 32
 %endif
 
-mv %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config.h \
-   %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config-%{wordsize}.h
+mv %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magickbase-config.h \
+   %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magickbase-config-%{wordsize}.h
 
-cat >%{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magick-config.h <<EOF
+cat >%{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magickbase-config.h <<EOF
 #ifndef IMAGEMAGICK_MULTILIB
 #define IMAGEMAGICK_MULTILIB
 
 #include <bits/wordsize.h>
 
 #if __WORDSIZE == 32
-# include "magick-config-32.h"
+# include "magickbase-config-32.h"
 #elif __WORDSIZE == 64
-# include "magick-config-64.h"
+# include "magickbase-config-64.h"
 #else
 # error "unexpected value for __WORDSIZE macro"
 #endif
