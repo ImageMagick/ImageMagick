@@ -204,33 +204,6 @@ if [ -z perl-pkg-files ] ; then
     exit -1
 fi
 
-# fix multilib issues
-%ifarch x86_64 s390x ia64 ppc64 alpha sparc64
-%define wordsize 64
-%else
-%define wordsize 32
-%endif
-
-mv %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magickbase-config.h \
-   %{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magickbase-config-%{wordsize}.h
-
-cat >%{buildroot}%{_includedir}/%{name}-%{MAJOR_VERSION}/magick/magickbase-config.h <<EOF
-#ifndef IMAGEMAGICK_MULTILIB
-#define IMAGEMAGICK_MULTILIB
-
-#include <bits/wordsize.h>
-
-#if __WORDSIZE == 32
-# include "magickbase-config-32.h"
-#elif __WORDSIZE == 64
-# include "magickbase-config-64.h"
-#else
-# error "unexpected value for __WORDSIZE macro"
-#endif
-
-#endif
-EOF
-
 %clean
 rm -rf %{buildroot}
 
