@@ -866,7 +866,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   normalize=0.0;
-  j=(ssize_t) kernel_info->width/2;
+  j=(ssize_t) (kernel_info->width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
@@ -879,6 +879,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     }
   }
   kernel_info->values[i/2]+=(1.0-normalize);
+  if (sigma < MagickEpsilon)
+    kernel_info->values[i/2]=1.0;
   blur_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
@@ -1282,7 +1284,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
       kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  j=(ssize_t) kernel_info->width/2;
+  j=(ssize_t) (kernel_info->width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
@@ -1374,7 +1376,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
       kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  j=(ssize_t) kernel_info->width/2;
+  j=(ssize_t) (kernel_info->width-1)/2;
   k=j;
   i=0;
   for (v=(-j); v <= j; v++)
@@ -1474,7 +1476,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
       kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  j=(ssize_t) kernel_info->width/2;
+  j=(ssize_t) (kernel_info->width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
@@ -3224,7 +3226,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   normalize=0.0;
-  j=(ssize_t) kernel_info->width/2;
+  j=(ssize_t) (kernel_info->width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
@@ -3237,6 +3239,8 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
     }
   }
   kernel_info->values[i/2]=(double) ((-2.0)*normalize);
+  if (sigma < MagickEpsilon)
+    kernel_info->values[i/2]=1.0;
   sharp_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
