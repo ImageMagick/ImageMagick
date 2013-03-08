@@ -2668,7 +2668,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           {
             double
               alpha,
-              gamma,
               pixel;
 
             PixelChannel
@@ -2705,7 +2704,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             k=(&kernel->values[kernel->width*kernel->height-1]);
             pixels=p;
             pixel=bias;
-            gamma=0.0;
             if ((morphology_traits & BlendPixelTrait) == 0)
               {
                 /*
@@ -2715,16 +2713,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 {
                   for (u=0; u < (ssize_t) kernel->width; u++)
                   {
-                    if (IsNaN(*k) != MagickFalse)
-                      continue;
-                    pixel+=(*k)*pixels[i];
-                    gamma+=(*k);
+                    if (IsNaN(*k) == MagickFalse)
+                      pixel+=(*k)*pixels[i];
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
                 }
-                gamma=PerceptibleReciprocal(gamma);
-                pixel*=gamma;
                 if (fabs(pixel-p[center+i]) > MagickEpsilon)
                   changed++;
                 SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),
@@ -2738,17 +2732,15 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if (IsNaN(*k) != MagickFalse)
-                  continue;
-                alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-                pixel+=(*k)*alpha*pixels[i];
-                gamma+=(*k)*alpha;
+                if (IsNaN(*k) == MagickFalse)
+                  {
+                    alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+                    pixel+=(*k)*alpha*pixels[i];
+                  }
                 k--;
                 pixels+=GetPixelChannels(image);
               }
             }
-            gamma=PerceptibleReciprocal(gamma);
-            pixel*=gamma;
             if (fabs(pixel-p[center+i]) > MagickEpsilon)
               changed++;
             SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
@@ -2820,7 +2812,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       {
         double
           alpha,
-          gamma,
           maximum,
           minimum,
           pixel;
@@ -2876,7 +2867,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           }
           default: pixel=0; break;
         }
-        gamma=0.0;
         switch (method)
         {
           case ConvolveMorphology:
@@ -2930,15 +2920,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                     pixel+=(*k)*alpha*pixels[i];
-                    gamma+=(*k)*alpha;
                   }
                 k--;
                 pixels+=GetPixelChannels(image);
               }
               pixels+=(image->columns-1)*GetPixelChannels(image);
             }
-            gamma=PerceptibleReciprocal(gamma);
-            pixel*=gamma;
             break;
           }
           case ErodeMorphology:
