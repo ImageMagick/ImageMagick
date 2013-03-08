@@ -1640,22 +1640,19 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       MagickRealType
         distance;
 
-      distance=fabs(GetPixelRed(p)-(double)
-        GetPixelRed(q));
+      distance=fabs(GetPixelRed(p)-(double) GetPixelRed(q));
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
       area++;
-      distance=fabs(GetPixelGreen(p)-(double)
-        GetPixelGreen(q));
+      distance=fabs(GetPixelGreen(p)-(double) GetPixelGreen(q));
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
       area++;
-      distance=fabs(GetPixelBlue(p)-(double)
-        GetPixelBlue(q));
+      distance=fabs(GetPixelBlue(p)-(double) GetPixelBlue(q));
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
@@ -1663,8 +1660,7 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       area++;
       if (image->matte != MagickFalse)
         {
-          distance=fabs(GetPixelOpacity(p)-(double)
-            GetPixelOpacity(q));
+          distance=fabs(GetPixelOpacity(p)-(double) GetPixelOpacity(q));
           mean_error_per_pixel+=distance;
           mean_error+=distance*distance;
           if (distance > maximum_error)

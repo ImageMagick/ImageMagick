@@ -932,7 +932,7 @@ MagickExport size_t GetOptimalKernelWidth1D(const double radius,
   for (width=5; ; )
   {
     normalize=0.0;
-    j=(ssize_t) width/2;
+    j=(ssize_t) (width-1)/2;
     for (i=(-j); i <= j; i++)
       normalize+=exp(-((double) (i*i))*alpha)*beta;
     value=exp(-((double) (j*j))*alpha)*beta/normalize;
@@ -972,7 +972,7 @@ MagickExport size_t GetOptimalKernelWidth2D(const double radius,
   for (width=5; ; )
   {
     normalize=0.0;
-    j=(ssize_t) width/2;
+    j=(ssize_t) (width-1)/2;
     for (v=(-j); v <= j; v++)
       for (u=(-j); u <= j; u++)
         normalize+=exp(-((double) (u*u+v*v))*alpha)*beta;
