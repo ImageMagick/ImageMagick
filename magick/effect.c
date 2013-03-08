@@ -818,7 +818,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   normalize=0.0;
-  j=(ssize_t) width/2;
+  j=(ssize_t) (width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
@@ -831,6 +831,8 @@ MagickExport Image *BlurImageChannel(const Image *image,
     }
   }
   kernel[i/2]+=(1.0-normalize);
+  if (sigma < MagickEpsilon)
+    kernel[i/2]=1.0;
   blur_image=ConvolveImageChannel(image,channel,width,kernel,exception);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   return(blur_image);
@@ -1641,7 +1643,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     width*sizeof(*kernel)));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  j=(ssize_t) width/2;
+  j=(ssize_t) (width-1)/2;
   k=j;
   i=0;
   for (v=(-j); v <= j; v++)
@@ -2106,7 +2108,7 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
     width*sizeof(*kernel)));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  j=(ssize_t) width/2;
+  j=(ssize_t) (width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
@@ -3347,7 +3349,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
     width*sizeof(*kernel)));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  j=(ssize_t) width/2;
+  j=(ssize_t) (width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
@@ -3989,7 +3991,7 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   normalize=0.0;
-  j=(ssize_t) width/2;
+  j=(ssize_t) (width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
@@ -4002,6 +4004,8 @@ MagickExport Image *SharpenImageChannel(const Image *image,
     }
   }
   kernel[i/2]=(double) ((-2.0)*normalize);
+  if (sigma < MagickEpsilon)
+    kernel[i/2]=1.0;
   sharp_image=ConvolveImageChannel(image,channel,width,kernel,exception);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   return(sharp_image);
