@@ -16,18 +16,92 @@ package Image::Magick;
 #
 #  Initial version, written by Kyle Shorter.
 
-
 use strict;
 use Carp;
+use vars qw($VERSION @ISA @EXPORT $AUTOLOAD);
 
-use parent qw/Image::Magick::Q16HDRI/;
+require 5.002;
+require Exporter;
+require DynaLoader;
+require AutoLoader;
+
+@ISA = qw(Exporter DynaLoader);
+# Items to export into callers namespace by default. Note: do not export
+# names by default without a very good reason. Use EXPORT_OK instead.
+# Do not simply export all your public functions/methods/constants.
+@EXPORT =
+  qw(
+      Success Transparent Opaque QuantumDepth QuantumRange MaxRGB
+      WarningException ResourceLimitWarning TypeWarning OptionWarning
+      DelegateWarning MissingDelegateWarning CorruptImageWarning
+      FileOpenWarning BlobWarning StreamWarning CacheWarning CoderWarning
+      ModuleWarning DrawWarning ImageWarning XServerWarning RegistryWarning
+      ConfigureWarning ErrorException ResourceLimitError TypeError
+      OptionError DelegateError MissingDelegateError CorruptImageError
+      FileOpenError BlobError StreamError CacheError CoderError
+      ModuleError DrawError ImageError XServerError RegistryError
+      ConfigureError FatalErrorException
+    );
+
+$VERSION = '7.00';
+
+sub AUTOLOAD {
+    # This AUTOLOAD is used to 'autoload' constants from the constant()
+    # XS function.  If a constant is not found then control is passed
+    # to the AUTOLOAD in AutoLoader.
+
+    my $constname;
+    ($constname = $AUTOLOAD) =~ s/.*:://;
+    die "&${AUTOLOAD} not defined. The required ImageMagick libraries are not installed or not installed properly.\n" if $constname eq 'constant';
+    my $val = constant($constname, @_ ? $_[0] : 0);
+    if ($! != 0) {
+    	if ($! =~ /Invalid/) {
+	        $AutoLoader::AUTOLOAD = $AUTOLOAD;
+	        goto &AutoLoader::AUTOLOAD;
+    	}
+    	else {
+	        my($pack,$file,$line) = caller;
+	        die "Your vendor has not defined PerlMagick macro $pack\:\:$constname, used at $file line $line.\n";
+    	}
+    }
+    eval "sub $AUTOLOAD { $val }";
+    goto &$AUTOLOAD;
+}
+
+bootstrap Image::Magick $VERSION;
+
+# Preloaded methods go here.
+
+sub new
+{
+    my $this = shift;
+    my $class = ref($this) || $this || "Image::Magick";
+    my $self = [ ];
+    bless $self, $class;
+    $self->set(@_) if @_;
+    return $self;
+}
+
+sub New
+{
+    my $this = shift;
+    my $class = ref($this) || $this || "Image::Magick";
+    my $self = [ ];
+    bless $self, $class;
+    $self->set(@_) if @_;
+    return $self;
+}
+
+# Autoload methods go after =cut, and are processed by the autosplit program.
+
+END { UNLOAD () };
 
 1;
 __END__
 
 =head1 NAME
 
-Image::Magick - objected-oriented Perl interface to ImageMagick for default quantum (Q16HDRI). Use it to read, manipulate, or write an image or image sequence from within a Perl script.
+Image::Magick - objected-oriented Perl interface to ImageMagick. Use it to read, manipulate, or write an image or image sequence from within a Perl script.
 
 =head1 SYNOPSIS
 
@@ -48,7 +122,7 @@ It was originally developed to be used by CGI scripts for Web pages.
 
 A web page has been set up for this extension. See:
 
-	 file:///usr/local/share/doc/ImageMagick-7/www/perl-magick.html
+	 file:///usr/local/share/doc/ImageMagick-6.8.2/www/perl-magick.html
 	 http://www.imagemagick.org/script/perl-magick.php
 
 If you have problems, go to

@@ -2734,7 +2734,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
               Alpha blending.
             */
-            for (v=0; v < (ssize_t) kernel->width; v++)
+            for (v=0; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
@@ -2922,7 +2922,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
               Alpha blending.
             */
-            for (v=0; v < (ssize_t) kernel->width; v++)
+            for (v=0; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
