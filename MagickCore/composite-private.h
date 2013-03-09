@@ -32,8 +32,8 @@ extern "C" {
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/pixel-private.h"
 
-static inline double MagickOver_(const double p,
-  const double alpha,const double q,const double beta)
+static inline double MagickOver_(const double p,const double alpha,
+  const double q,const double beta)
 {
   double
     Da,
@@ -64,6 +64,9 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
   gamma=PerceptibleReciprocal(gamma);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
+    double
+      pixel;
+
     PixelChannel
       channel;
 
@@ -74,45 +77,51 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
     traits=GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
+    if (((traits & CopyPixelTrait) != 0) || (GetPixelMask(image,q) != 0) ||
+        (fabs(alpha-TransparentAlpha) < MagickEpsilon))
+      {
+        composite[i]=q[i];
+        continue;
+      }
     switch (channel)
     {
       case RedPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) p->red,
-          alpha,(double) q[i],beta));
+        pixel=gamma*MagickOver_((double) p->red,alpha,(double) q[i],beta);
         break;
       }
       case GreenPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) p->green,
-          alpha,(double) q[i],beta));
+        pixel=gamma*MagickOver_((double) p->green,alpha,(double) q[i],beta);
         break;
       }
       case BluePixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) p->blue,
-          alpha,(double) q[i],beta));
+        pixel=gamma*MagickOver_((double) p->blue,alpha,(double) q[i],beta);
         break;
       }
       case BlackPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) p->black,
-          alpha,(double) q[i],beta));
+        pixel=gamma*MagickOver_((double) p->black,alpha,(double) q[i],beta);
         break;
       }
       case AlphaPixelChannel:
       {
-        composite[i]=ClampToQuantum(QuantumRange*(Sa*(-Da)+Sa+Da));
+        pixel=QuantumRange*(Sa*(-Da)+Sa+Da);
         break;
       }
       default:
+      {
+        pixel=(double) q[i];
         break;
+      }
     }
+    composite[i]=ClampToQuantum(pixel);
   }
 }
 
-static inline void CompositePixelInfoOver(const PixelInfo *p,
-  const double alpha,const PixelInfo *q,const double beta,PixelInfo *composite)
+static inline void CompositePixelInfoOver(const PixelInfo *p,const double alpha,
+  const PixelInfo *q,const double beta,PixelInfo *composite)
 {
   double
     Da,
@@ -122,7 +131,7 @@ static inline void CompositePixelInfoOver(const PixelInfo *p,
   /*
     Compose pixel p over pixel q with the given opacities.
   */
-  if (fabs(alpha-OpaqueAlpha) < MagickEpsilon)
+  if (fabs(alpha-TransparentAlpha) < MagickEpsilon)
     {
       *composite=(*p);
       return;
@@ -144,8 +153,8 @@ static inline double RoundToUnity(const double value)
   return(value < 0.0 ? 0.0 : (value > 1.0) ? 1.0 : value);
 }
 
-static inline void CompositePixelInfoPlus(const PixelInfo *p,
-  const double alpha,const PixelInfo *q,const double beta,PixelInfo *composite)
+static inline void CompositePixelInfoPlus(const PixelInfo *p,const double alpha,
+  const PixelInfo *q,const double beta,PixelInfo *composite)
 {
   double
     Da,
