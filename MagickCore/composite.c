@@ -585,7 +585,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   (void) SetImageColorspace(composite_image,image->colorspace,exception);
   if ((image->alpha_trait == BlendPixelTrait) &&
       (composite_image->alpha_trait != BlendPixelTrait))
-    SetImageAlphaChannel(composite_image,SetAlphaChannel,exception);
+    (void) SetImageAlphaChannel(composite_image,SetAlphaChannel,exception);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
       status=CompositeOverImage(image,composite_image,clip_to_self,x_offset,
