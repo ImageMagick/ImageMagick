@@ -770,7 +770,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         pages[MaxTextExtent];
 
       (void) FormatLocaleString(pages,MaxTextExtent,"-dFirstPage=%.20g "
-        "-dLastPage=%.20g",(double) read_info->scene+1,(double)
+        "-dLastPage=%.20g ",(double) read_info->scene+1,(double)
         (read_info->scene+read_info->number_scenes));
       (void) ConcatenateMagickString(options,pages,MaxTextExtent);
       read_info->number_scenes=0;
