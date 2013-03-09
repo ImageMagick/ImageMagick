@@ -5257,7 +5257,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
   color_vector.red=geometry_info.rho;
   color_vector.green=geometry_info.rho;
   color_vector.blue=geometry_info.rho;
-  color_vector.alpha=OpaqueAlpha;
+  color_vector.alpha=(MagickRealType) OpaqueAlpha;
   if ((flags & SigmaValue) != 0)
     color_vector.green=geometry_info.sigma;
   if ((flags & XiValue) != 0)
