@@ -1124,6 +1124,12 @@
 #define MAGICKCORE_LIBRARY_RELATIVE_PATH "ImageMagick-7.0.0"
 #endif
 
+/* Binaries in libraries path base name (will be during install linked to bin)
+   */
+#ifndef MAGICKCORE_LIB_BIN_BASEDIRNAME
+#define MAGICKCORE_LIB_BIN_BASEDIRNAME "bin"
+#endif
+
 /* Define if you have LQR library */
 /* #undef LQR_DELEGATE */
 

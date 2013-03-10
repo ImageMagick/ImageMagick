@@ -16,7 +16,6 @@ package Image::Magick;
 #
 #  Initial version, written by Kyle Shorter.
 
-
 use strict;
 use Carp;
 
