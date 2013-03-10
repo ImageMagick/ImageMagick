@@ -1,3 +1,7 @@
+2013-03-10  6.8.3-10 Cristy  <quetzlzacatenango@image...>
+  * The TXT image format can now generate output compatible with the
+    -sparse-color option (e.g. -define txt:sparse-color=true txt:-).
+
 2013-03-10  6.8.3-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-9, SVN revision 11294.
 
