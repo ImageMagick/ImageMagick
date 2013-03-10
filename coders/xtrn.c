@@ -325,18 +325,18 @@ ModuleExport void UnregisterXTRNImage(void)
 %
 %  WriteXTRNImage() writes an image in the XTRN encoded image format.
 %  We use GIF because it is the only format that is compressed without
-%  requiring addition optional delegates (TIFF, ZIP, etc).
+%  requiring additional optional delegates (TIFF, ZIP, etc).
 %
 %  The format of the WriteXTRNImage method is:
 %
-%      MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
+%        Image *image)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o image:  A pointer to a Image structure.
-%
 %
 */
 
@@ -382,7 +382,8 @@ size_t SafeArrayFifo(const Image *image,const void *data,const size_t length)
   return(tlen);
 }
 
-static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
+  Image *image)
 {
   Image *
     p;
