@@ -737,6 +737,10 @@
    installed. */
 #undef LIBRARY_RELATIVE_PATH
 
+/* Binaries in libraries path base name (will be during install linked to bin)
+   */
+#undef LIB_BIN_BASEDIRNAME
+
 /* Define if you have LQR library */
 #undef LQR_DELEGATE
 

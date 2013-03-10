@@ -57,12 +57,13 @@ AC_CONFIG_FILES([\
     Makefile \
     magick.sh \
     PerlMagick/check.sh \
+    PerlMagick/default/Magick.pm \
     PerlMagick/Makefile.PL \
+    PerlMagick/default/Makefile.PL \
     PerlMagick/quantum/Makefile.PL \
     PerlMagick/quantum/quantum.pm \
     PerlMagick/quantum/quantum.xs \
     PerlMagick/quantum/typemap \
-    PerlMagick/Magick.pm \
     utilities/animate.1 \
     utilities/compare.1 \
     utilities/composite.1 \
@@ -281,6 +282,7 @@ AX_COMPILER_VENDOR
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
+AC_PROG_SED
 AC_PROG_AWK
 AM_WITH_DMALLOC
 AX_C___ATTRIBUTE__
@@ -3000,6 +3002,24 @@ case "${build_os}" in
 esac
 AC_DEFINE_UNQUOTED(LIBRARY_PATH,"$DEFINE_LIBRARY_PATH",[Directory where architecture-dependent files live.])
 AC_SUBST(LIBRARY_PATH)
+
+#
+# path to local binaries
+if test "x$LIB_BIN_BASEDIRNAME" = "x"; then
+   LIB_BIN_BASEDIRNAME="bin"
+fi
+AC_DEFINE_UNQUOTED(LIB_BIN_BASEDIRNAME,"$LIB_BIN_BASEDIRNAME",[Binaries in libraries path base name (will be during install linked to bin)])
+AC_SUBST(LIB_BIN_BASEDIRNAME)
+
+if test "x$LIB_BIN_DIR" = "x"; then
+   LIB_BIN_DIR=${LIB_BIN_BASEDIRNAME}-${MAGICK_ABI_SUFFIX}
+fi
+AC_SUBST(LIB_BIN_DIR)
+
+LIB_BIN_DIR_RELATIVE_PATH=$LIB_BIN_DIR
+AC_SUBST(LIB_BIN_DIR_RELATIVE_PATH)
+LIB_BIN_DIR_PATH="${LIBRARY_PATH}/${LIB_BIN_DIR_RELATIVE_PATH}"
+AC_SUBST(LIB_BIN_DIR_PATH)
 
 #
 # path to modules lib

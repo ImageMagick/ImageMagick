@@ -258,12 +258,13 @@ DIST_COMMON = $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am \
 	$(top_srcdir)/MagickCore/MagickCore.pc.in \
 	$(top_srcdir)/MagickCore/version.h.in $(srcdir)/magick.sh.in \
 	$(top_srcdir)/PerlMagick/check.sh.in \
+	$(top_srcdir)/PerlMagick/default/Magick.pm.in \
 	$(top_srcdir)/PerlMagick/Makefile.PL.in \
+	$(top_srcdir)/PerlMagick/default/Makefile.PL.in \
 	$(top_srcdir)/PerlMagick/quantum/Makefile.PL.in \
 	$(top_srcdir)/PerlMagick/quantum/quantum.pm.in \
 	$(top_srcdir)/PerlMagick/quantum/quantum.xs.in \
 	$(top_srcdir)/PerlMagick/quantum/typemap.in \
-	$(top_srcdir)/PerlMagick/Magick.pm.in \
 	$(top_srcdir)/utilities/animate.1.in \
 	$(top_srcdir)/utilities/compare.1.in \
 	$(top_srcdir)/utilities/composite.1.in \
@@ -333,15 +334,15 @@ CONFIG_CLEAN_FILES = common.shi config/configure.xml \
 	MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc \
 	MagickCore/MagickCore-config MagickCore/MagickCore.pc \
 	MagickCore/version.h magick.sh PerlMagick/check.sh \
-	PerlMagick/Makefile.PL PerlMagick/quantum/Makefile.PL \
+	PerlMagick/default/Magick.pm PerlMagick/Makefile.PL \
+	PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL \
 	PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs \
-	PerlMagick/quantum/typemap PerlMagick/Magick.pm \
-	utilities/animate.1 utilities/compare.1 utilities/composite.1 \
-	utilities/conjure.1 utilities/convert.1 utilities/display.1 \
-	utilities/identify.1 utilities/ImageMagick.1 \
-	utilities/import.1 utilities/mogrify.1 utilities/montage.1 \
-	utilities/stream.1 MagickWand/MagickWand-config \
-	MagickWand/MagickWand.pc
+	PerlMagick/quantum/typemap utilities/animate.1 \
+	utilities/compare.1 utilities/composite.1 utilities/conjure.1 \
+	utilities/convert.1 utilities/display.1 utilities/identify.1 \
+	utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 \
+	utilities/montage.1 utilities/stream.1 \
+	MagickWand/MagickWand-config MagickWand/MagickWand.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -2605,6 +2606,10 @@ LIBTOOL = @LIBTOOL@
 
 # Automagically reconfigure libtool
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
+LIB_BIN_BASEDIRNAME = @LIB_BIN_BASEDIRNAME@
+LIB_BIN_DIR = @LIB_BIN_DIR@
+LIB_BIN_DIR_PATH = @LIB_BIN_DIR_PATH@
+LIB_BIN_DIR_RELATIVE_PATH = @LIB_BIN_DIR_RELATIVE_PATH@
 LIB_DIR = @LIB_DIR@
 LIB_DL = @LIB_DL@
 LIPO = @LIPO@
@@ -5109,7 +5114,11 @@ magick.sh: $(top_builddir)/config.status $(srcdir)/magick.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/check.sh: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/check.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/default/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/default/Magick.pm.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/default/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/default/Makefile.PL.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/quantum/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/Makefile.PL.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -5118,8 +5127,6 @@ PerlMagick/quantum/quantum.pm: $(top_builddir)/config.status $(top_srcdir)/PerlM
 PerlMagick/quantum/quantum.xs: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/quantum.xs.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/quantum/typemap: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/typemap.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 utilities/animate.1: $(top_builddir)/config.status $(top_srcdir)/utilities/animate.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -10562,7 +10569,8 @@ install-dvi-am:
 
 install-exec-am: install-binPROGRAMS install-binSCRIPTS \
 	install-exec-local install-libLTLIBRARIES
-
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
 install-html: install-html-recursive
 
 install-html-am:
@@ -10614,11 +10622,12 @@ uninstall-am: uninstall-MagickCoreincHEADERS \
 	uninstall-libLTLIBRARIES uninstall-local \
 	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
 	uninstall-man uninstall-pkgconfigDATA
-
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
 uninstall-man: uninstall-man1
 
 .MAKE: $(am__recursive_targets) all check check-am install install-am \
-	install-strip
+	install-exec-am install-strip uninstall-am
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am all-local \
 	am--refresh check check-TESTS check-am check-local clean \
@@ -10638,23 +10647,24 @@ uninstall-man: uninstall-man1
 	install-configshareDATA install-configsharearchDATA \
 	install-data install-data-am install-data-local \
 	install-docDATA install-dvi install-dvi-am install-exec \
-	install-exec-am install-exec-local install-filtersLTLIBRARIES \
-	install-html install-html-am install-includeHEADERS \
-	install-info install-info-am install-libLTLIBRARIES \
-	install-magickppincHEADERS install-magickpptopincHEADERS \
-	install-man install-man1 install-pdf install-pdf-am \
-	install-pkgconfigDATA install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-local mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	recheck tags tags-am uninstall uninstall-MagickCoreincHEADERS \
+	install-exec-am install-exec-hook install-exec-local \
+	install-filtersLTLIBRARIES install-html install-html-am \
+	install-includeHEADERS install-info install-info-am \
+	install-libLTLIBRARIES install-magickppincHEADERS \
+	install-magickpptopincHEADERS install-man install-man1 \
+	install-pdf install-pdf-am install-pkgconfigDATA install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic maintainer-clean-local mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am recheck tags tags-am uninstall \
+	uninstall-MagickCoreincHEADERS \
 	uninstall-MagickCoreincarchHEADERS \
 	uninstall-MagickWandincHEADERS uninstall-am \
 	uninstall-binPROGRAMS uninstall-binSCRIPTS \
 	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
 	uninstall-configshareDATA uninstall-configsharearchDATA \
-	uninstall-docDATA uninstall-filtersLTLIBRARIES \
+	uninstall-docDATA uninstall-filtersLTLIBRARIES uninstall-hook \
 	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 	uninstall-local uninstall-magickppincHEADERS \
 	uninstall-magickpptopincHEADERS uninstall-man uninstall-man1 \
@@ -10789,6 +10799,34 @@ uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) \
 	$(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) \
 	$(HTML_UNINSTALL_DATA_TARGETS) \
 	$(UTILITIES_UNINSTALL_LOCAL_TARGETS)
+
+install-exec-hook:
+	$(install_sh) -d  $(DESTDIR)/$(LIB_BIN_DIR_PATH)
+	cd $(DESTDIR)/$(bindir) && \
+	for CURR_PROG in `echo $(UTILITIES_PGMS) | sed 's/utilities\///g'`; do \
+		mv -f ./$$CURR_PROG$(EXEEXT) $(DESTDIR)/$(LIB_BIN_DIR_PATH)/$$CURR_PROG$(EXEEXT) && \
+		$(LN_S) $(LIB_BIN_DIR_PATH)/$$CURR_PROG$(EXEEXT) ./$$CURR_PROG$(EXEEXT); \
+	done;
+
+uninstall-hook:
+	for CURR_PROG in `echo $(UTILITIES_PGMS) | sed 's/utilities\///g'`; do \
+		rm -f $(DESTDIR)/$(LIB_DIR_PATH)/$$CURR_PROG$(EXEEXT)
+	done;
+	rm -r -f $(LIB_BIN_DIR_PATH)
+
+install-exec-hook:
+	$(install_sh) -d  $(DESTDIR)/$(LIB_BIN_DIR_PATH)
+	cd $(DESTDIR)/$(bindir) && \
+	for CURR_PROG in `echo $(UTILITIES_PGMS) | sed 's/utilities\///g'`; do \
+		mv -f ./$$CURR_PROG$(EXEEXT) $(DESTDIR)/$(LIB_BIN_DIR_PATH)/$$CURR_PROG$(EXEEXT) && \
+		$(LN_S) $(LIB_BIN_DIR_PATH)/$$CURR_PROG$(EXEEXT) ./$$CURR_PROG$(EXEEXT); \
+	done;
+
+uninstall-hook:
+	for CURR_PROG in `echo $(UTILITIES_PGMS) | sed 's/utilities\///g'`; do \
+		rm -f $(DESTDIR)/$(LIB_DIR_PATH)/$$CURR_PROG$(EXEEXT)
+	done;
+	rm -r -f $(LIB_BIN_DIR_PATH)
 
 clean-local: $(PERLMAGICK_CLEAN_LOCAL_TARGETS)
 
