@@ -621,7 +621,11 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
     colorspace[MaxTextExtent],
     tuple[MaxTextExtent];
 
+  const char
+    *option;
+
   MagickBooleanType
+    sparse_color,
     status;
 
   MagickOffsetType
@@ -654,6 +658,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
+  option=GetImageOption(image_info,"txt:sparse-color");
+  sparse_color=IsStringTrue(option);
   scene=0;
   do
   {
@@ -677,7 +683,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
       indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g",(double)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
         SetMagickPixelPacket(image,p,indexes+x,&pixel);
@@ -686,6 +692,22 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
             pixel.green-=(QuantumRange+1)/2.0;
             pixel.blue-=(QuantumRange+1)/2.0;
           }
+        if ((sparse_color != MagickFalse) &&
+            (GetPixelOpacity(p) == (Quantum) OpaqueOpacity))
+          {
+            /*
+              Sparse-color format.
+            */
+            (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
+              &image->exception);
+            (void) WriteBlobString(image," ");
+            (void) WriteBlobString(image,buffer);
+            (void) WriteBlobString(image,tuple);
+            (void) WriteBlobString(image," ");
+            p++;
+            continue;
+          }
+        (void) WriteBlobString(image,": ");
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
         ConcatenateColorComponent(&pixel,RedChannel,X11Compliance,tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
