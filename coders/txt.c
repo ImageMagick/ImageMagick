@@ -723,7 +723,6 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             */
             (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);
             (void) WriteBlobString(image," ");
-            (void) WriteBlobString(image,buffer);
             (void) WriteBlobString(image,tuple);
             (void) WriteBlobString(image," ");
             p+=GetPixelChannels(image);
