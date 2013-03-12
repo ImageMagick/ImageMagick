@@ -2095,8 +2095,8 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GePixelIntensity() returns a single sample intensity value from the
-%  red, green, and blue components of a pixel.
+%  GetPixelIntensity() returns a single sample intensity value from the red,
+%  green, and blue components of a pixel.
 %
 %  The format of the GetPixelIntensity method is:
 %
