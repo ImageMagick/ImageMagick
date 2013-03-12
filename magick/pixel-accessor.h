@@ -103,24 +103,6 @@ extern "C" {
 #define SetPixelYellow(pixel,value) ((pixel)->blue=(Quantum) (value))
 #define SetPixelY(pixel,value) ((pixel)->red=(Quantum) (value))
 
-static inline MagickRealType GetPixelIntensity(const Image *image,
-  const PixelPacket *restrict pixel)
-{
-  MagickRealType
-    blue,
-    green,
-    red;
-
-  if (image->colorspace == GRAYColorspace)
-    return((MagickRealType) pixel->red);
-  if (image->colorspace != sRGBColorspace)
-    return(0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*pixel->blue);
-  red=DecodePixelGamma((MagickRealType) pixel->red);
-  green=DecodePixelGamma((MagickRealType) pixel->green);
-  blue=DecodePixelGamma((MagickRealType) pixel->blue);
-  return((MagickRealType) (0.298839f*red+0.586811f*green+0.114350f*blue));
-}
-
 static inline MagickRealType AbsolutePixelValue(const MagickRealType x)
 {
   return(x < 0.0f ? -x : x);
