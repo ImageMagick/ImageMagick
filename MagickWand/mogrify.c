@@ -3452,6 +3452,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-fuzz distance       colors within this distance are considered equal",
       "-gravity type        horizontal and vertical text placement",
       "-green-primary point chromaticity green primary point",
+      "-intensity method    method to generate intensity value from pixel",
       "-intent type         type of rendering intent when managing the image color",
       "-interlace type      type of image interlacing scheme",
       "-interline-spacing value",
