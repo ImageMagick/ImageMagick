@@ -1927,6 +1927,49 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t P i x e l I n t e n s i t y                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelIntensity() returns a single sample intensity value from the red,
+%  green, and blue components of a pixel.
+%
+%  The format of the GetPixelIntensity method is:
+%
+%      GetPixelIntensity(const Image *image,const PixelPacket *pixel)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o pixel: Specifies a pointer to a PixelPacket structure.
+%
+*/
+MagickExport MagickRealType GetPixelIntensity(const Image *image,
+  const PixelPacket *restrict pixel)
+{
+  MagickRealType
+    blue,
+    green,
+    red;
+
+  if (image->colorspace == GRAYColorspace)
+    return((MagickRealType) pixel->red);
+  if (image->colorspace != sRGBColorspace)
+    return(0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*pixel->blue);
+  red=DecodePixelGamma((MagickRealType) pixel->red);
+  green=DecodePixelGamma((MagickRealType) pixel->green);
+  blue=DecodePixelGamma((MagickRealType) pixel->blue);
+  return((MagickRealType) (0.298839f*red+0.586811f*green+0.114350f*blue));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I m p o r t I m a g e P i x e l s                                         %
 %                                                                             %
 %                                                                             %
