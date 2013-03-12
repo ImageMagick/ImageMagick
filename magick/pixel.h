@@ -61,6 +61,17 @@ typedef enum
   MaskPixelComponent = 5
 } PixelComponent;
 
+typedef enum
+{
+  UndefinedPixelIntensityMethod = 0,
+  AveragePixelIntensityMethod,
+  BrightnessPixelIntensityMethod,
+  LightnessPixelIntensityMethod,
+  Rec601LumaPixelIntensityMethod,
+  Rec709LumaPixelIntensityMethod,
+  RMSPixelIntensityMethod
+} PixelIntensityMethod;
+
 typedef struct _DoublePixelPacket
 {
   double
