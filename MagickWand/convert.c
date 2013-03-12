@@ -379,7 +379,7 @@ static MagickBooleanType ConvertUsage(void)
       "-fuzz distance       colors within this distance are considered equal",
       "-gravity type        horizontal and vertical text placement",
       "-green-primary point chromaticity green primary point",
-      "-intensity method    method to generate intensity value from pixel",
+      "-intensity method    method to generate an intensity value from a pixel",
       "-intent type         type of rendering intent when managing the image color",
       "-interlace type      type of image interlacing scheme",
       "-interline-spacing value",
@@ -1709,6 +1709,21 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("intensity",option+1) == 0)
+          {
+            ssize_t
+              intensity;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            intensity=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,argv[i]);
+            if (intensity < 0)
+              ThrowConvertException(OptionError,"UnrecognizedPixelIntensityMethod",argv[i]);
+            break;
+          }
         if (LocaleCompare("intent",option+1) == 0)
           {
             ssize_t
@@ -1719,11 +1734,9 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            intent=ParseCommandOption(MagickIntentOptions,MagickFalse,
-              argv[i]);
+            intent=ParseCommandOption(MagickIntentOptions,MagickFalse,argv[i]);
             if (intent < 0)
-              ThrowConvertException(OptionError,"UnrecognizedIntentType",
-                argv[i]);
+              ThrowConvertException(OptionError,"UnrecognizedIntentType",argv[i]);
             break;
           }
         if (LocaleCompare("interlace",option+1) == 0)
