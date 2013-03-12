@@ -63,6 +63,7 @@
 #include "MagickCore/montage.h"
 #include "MagickCore/morphology.h"
 #include "MagickCore/option.h"
+#include "MagickCore/pixel.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
@@ -1259,6 +1260,7 @@ static const OptionInfo
     { "Noise", MagickNoiseOptions, UndefinedOptionFlag, MagickFalse },
     { "Orientation", MagickOrientationOptions, UndefinedOptionFlag, MagickFalse },
     { "PixelChannel", MagickPixelChannelOptions, UndefinedOptionFlag, MagickFalse },
+    { "PixelIntensity", MagickPixelIntensityOptions, UndefinedOptionFlag, MagickFalse },
     { "PixelTrait", MagickPixelTraitOptions, UndefinedOptionFlag, MagickFalse },
     { "Policy", MagickPolicyOptions, UndefinedOptionFlag, MagickFalse },
     { "PolicyDomain", MagickPolicyDomainOptions, UndefinedOptionFlag, MagickFalse },
@@ -1425,6 +1427,17 @@ static const OptionInfo
     { "Y", YellowPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Yellow", YellowPixelChannel, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedPixelChannel, UndefinedOptionFlag, MagickFalse }
+  },
+  PixelIntensityOptions[] =
+  {
+    { "Undefined", UndefinedPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Average", AveragePixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Brightness", BrightnessPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Lightness", LightnessPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Rec601Luma", Rec601LumaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Rec709Luma", Rec709LumaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "RMS", RMSPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { (char *) NULL, UndefinedPixelIntensityMethod, UndefinedOptionFlag, MagickFalse }
   },
   PixelTraitOptions[] =
   {
@@ -1699,6 +1712,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickNoiseOptions: return(NoiseOptions);
     case MagickOrientationOptions: return(OrientationOptions);
     case MagickPixelChannelOptions: return(PixelChannelOptions);
+    case MagickPixelIntensityOptions: return(PixelIntensityOptions);
     case MagickPixelTraitOptions: return(PixelTraitOptions);
     case MagickPolicyDomainOptions: return(PolicyDomainOptions);
     case MagickPolicyRightsOptions: return(PolicyRightsOptions);
