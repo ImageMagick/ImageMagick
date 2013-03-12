@@ -233,29 +233,6 @@ static inline MagickRealType GetPixelInfoLuminance(
   return(0.21267f*red+0.71516f*green+0.07217f*blue);
 }
 
-static inline MagickRealType GetPixelIntensity(const Image *restrict image,
-  const Quantum *restrict pixel)
-{
-  MagickRealType
-    blue,
-    green,
-    red;
-
-  if (image->colorspace == GRAYColorspace)
-    return((MagickRealType) pixel[image->channel_map[GrayPixelChannel].offset]);
-  if (image->colorspace != sRGBColorspace)
-    return(0.298839f*pixel[image->channel_map[RedPixelChannel].offset]+
-      0.586811f*pixel[image->channel_map[GreenPixelChannel].offset]+
-      0.114350f*pixel[image->channel_map[BluePixelChannel].offset]);
-  red=DecodePixelGamma((MagickRealType)
-    pixel[image->channel_map[RedPixelChannel].offset]);
-  green=DecodePixelGamma((MagickRealType)
-    pixel[image->channel_map[GreenPixelChannel].offset]);
-  blue=DecodePixelGamma((MagickRealType)
-    pixel[image->channel_map[BluePixelChannel].offset]);
-  return(0.298839f*red+0.586811f*green+0.114350f*blue);
-}
-
 static inline Quantum GetPixelL(const Image *restrict image,
   const Quantum *restrict pixel)
 {
