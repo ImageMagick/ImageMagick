@@ -3676,6 +3676,18 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'I':
     case 'i':
     {
+      if (LocaleCompare("intensity",property) == 0)
+        {
+          ssize_t
+            intensity;
+
+          intensity=ParseCommandOption(MagickIntentOptions,MagickFalse,
+            value);
+          if (intensity < 0)
+            return(MagickFalse);
+          image->intensity=(PixelIntensityMethod) intensity;
+          return(MagickTrue);
+        }
       if (LocaleCompare("intent",property) == 0)
         {
           ssize_t

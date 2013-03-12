@@ -216,6 +216,9 @@ struct _Image
   FilterTypes
     filter;         /* resize/distort filter to apply */
 
+  PixelIntensityMethod
+    intensity;      /* method to generate an intensity value from a pixel */
+
   InterlaceType
     interlace;
 

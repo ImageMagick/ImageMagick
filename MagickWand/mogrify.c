@@ -3452,7 +3452,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-fuzz distance       colors within this distance are considered equal",
       "-gravity type        horizontal and vertical text placement",
       "-green-primary point chromaticity green primary point",
-      "-intensity method    method to generate intensity value from pixel",
+      "-intensity method    method to generate an intensity value from a pixel",
       "-intent type         type of rendering intent when managing the image color",
       "-interlace type      type of image interlacing scheme",
       "-interline-spacing value",
@@ -4776,6 +4776,22 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("intensity",option+1) == 0)
+          {
+            ssize_t
+              intensity;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            intensity=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,argv[i]);
+            if (intensity < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedPixelIntensityMethod",
+                argv[i]);
             break;
           }
         if (LocaleCompare("intent",option+1) == 0)
@@ -6582,6 +6598,16 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
       }
       case 'i':
       {
+        if (LocaleCompare("intensity",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                (void) SetImageOption(image_info,option+1,"undefined");
+                break;
+              }
+            (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
         if (LocaleCompare("intent",option+1) == 0)
           {
             if (*option == '+')

@@ -494,7 +494,7 @@ static void ExportCharPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=ScaleQuantumToChar(GetPixelIntensity(image,p));
+          *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
           p+=GetPixelChannels(image);
         }
       }
@@ -605,7 +605,7 @@ static void ExportCharPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=ScaleQuantumToChar(GetPixelIntensity(image,p));
+            *q=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
             break;
           }
           default:
@@ -1113,7 +1113,7 @@ static void ExportLongPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=ScaleQuantumToLong(GetPixelIntensity(image,p));
+          *q++=ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
           p+=GetPixelChannels(image);
         }
       }
@@ -1224,7 +1224,7 @@ static void ExportLongPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=ScaleQuantumToLong(GetPixelIntensity(image,p));
+            *q=ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
             break;
           }
           default:
@@ -1319,7 +1319,7 @@ static void ExportLongLongPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=ScaleQuantumToLongLong(GetPixelIntensity(image,p));
+          *q++=ScaleQuantumToLongLong(ClampToQuantum(GetPixelIntensity(image,p)));
           p+=GetPixelChannels(image);
         }
       }
@@ -1430,7 +1430,7 @@ static void ExportLongLongPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=ScaleQuantumToLongLong(GetPixelIntensity(image,p));
+            *q=ScaleQuantumToLongLong(ClampToQuantum(GetPixelIntensity(image,p)));
             break;
           }
           default:
@@ -1525,7 +1525,7 @@ static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=GetPixelIntensity(image,p);
+          *q++=ClampToQuantum(GetPixelIntensity(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1636,7 +1636,7 @@ static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=(GetPixelIntensity(image,p));
+            *q=ClampToQuantum(GetPixelIntensity(image,p));
             break;
           }
           default:
@@ -1734,7 +1734,7 @@ static void ExportShortPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=ScaleQuantumToShort(GetPixelIntensity(image,p));
+          *q++=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,p)));
           p+=GetPixelChannels(image);
         }
       }
@@ -1845,7 +1845,7 @@ static void ExportShortPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=ScaleQuantumToShort(GetPixelIntensity(image,p));
+            *q=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,p)));
             break;
           }
           default:
@@ -2096,7 +2096,14 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetPixelIntensity() returns a single sample intensity value from the red,
-%  green, and blue components of a pixel.
+%  green, and blue components of a pixel based on the selected method:
+%
+%    Rec601Luma   0.298839R + 0.586811G + 0.114350B
+%    Rec709Luma   0.21260R + 0.71520G + 0.07220B
+%    Brightness   max(R, G, B)
+%    Lightness    (min(R, G, B) + max(R, G, B)) / 2.0
+%    RMS          (R^2 + G^2 + B^2) / 3.0
+%    Average      (R + G + B) / 3.0
 %
 %  The format of the GetPixelIntensity method is:
 %
@@ -2109,27 +2116,96 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %    o pixel: Specifies a pointer to a Quantum structure.
 %
 */
+
+static inline MagickRealType MagickMax(const MagickRealType x,
+  const MagickRealType y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
+static inline MagickRealType MagickMin(const MagickRealType x,
+  const MagickRealType y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
 MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
   const Quantum *restrict pixel)
 {
   MagickRealType
     blue,
     green,
-    red;
+    red,
+    intensity;
 
   if (image->colorspace == GRAYColorspace)
     return((MagickRealType) pixel[image->channel_map[GrayPixelChannel].offset]);
-  if (image->colorspace != sRGBColorspace)
-    return(0.298839f*pixel[image->channel_map[RedPixelChannel].offset]+
-      0.586811f*pixel[image->channel_map[GreenPixelChannel].offset]+
-      0.114350f*pixel[image->channel_map[BluePixelChannel].offset]);
-  red=DecodePixelGamma((MagickRealType)
-    pixel[image->channel_map[RedPixelChannel].offset]);
-  green=DecodePixelGamma((MagickRealType)
-    pixel[image->channel_map[GreenPixelChannel].offset]);
-  blue=DecodePixelGamma((MagickRealType)
-    pixel[image->channel_map[BluePixelChannel].offset]);
-  return(0.298839f*red+0.586811f*green+0.114350f*blue);
+  red=(MagickRealType) pixel[image->channel_map[RedPixelChannel].offset];
+  green=(MagickRealType) pixel[image->channel_map[GreenPixelChannel].offset];
+  blue=(MagickRealType) pixel[image->channel_map[BluePixelChannel].offset];
+  switch (image->intensity)
+  {
+    case Rec601LumaPixelIntensityMethod:
+    default:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
+        }
+      intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
+      break;
+    }
+    case Rec709LumaPixelIntensityMethod:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
+        }
+      intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
+      break;
+    }
+    case BrightnessPixelIntensityMethod:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
+        }
+      intensity=MagickMax(MagickMax(red,green),blue);
+      break;
+    }
+    case LightnessPixelIntensityMethod:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
+        }
+      intensity=MagickMin(MagickMin(red,green),blue);
+      break;
+    }
+    case RMSPixelIntensityMethod:
+    {
+      intensity=(MagickRealType) sqrt((double) red*red+green*green+blue*blue);
+      break;
+    }
+    case AveragePixelIntensityMethod:
+    {
+      intensity=(red+green+blue)/3.0;
+      break;
+    }
+  }
+  return(intensity);
 }
 
 
@@ -4094,13 +4170,6 @@ MagickExport void InitializePixelChannelMap(Image *image)
 %
 */
 
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 static inline void CatromWeights(const double x,double (*weights)[4])
 {
   double
@@ -4228,8 +4297,8 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
             x_offset--;
             y_offset--;
           }
-      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,count,count,
-        exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,(size_t) count,(size_t)
+        count,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
@@ -4687,8 +4756,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
             x_offset--;
             y_offset--;
           }
-      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,count,count,
-        exception);
+      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,(size_t) count,(size_t)
+        count,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
@@ -5302,8 +5371,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           x_offset--;
           y_offset--;
         }
-      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,count,count,
-        exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,(size_t) count,(size_t)
+        count,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
@@ -5774,8 +5843,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
       /*
         Transparencies are involved - set alpha distance
       */
-      pixel=GetPixelAlpha(source,p)-(double)
-        GetPixelAlpha(destination,q);
+      pixel=GetPixelAlpha(source,p)-(double) GetPixelAlpha(destination,q);
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);

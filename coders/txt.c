@@ -715,16 +715,18 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             pixel.green-=(QuantumRange+1)/2.0;
             pixel.blue-=(QuantumRange+1)/2.0;
           }
-        if ((sparse_color != MagickFalse) &&
-            (GetPixelAlpha(image,p) == (Quantum) OpaqueAlpha))
+        if (sparse_color != MagickFalse)
           {
             /*
               Sparse-color format.
             */
-            (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);
-            (void) WriteBlobString(image," ");
-            (void) WriteBlobString(image,tuple);
-            (void) WriteBlobString(image," ");
+            if (GetPixelAlpha(image,p) == (Quantum) OpaqueAlpha)
+              {
+                (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);
+                (void) WriteBlobString(image," ");
+                (void) WriteBlobString(image,tuple);
+                (void) WriteBlobString(image," ");
+              }
             p+=GetPixelChannels(image);
             continue;
           }
