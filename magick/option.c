@@ -1464,6 +1464,17 @@ static const OptionInfo
     { "Unsigned", UnsignedQuantumFormat, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, FloatingPointQuantumFormat, UndefinedOptionFlag, MagickFalse }
   },
+  PixelIntensityOptions[] =
+  {
+    { "Undefined", UndefinedPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Average", AveragePixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Brightness", BrightnessPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Lightness", LightnessPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Rec601Luma", Rec601LumaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Rec709Luma", Rec709LumaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "RMS", RMSPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { (char *) NULL, UndefinedPixelIntensityMethod, UndefinedOptionFlag, MagickFalse }
+  },
   ResolutionOptions[] =
   {
     { "Undefined", UndefinedResolution, UndefinedOptionFlag, MagickTrue },
@@ -1867,6 +1878,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickIntentOptions: return(IntentOptions);
     case MagickInterlaceOptions: return(InterlaceOptions);
     case MagickInterpolateOptions: return(InterpolateOptions);
+    case MagickPixelIntensityOptions: return(PixelIntensityOptions);
     case MagickKernelOptions: return(KernelOptions);
     case MagickLayerOptions: return(LayerOptions);
     case MagickLineCapOptions: return(LineCapOptions);
