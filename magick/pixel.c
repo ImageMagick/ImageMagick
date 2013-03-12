@@ -1982,9 +1982,9 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
 
   if (image->colorspace == GRAYColorspace)
     return((MagickRealType) pixel->red);
-  red=pixel->red;
-  green=pixel->green;
-  blue=pixel->blue;
+  red=(MagickRealType) pixel->red;
+  green=(MagickRealType) pixel->green;
+  blue=(MagickRealType) pixel->blue;
   switch (image->intensity)
   {
     case Rec601LumaPixelIntensityMethod:
@@ -1992,9 +1992,9 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
     {
       if (image->colorspace == sRGBColorspace)
         {
-          red=DecodePixelGamma((MagickRealType) pixel->red);
-          green=DecodePixelGamma((MagickRealType) pixel->green);
-          blue=DecodePixelGamma((MagickRealType) pixel->blue);
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
         }
       intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
       break;
@@ -2003,9 +2003,9 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
     {
       if (image->colorspace == sRGBColorspace)
         {
-          red=DecodePixelGamma((MagickRealType) pixel->red);
-          green=DecodePixelGamma((MagickRealType) pixel->green);
-          blue=DecodePixelGamma((MagickRealType) pixel->blue);
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
         }
       intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
       break;
@@ -2014,9 +2014,9 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
     {
       if (image->colorspace == sRGBColorspace)
         {
-          red=DecodePixelGamma((MagickRealType) pixel->red);
-          green=DecodePixelGamma((MagickRealType) pixel->green);
-          blue=DecodePixelGamma((MagickRealType) pixel->blue);
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
         }
       intensity=MagickMax(MagickMax(red,green),blue);
       break;
@@ -2025,9 +2025,9 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
     {
       if (image->colorspace == sRGBColorspace)
         {
-          red=DecodePixelGamma((MagickRealType) pixel->red);
-          green=DecodePixelGamma((MagickRealType) pixel->green);
-          blue=DecodePixelGamma((MagickRealType) pixel->blue);
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
         }
       intensity=MagickMin(MagickMin(red,green),blue);
       break;
