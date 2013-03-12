@@ -2089,6 +2089,55 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t P i x e l I n t e n s i t y                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GePixelIntensity() returns a single sample intensity value from the
+%  red, green, and blue components of a pixel.
+%
+%  The format of the GetPixelIntensity method is:
+%
+%      GetPixelIntensity(const Image *image,const Quantum *pixel)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o pixel: Specifies a pointer to a Quantum structure.
+%
+*/
+MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
+  const Quantum *restrict pixel)
+{
+  MagickRealType
+    blue,
+    green,
+    red;
+
+  if (image->colorspace == GRAYColorspace)
+    return((MagickRealType) pixel[image->channel_map[GrayPixelChannel].offset]);
+  if (image->colorspace != sRGBColorspace)
+    return(0.298839f*pixel[image->channel_map[RedPixelChannel].offset]+
+      0.586811f*pixel[image->channel_map[GreenPixelChannel].offset]+
+      0.114350f*pixel[image->channel_map[BluePixelChannel].offset]);
+  red=DecodePixelGamma((MagickRealType)
+    pixel[image->channel_map[RedPixelChannel].offset]);
+  green=DecodePixelGamma((MagickRealType)
+    pixel[image->channel_map[GreenPixelChannel].offset]);
+  blue=DecodePixelGamma((MagickRealType)
+    pixel[image->channel_map[BluePixelChannel].offset]);
+  return(0.298839f*red+0.586811f*green+0.114350f*blue);
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I m p o r t I m a g e P i x e l s                                         %
 %                                                                             %
 %                                                                             %
