@@ -104,7 +104,7 @@ extern "C" {
 #define SetPixelY(pixel,value) ((pixel)->red=(Quantum) (value))
 
 static inline MagickRealType GetPixelIntensity(const Image *image,
-  const PixelPacket *pixel)
+  const PixelPacket *restrict pixel)
 {
   MagickRealType
     blue,
