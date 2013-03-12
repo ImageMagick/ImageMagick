@@ -1934,7 +1934,14 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetPixelIntensity() returns a single sample intensity value from the red,
-%  green, and blue components of a pixel.
+%  green, and blue components of a pixel based on the selected method:
+%
+%    Rec601Luma   0.298839R + 0.586811G + 0.114350B
+%    Rec709Luma   0.21260R + 0.71520G + 0.07220B
+%    Brightness   max(R, G, B)
+%    Lightness    (min(R, G, B) + max(R, G, B)) / 2.0
+%    RMS          (R^2 + G^2 + B^2) / 3.0
+%    Average      (R + G + B) / 3.0
 %
 %  The format of the GetPixelIntensity method is:
 %
@@ -1947,22 +1954,96 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %    o pixel: Specifies a pointer to a PixelPacket structure.
 %
 */
+
+static inline MagickRealType MagickMax(const MagickRealType x,
+  const MagickRealType y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
+static inline MagickRealType MagickMin(const MagickRealType x,
+  const MagickRealType y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
 MagickExport MagickRealType GetPixelIntensity(const Image *image,
   const PixelPacket *restrict pixel)
 {
   MagickRealType
     blue,
     green,
+    intensity,
     red;
 
   if (image->colorspace == GRAYColorspace)
     return((MagickRealType) pixel->red);
-  if (image->colorspace != sRGBColorspace)
-    return(0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*pixel->blue);
-  red=DecodePixelGamma((MagickRealType) pixel->red);
-  green=DecodePixelGamma((MagickRealType) pixel->green);
-  blue=DecodePixelGamma((MagickRealType) pixel->blue);
-  return((MagickRealType) (0.298839f*red+0.586811f*green+0.114350f*blue));
+  red=pixel->red;
+  green=pixel->green;
+  blue=pixel->blue;
+  switch (image->intensity)
+  {
+    case Rec601LumaPixelIntensityMethod:
+    default:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma((MagickRealType) pixel->red);
+          green=DecodePixelGamma((MagickRealType) pixel->green);
+          blue=DecodePixelGamma((MagickRealType) pixel->blue);
+        }
+      intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
+      break;
+    }
+    case Rec709LumaPixelIntensityMethod:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma((MagickRealType) pixel->red);
+          green=DecodePixelGamma((MagickRealType) pixel->green);
+          blue=DecodePixelGamma((MagickRealType) pixel->blue);
+        }
+      intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
+      break;
+    }
+    case BrightnessPixelIntensityMethod:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma((MagickRealType) pixel->red);
+          green=DecodePixelGamma((MagickRealType) pixel->green);
+          blue=DecodePixelGamma((MagickRealType) pixel->blue);
+        }
+      intensity=MagickMax(MagickMax(red,green),blue);
+      break;
+    }
+    case LightnessPixelIntensityMethod:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma((MagickRealType) pixel->red);
+          green=DecodePixelGamma((MagickRealType) pixel->green);
+          blue=DecodePixelGamma((MagickRealType) pixel->blue);
+        }
+      intensity=MagickMin(MagickMin(red,green),blue);
+      break;
+    }
+    case RMSPixelIntensityMethod:
+    {
+      intensity=(MagickRealType) sqrt((double) red*red+green*green+blue*blue);
+      break;
+    }
+    case AveragePixelIntensityMethod:
+    {
+      intensity=(red+green+blue)/3.0;
+      break;
+    }
+  }
+  return(intensity);
 }
 
 /*
@@ -3951,13 +4032,6 @@ static inline void AlphaBlendMagickPixelPacket(const Image *image,
        (image->storage_class == PseudoClass)) &&
       (indexes != (const IndexPacket *) NULL))
     pixel->index=(*alpha*GetPixelIndex(indexes));
-}
-
-static inline double MagickMax(const MagickRealType x,const MagickRealType y)
-{
-  if (x > y)
-    return(x);
-  return(y);
 }
 
 static inline void CatromWeights(const MagickRealType x,

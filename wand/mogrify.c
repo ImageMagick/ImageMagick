@@ -4791,6 +4791,23 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("intensity",option+1) == 0)
+          {
+            ssize_t
+              intensity;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            intensity=ParseCommandOption(MagickPixelIntensityOptions,
+              MagickFalse,argv[i]);
+            if (intensity < 0)
+              ThrowMogrifyException(OptionError,
+                "UnrecognizedPixelIntensityMethod",argv[i]);
+            break;
+          }
         if (LocaleCompare("intent",option+1) == 0)
           {
             ssize_t
@@ -6629,6 +6646,16 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
       }
       case 'i':
       {
+        if (LocaleCompare("intensity",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                (void) SetImageOption(image_info,option+1,"undefined");
+                break;
+              }
+            (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
         if (LocaleCompare("intent",option+1) == 0)
           {
             if (*option == '+')

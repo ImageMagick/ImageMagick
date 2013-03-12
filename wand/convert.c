@@ -1696,6 +1696,23 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("intensity",option+1) == 0)
+          {
+            ssize_t
+              intensity;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            intensity=ParseCommandOption(MagickPixelIntensityOptions,
+              MagickFalse,argv[i]);
+            if (intensity < 0)
+              ThrowConvertException(OptionError,
+                "UnrecognizedPixelIntensityMethod",argv[i]);
+            break;
+          }
         if (LocaleCompare("intent",option+1) == 0)
           {
             ssize_t
@@ -1706,8 +1723,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            intent=ParseCommandOption(MagickIntentOptions,MagickFalse,
-              argv[i]);
+            intent=ParseCommandOption(MagickIntentOptions,MagickFalse,argv[i]);
             if (intent < 0)
               ThrowConvertException(OptionError,"UnrecognizedIntentType",
                 argv[i]);

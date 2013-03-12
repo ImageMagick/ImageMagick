@@ -345,6 +345,9 @@ struct _Image
 
   time_t
     timestamp;
+
+  PixelIntensityMethod
+    intensity;      /* method to generate an intensity value from a pixel */
 };
 
 struct _ImageInfo
