@@ -1990,8 +1990,22 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
   blue=(MagickRealType) pixel->blue;
   switch (image->intensity)
   {
+    case AveragePixelIntensityMethod:
+    {
+      intensity=(red+green+blue)/3.0;
+      break;
+    }
+    case BrightnessPixelIntensityMethod:
+    {
+      intensity=MagickMax(MagickMax(red,green),blue);
+      break;
+    }
+    case LightnessPixelIntensityMethod:
+    {
+      intensity=MagickMin(MagickMin(red,green),blue);
+      break;
+    }
     case Rec601LumaPixelIntensityMethod:
-    default:
     {
       intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
       break;
@@ -2008,6 +2022,7 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
       break;
     }
     case Rec709LumaPixelIntensityMethod:
+    default:
     {
       if (image->colorspace == sRGBColorspace)
         {
@@ -2029,24 +2044,9 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
       intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
       break;
     }
-    case BrightnessPixelIntensityMethod:
-    {
-      intensity=MagickMax(MagickMax(red,green),blue);
-      break;
-    }
-    case LightnessPixelIntensityMethod:
-    {
-      intensity=MagickMin(MagickMin(red,green),blue);
-      break;
-    }
     case RMSPixelIntensityMethod:
     {
       intensity=(MagickRealType) sqrt((double) red*red+green*green+blue*blue);
-      break;
-    }
-    case AveragePixelIntensityMethod:
-    {
-      intensity=(red+green+blue)/3.0;
       break;
     }
   }
