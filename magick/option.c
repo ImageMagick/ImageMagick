@@ -1227,6 +1227,7 @@ static const OptionInfo
     { "Format", MagickFormatOptions, UndefinedOptionFlag, MagickFalse },
     { "Function", MagickFunctionOptions, UndefinedOptionFlag, MagickFalse },
     { "Gravity", MagickGravityOptions, UndefinedOptionFlag, MagickFalse },
+    { "Intensity", MagickPixelIntensityOptions, UndefinedOptionFlag, MagickFalse },
     { "Intent", MagickIntentOptions, UndefinedOptionFlag, MagickFalse },
     { "Interlace", MagickInterlaceOptions, UndefinedOptionFlag, MagickFalse },
     { "Interpolate", MagickInterpolateOptions, UndefinedOptionFlag, MagickFalse },
@@ -1876,7 +1877,6 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickFilterOptions: return(FilterOptions);
     case MagickFunctionOptions: return(FunctionOptions);
     case MagickGravityOptions: return(GravityOptions);
-/*  case MagickImageListOptions: return(ImageListOptions); */
     case MagickIntentOptions: return(IntentOptions);
     case MagickInterlaceOptions: return(InterlaceOptions);
     case MagickInterpolateOptions: return(InterpolateOptions);
@@ -1893,6 +1893,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickMorphologyOptions: return(MorphologyOptions);
     case MagickNoiseOptions: return(NoiseOptions);
     case MagickOrientationOptions: return(OrientationOptions);
+    case MagickPixelIntensityOptions: return(PixelIntensityOptions);
     case MagickPolicyDomainOptions: return(PolicyDomainOptions);
     case MagickPolicyRightsOptions: return(PolicyRightsOptions);
     case MagickPreviewOptions: return(PreviewOptions);
