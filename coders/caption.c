@@ -155,7 +155,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   if (gravity != (char *) NULL)
     draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
       MagickFalse,gravity);
-  if ((*caption != '\0') && (image_info->pointsize == 0.0))
+  if ((*draw_info->text != '\0') && (image_info->pointsize == 0.0))
     {
       char
         *text;
