@@ -2098,16 +2098,19 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %  GetPixelIntensity() returns a single sample intensity value from the red,
 %  green, and blue components of a pixel based on the selected method:
 %
-%    Rec601Luma   0.298839R + 0.586811G + 0.114350B
-%    Rec709Luma   0.21260R + 0.71520G + 0.07220B
-%    Brightness   max(R, G, B)
-%    Lightness    (min(R, G, B) + max(R, G, B)) / 2.0
-%    RMS          (R^2 + G^2 + B^2) / 3.0
-%    Average      (R + G + B) / 3.0
+%    Rec601Luma       0.298839R' + 0.586811G' + 0.114350B'
+%    Rec601Luminance  0.298839R + 0.586811G + 0.114350B
+%    Rec709Luma       0.21260R' + 0.71520G' + 0.07220B'
+%    Rec709Luminance  0.21260R + 0.71520G + 0.07220B
+%    Brightness       max(R, G, B)
+%    Lightness        (min(R, G, B) + max(R, G, B)) / 2.0
+%    RMS              (R'^2 + G'^2 + B'^2) / 3.0
+%    Average          (R' + G' + B') / 3.0
 %
 %  The format of the GetPixelIntensity method is:
 %
-%      GetPixelIntensity(const Image *image,const Quantum *pixel)
+%      MagickRealType GetPixelIntensity(const Image *image,
+%        const Quantum *pixel)
 %
 %  A description of each parameter follows:
 %
@@ -2152,6 +2155,11 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
     case Rec601LumaPixelIntensityMethod:
     default:
     {
+      intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
+      break;
+    }
+    case Rec601LuminancePixelIntensityMethod:
+    {
       if (image->colorspace == sRGBColorspace)
         {
           red=DecodePixelGamma(red);
@@ -2162,6 +2170,11 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
       break;
     }
     case Rec709LumaPixelIntensityMethod:
+    {
+      intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
+      break;
+    }
+    case Rec709LuminancePixelIntensityMethod:
     {
       if (image->colorspace == sRGBColorspace)
         {
@@ -2174,23 +2187,11 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
     }
     case BrightnessPixelIntensityMethod:
     {
-      if (image->colorspace == sRGBColorspace)
-        {
-          red=DecodePixelGamma(red);
-          green=DecodePixelGamma(green);
-          blue=DecodePixelGamma(blue);
-        }
       intensity=MagickMax(MagickMax(red,green),blue);
       break;
     }
     case LightnessPixelIntensityMethod:
     {
-      if (image->colorspace == sRGBColorspace)
-        {
-          red=DecodePixelGamma(red);
-          green=DecodePixelGamma(green);
-          blue=DecodePixelGamma(blue);
-        }
       intensity=MagickMin(MagickMin(red,green),blue);
       break;
     }

@@ -239,8 +239,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   destination_image=CloneImage(source_image,0,0,MagickTrue,exception);
   if (destination_image == (Image *) NULL)
     return((Image *) NULL);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
   if (expression == (const char *) NULL)
     return(destination_image);
   destination_channel=RedPixelChannel;
@@ -290,8 +288,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             destination_image=DestroyImageList(destination_image);
             return(destination_image);
           }
-        if (IsGrayColorspace(canvas->colorspace) != MagickFalse)
-          (void) TransformImageColorspace(canvas,RGBColorspace,exception);
         AppendImageToList(&destination_image,canvas);
         destination_image=GetLastImageInList(destination_image);
         GetMagickToken(p,&p,token);
@@ -488,8 +484,6 @@ MagickExport Image *CombineImages(const Image *image,
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(combine_image,RGBColorspace,exception);
   if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
     combine_image->alpha_trait=BlendPixelTrait;
   /*

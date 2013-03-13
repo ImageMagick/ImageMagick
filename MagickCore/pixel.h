@@ -91,7 +91,9 @@ typedef enum
   BrightnessPixelIntensityMethod,
   LightnessPixelIntensityMethod,
   Rec601LumaPixelIntensityMethod,
+  Rec601LuminancePixelIntensityMethod,
   Rec709LumaPixelIntensityMethod,
+  Rec709LuminancePixelIntensityMethod,
   RMSPixelIntensityMethod
 } PixelIntensityMethod;
 
