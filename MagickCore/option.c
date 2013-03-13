@@ -1435,7 +1435,9 @@ static const OptionInfo
     { "Brightness", BrightnessPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
     { "Lightness", LightnessPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
     { "Rec601Luma", Rec601LumaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Rec601Luminance", Rec601LuminanceaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
     { "Rec709Luma", Rec709LumaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Rec709Luminance", Rec709LuminanceaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
     { "RMS", RMSPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedPixelIntensityMethod, UndefinedOptionFlag, MagickFalse }
   },

@@ -172,8 +172,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     return(MagickFalse);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace,exception);
   if ((image->alpha_trait != BlendPixelTrait) &&
       (draw_info->fill.alpha_trait == BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
@@ -780,9 +778,6 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsPixelInfoGray(fill) == MagickFalse))
-    (void) TransformImageColorspace(image,RGBColorspace,exception);
   if ((fill->alpha_trait == BlendPixelTrait) &&
       (image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);

@@ -230,9 +230,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       frame_image=DestroyImage(frame_image);
       return((Image *) NULL);
     }
-  if ((IsPixelInfoGray(&frame_image->matte_color) == MagickFalse) &&
-      (IsGrayColorspace(frame_image->colorspace) != MagickFalse))
-    (void) SetImageColorspace(frame_image,RGBColorspace,exception);
   if ((frame_image->matte_color.alpha_trait == BlendPixelTrait) &&
       (frame_image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(frame_image,OpaqueAlpha,exception);
