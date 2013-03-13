@@ -441,8 +441,6 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace);
   /*
     Bilevel threshold image.
   */
@@ -489,28 +487,27 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if ((channel & RedChannel) != 0)
-          SetPixelRed(q,(MagickRealType) GetPixelRed(q) <=
-            threshold ? 0 : QuantumRange);
+          SetPixelRed(q,(MagickRealType) GetPixelRed(q) <= threshold ? 0 :
+            QuantumRange);
         if ((channel & GreenChannel) != 0)
-          SetPixelGreen(q,(MagickRealType) GetPixelGreen(q) <=
-            threshold ? 0 : QuantumRange);
+          SetPixelGreen(q,(MagickRealType) GetPixelGreen(q) <= threshold ? 0 :
+            QuantumRange);
         if ((channel & BlueChannel) != 0)
-          SetPixelBlue(q,(MagickRealType) GetPixelBlue(q) <=
-            threshold ? 0 : QuantumRange);
+          SetPixelBlue(q,(MagickRealType) GetPixelBlue(q) <= threshold ? 0 :
+            QuantumRange);
         if ((channel & OpacityChannel) != 0)
           {
             if (image->matte == MagickFalse)
-              SetPixelOpacity(q,(MagickRealType)
-                GetPixelOpacity(q) <= threshold ? 0 : QuantumRange);
+              SetPixelOpacity(q,(MagickRealType) GetPixelOpacity(q) <=
+                threshold ? 0 : QuantumRange);
             else
-              SetPixelOpacity(q,(MagickRealType)
-                GetPixelOpacity(q) <= threshold ? OpaqueOpacity :
-                TransparentOpacity);
+              SetPixelOpacity(q,(MagickRealType) GetPixelOpacity(q) <=
+                threshold ? OpaqueOpacity : TransparentOpacity);
           }
         if (((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace))
-          SetPixelIndex(indexes+x,(MagickRealType)
-            GetPixelIndex(indexes+x) <= threshold ? 0 : QuantumRange);
+          SetPixelIndex(indexes+x,(MagickRealType) GetPixelIndex(indexes+x) <=
+            threshold ? 0 : QuantumRange);
         q++;
       }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -638,9 +635,6 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
       threshold.index*=(MagickRealType) (QuantumRange/100.0);
     }
   intensity=MagickPixelIntensity(&threshold);
-  if ((IsMagickGray(&threshold) == MagickFalse) &&
-      (IsGrayColorspace(image->colorspace) != MagickFalse))
-    (void) TransformImageColorspace(image,RGBColorspace);
   /*
     Black threshold image.
   */
@@ -2280,9 +2274,6 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
       threshold.index*=(MagickRealType) (QuantumRange/100.0);
     }
   intensity=MagickPixelIntensity(&threshold);
-  if ((IsMagickGray(&threshold) == MagickFalse) &&
-      (IsGrayColorspace(image->colorspace) != MagickFalse))
-    (void) TransformImageColorspace(image,RGBColorspace);
   /*
     White threshold image.
   */
