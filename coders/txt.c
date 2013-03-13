@@ -698,10 +698,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
               {
                 (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
                   &image->exception);
-                (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g",
+                (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g ",
                   (double) x,(double) y);
                 (void) WriteBlobString(image,buffer);
-                (void) WriteBlobString(image," ");
                 (void) WriteBlobString(image,tuple);
                 (void) WriteBlobString(image," ");
               }
