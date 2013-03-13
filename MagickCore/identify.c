@@ -722,8 +722,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     (void) FormatLocaleFile(file,"  Tile geometry: %.20gx%.20g%+.20g%+.20g\n",
       (double) image->extract_info.width,(double) image->extract_info.height,
       (double) image->extract_info.x,(double) image->extract_info.y);
-  (void) FormatLocaleFile(file,"  Interlace: %s\n",CommandOptionToMnemonic(
-    MagickInterlaceOptions,(ssize_t) image->interlace));
   (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
     exception);
   (void) FormatLocaleFile(file,"  Background color: %s\n",color);
@@ -736,6 +734,10 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   (void) QueryColorname(image,&image->transparent_color,SVGCompliance,color,
     exception);
   (void) FormatLocaleFile(file,"  Transparent color: %s\n",color);
+  (void) FormatLocaleFile(file,"  Interlace: %s\n",CommandOptionToMnemonic(
+    MagickInterlaceOptions,(ssize_t) image->interlace));
+  (void) FormatLocaleFile(file,"  Intensity: %s\n",CommandOptionToMnemonic(
+    MagickPixelIntensityOptions,(ssize_t) image->intensity));
   (void) FormatLocaleFile(file,"  Compose: %s\n",CommandOptionToMnemonic(
     MagickComposeOptions,(ssize_t) image->compose));
   if ((image->page.width != 0) || (image->page.height != 0) ||
