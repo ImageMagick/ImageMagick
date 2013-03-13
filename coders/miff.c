@@ -1957,8 +1957,6 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if ((image->storage_class == PseudoClass) &&
         (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
       (void) SetImageStorageClass(image,DirectClass,exception);
-    if (IsImageGray(image,exception) != MagickFalse)
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
     compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
