@@ -155,8 +155,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   if (gravity != (char *) NULL)
     draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
       MagickFalse,gravity);
-  if ((*caption != '\0') && (image->rows != 0) &&
-      (image_info->pointsize == 0.0))
+  if ((*caption != '\0') && (image_info->pointsize == 0.0))
     {
       char
         *text;
@@ -168,6 +167,27 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       /*
         Auto fit text into bounding box.
       */
+      status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+      if (image->rows == 0)
+        {
+          for ( ; ; )
+          {
+            (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+              -metrics.bounds.x1,metrics.ascent);
+            if (draw_info->gravity == UndefinedGravity)
+              (void) CloneString(&draw_info->geometry,geometry);
+            status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+            (void) status;
+            width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
+            height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
+            if (width > image->columns)
+              break;
+            if (width > (image->columns << 1))
+              break;
+            draw_info->pointsize*=2.0;
+          }
+          image->rows=(size_t) floor(height);
+        }
       for ( ; ; draw_info->pointsize*=2.0)
       {
         text=AcquireString(caption);
