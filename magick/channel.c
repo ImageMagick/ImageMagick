@@ -136,8 +136,6 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(combine_image,RGBColorspace);
   if ((channel & OpacityChannel) != 0)
     combine_image->matte=MagickTrue;
   (void) SetImageBackgroundColor(combine_image);
@@ -274,8 +272,6 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       }
   }
   combine_view=DestroyCacheView(combine_view);
-  if (IsGrayColorspace(combine_image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(combine_image,RGBColorspace);
   if (status == MagickFalse)
     combine_image=DestroyImage(combine_image);
   return(combine_image);
