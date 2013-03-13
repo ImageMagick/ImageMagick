@@ -724,7 +724,6 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
                 (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g ",
                   (double) x,(double) y);
                 (void) WriteBlobString(image,buffer);
-                (void) WriteBlobString(image," ");
                 (void) WriteBlobString(image,tuple);
                 (void) WriteBlobString(image," ");
               }
