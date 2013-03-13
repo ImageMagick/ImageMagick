@@ -1880,7 +1880,6 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickIntentOptions: return(IntentOptions);
     case MagickInterlaceOptions: return(InterlaceOptions);
     case MagickInterpolateOptions: return(InterpolateOptions);
-    case MagickPixelIntensityOptions: return(PixelIntensityOptions);
     case MagickKernelOptions: return(KernelOptions);
     case MagickLayerOptions: return(LayerOptions);
     case MagickLineCapOptions: return(LineCapOptions);
