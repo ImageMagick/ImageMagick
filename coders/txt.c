@@ -683,9 +683,6 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
       indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g",(double)
-          x,(double) y);
-        (void) WriteBlobString(image,buffer);
         SetMagickPixelPacket(image,p,indexes+x,&pixel);
         if (pixel.colorspace == LabColorspace)
           {
@@ -701,6 +698,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
               {
                 (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
                   &image->exception);
+                (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g",
+                  (double) x,(double) y);
+                (void) WriteBlobString(image,buffer);
                 (void) WriteBlobString(image," ");
                 (void) WriteBlobString(image,tuple);
                 (void) WriteBlobString(image," ");
@@ -708,7 +708,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
             p++;
             continue;
           }
-        (void) WriteBlobString(image,": ");
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
+          x,(double) y);
+        (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
         ConcatenateColorComponent(&pixel,RedChannel,X11Compliance,tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
