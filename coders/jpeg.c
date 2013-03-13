@@ -2107,8 +2107,6 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       break;
     }
     case GRAYColorspace:
-    case Rec601LumaColorspace:
-    case Rec709LumaColorspace:
     {
       jpeg_info.input_components=1;
       jpeg_info.in_color_space=JCS_GRAYSCALE;
@@ -2493,8 +2491,6 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           break;
         }
         case GRAYColorspace:
-        case Rec601LumaColorspace:
-        case Rec709LumaColorspace:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: GRAY");

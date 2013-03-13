@@ -1262,30 +1262,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       }
       break;
     }
-    case Rec601LumaColorspace:
-    {
-      /*
-        Initialize Rec601 luma tables:
-
-          G = 0.298839*R+0.586811*G+0.114350*B
-      */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4)
-#endif
-      for (i=0; i <= (ssize_t) MaxMap; i++)
-      {
-        x_map[i].x=(MagickRealType) (0.298839f*(float) i);
-        y_map[i].x=(MagickRealType) (0.586811f*(float) i);
-        z_map[i].x=(MagickRealType) (0.114350f*(float) i);
-        x_map[i].y=(MagickRealType) (0.298839f*(float) i);
-        y_map[i].y=(MagickRealType) (0.586811f*(float) i);
-        z_map[i].y=(MagickRealType) (0.114350f*(float) i);
-        x_map[i].z=(MagickRealType) (0.298839f*(float) i);
-        y_map[i].z=(MagickRealType) (0.586811f*(float) i);
-        z_map[i].z=(MagickRealType) (0.114350f*(float) i);
-      }
-      break;
-    }
     case Rec601YCbCrColorspace:
     case YCbCrColorspace:
     {
@@ -1316,30 +1292,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         x_map[i].z=(MagickRealType) (0.500000f*(float) i);
         y_map[i].z=(MagickRealType) (-0.418688f*(float) i);
         z_map[i].z=(MagickRealType) (-0.081312f*(float) i);
-      }
-      break;
-    }
-    case Rec709LumaColorspace:
-    {
-      /*
-        Initialize Rec709 luma tables:
-
-          G = 0.21260*R+0.71520*G+0.07220*B
-      */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4)
-#endif
-      for (i=0; i <= (ssize_t) MaxMap; i++)
-      {
-        x_map[i].x=(MagickRealType) (0.21260f*(float) i);
-        y_map[i].x=(MagickRealType) (0.71520f*(float) i);
-        z_map[i].x=(MagickRealType) (0.07220f*(float) i);
-        x_map[i].y=(MagickRealType) (0.21260f*(float) i);
-        y_map[i].y=(MagickRealType) (0.71520f*(float) i);
-        z_map[i].y=(MagickRealType) (0.07220f*(float) i);
-        x_map[i].z=(MagickRealType) (0.21260f*(float) i);
-        y_map[i].z=(MagickRealType) (0.71520f*(float) i);
-        z_map[i].z=(MagickRealType) (0.07220f*(float) i);
       }
       break;
     }
@@ -2319,8 +2271,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       return(status);
     }
     case GRAYColorspace:
-    case Rec601LumaColorspace:
-    case Rec709LumaColorspace:
     {
       /*
         Transform linear GRAY to sRGB colorspace.
