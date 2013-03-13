@@ -166,8 +166,6 @@ namespace Magick
   using MagickCore::HWBColorspace;
   using MagickCore::LogColorspace;
   using MagickCore::OHTAColorspace;
-  using MagickCore::Rec601LumaColorspace;
-  using MagickCore::Rec709LumaColorspace;
   using MagickCore::RGBColorspace;
   using MagickCore::sRGBColorspace;
   using MagickCore::TransparentColorspace;
