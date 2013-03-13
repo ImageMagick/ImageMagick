@@ -174,7 +174,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace,exception);
-  if ((image->alpha_trait != BlendPixelTrait) && (draw_info->fill.alpha_trait == BlendPixelTrait))
+  if ((image->alpha_trait != BlendPixelTrait) &&
+      (draw_info->fill.alpha_trait == BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Set floodfill state.
@@ -577,8 +578,6 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         linear_image=DestroyImage(paint_image);
       return((Image *) NULL);
     }
-  if (image->colorspace == sRGBColorspace)
-    (void) TransformImageColorspace(linear_image,sRGBColorspace,exception);
   if (SetImageStorageClass(paint_image,DirectClass,exception) == MagickFalse)
     {
       linear_image=DestroyImage(linear_image);
@@ -708,8 +707,6 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   image_view=DestroyCacheView(image_view);
   histograms=DestroyHistogramThreadSet(histograms);
   linear_image=DestroyImage(linear_image);
-  if (image->colorspace == sRGBColorspace)
-    (void) TransformImageColorspace(paint_image,sRGBColorspace,exception);
   if (status == MagickFalse)
     paint_image=DestroyImage(paint_image);
   return(paint_image);
@@ -786,7 +783,8 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelInfoGray(fill) == MagickFalse))
     (void) TransformImageColorspace(image,RGBColorspace,exception);
-  if ((fill->alpha_trait == BlendPixelTrait) && (image->alpha_trait != BlendPixelTrait))
+  if ((fill->alpha_trait == BlendPixelTrait) &&
+      (image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Make image color opaque.

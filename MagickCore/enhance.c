@@ -998,9 +998,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   CacheView
     *image_view;
 
-  ColorspaceType
-    colorspace;
-
   MagickBooleanType
     status;
 
@@ -1052,9 +1049,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   /*
     Form histogram.
   */
-  colorspace=image->colorspace;
-  if (colorspace == sRGBColorspace)
-    (void) SetImageColorspace(image,RGBColorspace,exception);
   status=MagickTrue;
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
@@ -1254,8 +1248,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
           status=MagickFalse;
       }
   }
-  if (colorspace == sRGBColorspace)
-    (void) SetImageColorspace(image,sRGBColorspace,exception);
   image_view=DestroyCacheView(image_view);
   stretch_map=(double *) RelinquishMagickMemory(stretch_map);
   white=(double *) RelinquishMagickMemory(white);

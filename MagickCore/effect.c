@@ -2978,8 +2978,6 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
         shade_image=DestroyImage(shade_image);
       return((Image *) NULL);
     }
-  if (image->colorspace == sRGBColorspace)
-    (void) TransformImageColorspace(linear_image,RGBColorspace,exception);
   if (SetImageStorageClass(shade_image,DirectClass,exception) == MagickFalse)
     {
       linear_image=DestroyImage(linear_image);
@@ -3133,8 +3131,6 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   shade_view=DestroyCacheView(shade_view);
   image_view=DestroyCacheView(image_view);
   linear_image=DestroyImage(linear_image);
-  if (image->colorspace == sRGBColorspace)
-    (void) TransformImageColorspace(shade_image,sRGBColorspace,exception);
   if (status == MagickFalse)
     shade_image=DestroyImage(shade_image);
   return(shade_image);
