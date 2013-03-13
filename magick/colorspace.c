@@ -382,7 +382,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       return(status);
     }
     case GRAYColorspace:
-    case Rec601LumaColorspace:
     {
       /*
         Transform image from sRGB to GRAY.
@@ -421,17 +420,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          double
-            blue,
-            gray,
-            green,
-            red;
-
-          red=DecodePixelGamma((MagickRealType) GetPixelRed(q));
-          green=DecodePixelGamma((MagickRealType) GetPixelGreen(q));
-          blue=DecodePixelGamma((MagickRealType) GetPixelBlue(q));
-          gray=0.298839f*red+0.586811f*green+0.114350f*blue;
-          SetPixelGray(q,ClampToQuantum(gray));
+          SetPixelGray(q,ClampToQuantum(GetPixelIntensity(image,q)));
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -1144,73 +1133,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         return(MagickFalse);
       return(status);
     }
-    case Rec709LumaColorspace:
-    {
-      /*
-        Transform image from sRGB to Rec709Luma.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register PixelPacket
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (PixelPacket *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            gray;
-
-          Quantum
-            blue,
-            green,
-            red;
-
-          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
-            GetPixelRed(q)));
-          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
-            GetPixelGreen(q)));
-          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
-            GetPixelBlue(q)));
-          gray=0.212600f*red+0.715200f*green+0.072200f*blue;
-          SetPixelGray(q,ClampToQuantum(gray));
-          q++;
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,colorspace) == MagickFalse)
-        return(MagickFalse);
-      image->type=GrayscaleType;
-      return(status);
-    }
     case RGBColorspace:
     {
       /*
@@ -1394,6 +1316,30 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         x_map[i].z=(MagickRealType) (-0.25000f*(float) i);
         y_map[i].z=(MagickRealType) (0.50000f*(float) i);
         z_map[i].z=(MagickRealType) (-0.25000f*(float) i);
+      }
+      break;
+    }
+    case Rec601LumaColorspace:
+    {
+      /*
+        Initialize Rec601 luma tables:
+
+          G = 0.298839*R+0.586811*G+0.114350*B
+      */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4)
+#endif
+      for (i=0; i <= (ssize_t) MaxMap; i++)
+      {
+        x_map[i].x=(MagickRealType) (0.298839f*(float) i);
+        y_map[i].x=(MagickRealType) (0.586811f*(float) i);
+        z_map[i].x=(MagickRealType) (0.114350f*(float) i);
+        x_map[i].y=(MagickRealType) (0.298839f*(float) i);
+        y_map[i].y=(MagickRealType) (0.586811f*(float) i);
+        z_map[i].y=(MagickRealType) (0.114350f*(float) i);
+        x_map[i].z=(MagickRealType) (0.298839f*(float) i);
+        y_map[i].z=(MagickRealType) (0.586811f*(float) i);
+        z_map[i].z=(MagickRealType) (0.114350f*(float) i);
       }
       break;
     }
