@@ -602,8 +602,6 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         linear_image=DestroyImage(paint_image);
       return((Image *) NULL);
     }
-  if (image->colorspace == sRGBColorspace)
-    (void) TransformImageColorspace(linear_image,RGBColorspace);
   if (SetImageStorageClass(paint_image,DirectClass) == MagickFalse)
     {
       InheritException(exception,&paint_image->exception);
@@ -724,8 +722,6 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   image_view=DestroyCacheView(image_view);
   histograms=DestroyHistogramThreadSet(histograms);
   linear_image=DestroyImage(linear_image);
-  if (image->colorspace == sRGBColorspace)
-    (void) TransformImageColorspace(paint_image,sRGBColorspace);
   if (status == MagickFalse)
     paint_image=DestroyImage(paint_image);
   return(paint_image);

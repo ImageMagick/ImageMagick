@@ -1129,7 +1129,6 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
     *exception;
 
   MagickBooleanType
-    linear,
     status;
 
   MagickOffsetType
@@ -1167,12 +1166,6 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   /*
     Form histogram.
   */
-  linear=MagickFalse;
-  if (image->colorspace == sRGBColorspace)
-    {
-      linear=MagickTrue;
-      (void) TransformImageColorspace(image,RGBColorspace);
-    }
   status=MagickTrue;
   exception=(&image->exception);
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
@@ -1525,8 +1518,6 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   stretch_map=(QuantumPixelPacket *) RelinquishMagickMemory(stretch_map);
-  if (linear != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
   return(status);
 }
 
@@ -1770,7 +1761,6 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     *exception;
 
   MagickBooleanType
-    linear,
     status;
 
   MagickOffsetType
@@ -1821,12 +1811,6 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   /*
     Form histogram.
   */
-  linear=MagickFalse;
-  if (image->colorspace == sRGBColorspace)
-    {
-      linear=MagickTrue;
-      (void) TransformImageColorspace(image,RGBColorspace);
-    }
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
   exception=(&image->exception);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -2051,8 +2035,6 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   equalize_map=(QuantumPixelPacket *) RelinquishMagickMemory(equalize_map);
-  if (linear != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
   return(status);
 }
 
