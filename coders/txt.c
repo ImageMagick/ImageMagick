@@ -706,9 +706,6 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g ",(double)
-          x,(double) y);
-        (void) WriteBlobString(image,buffer);
         GetPixelInfoPixel(image,p,&pixel);
         if (pixel.colorspace == LabColorspace)
           {
@@ -722,7 +719,11 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             */
             if (GetPixelAlpha(image,p) == (Quantum) OpaqueAlpha)
               {
-                (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);
+                (void) QueryColorname(image,&pixel,SVGCompliance,tuple,
+                  exception);
+                (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g ",
+                  (double) x,(double) y);
+                (void) WriteBlobString(image,buffer);
                 (void) WriteBlobString(image," ");
                 (void) WriteBlobString(image,tuple);
                 (void) WriteBlobString(image," ");
@@ -730,7 +731,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             p+=GetPixelChannels(image);
             continue;
           }
-        (void) WriteBlobString(image,": ");
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
+          x,(double) y);
+        (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
         if (pixel.colorspace == GRAYColorspace)
           ConcatenateColorComponent(&pixel,GrayPixelChannel,X11Compliance,
