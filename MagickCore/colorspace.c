@@ -3182,15 +3182,15 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.99999999999914679361*i;
-        y_map[i].x=(1.2188941887145875e-06)*i;
-        z_map[i].x=0.5f*1.4019995886561440468*(2.00f*i-MaxMap);
-        x_map[i].y=0.99999975910502514331*i;
-        y_map[i].y=0.5f*(-0.34413567816504303521)*(2.00f*i-MaxMap);
-        z_map[i].y=0.5f*(-0.71413649331646789076)*(2.00f*i-MaxMap);
-        x_map[i].z=1.00000124040004623180*i;
-        y_map[i].z=0.5f*1.77200006607230409200*(2.00f*i-MaxMap);
-        z_map[i].z=2.1453384174593273e-06*i;
+        x_map[i].x=0.99999999999914679361f*(float) i;
+        y_map[i].x=(1.2188941887145875e-06f)*(float) i;
+        z_map[i].x=0.5f*1.4019995886561440468f*(2.00f*(float) i-MaxMap);
+        x_map[i].y=0.99999975910502514331f*(float) i;
+        y_map[i].y=0.5f*(-0.34413567816504303521f)*(2.00f*(float) i-MaxMap);
+        z_map[i].y=0.5f*(-0.71413649331646789076f)*(2.00f*(float) i-MaxMap);
+        x_map[i].z=1.00000124040004623180f*(float) i;
+        y_map[i].z=0.5f*1.77200006607230409200f*(2.00f*(float) i-MaxMap);
+        z_map[i].z=2.1453384174593273e-06f*(float) i;
       }
       break;
     }
@@ -3275,15 +3275,15 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=1.0f*i;
-        y_map[i].x=0.5f*0.9562957197589482261*(2.00000f*i-MaxMap);
-        z_map[i].x=0.5f*0.6210244164652610754*(2.00000f*i-MaxMap);
-        x_map[i].y=1.0f*i;
-        y_map[i].y=0.5f*(-0.2721220993185104464)*(2.00000f*i-MaxMap);
-        z_map[i].y=0.5f*(-0.6473805968256950427)*(2.00000f*i-MaxMap);
-        x_map[i].z=1.0f*i;
-        y_map[i].z=0.5f*(-1.1069890167364901945)*(2.00000f*i-MaxMap);
-        z_map[i].z=0.5f*1.7046149983646481374*(2.00000f*i-MaxMap);
+        x_map[i].x=1.0f*(float) i;
+        y_map[i].x=0.5f*0.9562957197589482261f*(2.00000f*(float) i-MaxMap);
+        z_map[i].x=0.5f*0.6210244164652610754f*(2.00000f*(float) i-MaxMap);
+        x_map[i].y=1.0f*(float) i;
+        y_map[i].y=0.5f*(-0.2721220993185104464f)*(2.00000f*(float) i-MaxMap);
+        z_map[i].y=0.5f*(-0.6473805968256950427f)*(2.00000f*(float) i-MaxMap);
+        x_map[i].z=1.0f*(float) i;
+        y_map[i].z=0.5f*(-1.1069890167364901945f)*(2.00000f*(float) i-MaxMap);
+        z_map[i].z=0.5f*1.7046149983646481374f*(2.00000f*(float) i-MaxMap);
       }
       break;
     }
@@ -3305,15 +3305,15 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.99999999999914679361*i;
-        y_map[i].x=(-1.2188941887145875e-06)*(2.0f*i-MaxMap);
-        z_map[i].x=0.5f*1.4019995886561440468*(2.0f*i-MaxMap);
-        x_map[i].y=0.99999975910502514331*i;
-        y_map[i].y=0.5f*(-0.34413567816504303521)*(2.0f*i-MaxMap);
-        z_map[i].y=0.5f*(-0.71413649331646789076)*(2.0f*i-MaxMap);
-        x_map[i].z=1.00000124040004623180*i;
-        y_map[i].z=0.5f*1.77200006607230409200*(2.0f*i-MaxMap);
-        z_map[i].z=2.1453384174593273e-06*(2.0f*i-MaxMap);
+        x_map[i].x=0.99999999999914679361f*(float) i;
+        y_map[i].x=(-1.2188941887145875e-06f)*(2.0f*(float) i-MaxMap);
+        z_map[i].x=0.5f*1.4019995886561440468f*(2.0f*(float) i-MaxMap);
+        x_map[i].y=0.99999975910502514331f*(float) i;
+        y_map[i].y=0.5f*(-0.34413567816504303521f)*(2.0f*(float) i-MaxMap);
+        z_map[i].y=0.5f*(-0.71413649331646789076f)*(2.0f*(float) i-MaxMap);
+        x_map[i].z=1.00000124040004623180f*(float) i;
+        y_map[i].z=0.5f*1.77200006607230409200f*(2.0f*(float) i-MaxMap);
+        z_map[i].z=2.1453384174593273e-06f*(2.0f*(float) i-MaxMap);
       }
       break;
     }
@@ -3335,15 +3335,15 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=1.0f*i;
-        y_map[i].x=(-3.945707070708279e-05)*(2.0f*i-MaxMap);
-        z_map[i].x=0.5f*1.1398279671717170825*(2.0f*i-MaxMap);
-        x_map[i].y=1.0f*i;
-        y_map[i].y=0.5f*(-0.3946101641414141437)*(2.0f*i-MaxMap);
-        z_map[i].y=0.5f*(-0.5805003156565656797)*(2.0f*i-MaxMap);
-        x_map[i].z=1.0f*i;
-        y_map[i].z=0.5f*2.0319996843434342537*(2.0f*i-MaxMap);
-        z_map[i].z=(-4.813762626262513e-04)*(2.0f*i-MaxMap);
+        x_map[i].x=1.0f*(float) i;
+        y_map[i].x=(-3.945707070708279e-05f)*(2.0f*(float) i-MaxMap);
+        z_map[i].x=0.5f*1.1398279671717170825f*(2.0f*(float) i-MaxMap);
+        x_map[i].y=1.0f*(float) i;
+        y_map[i].y=0.5f*(-0.3946101641414141437f)*(2.0f*(float) i-MaxMap);
+        z_map[i].y=0.5f*(-0.5805003156565656797f)*(2.0f*(float) i-MaxMap);
+        x_map[i].z=1.0f*(float) i;
+        y_map[i].z=0.5f*2.0319996843434342537f*(2.0f*(float) i-MaxMap);
+        z_map[i].z=(-4.813762626262513e-04)*(2.0f*(float) i-MaxMap);
       }
       break;
     }
