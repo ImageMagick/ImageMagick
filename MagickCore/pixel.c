@@ -2207,7 +2207,6 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
   }
   return(intensity);
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
