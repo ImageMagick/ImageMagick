@@ -130,7 +130,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   label=GetImageProperty(image,"label",exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=ConstantString(label);
-  if ((*draw_info->text != '\0') && (image_info->pointsize == 0.0))
+  if ((*label != '\0') && (image->rows != 0) && (image_info->pointsize == 0.0))
     {
       double
         high,
@@ -140,27 +140,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         Auto fit text into bounding box.
       */
       status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-      if (image->rows == 0)
-        {
-          for ( ; ; )
-          {
-            (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-              -metrics.bounds.x1,metrics.ascent);
-            if (draw_info->gravity == UndefinedGravity)
-              (void) CloneString(&draw_info->geometry,geometry);
-            status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-            (void) status;
-            width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-            height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-            if (width > image->columns)
-              break;
-            if (width > (image->columns << 1))
-              break;
-            draw_info->pointsize*=2.0;
-          }
-          image->rows=(size_t) floor(height);
-        }
-      for ( ; ; )
+      for ( ; ; draw_info->pointsize*=2.0)
       {
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           -metrics.bounds.x1,metrics.ascent);
@@ -174,7 +154,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           break;
         if ((width > (image->columns << 1)) || (height > (image->rows << 1)))
           break;
-        draw_info->pointsize*=2.0;
       }
       high=draw_info->pointsize/2.0;
       low=high/2.0;
@@ -193,7 +172,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         else
           high=draw_info->pointsize-1.0;
       }
-      for (draw_info->pointsize=(low+high)/2.0; ; )
+      for (draw_info->pointsize=(low+high)/2.0; (high-low) > 1.0; )
       {
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           -metrics.bounds.x1,metrics.ascent);
@@ -206,7 +185,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           break;
         draw_info->pointsize--;
       }
-      draw_info->pointsize=floor(draw_info->pointsize);
+      draw_info->pointsize=floor(draw_info->pointsize+0.5);
     }
   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
