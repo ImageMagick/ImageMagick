@@ -137,7 +137,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         -metrics.bounds.x1,metrics.ascent);
       if (draw_info->gravity == UndefinedGravity)
         (void) CloneString(&draw_info->geometry,geometry);
-      status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+      status=GetMultilineTypeMetrics(image,draw_info,&metrics);
       (void) status;
       image->columns=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
     }
@@ -147,7 +147,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         -metrics.bounds.x1,metrics.ascent);
       if (draw_info->gravity == UndefinedGravity)
         (void) CloneString(&draw_info->geometry,geometry);
-      status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+      status=GetMultilineTypeMetrics(image,draw_info,&metrics);
       image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
     }
   if (image_info->pointsize == 0.0)
