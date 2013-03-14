@@ -199,9 +199,6 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     }
   if (image_info->pointsize == 0.0)
     {
-      char
-        *text;
-
       double
         high,
         low;
