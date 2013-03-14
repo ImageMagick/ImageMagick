@@ -130,7 +130,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   label=GetImageProperty(image,"label");
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=ConstantString(label);
-  if (((image->columns != 0) || (image->rows != 0)) &&
+  if ((image->columns == 0) || (image->rows == 0) ||
       (image_info->pointsize == 0.0))
     {
       double
