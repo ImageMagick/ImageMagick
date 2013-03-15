@@ -1618,6 +1618,8 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
 
     if (status == MagickFalse)
       continue;
+    if (*similarity_metric <= similarity_threshold)
+      continue;
     q=GetCacheViewAuthenticPixels(similarity_view,0,y,similarity_image->columns,
       1,exception);
     if (q == (Quantum *) NULL)
@@ -1630,15 +1632,17 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       register ssize_t
         i;
 
+      if (*similarity_metric <= similarity_threshold)
+        break;
       similarity=GetSimilarityMetric(image,reference,metric,x,y,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp critical (MagickCore_SimilarityImage)
 #endif
       if (similarity < *similarity_metric)
         {
-          *similarity_metric=similarity;
           offset->x=x;
           offset->y=y;
+          *similarity_metric=similarity;
         }
       if (GetPixelMask(similarity_image,q) != 0)
         {
