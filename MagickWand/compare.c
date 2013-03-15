@@ -175,6 +175,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define DefaultDissimilarityThreshold  0.31830988618379067154
+#define DefaultSimilarityThreshold  0.0
 #define DestroyCompare() \
 { \
   if (similarity_image != (Image *) NULL) \
@@ -268,6 +269,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   difference_image=NewImageList();
   similarity_image=NewImageList();
   dissimilarity_threshold=DefaultDissimilarityThreshold;
+  similarity_threshold=DefaultSimilarityThreshold;
   distortion=0.0;
   format=(char *) NULL;
   j=1;
@@ -814,6 +816,21 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("similarity-threshold",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
+            if (*option == '+')
+              similarity_threshold=DefaultSimilarityThreshold;
+            else
+              similarity_threshold=StringToDouble(argv[i],(char **) NULL);
+            break;
+          }
         if (LocaleCompare("size",option+1) == 0)
           {
             if (*option == '+')
@@ -922,8 +939,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   reconstruct_image=GetImageFromList(image,1);
   if (subimage_search != MagickFalse)
     {
-      similarity_image=SimilarityImage(image,reconstruct_image,metric,&offset,
-        &similarity_metric,exception);
+      similarity_image=SimilarityImage(image,reconstruct_image,metric,
+        similarity_threshold,&offset,&similarity_metric,exception);
       if (similarity_metric > dissimilarity_threshold)
         ThrowCompareException(ImageError,"ImagesTooDissimilar",image->filename);
     }

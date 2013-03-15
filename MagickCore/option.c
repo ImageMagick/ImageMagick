@@ -651,6 +651,8 @@ static const OptionInfo
     { "-sigmoidal-contrast", 1L, SimpleOperatorFlag, MagickFalse },
     { "+silent", 0L, NonMagickOptionFlag, MagickFalse },
     { "-silent", 1L, NonMagickOptionFlag, MagickFalse },
+    { "+similarity-threshold", 0L, NonMagickOptionFlag | ImageInfoOptionFlag, MagickFalse },
+    { "-similarity-threshold", 1L, NonMagickOptionFlag | ImageInfoOptionFlag, MagickFalse },
     { "+size", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-size", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+sketch", 1L, DeprecateOptionFlag, MagickTrue },
