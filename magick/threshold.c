@@ -441,6 +441,8 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace);
   /*
     Bilevel threshold image.
   */
@@ -635,6 +637,9 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
       threshold.index*=(MagickRealType) (QuantumRange/100.0);
     }
   intensity=MagickPixelIntensity(&threshold);
+  if ((IsMagickGray(&threshold) == MagickFalse) &&
+      (IsGrayColorspace(image->colorspace) != MagickFalse))
+    (void) TransformImageColorspace(image,sRGBColorspace);
   /*
     Black threshold image.
   */
