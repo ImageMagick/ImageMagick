@@ -10739,7 +10739,8 @@ WandExport MagickBooleanType MagickSigmoidalContrastImage(
 %
 %      MagickWand *MagickSimilarityImage(MagickWand *wand,
 %        const MagickWand *reference,const MetricType metric,
-%        RectangeInfo *offset,double *similarity)
+%        const double similarity_threshold,RectangeInfo *offset,
+%        double *similarity)
 %
 %  A description of each parameter follows:
 %
@@ -10749,14 +10750,16 @@ WandExport MagickBooleanType MagickSigmoidalContrastImage(
 %
 %    o metric: the metric.
 %
+%    o similarity_threshold: minimum distortion for (sub)image match.
+%
 %    o offset: the best match offset of the reference image within the image.
 %
 %    o similarity: the computed similarity between the images.
 %
 */
 WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
-  const MagickWand *reference,const MetricType metric,RectangleInfo *offset,
-  double *similarity)
+  const MagickWand *reference,const MetricType metric,
+  const double similarity_threshold,RectangleInfo *offset,double *similarity)
 {
   Image
     *similarity_image;
@@ -10771,8 +10774,8 @@ WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
         "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
-  similarity_image=SimilarityImage(wand->images,reference->images,metric,offset,
-    similarity,wand->exception);
+  similarity_image=SimilarityImage(wand->images,reference->images,metric,
+    similarity_threshold,offset,similarity,wand->exception);
   if (similarity_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandFromImages(wand,similarity_image));

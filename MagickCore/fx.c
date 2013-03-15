@@ -701,7 +701,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
       return((Image *) NULL);
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsPixelGray(&colorize) != MagickFalse))
+      (IsPixelInfoGray(colorize) != MagickFalse))
     (void) SetImageColorspace(colorize_image,sRGBColorspace,exception);
   if ((colorize_image->alpha_trait != BlendPixelTrait) &&
       (colorize->alpha_trait == BlendPixelTrait))
@@ -5247,7 +5247,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       return((Image *) NULL);
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsPixelGray(&tint) == MagickFalse))
+      (IsPixelInfoGray(tint) == MagickFalse))
     (void) SetImageColorspace(tint_image,sRGBColorspace,exception);
   if (blend == (const char *) NULL)
     return(tint_image);
