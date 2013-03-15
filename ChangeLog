@@ -7,6 +7,8 @@
     -sparse-color option (e.g. -define txt:sparse-color=true txt:-).
   * Support -intensity option: method to generate an intensity value from a
     pixel.
+  * Add -similarity-threshold option to the compare utility, the minimum
+    distortion for a (sub)image match.
 
 2013-03-10  6.8.3-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-9, SVN revision 11294.

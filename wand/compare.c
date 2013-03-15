@@ -175,6 +175,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define DefaultDissimilarityThreshold  0.31830988618379067154
+#define DefaultSimilarityThreshold  0.0
 #define DestroyCompare() \
 { \
   if (similarity_image != (Image *) NULL) \
@@ -215,7 +216,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   double
     dissimilarity_threshold,
     distortion,
-    similarity_metric;
+    similarity_metric,
+    similarity_threshold;
 
   Image
     *difference_image,
@@ -272,6 +274,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   difference_image=NewImageList();
   similarity_image=NewImageList();
   dissimilarity_threshold=DefaultDissimilarityThreshold;
+  similarity_threshold=DefaultSimilarityThreshold;
   distortion=0.0;
   format=(char *) NULL;
   j=1;
@@ -829,6 +832,21 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("similarity-threshold",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
+            if (*option == '+')
+              similarity_threshold=DefaultSimilarityThreshold;
+            else
+              similarity_threshold=StringToDouble(argv[i],(char **) NULL);
+            break;
+          }
         if (LocaleCompare("size",option+1) == 0)
           {
             if (*option == '+')
@@ -937,6 +955,12 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   reconstruct_image=GetImageFromList(image,1);
   if (subimage_search != MagickFalse)
     {
+      char
+        artifact[MaxTextExtent];
+
+      (void) FormatLocaleString(artifact,MaxTextExtent,"%g",
+        similarity_threshold);
+      (void) SetImageArtifact(image,"compare:similarity-threshold",artifact);
       similarity_image=SimilarityMetricImage(image,reconstruct_image,metric,
         &offset,&similarity_metric,exception);
       if (similarity_metric > dissimilarity_threshold)
