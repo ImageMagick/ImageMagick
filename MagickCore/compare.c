@@ -1499,8 +1499,8 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
 %  The format of the SimilarityImageImage method is:
 %
 %      Image *SimilarityImage(const Image *image,const Image *reference,
-%        const MetricType metric,RectangleInfo *offset,double *similarity,
-%        ExceptionInfo *exception)
+%        const MetricType metric,const double similarity_threshold,
+%        RectangleInfo *offset,double *similarity,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1510,7 +1510,9 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
 %
 %    o metric: the metric.
 %
-%    o the best match offset of the reference image within the image.
+%    o similarity_threshold: minimum distortion for (sub)image match.
+%
+%    o offset: the best match offset of the reference image within the image.
 %
 %    o similarity: the computed similarity between the images.
 %
@@ -1550,8 +1552,8 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
 }
 
 MagickExport Image *SimilarityImage(Image *image,const Image *reference,
-  const MetricType metric,RectangleInfo *offset,double *similarity_metric,
-  ExceptionInfo *exception)
+  const MetricType metric,const double similarity_threshold,
+  RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
 #define SimilarityImageTag  "Similarity/Image"
 
