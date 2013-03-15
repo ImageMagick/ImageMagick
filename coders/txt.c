@@ -693,11 +693,14 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->alpha_trait == BlendPixelTrait)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
-    (void) FormatLocaleString(buffer,MaxTextExtent,
-      "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
-      image->columns,(double) image->rows,(double)
-      GetQuantumRange(image->depth),colorspace);
-    (void) WriteBlobString(image,buffer);
+    if (sparse_color == MagickFalse)
+      {
+        (void) FormatLocaleString(buffer,MaxTextExtent,
+          "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
+          image->columns,(double) image->rows,(double)
+          GetQuantumRange(image->depth),colorspace);
+        (void) WriteBlobString(image,buffer);
+      }
     GetPixelInfo(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -721,7 +724,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
               {
                 (void) QueryColorname(image,&pixel,SVGCompliance,tuple,
                   exception);
-                (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g ",
+                (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g,",
                   (double) x,(double) y);
                 (void) WriteBlobString(image,buffer);
                 (void) WriteBlobString(image,tuple);
