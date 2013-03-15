@@ -136,6 +136,8 @@ static MagickBooleanType CompareUsage(void)
       "-seed value          seed a new sequence of pseudo-random numbers",
       "-set attribute value set an image attribute",
       "-quality value       JPEG/MIFF/PNG compression level",
+      "-similarity-threshold value",
+      "                     minimum distortion for (sub)image match",
       "-size geometry       width and height of image",
       "-subimage-search     search for subimage",
       "-transparent-color color",
