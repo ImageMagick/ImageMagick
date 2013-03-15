@@ -2028,6 +2028,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   Image
     *image;
 
+  char
+    im_vers[MaxTextExtent],
+    libpng_vers[MaxTextExtent],
+    zlib_vers[MaxTextExtent];
+
   int
     intent, /* "PNG Rendering intent", which is ICC intent + 1 */
     num_raw_profiles,
@@ -2133,6 +2138,30 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
     "  Enter ReadOnePNGImage()");
+
+  /* Define these outside of the following "if logging()" block so they will
+   * show in debuggers.
+   */
+  *im_vers='\0';
+  (void) ConcatenateMagickString(im_vers,
+         MagickLibVersionText,MaxTextExtent);
+  (void) ConcatenateMagickString(im_vers,
+         MagickLibAddendum,MaxTextExtent);
+  *libpng_vers='\0';
+  (void) ConcatenateMagickString(libpng_vers,
+         PNG_LIBPNG_VER_STRING,MaxTextExtent);
+  *zlib_vers='\0';
+  (void) ConcatenateMagickString(zlib_vers,
+         zlib_version,MaxTextExtent);
+  if (logging)
+    {
+       LogMagickEvent(CoderEvent,GetMagickModule(),"    IM version     = %s",
+           im_vers);
+       LogMagickEvent(CoderEvent,GetMagickModule(),"    Libpng version = %s",
+           libpng_vers);
+       LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
+           zlib_vers);
+    }
 
 #if (PNG_LIBPNG_VER < 10200)
   if (image_info->verbose)
@@ -7791,6 +7820,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   unsigned char
     *volatile ping_pixels;
 
+  char
+    im_vers[MaxTextExtent],
+    libpng_vers[MaxTextExtent],
+    zlib_vers[MaxTextExtent];
+
   volatile int
     image_colors,
     ping_bit_depth,
@@ -7828,6 +7862,30 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
   if (image_info == (ImageInfo *) NULL)
      ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
+
+  /* Define these outside of the following "if logging()" block so they will
+   * show in debuggers.
+   */
+  *im_vers='\0';
+  (void) ConcatenateMagickString(im_vers,
+         MagickLibVersionText,MaxTextExtent);
+  (void) ConcatenateMagickString(im_vers,
+         MagickLibAddendum,MaxTextExtent);
+  *libpng_vers='\0';
+  (void) ConcatenateMagickString(libpng_vers,
+         PNG_LIBPNG_VER_STRING,MaxTextExtent);
+  *zlib_vers='\0';
+  (void) ConcatenateMagickString(zlib_vers,
+         zlib_version,MaxTextExtent);
+  if (logging)
+    {
+       LogMagickEvent(CoderEvent,GetMagickModule(),"    IM version     = %s",
+           im_vers);
+       LogMagickEvent(CoderEvent,GetMagickModule(),"    Libpng version = %s",
+           libpng_vers);
+       LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
+           zlib_vers);
+    }
 
   /* Initialize some stuff */
   ping_bit_depth=0,
