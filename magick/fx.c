@@ -320,6 +320,8 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
       noise_image=DestroyImage(noise_image);
       return((Image *) NULL);
     }
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(noise_image,RGBColorspace);
   /*
     Add noise in each row.
   */
@@ -731,6 +733,9 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       colorize_image=DestroyImage(colorize_image);
       return((Image *) NULL);
     }
+ if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsPixelGray(&colorize) != MagickFalse))
+    (void) SetImageColorspace(colorize_image,sRGBColorspace);
   if ((colorize_image->matte == MagickFalse) &&
       (colorize.opacity != OpaqueOpacity))
     (void) SetImageAlphaChannel(colorize_image,OpaqueAlphaChannel);
@@ -4262,6 +4267,8 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(clone_image,sRGBColorspace);
   (void) SetImageVirtualPixelMethod(clone_image,EdgeVirtualPixelMethod);
   clone_image->compose=OverCompositeOp;
   border_info.width=(size_t) floor(2.0*sigma+0.5);
@@ -4576,6 +4583,8 @@ MagickExport MagickBooleanType SolarizeImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace);
   if (image->storage_class == PseudoClass)
     {
       register ssize_t
@@ -5234,6 +5243,9 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
       tint_image=DestroyImage(tint_image);
       return((Image *) NULL);
     }
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsPixelGray(&tint) == MagickFalse))
+    (void) SetImageColorspace(tint_image,sRGBColorspace);
   if (opacity == (const char *) NULL)
     return(tint_image);
   /*

@@ -773,7 +773,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace)
+    (void) TransformImageColorspace(image,sRGBColorspace);
   clut_map=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*clut_map));
   if (clut_map == (MagickPixelPacket *) NULL)
@@ -2369,7 +2369,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace);
+    (void) TransformImageColorspace(image,sRGBColorspace);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   /*
@@ -2662,7 +2662,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(image,RGBColorspace);
+    (void) SetImageColorspace(image,sRGBColorspace);
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
     {
