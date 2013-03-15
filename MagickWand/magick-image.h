@@ -342,7 +342,7 @@ extern WandExport MagickWand
   *MagickOptimizeImageLayers(MagickWand *),
   *MagickPreviewImages(MagickWand *wand,const PreviewType),
   *MagickSimilarityImage(MagickWand *,const MagickWand *,const MetricType,
-    RectangleInfo *,double *),
+    const double,RectangleInfo *,double *),
   *MagickSmushImages(MagickWand *,const MagickBooleanType,const ssize_t),
   *MagickSteganoImage(MagickWand *,const MagickWand *,const ssize_t),
   *MagickStereoImage(MagickWand *,const MagickWand *),

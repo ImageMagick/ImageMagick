@@ -213,7 +213,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   double
     dissimilarity_threshold,
     distortion,
-    similarity_metric;
+    similarity_metric,
+    similarity_threshold;
 
   Image
     *difference_image,
