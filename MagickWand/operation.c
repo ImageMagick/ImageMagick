@@ -4185,7 +4185,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             metric=(MetricType) ParseCommandOption(MagickMetricOptions,
               MagickFalse,value);
 
-          new_images=SimilarityImage(base_image,compare_image,metric,
+          new_images=SimilarityImage(base_image,compare_image,metric,0.0,
                &offset,&similarity,_exception);
 
           if ( new_images != (Image *)NULL ) {
