@@ -127,9 +127,9 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   if (image == (const Image *) NULL)
     return(quantum_info);
   status=SetQuantumDepth(image,quantum_info,image->depth);
+  quantum_info->endian=image->endian;
   if (status == MagickFalse)
     quantum_info=DestroyQuantumInfo(quantum_info);
-  quantum_info->endian=image->endian;
   return(quantum_info);
 }
 
