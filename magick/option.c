@@ -423,6 +423,8 @@ static const OptionInfo
     { "-implode", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+insert", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-insert", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "+intensity", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "-intensity", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+intent", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-intent", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+interlace", 0L, ImageInfoOptionFlag, MagickFalse },
