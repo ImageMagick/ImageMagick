@@ -419,7 +419,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   /*
     Bilevel threshold image.
   */
@@ -556,7 +556,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   GetPixelInfo(image,&threshold);
   flags=ParseGeometry(thresholds,&geometry_info);
   threshold.red=geometry_info.rho;

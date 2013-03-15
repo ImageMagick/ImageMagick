@@ -324,6 +324,8 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   assert(clut_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*clut_map));
   if (clut_map == (PixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -1952,6 +1954,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   assert(hald_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if (image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   /*
@@ -2304,6 +2308,8 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2311,14 +2317,12 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
         Level colormap.
       */
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].red=(double) LevelizeValue(
-          image->colormap[i].red);
+        image->colormap[i].red=(double) LevelizeValue(image->colormap[i].red);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].green=(double) LevelizeValue(
           image->colormap[i].green);
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].blue=(double) LevelizeValue(
-          image->colormap[i].blue);
+        image->colormap[i].blue=(double) LevelizeValue(image->colormap[i].blue);
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].alpha=(double) LevelizeValue(
           image->colormap[i].alpha);
