@@ -1,3 +1,7 @@
+
+2013-03-15  6.8.3-10 Glenn Randers-Pehrson <glennrp@image...>
+  * Added IM, libpng, and zlib version info to debug output.
+
 2013-03-10  6.8.3-10 Bastien Roucaries  <roucaries.basti...>
   * Move PerlMagick arch independant part to 'default' folder.
   * Move binaries to lib subdirectory and link are created from binary package.
