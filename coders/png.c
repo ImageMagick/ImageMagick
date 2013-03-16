@@ -2029,9 +2029,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *image;
 
   char
-    im_vers[MaxTextExtent],
-    libpng_vers[MaxTextExtent],
-    zlib_vers[MaxTextExtent];
+    im_vers[32],
+    libpng_runv[32],
+    libpng_vers[32],
+    zlib_runv[32],
+    zlib_vers[32];
 
   int
     intent, /* "PNG Rendering intent", which is ICC intent + 1 */
@@ -2144,23 +2146,42 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
    */
   *im_vers='\0';
   (void) ConcatenateMagickString(im_vers,
-         MagickLibVersionText,MaxTextExtent);
+         MagickLibVersionText,32);
   (void) ConcatenateMagickString(im_vers,
-         MagickLibAddendum,MaxTextExtent);
+         MagickLibAddendum,32);
+
   *libpng_vers='\0';
   (void) ConcatenateMagickString(libpng_vers,
-         PNG_LIBPNG_VER_STRING,MaxTextExtent);
+         PNG_LIBPNG_VER_STRING,32);
+  *libpng_runv='\0';
+  (void) ConcatenateMagickString(libpng_runv,
+         png_get_libpng_ver(NULL),32);
+
   *zlib_vers='\0';
   (void) ConcatenateMagickString(zlib_vers,
-         zlib_version,MaxTextExtent);
+         ZLIB_VERSION,32);
+  *zlib_runv='\0';
+  (void) ConcatenateMagickString(zlib_runv,
+         zlib_version,32);
+
   if (logging)
     {
        LogMagickEvent(CoderEvent,GetMagickModule(),"    IM version     = %s",
            im_vers);
        LogMagickEvent(CoderEvent,GetMagickModule(),"    Libpng version = %s",
            libpng_vers);
+       if (LocaleCompare(libpng_vers,libpng_runv) != 0)
+       {
+       LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+           libpng_runv);
+       }
        LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
            zlib_vers);
+       if (LocaleCompare(zlib_vers,zlib_runv) != 0)
+       {
+       LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+           zlib_runv);
+       }
     }
 
 #if (PNG_LIBPNG_VER < 10200)
@@ -2187,19 +2208,19 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (logging != MagickFalse)
   {
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      " Before reading:");
+      "    Before reading:");
 
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  image->alpha_trait=%d",(int) image->alpha_trait);
+      "      image->alpha_trait=%d",(int) image->alpha_trait);
 
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  image->rendering_intent=%d",(int) image->rendering_intent);
+      "      image->rendering_intent=%d",(int) image->rendering_intent);
 
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  image->colorspace=%d",(int) image->colorspace);
+      "      image->colorspace=%d",(int) image->colorspace);
 
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  image->gamma=%f", image->gamma);
+      "      image->gamma=%f", image->gamma);
   }
   intent=Magick_RenderingIntent_to_PNG_RenderingIntent(image->rendering_intent);
 
@@ -7821,9 +7842,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     *volatile ping_pixels;
 
   char
-    im_vers[MaxTextExtent],
-    libpng_vers[MaxTextExtent],
-    zlib_vers[MaxTextExtent];
+    im_vers[32],
+    libpng_runv[32],
+    libpng_vers[32],
+    zlib_runv[32],
+    zlib_vers[32];
 
   volatile int
     image_colors,
@@ -7871,20 +7894,39 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          MagickLibVersionText,MaxTextExtent);
   (void) ConcatenateMagickString(im_vers,
          MagickLibAddendum,MaxTextExtent);
+
   *libpng_vers='\0';
   (void) ConcatenateMagickString(libpng_vers,
-         PNG_LIBPNG_VER_STRING,MaxTextExtent);
+         PNG_LIBPNG_VER_STRING,32);
+  *libpng_runv='\0';
+  (void) ConcatenateMagickString(libpng_runv,
+         png_get_libpng_ver(NULL),32);
+
   *zlib_vers='\0';
   (void) ConcatenateMagickString(zlib_vers,
-         zlib_version,MaxTextExtent);
+         ZLIB_VERSION,32);
+  *zlib_runv='\0';
+  (void) ConcatenateMagickString(zlib_runv,
+         zlib_version,32);
+
   if (logging)
     {
        LogMagickEvent(CoderEvent,GetMagickModule(),"    IM version     = %s",
            im_vers);
        LogMagickEvent(CoderEvent,GetMagickModule(),"    Libpng version = %s",
            libpng_vers);
+       if (LocaleCompare(libpng_vers,libpng_runv) != 0)
+       {
+       LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+           libpng_runv);
+       }
        LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
            zlib_vers);
+       if (LocaleCompare(zlib_vers,zlib_runv) != 0)
+       {
+       LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+           zlib_runv);
+       }
     }
 
   /* Initialize some stuff */
