@@ -2661,8 +2661,6 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(image,sRGBColorspace);
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2670,22 +2668,20 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
         Level colormap.
       */
       if ((channel & RedChannel) != 0)
-        image->colormap[i].red=(Quantum) ClampToQuantum(LevelPixel(
-          black_point,white_point,gamma,(MagickRealType)
-          image->colormap[i].red));
+        image->colormap[i].red=(Quantum) ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,(MagickRealType) image->colormap[i].red));
       if ((channel & GreenChannel) != 0)
         image->colormap[i].green=(Quantum) ClampToQuantum(LevelPixel(
           black_point,white_point,gamma,(MagickRealType)
           image->colormap[i].green));
       if ((channel & BlueChannel) != 0)
-        image->colormap[i].blue=(Quantum) ClampToQuantum(LevelPixel(
-          black_point,white_point,gamma,(MagickRealType)
-          image->colormap[i].blue));
+        image->colormap[i].blue=(Quantum) ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,(MagickRealType) image->colormap[i].blue));
       if ((channel & OpacityChannel) != 0)
         image->colormap[i].opacity=(Quantum) (QuantumRange-(Quantum)
           ClampToQuantum(LevelPixel(black_point,white_point,gamma,
           (MagickRealType) (QuantumRange-image->colormap[i].opacity))));
-      }
+    }
   /*
     Level image.
   */
