@@ -198,6 +198,7 @@ static const CoderMapInfo
     { "ROSE", "MAGICK" },
     { "RW2", "DNG" },
     { "SHTML", "HTML" },
+    { "SPARSE-COLOR", "TXT" },
     { "SR2", "DNG" },
     { "SRF", "DNG" },
     { "SVGZ", "SVG" },
