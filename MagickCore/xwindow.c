@@ -6387,6 +6387,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                 /*
                   Convert to multi-byte continuous-tone X canvas.
                 */
+                (void) ResetMagickMemory(channel,0,sizeof(channel));
                 bytes_per_pixel=(unsigned int) (ximage->bits_per_pixel >> 3);
                 for (y=0; y < (int) canvas->rows; y++)
                 {
