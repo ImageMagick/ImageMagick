@@ -163,6 +163,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/sct.c \
 	coders/sfw.c \
 	coders/sgi.c \
+	coders/sparse-color.c \
 	coders/stegano.c \
 	coders/sun.c \
 	coders/svg.c \
@@ -283,6 +284,7 @@ coders_LTLIBRARIES = \
 	coders/sct.la \
 	coders/sfw.la \
 	coders/sgi.la \
+	coders/sparse-color.la \
 	coders/stegano.la \
 	coders/sun.la \
 	coders/svg.la \
@@ -863,6 +865,12 @@ coders_sgi_la_SOURCES      = coders/sgi.c
 coders_sgi_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_sgi_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_sgi_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# SPARSE-COLOR coder module
+coders_sparse_color_la_SOURCES  = coders/sparse-color.c
+coders_sparse_color_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_sparse_color_la_LDFLAGS  = $(MODULECOMMONFLAGS)
+coders_sparse_color_la_LIBADD   = $(MAGICKCORE_LIBS)
 
 # STEGANO coder module
 coders_stegano_la_SOURCES  = coders/stegano.c
