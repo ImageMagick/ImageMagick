@@ -10,7 +10,7 @@
 %                              T    X   X    T                                %
 %                                                                             %
 %                                                                             %
-%                       Read / Write image as ASCII Text.                     %
+%                      Render Text Onto A Canvas Image.                       %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
@@ -570,6 +570,13 @@ ModuleExport size_t RegisterTXTImage(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("SPARSE-COLOR");
+  entry->encoder=(EncodeImageHandler *) WriteTXTImage;
+  entry->raw=MagickTrue;
+  entry->endian_support=MagickTrue;
+  entry->description=ConstantString("Sparse Color");
+  entry->module=ConstantString("TXT");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TEXT");
   entry->decoder=(DecodeImageHandler *) ReadTXTImage;
   entry->encoder=(EncodeImageHandler *) WriteTXTImage;
@@ -609,6 +616,7 @@ ModuleExport size_t RegisterTXTImage(void)
 */
 ModuleExport void UnregisterTXTImage(void)
 {
+  (void) UnregisterMagickInfo("SPARSE-COLOR");
   (void) UnregisterMagickInfo("TEXT");
   (void) UnregisterMagickInfo("TXT");
 }
@@ -687,11 +695,14 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->alpha_trait == BlendPixelTrait)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
-    (void) FormatLocaleString(buffer,MaxTextExtent,
-      "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
-      image->columns,(double) image->rows,(double)
-      GetQuantumRange(image->depth),colorspace);
-    (void) WriteBlobString(image,buffer);
+    if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
+      {
+        (void) FormatLocaleString(buffer,MaxTextExtent,
+          "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
+          image->columns,(double) image->rows,(double)
+          GetQuantumRange(image->depth),colorspace);
+        (void) WriteBlobString(image,buffer);
+      }
     GetPixelInfo(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -705,6 +716,24 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
           {
             pixel.green-=(QuantumRange+1)/2.0;
             pixel.blue-=(QuantumRange+1)/2.0;
+          }
+        if (LocaleCompare(image_info->magick,"SPARSE-COLOR") == 0)
+          {
+            /*
+              Sparse-color format.
+            */
+            if (GetPixelAlpha(image,p) == (Quantum) OpaqueAlpha)
+              {
+                (void) QueryColorname(image,&pixel,SVGCompliance,tuple,
+                  exception);
+                (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g,",
+                  (double) x,(double) y);
+                (void) WriteBlobString(image,buffer);
+                (void) WriteBlobString(image,tuple);
+                (void) WriteBlobString(image," ");
+              }
+            p+=GetPixelChannels(image);
+            continue;
           }
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
           x,(double) y);
