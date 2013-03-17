@@ -28,7 +28,6 @@ demo/Turtle.pm
 demo/yellow-flower.gif
 Makefile.am
 Makefile.nt
-Makefile.PL
 Makefile.PL.in
 MANIFEST
 MANIFEST.SKIP
