@@ -2744,7 +2744,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   Static declarations.
 */
 static char
-  SVGDensityGeometry[] = "72.0x72.0";
+  SVGDensityGeometry[] = "90.0x90.0";
 
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
