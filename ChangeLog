@@ -14,7 +14,7 @@
 
 2013-03-10  6.8.3-10 Cristy  <quetzlzacatenango@image...>
   * The TXT image format can now generate output compatible with the
-    -sparse-color option (e.g. -define txt:sparse-color=true txt:-).
+    -sparse-color option (e.g. convert image.png sparse-color:image.txt).
   * Support -intensity option: method to generate an intensity value from a
     pixel.
   * Add -similarity-threshold option to the compare utility, the minimum
