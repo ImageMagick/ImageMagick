@@ -13,6 +13,9 @@ Image Settings:
   \-antialias           remove pixel-aliasing
   \-authenticate value  decrypt image with this password
   \-channel type        apply option to select image channels
+  \-clip                clip along the first path from the 8BIM profile
+  \-clip-mask filename  associate a clip mask with the image
+  \-clip-path id        clip along a named path from the 8BIM profile
   \-crop geometry       cut out a rectangular region of the image
   \-define format:option
                        define one or more image format options

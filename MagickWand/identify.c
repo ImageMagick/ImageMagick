@@ -118,6 +118,9 @@ static MagickBooleanType IdentifyUsage(void)
       "-authenticate password",
       "                     decipher image with this password",
       "-channel type        apply option to select image channels",
+      "-clip                clip along the first path from the 8BIM profile",
+      "-clip-mask filename  associate a clip mask with the image",
+      "-clip-path id        clip along a named path from the 8BIM profile",
       "-colorspace type     alternate image colorspace",
       "-crop geometry       cut out a rectangular region of the image",
       "-define format:option",
@@ -410,6 +413,24 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
+        if (LocaleCompare("clip",option+1) == 0)
+          break;
+        if (LocaleCompare("clip-mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowIdentifyException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("clip-path",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowIdentifyException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("colorspace",option+1) == 0)
           {
             ssize_t
@@ -514,7 +535,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
           }
         ThrowIdentifyException(OptionError,"UnrecognizedOption",option)
       }
-      case '3':
+      case 'e':
       {
         if (LocaleCompare("endian",option+1) == 0)
           {
