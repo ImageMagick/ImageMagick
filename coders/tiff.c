@@ -2472,6 +2472,11 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
   for (name=GetNextImageProfile(image); name != (const char *) NULL; )
   {
     profile=GetImageProfile(image,name);
+    if (GetStringInfoLength(profile) == 0)
+      {
+        name=GetNextImageProfile(image);
+        continue;
+      }
 #if defined(TIFFTAG_XMLPACKET)
     if (LocaleCompare(name,"xmp") == 0)
       (void) TIFFSetField(tiff,TIFFTAG_XMLPACKET,(uint32) GetStringInfoLength(
