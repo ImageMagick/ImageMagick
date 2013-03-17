@@ -23,6 +23,9 @@ Image Settings:
   \-caption string      assign a caption to an image
   \-cdl filename        color correct with a color decision list
   \-channel type        apply option to select image channels
+  \-clip                clip along the first path from the 8BIM profile
+  \-clip-mask filename  associate a clip mask with the image
+  \-clip-path id        clip along a named path from the 8BIM profile
   \-colors value        preferred number of colors in the image
   \-colorspace type     alternate image colorspace
   \-comment string      annotate image with comment
@@ -118,9 +121,6 @@ Image Operators:
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
   \-clamp               keep pixel values in range (0-QuantumRange)
-  \-clip                clip along the first path from the 8BIM profile
-  \-clip-mask filename  associate a clip mask with the image
-  \-clip-path id        clip along a named path from the 8BIM profile
   \-colorize value      colorize the image with the fill color
   \-color-matrix matrix apply color correction to the image
   \-contrast            enhance or reduce the image contrast
