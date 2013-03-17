@@ -99,22 +99,22 @@ static RandomInfo
 static ResourceInfo
   resource_info =
   {
-    MagickULLConstant(0),
-    MagickULLConstant(0),
-    MagickULLConstant(0),
-    MagickULLConstant(0),
-    MagickULLConstant(0),
-    MagickULLConstant(0),
-    MagickULLConstant(0),
-    MagickULLConstant(0),
-    MagickULLConstant(3072)*1024*1024,
-    MagickULLConstant(1536)*1024*1024,
-    MagickULLConstant(3072)*1024*1024,
-    MagickResourceInfinity,
-    MagickULLConstant(768),
-    MagickULLConstant(1),
-    MagickULLConstant(0),
-    MagickResourceInfinity
+    MagickULLConstant(0),              /* initial area */
+    MagickULLConstant(0),              /* initial memory */
+    MagickULLConstant(0),              /* initial map */
+    MagickULLConstant(0),              /* initial disk */
+    MagickULLConstant(0),              /* initial file */
+    MagickULLConstant(0),              /* initial thread */
+    MagickULLConstant(0),              /* initial throttle */
+    MagickULLConstant(0),              /* initial time */
+    MagickULLConstant(3072)*1024*1024, /* area limit */
+    MagickULLConstant(1536)*1024*1024, /* memory limit */
+    MagickULLConstant(3072)*1024*1024, /* map limit */
+    MagickResourceInfinity,            /* disk limit */
+    MagickULLConstant(768),            /* file limit */
+    MagickULLConstant(1),              /* thread limit */
+    MagickULLConstant(0),              /* throttle limit */
+    MagickResourceInfinity             /* time limit */
   };
 
 static SemaphoreInfo
