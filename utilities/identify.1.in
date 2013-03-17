@@ -13,6 +13,9 @@ Image Settings:
   \-antialias           remove pixel-aliasing
   \-authenticate value  decrypt image with this password
   \-channel type        apply option to select image channels
+  \-clip                clip along the first path from the 8BIM profile
+  \-clip-mask filename  associate a clip mask with the image
+  \-clip-path id        clip along a named path from the 8BIM profile
   \-crop geometry       cut out a rectangular region of the image
   \-define format:option
                        define one or more image format options
@@ -29,6 +32,7 @@ Image Settings:
   \-limit type value    pixel cache resource limit
   \-list type           Color, Configure, Delegate, Format, Magic, Module,
                        Resource, or Type
+  \-mask filename       associate a mask with the image
   \-matte               store matte channel if the image has one
   \-monitor             monitor progress
   \-ping                efficiently determine image attributes
