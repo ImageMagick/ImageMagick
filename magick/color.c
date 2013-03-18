@@ -1593,7 +1593,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
       (image->colorspace == HSLColorspace) ||
       (image->colorspace == HWBColorspace))
     {
-      /* This calculates a arc distance for hue.  Really if should be a vector
+      /* This calculates a arc distance for hue.  Really it should be a vector
          angle of 'S'/'W' length with 'L'/'B' forming appropriate cones.  In
          other words this is a hack - Anthony
       */
