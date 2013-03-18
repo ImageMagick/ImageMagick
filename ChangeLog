@@ -1,6 +1,8 @@
 2013-03-10  6.8.4-0 Cristy  <quetzlzacatenango@image...>
   * Do not write zero-length TIFF tags (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22957).
+  * Math library should be private for *.pc.in configuration files (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22986).
 
 2013-03-18  6.8.3-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-10, SVN revision 11413.
