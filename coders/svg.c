@@ -93,7 +93,10 @@
 
 #if defined(MAGICKCORE_RSVG_DELEGATE)
 #include "librsvg/rsvg.h"
-#if !LIBRSVG_CHECK_VERSION(2,36,2)
+#if !defined(LIBRSVG_CHECK_VERSION)
+#include "librsvg/rsvg-cairo.h"
+#include "librsvg/librsvg-features.h"
+#elif !LIBRSVG_CHECK_VERSION(2,36,2)
 #include "librsvg/rsvg-cairo.h"
 #include "librsvg/librsvg-features.h"
 #endif
