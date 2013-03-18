@@ -1,0 +1,32 @@
+
+Every program in this directory is the equivelent of this Shell API
+command...
+
+  magick -size 100x100 xc:red \
+        \( rose: -rotate -90 \) \
+        +append   show:
+
+
+Command should be expanded to show a simple image operation on a 
+list of images!
+
+
+
+Each however does so in its own way using various functions in the
+ImageMagick Library.
+
+Shell API...
+
+  magick.sh           A simple "magick" shell command (as above)
+  magick_script       As a "magick" script file
+
+MagickCLI API...
+
+  magick_command.c    As a argument list to the MagickCommand function
+  cli_process.c       Using the function that processes a argument list
+  cli_operators.c     Using operator groups to process individual options
+
+MagickWand API...
+
+  wand.c              usaing a MagickWand
+
