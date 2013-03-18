@@ -3060,12 +3060,18 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
   if (mask == (const Image *) NULL)
     {
       image->mask=MagickFalse;
-      return(MagickTrue);
+      return(SyncImagePixelCache(image,exception));
     }
-  status=MagickTrue;
   image->mask=MagickTrue;
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
+    return(MagickFalse);
+  status=MagickTrue;
   mask_view=AcquireVirtualCacheView(mask,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(mask,image,1,1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -3088,7 +3094,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelMask(image,GetPixelGray(mask,p),q);
+      SetPixelMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
       p+=GetPixelChannels(mask);
       q+=GetPixelChannels(image);
     }
