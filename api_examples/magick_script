@@ -1,0 +1,35 @@
+#!/bin/env magick-script
+#
+# Magick Script
+#
+-size 100x100 xc:red
+( rose: -rotate -90 )
++append   -write show:
+
+# exit - not really needed here -- more for pipelines and debugging
+-exit
+-------------------------------------------------------------------------------
+This area is completely ignored by the magick script.
+
+If you want you can put uncommented documentation such as Perl POD
+which reformat such documentation into many different doc formats.
+A bit like what Imagemagick does not Images!
+
+Or you can just put any old rubbish -- much like this :-)
+
+It could even be binary, image data or something else!
+Hmmm Image Data may be useful -- perhaps in the future
+Remind me sometime!
+
+Anthony Thyssen - Author/Developer for
+  Imagemagick Examples
+  ImageMagick Shell/Script API
+  Morphology Operator
+  Distort Operator
+  Composite Method Redevelopment
+  GIF Animation Methods
+
+-------------------------------------------------------------------------------
+    "Mr. Worf, scan that ship."     "Aye, Captain... 300 DPI?"
+-------------------------------------------------------------------------------
+
