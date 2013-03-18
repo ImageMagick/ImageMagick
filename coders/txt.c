@@ -724,8 +724,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             */
             if (GetPixelAlpha(image,p) == (Quantum) OpaqueAlpha)
               {
-                (void) QueryColorname(image,&pixel,SVGCompliance,tuple,
-                  exception);
+                GetColorTuple(&pixel,MagickFalse,tuple);
                 (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g,",
                   (double) x,(double) y);
                 (void) WriteBlobString(image,buffer);
