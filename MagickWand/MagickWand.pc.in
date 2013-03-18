@@ -2,10 +2,12 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
-
+libname=MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
+ 
 Name: MagickWand
+Description: MagickWand - C API for ImageMagick (ABI @MAGICK_ABI_SUFFIX@)
 Version: @PACKAGE_VERSION@
-Description:  MagickWand - C API for ImageMagick (ABI @MAGICK_ABI_SUFFIX@)
-Requires: ImageMagick
-Libs: -L${libdir} -lMagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@ -lMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
+Requires: MagickCore
+Libs: -L${libdir} -l${libname}
+Libs.private: -L${libdir} -l${libname} @MATH_LIBS@
 Cflags: -I${includedir} @MAGICK_PCFLAGS@
