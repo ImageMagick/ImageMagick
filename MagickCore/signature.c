@@ -518,6 +518,8 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
+    SetStringInfoLength(signature,image->columns*GetPixelChannels(image)*
+      sizeof(pixel));
     q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
