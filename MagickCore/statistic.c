@@ -1615,9 +1615,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   }
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
-    channel_statistics[CompositePixelChannel].depth=(size_t) EvaluateMax(
-      (double) channel_statistics[CompositePixelChannel].depth,(double)
-      channel_statistics[i].depth);
+    channel_statistics[CompositePixelChannel].area+=channel_statistics[i].area;
     channel_statistics[CompositePixelChannel].minima=MagickMin(
       channel_statistics[CompositePixelChannel].minima,
       channel_statistics[i].minima);
@@ -1640,6 +1638,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       channel_statistics[i].mean;
   }
   channels=GetImageChannels(image);
+  channel_statistics[CompositePixelChannel].area/=channels;
   channel_statistics[CompositePixelChannel].sum/=channels;
   channel_statistics[CompositePixelChannel].sum_squared/=channels;
   channel_statistics[CompositePixelChannel].sum_cubed/=channels;
