@@ -487,6 +487,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (channel_statistics != (ChannelStatistics *) NULL)
     {
       (void) FormatLocaleFile(file,"  Channel statistics:\n");
+      (void) FormatLocaleFile(file,"    Pixels: %.20g\n",
+        channel_statistics[CompositePixelChannel].area);
       switch (colorspace)
       {
         case RGBColorspace:
