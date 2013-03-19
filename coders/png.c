@@ -7855,6 +7855,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_pHYs_y_resolution = 0;
 
   ping_have_blob=MagickFalse;
+  ping_have_cheap_transparency=MagickFalse;
   ping_have_color=MagickTrue;
   ping_have_non_bw=MagickTrue;
   ping_have_PLTE=MagickFalse;
@@ -11370,6 +11371,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       mng_info->write_png48 = MagickFalse;
       mng_info->write_png64 = MagickFalse;
 
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "  Format=%s",value);
+
       if (LocaleCompare(value,"png8") == 0)
         mng_info->write_png8 = MagickTrue;
 
@@ -11385,59 +11389,59 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       else if (LocaleCompare(value,"png64") == 0)
         mng_info->write_png64 = MagickTrue;
 
-  if (LocaleCompare(value,"png00") == 0)
-    {
-      /* Retrieve png:IHDR.bit-depth-orig and png:IHDR.color-type-orig
-         Note that whitespace at the end of the property names must match
-         that in the corresponding SetImageProperty() calls.
-       */
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "  Format=%s",value);
+      else if (LocaleCompare(value,"png00") == 0)
+        {
+          /* Retrieve png:IHDR.bit-depth-orig and png:IHDR.color-type-orig
+             Note that whitespace at the end of the property names must match
+             that in the corresponding SetImageProperty() calls.
+           */
+          value=GetImageProperty(image,"png:IHDR.bit-depth-orig  ");
 
-      value=GetImageProperty(image,"png:IHDR.bit-depth-orig  ");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  png00 inherited bit depth=%s",value);
 
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "  png00 inherited bit depth=%s",value);
-      if (value != (char *) NULL)
-      {
+          if (value != (char *) NULL)
+          {
 
-        if (LocaleCompare(value,"1") == 0)
-          mng_info->write_png_depth = 1;
+            if (LocaleCompare(value,"1") == 0)
+              mng_info->write_png_depth = 1;
 
-        else if (LocaleCompare(value,"1") == 0)
-          mng_info->write_png_depth = 2;
+            else if (LocaleCompare(value,"1") == 0)
+              mng_info->write_png_depth = 2;
 
-        else if (LocaleCompare(value,"2") == 0)
-          mng_info->write_png_depth = 4;
+            else if (LocaleCompare(value,"2") == 0)
+              mng_info->write_png_depth = 4;
 
-        else if (LocaleCompare(value,"8") == 0)
-          mng_info->write_png_depth = 8;
+            else if (LocaleCompare(value,"8") == 0)
+              mng_info->write_png_depth = 8;
 
-        else if (LocaleCompare(value,"16") == 0)
-          mng_info->write_png_depth = 16;
-      }
+            else if (LocaleCompare(value,"16") == 0)
+              mng_info->write_png_depth = 16;
+          }
 
-      value=GetImageProperty(image,"png:IHDR.color-type-orig ");
-     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "  png00 inherited color type=%s",value);
-      if (value != (char *) NULL)
-      {
-        if (LocaleCompare(value,"0") == 0)
-          mng_info->write_png_colortype = 1;
+          value=GetImageProperty(image,"png:IHDR.color-type-orig ");
 
-        else if (LocaleCompare(value,"2") == 0)
-          mng_info->write_png_colortype = 3;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  png00 inherited color type=%s",value);
 
-        else if (LocaleCompare(value,"3") == 0)
-          mng_info->write_png_colortype = 4;
+          if (value != (char *) NULL)
+          {
+            if (LocaleCompare(value,"0") == 0)
+              mng_info->write_png_colortype = 1;
 
-        else if (LocaleCompare(value,"4") == 0)
-          mng_info->write_png_colortype = 5;
+            else if (LocaleCompare(value,"2") == 0)
+              mng_info->write_png_colortype = 3;
 
-        else if (LocaleCompare(value,"6") == 0)
-          mng_info->write_png_colortype = 7;
-      }
-    }
+            else if (LocaleCompare(value,"3") == 0)
+              mng_info->write_png_colortype = 4;
+
+            else if (LocaleCompare(value,"4") == 0)
+              mng_info->write_png_colortype = 5;
+
+            else if (LocaleCompare(value,"6") == 0)
+              mng_info->write_png_colortype = 7;
+          }
+        }
     }
 
   if (mng_info->write_png8)
