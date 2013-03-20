@@ -10,7 +10,7 @@ PACKAGE_NAME='ImageMagick'
 #
 # Package version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.0.0").
-PACKAGE_VERSION='6.4.0'
+PACKAGE_VERSION='6.8.4'
 PACKAGE_PERL_VERSION='6.84'
 PACKAGE_LIB_VERSION="0x684"
 PACKAGE_RELEASE="0"

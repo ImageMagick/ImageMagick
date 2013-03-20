@@ -1115,13 +1115,13 @@
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
-#define MAGICKCORE_LIBRARY_PATH "/usr/lib/ImageMagick-6.4.0/"
+#define MAGICKCORE_LIBRARY_PATH "/usr/lib/ImageMagick-6.8.4/"
 #endif
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
    installed */
 #ifndef MAGICKCORE_LIBRARY_RELATIVE_PATH
-#define MAGICKCORE_LIBRARY_RELATIVE_PATH "ImageMagick-6.4.0"
+#define MAGICKCORE_LIBRARY_RELATIVE_PATH "ImageMagick-6.8.4"
 #endif
 
 /* Binaries in libraries path base name (will be during install linked to bin)
