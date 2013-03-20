@@ -63,6 +63,7 @@ Requires: libjpeg-devel
 Requires: lcms-devel
 Requires: jasper-devel
 Requires: pkgconfig
+Requires: %{name}-libs = %{version}-%{release}
 
 %description devel
 ImageMagick-devel contains the library links and header files you'll
@@ -73,6 +74,13 @@ If you want to create applications that will use ImageMagick code or
 APIs, you need to install ImageMagick-devel as well as ImageMagick.
 You do not need to install it if you just want to use ImageMagick,
 however.
+
+%package libs
+Summary: ImageMagick libraries to link with
+Group: Applications/Multimedia
+
+%description libs
+This packages contains a shared libraries to use within other applications.
 
 %package djvu
 Summary: DjVu plugin for ImageMagick
@@ -207,11 +215,11 @@ fi
 %clean
 rm -rf %{buildroot}
 
-%post -p /sbin/ldconfig
+%post libs -p /sbin/ldconfig
 
 %post c++ -p /sbin/ldconfig
 
-%postun -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %postun c++ -p /sbin/ldconfig
 
