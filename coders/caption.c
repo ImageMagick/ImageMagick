@@ -159,7 +159,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for ( ; ; draw_info->pointsize*=2.0)
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&text,
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
           exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
@@ -180,7 +180,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for ( ; ; draw_info->pointsize*=2.0)
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&text,
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
           exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
@@ -197,7 +197,10 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
         draw_info->interline_spacing+draw_info->stroke_width)+0.5);
     }
-  if (image_info->pointsize == 0.0)
+  if (image_info->pointsize != 0.0)
+    i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption,
+      exception);
+  else
     {
       double
         high,
@@ -209,7 +212,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for ( ; ; draw_info->pointsize*=2.0)
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&text,
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
           exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
@@ -230,7 +233,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       {
         draw_info->pointsize=(low+high)/2.0;
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&text,
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
           exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
@@ -249,7 +252,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for (draw_info->pointsize=(low+high)/2.0; (high-low) > 1.0; )
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&text,
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
           exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
@@ -265,6 +268,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         draw_info->pointsize--;
       }
       draw_info->pointsize=floor(draw_info->pointsize+0.5);
+      i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&caption,
+        exception);
     }
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
@@ -274,7 +279,6 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   /*
     Draw caption.
   */
-  i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption,exception);
   (void) CloneString(&draw_info->text,caption);
   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if ((draw_info->gravity != UndefinedGravity) &&
