@@ -526,7 +526,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;

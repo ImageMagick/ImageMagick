@@ -221,7 +221,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           SetPixelInfoPixel(highlight_image,&lowlight,r);
           p+=GetPixelChannels(image);
@@ -385,7 +385,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -508,7 +508,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -608,7 +608,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -701,7 +701,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -799,7 +799,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -911,7 +911,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1030,7 +1030,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1439,7 +1439,7 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1645,7 +1645,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
           offset->y=y;
           *similarity_metric=similarity;
         }
-      if (GetPixelMask(similarity_image,q) != 0)
+      if (GetPixelMask(similarity_image,q) == 0)
         {
           q+=GetPixelChannels(similarity_image);
           continue;

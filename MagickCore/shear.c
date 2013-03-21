@@ -1093,7 +1093,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
               register ssize_t
                 i;
 
-              if (GetPixelMask(image,tile_pixels) != 0)
+              if (GetPixelMask(image,tile_pixels) == 0)
                 {
                   tile_pixels-=width*GetPixelChannels(image);
                   q+=GetPixelChannels(rotate_image);
@@ -1180,7 +1180,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             i;
 
           q-=GetPixelChannels(rotate_image);
-          if (GetPixelMask(image,p) != 0)
+          if (GetPixelMask(image,p) == 0)
             {
               p+=GetPixelChannels(image);
               continue;
@@ -1303,7 +1303,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
               register ssize_t
                 i;
 
-              if (GetPixelMask(image,tile_pixels) != 0)
+              if (GetPixelMask(image,tile_pixels) == 0)
                 {
                   tile_pixels+=width*GetPixelChannels(image);
                   q+=GetPixelChannels(rotate_image);
