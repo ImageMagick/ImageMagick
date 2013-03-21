@@ -505,7 +505,6 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   signature_info=AcquireSignatureInfo();
   signature=AcquireStringInfo(image->columns*GetPixelChannels(image)*
     sizeof(pixel));
-  pixels=GetStringInfoDatum(signature);
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -520,6 +519,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
       break;
     SetStringInfoLength(signature,image->columns*GetPixelChannels(image)*
       sizeof(pixel));
+    pixels=GetStringInfoDatum(signature);
     q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
