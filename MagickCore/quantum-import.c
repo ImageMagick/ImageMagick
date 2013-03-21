@@ -3604,7 +3604,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         register ssize_t
           i;
 
-        if (GetPixelMask(image,q) != 0)
+        if (GetPixelMask(image,q) == 0)
           {
             q+=GetPixelChannels(image);
             continue;

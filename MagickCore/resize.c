@@ -1652,7 +1652,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(resize_image,q) != 0)
+      if (GetPixelMask(resize_image,q) == 0)
         {
           q+=GetPixelChannels(resize_image);
           continue;
@@ -2328,7 +2328,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
             (resize_traits == UndefinedPixelTrait))
           continue;
         if (((resize_traits & CopyPixelTrait) != 0) ||
-            (GetPixelMask(resize_image,q) != 0))
+            (GetPixelMask(resize_image,q) == 0))
           {
             j=(ssize_t) (MagickMin(MagickMax(bisect,(double) start),(double)
               stop-1.0)+0.5);
@@ -2543,7 +2543,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             (resize_traits == UndefinedPixelTrait))
           continue;
         if (((resize_traits & CopyPixelTrait) != 0) ||
-            (GetPixelMask(resize_image,q) != 0))
+            (GetPixelMask(resize_image,q) == 0))
           {
             j=(ssize_t) (MagickMin(MagickMax(bisect,(double) start),(double)
               stop-1.0)+0.5);
@@ -2835,7 +2835,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
       register ssize_t
         i;
 
-      if (GetPixelMask(sample_image,q) != 0)
+      if (GetPixelMask(sample_image,q) == 0)
         {
           q+=GetPixelChannels(sample_image);
           continue;
@@ -3049,7 +3049,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          if (GetPixelMask(image,p) != 0)
+          if (GetPixelMask(image,p) == 0)
             {
               p+=GetPixelChannels(image);
               continue;
@@ -3096,7 +3096,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                 }
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                if (GetPixelMask(image,p) != 0)
+                if (GetPixelMask(image,p) == 0)
                   {
                     p+=GetPixelChannels(image);
                     continue;
@@ -3146,7 +3146,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               }
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (GetPixelMask(image,p) != 0)
+              if (GetPixelMask(image,p) == 0)
                 {
                   p+=GetPixelChannels(image);
                   continue;
@@ -3199,7 +3199,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         */
         for (x=0; x < (ssize_t) scale_image->columns; x++)
         {
-          if (GetPixelMask(scale_image,q) != 0)
+          if (GetPixelMask(scale_image,q) == 0)
             {
               q+=GetPixelChannels(scale_image);
               continue;
@@ -3305,7 +3305,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
       */
       for (x=0; x < (ssize_t) scale_image->columns; x++)
       {
-        if (GetPixelMask(scale_image,q) != 0)
+        if (GetPixelMask(scale_image,q) == 0)
           {
             q+=GetPixelChannels(scale_image);
             continue;

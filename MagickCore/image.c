@@ -577,7 +577,7 @@ MagickExport Image *AppendImages(const Image *images,
       GetPixelInfo(image,&pixel);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        if (GetPixelMask(image,p) != 0)
+        if (GetPixelMask(image,p) == 0)
           {
             p+=GetPixelChannels(image);
             q+=GetPixelChannels(append_image);
@@ -1686,7 +1686,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;
