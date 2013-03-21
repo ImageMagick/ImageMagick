@@ -1587,8 +1587,7 @@ static void SplaySplayTree(SplayTreeInfo *splay_tree,const void *key)
       (void) Splay(splay_tree,0UL,key,&splay_tree->root,(NodeInfo **) NULL,
         (NodeInfo **) NULL);
       if (splay_tree->balance != MagickFalse)
-        ThrowFatalException(ResourceLimitFatalError,
-          "MemoryAllocationFailed");
+        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     }
   splay_tree->key=(void *) key;
 }
