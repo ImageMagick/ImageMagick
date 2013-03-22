@@ -2777,7 +2777,7 @@ if test "$with_webp" != 'no'; then
     failed=0
     passed=0
     AC_CHECK_HEADER(webp/decode.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(webp,WebPPictureInit,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(webp,WebPPictureInitInternal,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING([if WEBP package is complete])
     if test $passed -gt 0; then
         if test $failed -gt 0; then
