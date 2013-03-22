@@ -1,13 +1,12 @@
 id=ImageMagick  version=1.0
 class=DirectClass  colors=0  matte=False
 columns=70  rows=46  depth=8
-type=Grayscale
 colorspace=Gray
 compression=None  quality=0
 resolution=72x72
 page=70x46+0+0
 gamma=1
-date:create=2012-07-02T19:26:59-04:00
+date:create=2013-03-22T17:22:54-04:00
 date:modify=2012-06-16T21:10:36-04:00
 
 :	
