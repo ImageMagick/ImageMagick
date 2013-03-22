@@ -854,8 +854,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->x=(ssize_t) width/2;
-  kernel_info->y=(ssize_t) width/2;
+  kernel_info->x=(ssize_t) (width-1)/2;
+  kernel_info->y=(ssize_t) (width-1)/2;
   kernel_info->signature=MagickSignature;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*
@@ -878,9 +878,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
       i++;
     }
   }
-  kernel_info->values[i/2]+=(1.0-normalize);
+  kernel_info->values[(i-1)/2]+=(1.0-normalize);
   if (sigma < MagickEpsilon)
-    kernel_info->values[i/2]=1.0;
+    kernel_info->values[(i-1)/2]=1.0;
   blur_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
@@ -916,7 +916,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 MagickExport Image *ConvolveImage(const Image *image,
   const KernelInfo *kernel_info,ExceptionInfo *exception)
 {
-  return(MorphologyImage(image,CorrelateMorphology,1,kernel_info,exception));
+  return(MorphologyImage(image,ConvolveMorphology,1,kernel_info,exception));
 }
 
 /*
@@ -1274,8 +1274,8 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->x=(ssize_t) width/2;
-  kernel_info->y=(ssize_t) width/2;
+  kernel_info->x=(ssize_t) (width-1)/2;
+  kernel_info->y=(ssize_t) (width-1)/2;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*
     sizeof(*kernel_info->values)));
@@ -1294,7 +1294,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
       i++;
     }
   }
-  kernel_info->values[i/2]=(MagickRealType) (width*width-1.0);
+  kernel_info->values[(i-1)/2]=(MagickRealType) (width*width-1.0);
   edge_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
@@ -1366,8 +1366,8 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->x=(ssize_t) width/2;
-  kernel_info->y=(ssize_t) width/2;
+  kernel_info->x=(ssize_t) (width-1)/2;
+  kernel_info->y=(ssize_t) (width-1)/2;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*
     sizeof(*kernel_info->values)));
@@ -1465,8 +1465,8 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->x=(ssize_t) width/2;
-  kernel_info->y=(ssize_t) width/2;
+  kernel_info->x=(ssize_t) (width-1)/2;
+  kernel_info->y=(ssize_t) (width-1)/2;
   kernel_info->signature=MagickSignature;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*
@@ -2141,8 +2141,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         geometry.width=(size_t) (2*i+2);
         geometry.height=(size_t) (2*i+2);
-        geometry.x=i/2;
-        geometry.y=i/2;
+        geometry.x=(i-1)/2;
+        geometry.y=(i-1)/2;
         (void) RaiseImage(preview_image,&geometry,MagickTrue,exception);
         (void) FormatLocaleString(label,MaxTextExtent,
           "raise %.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
@@ -2387,8 +2387,8 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
-  blur_center.x=(double) image->columns/2.0;
-  blur_center.y=(double) image->rows/2.0;
+  blur_center.x=(double) (image->columns-1)/2.0;
+  blur_center.y=(double) (image->rows-1)/2.0;
   blur_radius=hypot(blur_center.x,blur_center.y);
   n=(size_t) fabs(4.0*DegreesToRadians(angle)*sqrt((double) blur_radius)+2UL);
   theta=DegreesToRadians(angle)/(double) (n-1);
@@ -2652,7 +2652,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
     width,width*sizeof(*kernel)));
   if (kernel == (MagickRealType *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  j=(ssize_t) width/2;
+  j=(ssize_t) (width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
@@ -2721,8 +2721,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  center=(ssize_t) (GetPixelChannels(image)*(image->columns+width)*(width/2L)+
-    GetPixelChannels(image)*(width/2L));
+  center=(ssize_t) (GetPixelChannels(image)*(image->columns+width)*
+    ((width-1)/2L)+GetPixelChannels(image)*((width-1)/2L));
   image_view=AcquireVirtualCacheView(image,exception);
   luminance_view=AcquireVirtualCacheView(luminance_image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
@@ -2750,10 +2750,10 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),image->columns+width,width,exception);
-    l=GetCacheViewVirtualPixels(luminance_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),luminance_image->columns+width,width,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) (width-1)/2L),y-(ssize_t)
+      ((width-1)/2L),image->columns+width,width,exception);
+    l=GetCacheViewVirtualPixels(luminance_view,-((ssize_t) (width-1)/2L),y-
+      (ssize_t) ((width-1)/2L),luminance_image->columns+width,width,exception);
     q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -3210,8 +3210,8 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->x=(ssize_t) width/2;
-  kernel_info->y=(ssize_t) width/2;
+  kernel_info->x=(ssize_t) (width-1)/2;
+  kernel_info->y=(ssize_t) (width-1)/2;
   kernel_info->signature=MagickSignature;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*
@@ -3234,9 +3234,9 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
       i++;
     }
   }
-  kernel_info->values[i/2]=(double) ((-2.0)*normalize);
+  kernel_info->values[(i-1)/2]=(double) ((-2.0)*normalize);
   if (sigma < MagickEpsilon)
-    kernel_info->values[i/2]=1.0;
+    kernel_info->values[(i-1)/2]=1.0;
   sharp_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
