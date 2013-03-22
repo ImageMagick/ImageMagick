@@ -830,9 +830,9 @@ MagickExport Image *BlurImageChannel(const Image *image,
       i++;
     }
   }
-  kernel[i/2]+=(1.0-normalize);
+  kernel[(i-1)/2]+=(1.0-normalize);
   if (sigma < MagickEpsilon)
-    kernel[i/2]=1.0;
+    kernel[(i-1)/2]=1.0;
   blur_image=ConvolveImageChannel(image,channel,width,kernel,exception);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   return(blur_image);
@@ -1281,7 +1281,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   for (i=0; i < (ssize_t) (width*width); i++)
     kernel[i]=(-1.0);
-  kernel[i/2]=(double) (width*width-1.0);
+  kernel[(i-1)/2]=(double) (width*width-1.0);
   edge_image=ConvolveImage(image,width,kernel,exception);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   return(edge_image);
@@ -1549,9 +1549,9 @@ MagickExport Image *FilterImageChannel(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) kernel->width/2L),y-
-      (ssize_t) (kernel->height/2L),image->columns+kernel->width,kernel->height,
-      exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) (kernel->width-1)/2L),y-
+      (ssize_t) ((kernel->height-1)/2L),image->columns+kernel->width,
+      kernel->height,exception);
     q=GetCacheViewAuthenticPixels(filter_view,0,y,filter_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -2501,8 +2501,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         geometry.width=(size_t) (2*i+2);
         geometry.height=(size_t) (2*i+2);
-        geometry.x=i/2;
-        geometry.y=i/2;
+        geometry.x=(i-1)/2;
+        geometry.y=(i-1)/2;
         (void) RaiseImage(preview_image,&geometry,MagickTrue);
         (void) FormatLocaleString(label,MaxTextExtent,
           "raise %.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
@@ -2758,8 +2758,8 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
-  blur_center.x=(double) image->columns/2.0;
-  blur_center.y=(double) image->rows/2.0;
+  blur_center.x=(double) (image->columns-1)/2.0;
+  blur_center.y=(double) (image->rows-1)/2.0;
   blur_radius=hypot(blur_center.x,blur_center.y);
   n=(size_t) fabs(4.0*DegreesToRadians(angle)*sqrt((double) blur_radius)+2UL);
   theta=DegreesToRadians(angle)/(MagickRealType) (n-1);
@@ -3132,7 +3132,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  center=(ssize_t) ((image->columns+width)*(width/2L)+(width/2L));
+  center=(ssize_t) ((image->columns+width)*((width-1)/2L)+((width-1)/2L));
   GetMagickPixelPacket(image,&bias);
   SetMagickPixelPacketBias(image,&bias);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -3168,10 +3168,10 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),image->columns+width,width,exception);
-    l=GetCacheViewVirtualPixels(luminance_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),luminance_image->columns+width,width,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) (width-1)/2L),y-(ssize_t)
+      ((width-1)/2L),image->columns+width,width,exception);
+    l=GetCacheViewVirtualPixels(luminance_view,-((ssize_t) (width-1)/2L),y-
+      (ssize_t) ((width-1)/2L),luminance_image->columns+width,width,exception);
     q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) ||
@@ -3708,9 +3708,9 @@ MagickExport Image *SharpenImageChannel(const Image *image,
       i++;
     }
   }
-  kernel[i/2]=(double) ((-2.0)*normalize);
+  kernel[(i-1)/2]=(double) ((-2.0)*normalize);
   if (sigma < MagickEpsilon)
-    kernel[i/2]=1.0;
+    kernel[(i-1)/2]=1.0;
   sharp_image=ConvolveImageChannel(image,channel,width,kernel,exception);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   return(sharp_image);
