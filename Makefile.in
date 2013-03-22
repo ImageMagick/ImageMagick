@@ -10814,20 +10814,6 @@ uninstall-hook:
 	done;
 	rm -r -f $(LIB_BIN_DIR_PATH)
 
-install-exec-hook:
-	$(install_sh) -d  $(DESTDIR)/$(LIB_BIN_DIR_PATH)
-	cd $(DESTDIR)/$(bindir) && \
-	for CURR_PROG in `echo $(UTILITIES_PGMS) | sed 's/utilities\///g'`; do \
-		mv -f ./$$CURR_PROG$(EXEEXT) $(DESTDIR)/$(LIB_BIN_DIR_PATH)/$$CURR_PROG$(EXEEXT) && \
-		$(LN_S) $(LIB_BIN_DIR_PATH)/$$CURR_PROG$(EXEEXT) ./$$CURR_PROG$(EXEEXT); \
-	done;
-
-uninstall-hook:
-	for CURR_PROG in `echo $(UTILITIES_PGMS) | sed 's/utilities\///g'`; do \
-		rm -f $(DESTDIR)/$(LIB_DIR_PATH)/$$CURR_PROG$(EXEEXT)
-	done;
-	rm -r -f $(LIB_BIN_DIR_PATH)
-
 clean-local: $(PERLMAGICK_CLEAN_LOCAL_TARGETS)
 
 distclean-local: $(PERLMAGICK_DISTCLEAN_LOCAL_TARGETS)
