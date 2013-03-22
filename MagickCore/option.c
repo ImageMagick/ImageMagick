@@ -1264,6 +1264,7 @@ static const OptionInfo
     { "Orientation", MagickOrientationOptions, UndefinedOptionFlag, MagickFalse },
     { "PixelChannel", MagickPixelChannelOptions, UndefinedOptionFlag, MagickFalse },
     { "PixelIntensity", MagickPixelIntensityOptions, UndefinedOptionFlag, MagickFalse },
+    { "PixelMask", MagickPixelMaskOptions, UndefinedOptionFlag, MagickFalse },
     { "PixelTrait", MagickPixelTraitOptions, UndefinedOptionFlag, MagickFalse },
     { "Policy", MagickPolicyOptions, UndefinedOptionFlag, MagickFalse },
     { "PolicyDomain", MagickPolicyDomainOptions, UndefinedOptionFlag, MagickFalse },
@@ -1443,6 +1444,15 @@ static const OptionInfo
     { "Rec709Luminance", Rec709LuminancePixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
     { "RMS", RMSPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedPixelIntensityMethod, UndefinedOptionFlag, MagickFalse }
+  },
+  PixelMaskOptions[] =
+  {
+    { "Undefined", UndefinedPixelMask, UndefinedOptionFlag, MagickTrue },
+    { "R", ReadPixelMask, UndefinedOptionFlag, MagickFalse },
+    { "Read", ReadPixelMask, UndefinedOptionFlag, MagickFalse },
+    { "W", WritePixelMask, UndefinedOptionFlag, MagickFalse },
+    { "Write", WritePixelMask, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedPixelMask, UndefinedOptionFlag, MagickFalse }
   },
   PixelTraitOptions[] =
   {
@@ -1718,6 +1728,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickOrientationOptions: return(OrientationOptions);
     case MagickPixelChannelOptions: return(PixelChannelOptions);
     case MagickPixelIntensityOptions: return(PixelIntensityOptions);
+    case MagickPixelMaskOptions: return(PixelMaskOptions);
     case MagickPixelTraitOptions: return(PixelTraitOptions);
     case MagickPolicyDomainOptions: return(PolicyDomainOptions);
     case MagickPolicyRightsOptions: return(PolicyRightsOptions);

@@ -78,6 +78,7 @@ typedef enum
   MagickOrientationOptions,
   MagickPixelChannelOptions,
   MagickPixelIntensityOptions,
+  MagickPixelMaskOptions,
   MagickPixelTraitOptions,
   MagickPolicyOptions,
   MagickPolicyDomainOptions,
