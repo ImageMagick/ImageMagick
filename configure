@@ -3671,7 +3671,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=6.8.4-0
 
-MAGICK_SVN_REVISION=11416:11442M
+MAGICK_SVN_REVISION=11444:11461M
 
 
 # Substitute library versioning
@@ -31898,9 +31898,9 @@ else
 fi
 
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WebPPictureInit in -lwebp" >&5
-$as_echo_n "checking for WebPPictureInit in -lwebp... " >&6; }
-if ${ac_cv_lib_webp_WebPPictureInit+:} false; then :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WebPPictureInitInternal in -lwebp" >&5
+$as_echo_n "checking for WebPPictureInitInternal in -lwebp... " >&6; }
+if ${ac_cv_lib_webp_WebPPictureInitInternal+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -31914,27 +31914,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char WebPPictureInit ();
+char WebPPictureInitInternal ();
 int
 main ()
 {
-return WebPPictureInit ();
+return WebPPictureInitInternal ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_webp_WebPPictureInit=yes
+  ac_cv_lib_webp_WebPPictureInitInternal=yes
 else
-  ac_cv_lib_webp_WebPPictureInit=no
+  ac_cv_lib_webp_WebPPictureInitInternal=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_webp_WebPPictureInit" >&5
-$as_echo "$ac_cv_lib_webp_WebPPictureInit" >&6; }
-if test "x$ac_cv_lib_webp_WebPPictureInit" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_webp_WebPPictureInitInternal" >&5
+$as_echo "$ac_cv_lib_webp_WebPPictureInitInternal" >&6; }
+if test "x$ac_cv_lib_webp_WebPPictureInitInternal" = xyes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
