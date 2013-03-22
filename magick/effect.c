@@ -887,326 +887,35 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   const ChannelType channel,const size_t order,const double *kernel,
   ExceptionInfo *exception)
 {
-#define ConvolveImageTag  "Convolve/Image"
-
-  CacheView
-    *convolve_view,
-    *image_view;
-
-  double
-    gamma;
-
   Image
     *convolve_image;
 
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  MagickPixelPacket
-    bias;
-
-  MagickRealType
-    *normal_kernel;
+  KernelInfo
+    *kernel_info;
 
   register ssize_t
     i;
 
-  size_t
-    width;
-
-  ssize_t
-    y;
-
-  /*
-    Initialize convolve image attributes.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  width=order;
-  if ((width % 2) == 0)
-    ThrowImageException(OptionError,"KernelWidthMustBeAnOddNumber");
-  convolve_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (convolve_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(convolve_image,DirectClass) == MagickFalse)
+  kernel_info=AcquireKernelInfo((const char *) NULL);
+  if (kernel_info == (KernelInfo *) NULL)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  kernel_info->width=order;
+  kernel_info->height=order;
+  kernel_info->x=(ssize_t) (order-1)/2;
+  kernel_info->y=(ssize_t) (order-1)/2;
+  kernel_info->signature=MagickSignature;
+  kernel_info->values=(double *) MagickAssumeAligned(AcquireAlignedMemory(
+    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values)));
+  if (kernel_info->values == (double *) NULL)
     {
-      InheritException(exception,&convolve_image->exception);
-      convolve_image=DestroyImage(convolve_image);
-      return((Image *) NULL);
-    }
-  if (image->debug != MagickFalse)
-    {
-      char
-        format[MaxTextExtent],
-        *message;
-
-      register const double
-        *k;
-
-      ssize_t
-        u,
-        v;
-
-      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  ConvolveImage with %.20gx%.20g kernel:",(double) width,(double)
-        width);
-      message=AcquireString("");
-      k=kernel;
-      for (v=0; v < (ssize_t) width; v++)
-      {
-        *message='\0';
-        (void) FormatLocaleString(format,MaxTextExtent,"%.20g: ",(double) v);
-        (void) ConcatenateString(&message,format);
-        for (u=0; u < (ssize_t) width; u++)
-        {
-          (void) FormatLocaleString(format,MaxTextExtent,"%g ",*k++);
-          (void) ConcatenateString(&message,format);
-        }
-        (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
-      }
-      message=DestroyString(message);
-    }
-  /*
-    Normalize kernel.
-  */
-  normal_kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
-    width,width*sizeof(*normal_kernel)));
-  if (normal_kernel == (MagickRealType *) NULL)
-    {
-      convolve_image=DestroyImage(convolve_image);
+      kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  gamma=0.0;
-  for (i=0; i < (ssize_t) (width*width); i++)
-    gamma+=kernel[i];
-  gamma=PerceptibleReciprocal(gamma);
-  for (i=0; i < (ssize_t) (width*width); i++)
-    normal_kernel[i]=gamma*kernel[i];
-  /*
-    Convolve image.
-  */
-  status=MagickTrue;
-  progress=0;
-  GetMagickPixelPacket(image,&bias);
-  SetMagickPixelPacketBias(image,&bias);
-  image_view=AcquireVirtualCacheView(image,exception);
-  convolve_view=AcquireAuthenticCacheView(convolve_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,convolve_image,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    MagickBooleanType
-      sync;
-
-    register const IndexPacket
-      *restrict indexes;
-
-    register const PixelPacket
-      *restrict p;
-
-    register IndexPacket
-      *restrict convolve_indexes;
-
-    register PixelPacket
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),image->columns+width,width,exception);
-    q=GetCacheViewAuthenticPixels(convolve_view,0,y,convolve_image->columns,1,
-      exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    indexes=GetCacheViewVirtualIndexQueue(image_view);
-    convolve_indexes=GetCacheViewAuthenticIndexQueue(convolve_view);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      DoublePixelPacket
-        pixel;
-
-      register const MagickRealType
-        *restrict k;
-
-      register const PixelPacket
-        *restrict kernel_pixels;
-
-      register ssize_t
-        u;
-
-      ssize_t
-        v;
-
-      pixel.red=bias.red;
-      pixel.green=bias.green;
-      pixel.blue=bias.blue;
-      pixel.opacity=bias.opacity;
-      pixel.index=bias.index;
-      k=normal_kernel;
-      kernel_pixels=p;
-      if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
-        {
-          for (v=0; v < (ssize_t) width; v++)
-          {
-            for (u=0; u < (ssize_t) width; u++)
-            {
-              pixel.red+=(*k)*kernel_pixels[u].red;
-              pixel.green+=(*k)*kernel_pixels[u].green;
-              pixel.blue+=(*k)*kernel_pixels[u].blue;
-              k++;
-            }
-            kernel_pixels+=image->columns+width;
-          }
-          if ((channel & RedChannel) != 0)
-            SetPixelRed(q,ClampToQuantum(pixel.red));
-          if ((channel & GreenChannel) != 0)
-            SetPixelGreen(q,ClampToQuantum(pixel.green));
-          if ((channel & BlueChannel) != 0)
-            SetPixelBlue(q,ClampToQuantum(pixel.blue));
-          if ((channel & OpacityChannel) != 0)
-            {
-              k=normal_kernel;
-              kernel_pixels=p;
-              for (v=0; v < (ssize_t) width; v++)
-              {
-                for (u=0; u < (ssize_t) width; u++)
-                {
-                  pixel.opacity+=(*k)*kernel_pixels[u].opacity;
-                  k++;
-                }
-                kernel_pixels+=image->columns+width;
-              }
-              SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
-            }
-          if (((channel & IndexChannel) != 0) &&
-              (image->colorspace == CMYKColorspace))
-            {
-              register const IndexPacket
-                *restrict kernel_indexes;
-
-              k=normal_kernel;
-              kernel_indexes=indexes;
-              for (v=0; v < (ssize_t) width; v++)
-              {
-                for (u=0; u < (ssize_t) width; u++)
-                {
-                  pixel.index+=(*k)*GetPixelIndex(kernel_indexes+u);
-                  k++;
-                }
-                kernel_indexes+=image->columns+width;
-              }
-              SetPixelIndex(convolve_indexes+x,ClampToQuantum(pixel.index));
-            }
-        }
-      else
-        {
-          double
-            alpha,
-            gamma;
-
-          gamma=0.0;
-          for (v=0; v < (ssize_t) width; v++)
-          {
-            for (u=0; u < (ssize_t) width; u++)
-            {
-              alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-                kernel_pixels[u].opacity));
-              pixel.red+=(*k)*alpha*kernel_pixels[u].red;
-              pixel.green+=(*k)*alpha*kernel_pixels[u].green;
-              pixel.blue+=(*k)*alpha*kernel_pixels[u].blue;
-              gamma+=(*k)*alpha;
-              k++;
-            }
-            kernel_pixels+=image->columns+width;
-          }
-          gamma=PerceptibleReciprocal(gamma);
-          if ((channel & RedChannel) != 0)
-            SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
-          if ((channel & GreenChannel) != 0)
-            SetPixelGreen(q,ClampToQuantum(gamma*pixel.green));
-          if ((channel & BlueChannel) != 0)
-            SetPixelBlue(q,ClampToQuantum(gamma*pixel.blue));
-          if ((channel & OpacityChannel) != 0)
-            {
-              k=normal_kernel;
-              kernel_pixels=p;
-              for (v=0; v < (ssize_t) width; v++)
-              {
-                for (u=0; u < (ssize_t) width; u++)
-                {
-                  pixel.opacity+=(*k)*GetPixelOpacity(kernel_pixels+u);
-                  k++;
-                }
-                kernel_pixels+=image->columns+width;
-              }
-              SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
-            }
-          if (((channel & IndexChannel) != 0) &&
-              (image->colorspace == CMYKColorspace))
-            {
-              register const IndexPacket
-                *restrict kernel_indexes;
-
-              k=normal_kernel;
-              kernel_pixels=p;
-              kernel_indexes=indexes;
-              for (v=0; v < (ssize_t) width; v++)
-              {
-                for (u=0; u < (ssize_t) width; u++)
-                {
-                  alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-                    kernel_pixels[u].opacity));
-                  pixel.index+=(*k)*alpha*GetPixelIndex(kernel_indexes+u);
-                  k++;
-                }
-                kernel_pixels+=image->columns+width;
-                kernel_indexes+=image->columns+width;
-              }
-              SetPixelIndex(convolve_indexes+x,ClampToQuantum(gamma*
-                pixel.index));
-            }
-        }
-      indexes++;
-      p++;
-      q++;
-    }
-    sync=SyncCacheViewAuthenticPixels(convolve_view,exception);
-    if (sync == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_ConvolveImageChannel)
-#endif
-        proceed=SetImageProgress(image,ConvolveImageTag,progress++,image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  convolve_image->type=image->type;
-  convolve_view=DestroyCacheView(convolve_view);
-  image_view=DestroyCacheView(image_view);
-  normal_kernel=(MagickRealType *) RelinquishAlignedMemory(normal_kernel);
-  if (status == MagickFalse)
-    convolve_image=DestroyImage(convolve_image);
+  for (i=0; i < (ssize_t) (order*order); i++)
+    kernel_info->values[i]=kernel[i];
+  convolve_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
+    kernel_info,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
   return(convolve_image);
 }
 
