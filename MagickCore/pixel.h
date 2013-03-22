@@ -116,6 +116,13 @@ typedef enum
 
 typedef enum
 {
+  UndefinedPixelMask = 0x000000,
+  ReadPixelMask = 0x000001,
+  WritePixelMask = 0x000002
+} PixelMask;
+
+typedef enum
+{
   UndefinedPixelTrait = 0x000000,
   CopyPixelTrait = 0x000001,
   UpdatePixelTrait = 0x000002,
