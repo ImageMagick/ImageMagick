@@ -788,23 +788,15 @@ MagickExport Image *BlurImageChannel(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
   ExceptionInfo *exception)
 {
-  double
-    *kernel,
-    normalize;
+  char
+    geometry[MaxTextExtent];
+
+  KernelInfo
+    *kernel_info;
 
   Image
-    *blur_image;
-
-  register ssize_t
-    i;
-
-  size_t
-    width;
-
-  ssize_t
-    j,
-    u,
-    v;
+    *blur_image,
+    *morphology_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -812,29 +804,25 @@ MagickExport Image *BlurImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
-    width*sizeof(*kernel)));
-  if (kernel == (double *) NULL)
+  (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g",radius,
+    sigma);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  normalize=0.0;
-  j=(ssize_t) (width-1)/2;
-  i=0;
-  for (v=(-j); v <= j; v++)
-  {
-    for (u=(-j); u <= j; u++)
-    {
-      kernel[i]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
-        MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-      normalize+=kernel[i];
-      i++;
-    }
-  }
-  kernel[(i-1)/2]+=(1.0-normalize);
-  if (sigma < MagickEpsilon)
-    kernel[(i-1)/2]=1.0;
-  blur_image=ConvolveImageChannel(image,channel,width,kernel,exception);
-  kernel=(double *) RelinquishAlignedMemory(kernel);
+  morphology_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
+    kernel_info,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  if (morphology_image == (Image *) NULL)
+    return(morphology_image);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g+90",radius,
+    sigma);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  blur_image=MorphologyImageChannel(morphology_image,channel,ConvolveMorphology,
+    1,kernel_info,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  morphology_image=DestroyImage(morphology_image);
   return(blur_image);
 }
 
@@ -1789,22 +1777,14 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
   ExceptionInfo *exception)
 {
-  double
-    *kernel;
+  char
+    geometry[MaxTextExtent];
+
+  KernelInfo
+    *kernel_info;
 
   Image
     *blur_image;
-
-  register ssize_t
-    i;
-
-  size_t
-    width;
-
-  ssize_t
-    j,
-    u,
-    v;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1812,21 +1792,14 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
-    width*sizeof(*kernel)));
-  if (kernel == (double *) NULL)
+  (void) FormatLocaleString(geometry,MaxTextExtent,"gaussian:%.20gx%.20g",
+    radius,sigma);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  j=(ssize_t) (width-1)/2;
-  i=0;
-  for (v=(-j); v <= j; v++)
-  {
-    for (u=(-j); u <= j; u++)
-      kernel[i++]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
-        MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-  }
-  blur_image=ConvolveImageChannel(image,channel,width,kernel,exception);
-  kernel=(double *) RelinquishAlignedMemory(kernel);
+  blur_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
+    kernel_info,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
 
@@ -3666,23 +3639,14 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
   ExceptionInfo *exception)
 {
-  double
-    *kernel,
-    normalize;
+  char
+    geometry[MaxTextExtent];
+
+  KernelInfo
+    *kernel_info;
 
   Image
-    *sharp_image;
-
-  register ssize_t
-    i;
-
-  size_t
-    width;
-
-  ssize_t
-    j,
-    u,
-    v;
+    *sharpen_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3690,30 +3654,16 @@ MagickExport Image *SharpenImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width*
-    width,sizeof(*kernel)));
-  if (kernel == (double *) NULL)
+  (void) FormatLocaleString(geometry,MaxTextExtent,"LoG:%.20gx%.20g",radius,
+    sigma);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  normalize=0.0;
-  j=(ssize_t) (width-1)/2;
-  i=0;
-  for (v=(-j); v <= j; v++)
-  {
-    for (u=(-j); u <= j; u++)
-    {
-      kernel[i]=(double) (-exp(-((double) u*u+v*v)/(2.0*MagickSigma*
-        MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-      normalize+=kernel[i];
-      i++;
-    }
-  }
-  kernel[(i-1)/2]=(double) ((-2.0)*normalize);
-  if (sigma < MagickEpsilon)
-    kernel[(i-1)/2]=1.0;
-  sharp_image=ConvolveImageChannel(image,channel,width,kernel,exception);
-  kernel=(double *) RelinquishAlignedMemory(kernel);
-  return(sharp_image);
+  ScaleGeometryKernelInfo(kernel_info,"!,100%");
+  sharpen_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
+    kernel_info,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  return(sharpen_image);
 }
 
 /*
