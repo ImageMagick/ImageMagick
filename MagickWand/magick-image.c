@@ -11955,7 +11955,7 @@ WandExport MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  unsharp_image=UnsharpMaskImage(wand->images,radius,sigma,amount,
+  unsharp_image=UnsharpMaskImage(wand->images,radius,sigma,gain,
     wand->exception);
   if (unsharp_image == (Image *) NULL)
     return(MagickFalse);
