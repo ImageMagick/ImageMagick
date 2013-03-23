@@ -821,25 +821,15 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 MagickExport Image *BlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-  double
-    normalize;
-
-  Image
-    *blur_image;
+  char
+    geometry[MaxTextExtent];
 
   KernelInfo
     *kernel_info;
 
-  register ssize_t
-    i;
-
-  size_t
-    width;
-
-  ssize_t
-    j,
-    u,
-    v;
+  Image
+    *blur_image,
+    *morphology_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -847,42 +837,25 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g",radius,
+    sigma);
+  kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
-  kernel_info->width=width;
-  kernel_info->height=width;
-  kernel_info->x=(ssize_t) (width-1)/2;
-  kernel_info->y=(ssize_t) (width-1)/2;
-  kernel_info->signature=MagickSignature;
-  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
-    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
-    sizeof(*kernel_info->values)));
-  if (kernel_info->values == (MagickRealType *) NULL)
-    {
-      kernel_info=DestroyKernelInfo(kernel_info);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  normalize=0.0;
-  j=(ssize_t) (kernel_info->width-1)/2;
-  i=0;
-  for (v=(-j); v <= j; v++)
-  {
-    for (u=(-j); u <= j; u++)
-    {
-      kernel_info->values[i]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*
-        MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-      normalize+=kernel_info->values[i];
-      i++;
-    }
-  }
-  kernel_info->values[(i-1)/2]+=(1.0-normalize);
-  if (sigma < MagickEpsilon)
-    kernel_info->values[(i-1)/2]=1.0;
-  blur_image=ConvolveImage(image,kernel_info,exception);
+  morphology_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
+    exception);
   kernel_info=DestroyKernelInfo(kernel_info);
+  if (morphology_image == (Image *) NULL)
+    return(morphology_image);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g+90",radius,
+    sigma);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  blur_image=MorphologyImage(morphology_image,ConvolveMorphology,1,kernel_info,
+    exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  morphology_image=DestroyImage(morphology_image);
   return(blur_image);
 }
 
@@ -1435,22 +1408,14 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-  Image
-    *blur_image;
+  char
+    geometry[MaxTextExtent];
 
   KernelInfo
     *kernel_info;
 
-  register ssize_t
-    i;
-
-  size_t
-    width;
-
-  ssize_t
-    j,
-    u,
-    v;
+  Image
+    *blur_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1458,36 +1423,12 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"gaussian:%.20gx%.20g",
+    radius,sigma);
+  kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
-  kernel_info->width=width;
-  kernel_info->height=width;
-  kernel_info->x=(ssize_t) (width-1)/2;
-  kernel_info->y=(ssize_t) (width-1)/2;
-  kernel_info->signature=MagickSignature;
-  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
-    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
-    sizeof(*kernel_info->values)));
-  if (kernel_info->values == (MagickRealType *) NULL)
-    {
-      kernel_info=DestroyKernelInfo(kernel_info);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  j=(ssize_t) (kernel_info->width-1)/2;
-  i=0;
-  for (v=(-j); v <= j; v++)
-  {
-    for (u=(-j); u <= j; u++)
-    {
-      kernel_info->values[i]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*
-        MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-      i++;
-    }
-  }
-  blur_image=ConvolveImage(image,kernel_info,exception);
+  blur_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -3177,25 +3118,14 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 MagickExport Image *SharpenImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-  double
-    normalize;
-
-  Image
-    *sharp_image;
+  char
+    geometry[MaxTextExtent];
 
   KernelInfo
     *kernel_info;
 
-  register ssize_t
-    i;
-
-  size_t
-    width;
-
-  ssize_t
-    j,
-    u,
-    v;
+  Image
+    *sharpen_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3203,43 +3133,16 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"LoG:%.20gx%.20g",
+    radius,sigma);
+  kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
-  kernel_info->width=width;
-  kernel_info->height=width;
-  kernel_info->x=(ssize_t) (width-1)/2;
-  kernel_info->y=(ssize_t) (width-1)/2;
-  kernel_info->signature=MagickSignature;
-  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
-    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
-    sizeof(*kernel_info->values)));
-  if (kernel_info->values == (MagickRealType *) NULL)
-    {
-      kernel_info=DestroyKernelInfo(kernel_info);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  normalize=0.0;
-  j=(ssize_t) (kernel_info->width-1)/2;
-  i=0;
-  for (v=(-j); v <= j; v++)
-  {
-    for (u=(-j); u <= j; u++)
-    {
-      kernel_info->values[i]=(MagickRealType) (-exp(-((double) u*u+v*v)/(2.0*
-        MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-      normalize+=kernel_info->values[i];
-      i++;
-    }
-  }
-  kernel_info->values[(i-1)/2]=(double) ((-2.0)*normalize);
-  if (sigma < MagickEpsilon)
-    kernel_info->values[(i-1)/2]=1.0;
-  sharp_image=ConvolveImage(image,kernel_info,exception);
+  ScaleGeometryKernelInfo(kernel_info,"!,100%");
+  sharpen_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
+    exception);
   kernel_info=DestroyKernelInfo(kernel_info);
-  return(sharp_image);
+  return(sharpen_image);
 }
 
 /*
