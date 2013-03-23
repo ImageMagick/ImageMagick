@@ -543,6 +543,9 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                   state|=RetainColorsState;
                   status=MagickFalse;
                 }
+              if ((GetNextImageInList(display_image) == (Image *) NULL) &&
+                  (resource_info.window_id != (char *) NULL))
+                state|=ExitState;
             }
           else
             do
