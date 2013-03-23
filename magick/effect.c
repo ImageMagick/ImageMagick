@@ -3846,7 +3846,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %      ExceptionInfo *exception)
 %    Image *UnsharpMaskImageChannel(const Image *image,
 %      const ChannelType channel,const double radius,const double sigma,
-%      const double amount,const double threshold,ExceptionInfo *exception)
+%      const double gain,const double threshold,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3859,30 +3859,30 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o amount: the percentage of the difference between the original and the
+%    o gain: the percentage of the difference between the original and the
 %      blur image that is added back into the original.
 %
-%    o threshold: the threshold in pixels needed to apply the diffence amount.
+%    o threshold: the threshold in pixels needed to apply the diffence gain.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 
 MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
-  const double sigma,const double amount,const double threshold,
+  const double sigma,const double gain,const double threshold,
   ExceptionInfo *exception)
 {
   Image
     *sharp_image;
 
-  sharp_image=UnsharpMaskImageChannel(image,DefaultChannels,radius,sigma,amount,
+  sharp_image=UnsharpMaskImageChannel(image,DefaultChannels,radius,sigma,gain,
     threshold,exception);
   return(sharp_image);
 }
 
 MagickExport Image *UnsharpMaskImageChannel(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
-  const double amount,const double threshold,ExceptionInfo *exception)
+  const double gain,const double threshold,ExceptionInfo *exception)
 {
 #define SharpenImageTag  "Sharpen/Image"
 
@@ -3974,7 +3974,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
           if (fabs(2.0*pixel.red) < quantum_threshold)
             pixel.red=(MagickRealType) GetPixelRed(p);
           else
-            pixel.red=(MagickRealType) GetPixelRed(p)+(pixel.red*amount);
+            pixel.red=(MagickRealType) GetPixelRed(p)+(pixel.red*gain);
           SetPixelRed(q,ClampToQuantum(pixel.red));
         }
       if ((channel & GreenChannel) != 0)
@@ -3983,7 +3983,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
           if (fabs(2.0*pixel.green) < quantum_threshold)
             pixel.green=(MagickRealType) GetPixelGreen(p);
           else
-            pixel.green=(MagickRealType) GetPixelGreen(p)+(pixel.green*amount);
+            pixel.green=(MagickRealType) GetPixelGreen(p)+(pixel.green*gain);
           SetPixelGreen(q,ClampToQuantum(pixel.green));
         }
       if ((channel & BlueChannel) != 0)
@@ -3992,7 +3992,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
           if (fabs(2.0*pixel.blue) < quantum_threshold)
             pixel.blue=(MagickRealType) GetPixelBlue(p);
           else
-            pixel.blue=(MagickRealType) GetPixelBlue(p)+(pixel.blue*amount);
+            pixel.blue=(MagickRealType) GetPixelBlue(p)+(pixel.blue*gain);
           SetPixelBlue(q,ClampToQuantum(pixel.blue));
         }
       if ((channel & OpacityChannel) != 0)
@@ -4001,7 +4001,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
           if (fabs(2.0*pixel.opacity) < quantum_threshold)
             pixel.opacity=(MagickRealType) GetPixelOpacity(p);
           else
-            pixel.opacity=GetPixelOpacity(p)+(pixel.opacity*amount);
+            pixel.opacity=GetPixelOpacity(p)+(pixel.opacity*gain);
           SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
         }
       if (((channel & IndexChannel) != 0) &&
@@ -4013,7 +4013,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
             pixel.index=(MagickRealType) GetPixelIndex(indexes+x);
           else
             pixel.index=(MagickRealType) GetPixelIndex(indexes+x)+
-              (pixel.index*amount);
+              (pixel.index*gain);
           SetPixelIndex(unsharp_indexes+x,ClampToQuantum(pixel.index));
         }
       p++;
