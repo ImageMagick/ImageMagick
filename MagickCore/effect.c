@@ -3316,7 +3316,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %  The format of the UnsharpMaskImage method is:
 %
 %    Image *UnsharpMaskImage(const Image *image,const double radius,
-%      const double sigma,const double amount,const double threshold,
+%      const double sigma,const double gain,const double threshold,
 %      ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -3328,16 +3328,16 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o amount: the percentage of the difference between the original and the
+%    o gain: the percentage of the difference between the original and the
 %      blur image that is added back into the original.
 %
-%    o threshold: the threshold in pixels needed to apply the diffence amount.
+%    o threshold: the threshold in pixels needed to apply the diffence gain.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
-  const double sigma,const double amount,const double threshold,
+  const double sigma,const double gain,const double threshold,
   ExceptionInfo *exception)
 {
 #define SharpenImageTag  "Sharpen/Image"
@@ -3435,7 +3435,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
         if (fabs(2.0*pixel) < quantum_threshold)
           pixel=(double) p[i];
         else
-          pixel=(double) p[i]+amount*pixel;
+          pixel=(double) p[i]+gain*pixel;
         SetPixelChannel(unsharp_image,channel,ClampToQuantum(pixel),q);
       }
       p+=GetPixelChannels(image);
