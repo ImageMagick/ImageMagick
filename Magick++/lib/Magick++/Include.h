@@ -953,7 +953,6 @@ namespace Magick
   using MagickCore::UndefinedRegistryType;
   using MagickCore::UnregisterMagickInfo;
   using MagickCore::UnsharpMaskImage;
-  using MagickCore::UnsharpMaskImage;
   using MagickCore::CacheView;
   using MagickCore::WaveImage;
   using MagickCore::WidthValue;

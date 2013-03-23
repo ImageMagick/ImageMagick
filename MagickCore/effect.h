@@ -80,7 +80,7 @@ extern MagickExport Image
   *SpreadImage(const Image *,const double,const PixelInterpolateMethod,
     ExceptionInfo *),
   *UnsharpMaskImage(const Image *,const double,const double,const double,
-    const double,ExceptionInfo *);
+    ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

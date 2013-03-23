@@ -390,8 +390,7 @@ static struct
       { "black-point-compensation", MagickBooleanOptions} } },
     { "UnsharpMask", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
-      {"amount", RealReference}, {"threshold", RealReference},
-      {"channel", MagickChannelOptions} } },
+      {"gain", RealReference}, {"channel", MagickChannelOptions} } },
     { "MotionBlur", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
       {"angle", RealReference}, {"channel", MagickChannelOptions} } },
@@ -9489,12 +9488,10 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             geometry_info.xi=argument_list[3].real_reference;
           if (attribute_flag[4] != 0)
-            geometry_info.psi=argument_list[4].real_reference;
-          if (attribute_flag[5] != 0)
-            channel=(ChannelType) argument_list[5].integer_reference;
+            channel=(ChannelType) argument_list[4].integer_reference;
           channel_mask=SetImageChannelMask(image,channel);
           image=UnsharpMaskImage(image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,geometry_info.psi,exception);
+            geometry_info.xi,exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
           break;
