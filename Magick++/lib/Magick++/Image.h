@@ -259,7 +259,7 @@ namespace Magick
     void            crop ( const Geometry &geometry_ );
     
     // Cycle image colormap
-    void            cycleColormap ( const ::ssize_t amount_ );
+    void            cycleColormap ( const ::ssize_t gain_ );
     
     // Despeckle image (reduce speckle noise)
     void            despeckle ( void );
@@ -641,7 +641,7 @@ namespace Magick
     void            splice ( const Geometry &geometry_ );
 
     // Spread pixels randomly within image by specified ammount
-    void            spread ( const size_t amount_ = 3 );
+    void            spread ( const size_t gain_ = 3 );
     
     // Sparse color image, given a set of coordinates, interpolates the colors
     // found at those coordinates, across the whole image, using various
@@ -701,20 +701,18 @@ namespace Magick
     //    center pixel.
     //  sigma_
     //    the standard deviation of the Gaussian, in pixels.
-    //  amount_
+    //  gain_
     //    the percentage of the difference between the original and
     //    the blur image that is added back into the original.
     // threshold_
     //   the threshold in pixels needed to apply the diffence amount.
     void            unsharpmask ( const double radius_,
                                   const double sigma_,
-                                  const double amount_,
-                                  const double threshold_ );
+                                  const double gain_ );
     void            unsharpmaskChannel ( const ChannelType channel_,
                                          const double radius_,
                                          const double sigma_,
-                                         const double amount_,
-                                         const double threshold_ );
+                                         const double gain_ );
 
     // Map image pixels to a sine wave
     void            wave ( const double amplitude_ = 25.0,
