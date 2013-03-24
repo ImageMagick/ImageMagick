@@ -1313,8 +1313,8 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
       kernel_info->values[i]=(MagickRealType) (((u < 0) || (v < 0) ? -8.0 :
         8.0)*exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
         (2.0*MagickPI*MagickSigma*MagickSigma));
-      if (u != k)
-        kernel_info->values[i]=0.0;
+      if (u == k)
+        kernel_info->values[i]=v == k ? 1.0 : 0.0;
       i++;
     }
     k--;
