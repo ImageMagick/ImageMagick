@@ -335,14 +335,13 @@ void Magick::drawImage::operator()( Magick::Image &image_ ) const
 }
 
 // Edge image (hilight edges in image)
-Magick::edgeImage::edgeImage( const double radius_, const double sigma_ )
-  : _radius( radius_ ),
-    _sigma( sigma_ )
+Magick::edgeImage::edgeImage( const double radius_ )
+  : _radius( radius_ )
 {
 }
 void Magick::edgeImage::operator()( Magick::Image &image_ ) const
 {
-  image_.edge( _radius, _sigma );
+  image_.edge( _radius );
 }
 
 // Emboss image (hilight edges with 3D effect)
