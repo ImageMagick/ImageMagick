@@ -3125,7 +3125,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  ScaleGeometryKernelInfo(kernel_info,"!,100%");
+  ScaleGeometryKernelInfo(kernel_info,"50!,100%");
   sharpen_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
     exception);
   kernel_info=DestroyKernelInfo(kernel_info);
