@@ -1232,17 +1232,14 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 MagickExport Image *EdgeImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
+  char
+    geometry[MaxTextExtent];
+
+  KernelInfo
+    *kernel_info;
+
   Image
     *edge_image;
-
-  double
-    *kernel;
-
-  register ssize_t
-    i;
-
-  size_t
-    width;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1250,16 +1247,12 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth1D(radius,0.5);
-  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
-    width*sizeof(*kernel)));
-  if (kernel == (double *) NULL)
+  (void) FormatLocaleString(geometry,MaxTextExtent,"Laplacian:%.20g",radius);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  for (i=0; i < (ssize_t) (width*width); i++)
-    kernel[i]=(-1.0);
-  kernel[(i-1)/2]=(double) (width*width-1.0);
-  edge_image=ConvolveImage(image,width,kernel,exception);
-  kernel=(double *) RelinquishAlignedMemory(kernel);
+  edge_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
 
