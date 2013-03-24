@@ -201,7 +201,7 @@ install-exec-hook:
 
 uninstall-hook:
 	for CURR_PROG in `echo $(UTILITIES_PGMS) | sed 's/utilities\///g'`; do \
-		rm -f $(DESTDIR)/$(LIB_DIR_PATH)/$$CURR_PROG$(EXEEXT)
+		rm -f $(DESTDIR)/$(LIB_DIR_PATH)/$$CURR_PROG$(EXEEXT); \
 	done;
 	rm -r -f $(LIB_BIN_DIR_PATH)
 
