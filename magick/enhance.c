@@ -223,9 +223,9 @@ MagickExport MagickBooleanType AutoLevelImageChannel(Image *image,
   const ChannelType channel)
 {
   /*
-    This is simply a convenience function around a Min/Max Histogram Stretch
+    Convenience method for a min/max histogram stretch.
   */
-  return MinMaxStretchImage(image, channel, 0.0, 0.0);
+  return(MinMaxStretchImage(image,channel,0.0,0.0));
 }
 
 /*
@@ -2579,13 +2579,13 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     L e v e l i z e I m a g e                                               %
+%     L e v e l I m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LevelizeImage() applies the normal level operation to the image, spreading
+%  LevelImage() applies the normal level operation to the image, spreading
 %  out the values between the black and white points over the entire range of
 %  values.  Gamma correction is also applied after the values has been mapped.
 %
@@ -2596,9 +2596,9 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %
 %  The format of the LevelizeImage method is:
 %
-%      MagickBooleanType LevelizeImage(Image *image,const double black_point,
+%      MagickBooleanType LevelImage(Image *image,const double black_point,
 %        const double white_point,const double gamma)
-%      MagickBooleanType LevelizeImageChannel(Image *image,
+%      MagickBooleanType LevelImageChannel(Image *image,
 %        const ChannelType channel,const double black_point,
 %        const double white_point,const double gamma)
 %
@@ -2613,7 +2613,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %    o white_point: The level which is to be mapped to QuantiumRange (white)
 %
 %    o gamma: adjust gamma by this factor before mapping values.
-%             use 1.0 for purely linear stretching of image color values
+%      use 1.0 for purely linear stretching of image color values
 %
 */
 
@@ -2661,8 +2661,6 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
     {
