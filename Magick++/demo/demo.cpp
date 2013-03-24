@@ -440,8 +440,8 @@ int main( int /*argc*/, char ** argv)
       cout << "  unsharp mask ..." << endl;
       example = model;
       example.label( "Unsharp Mask" );
-      //           radius_, sigma_, amount_, threshold_
-      example.unsharpmask( 0.0, 1.0, 1.0, 0.05);
+      //           radius_, sigma_, gain_
+      example.unsharpmask( 0.0, 1.0, 1.0);
       images.push_back( example );
     
       cout << "  wave ..." << endl;
