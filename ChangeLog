@@ -11,6 +11,7 @@
     for -morphology convolve.
   * Fix infinite loop for 'display -window' (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23028).
+  * Revert -auto-level patch to match the results of ImageMagick 6.8.3-4.
 
 2013-03-18  6.8.3-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-10, SVN revision 11413.
