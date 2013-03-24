@@ -828,7 +828,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     *kernel_info;
 
   Image
-    *blur_image;
+    *blur_image,
+    *morphology_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -836,12 +837,27 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  (void) FormatLocaleString(geometry,MaxTextExtent,
-    "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g",radius,
+    sigma);
   kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  blur_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,exception);
+  morphology_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
+    exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  if (morphology_image == (Image *) NULL)
+    return((Image *) NULL);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g+90",radius,
+    sigma);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
+    {
+      morphology_image=DestroyImage(morphology_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  blur_image=MorphologyImage(morphology_image,ConvolveMorphology,1,kernel_info,
+    exception);
+  morphology_image=DestroyImage(morphology_image);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
