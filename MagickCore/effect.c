@@ -3089,14 +3089,25 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 MagickExport Image *SharpenImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-  char
-    geometry[MaxTextExtent];
+  double
+    normalize;
+
+  Image
+    *sharp_image;
 
   KernelInfo
     *kernel_info;
 
-  Image
-    *sharp_image;
+  register ssize_t
+    i;
+
+  size_t
+    width;
+
+  ssize_t
+    j,
+    u,
+    v;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3104,14 +3115,41 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"LoG:%.20gx%.20g",
-    radius,sigma);
-  kernel_info=AcquireKernelInfo(geometry);
+  width=GetOptimalKernelWidth2D(radius,sigma);
+  kernel_info=AcquireKernelInfo((const char *) NULL);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  ScaleGeometryKernelInfo(kernel_info,"56!,100%");
-  sharp_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
-    exception);
+  (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
+  kernel_info->width=width;
+  kernel_info->height=width;
+  kernel_info->x=(ssize_t) width/2;
+  kernel_info->y=(ssize_t) width/2;
+  kernel_info->signature=MagickSignature;
+  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
+    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
+    sizeof(*kernel_info->values)));
+  if (kernel_info->values == (MagickRealType *) NULL)
+    {
+      kernel_info=DestroyKernelInfo(kernel_info);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  normalize=0.0;
+  j=(ssize_t) (kernel_info->width-1)/2;
+  i=0;
+  for (v=(-j); v <= j; v++)
+  {
+    for (u=(-j); u <= j; u++)
+    {
+      kernel_info->values[i]=(MagickRealType) (-exp(-((double) u*u+v*v)/(2.0*
+        MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+      normalize+=kernel_info->values[i];
+      i++;
+    }
+  }
+  kernel_info->values[i/2]=(double) ((-2.0)*normalize);
+  if (sigma < MagickEpsilon)
+    kernel_info->values[i/2]=1.0;
+  sharp_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }
