@@ -3887,6 +3887,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  (void) threshold;
   (void) FormatLocaleString(geometry,MaxTextExtent,"Blur:%.20gx%.20g>",
     radius,sigma);
   kernel_info=AcquireKernelInfo(geometry);
