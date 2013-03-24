@@ -603,7 +603,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageType(clone_image,GrayscaleType,exception);
-  edge_image=EdgeImage(clone_image,radius,sigma,exception);
+  edge_image=EdgeImage(clone_image,radius,exception);
   clone_image=DestroyImage(clone_image);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
@@ -4480,7 +4480,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   random_image=DestroyImage(random_image);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  dodge_image=EdgeImage(blur_image,radius,1.0,exception);
+  dodge_image=EdgeImage(blur_image,radius,exception);
   blur_image=DestroyImage(blur_image);
   if (dodge_image == (Image *) NULL)
     return((Image *) NULL);

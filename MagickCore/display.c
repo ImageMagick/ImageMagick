@@ -8340,8 +8340,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(radius,&geometry_info);
-      edge_image=EdgeImage(*image,geometry_info.rho,geometry_info.sigma,
-        exception);
+      edge_image=EdgeImage(*image,geometry_info.rho,exception);
       if (edge_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
@@ -8376,8 +8375,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(amount,&geometry_info);
-      spread_image=EdgeImage(*image,geometry_info.rho,geometry_info.sigma,
-        exception);
+      spread_image=EdgeImage(*image,geometry_info.rho,exception);
       if (spread_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);

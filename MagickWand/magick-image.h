@@ -124,7 +124,7 @@ extern WandExport MagickBooleanType
   MagickDistortImage(MagickWand *,const DistortImageMethod,const size_t,
     const double *,const MagickBooleanType),
   MagickDrawImage(MagickWand *,const DrawingWand *),
-  MagickEdgeImage(MagickWand *,const double,const double),
+  MagickEdgeImage(MagickWand *,const double),
   MagickEmbossImage(MagickWand *,const double,const double),
   MagickEncipherImage(MagickWand *,const char *),
   MagickEnhanceImage(MagickWand *),
