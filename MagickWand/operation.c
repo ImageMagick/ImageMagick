@@ -2221,10 +2221,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & (RhoValue|SigmaValue)) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          if ((flags & SigmaValue) == 0)
-            geometry_info.sigma=1.0;
-          new_image=EdgeImage(_image,geometry_info.rho,geometry_info.sigma,
-               _exception);
+          new_image=EdgeImage(_image,geometry_info.rho,_exception);
           break;
         }
       if (LocaleCompare("emboss",option+1) == 0)

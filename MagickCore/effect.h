@@ -65,7 +65,7 @@ extern MagickExport Image
   *BlurImage(const Image *,const double,const double,ExceptionInfo *),
   *ConvolveImage(const Image *,const KernelInfo *,ExceptionInfo *),
   *DespeckleImage(const Image *,ExceptionInfo *),
-  *EdgeImage(const Image *,const double,const double,ExceptionInfo *),
+  *EdgeImage(const Image *,const double,ExceptionInfo *),
   *EmbossImage(const Image *,const double,const double,ExceptionInfo *),
   *GaussianBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *MotionBlurImage(const Image *,const double,const double,const double,

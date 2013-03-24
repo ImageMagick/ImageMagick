@@ -229,7 +229,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   /*
     Edge detect the image brighness channel, level, blur, and level again.
   */
-  edge_image=EdgeImage(image,radius,sigma,exception);
+  edge_image=EdgeImage(image,radius,exception);
   if (edge_image == (Image *) NULL)
     {
       blur_image=DestroyImage(blur_image);
@@ -554,7 +554,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   /*
     Edge detect the image brighness channel, level, sharp, and level again.
   */
-  edge_image=EdgeImage(image,radius,sigma,exception);
+  edge_image=EdgeImage(image,radius,exception);
   if (edge_image == (Image *) NULL)
     {
       sharp_image=DestroyImage(sharp_image);
@@ -1189,7 +1189,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 %  The format of the EdgeImage method is:
 %
 %      Image *EdgeImage(const Image *image,const double radius,
-%        const double sigma,ExceptionInfo *exception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1197,30 +1197,20 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 %
 %    o radius: the radius of the pixel neighborhood.
 %
-%    o sigma: the standard deviation of the Gaussian, in pixels.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *EdgeImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
-  Image
-    *edge_image;
+  char
+    geometry[MaxTextExtent];
 
   KernelInfo
     *kernel_info;
 
-  register ssize_t
-    i;
-
-  size_t
-    width;
-
-  ssize_t
-    j,
-    u,
-    v;
+  Image
+    *edge_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1228,34 +1218,11 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth1D(radius,sigma);
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"laplacian:%.20g",radius);
+  kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  kernel_info->width=width;
-  kernel_info->height=width;
-  kernel_info->x=(ssize_t) (width-1)/2;
-  kernel_info->y=(ssize_t) (width-1)/2;
-  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
-    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
-    sizeof(*kernel_info->values)));
-  if (kernel_info->values == (MagickRealType *) NULL)
-    {
-      kernel_info=DestroyKernelInfo(kernel_info);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  j=(ssize_t) (kernel_info->width-1)/2;
-  i=0;
-  for (v=(-j); v <= j; v++)
-  {
-    for (u=(-j); u <= j; u++)
-    {
-      kernel_info->values[i]=(MagickRealType) (-1.0);
-      i++;
-    }
-  }
-  kernel_info->values[(i-1)/2]=(MagickRealType) (width*width-1.0);
-  edge_image=ConvolveImage(image,kernel_info,exception);
+  edge_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
@@ -2031,7 +1998,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case EdgeDetectPreview:
       {
-        preview_image=EdgeImage(thumbnail,radius,sigma,exception);
+        preview_image=EdgeImage(thumbnail,radius,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"edge %g",radius);
         break;
       }
@@ -3112,7 +3079,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
     *kernel_info;
 
   Image
-    *sharpen_image;
+    *sharp_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3126,10 +3093,10 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   ScaleGeometryKernelInfo(kernel_info,"56!,100%");
-  sharpen_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
+  sharp_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
     exception);
   kernel_info=DestroyKernelInfo(kernel_info);
-  return(sharpen_image);
+  return(sharp_image);
 }
 
 /*

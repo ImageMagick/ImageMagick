@@ -2767,7 +2767,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           edge_image=EdgeImage(msl_info->image[n],geometry_info.rho,
-            geometry_info.sigma,msl_info->exception);
+            msl_info->exception);
           if (edge_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);

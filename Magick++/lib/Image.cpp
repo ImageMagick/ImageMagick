@@ -890,12 +890,12 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 }
 
 // Hilight edges in image
-void Magick::Image::edge ( const double radius_, const double sigma_ )
+void Magick::Image::edge ( const double radius_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    EdgeImage( image(), radius_, sigma_, &exceptionInfo );
+    EdgeImage( image(), radius_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
