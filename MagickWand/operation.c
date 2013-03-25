@@ -3336,7 +3336,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & PsiValue) == 0)
             geometry_info.psi=0.05;
           new_image=UnsharpMaskImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,_exception);
+            geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);

@@ -2282,7 +2282,8 @@ void Magick::Image::trim ( void )
 //   the threshold in pixels needed to apply the diffence amount.
 void Magick::Image::unsharpmask ( const double radius_,
                                   const double sigma_,
-                                  const double gain_ )
+                                  const double amount_,
+                                  const double threshold_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -2290,7 +2291,8 @@ void Magick::Image::unsharpmask ( const double radius_,
     UnsharpMaskImage( image(),
                       radius_,
                       sigma_,
-                      gain_,
+                      amount_,
+                      threshold_,
                       &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -2300,7 +2302,8 @@ void Magick::Image::unsharpmask ( const double radius_,
 void Magick::Image::unsharpmaskChannel ( const ChannelType channel_,
                                          const double radius_,
                                          const double sigma_,
-                                         const double gain_ )
+                                         const double amount_,
+                                         const double threshold_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -2309,7 +2312,8 @@ void Magick::Image::unsharpmaskChannel ( const ChannelType channel_,
     UnsharpMaskImage( image(),
                              radius_,
                              sigma_,
-                             gain_,
+                             amount_,
+                             threshold_,
                              &exceptionInfo );
   (void) SetPixelChannelMask( image(), channel_mask );
   replaceImage( newImage );

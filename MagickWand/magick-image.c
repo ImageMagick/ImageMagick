@@ -11925,7 +11925,8 @@ WandExport MagickBooleanType MagickUniqueImageColors(MagickWand *wand)
 %  The format of the MagickUnsharpMaskImage method is:
 %
 %      MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
-%        const double radius,const double sigma,const double gain)
+%        const double radius,const double sigma,const double gain,
+%        const double threshold)
 %
 %  A description of each parameter follows:
 %
@@ -11939,9 +11940,12 @@ WandExport MagickBooleanType MagickUniqueImageColors(MagickWand *wand)
 %    o gain: the percentage of the difference between the original and the
 %      blur image that is added back into the original.
 %
+%    o threshold: the threshold in pixels needed to apply the diffence gain.
+%
 */
 WandExport MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
-  const double radius,const double sigma,const double gain)
+  const double radius,const double sigma,const double gain,
+  const double threshold)
 {
   Image
     *unsharp_image;
@@ -11952,7 +11956,7 @@ WandExport MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  unsharp_image=UnsharpMaskImage(wand->images,radius,sigma,gain,
+  unsharp_image=UnsharpMaskImage(wand->images,radius,sigma,gain,threshold,
     wand->exception);
   if (unsharp_image == (Image *) NULL)
     return(MagickFalse);
