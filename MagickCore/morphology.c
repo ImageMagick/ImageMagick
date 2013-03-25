@@ -4336,7 +4336,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
        * Basically all that is needed is a reversal of the kernel data!
        * And a reflection of the origon
        */
-      double
+      MagickRealType
         t;
 
       register MagickRealType
