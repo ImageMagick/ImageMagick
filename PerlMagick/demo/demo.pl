@@ -131,7 +131,7 @@ push(@$images,$example);
 print "Convolve...\n";
 $example=$model->Clone();
 $example->Label('Convolve');
-$example->Convolve([1, 1, 1, 1, 4, 1, 1, 1, 1]);
+$example->Convolve([0.125, 0.125, 0.125, 0.125, 0.5, 0.125, 0.125, 0.125, 0.125]);
 push(@$images,$example);
 
 print "Crop...\n";
