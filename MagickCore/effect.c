@@ -3325,7 +3325,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %  The format of the UnsharpMaskImage method is:
 %
 %    Image *UnsharpMaskImage(const Image *image,const double radius,
-%      const double sigma,const double gain,ExceptionInfo *exception)
+%      const double sigma,const double amount,const double threshold,
+%      ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3339,37 +3340,135 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %    o gain: the percentage of the difference between the original and the
 %      blur image that is added back into the original.
 %
+%    o threshold: the threshold in pixels needed to apply the diffence gain.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
-  const double sigma,const double gain,ExceptionInfo *exception)
+  const double sigma,const double gain,const double threshold,
+  ExceptionInfo *exception)
 {
-  char
-    geometry[MaxTextExtent];
+#define SharpenImageTag  "Sharpen/Image"
 
-  KernelInfo
-    *kernel_info;
+  CacheView
+    *image_view,
+    *unsharp_view;
 
   Image
     *unsharp_image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  double
+    quantum_threshold;
+
+  ssize_t
+    y;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"Blur:%.20gx%.20g>",
-    radius,sigma);
-  kernel_info=AcquireKernelInfo(geometry);
-  if (kernel_info == (KernelInfo *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%.20g,%.20g%%",
-    -100.0+gain*100.0,200.0-gain*100.0);
-  ScaleGeometryKernelInfo(kernel_info,geometry);
-  unsharp_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
-    exception);
-  kernel_info=DestroyKernelInfo(kernel_info);
+  unsharp_image=BlurImage(image,radius,sigma,exception);
+  if (unsharp_image == (Image *) NULL)
+    return((Image *) NULL);
+  quantum_threshold=(double) QuantumRange*threshold;
+  /*
+    Unsharp-mask image.
+  */
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireVirtualCacheView(image,exception);
+  unsharp_view=AcquireAuthenticCacheView(unsharp_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,unsharp_image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *restrict p;
+
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(unsharp_view,0,y,unsharp_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        double
+          pixel;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits,
+          unsharp_traits;
+
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        unsharp_traits=GetPixelChannelTraits(unsharp_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (unsharp_traits == UndefinedPixelTrait))
+          continue;
+        if (((unsharp_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
+          {
+            SetPixelChannel(unsharp_image,channel,p[i],q);
+            continue;
+          }
+        pixel=p[i]-(double) GetPixelChannel(unsharp_image,channel,q);
+        if (fabs(2.0*pixel) < quantum_threshold)
+          pixel=(double) p[i];
+        else
+          pixel=(double) p[i]+gain*pixel;
+        SetPixelChannel(unsharp_image,channel,ClampToQuantum(pixel),q);
+      }
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(unsharp_image);
+    }
+    if (SyncCacheViewAuthenticPixels(unsharp_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_UnsharpMaskImage)
+#endif
+        proceed=SetImageProgress(image,SharpenImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  unsharp_image->type=image->type;
+  unsharp_view=DestroyCacheView(unsharp_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    unsharp_image=DestroyImage(unsharp_image);
   return(unsharp_image);
 }

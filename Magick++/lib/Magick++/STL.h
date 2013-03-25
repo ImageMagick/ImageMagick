@@ -389,12 +389,13 @@ namespace Magick
   class MagickPPExport edgeImage : public std::unary_function<Image&,void>
   {
   public:
-    edgeImage( const double radius_ = 0.0 );
+    edgeImage( const double radius_ = 0.0, const double sigma_ = 0.5  );
 
     void operator()( Image &image_ ) const;
 
   private:
     double _radius;
+    double _sigma;
   };
 
   // Emboss image (hilight edges with 3D effect)

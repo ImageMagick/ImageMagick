@@ -3046,7 +3046,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & PsiValue) == 0)
               geometry_info.psi=0.05;
             mogrify_image=UnsharpMaskImage(*image,geometry_info.rho,
-              geometry_info.sigma,geometry_info.xi,exception);
+              geometry_info.sigma,geometry_info.xi,geometry_info.psi,
+              exception);
             break;
           }
         break;
