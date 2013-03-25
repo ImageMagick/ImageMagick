@@ -1,3 +1,6 @@
+2013-03-26  6.8.4-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.4-0, SVN revision 11531.
+
 2013-03-20  6.8.4-0 Cristy  <quetzlzacatenango@image...>
   * Do not write zero-length TIFF tags (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22957).
