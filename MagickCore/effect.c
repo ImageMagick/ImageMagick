@@ -3122,8 +3122,8 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->x=(ssize_t) width/2;
-  kernel_info->y=(ssize_t) width/2;
+  kernel_info->x=(ssize_t) (width-1)/2;
+  kernel_info->y=(ssize_t) (width-1)/2;
   kernel_info->signature=MagickSignature;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*
