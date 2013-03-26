@@ -3824,6 +3824,10 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     image->rendering_intent=(RenderingIntent) ParseCommandOption(
       MagickIntentOptions,MagickFalse,option);
+  option=GetImageOption(image_info,"intensity");
+  if (option != (const char *) NULL)
+    image->intensity=(PixelIntensityMethod) ParseCommandOption(
+      MagickPixelIntensityOptions,MagickFalse,option);
   option=GetImageOption(image_info,"interlace");
   if (option != (const char *) NULL)
     image->interlace=(InterlaceType) ParseCommandOption(MagickInterlaceOptions,
