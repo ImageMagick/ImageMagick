@@ -1279,6 +1279,10 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
 MagickExport Image *EmbossImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
+  double
+    gamma,
+    normalize;
+
   Image
     *emboss_image;
 
@@ -1335,6 +1339,12 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     }
     k--;
   }
+  normalize=0.0;
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
+    normalize+=kernel_info->values[i];
+  gamma=PerceptibleReciprocal(normalize);
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
+    kernel_info->values[i]*=gamma;
   emboss_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
     exception);
   kernel_info=DestroyKernelInfo(kernel_info);
@@ -3090,6 +3100,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   double
+    gamma,
     normalize;
 
   Image
@@ -3147,13 +3158,13 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
     }
   }
   kernel_info->values[i/2]=(double) ((-2.0)*normalize);
-  if (sigma < MagickEpsilon)
-    kernel_info->values[i/2]=1.0;
   normalize=0.0;
-  for (i=0; i < width*width; i++)
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     normalize+=kernel_info->values[i];
-  kernel_info->values[i/2]+=1.0-normalize;
-  sharp_image=ConvolveImage(image,kernel_info,exception);
+  gamma=PerceptibleReciprocal(normalize);
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
+    kernel_info->values[i]*=gamma;
+  sharp_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }
