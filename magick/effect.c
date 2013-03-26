@@ -3679,7 +3679,7 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   kernel_info->y=(ssize_t) (width-1)/2;
   kernel_info->signature=MagickSignature;
   kernel_info->values=(double *) MagickAssumeAligned(AcquireAlignedMemory(
-    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values)));
+    kernel_info->width,kernel_info->height*sizeof(*kernel_info->values)));
   if (kernel_info->values == (double *) NULL)
     {
       kernel_info=DestroyKernelInfo(kernel_info);

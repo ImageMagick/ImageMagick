@@ -2873,7 +2873,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
       register const IndexPacket
         *restrict k_indexes;
 
-      MagickPixelPacket
+      DoublePixelPacket
         result,
         min,
         max;
@@ -2890,20 +2890,20 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
       min.green   =
       min.blue    =
       min.opacity =
-      min.index   = (MagickRealType) QuantumRange;
+      min.index   = (double) QuantumRange;
       max.red     =
       max.green   =
       max.blue    =
       max.opacity =
-      max.index   = (MagickRealType) 0;
+      max.index   = 0.0;
       /* default result is the original pixel value */
-      result.red     = (MagickRealType) p[r].red;
-      result.green   = (MagickRealType) p[r].green;
-      result.blue    = (MagickRealType) p[r].blue;
-      result.opacity = QuantumRange - (MagickRealType) p[r].opacity;
+      result.red     = (double) p[r].red;
+      result.green   = (double) p[r].green;
+      result.blue    = (double) p[r].blue;
+      result.opacity = QuantumRange - (double) p[r].opacity;
       result.index   = 0.0;
       if ( image->colorspace == CMYKColorspace)
-         result.index   = (MagickRealType) GetPixelIndex(p_indexes+r);
+         result.index   = (double) GetPixelIndex(p_indexes+r);
 
       switch (method) {
         case ConvolveMorphology:
@@ -2965,14 +2965,14 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                   k_indexes += virt_width;
                 }
                 if ((channel & RedChannel) != 0)
-                  SetPixelRed(q,ClampToQuantum(result.red));
+                  SetPixelRed(q,ClampToQuantum((MagickRealType) result.red));
                 if ((channel & GreenChannel) != 0)
-                  SetPixelGreen(q,ClampToQuantum(result.green));
+                  SetPixelGreen(q,ClampToQuantum((MagickRealType) result.green));
                 if ((channel & BlueChannel) != 0)
-                  SetPixelBlue(q,ClampToQuantum(result.blue));
+                  SetPixelBlue(q,ClampToQuantum((MagickRealType) result.blue));
                 if ((channel & OpacityChannel) != 0
                     && image->matte == MagickTrue )
-                  SetPixelOpacity(q,ClampToQuantum(result.opacity));
+                  SetPixelOpacity(q,ClampToQuantum((MagickRealType) result.opacity));
                 if ((channel & IndexChannel) != 0
                     && image->colorspace == CMYKColorspace)
                   SetPixelIndex(q_indexes+x,ClampToQuantum(
@@ -2984,10 +2984,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 ** transparent pixels are not part of the results.
                 */
                 double
+                  alpha,  /* alpha weighting for colors : alpha  */
                   gamma;  /* divisor, sum of color alpha weighting */
-
-                MagickRealType
-                  alpha;  /* alpha weighting for colors : alpha  */
 
                 size_t
                   count;  /* alpha valus collected, number kernel values */
@@ -3013,13 +3011,13 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 }
                 /* Sync'ed channels, all channels are modified */
                 gamma=(double)count/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
-                SetPixelRed(q,ClampToQuantum(gamma*result.red));
-                SetPixelGreen(q,ClampToQuantum(gamma*result.green));
-                SetPixelBlue(q,ClampToQuantum(gamma*result.blue));
+                SetPixelRed(q,ClampToQuantum((MagickRealType) (gamma*result.red)));
+                SetPixelGreen(q,ClampToQuantum((MagickRealType) (gamma*result.green)));
+                SetPixelBlue(q,ClampToQuantum((MagickRealType) (gamma*result.blue)));
                 SetPixelOpacity(q,ClampToQuantum(result.opacity));
                 if (image->colorspace == CMYKColorspace)
-                  SetPixelIndex(q_indexes+x,ClampToQuantum(gamma*
-                   result.index));
+                  SetPixelIndex(q_indexes+x,ClampToQuantum((MagickRealType) (gamma*
+                   result.index)));
               }
             break;
 
