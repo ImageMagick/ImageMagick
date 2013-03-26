@@ -2667,6 +2667,9 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
 
       for (y=0; y < (ssize_t) image->rows; y++)
       {
+        DoublePixelPacket
+          result;
+
         register ssize_t
           v;
 
@@ -2679,16 +2682,12 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
         register const IndexPacket
           *restrict k_indexes;
 
-        MagickPixelPacket
-          result;
-
         /* Copy input image to the output image for unused channels
         * This removes need for 'cloning' a new image every iteration
         */
         *q = p[r];
         if (image->colorspace == CMYKColorspace)
-          SetPixelIndex(q_indexes+y,GetPixelIndex(
-            p_indexes+r));
+          SetPixelIndex(q_indexes+y,GetPixelIndex(p_indexes+r));
 
         /* Set the bias of the weighted average output */
         result.red     =
