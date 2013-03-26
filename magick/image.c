@@ -3625,6 +3625,10 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       if ((flags & SigmaValue) == 0)
         image->chromaticity.green_primary.y=image->chromaticity.green_primary.x;
     }
+  option=GetImageOption(image_info,"intensity");
+  if (option != (const char *) NULL)
+    image->intensity=(PixelIntensityMethod) ParseCommandOption(
+      MagickPixelIntensityOptions,MagickFalse,option);
   option=GetImageOption(image_info,"intent");
   if (option != (const char *) NULL)
     image->rendering_intent=(RenderingIntent) ParseCommandOption(
