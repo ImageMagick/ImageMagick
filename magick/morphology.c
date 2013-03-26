@@ -2729,11 +2729,11 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               SetPixelGreen(q,ClampToQuantum(result.green));
             if ((channel & BlueChannel) != 0)
               SetPixelBlue(q,ClampToQuantum(result.blue));
-            if ((channel & OpacityChannel) != 0
-                && image->matte == MagickTrue )
+            if (((channel & OpacityChannel) != 0) &&
+                (image->matte == MagickTrue))
               SetPixelOpacity(q,ClampToQuantum(result.opacity));
-            if ((channel & IndexChannel) != 0
-                && image->colorspace == CMYKColorspace)
+            if (((channel & IndexChannel) != 0) &&
+                (image->colorspace == CMYKColorspace))
               SetPixelIndex(q_indexes+x,ClampToQuantum(result.index));
           }
         else
@@ -2769,14 +2769,14 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               k_indexes++;
             }
             /* Sync'ed channels, all channels are modified */
-            gamma=(double)count/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+            gamma=(double) count/(fabs((double) gamma) < MagickEpsilon ?
+              MagickEpsilon : gamma);
             SetPixelRed(q,ClampToQuantum(gamma*result.red));
             SetPixelGreen(q,ClampToQuantum(gamma*result.green));
             SetPixelBlue(q,ClampToQuantum(gamma*result.blue));
             SetPixelOpacity(q,ClampToQuantum(result.opacity));
             if (image->colorspace == CMYKColorspace)
-              SetPixelIndex(q_indexes+x,ClampToQuantum(gamma*
-                result.index));
+              SetPixelIndex(q_indexes+x,ClampToQuantum(gamma*result.index));
           }
 
         /* Count up changed pixels */
@@ -2969,13 +2969,12 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                   SetPixelGreen(q,ClampToQuantum((MagickRealType) result.green));
                 if ((channel & BlueChannel) != 0)
                   SetPixelBlue(q,ClampToQuantum((MagickRealType) result.blue));
-                if ((channel & OpacityChannel) != 0
-                    && image->matte == MagickTrue )
+                if (((channel & OpacityChannel) != 0) &&
+                    (image->matte == MagickTrue))
                   SetPixelOpacity(q,ClampToQuantum((MagickRealType) result.opacity));
-                if ((channel & IndexChannel) != 0
-                    && image->colorspace == CMYKColorspace)
-                  SetPixelIndex(q_indexes+x,ClampToQuantum(
-                    result.index));
+                if (((channel & IndexChannel) != 0) &&
+                    (image->colorspace == CMYKColorspace))
+                  SetPixelIndex(q_indexes+x,ClampToQuantum(result.index));
               }
             else
               { /* Channel 'Sync' Flag, and Alpha Channel enabled.
@@ -3009,7 +3008,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                   k_indexes += virt_width;
                 }
                 /* Sync'ed channels, all channels are modified */
-                gamma=(double)count/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+                gamma=(double) count/(fabs((double) gamma) < MagickEpsilon ?
+                  MagickEpsilon : gamma);
                 SetPixelRed(q,ClampToQuantum((MagickRealType) (gamma*result.red)));
                 SetPixelGreen(q,ClampToQuantum((MagickRealType) (gamma*result.green)));
                 SetPixelBlue(q,ClampToQuantum((MagickRealType) (gamma*result.blue)));
@@ -3292,8 +3292,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
           if ((channel & OpacityChannel) != 0
               && image->matte == MagickTrue )
             SetPixelAlpha(q,ClampToQuantum(result.opacity));
-          if ((channel & IndexChannel) != 0
-              && image->colorspace == CMYKColorspace)
+          if (((channel & IndexChannel) != 0) &&
+              (image->colorspace == CMYKColorspace))
             SetPixelIndex(q_indexes+x,ClampToQuantum(result.index));
           break;
       }
@@ -3558,10 +3558,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             SetPixelGreen(q,ClampToQuantum(result.green));
           if ((channel & BlueChannel) != 0)
             SetPixelBlue(q,ClampToQuantum(result.blue));
-          if ((channel & OpacityChannel) != 0 && image->matte == MagickTrue )
+          if (((channel & OpacityChannel) != 0) && (image->matte == MagickTrue))
             SetPixelAlpha(q,ClampToQuantum(result.opacity));
-          if ((channel & IndexChannel) != 0
-              && image->colorspace == CMYKColorspace)
+          if (((channel & IndexChannel) != 0) &&
+              (image->colorspace == CMYKColorspace))
             SetPixelIndex(q_indexes+x,ClampToQuantum(result.index));
           break;
       }
@@ -3748,10 +3748,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             SetPixelGreen(q,ClampToQuantum(result.green));
           if ((channel & BlueChannel) != 0)
             SetPixelBlue(q,ClampToQuantum(result.blue));
-          if ((channel & OpacityChannel) != 0 && image->matte == MagickTrue )
+          if (((channel & OpacityChannel) != 0) && (image->matte == MagickTrue))
             SetPixelAlpha(q,ClampToQuantum(result.opacity));
-          if ((channel & IndexChannel) != 0
-              && image->colorspace == CMYKColorspace)
+          if (((channel & IndexChannel) != 0) &&
+              (image->colorspace == CMYKColorspace))
             SetPixelIndex(q_indexes+x,ClampToQuantum(result.index));
           break;
       }
