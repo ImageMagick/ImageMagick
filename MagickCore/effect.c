@@ -3149,6 +3149,10 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   kernel_info->values[i/2]=(double) ((-2.0)*normalize);
   if (sigma < MagickEpsilon)
     kernel_info->values[i/2]=1.0;
+  normalize=0.0;
+  for (i=0; i < width*width; i++)
+    normalize+=kernel_info->values[i];
+  kernel_info->values[i/2]+=1.0-normalize;
   sharp_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
