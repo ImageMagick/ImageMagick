@@ -2011,6 +2011,7 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
       break;
     }
     case Rec601LuminancePixelIntensityMethod:
+    default:
     {
       if (image->colorspace == sRGBColorspace)
         {
@@ -2022,7 +2023,6 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
       break;
     }
     case Rec709LumaPixelIntensityMethod:
-    default:
     {
       if (image->colorspace == sRGBColorspace)
         {
