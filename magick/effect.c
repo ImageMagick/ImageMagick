@@ -3680,6 +3680,10 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   kernel[i/2]=(double) ((-2.0)*normalize);
   if (sigma < MagickEpsilon)
     kernel[i/2]=1.0;
+  normalize=0.0;
+  for (i=0; i < width*width; i++)
+    normalize+=kernel[i];
+  kernel[i/2]+=1.0-normalize;
   sharp_image=ConvolveImageChannel(image,channel,width,kernel,exception);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   return(sharp_image);
