@@ -1308,10 +1308,14 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   double
-    *kernel;
+    gamma,
+    normalize;
 
   Image
     *emboss_image;
+
+  KernelInfo
+    *kernel_info;
 
   register ssize_t
     i;
@@ -1325,37 +1329,54 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     u,
     v;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
-    width*sizeof(*kernel)));
-  if (kernel == (double *) NULL)
+  width=GetOptimalKernelWidth1D(radius,sigma);
+  kernel_info=AcquireKernelInfo((const char *) NULL);
+  if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  j=(ssize_t) (width-1)/2;
+  kernel_info->width=width;
+  kernel_info->height=width;
+  kernel_info->x=(ssize_t) (width-1)/2;
+  kernel_info->y=(ssize_t) (width-1)/2;
+  kernel_info->values=(double *) MagickAssumeAligned(AcquireAlignedMemory(
+    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values)));
+  if (kernel_info->values == (double *) NULL)
+    {
+      kernel_info=DestroyKernelInfo(kernel_info);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  j=(ssize_t) (kernel_info->width-1)/2;
   k=j;
   i=0;
   for (v=(-j); v <= j; v++)
   {
     for (u=(-j); u <= j; u++)
     {
-      kernel[i]=(double) (((u < 0) || (v < 0) ? -8.0 : 8.0)*
-        exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
+      kernel_info->values[i]=(double) (((u < 0) || (v < 0) ? -8.0 :
+        8.0)*exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
         (2.0*MagickPI*MagickSigma*MagickSigma));
       if (u == k)
-        kernel[i]=v == k ? 1.0 : 0.0;
+        kernel_info->values[i]=v == k ? 1.0 : 0.0;
       i++;
     }
     k--;
   }
-  emboss_image=ConvolveImage(image,width,kernel,exception);
+  normalize=0.0;
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
+    normalize+=kernel_info->values[i];
+  gamma=PerceptibleReciprocal(normalize);
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
+    kernel_info->values[i]*=gamma;
+  emboss_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
+    exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImage(emboss_image);
-  kernel=(double *) RelinquishAlignedMemory(kernel);
   return(emboss_image);
 }
 
@@ -3636,11 +3657,14 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   ExceptionInfo *exception)
 {
   double
-    *kernel,
+    gamma,
     normalize;
 
   Image
     *sharp_image;
+
+  KernelInfo
+    *kernel_info;
 
   register ssize_t
     i;
@@ -3660,32 +3684,45 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width*
-    width,sizeof(*kernel)));
-  if (kernel == (double *) NULL)
+  kernel_info=AcquireKernelInfo((const char *) NULL);
+  if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
+  kernel_info->width=width;
+  kernel_info->height=width;
+  kernel_info->x=(ssize_t) (width-1)/2;
+  kernel_info->y=(ssize_t) (width-1)/2;
+  kernel_info->signature=MagickSignature;
+  kernel_info->values=(double *) MagickAssumeAligned(AcquireAlignedMemory(
+    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values)));
+  if (kernel_info->values == (double *) NULL)
+    {
+      kernel_info=DestroyKernelInfo(kernel_info);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   normalize=0.0;
-  j=(ssize_t) (width-1)/2;
+  j=(ssize_t) (kernel_info->width-1)/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
     for (u=(-j); u <= j; u++)
     {
-      kernel[i]=(double) (-exp(-((double) u*u+v*v)/(2.0*MagickSigma*
-        MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-      normalize+=kernel[i];
+      kernel_info->values[i]=(double) (-exp(-((double) u*u+v*v)/(2.0*
+        MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+      normalize+=kernel_info->values[i];
       i++;
     }
   }
-  kernel[i/2]=(double) ((-2.0)*normalize);
-  if (sigma < MagickEpsilon)
-    kernel[i/2]=1.0;
+  kernel_info->values[i/2]=(double) ((-2.0)*normalize);
   normalize=0.0;
-  for (i=0; i < width*width; i++)
-    normalize+=kernel[i];
-  kernel[i/2]+=1.0-normalize;
-  sharp_image=ConvolveImageChannel(image,channel,width,kernel,exception);
-  kernel=(double *) RelinquishAlignedMemory(kernel);
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
+    normalize+=kernel_info->values[i];
+  gamma=PerceptibleReciprocal(normalize);
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
+    kernel_info->values[i]*=gamma;
+  sharp_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
+    kernel_info,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }
 
