@@ -67,6 +67,7 @@
 #include "magick/monitor-private.h"
 #include "magick/montage.h"
 #include "magick/morphology.h"
+#include "magick/morphology-private.h"
 #include "magick/paint.h"
 #include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
@@ -808,8 +809,8 @@ MagickExport Image *BlurImageChannel(const Image *image,
   kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  blur_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
-    kernel_info,exception);
+  blur_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
+    UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -889,8 +890,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     }
   for (i=0; i < (ssize_t) (order*order); i++)
     kernel_info->values[i]=kernel[i];
-  convolve_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
-    kernel_info,exception);
+  convolve_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
+    UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(convolve_image);
 }
@@ -1799,8 +1800,8 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  blur_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
-    kernel_info,exception);
+  blur_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
+    UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -3705,8 +3706,8 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   gamma=PerceptibleReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
-  sharp_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
-    kernel_info,exception);
+  sharp_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
+    UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }
