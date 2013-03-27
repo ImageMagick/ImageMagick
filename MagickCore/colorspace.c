@@ -1648,7 +1648,17 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   image->rendering_intent=UndefinedIntent;
   image->gamma=1.000f;
   (void) ResetMagickMemory(&image->chromaticity,0,sizeof(image->chromaticity));
-  if (IssRGBColorspace(colorspace) != MagickFalse)
+  if (IsGrayColorspace(colorspace) != MagickFalse)
+    {
+      if ((image->intensity != Rec601LuminancePixelIntensityMethod) &&
+          (image->intensity != Rec709LuminancePixelIntensityMethod))
+        image->gamma=1.000f/2.200f;
+      image->type=GrayscaleType;
+    }
+  else
+    if (IssRGBColorspace(colorspace) != MagickFalse)
+      image->gamma=1.000f/2.200f;
+  if (image->gamma == (1.000f/2.200f))
     {
       image->rendering_intent=PerceptualIntent;
       image->gamma=1.000f/2.200f;
