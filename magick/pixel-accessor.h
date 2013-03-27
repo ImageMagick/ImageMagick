@@ -140,20 +140,7 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
 static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
   const PixelPacket *restrict pixel)
 {
-  MagickRealType
-    blue,
-    green,
-    red;
-
-  if (image->colorspace == GRAYColorspace)
-    return(GetPixelGray(pixel));
-  if (image->colorspace != sRGBColorspace)
-    return(ClampToQuantum(0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*
-      pixel->blue));
-  red=DecodePixelGamma((MagickRealType) pixel->red);
-  green=DecodePixelGamma((MagickRealType) pixel->green);
-  blue=DecodePixelGamma((MagickRealType) pixel->blue);
-  return(ClampToQuantum(0.298839f*red+0.586811f*green+0.114350f*blue));
+  return(ClampToQuantum(GetPixelIntensity(image,pixel)));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
