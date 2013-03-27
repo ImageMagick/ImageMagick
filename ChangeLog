@@ -1,3 +1,6 @@
+2013-03-27  6.8.4-2 Cristy  <quetzlzacatenango@image...>
+  * Use MorphologyApply() rather than MorphologyImage() for -sharpen / -blur.
+
 2013-03-27  6.8.4-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-1, SVN revision 11552.
 
