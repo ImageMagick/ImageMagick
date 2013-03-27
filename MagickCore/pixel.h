@@ -27,6 +27,9 @@ extern "C" {
 #define MaxPixelChannels  32
 #undef index
 
+/*
+  Pixel enum declarations.
+*/
 typedef enum
 {
   UndefinedChannel = 0x0000,
@@ -129,6 +132,21 @@ typedef enum
   BlendPixelTrait = 0x000004
 } PixelTrait;
 
+typedef enum
+{
+  UndefinedPixel,
+  CharPixel,
+  DoublePixel,
+  FloatPixel,
+  LongPixel,
+  LongLongPixel,
+  QuantumPixel,
+  ShortPixel
+} StorageType;
+
+/*
+  Pixel typedef declarations.
+*/
 typedef struct _PixelChannelMap
 {
   PixelChannel
@@ -180,21 +198,12 @@ typedef struct _PixelPacket
     black;
 } PixelPacket;
 
-typedef enum
-{
-  UndefinedPixel,
-  CharPixel,
-  DoublePixel,
-  FloatPixel,
-  LongPixel,
-  LongLongPixel,
-  QuantumPixel,
-  ShortPixel
-} StorageType;
-
 typedef struct _CacheView
   CacheView_;
 
+/*
+  Pixel method declarations.
+*/
 extern MagickExport MagickBooleanType
   ExportImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,void *,ExceptionInfo *),
