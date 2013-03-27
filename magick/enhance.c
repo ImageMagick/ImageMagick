@@ -1166,6 +1166,8 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   /*
     Form histogram.
   */
+  if (IsGrayImage(image,exception) != MagickFalse)
+    (void) SetImageColorspace(image,GRAYColorspace);
   status=MagickTrue;
   exception=(&image->exception);
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
@@ -1196,7 +1198,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
         Quantum
           intensity;
 
-        intensity=PixelIntensityToQuantum(image,p);
+        intensity=ClampToQuantum(GetPixelIntensity(image,p));
         histogram[ScaleQuantumToMap(intensity)].red++;
         histogram[ScaleQuantumToMap(intensity)].green++;
         histogram[ScaleQuantumToMap(intensity)].blue++;
