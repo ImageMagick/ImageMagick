@@ -288,7 +288,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       comment=DestroyString(comment);
     }
   (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
-  pixel.alpha=(Quantum) OpaqueAlpha;
+  pixel.alpha=(MagickRealType) OpaqueAlpha;
   if (tga_info.colormap_type != 0)
     {
       /*
@@ -306,7 +306,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Gray scale.
             */
-            pixel.red=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+            pixel.red=(MagickRealType) ScaleCharToQuantum((unsigned char)
+              ReadBlobByte(image));
             pixel.green=pixel.red;
             pixel.blue=pixel.red;
             break;
@@ -323,10 +324,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             j=(unsigned char) ReadBlobByte(image);
             k=(unsigned char) ReadBlobByte(image);
             range=GetQuantumRange(5UL);
-            pixel.red=ScaleAnyToQuantum(1UL*(k & 0x7c) >> 2,range);
-            pixel.green=ScaleAnyToQuantum((1UL*(k & 0x03) << 3)+
-              (1UL*(j & 0xe0) >> 5),range);
-            pixel.blue=ScaleAnyToQuantum(1UL*(j & 0x1f),range);
+            pixel.red=(MagickRealType) ScaleAnyToQuantum(1UL*(k & 0x7c) >> 2,
+              range);
+            pixel.green=(MagickRealType) ScaleAnyToQuantum((1UL*(k & 0x03)
+              << 3)+(1UL*(j & 0xe0) >> 5),range);
+            pixel.blue=(MagickRealType) ScaleAnyToQuantum(1UL*(j & 0x1f),range);
             break;
           }
           case 24:
@@ -335,9 +337,12 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               8 bits each of blue, green and red.
             */
-            pixel.blue=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
-            pixel.green=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
-            pixel.red=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+            pixel.blue=(MagickRealType) ScaleCharToQuantum((unsigned char)
+              ReadBlobByte(image));
+            pixel.green=(MagickRealType) ScaleCharToQuantum((unsigned char)
+              ReadBlobByte(image));
+            pixel.red=(MagickRealType) ScaleCharToQuantum((unsigned char)
+              ReadBlobByte(image));
             break;
           }
         }
@@ -399,9 +404,12 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 1UL*index,exception)];
             else
               {
-                pixel.red=ScaleCharToQuantum((unsigned char) index);
-                pixel.green=ScaleCharToQuantum((unsigned char) index);
-                pixel.blue=ScaleCharToQuantum((unsigned char) index);
+                pixel.red=(MagickRealType) ScaleCharToQuantum((unsigned char)
+                  index);
+                pixel.green=(MagickRealType) ScaleCharToQuantum((unsigned char)
+                  index);
+                pixel.blue=(MagickRealType) ScaleCharToQuantum((unsigned char)
+                  index);
               }
             break;
           }
@@ -419,13 +427,14 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             j=pixels[0];
             k=pixels[1];
             range=GetQuantumRange(5UL);
-            pixel.red=ScaleAnyToQuantum(1UL*(k & 0x7c) >> 2,range);
-            pixel.green=ScaleAnyToQuantum((1UL*(k & 0x03) << 3)+
-              (1UL*(j & 0xe0) >> 5),range);
-            pixel.blue=ScaleAnyToQuantum(1UL*(j & 0x1f),range);
+            pixel.red=(MagickRealType) ScaleAnyToQuantum(1UL*(k & 0x7c) >> 2,
+              range);
+            pixel.green=(MagickRealType) ScaleAnyToQuantum((1UL*(k & 0x03)
+              << 3)+(1UL*(j & 0xe0) >> 5),range);
+            pixel.blue=(MagickRealType) ScaleAnyToQuantum(1UL*(j & 0x1f),range);
             if (image->alpha_trait == BlendPixelTrait)
-              pixel.alpha=(k & 0x80) == 0 ? (Quantum) OpaqueAlpha : (Quantum)
-                TransparentAlpha; 
+              pixel.alpha=(MagickRealType) ((k & 0x80) == 0 ? (Quantum)
+                OpaqueAlpha : (Quantum) TransparentAlpha); 
             if (image->storage_class == PseudoClass)
               index=ConstrainColormapIndex(image,((size_t) k << 8)+j,exception);
             break;
@@ -437,9 +446,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (ReadBlob(image,3,pixels) != 3)
               ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-            pixel.blue=ScaleCharToQuantum(pixels[0]);
-            pixel.green=ScaleCharToQuantum(pixels[1]);
-            pixel.red=ScaleCharToQuantum(pixels[2]);
+            pixel.blue=(MagickRealType) ScaleCharToQuantum(pixels[0]);
+            pixel.green=(MagickRealType) ScaleCharToQuantum(pixels[1]);
+            pixel.red=(MagickRealType) ScaleCharToQuantum(pixels[2]);
             break;
           }
           case 32:
@@ -449,10 +458,10 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (ReadBlob(image,4,pixels) != 4)
               ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-            pixel.blue=ScaleCharToQuantum(pixels[0]);
-            pixel.green=ScaleCharToQuantum(pixels[1]);
-            pixel.red=ScaleCharToQuantum(pixels[2]);
-            pixel.alpha=ScaleCharToQuantum(pixels[3]);
+            pixel.blue=(MagickRealType) ScaleCharToQuantum(pixels[0]);
+            pixel.green=(MagickRealType) ScaleCharToQuantum(pixels[1]);
+            pixel.red=(MagickRealType) ScaleCharToQuantum(pixels[2]);
+            pixel.alpha=(MagickRealType) ScaleCharToQuantum(pixels[3]);
             break;
           }
         }
@@ -460,11 +469,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       if (image->storage_class == PseudoClass)
         SetPixelIndex(image,index,q);
-      SetPixelRed(image,pixel.red,q);
-      SetPixelGreen(image,pixel.green,q);
-      SetPixelBlue(image,pixel.blue,q);
+      SetPixelRed(image,ClampToQuantum(pixel.red),q);
+      SetPixelGreen(image,ClampToQuantum(pixel.green),q);
+      SetPixelBlue(image,ClampToQuantum(pixel.blue),q);
       if (image->alpha_trait == BlendPixelTrait)
-        SetPixelAlpha(image,pixel.alpha,q);
+        SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(image);
     }
     if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
@@ -777,9 +786,9 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
       q=targa_colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        *q++=ScaleQuantumToChar(image->colormap[i].blue);
-        *q++=ScaleQuantumToChar(image->colormap[i].green);
-        *q++=ScaleQuantumToChar(image->colormap[i].red);
+        *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue));
+        *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green));
+        *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red));
       }
       (void) WriteBlob(image,(size_t) (3*targa_info.colormap_length),
         targa_colormap);
@@ -805,7 +814,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         *q++=(unsigned char) GetPixelIndex(image,p);
       else
         if (targa_info.image_type == TargaMonochrome)
-          *q++=(unsigned char) ScaleQuantumToChar(GetPixelIntensity(image,p));
+          *q++=(unsigned char) ScaleQuantumToChar((ClampToQuantum(
+            GetPixelIntensity(image,p))));
         else
           {
             *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
