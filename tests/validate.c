@@ -464,8 +464,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 {
   char
 #ifdef MagickCountTempFiles
-    SystemCommand[MaxTextExtent],
     path[MaxTextExtent],
+    SystemCommand[MaxTextExtent],
 #endif
     size[MaxTextExtent];
 
@@ -654,7 +654,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 #endif
       if (IssRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
-      fuzz+=MagickEpsilon;
+      fuzz+=2.31365e-06;
       difference_image=CompareImages(reference_image,reconstruct_image,
         RootMeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
@@ -678,10 +678,10 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       (void) FormatLocaleFile(stdout,"... pass, ");
       (void) fflush(stdout);
       SystemCommand[0]='\0';
-      (void)strncat(SystemCommand,"echo `ls ",9);
-      (void)strncat(SystemCommand,path,MaxTextExtent-31);
-      (void)strncat(SystemCommand,"* | wc -w` tmp files.",20);
-      (void)system(SystemCommand);
+      (void) strncat(SystemCommand,"echo `ls ",9);
+      (void) strncat(SystemCommand,path,MaxTextExtent-31);
+      (void) strncat(SystemCommand,"* | wc -w` tmp files.",20);
+      (void) system(SystemCommand);
       (void) fflush(stdout);
 #else
       (void) FormatLocaleFile(stdout,"... pass\n");
@@ -877,7 +877,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
 #endif
       if (IssRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
-      fuzz+=MagickEpsilon;
+      fuzz+=2.31365e-06;
       difference_image=CompareImages(reference_image,reconstruct_image,
         RootMeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
