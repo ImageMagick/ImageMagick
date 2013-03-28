@@ -216,6 +216,7 @@ static MagickBooleanType ConvertUsage(void)
       "-gaussian-blur geometry",
       "                     reduce image noise and reduce detail levels",
       "-geometry geometry   preferred size or location of the image",
+      "-grayscale method    convert image to grayscale",
       "-identify            identify the format and characteristics of the image",
       "-ift                 implements the inverse discrete Fourier transform (DFT)",
       "-implode amount      implode image pixels about the center",
@@ -1656,6 +1657,23 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               argv[i]);
             if (gravity < 0)
               ThrowConvertException(OptionError,"UnrecognizedGravityType",
+                argv[i]);
+            break;
+          }
+        if (LocaleCompare("grayscale",option+1) == 0)
+          {
+            ssize_t
+              method;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            method=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,
+              argv[i]);
+            if (method < 0)
+              ThrowConvertException(OptionError,"UnrecognizedIntensityMethod",
                 argv[i]);
             break;
           }

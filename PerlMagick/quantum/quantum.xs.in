@@ -541,7 +541,7 @@ static struct
     { "Perceptible", { {"epsilon", RealReference},
       {"channel", MagickChannelOptions} } },
     { "Poly", { {"terms", ArrayReference},
-      {"channel", MagickChannelOptions} } }
+      {"channel", MagickChannelOptions} } },
     { "Grayscale", { {"method", MagickNoiseOptions} } },
   };
 
