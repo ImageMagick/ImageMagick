@@ -31,11 +31,11 @@ extern "C" {
 #define MagickLibVersion  0x684
 #define MagickLibVersionText  "6.8.4"
 #define MagickLibVersionNumber  1,0,0
-#define MagickLibAddendum  "-3"
+#define MagickLibAddendum  "-4"
 #define MagickLibInterface  1
 #define MagickLibMinInterface  1
-#define MagickReleaseDate  "2013-03-27"
-#define MagickChangeDate   "20130327"
+#define MagickReleaseDate  "2013-03-28"
+#define MagickChangeDate   "20130328"
 #define MagickFeatures "DPC OpenMP"
 #define MagickDelegates "bzlib fontconfig freetype jng jp2 jpeg lcms lzma pango png ps tiff x xml zlib"
 #define MagickHomeURL  "file:///usr/share/doc/ImageMagick-6/index.html"
