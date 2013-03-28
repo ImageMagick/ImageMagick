@@ -1385,7 +1385,6 @@ int main(int argc,char **argv)
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   (void) CopyMagickString(image_info->filename,ReferenceFilename,MaxTextExtent);
-  (void) SetImageOption(image_info,"intensity","Rec601Lumniance");
   for (i=1; i < (ssize_t) argc; i++)
   {
     option=argv[i];
