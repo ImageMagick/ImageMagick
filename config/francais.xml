@@ -766,6 +766,9 @@
         <message name="UnrecognizedImageType">
           type d'image non reconnu
         </message>
+        <message name="UnrecognizedIntensityMethod">
+          unrecognized intensity method
+        </message>
         <message name="UnrecognizedIntentType">
           type de gestion des couleurs de l'image non reconnu
         </message>
