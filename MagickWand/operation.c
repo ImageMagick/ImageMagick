@@ -2050,7 +2050,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
              That seems to be a little strange!
           */
           (void) TransformImageColorspace(_image,
-                    IfNormalOp ? _image_info->colorspace : RGBColorspace,
+                    IfNormalOp ? _image_info->colorspace : sRGBColorspace,
                     _exception);
           break;
         }
@@ -2443,6 +2443,19 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           else
             new_image=ResizeImage(_image,geometry.width,geometry.height,
               _image->filter,_exception);
+          break;
+        }
+      if (LocaleCompare("distort",option+1) == 0)
+        {
+          parse = ParseCommandOption(MagickPixelIntensityOptions,
+            MagickFalse,arg1);
+          if ( parse < 0 )
+             CLIWandExceptArgBreak(OptionError,"UnrecognizedIntensityMethod",
+               option,arg1);
+          _image->intensity = (PixelIntensityMethod) parse;
+          (void) TransformImageColorspace(_image,
+                    IfNormalOp ? _image_info->colorspace : GRAYColorspace,
+                    _exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
