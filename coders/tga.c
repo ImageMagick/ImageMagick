@@ -809,15 +809,15 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
         *q++=(unsigned char) GetPixelIndex(indexes+x);
       else
         if (targa_info.image_type == TargaMonochrome)
-          *q++=(unsigned char) ScaleQuantumToChar(PixelIntensityToQuantum(image,p));
+          *q++=(unsigned char) ScaleQuantumToChar(
+            PixelIntensityToQuantum(image,p));
         else
           {
             *q++=ScaleQuantumToChar(GetPixelBlue(p));
             *q++=ScaleQuantumToChar(GetPixelGreen(p));
             *q++=ScaleQuantumToChar(GetPixelRed(p));
             if (image->matte != MagickFalse)
-              *q++=(unsigned char) ScaleQuantumToChar(
-                GetPixelAlpha(p));
+              *q++=(unsigned char) ScaleQuantumToChar(GetPixelAlpha(p));
             if (image->colorspace == CMYKColorspace)
               *q++=ScaleQuantumToChar(GetPixelIndex(indexes+x));
           }
