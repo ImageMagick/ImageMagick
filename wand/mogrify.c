@@ -1772,6 +1772,20 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               MagickGravityOptions,MagickFalse,argv[i+1]);
             break;
           }
+        if (LocaleCompare("grayscale",option+1) == 0)
+          {
+            (void) SyncImagesSettings(mogrify_info,*image);
+            if (*option == '+')
+              {
+                (void) TransformImageColorspace(*image,sRGBColorspace);
+                InheritException(exception,&(*image)->exception);
+                break;
+              }
+            (*image)->intensity=(PixelIntensityMethod) ParseCommandOption(
+              MagickPixelIntensityOptions,MagickFalse,argv[i+1]);
+            (void) TransformImageColorspace(*image,GRAYColorspace);
+            break;
+          }
         break;
       }
       case 'h':
@@ -3342,7 +3356,6 @@ static MagickBooleanType MogrifyUsage(void)
       "-ift                 implements the inverse discrete Fourier transform (DFT)",
       "-implode amount      implode image pixels about the center",
       "-lat geometry        local adaptive thresholding",
-      "-layers method       optimize, merge,  or compare image layers",
       "-level value         adjust the level of image contrast",
       "-level-colors color,color",
       "                     level image with the given colors",
@@ -3443,6 +3456,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-flatten             flatten a sequence of images",
       "-fx expression       apply mathematical expression to an image channel(s)",
       "-hald-clut           apply a Hald color lookup table to the image",
+      "-layers method       optimize, merge, or compare image layers",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-poly terms          build a polynomial from the image sequence and the corresponding",
@@ -4746,9 +4760,27 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,argv[i]);
+            gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,
+              argv[i]);
             if (gravity < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedGravityType",
+                argv[i]);
+            break;
+          }
+        if (LocaleCompare("grayscale",option+1) == 0)
+          {
+            ssize_t
+              type;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            type=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,
+              argv[i]);
+            if (type < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedIntensityMethod",
                 argv[i]);
             break;
           }
