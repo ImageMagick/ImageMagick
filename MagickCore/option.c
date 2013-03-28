@@ -424,6 +424,8 @@ static const OptionInfo
     { "-geometry", 1L, SimpleOperatorFlag, MagickFalse },
     { "+gravity", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-gravity", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
+    { "+grayscale", 1L, SimpleOperatorFlag, MagickTrue },
+    { "-grayscale", 1L, SimpleOperatorFlag, MagickFalse },
     { "+green-primary", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-green-primary", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+hald-clut", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
