@@ -952,9 +952,11 @@ interpret Percent Escapes in Arguments, At least not yet */
       if (LocaleCompare("intensity",option+1) == 0)
         {
           arg1 = ArgOption("undefined");
-          parse = ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,arg1);
+          parse = ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,
+            arg1);
           if (parse < 0)
-            CLIWandExceptArgBreak(OptionError,"UnrecognizedIntentType",option,arg1);
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedIntensityType",
+              option,arg1);
           (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }

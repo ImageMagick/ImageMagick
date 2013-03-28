@@ -1737,9 +1737,11 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            intensity=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,argv[i]);
+            intensity=ParseCommandOption(MagickPixelIntensityOptions,
+              MagickFalse,argv[i]);
             if (intensity < 0)
-              ThrowConvertException(OptionError,"UnrecognizedPixelIntensityMethod",argv[i]);
+              ThrowConvertException(OptionError,"UnrecognizedIntensityMethod",
+                argv[i]);
             break;
           }
         if (LocaleCompare("intent",option+1) == 0)
