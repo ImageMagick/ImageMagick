@@ -2600,21 +2600,25 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-
-  /* FUTURE: This should not be here! */
+  /*
+    FUTURE: This should not be here!
+  */
   if (LocaleCompare(option,"size") == 0)
     (void) CloneString(&image_info->size,value);
-
-  /* create tree if needed - specify how key,values are to be freed */
+  /*
+    Create tree if needed - specify how key,values are to be freed.
+  */
   if (image_info->options == (void *) NULL)
     image_info->options=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
-
-  /* Delete Option if NULL */
+  /*
+    Delete Option if NULL.
+  */
   if (value == (const char *) NULL)
     return(DeleteImageOption(image_info,option));
-
-  /* Add option to splay-tree */
+  /*
+    Add option to splay-tree.
+  */
   return(AddValueToSplayTree((SplayTreeInfo *) image_info->options,
     ConstantString(option),ConstantString(value)));
 }
