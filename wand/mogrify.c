@@ -3352,6 +3352,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-gaussian-blur geometry",
       "                     reduce image noise and reduce detail levels",
       "-geometry geometry   preferred size or location of the image",
+      "-grayscale method    convert image to grayscale",
       "-identify            identify the format and characteristics of the image",
       "-ift                 implements the inverse discrete Fourier transform (DFT)",
       "-implode amount      implode image pixels about the center",
