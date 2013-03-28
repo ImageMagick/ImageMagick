@@ -775,6 +775,9 @@
         <message name="UnrecognizedImageType">
           unrecognized image type
         </message>
+        <message name="UnrecognizedIntensityMethod">
+          unrecognized intensity method
+        </message>
         <message name="UnrecognizedIntentType">
           unrecognized intent type
         </message>

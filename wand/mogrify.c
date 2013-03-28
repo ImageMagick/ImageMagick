@@ -4770,16 +4770,16 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("grayscale",option+1) == 0)
           {
             ssize_t
-              type;
+              method;
 
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            type=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,
+            method=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,
               argv[i]);
-            if (type < 0)
+            if (method < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedIntensityMethod",
                 argv[i]);
             break;

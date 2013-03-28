@@ -1637,6 +1637,23 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
+        if (LocaleCompare("grayscale",option+1) == 0)
+          {
+            ssize_t
+              method;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            method=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,
+              argv[i]);
+            if (method < 0)
+              ThrowConvertException(OptionError,"UnrecognizedIntensityMethod",
+                argv[i]);
+            break;
+          }
         if (LocaleCompare("green-primary",option+1) == 0)
           {
             if (*option == '+')
