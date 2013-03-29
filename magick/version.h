@@ -37,7 +37,7 @@ extern "C" {
 #define MagickReleaseDate  "2013-03-29"
 #define MagickChangeDate   "20130329"
 #define MagickFeatures "DPC OpenMP"
-#define MagickDelegates "bzlib fontconfig freetype jng jp2 jpeg lcms lzma pango png ps tiff x xml zlib"
+#define MagickDelegates "fontconfig freetype lzma pango ps x"
 #define MagickHomeURL  "file:///usr/share/doc/ImageMagick-6/index.html"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
