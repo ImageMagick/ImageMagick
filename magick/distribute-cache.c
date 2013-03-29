@@ -71,7 +71,7 @@
 #include "magick/string-private.h"
 #include "magick/version.h"
 #include "magick/version-private.h"
-#if defined(MAGICKCORE_HAVE_SOCKET)
+#if defined(MAGICKCORE_HAVE_SOCKET) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -147,7 +147,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
 static int ConnectPixelCacheServer(const char *hostname,const int port,
   size_t *session_key,ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_HAVE_SOCKET)
+#if defined(MAGICKCORE_HAVE_SOCKET) && !defined(__MINGW32__) && !defined(__MINGW64__)
   char
     service[MaxTextExtent];
 
@@ -828,7 +828,7 @@ static void *DistributePixelCacheClient(void *socket)
 MagickExport void DistributePixelCacheServer(const int port,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT) && !defined(__MINGW32__) && !defined(__MINGW64__)
   char
     service[MaxTextExtent];
 
