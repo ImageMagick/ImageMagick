@@ -3535,14 +3535,11 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
               (image->colormap[i].green != image->colormap[i].blue))
             continue;
         if ((channel & RedChannel) != 0)
-          image->colormap[i].red=QuantumRange-
-            image->colormap[i].red;
+          image->colormap[i].red=QuantumRange-image->colormap[i].red;
         if ((channel & GreenChannel) != 0)
-          image->colormap[i].green=QuantumRange-
-            image->colormap[i].green;
+          image->colormap[i].green=QuantumRange-image->colormap[i].green;
         if ((channel & BlueChannel) != 0)
-          image->colormap[i].blue=QuantumRange-
-            image->colormap[i].blue;
+          image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
       }
     }
   /*
@@ -3597,12 +3594,10 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
           if ((channel & BlueChannel) != 0)
             SetPixelBlue(q,QuantumRange-GetPixelBlue(q));
           if ((channel & OpacityChannel) != 0)
-            SetPixelOpacity(q,QuantumRange-
-              GetPixelOpacity(q));
+            SetPixelOpacity(q,QuantumRange-GetPixelOpacity(q));
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            SetPixelIndex(indexes+x,QuantumRange-
-              GetPixelIndex(indexes+x));
+            SetPixelIndex(indexes+x,QuantumRange-GetPixelIndex(indexes+x));
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
