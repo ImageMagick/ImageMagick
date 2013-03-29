@@ -1,5 +1,6 @@
 2013-03-29  6.8.4-4 Cristy  <quetzlzacatenango@image...>
   * Update unit test signatures for Q8.
+  * Resolve send() / recv() socket problems under MinGW.
 
 2013-03-28  6.8.4-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-3, SVN revision 11581.
