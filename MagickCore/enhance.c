@@ -1878,6 +1878,200 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     G r a y s c a l e I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GrayscaleImage() converts the image to grayscale.
+%
+%  The format of the GrayscaleImage method is:
+%
+%      MagickBooleanType GrayscaleImage(Image *image,
+%        const PixelIntensityMethod method ,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o method: the pixel intensity method.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static inline MagickRealType MagickMax(const MagickRealType x,
+  const MagickRealType y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
+static inline MagickRealType MagickMin(const MagickRealType x,
+  const MagickRealType y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
+MagickExport MagickBooleanType GrayscaleImage(Image *image,
+  const PixelIntensityMethod grayscale,ExceptionInfo *exception)
+{
+#define GrayscaleImageTag  "Grayscale/Image"
+
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image->storage_class == PseudoClass)
+    {
+      if (SyncImage(image,exception) == MagickFalse)
+        return(MagickFalse);
+      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+        return(MagickFalse);
+    }
+  /*
+    Grayscale image.
+  */
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      MagickRealType
+        blue,
+        green,
+        red,
+        intensity;
+
+      if (GetPixelMask(image,q) == 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
+      red=(MagickRealType) GetPixelRed(image,q);
+      green=(MagickRealType) GetPixelGreen(image,q);
+      blue=(MagickRealType) GetPixelBlue(image,q);
+      switch (image->intensity)
+      {
+        case AveragePixelIntensityMethod:
+        {
+          intensity=(red+green+blue)/3.0;
+          break;
+        }
+        case BrightnessPixelIntensityMethod:
+        {
+          intensity=MagickMax(MagickMax(red,green),blue);
+          break;
+        }
+        case LightnessPixelIntensityMethod:
+        {
+          intensity=MagickMin(MagickMin(red,green),blue);
+          break;
+        }
+        case Rec601LumaPixelIntensityMethod:
+        {
+          intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
+          break;
+        }
+        case Rec601LuminancePixelIntensityMethod:
+        {
+          if (image->colorspace == sRGBColorspace)
+            {
+              red=DecodePixelGamma(red);
+              green=DecodePixelGamma(green);
+              blue=DecodePixelGamma(blue);
+            }
+          intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
+          break;
+        }
+        case Rec709LumaPixelIntensityMethod:
+        default:
+        {
+          intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
+          break;
+        }
+        case Rec709LuminancePixelIntensityMethod:
+        {
+          if (image->colorspace == sRGBColorspace)
+            {
+              red=DecodePixelGamma(red);
+              green=DecodePixelGamma(green);
+              blue=DecodePixelGamma(blue);
+            }
+          intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
+          break;
+        }
+        case RMSPixelIntensityMethod:
+        {
+          intensity=(MagickRealType) sqrt((double) red*red+green*green+
+            blue*blue);
+          break;
+        }
+      }
+      SetPixelGray(image,ClampToQuantum(intensity),q);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_GrayscaleImage)
+#endif
+        proceed=SetImageProgress(image,GrayscaleImageTag,progress++,
+           image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     H a l d C l u t I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -1904,14 +2098,6 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickBooleanType HaldClutImage(Image *image,
   const Image *hald_image,ExceptionInfo *exception)
 {
@@ -1966,7 +2152,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  length=MagickMin(hald_image->columns,hald_image->rows);
+  length=(size_t) MagickMin((MagickRealType) hald_image->columns,
+    (MagickRealType) hald_image->rows);
   for (level=2; (level*level*level) < length; level++) ;
   level*=level;
   cube_size=level*level;

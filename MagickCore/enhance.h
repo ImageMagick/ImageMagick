@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "MagickCore/pixel.h"
+
 extern MagickExport MagickBooleanType
   AutoGammaImage(Image *,ExceptionInfo *),
   AutoLevelImage(Image *,ExceptionInfo *),
@@ -32,6 +34,7 @@ extern MagickExport MagickBooleanType
   ContrastStretchImage(Image *,const double,const double,ExceptionInfo *),
   EqualizeImage(Image *image,ExceptionInfo *),
   GammaImage(Image *,const double,ExceptionInfo *),
+  GrayscaleImage(Image *,const PixelIntensityMethod,ExceptionInfo *),
   HaldClutImage(Image *,const Image *,ExceptionInfo *),
   LevelImage(Image *,const double,const double,const double,ExceptionInfo *),
   LevelizeImage(Image *,const double,const double,const double,ExceptionInfo *),

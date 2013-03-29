@@ -1755,16 +1755,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("grayscale",option+1) == 0)
           {
+            PixelIntensityMethod
+              method;
+
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            if (*option == '+')
-              {
-                (void) TransformImageColorspace(*image,sRGBColorspace,
-                  exception);
-                break;
-              }
-            (*image)->intensity=(PixelIntensityMethod) ParseCommandOption(
+            method=(PixelIntensityMethod) ParseCommandOption(
               MagickPixelIntensityOptions,MagickFalse,argv[i+1]);
-            (void) TransformImageColorspace(*image,GRAYColorspace,exception);
+            (void) GrayscaleImage(*image,method,exception);
             break;
           }
         break;

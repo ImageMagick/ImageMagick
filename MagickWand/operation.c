@@ -168,8 +168,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   This really should be in MagickCore, so that other API's can make use of it.
 */
 static Image *SparseColorOption(const Image *image,
-  const SparseColorMethod method,const char *arguments,
-  ExceptionInfo *exception)
+  const SparseColorMethod method,const char *arguments,ExceptionInfo *exception)
 {
   char
     token[MaxTextExtent];
@@ -2447,17 +2446,14 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
               _image->filter,_exception);
           break;
         }
-      if (LocaleCompare("distort",option+1) == 0)
+      if (LocaleCompare("grayscale",option+1) == 0)
         {
-          parse = ParseCommandOption(MagickPixelIntensityOptions,
+          parse=ParseCommandOption(MagickPixelIntensityOptions,
             MagickFalse,arg1);
-          if ( parse < 0 )
-             CLIWandExceptArgBreak(OptionError,"UnrecognizedIntensityMethod",
-               option,arg1);
-          _image->intensity = (PixelIntensityMethod) parse;
-          (void) TransformImageColorspace(_image,
-                    IfNormalOp ? _image_info->colorspace : GRAYColorspace,
-                    _exception);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedIntensityMethod",
+              option,arg1);
+          (void) GrayscaleImage(_image,(PixelIntensityMethod) parse,_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
