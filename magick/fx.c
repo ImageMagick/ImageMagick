@@ -381,8 +381,8 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
           random_info[id],GetPixelRed(p),noise_type,attenuate)));
       if (IsGrayColorspace(image->colorspace) != MagickFalse)
         {
-          SetPixelGreen(q,GetPixelRed(p));
-          SetPixelBlue(q,GetPixelRed(p));
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
         }
       else
         {
