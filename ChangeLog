@@ -1,6 +1,7 @@
 2013-03-30  6.8.4-5 Cristy  <quetzlzacatenango@image...>
   * Fix transient bug when writing grayscale MIFF images.
   * Adding noise to a gray image returns a gray image as expected.
+  * Image interlace no longer overwritten by proper cloning for GIF format.
 
 2013-03-29  6.8.4-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-4, SVN revision 11591.
