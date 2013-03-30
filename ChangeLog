@@ -2,6 +2,7 @@
   * Fix transient bug when writing grayscale MIFF images.
   * Adding noise to a gray image returns a gray image as expected.
   * Image interlace no longer overwritten by proper cloning for GIF format.
+  * Extract the clipping path from an image file with clip:myimage.
 
 2013-03-29  6.8.4-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-4, SVN revision 11591.
