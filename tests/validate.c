@@ -649,12 +649,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       fuzz=0.0;
       if (reference_formats[i].fuzz != 0.0)
         fuzz=reference_formats[i].fuzz;
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-      fuzz+=0.003;
-#endif
-      if (IssRGBColorspace(reference_image->colorspace) == MagickFalse)
-        fuzz+=0.3;
-      fuzz+=2.31365e-06;
+      fuzz+=0.003;  /* grayscale */
       difference_image=CompareImages(reference_image,reconstruct_image,
         RootMeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
