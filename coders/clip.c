@@ -46,6 +46,7 @@
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
@@ -60,6 +61,66 @@
 */
 static MagickBooleanType
   WriteCLIPImage(const ImageInfo *,Image *,ExceptionInfo *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d C L I P I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadCLIPImage returns the rendered clip path associated with the image.
+%
+%  The format of the ReadCLIPImage method is:
+%
+%      Image *ReadCLIPImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static Image *ReadCLIPImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  Image
+    *clip_image,
+    *image;
+
+  ImageInfo
+    *read_info;
+
+  /*
+    Initialize Image structure.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  if (image_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
+  *read_info->magick='\0';
+  clip_image=ReadImage(read_info,exception);
+  read_info=DestroyImageInfo(read_info);
+  if (clip_image == (Image *) NULL)
+    return((Image *) NULL);
+  (void) ClipImage(clip_image,exception);
+  image=GetImageMask(clip_image,exception);
+  clip_image=DestroyImage(clip_image);
+  if (image == (Image *) NULL)
+    ThrowReaderException(CoderError,"ImageDoesNotHaveAClipMask");
+  return(GetFirstImageInList(image));
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,6 +151,7 @@ ModuleExport size_t RegisterCLIPImage(void)
     *entry;
 
   entry=SetMagickInfo("CLIP");
+  entry->decoder=(DecodeImageHandler *) ReadCLIPImage;
   entry->encoder=(EncodeImageHandler *) WriteCLIPImage;
   entry->description=ConstantString("Image Clip Mask");
   entry->module=ConstantString("CLIP");
