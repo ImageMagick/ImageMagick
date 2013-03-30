@@ -1,5 +1,6 @@
 2013-03-30  6.8.4-5 Cristy  <quetzlzacatenango@image...>
   * Fix transient bug when writing grayscale MIFF images.
+  * Adding noise to a gray image returns a gray image as expected.
 
 2013-03-29  6.8.4-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-4, SVN revision 11591.
@@ -7,7 +8,6 @@
 2013-03-29  6.8.4-4 Cristy  <quetzlzacatenango@image...>
   * Update unit test signatures for Q8.
   * Resolve send() / recv() socket problems under MinGW.
-  * Adding noise to a gray image returns a gray image as expected.
 
 2013-03-28  6.8.4-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-3, SVN revision 11581.
