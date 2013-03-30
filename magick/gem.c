@@ -828,8 +828,8 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
           if (alpha <= MagickEpsilon)
             noise=(double) (pixel-QuantumRange);
           else
-            noise=(double) (pixel+QuantumRange*SigmaLaplacian*
-              log(2.0*alpha)+0.5);
+            noise=(double) (pixel+QuantumRange*SigmaLaplacian*log(2.0*alpha)+
+              0.5);
           break;
         }
       beta=1.0-alpha;
