@@ -646,10 +646,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       /*
         Compare reference to reconstruct image.
       */
-      fuzz=0.0;
+      fuzz=0.003;  /* grayscale */
       if (reference_formats[i].fuzz != 0.0)
         fuzz=reference_formats[i].fuzz;
-      fuzz+=0.003;  /* grayscale */
       difference_image=CompareImages(reference_image,reconstruct_image,
         RootMeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
@@ -864,15 +863,9 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       /*
         Compare reference to reconstruct image.
       */
-      fuzz=0.0;
+      fuzz=0.003;  /* grayscale */
       if (reference_formats[i].fuzz != 0.0)
         fuzz=reference_formats[i].fuzz;
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-      fuzz+=0.003;
-#endif
-      if (IssRGBColorspace(reference_image->colorspace) == MagickFalse)
-        fuzz+=0.3;
-      fuzz+=2.31365e-06;
       difference_image=CompareImages(reference_image,reconstruct_image,
         RootMeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
