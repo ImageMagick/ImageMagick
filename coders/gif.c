@@ -1239,6 +1239,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image attributes.
     */
+    CloneImageProperties(image,meta_image);
+    DestroyImageProperties(meta_image);
+    CloneImageProfiles(image,meta_image);
+    DestroyImageProfiles(meta_image);
     image->storage_class=PseudoClass;
     image->compression=LZWCompression;
     page.x=(ssize_t) ReadBlobLSBShort(image);
@@ -1247,6 +1251,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=ReadBlobLSBShort(image);
     image->depth=8;
     flag=(unsigned char) ReadBlobByte(image);
+    image->interlace=BitSet((int) flag,0x40) != 0 ? GIFInterlace :
+      NoInterlace;
     image->colors=BitSet((int) flag,0x80) == 0 ? global_colors :
       one << ((size_t) (flag & 0x07)+1);
     if (opacity >= (ssize_t) image->colors)
@@ -1269,12 +1275,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           global_colormap);
         ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
       }
-    CloneImageProperties(image,meta_image);
-    DestroyImageProperties(meta_image);
-    CloneImageProfiles(image,meta_image);
-    DestroyImageProfiles(meta_image);
-    image->interlace=BitSet((int) flag,0x40) != 0 ? GIFInterlace :
-      NoInterlace;
     /*
       Inititialize colormap.
     */
