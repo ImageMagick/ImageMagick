@@ -123,6 +123,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/mac.c \
 	coders/magick.c \
 	coders/map.c \
+	coders/mask.c \
 	coders/mat.c \
 	coders/matte.c \
 	coders/meta.c \
@@ -243,6 +244,7 @@ coders_LTLIBRARIES = \
 	coders/mac.la \
 	coders/magick.la \
 	coders/map.la \
+	coders/mask.la \
 	coders/mat.la \
 	coders/matte.la \
 	coders/meta.la \
@@ -623,6 +625,12 @@ coders_map_la_SOURCES      = coders/map.c
 coders_map_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_map_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_map_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# MASK coder module
+coders_mask_la_SOURCES    = coders/mask.c
+coders_mask_la_CPPFLAGS   = $(MODULE_EXTRA_CPPFLAGS)
+coders_mask_la_LDFLAGS    = $(MODULECOMMONFLAGS)
+coders_mask_la_LIBADD     = $(MAGICKCORE_LIBS)
 
 # MAT coder module
 coders_mat_la_SOURCES      = coders/mat.c
