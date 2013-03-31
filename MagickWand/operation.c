@@ -1983,9 +1983,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             {
               if (mask_image->alpha_trait != BlendPixelTrait)
                 SetPixelAlpha(mask_image,GetPixelIntensity(mask_image,q),q);
-              SetPixelRed(mask_image,GetPixelAlpha(mask_image,q),q);
-              SetPixelGreen(mask_image,GetPixelAlpha(mask_image,q),q);
-              SetPixelBlue(mask_image,GetPixelAlpha(mask_image,q),q);
+              SetPixelGray(mask_image,GetPixelAlpha(mask_image,q),q);
               q+=GetPixelChannels(mask_image);
             }
             if (IfMagickFalse(SyncCacheViewAuthenticPixels(mask_view,_exception)))
@@ -1994,6 +1992,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           /* clean up and set the write mask */
           mask_view=DestroyCacheView(mask_view);
           mask_image->alpha_trait=BlendPixelTrait;
+          (void) SetImageColorspace(_image,GRAYColorspace,_exception);
           (void) SetImageMask(_image,mask_image,_exception);
           mask_image=DestroyImage(mask_image);
           break;
