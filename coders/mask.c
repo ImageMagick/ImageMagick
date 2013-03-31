@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                          CCCC  L      IIIII  PPPP                           %
-%                         C      L        I    P   P                          %
-%                         C      L        I    PPPP                           %
-%                         C      L        I    P                              %
-%                          CCCC  LLLLL  IIIII  P                              %
+%                         M   M   AAA   SSSSS  K   K                          %
+%                         MM MM  A   A  SS     K  K                           %
+%                         M M M  AAAAA   SSS   KKK                            %
+%                         M   M  A   A     SS  K  K                           %
+%                         M   M  A   A  SSSSS  K   K                          %
 %                                                                             %
 %                                                                             %
-%                              Write Clip File.                               %
+%                              Write Mask File.                               %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
@@ -44,6 +44,7 @@
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/constitute.h"
+#include "magick/enhance.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/list.h"
@@ -61,24 +62,24 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteCLIPImage(const ImageInfo *,Image *);
+  WriteMASKImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d C L I P I m a g e                                                 %
+%   R e a d M A S K I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadCLIPImage returns the rendered clip path associated with the image.
+%  ReadMASKImage returns the image mask associated with the image.
 %
-%  The format of the ReadCLIPImage method is:
+%  The format of the ReadMASKImage method is:
 %
-%      Image *ReadCLIPImage(const ImageInfo *image_info,
+%      Image *ReadMASKImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -88,11 +89,10 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadCLIPImage(const ImageInfo *image_info,
+static Image *ReadMASKImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   Image
-    *clip_image,
     *image;
 
   ImageInfo
@@ -111,16 +111,17 @@ static Image *ReadCLIPImage(const ImageInfo *image_info,
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
   *read_info->magick='\0';
-  clip_image=ReadImage(read_info,exception);
+  image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
-  (void) ClipImage(clip_image);
-  image=(Image *) NULL;
-  if (clip_image->clip_mask == (Image *) NULL)
-    ThrowReaderException(CoderError,"ImageDoesNotHaveAClipMask");
-  image=CloneImage(clip_image->clip_mask,0,0,MagickTrue,exception);
-  clip_image=DestroyImage(clip_image);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
+  if (image != (Image *) NULL)
+    {
+      MagickBooleanType
+        status;
+
+      status=GrayscaleImage(image,image->intensity);
+      if (status == MagickFalse)
+        image=DestroyImage(image);
+    }
   return(GetFirstImageInList(image));
 }
 
@@ -129,34 +130,34 @@ static Image *ReadCLIPImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r C L I P I m a g e                                         %
+%   R e g i s t e r M A S K I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterCLIPImage() adds attributes for the CLIP image format to
+%  RegisterMASKImage() adds attributes for the MASK image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterCLIPImage method is:
+%  The format of the RegisterMASKImage method is:
 %
-%      size_t RegisterCLIPImage(void)
+%      size_t RegisterMASKImage(void)
 %
 */
-ModuleExport size_t RegisterCLIPImage(void)
+ModuleExport size_t RegisterMASKImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("CLIP");
-  entry->decoder=(DecodeImageHandler *) ReadCLIPImage;
-  entry->encoder=(EncodeImageHandler *) WriteCLIPImage;
+  entry=SetMagickInfo("MASK");
+  entry->decoder=(DecodeImageHandler *) ReadMASKImage;
+  entry->encoder=(EncodeImageHandler *) WriteMASKImage;
   entry->description=ConstantString("Image Clip Mask");
-  entry->module=ConstantString("CLIP");
+  entry->module=ConstantString("MASK");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -166,23 +167,23 @@ ModuleExport size_t RegisterCLIPImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r C L I P I m a g e                                     %
+%   U n r e g i s t e r M A S K I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnregisterCLIPImage() removes format registrations made by the
-%  CLIP module from the list of supported formats.
+%  UnregisterMASKImage() removes format registrations made by the
+%  MASK module from the list of supported formats.
 %
-%  The format of the UnregisterCLIPImage method is:
+%  The format of the UnregisterMASKImage method is:
 %
-%      UnregisterCLIPImage(void)
+%      UnregisterMASKImage(void)
 %
 */
-ModuleExport void UnregisterCLIPImage(void)
+ModuleExport void UnregisterMASKImage(void)
 {
-  (void) UnregisterMagickInfo("CLIP");
+  (void) UnregisterMagickInfo("MASK");
 }
 
 /*
@@ -190,18 +191,17 @@ ModuleExport void UnregisterCLIPImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e C L I P I m a g e                                               %
+%   W r i t e M A S K I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteCLIPImage() writes an image of clip bytes to a file.  It consists of
-%  data from the clip mask of the image.
+%  WriteMASKImage() writes an image mask to a file.
 %
-%  The format of the WriteCLIPImage method is:
+%  The format of the WriteMASKImage method is:
 %
-%      MagickBooleanType WriteCLIPImage(const ImageInfo *image_info,
+%      MagickBooleanType WriteMASKImage(const ImageInfo *image_info,
 %        Image *image)
 %
 %  A description of each parameter follows.
@@ -211,11 +211,11 @@ ModuleExport void UnregisterCLIPImage(void)
 %    o image:  The image.
 %
 */
-static MagickBooleanType WriteCLIPImage(const ImageInfo *image_info,
+static MagickBooleanType WriteMASKImage(const ImageInfo *image_info,
   Image *image)
 {
   Image
-    *clip_image;
+    *mask_image;
 
   ImageInfo
     *write_info;
@@ -223,22 +223,20 @@ static MagickBooleanType WriteCLIPImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  if (image->clip_mask == (Image *) NULL)
-    (void) ClipImage(image);
-  if (image->clip_mask == (Image *) NULL)
-    ThrowWriterException(CoderError,"ImageDoesNotHaveAClipMask");
-  clip_image=CloneImage(image->clip_mask,0,0,MagickTrue,&image->exception);
-  if (clip_image == (Image *) NULL)
+  if (image->mask == (Image *) NULL)
+    ThrowWriterException(CoderError,"ImageDoesNotHaveAMask");
+  mask_image=CloneImage(image->mask,0,0,MagickTrue,&image->exception);
+  if (mask_image == (Image *) NULL)
     return(MagickFalse);
-  (void) SetImageType(clip_image,TrueColorType);
-  (void) CopyMagickString(clip_image->filename,image->filename,MaxTextExtent);
+  (void) SetImageType(mask_image,TrueColorType);
+  (void) CopyMagickString(mask_image->filename,image->filename,MaxTextExtent);
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,&image->exception);
-  if (LocaleCompare(write_info->magick,"CLIP") == 0)
-    (void) FormatLocaleString(clip_image->filename,MaxTextExtent,"miff:%s",
+  if (LocaleCompare(write_info->magick,"MASK") == 0)
+    (void) FormatLocaleString(mask_image->filename,MaxTextExtent,"miff:%s",
       write_info->filename);
-  status=WriteImage(write_info,clip_image);
-  clip_image=DestroyImage(clip_image);
+  status=WriteImage(write_info,mask_image);
+  mask_image=DestroyImage(mask_image);
   write_info=DestroyImageInfo(write_info);
   return(status);
 }
