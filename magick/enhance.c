@@ -772,8 +772,6 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   assert(clut_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
   clut_map=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*clut_map));
   if (clut_map == (MagickPixelPacket *) NULL)
