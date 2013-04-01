@@ -1,3 +1,9 @@
+2013-04-01  6.8.4-6 Cristy  <quetzlzacatenango@image...>
+  * The -clut option return a luma grayscale instead of the expected luminance.
+
+2013-04-01  6.8.4-6 Bastien Roucaries  <roucaries.basti...>
+  * Prepare X11 support as a plugin.
+
 2013-03-31  6.8.4-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-5, SVN revision 11619.
 
