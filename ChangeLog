@@ -1,5 +1,7 @@
 2013-04-01  6.8.4-6 Cristy  <quetzlzacatenango@image...>
   * The -clut option return a luma grayscale instead of the expected luminance.
+  * Add moduledir variable to MagickCore.pc to support the MagickFilter and
+    MagickCore kits.
 
 2013-04-01  6.8.4-6 Bastien Roucaries  <roucaries.basti...>
   * Prepare X11 support as a plugin.
