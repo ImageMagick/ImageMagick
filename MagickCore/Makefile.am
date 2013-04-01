@@ -393,6 +393,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/statistic.h \
 	MagickCore/stream.h \
 	MagickCore/string_.h \
+	MagickCore/studio.h \
 	MagickCore/timer.h \
 	MagickCore/token.h \
 	MagickCore/transform.h \
@@ -459,7 +460,6 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/static.h \
 	MagickCore/stream-private.h \
 	MagickCore/string-private.h \
-	MagickCore/studio.h \
 	MagickCore/thread_.h \
 	MagickCore/thread-private.h \
 	MagickCore/token-private.h \
