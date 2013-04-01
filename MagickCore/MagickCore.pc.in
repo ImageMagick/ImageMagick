@@ -3,6 +3,7 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
 libname=MagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
+filterdir=@libdir@/ImageMagick-@MAGICK_MAJOR_VERSION@.@MAGICK_MINOR_VERSION@.@MAGICK_MICRO_VERSION@/modules-@MAGICK_ABI_SUFFIX@/filters
  
 Name: MagickCore
 Description: MagickCore - C API for ImageMagick (ABI @MAGICK_ABI_SUFFIX@)
