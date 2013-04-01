@@ -202,7 +202,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           break;
         draw_info->pointsize--;
       }
-      draw_info->pointsize=floor(draw_info->pointsize+0.5);
+      draw_info->pointsize--;
     }
   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)

@@ -267,7 +267,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           break;
         draw_info->pointsize--;
       }
-      draw_info->pointsize=floor(draw_info->pointsize+0.5);
+      draw_info->pointsize--;
       i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&caption,
         exception);
     }
