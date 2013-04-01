@@ -389,6 +389,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/statistic.h \
 	magick/stream.h \
 	magick/string_.h \
+	magick/studio.h \
 	magick/timer.h \
 	magick/token.h \
 	magick/transform.h \
@@ -432,7 +433,6 @@ MAGICK_NOINST_HDRS = \
 	magick/static.h \
 	magick/stream-private.h \
 	magick/string-private.h \
-	magick/studio.h \
 	magick/thread_.h \
 	magick/thread-private.h \
 	magick/token-private.h \
