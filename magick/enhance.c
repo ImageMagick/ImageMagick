@@ -1167,10 +1167,10 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   /*
     Form histogram.
   */
+  exception=(&image->exception);
   if (IsGrayImage(image,exception) != MagickFalse)
     (void) SetImageColorspace(image,GRAYColorspace);
   status=MagickTrue;
-  exception=(&image->exception);
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
