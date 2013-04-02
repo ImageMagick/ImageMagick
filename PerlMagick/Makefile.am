@@ -19,10 +19,10 @@
 # If source files missing, see if they can be obtained via VPATH
 #
 $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.xs: $(PERLMAGICK)/quantum/quantum.xs
-	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
+	$(AM_V_GEN) $(LN_S) quantum.xs $@
 
 $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.pm: $(PERLMAGICK)/quantum/quantum.pm
-	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
+	$(AM_V_GEN) $(LN_S) quantum.pm $@
 
 perl-quantum-sources: $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.xs $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.pm
 
