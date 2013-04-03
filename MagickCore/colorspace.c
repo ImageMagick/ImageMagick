@@ -819,13 +819,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           blue=DecodePixelGamma((MagickRealType) GetPixelBlue(image,q));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLab(X,Y,Z,&L,&a,&b);
-          C=sqrt(a*a+b*b);
-          H=atan2(b,a)*180.0f/MagickPI;
-          if (H < 0.0f)
-            H+=1.0f;
+          C=hypot(a,b);
+          H=180.0*atan2(b,a)/MagickPI;
+          if (H < 360.0)
+            H+=360.0;
+          if (H > 360.0)
+            H-=360.0;
           SetPixelRed(image,ClampToQuantum(QuantumRange*L),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*C),q);
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*H),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*H/360.0),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2723,8 +2725,8 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           L=QuantumScale*GetPixelRed(image,q);
           C=QuantumScale*GetPixelGreen(image,q);
           H=QuantumScale*GetPixelBlue(image,q);
-          a=C*cos(H*(MagickPI/180.0f));
-          b=C*sin(H*(MagickPI/180.0f));
+          a=C*cos(360.0*H*(MagickPI/180.0));
+          b=C*sin(360.0*H*(MagickPI/180.0));
           ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(EncodePixelGamma(red)),q);
