@@ -15,8 +15,8 @@
 
   MagickCore private graphic gems methods.
 */
-#ifndef _MAGICKCORE_GEM_PRIVATE_H
-#define _MAGICKCORE_GEM_PRIVATE_H
+#ifndef _MAGICKCORE_GEM_H
+#define _MAGICKCORE_GEM_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

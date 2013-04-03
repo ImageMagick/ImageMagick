@@ -53,6 +53,7 @@
 #include "magick/image.h"
 #include "magick/image-private.h"
 #include "magick/gem.h"
+#include "magick/gem-private.h"
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
@@ -124,59 +125,6 @@ static inline void ConvertXYZToLMS(const double x,const double y,
   *L=QuantumRange*l;
   *M=QuantumRange*m;
   *S=QuantumRange*s;
-}
-
-static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
-  const Quantum blue,double *X,double *Y,double *Z)
-{
-  double
-    b,
-    g,
-    r;
-
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
-  r=QuantumScale*red;
-  g=QuantumScale*green;
-  b=QuantumScale*blue;
-  *X=0.41239558896741421610*r+0.35758343076371481710*g+0.18049264738170157350*b;
-  *Y=0.21258623078559555160*r+0.71517030370341084990*g+0.07220049864333622685*b;
-  *Z=0.01929721549174694484*r+0.11918386458084853180*g+0.95049712513157976600*b;
-}
-
-static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
-  double *L,double *a,double *b)
-{
-#define D65X  (0.950456f)
-#define D65Y  (1.0f)
-#define D65Z  (1.08874f)
-#define CIEEpsilon  (216.0f/24389.0f)
-#define CIEK  (24389.0f/27.0f)
-
-  double
-    x,
-    y,
-    z;
-
-  assert(L != (double *) NULL);
-  assert(a != (double *) NULL);
-  assert(b != (double *) NULL);
-  if ((X/D65X) > CIEEpsilon)
-    x=pow(X/D65X,1.0/3.0);
-  else
-    x=(CIEK*X/D65X+16.0f)/116.0f;
-  if ((Y/D65Y) > CIEEpsilon)
-    y=pow(Y/D65Y,1.0/3.0);
-  else
-    y=(CIEK*Y/D65Y+16.0f)/116.0f;
-  if ((Z/D65Z) > CIEEpsilon)
-    z=pow(Z/D65Z,1.0/3.0);
-  else
-    z=(CIEK*Z/D65Z+16.0f)/116.0f;
-  *L=((116.0f*y)-16.0f)/100.0f;
-  *a=(500.0f*(x-y))/255.0f+0.5f;
-  *b=(200.0f*(y-z))/255.0f+0.5f;
 }
 
 static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
@@ -1893,37 +1841,6 @@ static inline void ConvertLMSToXYZ(const double L,const double M,const double S,
   *Z=(-0.009627608738429)*l-0.005698031216113*m+1.015325639954543*s;
 }
 
-static inline void ConvertLabToXYZ(const double L,const double a,const double b,
-  double *X,double *Y,double *Z)
-{
-  double
-    x,
-    y,
-    z;
-
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
-  y=(100.0f*L+16.0f)/116.0f;
-  x=y+255.0f*(a-0.5f)/500.0f;
-  z=y-255.0f*(b-0.5f)/200.0f;
-  if ((x*x*x) > CIEEpsilon)
-    x=(x*x*x);
-  else
-    x=(116.0f*x-16.0f)/CIEK;
-  if ((y*y*y) > CIEEpsilon)
-    y=(y*y*y);
-  else
-    y=(100.0f*L)/CIEK;
-  if ((z*z*z) > CIEEpsilon)
-    z=(z*z*z);
-  else
-    z=(116.0f*z-16.0f)/CIEK;
-  *X=D65X*x;
-  *Y=D65Y*y;
-  *Z=D65Z*z;
-}
-
 static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
   double *X,double *Y,double *Z)
 {
@@ -1949,28 +1866,6 @@ static inline ssize_t RoundToYCC(const MagickRealType value)
   if (value >= 1388.0f)
     return(1388);
   return((ssize_t) (value+0.5f));
-}
-
-static inline void ConvertXYZToRGB(const double x,const double y,const double z,
-  Quantum *red,Quantum *green,Quantum *blue)
-{
-  double
-    b,
-    g,
-    r;
-
-  /*
-    Convert XYZ to sRGB colorspace.
-  */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
-  r=3.2406f*x-1.5372f*y-0.4986f*z;
-  g=(-0.9689f*x+1.8758f*y+0.0415f*z);
-  b=0.0557f*x-0.2040f*y+1.0570f*z;
-  *red=ClampToQuantum((MagickRealType) QuantumRange*r);
-  *green=ClampToQuantum((MagickRealType) QuantumRange*g);
-  *blue=ClampToQuantum((MagickRealType) QuantumRange*b);
 }
 
 static inline void ConvertCMYKToRGB(MagickPixelPacket *pixel)
