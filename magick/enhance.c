@@ -3554,6 +3554,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
           }
         }
       }
+      image->colormap[i].red=red;
+      image->colormap[i].green=green;
+      image->colormap[i].blue=blue;
     }
   /*
     Modulate image.
