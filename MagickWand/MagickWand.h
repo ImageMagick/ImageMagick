@@ -44,6 +44,14 @@ extern "C" {
 # endif
 #endif
 
+#define MAGICKWAND_CHECK_VERSION(major,minor,micro) \
+  ((MAGICKWAND_MAJOR_VERSION > (major)) || \
+    ((MAGICKWAND_MAJOR_VERSION == (major)) && \
+     (MAGICKWAND_MINOR_VERSION > (minor))) || \
+    ((MAGICKWAND_MAJOR_VERSION == (major)) && \
+     (MAGICKWAND_MINOR_VERSION == (minor)) && \
+     (MAGICKWAND_MICRO_VERSION >= (micro))))
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -51,9 +59,9 @@ extern "C" {
 #include <sys/types.h>
 
 #if defined(WIN32) || defined(WIN64)
-#  define MAGICKCORE_WINDOWS_SUPPORT
+#  define MAGICKWAND_WINDOWS_SUPPORT
 #else
-#  define MAGICKCORE_POSIX_SUPPORT
+#  define MAGICKWAND_POSIX_SUPPORT
 #endif 
 
 #if defined(__BORLANDC__) && defined(_DLL)
@@ -64,7 +72,7 @@ extern "C" {
 
 #include "MagickWand/method-attribute.h"
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
+#if defined(MAGICKWAND_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 # define WandPrivate
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
