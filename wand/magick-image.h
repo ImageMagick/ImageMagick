@@ -374,7 +374,7 @@ extern WandExport MagickBooleanType
   MagickWriteImages(MagickWand *,const char *,const MagickBooleanType),
   MagickWriteImagesFile(MagickWand *,FILE *);
 
-WandExport MagickProgressMonitor
+extern WandExport MagickProgressMonitor
   MagickSetImageProgressMonitor(MagickWand *,const MagickProgressMonitor,
     void *);
 
