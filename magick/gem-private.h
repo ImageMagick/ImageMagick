@@ -115,7 +115,7 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
     r;
 
   /*
-    Convert XYZ to sRGB colorspace.
+    Convert XYZ to RGB colorspace.
   */
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
