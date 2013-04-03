@@ -30,8 +30,8 @@ extern "C" {
 #  undef MAGICKCORE_BUILD_MODULES
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
-# define MagickPrivate
+#if defined(MAGICKWAND_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
+# define WandPrivate
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
 # endif
@@ -41,25 +41,25 @@ extern "C" {
 #  endif
 #  if !defined(_MAGICKLIB_)
 #   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((dllimport))
+#    define WandExport __attribute__ ((dllimport))
 #   else
-#    define MagickExport __declspec(dllimport)
+#    define WandExport __declspec(dllimport)
 #   endif
 #   if defined(_VISUALC_)
 #    pragma message( "MagickCore lib DLL import interface" )
 #   endif
 #  else
 #   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((dllexport))
+#    define WandExport __attribute__ ((dllexport))
 #   else
-#    define MagickExport __declspec(dllexport)
+#    define WandExport __declspec(dllexport)
 #   endif
 #   if defined(_VISUALC_)
 #    pragma message( "MagickCore lib DLL export interface" )
 #   endif
 #  endif
 # else
-#  define MagickExport
+#  define WandExport
 #  if defined(_VISUALC_)
 #   pragma message( "MagickCore lib static interface" )
 #  endif
@@ -87,11 +87,11 @@ extern "C" {
 # endif
 #else
 # if __GNUC__ >= 4
-#  define MagickExport __attribute__ ((visibility ("default")))
-#  define MagickPrivate  __attribute__ ((visibility ("hidden")))
+#  define WandExport __attribute__ ((visibility ("default")))
+#  define WandPrivate  __attribute__ ((visibility ("hidden")))
 # else
-#   define MagickExport
-#   define MagickPrivate
+#   define WandExport
+#   define WandPrivate
 # endif
 # define MagickGlobal
 #endif
@@ -102,25 +102,25 @@ extern "C" {
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
-#  define magick_aligned(x)  __attribute__((aligned(x)))
-#  define magick_attribute  __attribute__
-#  define magick_unused(x)  magick_unused_ ## x __attribute__((unused))
+#  define wand_aligned(x)  __attribute__((aligned(x)))
+#  define wand_attribute  __attribute__
+#  define wand_unused(x)  wand_unused_ ## x __attribute__((unused))
 #else
-#  define magick_aligned(x)  __declspec(align(x))
-#  define magick_attribute(x)  /* nothing */
-#  define magick_unused(x) x
+#  define wand_aligned(x)  __declspec(align(x))
+#  define wand_attribute(x)  /* nothing */
+#  define wand_unused(x) x
 #endif
 
 #if (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
-#  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
-#  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
-#  define magick_cold_spot  __attribute__((__cold__))
-#  define magick_hot_spot  __attribute__((__hot__))
+#  define wand_alloc_size(x)  __attribute__((__alloc_size__(x)))
+#  define wand_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
+#  define wand_cold_spot  __attribute__((__cold__))
+#  define wand_hot_spot  __attribute__((__hot__))
 #else
-#  define magick_alloc_size(x)  /* nothing */
-#  define magick_alloc_sizes(x,y)  /* nothing */
-#  define magick_cold_spot
-#  define magick_hot_spot
+#  define wand_alloc_size(x)  /* nothing */
+#  define wand_alloc_sizes(x,y)  /* nothing */
+#  define wand_cold_spot
+#  define wand_hot_spot
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
