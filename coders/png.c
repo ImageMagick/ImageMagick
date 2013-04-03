@@ -2587,12 +2587,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          png_set_sRGB(ping,ping_info,
             Magick_RenderingIntent_to_PNG_RenderingIntent
             (image->rendering_intent));
-         if (ping_found_gAMA != MagickTrue)
-            png_set_gAMA(ping,ping_info,1.000f/2.200f);
          file_gamma=1.000f/2.200f;
          ping_found_sRGB=MagickTrue;
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-           "    Setting sRGB and gAMA as if in input");
+           "    Setting sRGB as if in input");
       }
     }
 #if defined(PNG_oFFs_SUPPORTED)
@@ -7711,7 +7709,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_have_non_bw,
     ping_have_PLTE,
     ping_have_bKGD,
+    ping_have_iCCP,
     ping_have_pHYs,
+    ping_have_sRGB,
     ping_have_tRNS,
 
     ping_exclude_bKGD,
@@ -7860,7 +7860,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_have_non_bw=MagickTrue;
   ping_have_PLTE=MagickFalse;
   ping_have_bKGD=MagickFalse;
+  ping_have_iCCP=MagickFalse;
   ping_have_pHYs=MagickFalse;
+  ping_have_sRGB=MagickFalse;
   ping_have_tRNS=MagickFalse;
 
   ping_exclude_bKGD=mng_info->ping_exclude_bKGD;
@@ -10403,6 +10405,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                          (png_const_bytep) GetStringInfoDatum(profile),
 #endif
                          (png_uint_32) GetStringInfoLength(profile));
+                       ping_have_iCCP = MagickTrue;
                  }
              }
 
@@ -10442,6 +10445,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           (void) png_set_sRGB(ping,ping_info,(
             Magick_RenderingIntent_to_PNG_RenderingIntent(
               image->rendering_intent)));
+
+          ping_have_sRGB = MagickTrue;
         }
     }
 
@@ -10449,6 +10454,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
     {
       if (ping_exclude_gAMA == MagickFalse &&
+          ping_have_iCCP == MagickFalse &&
+          ping_have_sRGB == MagickFalse &&
           (ping_exclude_sRGB == MagickFalse ||
           (image->gamma < .45 || image->gamma > .46)))
       {
@@ -10466,14 +10473,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
       }
 
-      if (ping_exclude_cHRM == MagickFalse)
+      if (ping_exclude_cHRM == MagickFalse && ping_have_sRGB == MagickFalse)
         {
           if ((mng_info->have_write_global_chrm == 0) &&
               (image->chromaticity.red_primary.x != 0.0))
             {
               /*
                 Note image chromaticity.
-                To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
+                Note: if cHRM+gAMA == sRGB write sRGB instead.
               */
                PrimaryInfo
                  bp,

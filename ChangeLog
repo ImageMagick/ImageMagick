@@ -1,3 +1,6 @@
+2013-04-02  6.8.4-7 Glenn Randers-Pehrson <glennrp@image...>
+  * Don't write a PNG gAMA or cHRM chunk when writing the iCCP or sRGB chunk.
+
 2013-04-02  6.8.4-7 Cristy  <quetzlzacatenango@image...>
   * Return MagickWand for the library name for Wand.pc.
 
