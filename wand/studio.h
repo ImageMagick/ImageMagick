@@ -23,9 +23,9 @@ extern "C" {
 #endif
 
 #if defined(WIN32) || defined(WIN64)
-#  define MAGICKCORE_WINDOWS_SUPPORT
+#  define MAGICKWAND_WINDOWS_SUPPORT
 #else
-#  define MAGICKCORE_POSIX_SUPPORT
+#  define MAGICKWAND_POSIX_SUPPORT
 #endif 
 
 #define MAGICKWAND_IMPLEMENTATION  1
@@ -95,14 +95,14 @@ extern "C" {
 #if defined(MAGICKCORE_HAVE_UNISTD_H)
 # include <unistd.h>
 #endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_DEBUG)
+#if defined(MAGICKWAND_WINDOWS_SUPPORT) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_DEBUG)
+#if defined(MAGICKWAND_WINDOWS_SUPPORT) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKWAND_WINDOWS_SUPPORT)
 # include <direct.h>
 # if !defined(MAGICKCORE_HAVE_STRERROR)
 #  define HAVE_STRERROR
@@ -124,7 +124,7 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 # include <pthread.h>
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+#elif defined(MAGICKWAND_WINDOWS_SUPPORT)
 #  define MAGICKCORE_HAVE_WINTHREADS  1
 #include <windows.h>
 #endif
@@ -166,13 +166,13 @@ extern size_t strlcpy(char *,const char *,size_t);
 extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_POSIX_SUPPORT)
+#if defined(MAGICKWAND_WINDOWS_SUPPORT) || defined(MAGICKWAND_POSIX_SUPPORT)
 # include <sys/types.h>
 # include <sys/stat.h>
 # if defined(MAGICKCORE_HAVE_FTIME)
 # include <sys/timeb.h>
 # endif
-# if defined(MAGICKCORE_POSIX_SUPPORT)
+# if defined(MAGICKWAND_POSIX_SUPPORT)
 #  if defined(MAGICKCORE_HAVE_SYS_NDIR_H) || defined(MAGICKCORE_HAVE_SYS_DIR_H) || defined(MAGICKCORE_HAVE_NDIR_H)
 #   define dirent direct
 #   define NAMLEN(dirent) (dirent)->d_namlen
@@ -199,7 +199,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 # endif
 # include "wand/MagickWand.h"
-# if !defined(MAGICKCORE_WINDOWS_SUPPORT)
+# if !defined(MAGICKWAND_WINDOWS_SUPPORT)
 #  include <sys/time.h>
 # if defined(MAGICKCORE_HAVE_SYS_TIMES_H)
 #  include <sys/times.h>
@@ -225,13 +225,13 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 
 #if defined(S_IRUSR) && defined(S_IWUSR)
 # define S_MODE (S_IRUSR | S_IWUSR)
-#elif defined (MAGICKCORE_WINDOWS_SUPPORT)
+#elif defined (MAGICKWAND_WINDOWS_SUPPORT)
 # define S_MODE (_S_IREAD | _S_IWRITE)
 #else
 # define S_MODE  0600
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKWAND_WINDOWS_SUPPORT)
 # include "magick/nt-base.h"
 #endif
 #if defined(macintosh)
@@ -252,7 +252,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 /*
   Review these platform specific definitions.
 */
-#if defined(MAGICKCORE_POSIX_SUPPORT) && !defined(__OS2__)
+#if defined(MAGICKWAND_POSIX_SUPPORT) && !defined(__OS2__)
 # define DirectorySeparator  "/"
 # define DirectoryListSeparator  ':'
 # define EditorOptions  " -title \"Edit Image Comment\" -e vi"
@@ -312,7 +312,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
      SetWarningHandler(MACWarningHandler)
 #  endif
 # endif
-# if defined(MAGICKCORE_WINDOWS_SUPPORT)
+# if defined(MAGICKWAND_WINDOWS_SUPPORT)
 #  define DirectorySeparator  "\\"
 #  define DirectoryListSeparator  ';'
 #  define EditorOptions ""

@@ -30,7 +30,7 @@ extern "C" {
 #  undef MAGICKCORE_BUILD_MODULES
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
+#if defined(MAGICKWAND_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 # define WandPrivate
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
