@@ -3026,9 +3026,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
       /*
         Modulate colormap.
       */
-      red=image->colormap[i].red;
-      green=image->colormap[i].green;
-      blue=image->colormap[i].blue;
+      red=DecodePixelGamma((MagickRealType) image->colormap[i].red);
+      green=DecodePixelGamma((MagickRealType) image->colormap[i].green);
+      blue=DecodePixelGamma((MagickRealType) image->colormap[i].blue);
       switch (colorspace)
       {
         case HCLColorspace:
@@ -3057,6 +3057,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
           break;
         }
       }
+      image->colormap[i].red=EncodePixelGamma(red);
+      image->colormap[i].green=EncodePixelGamma(green);
+      image->colormap[i].blue=EncodePixelGamma(blue);
     }
   /*
     Modulate image.
@@ -3091,9 +3094,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
         green,
         red;
 
-      red=(double) GetPixelRed(image,q);
-      green=(double) GetPixelGreen(image,q);
-      blue=(double) GetPixelBlue(image,q);
+      red=DecodePixelGamma((MagickRealType) GetPixelRed(image,q));
+      green=DecodePixelGamma((MagickRealType) GetPixelGreen(image,q));
+      blue=DecodePixelGamma((MagickRealType) GetPixelBlue(image,q));
       switch (colorspace)
       {
         case HCLColorspace:
@@ -3122,9 +3125,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
           break;
         }
       }
-      SetPixelRed(image,ClampToQuantum(red),q);
-      SetPixelGreen(image,ClampToQuantum(green),q);
-      SetPixelBlue(image,ClampToQuantum(blue),q);
+      SetPixelRed(image,ClampToQuantum(EncodePixelGamma(red)),q);
+      SetPixelGreen(image,ClampToQuantum(EncodePixelGamma(green)),q);
+      SetPixelBlue(image,ClampToQuantum(EncodePixelGamma(blue)),q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3556,25 +3559,33 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         for (i=0; i < (ssize_t) image->colors; i++)
         {
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            image->colormap[i].red=ScaledSig(image->colormap[i].red);
+            image->colormap[i].red=(MagickRealType) ScaledSig(
+              image->colormap[i].red);
           if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            image->colormap[i].green=ScaledSig(image->colormap[i].green);
+            image->colormap[i].green=(MagickRealType) ScaledSig(
+              image->colormap[i].green);
           if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            image->colormap[i].blue=ScaledSig(image->colormap[i].blue);
+            image->colormap[i].blue=(MagickRealType) ScaledSig(
+              image->colormap[i].blue);
           if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            image->colormap[i].alpha=ScaledSig(image->colormap[i].alpha);
+            image->colormap[i].alpha=(MagickRealType) ScaledSig(
+              image->colormap[i].alpha);
         }
       else
         for (i=0; i < (ssize_t) image->colors; i++)
         {
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            image->colormap[i].red=InverseScaledSig(image->colormap[i].red);
+            image->colormap[i].red=(MagickRealType) InverseScaledSig(
+              image->colormap[i].red);
           if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            image->colormap[i].green=InverseScaledSig(image->colormap[i].green);
+            image->colormap[i].green=(MagickRealType) InverseScaledSig(
+              image->colormap[i].green);
           if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            image->colormap[i].blue=InverseScaledSig(image->colormap[i].blue);
+            image->colormap[i].blue=(MagickRealType) InverseScaledSig(
+              image->colormap[i].blue);
           if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            image->colormap[i].alpha=InverseScaledSig(image->colormap[i].alpha);
+            image->colormap[i].alpha=(MagickRealType) InverseScaledSig(
+              image->colormap[i].alpha);
         }
     }
   /*
