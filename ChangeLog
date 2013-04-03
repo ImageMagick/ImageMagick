@@ -1,11 +1,9 @@
-2013-04-02  6.8.3-10 Bastien Roucaries  <roucaries.basti...>
-  * Fix compilation under HPUX of perlmagick
-
 2013-04-02  6.8.4-7 Cristy  <quetzlzacatenango@image...>
   * Return MagickWand for the library name for Wand.pc.
 
 2013-04-01  6.8.4-7 Bastien Roucaries  <roucaries.basti...>
   * Prepare X11 support as a plugin.
+  * Fix compilation under HPUX of perlmagick
 
 2013-04-01  6.8.4-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-6, SVN revision 11640.
