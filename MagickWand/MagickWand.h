@@ -64,94 +64,10 @@ extern "C" {
 #  define MAGICKWAND_POSIX_SUPPORT
 #endif 
 
-#if defined(__BORLANDC__) && defined(_DLL)
-#  pragma message("BCBMagick lib DLL export interface")
-#  define _MAGICKDLL_
-#  define _MAGICKLIB_
-#endif
-
-#include "MagickWand/method-attribute.h"
-
-#if defined(MAGICKWAND_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
-# define WandPrivate
-# if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
-#  define _MAGICKDLL_
-# endif
-# if defined(_MAGICKDLL_)
-#  if defined(_VISUALC_)
-#   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
-#  endif
-#  if !defined(_MAGICKLIB_)
-#   if defined(__GNUC__)
-#    define WandExport __attribute__ ((__dllimport__))
-#   else
-#    define WandExport __declspec(dllimport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "MagickWand lib DLL import interface" )
-#   endif
-#  else
-#   if defined(__GNUC__)
-#    define WandExport __attribute__ ((__dllexport__))
-#   else
-#    define WandExport __declspec(dllexport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "MagickWand lib DLL export interface" )
-#   endif
-#  endif
-# else
-#  define WandExport
-#  if defined(_VISUALC_)
-#   pragma message( "MagickWand lib static interface" )
-#  endif
-# endif
-
-# define WandGlobal __declspec(thread)
-# if defined(_VISUALC_)
-#  pragma warning(disable : 4018)
-#  pragma warning(disable : 4244)
-#  pragma warning(disable : 4142)
-#  pragma warning(disable : 4800)
-#  pragma warning(disable : 4786)
-#  pragma warning(disable : 4996)
-# endif
-#else
-# if __GNUC__ >= 4
-#  define WandExport __attribute__ ((__visibility__ ("default")))
-#  define WandPrivate  __attribute__ ((__visibility__ ("hidden")))
-# else
-#   define WandExport
-#   define WandPrivate
-# endif
-# define WandGlobal
-#endif
-
-#if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
-#  define wand_aligned(x)  __attribute__((__aligned__(x)))
-#  define wand_attribute  __attribute__
-#  define wand_unused(x)  wand_unused_ ## x __attribute__((__unused__))
-#else
-#  define wand_aligned(x)  /* nothing */
-#  define wand_attribute(x)  /* nothing */
-#  define wand_unused(x) x
-#endif
-
-#if defined(MAGICKCORE_HAVE___ALLOC_SIZE__)
-#  define wand_alloc_size(x)  __attribute__((__alloc_size__(x)))
-#  define wand_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
-#  define wand_cold  __attribute__((__cold__))
-#  define wand_hot  __attribute__((__hot__))
-#else
-#  define wand_alloc_size(x)  /* nothing */
-#  define wand_alloc_sizes(x,y)  /* nothing */
-#  define wand_cold
-#  define wand_hot
-#endif
-
 typedef struct _MagickWand
   MagickWand;
 
+#include "MagickWand/method-attribute.h"
 #include "MagickCore/MagickCore.h"
 #include "MagickWand/animate.h"
 #include "MagickWand/compare.h"
