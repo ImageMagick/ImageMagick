@@ -3,6 +3,7 @@
 
 2013-04-02  6.8.4-7 Cristy  <quetzlzacatenango@image...>
   * Return MagickWand for the library name for Wand.pc.
+  * The LCH colorspace makes the round-trip now.
 
 2013-04-01  6.8.4-7 Bastien Roucaries  <roucaries.basti...>
   * Prepare X11 support as a plugin.
