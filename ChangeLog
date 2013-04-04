@@ -4,6 +4,8 @@
 2013-04-02  6.8.4-7 Cristy  <quetzlzacatenango@image...>
   * Return MagickWand for the library name for Wand.pc.
   * The LCH colorspace makes the round-trip now.
+  * Revert the default upsampling algortithm for JPEG (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23100).
 
 2013-04-01  6.8.4-7 Bastien Roucaries  <roucaries.basti...>
   * Prepare X11 support as a plugin.
