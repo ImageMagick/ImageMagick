@@ -44,11 +44,15 @@ extern MagickPrivate void
     double *),
   ConvertHWBToRGB(const double,const double,const double,double *,double *,
     double *),
+  ConvertLCHToRGB(const double,const double,const double,double *,double *,
+    double *),
   ConvertRGBToHCL(const double,const double,const double,double *,double *,
     double *),
   ConvertRGBToHSB(const double,const double,const double,double *,double *,
     double *),
   ConvertRGBToHWB(const double,const double,const double,double *,double *,
+    double *),
+  ConvertRGBToLCH(const double,const double,const double,double *,double *,
     double *);
 
 static inline void ConvertLabToXYZ(const double L,const double a,const double b,

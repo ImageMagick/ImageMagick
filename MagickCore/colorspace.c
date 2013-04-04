@@ -749,32 +749,20 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
-            a,
-            b,
             blue,
-            C,
+            chroma,
             green,
-            H,
-            L,
-            red,
-            X,
-            Y,
-            Z;
+            hue,
+            luma,
+            red;
 
           red=DecodePixelGamma((MagickRealType) GetPixelRed(image,q));
           green=DecodePixelGamma((MagickRealType) GetPixelGreen(image,q));
           blue=DecodePixelGamma((MagickRealType) GetPixelBlue(image,q));
-          ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-          ConvertXYZToLab(X,Y,Z,&L,&a,&b);
-          C=hypot(a-0.5,b-0.5);
-          H=180.0*atan2(b-0.5,a-0.5)/MagickPI;
-          if (H < 360.0)
-            H+=360.0;
-          if (H > 360.0)
-            H-=360.0;
-          SetPixelRed(image,ClampToQuantum(QuantumRange*L),q);
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*C),q);
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*H/360.0),q);
+          ConvertRGBToLCH(red,green,blue,&luma,&chroma,&hue);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*luma),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*chroma),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*hue),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2604,25 +2592,17 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
-            a,
-            b,
             blue,
-            C,
+            chroma,
             green,
-            H,
-            L,
-            red,
-            X,
-            Y,
-            Z;
+            hue,
+            luma,
+            red;
 
-          L=QuantumScale*GetPixelRed(image,q);
-          C=QuantumScale*GetPixelGreen(image,q);
-          H=QuantumScale*GetPixelBlue(image,q);
-          a=C*cos(360.0*H*MagickPI/180.0)+0.5;
-          b=C*sin(360.0*H*MagickPI/180.0)+0.5;
-          ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
-          ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
+          luma=(double) (QuantumScale*GetPixelRed(image,q));
+          chroma=(double) (QuantumScale*GetPixelGreen(image,q));
+          hue=(double) (QuantumScale*GetPixelBlue(image,q));
+          ConvertLCHToRGB(luma,chroma,hue,&red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(EncodePixelGamma(red)),q);
           SetPixelGreen(image,ClampToQuantum(EncodePixelGamma(green)),q);
           SetPixelBlue(image,ClampToQuantum(EncodePixelGamma(blue)),q);
