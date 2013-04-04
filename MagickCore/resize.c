@@ -2761,6 +2761,9 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     *x_offset,
     y;
 
+  PointInfo
+    sample_offset;
+
   /*
     Initialize sampled image attributes.
   */
@@ -2777,6 +2780,31 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   sample_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (sample_image == (Image *) NULL)
     return((Image *) NULL);
+
+  /*
+    Check for posible user defined sampling offset Artifact
+    The default sampling offset is in the mid-point of sample regions.
+  */
+  sample_offset.x=sample_offset.y=0.5-MagickEpsilon;
+  {
+    const char
+      *value;
+
+    value=GetImageArtifact(image,"sample:offset");
+    if (value != (char *) NULL)
+      {
+        GeometryInfo
+          geometry_info;
+        MagickStatusType
+          flags;
+
+        (void) ParseGeometry(value,&geometry_info);
+        flags=ParseGeometry(value,&geometry_info);
+        sample_offset.x=sample_offset.y=geometry_info.rho/100.0-MagickEpsilon;
+        if ((flags & SigmaValue) != 0)
+          sample_offset.y=geometry_info.sigma/100.0-MagickEpsilon;
+      }
+  }
   /*
     Allocate scan line buffer and column offset buffers.
   */
@@ -2788,8 +2816,8 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   for (x=0; x < (ssize_t) sample_image->columns; x++)
-    x_offset[x]=(ssize_t) (((double) x*image->columns)/sample_image->columns+
-      0.5);
+    x_offset[x]=(ssize_t) ((((double) x+sample_offset.x)*image->columns)/
+                                                  sample_image->columns);
   /*
     Sample each row.
   */
@@ -2817,7 +2845,8 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
 
     if (status == MagickFalse)
       continue;
-    y_offset=(ssize_t) (((double) y*image->rows)/sample_image->rows+0.5);
+    y_offset=(ssize_t) ((((double) y+sample_offset.y)*image->rows)/
+                                               sample_image->rows);
     p=GetCacheViewVirtualPixels(image_view,0,y_offset,image->columns,1,
       exception);
     q=QueueCacheViewAuthenticPixels(sample_view,0,y,sample_image->columns,1,
