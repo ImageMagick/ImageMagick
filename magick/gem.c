@@ -102,9 +102,9 @@ MagickExport void ConvertHCLToRGB(const double hue,const double chroma,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  L=luma;
-  C=chroma;
   H=hue;
+  C=chroma;
+  L=luma;
   a=C*cos(360.0*H*MagickPI/180.0)+0.5;
   b=C*sin(360.0*H*MagickPI/180.0)+0.5;
   ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
@@ -420,9 +420,9 @@ MagickExport void ConvertRGBToHCL(const Quantum red,const Quantum green,
   ConvertXYZToLab(X,Y,Z,&L,&a,&b);
   C=hypot(a-0.5,b-0.5);
   H=180.0*atan2(b-0.5,a-0.5)/MagickPI;
-  if (H < 360.0)
+  if (H < 0.0)
     H+=360.0;
-  if (H > 360.0)
+  if (H >= 360.0)
     H-=360.0;
   *hue=H/360.0;
   *chroma=C;
