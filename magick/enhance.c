@@ -3447,6 +3447,30 @@ static inline void ModulateHWB(const double percent_hue,
   ConvertHWBToRGB(hue,whiteness,blackness,red,green,blue);
 }
 
+static inline void ModulateLCH(const double percent_luma,
+  const double percent_chroma,const double percent_hue,Quantum *red,
+  Quantum *green,Quantum *blue)
+{
+  double
+    hue,
+    luma,
+    chroma;
+
+  /*
+    Increase or decrease color hue, chroma, or chroma.
+  */
+  ConvertRGBToLCH(*red,*green,*blue,&luma,&chroma,&hue);
+  luma*=0.01*percent_luma;
+  chroma*=0.01*percent_chroma;
+  hue+=0.5*(0.01*percent_hue-1.0);
+  while (hue < 0.0)
+    hue+=1.0;
+  while (hue > 1.0)
+    hue-=1.0;
+  ConvertLCHToRGB(luma,chroma,hue,red,green,blue);
+}
+
+
 MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 {
 #define ModulateImageTag  "Modulate/Image"
@@ -3557,6 +3581,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
             &red,&green,&blue);
           break;
         }
+        case LCHColorspace:
+        {
+          ModulateLCH(percent_brightness,percent_saturation,percent_hue,
+            &red,&green,&blue);
+          break;
+        }
       }
       if (IssRGBColorspace(image->colorspace) != MagickFalse)
         {
@@ -3635,6 +3665,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
         case HWBColorspace:
         {
           ModulateHWB(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
+        case LCHColorspace:
+        {
+          ModulateLCH(percent_brightness,percent_saturation,percent_hue,
             &red,&green,&blue);
           break;
         }
