@@ -1156,7 +1156,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_info.desired_number_of_colors=(int) StringToUnsignedLong(option);
     }
   option=GetImageOption(image_info,"jpeg:block-smoothing");
-  jpeg_info.do_block_smoothing=IsStringTrue(option);
+  if (option != (const char *) NULL)
+    jpeg_info.do_block_smoothing=IsStringTrue(option);
   jpeg_info.dct_method=JDCT_FLOAT;
   option=GetImageOption(image_info,"jpeg:dct-method");
   if (option != (const char *) NULL)
@@ -1189,7 +1190,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       }
     }
   option=GetImageOption(image_info,"jpeg:fancy-upsampling");
-  jpeg_info.do_fancy_upsampling=IsStringTrue(option);
+  if (option != (const char *) NULL)
+    jpeg_info.do_fancy_upsampling=IsStringTrue(option);
   (void) jpeg_start_decompress(&jpeg_info);
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
