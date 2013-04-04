@@ -813,9 +813,9 @@ MagickPrivate void ConvertRGBToLCH(const double red,const double green,
   ConvertXYZToLab(X,Y,Z,&L,&a,&b);
   C=hypot(a-0.5,b-0.5);
   H=180.0*atan2(b-0.5,a-0.5)/MagickPI;
-  if (H < 360.0)
+  if (H < 0.0)
     H+=360.0;
-  if (H > 360.0)
+  if (H >= 360.0)
     H-=360.0;
   *luma=L;
   *chroma=C;
