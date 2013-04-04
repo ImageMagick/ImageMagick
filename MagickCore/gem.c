@@ -89,14 +89,13 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
   const double luma,double *red,double *green,double *blue)
 {
   double
-    a,
     b,
-    C,
-    H,
-    L,
-    X,
-    Y,
-    Z;
+    c,
+    g,
+    h,
+    m,
+    r,
+    x;
 
   /*
     Convert HCL to RGB colorspace.
@@ -104,13 +103,51 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  L=luma;
-  C=chroma;
-  H=hue;
-  a=C*cos(360.0*H*MagickPI/180.0)+0.5;
-  b=C*sin(360.0*H*MagickPI/180.0)+0.5;
-  ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
+  h=6.0*hue;
+  c=chroma;
+  x=c*(1.0-fabs(fmod(h,2.0)-1.0));
+  r=0.0;
+  g=0.0;
+  b=0.0;
+  if ((0.0 <= h) && (h < 1.0))
+    {
+      r=c;
+      g=x;
+    }
+  else
+    if ((1.0 <= h) && (h < 2.0))
+      {
+        r=x;
+        g=c;
+      }
+    else
+      if ((2.0 <= h) && (h < 3.0))
+        {
+          g=c;
+          b=x;
+        }
+      else
+        if ((3.0 <= h) && (h < 4.0))
+          {
+            g=x;
+            b=c;
+          }
+        else
+          if ((4.0 <= h) && (h < 5.0))
+            {
+              r=x;
+              b=c;
+            }
+          else
+            if ((5.0 <= h) && (h < 6.0))
+              {
+                r=c;
+                b=x;
+              }
+  m=luma-(0.298839f*r+0.586811f*g+0.114350f*b);
+  *red=QuantumRange*(r+m);
+  *green=QuantumRange*(g+m);
+  *blue=QuantumRange*(b+m);
 }
 
 /*
@@ -376,6 +413,61 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n v e r t L C H T o R G B                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertLCHToRGB() transforms a (luma, chroma, hue) to a (red, green,
+%  blue) triple.
+%
+%  The format of the ConvertLCHToRGBImage method is:
+%
+%      void ConvertLCHToRGB(const double luma,const double chroma,
+%        const double hue,double *red,double *green,double *blue)
+%
+%  A description of each parameter follows:
+%
+%    o luma, chroma, hue: A double value representing a
+%      component of the LCH color space.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+*/
+MagickPrivate void ConvertLCHToRGB(const double luma,const double chroma,
+  const double hue,double *red,double *green,double *blue)
+{
+  double
+    a,
+    b,
+    C,
+    H,
+    L,
+    X,
+    Y,
+    Z;
+
+  /*
+    Convert LCH to RGB colorspace.
+  */
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
+  L=luma;
+  C=chroma;
+  H=hue;
+  a=C*cos(360.0*H*MagickPI/180.0)+0.5;
+  b=C*sin(360.0*H*MagickPI/180.0)+0.5;
+  ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
+  ConvertXYZToRGB(X,Y,Z,red,green,blue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t R G B T o H C L                                             %
 %                                                                             %
 %                                                                             %
@@ -399,18 +491,31 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
 %      component of the HCL color space.
 %
 */
+
+static inline double MagickMax(const double x,const double y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
+static inline double MagickMin(const double x,const double y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
 MagickPrivate void ConvertRGBToHCL(const double red,const double green,
   const double blue,double *hue,double *chroma,double *luma)
 {
   double
-    a,
     b,
-    C,
-    H,
-    L,
-    X,
-    Y,
-    Z;
+    c,
+    g,
+    h,
+    max,
+    r;
 
   /*
     Convert RGB to HCL colorspace.
@@ -418,17 +523,26 @@ MagickPrivate void ConvertRGBToHCL(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(chroma != (double *) NULL);
   assert(luma != (double *) NULL);
-  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLab(X,Y,Z,&L,&a,&b);
-  C=hypot(a-0.5,b-0.5);
-  H=180.0*atan2(b-0.5,a-0.5)/MagickPI;
-  if (H < 360.0)
-    H+=360.0;
-  if (H > 360.0)
-    H-=360.0;
-  *hue=H/360.0;
-  *chroma=C;
-  *luma=L;
+  r=red;
+  g=green;
+  b=blue;
+  max=MagickMax(r,MagickMax(g,b));
+  c=max-(double) MagickMin(r,MagickMin(g,b));
+  h=0.0;
+  if (c == 0.0)
+    h=0.0;
+  else
+    if (red == max)
+      h=fmod((g-b)/c+6.0,6.0);
+    else
+      if (green == max)
+        h=((b-r)/c)+2.0;
+      else
+        if (blue == max)
+          h=((r-g)/c)+4.0;
+  *hue=(h/6.0);
+  *chroma=QuantumScale*c;
+  *luma=QuantumScale*(0.298839f*r+0.586811f*g+0.114350f*b);
 }
 
 /*
@@ -535,21 +649,6 @@ MagickPrivate void ConvertRGBToHSB(const double red,const double green,
 %      component of the HSL color space.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport void ConvertRGBToHSL(const double red,const double green,
   const double blue,double *hue,double *saturation,double *lightness)
 {
@@ -661,6 +760,66 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
   f=(r == w) ? g-b : ((g == w) ? b-r : r-g);
   p=(r == w) ? 3.0 : ((g == w) ? 5.0 : 1.0);
   *hue=(p-f/(v-1.0*w))/6.0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t R G B T o L C H                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertRGBToLCH() transforms a (red, green, blue) to a (luma, chroma,
+%  hue) triple.
+%
+%  The format of the ConvertRGBToLCH method is:
+%
+%      void ConvertRGBToLCH(const double red,const double green,
+%        const double blue,double *luma,double *chroma,double *hue)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel.
+%
+%    o luma, chroma, hue: A pointer to a double value representing a
+%      component of the LCH color space.
+%
+*/
+MagickPrivate void ConvertRGBToLCH(const double red,const double green,
+  const double blue,double *luma,double *chroma,double *hue)
+{
+  double
+    a,
+    b,
+    C,
+    H,
+    L,
+    X,
+    Y,
+    Z;
+
+  /*
+    Convert RGB to LCH colorspace.
+  */
+  assert(luma != (double *) NULL);
+  assert(chroma != (double *) NULL);
+  assert(hue != (double *) NULL);
+  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
+  ConvertXYZToLab(X,Y,Z,&L,&a,&b);
+  C=hypot(a-0.5,b-0.5);
+  H=180.0*atan2(b-0.5,a-0.5)/MagickPI;
+  if (H < 360.0)
+    H+=360.0;
+  if (H > 360.0)
+    H-=360.0;
+  *luma=L;
+  *chroma=C;
+  *hue=H/360.0;
 }
 
 /*
