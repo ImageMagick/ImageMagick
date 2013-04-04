@@ -107,8 +107,8 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
   L=luma;
   C=chroma;
   H=hue;
-  a=C*cos(360.0*H*(MagickPI/180.0));
-  b=C*sin(360.0*H*(MagickPI/180.0));
+  a=C*cos(360.0*H);
+  b=C*sin(360.0*H);
   ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
