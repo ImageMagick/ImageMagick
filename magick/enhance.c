@@ -3511,52 +3511,50 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
     colorspace=(ColorspaceType) ParseCommandOption(MagickColorspaceOptions,
       MagickFalse,artifact);
   if (image->storage_class == PseudoClass)
+    for (i=0; i < (ssize_t) image->colors; i++)
     {
-      /*
-        Modulate colormap.
-      */
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        Quantum
-          blue,
-          green,
-          red;
+      Quantum
+        blue,
+        green,
+        red;
 
-        red=image->colormap[i].red;
-        green=image->colormap[i].green;
-        blue=image->colormap[i].blue;
-        switch (colorspace)
+      /*
+        Modulate image colormap.
+      */
+      red=image->colormap[i].red;
+      green=image->colormap[i].green;
+      blue=image->colormap[i].blue;
+      switch (colorspace)
+      {
+        case HCLColorspace:
         {
-          case HCLColorspace:
-          {
-            ModulateHCL(percent_hue,percent_saturation,percent_brightness,
-              &red,&green,&blue);
-            break;
-          }
-          case HSBColorspace:
-          {
-            ModulateHSB(percent_hue,percent_saturation,percent_brightness,
-              &red,&green,&blue);
-            break;
-          }
-          case HSLColorspace:
-          default:
-          {
-            ModulateHSL(percent_hue,percent_saturation,percent_brightness,
-              &red,&green,&blue);
-            break;
-          }
-          case HWBColorspace:
-          {
-            ModulateHWB(percent_hue,percent_saturation,percent_brightness,
-              &red,&green,&blue);
-            break;
-          }
+          ModulateHCL(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
         }
-        image->colormap[i].red=red;
-        image->colormap[i].green=green;
-        image->colormap[i].blue=blue;
+        case HSBColorspace:
+        {
+          ModulateHSB(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
+        case HSLColorspace:
+        default:
+        {
+          ModulateHSL(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
+        case HWBColorspace:
+        {
+          ModulateHWB(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
       }
+      image->colormap[i].red=red;
+      image->colormap[i].green=green;
+      image->colormap[i].blue=blue;
     }
   /*
     Modulate image.
