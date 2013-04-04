@@ -3024,7 +3024,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
         red;
 
       /*
-        Modulate colormap.
+        Modulate image colormap.
       */
       red=DecodePixelGamma((MagickRealType) image->colormap[i].red);
       green=DecodePixelGamma((MagickRealType) image->colormap[i].green);
