@@ -806,8 +806,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             GetPixelBlue(q)));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLab(X,Y,Z,&L,&a,&b);
-          C=hypot(a,b);
-          H=180.0*atan2(b,a)/MagickPI;
+          C=hypot(a-0.5,b-0.5);
+          H=180.0*atan2(b-0.5,a-0.5)/MagickPI;
           if (H < 360.0)
             H+=360.0;
           if (H > 360.0)
@@ -2756,8 +2756,8 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           L=QuantumScale*GetPixelRed(q);
           C=QuantumScale*GetPixelGreen(q);
           H=QuantumScale*GetPixelBlue(q);
-          a=C*cos(360.0*H*MagickPI/180.0);
-          b=C*sin(360.0*H*MagickPI/180.0);
+          a=C*cos(360.0*H*MagickPI/180.0)+0.5;
+          b=C*sin(360.0*H*MagickPI/180.0)+0.5;
           ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
           red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
