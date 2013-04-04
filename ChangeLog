@@ -1,3 +1,8 @@
+2013-04-05  6.8.4-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fix -sample sampling point to midpoints of sampling areas
+  * add a "sample:offset=" define to allow users to adjust this
+    sampling point position in terms of percentage (default = 50x50)
+
 2013-04-02  6.8.4-7 Glenn Randers-Pehrson <glennrp@image...>
   * Don't write a PNG gAMA or cHRM chunk when writing the iCCP or sRGB chunk.
 
