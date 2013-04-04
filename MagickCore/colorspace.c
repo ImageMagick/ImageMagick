@@ -2619,8 +2619,8 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           L=QuantumScale*GetPixelRed(image,q);
           C=QuantumScale*GetPixelGreen(image,q);
           H=QuantumScale*GetPixelBlue(image,q);
-          a=C*cos(360.0*H*(MagickPI/180.0));
-          b=C*sin(360.0*H*(MagickPI/180.0));
+          a=C*cos(360.0*H*MagickPI/180.0);
+          b=C*sin(360.0*H*MagickPI/180.0);
           ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(EncodePixelGamma(red)),q);
