@@ -296,8 +296,8 @@ MagickExport const char *GetImageArtifact(const Image *image,
   /* Programmer notes....
      CLI IMv7: if no per-image artifact - look for a global option instead
      CLI IMv6: global options are copied into per-image artifacts
-     In all other cases, if image is not part of a image_info, image list this
-     pointer should be NULL.
+     In all other cases, if image is not part of an image_info image list this
+     pointer should be NULL, an no global image options are available.
    */
 
   if ( (image->image_info != (ImageInfo *)NULL) &&
