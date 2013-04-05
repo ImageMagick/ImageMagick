@@ -2342,7 +2342,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
   return(status);
 }
 
-static MagickBooleanType GetTIFFInfo(const IMage *image,TIFF *tiff,
+static MagickBooleanType GetTIFFInfo(const Image *image,TIFF *tiff,
   TIFFInfo *tiff_info)
 {
   const char
