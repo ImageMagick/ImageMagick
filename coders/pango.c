@@ -41,6 +41,7 @@
 */
 #include "magick/studio.h"
 #include "magick/annotate.h"
+#include "magick/artifact.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/composite-private.h"
