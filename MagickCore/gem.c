@@ -512,8 +512,8 @@ MagickPrivate void ConvertLCHuvToRGB(const double luma,const double chroma,
   L=luma;
   C=chroma;
   H=hue;
-  u=C*cos(360.0*H*MagickPI/180.0);
-  v=C*sin(360.0*H*MagickPI/180.0);
+  u=C*cos(360.0*H*MagickPI/180.0)+0.5;
+  v=C*sin(360.0*H*MagickPI/180.0)+0.5;
   ConvertLuvToXYZ(L,u,v,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
@@ -926,8 +926,8 @@ MagickPrivate void ConvertRGBToLCHuv(const double red,const double green,
   assert(hue != (double *) NULL);
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
   ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
-  C=hypot(u,v);
-  H=180.0*atan2(v,u)/MagickPI/360.0;
+  C=hypot(u-0.5,v-0.5);
+  H=180.0*atan2(v-0.5,u-0.5)/MagickPI/360.0;
   if (H < 0.0)
     H+=1.0;
   if (H >= 1.0)
