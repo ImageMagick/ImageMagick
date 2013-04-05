@@ -2719,10 +2719,10 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         return(MagickFalse);
       return(status);
     }
-    case LCHColorspace:
+    case LCHabColorspace:
     {
       /*
-        Transform image from LCH to sRGB.
+        Transform image from LCHab to sRGB.
       */
       if (image->storage_class == PseudoClass)
         {
@@ -2772,6 +2772,77 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           chroma=(double) (QuantumScale*GetPixelGreen(q));
           hue=(double) (QuantumScale*GetPixelBlue(q));
           ConvertLCHabToRGB(luma,chroma,hue,&red,&green,&blue);
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
+          SetPixelRed(q,red);
+          SetPixelGreen(q,green);
+          SetPixelBlue(q,blue);
+          q++;
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
+        return(MagickFalse);
+      return(status);
+    }
+    case LCHColorspace:
+    case LCHuvColorspace:
+    {
+      /*
+        Transform image from LCHuv to sRGB.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        magick_threads(image,image,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register PixelPacket
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (PixelPacket *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            chroma,
+            hue,
+            luma;
+
+          Quantum
+            blue,
+            green,
+            red;
+
+          luma=(double) (QuantumScale*GetPixelRed(q));
+          chroma=(double) (QuantumScale*GetPixelGreen(q));
+          hue=(double) (QuantumScale*GetPixelBlue(q));
+          ConvertLCHuvToRGB(luma,chroma,hue,&red,&green,&blue);
           red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
           green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
           blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
