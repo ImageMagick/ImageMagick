@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "magick/pixel-private.h"
+
 #define D65X  (0.950456f)
 #define D65Y  (1.0f)
 #define D65Z  (1.088754f)
@@ -57,6 +59,27 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   *X=D65X*x;
   *Y=D65Y*y;
   *Z=D65Z*z;
+}
+
+static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
+  double *L,double *u,double *v)
+{
+  double
+    alpha;
+
+  assert(L != (double *) NULL);
+  assert(u != (double *) NULL);
+  assert(v != (double *) NULL);
+  if ((Y/D65Y) > CIEEpsilon)
+    *L=(double) (116.0f*pow(Y/D65Y,1.0/3.0)-16.0f);
+  else
+    *L=CIEK*(Y/D65Y);
+  alpha=PerceptibleReciprocal(X+15.0f*Y+3.0f*Z);
+  *u=13.0f*(*L)*((4.0f*alpha*X)-(4.0f*D65X/(D65X+15.0f*D65Y+3.0f*D65Z)));
+  *v=13.0f*(*L)*((9.0f*alpha*Y)-(9.0f*D65Y/(D65X+15.0f*D65Y+3.0f*D65Z)));
+  *L/=100.0f;
+  *u=(*u+134.0f)/354.0f;
+  *v=(*v+140.0f)/262.0f;
 }
 
 static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
@@ -104,6 +127,24 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   *L=((116.0f*y)-16.0f)/100.0f;
   *a=(500.0f*(x-y))/255.0f+0.5f;
   *b=(200.0f*(y-z))/255.0f+0.5f;
+}
+
+static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
+  double *X,double *Y,double *Z)
+{
+  assert(X != (double *) NULL);
+  assert(Y != (double *) NULL);
+  assert(Z != (double *) NULL);
+  if ((100.0f*L) > (CIEK*CIEEpsilon))
+    *Y=(double) pow(((100.0*L)+16.0)/116.0,3.0);
+  else
+    *Y=(100.0f*L)/CIEK;
+  *X=((*Y*((39.0f*(100.0f*L)/((262.0f*v-140.0f)+13.0f*(100.0f*L)*(9.0f*D65Y/
+    (D65X+15.0f*D65Y+3.0f*D65Z))))-5.0f))+5.0f*(*Y))/((((52.0f*(100.0f*L)/
+    ((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D65X/(D65X+15.0f*D65Y+3.0f*
+    D65Z))))-1.0f)/3.0f)-(-1.0f/3.0f));
+  *Z=(*X*(((52.0f*(100.0f*L)/((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D65X/
+    (D65X+15.0f*D65Y+3.0f*D65Z))))-1.0f)/3.0f))-5.0f*(*Y);
 }
 
 static inline void ConvertXYZToRGB(const double x,const double y,const double z,

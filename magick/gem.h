@@ -44,7 +44,9 @@ extern MagickExport void
     Quantum *),
   ConvertHWBToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
-  ConvertLCHToRGB(const double,const double,const double,Quantum *,Quantum *,
+  ConvertLCHabToRGB(const double,const double,const double,Quantum *,Quantum *,
+    Quantum *),
+  ConvertLCHuvToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
   ConvertRGBToHCL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
@@ -54,7 +56,9 @@ extern MagickExport void
     double *),
   ConvertRGBToHWB(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
-  ConvertRGBToLCH(const Quantum,const Quantum,const Quantum,double *,double *,
+  ConvertRGBToLCHab(const Quantum,const Quantum,const Quantum,double *,double *,
+    double *),
+  ConvertRGBToLCHuv(const Quantum,const Quantum,const Quantum,double *,double *,
     double *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
