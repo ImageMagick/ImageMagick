@@ -1090,7 +1090,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   key=GetNextImageOption(image_info);
   for ( ; key != (char *) NULL; key=GetNextImageOption(image_info))
   {
-    option=GetImageOption(image_info,key);
+    option=GetImageArtifact(image,key);
     if (option == (const char *) NULL)
       continue;
     if (LocaleNCompare(key,"jp2:",4) == 0)
@@ -1104,7 +1104,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
         (void) ConcatenateString(&options," ");
       }
   }
-  option=GetImageOption(image_info,"jp2:rate");
+  option=GetImageArtifact(image,"jp2:rate");
   if ((option == (const char *) NULL) &&
       (image_info->compression != LosslessJPEGCompression) &&
       (image->quality != UndefinedCompressionQuality) &&

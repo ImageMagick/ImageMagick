@@ -303,7 +303,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
-  option=GetImageOption(read_info,"authenticate");
+  option=GetImageArtifact(image,"authenticate");
   if (option != (const char *) NULL)
     (void) FormatLocaleString(options+strlen(options),MaxTextExtent,
       " -sPCLPassword=%s",option);

@@ -3786,7 +3786,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         i=0;
         if ((window_center != 0) && (window_width == 0))
           window_width=(size_t) window_center;
-        option=GetImageOption(image_info,"dcm:display-range");
+        option=GetImageArtifact(image,"dcm:display-range");
         if (option != (const char *) NULL)
           {
             if (LocaleCompare(option,"reset") == 0)

@@ -101,8 +101,8 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   (void) exception;
   XGetImportInfo(&ximage_info);
-  ximage_info.screen=IsStringTrue(GetImageOption(image_info,"x:screen"));
-  ximage_info.silent=IsStringTrue(GetImageOption(image_info,"x:silent"));
+  ximage_info.screen=IsStringTrue(GetImageArtifact(image,"x:screen"));
+  ximage_info.silent=IsStringTrue(GetImageArtifact(image,"x:silent"));
   return(XImportImage(image_info,&ximage_info,exception));
 }
 #endif

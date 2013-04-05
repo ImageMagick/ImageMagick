@@ -472,14 +472,14 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   else
     if (image->quality >= 100)
       configure.lossless=1;
-  value=GetImageOption(image_info,"webp:lossless");
+  value=GetImageArtifact(image,"webp:lossless");
   if (value != (char *) NULL)
     configure.lossless=ParseCommandOption(MagickBooleanOptions,MagickFalse,
       value);
-  value=GetImageOption(image_info,"webp:method");
+  value=GetImageArtifact(image,"webp:method");
   if (value != (char *) NULL)
     configure.method=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:image-hint");
+  value=GetImageArtifact(image,"webp:image-hint");
   if (value != (char *) NULL)
     {
       if (LocaleCompare(value,"graph") == 0)
@@ -489,53 +489,53 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       if (LocaleCompare(value,"picture") == 0)
         configure.image_hint=WEBP_HINT_PICTURE;
     }
-  value=GetImageOption(image_info,"webp:target-size");
+  value=GetImageArtifact(image,"webp:target-size");
   if (value != (char *) NULL)
     configure.target_size=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:target-psnr");
+  value=GetImageArtifact(image,"webp:target-psnr");
   if (value != (char *) NULL)
     configure.target_PSNR=(float) StringToDouble(value,(char **) NULL);
-  value=GetImageOption(image_info,"webp:segments");
+  value=GetImageArtifact(image,"webp:segments");
   if (value != (char *) NULL)
     configure.segments=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:sns-strength");
+  value=GetImageArtifact(image,"webp:sns-strength");
   if (value != (char *) NULL)
     configure.sns_strength=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:filter-strength");
+  value=GetImageArtifact(image,"webp:filter-strength");
   if (value != (char *) NULL)
     configure.filter_strength=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:filter-sharpness");
+  value=GetImageArtifact(image,"webp:filter-sharpness");
   if (value != (char *) NULL)
     configure.filter_sharpness=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:filter-type");
+  value=GetImageArtifact(image,"webp:filter-type");
   if (value != (char *) NULL)
     configure.filter_type=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:auto-filter");
+  value=GetImageArtifact(image,"webp:auto-filter");
   if (value != (char *) NULL)
     configure.autofilter=ParseCommandOption(MagickBooleanOptions,MagickFalse,
       value);
-  value=GetImageOption(image_info,"webp:alpha-compression");
+  value=GetImageArtifact(image,"webp:alpha-compression");
   if (value != (char *) NULL)
     configure.alpha_compression=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:alpha-filtering");
+  value=GetImageArtifact(image,"webp:alpha-filtering");
   if (value != (char *) NULL)
     configure.alpha_filtering=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:alpha-quality");
+  value=GetImageArtifact(image,"webp:alpha-quality");
   if (value != (char *) NULL)
     configure.alpha_quality=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:pass");
+  value=GetImageArtifact(image,"webp:pass");
   if (value != (char *) NULL)
     configure.pass=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:show-compressed");
+  value=GetImageArtifact(image,"webp:show-compressed");
   if (value != (char *) NULL)
     configure.show_compressed=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:preprocessing");
+  value=GetImageArtifact(image,"webp:preprocessing");
   if (value != (char *) NULL)
     configure.preprocessing=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:partitions");
+  value=GetImageArtifact(image,"webp:partitions");
   if (value != (char *) NULL)
     configure.partitions=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:partition-limit");
+  value=GetImageArtifact(image,"webp:partition-limit");
   if (value != (char *) NULL)
     configure.partition_limit=StringToInteger(value);
   if (WebPValidateConfig(&configure) == 0)
