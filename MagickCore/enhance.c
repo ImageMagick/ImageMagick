@@ -2924,7 +2924,7 @@ static inline void ModulateHSL(const double percent_hue,
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
     hue+=1.0;
-  while (hue > 1.0)
+  while (hue >= 1.0)
     hue-=1.0;
   saturation*=0.01*percent_saturation;
   lightness*=0.01*percent_lightness;
@@ -2947,7 +2947,7 @@ static inline void ModulateHWB(const double percent_hue,
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
     hue+=1.0;
-  while (hue > 1.0)
+  while (hue >= 1.0)
     hue-=1.0;
   blackness*=0.01*percent_blackness;
   whiteness*=0.01*percent_whiteness;
@@ -2972,9 +2972,9 @@ static inline void ModulateLCH(const double percent_luma,
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
     hue+=1.0;
-  while (hue > 1.0)
+  while (hue >= 1.0)
     hue-=1.0;
-  ConvertHCLToRGB(luma,chroma,hue,red,green,blue);
+  ConvertLCHToRGB(luma,chroma,hue,red,green,blue);
 }
 
 MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
