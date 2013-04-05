@@ -6109,7 +6109,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   geometry;
 
                 (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
-                image_option=GetImageOption(msl_info->image_info[n],"page");
+                image_option=GetImageArtifact(msl_info->image[n],"page");
                 if (image_option != (const char *) NULL)
                   flags=ParseAbsoluteGeometry(image_option,&geometry);
                 flags=ParseAbsoluteGeometry(value,&geometry);

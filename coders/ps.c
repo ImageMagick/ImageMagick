@@ -777,7 +777,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
-  option=GetImageOption(image_info,"eps:use-cropbox");
+  option=GetImageArtifact(image,"eps:use-cropbox");
   if ((*image_info->magick == 'E') && ((option == (const char *) NULL) || 
       (IsStringTrue(option) != MagickFalse)))
     (void) ConcatenateMagickString(options,"-dEPSCrop ",MaxTextExtent);

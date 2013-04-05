@@ -11414,7 +11414,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   mng_info->write_png48=LocaleCompare(image_info->magick,"PNG48") == 0;
   mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0;
 
-  value=GetImageOption(image_info,"png:format");
+  value=GetImageArtifact(image,"png:format");
 
   if (value != (char *) NULL)
     {
@@ -11563,7 +11563,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       (void) SyncImage(image,exception);
     }
 
-  value=GetImageOption(image_info,"png:bit-depth");
+  value=GetImageArtifact(image,"png:bit-depth");
 
   if (value != (char *) NULL)
     {
@@ -11593,7 +11593,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
           "  png:bit-depth=%d was defined.\n",mng_info->write_png_depth);
     }
 
-  value=GetImageOption(image_info,"png:color-type");
+  value=GetImageArtifact(image,"png:color-type");
 
   if (value != (char *) NULL)
     {
@@ -11685,7 +11685,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   value=GetImageArtifact(image,"png:preserve-colormap");
   if (value == NULL)
-     value=GetImageOption(image_info,"png:preserve-colormap");
+     value=GetImageArtifact(image,"png:preserve-colormap");
   if (value != NULL)
      mng_info->ping_preserve_colormap=MagickTrue;
 
@@ -11694,7 +11694,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
    */
   value=GetImageArtifact(image,"png:compression-level");
   if (value == NULL)
-     value=GetImageOption(image_info,"png:compression-level");
+     value=GetImageArtifact(image,"png:compression-level");
   if (value != NULL)
   {
       /* We have to add 1 to everything because 0 is a valid input,
@@ -11739,7 +11739,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   value=GetImageArtifact(image,"png:compression-strategy");
   if (value == NULL)
-     value=GetImageOption(image_info,"png:compression-strategy");
+     value=GetImageArtifact(image,"png:compression-strategy");
   if (value != NULL)
   {
 
@@ -11775,7 +11775,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   value=GetImageArtifact(image,"png:compression-filter");
   if (value == NULL)
-     value=GetImageOption(image_info,"png:compression-filter");
+     value=GetImageArtifact(image,"png:compression-filter");
   if (value != NULL)
   {
 
@@ -11824,10 +11824,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       }
     else
       {
-       value=GetImageOption(image_info,"png:exclude-chunk");
+       value=GetImageArtifact(image,"png:exclude-chunk");
 
        if (value == NULL)
-         value=GetImageOption(image_info,"png:exclude-chunks");
+         value=GetImageArtifact(image,"png:exclude-chunks");
       }
 
     if (value != NULL)
@@ -11957,10 +11957,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       }
     else
       {
-       value=GetImageOption(image_info,"png:include-chunk");
+       value=GetImageArtifact(image,"png:include-chunk");
 
        if (value == NULL)
-         value=GetImageOption(image_info,"png:include-chunks");
+         value=GetImageArtifact(image,"png:include-chunks");
       }
 
     if (value != NULL)
@@ -13198,7 +13198,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        }
      (void) WriteBlob(image,32,chunk);
      (void) WriteBlobMSBULong(image,crc32(0,chunk,32));
-     option=GetImageOption(image_info,"mng:need-cacheoff");
+     option=GetImageArtifact(image,"mng:need-cacheoff");
      if (option != (const char *) NULL)
        {
          size_t
