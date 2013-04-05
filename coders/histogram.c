@@ -344,7 +344,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
     Relinquish resources.
   */
   histogram=(MagickPixelPacket *) RelinquishMagickMemory(histogram);
-  option=GetImageOption(image_info,"histogram:unique-colors");
+  option=GetImageArtifact(image,"histogram:unique-colors");
   if ((option == (const char *) NULL) || (IsMagickTrue(option) != MagickFalse))
     {
       FILE
