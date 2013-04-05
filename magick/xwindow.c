@@ -6089,6 +6089,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             Convert to multi-byte color-mapped X canvas.
           */
           bytes_per_pixel=(unsigned int) (ximage->bits_per_pixel >> 3);
+          (void) ResetMagickMemory(channel,0,sizeof(*channel));
           for (y=0; y < (int) canvas->rows; y++)
           {
             p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
