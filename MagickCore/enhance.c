@@ -3086,6 +3086,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
           break;
         }
         case LCHColorspace:
+        case LCHuvColorspace:
         {
           ModulateLCH(percent_brightness,percent_saturation,percent_hue,
             &red,&green,&blue);
@@ -3172,6 +3173,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
           break;
         }
         case LCHColorspace:
+        case LCHuvColorspace:
         {
           ModulateLCH(percent_brightness,percent_saturation,percent_hue,
             &red,&green,&blue);
