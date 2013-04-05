@@ -3459,7 +3459,7 @@ static inline void ModulateLCH(const double percent_luma,
   /*
     Increase or decrease color luma, chroma, or hue.
   */
-  ConvertRGBToLCHuv(*red,*green,*blue,&luma,&chroma,&hue);
+  ConvertRGBToLCHab(*red,*green,*blue,&luma,&chroma,&hue);
   luma*=0.01*percent_luma;
   chroma*=0.01*percent_chroma;
   hue+=0.5*(0.01*percent_hue-1.0);
@@ -3467,7 +3467,7 @@ static inline void ModulateLCH(const double percent_luma,
     hue+=1.0;
   while (hue >= 1.0)
     hue-=1.0;
-  ConvertLCHuvToRGB(luma,chroma,hue,red,green,blue);
+  ConvertLCHabToRGB(luma,chroma,hue,red,green,blue);
 }
 
 MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
@@ -3581,7 +3581,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
           break;
         }
         case LCHColorspace:
-        case LCHuvColorspace:
+        case LCHCaborspace:
         {
           ModulateLCH(percent_brightness,percent_saturation,percent_hue,
             &red,&green,&blue);
@@ -3669,7 +3669,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
           break;
         }
         case LCHColorspace:
-        case LCHuvColorspace:
+        case LCHabColorspace:
         {
           ModulateLCH(percent_brightness,percent_saturation,percent_hue,
             &red,&green,&blue);
