@@ -413,29 +413,29 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t L C H T o R G B                                             %
+%   C o n v e r t L C H a b T o R G B                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertLCHToRGB() transforms a (luma, chroma, hue) to a (red, green,
+%  ConvertLCHabToRGB() transforms a (luma, chroma, hue) to a (red, green,
 %  blue) triple.
 %
-%  The format of the ConvertLCHToRGBImage method is:
+%  The format of the ConvertLCHabToRGBImage method is:
 %
-%      void ConvertLCHToRGB(const double luma,const double chroma,
+%      void ConvertLCHabToRGB(const double luma,const double chroma,
 %        const double hue,double *red,double *green,double *blue)
 %
 %  A description of each parameter follows:
 %
-%    o luma, chroma, hue: A double value representing a
-%      component of the LCH color space.
+%    o luma, chroma, hue: A double value representing a component of the
+%      LCHab color space.
 %
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
-MagickPrivate void ConvertLCHToRGB(const double luma,const double chroma,
+MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
   const double hue,double *red,double *green,double *blue)
 {
   double
@@ -449,7 +449,7 @@ MagickPrivate void ConvertLCHToRGB(const double luma,const double chroma,
     Z;
 
   /*
-    Convert LCH to RGB colorspace.
+    Convert LCHab to RGB colorspace.
   */
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
@@ -460,6 +460,61 @@ MagickPrivate void ConvertLCHToRGB(const double luma,const double chroma,
   a=C*cos(360.0*H*MagickPI/180.0)+0.5;
   b=C*sin(360.0*H*MagickPI/180.0)+0.5;
   ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
+  ConvertXYZToRGB(X,Y,Z,red,green,blue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t L C H u v T o R G B                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertLCHuvToRGB() transforms a (luma, chroma, hue) to a (red, green,
+%  blue) triple.
+%
+%  The format of the ConvertLCHuvToRGBImage method is:
+%
+%      void ConvertLCHuvToRGB(const double luma,const double chroma,
+%        const double hue,double *red,double *green,double *blue)
+%
+%  A description of each parameter follows:
+%
+%    o luma, chroma, hue: A double value representing a component of the
+%      LCHuv color space.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+*/
+MagickPrivate void ConvertLCHuvToRGB(const double luma,const double chroma,
+  const double hue,double *red,double *green,double *blue)
+{
+  double
+    C,
+    H,
+    L,
+    u,
+    v,
+    X,
+    Y,
+    Z;
+
+  /*
+    Convert LCHuv to RGB colorspace.
+  */
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
+  L=luma;
+  C=chroma;
+  H=hue;
+  u=C*cos(360.0*H*MagickPI/180.0);
+  v=C*sin(360.0*H*MagickPI/180.0);
+  ConvertLuvToXYZ(L,u,v,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -767,18 +822,18 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t R G B T o L C H                                             %
+%   C o n v e r t R G B a b T o L C H                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertRGBToLCH() transforms a (red, green, blue) to a (luma, chroma,
+%  ConvertRGBToLCHab() transforms a (red, green, blue) to a (luma, chroma,
 %  hue) triple.
 %
-%  The format of the ConvertRGBToLCH method is:
+%  The format of the ConvertRGBToLCHab method is:
 %
-%      void ConvertRGBToLCH(const double red,const double green,
+%      void ConvertRGBToLCHab(const double red,const double green,
 %        const double blue,double *luma,double *chroma,double *hue)
 %
 %  A description of each parameter follows:
@@ -790,7 +845,7 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
 %      component of the LCH color space.
 %
 */
-MagickPrivate void ConvertRGBToLCH(const double red,const double green,
+MagickPrivate void ConvertRGBToLCHab(const double red,const double green,
   const double blue,double *luma,double *chroma,double *hue)
 {
   double
@@ -813,6 +868,66 @@ MagickPrivate void ConvertRGBToLCH(const double red,const double green,
   ConvertXYZToLab(X,Y,Z,&L,&a,&b);
   C=hypot(a-0.5,b-0.5);
   H=180.0*atan2(b-0.5,a-0.5)/MagickPI/360.0;
+  if (H < 0.0)
+    H+=1.0;
+  if (H >= 1.0)
+    H-=1.0;
+  *luma=L;
+  *chroma=C;
+  *hue=H;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t R G B u v T o L C H                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertRGBToLCHuv() transforms a (red, green, blue) to a (luma, chroma,
+%  hue) triple.
+%
+%  The format of the ConvertRGBToLCHuv method is:
+%
+%      void ConvertRGBToLCHuv(const double red,const double green,
+%        const double blue,double *luma,double *chroma,double *hue)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel.
+%
+%    o luma, chroma, hue: A pointer to a double value representing a
+%      component of the LCHuv color space.
+%
+*/
+MagickPrivate void ConvertRGBToLCHuv(const double red,const double green,
+  const double blue,double *luma,double *chroma,double *hue)
+{
+  double
+    C,
+    H,
+    L,
+    u,
+    v,
+    X,
+    Y,
+    Z;
+
+  /*
+    Convert RGB to LCH colorspace.
+  */
+  assert(luma != (double *) NULL);
+  assert(chroma != (double *) NULL);
+  assert(hue != (double *) NULL);
+  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
+  ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
+  C=hypot(u,v);
+  H=180.0*atan2(v,u)/MagickPI/360.0;
   if (H < 0.0)
     H+=1.0;
   if (H >= 1.0)
