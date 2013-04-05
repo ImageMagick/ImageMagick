@@ -430,11 +430,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   cmyk=image_info->colorspace == CMYKColorspace ? MagickTrue : MagickFalse;
   cropbox=MagickFalse;
-  option=GetImageOption(image_info,"pdf:use-cropbox");
+  option=GetImageArtifact(image,"pdf:use-cropbox");
   if (option != (const char *) NULL)
     cropbox=IsMagickTrue(option);
   trimbox=MagickFalse;
-  option=GetImageOption(image_info,"pdf:use-trimbox");
+  option=GetImageArtifact(image,"pdf:use-trimbox");
   if (option != (const char *) NULL)
     trimbox=IsMagickTrue(option);
   count=0;

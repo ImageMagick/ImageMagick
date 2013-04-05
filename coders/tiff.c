@@ -1070,7 +1070,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       SetImageColorspace(image,LabColorspace);
     TIFFGetProfiles(tiff,image);
     TIFFGetProperties(tiff,image);
-    option=GetImageOption(image_info,"tiff:exif-properties");
+    option=GetImageArtifact(image,"tiff:exif-properties");
     if ((option == (const char *) NULL) ||
         (IsMagickTrue(option) != MagickFalse))
       TIFFGetEXIFProperties(tiff,image);
@@ -1207,7 +1207,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
           SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
       }
-    option=GetImageOption(image_info,"tiff:alpha");
+    option=GetImageArtifact(image,"tiff:alpha");
     if (option != (const char *) NULL)
       associated_alpha=LocaleCompare(option,"associated") == 0 ? MagickTrue :
         MagickFalse;
@@ -2348,7 +2348,7 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,TIFF *tiff,
 
   assert(tiff_info != (TIFFInfo *) NULL);
   (void) ResetMagickMemory(tiff_info,0,sizeof(*tiff_info));
-  option=GetImageOption(image_info,"tiff:tile-geometry");
+  option=GetImageArtifact(image,"tiff:tile-geometry");
   if (option == (const char *) NULL)
     return(MagickTrue);
   flags=ParseAbsoluteGeometry(option,&tiff_info->tile_geometry);
