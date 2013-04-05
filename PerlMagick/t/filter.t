@@ -162,7 +162,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Roll.miff', 'Roll', q/ge
 testFilterCompare('input.miff',  q//, 'reference/filter/Rotate.miff', 'Rotate', q/45/, 0.4, 1.02);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Sample.miff', 'Sample', q/'60%'/, 0.002, 0.02);
+testFilterCompare('input.miff',  q//, 'reference/filter/Sample.miff', 'Sample', q/'60%'/, 0.006, 0.6);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Scale.miff', 'Scale', q/'60%'/, 0.008, 1.0);
