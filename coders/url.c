@@ -153,12 +153,9 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
-      read_info=DestroyImageInfo(read_info);
-      (void) CopyMagickString(image->filename,read_info->filename,
-        MaxTextExtent);
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
-        image->filename);
-      image=DestroyImageList(image);
+        read_info->filename);
+      read_info=DestroyImageInfo(read_info);
       return((Image *) NULL);
     }
   (void) CopyMagickString(filename,image_info->magick,MaxTextExtent);
