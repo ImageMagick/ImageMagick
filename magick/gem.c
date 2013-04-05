@@ -283,7 +283,7 @@ static inline double ConvertHueToRGB(double m1,double m2,double hue)
 {
   if (hue < 0.0)
     hue+=1.0;
-  if (hue > 1.0)
+  if (hue >= 1.0)
     hue-=1.0;
   if ((6.0*hue) < 1.0)
     return(m1+6.0*(m2-m1)*hue);
@@ -693,7 +693,7 @@ MagickExport void ConvertRGBToHSL(const Quantum red,const Quantum green,
           (delta/2.0)))/delta;
   if (*hue < 0.0)
     *hue+=1.0;
-  if (*hue > 1.0)
+  if (*hue >= 1.0)
     *hue-=1.0;
 }
 
@@ -810,12 +810,12 @@ MagickExport void ConvertRGBToLCH(const Quantum red,const Quantum green,
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
   ConvertXYZToLab(X,Y,Z,&L,&a,&b);
   C=hypot(a-0.5,b-0.5);
-  H=180.0*atan2(b-0.5,a-0.5)/MagickPI;
+  H=180.0*atan2(b-0.5,a-0.5)/MagickPI/360.0;
   if (H < 0.0)
-    H+=360.0;
-  if (H >= 360.0)
-    H-=360.0;
-  *hue=H/360.0;
+    H+=1.0;
+  if (H >= 1.0)
+    H-=1.0;
+  *hue=H;
   *chroma=C;
   *luma=L;
 }
