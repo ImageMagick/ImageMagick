@@ -2747,7 +2747,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
           q++;
-          q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
