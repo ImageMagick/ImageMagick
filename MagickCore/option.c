@@ -891,6 +891,8 @@ static const OptionInfo
     { "HWB", HWBColorspace, UndefinedOptionFlag, MagickFalse },
     { "Lab", LabColorspace, UndefinedOptionFlag, MagickFalse },
     { "LCH", LCHColorspace, UndefinedOptionFlag, MagickFalse },
+    { "LCHab", LCHabColorspace, UndefinedOptionFlag, MagickFalse },
+    { "LCHuv", LCHuvColorspace, UndefinedOptionFlag, MagickFalse },
     { "LMS", LMSColorspace, UndefinedOptionFlag, MagickFalse },
     { "Log", LogColorspace, UndefinedOptionFlag, MagickFalse },
     { "Luv", LuvColorspace, UndefinedOptionFlag, MagickFalse },

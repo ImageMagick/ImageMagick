@@ -34,6 +34,8 @@ typedef enum
   HWBColorspace,
   LabColorspace,
   LCHColorspace,
+  LCHabColorspace,
+  LCHuvColorspace,
   LogColorspace,
   LMSColorspace,
   LuvColorspace,

@@ -137,27 +137,6 @@ static inline void ConvertXYZToLMS(const double x,const double y,
   *S=QuantumRange*s;
 }
 
-static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
-  double *L,double *u,double *v)
-{
-  double
-    alpha;
-
-  assert(L != (double *) NULL);
-  assert(u != (double *) NULL);
-  assert(v != (double *) NULL);
-  if ((Y/D65Y) > CIEEpsilon)
-    *L=(double) (116.0f*pow(Y/D65Y,1.0/3.0)-16.0f);
-  else
-    *L=CIEK*(Y/D65Y);
-  alpha=PerceptibleReciprocal(X+15.0f*Y+3.0f*Z);
-  *u=13.0f*(*L)*((4.0f*alpha*X)-(4.0f*D65X/(D65X+15.0f*D65Y+3.0f*D65Z)));
-  *v=13.0f*(*L)*((9.0f*alpha*Y)-(9.0f*D65Y/(D65X+15.0f*D65Y+3.0f*D65Z)));
-  *L/=100.0f;
-  *u=(*u+134.0f)/354.0f;
-  *v=(*v+140.0f)/262.0f;
-}
-
 static MagickBooleanType sRGBTransformImage(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
@@ -709,10 +688,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         return(MagickFalse);
       return(status);
     }
-    case LCHColorspace:
+    case LCHabColorspace:
     {
       /*
-        Transform image from sRGB to LCH.
+        Transform image from sRGB to LCHab.
       */
       if (image->storage_class == PseudoClass)
         {
@@ -759,7 +738,73 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           red=DecodePixelGamma((MagickRealType) GetPixelRed(image,q));
           green=DecodePixelGamma((MagickRealType) GetPixelGreen(image,q));
           blue=DecodePixelGamma((MagickRealType) GetPixelBlue(image,q));
-          ConvertRGBToLCH(red,green,blue,&luma,&chroma,&hue);
+          ConvertRGBToLCHab(red,green,blue,&luma,&chroma,&hue);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*luma),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*chroma),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*hue),q);
+          q+=GetPixelChannels(image);
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
+      return(status);
+    }
+    case LCHColorspace:
+    case LCHuvColorspace:
+    {
+      /*
+        Transform image from sRGB to LCHuv.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image,exception) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        magick_threads(image,image,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register Quantum
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            blue,
+            chroma,
+            green,
+            hue,
+            luma,
+            red;
+
+          red=DecodePixelGamma((MagickRealType) GetPixelRed(image,q));
+          green=DecodePixelGamma((MagickRealType) GetPixelGreen(image,q));
+          blue=DecodePixelGamma((MagickRealType) GetPixelBlue(image,q));
+          ConvertRGBToLCHuv(red,green,blue,&luma,&chroma,&hue);
           SetPixelRed(image,ClampToQuantum(QuantumRange*luma),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*chroma),q);
           SetPixelBlue(image,ClampToQuantum(QuantumRange*hue),q);
@@ -1729,24 +1774,6 @@ static inline void ConvertLMSToXYZ(const double L,const double M,const double S,
   *Z=(-0.009627608738429)*l-0.005698031216113*m+1.015325639954543*s;
 }
 
-static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
-  double *X,double *Y,double *Z)
-{
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
-  if ((100.0f*L) > (CIEK*CIEEpsilon))
-    *Y=(double) pow(((100.0*L)+16.0)/116.0,3.0);
-  else
-    *Y=(100.0f*L)/CIEK;
-  *X=((*Y*((39.0f*(100.0f*L)/((262.0f*v-140.0f)+13.0f*(100.0f*L)*(9.0f*D65Y/
-    (D65X+15.0f*D65Y+3.0f*D65Z))))-5.0f))+5.0f*(*Y))/((((52.0f*(100.0f*L)/
-    ((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D65X/(D65X+15.0f*D65Y+3.0f*
-    D65Z))))-1.0f)/3.0f)-(-1.0f/3.0f));
-  *Z=(*X*(((52.0f*(100.0f*L)/((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D65X/
-    (D65X+15.0f*D65Y+3.0f*D65Z))))-1.0f)/3.0f))-5.0f*(*Y);
-}
-
 static inline ssize_t RoundToYCC(const double value)
 {
   if (value <= 0.0f)
@@ -2602,7 +2629,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           luma=(double) (QuantumScale*GetPixelRed(image,q));
           chroma=(double) (QuantumScale*GetPixelGreen(image,q));
           hue=(double) (QuantumScale*GetPixelBlue(image,q));
-          ConvertLCHToRGB(luma,chroma,hue,&red,&green,&blue);
+          ConvertLCHabToRGB(luma,chroma,hue,&red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(EncodePixelGamma(red)),q);
           SetPixelGreen(image,ClampToQuantum(EncodePixelGamma(green)),q);
           SetPixelBlue(image,ClampToQuantum(EncodePixelGamma(blue)),q);
