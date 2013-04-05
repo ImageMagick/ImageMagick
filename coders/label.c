@@ -41,6 +41,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/annotate.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/draw.h"
