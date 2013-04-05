@@ -40,7 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
-#include "MagickCore/property.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/colorspace.h"
@@ -55,6 +55,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
