@@ -586,6 +586,18 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     geometry=DestroyString(geometry);
                     break;
                   }
+                if (LocaleCompare(keyword,"pixel-intensity") == 0)
+                  {
+                    ssize_t
+                      intensity;
+
+                    intensity=ParseCommandOption(MagickPixelIntensityOptions,
+                      MagickFalse,options);
+                    if (intensity < 0)
+                      break;
+                    image->intensity=(PixelIntensityMethod) intensity;
+                    break;
+                  }
                 if ((LocaleNCompare(keyword,"profile:",8) == 0) ||
                     (LocaleNCompare(keyword,"profile-",8) == 0))
                   {
@@ -1091,8 +1103,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     */
     depth=GetImageQuantumDepth(image,MagickTrue);
     if ((image->storage_class == PseudoClass) &&
-        (image->colors > (one << depth)))
-      image->storage_class=DirectClass;
+        (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
+      (void) SetImageStorageClass(image,DirectClass);
     (void) WriteBlobString(image,"id=MagickCache\n");
     (void) FormatLocaleString(buffer,MaxTextExtent,"magick-signature=%u\n",
       GetMagickSignature((const StringInfo *) NULL));
@@ -1117,6 +1129,13 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,"colorspace=%s\n",
           CommandOptionToMnemonic(MagickColorspaceOptions,image->colorspace));
+        (void) WriteBlobString(image,buffer);
+      }
+    if (image->intensity != UndefinedPixelIntensityMethod)
+      {
+        (void) FormatLocaleString(buffer,MaxTextExtent,"pixel-intensity=%s\n",
+          CommandOptionToMnemonic(MagickPixelIntensityOptions,
+          image->intensity));
         (void) WriteBlobString(image,buffer);
       }
     if (image->endian != UndefinedEndian)
