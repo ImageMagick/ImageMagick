@@ -1,3 +1,7 @@
+2013-04-06  6.8.4-8 Cristy  <quetzlzacatenango@image...>
+  * Include intensity type in the MIFF metadata.
+  * Assume Rec709Luma for JPEG if a color profile is not included.
+
 2013-04-06  6.8.4-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-7, SVN revision 11720.
 
