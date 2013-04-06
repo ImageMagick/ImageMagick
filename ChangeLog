@@ -1,3 +1,6 @@
+2013-04-06  6.8.4-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.4-7, SVN revision 11720.
+
 2013-04-05  6.8.4-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix -sample sampling point to midpoints of sampling areas
   * add a "sample:offset=" define to allow users to adjust this
