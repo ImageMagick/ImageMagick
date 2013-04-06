@@ -617,8 +617,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       p=options+strlen(options);
                     }
                   if (options == (char *) NULL)
-                    ThrowReaderException(ResourceLimitError,
-                      "MemoryAllocationFailed");
+                    ThrowReaderException(ResourceLimitError, "MemoryAllocationFailed");
                   *p++=(char) c;
                   c=ReadBlobByte(image);
                   if (c == '\\')
@@ -888,6 +887,18 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     geometry=GetPageGeometry(options);
                     (void) ParseAbsoluteGeometry(geometry,&image->page);
                     geometry=DestroyString(geometry);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"pixel-intensity") == 0)
+                  {
+                    ssize_t
+                      intensity;
+
+                    intensity=ParseCommandOption(MagickPixelIntensityOptions,
+                      MagickFalse,options);
+                    if (intensity < 0)
+                      break;
+                    image->intensity=(PixelIntensityMethod) intensity;
                     break;
                   }
                 if ((LocaleNCompare(keyword,"profile:",8) == 0) ||
@@ -1509,8 +1520,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             offset=SeekBlob(image,-((MagickOffsetType)
               bzip_info.avail_in),SEEK_CUR);
             if (offset < 0)
-              ThrowReaderException(CorruptImageError,
-                "ImproperImageHeader");
+              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           }
         code=BZ2_bzDecompressEnd(&bzip_info);
         if (code != BZ_OK)
@@ -1546,8 +1556,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             offset=SeekBlob(image,-((MagickOffsetType) zip_info.avail_in),
               SEEK_CUR);
             if (offset < 0)
-              ThrowReaderException(CorruptImageError,
-                "ImproperImageHeader");
+              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           }
         code=inflateEnd(&zip_info);
         if (code != LZMA_OK)
@@ -1951,8 +1960,6 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if ((image->storage_class == PseudoClass) &&
         (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
       (void) SetImageStorageClass(image,DirectClass);
-    if (IsGrayImage(image,&image->exception) != MagickFalse)
-      (void) SetImageColorspace(image,GRAYColorspace);
     image->depth=image->depth <= 8 ? 8UL : image->depth <= 16 ? 16UL :
       image->depth <= 32 ? 32UL : 64UL;
     quantum_info=AcquireQuantumInfo(image_info,image);
@@ -2034,6 +2041,19 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,"colorspace=%s\n",
           CommandOptionToMnemonic(MagickColorspaceOptions,image->colorspace));
+        (void) WriteBlobString(image,buffer);
+      }
+    if (image->intensity != UndefinedPixelIntensityMethod)
+      {
+        (void) FormatLocaleString(buffer,MaxTextExtent,"pixel-intensity=%s\n",
+          CommandOptionToMnemonic(MagickPixelIntensityOptions,
+          image->intensity));
+        (void) WriteBlobString(image,buffer);
+      }
+    if (image->endian != UndefinedEndian)
+      {
+        (void) FormatLocaleString(buffer,MaxTextExtent,"endian=%s\n",
+          CommandOptionToMnemonic(MagickEndianOptions,image->endian));
         (void) WriteBlobString(image,buffer);
       }
     if (compression != UndefinedCompression)
