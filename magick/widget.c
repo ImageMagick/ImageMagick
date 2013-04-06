@@ -9087,9 +9087,8 @@ MagickExport void XTextViewWidget(Display *display,
   XGetWidgetInfo((char *) NULL,&north_info);
   XGetWidgetInfo((char *) NULL,&south_info);
   XGetWidgetInfo((char *) NULL,&expose_info);
+  XGetWidgetInfo((char *) NULL,&selection_info);
   visible_lines=0;
-  selection_info.width=0;
-  selection_info.height=0;
   delay=SuspendTime << 2;
   height=(unsigned int) (font_info->ascent+font_info->descent);
   state=UpdateConfigurationState;

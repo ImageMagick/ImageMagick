@@ -467,7 +467,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
   {
     if ((p == (PixelPacket *) NULL) || (r == (const PixelPacket *) NULL))
       break;
-    if (PixelIntensityToQuantum(image,r) > (QuantumRange/2))
+    if (GetPixelIntensity(image,r) > (QuantumRange/2))
       {
         SetPixelRed(q,GetPixelRed(p));
         SetPixelGreen(q,GetPixelGreen(p));
@@ -3367,8 +3367,8 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
       break;
     SetMagickPixelPacket(image,p,indexes+i,&alpha);
     SetMagickPixelPacket(image,q,nexus_indexes+i,&beta);
-    MagickPixelCompositeMask(&beta,(MagickRealType)
-      PixelIntensityToQuantum(image,r),&alpha,alpha.opacity,&beta);
+    MagickPixelCompositeMask(&beta,GetPixelIntensity(image,r),&alpha,
+      alpha.opacity,&beta);
     SetPixelRed(q,ClampToQuantum(beta.red));
     SetPixelGreen(q,ClampToQuantum(beta.green));
     SetPixelBlue(q,ClampToQuantum(beta.blue));

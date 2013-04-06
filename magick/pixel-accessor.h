@@ -137,12 +137,6 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
   return(ClampToQuantum(0.298839f*red+0.586811f*green+0.114350f*blue));
 }
 
-static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
-  const PixelPacket *restrict pixel)
-{
-  return(ClampToQuantum(GetPixelIntensity(image,pixel)));
-}
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

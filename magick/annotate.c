@@ -1812,9 +1812,9 @@ static MagickBooleanType RenderPostscript(Image *image,
         for (x=0; x < (ssize_t) annotate_image->columns; x++)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color);
-          SetPixelAlpha(q,ClampToQuantum((((QuantumRange-
-            (MagickRealType) PixelIntensityToQuantum(annotate_image,q))*
-            (QuantumRange-fill_color.opacity))/QuantumRange)));
+          SetPixelAlpha(q,ClampToQuantum((((QuantumRange-GetPixelIntensity(
+            annotate_image,q))*(QuantumRange-fill_color.opacity))/
+            QuantumRange)));
           SetPixelRed(q,fill_color.red);
           SetPixelGreen(q,fill_color.green);
           SetPixelBlue(q,fill_color.blue);

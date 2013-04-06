@@ -186,7 +186,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelRed(q,PixelIntensityToQuantum(image,p));
+          SetPixelRed(q,ClampToQuantum(GetPixelIntensity(image,p)));
           p++;
           q++;
         }
@@ -202,7 +202,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelGreen(q,PixelIntensityToQuantum(image,p));
+          SetPixelGreen(q,ClampToQuantum(GetPixelIntensity(image,p)));
           p++;
           q++;
         }
@@ -218,7 +218,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelBlue(q,PixelIntensityToQuantum(image,p));
+          SetPixelBlue(q,ClampToQuantum(GetPixelIntensity(image,p)));
           p++;
           q++;
         }
@@ -234,7 +234,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelAlpha(q,PixelIntensityToQuantum(image,p));
+          SetPixelAlpha(q,ClampToQuantum(GetPixelIntensity(image,p)));
           p++;
           q++;
         }
@@ -254,7 +254,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         indexes=GetCacheViewAuthenticIndexQueue(combine_view);
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelIndex(indexes+x,PixelIntensityToQuantum(image,p));
+          SetPixelIndex(indexes+x,ClampToQuantum(GetPixelIntensity(image,p)));
           p++;
         }
         image_view=DestroyCacheView(image_view);
@@ -474,7 +474,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelAlpha(q,PixelIntensityToQuantum(image,q));
+          SetPixelAlpha(q,ClampToQuantum(GetPixelIntensity(image,q)));
           q++;
         }
         break;

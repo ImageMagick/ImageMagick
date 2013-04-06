@@ -303,7 +303,7 @@ static void ExportCharPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=ScaleQuantumToChar(PixelIntensityToQuantum(image,p));
+          *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
           p++;
         }
       }
@@ -415,7 +415,7 @@ static void ExportCharPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=ScaleQuantumToChar(PixelIntensityToQuantum(image,p));
+            *q=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
             break;
           }
           default:
@@ -514,7 +514,7 @@ static void ExportDoublePixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(double) (QuantumScale*PixelIntensityToQuantum(image,p));
+          *q++=(double) (QuantumScale*GetPixelIntensity(image,p));
           p++;
         }
       }
@@ -628,7 +628,7 @@ static void ExportDoublePixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=(double) (QuantumScale*PixelIntensityToQuantum(image,p));
+            *q=(double) (QuantumScale*GetPixelIntensity(image,p));
             break;
           }
           default:
@@ -726,7 +726,7 @@ static void ExportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(float) (QuantumScale*PixelIntensityToQuantum(image,p));
+          *q++=(float) (QuantumScale*GetPixelIntensity(image,p));
           p++;
         }
       }
@@ -838,7 +838,7 @@ static void ExportFloatPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=(float) (QuantumScale*PixelIntensityToQuantum(image,p));
+            *q=(float) (QuantumScale*GetPixelIntensity(image,p));
             break;
           }
           default:
@@ -937,7 +937,7 @@ static void ExportIntegerPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(unsigned int) ScaleQuantumToLong(PixelIntensityToQuantum(image,p));
+          *q++=(unsigned int) ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
           p++;
         }
       }
@@ -1050,7 +1050,7 @@ static void ExportIntegerPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=(unsigned int) ScaleQuantumToLong(PixelIntensityToQuantum(image,p));
+            *q=(unsigned int) ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
             break;
           }
           default:
@@ -1148,7 +1148,7 @@ static void ExportLongPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=ScaleQuantumToLong(PixelIntensityToQuantum(image,p));
+          *q++=ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
           p++;
         }
       }
@@ -1260,7 +1260,7 @@ static void ExportLongPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=ScaleQuantumToLong(PixelIntensityToQuantum(image,p));
+            *q=ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
             break;
           }
           default:
@@ -1358,7 +1358,7 @@ static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=PixelIntensityToQuantum(image,p);
+          *q++=ClampToQuantum(GetPixelIntensity(image,p));
           p++;
         }
       }
@@ -1470,7 +1470,7 @@ static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=(PixelIntensityToQuantum(image,p));
+            *q=(ClampToQuantum(GetPixelIntensity(image,p)));
             break;
           }
           default:
@@ -1571,7 +1571,7 @@ static void ExportShortPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=ScaleQuantumToShort(PixelIntensityToQuantum(image,p));
+          *q++=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,p)));
           p++;
         }
       }
@@ -1683,7 +1683,7 @@ static void ExportShortPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=ScaleQuantumToShort(PixelIntensityToQuantum(image,p));
+            *q=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,p)));
             break;
           }
           default:

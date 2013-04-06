@@ -945,6 +945,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   WPGColorMapRec
     WPG_Palette;
 
+  WPGPSl1Record
+    WPG_Record;
+
   int
     i,
     bpp,
@@ -969,6 +972,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   one=1;
+  (void) WPG_Record;
   image=AcquireImage(image_info);
   image->depth=8;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
