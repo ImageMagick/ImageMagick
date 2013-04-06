@@ -3298,7 +3298,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
       break;
     for (x=(ssize_t) image->columns-1; x >= 0; x--)
     {
-      histogram[ScaleQuantumToMap(PixelIntensityToQuantum(image,p))]++;
+      histogram[ScaleQuantumToMap(ClampToQuantum(GetPixelIntensity(image,p)))]++;
       p++;
     }
   }

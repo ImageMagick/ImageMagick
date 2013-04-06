@@ -1643,7 +1643,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            pixel=PixelIntensityToQuantum(image,p);
+            pixel=ClampToQuantum(GetPixelIntensity(image,p));
             *q++=(unsigned char) (pixel >= (Quantum) (QuantumRange/2) ?
               '0' : '1');
             *q++=' ';
@@ -1696,7 +1696,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            index=PixelIntensityToQuantum(image,p);
+            index=ClampToQuantum(GetPixelIntensity(image,p));
             if (image->depth <= 8)
               count=(ssize_t) FormatLocaleString(buffer,MaxTextExtent,"%u ",
                 ScaleQuantumToChar(index));
@@ -1869,8 +1869,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if (IsGrayPixel(p) == MagickFalse)
-                    pixel=ScaleQuantumToAny(PixelIntensityToQuantum(image,p),
-                      range);
+                    pixel=ScaleQuantumToAny(ClampToQuantum(
+                      GetPixelIntensity(image,p)),range);
                   else
                     {
                       if (image->depth == 8)
@@ -1885,8 +1885,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if (IsGrayPixel(p) == MagickFalse)
-                    pixel=ScaleQuantumToAny(PixelIntensityToQuantum(image,p),
-                      range);
+                    pixel=ScaleQuantumToAny(ClampToQuantum(
+                      GetPixelIntensity(image,p)),range);
                   else
                     {
                       if (image->depth == 16)
@@ -2032,8 +2032,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                   if (image->depth <= 8)
                     for (x=0; x < (ssize_t) image->columns; x++)
                     {
-                      pixel=ScaleQuantumToAny(PixelIntensityToQuantum(image,p),
-                        range);
+                      pixel=ScaleQuantumToAny(ClampToQuantum(
+                        GetPixelIntensity(image,p)),range);
                       q=PopCharPixel((unsigned char) pixel,q);
                       if (image->matte != MagickFalse)
                         {
@@ -2046,8 +2046,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                   else
                     for (x=0; x < (ssize_t) image->columns; x++)
                     {
-                      pixel=ScaleQuantumToAny(PixelIntensityToQuantum(image,p),
-                        range);
+                      pixel=ScaleQuantumToAny(ClampToQuantum(
+                        GetPixelIntensity(image,p)),range);
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                       if (image->matte != MagickFalse)
                         {

@@ -5916,7 +5916,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       foreground=(unsigned char)
         (XPixelIntensity(&window->pixel_info->background_color) <
          XPixelIntensity(&window->pixel_info->foreground_color) ? 0x80 : 0x00);
-      polarity=(unsigned short) ((PixelIntensityToQuantum(image,
+      polarity=(unsigned short) ((GetPixelIntensity(image,
         &canvas->colormap[0])) < (QuantumRange/2) ? 1 : 0);
       if (canvas->colors == 2)
         polarity=GetPixelIntensity(canvas,&canvas->colormap[0]) <
@@ -6335,6 +6335,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                 /*
                   Convert to multi-byte continuous-tone X canvas.
                 */
+                (void) ResetMagickMemory(channel,0,sizeof(*channel));
                 bytes_per_pixel=(unsigned int) (ximage->bits_per_pixel >> 3);
                 for (y=0; y < (int) canvas->rows; y++)
                 {
@@ -6535,7 +6536,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       foreground=(unsigned char)
         (XPixelIntensity(&window->pixel_info->background_color) <
          XPixelIntensity(&window->pixel_info->foreground_color) ?  0x01 : 0x00);
-      polarity=(unsigned short) ((PixelIntensityToQuantum(image,
+      polarity=(unsigned short) ((GetPixelIntensity(image,
         &canvas->colormap[0])) < (QuantumRange/2) ? 1 : 0);
       if (canvas->colors == 2)
         polarity=GetPixelIntensity(canvas,&canvas->colormap[0]) <

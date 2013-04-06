@@ -250,19 +250,18 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       (void) WriteBlobString(image,"\n");
     }
   (void) SetImageType(image,BilevelType);
-  polarity = 0;
+  polarity=0;
   if (image->storage_class == PseudoClass) {
-    polarity=(IndexPacket) (PixelIntensityToQuantum(image,&image->colormap[0]) >=
-      (Quantum) (QuantumRange/2));
+    polarity=(IndexPacket) (GetPixelIntensity(image,&image->colormap[0]) >=
+      (QuantumRange/2));
     if (image->colors == 2)
-      polarity=(IndexPacket) (PixelIntensityToQuantum(image,&image->colormap[0]) >=
-         PixelIntensityToQuantum(image,&image->colormap[1]));
+      polarity=(IndexPacket) (GetPixelIntensity(image,&image->colormap[0]) >=
+        GetPixelIntensity(image,&image->colormap[1]));
   }
   for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) cell_height)
   {
     if ((y+cell_height) > image->rows)
       cell_height = (size_t) (image->rows-y);
-
     p=GetVirtualPixels(image,0,y,image->columns,cell_height,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
