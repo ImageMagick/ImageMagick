@@ -42,7 +42,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
   'input.miff', q//,q/, gravity=>'Center', compose=>'Bumpmap'/,
-  'reference/composite/Bumpmap.miff', 0.00001, 0.008);
+  'reference/composite/Bumpmap.miff', 0.03, 0.3);
 
 #
 # Clear
