@@ -2576,29 +2576,32 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         }
       else
         if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-          for (y=0; y < (ssize_t) image->rows; y++)
           {
-            register const PixelPacket
-              *p;
-
-            register ssize_t
-              x;
-
-            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            q=jpeg_pixels;
-            for (x=0; x < (ssize_t) image->columns; x++)
+            image->intensity=Rec709LumaPixelIntensityMethod;
+            for (y=0; y < (ssize_t) image->rows; y++)
             {
-              *q++=(JSAMPLE) ScaleQuantumToChar(ClampToQuantum(
-                GetPixelIntensity(image,p)));
-              p++;
+              register const PixelPacket
+                *p;
+
+              register ssize_t
+                x;
+
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              q=jpeg_pixels;
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                *q++=(JSAMPLE) ScaleQuantumToChar(ClampToQuantum(
+                  GetPixelIntensity(image,p)));
+                p++;
+              }
+              (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
+              if (status == MagickFalse)
+                break;
             }
-            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-            status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-              image->rows);
-            if (status == MagickFalse)
-              break;
           }
         else
           for (y=0; y < (ssize_t) image->rows; y++)
