@@ -1652,7 +1652,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) preview_image->columns; x++)
               {
                 byte<<=1;
-                pixel=ClampToQuantum(GetPixelIntensity(image,p));
+                pixel=ClampToQuantum(GetPixelLuma(image,p));
                 if (pixel >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
@@ -1791,7 +1791,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 pixel=ScaleQuantumToChar(ClampToQuantum(
-                  GetPixelIntensity(image,p)));
+                  GetPixelLuma(image,p)));
                 q=PopHexPixel(hex_digits,(size_t) pixel,q);
                 i++;
                 if ((q-pixels+8) >= 80)
@@ -1844,7 +1844,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte<<=1;
-                pixel=ClampToQuantum(GetPixelIntensity(image,p));
+                pixel=ClampToQuantum(GetPixelLuma(image,p));
                 if (pixel >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
