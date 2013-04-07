@@ -1546,21 +1546,21 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
       for (x=((ssize_t) number_pixels-7); x > 0; x-=8)
       {
         *q='\0';
-        *q|=(GetPixelIntensity(image,p) < threshold ? black : white) << 7;
+        *q|=(GetPixelLuma(image,p) < threshold ? black : white) << 7;
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) < threshold ? black : white) << 6;
+        *q|=(GetPixelLuma(image,p) < threshold ? black : white) << 6;
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) < threshold ? black : white) << 5;
+        *q|=(GetPixelLuma(image,p) < threshold ? black : white) << 5;
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) < threshold ? black : white) << 4;
+        *q|=(GetPixelLuma(image,p) < threshold ? black : white) << 4;
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) < threshold ? black : white) << 3;
+        *q|=(GetPixelLuma(image,p) < threshold ? black : white) << 3;
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) < threshold ? black : white) << 2;
+        *q|=(GetPixelLuma(image,p) < threshold ? black : white) << 2;
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) < threshold ? black : white) << 1;
+        *q|=(GetPixelLuma(image,p) < threshold ? black : white) << 1;
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) < threshold ? black : white) << 0;
+        *q|=(GetPixelLuma(image,p) < threshold ? black : white) << 0;
         p+=GetPixelChannels(image);
         q++;
       }
@@ -1569,7 +1569,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
           *q='\0';
           for (bit=7; bit >= (ssize_t) (8-(number_pixels % 8)); bit--)
           {
-            *q|=(GetPixelIntensity(image,p) < threshold ? black : white) << bit;
+            *q|=(GetPixelLuma(image,p) < threshold ? black : white) << bit;
             p+=GetPixelChannels(image);
           }
           q++;
@@ -1583,17 +1583,17 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
 
       for (x=0; x < (ssize_t) (number_pixels-1) ; x+=2)
       {
-        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
+        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
         *q=(((pixel >> 4) & 0xf) << 4);
         p+=GetPixelChannels(image);
-        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
+        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
         *q|=pixel >> 4;
         p+=GetPixelChannels(image);
         q++;
       }
       if ((number_pixels % 2) != 0)
         {
-          pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
+          pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
           *q=(((pixel >> 4) & 0xf) << 4);
           p+=GetPixelChannels(image);
           q++;
@@ -1607,7 +1607,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
 
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
+        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
         q=PopCharPixel(pixel,q);
         p+=GetPixelChannels(image);
         q+=quantum_info->pad;
@@ -1625,10 +1625,10 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) (number_pixels-2); x+=3)
           {
             pixel=(unsigned int) (ScaleQuantumToAny(ClampToQuantum(
-              GetPixelIntensity(image,p+2*GetPixelChannels(image))),range) <<
-              22 | ScaleQuantumToAny(ClampToQuantum(GetPixelIntensity(image,
-              p+GetPixelChannels(image))),range) << 12 | ScaleQuantumToAny(
-              ClampToQuantum(GetPixelIntensity(image,p)),range) << 2);
+              GetPixelLuma(image,p+2*GetPixelChannels(image))),range) << 22 |
+              ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(image,p+
+              GetPixelChannels(image))),range) << 12 | ScaleQuantumToAny(
+              ClampToQuantum(GetPixelLuma(image,p)),range) << 2);
             q=PopLongPixel(quantum_info->endian,pixel,q);
             p+=3*GetPixelChannels(image);
             q+=quantum_info->pad;
@@ -1637,11 +1637,11 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
             {
               pixel=0U;
               if (x++ < (ssize_t) (number_pixels-1))
-                pixel|=ScaleQuantumToAny(ClampToQuantum(GetPixelIntensity(image,
-                  p+GetPixelChannels(image))),range) << 12;
+                pixel|=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(image,p+
+                  GetPixelChannels(image))),range) << 12;
               if (x++ < (ssize_t) number_pixels)
-                pixel|=ScaleQuantumToAny(ClampToQuantum(GetPixelIntensity(image,
-                  p)),range) << 2;
+                pixel|=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(image,p)),
+                  range) << 2;
               q=PopLongPixel(quantum_info->endian,pixel,q);
             }
           break;
@@ -1649,7 +1649,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(ClampToQuantum(
-          GetPixelIntensity(image,p)),range),q);
+          GetPixelLuma(image,p)),range),q);
         p+=GetPixelChannels(image);
         q+=quantum_info->pad;
       }
@@ -1665,8 +1665,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         {
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(ClampToQuantum(
-              GetPixelIntensity(image,p)));
+            pixel=ScaleQuantumToShort(ClampToQuantum(GetPixelLuma(image,p)));
             q=PopShortPixel(quantum_info->endian,(unsigned short) (pixel >> 4),
               q);
             p+=GetPixelChannels(image);
@@ -1677,7 +1676,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(ClampToQuantum(
-          GetPixelIntensity(image,p)),range),q);
+          GetPixelLuma(image,p)),range),q);
         p+=GetPixelChannels(image);
         q+=quantum_info->pad;
       }
@@ -1692,8 +1691,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         {
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            pixel=SinglePrecisionToHalf(QuantumScale*
-              GetPixelIntensity(image,p));
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelLuma(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=GetPixelChannels(image);
             q+=quantum_info->pad;
@@ -1702,7 +1700,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         }
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        pixel=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,p)));
+        pixel=ScaleQuantumToShort(ClampToQuantum(GetPixelLuma(image,p)));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=GetPixelChannels(image);
         q+=quantum_info->pad;
@@ -1721,7 +1719,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
             float
               pixel;
 
-            pixel=(float) GetPixelIntensity(image,p);
+            pixel=(float) GetPixelLuma(image,p);
             q=PopFloatPixel(quantum_info,pixel,q);
             p+=GetPixelChannels(image);
             q+=quantum_info->pad;
@@ -1730,7 +1728,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         }
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        pixel=ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
+        pixel=ScaleQuantumToLong(ClampToQuantum(GetPixelLuma(image,p)));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=GetPixelChannels(image);
         q+=quantum_info->pad;
@@ -1746,7 +1744,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
             double
               pixel;
 
-            pixel=GetPixelIntensity(image,p);
+            pixel=GetPixelLuma(image,p);
             q=PopDoublePixel(quantum_info,pixel,q);
             p+=GetPixelChannels(image);
             q+=quantum_info->pad;
@@ -1760,7 +1758,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(ClampToQuantum(
-          GetPixelIntensity(image,p)),range),q);
+          GetPixelLuma(image,p)),range),q);
         p+=GetPixelChannels(image);
         q+=quantum_info->pad;
       }
@@ -1805,22 +1803,22 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
       for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
       {
         *q='\0';
-        *q|=(GetPixelIntensity(image,p) > threshold ? black : white) << 7;
+        *q|=(GetPixelLuma(image,p) > threshold ? black : white) << 7;
         pixel=(unsigned char) (GetPixelAlpha(image,p) == OpaqueAlpha ?
           0x00 : 0x01);
         *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 6);
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) > threshold ? black : white) << 5;
+        *q|=(GetPixelLuma(image,p) > threshold ? black : white) << 5;
         pixel=(unsigned char) (GetPixelAlpha(image,p) == OpaqueAlpha ?
           0x00 : 0x01);
         *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 4);
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) > threshold ? black : white) << 3;
+        *q|=(GetPixelLuma(image,p) > threshold ? black : white) << 3;
         pixel=(unsigned char) (GetPixelAlpha(image,p) == OpaqueAlpha ?
           0x00 : 0x01);
         *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 2);
         p+=GetPixelChannels(image);
-        *q|=(GetPixelIntensity(image,p) > threshold ? black : white) << 1;
+        *q|=(GetPixelLuma(image,p) > threshold ? black : white) << 1;
         pixel=(unsigned char) (GetPixelAlpha(image,p) == OpaqueAlpha ?
           0x00 : 0x01);
         *q|=(((int) pixel != 0 ? 0x00 : 0x01) << 0);
@@ -1832,7 +1830,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
           *q='\0';
           for (bit=0; bit <= (ssize_t) (number_pixels % 4); bit+=2)
           {
-            *q|=(GetPixelIntensity(image,p) > threshold ? black : white) <<
+            *q|=(GetPixelLuma(image,p) > threshold ? black : white) <<
               (7-bit);
             pixel=(unsigned char) (GetPixelAlpha(image,p) == OpaqueAlpha ?
               0x00 : 0x01);
@@ -1851,7 +1849,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 
       for (x=0; x < (ssize_t) number_pixels ; x++)
       {
-        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
+        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
         *q=(((pixel >> 4) & 0xf) << 4);
         pixel=(unsigned char) (16*QuantumScale*GetPixelAlpha(image,p)+0.5);
         *q|=pixel & 0xf;
@@ -1867,7 +1865,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,p)));
+        pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
         q=PopCharPixel(pixel,q);
         pixel=ScaleQuantumToChar(GetPixelAlpha(image,p));
         q=PopCharPixel(pixel,q);
@@ -1885,8 +1883,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         {
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            pixel=SinglePrecisionToHalf(QuantumScale*
-              GetPixelIntensity(image,p));
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelLuma(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             pixel=SinglePrecisionToHalf(QuantumScale*GetPixelAlpha(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
@@ -1897,7 +1894,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         }
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        pixel=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,p)));
+        pixel=ScaleQuantumToShort(ClampToQuantum(GetPixelLuma(image,p)));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         pixel=ScaleQuantumToShort(GetPixelAlpha(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
@@ -1918,7 +1915,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
             float
               pixel;
 
-            pixel=(float) GetPixelIntensity(image,p);
+            pixel=(float) GetPixelLuma(image,p);
             q=PopFloatPixel(quantum_info,pixel,q);
             pixel=(float) (GetPixelAlpha(image,p));
             q=PopFloatPixel(quantum_info,pixel,q);
@@ -1929,7 +1926,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         }
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        pixel=ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
+        pixel=ScaleQuantumToLong(ClampToQuantum(GetPixelLuma(image,p)));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         pixel=ScaleQuantumToLong(GetPixelAlpha(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
@@ -1947,7 +1944,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
             double
               pixel;
 
-            pixel=GetPixelIntensity(image,p);
+            pixel=GetPixelLuma(image,p);
             q=PopDoublePixel(quantum_info,pixel,q);
             pixel=(double) (GetPixelAlpha(image,p));
             q=PopDoublePixel(quantum_info,pixel,q);
@@ -1963,7 +1960,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(ClampToQuantum(
-          GetPixelIntensity(image,p)),range),q);
+          GetPixelLuma(image,p)),range),q);
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelAlpha(image,p),
           range),q);
         p+=GetPixelChannels(image);
