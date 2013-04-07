@@ -1626,7 +1626,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 *q++=ScaleQuantumToChar(ClampToQuantum(
-                  GetPixelIntensity(image,p)));
+                  GetPixelLuma(image,p)));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -1668,7 +1668,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
-                  GetPixelIntensity(image,p))));
+                  GetPixelLuma(image,p))));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -2077,7 +2077,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
                 *q++=ScaleQuantumToChar(ClampToQuantum(
-                   GetPixelIntensity(image,p)));
+                   GetPixelLuma(image,p)));
                 p++;
               }
             }
@@ -2113,7 +2113,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
                 Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
-                  GetPixelIntensity(image,p))));
+                  GetPixelLuma(image,p))));
                 p++;
               }
             }

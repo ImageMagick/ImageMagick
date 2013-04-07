@@ -9736,7 +9736,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 (ScaleQuantumToShort(image->colormap[0].blue) & mask);
 
               ping_trans_color.gray=(png_uint_16)
-                (ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,
+                (ScaleQuantumToShort(ClampToQuantum(GetPixelLuma(image,
                    image->colormap))) & mask);
 
               ping_trans_color.index=(png_byte) 0;
@@ -10007,7 +10007,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
          ping_background.gray=(png_uint_16)
            ((maxval/65535.)*(ScaleQuantumToShort((Quantum)
-              GetPixelIntensity(image,&image->background_color)))+.5);
+              GetPixelLuma(image,&image->background_color)))+.5);
          if (logging != MagickFalse)
          {
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
