@@ -627,7 +627,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           {
             for (bit=0; bit < 8; bit++)
             {
-              if (GetPixelIntensity(image,q) < ((double) QuantumRange/2.0))
+              if (GetPixelLuma(image,q) < (QuantumRange/2.0))
                 {
                   quantum=(size_t) GetPixelIndex(image,q);
                   quantum|=0x01;
@@ -640,7 +640,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
-                if (GetPixelIntensity(image,q) < ((double) QuantumRange/2.0))
+                if (GetPixelLuma(image,q) < (QuantumRange/2.0))
                   {
                     quantum=(size_t) GetPixelIndex(image,q);
                     quantum|=0x01;
@@ -1189,7 +1189,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte>>=1;
-                if (GetPixelIntensity(image,p) < ((double) QuantumRange/2.0))
+                if (GetPixelLuma(image,p) < (QuantumRange/2.0))
                   byte|=0x80;
                 bit++;
                 if (bit == 8)
@@ -1223,7 +1223,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=(unsigned char) GetPixelIntensity(image,p);
+                *q++=(unsigned char) ClampToQuantum(GetPixelLuma(image,p));
                 p+=GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)

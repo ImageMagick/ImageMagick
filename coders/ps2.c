@@ -791,7 +791,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetPixelIntensity(image,p));
+                *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
                 p+=GetPixelChannels(image);
               }
               progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -825,8 +825,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(
-                  GetPixelIntensity(image,p)));
+                Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
+                  GetPixelLuma(image,p))));
                 p+=GetPixelChannels(image);
               }
               progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)

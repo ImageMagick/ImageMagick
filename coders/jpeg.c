@@ -1207,7 +1207,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
     case JCS_GRAYSCALE:
     {
-      image->intensity=Rec709LumaPixelIntensityMethod;
       (void) SetImageColorspace(image,GRAYColorspace,exception);
       break;
     }
@@ -2608,32 +2607,30 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         }
       else
         if (jpeg_info.in_color_space == JCS_GRAYSCALE)
+          for (y=0; y < (ssize_t) image->rows; y++)
           {
-            image->intensity=Rec709LumaPixelIntensityMethod;
-            for (y=0; y < (ssize_t) image->rows; y++)
+            register const Quantum
+              *p;
+
+            register ssize_t
+              x;
+
+            p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+            if (p == (const Quantum *) NULL)
+              break;
+            q=jpeg_pixels;
+            for (x=0; x < (ssize_t) image->columns; x++)
             {
-              register const Quantum
-                *p;
-
-              register ssize_t
-                x;
-
-              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-              if (p == (const Quantum *) NULL)
-                break;
-              q=jpeg_pixels;
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                *q++=(JSAMPLE) ScaleQuantumToChar(GetPixelIntensity(image,p));
-                p+=GetPixelChannels(image);
-              }
-              (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
-              if (status == MagickFalse)
-                break;
+              *q++=(JSAMPLE) ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
+                image,p)));
+              p+=GetPixelChannels(image);
             }
-          }
+            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+            status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+              image->rows);
+            if (status == MagickFalse)
+              break;
+            }
         else
           for (y=0; y < (ssize_t) image->rows; y++)
           {
@@ -2685,7 +2682,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         q=jpeg_pixels;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelIntensity(image,p)) >> 4);
+          *q++=(JSAMPLE) (ScaleQuantumToShort(ClampToQuantum(GetPixelLuma(
+            image,p))) >> 4);
           p+=GetPixelChannels(image);
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

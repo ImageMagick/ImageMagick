@@ -399,11 +399,11 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     hex_digits[256];
 
   size_t
-    length,
-    priority;
+    length;
 
   ssize_t
-    count;
+    count,
+    priority;
 
   StringInfo
     *profile;
@@ -1063,9 +1063,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     } \
   else \
     { \
-      q=PopHexPixel(hex_digits,ScaleQuantumToChar(pixel.red),q); \
-      q=PopHexPixel(hex_digits,ScaleQuantumToChar(pixel.green),q); \
-      q=PopHexPixel(hex_digits,ScaleQuantumToChar(pixel.blue),q); \
+      q=PopHexPixel(hex_digits,ScaleQuantumToChar(ClampToQuantum(pixel.red)),q); \
+      q=PopHexPixel(hex_digits,ScaleQuantumToChar(ClampToQuantum(pixel.green)),q); \
+      q=PopHexPixel(hex_digits,ScaleQuantumToChar(ClampToQuantum(pixel.blue)),q); \
     } \
   q=PopHexPixel(hex_digits,(size_t) MagickMin(length,0xff),q); \
 }
@@ -1650,7 +1650,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
               for (x=0; x < (ssize_t) preview_image->columns; x++)
               {
                 byte<<=1;
-                pixel=GetPixelIntensity(preview_image,p);
+                pixel=ClampToQuantum(GetPixelLuma(preview_image,p));
                 if (pixel >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
@@ -1761,7 +1761,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
         labels=(char **) RelinquishMagickMemory(labels);
       }
     (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
-    pixel.alpha=(Quantum) TransparentAlpha;
+    pixel.alpha=(MagickRealType) TransparentAlpha;
     index=0;
     x=0;
     if ((image_info->type != TrueColorType) &&
@@ -1787,7 +1787,8 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                pixel=(Quantum) ScaleQuantumToChar(GetPixelIntensity(image,p));
+                pixel=(Quantum) ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
+                  image,p)));
                 q=PopHexPixel(hex_digits,(size_t) pixel,q);
                 i++;
                 if ((q-pixels+8) >= 80)
@@ -1838,7 +1839,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte<<=1;
-                pixel=GetPixelIntensity(image,p);
+                pixel=ClampToQuantum(GetPixelLuma(image,p));
                 if (pixel >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
@@ -1910,10 +1911,10 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                 length=255;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((GetPixelRed(image,p) == pixel.red) &&
-                      (GetPixelGreen(image,p) == pixel.green) &&
-                      (GetPixelBlue(image,p) == pixel.blue) &&
-                      (GetPixelAlpha(image,p) == pixel.alpha) &&
+                  if ((GetPixelRed(image,p) == ClampToQuantum(pixel.red)) &&
+                      (GetPixelGreen(image,p) == ClampToQuantum(pixel.green)) &&
+                      (GetPixelBlue(image,p) == ClampToQuantum(pixel.blue)) &&
+                      (GetPixelAlpha(image,p) == ClampToQuantum(pixel.alpha)) &&
                       (length < 255) && (x < (ssize_t) (image->columns-1)))
                     length++;
                   else
@@ -2030,9 +2031,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
           for (i=0; i < (ssize_t) image->colors; i++)
           {
             (void) FormatLocaleString(buffer,MaxTextExtent,"%02X%02X%02X\n",
-              ScaleQuantumToChar(image->colormap[i].red),
-              ScaleQuantumToChar(image->colormap[i].green),
-              ScaleQuantumToChar(image->colormap[i].blue));
+              ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red)),
+              ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green)),
+              ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue)));
             (void) WriteBlobString(image,buffer);
           }
           switch (image_info->compression)
@@ -2073,10 +2074,10 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                       length=0;
                     }
                   index=GetPixelIndex(image,p);
-                  pixel.red=GetPixelRed(image,p);
-                  pixel.green=GetPixelGreen(image,p);
-                  pixel.blue=GetPixelBlue(image,p);
-                  pixel.alpha=GetPixelAlpha(image,p);
+                  pixel.red=(MagickRealType) GetPixelRed(image,p);
+                  pixel.green=(MagickRealType) GetPixelGreen(image,p);
+                  pixel.blue=(MagickRealType) GetPixelBlue(image,p);
+                  pixel.alpha=(MagickRealType) GetPixelAlpha(image,p);
                   p+=GetPixelChannels(image);
                 }
                 q=PopHexPixel(hex_digits,(size_t) index,q);
