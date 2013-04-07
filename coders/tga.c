@@ -815,7 +815,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
       else
         if (targa_info.image_type == TargaMonochrome)
           *q++=(unsigned char) ScaleQuantumToChar((ClampToQuantum(
-            GetPixelIntensity(image,p))));
+            GetPixelLuma(image,p))));
         else
           {
             *q++=ScaleQuantumToChar(GetPixelBlue(image,p));

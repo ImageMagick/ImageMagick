@@ -936,6 +936,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   WPGColorMapRec
     WPG_Palette;
 
+  WPGPSl1Record
+    WPG_Record;
+
   int
     i,
     bpp,
@@ -959,6 +962,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  (void) WPG_Record;
   one=1;
   image=AcquireImage(image_info,exception);
   image->depth=8;

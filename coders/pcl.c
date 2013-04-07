@@ -872,7 +872,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             byte<<=1;
-            if (GetPixelIntensity(image,p) < ((double) QuantumRange/2.0))
+            if (GetPixelLuma(image,p) < (QuantumRange/2.0))
               byte|=0x01;
             bit++;
             if (bit == 8)

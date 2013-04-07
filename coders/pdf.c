@@ -1627,7 +1627,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetPixelIntensity(image,p));
+                *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
                 p+=GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
@@ -1668,8 +1668,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(
-                  GetPixelIntensity(image,p)));
+                Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
+                  GetPixelLuma(image,p))));
                 p+=GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
@@ -2082,7 +2082,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetPixelIntensity(tile_image,p));
+                *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
+                  tile_image,p)));
                 p+=GetPixelChannels(tile_image);
               }
             }
@@ -2117,8 +2118,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
-                Ascii85Encode(image,
-                  ScaleQuantumToChar(GetPixelIntensity(tile_image,p)));
+                Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
+                  GetPixelLuma(tile_image,p))));
                 p+=GetPixelChannels(tile_image);
               }
             }
@@ -2357,17 +2358,20 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
         {
           if (compression == NoCompression)
             {
-              Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].red));
-              Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].green));
-              Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].blue));
+              Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
+                image->colormap[i].red)));
+              Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
+                image->colormap[i].green)));
+              Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
+                image->colormap[i].blue)));
               continue;
             }
-          (void) WriteBlobByte(image,
-            ScaleQuantumToChar(image->colormap[i].red));
-          (void) WriteBlobByte(image,
-            ScaleQuantumToChar(image->colormap[i].green));
-          (void) WriteBlobByte(image,
-            ScaleQuantumToChar(image->colormap[i].blue));
+          (void) WriteBlobByte(image,ScaleQuantumToChar(
+             ClampToQuantum(image->colormap[i].red)));
+          (void) WriteBlobByte(image,ScaleQuantumToChar(
+             ClampToQuantum(image->colormap[i].green)));
+          (void) WriteBlobByte(image,ScaleQuantumToChar(
+             ClampToQuantum(image->colormap[i].blue)));
         }
         if (compression == NoCompression)
           Ascii85Flush(image);

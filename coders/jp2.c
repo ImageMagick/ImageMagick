@@ -1058,7 +1058,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     {
       if (number_components == 1)
         jas_matrix_setv(pixels[0],x,(jas_seqent_t) ScaleQuantumToAny(
-          GetPixelIntensity(image,p),range));
+          ClampToQuantum(GetPixelLuma(image,p)),range));
       else
         {
           jas_matrix_setv(pixels[0],x,(jas_seqent_t) ScaleQuantumToAny(

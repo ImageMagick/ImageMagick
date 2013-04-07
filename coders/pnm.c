@@ -1626,7 +1626,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            pixel=GetPixelIntensity(image,p);
+            pixel=ClampToQuantum(GetPixelLuma(image,p));
             *q++=(unsigned char) (pixel >= (Quantum) (QuantumRange/2) ?
               '0' : '1');
             *q++=' ';
@@ -1679,7 +1679,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            index=GetPixelIntensity(image,p);
+            index=ClampToQuantum(GetPixelLuma(image,p));
             if (image->depth <= 8)
               count=(ssize_t) FormatLocaleString(buffer,MaxTextExtent,"%u ",
                 ScaleQuantumToChar(index));
@@ -1852,7 +1852,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if (IsPixelGray(image,p) == MagickFalse)
-                    pixel=ScaleQuantumToAny(GetPixelIntensity(image,p),range);
+                    pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
+                      image,p)),range);
                   else
                     {
                       if (image->depth == 8)
@@ -1867,7 +1868,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if (IsPixelGray(image,p) == MagickFalse)
-                    pixel=ScaleQuantumToAny(GetPixelIntensity(image,p),range);
+                    pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
+                      image,p)),range);
                   else
                     {
                       if (image->depth == 16)
@@ -2009,12 +2011,13 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                   if (image->depth <= 8)
                     for (x=0; x < (ssize_t) image->columns; x++)
                     {
-                      pixel=ScaleQuantumToAny(GetPixelIntensity(image,p),range);
+                      pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
+                        image,p)),range);
                       q=PopCharPixel((unsigned char) pixel,q);
                       if (image->alpha_trait == BlendPixelTrait)
                         {
                           pixel=(unsigned char) ScaleQuantumToAny(
-                            GetPixelAlpha(image,p),range);
+                            ClampToQuantum(GetPixelAlpha(image,p)),range);
                           q=PopCharPixel((unsigned char) pixel,q);
                         }
                       p+=GetPixelChannels(image);
@@ -2022,7 +2025,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                   else
                     for (x=0; x < (ssize_t) image->columns; x++)
                     {
-                      pixel=ScaleQuantumToAny(GetPixelIntensity(image,p),range);
+                      pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
+                        image,p)),range);
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                       if (image->alpha_trait == BlendPixelTrait)
                         {
