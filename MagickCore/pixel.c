@@ -2146,10 +2146,10 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
     intensity;
 
   if (image->colorspace == GRAYColorspace)
-    return((MagickRealType) pixel[image->channel_map[GrayPixelChannel].offset]);
-  red=(MagickRealType) pixel[image->channel_map[RedPixelChannel].offset];
-  green=(MagickRealType) pixel[image->channel_map[GreenPixelChannel].offset];
-  blue=(MagickRealType) pixel[image->channel_map[BluePixelChannel].offset];
+    return((MagickRealType) GetPixelGray(image,pixel));
+  red=(MagickRealType) GetPixelRed(image,pixel);
+  green=(MagickRealType) GetPixelGreen(image,pixel);
+  blue=(MagickRealType) GetPixelBlue(image,pixel);
   switch (image->intensity)
   {
     case AveragePixelIntensityMethod:
