@@ -1207,8 +1207,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
     case JCS_GRAYSCALE:
     {
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
       image->intensity=Rec709LumaPixelIntensityMethod;
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       break;
     }
     case JCS_YCbCr:
