@@ -120,7 +120,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/MedianFilter.miff', 'Med
 testFilterCompare('input.miff',  q//, 'reference/filter/Minify.miff', 'Minify', q//, 0.00001, 0.004);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Modulate.miff', 'Modulate', q/brightness=>110,saturation=>110,hue=>110/, 0.0006, 0.11);
+testFilterCompare('input.miff',  q//, 'reference/filter/Modulate.miff', 'Modulate', q/brightness=>110,saturation=>110,hue=>110/, 0.005, 0.5);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/QuantizeMono.miff', 'Quantize', q/colors=>256/, 0.2, 0.7);
@@ -162,7 +162,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Roll.miff', 'Roll', q/ge
 testFilterCompare('input.miff',  q//, 'reference/filter/Rotate.miff', 'Rotate', q/45/, 0.00004, 0.04);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Sample.miff', 'Sample', q/'60%'/, 0.0, 0.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/Sample.miff', 'Sample', q/'60%'/, 0.006, 0.6);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Scale.miff', 'Scale', q/'60%'/, 0.0, 0.0);
