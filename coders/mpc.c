@@ -1074,8 +1074,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     i;
 
   size_t
-    depth,
-    one;
+    depth;
 
   /*
     Open persistent cache.
@@ -1095,7 +1094,6 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
   AppendImageFormat("cache",cache_filename);
   scene=0;
   offset=0;
-  one=1;
   do
   {
     /*
@@ -1104,7 +1102,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     depth=GetImageQuantumDepth(image,MagickTrue);
     if ((image->storage_class == PseudoClass) &&
         (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
-      (void) SetImageStorageClass(image,DirectClass);
+      (void) SetImageStorageClass(image,DirectClass,exception);
     (void) WriteBlobString(image,"id=MagickCache\n");
     (void) FormatLocaleString(buffer,MaxTextExtent,"magick-signature=%u\n",
       GetMagickSignature((const StringInfo *) NULL));
