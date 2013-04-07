@@ -6082,14 +6082,10 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           register unsigned int
             bytes_per_pixel;
 
-          unsigned char
-            channel[sizeof(size_t)];
-
           /*
             Convert to multi-byte color-mapped X canvas.
           */
           bytes_per_pixel=(unsigned int) (ximage->bits_per_pixel >> 3);
-          (void) ResetMagickMemory(channel,0,sizeof(*channel));
           for (y=0; y < (int) canvas->rows; y++)
           {
             p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,
@@ -6102,11 +6098,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               pixel=pixels[(ssize_t) GetPixelIndex(indexes+x)];
               for (k=0; k < (int) bytes_per_pixel; k++)
               {
-                channel[k]=(unsigned char) pixel;
+                *q++=(unsigned char) (pixel & 0xff);
                 pixel>>=8;
               }
-              for (k=0; k < (int) bytes_per_pixel; k++)
-                *q++=channel[k];
             }
             q+=scanline_pad;
           }
@@ -6329,13 +6323,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                 register unsigned int
                   bytes_per_pixel;
 
-                unsigned char
-                  channel[sizeof(size_t)];
-
                 /*
                   Convert to multi-byte continuous-tone X canvas.
                 */
-                (void) ResetMagickMemory(channel,0,sizeof(*channel));
                 bytes_per_pixel=(unsigned int) (ximage->bits_per_pixel >> 3);
                 for (y=0; y < (int) canvas->rows; y++)
                 {
@@ -6348,11 +6338,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                     pixel=XGammaPixel(map_info,p);
                     for (k=0; k < (int) bytes_per_pixel; k++)
                     {
-                      channel[k]=(unsigned char) pixel;
+                      *q++=(unsigned char) (pixel & 0xff);
                       pixel>>=8;
                     }
-                    for (k=0; k < (int) bytes_per_pixel; k++)
-                      *q++=channel[k];
                     p++;
                   }
                   q+=scanline_pad;
@@ -6948,9 +6936,6 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 register unsigned int
                   bytes_per_pixel;
 
-                unsigned char
-                  channel[sizeof(size_t)];
-
                 /*
                   Convert to multi-byte continuous-tone X canvas.
                 */
@@ -6966,11 +6951,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                     pixel=XGammaPixel(map_info,p);
                     for (k=(int) bytes_per_pixel-1; k >= 0; k--)
                     {
-                      channel[k]=(unsigned char) pixel;
+                      *q++=(unsigned char) (pixel & 0xff);
                       pixel>>=8;
                     }
-                    for (k=0; k < (int) bytes_per_pixel; k++)
-                      *q++=channel[k];
                     p++;
                   }
                   q+=scanline_pad;
