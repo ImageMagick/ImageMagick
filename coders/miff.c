@@ -1960,8 +1960,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if ((image->storage_class == PseudoClass) &&
         (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
       (void) SetImageStorageClass(image,DirectClass);
-    if (IsImageGray(image,exception) != MagickFalse)
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
+    if (IsGrayImage(image,&image->exception) != MagickFalse)
+      (void) SetImageColorspace(image,GRAYColorspace);
     image->depth=image->depth <= 8 ? 8UL : image->depth <= 16 ? 16UL :
       image->depth <= 32 ? 32UL : 64UL;
     quantum_info=AcquireQuantumInfo(image_info,image);
