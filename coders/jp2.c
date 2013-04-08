@@ -335,9 +335,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  int
-    format;
-
   jas_cmprof_t
     *cm_profile;
 
@@ -400,8 +397,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowReaderException(DelegateError,"UnableToManageJP2Stream");
-  format=jas_image_getfmt(jp2_stream);
-  jp2_image=jas_image_decode(jp2_stream,format,0);
+  jp2_image=jas_image_decode(jp2_stream,-1,0);
   if (jp2_image == (jas_image_t *) NULL)
     {
       (void) jas_stream_close(jp2_stream);
