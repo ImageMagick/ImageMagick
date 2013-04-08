@@ -24,9 +24,9 @@ extern "C" {
 
 #include "MagickCore/pixel-private.h"
 
-#define D65X  (0.950456f)
-#define D65Y  (1.0f)
-#define D65Z  (1.088754f)
+#define D50X  0.964221
+#define D50Y  1.0
+#define D50Z  0.825211
 #define CIEEpsilon  (216.0f/24389.0f)
 #define CIEK  (24389.0f/27.0f)
 
@@ -87,9 +87,9 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
     z=(z*z*z);
   else
     z=(116.0f*z-16.0f)/CIEK;
-  *X=D65X*x;
-  *Y=D65Y*y;
-  *Z=D65Z*z;
+  *X=D50X*x;
+  *Y=D50Y*y;
+  *Z=D50Z*z;
 }
 
 static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
@@ -102,12 +102,12 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
     *Y=(double) pow(((100.0*L)+16.0)/116.0,3.0);
   else
     *Y=(100.0f*L)/CIEK;
-  *X=((*Y*((39.0f*(100.0f*L)/((262.0f*v-140.0f)+13.0f*(100.0f*L)*(9.0f*D65Y/
-    (D65X+15.0f*D65Y+3.0f*D65Z))))-5.0f))+5.0f*(*Y))/((((52.0f*(100.0f*L)/
-    ((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D65X/(D65X+15.0f*D65Y+3.0f*
-    D65Z))))-1.0f)/3.0f)-(-1.0f/3.0f));
-  *Z=(*X*(((52.0f*(100.0f*L)/((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D65X/
-    (D65X+15.0f*D65Y+3.0f*D65Z))))-1.0f)/3.0f))-5.0f*(*Y);
+  *X=((*Y*((39.0f*(100.0f*L)/((262.0f*v-140.0f)+13.0f*(100.0f*L)*(9.0f*D50Y/
+    (D50X+15.0f*D50Y+3.0f*D50Z))))-5.0f))+5.0f*(*Y))/((((52.0f*(100.0f*L)/
+    ((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D50X/(D50X+15.0f*D50Y+3.0f*
+    D50Z))))-1.0f)/3.0f)-(-1.0f/3.0f));
+  *Z=(*X*(((52.0f*(100.0f*L)/((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D50X/
+    (D50X+15.0f*D50Y+3.0f*D50Z))))-1.0f)/3.0f))-5.0f*(*Y);
 }
 
 static inline void ConvertRGBToXYZ(const double red,const double green,
@@ -139,18 +139,18 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   assert(L != (double *) NULL);
   assert(a != (double *) NULL);
   assert(b != (double *) NULL);
-  if ((X/D65X) > CIEEpsilon)
-    x=pow(X/D65X,1.0/3.0);
+  if ((X/D50X) > CIEEpsilon)
+    x=pow(X/D50X,1.0/3.0);
   else
-    x=(CIEK*X/D65X+16.0f)/116.0f;
-  if ((Y/D65Y) > CIEEpsilon)
-    y=pow(Y/D65Y,1.0/3.0);
+    x=(CIEK*X/D50X+16.0f)/116.0f;
+  if ((Y/D50Y) > CIEEpsilon)
+    y=pow(Y/D50Y,1.0/3.0);
   else
-    y=(CIEK*Y/D65Y+16.0f)/116.0f;
-  if ((Z/D65Z) > CIEEpsilon)
-    z=pow(Z/D65Z,1.0/3.0);
+    y=(CIEK*Y/D50Y+16.0f)/116.0f;
+  if ((Z/D50Z) > CIEEpsilon)
+    z=pow(Z/D50Z,1.0/3.0);
   else
-    z=(CIEK*Z/D65Z+16.0f)/116.0f;
+    z=(CIEK*Z/D50Z+16.0f)/116.0f;
   *L=((116.0f*y)-16.0f)/100.0f;
   *a=(500.0f*(x-y))/255.0f+0.5f;
   *b=(200.0f*(y-z))/255.0f+0.5f;
@@ -165,13 +165,13 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   assert(L != (double *) NULL);
   assert(u != (double *) NULL);
   assert(v != (double *) NULL);
-  if ((Y/D65Y) > CIEEpsilon)
-    *L=(double) (116.0f*pow(Y/D65Y,1.0/3.0)-16.0f);
+  if ((Y/D50Y) > CIEEpsilon)
+    *L=(double) (116.0f*pow(Y/D50Y,1.0/3.0)-16.0f);
   else
-    *L=CIEK*(Y/D65Y);
+    *L=CIEK*(Y/D50Y);
   alpha=PerceptibleReciprocal(X+15.0f*Y+3.0f*Z);
-  *u=13.0f*(*L)*((4.0f*alpha*X)-(4.0f*D65X/(D65X+15.0f*D65Y+3.0f*D65Z)));
-  *v=13.0f*(*L)*((9.0f*alpha*Y)-(9.0f*D65Y/(D65X+15.0f*D65Y+3.0f*D65Z)));
+  *u=13.0f*(*L)*((4.0f*alpha*X)-(4.0f*D50X/(D50X+15.0f*D50Y+3.0f*D50Z)));
+  *v=13.0f*(*L)*((9.0f*alpha*Y)-(9.0f*D50Y/(D50X+15.0f*D50Y+3.0f*D50Z)));
   *L/=100.0f;
   *u=(*u+134.0f)/354.0f;
   *v=(*v+140.0f)/262.0f;
