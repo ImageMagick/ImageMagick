@@ -97,7 +97,7 @@ MagickExport void ConvertHCLToRGB(const double hue,const double chroma,
     Z;
 
   /*
-    Convert LCHuv to RGB colorspace.
+    Convert HCL to RGB colorspace.
   */
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
@@ -521,7 +521,7 @@ MagickExport void ConvertRGBToHCL(const Quantum red,const Quantum green,
     Z;
 
   /*
-    Convert RGB to LCHuv colorspace.
+    Convert RGB to HCL colorspace.
   */
   assert(luma != (double *) NULL);
   assert(chroma != (double *) NULL);
