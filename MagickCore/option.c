@@ -1428,10 +1428,11 @@ static const OptionInfo
     { "K", BlackPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "M", MagentaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Magenta", MagentaPixelChannel, UndefinedOptionFlag, MagickFalse },
-    { "Mask", MaskPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "R", RedPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "ReadMask", ReadMaskPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Red", RedPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Sync", SyncPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "WriteMask", WriteMaskPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Y", YellowPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Yellow", YellowPixelChannel, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedPixelChannel, UndefinedOptionFlag, MagickFalse }

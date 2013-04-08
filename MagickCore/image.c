@@ -577,7 +577,7 @@ MagickExport Image *AppendImages(const Image *images,
       GetPixelInfo(image,&pixel);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        if (GetPixelMask(image,p) == 0)
+        if (GetPixelReadMask(image,p) == 0)
           {
             p+=GetPixelChannels(image);
             q+=GetPixelChannels(append_image);
@@ -821,7 +821,8 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->number_meta_channels=image->number_meta_channels;
   clone_image->metacontent_extent=image->metacontent_extent;
   clone_image->colorspace=image->colorspace;
-  clone_image->mask=image->mask;
+  clone_image->read_mask=image->read_mask;
+  clone_image->write_mask=image->write_mask;
   clone_image->alpha_trait=image->alpha_trait;
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
@@ -1320,7 +1321,7 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
     return((Image *) NULL);
   status=MagickTrue;
   (void) SetImageColorspace(mask_image,GRAYColorspace,exception);
-  mask_image->mask=MagickFalse;
+  mask_image->read_mask=MagickFalse;
   image_view=AcquireVirtualCacheView(image,exception);
   mask_view=AcquireAuthenticCacheView(mask_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1346,7 +1347,7 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelGray(mask_image,GetPixelMask(image,p),q);
+      SetPixelGray(mask_image,GetPixelReadMask(image,p),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(mask_image);
     }
@@ -1686,7 +1687,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;
@@ -3059,10 +3060,10 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
   assert(image->signature == MagickSignature);
   if (mask == (const Image *) NULL)
     {
-      image->mask=MagickFalse;
+      image->read_mask=MagickFalse;
       return(SyncImagePixelCache(image,exception));
     }
-  image->mask=MagickTrue;
+  image->read_mask=MagickTrue;
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -3094,7 +3095,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
+      SetPixelReadMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
       p+=GetPixelChannels(mask);
       q+=GetPixelChannels(image);
     }

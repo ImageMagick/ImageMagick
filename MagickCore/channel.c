@@ -677,7 +677,7 @@ MagickExport Image *SeparateImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(separate_image);

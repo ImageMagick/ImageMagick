@@ -1464,7 +1464,8 @@ static inline MagickBooleanType ValidatePixelCacheMorphology(
   if ((image->storage_class != cache_info->storage_class) ||
       (image->colorspace != cache_info->colorspace) ||
       (image->alpha_trait != cache_info->alpha_trait) ||
-      (image->mask != cache_info->mask) ||
+      (image->read_mask != cache_info->read_mask) ||
+      (image->write_mask != cache_info->write_mask) ||
       (image->columns != cache_info->columns) ||
       (image->rows != cache_info->rows) ||
       (image->number_channels != cache_info->number_channels) ||
@@ -3455,7 +3456,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->alpha_trait=image->alpha_trait;
-  cache_info->mask=image->mask;
+  cache_info->read_mask=image->read_mask;
+  cache_info->write_mask=image->write_mask;
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
   InitializePixelChannelMap(image);

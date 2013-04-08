@@ -283,17 +283,25 @@ static inline PixelTrait GetPixelMagentaTraits(const Image *restrict image)
   return(image->channel_map[MagentaPixelChannel].traits);
 }
 
-static inline Quantum GetPixelMask(const Image *restrict image,
+static inline Quantum GetPixelReadMask(const Image *restrict image,
   const Quantum *restrict pixel)
 {
-  if (image->channel_map[MaskPixelChannel].traits == UndefinedPixelTrait)
+  if (image->channel_map[ReadMaskPixelChannel].traits == UndefinedPixelTrait)
     return((Quantum) QuantumRange);
-  return(pixel[image->channel_map[MaskPixelChannel].offset]);
+  return(pixel[image->channel_map[ReadMaskPixelChannel].offset]);
 }
 
-static inline PixelTrait GetPixelMaskTraits(const Image *restrict image)
+static inline Quantum GetPixelWriteMask(const Image *restrict image,
+  const Quantum *restrict pixel)
 {
-  return(image->channel_map[MaskPixelChannel].traits);
+  if (image->channel_map[WriteMaskPixelChannel].traits == UndefinedPixelTrait)
+    return((Quantum) QuantumRange);
+  return(pixel[image->channel_map[WriteMaskPixelChannel].offset]);
+}
+
+static inline PixelTrait GetPixelReadMaskTraits(const Image *restrict image)
+{
+  return(image->channel_map[ReadMaskPixelChannel].traits);
 }
 
 static inline size_t GetPixelMetaChannels(const Image *restrict image)
@@ -674,11 +682,18 @@ static inline void SetPixelMagentaTraits(Image *image,const PixelTrait traits)
   image->channel_map[MagentaPixelChannel].traits=traits;
 }
 
-static inline void SetPixelMask(const Image *restrict image,
+static inline void SetPixelReadMask(const Image *restrict image,
   const Quantum mask,Quantum *restrict pixel)
 {
-  if (image->channel_map[MaskPixelChannel].traits != UndefinedPixelTrait)
-    pixel[image->channel_map[MaskPixelChannel].offset]=mask;
+  if (image->channel_map[ReadMaskPixelChannel].traits != UndefinedPixelTrait)
+    pixel[image->channel_map[ReadMaskPixelChannel].offset]=mask;
+}
+
+static inline void SetPixelWriteMask(const Image *restrict image,
+  const Quantum mask,Quantum *restrict pixel)
+{
+  if (image->channel_map[WriteMaskPixelChannel].traits != UndefinedPixelTrait)
+    pixel[image->channel_map[WriteMaskPixelChannel].offset]=mask;
 }
 
 static inline void SetPixelMetacontentExtent(Image *image,const size_t extent)

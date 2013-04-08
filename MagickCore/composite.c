@@ -431,7 +431,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
               Sc: source color.
               Dc: destination color.
           */
-          if (GetPixelMask(image,q) == 0)
+          if (GetPixelReadMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
               continue;
@@ -457,7 +457,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
           Sa:  normalized source alpha.
           Da:  normalized destination alpha.
       */
-      if (GetPixelMask(composite_image,p) == 0)
+      if (GetPixelReadMask(composite_image,p) == 0)
         {
           p+=GetPixelChannels(composite_image);
           channels=GetPixelChannels(composite_image);
@@ -645,7 +645,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           register ssize_t
             i;
 
-          if (GetPixelMask(composite_image,p) == 0)
+          if (GetPixelReadMask(composite_image,p) == 0)
             {
               p+=GetPixelChannels(composite_image);
               q+=GetPixelChannels(image);
@@ -1285,7 +1285,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           */
           (void) GetOneVirtualPixel(composite_image,x-x_offset,y-y_offset,
             source,exception);
-          if (GetPixelMask(image,q) == 0)
+          if (GetPixelReadMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
               continue;
@@ -1451,7 +1451,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           break;
         }
       }
-      if (GetPixelMask(image,q) == 0)
+      if (GetPixelReadMask(image,q) == 0)
         {
           p+=GetPixelChannels(composite_image);
           q+=GetPixelChannels(image);
@@ -2459,7 +2459,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
         register ssize_t
           i;
 
-        if (GetPixelMask(image,q) == 0)
+        if (GetPixelReadMask(image,q) == 0)
           {
             p+=GetPixelChannels(texture_image);
             q+=GetPixelChannels(image);

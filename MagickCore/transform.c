@@ -696,7 +696,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(crop_image);
@@ -1051,7 +1051,7 @@ MagickExport Image *ExcerptImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(excerpt_image);
@@ -1251,7 +1251,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(flip_image);
@@ -1393,7 +1393,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
         i;
 
       q-=GetPixelChannels(flop_image);
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;
@@ -1519,7 +1519,7 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
       register ssize_t
         i;
 
-      if (GetPixelMask(source,p) == 0)
+      if (GetPixelReadMask(source,p) == 0)
         {
           p+=GetPixelChannels(source);
           q+=GetPixelChannels(destination);
@@ -1837,7 +1837,7 @@ MagickExport Image *SpliceImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(splice_image);
@@ -1863,7 +1863,7 @@ MagickExport Image *SpliceImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(splice_image);
@@ -1932,7 +1932,7 @@ MagickExport Image *SpliceImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,q) == 0)
+      if (GetPixelReadMask(image,q) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(splice_image);
@@ -1958,7 +1958,7 @@ MagickExport Image *SpliceImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,q) == 0)
+      if (GetPixelReadMask(image,q) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(splice_image);
@@ -2267,7 +2267,7 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
       register ssize_t
         i;
 
-      if (GetPixelMask(image,q) == 0)
+      if (GetPixelReadMask(image,q) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(transpose_image);
@@ -2415,7 +2415,7 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
         i;
 
       q-=GetPixelChannels(transverse_image);
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;
