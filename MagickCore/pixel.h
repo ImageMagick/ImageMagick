@@ -44,8 +44,9 @@ typedef enum
   AlphaChannel = 0x0010,
   OpacityChannel = 0x0010,
   IndexChannel = 0x0020,
-  MaskChannel = 0x0040,
-  MetaChannel = 0x0080,
+  ReadMaskChannel = 0x0040,
+  WriteMaskChannel = 0x0080,
+  MetaChannel = 0x0100,
   CompositeChannels = 0x002F,
   AllChannels = 0x7ffffff,
   /*
@@ -80,9 +81,10 @@ typedef enum
   BlackPixelChannel = 3,
   AlphaPixelChannel = 4,
   IndexPixelChannel = 5,
-  MaskPixelChannel = 6,                 /* Image Write Mask */
-  MetaPixelChannel = 7,                 /* ??? */
-  IntensityPixelChannel = MaxPixelChannels,  /* what are these ??? */
+  ReadMaskPixelChannel = 6,
+  WriteMaskPixelChannel = 7,
+  MetaPixelChannel = 8,
+  IntensityPixelChannel = MaxPixelChannels,
   CompositePixelChannel = MaxPixelChannels,
   SyncPixelChannel = MaxPixelChannels+1
 } PixelChannel;  /* must correspond to ChannelType */

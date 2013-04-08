@@ -270,7 +270,8 @@ struct _Image
     ping;              /* no image data read, just attributes */
 
   MagickBooleanType
-    mask;
+    read_mask,
+    write_mask;
 
   PixelTrait
     alpha_trait;       /* is transparency channel defined and active */

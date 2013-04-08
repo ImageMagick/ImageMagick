@@ -452,9 +452,10 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
   if (image == (Image *) NULL)
     return(MagickFalse);
   length=sizeof(image->storage_class)+sizeof(image->colorspace)+
-    sizeof(image->alpha_trait)+sizeof(image->mask)+sizeof(image->columns)+
-    sizeof(image->rows)+sizeof(image->number_channels)+MaxPixelChannels*
-    sizeof(*image->channel_map)+sizeof(image->metacontent_extent);
+    sizeof(image->alpha_trait)+sizeof(image->read_mask)+
+    sizeof(image->write_mask)+sizeof(image->columns)+sizeof(image->rows)+
+    sizeof(image->number_channels)+MaxPixelChannels*sizeof(*image->channel_map)+
+    sizeof(image->metacontent_extent);
   count=dpc_read(file,length,message);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
@@ -468,8 +469,10 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
   p+=sizeof(image->colorspace);
   (void) memcpy(&image->alpha_trait,p,sizeof(image->alpha_trait));
   p+=sizeof(image->alpha_trait);
-  (void) memcpy(&image->mask,p,sizeof(image->mask));
-  p+=sizeof(image->mask);
+  (void) memcpy(&image->read_mask,p,sizeof(image->read_mask));
+  p+=sizeof(image->read_mask);
+  (void) memcpy(&image->write_mask,p,sizeof(image->write_mask));
+  p+=sizeof(image->write_mask);
   (void) memcpy(&image->columns,p,sizeof(image->columns));
   p+=sizeof(image->columns);
   (void) memcpy(&image->rows,p,sizeof(image->rows));
@@ -1084,8 +1087,10 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   p+=sizeof(image->colorspace);
   (void) memcpy(p,&image->alpha_trait,sizeof(image->alpha_trait));
   p+=sizeof(image->alpha_trait);
-  (void) memcpy(p,&image->mask,sizeof(image->mask));
-  p+=sizeof(image->mask);
+  (void) memcpy(p,&image->read_mask,sizeof(image->read_mask));
+  p+=sizeof(image->read_mask);
+  (void) memcpy(p,&image->write_mask,sizeof(image->write_mask));
+  p+=sizeof(image->write_mask);
   (void) memcpy(p,&image->columns,sizeof(image->columns));
   p+=sizeof(image->columns);
   (void) memcpy(p,&image->rows,sizeof(image->rows));

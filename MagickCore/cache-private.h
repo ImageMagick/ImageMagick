@@ -116,7 +116,8 @@ typedef struct _CacheInfo
     alpha_trait;
 
   MagickBooleanType
-    mask;
+    read_mask,
+    write_mask;
 
   size_t
     columns,

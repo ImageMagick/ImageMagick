@@ -650,7 +650,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             register ssize_t
               i;
 
-            if (GetPixelMask(next,p) == 0)
+            if (GetPixelReadMask(next,p) == 0)
               {
                 p+=GetPixelChannels(next);
                 continue;
@@ -708,7 +708,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           register ssize_t
             i;
 
-          if (GetPixelMask(image,q) == 0)
+          if (GetPixelReadMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
               continue;
@@ -823,7 +823,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelMask(image,q) == 0))
+            (GetPixelReadMask(image,q) == 0))
           continue;
         q[i]=ClampToQuantum(ApplyEvaluateOperator(random_info[id],q[i],op,
           value));
@@ -1036,7 +1036,7 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,q) == 0)
+      if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -1288,7 +1288,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;
@@ -1413,7 +1413,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;
@@ -1559,7 +1559,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;
@@ -1825,7 +1825,7 @@ MagickExport Image *PolynomialImage(const Image *images,
         register ssize_t
           i;
 
-        if (GetPixelMask(next,p) == 0)
+        if (GetPixelReadMask(next,p) == 0)
           {
             p+=GetPixelChannels(next);
             continue;
@@ -1859,7 +1859,7 @@ MagickExport Image *PolynomialImage(const Image *images,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,q) == 0)
+      if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -2485,7 +2485,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
             (statistic_traits == UndefinedPixelTrait))
           continue;
         if (((statistic_traits & CopyPixelTrait) != 0) ||
-            (GetPixelMask(image,p) == 0))
+            (GetPixelReadMask(image,p) == 0))
           {
             SetPixelChannel(statistic_image,channel,p[center+i],q);
             continue;

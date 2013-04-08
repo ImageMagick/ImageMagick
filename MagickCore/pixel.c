@@ -130,7 +130,7 @@
         name="alpha"; \
         break; \
       } \
-      case MaskPixelChannel: \
+      case ReadMaskPixelChannel: \
       { \
         name="mask"; \
         break; \
@@ -4116,8 +4116,10 @@ MagickExport void InitializePixelChannelMap(Image *image)
     SetPixelChannelAttributes(image,AlphaPixelChannel,CopyPixelTrait,n++);
   if (image->storage_class == PseudoClass)
     SetPixelChannelAttributes(image,IndexPixelChannel,CopyPixelTrait,n++);
-  if (image->mask != MagickFalse)
-    SetPixelChannelAttributes(image,MaskPixelChannel,CopyPixelTrait,n++);
+  if (image->read_mask != MagickFalse)
+    SetPixelChannelAttributes(image,ReadMaskPixelChannel,CopyPixelTrait,n++);
+  if (image->write_mask != MagickFalse)
+    SetPixelChannelAttributes(image,WriteMaskPixelChannel,CopyPixelTrait,n++);
   assert((n+image->number_meta_channels) < MaxPixelChannels);
   for (i=0; i < (ssize_t) image->number_meta_channels; i++)
     SetPixelChannelAttributes(image,(PixelChannel) (MetaPixelChannel+i),
@@ -6068,8 +6070,10 @@ MagickExport void SetPixelChannelMask(Image *image,
   }
   if (image->storage_class == PseudoClass)
     SetPixelChannelTraits(image,IndexPixelChannel,CopyPixelTrait);
-  if (image->mask != MagickFalse)
-    SetPixelChannelTraits(image,MaskPixelChannel,CopyPixelTrait);
+  if (image->read_mask != MagickFalse)
+    SetPixelChannelTraits(image,ReadMaskPixelChannel,CopyPixelTrait);
+  if (image->write_mask != MagickFalse)
+    SetPixelChannelTraits(image,WriteMaskPixelChannel,CopyPixelTrait);
   if (image->debug != MagickFalse)
     LogPixelChannels(image);
 }

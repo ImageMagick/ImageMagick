@@ -270,7 +270,7 @@ static Image *MaskImage(const Image *image,ExceptionInfo *exception)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelChannel(mask_image,GrayPixelChannel,0,q);
-      SetPixelChannel(mask_image,GrayPixelChannel,GetPixelMask(image,p),q);
+      SetPixelChannel(mask_image,GrayPixelChannel,GetPixelReadMask(image,p),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(mask_image);
     }
