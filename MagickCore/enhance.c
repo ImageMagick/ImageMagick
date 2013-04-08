@@ -2637,6 +2637,10 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      ((IsGrayColorspace(black_color->colorspace) == MagickFalse) ||
+       (IsGrayColorspace(white_color->colorspace) == MagickFalse)))
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   status=MagickFalse;
   if (invert == MagickFalse)
     {
