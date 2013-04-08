@@ -2777,7 +2777,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %  the minimum and maximum values found in the image, the image can be
 %  normalized.  or by swapping black and white values, negate the image.
 %
-%  The format of the LevelizeImage method is:
+%  The format of the LevelImage method is:
 %
 %      MagickBooleanType LevelImage(Image *image,const double black_point,
 %        const double white_point,const double gamma)
@@ -3084,8 +3084,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
         SetPixelAlpha(q,LevelizeValue(GetPixelAlpha(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelIndex(indexes+x,LevelizeValue(
-          GetPixelIndex(indexes+x)));
+        SetPixelIndex(indexes+x,LevelizeValue(GetPixelIndex(indexes+x)));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3178,46 +3177,50 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      ((IsGrayColorspace(black_color->colorspace) == MagickFalse) ||
+       (IsGrayColorspace(white_color->colorspace) == MagickFalse)))
+    (void) TransformImageColorspace(image,sRGBColorspace);
   status=MagickFalse;
   if (invert == MagickFalse)
     {
       if ((channel & RedChannel) != 0)
-        status|=LevelImageChannel(image,RedChannel,
-          black_color->red,white_color->red,(double) 1.0);
+        status|=LevelImageChannel(image,RedChannel,black_color->red,
+          white_color->red,(double) 1.0);
       if ((channel & GreenChannel) != 0)
-        status|=LevelImageChannel(image,GreenChannel,
-          black_color->green,white_color->green,(double) 1.0);
+        status|=LevelImageChannel(image,GreenChannel,black_color->green,
+          white_color->green,(double) 1.0);
       if ((channel & BlueChannel) != 0)
-        status|=LevelImageChannel(image,BlueChannel,
-          black_color->blue,white_color->blue,(double) 1.0);
+        status|=LevelImageChannel(image,BlueChannel,black_color->blue,
+          white_color->blue,(double) 1.0);
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        status|=LevelImageChannel(image,OpacityChannel,
-          black_color->opacity,white_color->opacity,(double) 1.0);
+        status|=LevelImageChannel(image,OpacityChannel,black_color->opacity,
+          white_color->opacity,(double) 1.0);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        status|=LevelImageChannel(image,IndexChannel,
-          black_color->index,white_color->index,(double) 1.0);
+        status|=LevelImageChannel(image,IndexChannel,black_color->index,
+          white_color->index,(double) 1.0);
     }
   else
     {
       if ((channel & RedChannel) != 0)
-        status|=LevelizeImageChannel(image,RedChannel,
-          black_color->red,white_color->red,(double) 1.0);
+        status|=LevelizeImageChannel(image,RedChannel,black_color->red,
+          white_color->red,(double) 1.0);
       if ((channel & GreenChannel) != 0)
-        status|=LevelizeImageChannel(image,GreenChannel,
-          black_color->green,white_color->green,(double) 1.0);
+        status|=LevelizeImageChannel(image,GreenChannel,black_color->green,
+          white_color->green,(double) 1.0);
       if ((channel & BlueChannel) != 0)
-        status|=LevelizeImageChannel(image,BlueChannel,
-          black_color->blue,white_color->blue,(double) 1.0);
+        status|=LevelizeImageChannel(image,BlueChannel,black_color->blue,
+          white_color->blue,(double) 1.0);
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        status|=LevelizeImageChannel(image,OpacityChannel,
-          black_color->opacity,white_color->opacity,(double) 1.0);
+        status|=LevelizeImageChannel(image,OpacityChannel,black_color->opacity,
+          white_color->opacity,(double) 1.0);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        status|=LevelizeImageChannel(image,IndexChannel,
-          black_color->index,white_color->index,(double) 1.0);
+        status|=LevelizeImageChannel(image,IndexChannel,black_color->index,
+          white_color->index,(double) 1.0);
     }
   return(status == 0 ? MagickFalse : MagickTrue);
 }
