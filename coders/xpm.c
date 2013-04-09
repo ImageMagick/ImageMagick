@@ -382,7 +382,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->storage_class=DirectClass;
         image->matte=MagickTrue;
       }
-    status=QueryColorCompliance(target,AllCompliance,&image->colormap[j],
+    status=QueryColorCompliance(target,XPMCompliance,&image->colormap[j],
       exception);
     if (status == MagickFalse)
       break;
