@@ -4321,7 +4321,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
     Bacically a 'reverse-level' function, with different input args.
   * Set  +level  or a '!' flag in -level or LevelImage() to call
     the new 'reverse-level' function LevelizeImageChannels().
-  * More work on IsMagickColorSimular() to fix relationship between
+  * More work on IsMagickColorSimilar() to fix relationship between
     transparent-black and opaque-black, which was matched as 'similar'.
     Also attempts to fix 'K' channel handling for CMYK colorspace.
     More work on this to come.
@@ -4333,7 +4333,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=11492).
 
 2008-06-13  6.4.1-8 Anthony <anthony@griffith...>
-  * Fixed IsMagickColorSimular() as used by -opauqe and -transparent
+  * Fixed IsMagickColorSimilar() as used by -opaque and -transparent
     so as to understand that the Hue Channel is cyclic by nature
 
 2008-06-08  6.4.1-8 Cristy  <quetzlzacatenango@image...>
