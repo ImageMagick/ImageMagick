@@ -89,14 +89,13 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
   const double luma,double *red,double *green,double *blue)
 {
   double
-    C,
-    H,
-    L,
-    u,
-    v,
-    X,
-    Y,
-    Z;
+    b,
+    c,
+    g,
+    h,
+    m,
+    r,
+    x;
 
   /*
     Convert HCL to RGB colorspace.
@@ -104,13 +103,51 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  L=luma;
-  C=chroma;
-  H=hue;
-  u=C*cos(360.0*H*MagickPI/180.0);
-  v=C*sin(360.0*H*MagickPI/180.0);
-  ConvertLuvToXYZ(L,u,v,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
+  h=6.0*hue;
+  c=chroma;
+  x=c*(1.0-fabs(fmod(h,2.0)-1.0));
+  r=0.0;
+  g=0.0;
+  b=0.0;
+  if ((0.0 <= h) && (h < 1.0))
+    {
+      r=c;
+      g=x;
+    }
+  else
+    if ((1.0 <= h) && (h < 2.0))
+      {
+        r=x;
+        g=c;
+      }
+    else
+      if ((2.0 <= h) && (h < 3.0))
+        {
+          g=c;
+          b=x;
+        }
+      else
+        if ((3.0 <= h) && (h < 4.0))
+          {
+            g=x;
+            b=c;
+          }
+        else
+          if ((4.0 <= h) && (h < 5.0))
+            {
+              r=x;
+              b=c;
+            }
+          else
+            if ((5.0 <= h) && (h < 6.0))
+              {
+                r=c;
+                b=x;
+              }
+  m=luma-(0.298839f*r+0.586811f*g+0.114350f*b);
+  *red=QuantumRange*(r+m);
+  *green=QuantumRange*(g+m);
+  *blue=QuantumRange*(b+m);
 }
 
 /*
@@ -509,36 +546,58 @@ MagickPrivate void ConvertLCHuvToRGB(const double luma,const double chroma,
 %      component of the HCL color space.
 %
 */
+
+static inline double MagickMax(const double x,const double y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
+static inline double MagickMin(const double x,const double y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
 MagickPrivate void ConvertRGBToHCL(const double red,const double green,
   const double blue,double *hue,double *chroma,double *luma)
 {
   double
-    C,
-    H,
-    L,
-    u,
-    v,
-    X,
-    Y,
-    Z;
+    b,
+    c,
+    g,
+    h,
+    max,
+    r;
 
   /*
     Convert RGB to HCL colorspace.
   */
-  assert(luma != (double *) NULL);
-  assert(chroma != (double *) NULL);
   assert(hue != (double *) NULL);
-  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
-  C=hypot(u,v);
-  H=180.0*atan2(v,u)/MagickPI/360.0;
-  if (H < 0.0)
-    H+=1.0;
-  if (H >= 1.0)
-    H-=1.0;
-  *luma=L;
-  *chroma=C;
-  *hue=H;
+  assert(chroma != (double *) NULL);
+  assert(luma != (double *) NULL);
+  r=red;
+  g=green;
+  b=blue;
+  max=MagickMax(r,MagickMax(g,b));
+  c=max-(double) MagickMin(r,MagickMin(g,b));
+  h=0.0;
+  if (c == 0.0)
+    h=0.0;
+  else
+    if (red == max)
+      h=fmod((g-b)/c+6.0,6.0);
+    else
+      if (green == max)
+        h=((b-r)/c)+2.0;
+      else
+        if (blue == max)
+          h=((r-g)/c)+4.0;
+  *hue=(h/6.0);
+  *chroma=QuantumScale*c;
+  *luma=QuantumScale*(0.298839f*r+0.586811f*g+0.114350f*b);
 }
 
 /*
@@ -645,21 +704,6 @@ MagickPrivate void ConvertRGBToHSB(const double red,const double green,
 %      component of the HSL color space.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport void ConvertRGBToHSL(const double red,const double green,
   const double blue,double *hue,double *saturation,double *lightness)
 {
@@ -882,7 +926,7 @@ MagickPrivate void ConvertRGBToLCHuv(const double red,const double green,
   assert(hue != (double *) NULL);
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
   ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
-  C=hypot(uu,v);
+  C=hypot(u,v);
   H=180.0*atan2(v,u)/MagickPI/360.0;
   if (H < 0.0)
     H+=1.0;
