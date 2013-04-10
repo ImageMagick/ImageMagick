@@ -880,6 +880,7 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
       }
   }
   projection=(size_t *) RelinquishMagickMemory(projection);
+  degrees=RadiansToDegrees(-atan((double) skew/width/8));
   /*
     Deskew image.
   */
@@ -887,7 +888,6 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageVirtualPixelMethod(clone_image,BackgroundVirtualPixelMethod);
-  degrees=RadiansToDegrees(-atan((double) skew/width/8));
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),
       "  Deskew angle: %g",degrees);
