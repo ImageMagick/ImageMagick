@@ -436,7 +436,7 @@ MagickExport void ResetImageArtifactIterator(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageArtifact() associates makes a copy of the given string value
+%  SetImageArtifact() associates makes a copy of the given string arguments
 %  and inserts it into the artifact tree of the given image.
 %
 %  The format of the SetImageArtifact method is:
@@ -448,9 +448,9 @@ MagickExport void ResetImageArtifactIterator(const Image *image)
 %
 %    o image: the image.
 %
-%    o artifact: the image artifact.
+%    o artifact: the image artifact key.
 %
-%    o values: the image artifact values.
+%    o value: the image artifact value.
 %
 */
 MagickExport MagickBooleanType SetImageArtifact(Image *image,
