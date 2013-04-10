@@ -1946,6 +1946,24 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
     }
+  switch (image->intensity)
+  {
+    case Rec601LuminancePixelIntensityMethod:
+    case Rec709LuminancePixelIntensityMethod:
+    {
+      (void) TransformImageColorspace(image,RGBColorspace,exception);
+      break;
+    }
+    case Rec601LumaPixelIntensityMethod:
+    case Rec709LumaPixelIntensityMethod:
+    case UndefinedPixelIntensityMethod:
+    {
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
+      break;
+    }
+    default:
+      break;
+  }
   /*
     Grayscale image.
   */
@@ -1988,6 +2006,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       red=(MagickRealType) GetPixelRed(image,q);
       green=(MagickRealType) GetPixelGreen(image,q);
       blue=(MagickRealType) GetPixelBlue(image,q);
+      intensity=0.0;
       switch (image->intensity)
       {
         case AveragePixelIntensityMethod:
@@ -2012,29 +2031,17 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         }
         case Rec601LuminancePixelIntensityMethod:
         {
-          if (image->colorspace == sRGBColorspace)
-            {
-              red=DecodePixelGamma(red);
-              green=DecodePixelGamma(green);
-              blue=DecodePixelGamma(blue);
-            }
           intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
           break;
         }
         case Rec709LumaPixelIntensityMethod:
-        default:
+        case UndefinedPixelIntensityMethod:
         {
           intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
           break;
         }
         case Rec709LuminancePixelIntensityMethod:
         {
-          if (image->colorspace == sRGBColorspace)
-            {
-              red=DecodePixelGamma(red);
-              green=DecodePixelGamma(green);
-              blue=DecodePixelGamma(blue);
-            }
           intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
           break;
         }
@@ -2044,6 +2051,8 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
             blue*blue);
           break;
         }
+        default:
+          break;
       }
       SetPixelGray(image,ClampToQuantum(intensity),q);
       q+=GetPixelChannels(image);
@@ -2065,6 +2074,9 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
+  if (SetImageColorspace(image,GRAYColorspace,exception) == MagickFalse)
+    return(MagickFalse);
+  image->type=GrayscaleType;
   return(status);
 }
 
