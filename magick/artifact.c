@@ -193,8 +193,7 @@ MagickExport MagickBooleanType DeleteImageArtifact(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts == (void *) NULL)
     return(MagickFalse);
   return(DeleteNodeFromSplayTree((SplayTreeInfo *) image->artifacts,artifact));
@@ -228,8 +227,7 @@ MagickExport void DestroyImageArtifacts(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts != (void *) NULL)
     image->artifacts=(void *) DestroySplayTree((SplayTreeInfo *)
       image->artifacts);
@@ -281,8 +279,8 @@ MagickExport const char *GetImageArtifact(const Image *image,
     }
   if (image->artifacts != (void *) NULL)
     {
-      p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-        image->artifacts,artifact);
+      p=(const char *) GetValueFromSplayTree((SplayTreeInfo *) image->artifacts,
+        artifact);
       if (p != (const char *) NULL)
         return(p);
     }
@@ -316,8 +314,7 @@ MagickExport char *GetNextImageArtifact(const Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts == (void *) NULL)
     return((char *) NULL);
   return((char *) GetNextKeyInSplayTree((SplayTreeInfo *) image->artifacts));
@@ -356,8 +353,7 @@ MagickExport char *RemoveImageArtifact(Image *image,const char *artifact)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts == (void *) NULL)
     return((char *) NULL);
   value=(char *) RemoveNodeFromSplayTree((SplayTreeInfo *) image->artifacts,
@@ -394,8 +390,7 @@ MagickExport void ResetImageArtifactIterator(const Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts == (void *) NULL)
     return;
   ResetSplayTreeIterator((SplayTreeInfo *) image->artifacts);
@@ -438,17 +433,21 @@ MagickExport MagickBooleanType SetImageArtifact(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
-
-  /* Create tree if needed */
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  /*
+    Create tree if needed.
+  */
   if (image->artifacts == (void *) NULL)
-    image->artifacts=NewSplayTree(CompareSplayTreeString,
-      RelinquishMagickMemory,RelinquishMagickMemory);
-  /* Delete artifact if NULL --  empty string values are valid! */
+    image->artifacts=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
+      RelinquishMagickMemory);
+  /*
+    Delete artifact if NULL --  empty string values are valid!
+  */
   if (value == (const char *) NULL)
     return(DeleteImageArtifact(image,artifact));
-  /* Add artifact to tree */
+  /*
+    Add artifact to tree.
+  */
   status=AddValueToSplayTree((SplayTreeInfo *) image->artifacts,
     ConstantString(artifact),ConstantString(value));
   return(status);
