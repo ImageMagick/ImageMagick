@@ -192,10 +192,12 @@ static MagickBooleanType CropToFitImage(Image **image,
 %  imperfections in the scanning or surface, or simply because the paper was
 %  not placed completely flat when scanned.
 %
-%  The result will be auto-croped if the artifact "deskew:auto-crop" is
-%  defined, while the amount the image is to be deskewed, in degrees is also
-%  saved as the artifact "deskew:angle".
+%  The amount of rotation calculated to deskew the image is saved in the
+%  artifact "deskew:angle".
 %
+%  If the artifact "deskew:auto-crop" is defined with 'offset limits' used to
+%  determine the images background color, the image will be automatically
+%  cropped of the excess background.
 %
 %  The format of the DeskewImage method is:
 %
