@@ -192,6 +192,11 @@ static MagickBooleanType CropToFitImage(Image **image,
 %  imperfections in the scanning or surface, or simply because the paper was
 %  not placed completely flat when scanned.
 %
+%  The result will be auto-croped if the artifact "deskew:auto-crop" is
+%  defined, while the amount the image is to be deskewed, in degrees is also
+%  saved as the artifact "deskew:angle".
+%
+%
 %  The format of the DeskewImage method is:
 %
 %      Image *DeskewImage(const Image *image,const double threshold,
@@ -888,6 +893,13 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
+  {
+    char
+      angle[MaxTextExtent];
+
+    (void) FormatLocaleString(angle,MaxTextExtent,"%.20g",degrees);
+    (void) SetImageArtifact(clone_image,"deskew:angle",angle);
+  }
   (void) SetImageVirtualPixelMethod(clone_image,BackgroundVirtualPixelMethod,
     exception);
   affine_matrix.sx=cos(DegreesToRadians(fmod((double) degrees,360.0)));
