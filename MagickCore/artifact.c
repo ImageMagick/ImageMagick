@@ -197,8 +197,7 @@ MagickExport MagickBooleanType DeleteImageArtifact(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts == (void *) NULL)
     return(MagickFalse);
   return(DeleteNodeFromSplayTree((SplayTreeInfo *) image->artifacts,artifact));
@@ -232,8 +231,7 @@ MagickExport void DestroyImageArtifacts(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts != (void *) NULL)
     image->artifacts=(void *) DestroySplayTree((SplayTreeInfo *)
       image->artifacts);
@@ -288,22 +286,23 @@ MagickExport const char *GetImageArtifact(const Image *image,
     }
   if (image->artifacts != (void *) NULL)
     {
-      p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-        image->artifacts,artifact);
+      p=(const char *) GetValueFromSplayTree((SplayTreeInfo *) image->artifacts,
+        artifact);
       if (p != (const char *) NULL)
         return(p);
     }
-  /* Programmer notes....
-     CLI IMv7: if no per-image artifact - look for a global option instead
-     CLI IMv6: global options are copied into per-image artifacts
-     In all other cases, if image is not part of an image_info image list this
-     pointer should be NULL, an no global image options are available.
-   */
+  /*
+    Programmer notes:
 
-  if ( (image->image_info != (ImageInfo *)NULL) &&
-       (image->image_info->options != (void *) NULL) )
+    CLI IMv7: if no per-image artifact - look for a global option instead CLI
+    IMv6: global options are copied into per-image artifacts In all other
+    cases, if image is not part of an image_info image list this pointer
+    should be NULL, an no global image options are available.
+  */
+  if ((image->image_info != (ImageInfo *)NULL) &&
+      (image->image_info->options != (void *) NULL))
     p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-        image->image_info->options,artifact);
+      image->image_info->options,artifact);
   return(p);
 }
 
@@ -334,8 +333,7 @@ MagickExport char *GetNextImageArtifact(const Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts == (void *) NULL)
     return((char *) NULL);
   return((char *) GetNextKeyInSplayTree((SplayTreeInfo *) image->artifacts));
@@ -377,8 +375,7 @@ MagickExport char *RemoveImageArtifact(Image *image,const char *artifact)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts == (void *) NULL)
     return((char *) NULL);
   value=(char *) RemoveNodeFromSplayTree((SplayTreeInfo *) image->artifacts,
@@ -418,8 +415,7 @@ MagickExport void ResetImageArtifactIterator(const Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts == (void *) NULL)
     return;
   ResetSplayTreeIterator((SplayTreeInfo *) image->artifacts);
@@ -462,19 +458,21 @@ MagickExport MagickBooleanType SetImageArtifact(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
-
-  /* Create tree if needed - specify how key,values are to be freed */
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  /*
+    Create tree if needed - specify how key,values are to be freed.
+  */
   if (image->artifacts == (void *) NULL)
-    image->artifacts=NewSplayTree(CompareSplayTreeString,
-      RelinquishMagickMemory,RelinquishMagickMemory);
-
-  /* Delete artifact if NULL --  empty string values are valid! */
+    image->artifacts=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
+      RelinquishMagickMemory);
+  /*
+    Delete artifact if NULL --  empty string values are valid!,
+  */
   if (value == (const char *) NULL)
     return(DeleteImageArtifact(image,artifact));
-
-  /* add artifact to splay-tree */
+  /*
+    Add artifact to splay-tree.
+  */
   status=AddValueToSplayTree((SplayTreeInfo *) image->artifacts,
     ConstantString(artifact),ConstantString(value));
   return(status);
