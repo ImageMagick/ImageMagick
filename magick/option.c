@@ -1239,6 +1239,7 @@ static const OptionInfo
     { "Gravity", MagickGravityOptions, UndefinedOptionFlag, MagickFalse },
     { "Intensity", MagickPixelIntensityOptions, UndefinedOptionFlag, MagickFalse },
     { "Intent", MagickIntentOptions, UndefinedOptionFlag, MagickFalse },
+    { "Intensity", MagickPixelIntensityOptions, UndefinedOptionFlag, MagickFalse },
     { "Interlace", MagickInterlaceOptions, UndefinedOptionFlag, MagickFalse },
     { "Interpolate", MagickInterpolateOptions, UndefinedOptionFlag, MagickFalse },
     { "Kernel", MagickKernelOptions, UndefinedOptionFlag, MagickFalse },
