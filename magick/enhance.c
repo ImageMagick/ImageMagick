@@ -2342,6 +2342,24 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       if (SetImageStorageClass(image,DirectClass) == MagickFalse)
         return(MagickFalse);
     }
+  switch (image->intensity)
+  {
+    case Rec601LuminancePixelIntensityMethod:
+    case Rec709LuminancePixelIntensityMethod:
+    {
+      (void) TransformImageColorspace(image,RGBColorspace);
+      break;
+    }
+    case Rec601LumaPixelIntensityMethod:
+    case Rec709LumaPixelIntensityMethod:
+    case UndefinedPixelIntensityMethod:
+    {
+      (void) TransformImageColorspace(image,sRGBColorspace);
+      break;
+    }
+    default:
+      break;
+  }
   /*
     Grayscale image.
   */
@@ -2380,6 +2398,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       red=(MagickRealType) q->red;
       green=(MagickRealType) q->green;
       blue=(MagickRealType) q->blue;
+      intensity=0;
       switch (method)
       {
         case AveragePixelIntensityMethod:
@@ -2403,14 +2422,8 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
           break;
         }
         case Rec601LuminancePixelIntensityMethod:
-        default:
+        case UndefinedPixelIntensityMethod:
         {
-          if (image->colorspace == sRGBColorspace)
-            {
-              red=DecodePixelGamma(red);
-              green=DecodePixelGamma(green);
-              blue=DecodePixelGamma(blue);
-            }
           intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
           break;
         }
@@ -2421,12 +2434,6 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         }
         case Rec709LuminancePixelIntensityMethod:
         {
-          if (image->colorspace == sRGBColorspace)
-            {
-              red=DecodePixelGamma(red);
-              green=DecodePixelGamma(green);
-              blue=DecodePixelGamma(blue);
-            }
           intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
           break;
         }
@@ -2436,6 +2443,8 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
             blue*blue);
           break;
         }
+        default:
+          break;
       }
       SetPixelGray(q,ClampToQuantum(intensity));
       q++;
