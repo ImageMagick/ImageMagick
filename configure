@@ -3675,7 +3675,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=11786:11789M
+MAGICK_SVN_REVISION=11786:11799M
 
 
 # Substitute library versioning
@@ -9406,9 +9406,20 @@ fi
         LIBS="$save_LIBS"
         CFLAGS="$save_CFLAGS"
 
-        # More AIX lossage: must compile with xlc_r or cc_r
-        if test x"$GCC" != xyes; then
-          for ac_prog in xlc_r cc_r
+        # More AIX lossage: compile with *_r variant
+        if test "x$GCC" != xyes; then
+            case $host_os in
+                aix*)
+                case "x/$CC" in #(
+  x*/c89|x*/c89_128|x*/c99|x*/c99_128|x*/cc|x*/cc128|x*/xlc|x*/xlc_v6|x*/xlc128|x*/xlc128_v6) :
+    #handle absolute path differently from PATH based program lookup
+                   case "x$CC" in #(
+  x/*) :
+    if as_fn_executable_p ${CC}_r; then :
+  PTHREAD_CC="${CC}_r"
+fi ;; #(
+  *) :
+    for ac_prog in ${CC}_r
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -9449,14 +9460,18 @@ fi
 
   test -n "$PTHREAD_CC" && break
 done
-test -n "$PTHREAD_CC" || PTHREAD_CC="${CC}"
-
-        else
-          PTHREAD_CC=$CC
+test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
+ ;;
+esac ;; #(
+  *) :
+     ;;
+esac
+                ;;
+            esac
         fi
-else
-        PTHREAD_CC="$CC"
 fi
+
+test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
 
 
 
@@ -9898,9 +9913,20 @@ fi
         LIBS="$save_LIBS"
         CFLAGS="$save_CFLAGS"
 
-        # More AIX lossage: must compile with xlc_r or cc_r
-        if test x"$GCC" != xyes; then
-          for ac_prog in xlc_r cc_r
+        # More AIX lossage: compile with *_r variant
+        if test "x$GCC" != xyes; then
+            case $host_os in
+                aix*)
+                case "x/$CC" in #(
+  x*/c89|x*/c89_128|x*/c99|x*/c99_128|x*/cc|x*/cc128|x*/xlc|x*/xlc_v6|x*/xlc128|x*/xlc128_v6) :
+    #handle absolute path differently from PATH based program lookup
+                   case "x$CC" in #(
+  x/*) :
+    if as_fn_executable_p ${CC}_r; then :
+  PTHREAD_CC="${CC}_r"
+fi ;; #(
+  *) :
+    for ac_prog in ${CC}_r
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -9941,14 +9967,18 @@ fi
 
   test -n "$PTHREAD_CC" && break
 done
-test -n "$PTHREAD_CC" || PTHREAD_CC="${CC}"
-
-        else
-          PTHREAD_CC=$CC
+test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
+ ;;
+esac ;; #(
+  *) :
+     ;;
+esac
+                ;;
+            esac
         fi
-else
-        PTHREAD_CC="$CC"
 fi
+
+test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
 
 
 
