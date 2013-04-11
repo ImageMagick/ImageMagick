@@ -5205,6 +5205,9 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
     *image_view,
     *tint_view;
 
+  double
+    intensity;
+
   GeometryInfo
     geometry_info;
 
@@ -5216,9 +5219,6 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
 
   MagickOffsetType
     progress;
-
-  double
-    intensity;
 
   PixelInfo
     color_vector;
@@ -5275,16 +5275,11 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
         color_vector.alpha=geometry_info.chi;
     }
   intensity=(double) GetPixelInfoIntensity(tint);
-  color_vector.red=(double) (color_vector.red*tint->red/100.0-
-    intensity);
-  color_vector.green=(double) (color_vector.green*tint->green/100.0-
-    intensity);
-  color_vector.blue=(double) (color_vector.blue*tint->blue/100.0-
-    intensity);
-  color_vector.black=(double) (color_vector.black*tint->black/100.0-
-    intensity);
-  color_vector.alpha=(double) (color_vector.alpha*tint->alpha/100.0-
-    intensity);
+  color_vector.red=(double) (color_vector.red*tint->red/100.0-intensity);
+  color_vector.green=(double) (color_vector.green*tint->green/100.0-intensity);
+  color_vector.blue=(double) (color_vector.blue*tint->blue/100.0-intensity);
+  color_vector.black=(double) (color_vector.black*tint->black/100.0-intensity);
+  color_vector.alpha=(double) (color_vector.alpha*tint->alpha/100.0-intensity);
   /*
     Tint image.
   */
