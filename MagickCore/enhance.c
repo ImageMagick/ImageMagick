@@ -2047,8 +2047,8 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         }
         case RMSPixelIntensityMethod:
         {
-          intensity=(MagickRealType) sqrt((double) red*red+green*green+
-            blue*blue);
+          intensity=(MagickRealType) (sqrt((double) red*red+green*green+
+            blue*blue)/sqrt(3.0);
           break;
         }
         default:
