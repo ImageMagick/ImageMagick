@@ -74,7 +74,8 @@ typedef enum
   Rec601LuminancePixelIntensityMethod,
   Rec709LumaPixelIntensityMethod,
   Rec709LuminancePixelIntensityMethod,
-  RMSPixelIntensityMethod
+  RMSPixelIntensityMethod,
+  MSPixelIntensityMethod
 } PixelIntensityMethod;
 
 /*
