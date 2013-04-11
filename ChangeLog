@@ -1,6 +1,10 @@
+2013-04-10  6.8.4-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.4-9, SVN revision 11803.
+
 2013-04-10  6.8.4-9 Bastien Roucaries  <roucaries.basti...>
   * Respect --program-suffix configure script option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23143).
+  * Update to the newest AX_CHECK_PTHREAD macro from autoconf-archive.
 
 2013-04-10  6.8.4-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Save the calculated angle for "deskew" as the artifact "deskew:angle"
