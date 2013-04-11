@@ -95,6 +95,7 @@ typedef enum
   AveragePixelIntensityMethod,
   BrightnessPixelIntensityMethod,
   LightnessPixelIntensityMethod,
+  MSPixelIntensityMethod,
   Rec601LumaPixelIntensityMethod,
   Rec601LuminancePixelIntensityMethod,
   Rec709LumaPixelIntensityMethod,
