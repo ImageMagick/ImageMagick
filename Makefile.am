@@ -217,6 +217,7 @@ install-exec-hook:
 	    test -z "$$files" || { \
 	    echo "$(LN_S) $(DESTDIR)$(utilities_bindir)/$$dir ./$$dir"; \
 		(cd $(DESTDIR)/$(bindir) && \
+		 rm -f ./$$dir && \
 		 $(LN_S) $(DESTDIR)/$(utilities_bindir)/$$dir ./$$dir) || exit $$?; \
 	    } \
 	; done;
