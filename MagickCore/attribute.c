@@ -718,7 +718,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
   ((Image *) image)->type=type;
   if ((type == GrayscaleType) && (image->alpha_trait == BlendPixelTrait))
     ((Image *) image)->type=GrayscaleMatteType;
-  return(MagickTrue);
+  return(SetImageColorspace((Image *) image,GRAYColorspace,exception));
 }
 
 /*
@@ -798,7 +798,7 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image,
   if (type == UndefinedType)
     return(MagickFalse);
   ((Image *) image)->type=type;
-  return(MagickTrue);
+  return(SetImageColorspace((Image *) image,GRAYColorspace,exception));
 }
 
 /*
