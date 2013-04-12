@@ -15,6 +15,8 @@
   * Previously tinting a grayscale image returned dark results.
   * The -page option only affects new images (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23172).
+  * Revert 'Move binaries to lib subdirectory and link are created from binary
+	  package' patch.  We're getting too many bug reports.
 
 2013-04-07  6.8.4-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-8, SVN revision 11743.
