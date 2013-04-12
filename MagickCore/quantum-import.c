@@ -2755,6 +2755,7 @@ static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
     }
   }
 }
+
 static void ImportRedQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const unsigned char *restrict p,
   Quantum *restrict q,ExceptionInfo *exception)
