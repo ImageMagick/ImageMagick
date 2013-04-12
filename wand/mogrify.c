@@ -3216,9 +3216,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         Composite transformed region onto image.
       */
       (void) SyncImageSettings(mogrify_info,*image);
-      (void) CompositeImage(region_image,region_image->matte !=
-           MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
-           region_geometry.x,region_geometry.y);
+      (void) CompositeImage(region_image,region_image->matte != MagickFalse ?
+        CopyCompositeOp : OverCompositeOp,*image,region_geometry.x,
+        region_geometry.y);
       InheritException(exception,&region_image->exception);
       *image=DestroyImage(*image);
       *image=region_image;
