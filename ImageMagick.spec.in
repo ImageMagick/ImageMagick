@@ -187,6 +187,8 @@ make
 rm -rf %{buildroot}
 
 make install DESTDIR=%{buildroot} INSTALL="install -p"
+mv %{buildroot}%{_libdir}/%{name}-%{version}/bin-Q16/* %{buildroot}%{_bindir}
+rm %{buildroot}%{_bindir}/bin-Q16
 cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{MAJOR_VERSION}
 rm %{buildroot}%{_libdir}/*.la
 
