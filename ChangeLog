@@ -13,6 +13,8 @@
   * Pass JP2 format type to decoder (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23038).
   * Previously tinting a grayscale image returned dark results.
+  * The -page option only affects new images (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23172).
 
 2013-04-07  6.8.4-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-8, SVN revision 11743.
