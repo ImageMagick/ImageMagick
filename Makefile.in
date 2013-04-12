@@ -228,10 +228,10 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-utilities_bin_PROGRAMS = $(am__EXEEXT_4)
+bin_PROGRAMS = $(am__EXEEXT_1)
 TESTS = $(TESTS_TESTS) $(am__EXEEXT_5)
 XFAIL_TESTS = $(am__EXEEXT_6) $(am__EXEEXT_6)
-check_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_3)
+check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4)
 DIST_COMMON = $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am \
 	$(srcdir)/coders/Makefile.am $(srcdir)/MagickCore/Makefile.am \
 	$(srcdir)/MagickWand/Makefile.am \
@@ -372,7 +372,7 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 am__installdirs = "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" \
-	"$(DESTDIR)$(libdir)" "$(DESTDIR)$(utilities_bindir)" \
+	"$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" \
 	"$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" \
 	"$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" \
@@ -1766,9 +1766,15 @@ filters_analyze_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(filters_analyze_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_filters_analyze_la_rpath = -rpath $(filtersdir)
-am__EXEEXT_1 = tests/validate$(EXEEXT) tests/drawtest$(EXEEXT) \
+am__EXEEXT_1 = utilities/animate$(EXEEXT) utilities/compare$(EXEEXT) \
+	utilities/composite$(EXEEXT) utilities/conjure$(EXEEXT) \
+	utilities/display$(EXEEXT) utilities/identify$(EXEEXT) \
+	utilities/import$(EXEEXT) utilities/magick$(EXEEXT) \
+	utilities/mogrify$(EXEEXT) utilities/montage$(EXEEXT) \
+	utilities/stream$(EXEEXT)
+am__EXEEXT_2 = tests/validate$(EXEEXT) tests/drawtest$(EXEEXT) \
 	tests/wandtest$(EXEEXT)
-am__EXEEXT_2 = Magick++/demo/analyze$(EXEEXT) \
+am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 	Magick++/demo/button$(EXEEXT) Magick++/demo/demo$(EXEEXT) \
 	Magick++/demo/detrans$(EXEEXT) Magick++/demo/flip$(EXEEXT) \
 	Magick++/demo/gravity$(EXEEXT) Magick++/demo/piddle$(EXEEXT) \
@@ -1785,14 +1791,8 @@ am__EXEEXT_2 = Magick++/demo/analyze$(EXEEXT) \
 	Magick++/tests/morphImages$(EXEEXT) \
 	Magick++/tests/readWriteBlob$(EXEEXT) \
 	Magick++/tests/readWriteImages$(EXEEXT)
-@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_3 = $(am__EXEEXT_2)
-am__EXEEXT_4 = utilities/animate$(EXEEXT) utilities/compare$(EXEEXT) \
-	utilities/composite$(EXEEXT) utilities/conjure$(EXEEXT) \
-	utilities/display$(EXEEXT) utilities/identify$(EXEEXT) \
-	utilities/import$(EXEEXT) utilities/magick$(EXEEXT) \
-	utilities/mogrify$(EXEEXT) utilities/montage$(EXEEXT) \
-	utilities/stream$(EXEEXT)
-PROGRAMS = $(utilities_bin_PROGRAMS)
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_4 = $(am__EXEEXT_3)
+PROGRAMS = $(bin_PROGRAMS)
 am_Magick___demo_analyze_OBJECTS = Magick++/demo/analyze.$(OBJEXT)
 Magick___demo_analyze_OBJECTS = $(am_Magick___demo_analyze_OBJECTS)
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_2 = Magick++/lib/libMagick++-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.la
@@ -2887,7 +2887,6 @@ CLEANFILES = \
 	$(UTILITIES_CLEANFILES) \
 	$(TESTS_CLEANFILES)
 
-utilities_bindir = $(LIB_BIN_DIR_PATH)
 
 # Binary scripts
 bin_SCRIPTS = \
@@ -6441,21 +6440,12 @@ filters/filters_analyze_la-analyze.lo: filters/$(am__dirstamp) \
 	filters/$(DEPDIR)/$(am__dirstamp)
 filters/analyze.la: $(filters_analyze_la_OBJECTS) $(filters_analyze_la_DEPENDENCIES) $(EXTRA_filters_analyze_la_DEPENDENCIES) filters/$(am__dirstamp)
 	$(AM_V_CCLD)$(filters_analyze_la_LINK) $(am_filters_analyze_la_rpath) $(filters_analyze_la_OBJECTS) $(filters_analyze_la_LIBADD) $(LIBS)
-
-clean-checkPROGRAMS:
-	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
-	echo " rm -f" $$list; \
-	rm -f $$list || exit $$?; \
-	test -n "$(EXEEXT)" || exit 0; \
-	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
-	echo " rm -f" $$list; \
-	rm -f $$list
-install-utilities_binPROGRAMS: $(utilities_bin_PROGRAMS)
+install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	@list='$(utilities_bin_PROGRAMS)'; test -n "$(utilities_bindir)" || list=; \
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
 	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(utilities_bindir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(utilities_bindir)" || exit 1; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
 	fi; \
 	for p in $$list; do echo "$$p $$p"; done | \
 	sed 's/$(EXEEXT)$$//' | \
@@ -6475,24 +6465,33 @@ install-utilities_binPROGRAMS: $(utilities_bin_PROGRAMS)
 	while read type dir files; do \
 	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
 	    test -z "$$files" || { \
-	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(utilities_bindir)$$dir'"; \
-	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(utilities_bindir)$$dir" || exit $$?; \
+	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
+	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
 	    } \
 	; done
 
-uninstall-utilities_binPROGRAMS:
+uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(utilities_bin_PROGRAMS)'; test -n "$(utilities_bindir)" || list=; \
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
 	files=`for p in $$list; do echo "$$p"; done | \
 	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
 	      -e 's/$$/$(EXEEXT)/' \
 	`; \
 	test -n "$$list" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(utilities_bindir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(utilities_bindir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(bindir)" && rm -f $$files
 
-clean-utilities_binPROGRAMS:
-	@list='$(utilities_bin_PROGRAMS)'; test -n "$$list" || exit 0; \
+clean-binPROGRAMS:
+	@list='$(bin_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
+
+clean-checkPROGRAMS:
+	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
 	echo " rm -f" $$list; \
 	rm -f $$list || exit $$?; \
 	test -n "$(EXEEXT)" || exit 0; \
@@ -10510,9 +10509,11 @@ check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-recursive
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
 		$(HEADERS) all-local
+install-binPROGRAMS: install-libLTLIBRARIES
+
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(utilities_bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(MagickCoreincdir)" "$(DESTDIR)$(MagickCoreincarchdir)" "$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"; do \
+	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(MagickCoreincdir)" "$(DESTDIR)$(MagickCoreincarchdir)" "$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -10573,10 +10574,10 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-recursive
 
-clean-am: clean-checkPROGRAMS clean-codersLTLIBRARIES \
-	clean-filtersLTLIBRARIES clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-local clean-noinstLTLIBRARIES \
-	clean-utilities_binPROGRAMS mostlyclean-am
+clean-am: clean-binPROGRAMS clean-checkPROGRAMS \
+	clean-codersLTLIBRARIES clean-filtersLTLIBRARIES clean-generic \
+	clean-libLTLIBRARIES clean-libtool clean-local \
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
@@ -10602,16 +10603,15 @@ install-data-am: install-MagickCoreincHEADERS \
 	install-data-local install-docDATA install-filtersLTLIBRARIES \
 	install-includeHEADERS install-magickppincHEADERS \
 	install-magickpptopincHEADERS install-man \
-	install-pkgconfigDATA install-utilities_binPROGRAMS
+	install-pkgconfigDATA
 
 install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
-install-exec-am: install-binSCRIPTS install-exec-local \
-	install-libLTLIBRARIES
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
+install-exec-am: install-binPROGRAMS install-binSCRIPTS \
+	install-exec-local install-libLTLIBRARIES
+
 install-html: install-html-recursive
 
 install-html-am:
@@ -10655,61 +10655,59 @@ ps-am:
 
 uninstall-am: uninstall-MagickCoreincHEADERS \
 	uninstall-MagickCoreincarchHEADERS \
-	uninstall-MagickWandincHEADERS uninstall-binSCRIPTS \
+	uninstall-MagickWandincHEADERS uninstall-binPROGRAMS \
+	uninstall-binSCRIPTS uninstall-codersLTLIBRARIES \
+	uninstall-configlibDATA uninstall-configshareDATA \
+	uninstall-configsharearchDATA uninstall-docDATA \
+	uninstall-filtersLTLIBRARIES uninstall-includeHEADERS \
+	uninstall-libLTLIBRARIES uninstall-local \
+	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
+	uninstall-man uninstall-pkgconfigDATA
+
+uninstall-man: uninstall-man1
+
+.MAKE: $(am__recursive_targets) all check check-am install install-am \
+	install-strip
+
+.PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am all-local \
+	am--refresh check check-TESTS check-am check-local clean \
+	clean-binPROGRAMS clean-checkPROGRAMS clean-codersLTLIBRARIES \
+	clean-cscope clean-filtersLTLIBRARIES clean-generic \
+	clean-libLTLIBRARIES clean-libtool clean-local \
+	clean-noinstLTLIBRARIES cscope cscopelist-am ctags ctags-am \
+	dist dist-all dist-bzip2 dist-gzip dist-hook dist-lzip \
+	dist-shar dist-tarZ dist-xz dist-zip distcheck distclean \
+	distclean-compile distclean-generic distclean-hdr \
+	distclean-libtool distclean-local distclean-tags \
+	distcleancheck distdir distuninstallcheck dvi dvi-am html \
+	html-am info info-am install install-MagickCoreincHEADERS \
+	install-MagickCoreincarchHEADERS install-MagickWandincHEADERS \
+	install-am install-binPROGRAMS install-binSCRIPTS \
+	install-codersLTLIBRARIES install-configlibDATA \
+	install-configshareDATA install-configsharearchDATA \
+	install-data install-data-am install-data-local \
+	install-docDATA install-dvi install-dvi-am install-exec \
+	install-exec-am install-exec-local install-filtersLTLIBRARIES \
+	install-html install-html-am install-includeHEADERS \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-magickppincHEADERS install-magickpptopincHEADERS \
+	install-man install-man1 install-pdf install-pdf-am \
+	install-pkgconfigDATA install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-local mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	recheck tags tags-am uninstall uninstall-MagickCoreincHEADERS \
+	uninstall-MagickCoreincarchHEADERS \
+	uninstall-MagickWandincHEADERS uninstall-am \
+	uninstall-binPROGRAMS uninstall-binSCRIPTS \
 	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
 	uninstall-configshareDATA uninstall-configsharearchDATA \
 	uninstall-docDATA uninstall-filtersLTLIBRARIES \
 	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 	uninstall-local uninstall-magickppincHEADERS \
-	uninstall-magickpptopincHEADERS uninstall-man \
-	uninstall-pkgconfigDATA uninstall-utilities_binPROGRAMS
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
-uninstall-man: uninstall-man1
-
-.MAKE: $(am__recursive_targets) all check check-am install install-am \
-	install-exec-am install-strip uninstall-am
-
-.PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am all-local \
-	am--refresh check check-TESTS check-am check-local clean \
-	clean-checkPROGRAMS clean-codersLTLIBRARIES clean-cscope \
-	clean-filtersLTLIBRARIES clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-local clean-noinstLTLIBRARIES \
-	clean-utilities_binPROGRAMS cscope cscopelist-am ctags \
-	ctags-am dist dist-all dist-bzip2 dist-gzip dist-hook \
-	dist-lzip dist-shar dist-tarZ dist-xz dist-zip distcheck \
-	distclean distclean-compile distclean-generic distclean-hdr \
-	distclean-libtool distclean-local distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am html \
-	html-am info info-am install install-MagickCoreincHEADERS \
-	install-MagickCoreincarchHEADERS install-MagickWandincHEADERS \
-	install-am install-binSCRIPTS install-codersLTLIBRARIES \
-	install-configlibDATA install-configshareDATA \
-	install-configsharearchDATA install-data install-data-am \
-	install-data-local install-docDATA install-dvi install-dvi-am \
-	install-exec install-exec-am install-exec-hook \
-	install-exec-local install-filtersLTLIBRARIES install-html \
-	install-html-am install-includeHEADERS install-info \
-	install-info-am install-libLTLIBRARIES \
-	install-magickppincHEADERS install-magickpptopincHEADERS \
-	install-man install-man1 install-pdf install-pdf-am \
-	install-pkgconfigDATA install-ps install-ps-am install-strip \
-	install-utilities_binPROGRAMS installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-local mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am recheck tags tags-am uninstall \
-	uninstall-MagickCoreincHEADERS \
-	uninstall-MagickCoreincarchHEADERS \
-	uninstall-MagickWandincHEADERS uninstall-am \
-	uninstall-binSCRIPTS uninstall-codersLTLIBRARIES \
-	uninstall-configlibDATA uninstall-configshareDATA \
-	uninstall-configsharearchDATA uninstall-docDATA \
-	uninstall-filtersLTLIBRARIES uninstall-hook \
-	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-local uninstall-magickppincHEADERS \
 	uninstall-magickpptopincHEADERS uninstall-man uninstall-man1 \
-	uninstall-pkgconfigDATA uninstall-utilities_binPROGRAMS
+	uninstall-pkgconfigDATA
 
 MagickCore-install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(MagickCoreincdir)
@@ -10840,61 +10838,6 @@ uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) \
 	$(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) \
 	$(HTML_UNINSTALL_DATA_TARGETS) \
 	$(UTILITIES_UNINSTALL_LOCAL_TARGETS)
-
-install-exec-hook:
-	@list='$(utilities_bin_PROGRAMS)'; test -n "$(utilities_bindir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
-	fi; \
-	for p in $$list; do echo "$$p $$p"; done | \
-	sed 's/^utilities\///g' | sed 's/$(EXEEXT)$$//' | \
-	while read p p1; do if test -f $$p || test -f $$p1; \
-	  then echo "$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n;h' -e 's|.*|.|' \
-	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
-	sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
-	    else { print "f", $$3 "/" $$4, $$1; } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	    test -z "$$files" || { \
-	    echo "$(LN_S) $(DESTDIR)$(utilities_bindir)/$$dir ./$$dir"; \
-		(cd $(DESTDIR)/$(bindir) && \
-		 $(LN_S) $(DESTDIR)/$(utilities_bindir)/$$dir ./$$dir) || exit $$?; \
-	    } \
-	; done;
-
-uninstall-hook:
-	@list='$(utilities_bin_PROGRAMS)'; test -n "$(utilities_bindir)" || list=; \
-	for p in $$list; do echo "$$p $$p"; done | \
-	sed 's/^utilities\///g' | sed 's/$(EXEEXT)$$//' | \
-	while read p p1; do if test -f $$p || test -f $$p1; \
-	  then echo "$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n;h' -e 's|.*|.|' \
-	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
-	sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
-	    else { print "f", $$3 "/" $$4, $$1; } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	    test -z "$$files" || { \
-	    echo " link program $$files to '$(DESTDIR)$(bindir)$$dir'"; \
-	    for file in $$files ; do \
-		(cd $(DESTDIR)/$(bindir) && \
-		 rm -f ./$$dir) || exit $$?; \
-	    done; \
-	    } \
-	; done;
-	rm -r -f $(LIB_BIN_DIR_PATH)
 
 clean-local: $(PERLMAGICK_CLEAN_LOCAL_TARGETS)
 

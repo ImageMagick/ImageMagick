@@ -40,10 +40,8 @@ CLEANFILES = \
 	$(UTILITIES_CLEANFILES) \
 	$(TESTS_CLEANFILES)
 
-utilities_bin_PROGRAMS = \
+bin_PROGRAMS = \
 	$(UTILITIES_PGMS)
-utilities_bindir = $(LIB_BIN_DIR_PATH)
-
 
 # Binary scripts
 bin_SCRIPTS = \
@@ -192,62 +190,6 @@ uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) \
 	$(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) \
 	$(HTML_UNINSTALL_DATA_TARGETS) \
 	$(UTILITIES_UNINSTALL_LOCAL_TARGETS)
-
-install-exec-hook:
-	@list='$(utilities_bin_PROGRAMS)'; test -n "$(utilities_bindir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
-	fi; \
-	for p in $$list; do echo "$$p $$p"; done | \
-	sed 's/^utilities\///g' | sed 's/$(EXEEXT)$$//' | \
-	while read p p1; do if test -f $$p || test -f $$p1; \
-	  then echo "$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n;h' -e 's|.*|.|' \
-	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
-	sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
-	    else { print "f", $$3 "/" $$4, $$1; } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	    test -z "$$files" || { \
-	    echo "$(LN_S) $(DESTDIR)$(utilities_bindir)/$$dir ./$$dir"; \
-		(cd $(DESTDIR)/$(bindir) && \
-		 rm -f ./$$dir && \
-		 $(LN_S) $(DESTDIR)/$(utilities_bindir)/$$dir ./$$dir) || exit $$?; \
-	    } \
-	; done;
-	
-uninstall-hook:
-	@list='$(utilities_bin_PROGRAMS)'; test -n "$(utilities_bindir)" || list=; \
-	for p in $$list; do echo "$$p $$p"; done | \
-	sed 's/^utilities\///g' | sed 's/$(EXEEXT)$$//' | \
-	while read p p1; do if test -f $$p || test -f $$p1; \
-	  then echo "$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n;h' -e 's|.*|.|' \
-	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
-	sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
-	    else { print "f", $$3 "/" $$4, $$1; } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	    test -z "$$files" || { \
-	    echo " link program $$files to '$(DESTDIR)$(bindir)$$dir'"; \
-	    for file in $$files ; do \
-		(cd $(DESTDIR)/$(bindir) && \
-		 rm -f ./$$dir) || exit $$?; \
-	    done; \
-	    } \
-	; done;
-	rm -r -f $(LIB_BIN_DIR_PATH)
 
 clean-local: $(PERLMAGICK_CLEAN_LOCAL_TARGETS)
 
