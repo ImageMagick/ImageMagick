@@ -522,7 +522,9 @@ extern MagickPrivate MagickBooleanType
     const MagickSizeType,void *),
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,unsigned int,
     unsigned int,ExceptionInfo *),
-  XQueryColorCompliance(const char *,XColor *);
+  XQueryColorCompliance(const char *,XColor *),
+  XRenderImage(Image *,const DrawInfo *,const PointInfo *,TypeMetric *,
+    ExceptionInfo *);
 
 extern MagickPrivate void
   XBestIconSize(Display *,XWindowInfo *,Image *),
