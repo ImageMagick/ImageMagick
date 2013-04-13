@@ -1,6 +1,7 @@
 2013-04-11  6.8.4-10 Cristy  <quetzlzacatenango@image...>
   * Ensure -define jpeg:extent is resticted to at most 7 iterations (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23179).
+  * Move X11 font support from annotate.c source module to xwindow.c.
 
 2013-04-10  6.8.4-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-9, SVN revision 11818.
