@@ -22,6 +22,10 @@
 extern "C" {
 #endif
 
+#include "magick/exception.h"
+#include "magick/geometry.h"
+#include "magick/quantize.h"
+
 #if defined(MAGICKCORE_X11_DELEGATE)
 
 #include <X11/Xos.h>
@@ -31,9 +35,6 @@ extern "C" {
 #include <X11/keysym.h>
 #include <X11/Xresource.h>
 #include <X11/Xutil.h>
-#include "magick/exception.h"
-#include "magick/geometry.h"
-#include "magick/quantize.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 # define klass  c_class
@@ -596,8 +597,10 @@ static inline MagickRealType XPixelIntensity(const XColor *pixel)
   intensity=0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*pixel->blue;
   return(intensity);
 }
-
 #endif
+
+extern MagickPrivate MagickBooleanType
+  XRenderImage(Image *,const DrawInfo *,const PointInfo *,TypeMetric *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
