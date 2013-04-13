@@ -22,6 +22,11 @@
 extern "C" {
 #endif
 
+#include "MagickCore/exception.h"
+#include "MagickCore/geometry.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantize.h"
+
 #if defined(MAGICKCORE_X11_DELEGATE)
 
 #include <X11/Xos.h>
@@ -31,10 +36,6 @@ extern "C" {
 #include <X11/keysym.h>
 #include <X11/Xresource.h>
 #include <X11/Xutil.h>
-#include "MagickCore/exception.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantize.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 # define klass  c_class
@@ -522,9 +523,7 @@ extern MagickPrivate MagickBooleanType
     const MagickSizeType,void *),
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,unsigned int,
     unsigned int,ExceptionInfo *),
-  XQueryColorCompliance(const char *,XColor *),
-  XRenderImage(Image *,const DrawInfo *,const PointInfo *,TypeMetric *,
-    ExceptionInfo *);
+  XQueryColorCompliance(const char *,XColor *);
 
 extern MagickPrivate void
   XBestIconSize(Display *,XWindowInfo *,Image *),
@@ -612,6 +611,10 @@ static inline double XPixelIntensity(const XColor *pixel)
 }
 
 #endif
+
+extern MagickPrivate MagickBooleanType
+  XRenderImage(Image *,const DrawInfo *,const PointInfo *,TypeMetric *,
+    ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
