@@ -157,7 +157,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
             ((image->rows != 0) && (height >= (2*image->rows))))
           break;
       }
-      high=draw_info->pointsize/2.0;
+      high=draw_info->pointsize;
       for (low=high/2.0; (high-low) > 1.0; )
       {
         draw_info->pointsize=(low+high)/2.0;
