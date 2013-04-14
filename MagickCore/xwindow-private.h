@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/pixel-accessor.h"
