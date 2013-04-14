@@ -226,6 +226,7 @@ static MagickBooleanType ConvertUsage(void)
       "                     improve contrast by `stretching with saturation'",
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
+      "-magnify             double the size of the image with pixel art scaling",
       "-median geometry     apply a median filter to the image",
       "-mode geometry       make each pixel the 'predominant color' of the",
       "                     neighborhood",
@@ -1976,6 +1977,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("magnify",option+1) == 0)
+          break;
         if (LocaleCompare("map",option+1) == 0)
           {
             if (*option == '+')

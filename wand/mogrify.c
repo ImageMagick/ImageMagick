@@ -2019,6 +2019,15 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       }
       case 'm':
       {
+        if (LocaleCompare("magnify",option+1) == 0)
+          {
+            /*
+              Double image size.
+            */
+            (void) SyncImageSettings(mogrify_info,*image);
+            mogrify_image=MagnifyImage(*image,exception);
+            break;
+          }
         if (LocaleCompare("map",option+1) == 0)
           {
             Image
@@ -3362,6 +3371,7 @@ static MagickBooleanType MogrifyUsage(void)
       "                     improve contrast by `stretching with saturation'",
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
+      "-magnify             double the size of the image with pixel art scaling",
       "-median geometry     apply a median filter to the image",
       "-mode geometry       make each pixel the 'predominant color' of the",
       "                     neighborhood",
@@ -5073,6 +5083,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("magnify",option+1) == 0)
+          break;
         if (LocaleCompare("map",option+1) == 0)
           {
             global_colormap=(*option == '+') ? MagickTrue : MagickFalse;
