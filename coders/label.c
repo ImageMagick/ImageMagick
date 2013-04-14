@@ -133,7 +133,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   draw_info->text=ConstantString(label);
   if ((image->columns == 0) && (image->rows == 0))
     {
-      status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+      status=GetMultilineTypeMetrics(image,draw_info,&metrics);
       image->columns=(size_t) (metrics.width+draw_info->stroke_width+0.5);
       image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
     }
