@@ -1067,6 +1067,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       return(status);
     }
     case RGBColorspace:
+    case scRGBColorspace:
     {
       /*
         Transform image from sRGB to linear RGB.
@@ -2960,6 +2961,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       return(status);
     }
     case RGBColorspace:
+    case scRGBColorspace:
     {
       /*
         Transform linear RGB to sRGB colorspace.
