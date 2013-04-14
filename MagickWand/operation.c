@@ -2634,6 +2634,11 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'm':
     {
+      if (LocaleCompare("magnify",option+1) == 0)
+        {
+          new_image=MagnifyImage(_image,_exception);
+          break;
+        }
       if (LocaleCompare("map",option+1) == 0)
         {
           CLIWandWarnReplaced("-remap");

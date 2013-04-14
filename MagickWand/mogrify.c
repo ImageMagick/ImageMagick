@@ -2001,6 +2001,15 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       }
       case 'm':
       {
+        if (LocaleCompare("magnify",option+1) == 0)
+          {
+            /*
+              Double image size.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            mogrify_image=MagnifyImage(*image,exception);
+            break;
+          }
         if (LocaleCompare("map",option+1) == 0)
           {
             Image
