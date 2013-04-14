@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include "magick/draw.h"
 #include "magick/exception.h"
 #include "magick/geometry.h"
 #include "magick/quantize.h"
