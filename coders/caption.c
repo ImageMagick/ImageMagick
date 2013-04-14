@@ -173,6 +173,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           break;
       }
       draw_info->pointsize/=2.0;
+      status=GetMultilineTypeMetrics(image,draw_info,&metrics);
       width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
       image->columns=width;
     }
@@ -227,7 +228,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         if ((width >= (image->columns << 1)) || (height >= (image->rows << 1)))
           break;
       }
-      high=draw_info->pointsize/2.0;
+      high=draw_info->pointsize;
       for (low=high/2.0; (high-low) > 1.0; )
       {
         draw_info->pointsize=(low+high)/2.0;
