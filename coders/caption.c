@@ -174,6 +174,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           break;
       }
       draw_info->pointsize/=2.0;
+      status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
       width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
       image->columns=width;
     }
