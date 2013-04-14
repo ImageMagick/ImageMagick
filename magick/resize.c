@@ -1914,8 +1914,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagnifyImage() is a convenience method that scales an image proportionally
-%  to twice its size.
+%  MagnifyImage() doubles the size of the image with a pixel art scaling
+%  algorithm.
 %
 %  The format of the MagnifyImage method is:
 %
@@ -1930,17 +1930,209 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 */
 MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 {
+#define MagnifyImageTag  "Magnify/Image"
+
+  CacheView
+    *image_view,
+    *magnify_view;
+
   Image
     *magnify_image;
 
-  assert(image != (Image *) NULL);
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  /*
+    Initialize magnified image attributes.
+  */
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  magnify_image=ResizeImage(image,2*image->columns,2*image->rows,SplineFilter,
-    1.0,exception);
+  magnify_image=CloneImage(image,2*image->columns,2*image->rows,MagickTrue,
+    exception);
+  if (magnify_image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Magnify image.
+  */
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireVirtualCacheView(image,exception);
+  magnify_view=AcquireAuthenticCacheView(magnify_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,magnify_image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register IndexPacket
+      *restrict magnify_indexes;
+
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(magnify_view,0,2*y,magnify_image->columns,2,
+      exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    magnify_indexes=GetCacheViewAuthenticIndexQueue(magnify_view);
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      MagickRealType
+        intensity[9];
+
+      register const IndexPacket
+        *restrict indexes;
+
+      register const PixelPacket
+        *restrict p;
+
+      register PixelPacket
+        *restrict r;
+
+      register ssize_t
+        i;
+
+      /*
+        Magnify this row of pixels.
+      */
+      p=GetCacheViewVirtualPixels(image_view,x-1,y-1,3,3,exception);
+      if (p == (const PixelPacket *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      indexes=GetCacheViewVirtualIndexQueue(image_view);
+      for (i=0; i < 9; i++)
+        intensity[i]=GetPixelIntensity(image,p+i);
+      r=q;
+      if ((fabs(intensity[1]-intensity[7]) < MagickEpsilon) ||
+          (fabs(intensity[3]-intensity[5]) < MagickEpsilon))
+        {
+          /*
+            Clone center pixel.
+          */
+          *r=p[4];
+          r++;
+          *r=p[4];
+          r+=(magnify_image->columns-1);
+          *r=p[4];
+          r++;
+          *r=p[4];
+        }
+      else
+        {
+          /*
+            Selectively clone pixel.
+          */
+          if (fabs(intensity[1]-intensity[3]) < MagickEpsilon)
+            *r=p[3];
+          else
+            *r=p[4];
+          r++;
+          if (fabs(intensity[1]-intensity[5]) < MagickEpsilon)
+            *r=p[5];
+          else
+            *r=p[4];
+          r+=(magnify_image->columns-1);
+          if (fabs(intensity[3]-intensity[7]) < MagickEpsilon)
+            *r=p[3];
+          else
+            *r=p[4];
+          r++;
+          if (fabs(intensity[5]-intensity[7]) < MagickEpsilon)
+            *r=p[5];
+          else
+            *r=p[4];
+        }
+      if (indexes != (const IndexPacket *) NULL)
+        {
+          register IndexPacket
+            *r;
+
+          /*
+            Magnify the colormap indexes.
+          */
+          r=magnify_indexes;
+          if ((fabs(intensity[1]-intensity[7]) < MagickEpsilon) ||
+              (fabs(intensity[3]-intensity[5]) < MagickEpsilon))
+            {
+              /*
+                Clone center pixel.
+              */
+              *r=indexes[4];
+              r++;
+              *r=indexes[4];
+              r+=(magnify_image->columns-1);
+              *r=indexes[4];
+              r++;
+              *r=indexes[4];
+            }
+          else
+            {
+              /*
+                Selectively clone pixel.
+              */
+              if (fabs(intensity[1]-intensity[3]) < MagickEpsilon)
+                *r=indexes[3];
+              else
+                *r=indexes[4];
+              r++;
+              if (fabs(intensity[1]-intensity[5]) < MagickEpsilon)
+                *r=indexes[5];
+              else
+                *r=indexes[4];
+              r+=(magnify_image->columns-1);
+              if (fabs(intensity[3]-intensity[7]) < MagickEpsilon)
+                *r=indexes[3];
+              else
+                *r=indexes[4];
+              r++;
+              if (fabs(intensity[5]-intensity[7]) < MagickEpsilon)
+                *r=indexes[5];
+              else
+                *r=indexes[4];
+            }
+          magnify_indexes+=2;
+        }
+      q+=2;
+    }
+    if (SyncCacheViewAuthenticPixels(magnify_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_MagnifyImage)
+#endif
+        proceed=SetImageProgress(image,MagnifyImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  magnify_view=DestroyCacheView(magnify_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    magnify_image=DestroyImage(magnify_image);
   return(magnify_image);
 }
 
