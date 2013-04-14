@@ -251,8 +251,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       draw_info->pointsize--;
     }
   (void) CloneString(&draw_info->text,caption);
-  i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&caption,
-    exception);
+  i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&caption);
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
       InheritException(exception,&image->exception);
