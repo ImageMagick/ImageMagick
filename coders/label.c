@@ -131,27 +131,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   label=GetImageProperty(image,"label",exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=ConstantString(label);
-  status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-  if (image->columns == 0)
-    {
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-        -metrics.bounds.x1,metrics.ascent);
-      if (draw_info->gravity == UndefinedGravity)
-        (void) CloneString(&draw_info->geometry,geometry);
-      status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-      (void) status;
-      image->columns=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-    }
-  if (image->rows == 0)
-    {
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-        -metrics.bounds.x1,metrics.ascent);
-      if (draw_info->gravity == UndefinedGravity)
-        (void) CloneString(&draw_info->geometry,geometry);
-      status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-      image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-    }
-  if (image_info->pointsize == 0.0)
+  if (((image->columns == 0) || (image->rows == 0)) &&
+      (fabs(image_info->pointsize) < MagickEpsilon))
     {
       double
         high,
@@ -169,9 +150,11 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-        if ((width >= image->columns) && (height >= image->rows))
+        if (((image->columns != 0) && (width >= image->columns)) ||
+            ((image->rows != 0) && (height >= image->rows)))
           break;
-        if ((width >= (image->columns << 1)) || (height >= (image->rows << 1)))
+        if (((image->columns != 0) && (width >= (2*image->columns))) ||
+            ((image->rows != 0) && (height >= (2*image->rows))))
           break;
       }
       high=draw_info->pointsize/2.0;
@@ -185,7 +168,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-        if ((width <= image->columns) && (height <= image->rows))
+        if (((image->columns != 0) && (width < image->columns)) ||
+            ((image->rows != 0) && (height < image->rows)))
           low=draw_info->pointsize+1.0;
         else
           high=draw_info->pointsize-1.0;
@@ -199,7 +183,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-        if ((width <= image->columns) && (height <= image->rows))
+        if (((image->columns != 0) && (width < image->columns)) ||
+            ((image->rows != 0) && (height < image->rows)))
           break;
         draw_info->pointsize--;
       }
@@ -211,6 +196,15 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  if (image->columns == 0)
+    image->columns=(size_t) (metrics.width+draw_info->stroke_width+0.5);
+  if (image->columns == 0)
+    image->columns=(size_t) (draw_info->pointsize+draw_info->stroke_width+0.5);
+  if (image->rows == 0)
+    image->rows=(size_t) (metrics.ascent-metrics.descent+
+      draw_info->stroke_width+0.5);
+  if (image->rows == 0)
+    image->rows=(size_t) (draw_info->pointsize+draw_info->stroke_width+0.5);
   if (draw_info->gravity == UndefinedGravity)
     {
       (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
