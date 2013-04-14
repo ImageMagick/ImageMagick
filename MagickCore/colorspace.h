@@ -43,6 +43,7 @@ typedef enum
   Rec601YCbCrColorspace,
   Rec709YCbCrColorspace,
   RGBColorspace,
+  scRGBColorspace,
   sRGBColorspace,
   TransparentColorspace,
   XYZColorspace,
