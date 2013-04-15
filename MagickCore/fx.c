@@ -600,7 +600,6 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageType(clone_image,GrayscaleType,exception);
   edge_image=EdgeImage(clone_image,GetOptimalKernelWidth1D(radius,1.0),
     exception);
   clone_image=DestroyImage(clone_image);
@@ -612,7 +611,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
     return((Image *) NULL);
   (void) NormalizeImage(charcoal_image,exception);
   (void) NegateImage(charcoal_image,MagickFalse,exception);
-  (void) SetImageType(charcoal_image,GrayscaleType,exception);
+  (void) GrayscaleImage(charcoal_image,image->intensity,exception);
   return(charcoal_image);
 }
 
