@@ -1,3 +1,6 @@
+2013-04-15  6.8.4-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.4-10, SVN revision 11851.
+
 2013-04-11  6.8.4-10 Cristy  <quetzlzacatenango@image...>
   * Ensure -define jpeg:extent is resticted to at most 7 iterations (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23179).
