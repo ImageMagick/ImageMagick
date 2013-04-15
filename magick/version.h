@@ -28,13 +28,13 @@ extern "C" {
 #define MagickPackageName "ImageMagick"
 #define MagickCopyright  "Copyright (C) 1999-2013 ImageMagick Studio LLC"
 #define MagickSVNRevision  "10070"
-#define MagickLibVersion  0x684
-#define MagickLibVersionText  "6.8.4"
+#define MagickLibVersion  0x685
+#define MagickLibVersionText  "6.8.5"
 #define MagickLibVersionNumber  1,0,0
-#define MagickLibAddendum  "-10"
+#define MagickLibAddendum  "-0"
 #define MagickLibInterface  1
 #define MagickLibMinInterface  1
-#define MagickReleaseDate  "2013-04-13"
+#define MagickReleaseDate  "2013-04-15"
 #define MagickChangeDate   "20130411"
 #define MagickFeatures "DPC OpenMP"
 #define MagickDelegates "bzlib fontconfig freetype jng jp2 jpeg lcms lzma pango png ps tiff x xml zlib"
