@@ -2167,6 +2167,12 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
       intensity=MagickMin(MagickMin(red,green),blue);
       break;
     }
+    case MSPixelIntensityMethod:
+    {
+      intensity=(MagickRealType) (((double) red*red+green*green+blue*blue)/
+        (3.0*QuantumRange));
+      break;
+    }
     case Rec601LumaPixelIntensityMethod:
     {
       intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
@@ -2202,7 +2208,8 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
     }
     case RMSPixelIntensityMethod:
     {
-      intensity=(MagickRealType) sqrt((double) red*red+green*green+blue*blue);
+      intensity=(MagickRealType) (sqrt((double) red*red+green*green+blue*blue)/
+        sqrt(3.0));
       break;
     }
   }
