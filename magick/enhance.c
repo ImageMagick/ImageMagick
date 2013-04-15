@@ -2419,7 +2419,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         case MSPixelIntensityMethod:
         {
           intensity=(MagickRealType) (((double) red*red+green*green+
-            blue*blue)/3.0);
+            blue*blue)/(3.0*QuantumRange));
           break;
         }
         case Rec601LumaPixelIntensityMethod:
