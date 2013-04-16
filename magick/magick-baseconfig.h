@@ -332,6 +332,11 @@
 #define MAGICKCORE_HAVE_GMTIME_R 1
 #endif
 
+/* Compile with hugepage support */
+#ifndef MAGICKCORE_HAVE_HUGEPAGES
+#define MAGICKCORE_HAVE_HUGEPAGES 1
+#endif
+
 /* Define to 1 if the system has the type `intmax_t'. */
 #ifndef MAGICKCORE_HAVE_INTMAX_T
 #define MAGICKCORE_HAVE_INTMAX_T 1

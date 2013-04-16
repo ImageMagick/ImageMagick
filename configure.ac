@@ -663,6 +663,12 @@ fi
 # option to avoid confusing end users.
 AM_MAINTAINER_MODE
 
+# Enable hugepages support
+AC_ARG_ENABLE([hugepages],
+    [AC_HELP_STRING([--enable-hugepages],
+                    [enable 'huge pages' support])],
+    [enable_hugepages=$enableval],
+    [enable_hugepages='no'])
 
 # Enable ccmalloc memory debugging support
 AC_ARG_ENABLE([ccmalloc],
@@ -1420,6 +1426,13 @@ if test "$with_umem" != 'no'; then
 fi
 AM_CONDITIONAL(HasUMEM, test "$have_umem" = 'yes')
 AC_SUBST(UMEM_LIBS)
+
+#
+# Add support for 'huge pages' if requested
+#
+AS_IF([test "x$enable_hugepages" != "xno"],[
+  AC_DEFINE(HAVE_HUGEPAGES, 1, [Compile with hugepage support])
+])
 
 #
 # Add support for ccmalloc memory debugging library if requested
