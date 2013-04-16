@@ -730,7 +730,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       colorize_image=DestroyImage(colorize_image);
       return((Image *) NULL);
     }
- if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+ if ((IsGrayColorspace(image->colorspace) != MagickFalse) ||
       (IsPixelGray(&colorize) != MagickFalse))
     (void) SetImageColorspace(colorize_image,sRGBColorspace);
   if ((colorize_image->matte == MagickFalse) &&
