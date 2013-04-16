@@ -2154,6 +2154,9 @@ MagickExport unsigned char *MapBlob(int file,const MapMode mode,
   if (file == -1)
 #if defined(MAP_ANONYMOUS)
     flags|=MAP_ANONYMOUS;
+#if defined(MAGICKCORE_HAVE_HUGEPAGES) && defined(MAP_HUGETLB)
+    flags|=MAP_HUGETLB;
+#endif
 #else
     return((unsigned char *) NULL);
 #endif
