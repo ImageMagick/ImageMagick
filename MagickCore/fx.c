@@ -698,7 +698,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
       colorize_image=DestroyImage(colorize_image);
       return((Image *) NULL);
     }
-  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) ||
       (IsPixelInfoGray(colorize) != MagickFalse))
     (void) SetImageColorspace(colorize_image,sRGBColorspace,exception);
   if ((colorize_image->alpha_trait != BlendPixelTrait) &&
