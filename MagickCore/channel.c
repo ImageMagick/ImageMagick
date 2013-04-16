@@ -638,8 +638,8 @@ MagickExport Image *SeparateImage(const Image *image,
       separate_image=DestroyImage(separate_image);
       return((Image *) NULL);
     }
-  separate_image->alpha_trait=UndefinedPixelTrait;
   (void) SetImageColorspace(separate_image,GRAYColorspace,exception);
+  separate_image->alpha_trait=UndefinedPixelTrait;
   /*
     Separate image.
   */
@@ -686,19 +686,12 @@ MagickExport Image *SeparateImage(const Image *image,
       SetPixelChannel(separate_image,GrayPixelChannel,0,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        double
-          pixel;
-
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (GetChannelBit(channel_type,channel) == 0))
           continue;
-        pixel=p[i];
-        if (IssRGBColorspace(image->colorspace) != MagickFalse)
-          pixel=DecodePixelGamma(pixel);
-        SetPixelChannel(separate_image,GrayPixelChannel,ClampToQuantum(pixel),
-          q);
+        SetPixelChannel(separate_image,GrayPixelChannel,p[i],q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(separate_image);
