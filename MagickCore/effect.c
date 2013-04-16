@@ -264,7 +264,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
     if (kernel[i] == (MagickRealType *) NULL)
       break;
     normalize=0.0;
-    j=(ssize_t) (width-i)/2;
+    j=(ssize_t) (width-i-1)/2;
     k=0;
     for (v=(-j); v <= j; v++)
     {
@@ -276,11 +276,9 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         k++;
       }
     }
-    if (fabs(normalize) < MagickEpsilon)
-      normalize=MagickEpsilon;
-    normalize=PerceptibleReciprocal(normalize);
-    for (k=0; k < (j*j); k++)
-      kernel[i][k]=normalize*kernel[i][k];
+    kernel[i][(j-1)/2]+=(1.0-normalize);
+    if (sigma < MagickEpsilon)
+      kernel[i][(j-1)/2]=1.0;
   }
   if (i < (ssize_t) width)
     {
@@ -601,11 +599,9 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         k++;
       }
     }
-    if (fabs(normalize) < MagickEpsilon)
-      normalize=MagickEpsilon;
-    normalize=PerceptibleReciprocal(normalize);
-    for (k=0; k < (j*j); k++)
-      kernel[i][k]=normalize*kernel[i][k];
+    kernel[i][(k-1)/2]=(double) ((-2.0)*normalize);
+    if (sigma < MagickEpsilon)
+      kernel[i][(k-1)/2]=1.0;
   }
   if (i < (ssize_t) width)
     {
@@ -661,8 +657,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         center,
         j;
 
-      j=(ssize_t) ceil((double) width*QuantumScale*
-        GetPixelIntensity(edge_image,r)-0.5);
+      j=(ssize_t) ceil((double) width*(1.0-QuantumScale*
+        GetPixelIntensity(edge_image,r))-0.5);
       if (j < 0)
         j=0;
       else
