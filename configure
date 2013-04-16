@@ -1134,6 +1134,7 @@ enable_zero_configuration
 enable_hdri
 enable_assert
 enable_maintainer_mode
+enable_hugepages
 enable_ccmalloc
 enable_efence
 enable_prof
@@ -1875,6 +1876,7 @@ Optional Features:
   --enable-maintainer-mode
                           enable make rules and dependencies not useful (and
                           sometimes confusing) to the casual installer
+  --enable-hugepages      enable 'huge pages' support
   --enable-ccmalloc       enable 'ccmalloc' memory debug support
   --enable-efence         enable 'efence' memory debug support
   --enable-prof           enable 'prof' profiling support
@@ -3675,7 +3677,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=11804:11823
+MAGICK_SVN_REVISION=11838:11860M
 
 
 # Substitute library versioning
@@ -21055,6 +21057,15 @@ fi
 
 
 
+# Enable hugepages support
+# Check whether --enable-hugepages was given.
+if test "${enable_hugepages+set}" = set; then :
+  enableval=$enable_hugepages; enable_hugepages=$enableval
+else
+  enable_hugepages='no'
+fi
+
+
 # Enable ccmalloc memory debugging support
 # Check whether --enable-ccmalloc was given.
 if test "${enable_ccmalloc+set}" = set; then :
@@ -26816,6 +26827,17 @@ fi
             LIBS="$OLIBS"
         fi
     fi
+fi
+
+#
+# Add support for 'huge pages' if requested
+#
+if test "x$enable_hugepages" != "xno"; then :
+
+
+$as_echo "#define HAVE_HUGEPAGES 1" >>confdefs.h
+
+
 fi
 
 #
