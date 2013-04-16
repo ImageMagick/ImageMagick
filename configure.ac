@@ -656,6 +656,13 @@ fi
 # Don't emit "rebuild rules" for configure, Makefile.ins, etc.
 AM_MAINTAINER_MODE
 
+# Enable hugepages support
+AC_ARG_ENABLE([hugepages],
+    [AC_HELP_STRING([--enable-hugepages],
+                    [enable 'huge pages' support])],
+    [enable_hugepages=$enableval],
+    [enable_hugepages='no'])
+
 # Enable ccmalloc memory debugging support
 AC_ARG_ENABLE([ccmalloc],
     [AC_HELP_STRING([--enable-ccmalloc],
@@ -1438,6 +1445,13 @@ if test "$enable_ccmalloc" = 'yes'; then
         fi
     fi
 fi
+
+#
+# Add support for 'huge pages' if requested
+#
+AS_IF([test "x$enable_hugepages" != "xno"],[
+  AC_DEFINE(HAVE_HUGEPAGES, 1, [Compile with hugepage support])
+])
 
 #
 # Add support for efence memory debugging library if requested
