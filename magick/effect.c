@@ -249,11 +249,9 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
         k++;
       }
     }
-    if (fabs(normalize) < MagickEpsilon)
-      normalize=MagickEpsilon;
-    normalize=PerceptibleReciprocal(normalize);
-    for (k=0; k < (j*j); k++)
-      kernel[i][k]=normalize*kernel[i][k];
+    kernel[i][(k-1)/2]+=(1.0-normalize);
+    if (sigma < MagickEpsilon)
+      kernel[i][(k-1)/2]=1.0;
   }
   if (i < (ssize_t) width)
     {
@@ -561,7 +559,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
     if (kernel[i] == (double *) NULL)
       break;
     normalize=0.0;
-    j=(ssize_t) (width-i)/2;
+    j=(ssize_t) (width-i-1)/2;
     k=0;
     for (v=(-j); v <= j; v++)
     {
@@ -573,11 +571,9 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
         k++;
       }
     }
-    if (fabs(normalize) < MagickEpsilon)
-      normalize=MagickEpsilon;
-    normalize=PerceptibleReciprocal(normalize);
-    for (k=0; k < (j*j); k++)
-      kernel[i][k]=normalize*kernel[i][k];
+    kernel[i][(k-1)/2]=(double) ((-2.0)*normalize);
+    if (sigma < MagickEpsilon)
+      kernel[i][(k-1)/2]=1.0;
   }
   if (i < (ssize_t) width)
     {
@@ -649,7 +645,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
         v;
 
       gamma=0.0;
-      i=(ssize_t) ceil((double) width*(QuantumRange-QuantumScale*
+      i=(ssize_t) ceil((double) width*(1.0-QuantumScale*
         GetPixelIntensity(edge_image,r))-0.5);
       if (i < 0)
         i=0;
