@@ -1,3 +1,7 @@
+2013-04-16  6.8.5-0 Cristy  <quetzlzacatenango@image...>
+  * Don't modify channel values for -separate (reference
+   http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23193).
+
 2013-04-15  6.8.4-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-10, SVN revision 11851.
 
