@@ -3277,13 +3277,9 @@ MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
 
 static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
 {
-  cache_info->pixels=(Quantum *) NULL;
-  if (cache_info->length < MagickMaxBufferExtent)
-    {
-      cache_info->mapped=MagickFalse;
-      cache_info->pixels=(Quantum *) MagickAssumeAligned(AcquireAlignedMemory(1,
-        (size_t) cache_info->length));
-    }
+  cache_info->mapped=MagickFalse;
+  cache_info->pixels=(Quantum *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    (size_t) cache_info->length));
   if (cache_info->pixels == (Quantum *) NULL)
     {
       cache_info->mapped=MagickTrue;
