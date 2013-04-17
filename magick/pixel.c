@@ -116,7 +116,7 @@ MagickExport MagickPixelPacket *CloneMagickPixelPacket(
 %
 %  DecodePixelGamma() applies the expansive power-law nonlinearity to the pixel.
 %
-%  The format of the DecodePixelGammaImage method is:
+%  The format of the DecodePixelGamma method is:
 %
 %      MagickRealType DecodePixelGamma(const MagickRealType pixel)
 %
@@ -146,7 +146,7 @@ MagickExport MagickRealType DecodePixelGamma(const MagickRealType pixel)
 %
 %  EncodePixelGamma() cancels any nonlinearity in the pixel.
 %
-%  The format of the EncodePixelGammaImage method is:
+%  The format of the EncodePixelGamma method is:
 %
 %      MagickRealType EncodePixelGamma(const MagickRealType pixel)
 %
