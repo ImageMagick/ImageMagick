@@ -2310,6 +2310,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   LockSemaphoreInfo(ping_semaphore);
 #endif
 
+#if PNG_LIBPNG_VER >= 10400
+  /* Allow benign errors */
+  png_set_benign_errors(ping, 1);
+#endif
+
   /*
     Prepare PNG for reading.
   */
@@ -9319,6 +9324,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
 #ifdef PNG_SETJMP_NOT_THREAD_SAFE
   LockSemaphoreInfo(ping_semaphore);
+#endif
+
+#if PNG_LIBPNG_VER >= 10400
+  /* Allow benign errors */
+  png_set_benign_errors(ping, 1);
 #endif
 
   /*
