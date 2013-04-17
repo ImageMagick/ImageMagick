@@ -1788,6 +1788,7 @@ static void MagickPNGWarningHandler(png_struct *ping,png_const_charp message)
     message,"`%s'",image->filename);
 }
 
+
 #ifdef PNG_USER_MEM_SUPPORTED
 #if PNG_LIBPNG_VER >= 14000
 static png_voidp Magick_png_malloc(png_structp png_ptr,png_alloc_size_t size)
@@ -2271,6 +2272,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
 #ifdef PNG_SETJMP_NOT_THREAD_SAFE
   LockSemaphoreInfo(ping_semaphore);
+#endif
+
+#if PNG_LIBPNG_VER >= 10400
+  /* Allow benign errors */
+  png_set_benign_errors(ping, 1);
 #endif
 
   /*
@@ -9261,6 +9267,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
 #ifdef PNG_SETJMP_NOT_THREAD_SAFE
   LockSemaphoreInfo(ping_semaphore);
+#endif
+
+#if PNG_LIBPNG_VER >= 10400
+  /* Allow benign errors */
+  png_set_benign_errors(ping, 1);
 #endif
 
   /*
