@@ -25,6 +25,9 @@ extern "C" {
 #include "magick/memory_.h"
 #include "magick/nt-base.h"
 
+extern MagickPrivate MagickBooleanType
+  ShredFile(const char *);
+
 /*
   Windows UTF8 compatibility methods.
 */
