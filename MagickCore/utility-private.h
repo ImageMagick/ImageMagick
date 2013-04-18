@@ -31,7 +31,8 @@ extern MagickPrivate char
   **ListFiles(const char *,const char *,size_t *);
 
 extern MagickPrivate MagickBooleanType
-  GetExecutionPath(char *,const size_t);
+  GetExecutionPath(char *,const size_t),
+  ShredFile(const char *);
 
 extern MagickPrivate ssize_t
   GetMagickPageSize(void);

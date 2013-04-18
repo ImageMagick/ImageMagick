@@ -315,7 +315,7 @@ MagickPrivate void AsynchronousResourceComponentTerminus(void)
   path=(const char *) GetNextKeyInSplayTree(temporary_resources);
   while (path != (const char *) NULL)
   {
-    (void) remove_utf8(path);
+    (void) ShredFile(path);
     path=(const char *) GetNextKeyInSplayTree(temporary_resources);
   }
 }
@@ -347,7 +347,7 @@ MagickPrivate void AsynchronousResourceComponentTerminus(void)
 
 static void *DestroyTemporaryResources(void *temporary_resource)
 {
-  (void) remove_utf8((char *) temporary_resource);
+  (void) ShredFile((char *) temporary_resource);
   temporary_resource=DestroyString((char *) temporary_resource);
   return((void *) NULL);
 }
@@ -900,8 +900,8 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
     }
   (void) CopyMagickString(cache_path,path,MaxTextExtent);
   AppendImageFormat("cache",cache_path);
-  (void) remove_utf8(cache_path);
-  return(remove_utf8(path) == 0 ? MagickTrue : MagickFalse);
+  (void) ShredFile(cache_path);
+  return(ShredFile(path));
 }
 
 /*
