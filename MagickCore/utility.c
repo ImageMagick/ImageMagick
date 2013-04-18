@@ -1765,8 +1765,8 @@ MagickExport size_t MultilineCensus(const char *label)
 %
 %  ShredFile() overwrites the specified file with zeros or random data and then
 %  removes it.  The overwrite is optional and is only required to help keep
-%  the contents of the file private.  The first, the file is zeroed.  For
-%  other passes, random data is written.
+%  the contents of the file private.  On the first pass, the file is zeroed.
+%  For subsequent passes, random data is written.
 %
 %  The format of the ShredFile method is:
 %
@@ -1780,7 +1780,7 @@ MagickExport size_t MultilineCensus(const char *label)
 MagickPrivate MagickBooleanType ShredFile(const char *path)
 {
   char
-    *iterations;
+    *passes;
 
   ExceptionInfo
     *exception;
@@ -1804,12 +1804,12 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(MagickFalse);
   exception=AcquireExceptionInfo();
-  iterations=(char *) GetImageRegistry(StringRegistryType,"temporary-path",
+  passes=(char *) GetImageRegistry(StringRegistryType,"shred-passes",
     exception);
   exception=DestroyExceptionInfo(exception);
-  if (iterations == (char *) NULL)
-    iterations=GetEnvironmentValue("MAGICK_SHRED_FILE");
-  if (iterations == (char *) NULL)
+  if (passes == (char *) NULL)
+    passes=GetEnvironmentValue("MAGICK_SHRED_PASSES");
+  if (passes == (char *) NULL)
     {
       /*
         Don't shred the file, just remove it.
@@ -1830,7 +1830,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     quantum=(size_t) MagickMin((MagickSizeType) file_stats.st_size,
       MagickMaxBufferExtent);
   length=(MagickSizeType) file_stats.st_size;
-  for (i=0; i < StringToInteger(iterations); i++)
+  for (i=0; i < StringToInteger(passes); i++)
   {
     RandomInfo
       *random_info;
@@ -1870,7 +1870,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   status=remove_utf8(path);
   if (status == -1)
     return(MagickFalse);
-  return(i < StringToInteger(iterations) ? MagickFalse : MagickTrue);
+  return(i < StringToInteger(passes) ? MagickFalse : MagickTrue);
 }
 
 /*
