@@ -31,8 +31,12 @@ extern "C" {
 #define CacheAlign(size)  ((size) < CACHE_LINE_SIZE ? CACHE_LINE_SIZE : (size))
 
 #if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 6))
+#if !defined(__ICC)
 #define MagickAssumeAligned(address) \
-	__builtin_assume_aligned((address),CACHE_LINE_SIZE)
+  __builtin_assume_aligned((address),CACHE_LINE_SIZE)
+#else
+#define MagickAssumeAligned(address)  (address)
+#endif
 #else
 #define MagickAssumeAligned(address)  (address)
 #endif
