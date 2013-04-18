@@ -1835,7 +1835,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     RandomInfo
       *random_info;
 
-    register ssize_t
+    register MagickOffsetType
       j;
 
     ssize_t
@@ -1844,7 +1844,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     if (lseek(file,0,SEEK_SET) < 0)
       break;
     random_info=AcquireRandomInfo();
-    for (j=0; j < (ssize_t) length; j+=count)
+    for (j=0; j < (MagickOffsetType) length; j+=count)
     {
       StringInfo
         *key;
