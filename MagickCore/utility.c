@@ -1844,13 +1844,13 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     if (lseek(file,0,SEEK_SET) < 0)
       break;
     random_info=AcquireRandomInfo();
-    for (j=0; j < length; j+=count)
+    for (j=0; j < (ssize_t) length; j+=count)
     {
       StringInfo
         *key;
 
       key=GetRandomKey(random_info,quantum);
-      if (j == 0)
+      if (i == 0)
         ResetStringInfo(key);  /* zero on first pass */
       count=write(file,GetStringInfoDatum(key),(size_t)
         MagickMin(quantum,length-j));
