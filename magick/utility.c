@@ -51,6 +51,8 @@
 #include "magick/memory_.h"
 #include "magick/option.h"
 #include "magick/policy.h"
+#include "magick/random_.h"
+#include "magick/registry.h"
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
 #include "magick/signature-private.h"
@@ -1758,9 +1760,10 @@ MagickExport size_t MultilineCensus(const char *label)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ShredFile() first overwrites the specified file with random data and then
-%  removed it.  The overwrite is optional and is only required to help keep
-%  the contents of the file private.
+%  ShredFile() overwrites the specified file with zeros or random data and then
+%  removes it.  The overwrite is optional and is only required to help keep
+%  the contents of the file private.  The first, the file is zeroed.  For
+%  other passes, random data is written.
 %
 %  The format of the ShredFile method is:
 %
@@ -1773,15 +1776,98 @@ MagickExport size_t MultilineCensus(const char *label)
 */
 MagickPrivate MagickBooleanType ShredFile(const char *path)
 {
+  char
+    *iterations;
+
+  ExceptionInfo
+    *exception;
+
   int
+    file,
     status;
+
+  MagickSizeType
+    length;
+
+  register ssize_t
+    i;
+
+  size_t
+    quantum;
+
+  struct stat
+    file_stats;
 
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(MagickFalse);
+  exception=AcquireExceptionInfo();
+  iterations=(char *) GetImageRegistry(StringRegistryType,"temporary-path",
+    exception);
+  exception=DestroyExceptionInfo(exception);
+  if (iterations == (char *) NULL)
+    iterations=GetEnvironmentValue("MAGICK_SHRED_FILE");
+  if (iterations == (char *) NULL)
+    {
+      /*
+        Don't shred the file, just remove it.
+      */
+      status=remove_utf8(path);
+      if (status == -1)
+        return(MagickFalse);
+      return(MagickTrue);
+    }
+  file=open_utf8(path,O_WRONLY | O_EXCL | O_BINARY,S_MODE);
+  if (file == -1)
+    return(MagickFalse);
+  /*
+    Shred the file.
+  */
+  quantum=(size_t) MagickMaxBufferExtent;
+  if ((fstat(file,&file_stats) == 0) && (file_stats.st_size != 0))
+    quantum=(size_t) MagickMin((MagickSizeType) file_stats.st_size,
+      MagickMaxBufferExtent);
+  length=(MagickSizeType) file_stats.st_size;
+  for (i=0; i < StringToInteger(iterations); i++)
+  {
+    RandomInfo
+      *random_info;
+
+    register ssize_t
+      j;
+
+    ssize_t
+      count;
+
+    if (lseek(file,0,SEEK_SET) < 0)
+      break;
+    random_info=AcquireRandomInfo();
+    for (j=0; j < length; j+=count)
+    {
+      StringInfo
+        *key;
+
+      key=GetRandomKey(random_info,quantum);
+      if (j == 0)
+        ResetStringInfo(key);  /* zero on first pass */
+      count=write(file,GetStringInfoDatum(key),(size_t)
+        MagickMin(quantum,length-j));
+      key=DestroyStringInfo(key);
+      if (count <= 0)
+        {
+          count=0;
+          if (errno != EINTR)
+            break;
+        }
+    }
+    random_info=DestroyRandomInfo(random_info);
+    if (j < length)
+      break;
+  }
+  status=close(file);
   status=remove_utf8(path);
   if (status == -1)
     return(MagickFalse);
-  return(MagickTrue);
+  return(i < StringToInteger(iterations) ? MagickFalse : MagickTrue);
 }
 
 /*
