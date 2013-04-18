@@ -1412,7 +1412,7 @@ MagickPrivate char **GetPathComponents(const char *path,
 %
 %  The format of the IsPathAccessible method is:
 %
-%      MagickBooleanType IsPathAccessible(const char *filename)
+%      MagickBooleanType IsPathAccessible(const char *path)
 %
 %  A description of each parameter follows.
 %
@@ -1748,6 +1748,43 @@ MagickExport size_t MultilineCensus(const char *label)
     if (*label == '\n')
       number_lines++;
   return(number_lines);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S h r e a d F i l e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ShredFile() first overwrites the specified file with random data and then
+%  removed it.  The overwrite is optional and is only required to help keep
+%  the contents of the file private.
+%
+%  The format of the ShredFile method is:
+%
+%      MagickBooleanType ShredFile(const char *path)
+%
+%  A description of each parameter follows.
+%
+%    o path:  Specifies a path to a file.
+%
+*/
+MagickPrivate MagickBooleanType ShredFile(const char *path)
+{
+  int
+    status;
+
+  if ((path == (const char *) NULL) || (*path == '\0'))
+    return(MagickFalse);
+  status=remove_utf8(path);
+  if (status == -1)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 /*
