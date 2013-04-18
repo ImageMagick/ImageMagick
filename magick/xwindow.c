@@ -5615,11 +5615,11 @@ MagickExport MagickBooleanType XMakeImage(Display *display,
   if (window->shared_memory == MagickFalse)
     {
       if (ximage->format != XYBitmap)
-        ximage->data=(char *) AcquireQuantumMemory((size_t)
-          ximage->bytes_per_line,(size_t) ximage->height);
+        ximage->data=(char *) malloc((size_t) ximage->bytes_per_line*
+          ximage->height);
       else
-        ximage->data=(char *) AcquireQuantumMemory((size_t)
-          ximage->bytes_per_line*ximage->depth,(size_t) ximage->height);
+        ximage->data=(char *) malloc((size_t) ximage->bytes_per_line*
+          ximage->depth*ximage->height);
     }
   if (ximage->data == (char *) NULL)
     {
@@ -5697,9 +5697,9 @@ MagickExport MagickBooleanType XMakeImage(Display *display,
             /*
               Allocate matte image pixel data.
             */
-            matte_image->data=(char *) AcquireQuantumMemory((size_t)
-              matte_image->bytes_per_line*matte_image->depth,
-              (size_t) matte_image->height);
+            matte_image->data=(char *) malloc((size_t)
+              matte_image->bytes_per_line*matte_image->depth*
+              matte_image->height);
             if (matte_image->data == (char *) NULL)
               {
                 XDestroyImage(matte_image);
