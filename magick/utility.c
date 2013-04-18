@@ -1802,8 +1802,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(MagickFalse);
   exception=AcquireExceptionInfo();
-  passes=(char *) GetImageRegistry(StringRegistryType,"shred-passes",
-    exception);
+  passes=(char *) GetImageRegistry(StringRegistryType,"shred-passes",exception);
   exception=DestroyExceptionInfo(exception);
   if (passes == (char *) NULL)
     passes=GetEnvironmentValue("MAGICK_SHRED_PASSES");
@@ -1819,7 +1818,13 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     }
   file=open_utf8(path,O_WRONLY | O_EXCL | O_BINARY,S_MODE);
   if (file == -1)
-    return(MagickFalse);
+    {
+      /*
+        Don't shred the file, just remove it.
+      */
+      status=remove_utf8(path);
+      return(MagickFalse);
+    }
   /*
     Shred the file.
   */
@@ -1868,7 +1873,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   status=remove_utf8(path);
   if (status == -1)
     return(MagickFalse);
-  return(i < StringToInteger(passes) ? MagickFalse : MagickTrue);
+  return(i < (ssize_t) StringToInteger(passes) ? MagickFalse : MagickTrue);
 }
 
 /*
