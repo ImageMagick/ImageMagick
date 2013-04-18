@@ -458,7 +458,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 #endif
     if (file != -1)
       (void) close(file);
-    (void) removbe_utf8(filename);
+    (void) remove_utf8(filename);
     SetStringInfoLength(chaos,strlen(filename));
     SetStringInfoDatum(chaos,(unsigned char *) filename);
     ConcatenateStringInfo(entropy,chaos);
