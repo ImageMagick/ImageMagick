@@ -1830,7 +1830,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     quantum=(size_t) MagickMin((MagickSizeType) file_stats.st_size,
       MagickMaxBufferExtent);
   length=(MagickSizeType) file_stats.st_size;
-  for (i=0; i < StringToInteger(passes); i++)
+  for (i=0; i < (ssize_t) StringToInteger(passes); i++)
   {
     RandomInfo
       *random_info;
