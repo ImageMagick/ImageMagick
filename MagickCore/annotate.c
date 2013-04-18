@@ -1890,9 +1890,8 @@ static MagickBooleanType RenderPostscript(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickPrivate MagickBooleanType RenderX11(Image *image,
-  const DrawInfo *draw_info,const PointInfo *offset,TypeMetric *metrics,
-  ExceptionInfo *exception)
+static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
+  const PointInfo *offset,TypeMetric *metrics,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
