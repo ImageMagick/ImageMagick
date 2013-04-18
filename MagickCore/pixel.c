@@ -479,7 +479,7 @@ MagickExport MagickRealType EncodePixelGamma(const MagickRealType pixel)
   if (pixel <= (0.0031306684425005883*QuantumRange))
     return(12.92f*pixel);
   return((MagickRealType) QuantumRange*(1.055*EncodeGamma((double) QuantumScale*
-    pixel-0.055)));
+    pixel)-0.055));
 }
 
 /*
@@ -4890,8 +4890,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
             x_offset--;
             y_offset--;
           }
-      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,(size_t) count,
-        (size_t) count,exception);
+      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,(size_t) count,(size_t)
+        count,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
