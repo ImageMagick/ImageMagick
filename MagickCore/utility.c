@@ -149,7 +149,8 @@ MagickExport MagickBooleanType AcquireUniqueFilename(char *path)
 %
 */
 
-static inline size_t MagickMin(const size_t x,const size_t y)
+static inline MagickSizeType MagickMin(const MagickSizeType x,
+  const MagickSizeType y)
 {
   if (x < y)
     return(x);
@@ -212,7 +213,8 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
     }
   quantum=(size_t) MagickMaxBufferExtent;
   if ((fstat(source_file,&attributes) == 0) && (attributes.st_size != 0))
-    quantum=MagickMin((size_t) attributes.st_size,MagickMaxBufferExtent);
+    quantum=(size_t) MagickMin((size_t) attributes.st_size,
+      MagickMaxBufferExtent);
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     {
@@ -1868,7 +1870,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
         }
     }
     random_info=DestroyRandomInfo(random_info);
-    if (j < length)
+    if (j < (MagickOffsetType) length)
       break;
   }
   status=close(file);
