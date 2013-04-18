@@ -2440,8 +2440,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         {
           bzip_info.next_in=(char *) pixels;
           bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
-          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,exception);
+          (void) ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,quantum_type,pixels,exception);
           do
           {
             int
@@ -2468,8 +2468,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         {
           lzma_info.next_in=pixels;
           lzma_info.avail_in=packet_size*image->columns;
-          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,exception);
+          (void) ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,quantum_type,pixels,exception);
           do
           {
             int
@@ -2496,8 +2496,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         {
           zip_info.next_in=pixels;
           zip_info.avail_in=(uInt) (packet_size*image->columns);
-          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,exception);
+          (void) ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,quantum_type,pixels,exception);
           do
           {
             int
@@ -2543,8 +2543,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         }
         default:
         {
-          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,exception);
+          (void) ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,quantum_type,pixels,exception);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
           break;
         }
