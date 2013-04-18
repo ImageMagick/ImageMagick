@@ -120,7 +120,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/MedianFilter.miff', 'Med
 testFilterCompare('input.miff',  q//, 'reference/filter/Minify.miff', 'Minify', q//, 0.00001, 0.004);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Modulate.miff', 'Modulate', q/brightness=>110,saturation=>110,hue=>110/, 0.005, 0.5);
+testFilterCompare('input.miff',  q//, 'reference/filter/Modulate.miff', 'Modulate', q/brightness=>110,saturation=>110,hue=>110/, 0.05, 0.5);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/QuantizeMono.miff', 'Quantize', q/colors=>256/, 0.2, 0.7);
