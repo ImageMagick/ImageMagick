@@ -3267,7 +3267,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(implode_view,0,y,implode_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -5084,7 +5084,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(swirl_view,0,y,swirl_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
