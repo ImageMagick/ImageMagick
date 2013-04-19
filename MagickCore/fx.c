@@ -3180,7 +3180,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 
   CacheView
     *image_view,
-    *implode_view;
+    *implode_view,
+    *interpolate_view;
 
   Image
     *implode_image;
@@ -3243,6 +3244,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   status=MagickTrue;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
+  interpolate_view=AcquireVirtualCacheView(image,exception);
   implode_view=AcquireAuthenticCacheView(implode_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -3316,9 +3318,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           if (distance > 0.0)
             factor=pow(sin((double) (MagickPI*sqrt((double) distance)/radius/
               2)),-amount);
-          status=InterpolatePixelChannels(image,image_view,implode_image,method,
-            (double) (factor*delta.x/scale.x+center.x),(double) (factor*delta.y/
-            scale.y+center.y),q,exception);
+          status=InterpolatePixelChannels(image,interpolate_view,implode_image,
+            method,(double) (factor*delta.x/scale.x+center.x),(double) (factor*
+            delta.y/scale.y+center.y),q,exception);
         }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(implode_image);
@@ -3339,6 +3341,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       }
   }
   implode_view=DestroyCacheView(implode_view);
+  interpolate_view=DestroyCacheView(interpolate_view);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     implode_image=DestroyImage(implode_image);
@@ -5000,6 +5003,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 
   CacheView
     *image_view,
+    *interpolate_view,
     *swirl_view;
 
   Image
@@ -5060,6 +5064,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   status=MagickTrue;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
+  interpolate_view=AcquireVirtualCacheView(image,exception);
   swirl_view=AcquireAuthenticCacheView(swirl_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -5135,8 +5140,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           factor=1.0-sqrt((double) distance)/radius;
           sine=sin((double) (degrees*factor*factor));
           cosine=cos((double) (degrees*factor*factor));
-          status=InterpolatePixelChannels(image,image_view,swirl_image,method,
-            ((cosine*delta.x-sine*delta.y)/scale.x+center.x),(double)
+          status=InterpolatePixelChannels(image,interpolate_view,swirl_image,
+            method,((cosine*delta.x-sine*delta.y)/scale.x+center.x),(double)
             ((sine*delta.x+cosine*delta.y)/scale.y+center.y),q,exception);
         }
       p+=GetPixelChannels(image);
@@ -5158,6 +5163,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       }
   }
   swirl_view=DestroyCacheView(swirl_view);
+  interpolate_view=DestroyCacheView(interpolate_view);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     swirl_image=DestroyImage(swirl_image);
