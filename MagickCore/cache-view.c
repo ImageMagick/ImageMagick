@@ -714,7 +714,7 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
     id = GetOpenMPThreadId();
 
   Quantum
-    *p;
+    *q;
 
   register ssize_t
     i;
@@ -723,9 +723,9 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
   assert(cache_view->signature == MagickSignature);
   assert(id < (int) cache_view->number_threads);
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
-  p=GetAuthenticPixelCacheNexus(cache_view->image,x,y,1,1,
+  q=GetAuthenticPixelCacheNexus(cache_view->image,x,y,1,1,
     cache_view->nexus_info[id],exception);
-  if (p == (const Quantum *) NULL)
+  if (q == (const Quantum *) NULL)
     {
       PixelInfo
         background_color;
@@ -741,7 +741,7 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
   for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
   {
     PixelChannel channel=GetPixelChannelChannel(cache_view->image,i);
-    pixel[channel]=p[i];
+    pixel[channel]=q[i];
   }
   return(MagickTrue);
 }
