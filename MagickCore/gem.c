@@ -822,7 +822,7 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t R G B a b T o L C H                                         %
+%   C o n v e r t R G B T o L C H a b                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -882,7 +882,7 @@ MagickPrivate void ConvertRGBToLCHab(const double red,const double green,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t R G B u v T o L C H                                         %
+%   C o n v e r t R G B T o L C H u v                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
