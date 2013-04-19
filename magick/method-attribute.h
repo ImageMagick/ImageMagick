@@ -109,15 +109,15 @@ extern "C" {
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
-#  define magick_aligned(x)  __attribute__((aligned(x)))
+#  define magick_aligned(x,y)  x __attribute__((aligned(y)))
 #  define magick_attribute  __attribute__
 #  define magick_unused(x)  magick_unused_ ## x __attribute__((unused))
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
-#  define magick_aligned(x)  __declspec(align(x))
+#  define magick_aligned(x,y)  __declspec(align(y)) x
 #  define magick_attribute(x)  /* nothing */
 #  define magick_unused(x) x
 #else
-#  define magick_aligned(x)  /* nothing */
+#  define magick_aligned(x,y)  /* nothing */
 #  define magick_attribute(x)  /* nothing */
 #  define magick_unused(x) x
 #endif
