@@ -4699,7 +4699,7 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
         }
     }
   else
-    if (nexus_info->length != length)
+    if (nexus_info->length < length)
       {
         RelinquishCacheNexusPixels(nexus_info);
         nexus_info->length=length;
