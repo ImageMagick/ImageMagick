@@ -1179,7 +1179,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheIndexes(
 %
 %      MagickOffsetType ReadDistributePixelCachePixels(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
-%        const MagickSizeType length,unsigned char *pixels)
+%        const MagickSizeType length,unsigned char *restrict pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1196,7 +1196,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheIndexes(
 */
 MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   DistributeCacheInfo *server_info,const RectangleInfo *region,
-  const MagickSizeType length,unsigned char *pixels)
+  const MagickSizeType length,unsigned char *restrict pixels)
 {
   MagickOffsetType
     count;
@@ -1386,7 +1386,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheIndexes(
 %
 %      MagickBooleanType WriteDistributePixelCachePixels(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
-%        const MagickSizeType length,const unsigned char *pixels)
+%        const MagickSizeType length,const unsigned char *restrict pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1403,7 +1403,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheIndexes(
 */
 MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   DistributeCacheInfo *server_info,const RectangleInfo *region,
-  const MagickSizeType length,const unsigned char *pixels)
+  const MagickSizeType length,const unsigned char *restrict pixels)
 {
   MagickOffsetType
     count;
