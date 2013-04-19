@@ -925,8 +925,8 @@ MagickExport void ConvertRGBToLCHuv(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
   ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
-  C=hypot(u,v);
-  H=180.0*atan2(v,u)/MagickPI/360.0;
+  C=hypot(3.54*u-1.34,2.62*v-1.4);
+  H=180.0*atan2(2.62*v-1.4,3.54*u-1.34)/MagickPI/360.0;
   if (H < 0.0)
     H+=1.0;
   if (H >= 1.0)
