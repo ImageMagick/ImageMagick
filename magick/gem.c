@@ -510,8 +510,8 @@ MagickExport void ConvertLCHuvToRGB(const double luma,const double chroma,
   L=luma;
   C=chroma;
   H=hue;
-  u=C*cos(360.0*H*MagickPI/180.0)+(134.0)/354.0;
-  v=C*sin(360.0*H*MagickPI/180.0)+(140.0)/262.0;
+  u=C*cos(360.0*H*MagickPI/180.0)+(134.0/354.0);
+  v=C*sin(360.0*H*MagickPI/180.0)+(140.0/262.0);
   ConvertLuvToXYZ(L,u,v,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
@@ -870,9 +870,9 @@ MagickExport void ConvertRGBToLCHab(const Quantum red,const Quantum green,
     H+=1.0;
   if (H >= 1.0)
     H-=1.0;
-  *hue=H;
-  *chroma=C;
   *luma=L;
+  *chroma=C;
+  *hue=H;
 }
 
 /*
@@ -930,9 +930,9 @@ MagickExport void ConvertRGBToLCHuv(const Quantum red,const Quantum green,
     H+=1.0;
   if (H >= 1.0)
     H-=1.0;
-  *hue=H;
-  *chroma=C;
   *luma=L;
+  *chroma=C;
+  *hue=H;
 }
 
 /*
@@ -957,7 +957,7 @@ MagickExport void ConvertRGBToLCHuv(const Quantum red,const Quantum green,
 %
 %  A description of each parameter follows:
 %
-%    o expansion: Method ExpandAffine returns the affine's expansion factor.
+%    o expansion: ExpandAffine returns the affine's expansion factor.
 %
 %    o affine: A pointer the affine transform of type AffineMatrix.
 %
