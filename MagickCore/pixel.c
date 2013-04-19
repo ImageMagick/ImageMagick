@@ -4890,8 +4890,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
             x_offset--;
             y_offset--;
           }
-      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,(size_t) count,(size_t)
-        count,exception);
+      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,(size_t) count,
+        (size_t) count,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
