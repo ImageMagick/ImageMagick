@@ -3258,9 +3258,6 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     const int
       id = GetOpenMPThreadId();
 
-    register const Quantum
-      *restrict p;
-
     register Quantum
       *restrict q;
 
@@ -3269,10 +3266,9 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(spread_view,0,y,spread_image->columns,1,
       exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
