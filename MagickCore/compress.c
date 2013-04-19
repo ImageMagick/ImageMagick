@@ -905,7 +905,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
 %  The format of the LZWEncodeImage method is:
 %
 %      MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
-%        unsigned char *pixels,ExceptionInfo *exception)
+%        unsigned char *restrict pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -920,7 +920,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
 %
 */
 MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
-  unsigned char *pixels,ExceptionInfo *exception)
+  unsigned char *restrict pixels,ExceptionInfo *exception)
 {
 #define LZWClr  256UL  /* Clear Table Marker */
 #define LZWEod  257UL  /* End of Data marker */
@@ -1069,7 +1069,7 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
 %  The format of the PackbitsEncodeImage method is:
 %
 %      MagickBooleanType PackbitsEncodeImage(Image *image,const size_t length,
-%        unsigned char *pixels)
+%        unsigned char *restrict pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1082,7 +1082,7 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
 %
 */
 MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
-  const size_t length,unsigned char *pixels,ExceptionInfo *exception)
+  const size_t length,unsigned char *restrict pixels,ExceptionInfo *exception)
 {
   int
     count;
@@ -1204,7 +1204,7 @@ MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
 %  The format of the ZLIBEncodeImage method is:
 %
 %      MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
-%        unsigned char *pixels,ExceptionInfo *exception)
+%        unsigned char *restrict pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1234,7 +1234,7 @@ static void RelinquishZIPMemory(voidpf context,voidpf memory)
 }
 
 MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
-  unsigned char *pixels,ExceptionInfo *exception)
+  unsigned char *restrict pixels,ExceptionInfo *exception)
 {
   int
     status;
