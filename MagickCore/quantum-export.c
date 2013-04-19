@@ -91,7 +91,7 @@
 %
 %      size_t ExportQuantumPixels(const Image *image,CacheView *image_view,
 %        QuantumInfo *quantum_info,const QuantumType quantum_type,
-%        unsigned char *pixels,ExceptionInfo *exception)
+%        unsigned char *restrict pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -111,7 +111,7 @@
 */
 
 static inline unsigned char *PopDoublePixel(QuantumInfo *quantum_info,
-  const double pixel,unsigned char *pixels)
+  const double pixel,unsigned char *restrict pixels)
 {
   double
     *p;
@@ -145,7 +145,7 @@ static inline unsigned char *PopDoublePixel(QuantumInfo *quantum_info,
 }
 
 static inline unsigned char *PopFloatPixel(QuantumInfo *quantum_info,
-  const float pixel,unsigned char *pixels)
+  const float pixel,unsigned char *restrict pixels)
 {
   float
     *p;
@@ -172,7 +172,7 @@ static inline unsigned char *PopFloatPixel(QuantumInfo *quantum_info,
 }
 
 static inline unsigned char *PopQuantumPixel(QuantumInfo *quantum_info,
-  const QuantumAny pixel,unsigned char *pixels)
+  const QuantumAny pixel,unsigned char *restrict pixels)
 {
   register ssize_t
     i;
@@ -203,7 +203,7 @@ static inline unsigned char *PopQuantumPixel(QuantumInfo *quantum_info,
 }
 
 static inline unsigned char *PopQuantumLongPixel(QuantumInfo *quantum_info,
-  const size_t pixel,unsigned char *pixels)
+  const size_t pixel,unsigned char *restrict pixels)
 {
   register ssize_t
     i;
@@ -3183,7 +3183,8 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
 
 MagickExport size_t ExportQuantumPixels(const Image *image,
   CacheView *image_view,QuantumInfo *quantum_info,
-  const QuantumType quantum_type,unsigned char *pixels,ExceptionInfo *exception)
+  const QuantumType quantum_type,unsigned char *restrict pixels,
+  ExceptionInfo *exception)
 {
   MagickSizeType
     number_pixels;

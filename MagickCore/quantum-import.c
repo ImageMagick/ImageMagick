@@ -92,7 +92,7 @@
 %
 %      size_t ImportQuantumPixels(const Image *image,CacheView *image_view,
 %        QuantumInfo *quantum_info,const QuantumType quantum_type,
-%        const unsigned char *pixels,ExceptionInfo *exception)
+%        const unsigned char *restrict pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -121,7 +121,7 @@ static inline Quantum PushColormapIndex(const Image *image,const size_t index,
 }
 
 static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
-  const unsigned char *pixels,double *pixel)
+  const unsigned char *restrict pixels,double *pixel)
 {
   double
     *p;
@@ -161,7 +161,7 @@ static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
 }
 
 static inline const unsigned char *PushFloatPixel(QuantumInfo *quantum_info,
-  const unsigned char *pixels,float *pixel)
+  const unsigned char *restrict pixels,float *pixel)
 {
   float
     *p;
@@ -193,7 +193,7 @@ static inline const unsigned char *PushFloatPixel(QuantumInfo *quantum_info,
 }
 
 static inline const unsigned char *PushQuantumPixel(QuantumInfo *quantum_info,
-  const unsigned char *pixels,unsigned int *quantum)
+  const unsigned char *restrict pixels,unsigned int *quantum)
 {
   register ssize_t
     i;
@@ -222,7 +222,8 @@ static inline const unsigned char *PushQuantumPixel(QuantumInfo *quantum_info,
 }
 
 static inline const unsigned char *PushQuantumLongPixel(
-  QuantumInfo *quantum_info,const unsigned char *pixels,unsigned int *quantum)
+  QuantumInfo *quantum_info,const unsigned char *restrict pixels,
+  unsigned int *quantum)
 {
   register ssize_t
     i;
@@ -3414,7 +3415,7 @@ static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
 
 MagickExport size_t ImportQuantumPixels(const Image *image,
   CacheView *image_view,QuantumInfo *quantum_info,
-  const QuantumType quantum_type,const unsigned char *pixels,
+  const QuantumType quantum_type,const unsigned char *restrict pixels,
   ExceptionInfo *exception)
 {
   MagickSizeType
