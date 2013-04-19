@@ -867,13 +867,13 @@ MagickPrivate void ConvertRGBToLCHab(const double red,const double green,
   assert(hue != (double *) NULL);
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
   ConvertXYZToLab(X,Y,Z,&L,&a,&b);
-  C=hypot(a,b);
-  H=180.0*atan2(b,a)/MagickPI/360.0;
+  C=hypot(255.0*(a-0.5)/500.0,255.0*(b-0.5)/200.0);
+  H=180.0*atan2(255.0*(b-0.5)/200.0,255.0*(a-0.5)/500.0)/MagickPI/360.0;
   if (H < 0.0)
     H+=1.0;
   if (H >= 1.0)
     H-=1.0;
-  *luma=L;
+  *luma=(100.0*L+16.0)/116.0;
   *chroma=C;
   *hue=H;
 }
