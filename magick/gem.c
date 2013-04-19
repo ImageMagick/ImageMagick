@@ -871,7 +871,7 @@ MagickExport void ConvertRGBToLCHab(const Quantum red,const Quantum green,
     H+=1.0;
   if (H >= 1.0)
     H-=1.0;
-  *luma=(100.0*L+16.0)/116.0
+  *luma=(100.0*L+16.0)/116.0;
   *chroma=C;
   *hue=H;
 }
