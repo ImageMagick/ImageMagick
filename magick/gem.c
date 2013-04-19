@@ -455,9 +455,10 @@ MagickExport void ConvertLCHabToRGB(const double luma,const double chroma,
   L=luma;
   C=chroma;
   H=hue;
-  a=C*cos(360.0*H*MagickPI/180.0)+0.5;
-  b=C*sin(360.0*H*MagickPI/180.0)+0.5;
-  ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
+  a=C*cos(360.0*H*MagickPI/180.0);
+  b=C*sin(360.0*H*MagickPI/180.0);
+  ConvertLabToXYZ(((116.0*L)-16.0)/100.0,(500.0*a)/255.0+0.5,(200.0*b)/255.0+
+    0.5,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -512,7 +513,7 @@ MagickExport void ConvertLCHuvToRGB(const double luma,const double chroma,
   H=hue;
   u=C*cos(360.0*H*MagickPI/180.0)+(134.0/354.0);
   v=C*sin(360.0*H*MagickPI/180.0)+(140.0/262.0);
-  ConvertLuvToXYZ(L,u,v,&X,&Y,&Z);
+  ConvertLuvToXYZ(L,(u+1.34)/3.54,v+1.4/2.62,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
