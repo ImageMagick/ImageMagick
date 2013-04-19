@@ -959,7 +959,7 @@ MagickPrivate void ConvertRGBToLCHuv(const double red,const double green,
 %
 %  A description of each parameter follows:
 %
-%    o expansion: Method ExpandAffine returns the affine's expansion factor.
+%    o expansion: ExpandAffine returns the affine's expansion factor.
 %
 %    o affine: A pointer the affine transform of type AffineMatrix.
 %
@@ -1129,8 +1129,8 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
 %
 %  A description of each parameter follows:
 %
-%    o width: Method GetOptimalKernelWidth returns the optimal width of
-%      a convolution kernel.
+%    o width: GetOptimalKernelWidth returns the optimal width of a
+%      convolution kernel.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
