@@ -1251,7 +1251,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Initialize YCbCr tables (ITU-R BT.601):
 
-          Y =  0.298839f0*R+0.586811f0*G+0.114350f0*B
+          Y =  0.2988390*R+0.5868110*G+0.1143500*B
           Cb= -0.1687367*R-0.3312640*G+0.5000000*B
           Cr=  0.5000000*R-0.4186880*G-0.0813120*B
 
@@ -1386,7 +1386,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Initialize YPbPr tables (ITU-R BT.601):
 
-          Y =  0.298839f0*R+0.586811f0*G+0.114350f0*B
+          Y =  0.2988390*R+0.5868110*G+0.1143500*B
           Pb= -0.1687367*R-0.3312640*G+0.5000000*B
           Pr=  0.5000000*R-0.4186880*G-0.0813120*B
 
@@ -1418,7 +1418,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Initialize YUV tables:
 
-          Y =  0.298839f*R+0.586811f*G+0.114350f*B
+          Y =  0.298839*R+0.586811*G+0.114350*B
           U = -0.147130*R-0.288860*G+0.436000*B
           V =  0.615000*R-0.514990*G-0.100010*B
 
