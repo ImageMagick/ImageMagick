@@ -1160,7 +1160,7 @@ MagickExport size_t GetOptimalKernelWidth1D(const double radius,
   if (gamma <= MagickEpsilon)
     return(3UL);
   alpha=PerceptibleReciprocal(2.0*gamma*gamma);
-  beta=(double) PerceptibleReciprocal(MagickSQ2PI*gamma);
+  beta=(double) PerceptibleReciprocal((double) MagickSQ2PI*gamma);
   for (width=5; ; )
   {
     normalize=0.0;
@@ -1200,7 +1200,7 @@ MagickExport size_t GetOptimalKernelWidth2D(const double radius,
   if (gamma <= MagickEpsilon)
     return(3UL);
   alpha=PerceptibleReciprocal(2.0*gamma*gamma);
-  beta=(double) PerceptibleReciprocal(Magick2PI*gamma*gamma);
+  beta=(double) PerceptibleReciprocal((double) Magick2PI*gamma*gamma);
   for (width=5; ; )
   {
     normalize=0.0;
