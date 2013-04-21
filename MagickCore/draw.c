@@ -4148,7 +4148,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       ((IsPixelInfoGray(&draw_info->fill) == MagickFalse) ||
        (IsPixelInfoGray(&draw_info->stroke) == MagickFalse)))
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   status=MagickTrue;
   x=(ssize_t) ceil(primitive_info->point.x-0.5);
   y=(ssize_t) ceil(primitive_info->point.y-0.5);

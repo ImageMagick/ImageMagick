@@ -4267,7 +4267,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(clone_image,sRGBColorspace,exception);
+    (void) SetImageColorspace(clone_image,sRGBColorspace,exception);
   (void) SetImageVirtualPixelMethod(clone_image,TransparentVirtualPixelMethod,
     exception);
   border_info.width=(size_t) floor(2.0*sigma+0.5);
@@ -4563,7 +4563,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   if (image->storage_class == PseudoClass)
     {
       register ssize_t
