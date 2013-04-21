@@ -2375,29 +2375,33 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       table=GetQuantizationTable(option,"0",&image->exception);
       if (table != (QuantizationTable *) NULL)
         {
-          jpeg_add_quant_table(&jpeg_info,0,table->levels,jpeg_quality_scaling(
-            quality),0);
+          for (i=0; i < MAX_COMPONENTS; i++)
+            jpeg_add_quant_table(&jpeg_info,i,table->levels,
+              jpeg_quality_scaling(quality),0);
           table=DestroyQuantizationTable(table);
         }
       table=GetQuantizationTable(option,"1",&image->exception);
       if (table != (QuantizationTable *) NULL)
         {
-          jpeg_add_quant_table(&jpeg_info,1,table->levels,jpeg_quality_scaling(
-            quality),0);
+          for (i=1; i < MAX_COMPONENTS; i++)
+            jpeg_add_quant_table(&jpeg_info,i,table->levels,
+              jpeg_quality_scaling(quality),0);
           table=DestroyQuantizationTable(table);
         }
       table=GetQuantizationTable(option,"2",&image->exception);
       if (table != (QuantizationTable *) NULL)
         {
-          jpeg_add_quant_table(&jpeg_info,2,table->levels,jpeg_quality_scaling(
-            quality),0);
+          for (i=2; i < MAX_COMPONENTS; i++)
+            jpeg_add_quant_table(&jpeg_info,i,table->levels,
+              jpeg_quality_scaling(quality),0);
           table=DestroyQuantizationTable(table);
         }
       table=GetQuantizationTable(option,"3",&image->exception);
       if (table != (QuantizationTable *) NULL)
         {
-          jpeg_add_quant_table(&jpeg_info,3,table->levels,jpeg_quality_scaling(
-            quality),0);
+          for (i=3; i < MAX_COMPONENTS; i++)
+            jpeg_add_quant_table(&jpeg_info,i,table->levels,
+              jpeg_quality_scaling(quality),0);
           table=DestroyQuantizationTable(table);
         }
     }
