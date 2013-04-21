@@ -327,7 +327,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
     return(MagickFalse);
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsGrayColorspace(clut_image->colorspace) == MagickFalse))
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*clut_map));
   if (clut_map == (PixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -1951,14 +1951,14 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
     case Rec601LuminancePixelIntensityMethod:
     case Rec709LuminancePixelIntensityMethod:
     {
-      (void) TransformImageColorspace(image,RGBColorspace,exception);
+      (void) SetImageColorspace(image,RGBColorspace,exception);
       break;
     }
     case Rec601LumaPixelIntensityMethod:
     case Rec709LumaPixelIntensityMethod:
     case UndefinedPixelIntensityMethod:
     {
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
+      (void) SetImageColorspace(image,sRGBColorspace,exception);
       break;
     }
     default:
@@ -2658,7 +2658,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       ((IsGrayColorspace(black_color->colorspace) == MagickFalse) ||
        (IsGrayColorspace(white_color->colorspace) == MagickFalse)))
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   status=MagickFalse;
   if (invert == MagickFalse)
     {
@@ -3069,7 +3069,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   if (modulate == (char *) NULL)
     return(MagickFalse);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   flags=ParseGeometry(modulate,&geometry_info);
   percent_brightness=geometry_info.rho;
   percent_saturation=geometry_info.sigma;
