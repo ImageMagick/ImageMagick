@@ -282,7 +282,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) SetImageColorspace(image,sRGBColorspace);
   status=MagickTrue;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {

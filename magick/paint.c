@@ -811,7 +811,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
     return(MagickFalse);
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsMagickGray(fill) == MagickFalse))
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) SetImageColorspace(image,sRGBColorspace);
   if ((fill->opacity != OpaqueOpacity) && (image->matte == MagickFalse))
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   /*
