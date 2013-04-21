@@ -774,7 +774,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
     return(MagickFalse);
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsGrayColorspace(clut_image->colorspace) == MagickFalse))
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) SetImageColorspace(image,sRGBColorspace);
   clut_map=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*clut_map));
   if (clut_map == (MagickPixelPacket *) NULL)
@@ -2347,14 +2347,14 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
     case Rec601LuminancePixelIntensityMethod:
     case Rec709LuminancePixelIntensityMethod:
     {
-      (void) TransformImageColorspace(image,RGBColorspace);
+      (void) SetImageColorspace(image,RGBColorspace);
       break;
     }
     case Rec601LumaPixelIntensityMethod:
     case Rec709LumaPixelIntensityMethod:
     case UndefinedPixelIntensityMethod:
     {
-      (void) TransformImageColorspace(image,sRGBColorspace);
+      (void) SetImageColorspace(image,sRGBColorspace);
       break;
     }
     default:
@@ -2566,7 +2566,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) SetImageColorspace(image,sRGBColorspace);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   /*
@@ -3195,7 +3195,7 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       ((IsGrayColorspace(black_color->colorspace) == MagickFalse) ||
        (IsGrayColorspace(white_color->colorspace) == MagickFalse)))
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) SetImageColorspace(image,sRGBColorspace);
   status=MagickFalse;
   if (invert == MagickFalse)
     {
@@ -3560,7 +3560,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   if (modulate == (char *) NULL)
     return(MagickFalse);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) SetImageColorspace(image,sRGBColorspace);
   flags=ParseGeometry(modulate,&geometry_info);
   percent_brightness=geometry_info.rho;
   percent_saturation=geometry_info.sigma;
