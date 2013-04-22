@@ -2328,7 +2328,7 @@ static inline double LevelPixel(const double black_point,
   scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
   level_pixel=(double) QuantumRange*pow(scale*((double) pixel-
     black_point),1.0/gamma);
-  return(level_pixel);
+  return((MagickRealType) (IsNaN(level_pixel) ? 0.0 : level_pixel));
 }
 
 MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
