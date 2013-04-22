@@ -28,21 +28,6 @@ extern "C" {
 
 #include "magick/morphology.h"
 
-/*
-  The following test is for special floating point numbers of value NaN (not
-  a number), that may be used within a Kernel Definition.  NaN's are defined
-  as part of the IEEE standard for floating point number representation.
-  They are used as a Kernel value to mean that this kernel position is not
-  part of the kernel neighbourhood for convolution or morphology processing,
-  and thus should be ignored.  This allows the use of 'shaped' kernels.
-
-  The special property that two NaN's are never equal, even if they are from
-  the same variable allow you to test if a value is special NaN value.
-
-  This macro  IsNaN() is thus is only true if the value given is NaN.
-*/
-#define IsNaN(a) ((a)!=(a))
-
 extern MagickExport Image
   *MorphologyApply(const Image *,const ChannelType,const MorphologyMethod,
     const ssize_t,const KernelInfo *,const CompositeOperator,const double,
