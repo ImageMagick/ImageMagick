@@ -2815,7 +2815,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %
 */
 
-static inline MagickRealType LevelPixel(const double black_point,
+static inline double LevelPixel(const double black_point,
   const double white_point,const double gamma,const MagickRealType pixel)
 {
   double
@@ -2825,7 +2825,7 @@ static inline MagickRealType LevelPixel(const double black_point,
   scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
   level_pixel=QuantumRange*pow(scale*((double) pixel-
     black_point),1.0/gamma);
-  return((MagickRealType) (IsNaN(level_pixel) ? 0.0 : level_pixel));
+  return(IsNaN(level_pixel) != MagickFalse ? 0.0 : level_pixel);
 }
 
 MagickExport MagickBooleanType LevelImageChannel(Image *image,
