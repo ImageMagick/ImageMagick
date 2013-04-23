@@ -2814,6 +2814,10 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %      use 1.0 for purely linear stretching of image color values
 %
 */
+static inline double gamma_pow(const double value,const double gamma)
+{
+  return(value < 0.0 ? value : pow(value,1.0/gamma));
+}
 
 static inline double LevelPixel(const double black_point,
   const double white_point,const double gamma,const MagickRealType pixel)
@@ -2823,9 +2827,8 @@ static inline double LevelPixel(const double black_point,
     scale;
 
   scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
-  level_pixel=QuantumRange*pow(scale*((double) pixel-
-    black_point),1.0/gamma);
-  return(IsNaN(level_pixel) != MagickFalse ? 0.0 : level_pixel);
+  level_pixel=QuantumRange*gamma_pow(scale*((double) pixel-black_point),gamma);
+  return(level_pixel);
 }
 
 MagickExport MagickBooleanType LevelImageChannel(Image *image,
@@ -3010,9 +3013,8 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   const double gamma)
 {
 #define LevelizeImageTag  "Levelize/Image"
-#define LevelizeValue(x) (ClampToQuantum(((MagickRealType) \
-  pow((double)(QuantumScale*(x)),1.0/gamma))*(white_point-black_point)+ \
-  black_point))
+#define LevelizeValue(x) ClampToQuantum(((MagickRealType) gamma_pow((double) \
+  (QuantumScale*(x)),gamma))*(white_point-black_point)+black_point)
 
   CacheView
     *image_view;
