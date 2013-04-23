@@ -275,7 +275,7 @@ static inline int SplayTreeToNodeArray(NodeInfo *node,const void *nodes)
   return(0);
 }
 
-static inline void BalanceSplayTree(SplayTreeInfo *splay_tree)
+static void BalanceSplayTree(SplayTreeInfo *splay_tree)
 {
   NodeInfo
     **node,
@@ -291,8 +291,8 @@ static inline void BalanceSplayTree(SplayTreeInfo *splay_tree)
   if (nodes == (NodeInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   node=nodes;
-  (void) IterateOverSplayTree(splay_tree,SplayTreeToNodeArray,
-    (const void *) &node);
+  (void) IterateOverSplayTree(splay_tree,SplayTreeToNodeArray,(const void *)
+    &node);
   splay_tree->root=LinkSplayTreeNodes(nodes,0,splay_tree->nodes-1);
   splay_tree->balance=MagickFalse;
   nodes=(NodeInfo **) RelinquishMagickMemory(nodes);
