@@ -242,7 +242,7 @@ MagickExport MagickBooleanType AddValueToSplayTree(SplayTreeInfo *splay_tree,
 %
 */
 
-static NodeInfo *LinkSplayTreeNodes(NodeInfo **nodes,const size_t low,
+static inline NodeInfo *LinkSplayTreeNodes(NodeInfo **nodes,const size_t low,
   const size_t high)
 {
   register NodeInfo
@@ -264,7 +264,7 @@ static NodeInfo *LinkSplayTreeNodes(NodeInfo **nodes,const size_t low,
   return(node);
 }
 
-static int SplayTreeToNodeArray(NodeInfo *node,const void *nodes)
+static inline int SplayTreeToNodeArray(NodeInfo *node,const void *nodes)
 {
   register const NodeInfo
     ***p;
@@ -275,7 +275,7 @@ static int SplayTreeToNodeArray(NodeInfo *node,const void *nodes)
   return(0);
 }
 
-static void BalanceSplayTree(SplayTreeInfo *splay_tree)
+static inline void BalanceSplayTree(SplayTreeInfo *splay_tree)
 {
   NodeInfo
     **node,
@@ -291,8 +291,8 @@ static void BalanceSplayTree(SplayTreeInfo *splay_tree)
   if (nodes == (NodeInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   node=nodes;
-  (void) IterateOverSplayTree(splay_tree,SplayTreeToNodeArray,
-    (const void *) &node);
+  (void) IterateOverSplayTree(splay_tree,SplayTreeToNodeArray,(const void *)
+    &node);
   splay_tree->root=LinkSplayTreeNodes(nodes,0,splay_tree->nodes-1);
   splay_tree->balance=MagickFalse;
   nodes=(NodeInfo **) RelinquishMagickMemory(nodes);
@@ -328,7 +328,7 @@ static void BalanceSplayTree(SplayTreeInfo *splay_tree)
 %
 */
 
-static void *GetFirstSplayTreeNode(SplayTreeInfo *splay_tree)
+static inline void *GetFirstSplayTreeNode(SplayTreeInfo *splay_tree)
 {
   register NodeInfo
     *node;
@@ -1471,7 +1471,7 @@ MagickExport void ResetSplayTreeIterator(SplayTreeInfo *splay_tree)
 %
 */
 
-static NodeInfo *Splay(SplayTreeInfo *splay_tree,const size_t depth,
+static inline NodeInfo *Splay(SplayTreeInfo *splay_tree,const size_t depth,
   const void *key,NodeInfo **node,NodeInfo **parent,NodeInfo **grandparent)
 {
   int
