@@ -2317,6 +2317,10 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static inline double gamma_pow(const double value,const double gamma)
+{
+  return(value < 0.0 ? value : pow(value,1.0/gamma));
+}
 
 static inline double LevelPixel(const double black_point,
   const double white_point,const double gamma,const double pixel)
@@ -2326,9 +2330,8 @@ static inline double LevelPixel(const double black_point,
     scale;
 
   scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
-  level_pixel=(double) QuantumRange*pow(scale*((double) pixel-
-    black_point),1.0/gamma);
-  return(IsNaN(level_pixel) != MagickFalse ? 0.0 : level_pixel);
+  level_pixel=QuantumRange*gamma_pow(scale*((double) pixel-black_point),gamma);
+  return(level_pixel);
 }
 
 MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
@@ -2490,8 +2493,8 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
   ExceptionInfo *exception)
 {
 #define LevelizeImageTag  "Levelize/Image"
-#define LevelizeValue(x) (ClampToQuantum((pow((double) (QuantumScale*(x)), \
-  1.0/gamma))*(white_point-black_point)+black_point))
+#define LevelizeValue(x) ClampToQuantum(((MagickRealType) gamma_pow((double) \
+  (QuantumScale*(x)),gamma))*(white_point-black_point)+black_point)
 
   CacheView
     *image_view;
