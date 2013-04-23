@@ -2365,7 +2365,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
     exception);
   status=MagickTrue;
   if ((image->compose != CopyCompositeOp) &&
-      ((image->compose != OverCompositeOp) || (image->alpha_trait == BlendPixelTrait) ||
+      ((image->compose != OverCompositeOp) ||
+       (image->alpha_trait == BlendPixelTrait) ||
        (texture_image->alpha_trait == BlendPixelTrait)))
     {
       /*
