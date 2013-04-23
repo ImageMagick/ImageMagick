@@ -621,6 +621,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 break;
               display_image=GetNextImageInList(display_image);
             }
+          if (l < (ssize_t) resource_info.quantum)
+            break;
         } while ((display_image != (Image *) NULL) && ((state & ExitState) == 0));
         /*
           Free image resources.
