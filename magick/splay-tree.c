@@ -275,7 +275,7 @@ static inline int SplayTreeToNodeArray(NodeInfo *node,const void *nodes)
   return(0);
 }
 
-static inline void BalanceSplayTree(SplayTreeInfo *splay_tree)
+static void BalanceSplayTree(SplayTreeInfo *splay_tree)
 {
   NodeInfo
     **node,
