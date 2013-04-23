@@ -967,7 +967,7 @@ MagickExport size_t GetNumberOfNodesInSplayTree(
 %    o value: the value.
 %
 */
-static inline int IterateOverSplayTree(SplayTreeInfo *splay_tree,
+static int IterateOverSplayTree(SplayTreeInfo *splay_tree,
   int (*method)(NodeInfo *,const void *),const void *value)
 {
   typedef enum
@@ -1562,7 +1562,7 @@ static inline NodeInfo *Splay(SplayTreeInfo *splay_tree,const size_t depth,
   return(n);
 }
 
-static inline void SplaySplayTree(SplayTreeInfo *splay_tree,const void *key)
+static void SplaySplayTree(SplayTreeInfo *splay_tree,const void *key)
 {
   if (splay_tree->root == (NodeInfo *) NULL)
     return;
