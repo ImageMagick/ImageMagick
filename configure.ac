@@ -2672,7 +2672,7 @@ dnl ===========================================================================
 # Check for RSVG delegate library.
 #
 AC_ARG_WITH([rsvg],
-    [AC_HELP_STRING([--without-rsvg],
+    [AC_HELP_STRING([--with-rsvg],
                     [enable RSVG support])],
     [with_rsvg=$withval],
     [with_rsvg='no'])
