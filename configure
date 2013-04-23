@@ -1944,7 +1944,7 @@ Optional Packages:
   --without-openexr       disable OpenEXR support
   --without-pango         disable PANGO support
   --without-png           disable PNG support
-  --without-rsvg          enable RSVG support
+  --with-rsvg             enable RSVG support
   --without-tiff          disable TIFF support
   --without-webp          disable WEBP support
   --with-windows-font-dir=DIR
@@ -3677,7 +3677,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=11838:11906
+MAGICK_SVN_REVISION=11949:11963M
 
 
 # Substitute library versioning
