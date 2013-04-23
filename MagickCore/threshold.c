@@ -777,7 +777,7 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
+        if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=ClampPixel(q[i]);
       }
