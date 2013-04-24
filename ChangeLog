@@ -1,3 +1,6 @@
+2013-04-24  6.8.5-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.5-0, SVN revision 11979.
+
 2013-04-16  6.8.5-0 Glenn Randers-Pehrson <glennrp@image...>
   * Handle benign errors as warnings in the PNG coder.
 
