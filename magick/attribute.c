@@ -46,6 +46,7 @@
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
+#include "magick/cache-private.h"
 #include "magick/cache-view.h"
 #include "magick/client.h"
 #include "magick/channel.h"
@@ -749,10 +750,11 @@ MagickExport MagickBooleanType IsGrayImage(const Image *image,
   image_view=DestroyCacheView(image_view);
   if (type == UndefinedType)
     return(MagickFalse);
+  ((Image *) image)->colorspace=GRAYColorspace;
   ((Image *) image)->type=type;
   if ((type == GrayscaleType) && (image->matte != MagickFalse))
     ((Image *) image)->type=GrayscaleMatteType;
-  return(SetImageColorspace((Image *) image,GRAYColorspace));
+  return(SyncImagePixelCache((Image *) image,exception));
 }
 
 /*
@@ -831,8 +833,9 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
   image_view=DestroyCacheView(image_view);
   if (type == UndefinedType)
     return(MagickFalse);
+  ((Image *) image)->colorspace=GRAYColorspace;
   ((Image *) image)->type=type;
-  return(SetImageColorspace((Image *) image,GRAYColorspace));
+  return(SyncImagePixelCache((Image *) image,exception));
 }
 
 /*
