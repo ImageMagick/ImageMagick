@@ -2783,20 +2783,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
       break;
     case StandardStream:
     {
-      register ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) length; i+=count)
-      {
-        count=read(fileno(image->blob->file_info.file),q+i,(size_t)
-          MagickMin(length-i,(MagickSizeType) SSIZE_MAX));
-        if (count <= 0)
-          {
-            count=0;
-            if (errno != EINTR)
-              break;
-          }
-      }
+      count=read(fileno(image->blob->file_info.file),q,length);
       break;
     }
     case FileStream:
