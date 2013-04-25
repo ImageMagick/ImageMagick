@@ -1940,7 +1940,7 @@ static inline MagickRealType MagickMin(const MagickRealType x,
 }
 
 MagickExport MagickBooleanType GrayscaleImage(Image *image,
-  const PixelIntensityMethod grayscale,ExceptionInfo *exception)
+  const PixelIntensityMethod method,ExceptionInfo *exception)
 {
 #define GrayscaleImageTag  "Grayscale/Image"
 
@@ -2028,7 +2028,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       green=(MagickRealType) GetPixelGreen(image,q);
       blue=(MagickRealType) GetPixelBlue(image,q);
       intensity=0.0;
-      switch (image->intensity)
+      switch (method)
       {
         case AveragePixelIntensityMethod:
         {
@@ -2101,10 +2101,9 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  if (SetImageColorspace(image,GRAYColorspace,exception) == MagickFalse)
-    return(MagickFalse);
+  image->intensity=method;
   image->type=GrayscaleType;
-  return(status);
+  return(SetImageColorspace(image,GRAYColorspace,exception));
 }
 
 /*
