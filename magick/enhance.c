@@ -2070,6 +2070,12 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 %    o gamma: the image gamma.
 %
 */
+
+static inline double gamma_pow(const double value,const double gamma)
+{
+  return(value < 0.0 ? value : pow(value,1.0/gamma));
+}
+
 MagickExport MagickBooleanType GammaImage(Image *image,const char *level)
 {
   GeometryInfo
@@ -2161,6 +2167,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
       */
       for (i=0; i < (ssize_t) image->colors; i++)
       {
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
         if ((channel & RedChannel) != 0)
           image->colormap[i].red=gamma_map[ScaleQuantumToMap(
             image->colormap[i].red)];
@@ -2180,6 +2187,26 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
                 ScaleQuantumToMap((Quantum) (QuantumRange-
                 image->colormap[i].opacity))];
           }
+#else
+        if ((channel & RedChannel) != 0)
+          image->colormap[i].red=gamma_pow((double)
+            image->colormap[i].red,1.0/gamma);
+        if ((channel & GreenChannel) != 0)
+          image->colormap[i].green=gamma_pow((double)
+            image->colormap[i].green,1.0/gamma);
+        if ((channel & BlueChannel) != 0)
+          image->colormap[i].blue=gamma_pow((double)
+            image->colormap[i].blue,1.0/gamma);
+        if ((channel & OpacityChannel) != 0)
+          {
+            if (image->matte == MagickFalse)
+              image->colormap[i].opacity=gamma_pow((double)
+                image->colormap[i].opacity,1.0/gamma);
+            else
+              image->colormap[i].opacity=QuantumRange-gamma_pow((double)
+                (QuantumRange-image->colormap[i].opacity),1.0/gamma);
+          }
+#endif
       }
     }
   /*
@@ -2215,6 +2242,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
       if ((channel & SyncChannels) != 0)
         {
           SetPixelRed(q,gamma_map[ScaleQuantumToMap(GetPixelRed(q))]);
@@ -2239,6 +2267,31 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
                   GetPixelAlpha(q))]);
             }
         }
+#else
+      if ((channel & SyncChannels) != 0)
+        {
+          SetPixelRed(q,gamma_pow((double) GetPixelRed(q),1.0/gamma));
+          SetPixelGreen(q,gamma_pow((double) GetPixelGreen(q),1.0/gamma));
+          SetPixelBlue(q,gamma_pow((double) GetPixelBlue(q),1.0/gamma));
+        }
+      else
+        {
+          if ((channel & RedChannel) != 0)
+            SetPixelRed(q,gamma_pow((double) GetPixelRed(q),1.0/gamma));
+          if ((channel & GreenChannel) != 0)
+            SetPixelGreen(q,gamma_pow((double) GetPixelGreen(q),1.0/gamma));
+          if ((channel & BlueChannel) != 0)
+            SetPixelBlue(q,gamma_pow((double) GetPixelBlue(q),1.0/gamma));
+          if ((channel & OpacityChannel) != 0)
+            {
+              if (image->matte == MagickFalse)
+                SetPixelOpacity(q,gamma_pow((double) GetPixelOpacity(q),1.0/
+                  gamma));
+              else
+                SetPixelAlpha(q,gamma_pow((double) GetPixelAlpha(q),1.0/gamma));
+            }
+        }
+#endif
       q++;
     }
     if (((channel & IndexChannel) != 0) &&
@@ -2814,10 +2867,6 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %      use 1.0 for purely linear stretching of image color values
 %
 */
-static inline double gamma_pow(const double value,const double gamma)
-{
-  return(value < 0.0 ? value : pow(value,1.0/gamma));
-}
 
 static inline double LevelPixel(const double black_point,
   const double white_point,const double gamma,const MagickRealType pixel)
