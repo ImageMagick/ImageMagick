@@ -272,7 +272,7 @@ MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
     }
   for (i=0; i < length; i+=count)
   {
-    count=(ssize_t) write(file,(const char *) blob+i,(size_t) MagickMin(length-
+    count=write(file,(const char *) blob+i,(size_t) MagickMin(length-
       i,(MagickSizeType) SSIZE_MAX));
     if (count <= 0)
       {
@@ -978,7 +978,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       blob=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*blob));
       for (i=0; blob != (unsigned char *) NULL; i+=count)
       {
-        count=(ssize_t) read(file,blob+i,quantum);
+        count=read(file,blob+i,quantum);
         if (count <= 0)
           {
             count=0;
@@ -1036,7 +1036,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       (void) lseek(file,0,SEEK_SET);
       for (i=0; i < *length; i+=count)
       {
-        count=(ssize_t) read(file,blob+i,(size_t) MagickMin(*length-i,
+        count=read(file,blob+i,(size_t) MagickMin(*length-i,
           (MagickSizeType) SSIZE_MAX));
         if (count <= 0)
           {
@@ -1162,7 +1162,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename)
     }
   for ( ; ; )
   {
-    count=(ssize_t) read(file,blob,quantum);
+    count=read(file,blob,quantum);
     if (count <= 0)
       {
         count=0;
@@ -1986,7 +1986,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
     }
   for (i=0; ; i+=count)
   {
-    count=(ssize_t) read(file,buffer,quantum);
+    count=read(file,buffer,quantum);
     if (count <= 0)
       {
         count=0;
@@ -2791,7 +2791,21 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
       break;
     case StandardStream:
     {
-      count=read(fileno(image->blob->file_info.file),q,length);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) length; i+=count)
+      {
+        count=read(fileno(image->blob->file_info.file),q+i,(size_t) 
+          MagickMin(length-i,(MagickSizeType) SSIZE_MAX));
+        if (count <= 0)
+          {
+            count=0;
+            if (errno != EINTR)
+              break;
+          }
+      }
+      count=i;
       break;
     }
     case FileStream:
