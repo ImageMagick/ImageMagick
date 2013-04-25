@@ -37,7 +37,7 @@ testReadWrite( 'input_truecolor.png',
 ++$test;
 testReadWrite( 'input_mono.png',
   'output_mono.png', '',
-  '7e704fc1a99118630a92374ba27adf5baf69f30019016be2ed70eac79629e8b4' );
+  '1502b4e5747ed8805fe9103f56f9c4097f60440b3a867fa6b1ae0ba81f12a90d' );
 
 #
 # 4) Test Multiple-image Network Graphics
@@ -56,6 +56,6 @@ testReadWrite( 'input_16.png',
   'output_16.png',
   q/quality=>55/,
   'd4bed86abb1849f69f1a5afb7c5cf8798e8192ba228357f189c277198c14f5a0',
-  '106f0647ae10a6516b1ab2968038161e287ef40d1b22ca047531ed768e594ef1');
+  '07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541');
 
 
