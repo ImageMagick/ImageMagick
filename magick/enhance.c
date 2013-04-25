@@ -2525,10 +2525,9 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  if (SetImageColorspace(image,GRAYColorspace) == MagickFalse)
-    return(MagickFalse);
+  image->intensity=method;
   image->type=GrayscaleType;
-  return(status);
+  return(SetImageColorspace(image,GRAYColorspace));
 }
 
 /*
