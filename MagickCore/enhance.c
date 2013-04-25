@@ -1745,6 +1745,12 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
 %    o gamma: the image gamma.
 %
 */
+
+static inline double gamma_pow(const double value,const double gamma)
+{
+  return(value < 0.0 ? value : pow(value,1.0/gamma));
+}
+
 MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   ExceptionInfo *exception)
 {
@@ -1792,6 +1798,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       /*
         Gamma-correct colormap.
       */
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].red=(double) gamma_map[
           ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))];
@@ -1804,6 +1811,16 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].alpha=(double) gamma_map[
           ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))];
+#else
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+        image->colormap[i].red=gamma_pow(image->colormap[i].red,1.0/gamma);
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+        image->colormap[i].green=gamma_pow(image->colormap[i].green,1.0/gamma);
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+        image->colormap[i].blue=gamma_pow(image->colormap[i].blue,1.0/gamma);
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+        image->colormap[i].alpha=gamma_pow(image->colormap[i].alpha,1.0/gamma);
+#endif
     }
   /*
     Gamma-correct image.
@@ -1847,7 +1864,11 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
         q[i]=gamma_map[ScaleQuantumToMap(q[i])];
+#else
+        q[i]=gamma_pow((double) q[i],1.0/gamma);
+#endif
       }
       q+=GetPixelChannels(image);
     }
@@ -2317,10 +2338,6 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static inline double gamma_pow(const double value,const double gamma)
-{
-  return(value < 0.0 ? value : pow(value,1.0/gamma));
-}
 
 static inline double LevelPixel(const double black_point,
   const double white_point,const double gamma,const double pixel)
