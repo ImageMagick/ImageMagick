@@ -1,5 +1,7 @@
 2013-04-26  6.8.5-1 Cristy  <quetzlzacatenango@image...>
   * Recognize xc:gray50 is non-linear.
+  * Loop over read() until requested bytes are consumed (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?t=23268).
 
 2013-04-24  6.8.5-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-0, SVN revision 11979.
