@@ -177,7 +177,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   /*
     Format caption.
   */
-  option=GetImageArtifact(image,"filename");
+  option=GetImageOption(image_info,"filename");
   if (option == (const char *) NULL)
     property=InterpretImageProperties(image_info,image,image_info->filename,
       exception);
@@ -196,7 +196,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   pango_cairo_font_map_set_resolution(PANGO_CAIRO_FONT_MAP(fontmap),
     image->resolution.x == 0.0 ? 90.0 : image->resolution.x);
   font_options=cairo_font_options_create();
-  option=GetImageArtifact(image,"pango:hinting");
+  option=GetImageOption(image_info,"pango:hinting");
   if (option != (const char *) NULL)
     {
       if (LocaleCompare(option,"none") != 0)
@@ -207,7 +207,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   context=pango_font_map_create_context(fontmap);
   pango_cairo_context_set_font_options(context,font_options);
   cairo_font_options_destroy(font_options);
-  option=GetImageArtifact(image,"pango:language");
+  option=GetImageOption(image_info,"pango:language");
   if (option != (const char *) NULL)
     pango_context_set_language(context,pango_language_from_string(option));
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
@@ -246,7 +246,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     }
   }
   pango_context_set_base_gravity(context,gravity);
-  option=GetImageArtifact(image,"pango:gravity-hint");
+  option=GetImageOption(image_info,"pango:gravity-hint");
   if (option != (const char *) NULL)
     {
       if (LocaleCompare(option,"line") == 0)
@@ -260,10 +260,10 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     Configure layout.
   */
   layout=pango_layout_new(context);
-  option=GetImageArtifact(image,"pango:auto-dir");
+  option=GetImageOption(image_info,"pango:auto-dir");
   if (option != (const char *) NULL)
     pango_layout_set_auto_dir(layout,1);
-  option=GetImageArtifact(image,"pango:ellipsize");
+  option=GetImageOption(image_info,"pango:ellipsize");
   if (option != (const char *) NULL)
     {
       if (LocaleCompare(option,"end") == 0)
@@ -275,13 +275,13 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       if (LocaleCompare(option,"start") == 0)
         pango_layout_set_ellipsize(layout,PANGO_ELLIPSIZE_START);
     }
-  option=GetImageArtifact(image,"pango:justify");
+  option=GetImageOption(image_info,"pango:justify");
   if (IfMagickTrue(IsStringTrue(option)))
     pango_layout_set_justify(layout,1);
-  option=GetImageArtifact(image,"pango:single-paragraph");
+  option=GetImageOption(image_info,"pango:single-paragraph");
   if (IfMagickTrue(IsStringTrue(option)))
     pango_layout_set_single_paragraph_mode(layout,1);
-  option=GetImageArtifact(image,"pango:wrap");
+  option=GetImageOption(image_info,"pango:wrap");
   if (option != (const char *) NULL)
     {
       if (LocaleCompare(option,"char") == 0)
@@ -291,7 +291,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       if (LocaleCompare(option,"word-char") == 0)
         pango_layout_set_wrap(layout,PANGO_WRAP_WORD_CHAR);
     }
-  option=GetImageArtifact(image,"pango:indent");
+  option=GetImageOption(image_info,"pango:indent");
   if (option != (const char *) NULL)
     pango_layout_set_indent(layout,(int) ((StringToLong(option)*
       (image->resolution.x == 0.0 ? 90.0 : image->resolution.x)*PANGO_SCALE+36)/
@@ -330,7 +330,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       pango_layout_set_font_description(layout,description);
       pango_font_description_free(description);
     }
-  option=GetImageArtifact(image,"pango:markup");
+  option=GetImageOption(image_info,"pango:markup");
   if ((option != (const char *) NULL) && (IsStringTrue(option) == MagickFalse))
     pango_layout_set_text(layout,caption,-1);
   else

@@ -431,8 +431,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine page geometry from the PDF media box.
   */
   cmyk=image_info->colorspace == CMYKColorspace ? MagickTrue : MagickFalse;
-  cropbox=IsStringTrue(GetImageArtifact(image,"pdf:use-cropbox"));
-  trimbox=IsStringTrue(GetImageArtifact(image,"pdf:use-trimbox"));
+  cropbox=IsStringTrue(GetImageOption(image_info,"pdf:use-cropbox"));
+  trimbox=IsStringTrue(GetImageOption(image_info,"pdf:use-trimbox"));
   count=0;
   spotcolor=0;
   (void) ResetMagickMemory(&bounding_box,0,sizeof(bounding_box));
@@ -631,7 +631,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
-  option=GetImageArtifact(image,"authenticate");
+  option=GetImageOption(image_info,"authenticate");
   if (option != (const char *) NULL)
     (void) FormatLocaleString(options+strlen(options),MaxTextExtent,
       " -sPCLPassword=%s",option);

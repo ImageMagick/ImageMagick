@@ -1074,7 +1074,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       SetImageColorspace(image,LabColorspace,exception);
     TIFFGetProfiles(tiff,image,exception);
     TIFFGetProperties(tiff,image,exception);
-    option=GetImageArtifact(image,"tiff:exif-properties");
+    option=GetImageOption(image_info,"tiff:exif-properties");
     if (IfMagickTrue(IsStringNotFalse(option))) /* enabled by default */
       TIFFGetEXIFProperties(tiff,image,exception);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
@@ -1210,7 +1210,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
           SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
       }
-    option=GetImageArtifact(image,"tiff:alpha");
+    option=GetImageOption(image_info,"tiff:alpha");
     if (option != (const char *) NULL)
       associated_alpha=LocaleCompare(option,"associated") == 0 ? MagickTrue :
         MagickFalse;
@@ -2342,8 +2342,8 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
   return(status);
 }
 
-static MagickBooleanType GetTIFFInfo(const Image *image,TIFF *tiff,
-  TIFFInfo *tiff_info)
+static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
+  const Image *image,TIFF *tiff,TIFFInfo *tiff_info)
 {
   const char
     *option;
@@ -2357,7 +2357,7 @@ static MagickBooleanType GetTIFFInfo(const Image *image,TIFF *tiff,
 
   assert(tiff_info != (TIFFInfo *) NULL);
   (void) ResetMagickMemory(tiff_info,0,sizeof(*tiff_info));
-  option=GetImageArtifact(image,"tiff:tile-geometry");
+  option=GetImageOption(image_info,"tiff:tile-geometry");
   if (option == (const char *) NULL)
     return(MagickTrue);
   flags=ParseAbsoluteGeometry(option,&tiff_info->tile_geometry);
@@ -2710,7 +2710,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   error_handler=TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   warning_handler=TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   endian_type=UndefinedEndian;
-  option=GetImageArtifact(image,"tiff:endian");
+  option=GetImageOption(image_info,"tiff:endian");
   if (option != (const char *) NULL)
     {
       if (LocaleNCompare(option,"msb",3) == 0)
@@ -2995,7 +2995,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
          compress_tag=COMPRESSION_NONE;
          endian=FILLORDER_MSB2LSB;
        }
-    option=GetImageArtifact(image,"tiff:fill-order");
+    option=GetImageOption(image_info,"tiff:fill-order");
     if (option != (const char *) NULL)
       {
         if (LocaleNCompare(option,"msb",3) == 0)
@@ -3018,7 +3018,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         */
         extra_samples=1;
         sample_info[0]=EXTRASAMPLE_UNASSALPHA;
-        option=GetImageArtifact(image,"tiff:alpha");
+        option=GetImageOption(image_info,"tiff:alpha");
         if ((option != (const char *) NULL) &&
             (LocaleCompare(option,"associated") == 0))
           sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
@@ -3063,7 +3063,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if (TIFFScanlineSize(tiff) != 0)
       rows_per_strip=(uint32) MagickMax((size_t) TIFFDefaultStripSize(tiff,0),
         1);
-    option=GetImageArtifact(image,"tiff:rows-per-strip");
+    option=GetImageOption(image_info,"tiff:rows-per-strip");
     if (option != (const char *) NULL)
       rows_per_strip=(size_t) strtol(option,(char **) NULL,10);
     switch (compress_tag)
@@ -3172,7 +3172,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    option=GetImageArtifact(image,"tiff:rows-per-strip");
+    option=GetImageOption(image_info,"tiff:rows-per-strip");
     if (option == (const char *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
     if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
@@ -3250,7 +3250,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     /*
       Write image scanlines.
     */
-    if (GetTIFFInfo(image,tiff,&tiff_info) == MagickFalse)
+    if (GetTIFFInfo(image_info,image,tiff,&tiff_info) == MagickFalse)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     quantum_info->endian=LSBEndian;
     pixels=GetQuantumPixels(quantum_info);
