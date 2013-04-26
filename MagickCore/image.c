@@ -893,6 +893,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->columns=columns;
   clone_image->rows=rows;
   clone_image->cache=ClonePixelCache(image->cache);
+
   return(clone_image);
 }
 
