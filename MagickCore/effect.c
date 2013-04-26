@@ -1206,14 +1206,21 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 MagickExport Image *EdgeImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
-  char
-    geometry[MaxTextExtent];
+  double
+    gamma,
+    normalize;
+
+  Image
+    *edge_image;
 
   KernelInfo
     *kernel_info;
 
-  Image
-    *edge_image;
+  register ssize_t
+    i;
+
+  size_t
+    width;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1221,10 +1228,33 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"laplacian:%.20g",radius);
-  kernel_info=AcquireKernelInfo(geometry);
+  width=GetOptimalKernelWidth1D(radius,0.5);
+  kernel_info=AcquireKernelInfo((const char *) NULL);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
+  kernel_info->width=width;
+  kernel_info->height=width;
+  kernel_info->x=(ssize_t) (width-1)/2;
+  kernel_info->y=(ssize_t) (width-1)/2;
+  kernel_info->signature=MagickSignature;
+  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
+    AcquireAlignedMemory(kernel_info->width,kernel_info->height*
+    sizeof(*kernel_info->values)));
+  if (kernel_info->values == (MagickRealType *) NULL)
+    {
+      kernel_info=DestroyKernelInfo(kernel_info);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  for (i=0; i < (ssize_t) (width*width); i++)
+    kernel_info->values[i]=(-1.0);
+  kernel_info->values[i/2]=((double) width*width-1.0);
+  normalize=0.0;
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
+    normalize+=kernel_info->values[i];
+  gamma=PerceptibleReciprocal(normalize);
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
+    kernel_info->values[i]*=gamma;
   edge_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
     UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
