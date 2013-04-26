@@ -1230,7 +1230,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     /*
       Render with imagemask operator?
     */
-    option=GetImageArtifact(image,"ps3:imagemask");
+    option=GetImageOption(image_info,"ps3:imagemask");
     (void) WriteBlobString(image,((option != (const char *) NULL) &&
       (IsImageMonochrome(image,exception) != MagickFalse)) ?
       "true\n" : "false\n");

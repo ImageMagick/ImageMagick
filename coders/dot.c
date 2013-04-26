@@ -142,7 +142,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
   if (graph == (graph_t *) NULL)
     return ((Image *) NULL);
-  option=GetImageArtifact(image,"dot:layout-engine");
+  option=GetImageOption(image_info,"dot:layout-engine");
   if (option == (const char *) NULL)
     gvLayout(graphic_context,graph,(char *) "dot");
   else

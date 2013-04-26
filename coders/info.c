@@ -183,7 +183,7 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
   scene=0;
   do
   {
-    format=GetImageArtifact(image,"format");
+    format=GetImageOption(image_info,"format");
     if (format == (char *) NULL)
       {
         (void) CopyMagickString(image->filename,image->magick_filename,

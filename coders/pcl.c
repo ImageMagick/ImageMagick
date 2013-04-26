@@ -351,7 +351,7 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
-  option=GetImageArtifact(image,"authenticate");
+  option=GetImageOption(image_info,"authenticate");
   if (option != (const char *) NULL)
     (void) FormatLocaleString(options+strlen(options),MaxTextExtent,
       " -sPCLPassword=%s",option);
@@ -787,7 +787,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
             (void) WriteBlobString(image,buffer);
           }
         }
-    option=GetImageArtifact(image,"pcl:fit-to-page");
+    option=GetImageOption(image_info,"pcl:fit-to-page");
     if (IfMagickTrue(IsStringTrue(option)))
       (void) WriteBlobString(image,"\033*r3A");
     else

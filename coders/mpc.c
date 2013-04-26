@@ -1340,7 +1340,6 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       (void) WriteBlobByte(image,'\n');
       property=GetNextImageProperty(image);
     }
-    ResetImageArtifactIterator(image);
     (void) WriteBlobString(image,"\f\n:\032");
     if (image->montage != (char *) NULL)
       {
