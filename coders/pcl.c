@@ -772,7 +772,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,buffer);
           }
         }
-    option=GetImageArtifact(image,"pcl:fit-to-page");
+    option=GetImageOption(image_info,"pcl:fit-to-page");
     if ((option != (const char *) NULL) &&
         (IsMagickTrue(option) != MagickFalse))
       (void) WriteBlobString(image,"\033*r3A");
