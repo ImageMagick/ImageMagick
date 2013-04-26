@@ -1206,10 +1206,6 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 MagickExport Image *EdgeImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
-  double
-    gamma,
-    normalize;
-
   Image
     *edge_image;
 
@@ -1246,15 +1242,9 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
       kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (i=0; i < (ssize_t) (width*width); i++)
+  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]=(-1.0);
-  kernel_info->values[i/2]=((double) width*width-1.0);
-  normalize=0.0;
-  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
-    normalize+=kernel_info->values[i];
-  gamma=PerceptibleReciprocal(normalize);
-  for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
-    kernel_info->values[i]*=gamma;
+  kernel_info->values[i/2]=(double) kernel_info->width*kernel_info->height-1.0;
   edge_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
     UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
