@@ -1384,8 +1384,8 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   gamma=PerceptibleReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
-  emboss_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
-    exception);
+  emboss_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
+    kernel_info,UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImage(emboss_image);
