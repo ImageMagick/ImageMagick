@@ -399,18 +399,17 @@ static Image *SparseColorOption(const Image *image,
 %
 */
 WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
-     const char *option,const char *arg1, const char *arg2)
+     const char *option,const char *arg1n, const char *arg2n)
 {
   ssize_t
     parse;     /* option argument parsing (string to value table lookup) */
 
-  assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
-  if (IfMagickTrue(cli_wand->wand.debug))
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
+  const char    /* percent escaped versions of the args */
+    *arg1,
+    *arg2;
 
 #define _image_info       (cli_wand->wand.image_info)
+#define _image            (cli_wand->wand.images)
 #define _exception        (cli_wand->wand.exception)
 #define _draw_info        (cli_wand->draw_info)
 #define _quantize_info    (cli_wand->quantize_info)
@@ -420,15 +419,21 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 #define ArgBooleanString  (IfSetOption?"true":"false")
 #define ArgOption(def)    (IfSetOption?arg1:(const char *)(def))
 
-#if 0
-Setting are not directly involved with images, so can not
-interpret Percent Escapes in Arguments, At least not yet */
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->wand.signature == WandSignature);
 
+  if (IfMagickTrue(cli_wand->wand.debug))
+    (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
+         "- Setting Option: %s \"%s\" \"%s\"", option,arg1n,arg2n);
+
+  arg1 = arg1n,
+  arg2 = arg2n;
+
+#if 1
 #define _process_flags    (cli_wand->process_flags)
 #define _option_type      ((CommandOptionFlags) cli_wand->command->flags)
   /* Interpret Percent Escapes in Arguments - using first image */
-  arg1 = arg1n,
-  arg2 = arg2n;
   if ( (((_process_flags & ProcessInterpretProperities) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
@@ -825,6 +830,14 @@ interpret Percent Escapes in Arguments, At least not yet */
           (void) CloneString(&_draw_info->family,ArgOption(NULL));
           break;
         }
+      if (LocaleCompare("features",option+1) == 0)
+        {
+          (void) SetImageOption(_image_info,"identify:features",
+                    ArgBooleanString);
+          if (IfSetOption)
+            (void) SetImageArtifact(_image,"verbose","true");
+          break;
+        }
       if (LocaleCompare("fill",option+1) == 0)
         {
           /* Set "fill" OR "fill-pattern" in _draw_info
@@ -895,7 +908,7 @@ interpret Percent Escapes in Arguments, At least not yet */
              SyncImageSettings() used to set per-image attribute.
 
              FUTURE: Can't find anything else using _image_info->fuzz directly!
-                     remove direct sttribute from image_info
+                     convert structure attribute to 'option' string
           */
           arg1=ArgOption("0");
           if (IfMagickFalse(IsGeometry(arg1)))
@@ -1581,13 +1594,11 @@ interpret Percent Escapes in Arguments, At least not yet */
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
   }
 
-#if 0
   /* clean up percent escape interpreted strings */
   if (arg1 != arg1n )
     arg1=DestroyString((char *)arg1);
   if (arg2 != arg2n )
     arg2=DestroyString((char *)arg2);
-#endif
 
 #undef _image_info
 #undef _exception
@@ -1669,21 +1680,21 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
   ssize_t
     parse;
 
-  const char    /* For percent escape interpretImageProperties() */
+  const char    /* percent escaped versions of the args */
     *arg1,
     *arg2;
 
-#define _image_info     (cli_wand->wand.image_info)
-#define _image          (cli_wand->wand.images)
-#define _exception      (cli_wand->wand.exception)
-#define _draw_info      (cli_wand->draw_info)
-#define _quantize_info  (cli_wand->quantize_info)
-#define _process_flags  (cli_wand->process_flags)
-#define _option_type    ((CommandOptionFlags) cli_wand->command->flags)
-#define IfNormalOp      (*option=='-')
-#define IfPlusOp        (*option!='-')
-#define normal_op       IsMagickTrue(IfNormalOp)
-#define plus_alt_op     IsMagickFalse(IfNormalOp)
+#define _image_info       (cli_wand->wand.image_info)
+#define _image            (cli_wand->wand.images)
+#define _exception        (cli_wand->wand.exception)
+#define _draw_info        (cli_wand->draw_info)
+#define _quantize_info    (cli_wand->quantize_info)
+#define _process_flags    (cli_wand->process_flags)
+#define _option_type      ((CommandOptionFlags) cli_wand->command->flags)
+#define IfNormalOp        (*option=='-')
+#define IfPlusOp          (*option!='-')
+#define IsNormalOp        IsMagickTrue(IfNormalOp)
+#define IsPlusOp          IsMagickFalse(IfNormalOp)
 
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
@@ -1692,9 +1703,10 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-  /* Interpret Percent Escapes in Arguments - using first image */
   arg1 = arg1n,
   arg2 = arg2n;
+
+  /* Interpret Percent Escapes in Arguments - using first image */
   if ( (((_process_flags & ProcessInterpretProperities) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
@@ -1999,7 +2011,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("clip-path",option+1) == 0)
         {
-          (void) ClipImagePath(_image,arg1,normal_op,_exception);
+          (void) ClipImagePath(_image,arg1,IsNormalOp,_exception);
           /* Note: Use "+clip-mask" remove the write mask added */
           break;
         }
@@ -2056,8 +2068,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("contrast",option+1) == 0)
         {
-          CLIWandWarnReplaced(normal_op?"-level":"+level");
-          (void) ContrastImage(_image,normal_op,_exception);
+          CLIWandWarnReplaced(IfNormalOp?"-level":"+level");
+          (void) ContrastImage(_image,IsNormalOp,_exception);
           break;
         }
       if (LocaleCompare("contrast-stretch",option+1) == 0)
@@ -2201,7 +2213,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
 
           new_image=DistortImage(_image,(DistortImageMethod) parse,count,args,
-               plus_alt_op,_exception);
+               IsPlusOp,_exception);
           args=(double *) RelinquishMagickMemory(args);
           break;
         }
@@ -2291,17 +2303,6 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'f':
     {
-      if (LocaleCompare("features",option+1) == 0)
-        {
-          /* FUTURE: move to SyncImageSettings() and AcqireImage()??? */
-          if (IfPlusOp) {
-              (void) DeleteImageArtifact(_image,"identify:features");
-              break;
-            }
-          (void) SetImageArtifact(_image,"identify:features","true");
-          (void) SetImageArtifact(_image,"verbose","true");
-          break;
-        }
       if (LocaleCompare("flip",option+1) == 0)
         {
           new_image=FlipImage(_image,_exception);
@@ -2322,7 +2323,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) ParsePageGeometry(_image,arg1,&geometry,_exception);
           (void) QueryColorCompliance(arg2,AllCompliance,&target,_exception);
           (void) FloodfillPaintImage(_image,_draw_info,&target,geometry.x,
-            geometry.y,plus_alt_op,_exception);
+            geometry.y,IsPlusOp,_exception);
           break;
         }
       if (LocaleCompare("frame",option+1) == 0)
@@ -2586,7 +2587,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
                            &white_point,_exception);
             }
           (void) LevelImageColors(_image,&black_point,&white_point,
-                     plus_alt_op,_exception);
+                     IsPlusOp,_exception);
           break;
         }
       if (LocaleCompare("linear-stretch",option+1) == 0)
@@ -2754,7 +2755,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("negate",option+1) == 0)
         {
-          (void) NegateImage(_image, plus_alt_op, _exception);
+          (void) NegateImage(_image, IsPlusOp, _exception);
           break;
         }
       if (LocaleCompare("noise",option+1) == 0)
@@ -2798,7 +2799,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             target;
 
           (void) QueryColorCompliance(arg1,AllCompliance,&target,_exception);
-          (void) OpaquePaintImage(_image,&target,&_draw_info->fill,plus_alt_op,
+          (void) OpaquePaintImage(_image,&target,&_draw_info->fill,IsPlusOp,
                _exception);
           break;
         }
@@ -2952,7 +2953,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
-          (void) RaiseImage(_image,&geometry,normal_op,_exception);
+          (void) RaiseImage(_image,&geometry,IsNormalOp,_exception);
           break;
         }
       if (LocaleCompare("random-threshold",option+1) == 0)
@@ -3103,7 +3104,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if (((flags & RhoValue) == 0) || ((flags & SigmaValue) == 0))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          new_image=ShadeImage(_image,normal_op,geometry_info.rho,
+          new_image=ShadeImage(_image,IsNormalOp,geometry_info.rho,
                geometry_info.sigma,_exception);
           break;
         }
@@ -3165,7 +3166,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & PercentValue) != 0)
             geometry_info.sigma=(double) QuantumRange*geometry_info.sigma/
               100.0;
-          (void) SigmoidalContrastImage(_image,normal_op,geometry_info.rho,
+          (void) SigmoidalContrastImage(_image,IsNormalOp,geometry_info.rho,
                geometry_info.sigma,_exception);
           break;
         }
@@ -3255,7 +3256,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             threshold;
 
           threshold=(double) QuantumRange/2;
-          if (normal_op) {
+          if (IfNormalOp) {
             if (IfMagickFalse(IsGeometry(arg1)))
               CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             threshold=StringToDoubleInterval(arg1,(double) QuantumRange+1.0);
@@ -3292,7 +3293,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           (void) QueryColorCompliance(arg1,AllCompliance,&target,_exception);
           (void) TransparentPaintImage(_image,&target,(Quantum)
-            TransparentAlpha,plus_alt_op,_exception);
+            TransparentAlpha,IsPlusOp,_exception);
           break;
         }
       if (LocaleCompare("transpose",option+1) == 0)
@@ -3326,7 +3327,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
              Option is not documented, bt appears to be for "identify".
              We may need a identify specific verbose!
           */
-          if (plus_alt_op) {
+          if (IsPlusOp) {
               (void) DeleteImageArtifact(_image,"identify:unique-colors");
               break;
             }
@@ -3430,8 +3431,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 #undef _exception
 #undef IfNormalOp
 #undef IfPlusOp
-#undef normal_op
-#undef plus_alt_op
+#undef IsNormalOp
+#undef IsPlusOp
 }
 
 WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
@@ -3447,8 +3448,10 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
   assert(cli_wand->signature == WandSignature);
   assert(cli_wand->wand.signature == WandSignature);
   assert(cli_wand->wand.images != (Image *) NULL); /* images must be present */
+
   if (IfMagickTrue(cli_wand->wand.debug))
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
+    (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
+         "- Simple Operator: %s \"%s\" \"%s\"", option,arg1,arg2);
 
 #if !USE_WAND_METHODS
   /* FUTURE add appropriate tracing */
@@ -3507,7 +3510,7 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
 WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
   const char *option,const char *arg1n,const char *arg2n)
 {
-  const char    /* For percent escape interpretImageProperties() */
+  const char    /* percent escaped versions of the args */
     *arg1,
     *arg2;
 
@@ -3529,18 +3532,21 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 #define _option_type    ((CommandOptionFlags) cli_wand->command->flags)
 #define IfNormalOp      (*option=='-')
 #define IfPlusOp        (*option!='-')
-#define normal_op       IsMagickTrue(IfNormalOp)
+#define IsNormalOp       IsMagickTrue(IfNormalOp)
 
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
   assert(cli_wand->wand.signature == WandSignature);
   assert(_images != (Image *) NULL);             /* _images must be present */
-  if (IfMagickTrue(cli_wand->wand.debug))
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-  /* Interpret Percent Escapes in Arguments - using first image */
+  if (IfMagickTrue(cli_wand->wand.debug))
+    (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
+         "- List Operator: %s \"%s\" \"%s\"", option,arg1n,arg2n);
+
   arg1 = arg1n;
   arg2 = arg2n;
+
+  /* Interpret Percent Escapes in Arguments - using first image */
   if ( (((_process_flags & ProcessInterpretProperities) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
@@ -3563,11 +3569,6 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 #undef _process_flags
 #undef _option_type
 
-#if 0
-  (void) FormatLocaleFile(stderr,
-    "CLIListOperatorImages: \"%s\" \"%s\" \"%s\"\n",option,arg1,arg2);
-#endif
-
   status=MagickTrue;
   new_images=NewImageList();
 
@@ -3577,7 +3578,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("append",option+1) == 0)
         {
-          new_images=AppendImages(_images,normal_op,_exception);
+          new_images=AppendImages(_images,IsNormalOp,_exception);
           break;
         }
       if (LocaleCompare("average",option+1) == 0)
@@ -3782,7 +3783,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("fft",option+1) == 0)
         {
-          new_images=ForwardFourierTransformImage(_images,normal_op,_exception);
+          new_images=ForwardFourierTransformImage(_images,IsNormalOp,_exception);
           break;
         }
       if (LocaleCompare("flatten",option+1) == 0)
@@ -3832,7 +3833,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
            if (phase_image == (Image *) NULL)
              break;
            new_images=InverseFourierTransformImage(magnitude_image,phase_image,
-                   normal_op,_exception);
+                   IsNormalOp,_exception);
            magnitude_image=DestroyImage(magnitude_image);
            phase_image=DestroyImage(phase_image);
           break;
@@ -4065,11 +4066,6 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           args=(double *) RelinquishMagickMemory(args);
           break;
         }
-      if (LocaleCompare("print",option+1) == 0)
-        {
-          (void) FormatLocaleFile(stdout,"%s",arg1);
-          break;
-        }
       if (LocaleCompare("process",option+1) == 0)
         {
           /* FUTURE: better parsing using ScriptToken() from string ??? */
@@ -4166,7 +4162,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           offset=(ssize_t) StringToLong(arg1);
-          new_images=SmushImages(_images,normal_op,offset,_exception);
+          new_images=SmushImages(_images,IsNormalOp,offset,_exception);
           break;
         }
       if (LocaleCompare("subimage",option+1) == 0)
@@ -4292,7 +4288,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 #undef _quantize_info
 #undef IfNormalOp
 #undef IfPlusOp
-#undef normal_op
+#undef IsNormalOp
 }
 
 /*
@@ -4332,36 +4328,32 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 %
 */
 WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
-  const char *option,const char *arg1,const char *arg2)
+  const char *option,const char *arg1n,const char *arg2n)
 {
-#if 0
-  const char    /* For percent escape interpretImageProperties() */
+  const char    /* percent escaped versions of the args */
     *arg1,
     *arg2;
-#endif
 
 #define _image_info     (cli_wand->wand.image_info)
 #define _images         (cli_wand->wand.images)
 #define _exception      (cli_wand->wand.exception)
+#define _process_flags  (cli_wand->process_flags)
+#define _option_type    ((CommandOptionFlags) cli_wand->command->flags)
 #define IfNormalOp      (*option=='-')
 #define IfPlusOp        (*option!='-')
 
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
   assert(cli_wand->wand.signature == WandSignature);
+
   if (IfMagickTrue(cli_wand->wand.debug))
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
+    (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
+         "- NoImage Operator: %s \"%s\" \"%s\"", option,arg1n,arg2n);
 
-#if 0
-  Not able to be used as their may not be any images!
-  Also the only option that may have arguments that can be percent escaped is
-  "-clone".
-
-#define _process_flags  (cli_wand->process_flags)
-#define _option_type    ((CommandOptionFlags) cli_wand->command->flags)
-  /* Interpret Percent Escapes in Arguments - using first image */
   arg1 = arg1n;
   arg2 = arg2n;
+
+  /* Interpret Percent Escapes in Arguments - using first image */
   if ( (((_process_flags & ProcessInterpretProperities) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
@@ -4383,7 +4375,6 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
   }
 #undef _process_flags
 #undef _option_type
-#endif
 
   do {  /* break to exit code */
     /*
@@ -4465,7 +4456,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         *write_info;
 
       /* Need images, unless a "null:" output coder is used */
-      if ( cli_wand->wand.images == (Image *) NULL ) {
+      if ( _images == (Image *) NULL ) {
         if ( LocaleCompare(arg1,"null:") == 0 )
           break;
         CLIWandExceptArgBreak(OptionError,"NoImagesForWrite",option,arg1);
@@ -4505,9 +4496,9 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         CLIWandExceptionBreak(ResourceLimitFatalError,
             "MemoryAllocationFailed",option);
       node->data = (void *)cli_wand->wand.images;
-      cli_wand->wand.images = NewImageList();
       node->next = cli_wand->image_list_stack;
       cli_wand->image_list_stack = node;
+      cli_wand->wand.images = NewImageList();
 
       /* handle respect-parenthesis */
       if (IfMagickTrue(IsStringTrue(GetImageOption(cli_wand->wand.image_info,
@@ -4515,7 +4506,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         option="{"; /* fall-thru so as to push image settings too */
       else
         break;
-      /* fall thru to next if */
+      /* fall thru to operation */
     }
     if (LocaleCompare("{",option) == 0) {
       /* stack 'push' of image_info settings */
@@ -4537,6 +4528,9 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
             "MemoryAllocationFailed",option);
 
       node->data = (void *)cli_wand->wand.image_info;
+      node->next = cli_wand->image_info_stack;
+
+      cli_wand->image_info_stack = node;
       cli_wand->wand.image_info = CloneImageInfo(cli_wand->wand.image_info);
       if (cli_wand->wand.image_info == (ImageInfo *)NULL) {
         CLIWandException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -4545,9 +4539,6 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         node = (Stack *)RelinquishMagickMemory(node);
         break;
       }
-
-      node->next = cli_wand->image_info_stack;
-      cli_wand->image_info_stack = node;
 
       break;
     }
@@ -4599,86 +4590,94 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
       break;
     }
+      if (LocaleCompare("print",option+1) == 0)
+        {
+          (void) FormatLocaleFile(stdout,"%s",arg1);
+          break;
+        }
     if (LocaleCompare("set",option+1) == 0)
       {
-        /* Note: arguments are not percent escapes expanded yet */
-        /* Some settings are applied to each image in memory in turn.
-           While others only need to be applied once globally.
+        /* Settings are applied to each image in memory in turn (if any).
+           While a option: only need to be applied once globally.
+
+           NOTE: rguments have not been automatically percent expaneded
         */
-        char
-          *value;
+
+        /* escape the 'key' once only, using first image. */
+        arg1=InterpretImageProperties(_image_info,_images,arg1n,_exception);
+        if (arg1 == (char *) NULL)
+          CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
+                option);
 
         if (LocaleNCompare(arg1,"registry:",9) == 0)
           {
             if (IfPlusOp)
               {
                 (void) DeleteImageRegistry(arg1+9);
+                arg1=DestroyString((char *)arg1);
                 break;
               }
-            value=InterpretImageProperties(_image_info,_images,arg2,_exception);
-            if (value == (char *) NULL)
+            arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
+            if (arg2 == (char *) NULL) {
+              arg1=DestroyString((char *)arg1);
               CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
                     option);
-            (void) SetImageRegistry(StringRegistryType,arg1+9,value,_exception);
-            value=DestroyString(value);
+            }
+            (void) SetImageRegistry(StringRegistryType,arg1+9,arg2,_exception);
+            arg1=DestroyString((char *)arg1);
+            arg2=DestroyString((char *)arg2);
             break;
           }
         if (LocaleNCompare(arg1,"option:",7) == 0)
           {
             /* delete equivelent artifact from all images (if any) */
-            MagickResetIterator(&cli_wand->wand);
-            while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
-              (void) DeleteImageArtifact(_images,arg1+7);
-            MagickResetIterator(&cli_wand->wand);
+            if (_images != (Image *)NULL)
+              {
+                MagickResetIterator(&cli_wand->wand);
+                while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
+                  (void) DeleteImageArtifact(_images,arg1+7);
+                MagickResetIterator(&cli_wand->wand);
+              }
             /* now set/delete the global option as needed */
-            if (IfPlusOp) {
-              (void) DeleteImageOption(_image_info,arg1+7);
-              break;
-            }
-            value=InterpretImageProperties(_image_info,_images,arg2,_exception);
-            if (value == (char *) NULL)
-              CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
-                option);
-            (void) SetImageOption(_image_info,arg1+7,value);
-            value=DestroyString(value);
+            /* FUTURE: make escapes in a global 'option:' delayed */
+            arg2=(char *)NULL;
+            if (IfNormalOp)
+              {
+                arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
+                if (arg2 == (char *) NULL)
+                  CLIWandExceptionBreak(OptionWarning,
+                       "InterpretPropertyFailure",option);
+              }
+            (void) SetImageOption(_image_info,arg1+7,arg2);
+            arg1=DestroyString((char *)arg1);
+            arg2=DestroyString((char *)arg2);
             break;
           }
-        if ( cli_wand->wand.images == (Image *) NULL )
-          CLIWandExceptArgBreak(OptionError,"NoImagesFound",option,arg1);
+        /* Set Artifacts/Properties/Attributes all images (required) */
+        if ( _images == (Image *) NULL )
+          CLIWandExceptArgBreak(OptionWarning,"NoImageForProperty",option,arg1);
+
         MagickResetIterator(&cli_wand->wand);
         while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
           {
-            Image
-              *next;
-
-            if (IfPlusOp) {
-              if (LocaleNCompare(arg1,"artifact:",9) == 0)
-                (void) DeleteImageArtifact(_images,arg1+9);
-              else if (LocaleNCompare(arg1,"property:",9) == 0)
-                (void) DeleteImageProperty(_images,arg1+9);
-              else
-                (void) DeleteImageProperty(_images,arg1);
-              break;
-            }
-            next=_images;
-            for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
-            {
-              value=InterpretImageProperties(_image_info,next,arg2,_exception);
-              if (value == (char *) NULL)
-                CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
-                  option);
-              if (LocaleNCompare(arg1,"artifact:",9) == 0)
-                (void) SetImageArtifact(next,arg1+9,value);
-              else
-                if (LocaleNCompare(arg1,"property:",9) == 0)
-                  (void) SetImageProperty(next,arg1+9,value,_exception);
-                else
-                  (void) SetImageProperty(next,arg1,value,_exception);
-              value=DestroyString(value);
-            }
-            break;
+            arg2=(char *)NULL;
+            if (IfNormalOp)
+              {
+                arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
+                if (arg2 == (char *) NULL)
+                  CLIWandExceptionBreak(OptionWarning,
+                       "InterpretPropertyFailure",option);
+              }
+            if (LocaleNCompare(arg1,"artifact:",9) == 0)
+              (void) SetImageArtifact(_images,arg1+9,arg2);
+            else if (LocaleNCompare(arg1,"property:",9) == 0)
+              (void) SetImageProperty(_images,arg1+9,arg2,_exception);
+            else
+              (void) SetImageProperty(_images,arg1,arg2,_exception);
+            arg2=DestroyString((char *)arg2);
           }
         MagickResetIterator(&cli_wand->wand);
+        arg1=DestroyString((char *)arg1);
         break;
      }
     if (LocaleCompare("clone",option+1) == 0) {
@@ -4789,13 +4788,11 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
   } while (0);  /* break to exit code. */
 
-#if 0
   /* clean up percent escape interpreted strings */
   if (arg1 != arg1n )
     arg1=DestroyString((char *)arg1);
   if (arg2 != arg2n )
     arg2=DestroyString((char *)arg2);
-#endif
 
 #undef _image_info
 #undef _images
@@ -4851,7 +4848,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 */
 WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
 {
-  const char
+  const char    /* extracted option args from args */
     *arg1,
     *arg2;
 
@@ -4861,8 +4858,6 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
   assert(cli_wand->wand.signature == WandSignature);
-  if (IfMagickTrue(cli_wand->wand.debug))
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
   do { /* Break Code Block for error handling */
 
@@ -4889,7 +4884,9 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
       CLIWandExceptionBreak(OptionFatalError,"InvalidUseOfOption",option);
 
     /* Get argument strings from VarArgs
-      How can you determine arguments is enough was supplied? */
+      How can you determine if enough arguments was supplied?
+      What happens if not enough arguments were supplied?
+    */
     { size_t
         count = cli_wand->command->type;
 
@@ -4905,7 +4902,6 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
         arg2=(const char *) va_arg(operands, const char *);
 
       va_end(operands);
-
 #if 0
       (void) FormatLocaleFile(stderr,
         "CLIOption: \"%s\"  Count: %ld  Flags: %04x  Args: \"%s\" \"%s\"\n",
@@ -4940,8 +4936,9 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
           ((option_type & SettingOptionFlags) == 0 ))  /* temp hack */
         CLIWandExceptionBreak(OptionError,"NoImagesFound",option);
 
-    /* Operators work on single images, and needs a loop over the images */
-    if ( (option_type & SimpleOperatorFlag) != 0)
+    /* Operators which loop of individual images, simply */
+    if ( (option_type & SimpleOperatorFlag) != 0 &&
+         cli_wand->wand.images != (Image *)NULL) /* temp hack */
       CLISimpleOperatorImages(cli_wand, option, arg1, arg2);
 
     /* Operators that work on the image list as a whole */

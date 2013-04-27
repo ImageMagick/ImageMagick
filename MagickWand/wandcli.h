@@ -31,6 +31,9 @@ extern WandExport MagickCLI
 
 extern WandExport MagickBooleanType
   CLICatchException(MagickCLI *,const MagickBooleanType),
+  CLILogEvent(MagickCLI *,const LogEventType,const char *,const char *,
+    const size_t, const char *,...)
+    magick_attribute((__format__ (__printf__,6,7))),
   CLIThrowException(MagickCLI *,const char *,const char *,const size_t,
     const ExceptionType,const char *,const char *,...)
     magick_attribute((__format__ (__printf__,7,8)));

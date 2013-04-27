@@ -118,7 +118,7 @@ typedef enum
 /*
   Flags to describe classes of image processing options.
   These are used to determine how a option should be processed, and
-  allow use to avoid attempting to process each option in every way posible.
+  avoid attempting to process all options in every way posible.
 */
 typedef enum
 {
@@ -141,7 +141,7 @@ typedef enum
   AlwaysInterpretArgsFlag   = 0x0400,  /* Always Interpret escapes in Args */
                                        /* CF: "convert" compatibility mode */
   NeverInterpretArgsFlag    = 0x0800,  /* Never Interpret escapes in Args */
-                                       /* Typical because it's a filename */
+                                       /* EG: filename, or delayed escapes */
 
   NonMagickOptionFlag       = 0x1000,  /* Option not used by Magick Command */
   FireOptionFlag            = 0x2000,  /* Convert operation seq firing point */

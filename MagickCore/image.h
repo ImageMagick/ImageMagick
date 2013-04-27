@@ -211,7 +211,7 @@ struct _Image
     extract_info;
 
   double
-    fuzz;           /* current color fuzz attribute - make image_info */
+    fuzz;           /* current color fuzz attribute - move to image_info */
 
   FilterTypes
     filter;         /* resize/distort filter to apply */

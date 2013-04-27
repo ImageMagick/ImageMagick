@@ -849,7 +849,7 @@ static void *DestroyColorElement(void *color_info)
     *p;
 
   p=(ColorInfo *) color_info;
-  if (p->exempt  == MagickFalse)
+  if (IfMagickFalse(p->exempt))
     {
       if (p->path != (char *) NULL)
         p->path=DestroyString(p->path);
@@ -914,11 +914,11 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
 
   assert(exception != (ExceptionInfo *) NULL);
   if ((color_list == (LinkedListInfo *) NULL) ||
-      (instantiate_color == MagickFalse))
-    if (InitializeColorList(exception) == MagickFalse)
+       IfMagickFalse(instantiate_color))
+    if (IfMagickFalse(InitializeColorList(exception)))
       return((const ColorInfo *) NULL);
   if ((color_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(color_list) != MagickFalse))
+      IfMagickTrue(IsLinkedListEmpty(color_list)))
     return((const ColorInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((const ColorInfo *) GetValueFromLinkedList(color_list,0));
@@ -1194,8 +1194,8 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   for (i=0; p != (const ColorInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
+    if (IsMagickFalse(p->stealth) &&
+        IsMagickTrue(GlobExpression(p->name,pattern,MagickFalse)))
       colors[i++]=p;
     p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   }
@@ -1287,8 +1287,8 @@ MagickExport char **GetColorList(const char *pattern,
   p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   for (i=0; p != (const ColorInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
+    if (IsMagickFalse(p->stealth) &&
+        IsMagickTrue(GlobExpression(p->name,pattern,MagickFalse)))
       colors[i++]=ConstantString(p->name);
     p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   }
@@ -1406,7 +1406,7 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
   assert(tuple != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tuple);
   *tuple='\0';
-  if (hex != MagickFalse)
+  if (IfMagickTrue(hex))
     {
       /*
         Convert pixel to hex color.
@@ -1437,19 +1437,19 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
       /*
         SVG requires color depths > 8 expressed as percentages.
       */
-      status=fabs(color.red-SVGCompliant(color.red)) < MagickEpsilon ?
-        MagickTrue : MagickFalse;
-      status&=fabs(color.green-SVGCompliant(color.green)) < MagickEpsilon ?
-        MagickTrue : MagickFalse;
-      status&=fabs(color.blue-SVGCompliant(color.blue)) < MagickEpsilon ?
-        MagickTrue : MagickFalse;
+      status=IsMagickTrue(fabs(color.red-SVGCompliant(color.red))
+           < MagickEpsilon);
+      status&=IsMagickTrue(fabs(color.green-SVGCompliant(color.green))
+           < MagickEpsilon);
+      status&=IsMagickTrue(fabs(color.blue-SVGCompliant(color.blue))
+           < MagickEpsilon);
       if (color.colorspace-CMYKColorspace)
-        status&=fabs(color.black-SVGCompliant(color.black)) < MagickEpsilon ?
-          MagickTrue : MagickFalse;
+        status&=IsMagickTrue(fabs(color.black-SVGCompliant(color.black))
+             < MagickEpsilon);
       if (color.alpha_trait == BlendPixelTrait)
-        status&=fabs(color.alpha-SVGCompliant(color.alpha)) < MagickEpsilon ?
-          MagickTrue : MagickFalse;
-      if (status != MagickFalse)
+        status&=IsMagickTrue(fabs(color.alpha-SVGCompliant(color.alpha))
+             < MagickEpsilon);
+      if (IfMagickTrue(status))
         color.depth=8;
     }
   (void) ConcatenateMagickString(tuple,CommandOptionToMnemonic(
@@ -1507,20 +1507,20 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
 static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
 {
   if ((color_list == (LinkedListInfo *) NULL) &&
-      (instantiate_color == MagickFalse))
+      IfMagickFalse(instantiate_color))
     {
       if (color_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&color_semaphore);
       LockSemaphoreInfo(color_semaphore);
       if ((color_list == (LinkedListInfo *) NULL) &&
-          (instantiate_color == MagickFalse))
+          IfMagickFalse(instantiate_color))
         {
           (void) LoadColorLists(ColorFilename,exception);
           instantiate_color=MagickTrue;
         }
       UnlockSemaphoreInfo(color_semaphore);
     }
-  return(color_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+  return(IfMagickTrue(color_list != (LinkedListInfo *) NULL));
 }
 
 /*
@@ -1648,7 +1648,7 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if (IfMagickTrue(image->debug))
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(target_image != (Image *) NULL);
   assert(target_image->signature == MagickSignature);
@@ -1673,7 +1673,7 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
           GetPixelInfoPixel(image,p,&pixel);
           q=GetCacheViewVirtualPixels(target_view,i,j,1,1,exception);
           GetPixelInfoPixel(image,q,&target);
-          if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
+          if (IfMagickFalse(IsFuzzyEquivalencePixelInfo(&pixel,&target)))
             break;
         }
         if (i < (ssize_t) target_image->columns)
@@ -1691,7 +1691,7 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
 
         proceed=SetImageProgress(image,SearchImageText,(MagickOffsetType) y,
           image->rows);
-        if (proceed == MagickFalse)
+        if( IfMagickFalse(proceed) )
           status=MagickFalse;
       }
   }
@@ -1699,9 +1699,9 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
   image_view=DestroyCacheView(image_view);
   *x_offset=x;
   *y_offset=y;
-  if (status == MagickFalse)
+  if (IfMagickFalse(status))
     return(status);
-  return(y < (ssize_t) image->rows ? MagickTrue : MagickFalse);
+  return(IsMagickTrue(y < (ssize_t) image->rows));
 }
 
 /*
@@ -1759,7 +1759,7 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
   path=(const char *) NULL;
   for (i=0; i < (ssize_t) number_colors; i++)
   {
-    if (color_info[i]->stealth != MagickFalse)
+    if (IfMagickTrue(color_info[i]->stealth))
       continue;
     if ((path == (const char *) NULL) ||
         (LocaleCompare(path,color_info[i]->path) != 0))
@@ -1944,7 +1944,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
     if (LocaleCompare(keyword,"/>") == 0)
       {
         status=AppendValueToLinkedList(color_list,color_info);
-        if (status == MagickFalse)
+        if (IfMagickFalse(status))
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             color_info->name);
@@ -1972,11 +1972,11 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
               compliance;
 
             compliance=color_info->compliance;
-            if (GlobExpression(token,"*SVG*",MagickTrue) != MagickFalse)
+            if (IfMagickTrue(GlobExpression(token,"*SVG*",MagickTrue)))
               compliance|=SVGCompliance;
-            if (GlobExpression(token,"*X11*",MagickTrue) != MagickFalse)
+            if (IfMagickTrue(GlobExpression(token,"*X11*",MagickTrue)))
               compliance|=X11Compliance;
-            if (GlobExpression(token,"*XPM*",MagickTrue) != MagickFalse)
+            if (IfMagickTrue(GlobExpression(token,"*XPM*",MagickTrue)))
               compliance|=XPMCompliance;
             color_info->compliance=(ComplianceType) compliance;
             break;
@@ -2094,7 +2094,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
     color_info->exempt=MagickTrue;
     color_info->signature=MagickSignature;
     status=AppendValueToLinkedList(color_list,color_info);
-    if (status == MagickFalse)
+    if (IfMagickFalse(status))
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
   }
@@ -2110,7 +2110,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 /*
@@ -2200,7 +2200,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       */
       (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
       name++;
-      for (n=0; isxdigit((int) ((unsigned char) name[n])) != MagickFalse; n++) ;
+      for (n=0; IfMagickTrue(isxdigit((int) ((unsigned char) name[n]))); n++);
       if ((n % 3) == 0)
         {
           do
@@ -2223,7 +2223,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
                   else
                     return(MagickFalse);
             }
-          } while (isxdigit((int) ((unsigned char) *name)) != MagickFalse);
+          } while (IfMagickTrue(isxdigit((int) ((unsigned char) name[n]))));
           depth=4*(n/3);
         }
       else
@@ -2255,7 +2255,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
                   else
                     return(MagickFalse);
             }
-          } while (isxdigit((int) ((unsigned char) *name)) != MagickFalse);
+          } while (IfMagickTrue(isxdigit((int) ((unsigned char) name[n]))));
           depth=4*(n/4);
         }
       color->colorspace=sRGBColorspace;
@@ -2326,7 +2326,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           return(MagickFalse);
         }
       color->colorspace=(ColorspaceType) type;
-      if ((icc_color == MagickFalse) && (color->colorspace == RGBColorspace))
+      if (IfMagickFalse(icc_color) && (color->colorspace == RGBColorspace))
         color->colorspace=sRGBColorspace;  /* as required by SVG standard */
       SetGeometryInfo(&geometry_info);
       flags=ParseGeometry(name+i+1,&geometry_info);
@@ -2470,6 +2470,9 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
 %  example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223)
 %  returns #dfdfdf.
 %
+%  UPDATE: the 'image' argument is no longer needed as all information should
+%  have been preset using GetPixelInfo().
+%
 %  The format of the QueryColorname method is:
 %
 %      MagickBooleanType QueryColorname(const Image *image,
@@ -2478,7 +2481,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
 %
 %  A description of each parameter follows.
 %
-%    o image: the image.
+%    o image: the image. (not used! - color gets settings from GetPixelInfo()
 %
 %    o color: the color intensities.
 %
@@ -2490,22 +2493,15 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
 %
 */
 
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
-MagickExport MagickBooleanType QueryColorname(const Image *image,
-  const PixelInfo *color,const ComplianceType compliance,char *name,
-  ExceptionInfo *exception)
+MagickExport MagickBooleanType QueryColorname(
+  const Image *magick_unused(image),const PixelInfo *color,
+  const ComplianceType compliance,char *name,ExceptionInfo *exception)
 {
   PixelInfo
     pixel;
 
   double
-    opacity;
+    alpha;
 
   register const ColorInfo
     *p;
@@ -2515,15 +2511,15 @@ MagickExport MagickBooleanType QueryColorname(const Image *image,
   if (compliance == XPMCompliance)
     {
       pixel.alpha_trait=UndefinedPixelTrait;
-      pixel.depth=(size_t) MagickMin(1.0*image->depth,16.0);
+      if ( pixel.depth > 16 )
+        pixel.depth=16;
     }
-  GetColorTuple(&pixel,compliance != SVGCompliance ? MagickTrue : MagickFalse,
-    name);
-  if (IssRGBColorspace(pixel.colorspace) == MagickFalse)
+  GetColorTuple(&pixel,IsMagickTrue(compliance != SVGCompliance),name);
+  if (IfMagickFalse(IssRGBColorspace(pixel.colorspace)))
     return(MagickFalse);
+  alpha=color->alpha_trait == BlendPixelTrait ? color->alpha : OpaqueAlpha;
   (void) GetColorInfo("*",exception);
   ResetLinkedListIterator(color_list);
-  opacity=image->alpha_trait == BlendPixelTrait ? color->alpha : OpaqueAlpha;
   p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   while (p != (const ColorInfo *) NULL)
   {
@@ -2531,7 +2527,7 @@ MagickExport MagickBooleanType QueryColorname(const Image *image,
         ((fabs(p->color.red-color->red) < MagickEpsilon)) &&
          (fabs(p->color.green-color->green) < MagickEpsilon) &&
          (fabs(p->color.blue-color->blue) < MagickEpsilon) &&
-         (fabs(p->color.alpha-opacity) < MagickEpsilon))
+         (fabs(p->color.alpha-alpha) < MagickEpsilon))
       {
         (void) CopyMagickString(name,p->name,MaxTextExtent);
         break;

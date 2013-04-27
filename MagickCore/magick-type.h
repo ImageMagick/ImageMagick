@@ -165,24 +165,40 @@ typedef enum
    IsMagickNotNULL()  converts C pointers tests MagickBooleanType
 */
 #if 1
-/* Fast C typing method assumes MagickBooleanType uses match 0,1 values */
+/* Fast C typing method assumes MagickBooleanType match 0,1 values */
 #  define IfMagickTrue(v)  ((int)(v))
 #  define IfMagickFalse(v) (!(int)(v))
 #  define IsMagickTrue(v)  ((MagickBooleanType)((int)(v)!=0))
 #  define IsMagickFalse(v) ((MagickBooleanType)(!(int)(v)))
 #  define IsMagickNot(v)   ((MagickBooleanType)(!(int)(v)))
 #else
-/* Do not depend MagickBooleanValues */
+/* Do not depend MagickBooleanType's values */
 #  define IfMagickTrue(v)  ((v) != MagickFalse)
 #  define IfMagickFalse(v) ((v) == MagickFalse)
 #  define IsMagickTrue(v)  ((v)?MagickTrue:MagickFalse)
 #  define IsMagickFalse(v) ((v)?MagickFalse:MagickTrue)
 #  define IsMagickNot(v)   (IfMagickTrue(v)?MagickFalse:MagickTrue)
+#  define IfNaN(a) ((a) != (a))
 #endif
 #define IfStringTrue(v)       IfMagickTrue(IsStringTrue(v))
 #define IfStringNotFalse(v)   IfMagickTrue(IsStringNotFalse(v))
 #define IsMagickNULL(v)       (((void *)(v) == NULL)?MagickTrue:MagickFalse)
 #define IsMagickNotNULL(v)    (((void *)(v) != NULL)?MagickTrue:MagickFalse)
+
+/*
+  The IsNaN and IfNan tests for special floating point numbers of
+  value NaN (not a number).  NaN's are defined as part of the IEEE standard
+  for floating point number representation, and need to be watched out for.
+  Morphology Kernels often use these special numbers as neighbourhood masks.
+
+  The special property that two NaN's are never equal, even if they are from
+  the same variable allows you to test if a value is special NaN value.
+
+  The macros are thus is only true if the value given is NaN.
+*/
+#  define IfNaN(a) ((a) != (a))
+#  define IsNaN(a) ((a) != (a)?MagickTrue:MagickFalse)
+
 
 typedef struct _BlobInfo BlobInfo;
 

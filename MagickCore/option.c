@@ -321,8 +321,8 @@ static const OptionInfo
     { "-decipher", 1L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
     { "+deconstruct", 0L, DeprecateOptionFlag, MagickTrue },
     { "-deconstruct", 0L, ReplacedOptionFlag | ListOperatorFlag | FireOptionFlag, MagickTrue },
-    { "+define", 1L, ImageInfoOptionFlag | FireOptionFlag, MagickFalse },
-    { "-define", 1L, ImageInfoOptionFlag | FireOptionFlag, MagickFalse },
+    { "+define", 1L, ImageInfoOptionFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
+    { "-define", 1L, ImageInfoOptionFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { "+delay", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-delay", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+delete", 0L, ListOperatorFlag | FireOptionFlag, MagickFalse },
@@ -405,7 +405,7 @@ static const OptionInfo
     { "+foreground", 0L, NonMagickOptionFlag, MagickFalse },
     { "-foreground", 1L, NonMagickOptionFlag, MagickFalse },
     { "+format", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "-format", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "-format", 1L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "+frame", 1L, DeprecateOptionFlag, MagickTrue },
     { "-frame", 1L, SimpleOperatorFlag, MagickFalse },
     { "+function", 2L, DeprecateOptionFlag, MagickTrue },
@@ -435,7 +435,7 @@ static const OptionInfo
     { "+iconGeometry", 0L, NonMagickOptionFlag, MagickFalse },
     { "-iconGeometry", 1L, NonMagickOptionFlag, MagickFalse },
     { "+iconic", 0L, NonMagickOptionFlag, MagickFalse },
-    { "-iconic", 1L, NonMagickOptionFlag, MagickFalse },
+    { "-iconic", 0L, NonMagickOptionFlag, MagickFalse },
     { "+identify", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-identify", 0L, SimpleOperatorFlag | FireOptionFlag, MagickFalse },
     { "+ift", 0L, ListOperatorFlag | FireOptionFlag, MagickFalse },
@@ -558,7 +558,7 @@ static const OptionInfo
     { "+preview", 0L, DeprecateOptionFlag, MagickTrue },
     { "-preview", 1L, GlobalOptionFlag, MagickFalse },
     { "+print", 1L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
-    { "-print", 1L, ListOperatorFlag | AlwaysInterpretArgsFlag | FireOptionFlag, MagickFalse },
+    { "-print", 1L, NoImageOperatorFlag | AlwaysInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { "+process", 1L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-process", 1L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "+profile", 1L, SimpleOperatorFlag, MagickFalse },
@@ -635,7 +635,7 @@ static const OptionInfo
     { "-separate", 0L, SimpleOperatorFlag | FireOptionFlag, MagickFalse },
     { "+sepia-tone", 1L, DeprecateOptionFlag, MagickTrue },
     { "-sepia-tone", 1L, SimpleOperatorFlag, MagickFalse },
-    { "+set", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "+set", 1L, NoImageOperatorFlag, MagickFalse },
     { "-set", 2L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
     { "+shade", 0L, DeprecateOptionFlag, MagickTrue },
     { "-shade", 1L, SimpleOperatorFlag, MagickFalse },
@@ -1299,6 +1299,7 @@ static const OptionInfo
     { "Blob", BlobEvent, UndefinedOptionFlag, MagickFalse },
     { "Cache", CacheEvent, UndefinedOptionFlag, MagickFalse },
     { "Coder", CoderEvent, UndefinedOptionFlag, MagickFalse },
+    { "Command", CommandEvent, UndefinedOptionFlag, MagickFalse },
     { "Configure", ConfigureEvent, UndefinedOptionFlag, MagickFalse },
     { "Deprecate", DeprecateEvent, UndefinedOptionFlag, MagickFalse },
     { "Draw", DrawEvent, UndefinedOptionFlag, MagickFalse },
@@ -2798,8 +2799,10 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
   /*
     Specific global option settings.
   */
-  if (LocaleCompare(option,"size") == 0)
+  if (LocaleCompare(option,"size") == 0) {
     (void) CloneString(&image_info->size,value);
+    return(MagickTrue);
+  }
   /*
     Create tree if needed - specify how key,values are to be freed.
   */
