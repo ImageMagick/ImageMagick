@@ -202,7 +202,7 @@
 %    o filename   the filename to open  ("-" means stdin)
 %
 */
-WandExport ScriptTokenInfo *AcquireScriptTokenInfo(char *filename)
+WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
 {
   ScriptTokenInfo
     *token_info;

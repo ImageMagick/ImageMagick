@@ -63,7 +63,7 @@ typedef struct
 
 
 extern WandExport ScriptTokenInfo
-  *AcquireScriptTokenInfo(char *),
+  *AcquireScriptTokenInfo(const char *),
   *DestroyScriptTokenInfo(ScriptTokenInfo *);
 
 extern WandExport MagickBooleanType

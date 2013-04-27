@@ -82,6 +82,12 @@ static const char
 %  MagickCommandGenesis() applies image processing options to an image as
 %  prescribed by command line options.
 %
+%  It wiil look for special options like "-debug", "-bench", and
+%  "-distribute-cache" that needs to be applied even before the main
+%  processing begins, and may completely overrule normal command processing.
+%  Such 'Genesis' Options can only be given on the CLI, (not in a script)
+%  and are typically ignored (as they have been handled) if seen later.
+%
 %  The format of the MagickCommandGenesis method is:
 %
 %      MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,

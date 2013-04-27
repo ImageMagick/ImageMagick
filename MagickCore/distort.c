@@ -1516,6 +1516,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
     return((Image *) NULL);
   (void) SetImageVirtualPixelMethod(tmp_image,TransparentVirtualPixelMethod,
     exception);
+  tmp_image->image_info=image->image_info; /* preserve global options */
 
   if (image->alpha_trait != BlendPixelTrait)
     {
@@ -1556,6 +1557,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
       tmp_image=CloneImage(image,0,0,MagickTrue,exception);
       if ( tmp_image == (Image *) NULL )
         return((Image *) NULL);
+      tmp_image->image_info=image->image_info; /* preserve global options */
       (void) SetImageVirtualPixelMethod(tmp_image,
         TransparentVirtualPixelMethod,exception);
       resize_image=DistortImage(tmp_image,AffineDistortion,12,distort_args,
@@ -1705,6 +1707,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
+fprintf(stderr, "distort image->options=%d\n",
+     image->image_info != (ImageInfo *)NULL);
 
   /*
     Handle Special Compound Distortions

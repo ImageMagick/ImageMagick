@@ -261,13 +261,59 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C L I L o g E v e n t                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CLILogEvent() is a wrapper around LogMagickEvent(), adding to it the
+% location of the option that is (about) to be executed.
+%
+*/
+WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
+     const LogEventType type,const char *module,const char *function,
+     const size_t line,const char *format,...)
+{
+  char
+    new_format[MaxTextExtent];
+
+  MagickBooleanType
+    status;
+
+  va_list
+    operands;
+
+  /* HACK - prepend the CLI location to format string.
+     The better way would be add more arguments to to the 'va' oparands
+     list, but that does not appear to be possible! So we do some
+     pre-formating of the location info here.
+  */
+  (void) FormatLocaleString(new_format,MaxTextExtent,cli_wand->location,
+       cli_wand->filename, cli_wand->line, cli_wand->column);
+  (void) ConcatenateMagickString(new_format," ",MaxTextExtent);
+  (void) ConcatenateMagickString(new_format,format,MaxTextExtent);
+
+  va_start(operands,format);
+  status=LogMagickEventList(type,module,function,line,new_format,operands);
+  va_end(operands);
+
+
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   C L I T h r o w E x c e p t i o n                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% CLIThrowException() formats and records an exception condition, adding to
+% CLIThrowException() is a wrapper around ThrowMagickException(), adding to
 % it the location of the option that caused the exception to occur.
 */
 WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
@@ -287,10 +333,9 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
     operands;
 
   /* HACK - append location to format string.
-     The better way would be append location formats and add more arguments to
-     operands, but that does not appear to be posible!
-     Note:  ThrowMagickExceptionList() was exported specifically for
-     the use of this function.
+     The better way would be add more arguments to to the 'va' oparands
+     list, but that does not appear to be possible! So we do some
+     pre-formating of the location info here.
   */
   (void) CopyMagickString(new_format,format,MaxTextExtent);
   (void) ConcatenateMagickString(new_format," ",MaxTextExtent);

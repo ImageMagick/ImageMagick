@@ -43,18 +43,19 @@ typedef enum
   ConfigureEvent = 0x00020,
   DeprecateEvent = 0x00040,
   DrawEvent = 0x00080,
-  ExceptionEvent = 0x00100,
+  ExceptionEvent = 0x00100,   /* Log Errors and Warnings immediately */
   ImageEvent = 0x00200,
   LocaleEvent = 0x00400,
-  ModuleEvent = 0x00800,
+  ModuleEvent = 0x00800,      /* Loding of coder and filter modules */
   PixelEvent = 0x01000,
   PolicyEvent = 0x02000,
   ResourceEvent = 0x04000,
   TraceEvent = 0x08000,
   TransformEvent = 0x10000,
   UserEvent = 0x20000,
-  WandEvent = 0x40000,
+  WandEvent = 0x40000,        /* Log MagickWand */
   X11Event = 0x80000,
+  CommandEvent = 0x100000,    /* Log Command Processing (CLI & Scripts) */
   AllEvents = 0x7fffffff
 } LogEventType;
 
@@ -67,7 +68,7 @@ extern MagickExport char
 extern MagickExport const char
   *GetLogName(void),
   *SetLogName(const char *);
-                                                                                
+
 extern MagickExport const LogInfo
   **GetLogInfoList(const char *,size_t *,ExceptionInfo *);
 

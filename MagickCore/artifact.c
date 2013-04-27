@@ -301,8 +301,10 @@ MagickExport const char *GetImageArtifact(const Image *image,
   */
   if ((image->image_info != (ImageInfo *)NULL) &&
       (image->image_info->options != (void *) NULL))
+{
     p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
       image->image_info->options,artifact);
+}
   return(p);
 }
 

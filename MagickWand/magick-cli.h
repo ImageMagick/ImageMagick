@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 extern WandExport void
-  ProcessScriptOptions(MagickCLI *,int,char **,int);
+  ProcessScriptOptions(MagickCLI *,const char *,int,char **,int);
 
 extern WandExport int
   ProcessCommandOptions(MagickCLI *,int,char **,int);

@@ -2182,7 +2182,7 @@ MagickExport MagickBooleanType ExportImagePixels(Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o image: the image. (optional - may be NULL)
 %
 %    o pixel: Specifies a pointer to a PixelInfo structure.
 %
