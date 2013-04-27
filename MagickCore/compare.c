@@ -1619,6 +1619,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
 
     if (status == MagickFalse)
       continue;
+    #pragma omp flush(similarity_metric)
     if (*similarity_metric <= similarity_threshold)
       continue;
     q=GetCacheViewAuthenticPixels(similarity_view,0,y,similarity_image->columns,
@@ -1633,6 +1634,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       register ssize_t
         i;
 
+      #pragma omp flush(similarity_metric)
       if (*similarity_metric <= similarity_threshold)
         break;
       similarity=GetSimilarityMetric(image,reference,metric,x,y,exception);
