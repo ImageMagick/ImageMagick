@@ -3169,6 +3169,8 @@ HPGLDecodeDelegateDefault='hp2xx'
 HTMLDecodeDelegateDefault='html2ps'
 ILBMDecodeDelegateDefault='ilbmtoppm'
 ILBMEncodeDelegateDefault='ppmtoilbm'
+JXRDecodeDelegateDefault='JxrDecApp'
+JXREncodeDelegateDefault='JxrEncApp'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
@@ -3220,6 +3222,8 @@ AC_PATH_PROG(HPGLDecodeDelegate, "$HPGLDecodeDelegateDefault", "$HPGLDecodeDeleg
 AC_PATH_PROG(HTMLDecodeDelegate, "$HTMLDecodeDelegateDefault", "$HTMLDecodeDelegateDefault")
 AC_PATH_PROG(ILBMDecodeDelegate, "$ILBMDecodeDelegateDefault", "$ILBMDecodeDelegateDefault")
 AC_PATH_PROG(ILBMEncodeDelegate, "$ILBMEncodeDelegateDefault", "$ILBMEncodeDelegateDefault")
+AC_PATH_PROG(JXRDecodeDelegate, "$JXRDecodeDelegateDefault", "$JXRDecodeDelegateDefault")
+AC_PATH_PROG(JXREncodeDelegate, "$JXREncodeDelegateDefault", "$JXREncodeDelegateDefault")
 AC_PATH_PROG(LPDelegate, "$LPDelegateDefault", no)
 AC_PATH_PROG(LPRDelegate, "$LPRDelegateDefault", "$LPRDelegateDefault")
 AC_PATH_PROG(LaunchDelegate, "$LaunchDelegateDefault", "$LaunchDelegateDefault")
@@ -3375,16 +3379,20 @@ if test "$with_frozenpaths" != 'yes'; then
   CGMDecodeDelegate="$CGMDecodeDelegateDefault"
   CatDelegate="$CatDelegateDefault"
   ConvertDelegate="$ConvertDelegateDefault"
-  GVCDecodeDelegate="$GVCDecodeDelegateDefault"
+  DisplayDelegate="$DisplayDelegateDefault"
+  DNGDecodeDelegate="$DNGDecodeDelegateDefault"
   DVIDecodeDelegate="$DVIDecodeDelegateDefault"
   EchoDelegate="$EchoDelegateDefault"
   EditorDelegate="$EditorDelegateDefault"
   FIGDecodeDelegate="$FIGDecodeDelegateDefault"
   GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
+  GVCDecodeDelegate="$GVCDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
   HTMLDecodeDelegate="$HTMLDecodeDelegateDefault"
   ILBMDecodeDelegate="$ILBMDecodeDelegateDefault"
   ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
+  JXRDecodeDelegate="$JXRDecodeDelegateDefault"
+  JXREncodeDelegate="$JXREncodeDelegateDefault"
   LPDelegate="$LPDelegateDefault"
   LaunchDelegate="$LaunchDelegateDefault"
   MANDelegate="$MANDelegateDefault"
@@ -3429,6 +3437,8 @@ AC_SUBST(HPGLDecodeDelegate)
 AC_SUBST(HTMLDecodeDelegate)
 AC_SUBST(ILBMDecodeDelegate)
 AC_SUBST(ILBMEncodeDelegate)
+AC_SUBST(JXRDecodeDelegate)
+AC_SUBST(JXREncodeDelegate)
 AC_SUBST(LPDelegate)
 AC_SUBST(LaunchDelegate)
 AC_SUBST(MANDelegate)

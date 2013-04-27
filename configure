@@ -711,6 +711,8 @@ MANDelegate
 LaunchDelegate
 LPRDelegate
 LPDelegate
+JXREncodeDelegate
+JXRDecodeDelegate
 ILBMEncodeDelegate
 ILBMDecodeDelegate
 HTMLDecodeDelegate
@@ -3677,7 +3679,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=11949:11963M
+MAGICK_SVN_REVISION=12018M
 
 
 # Substitute library versioning
@@ -22564,12 +22566,14 @@ _ACEOF
 esac
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for long long int" >&5
-$as_echo_n "checking for long long int... " >&6; }
-if ${ac_cv_type_long_long_int+:} false; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unsigned long long int" >&5
+$as_echo_n "checking for unsigned long long int... " >&6; }
+if ${ac_cv_type_unsigned_long_long_int+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+  ac_cv_type_unsigned_long_long_int=yes
+     if test "x${ac_cv_prog_cc_c99-no}" = xno; then
+       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
   /* For now, do not test the preprocessor; as of 2007 there are too many
@@ -22602,37 +22606,64 @@ main ()
 
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-                          if test "$cross_compiling" = yes; then :
+
+else
+  ac_cv_type_unsigned_long_long_int=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+     fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_type_unsigned_long_long_int" >&5
+$as_echo "$ac_cv_type_unsigned_long_long_int" >&6; }
+  if test $ac_cv_type_unsigned_long_long_int = yes; then
+
+$as_echo "#define HAVE_UNSIGNED_LONG_LONG_INT 1" >>confdefs.h
+
+  fi
+
+
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for long long int" >&5
+$as_echo_n "checking for long long int... " >&6; }
+if ${ac_cv_type_long_long_int+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
   ac_cv_type_long_long_int=yes
+      if test "x${ac_cv_prog_cc_c99-no}" = xno; then
+        ac_cv_type_long_long_int=$ac_cv_type_unsigned_long_long_int
+        if test $ac_cv_type_long_long_int = yes; then
+                                        if test "$cross_compiling" = yes; then :
+  :
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <limits.h>
-               #ifndef LLONG_MAX
-               # define HALF \
-                        (1LL << (sizeof (long long int) * CHAR_BIT - 2))
-               # define LLONG_MAX (HALF - 1 + HALF)
-               #endif
+                 #ifndef LLONG_MAX
+                 # define HALF \
+                          (1LL << (sizeof (long long int) * CHAR_BIT - 2))
+                 # define LLONG_MAX (HALF - 1 + HALF)
+                 #endif
 int
 main ()
 {
 long long int n = 1;
-               int i;
-               for (i = 0; ; i++)
-                 {
-                   long long int m = n << i;
-                   if (m >> i != n)
-                     return 1;
-                   if (LLONG_MAX / 2 < m)
-                     break;
-                 }
-               return 0;
+                 int i;
+                 for (i = 0; ; i++)
+                   {
+                     long long int m = n << i;
+                     if (m >> i != n)
+                       return 1;
+                     if (LLONG_MAX / 2 < m)
+                       break;
+                   }
+                 return 0;
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
-  ac_cv_type_long_long_int=yes
+
 else
   ac_cv_type_long_long_int=no
 fi
@@ -22640,11 +22671,8 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
-else
-  ac_cv_type_long_long_int=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
+        fi
+      fi
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_type_long_long_int" >&5
 $as_echo "$ac_cv_type_long_long_int" >&6; }
@@ -22804,75 +22832,47 @@ $as_echo "#define HAVE_LONG_DOUBLE_WIDER 1" >>confdefs.h
   fi
 
 
+
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for long long int" >&5
 $as_echo_n "checking for long long int... " >&6; }
 if ${ac_cv_type_long_long_int+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-  /* For now, do not test the preprocessor; as of 2007 there are too many
-         implementations with broken preprocessors.  Perhaps this can
-         be revisited in 2012.  In the meantime, code should not expect
-         #if to work with literals wider than 32 bits.  */
-      /* Test literals.  */
-      long long int ll = 9223372036854775807ll;
-      long long int nll = -9223372036854775807LL;
-      unsigned long long int ull = 18446744073709551615ULL;
-      /* Test constant expressions.   */
-      typedef int a[((-9223372036854775807LL < 0 && 0 < 9223372036854775807ll)
-                     ? 1 : -1)];
-      typedef int b[(18446744073709551615ULL <= (unsigned long long int) -1
-                     ? 1 : -1)];
-      int i = 63;
-int
-main ()
-{
-/* Test availability of runtime routines for shift and division.  */
-      long long int llmax = 9223372036854775807ll;
-      unsigned long long int ullmax = 18446744073709551615ull;
-      return ((ll << 63) | (ll >> 63) | (ll < i) | (ll > i)
-              | (llmax / ll) | (llmax % ll)
-              | (ull << 63) | (ull >> 63) | (ull << i) | (ull >> i)
-              | (ullmax / ull) | (ullmax % ull));
-  ;
-  return 0;
-}
-
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-                          if test "$cross_compiling" = yes; then :
   ac_cv_type_long_long_int=yes
+      if test "x${ac_cv_prog_cc_c99-no}" = xno; then
+        ac_cv_type_long_long_int=$ac_cv_type_unsigned_long_long_int
+        if test $ac_cv_type_long_long_int = yes; then
+                                        if test "$cross_compiling" = yes; then :
+  :
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <limits.h>
-               #ifndef LLONG_MAX
-               # define HALF \
-                        (1LL << (sizeof (long long int) * CHAR_BIT - 2))
-               # define LLONG_MAX (HALF - 1 + HALF)
-               #endif
+                 #ifndef LLONG_MAX
+                 # define HALF \
+                          (1LL << (sizeof (long long int) * CHAR_BIT - 2))
+                 # define LLONG_MAX (HALF - 1 + HALF)
+                 #endif
 int
 main ()
 {
 long long int n = 1;
-               int i;
-               for (i = 0; ; i++)
-                 {
-                   long long int m = n << i;
-                   if (m >> i != n)
-                     return 1;
-                   if (LLONG_MAX / 2 < m)
-                     break;
-                 }
-               return 0;
+                 int i;
+                 for (i = 0; ; i++)
+                   {
+                     long long int m = n << i;
+                     if (m >> i != n)
+                       return 1;
+                     if (LLONG_MAX / 2 < m)
+                       break;
+                   }
+                 return 0;
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
-  ac_cv_type_long_long_int=yes
+
 else
   ac_cv_type_long_long_int=no
 fi
@@ -22880,11 +22880,8 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
-else
-  ac_cv_type_long_long_int=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
+        fi
+      fi
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_type_long_long_int" >&5
 $as_echo "$ac_cv_type_long_long_int" >&6; }
@@ -23069,60 +23066,6 @@ _ACEOF
   esac
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unsigned long long int" >&5
-$as_echo_n "checking for unsigned long long int... " >&6; }
-if ${ac_cv_type_unsigned_long_long_int+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-  /* For now, do not test the preprocessor; as of 2007 there are too many
-         implementations with broken preprocessors.  Perhaps this can
-         be revisited in 2012.  In the meantime, code should not expect
-         #if to work with literals wider than 32 bits.  */
-      /* Test literals.  */
-      long long int ll = 9223372036854775807ll;
-      long long int nll = -9223372036854775807LL;
-      unsigned long long int ull = 18446744073709551615ULL;
-      /* Test constant expressions.   */
-      typedef int a[((-9223372036854775807LL < 0 && 0 < 9223372036854775807ll)
-                     ? 1 : -1)];
-      typedef int b[(18446744073709551615ULL <= (unsigned long long int) -1
-                     ? 1 : -1)];
-      int i = 63;
-int
-main ()
-{
-/* Test availability of runtime routines for shift and division.  */
-      long long int llmax = 9223372036854775807ll;
-      unsigned long long int ullmax = 18446744073709551615ull;
-      return ((ll << 63) | (ll >> 63) | (ll < i) | (ll > i)
-              | (llmax / ll) | (llmax % ll)
-              | (ull << 63) | (ull >> 63) | (ull << i) | (ull >> i)
-              | (ullmax / ull) | (ullmax % ull));
-  ;
-  return 0;
-}
-
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_type_unsigned_long_long_int=yes
-else
-  ac_cv_type_unsigned_long_long_int=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_type_unsigned_long_long_int" >&5
-$as_echo "$ac_cv_type_unsigned_long_long_int" >&6; }
-  if test $ac_cv_type_unsigned_long_long_int = yes; then
-
-$as_echo "#define HAVE_UNSIGNED_LONG_LONG_INT 1" >>confdefs.h
-
-  fi
-
-
 
   ac_fn_c_check_type "$LINENO" "uintmax_t" "ac_cv_type_uintmax_t" "$ac_includes_default"
 if test "x$ac_cv_type_uintmax_t" = xyes; then :
@@ -23184,7 +23127,9 @@ $as_echo_n "checking for unsigned long long int... " >&6; }
 if ${ac_cv_type_unsigned_long_long_int+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+  ac_cv_type_unsigned_long_long_int=yes
+     if test "x${ac_cv_prog_cc_c99-no}" = xno; then
+       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
   /* For now, do not test the preprocessor; as of 2007 there are too many
@@ -23217,12 +23162,13 @@ main ()
 
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_type_unsigned_long_long_int=yes
+
 else
   ac_cv_type_unsigned_long_long_int=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
+     fi
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_type_unsigned_long_long_int" >&5
 $as_echo "$ac_cv_type_unsigned_long_long_int" >&6; }
@@ -32726,6 +32672,8 @@ HPGLDecodeDelegateDefault='hp2xx'
 HTMLDecodeDelegateDefault='html2ps'
 ILBMDecodeDelegateDefault='ilbmtoppm'
 ILBMEncodeDelegateDefault='ppmtoilbm'
+JXRDecodeDelegateDefault='JxrDecApp'
+JXREncodeDelegateDefault='JxrEncApp'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
@@ -33576,6 +33524,88 @@ ILBMEncodeDelegate=$ac_cv_path_ILBMEncodeDelegate
 if test -n "$ILBMEncodeDelegate"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ILBMEncodeDelegate" >&5
 $as_echo "$ILBMEncodeDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+# Extract the first word of ""$JXRDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$JXRDecodeDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_JXRDecodeDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $JXRDecodeDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_JXRDecodeDelegate="$JXRDecodeDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_JXRDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_JXRDecodeDelegate" && ac_cv_path_JXRDecodeDelegate=""$JXRDecodeDelegateDefault""
+  ;;
+esac
+fi
+JXRDecodeDelegate=$ac_cv_path_JXRDecodeDelegate
+if test -n "$JXRDecodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $JXRDecodeDelegate" >&5
+$as_echo "$JXRDecodeDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+# Extract the first word of ""$JXREncodeDelegateDefault"", so it can be a program name with args.
+set dummy "$JXREncodeDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_JXREncodeDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $JXREncodeDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_JXREncodeDelegate="$JXREncodeDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_JXREncodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_JXREncodeDelegate" && ac_cv_path_JXREncodeDelegate=""$JXREncodeDelegateDefault""
+  ;;
+esac
+fi
+JXREncodeDelegate=$ac_cv_path_JXREncodeDelegate
+if test -n "$JXREncodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $JXREncodeDelegate" >&5
+$as_echo "$JXREncodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -34668,16 +34698,20 @@ if test "$with_frozenpaths" != 'yes'; then
   CGMDecodeDelegate="$CGMDecodeDelegateDefault"
   CatDelegate="$CatDelegateDefault"
   ConvertDelegate="$ConvertDelegateDefault"
-  GVCDecodeDelegate="$GVCDecodeDelegateDefault"
+  DisplayDelegate="$DisplayDelegateDefault"
+  DNGDecodeDelegate="$DNGDecodeDelegateDefault"
   DVIDecodeDelegate="$DVIDecodeDelegateDefault"
   EchoDelegate="$EchoDelegateDefault"
   EditorDelegate="$EditorDelegateDefault"
   FIGDecodeDelegate="$FIGDecodeDelegateDefault"
   GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
+  GVCDecodeDelegate="$GVCDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
   HTMLDecodeDelegate="$HTMLDecodeDelegateDefault"
   ILBMDecodeDelegate="$ILBMDecodeDelegateDefault"
   ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
+  JXRDecodeDelegate="$JXRDecodeDelegateDefault"
+  JXREncodeDelegate="$JXREncodeDelegateDefault"
   LPDelegate="$LPDelegateDefault"
   LaunchDelegate="$LaunchDelegateDefault"
   MANDelegate="$MANDelegateDefault"
@@ -34705,6 +34739,8 @@ if test "$with_frozenpaths" != 'yes'; then
 fi
 
 # Delegate substitutions
+
+
 
 
 
