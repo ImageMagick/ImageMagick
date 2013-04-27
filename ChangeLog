@@ -1,6 +1,10 @@
+2013-04-28  6.8.5-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.5-3, SVN revision 12025.
+
 2013-04-29  6.8.5-3 Cristy  <quetzlzacatenango@image...>
   * Add DeleteImageArtifact() for jpeg:extent artifact (thanks to
     Jimmy Xie @ Microsoft).
+  * Add support for JXR / WDP image format.
 
 2013-04-28  6.8.5-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-2, SVN revision 12013.
