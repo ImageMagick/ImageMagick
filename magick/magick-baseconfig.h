@@ -333,9 +333,7 @@
 #endif
 
 /* Compile with hugepage support */
-#ifndef MAGICKCORE_HAVE_HUGEPAGES
-#define MAGICKCORE_HAVE_HUGEPAGES 1
-#endif
+/* #undef HAVE_HUGEPAGES */
 
 /* Define to 1 if the system has the type `intmax_t'. */
 #ifndef MAGICKCORE_HAVE_INTMAX_T
@@ -418,7 +416,7 @@
 #define MAGICKCORE_HAVE_LONG_DOUBLE_WIDER 1
 #endif
 
-/* Define to 1 if the system has the type `long long int'. */
+/* Define to 1 if the system has the type 'long long int'. */
 #ifndef MAGICKCORE_HAVE_LONG_LONG_INT
 #define MAGICKCORE_HAVE_LONG_LONG_INT 1
 #endif
@@ -962,7 +960,7 @@
 #define MAGICKCORE_HAVE_UNISTD_H 1
 #endif
 
-/* Define to 1 if the system has the type `unsigned long long int'. */
+/* Define to 1 if the system has the type 'unsigned long long int'. */
 #ifndef MAGICKCORE_HAVE_UNSIGNED_LONG_LONG_INT
 #define MAGICKCORE_HAVE_UNSIGNED_LONG_LONG_INT 1
 #endif
