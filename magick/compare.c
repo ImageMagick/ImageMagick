@@ -1869,8 +1869,7 @@ MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
           offset->x=x;
           offset->y=y;
         }
-      SetPixelRed(q,ClampToQuantum(QuantumRange-QuantumRange*
-        similarity));
+      SetPixelRed(q,ClampToQuantum(QuantumRange-QuantumRange*similarity));
       SetPixelGreen(q,GetPixelRed(q));
       SetPixelBlue(q,GetPixelRed(q));
       q++;
