@@ -2630,7 +2630,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         vertical kernels (such as a 'BlurKernel')
      */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-     #pragma omp parallel for schedule(static,4) shared(progress,status) \
+     #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
        magick_threads(image,morphology_image,image->columns,1)
 #endif
       for (x=0; x < (ssize_t) image->columns; x++)
@@ -2741,6 +2741,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 pixels+=GetPixelChannels(image);
               }
             }
+            #pragma omp critical (MagickCore_MorphologyImage)
             if (fabs(pixel-p[center+i]) > MagickEpsilon)
               changed++;
             SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
@@ -2773,7 +2774,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     Normal handling of horizontal or rectangular kernels (row by row).
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
     magick_threads(image,morphology_image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -3135,6 +3136,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           default:
             break;
         }
+        #pragma omp critical (MagickCore_MorphologyImage)
         if (fabs(pixel-p[center+i]) > MagickEpsilon)
           changed++;
         SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
