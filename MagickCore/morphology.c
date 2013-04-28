@@ -2719,6 +2719,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                     pixels+=GetPixelChannels(image);
                   }
                 }
+                #pragma omp critical (MagickCore_MorphologyPrimitive)
                 if (fabs(pixel-p[center+i]) > MagickEpsilon)
                   changed++;
                 SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),
@@ -2741,7 +2742,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 pixels+=GetPixelChannels(image);
               }
             }
-            #pragma omp critical (MagickCore_MorphologyImage)
+            #pragma omp critical (MagickCore_MorphologyPrimitive)
             if (fabs(pixel-p[center+i]) > MagickEpsilon)
               changed++;
             SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
@@ -2757,7 +2758,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_MorphologyImage)
+            #pragma omp critical (MagickCore_MorphologyPrimitive)
 #endif
             proceed=SetImageProgress(image,MorphologyTag,progress++,
               image->rows);
@@ -3136,7 +3137,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           default:
             break;
         }
-        #pragma omp critical (MagickCore_MorphologyImage)
+        #pragma omp critical (MagickCore_MorphologyPrimitive)
         if (fabs(pixel-p[center+i]) > MagickEpsilon)
           changed++;
         SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
@@ -3152,7 +3153,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MorphologyImage)
+        #pragma omp critical (MagickCore_MorphologyPrimitive)
 #endif
         proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -3235,6 +3236,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   morphology_view=AcquireAuthenticCacheView(image,exception);
   width=image->columns+kernel->width-1;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+     #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
+       magick_threads(image,image,image->columns,1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -3258,15 +3263,16 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       through the image iterating the distance function as we go.
     */
     if (status == MagickFalse)
-      break;
+      continue;
     p=GetCacheViewVirtualPixels(image_view,-offset.x,y-offset.y,width,(size_t)
       offset.y+1,exception);
     q=GetCacheViewAuthenticPixels(morphology_view,0,y,image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      status=MagickFalse;
-    if (status == MagickFalse)
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     center=(ssize_t) (GetPixelChannels(image)*width*offset.y+
       GetPixelChannels(image)*offset.x);
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -3369,6 +3375,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           default:
             break;
         }
+        #pragma omp critical (MagickCore_MorphologyImage)
         if (fabs(pixel-q[i]) > MagickEpsilon)
           changed++;
         q[i]=ClampToQuantum(pixel);
@@ -3398,6 +3405,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   */
   image_view=AcquireVirtualCacheView(image,exception);
   morphology_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+     #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
+       magick_threads(image,image,image->columns,1)
+#endif
   for (y=(ssize_t) image->rows-1; y >= 0; y--)
   {
     register const Quantum
@@ -3420,15 +3431,16 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
        Only the bottom half of the kernel is processed as we up the image.
     */
     if (status == MagickFalse)
-      break;
+      continue;
     p=GetCacheViewVirtualPixels(image_view,-offset.x,y,width,(size_t)
       kernel->y+1,exception);
     q=GetCacheViewAuthenticPixels(morphology_view,0,y,image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      status=MagickFalse;
-    if (status == MagickFalse)
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     p+=(image->columns-1)*GetPixelChannels(image);
     q+=(image->columns-1)*GetPixelChannels(image);
     center=(ssize_t) (offset.x*GetPixelChannels(image));
@@ -3534,6 +3546,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           default:
             break;
         }
+        #pragma omp critical (MagickCore_MorphologyPrimitiveDirect)
         if (fabs(pixel-q[i]) > MagickEpsilon)
           changed++;
         q[i]=ClampToQuantum(pixel);
@@ -3549,7 +3562,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MorphologyImage)
+        #pragma omp critical (MagickCore_MorphologyPrimitiveDirect)
 #endif
         proceed=SetImageProgress(image,MorphologyTag,progress++,2*image->rows);
         if (proceed == MagickFalse)
@@ -4400,7 +4413,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %
 */
 MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
-     const char *geometry)
+  const char *geometry)
 {
   MagickStatusType
     flags;
@@ -4508,12 +4521,12 @@ MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
 MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   const double scaling_factor,const GeometryFlags normalize_flags)
 {
-  register ssize_t
-    i;
-
   register double
     pos_scale,
     neg_scale;
+
+  register ssize_t
+    i;
 
   /* do the other kernels in a multi-kernel list first */
   if ( kernel->next != (KernelInfo *) NULL)
