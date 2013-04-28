@@ -3230,8 +3230,9 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
 
               (void) FormatLocaleString(result,MaxTextExtent,"%.*g",
                 GetMagickPrecision(),(double) value);
-              AppendKeyValue2Text(key,result);
+              AppendString2Text(result);
             }
+          continue;
         }
       /* pixel - color value calculator */
       if (LocaleNCompare("pixel:",pattern,6) == 0)
@@ -3283,6 +3284,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
                 exception);
               AppendString2Text(name);
             }
+          continue;
         }
       /* option - direct global option lookup (with globbing) */
       if (LocaleNCompare("option:",pattern,7) == 0)
