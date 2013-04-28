@@ -2626,7 +2626,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
       x;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
       magick_threads(image,result_image,image->columns,1)
 #endif
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -2780,6 +2780,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
           }
 
         /* Count up changed pixels */
+        #pragma omp critical (MagickCore_MorphologyImage)
         if (   ( p[r].red != GetPixelRed(q))
             || ( p[r].green != GetPixelGreen(q))
             || ( p[r].blue != GetPixelBlue(q))
@@ -2815,7 +2816,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
   ** Normal handling of horizontal or rectangular kernels (row by row)
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
     magick_threads(image,result_image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -3298,6 +3299,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
           break;
       }
       /* Count up changed pixels */
+      #pragma omp critical (MagickCore_MorphologyImage)
       if (   ( p[r].red != GetPixelRed(q) )
           || ( p[r].green != GetPixelGreen(q) )
           || ( p[r].blue != GetPixelBlue(q) )
