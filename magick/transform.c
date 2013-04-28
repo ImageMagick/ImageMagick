@@ -826,14 +826,15 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static inline ssize_t MagickRound(MagickRealType x)
+
+static inline double MagickRound(double x)
 {
   /*
     Round the fraction to nearest integer.
   */
-  if (x >= 0.0)
-    return((ssize_t) (x+0.5));
-  return((ssize_t) (x-0.5));
+  if ((x-floor(x)) < (ceil(x)-x)
+    return(floor(x));
+  return(ceil(x));
 }
 
 MagickExport Image *CropImageToTiles(const Image *image,
