@@ -1821,7 +1821,7 @@ MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
   /*
     Measure similarity of reference image against image.
   */
-  similarity_threshold=0.0;
+  similarity_threshold=(-1.0);
   artifact=GetImageArtifact(image,"compare:similarity-threshold");
   if (artifact != (const char *) NULL)
     similarity_threshold=StringToDouble(artifact,(char **) NULL);
