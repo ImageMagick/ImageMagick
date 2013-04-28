@@ -3236,10 +3236,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   morphology_view=AcquireAuthenticCacheView(image,exception);
   width=image->columns+kernel->width-1;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-     #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
-       magick_threads(image,image,image->columns,1)
-#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -3375,7 +3371,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           default:
             break;
         }
-        #pragma omp critical (MagickCore_MorphologyImage)
         if (fabs(pixel-q[i]) > MagickEpsilon)
           changed++;
         q[i]=ClampToQuantum(pixel);
@@ -3390,9 +3385,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MorphologyImage)
-#endif
         proceed=SetImageProgress(image,MorphologyTag,progress++,2*image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -3405,10 +3397,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   */
   image_view=AcquireVirtualCacheView(image,exception);
   morphology_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-     #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
-       magick_threads(image,image,image->columns,1)
-#endif
   for (y=(ssize_t) image->rows-1; y >= 0; y--)
   {
     register const Quantum
@@ -3546,7 +3534,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           default:
             break;
         }
-        #pragma omp critical (MagickCore_MorphologyPrimitiveDirect)
         if (fabs(pixel-q[i]) > MagickEpsilon)
           changed++;
         q[i]=ClampToQuantum(pixel);
@@ -3561,9 +3548,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MorphologyPrimitiveDirect)
-#endif
         proceed=SetImageProgress(image,MorphologyTag,progress++,2*image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -3704,8 +3688,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       if (SetImageStorageClass(rslt_image,DirectClass,exception) == MagickFalse)
         goto error_cleanup;
 
-      changed = MorphologyPrimitiveDirect(rslt_image, method,
-         kernel, exception);
+      changed=MorphologyPrimitiveDirect(rslt_image,method,kernel,exception);
 
       if ( IfMagickTrue(verbose) )
         (void) (void) FormatLocaleFile(stderr,
@@ -3902,6 +3885,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           }
           if ( changed < 0 )
             goto error_cleanup;
+          #pragma omp flush(changed)
           kernel_changed += changed;
           method_changed += changed;
 
