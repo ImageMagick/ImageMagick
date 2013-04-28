@@ -2578,7 +2578,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
       */
       (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
       name++;
-      for (n=0; isxdigit((int) ((unsigned char) name[n])) != MagickFalse; n++) ;
+      for (n=0; isxdigit((int) ((unsigned char) name[n])) != 0; n++) ;
       if ((n % 3) == 0)
         {
           do
@@ -2601,7 +2601,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
                   else
                     return(MagickFalse);
             }
-          } while (isxdigit((int) ((unsigned char) *name)) != MagickFalse);
+          } while (isxdigit((int) ((unsigned char) *name)) != 0);
           depth=4*(n/3);
         }
       else
