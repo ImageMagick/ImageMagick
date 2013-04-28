@@ -2780,7 +2780,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
           }
 
         /* Count up changed pixels */
-        #pragma omp critical (MagickCore_MorphologyImage)
+        #pragma omp critical (MagickCore_MorphologyPrimitive)
         if (   ( p[r].red != GetPixelRed(q))
             || ( p[r].green != GetPixelGreen(q))
             || ( p[r].blue != GetPixelBlue(q))
@@ -2799,7 +2799,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-          #pragma omp critical (MagickCore_MorphologyImage)
+          #pragma omp critical (MagickCore_MorphologyPrimitive)
 #endif
           proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
           if (proceed == MagickFalse)
@@ -3155,6 +3155,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                      GetPixelIntensity(image,&(k_pixels[u])) < GetPixelIntensity(result_image,q) ) {
                   /* copy the whole pixel - no channel selection */
                   *q = k_pixels[u];
+                
                   if ( result.red > 0.0 ) changed++;
                   result.red = 1.0;
                 }
@@ -3299,7 +3300,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
           break;
       }
       /* Count up changed pixels */
-      #pragma omp critical (MagickCore_MorphologyImage)
+      #pragma omp critical (MagickCore_MorphologyPrimitive)
       if (   ( p[r].red != GetPixelRed(q) )
           || ( p[r].green != GetPixelGreen(q) )
           || ( p[r].blue != GetPixelBlue(q) )
@@ -3318,7 +3319,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MorphologyImage)
+        #pragma omp critical (MagickCore_MorphologyPrimitive)
 #endif
         proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -4115,6 +4116,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           }
           if ( changed < 0 )
             goto error_cleanup;
+          #pragma omp flush(changed)
           kernel_changed += changed;
           method_changed += changed;
 
