@@ -2407,7 +2407,8 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
         string="0";
 #else
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-              image_info->number_scenes);
+        (image_info->number_scenes == 0 ? 2147483647 :
+         image_info->number_scenes));
 #endif
       break;
     }
