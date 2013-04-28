@@ -2337,14 +2337,14 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 */
 
-static inline ssize_t MagickRound(double x)
+static inline double MagickRound(double x)
 {
   /*
     Round the fraction to nearest integer.
   */
-  if (x >= 0.0)
-    return((ssize_t) (x+0.5));
-  return((ssize_t) (x-0.5));
+  if ((x-floor(x)) < (ceil(x)-x)
+    return(floor(x));
+  return(ceil(x));
 }
 
 MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,

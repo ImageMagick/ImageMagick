@@ -131,16 +131,6 @@ static void InvertPerspectiveCoefficients(const double *coeff,
   inverse[7]=determinant*(coeff[6]*coeff[1]-coeff[0]*coeff[7]);
 }
 
-static inline double MagickRound(double x)
-{
-  /*
-    Round the fraction to nearest integer.
-  */
-  if (x >= 0.0)
-    return((double) ((ssize_t) (x+0.5)));
-  return((double) ((ssize_t) (x-0.5)));
-}
-
 /*
  * Polynomial Term Defining Functions
  *
@@ -377,6 +367,16 @@ MagickExport Image *AffineTransformImage(const Image *image,
 %  Because of this this method should not be classed as stable or used
 %  outside other MagickCore library methods.
 */
+
+static inline double MagickRound(double x)
+{
+  /*
+    Round the fraction to nearest integer.
+  */
+  if ((x-floor(x)) < (ceil(x)-x)
+    return(floor(x));
+  return(ceil(x));
+}
 
 static double *GenerateCoefficients(const Image *image,
   DistortImageMethod *method,const size_t number_arguments,
