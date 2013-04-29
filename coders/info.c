@@ -198,7 +198,8 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
         char
           *text;
 
-        text=InterpretImageProperties(image_info,image,format,exception);
+        text=InterpretImageProperties((ImageInfo *) image_info,image,format,
+          exception);
         if (text != (char *) NULL)
           {
             (void) WriteBlobString(image,text);
