@@ -284,11 +284,12 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   if (commands == (char **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
-        decode ? decode : encode);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",decode ? decode :
+        encode);
       return((char *) NULL);
     }
-  command=InterpretImageProperties(image_info,image,commands[0],exception);
+  command=InterpretImageProperties((ImageInfo *) image_info,image,commands[0],
+    exception);
   if (command == (char *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
       "MemoryAllocationFailed","`%s'",commands[0]);
