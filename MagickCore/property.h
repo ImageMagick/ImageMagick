@@ -24,13 +24,13 @@ extern "C" {
 
 extern MagickExport char
   *GetNextImageProperty(const Image *),
-  *InterpretImageProperties(const ImageInfo *,Image *,const char *,
+  *InterpretImageProperties(ImageInfo *,Image *,const char *,
     ExceptionInfo *),
   *RemoveImageProperty(Image *,const char *);
 
 extern MagickExport const char
   *GetImageProperty(const Image *,const char *,ExceptionInfo *),
-  *GetMagickProperty(const ImageInfo *,Image *,const char *,ExceptionInfo *);
+  *GetMagickProperty(ImageInfo *,Image *,const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   CloneImageProperties(Image *,const Image *),

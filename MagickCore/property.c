@@ -1999,7 +1999,7 @@ MagickExport const char *GetImageProperty(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   p=(const char *) NULL;
-  /* if properuty is in splay tree - return it and we are done */
+  /* if property is in splay tree - return it and we are done */
   if (image->properties != (void *) NULL)
     {
       if (property == (const char *) NULL)
@@ -2097,29 +2097,29 @@ MagickExport const char *GetImageProperty(const Image *image,
 %
 %  GetMagickProperty() gets attributes or calculated values that is associated
 %  with a fixed known property name, or single letter property. It may be
-%  called if no image is defined (IMv7), in which case only global image info
-%  properities are available.
+%  called if no image is defined (IMv7), in which case only global image_info
+%  values are available.
 %
-%  This does not return, special profile or property expressions. Nor does it
-%  return free-form property strings, unless referenced by a single letter
-%  property name.
+%  This routine only handles specifically known properties.  It does not
+%  handle special prefixed properties, profiles, or expressions. Nor does
+%  it return any free-form property strings.
 %
-%  The returned string a reference to a string stored somewhere, it should not
-%  be freed.  If the string was generated (common) the string will be stored
-%  as teh image artifact 'get-property'.  This artifact or option may be
-%  deleted when no longer required, but is not guranteed to exist after this
-%  function is called.
+%  The returned string is stored in a structure somewhere, and should not be
+%  directly freed.  If the string was generated (common) the string will be
+%  stored as as either as artifact or option 'get-property'.  These may be
+%  deleted (cleaned up) when no longer required, but neither artifact or
+%  option is guranteed to exist.
 %
 %  The format of the GetMagickProperty method is:
 %
-%      const char *GetMagickProperty(const ImageInfo *image_info,Image *image,
+%      const char *GetMagickProperty(ImageInfo *image_info,Image *image,
 %        const char *property,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: the image info (required)
+%    o image_info: the image info (optional)
 %
-%    o image: the image (required, except for n,o,s,u,Z)
+%    o image: the image (optional)
 %
 %    o key: the key.
 %
@@ -2132,8 +2132,14 @@ MagickExport const char *GetImageProperty(const Image *image,
         "NoImageForProperty",format,arg); \
     return((const char *)NULL); \
   }
+#define WarnNoImageInfoReturn(format,arg) \
+  if (image == (Image *) NULL ) { \
+    (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning, \
+        "NoImageInfoForProperty",format,arg); \
+    return((const char *)NULL); \
+  }
 
-static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
+static const char *GetMagickPropertyLetter(ImageInfo *image_info,
   Image *image,const char letter,ExceptionInfo *exception)
 {
   char
@@ -2144,6 +2150,9 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
 
   if (image != (Image *) NULL && IfMagickTrue(image->debug))
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  else if( image_info != (ImageInfo *) NULL && IfMagickTrue(image_info->debug))
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s","no-images");
+
   *value='\0';           /* formatted string */
   string=(char *) NULL;  /* constant string reference */
 
@@ -2244,6 +2253,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       break;
     }
     case 'o': /* Output Filename - for delegate use only */
+      WarnNoImageInfoReturn("\"%%%c\"",letter);
       string=image_info->filename;
       break;
     case 'p': /* Image index in current image list */
@@ -2301,6 +2311,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       break;
     }
     case 'u': /* Unique filename */
+      WarnNoImageInfoReturn("\"%%%c\"",letter);
       string=image_info->unique;
       break;
     case 'w': /* Image width (current) */
@@ -2397,13 +2408,14 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'S': /* Number of scenes in image list.  */
     {
+      WarnNoImageInfoReturn("\"%%%c\"",letter);
 #if 0 /* What is this number? -- it makes no sense - simplifing */
       if (image_info->number_scenes == 0)
          string="2147483647";
       else if ( image != (Image *) NULL )
         (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
                 image_info->scene+image_info->number_scenes);
-      else 
+      else
         string="0";
 #else
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
@@ -2441,6 +2453,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       break;
     }
     case 'Z': /* Zero filename ??? */
+      WarnNoImageInfoReturn("\"%%%c\"",letter);
       string=image_info->zero;
       break;
     case '%': /* percent escaped */
@@ -2469,14 +2482,23 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
   if (string != (char *) NULL)
     return(string);
   if (*value != '\0')
-    { /* effectivally creates a cloned copy for return */
-      (void) SetImageArtifact(image,"get-property",value);
-      return(GetImageArtifact(image,"get-property"));
-    }
+  {
+    /* create a cloned copy of result, that will get cleaned up, eventually */
+    if (image != (Image *)NULL)
+      {
+        (void) SetImageArtifact(image,"get-property",value);
+        return(GetImageArtifact(image,"get-property"));
+      }
+    else
+      {
+        (void) SetImageOption(image_info,"get-property",value);
+        return(GetImageOption(image_info,"get-property"));
+      }
+  }
   return((char *)NULL);
 }
 
-MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
+MagickExport const char *GetMagickProperty(ImageInfo *image_info,
   Image *image,const char *property,ExceptionInfo *exception)
 {
   char
@@ -2486,13 +2508,15 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     *string;
 
   assert(property[0] != '\0');
-  assert(image_info != (const ImageInfo *)NULL);
+  assert(image != (Image *)NULL || image_info != (ImageInfo *)NULL );
 
   if (property[1] == '\0')  /* single letter property request */
     return(GetMagickPropertyLetter(image_info,image,*property,exception));
 
-  if ((image != (Image *) NULL) && IfMagickTrue(image->debug))
+  if (image != (Image *) NULL && IfMagickTrue(image->debug))
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  else if( image_info != (ImageInfo *) NULL && IfMagickTrue(image_info->debug))
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s","no-images");
 
   *value='\0';           /* formated string */
   string=(char *) NULL;  /* constant string reference */
@@ -2583,10 +2607,9 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             GetMagickPrecision(),image->gamma);
           break;
         }
-      if ( (image_info != (ImageInfo *) NULL) &&
-           (LocaleCompare("group",property) == 0) )
+      if (LocaleCompare("group",property) == 0)
         {
-          WarnNoImageReturn("\"%%[%s]\"",property);
+          WarnNoImageInfoReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MaxTextExtent,"0x%lx",(unsigned long)
             image_info->group);
           break;
@@ -2692,9 +2715,9 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             image->orientation);
           break;
         }
-      if ((image_info != (ImageInfo *) NULL) &&
-          (LocaleCompare("output",property) == 0))
+      if (LocaleCompare("output",property) == 0)
         {
+          WarnNoImageInfoReturn("\"%%[%s]\"",property);
           (void) CopyMagickString(value,image_info->filename,MaxTextExtent);
           break;
         }
@@ -2736,8 +2759,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleCompare("scene",property) == 0)
         {
-          if ((image_info != (ImageInfo *) NULL) &&
-              (image_info->number_scenes != 0))
+          WarnNoImageInfoReturn("\"%%[%s]\"",property);
+          if (image_info->number_scenes != 0)
             (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
               image_info->scene);
           else {
@@ -2749,6 +2772,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       if (LocaleCompare("scenes",property) == 0)
         {
+          /* FUTURE: equivelent to %n? */
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             GetImageListLength(image));
@@ -2803,9 +2827,9 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'u':
     {
-      if ((image_info != (ImageInfo *) NULL) &&
-          (LocaleCompare("unique",property) == 0))
+      if (LocaleCompare("unique",property) == 0)
         {
+          WarnNoImageInfoReturn("\"%%[%s]\"",property);
           string=image_info->unique;
           break;
         }
@@ -2857,9 +2881,9 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'z':
     {
-      if ((image_info != (ImageInfo *) NULL) &&
-          (LocaleCompare("zero",property) == 0))
+      if (LocaleCompare("zero",property) == 0)
         {
+          WarnNoImageInfoReturn("\"%%[%s]\"",property);
           string=image_info->zero;
           break;
         }
@@ -2869,10 +2893,19 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
   if (string != (char *) NULL)
     return(string);
   if (*value != '\0')
-    { /* effectivally creates a cloned copy for return */
-      (void) SetImageArtifact(image,"get-property",value);
-      return(GetImageArtifact(image,"get-property"));
-    }
+  {
+    /* create a cloned copy of result, that will get cleaned up, eventually */
+    if (image != (Image *)NULL)
+      {
+        (void) SetImageArtifact(image,"get-property",value);
+        return(GetImageArtifact(image,"get-property"));
+      }
+    else
+      {
+        (void) SetImageOption(image_info,"get-property",value);
+        return(GetImageOption(image_info,"get-property"));
+      }
+  }
   return((char *)NULL);
 }
 #undef WarnNoImageRteurn
@@ -2950,7 +2983,7 @@ MagickExport char *GetNextImageProperty(const Image *image)
 %
 %  The format of the InterpretImageProperties method is:
 %
-%      char *InterpretImageProperties(const ImageInfo *image_info,
+%      char *InterpretImageProperties(ImageInfo *image_info,
 %        Image *image,const char *embed_text,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -3007,7 +3040,7 @@ MagickExport char *GetNextImageProperty(const Image *image)
      q+=FormatLocaleString(q,extent,"%s=%s\n",(key),(string)); \
    } while (0)  /* no trailing ; */
 
-MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
+MagickExport char *InterpretImageProperties(ImageInfo *image_info,
   Image *image,const char *embed_text,ExceptionInfo *exception)
 {
   char
@@ -3025,12 +3058,13 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   MagickBooleanType
     number;
 
-  assert(image_info != (ImageInfo *)NULL);
-  if( image != (Image *) NULL && IfMagickTrue(image->debug) )
-    {
-      assert(image->signature == MagickSignature);
-      (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  }
+  assert(image == NULL || image->signature == MagickSignature);
+  assert(image_info == NULL || image_info->signature == MagickSignature);
+
+  if (image != (Image *) NULL && IfMagickTrue(image->debug))
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  else if( image_info != (ImageInfo *) NULL && IfMagickTrue(image_info->debug))
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s","no-image");
 
   if (embed_text == (const char *) NULL)
     return((char *) NULL);
@@ -3135,6 +3169,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       if (string != (char *) NULL)
         {
           AppendString2Text(string);
+          if (image != (Image *) NULL)
+            (void)DeleteImageArtifact(image,"get-property");
+          if (image_info != (ImageInfo *) NULL)
+            (void)DeleteImageOption(image_info,"get-property");
           continue;
         }
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
@@ -3195,8 +3233,6 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         (void) ThrowMagickException(exception,GetMagickModule(),
             OptionError,"UnbalancedBraces","\"%%[%s\"",pattern);
         interpret_text=DestroyString(interpret_text);
-        if (image != (Image *) NULL)
-          (void)DeleteImageArtifact(image,"get-property"); /* minor cleanup */
         return((char *)NULL);
       }
 
@@ -3378,6 +3414,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           if (string != (const char *) NULL)
             {
               AppendString2Text(string);
+              if (image != (Image *) NULL)
+                (void)DeleteImageArtifact(image,"get-property");
+              if (image_info != (ImageInfo *) NULL)
+                (void)DeleteImageOption(image_info,"get-property");
               continue;
             }
         }
@@ -3452,8 +3492,6 @@ PropertyLookupFailure:
 
   } /* for each char in 'embed_text' */
   *q='\0';
-  if (image != (Image *) NULL)
-    (void)DeleteImageArtifact(image,"get-property"); /* minor cleanup */
   return(interpret_text);
 }
 

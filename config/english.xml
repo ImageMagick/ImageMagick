@@ -957,6 +957,9 @@
         <message name="NoImageForProperty">
           no image to apply a property
         </message>
+        <message name="NoImageInfoForProperty">
+          no image info (wand) to apply a property
+        </message>
         <message name="NoSuchElement">
           no such element in list
         </message>

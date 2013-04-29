@@ -178,7 +178,6 @@ typedef enum
 #  define IsMagickTrue(v)  ((v)?MagickTrue:MagickFalse)
 #  define IsMagickFalse(v) ((v)?MagickFalse:MagickTrue)
 #  define IsMagickNot(v)   (IfMagickTrue(v)?MagickFalse:MagickTrue)
-#  define IfNaN(a) ((a) != (a))
 #endif
 #define IfStringTrue(v)       IfMagickTrue(IsStringTrue(v))
 #define IfStringNotFalse(v)   IfMagickTrue(IsStringNotFalse(v))
