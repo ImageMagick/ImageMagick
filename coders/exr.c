@@ -222,6 +222,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
+    ResetMagickMemory(scanline,0,image->columns*sizeof(*scanline));
     ImfInputSetFrameBuffer(file,scanline-min_x-image->columns*(min_y+y),1,
       image->columns);
     ImfInputReadPixels(file,min_y+y,min_y+y);
@@ -434,6 +435,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
       (void) ImfCloseOutputFile(file);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
+  ResetMagickMemory(scanline,0,image->columns*sizeof(*scanline));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
