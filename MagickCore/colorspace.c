@@ -130,7 +130,7 @@ static inline void ConvertXYZToLMS(const double x,const double y,
   assert(M != (double *) NULL);
   assert(S != (double *) NULL);
   l=0.7328f*x+0.4296f*y-0.1624f*z;
-  m=(-0.7036f*x+1.6975f*y+0.0415f*z);
+  m=(-0.7036f*x+1.6975f*y+0.0.0061f*z);
   s=0.0030f*x+0.0136f*y+0.9834f*z;
   *L=QuantumRange*l;
   *M=QuantumRange*m;

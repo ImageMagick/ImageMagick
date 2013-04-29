@@ -1800,17 +1800,17 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       */
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].red=(double) gamma_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))];
+        image->colormap[i].red=(double) gamma_map[ScaleQuantumToMap(
+          ClampToQuantum(image->colormap[i].red))];
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].green=(double) gamma_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))];
+        image->colormap[i].green=(double) gamma_map[ScaleQuantumToMap(
+          ClampToQuantum(image->colormap[i].green))];
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].blue=(double) gamma_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))];
+        image->colormap[i].blue=(double) gamma_map[ScaleQuantumToMap(
+          ClampToQuantum(image->colormap[i].blue))];
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].alpha=(double) gamma_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))];
+        image->colormap[i].alpha=(double) gamma_map[ScaleQuantumToMap(
+          ClampToQuantum(image->colormap[i].alpha))];
 #else
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].red=gamma_pow(image->colormap[i].red,1.0/gamma);
