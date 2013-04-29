@@ -2189,14 +2189,14 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
           }
 #else
         if ((channel & RedChannel) != 0)
-          image->colormap[i].red=gamma_pow((double)
-            image->colormap[i].red,1.0/gamma);
+          image->colormap[i].red=gamma_pow((double) image->colormap[i].red,
+            1.0/gamma);
         if ((channel & GreenChannel) != 0)
-          image->colormap[i].green=gamma_pow((double)
-            image->colormap[i].green,1.0/gamma);
+          image->colormap[i].green=gamma_pow((double) image->colormap[i].green,
+            1.0/gamma);
         if ((channel & BlueChannel) != 0)
-          image->colormap[i].blue=gamma_pow((double)
-            image->colormap[i].blue,1.0/gamma);
+          image->colormap[i].blue=gamma_pow((double) image->colormap[i].blue,
+            1.0/gamma);
         if ((channel & OpacityChannel) != 0)
           {
             if (image->matte == MagickFalse)
