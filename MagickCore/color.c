@@ -2255,7 +2255,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
                   else
                     return(MagickFalse);
             }
-          } while (IfMagickTrue(isxdigit((int) ((unsigned char) name[n]))));
+          } while (isxdigit((int) ((unsigned char) *name)) != 0);
           depth=4*(n/4);
         }
       color->colorspace=sRGBColorspace;
