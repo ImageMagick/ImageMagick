@@ -112,7 +112,7 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image,
   ExceptionInfo *exception)
 {
   CacheView
-    *cache_view;
+    *restrict cache_view;
 
   cache_view=AcquireVirtualCacheView(image,exception);
   (void) SyncImagePixelCache(cache_view->image,exception);
@@ -155,7 +155,7 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
   ExceptionInfo *exception)
 {
   CacheView
-    *cache_view;
+    *restrict cache_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -207,7 +207,7 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
 MagickExport CacheView *CloneCacheView(const CacheView *cache_view)
 {
   CacheView
-    *clone_view;
+    *restrict clone_view;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -514,14 +514,14 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
 %
 */
 MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
-  const CacheView *cache_view,const ssize_t x,const ssize_t y,
-  PixelPacket *pixel,ExceptionInfo *exception)
+  const CacheView *restrict cache_view,const ssize_t x,const ssize_t y,
+  PixelPacket *restrict pixel,ExceptionInfo *exception)
 {
   const int
     id = GetOpenMPThreadId();
 
   PixelPacket
-    *pixels;
+    *restrict pixels;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -766,14 +766,14 @@ MagickExport const PixelPacket *GetCacheViewVirtualPixels(
 %
 */
 MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
-  const CacheView *cache_view,const ssize_t x,const ssize_t y,
-  PixelPacket *pixel,ExceptionInfo *exception)
+  const CacheView *restrict cache_view,const ssize_t x,const ssize_t y,
+  PixelPacket *restrict pixel,ExceptionInfo *exception)
 {
   const int
     id = GetOpenMPThreadId();
 
   const PixelPacket
-    *pixels;
+    *restrict pixels;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -832,7 +832,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
     id = GetOpenMPThreadId();
 
   const PixelPacket
-    *pixels;
+    *restrict pixels;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -956,7 +956,7 @@ MagickExport MagickBooleanType SetCacheViewStorageClass(CacheView *cache_view,
 %
 */
 MagickExport MagickBooleanType SetCacheViewVirtualPixelMethod(
-  CacheView *cache_view,const VirtualPixelMethod virtual_pixel_method)
+  CacheView *restrict cache_view,const VirtualPixelMethod virtual_pixel_method)
 {
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -995,7 +995,7 @@ MagickExport MagickBooleanType SetCacheViewVirtualPixelMethod(
 %
 */
 MagickExport MagickBooleanType SyncCacheViewAuthenticPixels(
-  CacheView *cache_view,ExceptionInfo *exception)
+  CacheView *restrict cache_view,ExceptionInfo *exception)
 {
   const int
     id = GetOpenMPThreadId();
