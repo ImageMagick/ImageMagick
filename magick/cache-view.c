@@ -568,8 +568,7 @@ MagickExport IndexPacket *GetCacheViewAuthenticIndexQueue(CacheView *cache_view)
   assert(cache_view->signature == MagickSignature);
   assert(cache_view->image->cache != (Cache) NULL);
   assert(id < (int) cache_view->number_threads);
-  return(GetPixelCacheNexusIndexes(cache_view->image->cache,
-    cache_view->nexus_info[id]));
+  return(cache_view->nexus_info[id]->indexes);
 }
 
 /*
@@ -606,8 +605,7 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
   assert(cache_view->signature == MagickSignature);
   assert(cache_view->image->cache != (Cache) NULL);
   assert(id < (int) cache_view->number_threads);
-  return(GetPixelCacheNexusPixels(cache_view->image->cache,
-    cache_view->nexus_info[id]));
+  return(cache_view->nexus_info[id]->pixels);
 }
 
 /*
