@@ -4716,7 +4716,6 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   /*
     Pixels are stored in a staging region until they are synced to the cache.
   */
-  nexus_info->authentic_cache=MagickFalse;
   number_pixels=(MagickSizeType) nexus_info->region.width*
     nexus_info->region.height;
   length=number_pixels*sizeof(PixelPacket);
