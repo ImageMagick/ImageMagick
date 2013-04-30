@@ -1148,7 +1148,7 @@ MagickExport PixelPacket *GetAuthenticPixelCacheNexus(Image *image,
     return((PixelPacket *) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (nexus_info->is_authentic_pixels != MagickFalse)
+  if (nexus_info->authentic_cache != MagickFalse)
     return(pixels);
   if (ReadPixelCachePixels(cache_info,nexus_info,exception) == MagickFalse)
     return((PixelPacket *) NULL);
@@ -2612,7 +2612,7 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
         /*
           Pixel request is inside cache extents.
         */
-        if (nexus_info->is_authentic_pixels != MagickFalse)
+        if (nexus_info->authentic_cache != MagickFalse)
           return(pixels);
         status=ReadPixelCachePixels(cache_info,nexus_info,exception);
         if (status == MagickFalse)
@@ -4165,7 +4165,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
 
   if (cache_info->active_index_channel == MagickFalse)
     return(MagickFalse);
-  if (nexus_info->is_authentic_pixels != MagickFalse)
+  if (nexus_info->authentic_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
@@ -4330,7 +4330,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
   size_t
     rows;
 
-  if (nexus_info->is_authentic_pixels != MagickFalse)
+  if (nexus_info->authentic_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
@@ -4635,7 +4635,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   return(MagickTrue);
 }
 
-static inline MagickBooleanType IsAuthenticPixels(
+static inline MagickBooleanType IsAuthenticCache(
   const CacheInfo *restrict cache_info,const NexusInfo *restrict nexus_info)
 {
   MagickOffsetType
@@ -4698,6 +4698,7 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
           /*
             Pixels are accessed directly from memory.
           */
+          nexus_info->authentic_cache=MagickTrue;
           offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
             nexus_info->region.x;
           nexus_info->pixels=cache_info->pixels+offset;
@@ -4705,14 +4706,13 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
           if (cache_info->active_index_channel != MagickFalse)
             nexus_info->indexes=cache_info->indexes+offset;
           PrefetchPixelCacheNexusPixels(nexus_info,mode);
-          nexus_info->is_authentic_pixels=IsAuthenticPixels(cache_info,
-            nexus_info);
           return(nexus_info->pixels);
         }
     }
   /*
-    Pixels are stored in a cache region until they are synced to the cache.
+    Pixels are stored in a staging region until they are synced to the cache.
   */
+  nexus_info->authentic_cache=MagickFalse;
   number_pixels=(MagickSizeType) nexus_info->region.width*
     nexus_info->region.height;
   length=number_pixels*sizeof(PixelPacket);
@@ -4745,7 +4745,6 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   if (cache_info->active_index_channel != MagickFalse)
     nexus_info->indexes=(IndexPacket *) (nexus_info->pixels+number_pixels);
   PrefetchPixelCacheNexusPixels(nexus_info,mode);
-  nexus_info->is_authentic_pixels=IsAuthenticPixels(cache_info,nexus_info);
   return(nexus_info->pixels);
 }
 
@@ -4932,7 +4931,7 @@ MagickExport MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
   if ((image->mask != (Image *) NULL) &&
       (MaskPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
     return(MagickFalse);
-  if (nexus_info->is_authentic_pixels != MagickFalse)
+  if (nexus_info->authentic_cache != MagickFalse)
     return(MagickTrue);
   assert(cache_info->signature == MagickSignature);
   status=WritePixelCachePixels(cache_info,nexus_info,exception);
@@ -5126,7 +5125,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
 
   if (cache_info->active_index_channel == MagickFalse)
     return(MagickFalse);
-  if (nexus_info->is_authentic_pixels != MagickFalse)
+  if (nexus_info->authentic_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
@@ -5292,7 +5291,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
   size_t
     rows;
 
-  if (nexus_info->is_authentic_pixels != MagickFalse)
+  if (nexus_info->authentic_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;

@@ -116,7 +116,7 @@ typedef struct _NexusInfo
     *pixels;
 
   MagickBooleanType
-    is_authentic_pixels;
+    authentic_cache;
 
   IndexPacket
     *indexes;
