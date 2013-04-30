@@ -116,6 +116,9 @@ typedef struct _NexusInfo
     *cache,
     *pixels;
 
+  MagickBooleanType
+    is_authentic_pixels;
+
   void
     *metacontent;
 
