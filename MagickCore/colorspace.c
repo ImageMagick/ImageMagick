@@ -3134,14 +3134,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
         x_map[i].x=(MagickRealType) (1.0*(double) i);
-        y_map[i].x=(MagickRealType) (0.5*(2.0*(double) i-MaxMap));
-        z_map[i].x=(MagickRealType) ((-0.333340)*(2.0*(double) i-MaxMap));
+        y_map[i].x=(MagickRealType) (0.5*1.00000*(2.0*(double) i-MaxMap));
+        z_map[i].x=(MagickRealType) (-0.5*0.66668*(2.0*(double) i-MaxMap));
         x_map[i].y=(MagickRealType) (1.0*(double) i);
-        y_map[i].y=(MagickRealType) 0.000000;
-        z_map[i].y=(MagickRealType) (0.666665*(2.0*(double) i-MaxMap));
+        y_map[i].y=(MagickRealType) (0.5*0.00000*(2.0*(double) i-MaxMap));
+        z_map[i].y=(MagickRealType) (0.5*1.33333*(2.0*(double) i-MaxMap));
         x_map[i].z=(MagickRealType) (1.0*(double) i);
-        y_map[i].z=(MagickRealType) (-0.500000*(2.0*(double) i-MaxMap));
-        z_map[i].z=(MagickRealType) (-0.333340*(2.0*(double) i-MaxMap));
+        y_map[i].z=(MagickRealType) (-0.5*1.00000*(2.0*(double) i-MaxMap));
+        z_map[i].z=(MagickRealType) (-0.5*0.66668*(2.0*(double) i-MaxMap));
       }
       break;
     }
@@ -3165,14 +3165,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
         x_map[i].x=0.99999999999914679361*(double) i;
-        y_map[i].x=(-1.2188941887145875e-06)*(double) i;
+        y_map[i].x=0.5*(-1.2188941887145875e-06)*(2.00*(double) i-MaxMap)
         z_map[i].x=0.5*1.4019995886561440468*(2.00*(double) i-MaxMap);
         x_map[i].y=0.99999975910502514331*(double) i;
         y_map[i].y=0.5*(-0.34413567816504303521)*(2.00*(double) i-MaxMap);
         z_map[i].y=0.5*(-0.71413649331646789076)*(2.00*(double) i-MaxMap);
         x_map[i].z=1.00000124040004623180*(double) i;
         y_map[i].z=0.5*1.77200006607230409200*(2.00*(double) i-MaxMap);
-        z_map[i].z=2.1453384174593273e-06*(double) i;
+        z_map[i].z=0.5*2.1453384174593273e-06*(2.00*(double) i-MaxMap);
       }
       break;
     }
@@ -3195,14 +3195,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
         x_map[i].x=(MagickRealType) (1.0*i);
-        y_map[i].x=(MagickRealType) (0.000000*(2.0*i-MaxMap));
+        y_map[i].x=(MagickRealType) (0.5*0.000000*(2.0*i-MaxMap));
         z_map[i].x=(MagickRealType) (0.5*1.574800*(2.0*i-MaxMap));
         x_map[i].y=(MagickRealType) (1.0*i);
         y_map[i].y=(MagickRealType) (0.5*(-0.187324)*(2.0*i-MaxMap));
         z_map[i].y=(MagickRealType) (0.5*(-0.468124)*(2.0*i-MaxMap));
         x_map[i].z=(MagickRealType) (1.0*i);
         y_map[i].z=(MagickRealType) (0.5*1.855600*(2.0*i-MaxMap));
-        z_map[i].z=(MagickRealType) (0.000000*(2.0*i-MaxMap));
+        z_map[i].z=(MagickRealType) (0.5*0.000000*(2.0*i-MaxMap));
       }
       break;
     }
@@ -3288,14 +3288,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
         x_map[i].x=0.99999999999914679361*(double) i;
-        y_map[i].x=(-1.2188941887145875e-06)*(2.0*(double) i-MaxMap);
+        y_map[i].x=0.5*(-1.2188941887145875e-06)*(2.0*(double) i-MaxMap);
         z_map[i].x=0.5*1.4019995886561440468*(2.0*(double) i-MaxMap);
         x_map[i].y=0.99999975910502514331*(double) i;
         y_map[i].y=0.5*(-0.34413567816504303521)*(2.0*(double) i-MaxMap);
         z_map[i].y=0.5*(-0.71413649331646789076)*(2.0*(double) i-MaxMap);
         x_map[i].z=1.00000124040004623180*(double) i;
         y_map[i].z=0.5*1.77200006607230409200*(2.0*(double) i-MaxMap);
-        z_map[i].z=2.1453384174593273e-06*(2.0*(double) i-MaxMap);
+        z_map[i].z=0.5*2.1453384174593273e-06*(2.0*(double) i-MaxMap);
       }
       break;
     }
@@ -3318,14 +3318,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
         x_map[i].x=1.0*(double) i;
-        y_map[i].x=(-3.945707070708279e-05)*(2.0*(double) i-MaxMap);
+        y_map[i].x=0.5*(-3.945707070708279e-05)*(2.0*(double) i-MaxMap);
         z_map[i].x=0.5*1.1398279671717170825*(2.0*(double) i-MaxMap);
         x_map[i].y=1.0*(double) i;
         y_map[i].y=0.5*(-0.3946101641414141437)*(2.0*(double) i-MaxMap);
         z_map[i].y=0.5*(-0.5805003156565656797)*(2.0*(double) i-MaxMap);
         x_map[i].z=1.0*(double) i;
         y_map[i].z=0.5*2.0319996843434342537*(2.0*(double) i-MaxMap);
-        z_map[i].z=(-4.813762626262513e-04)*(2.0*(double) i-MaxMap);
+        z_map[i].z=0.5*(-4.813762626262513e-04)*(2.0*(double) i-MaxMap);
       }
       break;
     }
