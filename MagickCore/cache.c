@@ -93,28 +93,6 @@ typedef struct _MagickModulo
     quotient,
     remainder;
 } MagickModulo;
-
-struct _NexusInfo
-{
-  MagickBooleanType
-    mapped;
-
-  RectangleInfo
-    region;
-
-  MagickSizeType
-    length;
-
-  Quantum
-    *cache,
-    *pixels;
-
-  void
-    *metacontent;
-
-  size_t
-    signature;
-};
 
 /*
   Forward declarations.
@@ -1006,9 +984,6 @@ MagickExport void *GetAuthenticMetacontent(const Image *image)
   const int
     id = GetOpenMPThreadId();
 
-  void
-    *metacontent;
-
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
@@ -1017,14 +992,15 @@ MagickExport void *GetAuthenticMetacontent(const Image *image)
   if (cache_info->methods.get_authentic_metacontent_from_handler !=
       (GetAuthenticMetacontentFromHandler) NULL)
     {
+      void
+        *metacontent;
+
       metacontent=cache_info->methods.
         get_authentic_metacontent_from_handler(image);
       return(metacontent);
     }
   assert(id < (int) cache_info->number_threads);
-  metacontent=GetPixelCacheNexusMetacontent(cache_info,
-    cache_info->nexus_info[id]);
-  return(metacontent);
+  return(cache_info->nexus_info[id]->metacontent);
 }
 
 /*
@@ -1059,18 +1035,13 @@ static void *GetAuthenticMetacontentFromCache(const Image *image)
   const int
     id = GetOpenMPThreadId();
 
-  void
-    *metacontent;
-
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  metacontent=GetPixelCacheNexusMetacontent(image->cache,
-    cache_info->nexus_info[id]);
-  return(metacontent);
+  return(cache_info->nexus_info[id]->metacontent);
 }
 
 /*
@@ -1194,7 +1165,7 @@ static Quantum *GetAuthenticPixelsFromCache(const Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  return(GetPixelCacheNexusPixels(image->cache,cache_info->nexus_info[id]));
+  return(cache_info->nexus_info[id]->pixels);
 }
 
 /*
@@ -1238,7 +1209,7 @@ MagickExport Quantum *GetAuthenticPixelQueue(const Image *image)
        (GetAuthenticPixelsFromHandler) NULL)
     return(cache_info->methods.get_authentic_pixels_from_handler(image));
   assert(id < (int) cache_info->number_threads);
-  return(GetPixelCacheNexusPixels(cache_info,cache_info->nexus_info[id]));
+  return(cache_info->nexus_info[id]->pixels);
 }
 
 /*
@@ -2092,86 +2063,6 @@ MagickPrivate MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t P i x e l C a c h e N e x u s M e t a c o n t e n t                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetPixelCacheNexusMetacontent() returns the meta-content for the specified
-%  cache nexus.
-%
-%  The format of the GetPixelCacheNexusMetacontent() method is:
-%
-%      void *GetPixelCacheNexusMetacontent(const Cache cache,
-%        NexusInfo *nexus_info)
-%
-%  A description of each parameter follows:
-%
-%    o cache: the pixel cache.
-%
-%    o nexus_info: the cache nexus to return the meta-content.
-%
-*/
-MagickPrivate void *GetPixelCacheNexusMetacontent(const Cache cache,
-  NexusInfo *nexus_info)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(cache != NULL);
-  cache_info=(CacheInfo *) cache;
-  assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class == UndefinedClass)
-    return((void *) NULL);
-  return(nexus_info->metacontent);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t P i x e l C a c h e N e x u s P i x e l s                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetPixelCacheNexusPixels() returns the pixels associated with the specified
-%  cache nexus.
-%
-%  The format of the GetPixelCacheNexusPixels() method is:
-%
-%      Quantum *GetPixelCacheNexusPixels(const Cache cache,
-%        NexusInfo *nexus_info)
-%
-%  A description of each parameter follows:
-%
-%    o cache: the pixel cache.
-%
-%    o nexus_info: the cache nexus to return the pixels.
-%
-*/
-MagickPrivate Quantum *GetPixelCacheNexusPixels(const Cache cache,
-  NexusInfo *nexus_info)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(cache != NULL);
-  cache_info=(CacheInfo *) cache;
-  assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class == UndefinedClass)
-    return((Quantum *) NULL);
-  return(nexus_info->pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t P i x e l C a c h e P i x e l s                                     %
 %                                                                             %
 %                                                                             %
@@ -2690,7 +2581,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   /*
     Pixel request is outside cache extents.
   */
-  s=(unsigned char *) GetPixelCacheNexusMetacontent(cache_info,nexus_info);
+  s=(unsigned char *) nexus_info->metacontent;
   virtual_nexus=AcquirePixelCacheNexus(1);
   if (virtual_nexus == (NexusInfo **) NULL)
     {

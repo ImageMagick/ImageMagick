@@ -102,7 +102,26 @@ typedef struct _CacheMethods
 } CacheMethods;
 
 typedef struct _NexusInfo
-  NexusInfo;
+{
+  MagickBooleanType
+    mapped;
+
+  RectangleInfo
+    region;
+
+  MagickSizeType
+    length;
+
+  Quantum
+    *cache,
+    *pixels;
+
+  void
+    *metacontent;
+
+  size_t
+    signature;
+} NexusInfo;
 
 typedef struct _CacheInfo
 {
@@ -238,7 +257,6 @@ extern MagickPrivate NexusInfo
 extern MagickPrivate Quantum
   *GetAuthenticPixelCacheNexus(Image *,const ssize_t,const ssize_t,
     const size_t,const size_t,NexusInfo *,ExceptionInfo *) magick_hot_spot,
-  *GetPixelCacheNexusPixels(const Cache,NexusInfo *),
   *QueueAuthenticPixelCacheNexus(Image *,const ssize_t,const ssize_t,
     const size_t,const size_t,const MagickBooleanType,NexusInfo *,
     ExceptionInfo *) magick_hot_spot;
@@ -253,7 +271,6 @@ extern MagickPrivate VirtualPixelMethod
 extern MagickPrivate void
   CacheComponentTerminus(void),
   ClonePixelCacheMethods(Cache,const Cache),
-  *GetPixelCacheNexusMetacontent(const Cache,NexusInfo *) magick_hot_spot,
   *GetPixelCachePixels(Image *,MagickSizeType *,ExceptionInfo *),
   GetPixelCacheTileSize(const Image *,size_t *,size_t *),
   GetPixelCacheMethods(CacheMethods *),

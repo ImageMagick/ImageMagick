@@ -342,16 +342,11 @@ MagickExport void *GetCacheViewAuthenticMetacontent(CacheView *cache_view)
   const int
     id = GetOpenMPThreadId();
 
-  void
-    *metacontent;
-
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   assert(cache_view->image->cache != (Cache) NULL);
   assert(id < (int) cache_view->number_threads);
-  metacontent=GetPixelCacheNexusMetacontent(cache_view->image->cache,
-    cache_view->nexus_info[id]);
-  return(metacontent);
+  return(cache_view->nexus_info[id]->metacontent);
 }
 
 /*
@@ -384,16 +379,11 @@ MagickExport Quantum *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
   const int
     id = GetOpenMPThreadId();
 
-  Quantum
-    *pixels;
-
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   assert(cache_view->image->cache != (Cache) NULL);
   assert(id < (int) cache_view->number_threads);
-  pixels=GetPixelCacheNexusPixels(cache_view->image->cache,
-    cache_view->nexus_info[id]);
-  return(pixels);
+  return(cache_view->nexus_info[id]->pixels);
 }
 
 /*
