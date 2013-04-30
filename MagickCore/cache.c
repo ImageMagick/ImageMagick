@@ -4497,6 +4497,9 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
 static inline MagickBooleanType IsAuthenticCache(
   const CacheInfo *restrict cache_info,const NexusInfo *restrict nexus_info)
 {
+  MagickBooleanType
+    status;
+
   MagickOffsetType
     offset;
 
@@ -4504,8 +4507,9 @@ static inline MagickBooleanType IsAuthenticCache(
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
-  return(nexus_info->pixels == (cache_info->pixels+offset) ? MagickTrue :
-    MagickFalse);
+  status=nexus_info->pixels == (cache_info->pixels+offset*
+    cache_info->number_channels) ? MagickTrue : MagickFalse;
+  return(status);
 }
 
 static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
