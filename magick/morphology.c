@@ -1204,7 +1204,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 #endif
         /* Note the above kernel may have been 'clipped' by a user defined
         ** radius, producing a smaller (darker) kernel.  Also for very small
-        ** sigma's (> 0.1) the central value becomes larger than one, as a
+        ** sigma's (< 0.1) the central value becomes larger than one, as a
         ** result of not generating a actual 'discrete' kernel, and thus
         ** producing a very bright 'impulse'.
         **
