@@ -1707,8 +1707,6 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
-     image->image_info != (ImageInfo *)NULL);
-
   /*
     Handle Special Compound Distortions
   */
