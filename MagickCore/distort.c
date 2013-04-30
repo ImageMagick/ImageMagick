@@ -1707,7 +1707,6 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
-fprintf(stderr, "distort image->options=%d\n",
      image->image_info != (ImageInfo *)NULL);
 
   /*
