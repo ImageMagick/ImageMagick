@@ -1100,7 +1100,7 @@ MagickPrivate Quantum *GetAuthenticPixelCacheNexus(Image *image,const ssize_t x,
     return((Quantum *) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (nexus_info->authentic_cache != MagickFalse)
+  if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(pixels);
   if (ReadPixelCachePixels(cache_info,nexus_info,exception) == MagickFalse)
     return((Quantum *) NULL);
@@ -2547,7 +2547,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
         /*
           Pixel request is inside cache extents.
         */
-        if (nexus_info->authentic_cache != MagickFalse)
+        if (nexus_info->authentic_pixel_cache != MagickFalse)
           return(q);
         status=ReadPixelCachePixels(cache_info,nexus_info,exception);
         if (status == MagickFalse)
@@ -4023,7 +4023,7 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
 
   if (cache_info->metacontent_extent == 0)
     return(MagickFalse);
-  if (nexus_info->authentic_cache != MagickFalse)
+  if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
@@ -4191,7 +4191,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
   size_t
     rows;
 
-  if (nexus_info->authentic_cache != MagickFalse)
+  if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
@@ -4494,7 +4494,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   return(MagickTrue);
 }
 
-static inline MagickBooleanType IsAuthenticCache(
+static inline MagickBooleanType IsPixelCacheAuthentic(
   const CacheInfo *restrict cache_info,const NexusInfo *restrict nexus_info)
 {
   MagickBooleanType
@@ -4568,7 +4568,8 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
             nexus_info->metacontent=(unsigned char *) cache_info->metacontent+
               offset*cache_info->metacontent_extent;
           PrefetchPixelCacheNexusPixels(nexus_info,mode);
-          nexus_info->authentic_cache=IsAuthenticCache(cache_info,nexus_info);
+          nexus_info->authentic_pixel_cache=IsPixelCacheAuthentic(cache_info,
+            nexus_info);
           return(nexus_info->pixels);
         }
     }
@@ -4608,7 +4609,8 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
     nexus_info->metacontent=(void *) (nexus_info->pixels+number_pixels*
       cache_info->number_channels);
   PrefetchPixelCacheNexusPixels(nexus_info,mode);
-  nexus_info->authentic_cache=IsAuthenticCache(cache_info,nexus_info);
+  nexus_info->authentic_pixel_cache=IsPixelCacheAuthentic(cache_info,
+    nexus_info);
   return(nexus_info->pixels);
 }
 
@@ -4790,7 +4792,7 @@ MagickPrivate MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
   assert(cache_info->signature == MagickSignature);
   if (cache_info->type == UndefinedCache)
     return(MagickFalse);
-  if (nexus_info->authentic_cache != MagickFalse)
+  if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
   assert(cache_info->signature == MagickSignature);
   status=WritePixelCachePixels(cache_info,nexus_info,exception);
@@ -4996,7 +4998,7 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
 
   if (cache_info->metacontent_extent == 0)
     return(MagickFalse);
-  if (nexus_info->authentic_cache != MagickFalse)
+  if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
@@ -5164,7 +5166,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
   size_t
     rows;
 
-  if (nexus_info->authentic_cache != MagickFalse)
+  if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
