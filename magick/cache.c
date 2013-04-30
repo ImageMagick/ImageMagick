@@ -94,28 +94,6 @@ typedef struct _MagickModulo
     quotient,
     remainder;
 } MagickModulo;
-
-struct _NexusInfo
-{
-  MagickBooleanType
-    mapped;
-
-  RectangleInfo
-    region;
-
-  MagickSizeType
-    length;
-
-  PixelPacket
-    *cache,
-    *pixels;
-
-  IndexPacket
-    *indexes;
-
-  size_t
-    signature;
-};
 
 /*
   Forward declarations.
@@ -455,7 +433,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
   p=GetAuthenticPixelCacheNexus(image,nexus_info->region.x,nexus_info->region.y,
     nexus_info->region.width,nexus_info->region.height,image_nexus[0],
     exception);
-  indexes=GetPixelCacheNexusIndexes(cache_info,image_nexus[0]);
+  indexes=image_nexus[0]->indexes;
   q=nexus_info->pixels;
   nexus_indexes=nexus_info->indexes;
   r=GetVirtualPixelsFromNexus(image->clip_mask,MaskVirtualPixelMethod,
@@ -1066,7 +1044,7 @@ static IndexPacket *GetAuthenticIndexesFromCache(const Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  return(GetPixelCacheNexusIndexes(image->cache,cache_info->nexus_info[id]));
+  return(cache_info->nexus_info[id]->indexes);
 }
 
 /*
@@ -1111,7 +1089,7 @@ MagickExport IndexPacket *GetAuthenticIndexQueue(const Image *image)
        (GetAuthenticIndexesFromHandler) NULL)
     return(cache_info->methods.get_authentic_indexes_from_handler(image));
   assert(id < (int) cache_info->number_threads);
-  return(GetPixelCacheNexusIndexes(cache_info,cache_info->nexus_info[id]));
+  return(cache_info->nexus_info[id]->indexes);
 }
 
 /*
@@ -1231,7 +1209,7 @@ static PixelPacket *GetAuthenticPixelsFromCache(const Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  return(GetPixelCacheNexusPixels(image->cache,cache_info->nexus_info[id]));
+  return(cache_info->nexus_info[id]->pixels);
 }
 
 /*
@@ -1274,7 +1252,7 @@ MagickExport PixelPacket *GetAuthenticPixelQueue(const Image *image)
        (GetAuthenticPixelsFromHandler) NULL)
     return(cache_info->methods.get_authentic_pixels_from_handler(image));
   assert(id < (int) cache_info->number_threads);
-  return(GetPixelCacheNexusPixels(cache_info,cache_info->nexus_info[id]));
+  return(cache_info->nexus_info[id]->pixels);
 }
 
 /*
@@ -2163,86 +2141,6 @@ MagickExport MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t P i x e l C a c h e N e x u s I n d e x e s                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetPixelCacheNexusIndexes() returns the indexes associated with the
-%  specified cache nexus.
-%
-%  The format of the GetPixelCacheNexusIndexes() method is:
-%
-%      IndexPacket *GetPixelCacheNexusIndexes(const Cache cache,
-%        NexusInfo *nexus_info)
-%
-%  A description of each parameter follows:
-%
-%    o cache: the pixel cache.
-%
-%    o nexus_info: the cache nexus to return the colormap indexes.
-%
-*/
-MagickExport IndexPacket *GetPixelCacheNexusIndexes(const Cache cache,
-  NexusInfo *nexus_info)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(cache != NULL);
-  cache_info=(CacheInfo *) cache;
-  assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class == UndefinedClass)
-    return((IndexPacket *) NULL);
-  return(nexus_info->indexes);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t P i x e l C a c h e N e x u s P i x e l s                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetPixelCacheNexusPixels() returns the pixels associated with the specified
-%  cache nexus.
-%
-%  The format of the GetPixelCacheNexusPixels() method is:
-%
-%      PixelPacket *GetPixelCacheNexusPixels(const Cache cache,
-%        NexusInfo *nexus_info)
-%
-%  A description of each parameter follows:
-%
-%    o cache: the pixel cache.
-%
-%    o nexus_info: the cache nexus to return the pixels.
-%
-*/
-MagickExport PixelPacket *GetPixelCacheNexusPixels(const Cache cache,
-  NexusInfo *nexus_info)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(cache != NULL);
-  cache_info=(CacheInfo *) cache;
-  assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class == UndefinedClass)
-    return((PixelPacket *) NULL);
-  return(nexus_info->pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t P i x e l C a c h e P i x e l s                                     %
 %                                                                             %
 %                                                                             %
@@ -2746,7 +2644,7 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
     Pixel request is outside cache extents.
   */
   q=pixels;
-  indexes=GetPixelCacheNexusIndexes(cache_info,nexus_info);
+  indexes=nexus_info->indexes;
   virtual_nexus=AcquirePixelCacheNexus(1);
   if (virtual_nexus == (NexusInfo **) NULL)
     {
@@ -3351,7 +3249,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
   p=GetAuthenticPixelCacheNexus(image,nexus_info->region.x,
     nexus_info->region.y,nexus_info->region.width,nexus_info->region.height,
     image_nexus[0],exception);
-  indexes=GetPixelCacheNexusIndexes(image->cache,image_nexus[0]);
+  indexes=image_nexus[0]->indexes;
   q=nexus_info->pixels;
   nexus_indexes=nexus_info->indexes;
   r=GetVirtualPixelsFromNexus(image->mask,MaskVirtualPixelMethod,
