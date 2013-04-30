@@ -2561,7 +2561,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   OffsetInfo
     offset;
 
+  register ssize_t
+    i;
+
   ssize_t
+    changes[GetOpenMPMaximumThreads()],
     y;
 
   size_t
@@ -2583,7 +2587,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   status=MagickTrue;
-  changed=0;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
   morphology_view=AcquireAuthenticCacheView(morphology_image,exception);
@@ -2618,8 +2621,14 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       break;
     }
   }
+  changed=0;
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+    changes[i]=0;
   if ((method == ConvolveMorphology) && (kernel->width == 1))
     {
+      const int
+        id = GetOpenMPThreadId();
+
       register ssize_t
         x;
 
@@ -2630,7 +2639,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         vertical kernels (such as a 'BlurKernel')
      */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-     #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
+     #pragma omp parallel for schedule(static,4) shared(progress,status) \
        magick_threads(image,morphology_image,image->columns,1)
 #endif
       for (x=0; x < (ssize_t) image->columns; x++)
@@ -2719,9 +2728,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                     pixels+=GetPixelChannels(image);
                   }
                 }
-                #pragma omp critical (MagickCore_MorphologyPrimitive)
                 if (fabs(pixel-p[center+i]) > MagickEpsilon)
-                  changed++;
+                  changes[id]++;
                 SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),
                   q);
                 continue;
@@ -2742,9 +2750,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 pixels+=GetPixelChannels(image);
               }
             }
-            #pragma omp critical (MagickCore_MorphologyPrimitive)
             if (fabs(pixel-p[center+i]) > MagickEpsilon)
-              changed++;
+              changes[id]++;
             SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
           }
           p+=GetPixelChannels(image);
@@ -2769,17 +2776,22 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       morphology_image->type=image->type;
       morphology_view=DestroyCacheView(morphology_view);
       image_view=DestroyCacheView(image_view);
+      for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+        changed+=changes[i];
       return(status ? (ssize_t) changed : 0);
     }
   /*
     Normal handling of horizontal or rectangular kernels (row by row).
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(changed,progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
     magick_threads(image,morphology_image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     register const Quantum
       *restrict p;
 
@@ -3137,9 +3149,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           default:
             break;
         }
-        #pragma omp critical (MagickCore_MorphologyPrimitive)
         if (fabs(pixel-p[center+i]) > MagickEpsilon)
-          changed++;
+          changes[id]++;
         SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
       }
       p+=GetPixelChannels(image);
@@ -3162,7 +3173,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   }
   morphology_view=DestroyCacheView(morphology_view);
   image_view=DestroyCacheView(image_view);
-  return(status ? (ssize_t)changed : -1);
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+    changed+=changes[i];
+  return(status ? (ssize_t) changed : -1);
 }
 
 /*
