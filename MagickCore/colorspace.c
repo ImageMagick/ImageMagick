@@ -3165,7 +3165,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
         x_map[i].x=0.99999999999914679361*(double) i;
-        y_map[i].x=0.5*(-1.2188941887145875e-06)*(2.00*(double) i-MaxMap)
+        y_map[i].x=0.5*(-1.2188941887145875e-06)*(2.00*(double) i-MaxMap);
         z_map[i].x=0.5*1.4019995886561440468*(2.00*(double) i-MaxMap);
         x_map[i].y=0.99999975910502514331*(double) i;
         y_map[i].y=0.5*(-0.34413567816504303521)*(2.00*(double) i-MaxMap);
