@@ -171,7 +171,7 @@ static SemaphoreInfo
 MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   char
     *synchronize;
@@ -234,7 +234,7 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
 MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 {
   NexusInfo
-    **nexus_info;
+    **restrict nexus_info;
 
   register ssize_t
     i;
@@ -288,7 +288,7 @@ MagickPrivate const void *AcquirePixelCachePixels(const Image *image,
   MagickSizeType *length,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -381,10 +381,10 @@ MagickPrivate void CacheComponentTerminus(void)
 MagickPrivate Cache ClonePixelCache(const Cache cache)
 {
   CacheInfo
-    *clone_info;
+    *restrict clone_info;
 
   const CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(cache != NULL);
   cache_info=(const CacheInfo *) cache;
@@ -427,8 +427,8 @@ MagickPrivate Cache ClonePixelCache(const Cache cache)
 MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
 {
   CacheInfo
-    *cache_info,
-    *source_info;
+    *restrict cache_info,
+    *restrict source_info;
 
   assert(clone != (Cache) NULL);
   source_info=(CacheInfo *) clone;
@@ -478,8 +478,9 @@ static inline MagickSizeType MagickMin(const MagickSizeType x,
   return(y);
 }
 
-static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
-  CacheInfo *cache_info,ExceptionInfo *exception)
+static MagickBooleanType ClonePixelCacheRepository(
+  CacheInfo *restrict clone_info,CacheInfo *restrict cache_info,
+  ExceptionInfo *exception)
 {
 #define MaxCacheThreads  2
 #define cache_threads(source,destination,chunk) \
@@ -492,8 +493,8 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     status;
 
   NexusInfo
-    **cache_nexus,
-    **clone_nexus;
+    **restrict cache_nexus,
+    **restrict clone_nexus;
 
   size_t
     length;
@@ -744,7 +745,7 @@ static void DestroyImagePixelCache(Image *image)
 MagickExport void DestroyImagePixels(Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -851,7 +852,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
 MagickPrivate Cache DestroyPixelCache(Cache cache)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -979,7 +980,7 @@ MagickPrivate NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
 MagickExport void *GetAuthenticMetacontent(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -1030,7 +1031,7 @@ MagickExport void *GetAuthenticMetacontent(const Image *image)
 static void *GetAuthenticMetacontentFromCache(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -1084,10 +1085,10 @@ MagickPrivate Quantum *GetAuthenticPixelCacheNexus(Image *image,const ssize_t x,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   Quantum
-    *pixels;
+    *restrict pixels;
 
   /*
     Transfer pixels from the cache.
@@ -1136,7 +1137,7 @@ MagickPrivate Quantum *GetAuthenticPixelCacheNexus(Image *image,const ssize_t x,
 static Quantum *GetAuthenticPixelsFromCache(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -1177,7 +1178,7 @@ static Quantum *GetAuthenticPixelsFromCache(const Image *image)
 MagickExport Quantum *GetAuthenticPixelQueue(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -1243,7 +1244,7 @@ MagickExport Quantum *GetAuthenticPixels(Image *image,const ssize_t x,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -1305,13 +1306,13 @@ static Quantum *GetAuthenticPixelsCache(Image *image,const ssize_t x,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
 
   Quantum
-    *pixels;
+    *restrict pixels;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1352,7 +1353,7 @@ static Quantum *GetAuthenticPixelsCache(Image *image,const ssize_t x,
 MagickExport MagickSizeType GetImageExtent(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -1433,7 +1434,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   MagickBooleanType
     destroy,
@@ -1553,7 +1554,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
 MagickExport CacheType GetImagePixelCacheType(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1597,7 +1598,7 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
   const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   register Quantum
     *restrict q;
@@ -1668,7 +1669,7 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
   const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -1740,7 +1741,7 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
   const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -1820,7 +1821,7 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
   Quantum *pixel,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -1896,13 +1897,13 @@ MagickExport MagickBooleanType GetOneVirtualPixelInfo(const Image *image,
   PixelInfo *pixel,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
 
   register const Quantum
-    *p;
+    *restrict p;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1944,7 +1945,7 @@ MagickExport MagickBooleanType GetOneVirtualPixelInfo(const Image *image,
 MagickPrivate ColorspaceType GetPixelCacheColorspace(const Cache cache)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -2023,10 +2024,10 @@ MagickPrivate void GetPixelCacheMethods(CacheMethods *cache_methods)
 %
 */
 MagickPrivate MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
-  NexusInfo *nexus_info)
+  NexusInfo *restrict nexus_info)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   MagickSizeType
     extent;
@@ -2071,7 +2072,7 @@ MagickPrivate void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2115,7 +2116,7 @@ MagickPrivate void *GetPixelCachePixels(Image *image,MagickSizeType *length,
 MagickPrivate ClassType GetPixelCacheStorageClass(const Cache cache)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -2157,7 +2158,7 @@ MagickPrivate void GetPixelCacheTileSize(const Image *image,size_t *width,
   size_t *height)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2198,7 +2199,7 @@ MagickPrivate void GetPixelCacheTileSize(const Image *image,size_t *width,
 MagickPrivate VirtualPixelMethod GetPixelCacheVirtualMethod(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2234,13 +2235,13 @@ MagickPrivate VirtualPixelMethod GetPixelCacheVirtualMethod(const Image *image)
 static const void *GetVirtualMetacontentFromCache(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
 
   const void
-    *metacontent;
+    *restrict metacontent;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2280,10 +2281,10 @@ static const void *GetVirtualMetacontentFromCache(const Image *image)
 %
 */
 MagickPrivate const void *GetVirtualMetacontentFromNexus(const Cache cache,
-  NexusInfo *nexus_info)
+  NexusInfo *restrict nexus_info)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -2320,13 +2321,13 @@ MagickPrivate const void *GetVirtualMetacontentFromNexus(const Cache cache,
 MagickExport const void *GetVirtualMetacontent(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
 
   const void
-    *metacontent;
+    *restrict metacontent;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2472,7 +2473,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   MagickOffsetType
     offset;
@@ -2482,10 +2483,10 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
     number_pixels;
 
   NexusInfo
-    **virtual_nexus;
+    **restrict virtual_nexus;
 
   Quantum
-    *pixels,
+    *restrict pixels,
     virtual_pixel[MaxPixelChannels];
 
   RectangleInfo
@@ -2511,7 +2512,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
     v;
 
   void
-    *virtual_metacontent;
+    *restrict virtual_metacontent;
 
   /*
     Acquire pixels.
@@ -2899,13 +2900,13 @@ static const Quantum *GetVirtualPixelCache(const Image *image,
   const size_t columns,const size_t rows,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
 
   const Quantum
-    *p;
+    *restrict p;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2944,7 +2945,7 @@ static const Quantum *GetVirtualPixelCache(const Image *image,
 MagickExport const Quantum *GetVirtualPixelQueue(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -3014,13 +3015,13 @@ MagickExport const Quantum *GetVirtualPixels(const Image *image,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
 
   const Quantum
-    *p;
+    *restrict p;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3063,7 +3064,7 @@ MagickExport const Quantum *GetVirtualPixels(const Image *image,
 static const Quantum *GetVirtualPixelsCache(const Image *image)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -3104,10 +3105,10 @@ static const Quantum *GetVirtualPixelsCache(const Image *image)
 %
 */
 MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
-  NexusInfo *nexus_info)
+  NexusInfo *restrict nexus_info)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -3245,7 +3246,7 @@ static inline MagickOffsetType WritePixelCacheRegion(
 static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   MagickOffsetType
     count,
@@ -3292,7 +3293,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info,
+    *restrict cache_info,
     source_info;
 
   char
@@ -3610,8 +3611,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info,
-    *clone_info;
+    *restrict cache_info,
+    *restrict clone_info;
 
   Image
     clone_image;
@@ -3743,7 +3744,7 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   const MagickBooleanType clone,NexusInfo *nexus_info,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   MagickOffsetType
     offset;
@@ -3752,7 +3753,7 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
     number_pixels;
 
   Quantum
-    *pixels;
+    *restrict pixels;
 
   RectangleInfo
     region;
@@ -3832,13 +3833,13 @@ static Quantum *QueueAuthenticPixelsCache(Image *image,const ssize_t x,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
 
   Quantum
-    *pixels;
+    *restrict pixels;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3912,13 +3913,13 @@ MagickExport Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
 
   Quantum
-    *pixels;
+    *restrict pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4001,8 +4002,9 @@ static inline MagickOffsetType ReadPixelCacheRegion(
   return(i);
 }
 
-static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
+static MagickBooleanType ReadPixelCacheMetacontent(
+  CacheInfo *restrict cache_info,NexusInfo *restrict nexus_info,
+  ExceptionInfo *exception)
 {
   MagickOffsetType
     count,
@@ -4171,8 +4173,8 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
+static MagickBooleanType ReadPixelCachePixels(CacheInfo *restrict cache_info,
+  NexusInfo *restrict nexus_info,ExceptionInfo *exception)
 {
   MagickOffsetType
     count,
@@ -4334,7 +4336,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
 MagickPrivate Cache ReferencePixelCache(Cache cache)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
@@ -4372,7 +4374,7 @@ MagickPrivate Cache ReferencePixelCache(Cache cache)
 MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   GetOneAuthenticPixelFromHandler
     get_one_authentic_pixel_from_handler;
@@ -4648,10 +4650,10 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   CacheView
-    *image_view;
+    *restrict image_view;
 
   MagickBooleanType
     status;
@@ -4704,7 +4706,7 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
   const VirtualPixelMethod virtual_pixel_method,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   VirtualPixelMethod
     method;
@@ -4773,10 +4775,10 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
 %
 */
 MagickPrivate MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
+  NexusInfo *restrict nexus_info,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   MagickBooleanType
     status;
@@ -4833,7 +4835,7 @@ static MagickBooleanType SyncAuthenticPixelsCache(Image *image,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -4883,7 +4885,7 @@ MagickExport MagickBooleanType SyncAuthenticPixels(Image *image,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   const int
     id = GetOpenMPThreadId();
@@ -4940,7 +4942,7 @@ MagickPrivate MagickBooleanType SyncImagePixelCache(Image *image,
   ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    *restrict cache_info;
 
   assert(image != (Image *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
@@ -4977,7 +4979,7 @@ MagickPrivate MagickBooleanType SyncImagePixelCache(Image *image,
 %
 */
 static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
+  NexusInfo *restrict nexus_info,ExceptionInfo *exception)
 {
   MagickOffsetType
     count,
@@ -5146,8 +5148,8 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
+static MagickBooleanType WritePixelCachePixels(CacheInfo *restrict cache_info,
+  NexusInfo *restrict nexus_info,ExceptionInfo *exception)
 {
   MagickOffsetType
     count,
