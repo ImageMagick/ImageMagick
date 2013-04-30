@@ -4494,6 +4494,20 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   return(MagickTrue);
 }
 
+static inline MagickBooleanType IsAuthenticCache(
+  const CacheInfo *restrict cache_info,const NexusInfo *restrict nexus_info)
+{
+  MagickOffsetType
+    offset;
+
+  if (cache_info->type == PingCache)
+    return(MagickTrue);
+  offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
+    nexus_info->region.x;
+  return(nexus_info->pixels == (cache_info->pixels+offset) ? MagickTrue :
+    MagickFalse);
+}
+
 static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
   const MapMode mode)
 {
@@ -4541,7 +4555,6 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
           /*
             Pixels are accessed directly from memory.
           */
-          nexus_info->authentic_cache=MagickTrue;
           offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
             nexus_info->region.x;
           nexus_info->pixels=cache_info->pixels+cache_info->number_channels*
@@ -4551,13 +4564,13 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
             nexus_info->metacontent=(unsigned char *) cache_info->metacontent+
               offset*cache_info->metacontent_extent;
           PrefetchPixelCacheNexusPixels(nexus_info,mode);
+          nexus_info->authentic_cache=IsAuthenticCache(cache_info,nexus_info);
           return(nexus_info->pixels);
         }
     }
   /*
     Pixels are stored in a staging region until they are synced to the cache.
   */
-  nexus_info->authentic_cache=MagickFalse;
   number_pixels=(MagickSizeType) nexus_info->region.width*
     nexus_info->region.height;
   length=number_pixels*cache_info->number_channels*sizeof(Quantum);
@@ -4591,6 +4604,7 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
     nexus_info->metacontent=(void *) (nexus_info->pixels+number_pixels*
       cache_info->number_channels);
   PrefetchPixelCacheNexusPixels(nexus_info,mode);
+  nexus_info->authentic_cache=IsAuthenticCache(cache_info,nexus_info);
   return(nexus_info->pixels);
 }
 
