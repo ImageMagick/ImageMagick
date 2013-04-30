@@ -113,7 +113,7 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image,
   ExceptionInfo *exception)
 {
   CacheView
-    *cache_view;
+    *restrict cache_view;
 
   cache_view=AcquireVirtualCacheView(image,exception);
   (void) SyncImagePixelCache(cache_view->image,exception);
@@ -151,7 +151,7 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
   ExceptionInfo *exception)
 {
   CacheView
-    *cache_view;
+    *restrict cache_view;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -203,7 +203,7 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
 MagickExport CacheView *CloneCacheView(const CacheView *cache_view)
 {
   CacheView
-    *clone_view;
+    *restrict clone_view;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -302,7 +302,7 @@ MagickExport Quantum *GetCacheViewAuthenticPixels(CacheView *cache_view,
     id = GetOpenMPThreadId();
 
   Quantum
-    *pixels;
+    *restrict pixels;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -560,7 +560,7 @@ MagickExport const void *GetCacheViewVirtualMetacontent(
     id = GetOpenMPThreadId();
 
   const void
-    *metacontent;
+    *restrict metacontent;
 
   assert(cache_view != (const CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -603,7 +603,7 @@ MagickExport const Quantum *GetCacheViewVirtualPixelQueue(
     id = GetOpenMPThreadId();
 
   const Quantum
-    *pixels;
+    *restrict pixels;
 
   assert(cache_view != (const CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -654,7 +654,7 @@ MagickExport const Quantum *GetCacheViewVirtualPixels(
     id = GetOpenMPThreadId();
 
   const Quantum
-    *pixels;
+    *restrict pixels;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -704,7 +704,7 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
     id = GetOpenMPThreadId();
 
   Quantum
-    *q;
+    *restrict q;
 
   register ssize_t
     i;
@@ -776,7 +776,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
     id = GetOpenMPThreadId();
 
   register const Quantum
-    *p;
+    *restrict p;
 
   register ssize_t
     i;
@@ -849,7 +849,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixelInfo(
     id = GetOpenMPThreadId();
 
   register const Quantum
-    *p;
+    *restrict p;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -908,7 +908,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
     id = GetOpenMPThreadId();
 
   const Quantum
-    *p;
+    *restrict p;
 
   register ssize_t
     i;
@@ -980,7 +980,7 @@ MagickExport Quantum *QueueCacheViewAuthenticPixels(CacheView *cache_view,
     id = GetOpenMPThreadId();
 
   Quantum
-    *pixels;
+    *restrict pixels;
 
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -1056,7 +1056,7 @@ MagickExport MagickBooleanType SetCacheViewStorageClass(CacheView *cache_view,
 %
 */
 MagickExport MagickBooleanType SetCacheViewVirtualPixelMethod(
-  CacheView *cache_view,const VirtualPixelMethod virtual_pixel_method)
+  CacheView *restrict cache_view,const VirtualPixelMethod virtual_pixel_method)
 {
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
@@ -1095,7 +1095,7 @@ MagickExport MagickBooleanType SetCacheViewVirtualPixelMethod(
 %
 */
 MagickExport MagickBooleanType SyncCacheViewAuthenticPixels(
-  CacheView *cache_view,ExceptionInfo *exception)
+  CacheView *restrict cache_view,ExceptionInfo *exception)
 {
   const int
     id = GetOpenMPThreadId();
