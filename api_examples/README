@@ -28,5 +28,5 @@ MagickCLI API...
 
 MagickWand API...
 
-  wand.c              usaing a MagickWand
+  wand.c              using a MagickWand
 
