@@ -3621,8 +3621,10 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("combine",option+1) == 0)
         {
-          /* FUTURE - this may be replaced by a 'channel' method */
-          parse = ParseCommandOption(MagickColorspaceOptions,MagickFalse,arg1);
+          parse = (ssize_t) sRGBColorspace; /* default (backward compatible) */
+          if ( IfPlusOp )
+            parse = ParseCommandOption(MagickColorspaceOptions,MagickFalse,
+                 arg1);
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedColorspace",option,
               arg1);
