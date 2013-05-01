@@ -484,8 +484,7 @@ MagickExport Image *CombineImages(const Image *image,
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(combine_image,sRGBColorspace,exception);
+  (void) SetImageColorspace(combine_image,colorspace,exception);
   if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
     combine_image->alpha_trait=BlendPixelTrait;
   /*
@@ -566,7 +565,6 @@ MagickExport Image *CombineImages(const Image *image,
       }
   }
   combine_view=DestroyCacheView(combine_view);
-  (void) TransformImageColorspace(combine_image,colorspace,exception);
   if (status == MagickFalse)
     combine_image=DestroyImage(combine_image);
   return(combine_image);
