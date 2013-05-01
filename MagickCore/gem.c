@@ -95,7 +95,8 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
     h,
     m,
     r,
-    x;
+    x,
+    z;
 
   /*
     Convert HCL to RGB colorspace.
@@ -145,9 +146,21 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
                 b=x;
               }
   m=luma-(0.298839f*r+0.586811f*g+0.114350f*b);
-  *red=QuantumRange*(r+m);
-  *green=QuantumRange*(g+m);
-  *blue=QuantumRange*(b+m);
+  z=1.0;
+  if (m < 0.0)
+    {
+      z=luma/(luma-m);
+      m=0.0;
+    }
+  else
+    if (m+c > 1.0)
+      {
+        z=(1.0-luma)/(m+c-luma);
+        m=1.0-z*c;
+      }
+  *red=ClampToQuantum(QuantumRange*(z*r+m));
+  *green=ClampToQuantum(QuantumRange*(z*g+m));
+  *blue=ClampToQuantum(QuantumRange*(z*b+m));
 }
 
 /*
