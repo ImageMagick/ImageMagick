@@ -1,3 +1,10 @@
+2013-05-01  6.8.5-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.5-4, SVN revision 12087.
+
+2013-05-01  6.8.5-4 Cristy  <quetzlzacatenango@image...>
+  * Add DeleteImageArtifact() for jpeg:extent artifact (thanks to
+    Jimmy Xie @ Microsoft).
+
 2013-04-28  6.8.5-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-3, SVN revision 12025.
 
