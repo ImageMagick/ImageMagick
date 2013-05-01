@@ -2565,12 +2565,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     i;
 
   ssize_t
-    changes[GetOpenMPMaximumThreads()],
     y;
 
   size_t
-    width,
-    changed;
+    *changes,
+    changed,
+    width;
 
   MagickBooleanType
     status;
@@ -2622,6 +2622,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     }
   }
   changed=0;
+  changes=(size_t *) AcquireQuantumMemory(GetOpenMPMaximumThreads(),
+    sizeof(*changes));
+  if (changes == (size_t *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     changes[i]=0;
   if ((method == ConvolveMorphology) && (kernel->width == 1))
@@ -2778,6 +2782,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       image_view=DestroyCacheView(image_view);
       for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
         changed+=changes[i];
+      changes=(size_t *) RelinquishMagickMemory(changes);
       return(status ? (ssize_t) changed : 0);
     }
   /*
@@ -3175,6 +3180,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   image_view=DestroyCacheView(image_view);
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     changed+=changes[i];
+  changes=(size_t *) RelinquishMagickMemory(changes);
   return(status ? (ssize_t) changed : -1);
 }
 
