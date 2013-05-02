@@ -206,12 +206,12 @@ static inline MagickRealType GetPixelInfoIntensity(
   if (pixel_info->colorspace == GRAYColorspace)
     return(pixel_info->red);
   if (pixel_info->colorspace != sRGBColorspace)
-    return(0.298839f*pixel_info->red+0.586811f*pixel_info->green+
-      0.114350f*pixel_info->blue);
+    return(0.298839*pixel_info->red+0.586811*pixel_info->green+
+      0.114350*pixel_info->blue);
   red=DecodePixelGamma(pixel_info->red);
   green=DecodePixelGamma(pixel_info->green);
   blue=DecodePixelGamma(pixel_info->blue);
-  return(0.298839f*red+0.586811f*green+0.114350f*blue);
+  return(0.298839*red+0.586811*green+0.114350*blue);
 }
 
 static inline MagickRealType GetPixelInfoLuminance(

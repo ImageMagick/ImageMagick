@@ -79,8 +79,8 @@
 %
 %  A description of each parameter follows:
 %
-%    o hue, chroma, luma: A double value representing a
-%      component of the HCL color space.
+%    o hue, chroma, luma: A double value representing a component of the
+%      HCL color space.
 %
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
@@ -95,8 +95,7 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
     h,
     m,
     r,
-    x,
-    z;
+    x;
 
   /*
     Convert HCL to RGB colorspace.
@@ -145,7 +144,101 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
                 r=c;
                 b=x;
               }
-  m=luma-(0.298839f*r+0.586811f*g+0.114350f*b);
+  m=luma-(0.298839*r+0.586811*g+0.114350*b);
+  *red=QuantumRange*(r+m);
+  *green=QuantumRange*(g+m);
+  *blue=QuantumRange*(b+m);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t H C L p T o R G B                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertHCLpToRGB() transforms a (hue, chroma, luma) to a (red, green,
+%  blue) triple.  Since HCL colorspace is wider than RGB, we instead choose a
+%  saturation strategy to project it on the RGB cube.
+%
+%  The format of the ConvertHCLpToRGBImage method is:
+%
+%      void ConvertHCLpToRGB(const double hue,const double chroma,
+%        const double luma,double *red,double *green,double *blue)
+%
+%  A description of each parameter follows:
+%
+%    o hue, chroma, luma: A double value representing a componenet of the
+%      HCLp color space.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+*/
+MagickPrivate void ConvertHCLpToRGB(const double hue,const double chroma,
+  const double luma,double *red,double *green,double *blue)
+{
+  double
+    b,
+    c,
+    g,
+    h,
+    m,
+    r,
+    x,
+    z;
+
+  /*
+    Convert HCLp to RGB colorspace.
+  */
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
+  h=6.0*hue;
+  c=chroma;
+  x=c*(1.0-fabs(fmod(h,2.0)-1.0));
+  r=0.0;
+  g=0.0;
+  b=0.0;
+  if ((0.0 <= h) && (h < 1.0))
+    {
+      r=c;
+      g=x;
+    }
+  else
+    if ((1.0 <= h) && (h < 2.0))
+      {
+        r=x;
+        g=c;
+      }
+    else
+      if ((2.0 <= h) && (h < 3.0))
+        {
+          g=c;
+          b=x;
+        }
+      else
+        if ((3.0 <= h) && (h < 4.0))
+          {
+            g=x;
+            b=c;
+          }
+        else
+          if ((4.0 <= h) && (h < 5.0))
+            {
+              r=x;
+              b=c;
+            }
+          else
+            if ((5.0 <= h) && (h < 6.0))
+              {
+                r=c;
+                b=x;
+              }
+  m=luma-(0.298839*r+0.586811*g+0.114350*b);
   z=1.0;
   if (m < 0.0)
     {
@@ -807,7 +900,74 @@ MagickPrivate void ConvertRGBToHCL(const double red,const double green,
           h=((r-g)/c)+4.0;
   *hue=(h/6.0);
   *chroma=QuantumScale*c;
-  *luma=QuantumScale*(0.298839f*r+0.586811f*g+0.114350f*b);
+  *luma=QuantumScale*(0.298839*r+0.586811*g+0.114350*b);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t R G B T o H C L p                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertRGBToHCLp() transforms a (red, green, blue) to a (hue, chroma,
+%  luma) triple.
+%
+%  The format of the ConvertRGBToHCLp method is:
+%
+%      void ConvertRGBToHCLp(const double red,const double green,
+%        const double blue,double *hue,double *chroma,double *luma)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel.
+%
+%    o hue, chroma, luma: A pointer to a double value representing a
+%      component of the HCL color space.
+%
+*/
+MagickPrivate void ConvertRGBToHCLp(const double red,const double green,
+  const double blue,double *hue,double *chroma,double *luma)
+{
+  double
+    b,
+    c,
+    g,
+    h,
+    max,
+    r;
+
+  /*
+    Convert RGB to HCL colorspace.
+  */
+  assert(hue != (double *) NULL);
+  assert(chroma != (double *) NULL);
+  assert(luma != (double *) NULL);
+  r=red;
+  g=green;
+  b=blue;
+  max=MagickMax(r,MagickMax(g,b));
+  c=max-(double) MagickMin(r,MagickMin(g,b));
+  h=0.0;
+  if (c == 0.0)
+    h=0.0;
+  else
+    if (red == max)
+      h=fmod((g-b)/c+6.0,6.0);
+    else
+      if (green == max)
+        h=((b-r)/c)+2.0;
+      else
+        if (blue == max)
+          h=((r-g)/c)+4.0;
+  *hue=(h/6.0);
+  *chroma=QuantumScale*c;
+  *luma=QuantumScale*(0.298839*r+0.586811*g+0.114350*b);
 }
 
 /*
