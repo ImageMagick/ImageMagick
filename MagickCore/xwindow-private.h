@@ -608,7 +608,7 @@ static inline double XPixelIntensity(const XColor *pixel)
   red=DecodePixelGamma((MagickRealType) pixel->red);
   green=DecodePixelGamma((MagickRealType) pixel->green);
   blue=DecodePixelGamma((MagickRealType) pixel->blue);
-  return(0.298839f*red+0.586811f*green+0.114350f*blue);
+  return(0.298839*red+0.586811*green+0.114350*blue);
 }
 
 #endif

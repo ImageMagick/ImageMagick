@@ -42,6 +42,8 @@ extern MagickPrivate size_t
 extern MagickPrivate void
   ConvertHCLToRGB(const double,const double,const double,double *,double *,
     double *),
+  ConvertHCLpToRGB(const double,const double,const double,double *,double *,
+    double *),
   ConvertHSBToRGB(const double,const double,const double,double *,double *,
     double *),
   ConvertHSIToRGB(const double,const double,const double,double *,double *,
@@ -55,6 +57,8 @@ extern MagickPrivate void
   ConvertLCHuvToRGB(const double,const double,const double,double *,double *,
     double *),
   ConvertRGBToHCL(const double,const double,const double,double *,double *,
+    double *),
+  ConvertRGBToHCLp(const double,const double,const double,double *,double *,
     double *),
   ConvertRGBToHSB(const double,const double,const double,double *,double *,
     double *),

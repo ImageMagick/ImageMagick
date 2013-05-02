@@ -2053,12 +2053,12 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         }
         case Rec601LumaPixelIntensityMethod:
         {
-          intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
+          intensity=0.298839*red+0.586811*green+0.114350*blue;
           break;
         }
         case Rec601LuminancePixelIntensityMethod:
         {
-          intensity=0.298839f*red+0.586811f*green+0.114350f*blue;
+          intensity=0.298839*red+0.586811*green+0.114350*blue;
           break;
         }
         case Rec709LumaPixelIntensityMethod:
@@ -2926,6 +2926,29 @@ static inline void ModulateHCL(const double percent_hue,
   ConvertHCLToRGB(hue,chroma,luma,red,green,blue);
 }
 
+static inline void ModulateHCLp(const double percent_hue,
+  const double percent_chroma,const double percent_luma,double *red,
+  double *green,double *blue)
+{
+  double
+    hue,
+    luma,
+    chroma;
+
+  /*
+    Increase or decrease color luma, chroma, or hue.
+  */
+  ConvertRGBToHCLp(*red,*green,*blue,&hue,&chroma,&luma);
+  hue+=0.5*(0.01*percent_hue-1.0);
+  while (hue < 0.0)
+    hue+=1.0;
+  while (hue > 1.0)
+    hue-=1.0;
+  chroma*=0.01*percent_chroma;
+  luma*=0.01*percent_luma;
+  ConvertHCLpToRGB(hue,chroma,luma,red,green,blue);
+}
+
 static inline void ModulateHSB(const double percent_hue,
   const double percent_saturation,const double percent_brightness,double *red,
   double *green,double *blue)
@@ -3173,6 +3196,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
         case HCLColorspace:
         {
           ModulateHCL(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
+        case HCLpColorspace:
+        {
+          ModulateHCLp(percent_hue,percent_saturation,percent_brightness,
             &red,&green,&blue);
           break;
         }
