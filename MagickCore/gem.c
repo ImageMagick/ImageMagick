@@ -1097,7 +1097,7 @@ MagickPrivate void ConvertRGBToHSI(const double red,const double green,
   *saturation=1.0-MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
     QuantumScale*blue))/(*intensity);
   alpha=0.5*(2.0*QuantumScale*red-QuantumScale*green-QuantumScale*blue);
-  beta=0.866025403784439*(QuantumScale*green-QuantumScale*blue);
+  beta=0.8660254037844385*(QuantumScale*green-QuantumScale*blue);
   *hue=atan2(beta,alpha)*(180.0/MagickPI)/360.0;
   if (*hue < 0.0)
     *hue+=1.0;
