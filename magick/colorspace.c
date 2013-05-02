@@ -2659,16 +2659,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-    case HSLColorspace:
-    {
-      /*
-        Transform image from HSL to sRGB.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireAuthenticCacheView(image,exception);
