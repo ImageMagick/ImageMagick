@@ -619,6 +619,71 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         return(MagickFalse);
       return(status);
     }
+    case HSVColorspace:
+    {
+      /*
+        Transform image from sRGB to HSV.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image,exception) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        magick_threads(image,image,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register Quantum
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            blue,
+            green,
+            hue,
+            red,
+            saturation,
+            value;
+
+          red=DecodePixelGamma((MagickRealType) GetPixelRed(image,q));
+          green=DecodePixelGamma((MagickRealType) GetPixelGreen(image,q));
+          blue=DecodePixelGamma((MagickRealType) GetPixelBlue(image,q));
+          ConvertRGBToHSV(red,green,blue,&hue,&saturation,&value);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*saturation),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*value),q);
+          q+=GetPixelChannels(image);
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
+      return(status);
+    }
     case HWBColorspace:
     {
       /*
@@ -2563,6 +2628,71 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           saturation=(double) (QuantumScale*GetPixelGreen(image,q));
           lightness=(double) (QuantumScale*GetPixelBlue(image,q));
           ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
+          SetPixelRed(image,ClampToQuantum(EncodePixelGamma(red)),q);
+          SetPixelGreen(image,ClampToQuantum(EncodePixelGamma(green)),q);
+          SetPixelBlue(image,ClampToQuantum(EncodePixelGamma(blue)),q);
+          q+=GetPixelChannels(image);
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
+        return(MagickFalse);
+      return(status);
+    }
+    case HSVColorspace:
+    {
+      /*
+        Transform image from HSV to sRGB.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image,exception) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        magick_threads(image,image,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register Quantum
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            blue,
+            green,
+            hue,
+            red,
+            saturation,
+            value;
+
+          hue=(double) (QuantumScale*GetPixelRed(image,q));
+          saturation=(double) (QuantumScale*GetPixelGreen(image,q));
+          value=(double) (QuantumScale*GetPixelBlue(image,q));
+          ConvertHSVToRGB(hue,saturation,value,&red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(EncodePixelGamma(red)),q);
           SetPixelGreen(image,ClampToQuantum(EncodePixelGamma(green)),q);
           SetPixelBlue(image,ClampToQuantum(EncodePixelGamma(blue)),q);

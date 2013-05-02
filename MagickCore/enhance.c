@@ -2995,6 +2995,29 @@ static inline void ModulateHSL(const double percent_hue,
   ConvertHSLToRGB(hue,saturation,lightness,red,green,blue);
 }
 
+static inline void ModulateHSV(const double percent_hue,
+  const double percent_saturation,const double percent_value,double *red,
+  double *green,double *blue)
+{
+  double
+    hue,
+    saturation,
+    value;
+
+  /*
+    Increase or decrease color value, saturation, or hue.
+  */
+  ConvertRGBToHSV(*red,*green,*blue,&hue,&saturation,&value);
+  hue+=0.5*(0.01*percent_hue-1.0);
+  while (hue < 0.0)
+    hue+=1.0;
+  while (hue >= 1.0)
+    hue-=1.0;
+  saturation*=0.01*percent_saturation;
+  value*=0.01*percent_value;
+  ConvertHSVToRGB(hue,saturation,value,red,green,blue);
+}
+
 static inline void ModulateHWB(const double percent_hue,
   const double percent_whiteness,const double percent_blackness,double *red,
   double *green,double *blue)
@@ -3169,6 +3192,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
         default:
         {
           ModulateHSL(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
+        case HSVColorspace:
+        {
+          ModulateHSV(percent_hue,percent_saturation,percent_brightness,
             &red,&green,&blue);
           break;
         }
