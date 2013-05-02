@@ -158,9 +158,9 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
         z=(1.0-luma)/(m+c-luma);
         m=1.0-z*c;
       }
-  *red=ClampToQuantum(QuantumRange*(z*r+m));
-  *green=ClampToQuantum(QuantumRange*(z*g+m));
-  *blue=ClampToQuantum(QuantumRange*(z*b+m));
+  *red=QuantumRange*(z*r+m);
+  *green=QuantumRange*(z*g+m);
+  *blue=QuantumRange*(z*b+m);
 }
 
 /*
@@ -363,31 +363,14 @@ MagickPrivate void ConvertHSIToRGB(const double hue,const double saturation,
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
-
-static inline double ConvertHueToRGB(double m1,double m2,double hue)
-{
-  if (hue < 0.0)
-    hue+=1.0;
-  if (hue >= 1.0)
-    hue-=1.0;
-  if ((6.0*hue) < 1.0)
-    return(m1+6.0*(m2-m1)*hue);
-  if ((2.0*hue) < 1.0)
-    return(m2);
-  if ((3.0*hue) < 2.0)
-    return(m1+6.0*(m2-m1)*(2.0/3.0-hue));
-  return(m1);
-}
-
 MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   const double lightness,double *red,double *green,double *blue)
 {
   double
-    b,
-    g,
-    r,
-    m1,
-    m2;
+    c,
+    h,
+    min,
+    x;
 
   /*
     Convert HSL to RGB colorspace.
@@ -395,24 +378,66 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  if (saturation == 0)
-    {
-      *red=QuantumRange*lightness;
-      *green=(*red);
-      *blue=(*red);
-      return;
-    }
-  if (lightness < 0.5)
-    m2=lightness*(saturation+1.0);
+  h=hue*360.0;
+  if (lightness <= 0.5)
+    c=2.0*lightness*saturation;
   else
-    m2=(lightness+saturation)-(lightness*saturation);
-  m1=2.0*lightness-m2;
-  r=ConvertHueToRGB(m1,m2,hue+1.0/3.0);
-  g=ConvertHueToRGB(m1,m2,hue);
-  b=ConvertHueToRGB(m1,m2,hue-1.0/3.0);
-  *red=QuantumRange*r;
-  *green=QuantumRange*g;
-  *blue=QuantumRange*b;
+    c=(2.0-2.0*lightness)*saturation;
+  min=lightness-0.5*c;
+  h-=360.0*floor(h/360.0);
+  h/=60.0;
+  x=c*(1.0-fabs(h-2.0*floor(h/2.0)-1.0));
+  switch ((int) floor(h))
+  {
+    case 0:
+    {
+      *red=QuantumRange*(min+c);
+      *green=QuantumRange*(min+x);
+      *blue=QuantumRange*min;
+      break;
+    }
+    case 1:
+    {
+      *red=QuantumRange*(min+x);
+      *green=QuantumRange*(min+c);
+      *blue=QuantumRange*min;
+      break;
+    }
+    case 2:
+    {
+      *red=QuantumRange*min;
+      *green=QuantumRange*(min+c);
+      *blue=QuantumRange*(min+x);
+      break;
+    }
+    case 3:
+    {
+      *red=QuantumRange*min;
+      *green=QuantumRange*(min+x);
+      *blue=QuantumRange*(min+c);
+      break;
+    }
+    case 4:
+    {
+      *red=QuantumRange*(min+x);
+      *green=QuantumRange*min;
+      *blue=QuantumRange*(min+c);
+      break;
+    }
+    case 5:
+    {
+      *red=QuantumRange*(min+c);
+      *green=QuantumRange*min;
+      *blue=QuantumRange*(min+x);
+      break;
+    }
+    default:
+    {
+      *red=0.0;
+      *green=0.0;
+      *blue=0.0;
+    }
+  }
 }
 
 /*
@@ -806,17 +831,15 @@ MagickPrivate void ConvertRGBToHSI(const double red,const double green,
     {
       *hue=0.0;
       *saturation=0.0;
+      return;
     }
-  else
-    {
-      *saturation=1.0-MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
-        QuantumScale*blue))/(*intensity);
-      alpha=0.5*(2.0*QuantumScale*red-QuantumScale*green-QuantumScale*blue);
-      beta=0.866025403784439*(QuantumScale*green-QuantumScale*blue);
-      *hue=atan2(beta,alpha)*(180.0/MagickPI)/360.0;
-      if (*hue < 0.0)
-        *hue+=1.0;
-    }
+  *saturation=1.0-MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
+    QuantumScale*blue))/(*intensity);
+  alpha=0.5*(2.0*QuantumScale*red-QuantumScale*green-QuantumScale*blue);
+  beta=0.866025403784439*(QuantumScale*green-QuantumScale*blue);
+  *hue=atan2(beta,alpha)*(180.0/MagickPI)/360.0;
+  if (*hue < 0.0)
+    *hue+=1.0;
 }
 
 /*
@@ -851,12 +874,9 @@ MagickExport void ConvertRGBToHSL(const double red,const double green,
   const double blue,double *hue,double *saturation,double *lightness)
 {
   double
-    b,
-    delta,
-    g,
+    c,
     max,
-    min,
-    r;
+    min;
 
   /*
     Convert RGB to HSL colorspace.
@@ -864,37 +884,34 @@ MagickExport void ConvertRGBToHSL(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(saturation != (double *) NULL);
   assert(lightness != (double *) NULL);
-  r=QuantumScale*red;
-  g=QuantumScale*green;
-  b=QuantumScale*blue;
-  max=MagickMax(r,MagickMax(g,b));
-  min=MagickMin(r,MagickMin(g,b));
-  *lightness=(double) ((min+max)/2.0);
-  delta=max-min;
-  if (delta == 0.0)
+  max=MagickMax(QuantumScale*red,MagickMax(QuantumScale*green,
+    QuantumScale*blue));
+  min=MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
+    QuantumScale*blue));
+  c=max-min;
+  *lightness=(max+min)/2.0;
+  if (c <= 0.0)
     {
       *hue=0.0;
       *saturation=0.0;
       return;
     }
-  if (*lightness < 0.5)
-    *saturation=(double) (delta/(min+max));
+  if (max == (QuantumScale*red))
+    {
+      *hue=(QuantumScale*green-QuantumScale*blue)/c;
+      if ((QuantumScale*green) < (QuantumScale*blue))
+        *hue+=6.0;
+    }
   else
-    *saturation=(double) (delta/(2.0-max-min));
-  if (r == max)
-    *hue=((((max-b)/6.0)+(delta/2.0))-(((max-g)/6.0)+(delta/2.0)))/delta;
-  else
-    if (g == max)
-      *hue=(1.0/3.0)+((((max-r)/6.0)+(delta/2.0))-(((max-b)/6.0)+(delta/2.0)))/
-        delta;
+    if (max == (QuantumScale*green))
+      *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
     else
-      if (b == max)
-        *hue=(2.0/3.0)+((((max-g)/6.0)+(delta/2.0))-(((max-r)/6.0)+
-          (delta/2.0)))/delta;
-  if (*hue < 0.0)
-    *hue+=1.0;
-  if (*hue >= 1.0)
-    *hue-=1.0;
+      *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
+  *hue*=60.0/360.0;
+  if (*lightness <= 0.5)
+    *saturation=c/(2.0*(*lightness));
+  else
+    *saturation=c/(2.0-2.0*(*lightness));
 }
 
 /*
