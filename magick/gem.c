@@ -269,6 +269,79 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n v e r t H S I T o R G B                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertHSIToRGB() transforms a (hue, saturation, intensity) to a (red,
+%  green, blue) triple.
+%
+%  The format of the ConvertHSIToRGBImage method is:
+%
+%      void ConvertHSIToRGB(const double hue,const double saturation,
+%        const double intensity,Quantum *red,Quantum *green,Quantum *blue)
+%
+%  A description of each parameter follows:
+%
+%    o hue, saturation, intensity: A double value representing a
+%      component of the HSI color space.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+*/
+MagickExport void ConvertHSIToRGB(const double hue,const double saturation,
+  const double intensity,Quantum *red,Quantum *green,Quantum *blue)
+{
+  double
+    b,
+    g,
+    h,
+    r;
+
+  /*
+    Convert HSI to RGB colorspace.
+  */
+  assert(red != (Quantum *) NULL);
+  assert(green != (Quantum *) NULL);
+  assert(blue != (Quantum *) NULL);
+  h=360.0*hue;
+  h-=360.0*floor(h/360.0);
+  if (h < 120.0)
+    {
+      b=intensity*(1.0-saturation);
+      r=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
+        (MagickPI/180.0)));
+      g=3.0*intensity-r-b;
+    }
+  else
+    if (h < 240.0)
+      {
+        h-=120.0;
+        r=intensity*(1.0-saturation);
+        g=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
+          (MagickPI/180.0)));
+        b=3.0*intensity-r-g;
+      }
+    else
+      {
+        h-=240.0;
+        g=intensity*(1.0-saturation);
+        b=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
+          (MagickPI/180.0)));
+        r=3.0*intensity-g-b;
+      }
+  *red=ClampToQuantum(QuantumRange*r);
+  *green=ClampToQuantum(QuantumRange*g);
+  *blue=ClampToQuantum(QuantumRange*b);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t H S L T o R G B                                             %
 %                                                                             %
 %                                                                             %
@@ -686,6 +759,65 @@ MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
   *hue/=6.0;
   if (*hue < 0.0)
     *hue+=1.0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t R G B T o H S I                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertRGBToHSI() transforms a (red, green, blue) to a (hue, saturation,
+%  intensity) triple.
+%
+%  The format of the ConvertRGBToHSI method is:
+%
+%      void ConvertRGBToHSI(const Quantum red,const Quantum green,
+%        const Quantum blue,double *hue,double *saturation,double *intensity)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel..
+%
+%    o hue, saturation, intensity: A pointer to a double value representing a
+%      component of the HSI color space.
+%
+*/
+MagickExport void ConvertRGBToHSI(const Quantum red,const Quantum green,
+  const Quantum blue,double *hue,double *saturation,double *intensity)
+{
+  double
+    alpha,
+    beta;
+
+  /*
+    Convert RGB to HSI colorspace.
+  */
+  assert(hue != (double *) NULL);
+  assert(saturation != (double *) NULL);
+  assert(intensity != (double *) NULL);
+  *intensity=(QuantumScale*red+QuantumScale*green+QuantumScale*blue)/3.0;
+  if (*intensity <= 0.0)
+    {
+      *hue=0.0;
+      *saturation=0.0;
+    }
+  else
+    {
+      *saturation=1.0-MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
+        QuantumScale*blue))/(*intensity);
+      alpha=0.5*(2.0*QuantumScale*red-QuantumScale*green-QuantumScale*blue);
+      beta=0.866025403784439*(QuantumScale*green-QuantumScale*blue);
+      *hue=atan2(beta,alpha)*(180.0/MagickPI)/360.0;
+      if (*hue < 0.0)
+        *hue+=1.0;
+    }
 }
 
 /*
