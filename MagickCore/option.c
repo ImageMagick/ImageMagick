@@ -887,6 +887,7 @@ static const OptionInfo
     { "Gray", GRAYColorspace, UndefinedOptionFlag, MagickFalse },
     { "HCL", HCLColorspace, UndefinedOptionFlag, MagickFalse },
     { "HSB", HSBColorspace, UndefinedOptionFlag, MagickFalse },
+    { "HSI", HSIColorspace, UndefinedOptionFlag, MagickFalse },
     { "HSL", HSLColorspace, UndefinedOptionFlag, MagickFalse },
     { "HWB", HWBColorspace, UndefinedOptionFlag, MagickFalse },
     { "Lab", LabColorspace, UndefinedOptionFlag, MagickFalse },
