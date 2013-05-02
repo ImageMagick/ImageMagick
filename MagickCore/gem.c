@@ -445,6 +445,107 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n v e r t H S V T o R G B                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertHSVToRGB() transforms a (hue, saturation, value) to a (red,
+%  green, blue) triple.
+%
+%  The format of the ConvertHSVToRGBImage method is:
+%
+%      void ConvertHSVToRGB(const double hue,const double saturation,
+%        const double value,double *red,double *green,double *blue)
+%
+%  A description of each parameter follows:
+%
+%    o hue, saturation, value: A double value representing a
+%      component of the HSV color space.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+*/
+MagickPrivate void ConvertHSVToRGB(const double hue,const double saturation,
+  const double value,double *red,double *green,double *blue)
+{
+  double
+    c,
+    h,
+    min,
+    x;
+
+  /*
+    Convert HSV to RGB colorspace.
+  */
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
+  h=hue*360.0;
+  c=value*saturation;
+  min=value-c;
+  h-=360.0*floor(h/360.0);
+  h/=60.0;
+  x=c*(1.0-fabs(h-2.0*floor(h/2.0)-1.0));
+  switch ((int) floor(h))
+  {
+    case 0:
+    {
+      *red=QuantumRange*(min+c);
+      *green=QuantumRange*(min+x);
+      *blue=QuantumRange*min;
+      break;
+    }
+    case 1:
+    {
+      *red=QuantumRange*(min+x);
+      *green=QuantumRange*(min+c);
+      *blue=QuantumRange*min;
+      break;
+    }
+    case 2:
+    {
+      *red=QuantumRange*min;
+      *green=QuantumRange*(min+c);
+      *blue=QuantumRange*(min+x);
+      break;
+    }
+    case 3:
+    {
+      *red=QuantumRange*min;
+      *green=QuantumRange*(min+x);
+      *blue=QuantumRange*(min+c);
+      break;
+    }
+    case 4:
+    {
+      *red=QuantumRange*(min+x);
+      *green=QuantumRange*min;
+      *blue=QuantumRange*(min+c);
+      break;
+    }
+    case 5:
+    {
+      *red=QuantumRange*(min+c);
+      *green=QuantumRange*min;
+      *blue=QuantumRange*(min+x);
+      break;
+    }
+    default:
+    {
+      *red=0.0;
+      *green=0.0;
+      *blue=0.0;
+    }
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t H W B T o R G B                                             %
 %                                                                             %
 %                                                                             %
@@ -912,6 +1013,75 @@ MagickExport void ConvertRGBToHSL(const double red,const double green,
     *saturation=c/(2.0*(*lightness));
   else
     *saturation=c/(2.0-2.0*(*lightness));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t R G B T o H S V                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertRGBToHSV() transforms a (red, green, blue) to a (hue, saturation,
+%  value) triple.
+%
+%  The format of the ConvertRGBToHSV method is:
+%
+%      void ConvertRGBToHSV(const double red,const double green,
+%        const double blue,double *hue,double *saturation,double *value)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel..
+%
+%    o hue, saturation, value: A pointer to a double value representing a
+%      component of the HSV color space.
+%
+*/
+MagickPrivate void ConvertRGBToHSV(const double red,const double green,
+  const double blue,double *hue,double *saturation,double *value)
+{
+  double
+    c,
+    max,
+    min;
+
+  /*
+    Convert RGB to HSV colorspace.
+  */
+  assert(hue != (double *) NULL);
+  assert(saturation != (double *) NULL);
+  assert(value != (double *) NULL);
+  max=MagickMax(QuantumScale*red,MagickMax(QuantumScale*green,
+    QuantumScale*blue));
+  min=MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
+    QuantumScale*blue));
+  c=max-min;
+  *value=max;
+  if (c <= 0.0)
+    {
+      *hue=0.0;
+      *saturation=0.0;
+      return;
+    }
+  if (max == (QuantumScale*red))
+    {
+      *hue=(QuantumScale*green-QuantumScale*blue)/c;
+      if ((QuantumScale*green) < (QuantumScale*blue))
+        *hue+=6.0;
+    }
+  else
+    if (max == (QuantumScale*green))
+      *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
+    else
+      *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
+  *hue*=60.0/360.0;
+  *saturation=c/max;
 }
 
 /*

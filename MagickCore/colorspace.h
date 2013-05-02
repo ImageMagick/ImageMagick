@@ -32,6 +32,7 @@ typedef enum
   HSBColorspace,
   HSIColorspace,
   HSLColorspace,
+  HSVColorspace,
   HWBColorspace,
   LabColorspace,
   LCHColorspace,
