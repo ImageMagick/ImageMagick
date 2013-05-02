@@ -38,6 +38,8 @@ extern MagickExport size_t
 extern MagickExport void
   ConvertHCLToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
+  ConvertHCLpToRGB(const double,const double,const double,Quantum *,Quantum *,
+    Quantum *),
   ConvertHSBToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
   ConvertHSIToRGB(const double,const double,const double,Quantum *,Quantum *,
@@ -53,6 +55,8 @@ extern MagickExport void
   ConvertLCHuvToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
   ConvertRGBToHCL(const Quantum,const Quantum,const Quantum,double *,double *,
+    double *),
+  ConvertRGBToHCLp(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
   ConvertRGBToHSB(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),

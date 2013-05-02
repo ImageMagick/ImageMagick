@@ -1086,8 +1086,11 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       return;
     }
   if ((pixel->colorspace == HCLColorspace) ||
+      (pixel->colorspace == HCLpColorspace) ||
       (pixel->colorspace == HSBColorspace) ||
+      (pixel->colorspace == HSIColorspace) ||
       (pixel->colorspace == HSLColorspace) ||
+      (pixel->colorspace == HSVColorspace) ||
       (pixel->colorspace == HWBColorspace))
     {
       (void) FormatLocaleString(component,MaxTextExtent,"%g%%",
