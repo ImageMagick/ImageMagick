@@ -53,7 +53,8 @@ typedef enum
   LMSColorspace,
   LCHabColorspace,
   LCHuvColorspace,
-  scRGBColorspace
+  scRGBColorspace,
+  HSIColorspace
 } ColorspaceType;
 
 extern MagickExport MagickBooleanType
