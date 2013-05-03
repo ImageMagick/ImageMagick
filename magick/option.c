@@ -888,6 +888,7 @@ static const OptionInfo
     { "Rec709Luma", Rec709LumaColorspace, DeprecateOptionFlag, MagickFalse },
     { "Rec709YCbCr", Rec709YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
     { "RGB", RGBColorspace, UndefinedOptionFlag, MagickFalse },
+    { "scRGB", scRGBColorspace, UndefinedOptionFlag, MagickFalse },
     { "sRGB", sRGBColorspace, UndefinedOptionFlag, MagickFalse },
     { "Transparent", TransparentColorspace, UndefinedOptionFlag, MagickFalse },
     { "XYZ", XYZColorspace, UndefinedOptionFlag, MagickFalse },
