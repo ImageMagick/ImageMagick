@@ -3675,7 +3675,7 @@ MAGICK_PATCHLEVEL_VERSION=5
 
 MAGICK_VERSION=6.8.5-5
 
-MAGICK_SVN_REVISION=12087:12092M
+MAGICK_SVN_REVISION=12110:12124M
 
 
 # Substitute library versioning
@@ -4215,7 +4215,12 @@ mkdir_p='$(MKDIR_P)'
 # in the wild :-(  We should find a proper way to deprecate it ...
 AMTAR='$${TAR-tar}'
 
+
+# We'll loop over all known methods to create a tar archive until one works.
+_am_tools='gnutar  pax cpio none'
+
 am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
+
 
 
 
