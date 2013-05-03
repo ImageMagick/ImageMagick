@@ -25,31 +25,31 @@ extern "C" {
 typedef enum
 {
   UndefinedColorspace,
-  CMYColorspace,
-  CMYKColorspace,
-  GRAYColorspace,
+  CMYColorspace,           /* negated linear RGB colorspace */
+  CMYKColorspace,          /* CMY with Black seperation */
+  GRAYColorspace,          /* Single Channel greyscale (linear) image */
   HCLColorspace,
   HCLpColorspace,
   HSBColorspace,
   HSIColorspace,
   HSLColorspace,
-  HSVColorspace,
+  HSVColorspace,           /* alias for HSB */
   HWBColorspace,
   LabColorspace,
-  LCHColorspace,
-  LCHabColorspace,
-  LCHuvColorspace,
+  LCHColorspace,           /* alias for LCHuv */
+  LCHabColorspace,         /* Cylindrical (Polar) Lab */
+  LCHuvColorspace,         /* Cylindrical (Polar) Luv */
   LogColorspace,
   LMSColorspace,
   LuvColorspace,
   OHTAColorspace,
   Rec601YCbCrColorspace,
   Rec709YCbCrColorspace,
-  RGBColorspace,
-  scRGBColorspace,
-  sRGBColorspace,
+  RGBColorspace,           /* Linear RGB colorspace */
+  scRGBColorspace,         /* ??? */
+  sRGBColorspace,          /* Default: non-lienar sRGB colorspace */
   TransparentColorspace,
-  XYZColorspace,
+  XYZColorspace,           /* IEEE Color Reference colorspace */
   YCbCrColorspace,
   YCCColorspace,
   YIQColorspace,
