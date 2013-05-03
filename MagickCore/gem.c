@@ -1360,8 +1360,6 @@ MagickPrivate void ConvertRGBToLCHab(const double red,const double green,
   H=180.0*atan2(255.0*(b-0.5)/200.0,255.0*(a-0.5)/500.0)/MagickPI/360.0;
   if (H < 0.0)
     H+=1.0;
-  if (H >= 1.0)
-    H-=1.0;
   *luma=(100.0*L+16.0)/116.0;
   *chroma=C;
   *hue=H;
