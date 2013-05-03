@@ -914,6 +914,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         return(MagickFalse);
       return(status);
     }
+    case LCHColorspace:
     case LCHabColorspace:
     {
       /*
@@ -981,7 +982,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         return(MagickFalse);
       return(status);
     }
-    case LCHColorspace:
     case LCHuvColorspace:
     {
       /*
@@ -3087,6 +3087,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         return(MagickFalse);
       return(status);
     }
+    case LCHColorspace:
     case LCHabColorspace:
     {
       /*
@@ -3157,7 +3158,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         return(MagickFalse);
       return(status);
     }
-    case LCHColorspace:
     case LCHuvColorspace:
     {
       /*
