@@ -82,7 +82,7 @@ typedef struct _TransformPacket
   Forward declarations.
 */
 static MagickBooleanType
-  TransformsRGBImage(Image *,const ColorspaceType,ExceptionInfo *);
+  TransformsRGBImage(Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1907,10 +1907,10 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   (void) DeleteImageProfile(image,"icc");
   (void) DeleteImageProfile(image,"icm");
   if (IssRGBColorspace(colorspace) != MagickFalse)
-    return(TransformsRGBImage(image,colorspace,exception));
+    return(TransformsRGBImage(image,exception));
   status=MagickTrue;
   if (IssRGBColorspace(image->colorspace) == MagickFalse)
-    status=TransformsRGBImage(image,image->colorspace,exception);
+    status=TransformsRGBImage(image,exception);
   if (status == MagickFalse)
     return(status);
   /*
@@ -1940,13 +1940,11 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 %  The format of the TransformsRGBImage method is:
 %
 %      MagickBooleanType TransformsRGBImage(Image *image,
-%        const ColorspaceType colorspace,ExceptionInfo *exception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o colorspace: the colorspace to transform the image to.
 %
 %   o exception: return any errors or warnings in this structure.
 %
@@ -1991,7 +1989,7 @@ static inline void ConvertCMYKToRGB(PixelInfo *pixel)
 }
 
 static MagickBooleanType TransformsRGBImage(Image *image,
-  const ColorspaceType colorspace,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
 #define TransformsRGBImageTag  "Transform/Image"
 

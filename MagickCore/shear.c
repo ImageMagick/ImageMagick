@@ -536,6 +536,7 @@ static void RadonProjection(const Image *image,RadonInfo *source_cells,
   size_t
     step;
 
+  assert(image != (Image *) NULL);
   p=source_cells;
   q=destination_cells;
   for (step=1; step < p->width; step*=2)

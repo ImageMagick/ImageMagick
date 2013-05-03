@@ -181,7 +181,7 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
     Read extended header.
   */
   offset=RIFF_HEADER_SIZE+TAG_SIZE+CHUNK_SIZE_BYTES+VP8X_CHUNK_SIZE;
-  while (offset <= length)
+  while (offset <= (ssize_t) length)
   {
     uint32_t
       chunk_size,
@@ -566,7 +566,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       *q++=(uint32_t) (image->alpha_trait == BlendPixelTrait ?
-        ScaleQuantumToChar(GetPixelAlpha(image,p)) << 24 : 0xff000000u) |
+        ScaleQuantumToChar(GetPixelAlpha(image,p)) << 24 : 0xff000000) |
         (ScaleQuantumToChar(GetPixelRed(image,p)) << 16) |
         (ScaleQuantumToChar(GetPixelGreen(image,p)) << 8) |
         (ScaleQuantumToChar(GetPixelBlue(image,p)));

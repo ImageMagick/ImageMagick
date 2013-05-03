@@ -394,6 +394,7 @@ static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
   /*
     Destroy distributed pixel cache.
   */
+  (void) file;
   return(DeleteNodeFromSplayTree(registry,(const void *) session_key));
 }
 
@@ -875,6 +876,8 @@ MagickExport void DistributePixelCacheServer(const int port,
   /*
     Launch distributed pixel cache server.
   */
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   (void) ResetMagickMemory(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;

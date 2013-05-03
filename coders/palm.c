@@ -180,7 +180,7 @@ static MagickBooleanType
 %
 %  The format of the FindColor method is:
 %
-%      int FindColor(const Image *image,PixelInfo *pixel)
+%      int FindColor(PixelInfo *pixel)
 %
 %  A description of each parameter follows:
 %
@@ -189,7 +189,7 @@ static MagickBooleanType
 %    o pixel: a pointer to the PixelInfo to be matched.
 %
 */
-static int FindColor(const Image *image,PixelInfo *packet)
+static int FindColor(PixelInfo *packet)
 {
   register ssize_t
     i;
@@ -825,7 +825,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetPixelIndex(image,FindColor(image,&image->colormap[(ssize_t)
+              SetPixelIndex(image,FindColor(&image->colormap[(ssize_t)
                 GetPixelIndex(image,q)]),q);
               q+=GetPixelChannels(image);
             }
