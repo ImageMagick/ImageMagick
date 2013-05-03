@@ -2955,6 +2955,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         return(MagickFalse);
       return(status);
     }
+    case LCHColorspace:
     case LCHabColorspace:
     {
       /*
@@ -3020,7 +3021,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         return(MagickFalse);
       return(status);
     }
-    case LCHColorspace:
     case LCHuvColorspace:
     {
       /*
