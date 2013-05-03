@@ -56,7 +56,7 @@ typedef enum
   LCHuvColorspace,          /* Cylindrical (Polar) Luv */
   scRGBColorspace,
   HSIColorspace,
-  HSVColorspace,
+  HSVColorspace,            /* alias for HSB */
   HSLwColorspace,
 } ColorspaceType;
 
