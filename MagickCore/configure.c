@@ -752,6 +752,9 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         (void) FormatLocaleString(path,MaxTextExtent,"%s/share/%s/",home,
           MAGICKCORE_SHARE_RELATIVE_PATH);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) FormatLocaleString(path,MaxTextExtent,"%s",
+          MAGICKCORE_SHAREARCH_PATH);
+        (void) AppendValueToLinkedList(paths,ConstantString(path));
 #endif
         home=DestroyString(home);
       }
@@ -776,6 +779,9 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       (void) AppendValueToLinkedList(paths,ConstantString(path));
       (void) FormatLocaleString(path,MaxTextExtent,"%s/share/%s/",prefix,
         MAGICKCORE_SHARE_RELATIVE_PATH);
+      (void) AppendValueToLinkedList(paths,ConstantString(path));
+      (void) FormatLocaleString(path,MaxTextExtent,"%s",
+        MAGICKCORE_SHAREARCH_PATH);
       (void) AppendValueToLinkedList(paths,ConstantString(path));
 #endif
     }
