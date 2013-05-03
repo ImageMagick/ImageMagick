@@ -1,3 +1,7 @@
+2013-05-05  6.8.5-5 Cristy  <quetzlzacatenango@image...>
+  * Fix transient bug in the -separate option (reference
+   http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23335).
+
 2013-05-01  6.8.5-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-4, SVN revision 12089.
 
