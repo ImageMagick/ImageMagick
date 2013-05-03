@@ -117,9 +117,9 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
   *X=((*Y*((39.0*(100.0*L)/((262.0*v-140.0)+13.0*(100.0*L)*(9.0*D65Y/
     (D65X+15.0*D65Y+3.0*D65Z))))-5.0))+5.0*(*Y))/((((52.0f*(100.0*L)/
     ((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D65X/(D65X+15.0*D65Y+3.0*
-    D65Z))))-1.0f)/3.0)-(-1.0f/3.0));
+    D65Z))))-1.0)/3.0)-(-1.0/3.0));
   *Z=(*X*(((52.0f*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D65X/
-    (D65X+15.0*D65Y+3.0*D65Z))))-1.0f)/3.0))-5.0*(*Y);
+    (D65X+15.0*D65Y+3.0*D65Z))))-1.0)/3.0))-5.0*(*Y);
 }
 
 static inline void ConvertRGBToXYZ(const double red,const double green,
