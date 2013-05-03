@@ -322,7 +322,7 @@ process_message(ddjvu_message_t *message)
  * we use the RGB format!
  */
 static void
-get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, const ImageInfo *image_info, ExceptionInfo *exception ) {
+get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, ExceptionInfo *exception ) {
   ddjvu_format_t
     *format;
 
@@ -674,8 +674,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 #if 1                           /* per_line */
 
         /* q = QueueAuthenticPixels(image,0,0,image->columns,image->rows); */
-        get_page_image(lc, lc->page, 0, 0, info.width, info.height, image_info,
-          exception);
+        get_page_image(lc, lc->page, 0, 0, info.width, info.height, exception);
 #else
         int i;
         for (i = 0;i< image->rows; i++)

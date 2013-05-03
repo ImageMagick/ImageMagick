@@ -244,6 +244,8 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   register ssize_t
     x;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -350,6 +352,8 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     bit;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -644,6 +648,8 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
   register ssize_t
     x;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -995,6 +1001,8 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
   register ssize_t
     x;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -1108,6 +1116,8 @@ static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     n;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   n=0;
   quantum=0;
   switch (quantum_info->depth)
@@ -1521,6 +1531,8 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
   register ssize_t
     x;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 1:
@@ -1777,6 +1789,8 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   register ssize_t
     x;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 1:
@@ -1981,6 +1995,8 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
   register ssize_t
     x;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -2446,6 +2462,8 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
   register ssize_t
     x;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -2549,6 +2567,8 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
   register ssize_t
     x;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -2655,6 +2675,8 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     bit;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -2949,6 +2971,8 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
   register ssize_t
     x;
 
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   switch (quantum_info->depth)
   {
     case 8:

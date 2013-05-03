@@ -451,6 +451,7 @@ int magick_progress_callback(void *context,float quantum)
   MagickBooleanType
     status;
 
+  (void) quantum;
   image=(Image *) context;
   assert(image->signature == MagickSignature);
   status=SetImageProgress(image,LoadImagesTag,TellBlob(image),

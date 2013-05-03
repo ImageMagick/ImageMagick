@@ -2291,6 +2291,8 @@ MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
   /*
     Determine count of values, and check syntax.
   */
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   *count=0;
   i=0;
   p=string;

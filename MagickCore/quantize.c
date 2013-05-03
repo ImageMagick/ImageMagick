@@ -454,9 +454,8 @@ static inline void AssociateAlphaPixel(const Image *image,
   alpha_pixel->alpha=(double) GetPixelAlpha(image,pixel);
 }
 
-static inline void AssociateAlphaPixelInfo(const Image *image,
-  const CubeInfo *cube_info,const PixelInfo *pixel,
-  RealPixelInfo *alpha_pixel)
+static inline void AssociateAlphaPixelInfo(const CubeInfo *cube_info,
+  const PixelInfo *pixel,RealPixelInfo *alpha_pixel)
 {
   double
     alpha;
@@ -1636,7 +1635,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
       /*
         Store the error.
       */
-      AssociateAlphaPixelInfo(image,&cube,image->colormap+index,&color);
+      AssociateAlphaPixelInfo(&cube,image->colormap+index,&color);
       current[u].red=pixel.red-color.red;
       current[u].green=pixel.green-color.green;
       current[u].blue=pixel.blue-color.blue;
@@ -1895,7 +1894,7 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
       */
       (void) CopyMagickMemory(p->error,p->error+1,(ErrorQueueLength-1)*
         sizeof(p->error[0]));
-      AssociateAlphaPixelInfo(image,cube_info,image->colormap+index,&color);
+      AssociateAlphaPixelInfo(cube_info,image->colormap+index,&color);
       p->error[ErrorQueueLength-1].red=pixel.red-color.red;
       p->error[ErrorQueueLength-1].green=pixel.green-color.green;
       p->error[ErrorQueueLength-1].blue=pixel.blue-color.blue;

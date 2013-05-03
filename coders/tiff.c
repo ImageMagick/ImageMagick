@@ -2343,7 +2343,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
 }
 
 static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
-  const Image *image,TIFF *tiff,TIFFInfo *tiff_info)
+  TIFF *tiff,TIFFInfo *tiff_info)
 {
   const char
     *option;
@@ -3250,7 +3250,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     /*
       Write image scanlines.
     */
-    if (GetTIFFInfo(image_info,image,tiff,&tiff_info) == MagickFalse)
+    if (GetTIFFInfo(image_info,tiff,&tiff_info) == MagickFalse)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     quantum_info->endian=LSBEndian;
     pixels=GetQuantumPixels(quantum_info);

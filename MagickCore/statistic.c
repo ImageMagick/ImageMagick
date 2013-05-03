@@ -2315,8 +2315,7 @@ static inline void GetStandardDeviationPixelList(PixelList *pixel_list,
   *pixel=ScaleShortToQuantum((unsigned short) sqrt(sum_squared-(sum*sum)));
 }
 
-static inline void InsertPixelList(const Image *image,const Quantum pixel,
-  PixelList *pixel_list)
+static inline void InsertPixelList(const Quantum pixel,PixelList *pixel_list)
 {
   size_t
     signature;
@@ -2496,7 +2495,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         {
           for (u=0; u < (ssize_t) MagickMax(width,1); u++)
           {
-            InsertPixelList(image,pixels[i],pixel_list[id]);
+            InsertPixelList(pixels[i],pixel_list[id]);
             pixels+=GetPixelChannels(image);
           }
           pixels+=(image->columns-1)*GetPixelChannels(image);
