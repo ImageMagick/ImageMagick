@@ -1,3 +1,6 @@
+2013-04-16  6.8.5-5 Glenn Randers-Pehrson <glennrp@image...>
+  * Eliminate whitespace from image properties that hold  PNG chunk data.
+
 2013-05-05  6.8.5-5 Cristy  <quetzlzacatenango@image...>
   * Fix transient bug in the -separate option (reference
    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23335).
@@ -51,7 +54,7 @@
   * If there are more components than quantization tables, the last table is
     replicated.
   * Removed the ICC profile from the logo: image definition in coders/magick.c;
-    it was a broken sRGB profile.
+    libpng16 detected that it was a broken sRGB profile.
   * Negatives raised to a non-integer power returns NaN's (reference
    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23234).
 

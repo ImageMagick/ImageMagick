@@ -2370,10 +2370,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         msg[MaxTextExtent];
 
       (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_color_type);
-      (void) SetImageProperty(image,"png:IHDR.color-type-orig ",msg);
+      (void) SetImageProperty(image,"png:IHDR.color-type-orig",msg);
 
       (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
-      (void) SetImageProperty(image,"png:IHDR.bit-depth-orig  ",msg);
+      (void) SetImageProperty(image,"png:IHDR.bit-depth-orig",msg);
   }
 
   (void) png_get_tRNS(ping, ping_info, &ping_trans_alpha, &ping_num_trans,
@@ -2975,15 +2975,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      (void) FormatLocaleString(msg,MaxTextExtent,
          "%d, %d",(int) ping_width, (int) ping_height);
-     (void) SetImageProperty(image,"png:IHDR.width,height    ",msg);
+     (void) SetImageProperty(image,"png:IHDR.width,height",msg);
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_file_depth);
-     (void) SetImageProperty(image,"png:IHDR.bit_depth       ",msg);
+     (void) SetImageProperty(image,"png:IHDR.bit_depth",msg);
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%d (%s)",
          (int) ping_color_type,
          Magick_ColorType_from_PNG_ColorType((int)ping_color_type));
-     (void) SetImageProperty(image,"png:IHDR.color_type      ",msg);
+     (void) SetImageProperty(image,"png:IHDR.color_type",msg);
 
      if (ping_interlace_method == 0)
        {
@@ -3006,7 +3006,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"%d",
             (int) number_colors);
-         (void) SetImageProperty(image,"png:PLTE.number_colors   ",msg);
+         (void) SetImageProperty(image,"png:PLTE.number_colors",msg);
        }
    }
 
@@ -3706,7 +3706,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
          (void) FormatLocaleString(msg,MaxTextExtent,
             "%d tEXt/zTXt/iTXt chunks were found", num_text_total);
-         (void) SetImageProperty(image,"png:text                 ",msg);
+         (void) SetImageProperty(image,"png:text",msg);
        }
 
      if (num_raw_profiles != 0)
@@ -3720,24 +3720,24 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Chromaticity, above)");
-         (void) SetImageProperty(image,"png:cHRM                 ",msg);
+         (void) SetImageProperty(image,"png:cHRM",msg);
        }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Background color, above)");
-         (void) SetImageProperty(image,"png:bKGD                 ",msg);
+         (void) SetImageProperty(image,"png:bKGD",msg);
        }
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%s",
         "chunk was found");
 
      if (ping_found_iCCP != MagickFalse)
-        (void) SetImageProperty(image,"png:iCCP                 ",msg);
+        (void) SetImageProperty(image,"png:iCCP",msg);
 
      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
-        (void) SetImageProperty(image,"png:tRNS                 ",msg);
+        (void) SetImageProperty(image,"png:tRNS",msg);
 
 #if defined(PNG_sRGB_SUPPORTED)
      if (ping_found_sRGB != MagickFalse)
@@ -3746,7 +3746,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             "intent=%d (%s)",
             (int) intent,
             Magick_RenderingIntentString_from_PNG_RenderingIntent(intent));
-         (void) SetImageProperty(image,"png:sRGB                 ",msg);
+         (void) SetImageProperty(image,"png:sRGB",msg);
        }
 #endif
 
@@ -3754,7 +3754,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        {
          (void) FormatLocaleString(msg,MaxTextExtent,
             "gamma=%.8g (See Gamma, above)", file_gamma);
-         (void) SetImageProperty(image,"png:gAMA                 ",msg);
+         (void) SetImageProperty(image,"png:gAMA",msg);
        }
 
 #if defined(PNG_pHYs_SUPPORTED)
@@ -3763,7 +3763,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "x_res=%.10g, y_res=%.10g, units=%d",
             (double) x_resolution,(double) y_resolution, unit_type);
-         (void) SetImageProperty(image,"png:pHYs                 ",msg);
+         (void) SetImageProperty(image,"png:pHYs",msg);
        }
 #endif
 
@@ -3772,7 +3772,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"x_off=%.20g, y_off=%.20g",
             (double) image->page.x,(double) image->page.y);
-         (void) SetImageProperty(image,"png:oFFs                 ",msg);
+         (void) SetImageProperty(image,"png:oFFs",msg);
        }
 #endif
 
@@ -3782,7 +3782,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "width=%.20g, height=%.20g",
             (double) image->page.width,(double) image->page.height);
-         (void) SetImageProperty(image,"png:vpAg                 ",msg);
+         (void) SetImageProperty(image,"png:vpAg",msg);
        }
    }
 
@@ -11409,11 +11409,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
 
       else if (LocaleCompare(value,"png00") == 0)
         {
-          /* Retrieve png:IHDR.bit-depth-orig and png:IHDR.color-type-orig
-             Note that whitespace at the end of the property names must match
-             that in the corresponding SetImageProperty() calls.
-           */
-          value=GetImageProperty(image,"png:IHDR.bit-depth-orig  ");
+          /* Retrieve png:IHDR.bit-depth-orig and png:IHDR.color-type-orig */
+          value=GetImageProperty(image,"png:IHDR.bit-depth-orig");
 
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "  png00 inherited bit depth=%s",value);
@@ -11437,7 +11434,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
               mng_info->write_png_depth = 16;
           }
 
-          value=GetImageProperty(image,"png:IHDR.color-type-orig ");
+          value=GetImageProperty(image,"png:IHDR.color-type-orig");
 
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "  png00 inherited color type=%s",value);
