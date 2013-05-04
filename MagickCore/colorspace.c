@@ -137,6 +137,34 @@ static inline void ConvertXYZToLMS(const double x,const double y,
   *S=QuantumRange*s;
 }
 
+static void ConvertRGBToYPbPr(const double red,const double green,
+  const double blue,double *Y,double *Pb,double *Pr)
+{
+  /*
+    Convert RGB to YPbPr colorspace.
+  */
+  assert(Y != (double *) NULL);
+  assert(Pb != (double *) NULL);
+  assert(Pr != (double *) NULL);
+  *Y=0.298839*red+0.586811*green+0.114350*blue;
+  *Pb=(-0.1687367)*red-0.331264*green+0.5*blue;
+  *Pr=0.5*red-0.418688*green-0.081312*blue;
+}
+
+static void ConvertRGBToYCbCr(const double red,const double green,
+  const double blue,double *Y,double *Cb,double *Cr)
+{
+  /*
+    Convert RGB to -YCbCr colorspace.
+  */
+  assert(Y != (double *) NULL);
+  assert(Cb != (double *) NULL);
+  assert(Cr != (double *) NULL);
+  ConvertRGBToYPbPr(red,green,blue,Y,Cb,Cr);
+  *Cb+=0.5;
+  *Cr+=0.5;
+}
+
 static MagickBooleanType sRGBTransformImage(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
@@ -356,7 +384,13 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       image->type=GrayscaleType;
       return(status);
     }
+    case HCLColorspace:
+    case HCLpColorspace:
+    case HSBColorspace:
     case HSIColorspace:
+    case HSLColorspace:
+    case HSVColorspace:
+    case HWBColorspace:
     {
       /*
         Transform image from sRGB to target colorspace.
@@ -418,9 +452,29 @@ static MagickBooleanType sRGBTransformImage(Image *image,
               ConvertRGBToHCLp(red,green,blue,&X,&Y,&Z);
               break;
             }
+            case HSBColorspace:
+            {
+              ConvertRGBToHSB(red,green,blue,&X,&Y,&Z);
+              break;
+            }
             case HSIColorspace:
             {
               ConvertRGBToHSI(red,green,blue,&X,&Y,&Z);
+              break;
+            }
+            case HSLColorspace:
+            {
+              ConvertRGBToHSL(red,green,blue,&X,&Y,&Z);
+              break;
+            }
+            case HSVColorspace:
+            {
+              ConvertRGBToHSV(red,green,blue,&X,&Y,&Z);
+              break;
+            }
+            case HWBColorspace:
+            {
+              ConvertRGBToHWB(red,green,blue,&X,&Y,&Z);
               break;
             }
             default:
@@ -429,266 +483,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           SetPixelRed(image,ClampToQuantum(QuantumRange*X),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*Y),q);
           SetPixelBlue(image,ClampToQuantum(QuantumRange*Z),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
-    case HSBColorspace:
-    {
-      /*
-        Transform image from sRGB to HSB.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            blue,
-            brightness,
-            green,
-            hue,
-            red,
-            saturation;
-
-          red=(double) GetPixelRed(image,q);
-          green=(double) GetPixelGreen(image,q);
-          blue=(double) GetPixelBlue(image,q);
-          ConvertRGBToHSB(red,green,blue,&hue,&saturation,&brightness);
-          SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*saturation),q);
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*brightness),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
-    case HSLColorspace:
-    {
-      /*
-        Transform image from sRGB to HSL.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            blue,
-            green,
-            hue,
-            lightness,
-            red,
-            saturation;
-
-          red=(double) GetPixelRed(image,q);
-          green=(double) GetPixelGreen(image,q);
-          blue=(double) GetPixelBlue(image,q);
-          ConvertRGBToHSL(red,green,blue,&hue,&saturation,&lightness);
-          SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*saturation),q);
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*lightness),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
-    case HSVColorspace:
-    {
-      /*
-        Transform image from sRGB to HSV.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            blue,
-            green,
-            hue,
-            red,
-            saturation,
-            value;
-
-          red=(double) GetPixelRed(image,q);
-          green=(double) GetPixelGreen(image,q);
-          blue=(double) GetPixelBlue(image,q);
-          ConvertRGBToHSV(red,green,blue,&hue,&saturation,&value);
-          SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*saturation),q);
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*value),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
-    case HWBColorspace:
-    {
-      /*
-        Transform image from sRGB to HWB.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            blackness,
-            blue,
-            green,
-            hue,
-            red,
-            whiteness;
-
-          red=(double) GetPixelRed(image,q);
-          green=(double) GetPixelGreen(image,q);
-          blue=(double) GetPixelBlue(image,q);
-          ConvertRGBToHWB(red,green,blue,&hue,&whiteness,&blackness);
-          SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*whiteness),q);
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*blackness),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -1869,6 +1663,35 @@ static inline void ConvertCMYKToRGB(PixelInfo *pixel)
     (QuantumRange-pixel->black)+pixel->black)));
 }
 
+static void ConvertYPbPrToRGB(const double Y,const double Pb,const double Pr,
+  double *red,double *green,double *blue)
+{
+  /*
+    Convert YPbPr to RGB colorspace.
+  */
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
+  *red=0.99999999999914679361*Y-1.2188941887145875e-06*Pb+
+    1.4019995886561440468*Pr;
+  *green=0.99999975910502514331*Y-0.34413567816504303521*Pb-
+    0.71413649331646789076*Pr;
+  *blue=1.00000124040004623180*Y+1.77200006607230409200*Pb+
+    2.1453384174593273e-06*Pr;
+}
+
+static void ConvertYCbCrToRGB(const double Y,const double Cb,
+  const double Cr,double *red,double *green,double *blue)
+{
+  /*
+    Convert -YCbCr to RGB colorspace.
+  */
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
+  ConvertYPbPrToRGB(Y,Cb-0.5,Cr-0.5,red,green,blue);
+}
+
 static MagickBooleanType TransformsRGBImage(Image *image,
   ExceptionInfo *exception)
 {
@@ -2320,7 +2143,13 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         return(MagickFalse);
       return(status);
     }
+    case HCLColorspace:
+    case HCLpColorspace:
+    case HSBColorspace:
     case HSIColorspace:
+    case HSLColorspace:
+    case HSVColorspace:
+    case HWBColorspace:
     {
       /*
         Transform image from source colorspace to sRGB.
@@ -2382,274 +2211,34 @@ static MagickBooleanType TransformsRGBImage(Image *image,
               ConvertHCLpToRGB(X,Y,Z,&red,&green,&blue);
               break;
             }
+            case HSBColorspace:
+            {
+              ConvertHSBToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
             case HSIColorspace:
             {
               ConvertHSIToRGB(X,Y,Z,&red,&green,&blue);
               break;
             }
+            case HSLColorspace:
+            {
+              ConvertHSLToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
+            case HSVColorspace:
+            {
+              ConvertHSVToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
+            case HWBColorspace:
+            {
+              ConvertHWBToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
             default:
               break;
           }
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
-    case HSBColorspace:
-    {
-      /*
-        Transform image from HSB to sRGB.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            blue,
-            brightness,
-            green,
-            hue,
-            red,
-            saturation;
-
-          hue=(double) (QuantumScale*GetPixelRed(image,q));
-          saturation=(double) (QuantumScale*GetPixelGreen(image,q));
-          brightness=(double) (QuantumScale*GetPixelBlue(image,q));
-          ConvertHSBToRGB(hue,saturation,brightness,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
-    case HSLColorspace:
-    {
-      /*
-        Transform image from HSL to sRGB.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            blue,
-            green,
-            hue,
-            lightness,
-            red,
-            saturation;
-
-          hue=(double) (QuantumScale*GetPixelRed(image,q));
-          saturation=(double) (QuantumScale*GetPixelGreen(image,q));
-          lightness=(double) (QuantumScale*GetPixelBlue(image,q));
-          ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
-    case HSVColorspace:
-    {
-      /*
-        Transform image from HSV to sRGB.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            blue,
-            green,
-            hue,
-            red,
-            saturation,
-            value;
-
-          hue=(double) (QuantumScale*GetPixelRed(image,q));
-          saturation=(double) (QuantumScale*GetPixelGreen(image,q));
-          value=(double) (QuantumScale*GetPixelBlue(image,q));
-          ConvertHSVToRGB(hue,saturation,value,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
-    case HWBColorspace:
-    {
-      /*
-        Transform image from HWB to sRGB.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            blackness,
-            blue,
-            green,
-            hue,
-            red,
-            whiteness;
-
-          hue=(double) (QuantumScale*GetPixelRed(image,q));
-          whiteness=(double) (QuantumScale*GetPixelGreen(image,q));
-          blackness=(double) (QuantumScale*GetPixelBlue(image,q));
-          ConvertHWBToRGB(hue,whiteness,blackness,&red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
           SetPixelBlue(image,ClampToQuantum(blue),q);
