@@ -146,9 +146,12 @@ static void ConvertRGBToYPbPr(const double red,const double green,
   assert(Y != (double *) NULL);
   assert(Pb != (double *) NULL);
   assert(Pr != (double *) NULL);
-  *Y=0.298839*red+0.586811*green+0.114350*blue;
-  *Pb=(-0.1687367)*red-0.331264*green+0.5*blue;
-  *Pr=0.5*red-0.418688*green-0.081312*blue;
+  *Y=0.298839*QuantumScale*red+0.586811*QuantumScale*green+0.114350*
+    QuantumScale*blue;
+  *Pb=(-0.1687367)*QuantumScale*red-0.331264*QuantumScale*green+0.5*
+    QuantumScale*blue;
+  *Pr=0.5*QuantumScale*red-0.418688*QuantumScale*green-0.081312*
+    QuantumScale*blue;
 }
 
 static void ConvertRGBToYCbCr(const double red,const double green,
@@ -1672,12 +1675,12 @@ static void ConvertYPbPrToRGB(const double Y,const double Pb,const double Pr,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  *red=0.99999999999914679361*Y-1.2188941887145875e-06*Pb+
-    1.4019995886561440468*Pr;
-  *green=0.99999975910502514331*Y-0.34413567816504303521*Pb-
-    0.71413649331646789076*Pr;
-  *blue=1.00000124040004623180*Y+1.77200006607230409200*Pb+
-    2.1453384174593273e-06*Pr;
+  *red=QuantumRange*(0.99999999999914679361*Y-1.2188941887145875e-06*Pb+
+    1.4019995886561440468*Pr);
+  *green=QuantumRange*(0.99999975910502514331*Y-0.34413567816504303521*Pb-
+    0.71413649331646789076*Pr);
+  *blue=QuantumRange*(1.00000124040004623180*Y+1.77200006607230409200*Pb+
+    2.1453384174593273e-06*Pr);
 }
 
 static void ConvertYCbCrToRGB(const double Y,const double Cb,
