@@ -37,7 +37,7 @@
 
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
-#define MAGICKCORE_CONFIGURE_PATH "/usr/etc/ImageMagick-7/"
+#define MAGICKCORE_CONFIGURE_PATH "/usr/local/etc/ImageMagick-7/"
 #endif
 
 /* Subdirectory of lib where architecture-dependent configuration files live.
@@ -47,11 +47,13 @@
 #endif
 
 /* Define if you have DJVU library */
-/* #undef DJVU_DELEGATE */
+#ifndef MAGICKCORE_DJVU_DELEGATE
+#define MAGICKCORE_DJVU_DELEGATE 1
+#endif
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
-#define MAGICKCORE_DOCUMENTATION_PATH "/usr/share/doc/ImageMagick-7/"
+#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-7/"
 #endif
 
 /* Define if you have Display Postscript */
@@ -62,7 +64,7 @@
 
 /* Directory where executables are installed. */
 #ifndef MAGICKCORE_EXECUTABLE_PATH
-#define MAGICKCORE_EXECUTABLE_PATH "/usr/bin/"
+#define MAGICKCORE_EXECUTABLE_PATH "/usr/local/bin/"
 #endif
 
 /* Define if you have FFTW library */
@@ -1085,12 +1087,12 @@
 
 /* Directory where ImageMagick architecture headers live. */
 #ifndef MAGICKCORE_INCLUDEARCH_PATH
-#define MAGICKCORE_INCLUDEARCH_PATH "/usr/include/ImageMagick-7/"
+#define MAGICKCORE_INCLUDEARCH_PATH "/usr/local/include/ImageMagick-7/"
 #endif
 
 /* Directory where ImageMagick headers live. */
 #ifndef MAGICKCORE_INCLUDE_PATH
-#define MAGICKCORE_INCLUDE_PATH "/usr/include/ImageMagick-7/"
+#define MAGICKCORE_INCLUDE_PATH "/usr/local/include/ImageMagick-7/"
 #endif
 
 /* ImageMagick is formally installed under prefix */
@@ -1099,7 +1101,9 @@
 #endif
 
 /* Define if you have JBIG library */
-/* #undef JBIG_DELEGATE */
+#ifndef MAGICKCORE_JBIG_DELEGATE
+#define MAGICKCORE_JBIG_DELEGATE 1
+#endif
 
 /* Define if you have JPEG version 2 "Jasper" library */
 #ifndef MAGICKCORE_JP2_DELEGATE
@@ -1118,7 +1122,7 @@
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
-#define MAGICKCORE_LIBRARY_PATH "/usr/lib/ImageMagick-7.0.0/"
+#define MAGICKCORE_LIBRARY_PATH "/usr/local/lib/ImageMagick-7.0.0/"
 #endif
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
@@ -1134,7 +1138,9 @@
 #endif
 
 /* Define if you have LQR library */
-/* #undef LQR_DELEGATE */
+#ifndef MAGICKCORE_LQR_DELEGATE
+#define MAGICKCORE_LQR_DELEGATE 1
+#endif
 
 /* Define if using libltdl to support dynamically loadable modules */
 /* #undef LTDL_DELEGATE */
@@ -1186,7 +1192,9 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
-/* #undef OPENEXR_DELEGATE */
+#ifndef MAGICKCORE_OPENEXR_DELEGATE
+#define MAGICKCORE_OPENEXR_DELEGATE 1
+#endif
 
 /* Name of package */
 #ifndef MAGICKCORE_PACKAGE
@@ -1224,14 +1232,10 @@
 #endif
 
 /* Define if you have PANGOCAIRO library */
-#ifndef MAGICKCORE_PANGOCAIRO_DELEGATE
-#define MAGICKCORE_PANGOCAIRO_DELEGATE 1
-#endif
+/* #undef PANGOCAIRO_DELEGATE */
 
 /* Define if you have PANGO library */
-#ifndef MAGICKCORE_PANGO_DELEGATE
-#define MAGICKCORE_PANGO_DELEGATE 1
-#endif
+/* #undef PANGO_DELEGATE */
 
 /* Define if you have PNG library */
 #ifndef MAGICKCORE_PNG_DELEGATE
@@ -1283,7 +1287,7 @@
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHARE_PATH
-#define MAGICKCORE_SHARE_PATH "/usr/share/ImageMagick-7/"
+#define MAGICKCORE_SHARE_PATH "/usr/local/share/ImageMagick-7/"
 #endif
 
 /* Subdirectory of lib where architecture-independent configuration files

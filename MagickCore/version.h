@@ -38,8 +38,8 @@ extern "C" {
 #define MagickChangeDate   "20120427"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickFeatures "DPC HDRI OpenMP"
-#define MagickDelegates "bzlib fontconfig freetype jng jp2 jpeg lcms lzma pango png ps tiff x xml zlib"
-#define MagickHomeURL  "file:///usr/share/doc/ImageMagick-7/index.html"
+#define MagickDelegates "bzlib djvu fontconfig freetype jbig jng jp2 jpeg lcms lqr lzma openexr png ps tiff x xml zlib"
+#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-7/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
 #define MagickQuantumRange  "255"
