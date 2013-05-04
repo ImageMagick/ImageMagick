@@ -1,5 +1,5 @@
 2013-04-16  6.8.5-5 Glenn Randers-Pehrson <glennrp@image...>
-  * Eliminate whitespace from image properties that hold  PNG chunk data.
+  * Eliminate whitespace from image properties that hold PNG chunk data.
 
 2013-05-05  6.8.5-5 Cristy  <quetzlzacatenango@image...>
   * Fix transient bug in the -separate option (reference
