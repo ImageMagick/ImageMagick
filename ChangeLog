@@ -1,3 +1,7 @@
+2013-05-13  6.8.5-5 Glenn Randers-Pehrson <nicolas.robidoux@gmail...>
+  * Change the sample JPEG quantization table xml to something that works
+    really well with 2x2 Chroma subsampling around quality 75.
+
 2013-04-16  6.8.5-5 Glenn Randers-Pehrson <glennrp@image...>
   * Eliminate whitespace from image properties that hold PNG chunk data.
 
