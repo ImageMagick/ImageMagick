@@ -575,8 +575,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           SetPixelGreen(q,ClampToQuantum(evaluate_pixel[i/2].green));
           SetPixelBlue(q,ClampToQuantum(evaluate_pixel[i/2].blue));
           if (image->matte == MagickFalse)
-            SetPixelOpacity(q,ClampToQuantum(
-              evaluate_pixel[i/2].opacity));
+            SetPixelOpacity(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
           else
             SetPixelAlpha(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
           if (image->colorspace == CMYKColorspace)
@@ -2055,8 +2054,8 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
         polynomial_pixel[x].green+=coefficient*pow(QuantumScale*p->green,
           degree);
         polynomial_pixel[x].blue+=coefficient*pow(QuantumScale*p->blue,degree);
-        polynomial_pixel[x].opacity+=coefficient*pow(QuantumScale*p->opacity,
-          degree);
+        polynomial_pixel[x].opacity+=coefficient*pow(QuantumScale*
+          (QuantumRange-p->opacity),degree);
         if (image->colorspace == CMYKColorspace)
           polynomial_pixel[x].index+=coefficient*pow(QuantumScale*indexes[x],
             degree);
@@ -2071,10 +2070,10 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
       SetPixelGreen(q,ClampToQuantum(QuantumRange*polynomial_pixel[x].green));
       SetPixelBlue(q,ClampToQuantum(QuantumRange*polynomial_pixel[x].blue));
       if (image->matte == MagickFalse)
-        SetPixelOpacity(q,ClampToQuantum(QuantumRange*
+        SetPixelOpacity(q,ClampToQuantum(QuantumRange-QuantumRange*
           polynomial_pixel[x].opacity));
       else
-        SetPixelAlpha(q,ClampToQuantum(QuantumRange*
+        SetPixelAlpha(q,ClampToQuantum(QuantumRange-QuantumRange*
           polynomial_pixel[x].opacity));
       if (image->colorspace == CMYKColorspace)
         SetPixelIndex(polynomial_indexes+x,ClampToQuantum(QuantumRange*
