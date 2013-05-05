@@ -174,9 +174,9 @@ static void ConvertRGBToYIQ(const double red,const double green,
   assert(Y != (double *) NULL);
   assert(I != (double *) NULL);
   assert(Q != (double *) NULL);
-  *Y=0.298839*red+0.586811*green+0.114350*blue;
-  *I=0.595716*red-0.274453*green-0.321263*blue+0.5;
-  *Q=0.211456*red-0.522591*green+0.311135*blue+0.5;
+  *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
+  *I=QuantumScale*(0.595716*red-0.274453*green-0.321263*blue)+0.5;
+  *Q=QuantumScale*(0.211456*red-0.522591*green+0.311135*blue)+0.5;
 }
 
 static void ConvertRGBToYPbPr(const double red,const double green,
@@ -188,12 +188,9 @@ static void ConvertRGBToYPbPr(const double red,const double green,
   assert(Y != (double *) NULL);
   assert(Pb != (double *) NULL);
   assert(Pr != (double *) NULL);
-  *Y=0.298839*QuantumScale*red+0.586811*QuantumScale*green+0.114350*
-    QuantumScale*blue;
-  *Pb=(-0.1687367)*QuantumScale*red-0.331264*QuantumScale*green+0.5*
-    QuantumScale*blue+0.5;
-  *Pr=0.5*QuantumScale*red-0.418688*QuantumScale*green-0.081312*
-    QuantumScale*blue+0.5;
+  *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
+  *Pb=QuantumScale*((-0.1687367)*red-0.331264*green+0.5*blue)+0.5;
+  *Pr=QuantumScale*(0.5*QuantumScale*red-0.418688*green-0.081312*blue)+0.5;
 }
 
 static void ConvertRGBToYCbCr(const double red,const double green,
@@ -217,9 +214,9 @@ static void ConvertRGBToYUV(const double red,const double green,
   assert(Y != (double *) NULL);
   assert(U != (double *) NULL);
   assert(V != (double *) NULL);
-  *Y=0.298839*red+0.586811*green+0.114350*blue;
-  *U=(-0.147)*red-0.289*green+0.436*blue+0.5;
-  *V=0.615*red-0.515*green-0.100*blue+0.5;
+  *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
+  *U=QuantumScale*((-0.147)*red-0.289*green+0.436*blue+0.5);
+  *V=QuantumScale*(0.615*red-0.515*green-0.100*blue+0.5);
 }
 
 static MagickBooleanType sRGBTransformImage(Image *image,
@@ -1348,9 +1345,12 @@ static void ConvertYIQToRGB(const double Y,const double I,const double Q,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  *red=Y+0.9562957197589482261*(I-0.5)+0.6210244164652610754*(Q-0.5);
-  *green=Y-0.2721220993185104464*(I-0.5)-0.6473805968256950427*(Q-0.5);
-  *blue=Y-1.1069890167364901945*(I-0.5)+1.7046149983646481374*(Q-0.5);
+  *red=QuantumRange*(Y+0.9562957197589482261*(I-0.5)+0.6210244164652610754*
+    (Q-0.5));
+  *green=QuantumRange*(Y-0.2721220993185104464*(I-0.5)-0.6473805968256950427*
+    (Q-0.5));
+  *blue=QuantumRange*(Y-1.1069890167364901945*(I-0.5)+1.7046149983646481374*
+    (Q-0.5));
 }
 
 static void ConvertYUVToRGB(const double Y,const double U,const double V,
@@ -1362,9 +1362,12 @@ static void ConvertYUVToRGB(const double Y,const double U,const double V,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  *red=Y-3.945707070708279e-05*(U-0.5)+1.1398279671717170825*(V-0.5);
-  *green=Y-0.3946101641414141437*(U-0.5)-0.5805003156565656797*(V-0.5);
-  *blue=Y+2.0319996843434342537*(U-0.5)-4.813762626262513e-04*(V-0.5);
+  *red=QuantumRange*(Y-3.945707070708279e-05*(U-0.5)+1.1398279671717170825*
+    (V-0.5));
+  *green=QuantumRange*(Y-0.3946101641414141437*(U-0.5)-0.5805003156565656797*
+    (V-0.5));
+  *blue=QuantumRange*(Y+2.0319996843434342537*(U-0.5)-4.813762626262513e-04*
+    (V-0.5));
 }
 
 static MagickBooleanType TransformsRGBImage(Image *image,
