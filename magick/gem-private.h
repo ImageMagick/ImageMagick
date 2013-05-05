@@ -96,9 +96,9 @@ static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
-  r=QuantumScale*red;
-  g=QuantumScale*green;
-  b=QuantumScale*blue;
+  r=QuantumScale*DecodePixelGamma((MagickRealType) red);
+  g=QuantumScale*DecodePixelGamma((MagickRealType) green);
+  b=QuantumScale*DecodePixelGamma((MagickRealType) blue);
   *X=0.41239558896741421610*r+0.35758343076371481710*g+0.18049264738170157350*b;
   *Y=0.21258623078559555160*r+0.71517030370341084990*g+0.07220049864333622685*b;
   *Z=0.01929721549174694484*r+0.11918386458084853180*g+0.95049712513157976600*b;
@@ -167,9 +167,9 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
   r=3.2406*x-1.5372*y-0.4986*z;
   g=(-0.9689*x+1.8758*y+0.0415*z);
   b=0.0557*x-0.2040*y+1.0570*z;
-  *red=ClampToQuantum((MagickRealType) QuantumRange*r);
-  *green=ClampToQuantum((MagickRealType) QuantumRange*g);
-  *blue=ClampToQuantum((MagickRealType) QuantumRange*b);
+  *red=ClampToQuantum((MagickRealType) EncodePixelGamma(QuantumRange*r));
+  *green=ClampToQuantum((MagickRealType) EncodePixelGamma(QuantumRange*g));
+  *blue=ClampToQuantum((MagickRealType) EncodePixelGamma(QuantumRange*b));
 }
 
 
