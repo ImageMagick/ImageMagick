@@ -173,7 +173,7 @@ static void ConvertRGBToYCbCr(const Quantum red,const Quantum green,
   const Quantum blue,double *Y,double *Cb,double *Cr)
 {
   /*
-    Convert RGB to -YCbCr colorspace.
+    Convert RGB to YCbCr colorspace.
   */
   assert(Y != (double *) NULL);
   assert(Cb != (double *) NULL);
@@ -1400,7 +1400,7 @@ static void ConvertYCbCrToRGB(const double Y,const double Cb,
   const double Cr,Quantum *red,Quantum *green,Quantum *blue)
 {
   /*
-    Convert -YCbCr to RGB colorspace.
+    Convert YCbCr to RGB colorspace.
   */
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
