@@ -2073,7 +2073,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 
 static inline double gamma_pow(const double value,const double gamma)
 {
-  return(value < 0.0 ? value : pow(value,1.0/gamma));
+  return(value < 0.0 ? value : pow(value,gamma));
 }
 
 MagickExport MagickBooleanType GammaImage(Image *image,const char *level)
@@ -2189,22 +2189,23 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
           }
 #else
         if ((channel & RedChannel) != 0)
-          image->colormap[i].red=gamma_pow((double) image->colormap[i].red,
-            1.0/gamma);
+          image->colormap[i].red=QuantumRange*gamma_pow(QuantumScale*
+            image->colormap[i].red,1.0/gamma);
         if ((channel & GreenChannel) != 0)
-          image->colormap[i].green=gamma_pow((double) image->colormap[i].green,
-            1.0/gamma);
+          image->colormap[i].green=QuantumRange*gamma_pow(QuantumScale*
+            image->colormap[i].green,1.0/gamma);
         if ((channel & BlueChannel) != 0)
-          image->colormap[i].blue=gamma_pow((double) image->colormap[i].blue,
-            1.0/gamma);
+          image->colormap[i].blue=QuantumRange*gamma_pow(QuantumScale*
+            image->colormap[i].blue,1.0/gamma);
         if ((channel & OpacityChannel) != 0)
           {
             if (image->matte == MagickFalse)
-              image->colormap[i].opacity=gamma_pow((double)
+              image->colormap[i].opacity=QuantumRange*gamma_pow(QuantumScale*
                 image->colormap[i].opacity,1.0/gamma);
             else
-              image->colormap[i].opacity=QuantumRange-gamma_pow((double)
-                (QuantumRange-image->colormap[i].opacity),1.0/gamma);
+              image->colormap[i].opacity=QuantumRange-QuantumRange*gamma_pow(
+                QuantumScale*(QuantumRange-image->colormap[i].opacity),1.0/
+                gamma);
           }
 #endif
       }
@@ -2270,25 +2271,32 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
 #else
       if ((channel & SyncChannels) != 0)
         {
-          SetPixelRed(q,gamma_pow((double) GetPixelRed(q),1.0/gamma));
-          SetPixelGreen(q,gamma_pow((double) GetPixelGreen(q),1.0/gamma));
-          SetPixelBlue(q,gamma_pow((double) GetPixelBlue(q),1.0/gamma));
+          SetPixelRed(q,QuantumRange*gamma_pow(QuantumScale*GetPixelRed(q),
+            1.0/gamma));
+          SetPixelGreen(q,QuantumRange*gamma_pow(QuantumScale*GetPixelGreen(q),
+            1.0/gamma));
+          SetPixelBlue(q,QuantumRange*gamma_pow(QuantumScale*GetPixelBlue(q),
+            1.0/gamma));
         }
       else
         {
           if ((channel & RedChannel) != 0)
-            SetPixelRed(q,gamma_pow((double) GetPixelRed(q),1.0/gamma));
+            SetPixelRed(q,QuantumRange*gamma_pow(QuantumScale*GetPixelRed(q),
+            1.0/gamma));
           if ((channel & GreenChannel) != 0)
-            SetPixelGreen(q,gamma_pow((double) GetPixelGreen(q),1.0/gamma));
+            SetPixelGreen(q,QuantumRange*gamma_pow(QuantumScale*
+              GetPixelGreen(q),1.0/gamma));
           if ((channel & BlueChannel) != 0)
-            SetPixelBlue(q,gamma_pow((double) GetPixelBlue(q),1.0/gamma));
+            SetPixelBlue(q,QuantumRange*gamma_pow(QuantumScale*GetPixelBlue(q),
+              1.0/gamma));
           if ((channel & OpacityChannel) != 0)
             {
               if (image->matte == MagickFalse)
-                SetPixelOpacity(q,gamma_pow((double) GetPixelOpacity(q),1.0/
-                  gamma));
+                SetPixelOpacity(q,QuantumRange*gamma_pow(QuantumScale*
+                  GetPixelOpacity(q),1.0/gamma));
               else
-                SetPixelAlpha(q,gamma_pow((double) GetPixelAlpha(q),1.0/gamma));
+                SetPixelAlpha(q,QuantumRange*gamma_pow(QuantumScale*
+                  GetPixelAlpha(q),1.0/gamma));
             }
         }
 #endif
