@@ -115,15 +115,23 @@ static MagickBooleanType
 %
 */
 
+static inline void ConvertRGBToCMY(const double red,const double green,
+  const double blue,double *cyan,double *magenta,double *yellow)
+{
+  /*
+    Convert RGB to CMY colorspace.
+  */
+  *cyan=QuantumScale*(QuantumRange-red);
+  *magenta=QuantumScale*(QuantumRange-green);
+  *yellow=QuantumScale*(QuantumRange-blue);
+}
+
 static inline void ConvertXYZToLMS(const double x,const double y,
   const double z,double *L,double *M,double *S)
 {
   /*
     Convert XYZ to LMS colorspace.
   */
-  assert(L != (double *) NULL);
-  assert(M != (double *) NULL);
-  assert(S != (double *) NULL);
   *L=0.7328*x+0.4296*y-0.1624*z;
   *M=(-0.7036*x+1.6975*y+0.0061*z);
   *S=0.0030*x+0.0136*y+0.9834*z;
@@ -171,9 +179,6 @@ static void ConvertRGBToYIQ(const double red,const double green,
   /*
     Convert RGB to YIQ colorspace.
   */
-  assert(Y != (double *) NULL);
-  assert(I != (double *) NULL);
-  assert(Q != (double *) NULL);
   *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
   *I=QuantumScale*(0.595716*red-0.274453*green-0.321263*blue)+0.5;
   *Q=QuantumScale*(0.211456*red-0.522591*green+0.311135*blue)+0.5;
@@ -185,9 +190,6 @@ static void ConvertRGBToYPbPr(const double red,const double green,
   /*
     Convert RGB to YPbPr colorspace.
   */
-  assert(Y != (double *) NULL);
-  assert(Pb != (double *) NULL);
-  assert(Pr != (double *) NULL);
   *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
   *Pb=QuantumScale*((-0.1687367)*red-0.331264*green+0.5*blue)+0.5;
   *Pr=QuantumScale*(0.5*red-0.418688*green-0.081312*blue)+0.5;
@@ -199,9 +201,6 @@ static void ConvertRGBToYCbCr(const double red,const double green,
   /*
     Convert RGB to YCbCr colorspace.
   */
-  assert(Y != (double *) NULL);
-  assert(Cb != (double *) NULL);
-  assert(Cr != (double *) NULL);
   ConvertRGBToYPbPr(red,green,blue,Y,Cb,Cr);
 }
 
@@ -211,9 +210,6 @@ static void ConvertRGBToYUV(const double red,const double green,
   /*
     Convert RGB to YUV colorspace.
   */
-  assert(Y != (double *) NULL);
-  assert(U != (double *) NULL);
-  assert(V != (double *) NULL);
   *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
   *U=QuantumScale*((-0.147)*red-0.289*green+0.436*blue)+0.5;
   *V=QuantumScale*(0.615*red-0.515*green-0.100*blue)+0.5;
@@ -258,69 +254,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
   progress=0;
   switch (colorspace)
   {
-    case CMYColorspace:
-    {
-      /*
-        Convert RGB to CMY colorspace.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            cyan,
-            magenta,
-            yellow;
-
-          cyan=(MagickRealType) GetPixelCyan(image,q);
-          magenta=(MagickRealType) GetPixelMagenta(image,q);
-          yellow=(MagickRealType) GetPixelYellow(image,q);
-          SetPixelCyan(image,ClampToQuantum(QuantumRange-cyan),q);
-          SetPixelMagenta(image,ClampToQuantum(QuantumRange-magenta),q);
-          SetPixelYellow(image,ClampToQuantum(QuantumRange-yellow),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      image->type=image->alpha_trait != BlendPixelTrait ? ColorSeparationType :
-        ColorSeparationMatteType;
-      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
     case CMYKColorspace:
     {
       PixelInfo
@@ -438,6 +371,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       image->type=GrayscaleType;
       return(status);
     }
+    case CMYColorspace:
     case HCLColorspace:
     case HCLpColorspace:
     case HSBColorspace:
@@ -507,6 +441,11 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           blue=(double) GetPixelBlue(image,q);
           switch (colorspace)
           {
+            case CMYColorspace:
+            {
+              ConvertRGBToCMY(red,green,blue,&X,&Y,&Z);
+              break;
+            }
             case HCLColorspace:
             {
               ConvertRGBToHCL(red,green,blue,&X,&Y,&Z);
@@ -1241,12 +1180,20 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 %
 */
 
+static inline void ConvertCMYToRGB(const double cyan,const double magenta,
+  const double yellow,double *red,double *green,double *blue)
+{
+  /*
+    Convert CMY to RGB colorspace.
+  */
+  *red=QuantumRange*(1.0-cyan);
+  *green=QuantumRange*(1.0-magenta);
+  *blue=QuantumRange*(1.0-yellow);
+}
+
 static inline void ConvertLMSToXYZ(const double L,const double M,const double S,
   double *X,double *Y,double *Z)
 {
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
   *X=1.096123820835514*L-0.278869000218287*M+0.182745179382773*S;
   *Y=0.454369041975359*L+0.473533154307412*M+0.072097803717229*S;
   *Z=(-0.009627608738429)*L-0.005698031216113*M+1.015325639954543*S;
@@ -1313,9 +1260,6 @@ static void ConvertYPbPrToRGB(const double Y,const double Pb,const double Pr,
   /*
     Convert YPbPr to RGB colorspace.
   */
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
   *red=QuantumRange*(0.99999999999914679361*Y-1.2188941887145875e-06*(Pb-0.5)+
     1.4019995886561440468*(Pr-0.5));
   *green=QuantumRange*(0.99999975910502514331*Y-0.34413567816504303521*(Pb-0.5)-
@@ -1330,9 +1274,6 @@ static void ConvertYCbCrToRGB(const double Y,const double Cb,
   /*
     Convert YCbCr to RGB colorspace.
   */
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
   ConvertYPbPrToRGB(Y,Cb,Cr,red,green,blue);
 }
 
@@ -1342,9 +1283,6 @@ static void ConvertYIQToRGB(const double Y,const double I,const double Q,
   /*
     Convert YIQ to RGB colorspace.
   */
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
   *red=QuantumRange*(Y+0.9562957197589482261*(I-0.5)+0.6210244164652610754*
     (Q-0.5));
   *green=QuantumRange*(Y-0.2721220993185104464*(I-0.5)-0.6473805968256950427*
@@ -1359,9 +1297,6 @@ static void ConvertYUVToRGB(const double Y,const double U,const double V,
   /*
     Convert YUV to RGB colorspace.
   */
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
   *red=QuantumRange*(Y-3.945707070708279e-05*(U-0.5)+1.1398279671717170825*
     (V-0.5));
   *green=QuantumRange*(Y-0.3946101641414141437*(U-0.5)-0.5805003156565656797*
@@ -1640,67 +1575,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
   progress=0;
   switch (image->colorspace)
   {
-    case CMYColorspace:
-    {
-      /*
-        Transform image from CMY to sRGB.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
-        }
-      image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register ssize_t
-          x;
-
-        register Quantum
-          *restrict q;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          double
-            cyan,
-            magenta,
-            yellow;
-
-          cyan=(MagickRealType) (QuantumRange-GetPixelCyan(image,q));
-          magenta=(MagickRealType) (QuantumRange-GetPixelMagenta(image,q));
-          yellow=(MagickRealType) (QuantumRange-GetPixelYellow(image,q));
-          SetPixelCyan(image,ClampToQuantum(cyan),q);
-          SetPixelMagenta(image,ClampToQuantum(magenta),q);
-          SetPixelYellow(image,ClampToQuantum(yellow),q);
-          q+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
-        return(MagickFalse);
-      return(status);
-    }
     case CMYKColorspace:
     {
       PixelInfo
@@ -1821,6 +1695,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         return(MagickFalse);
       return(status);
     }
+    case CMYColorspace:
     case HCLColorspace:
     case HCLpColorspace:
     case HSBColorspace:
@@ -1890,6 +1765,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           Z=QuantumScale*GetPixelBlue(image,q);
           switch (image->colorspace)
           {
+            case CMYColorspace:
+            {
+              ConvertCMYToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
             case HCLColorspace:
             {
               ConvertHCLToRGB(X,Y,Z,&red,&green,&blue);
@@ -2195,6 +2075,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       /*
         Initialize OHTA tables:
 
+          I1 = 0.33333*R+0.33334*G+0.33333*B
+          I2 = 0.50000*R+0.00000*G-0.50000*B
+          I3 =-0.25000*R+0.50000*G-0.25000*B
           R = I1+1.00000*I2-0.66668*I3
           G = I1+0.00000*I2+1.33333*I3
           B = I1-1.00000*I2-0.66668*I3
