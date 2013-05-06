@@ -2304,7 +2304,6 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
       break;
     }
     case Rec601LuminancePixelIntensityMethod:
-    default:
     {
       if (image->colorspace == sRGBColorspace)
         {
@@ -2316,6 +2315,7 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
       break;
     }
     case Rec709LumaPixelIntensityMethod:
+    default:
     {
       intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
       break;
