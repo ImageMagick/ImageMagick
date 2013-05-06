@@ -84,9 +84,9 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
-  y=(100.0*L+16.0)/116.0;
-  x=y+255.0*(a-0.5)/500.0;
-  z=y-255.0*(b-0.5)/200.0;
+  y=(L+16.0)/116.0;
+  x=y+a/500.0;
+  z=y-b/200.0;
   if ((x*x*x) > CIEEpsilon)
     x=(x*x*x);
   else
@@ -94,7 +94,7 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   if ((y*y*y) > CIEEpsilon)
     y=(y*y*y);
   else
-    y=(100.0*L)/CIEK;
+    y=L/CIEK;
   if ((z*z*z) > CIEEpsilon)
     z=(z*z*z);
   else
