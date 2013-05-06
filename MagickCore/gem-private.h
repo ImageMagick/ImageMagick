@@ -110,16 +110,15 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
-  if ((100.0*L) > (CIEK*CIEEpsilon))
-    *Y=(double) pow(((100.0*L)+16.0)/116.0,3.0);
+  if (L > (CIEK*CIEEpsilon))
+    *Y=(double) pow((L+16.0)/116.0,3.0);
   else
-    *Y=(100.0*L)/CIEK;
-  *X=((*Y*((39.0*(100.0*L)/((262.0*v-140.0)+13.0*(100.0*L)*(9.0*D65Y/
-    (D65X+15.0*D65Y+3.0*D65Z))))-5.0))+5.0*(*Y))/((((52.0f*(100.0*L)/
-    ((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D65X/(D65X+15.0*D65Y+3.0*
-    D65Z))))-1.0)/3.0)-(-1.0/3.0));
-  *Z=(*X*(((52.0f*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D65X/
-    (D65X+15.0*D65Y+3.0*D65Z))))-1.0)/3.0))-5.0*(*Y);
+    *Y=L/CIEK;
+  *X=((*Y*((39.0*L/(v+13.0*L*(9.0*D65Y/(D65X+15.0*D65Y+3.0*D65Z))))-5.0))+
+    5.0*(*Y))/((((52.0f*L/(u+13.0*L*(4.0*D65X/(D65X+15.0*D65Y+3.0*D65Z))))-1.0)/
+    3.0)-(-1.0/3.0));
+  *Z=(*X*(((52.0f*L/(u+13.0*L*(4.0*D65X/(D65X+15.0*D65Y+3.0*D65Z))))-1.0)/3.0))-
+    5.0*(*Y);
 }
 
 static inline void ConvertRGBToXYZ(const double red,const double green,
