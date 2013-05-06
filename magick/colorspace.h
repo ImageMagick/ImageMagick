@@ -49,7 +49,6 @@ typedef enum
   CMYColorspace,            /* negated linear RGB colorspace */
   LuvColorspace,
   HCLColorspace,
-  HCLpColorspace,
   LCHColorspace,            /* alias for LCHuv */
   LMSColorspace,
   LCHabColorspace,          /* Cylindrical (Polar) Lab */
@@ -57,7 +56,8 @@ typedef enum
   scRGBColorspace,
   HSIColorspace,
   HSVColorspace,            /* alias for HSB */
-  HSLwColorspace,
+  HCLpColorspace,
+  YDbDrColorspace
 } ColorspaceType;
 
 extern MagickExport MagickBooleanType
