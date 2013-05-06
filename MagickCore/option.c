@@ -908,6 +908,7 @@ static const OptionInfo
     { "Transparent", TransparentColorspace, UndefinedOptionFlag, MagickFalse },
     { "XYZ", XYZColorspace, UndefinedOptionFlag, MagickFalse },
     { "YCbCr", YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
+    { "YDbDr", YDbDrColorspace, UndefinedOptionFlag, MagickFalse },
     { "YCC", YCCColorspace, UndefinedOptionFlag, MagickFalse },
     { "YIQ", YIQColorspace, UndefinedOptionFlag, MagickFalse },
     { "YPbPr", YPbPrColorspace, UndefinedOptionFlag, MagickFalse },
