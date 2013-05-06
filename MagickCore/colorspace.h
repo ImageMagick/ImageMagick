@@ -52,6 +52,7 @@ typedef enum
   XYZColorspace,           /* IEEE Color Reference colorspace */
   YCbCrColorspace,
   YCCColorspace,
+  YDbDrColorspace,
   YIQColorspace,
   YPbPrColorspace,
   YUVColorspace
