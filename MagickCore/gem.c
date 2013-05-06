@@ -737,15 +737,18 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
+
+static inline void ConvertLCHabToXYZ(const double luma,const double chroma,
+  const double hue,double *X,double *Y,double *Z)
+{
+  ConvertLabToXYZ(luma,chroma*cos(hue*MagickPI/180.0),chroma*
+    sin(hue*MagickPI/180.0),X,Y,Z);
+}
+
 MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
   const double hue,double *red,double *green,double *blue)
 {
   double
-    a,
-    b,
-    C,
-    H,
-    L,
     X,
     Y,
     Z;
@@ -756,13 +759,7 @@ MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  L=luma;
-  C=chroma;
-  H=hue;
-  a=C*cos(360.0*H*MagickPI/180.0);
-  b=C*sin(360.0*H*MagickPI/180.0);
-  ConvertLabToXYZ(((116.0*L)-16.0)/100.0,(500.0*a)/255.0+0.5,(200.0*b)/255.0+
-    0.5,&X,&Y,&Z);
+  ConvertLCHabToXYZ(luma*100.0,255.0*(chroma-0.5),255.0*(hue-0.5),&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
