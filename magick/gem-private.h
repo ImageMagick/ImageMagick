@@ -90,9 +90,6 @@ static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
     g,
     r;
 
-  /*
-    Convert RGB to XYZ colorspace.
-  */
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
@@ -157,9 +154,6 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
     g,
     r;
 
-  /*
-    Convert XYZ to RGB colorspace.
-  */
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
