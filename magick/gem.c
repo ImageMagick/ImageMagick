@@ -1344,34 +1344,42 @@ MagickExport void ConvertRGBToHWB(const Quantum red,const Quantum green,
 %      component of the LCHab color space.
 %
 */
+static inline void ConvertXYZToLCHab(const double X,const double Y,
+  const double Z,double *luma,double *chroma,double *hue)
+{
+  double
+    a,
+    b;
+
+  /*
+    Convert XYZ to LCHab colorspace.
+  */
+  assert(luma != (double *) NULL);
+  assert(chroma != (double *) NULL);
+  assert(hue != (double *) NULL);
+  ConvertXYZToLab(X,Y,Z,luma,&a,&b);
+  *chroma=hypot(a,b);
+  *hue=180.0*atan2(b,a)/MagickPI;
+  if (*hue < 0.0)
+    *hue+=360.0;
+}
+
 MagickExport void ConvertRGBToLCHab(const Quantum red,const Quantum green,
   const Quantum blue,double *luma,double *chroma,double *hue)
 {
   double
-    a,
-    b,
-    C,
-    H,
-    L,
     X,
     Y,
     Z;
 
   /*
-    Convert RGB to LCHab colorspace.
+   Convert RGB to LCHab colorspace.
   */
   assert(luma != (double *) NULL);
   assert(chroma != (double *) NULL);
   assert(hue != (double *) NULL);
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLab(X,Y,Z,&L,&a,&b);
-  C=hypot(255.0*(a-0.5)/500.0,255.0*(b-0.5)/200.0);
-  H=180.0*atan2(255.0*(b-0.5)/200.0,255.0*(a-0.5)/500.0)/MagickPI/360.0;
-  if (H < 0.0)
-    H+=1.0;
-  *luma=(100.0*L+16.0)/116.0;
-  *chroma=C;
-  *hue=H;
+  ConvertXYZToLCHab(X,Y,Z,luma,chroma,hue);
 }
 
 /*
@@ -1402,15 +1410,25 @@ MagickExport void ConvertRGBToLCHab(const Quantum red,const Quantum green,
 %      component of the LCHuv color space.
 %
 */
+
+static inline void ConvertXYZToLCHuv(const double X,const double Y,
+  const double Z,double *luma,double *chroma,double *hue)
+{
+  double
+    a,
+    b;
+
+  ConvertXYZToLab(X,Y,Z,luma,&a,&b);
+  *chroma=hypot(a,b);
+  *hue=180.0*atan2(b,a)/MagickPI;
+  if (*hue < 0.0)
+    *hue+=360.0;
+}
+
 MagickExport void ConvertRGBToLCHuv(const Quantum red,const Quantum green,
   const Quantum blue,double *luma,double *chroma,double *hue)
 {
   double
-    C,
-    H,
-    L,
-    u,
-    v,
     X,
     Y,
     Z;
@@ -1422,16 +1440,7 @@ MagickExport void ConvertRGBToLCHuv(const Quantum red,const Quantum green,
   assert(chroma != (double *) NULL);
   assert(hue != (double *) NULL);
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
-  C=hypot((354.0*u-134.0)/100.0,(262.0*v-140.0)/100.0);
-  H=180.0*atan2((262.0*v-140.0)/100.0,(354.0*u-134.0)/100.0)/MagickPI/360.0;
-  if (H < 0.0)
-    H+=1.0;
-  if (H >= 1.0)
-    H-=1.0;
-  *luma=L;
-  *chroma=C;
-  *hue=H;
+  ConvertXYZToLCHuv(X,Y,Z,luma,chroma,hue);
 }
 
 /*
