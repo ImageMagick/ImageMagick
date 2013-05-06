@@ -150,6 +150,7 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
     x,
     y,
     z;
+
   assert(L != (double *) NULL);
   assert(a != (double *) NULL);
   assert(b != (double *) NULL);
