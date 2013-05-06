@@ -759,7 +759,7 @@ MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  ConvertLCHabToXYZ(luma*100.0,255.0*(chroma-0.5),255.0*(hue-0.5),&X,&Y,&Z);
+  ConvertLCHabToXYZ(100.0*luma,255.0*(chroma-0.5),255.0*(hue-0.5),&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
