@@ -179,6 +179,14 @@ static void ConvertRGBToYUV(const Quantum red,const Quantum green,
   *V=QuantumScale*(0.615*red-0.515*green-0.100*blue)+0.5;
 }
 
+static void ConvertRGBToYDbDr(const Quantum red,const Quantum green,
+  const Quantum blue,double *Y,double *Db,double *Dr)
+{
+  *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
+  *Db=QuantumScale*((-0.450)*red-0.883*green+1.333*blue)+0.5;
+  *Dr=QuantumScale*(1.333*red-0.116*green-0.217*blue)+0.5;
+}
+
 static void ConvertRGBToYIQ(const Quantum red,const Quantum green,
   const Quantum blue,double *Y,double *I,double *Q)
 {
@@ -371,6 +379,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
     case LuvColorspace:
     case XYZColorspace:
     case YCbCrColorspace:
+    case YDbDrColorspace:
     case YIQColorspace:
     case YPbPrColorspace:
     case YUVColorspace:
@@ -501,6 +510,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             case YCbCrColorspace:
             {
               ConvertRGBToYCbCr(red,green,blue,&X,&Y,&Z);
+              break;
+            }
+            case YDbDrColorspace:
+            {
+              ConvertRGBToYDbDr(red,green,blue,&X,&Y,&Z);
               break;
             }
             case YIQColorspace:
@@ -1285,17 +1299,6 @@ static inline void ConvertLabToRGB(const double L,const double a,
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
-static void ConvertYIQToRGB(const double Y,const double I,const double Q,
-  Quantum *red,Quantum *green,Quantum *blue)
-{
-  *red=ClampToQuantum(QuantumRange*(Y+0.9562957197589482261*(I-0.5)+
-    0.6210244164652610754*(Q-0.5)));
-  *green=ClampToQuantum(QuantumRange*(Y-0.2721220993185104464*(I-0.5)-
-    0.6473805968256950427*(Q-0.5)));
-  *blue=ClampToQuantum(QuantumRange*(Y-1.1069890167364901945*(I-0.5)+
-    1.7046149983646481374*(Q-0.5)));
-}
-
 static void ConvertYPbPrToRGB(const double Y,const double Pb,const double Pr,
   Quantum *red,Quantum *green,Quantum *blue)
 {
@@ -1311,6 +1314,28 @@ static void ConvertYCbCrToRGB(const double Y,const double Cb,
   const double Cr,Quantum *red,Quantum *green,Quantum *blue)
 {
   ConvertYPbPrToRGB(Y,Cb,Cr,red,green,blue);
+}
+
+static void ConvertYDbDrToRGB(const double Y,const double Db,const double Dr,
+  Quantum *red,Quantum *green,Quantum *blue)
+{
+  *red=ClampToQuantum(QuantumRange*(Y-9.2303716147657e-05*(Db-0.5)+
+    0.52591263066186533*(Dr-0.5)));
+  *green=ClampToQuantum(QuantumRange*(Y-12913289889050927*(Db-0.5)-
+    0.26789932820759876*(Dr-0.5)));
+  *blue=ClampToQuantum(QuantumRange*(Y+0.66467905997895482*(Db-0.5)+
+    7.9202543533108e-05*(Dr-0.5)));
+}
+
+static void ConvertYIQToRGB(const double Y,const double I,const double Q,
+  Quantum *red,Quantum *green,Quantum *blue)
+{
+  *red=ClampToQuantum(QuantumRange*(Y+0.9562957197589482261*(I-0.5)+
+    0.6210244164652610754*(Q-0.5)));
+  *green=ClampToQuantum(QuantumRange*(Y-0.2721220993185104464*(I-0.5)-
+    0.6473805968256950427*(Q-0.5)));
+  *blue=ClampToQuantum(QuantumRange*(Y-1.1069890167364901945*(I-0.5)+
+    1.7046149983646481374*(Q-0.5)));
 }
 
 static void ConvertYUVToRGB(const double Y,const double U,const double V,
@@ -1740,6 +1765,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
     case LuvColorspace:
     case XYZColorspace:
     case YCbCrColorspace:
+    case YDbDrColorspace:
     case YIQColorspace:
     case YPbPrColorspace:
     case YUVColorspace:
@@ -1870,6 +1896,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             case YCbCrColorspace:
             {
               ConvertYCbCrToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
+            case YDbDrColorspace:
+            {
+              ConvertYDbDrToRGB(X,Y,Z,&red,&green,&blue);
               break;
             }
             case YIQColorspace:
