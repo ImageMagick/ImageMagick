@@ -1339,10 +1339,12 @@ static inline void ConvertXYZToLCHab(const double X,const double Y,
     b;
 
   ConvertXYZToLab(X,Y,Z,luma,&a,&b);
-  *chroma=hypot(a,b);
-  *hue=180.0*atan2(b,a)/MagickPI;
+  *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5));
+  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI;
   if (*hue < 0.0)
     *hue+=360.0;
+  *chroma=(*chroma)/255.0+0.5;
+  *hue=(*hue)/255.0+0.5;
 }
 
 MagickPrivate void ConvertRGBToLCHab(const double red,const double green,
@@ -1396,14 +1398,16 @@ static inline void ConvertXYZToLCHuv(const double X,const double Y,
   const double Z,double *luma,double *chroma,double *hue)
 {
   double
-    a,
-    b;
+    u,
+    v;
 
-  ConvertXYZToLab(X,Y,Z,luma,&a,&b);
-  *chroma=hypot(a,b);
-  *hue=180.0*atan2(b,a)/MagickPI;
+  ConvertXYZToLuv(X,Y,Z,luma,&u,&v);
+  *chroma=hypot(354.0*u-134.0,262.0*v-140.0);
+  *hue=180.0*atan2(262.0*v-140.0,354.0*u-134.0)/MagickPI;
   if (*hue < 0.0)
     *hue+=360.0;
+  *chroma=(*chroma+134.0)/354.0;
+  *hue=(*hue+140.0)/262.0;
 }
 
 MagickPrivate void ConvertRGBToLCHuv(const double red,const double green,
