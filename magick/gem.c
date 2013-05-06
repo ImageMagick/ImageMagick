@@ -403,7 +403,7 @@ MagickExport void ConvertHSIToRGB(const double hue,const double saturation,
       *blue=intensity*(1.0-saturation);
       *red=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
         (MagickPI/180.0)));
-      *green=3.0*intensity-r-b;
+      *green=3.0*intensity-*red-*blue;
     }
   else
     if (h < 240.0)
@@ -412,7 +412,7 @@ MagickExport void ConvertHSIToRGB(const double hue,const double saturation,
         *red=intensity*(1.0-saturation);
         *green=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
           (MagickPI/180.0)));
-        *blue=3.0*intensity-r-g;
+        *blue=3.0*intensity-*red-*green;
       }
     else
       {
@@ -420,7 +420,7 @@ MagickExport void ConvertHSIToRGB(const double hue,const double saturation,
         *green=intensity*(1.0-saturation);
         *blue=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
           (MagickPI/180.0)));
-        &red=3.0*intensity-g-b;
+        *red=3.0*intensity-*green-*blue;
       }
   *red=ClampToQuantum(QuantumRange**red);
   *green=ClampToQuantum(QuantumRange**green);
