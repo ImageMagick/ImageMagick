@@ -388,10 +388,7 @@ MagickExport void ConvertHSIToRGB(const double hue,const double saturation,
   const double intensity,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
-    b,
-    g,
-    h,
-    r;
+    h;
 
   /*
     Convert HSI to RGB colorspace.
@@ -403,31 +400,31 @@ MagickExport void ConvertHSIToRGB(const double hue,const double saturation,
   h-=360.0*floor(h/360.0);
   if (h < 120.0)
     {
-      b=intensity*(1.0-saturation);
-      r=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
+      *blue=intensity*(1.0-saturation);
+      *red=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
         (MagickPI/180.0)));
-      g=3.0*intensity-r-b;
+      *green=3.0*intensity-r-b;
     }
   else
     if (h < 240.0)
       {
         h-=120.0;
-        r=intensity*(1.0-saturation);
-        g=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
+        *red=intensity*(1.0-saturation);
+        *green=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
           (MagickPI/180.0)));
-        b=3.0*intensity-r-g;
+        *blue=3.0*intensity-r-g;
       }
     else
       {
         h-=240.0;
-        g=intensity*(1.0-saturation);
-        b=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
+        *green=intensity*(1.0-saturation);
+        *blue=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
           (MagickPI/180.0)));
-        r=3.0*intensity-g-b;
+        &red=3.0*intensity-g-b;
       }
-  *red=ClampToQuantum(QuantumRange*r);
-  *green=ClampToQuantum(QuantumRange*g);
-  *blue=ClampToQuantum(QuantumRange*b);
+  *red=ClampToQuantum(QuantumRange**red);
+  *green=ClampToQuantum(QuantumRange**green);
+  *blue=ClampToQuantum(QuantumRange**blue);
 }
 
 /*
@@ -1100,17 +1097,15 @@ MagickExport void ConvertRGBToHSI(const Quantum red,const Quantum green,
     {
       *hue=0.0;
       *saturation=0.0;
+      return;
     }
-  else
-    {
-      *saturation=1.0-MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
-        QuantumScale*blue))/(*intensity);
-      alpha=0.5*(2.0*QuantumScale*red-QuantumScale*green-QuantumScale*blue);
-      beta=0.8660254037844385*(QuantumScale*green-QuantumScale*blue);
-      *hue=atan2(beta,alpha)*(180.0/MagickPI)/360.0;
-      if (*hue < 0.0)
-        *hue+=1.0;
-    }
+  *saturation=1.0-MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
+    QuantumScale*blue))/(*intensity);
+  alpha=0.5*(2.0*QuantumScale*red-QuantumScale*green-QuantumScale*blue);
+  beta=0.8660254037844385*(QuantumScale*green-QuantumScale*blue);
+  *hue=atan2(beta,alpha)*(180.0/MagickPI)/360.0;
+  if (*hue < 0.0)
+    *hue+=1.0;
 }
 
 /*
