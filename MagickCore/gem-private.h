@@ -200,9 +200,6 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
     g,
     r;
 
-  /*
-    Convert XYZ to RGB colorspace.
-  */
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
