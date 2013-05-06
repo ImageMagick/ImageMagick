@@ -105,8 +105,8 @@ typedef struct _TransformPacket
 %
 */
 
-static inline void ConvertRGBToCMY(const double red,const double green,
-  const double blue,double *cyan,double *magenta,double *yellow)
+static inline void ConvertRGBToCMY(const Quantum red,const Quantum green,
+  const Quantum blue,double *cyan,double *magenta,double *yellow)
 {
   *cyan=QuantumScale*(QuantumRange-red);
   *magenta=QuantumScale*(QuantumRange-green);
