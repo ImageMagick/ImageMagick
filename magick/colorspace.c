@@ -1302,7 +1302,7 @@ static inline void ConvertLabToRGB(const double L,const double a,
     Y,
     Z;
 
-  ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
+  ConvertLabToXYZ(100.0*L,255.0*(a-0.5),255.0*(b-0.5),&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -1310,8 +1310,8 @@ static void ConvertYIQToRGB(const double Y,const double I,const double Q,
   Quantum *red,Quantum *green,Quantum *blue)
 {
   /*
- *     Convert YIQ to RGB colorspace.
- *       */
+    Convert YIQ to RGB colorspace.
+  */
   *red=ClampToQuantum(QuantumRange*(Y+0.9562957197589482261*(I-0.5)+
     0.6210244164652610754*(Q-0.5)));
   *green=ClampToQuantum(QuantumRange*(Y-0.2721220993185104464*(I-0.5)-
