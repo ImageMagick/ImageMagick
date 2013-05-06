@@ -1347,16 +1347,13 @@ static inline void ConvertXYZToLCHab(const double X,const double Y,
     a,
     b;
 
-  /*
-    Convert XYZ to LCHab colorspace.
-  */
   ConvertXYZToLab(X,Y,Z,luma,&a,&b);
   *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5));
   *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI;
-  if (*hue < 0.0)
-    *hue+=360.0;
   *chroma=(*chroma)/255.0+0.5;
   *hue=(*hue)/255.0+0.5;
+  if (*hue < 0.0)
+    *hue+=1.0;
 }
 
 MagickExport void ConvertRGBToLCHab(const Quantum red,const Quantum green,
