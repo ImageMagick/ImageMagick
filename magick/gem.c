@@ -750,6 +750,7 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
+
 static inline void ConvertLCHabToXYZ(const double luma,const double chroma,
   const double hue,double *X,double *Y,double *Z)
 {
