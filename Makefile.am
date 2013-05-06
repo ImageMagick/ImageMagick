@@ -31,7 +31,7 @@ SUBDIRS = .
 # compiler, headers, and libraries are used as for a normal build.
 DISTCHECK_CONFIGURE_FLAGS=$(DISTCHECK_CONFIG_FLAGS)
 
-DISTCLEANFILES = _configs.sed MagickCore/magick-config.h
+DISTCLEANFILES = _configs.sed MagickCore/magick-baseconfig.h
 
 ## Make sure these will be cleaned even when they're not built by default.
 CLEANFILES = \

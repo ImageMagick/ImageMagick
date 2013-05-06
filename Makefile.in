@@ -2882,7 +2882,7 @@ SUBDIRS = .
 # We want to preserve user-provided option variables so the same
 # compiler, headers, and libraries are used as for a normal build.
 DISTCHECK_CONFIGURE_FLAGS = $(DISTCHECK_CONFIG_FLAGS)
-DISTCLEANFILES = _configs.sed MagickCore/magick-config.h
+DISTCLEANFILES = _configs.sed MagickCore/magick-baseconfig.h
 CLEANFILES = \
 	$(MAGICKWAND_CLEANFILES) \
 	$(MAGICKPP_CLEANFILES) \
