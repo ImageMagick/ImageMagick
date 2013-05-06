@@ -757,8 +757,8 @@ static inline void ConvertLCHabToXYZ(const double luma,const double chroma,
     sin(hue*MagickPI/180.0),X,Y,Z);
 }
 
-MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
-  const double hue,double *red,double *green,double *blue)
+MagickExport void ConvertLCHabToRGB(const double luma,const double chroma,
+  const double hue,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
     X,
@@ -768,9 +768,9 @@ MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
   /*
     Convert LCHab to RGB colorspace.
   */
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
+  assert(red != (Quantum *) NULL);
+  assert(green != (Quantum *) NULL);
+  assert(blue != (Quantum *) NULL);
   ConvertLCHabToXYZ(luma*100.0,255.0*(chroma-0.5),255.0*(hue-0.5),&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
@@ -802,31 +802,29 @@ MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
+
+static inline void ConvertLCHuvToXYZ(const double luma,const double chroma,
+  const double hue,double *X,double *Y,double *Z)
+{
+  ConvertLuvToXYZ(luma,chroma*cos(hue*MagickPI/180.0),chroma*
+    sin(hue*MagickPI/180.0),X,Y,Z);
+}
+
 MagickExport void ConvertLCHuvToRGB(const double luma,const double chroma,
   const double hue,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
-    C,
-    H,
-    L,
-    u,
-    v,
     X,
     Y,
     Z;
 
   /*
-    Convert LCHuv to RGB colorspace.
-  */
+   Convert LCHuv to RGB colorspace.
+ */
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  L=luma;
-  C=chroma;
-  H=hue;
-  u=C*cos(360.0*H*MagickPI/180.0);
-  v=C*sin(360.0*H*MagickPI/180.0);
-  ConvertLuvToXYZ(L,(100.0*u+134.0)/354.0,(100.0*v+140.0)/262.0,&X,&Y,&Z);
+  ConvertLCHuvToXYZ(100.0*luma,354.0*chroma-134.0,262.0*hue-140.0,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
