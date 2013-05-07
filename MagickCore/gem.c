@@ -390,7 +390,10 @@ MagickPrivate void ConvertHSIToRGB(const double hue,const double saturation,
   const double intensity,double *red,double *green,double *blue)
 {
   double
-    h;
+    b,
+    g
+    h,
+    r;
 
   /*
     Convert HSI to RGB colorspace.
@@ -402,31 +405,31 @@ MagickPrivate void ConvertHSIToRGB(const double hue,const double saturation,
   h-=360.0*floor(h/360.0);
   if (h < 120.0)
     {
-      *blue=intensity*(1.0-saturation);
-      *red=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
+      b=intensity*(1.0-saturation);
+      r=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
         (MagickPI/180.0)));
-      *green=3.0*intensity-*red-*blue;
+      g=3.0*intensity-r-b;
     }
   else
     if (h < 240.0)
       {
         h-=120.0;
-        *red=intensity*(1.0-saturation);
-        *green=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
+        r=intensity*(1.0-saturation);
+        g=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
           (MagickPI/180.0)));
-        *blue=3.0*intensity-*red-*green;
+        b=3.0*intensity-r-g;
       }
     else
       {
         h-=240.0;
-        *green=intensity*(1.0-saturation);
-        *blue=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
+        g=intensity*(1.0-saturation);
+        b=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
           (MagickPI/180.0)));
-        *red=3.0*intensity-*green-*blue;
+        r=3.0*intensity-g-b;
       }
-  *red*=QuantumRange;
-  *green*=QuantumRange;
-  *blue*=QuantumRange;
+  *red=QuantumRange*r;
+  *green=QuantumRange*g;
+  *blue=QuantumRange*b;
 }
 
 /*
