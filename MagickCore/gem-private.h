@@ -192,7 +192,7 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   *v=(*v+140.0)/262.0;
 }
 
-static inline void ConvertXYZToRGB(const double x,const double y,const double z,
+static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
   double *red,double *green,double *blue)
 {
   double
@@ -203,9 +203,9 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  r=3.2406*x-1.5372*y-0.4986*z;
-  g=(-0.9689*x+1.8758*y+0.0415*z);
-  b=0.0557*x-0.2040*y+1.0570*z;
+  r=3.2406*X-1.5372*Y-0.4986*Z;
+  g=(-0.9689*X+1.8758*Y+0.0415*Z);
+  b=0.0557*X-0.2040*Y+1.0570*Z;
   *red=EncodePixelGamma(QuantumRange*r);
   *green=EncodePixelGamma(QuantumRange*g);
   *blue=EncodePixelGamma(QuantumRange*b);
