@@ -1,8 +1,11 @@
-2013-05-13  6.8.5-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
+2013-05-08  6.8.5-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.5-5, SVN revision 12222.
+
+2013-05-07  6.8.5-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Change the sample JPEG quantization table xml to something that works
     really well with 2x2 Chroma subsampling around quality 75.
 
-2013-04-16  6.8.5-5 Glenn Randers-Pehrson <glennrp@image...>
+2013-05-06  6.8.5-5 Glenn Randers-Pehrson <glennrp@image...>
   * Eliminate whitespace from image properties that hold PNG chunk data.
   * The -poly option treats the opacity channel as alpha (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23346).
