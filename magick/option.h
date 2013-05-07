@@ -109,6 +109,7 @@ typedef enum
   ImportExportValidate = 0x00040,
   MontageValidate = 0x00080,
   StreamValidate = 0x00100,
+  ColorspaceValidate = 0x00200,
   AllValidate = 0x7fffffff
 } ValidateType;
 
