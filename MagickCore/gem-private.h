@@ -204,7 +204,7 @@ static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
   r=3.2406*X-1.5372*Y-0.4986*Z;
-  g=(-0.9689*X+1.8758*Y+0.0415*Z);
+  g=(-0.9689)*X+1.8758*Y+0.0415*Z;
   b=0.0557*X-0.2040*Y+1.0570*Z;
   *red=EncodePixelGamma(QuantumRange*r);
   *green=EncodePixelGamma(QuantumRange*g);
