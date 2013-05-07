@@ -3160,7 +3160,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
     }
     option=GetImageOption(image_info,"tiff:rows-per-strip");
-    if (option == (const char *) NULL)
+    if (option != (const char *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
     if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
       {
