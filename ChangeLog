@@ -8,6 +8,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23346).
   * The -threshold 50% option returns a 50-50 black and white image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23354).
+  * Let user override the TIFF rows per strip  (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=23307).
 
 2013-05-05  6.8.5-5 Cristy  <quetzlzacatenango@image...>
   * Fix transient bug in the -separate option (reference
