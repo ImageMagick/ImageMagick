@@ -1160,16 +1160,16 @@ static MagickBooleanType ValidateYIQToRGB()
 static MagickBooleanType ValidateRGBToYPbPr()
 {
   double
-    cb,
-    cr,
+    Pb,
+    Pr,
     y;
 
   (void) FormatLocaleFile(stdout,"  RGBToYPbPr");
   ConvertRGBToYPbPr(0.545877*QuantumRange,0.966567*QuantumRange,
-    0.463759*QuantumRange,&y,&cb,&cr);
+    0.463759*QuantumRange,&y,&Pb,&Pr);
   if ((fabs(y-0.783460) >= ReferenceEpsilon) ||
-      (fabs(cb-(-0.180419)) >= ReferenceEpsilon) ||
-      (fabs(cr-(-0.169461)) >= ReferenceEpsilon))
+      (fabs(Pb-(-0.180419)) >= ReferenceEpsilon) ||
+      (fabs(Pr-(-0.169461)) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
