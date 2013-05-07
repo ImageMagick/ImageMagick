@@ -1598,6 +1598,7 @@ static const OptionInfo
   {
     { "Undefined", UndefinedValidate, UndefinedOptionFlag, MagickTrue },
     { "All", AllValidate, UndefinedOptionFlag, MagickFalse },
+    { "Colorspace", ColorspaceValidate, UndefinedOptionFlag, MagickFalse },
     { "Compare", CompareValidate, UndefinedOptionFlag, MagickFalse },
     { "Composite", CompositeValidate, UndefinedOptionFlag, MagickFalse },
     { "Convert", ConvertValidate, UndefinedOptionFlag, MagickFalse },

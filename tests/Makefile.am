@@ -36,6 +36,7 @@ TESTS_XFAIL_TESTS =
 TESTS_TESTS = \
 	tests/cli-pipe.tap \
 	tests/cli-colorspace.tap \
+	tests/validate-colorspace.tap \
 	tests/validate-compare.tap \
 	tests/validate-composite.tap \
 	tests/validate-convert.tap \
