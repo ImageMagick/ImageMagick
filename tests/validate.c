@@ -104,9 +104,6 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
     min,
     x;
 
-  /*
-    Convert HSL to RGB colorspace.
-  */
   h=hue*360.0;
   if (lightness <= 0.5)
     c=2.0*lightness*saturation;
@@ -167,13 +164,9 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
       *blue=0.0;
     }
   }
-}
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
+  *red=ClampToQuantum(QuantumRange**red);
+  *green=ClampToQuantum(QuantumRange**green);
+  *blue=ClampToQuantum(QuantumRange**blue);
 }
 
 static inline void ConvertRGBToXYZ(const double red,const double green,
@@ -184,9 +177,6 @@ static inline void ConvertRGBToXYZ(const double red,const double green,
     g,
     r;
 
-  /*
-    Convert RGB to XYZ colorspace.
-  */
   r=QuantumScale*DecodePixelGamma(red);
   g=QuantumScale*DecodePixelGamma(green);
   b=QuantumScale*DecodePixelGamma(blue);
@@ -268,15 +258,12 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
     g,
     r;
 
-  /*
-    Convert XYZ to RGB colorspace.
-  */
   r=3.2406*x-1.5372*y-0.4986*z;
   g=(-0.9689*x+1.8758*y+0.0415*z);
   b=0.0557*x-0.2040*y+1.0570*z;
-  *red=EncodePixelGamma(QuantumRange*r);
-  *green=EncodePixelGamma(QuantumRange*g);
-  *blue=EncodePixelGamma(QuantumRange*b);
+  *red=ClampToQuantum(EncodePixelGamma(QuantumRange*r));
+  *green=ClampToQuantum(EncodePixelGamma(QuantumRange*g));
+  *blue=ClampToQuantum(EncodePixelGamma(QuantumRange*b));
 }
 
 static inline void ConvertLabToRGB(const double L,const double a,
@@ -294,9 +281,6 @@ static inline void ConvertLabToRGB(const double L,const double a,
 static void ConvertRGBToYPbPr(const double red,const double green,
   const double blue,double *Y,double *Pb,double *Pr)
 {
-  /*
-    Convert RGB to YPbPr colorspace.
-  */
   *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
   *Pb=QuantumScale*((-0.1687367)*red-0.331264*green+0.5*blue)+0.5;
   *Pr=QuantumScale*(0.5*red-0.418688*green-0.081312*blue)+0.5;
@@ -305,32 +289,23 @@ static void ConvertRGBToYPbPr(const double red,const double green,
 static void ConvertRGBToYCbCr(const double red,const double green,
   const double blue,double *Y,double *Cb,double *Cr)
 {
-  /*
-    Convert RGB to YCbCr colorspace.
-  */
   ConvertRGBToYPbPr(red,green,blue,Y,Cb,Cr);
 }
 
 static void ConvertYPbPrToRGB(const double Y,const double Pb,const double Pr,
   Quantum *red,Quantum *green,Quantum *blue)
 {
-  /*
-    Convert YPbPr to RGB colorspace.
-  */
-  *red=QuantumRange*(0.99999999999914679361*Y-1.2188941887145875e-06*(Pb-0.5)+
-    1.4019995886561440468*(Pr-0.5));
-  *green=QuantumRange*(0.99999975910502514331*Y-0.34413567816504303521*(Pb-0.5)-
-    0.71413649331646789076*(Pr-0.5));
-  *blue=QuantumRange*(1.00000124040004623180*Y+1.77200006607230409200*(Pb-0.5)+
-    2.1453384174593273e-06*(Pr-0.5));
+  *red=ClampToQuantum(QuantumRange*(0.99999999999914679361*Y-
+    1.2188941887145875e-06*(Pb-0.5)+1.4019995886561440468*(Pr-0.5)));
+  *green=ClampToQuantum(QuantumRange*(0.99999975910502514331*Y-
+    0.34413567816504303521*(Pb-0.5)-0.71413649331646789076*(Pr-0.5)));
+  *blue=ClampToQuantum(QuantumRange*(1.00000124040004623180*Y+
+    1.77200006607230409200*(Pb-0.5)+2.1453384174593273e-06*(Pr-0.5)));
 }
 
 static void ConvertYCbCrToRGB(const double Y,const double Cb,
   const double Cr,Quantum *red,Quantum *green,Quantum *blue)
 {
-  /*
-    Convert YCbCr to RGB colorspace.
-  */
   ConvertYPbPrToRGB(Y,Cb,Cr,red,green,blue);
 }
 
@@ -380,9 +355,6 @@ static inline void ConvertLMSToRGB(const double L,const double M,
 static inline void ConvertXYZToLMS(const double x,const double y,
   const double z,double *L,double *M,double *S)
 {
-  /*
-    Convert XYZ to LMS colorspace.
-  */
   *L=0.7328*x+0.4296*y-0.1624*z;
   *M=(-0.7036*x+1.6975*y+0.0061*z);
   *S=0.0030*x+0.0136*y+0.9834*z;
@@ -473,9 +445,6 @@ static inline void ConvertLuvToRGB(const double L,const double u,
 static void ConvertRGBToYDbDr(const double red,const double green,
   const double blue,double *Y,double *Db,double *Dr)
 {
-  /*
-    Convert RGB to YDbDr colorspace.
-  */
   *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
   *Db=QuantumScale*(-0.450*red-0.883*green+1.333*blue)+0.5;
   *Dr=QuantumScale*(-1.333*red+1.116*green+0.217*blue)+0.5;
@@ -484,23 +453,17 @@ static void ConvertRGBToYDbDr(const double red,const double green,
 static void ConvertYDbDrToRGB(const double Y,const double Db,const double Dr,
   Quantum *red,Quantum *green,Quantum *blue)
 {
-  /*
-    Convert YDbDr to RGB colorspace.
-  */
-  *red=QuantumRange*(Y+9.2303716147657e-05*(Db-0.5)-0.52591263066186533*
-    (Dr-0.5));
-  *green=QuantumRange*(Y-0.12913289889050927*(Db-0.5)+0.26789932820759876*
-    (Dr-0.5));
-  *blue=QuantumRange*(Y+0.66467905997895482*(Db-0.5)-7.9202543533108e-05*
-    (Dr-0.5));
+  *red=ClampToQuantum(QuantumRange*(Y+9.2303716147657e-05*(Db-0.5)-
+    0.52591263066186533*(Dr-0.5)));
+  *green=ClampToQuantum(QuantumRange*(Y-0.12913289889050927*(Db-0.5)+
+    0.26789932820759876*(Dr-0.5)));
+  *blue=ClampToQuantum(QuantumRange*(Y+0.66467905997895482*(Db-0.5)-
+    7.9202543533108e-05*(Dr-0.5)));
 }
 
 static void ConvertRGBToYIQ(const double red,const double green,
   const double blue,double *Y,double *I,double *Q)
 {
-  /*
-    Convert RGB to YIQ colorspace.
-  */
   *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
   *I=QuantumScale*(0.595716*red-0.274453*green-0.321263*blue)+0.5;
   *Q=QuantumScale*(0.211456*red-0.522591*green+0.311135*blue)+0.5;
@@ -509,23 +472,17 @@ static void ConvertRGBToYIQ(const double red,const double green,
 static void ConvertYIQToRGB(const double Y,const double I,const double Q,
   Quantum *red,Quantum *green,Quantum *blue)
 {
-  /*
-    Convert YIQ to RGB colorspace.
-  */
-  *red=QuantumRange*(Y+0.9562957197589482261*(I-0.5)+0.6210244164652610754*
-    (Q-0.5));
-  *green=QuantumRange*(Y-0.2721220993185104464*(I-0.5)-0.6473805968256950427*
-    (Q-0.5));
-  *blue=QuantumRange*(Y-1.1069890167364901945*(I-0.5)+1.7046149983646481374*
-    (Q-0.5));
+  *red=ClampToQuantum(QuantumRange*(Y+0.9562957197589482261*(I-0.5)+
+    0.6210244164652610754*(Q-0.5)));
+  *green=ClampToQuantum(QuantumRange*(Y-0.2721220993185104464*(I-0.5)-
+    0.6473805968256950427*(Q-0.5)));
+  *blue=ClampToQuantum(QuantumRange*(Y-1.1069890167364901945*(I-0.5)+
+    1.7046149983646481374*(Q-0.5)));
 }
 
 static void ConvertRGBToYUV(const double red,const double green,
   const double blue,double *Y,double *U,double *V)
 {
-  /*
-    Convert RGB to YUV colorspace.
-  */
   *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
   *U=QuantumScale*((-0.147)*red-0.289*green+0.436*blue)+0.5;
   *V=QuantumScale*(0.615*red-0.515*green-0.100*blue)+0.5;
@@ -534,15 +491,12 @@ static void ConvertRGBToYUV(const double red,const double green,
 static void ConvertYUVToRGB(const double Y,const double U,const double V,
   Quantum *red,Quantum *green,Quantum *blue)
 {
-  /*
-    Convert YUV to RGB colorspace.
-  */
-  *red=QuantumRange*(Y-3.945707070708279e-05*(U-0.5)+1.1398279671717170825*
-    (V-0.5));
-  *green=QuantumRange*(Y-0.3946101641414141437*(U-0.5)-0.5805003156565656797*
-    (V-0.5));
-  *blue=QuantumRange*(Y+2.0319996843434342537*(U-0.5)-4.813762626262513e-04*
-    (V-0.5));
+  *red=ClampToQuantum(QuantumRange*(Y-3.945707070708279e-05*(U-0.5)+
+    1.1398279671717170825*(V-0.5)));
+  *green=ClampToQuantum(QuantumRange*(Y-0.3946101641414141437*(U-0.5)-
+    0.5805003156565656797*(V-0.5)));
+  *blue=ClampToQuantum(QuantumRange*(Y+2.0319996843434342537*(U-0.5)-
+    4.813762626262513e-04*(V-0.5)));
 }
 
 static MagickBooleanType ValidateHSIToRGB()
