@@ -67,20 +67,19 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   V a l i d a t e C o l o r s p a c e C o m m a n d                         %
+%   V a l i d a t e C o l o r s p a c e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ValidateColorspaceCommand() validates the ImageMagick colorspaces and
-%  returns the number of validation tests that passed and failed.
+%  ValidateColorspaces() validates the ImageMagick colorspaces and returns the
+%  number of validation tests that passed and failed.
 %
-%  The format of the ValidateColorspaceCommand method is:
+%  The format of the ValidateColorspaces method is:
 %
-%      size_t ValidateColorspaceCommand(ImageInfo *image_info,
-%        const char *reference_filename,const char *output_filename,
-%        size_t *fail,ExceptionInfo *exception)
+%      size_t ValidateColorspaces(ImageInfo *image_info,size_t *fail,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -96,81 +95,8 @@
 %
 */
 
-static void ConvertHSIToRGB(const double hue,const double saturation,
-  const double intensity,double *red,double *green,double *blue)
-{
-  double
-    h;
-
-  /*
-    Convert HSI to RGB colorspace.
-  */
-  h=360.0*hue;
-  h-=360.0*floor(h/360.0);
-  if (h < 120.0)
-    {
-      *blue=intensity*(1.0-saturation);
-      *red=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
-        (MagickPI/180.0)));
-      *green=3.0*intensity-*red-*blue;
-    }
-  else
-    if (h < 240.0)
-      {
-        h-=120.0;
-        *red=intensity*(1.0-saturation);
-        *green=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
-          (MagickPI/180.0)));
-        *blue=3.0*intensity-*red-*green;
-      }
-    else
-      {
-        h-=240.0;
-        *green=intensity*(1.0-saturation);
-        *blue=intensity*(1.0+saturation*cos(h*(MagickPI/180.0))/cos((60.0-h)*
-          (MagickPI/180.0)));
-        *red=3.0*intensity-*green-*blue;
-      }
-  *red*=QuantumRange;
-  *green*=QuantumRange;
-  *blue*=QuantumRange;
-}
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
-static void ConvertRGBToHSI(const double red,const double green,
-  const double blue,double *hue,double *saturation,double *intensity)
-{
-  double
-    alpha,
-    beta;
-
-  /*
-    Convert RGB to HSI colorspace.
-  */
-  *intensity=(QuantumScale*red+QuantumScale*green+QuantumScale*blue)/3.0;
-  if (*intensity <= 0.0)
-    {
-      *hue=0.0;
-      *saturation=0.0;
-      return;
-    }
-  *saturation=1.0-MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
-    QuantumScale*blue))/(*intensity);
-  alpha=0.5*(2.0*QuantumScale*red-QuantumScale*green-QuantumScale*blue);
-  beta=0.8660254037844385*(QuantumScale*green-QuantumScale*blue);
-  *hue=atan2(beta,alpha)*(180.0/MagickPI)/360.0;
-  if (*hue < 0.0)
-    *hue+=1.0;
-}
-
 MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
-  const double lightness,double *red,double *green,double *blue)
+  const double lightness,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
     c,
@@ -248,118 +174,6 @@ static inline double MagickMax(const double x,const double y)
   if (x > y)
     return(x);
   return(y);
-}
-
-MagickExport void ConvertRGBToHSL(const double red,const double green,
-  const double blue,double *hue,double *saturation,double *lightness)
-{
-  double
-    c,
-    max,
-    min;
-
-  /*
-    Convert RGB to HSL colorspace.
-  */
-  max=MagickMax(QuantumScale*red,MagickMax(QuantumScale*green,
-    QuantumScale*blue));
-  min=MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
-    QuantumScale*blue));
-  c=max-min;
-  *lightness=(max+min)/2.0;
-  if (c <= 0.0)
-    {
-      *hue=0.0;
-      *saturation=0.0;
-      return;
-    }
-  if (max == (QuantumScale*red))
-    {
-      *hue=(QuantumScale*green-QuantumScale*blue)/c;
-      if ((QuantumScale*green) < (QuantumScale*blue))
-        *hue+=6.0;
-    }
-  else
-    if (max == (QuantumScale*green))
-      *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
-    else
-      *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
-  *hue*=60.0/360.0;
-  if (*lightness <= 0.5)
-    *saturation=c/(2.0*(*lightness));
-  else
-    *saturation=c/(2.0-2.0*(*lightness));
-}
-
-static void ConvertHSVToRGB(const double hue,const double saturation,
-  const double value,double *red,double *green,double *blue)
-{
-  double
-    c,
-    h,
-    min,
-    x;
-
-  /*
-    Convert HSV to RGB colorspace.
-  */
-  h=hue*360.0;
-  c=value*saturation;
-  min=value-c;
-  h-=360.0*floor(h/360.0);
-  h/=60.0;
-  x=c*(1.0-fabs(h-2.0*floor(h/2.0)-1.0));
-  switch ((int) floor(h))
-  {
-    case 0:
-    {
-      *red=QuantumRange*(min+c);
-      *green=QuantumRange*(min+x);
-      *blue=QuantumRange*min;
-      break;
-    }
-    case 1:
-    {
-      *red=QuantumRange*(min+x);
-      *green=QuantumRange*(min+c);
-      *blue=QuantumRange*min;
-      break;
-    }
-    case 2:
-    {
-      *red=QuantumRange*min;
-      *green=QuantumRange*(min+c);
-      *blue=QuantumRange*(min+x);
-      break;
-    }
-    case 3:
-    {
-      *red=QuantumRange*min;
-      *green=QuantumRange*(min+x);
-      *blue=QuantumRange*(min+c);
-      break;
-    }
-    case 4:
-    {
-      *red=QuantumRange*(min+x);
-      *green=QuantumRange*min;
-      *blue=QuantumRange*(min+c);
-      break;
-    }
-    case 5:
-    {
-      *red=QuantumRange*(min+c);
-      *green=QuantumRange*min;
-      *blue=QuantumRange*(min+x);
-      break;
-    }
-    default:
-    {
-      *red=0.0;
-      *green=0.0;
-      *blue=0.0;
-    }
-  }
 }
 
 static inline void ConvertRGBToXYZ(const double red,const double green,
@@ -447,7 +261,7 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
 }
 
 static inline void ConvertXYZToRGB(const double x,const double y,const double z,
-  double *red,double *green,double *blue)
+  Quantum *red,Quantum *green,Quantum *blue)
 {
   double
     b,
@@ -466,7 +280,7 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
 }
 
 static inline void ConvertLabToRGB(const double L,const double a,
-  const double b,double *red,double *green,double *blue)
+  const double b,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
     X,
@@ -498,7 +312,7 @@ static void ConvertRGBToYCbCr(const double red,const double green,
 }
 
 static void ConvertYPbPrToRGB(const double Y,const double Pb,const double Pr,
-  double *red,double *green,double *blue)
+  Quantum *red,Quantum *green,Quantum *blue)
 {
   /*
     Convert YPbPr to RGB colorspace.
@@ -512,7 +326,7 @@ static void ConvertYPbPrToRGB(const double Y,const double Pb,const double Pr,
 }
 
 static void ConvertYCbCrToRGB(const double Y,const double Cb,
-  const double Cr,double *red,double *green,double *blue)
+  const double Cr,Quantum *red,Quantum *green,Quantum *blue)
 {
   /*
     Convert YCbCr to RGB colorspace.
@@ -525,59 +339,6 @@ static inline void ConvertLCHabToXYZ(const double luma,const double chroma,
 {
   ConvertLabToXYZ(luma,chroma*cos(hue*MagickPI/180.0),chroma*
     sin(hue*MagickPI/180.0),X,Y,Z);
-}
-
-static void ConvertLCHabToRGB(const double luma,const double chroma,
-  const double hue,double *red,double *green,double *blue)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  /*
-    Convert LCHab to RGB colorspace.
-  */
-  ConvertLCHabToXYZ(luma*100.0,255.0*(chroma-0.5),255.0*(hue-0.5),&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
-}
-
-static void ConvertRGBToHSV(const double red,const double green,
-  const double blue,double *hue,double *saturation,double *value)
-{
-  double
-    c,
-    max,
-    min;
-
-  /*
-    Convert RGB to HSV colorspace.
-  */
-  max=MagickMax(QuantumScale*red,MagickMax(QuantumScale*green,
-    QuantumScale*blue));
-  min=MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
-    QuantumScale*blue));
-  c=max-min;
-  *value=max;
-  if (c <= 0.0)
-    {
-      *hue=0.0;
-      *saturation=0.0;
-      return;
-    }
-  if (max == (QuantumScale*red))
-    {
-      *hue=(QuantumScale*green-QuantumScale*blue)/c;
-      if ((QuantumScale*green) < (QuantumScale*blue))
-        *hue+=6.0;
-    }
-  else
-    if (max == (QuantumScale*green))
-      *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
-    else
-      *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
-  *hue*=60.0/360.0;
-  *saturation=c/max;
 }
 
 static inline void ConvertXYZToLCHab(const double X,const double Y,
@@ -596,18 +357,6 @@ static inline void ConvertXYZToLCHab(const double X,const double Y,
     *hue+=1.0;
 }
 
-static void ConvertRGBToLCHab(const double red,const double green,
-  const double blue,double *luma,double *chroma,double *hue)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLCHab(X,Y,Z,luma,chroma,hue);
-}
-
 static inline void ConvertLMSToXYZ(const double L,const double M,const double S,
   double *X,double *Y,double *Z)
 {
@@ -617,7 +366,7 @@ static inline void ConvertLMSToXYZ(const double L,const double M,const double S,
 }
 
 static inline void ConvertLMSToRGB(const double L,const double M,
-  const double S,double *red,double *green,double *blue)
+  const double S,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
     X,
@@ -710,7 +459,7 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
 }
 
 static inline void ConvertLuvToRGB(const double L,const double u,
-  const double v,double *red,double *green,double *blue)
+  const double v,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
     X,
@@ -733,7 +482,7 @@ static void ConvertRGBToYDbDr(const double red,const double green,
 }
 
 static void ConvertYDbDrToRGB(const double Y,const double Db,const double Dr,
-  double *red,double *green,double *blue)
+  Quantum *red,Quantum *green,Quantum *blue)
 {
   /*
     Convert YDbDr to RGB colorspace.
@@ -758,7 +507,7 @@ static void ConvertRGBToYIQ(const double red,const double green,
 }
 
 static void ConvertYIQToRGB(const double Y,const double I,const double Q,
-  double *red,double *green,double *blue)
+  Quantum *red,Quantum *green,Quantum *blue)
 {
   /*
     Convert YIQ to RGB colorspace.
@@ -783,7 +532,7 @@ static void ConvertRGBToYUV(const double red,const double green,
 }
 
 static void ConvertYUVToRGB(const double Y,const double U,const double V,
-  double *red,double *green,double *blue)
+  Quantum *red,Quantum *green,Quantum *blue)
 {
   /*
     Convert YUV to RGB colorspace.
@@ -798,10 +547,10 @@ static void ConvertYUVToRGB(const double Y,const double U,const double V,
 
 static MagickBooleanType ValidateHSIToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  HSIToRGB: ");
   ConvertHSIToRGB(111.244375/360.0,0.295985,0.658734,&r,&g,&b);
@@ -831,10 +580,10 @@ static MagickBooleanType ValidateRGBToHSI()
 
 static MagickBooleanType ValidateHSLToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  HSLToRGB: ");
   ConvertHSLToRGB(110.200859/360.0,0.882623,0.715163,&r,&g,&b);
@@ -864,10 +613,10 @@ static MagickBooleanType ValidateRGBToHSL()
 
 static MagickBooleanType ValidateHSVToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  HSVToRGB: ");
   ConvertHSVToRGB(110.200859/360.0,0.520200,0.966567,&r,&g,&b);
@@ -914,10 +663,10 @@ static MagickBooleanType ValidateRGBToJPEGYCbCr()
 
 static MagickBooleanType ValidateJPEGYCbCrToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  JPEGYCbCrToRGB: ");
   ConvertYCbCrToRGB(0.783460,0.319581,0.330539,&r,&g,&b);
@@ -930,10 +679,10 @@ static MagickBooleanType ValidateJPEGYCbCrToRGB()
 
 static MagickBooleanType ValidateLabToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  LabToRGB: ");
   ConvertLabToRGB(88.456154/100.0,-54.671483/255+0.5,51.662818/255.0+0.5,
@@ -964,7 +713,7 @@ static MagickBooleanType ValidateRGBToLab()
 
 static MagickBooleanType ValidateLchToRGB()
 {
-  double
+  Quantum
     b,
     g,
     r;
@@ -1015,10 +764,10 @@ static MagickBooleanType ValidateRGBToLMS()
 
 static MagickBooleanType ValidateLMSToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  LMSToRGB: ");
   ConvertLMSToRGB(0.611749,0.910088,0.294880,&r,&g,&b);
@@ -1032,14 +781,14 @@ static MagickBooleanType ValidateLMSToRGB()
 static MagickBooleanType ValidateRGBToLuv()
 {
   double
-    l,
+    L,
     u,
     v;
 
   (void) FormatLocaleFile(stdout,"  RGBToLuv: ");
   ConvertRGBToLuv(0.545877*QuantumRange,0.966567*QuantumRange,
-    0.463759*QuantumRange,&l,&u,&v);
-  if ((fabs(l-88.456154/262.0) >= ReferenceEpsilon) ||
+    0.463759*QuantumRange,&L,&u,&v);
+  if ((fabs(L-88.456154/262.0) >= ReferenceEpsilon) ||
       (fabs(u-(-51.330414+134.0)/354.0) >= ReferenceEpsilon) ||
       (fabs(v-(76.405526+140.0)/262.0) >= ReferenceEpsilon))
     return(MagickFalse);
@@ -1048,10 +797,10 @@ static MagickBooleanType ValidateRGBToLuv()
 
 static MagickBooleanType ValidateLuvToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  LuvToRGB: ");
   ConvertLuvToRGB(88.456154/100.0,(-51.330414+134.0)/354.0,
@@ -1082,10 +831,10 @@ static MagickBooleanType ValidateRGBToXYZ()
 
 static MagickBooleanType ValidateXYZToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  XYZToRGB: ");
   ConvertXYZToRGB(0.470646,0.730178,0.288324,&r,&g,&b);
@@ -1098,10 +847,10 @@ static MagickBooleanType ValidateXYZToRGB()
 
 static MagickBooleanType ValidateYDbDrToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  YDbDrToRGB: ");
   ConvertYDbDrToRGB(0.783460,-0.480932+0.5,0.451670+0.5,&r,&g,&b);
@@ -1148,10 +897,10 @@ static MagickBooleanType ValidateRGBToYIQ()
 
 static MagickBooleanType ValidateYIQToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  YIQToRGB: ");
   ConvertYIQToRGB(0.783460,-0.089078+0.5,-0.245399+0.5,&r,&g,&b);
@@ -1165,26 +914,26 @@ static MagickBooleanType ValidateYIQToRGB()
 static MagickBooleanType ValidateRGBToYPbPr()
 {
   double
-    cb,
-    cr,
-    y;
+    Pb,
+    Pr,
+    Y;
 
   (void) FormatLocaleFile(stdout,"  RGBToYPbPr: ");
   ConvertRGBToYPbPr(0.545877*QuantumRange,0.966567*QuantumRange,
-    0.463759*QuantumRange,&y,&cb,&cr);
-  if ((fabs(y-0.783460) >= ReferenceEpsilon) ||
-      (fabs(cb-(-0.180419)) >= ReferenceEpsilon) ||
-      (fabs(cr-(-0.169461)) >= ReferenceEpsilon))
+    0.463759*QuantumRange,&Y,&Pb,&Pr);
+  if ((fabs(Y-0.783460) >= ReferenceEpsilon) ||
+      (fabs(Pb-(-0.180419)) >= ReferenceEpsilon) ||
+      (fabs(Pr-(-0.169461)) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
 
 static MagickBooleanType ValidateYPbPrToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  YPbPrToRGB: ");
   ConvertYPbPrToRGB(0.783460,-0.180419+0.5,-0.169461+0.5,&r,&g,&b);
@@ -1214,10 +963,10 @@ static MagickBooleanType ValidateRGBToYUV()
 
 static MagickBooleanType ValidateYUVToRGB()
 {
-  double
-    r,
+  Quantum
+    b,
     g,
-    b;
+    r;
 
   (void) FormatLocaleFile(stdout,"  YUVToRGB: ");
   ConvertYUVToRGB(0.783460,-0.157383+0.5,-0.208443+0.5,&r,&g,&b);
@@ -1228,8 +977,7 @@ static MagickBooleanType ValidateYUVToRGB()
   return(MagickTrue);
 }
 
-static size_t ValidateColorspaceCommand(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,size_t *fail,
+static size_t ValidateColorspaces(ImageInfo *image_info,size_t *fail,
   ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -2770,8 +2518,7 @@ int main(int argc,char **argv)
             "ImageMagick Validation Suite (%s)\n\n",CommandOptionToMnemonic(
             MagickValidateOptions,(ssize_t) type));
           if ((type & ColorspaceValidate) != 0)
-            tests+=ValidateColorspaceCommand(image_info,reference_filename,
-              output_filename,&fail,exception);
+            tests+=ValidateColorspaces(image_info,&fail,exception);
           if ((type & CompareValidate) != 0)
             tests+=ValidateCompareCommand(image_info,reference_filename,
               output_filename,&fail,exception);
