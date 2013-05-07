@@ -57,6 +57,72 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   V a l i d a t e C o l o r s p a c e C o m m a n d                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ValidateCompareCommand() validates the ImageMagick colorspaces and returns
+%  the number of validation tests that passed and failed.
+%
+%  The format of the ValidateColorspaceCommand method is:
+%
+%      size_t ValidateColorspaceCommand(ImageInfo *image_info,
+%        const char *reference_filename,const char *output_filename,
+%        size_t *fail,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o reference_filename: the reference image filename.
+%
+%    o output_filename: the output image filename.
+%
+%    o fail: return the number of validation tests that pass.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static size_t ValidateColorspaceCommand(ImageInfo *image_info,
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  register ssize_t
+    i;
+
+  size_t
+    test;
+
+  test=0;
+  (void) FormatLocaleFile(stdout,"validate colorspaces:\n");
+  status=MagickTrue;
+  if (status != MagickFalse)
+    {
+      (void) FormatLocaleFile(stdout,"... pass.\n");
+      test++;
+    }
+  else
+    {
+      (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
+        GetMagickModule());
+      (*fail)++;
+    }
+  (void) FormatLocaleFile(stdout,
+    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    (double) (test-(*fail)),(double) *fail);
+  return(test);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   V a l i d a t e C o m p a r e C o m m a n d                               %
 %                                                                             %
 %                                                                             %
@@ -1496,6 +1562,9 @@ int main(int argc,char **argv)
           (void) FormatLocaleFile(stdout,
             "ImageMagick Validation Suite (%s)\n\n",CommandOptionToMnemonic(
             MagickValidateOptions,(ssize_t) type));
+          if ((type & ColorspaceValidate) != 0)
+            tests+=ValidateColorspaceCommand(image_info,reference_filename,
+              output_filename,&fail,exception);
           if ((type & CompareValidate) != 0)
             tests+=ValidateCompareCommand(image_info,reference_filename,
               output_filename,&fail,exception);
