@@ -391,7 +391,7 @@ MagickPrivate void ConvertHSIToRGB(const double hue,const double saturation,
 {
   double
     b,
-    g
+    g,
     h,
     r;
 
