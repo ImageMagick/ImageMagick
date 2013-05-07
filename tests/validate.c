@@ -67,28 +67,23 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   V a l i d a t e C o l o r s p a c e C o m m a n d                         %
+%   V a l i d a t e C o l o r s p a c e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ValidateCompareCommand() validates the ImageMagick colorspaces and returns
-%  the number of validation tests that passed and failed.
+%  ValidateColorspaces() validates the ImageMagick colorspaces and returns the
+%  number of validation tests that passed and failed.
 %
-%  The format of the ValidateColorspaceCommand method is:
+%  The format of the ValidateColorspaces method is:
 %
-%      size_t ValidateColorspaceCommand(ImageInfo *image_info,
-%        const char *reference_filename,const char *output_filename,
-%        size_t *fail,ExceptionInfo *exception)
+%      size_t ValidateColorspaces(ImageInfo *image_info,size_t *fail,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
-%
-%    o reference_filename: the reference image filename.
-%
-%    o output_filename: the output image filename.
 %
 %    o fail: return the number of validation tests that pass.
 %
@@ -1228,8 +1223,7 @@ static MagickBooleanType ValidateYUVToRGB()
   return(MagickTrue);
 }
 
-static size_t ValidateColorspaceCommand(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,size_t *fail,
+static size_t ValidateColorspaces(ImageInfo *image_info,size_t *fail,
   ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -2756,8 +2750,7 @@ int main(int argc,char **argv)
             "ImageMagick Validation Suite (%s)\n\n",CommandOptionToMnemonic(
             MagickValidateOptions,(ssize_t) type));
           if ((type & ColorspaceValidate) != 0)
-            tests+=ValidateColorspaceCommand(image_info,reference_filename,
-              output_filename,&fail,exception);
+            tests+=ValidateColorspaces(image_info,&fail,exception);
           if ((type & CompareValidate) != 0)
             tests+=ValidateCompareCommand(image_info,reference_filename,
               output_filename,&fail,exception);
