@@ -99,9 +99,12 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   const double lightness,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
+    b,
     c,
+    g,
     h,
     min,
+    r,
     x;
 
   h=hue*360.0;
@@ -117,56 +120,56 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   {
     case 0:
     {
-      *red=QuantumRange*(min+c);
-      *green=QuantumRange*(min+x);
-      *blue=QuantumRange*min;
+      r=min+c;
+      g=min+x;
+      b=min;
       break;
     }
     case 1:
     {
-      *red=QuantumRange*(min+x);
-      *green=QuantumRange*(min+c);
-      *blue=QuantumRange*min;
+      r=min+x;
+      g=min+c;
+      b=min;
       break;
     }
     case 2:
     {
-      *red=QuantumRange*min;
-      *green=QuantumRange*(min+c);
-      *blue=QuantumRange*(min+x);
+      r=min;
+      g=min+c;
+      b=min+x;
       break;
     }
     case 3:
     {
-      *red=QuantumRange*min;
-      *green=QuantumRange*(min+x);
-      *blue=QuantumRange*(min+c);
+      r=min;
+      g=min+x;
+      b=min+c;
       break;
     }
     case 4:
     {
-      *red=QuantumRange*(min+x);
-      *green=QuantumRange*min;
-      *blue=QuantumRange*(min+c);
+      r=min+x;
+      g=min;
+      b=min+c;
       break;
     }
     case 5:
     {
-      *red=QuantumRange*(min+c);
-      *green=QuantumRange*min;
-      *blue=QuantumRange*(min+x);
+      r=min+c;
+      g=min;
+      b=min+x;
       break;
     }
     default:
     {
-      *red=0.0;
-      *green=0.0;
-      *blue=0.0;
+      r=0.0;
+      g=0.0;
+      b=0.0;
     }
   }
-  *red=ClampToQuantum(QuantumRange**red);
-  *green=ClampToQuantum(QuantumRange**green);
-  *blue=ClampToQuantum(QuantumRange**blue);
+  *red=ClampToQuantum(QuantumRange*r);
+  *green=ClampToQuantum(QuantumRange*g);
+  *blue=ClampToQuantum(QuantumRange*b);
 }
 
 static inline void ConvertRGBToXYZ(const double red,const double green,
