@@ -613,9 +613,6 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
   register ssize_t
     x;
 
-  register ssize_t
-    i;
-
   register unsigned char
     *q;
 
