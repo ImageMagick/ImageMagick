@@ -1173,7 +1173,7 @@ static size_t ValidateColorspaces(ImageInfo *image_info,size_t *fail,
     test;
 
   /*
-     Reference: https://code.google.com/p/chroma:
+     Reference: https://code.google.com/p/chroma.
 
      Illuminant =  D65
      Observer   =  2° (1931)
@@ -1193,7 +1193,6 @@ static size_t ValidateColorspaces(ImageInfo *image_info,size_t *fail,
      HSL          110.200859,   0.882623,   0.715163
      HSI          111.244375,   0.295985,   0.658734
      Y'CbCr       187.577791,  87.586330,  90.040886
-
   */
   (void) FormatLocaleFile(stdout,"validate colorspaces:\n");
   for (test=0; test < 26; test++)
