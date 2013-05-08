@@ -944,7 +944,7 @@ static size_t ValidateColorspaces(ImageInfo *image_info,size_t *fail,
     test;
 
   /*
-     Reference: https://code.google.com/p/chroma:
+     Reference: https://code.google.com/p/chroma.
 
      Illuminant =  D65
      Observer   =  2° (1931)
