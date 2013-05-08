@@ -2091,8 +2091,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(EncodePixelGamma((MagickRealType)
-            GetPixelRed(q)));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) GetPixelRed(q)));
           green=ClampToQuantum(EncodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
           blue=ClampToQuantum(EncodePixelGamma((MagickRealType)
