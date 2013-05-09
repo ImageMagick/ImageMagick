@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/exception.h"
@@ -1098,8 +1099,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       /*
         sRGB masquerading as a grayscale image?
       */
-      if (IsGrayImage(image,&image->exception) == MagickFalse)
-        (void) SetImageColorspace(image,sRGBColorspace);
+      if (IsImageGray(image,exception) == MagickFalse)
+        (void) SetImageColorspace(image,sRGBColorspace,exception);
     }
   (void) SyncImageProfiles(image);
   option=GetImageOption(image_info,"delegate:bimodal");
