@@ -798,7 +798,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       if (colorize_image->matte == MagickFalse)
         SetPixelOpacity(q,GetPixelOpacity(p));
       else
-        SetPixelOpacity(q,((GetPixelOpacity(p)*pixel.opacity+
+        SetPixelOpacity(q,((GetPixelOpacity(p)*(100.0-pixel.opacity)+
           colorize.opacity*pixel.opacity)/100.0));
       p++;
       q++;
