@@ -1981,7 +1981,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       compression=image_info->compression;
     switch (compression)
     {
-#if !defined(MAGICKCORE_ZLIB_DELEGATE)
+#if !defined(MAGICKCORE_LZMA_DELEGATE)
       case LZMACompression: compression=NoCompression; break;
 #endif
 #if !defined(MAGICKCORE_ZLIB_DELEGATE)
