@@ -46,6 +46,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/client.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
@@ -1091,6 +1092,14 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             lsb_first=1;
             image->endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
          }
+    }
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    {
+      /*
+        sRGB masquerading as a grayscale image?
+      */
+      if (IsGrayImage(image,&image->exception) == MagickFalse)
+        (void) SetImageColorspace(image,sRGBColorspace);
     }
   (void) SyncImageProfiles(image);
   option=GetImageOption(image_info,"delegate:bimodal");
