@@ -1,3 +1,7 @@
+2013-05-09  6.8.5-6 Cristy  <quetzlzacatenango@image...>
+  * Sometimes an sRGB image is masquerading as grayscale (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23370).
+
 2013-05-08  6.8.5-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-5, SVN revision 12227.
 
