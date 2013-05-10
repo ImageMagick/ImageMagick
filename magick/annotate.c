@@ -1289,7 +1289,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       glyph.id=FT_Get_Char_Index(face,'?');
     if ((glyph.id != 0) && (last_glyph.id != 0))
       {
-        if (draw_info->kerning != 0.0)
+        if (fabs(draw_info->kerning) >= MagickEpsilon)
           origin.x+=(FT_Pos) (64.0*direction*draw_info->kerning);
         else
           if (FT_HAS_KERNING(face))
@@ -1342,6 +1342,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       continue;
     bitmap=(FT_BitmapGlyph) glyph.image;
     point.x=offset->x+bitmap->left;
+    if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
+      point.x=offset->x+(origin.x >> 6);
     point.y=offset->y-bitmap->top;
     if (draw_info->render != MagickFalse)
       {
@@ -1447,7 +1449,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       }
     if ((bitmap->left+bitmap->bitmap.width) > metrics->width)
       metrics->width=bitmap->left+bitmap->bitmap.width;
-    if ((draw_info->interword_spacing != 0.0) &&
+    if ((fabs(draw_info->interword_spacing) >= MagickEpsilon) &&
         (IsUTFSpace(GetUTFCode(p)) != MagickFalse) &&
         (IsUTFSpace(code) == MagickFalse))
       origin.x+=(FT_Pos) (64.0*direction*draw_info->interword_spacing);
@@ -1455,13 +1457,15 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       origin.x+=(FT_Pos) (direction*face->glyph->advance.x);
     metrics->origin.x=origin.x;
     metrics->origin.y=origin.y;
-    FT_Done_Glyph(last_glyph.image);
+    if (last_glyph.id != 0)
+      FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
     code=GetUTFCode(p);
   }
   if (utf8 != (unsigned char *) NULL)
     utf8=(unsigned char *) RelinquishMagickMemory(utf8);
-  FT_Done_Glyph(last_glyph.image);
+  if (last_glyph.id != 0)
+    FT_Done_Glyph(last_glyph.image);
   if ((draw_info->stroke.opacity != TransparentOpacity) ||
       (draw_info->stroke_pattern != (Image *) NULL))
     {
@@ -1665,9 +1669,9 @@ static MagickBooleanType RenderPostscript(Image *image,
   /*
     Sample to compute bounding box.
   */
-  identity=(draw_info->affine.sx == draw_info->affine.sy) &&
-    (draw_info->affine.rx == 0.0) && (draw_info->affine.ry == 0.0) ?
-    MagickTrue : MagickFalse;
+  identity=(fabs(draw_info->affine.sx-draw_info->affine.sy) < MagickEpsilon) &&
+    (fabs(draw_info->affine.rx) < MagickEpsilon) &&
+    (fabs(draw_info->affine.ry) < MagickEpsilon) ? MagickTrue : MagickFalse;
   extent.x=0.0;
   extent.y=0.0;
   length=strlen(draw_info->text);
