@@ -1315,13 +1315,13 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (status != 0)
       continue;
     if ((p == draw_info->text) || (bounds.xMin < metrics->bounds.x1))
-      metrics->bounds.x1=bounds.xMin;
+      metrics->bounds.x1=(double) bounds.xMin;
     if ((p == draw_info->text) || (bounds.yMin < metrics->bounds.y1))
-      metrics->bounds.y1=bounds.yMin;
+      metrics->bounds.y1=(double) bounds.yMin;
     if ((p == draw_info->text) || (bounds.xMax > metrics->bounds.x2))
-      metrics->bounds.x2=bounds.xMax;
+      metrics->bounds.x2=(double) bounds.xMax;
     if ((p == draw_info->text) || (bounds.yMax > metrics->bounds.y2))
-      metrics->bounds.y2=bounds.yMax;
+      metrics->bounds.y2=(double) bounds.yMax;
     if (draw_info->render != MagickFalse)
       if ((draw_info->stroke.opacity != TransparentOpacity) ||
           (draw_info->stroke_pattern != (Image *) NULL))
@@ -1455,8 +1455,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       origin.x+=(FT_Pos) (64.0*direction*draw_info->interword_spacing);
     else
       origin.x+=(FT_Pos) (direction*face->glyph->advance.x);
-    metrics->origin.x=origin.x;
-    metrics->origin.y=origin.y;
+    metrics->origin.x=(double) origin.x;
+    metrics->origin.y=(double) origin.y;
     if (last_glyph.id != 0)
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
