@@ -1120,8 +1120,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (status != 0)
     {
       (void) FT_Done_FreeType(library);
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        TypeError,"UnableToReadFont","`%s'",draw_info->font);
+      (void) ThrowMagickException(&image->exception,GetMagickModule(),TypeError,
+        "UnableToReadFont","`%s'",draw_info->font);
       return(RenderPostscript(image,draw_info,offset,metrics));
     }
   if ((draw_info->metrics != (char *) NULL) &&
