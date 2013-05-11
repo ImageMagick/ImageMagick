@@ -250,7 +250,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           else
             high=draw_info->pointsize-1.0;
       }
-      draw_info->pointsize=(low+high)/2.0;
+      draw_info->pointsize=(low+high)/2.0-1.0;
     }
   (void) CloneString(&draw_info->text,caption);
   i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&caption,
