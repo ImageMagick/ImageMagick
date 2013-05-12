@@ -73,7 +73,7 @@ typedef struct
    } RGB_Record;
 
 /* Default palette for WPG level 1 */
-const RGB_Record WPG1_Palette[256]={
+static const RGB_Record WPG1_Palette[256]={
 {  0,  0,  0},    {  0,  0,168},
 {  0,168,  0},    {  0,168,168},
 {168,  0,  0},    {168,  0,168},
