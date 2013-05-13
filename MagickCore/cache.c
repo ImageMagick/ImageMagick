@@ -4506,7 +4506,7 @@ static inline MagickBooleanType IsPixelCacheAuthentic(
     offset;
 
   /*
-    Does nexus points directly to in-core cache pixels (not buffered)?
+    Does nexus pixels point directly to in-core cache pixels or is it buffered?
   */
   if (cache_info->type == PingCache)
     return(MagickTrue);
