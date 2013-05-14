@@ -1837,7 +1837,7 @@ static void MagickPNGWarningHandler(png_struct *ping,png_const_charp message)
 
 
 #ifdef PNG_USER_MEM_SUPPORTED
-#if PNG_LIBPNG_VER >= 14000
+#if PNG_LIBPNG_VER >= 10400
 static png_voidp Magick_png_malloc(png_structp png_ptr,png_alloc_size_t size)
 #else
 static png_voidp Magick_png_malloc(png_structp png_ptr,png_size_t size)
@@ -2515,6 +2515,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "    Found PNG sRGB chunk.");
     }
 
+#ifdef PNG_READ_iCCP_SUPPORTED
   if (ping_found_iCCP !=MagickTrue &&
       ping_found_sRGB != MagickTrue &&
       png_get_valid(ping,ping_info, PNG_INFO_iCCP))
@@ -2525,7 +2526,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "    Found PNG iCCP chunk.");
     }
 
-#ifdef PNG_READ_iCCP_SUPPORTED
   if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
     {
       int
@@ -7700,7 +7700,7 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
          (char *) profile_type, (double) length);
      }
 
-#if PNG_LIBPNG_VER >= 14000
+#if PNG_LIBPNG_VER >= 10400
    text=(png_textp) png_malloc(ping,(png_alloc_size_t) sizeof(png_text));
 #else
    text=(png_textp) png_malloc(ping,(png_size_t) sizeof(png_text));
@@ -7708,7 +7708,7 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    description_length=(png_uint_32) strlen((const char *) profile_description);
    allocated_length=(png_uint_32) (length*2 + (length >> 5) + 20
       + description_length);
-#if PNG_LIBPNG_VER >= 14000
+#if PNG_LIBPNG_VER >= 10400
    text[0].text=(png_charp) png_malloc(ping,
       (png_alloc_size_t) allocated_length);
    text[0].key=(png_charp) png_malloc(ping, (png_alloc_size_t) 80);
@@ -8043,7 +8043,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    * PNG image.
    *
    * To do: recognize other variants of the sRGB profile, using the CRC to
-   * verify all recognized variants including the 3 already known.
+   * verify all recognized variants including the 7 already known.
    *
    * Work around libpng16+ rejecting some "known invalid sRGB profiles".
    *
@@ -11203,7 +11203,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         if (value != (const char *) NULL)
           {
 
-#if PNG_LIBPNG_VER >= 14000
+#if PNG_LIBPNG_VER >= 10400
             text=(png_textp) png_malloc(ping,
                  (png_alloc_size_t) sizeof(png_text));
 #else
