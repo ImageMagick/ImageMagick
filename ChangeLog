@@ -1,3 +1,8 @@
+2013-05-14  6.8.5-7 Glenn Randers-Pehrson <glennrp@image...>
+  * Recognize PNG iCCP chunks that contain the sRGB profile and replace
+    them with the PNG sRGB chunk.  Use "-define png:preserve-iCCP" to
+    get the previous behavior, of simply copying the iCCP chunk.
+
 2013-05-11  6.8.5-7 Cristy  <quetzlzacatenango@image...>
   * Sometimes an sRGB image is masquerading as grayscale (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23370).
@@ -29,7 +34,7 @@
   * Let user override the TIFF rows per strip  (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=23307).
   * Fix transient bug in the -separate option (reference
-   http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23335).
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23335).
 
 2013-05-01  6.8.5-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-4, SVN revision 12089.
