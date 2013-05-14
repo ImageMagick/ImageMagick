@@ -2137,7 +2137,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *volatile ping_pixels;
 
 #ifdef PNG_UNKNOWN_CHUNKS_SUPPORTED
-  const png_byte unused_chunks[]=
+  png_byte unused_chunks[]=
   {
     104,  73,  83,  84, (png_byte) '\0',   /* hIST */
     105,  84,  88, 116, (png_byte) '\0',   /* iTXt */
@@ -2575,7 +2575,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
                  png_uint_32
                    length,
-                   profile_crc;
+                   profile_crc=0;
 
                  unsigned char
                    *data;
@@ -8079,7 +8079,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                  png_uint_32
                    length,
-                   profile_crc;
+                   profile_crc=0;
 
                  unsigned char
                    *data;
