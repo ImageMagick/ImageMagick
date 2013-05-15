@@ -902,7 +902,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
     p->description=ConstantString(description);
   p->signature=MagickSignature;
   (void) AppendValueToLinkedList((LinkedListInfo *) exception->exceptions,p);
-  if (p->severity > exception->severity)
+  if (p->severity >= exception->severity)
     {
       exception->severity=p->severity;
       exception->reason=p->reason;
