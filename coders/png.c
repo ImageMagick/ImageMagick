@@ -139,29 +139,19 @@ struct sRGB_info_struct
 
 const struct sRGB_info_struct sRGB_info[] =
 { 
-    /* ICC v2 perceptual no black compensation
-     * sRGB_IEC61966-2-1_black_scaled.icc
-     */
+    /* ICC v2 perceptual sRGB_IEC61966-2-1_black_scaled.icc */
     { 3048, 0x3b8772b9UL, 0},
 
-    /* ICC v2 relative no black compensation
-     * sRGB_IEC61966-2-1_no_black_scaling.icc
-     */
+    /* ICC v2 relative sRGB_IEC61966-2-1_no_black_scaling.icc */
     { 3052, 0x427ebb21UL, 1},
 
-    /* ICC v4 perceptual
-     * sRGB_v4_ICC_preference_displayclass.icc
-     */
+    /* ICC v4 perceptual sRGB_v4_ICC_preference_displayclass.icc */
     {60988, 0x306fd8aeUL, 0},
 
-    /* ICC v4 perceptual
-     * sRGB_v4_ICC_preference.icc perceptual
-     */
+    /* ICC v4 perceptual sRGB_v4_ICC_preference.icc perceptual */
      {60960, 0xbbef7812UL, 0},
 
-    /* HP? sRGB v2 media-relative
-     * sRGB_IEC61966-2-1_noBPC.icc
-     */
+    /* HP? sRGB v2 media-relative sRGB_IEC61966-2-1_noBPC.icc */
      { 3024, 0x5d5129ceUL, 1},
 
      /* HP-Microsoft sRGB v2 perceptual */
@@ -169,6 +159,12 @@ const struct sRGB_info_struct sRGB_info[] =
 
      /* HP-Microsoft sRGB v2 media-relative */
      { 3144, 0xf29e526dUL, 1},
+
+     /* Facebook's "2012/01/25 03:41:57", 524, "TINYsRGB.icc" */
+     {  524, 0xd4938c39UL, 0},
+
+     /* "2012/11/28 22:35:21", 3212, "Argyll_sRGB.icm") */
+     { 3212, 0x034af5a1UL, 0},
 
      /* Not recognized */
      {    0, 0x00000000UL, 0},
