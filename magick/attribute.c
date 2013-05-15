@@ -529,9 +529,8 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
             ScaleQuantumToAny(GetPixelOpacity(p),range),range);
         if (((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace))
-          status|=GetPixelIndex(indexes+x) !=
-            ScaleAnyToQuantum(ScaleQuantumToAny(GetPixelIndex(indexes+
-            x),range),range);
+          status|=GetPixelIndex(indexes+x) != ScaleAnyToQuantum(
+            ScaleQuantumToAny(GetPixelIndex(indexes+x),range),range);
         if (status == 0)
           break;
         current_depth[id]++;
