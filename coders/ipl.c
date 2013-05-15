@@ -85,6 +85,7 @@ typedef struct _IPLInfo
 static MagickBooleanType
   WriteIPLImage(const ImageInfo *,Image *);
 
+/*
 static void increase (void *pixel, int byteType){
   switch(byteType){
     case 0:(*((unsigned char *) pixel))++; break;
@@ -94,6 +95,7 @@ static void increase (void *pixel, int byteType){
     default:(*((unsigned int *) pixel))++; break;
   }
 }
+*/
 
 /*
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
