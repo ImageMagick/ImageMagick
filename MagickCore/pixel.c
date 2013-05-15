@@ -6160,14 +6160,14 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t P i x e l C h a n n e l M a p M a s k                               %
+%   S e t P i x e l C h a n n e l M a s k                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetPixelChannelMask() sets the pixel channel map from the specified
-%  channel mask.
+%  SetPixelChannelMask() sets the pixel channel map from the specified channel
+%  mask.
 %
 %  The format of the SetPixelChannelMask method is:
 %
