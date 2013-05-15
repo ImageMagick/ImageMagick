@@ -4137,7 +4137,6 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           }
           if ( changed < 0 )
             goto error_cleanup;
-          #pragma omp flush(changed)
           kernel_changed += changed;
           method_changed += changed;
 
