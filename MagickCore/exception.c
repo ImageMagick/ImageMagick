@@ -939,9 +939,12 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
     p->description=ConstantString(description);
   p->signature=MagickSignature;
   (void) AppendValueToLinkedList((LinkedListInfo *) exception->exceptions,p);
-  exception->severity=p->severity;
-  exception->reason=p->reason;
-  exception->description=p->description;
+  if (p->severity >= exception->severity)
+    {
+      exception->severity=p->severity;
+      exception->reason=p->reason;
+      exception->description=p->description;
+    }
   UnlockSemaphoreInfo(exception->semaphore);
   return(MagickTrue);
 }
