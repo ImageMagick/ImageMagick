@@ -249,32 +249,46 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   channel_op=ExtractChannelOp;
   for (channels=0; *token != '\0'; )
   {
+    MagickBooleanType
+      delete_channel;
+
     ssize_t
       i;
 
     /*
       Interpret channel expression.
     */
-    if (*token == ',')
+    delete_channel=MagickFalse;
+    switch (*token)
+    {
+      case '~':
+      {
+        delete_channel=MagickTrue;
+        GetMagickToken(p,&p,token);
+        break;
+      }
+      case ',':
       {
         destination_channel=(PixelChannel) ((ssize_t) destination_channel+1);
         GetMagickToken(p,&p,token);
+        break;
       }
-    if (*token == '|')
+      case '|':
       {
         if (GetNextImageInList(source_image) != (Image *) NULL)
           source_image=GetNextImageInList(source_image);
         else
           source_image=GetFirstImageInList(source_image);
         GetMagickToken(p,&p,token);
+        break;
       }
-    if (*token == ';')
+      case ';':
       {
         Image
           *canvas;
 
         SetPixelChannelMask(destination_image,channel_mask);
-        if ((channel_op == ExtractChannelOp) && (destination_channel == 1))
+        if ((channel_op == ExtractChannelOp) && (channels == 1))
           (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
         status=SetImageStorageClass(destination_image,DirectClass,exception);
         if (status == MagickFalse)
@@ -294,7 +308,11 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         channels=0;
         destination_channel=RedPixelChannel;
         channel_mask=UndefinedChannel;
+        break;
       }
+      default:
+        break;
+    }
     i=ParsePixelChannelOption(token);
     if (i < 0)
       {
@@ -344,21 +362,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
           }
         destination_channel=(PixelChannel) i;
         channel_mask=(ChannelType) (channel_mask | ParseChannelOption(token));
-        if (LocaleCompare(token,"gray") == 0)
-          (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
-        if ((LocaleCompare(token,"black") == 0) ||
-            (LocaleCompare(token,"c") == 0) ||
-            (LocaleCompare(token,"cyan") == 0) ||
-            (LocaleCompare(token,"k") == 0) ||
-            (LocaleCompare(token,"m") == 0) ||
-            (LocaleCompare(token,"magenta") == 0) ||
-            (LocaleCompare(token,"y") == 0) ||
-            (LocaleCompare(token,"yellow") == 0))
-          (void) SetImageColorspace(destination_image,CMYKColorspace,exception);
-        if ((LocaleCompare(token,"Cb") == 0) ||
-            (LocaleCompare(token,"Cr") == 0))
-          (void) SetImageColorspace(destination_image,YCbCrColorspace,
-            exception);
+        if (((channels >= 1)  || (destination_channel >= 1)) &&
+            (IsGrayColorspace(destination_image->colorspace) != MagickFalse))
+          (void) SetImageColorspace(destination_image,sRGBColorspace,exception);
         if (LocaleCompare(token,"alpha") == 0)
           (void) SetImageAlpha(destination_image,OpaqueAlpha,exception);
         if (i >= (ssize_t) GetPixelChannels(destination_image))
@@ -393,7 +399,12 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     {
       case ExtractChannelOp:
       {
-        channel_mask=(ChannelType) (channel_mask | (1 << destination_channel));
+        if (delete_channel == MagickFalse)
+          channel_mask=(ChannelType) (channel_mask &~
+            (1 << destination_channel));
+        else
+          channel_mask=(ChannelType) (channel_mask |
+            (1 << destination_channel));
         destination_channel=(PixelChannel) (destination_channel+1);
         break;
       }
@@ -406,7 +417,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       break;
   }
   SetPixelChannelMask(destination_image,channel_mask);
-  if ((channel_op == ExtractChannelOp) && (destination_channel == 1))
+  if ((channel_op == ExtractChannelOp) && (channels == 1))
     (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
   status=SetImageStorageClass(destination_image,DirectClass,exception);
   if (status == MagickFalse)
