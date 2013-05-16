@@ -283,6 +283,7 @@ ModuleExport void RegisterXTRNImage(void)
     "External transfer via a smart array interface");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
+  return(MagickImageCoderSignature);
 }
 
 /*
