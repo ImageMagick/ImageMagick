@@ -1963,9 +1963,19 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       (void) SetImageStorageClass(image,DirectClass);
     image->depth=image->depth <= 8 ? 8UL : image->depth <= 16 ? 16UL :
       image->depth <= 32 ? 32UL : 64UL;
+    if (IsGrayImage(image,&image->exception) == MagickFalse)
+      {
+        /*
+          sRGB masquerading as a grayscale image?
+        */
+        if (IsGrayColorspace(image->colorspace) != MagickFalse)
+          (void) SetImageColorspace(image,sRGBColorspace);
+      }
+    else
+      if (IsGrayColorspace(image->colorspace) == MagickFalse)
+        (void) SetImageColorspace(image,GRAYColorspace);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if ((image->storage_class != PseudoClass) && (image->depth >= 32) &&
         (quantum_info->format == UndefinedQuantumFormat) &&
         (IsHighDynamicRangeImage(image,&image->exception) != MagickFalse))

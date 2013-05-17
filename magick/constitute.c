@@ -1101,17 +1101,6 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             image->endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
          }
     }
-  if (IsGrayImage(image,&image->exception) == MagickFalse)
-    {
-      /*
-        sRGB masquerading as a grayscale image?
-      */
-      if (IsGrayColorspace(image->colorspace) != MagickFalse)
-        (void) SetImageColorspace(image,sRGBColorspace);
-    }
-  else
-    if (IsGrayColorspace(image->colorspace) == MagickFalse)
-      (void) SetImageColorspace(image,GRAYColorspace);
  (void) SyncImageProfiles(image);
   option=GetImageOption(image_info,"delegate:bimodal");
   if ((option != (const char *) NULL) &&
