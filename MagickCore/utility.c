@@ -1076,6 +1076,14 @@ MagickPrivate MagickBooleanType GetExecutionPath(char *path,const size_t extent)
     execution_path=(char *) RelinquishMagickMemory(execution_path);
   }
 #endif
+#if defined(__OpenBSD__)
+  {
+    extern char
+      *__progname;
+
+    (void) CopyMagickString(path,__progname,extent);
+  }
+#endif
   return(IsPathAccessible(path));
 }
 
