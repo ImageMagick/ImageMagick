@@ -9,6 +9,8 @@
   * Labels no longer overflow (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22964).
   * If more then one exception, return the highest security exception.
+  * A grayscale image returns a color JPEG for -type TrueColor (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=23421).
 
 2013-05-10  6.8.5-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-6, SVN revision 12257.
