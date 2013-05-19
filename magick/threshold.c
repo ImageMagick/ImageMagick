@@ -2279,6 +2279,9 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
       threshold.index*=(MagickRealType) (QuantumRange/100.0);
     }
   intensity=MagickPixelIntensity(&threshold);
+  if ((IsMagickGray(&threshold) == MagickFalse) &&
+      (IsGrayColorspace(image->colorspace) != MagickFalse))
+    (void) SetImageColorspace(image,sRGBColorspace);
   /*
     White threshold image.
   */
