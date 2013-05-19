@@ -1,5 +1,5 @@
 2013-05-20  6.8.5-7 Cristy  <quetzlzacatenango@image...>
-  * New version 6.8.5-7, SVN revision 12308.
+  * New version 6.8.5-7, SVN revision 12310.
 
 2013-05-14  6.8.5-7 Glenn Randers-Pehrson <glennrp@image...>
   * Recognize PNG iCCP chunks that contain the sRGB profile and replace
