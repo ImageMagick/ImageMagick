@@ -1,3 +1,6 @@
+2013-05-20  6.8.5-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.5-7, SVN revision 12308.
+
 2013-05-14  6.8.5-7 Glenn Randers-Pehrson <glennrp@image...>
   * Recognize PNG iCCP chunks that contain the sRGB profile and replace
     them with the PNG sRGB chunk.  Use "-define png:preserve-iCCP" to
