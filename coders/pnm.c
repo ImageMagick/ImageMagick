@@ -339,6 +339,16 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           while (isspace((int) ((unsigned char) c)) != 0)
             c=ReadBlobByte(image);
+          if (c == '#')
+            {
+              /*
+                Comment.
+              */
+              while ((c != EOF) && (c != '\n'))
+                c=ReadBlobByte(image);
+              while (isspace((int) ((unsigned char) c)) != 0)
+                c=ReadBlobByte(image);
+            }
           p=keyword;
           do
           {
