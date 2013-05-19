@@ -2303,7 +2303,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   colorspace=jpeg_info.in_color_space;
   value=GetImageOption(image_info,"jpeg:colorspace");
   if (value == (char *) NULL)
-    value=GetImageProperty(image,"jpeg:colorspace",exception);
+    value=GetImageProperty(image,"jpeg:colorspace");
   if (value != (char *) NULL)
     colorspace=StringToInteger(value);
   sampling_factor=(const char *) NULL;
