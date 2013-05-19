@@ -69,6 +69,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/string_.h"
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
@@ -242,10 +243,10 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
 %
 %  The format of the RegisterXTRNImage method is:
 %
-%      RegisterXTRNImage(void)
+%      size_t RegisterXTRNImage(void)
 %
 */
-ModuleExport void RegisterXTRNImage(void)
+ModuleExport size_t RegisterXTRNImage(void)
 {
   MagickInfo
     *entry;
