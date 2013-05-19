@@ -596,9 +596,6 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   MagickPixelPacket
     threshold;
 
-  MagickRealType
-    intensity;
-
   MagickStatusType
     flags;
 
@@ -672,36 +669,22 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & SyncChannels) != 0)
-        {
-          if (GetPixelIntensity(image,q) < intensity)
-            {
-              SetPixelRed(q,0);
-              SetPixelGreen(q,0);
-              SetPixelBlue(q,0);
-              if (image->colorspace == CMYKColorspace)
-                SetPixelIndex(indexes+x,0);
-            }
-        }
-      else
-        {
-          if (((channel & RedChannel) != 0) &&
-              ((MagickRealType) GetPixelRed(q) < threshold.red))
-            SetPixelRed(q,0);
-          if (((channel & GreenChannel) != 0) &&
-              ((MagickRealType) GetPixelGreen(q) < threshold.green))
-            SetPixelGreen(q,0);
-          if (((channel & BlueChannel) != 0) &&
-              ((MagickRealType) GetPixelBlue(q) < threshold.blue))
-            SetPixelBlue(q,0);
-          if (((channel & OpacityChannel) != 0) &&
-              ((MagickRealType) GetPixelOpacity(q) < threshold.opacity))
-            SetPixelOpacity(q,0);
-          if (((channel & IndexChannel) != 0) &&
-              (image->colorspace == CMYKColorspace) &&
-              ((MagickRealType) GetPixelIndex(indexes+x) < threshold.index))
-            SetPixelIndex(indexes+x,0);
-        }
+      if (((channel & RedChannel) != 0) &&
+          ((MagickRealType) GetPixelRed(q) < threshold.red))
+        SetPixelRed(q,0);
+      if (((channel & GreenChannel) != 0) &&
+          ((MagickRealType) GetPixelGreen(q) < threshold.green))
+        SetPixelGreen(q,0);
+      if (((channel & BlueChannel) != 0) &&
+          ((MagickRealType) GetPixelBlue(q) < threshold.blue))
+        SetPixelBlue(q,0);
+      if (((channel & OpacityChannel) != 0) &&
+          ((MagickRealType) GetPixelOpacity(q) < threshold.opacity))
+        SetPixelOpacity(q,0);
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace) &&
+          ((MagickRealType) GetPixelIndex(indexes+x) < threshold.index))
+        SetPixelIndex(indexes+x,0);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2238,9 +2221,6 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   MagickPixelPacket
     threshold;
 
-  MagickRealType
-    intensity;
-
   MagickStatusType
     flags;
 
@@ -2314,36 +2294,22 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & SyncChannels) != 0)
-        {
-          if (GetPixelIntensity(image,q) > intensity)
-            {
-              SetPixelRed(q,QuantumRange);
-              SetPixelGreen(q,QuantumRange);
-              SetPixelBlue(q,QuantumRange);
-              if (image->colorspace == CMYKColorspace)
-                SetPixelIndex(indexes+x,QuantumRange);
-            }
-        }
-      else
-        {
-          if (((channel & RedChannel) != 0) &&
-              ((MagickRealType) GetPixelRed(q) > threshold.red))
-            SetPixelRed(q,QuantumRange);
-          if (((channel & GreenChannel) != 0) &&
-              ((MagickRealType) GetPixelGreen(q) > threshold.green))
-            SetPixelGreen(q,QuantumRange);
-          if (((channel & BlueChannel) != 0) &&
-              ((MagickRealType) GetPixelBlue(q) > threshold.blue))
-            SetPixelBlue(q,QuantumRange);
-          if (((channel & OpacityChannel) != 0) &&
-              ((MagickRealType) GetPixelOpacity(q) > threshold.opacity))
-            SetPixelOpacity(q,QuantumRange);
-          if (((channel & IndexChannel) != 0) &&
-              (image->colorspace == CMYKColorspace) &&
-              ((MagickRealType) GetPixelIndex(indexes+x)) > threshold.index)
-            SetPixelIndex(indexes+x,QuantumRange);
-        }
+      if (((channel & RedChannel) != 0) &&
+          ((MagickRealType) GetPixelRed(q) > threshold.red))
+        SetPixelRed(q,QuantumRange);
+      if (((channel & GreenChannel) != 0) &&
+          ((MagickRealType) GetPixelGreen(q) > threshold.green))
+        SetPixelGreen(q,QuantumRange);
+      if (((channel & BlueChannel) != 0) &&
+          ((MagickRealType) GetPixelBlue(q) > threshold.blue))
+        SetPixelBlue(q,QuantumRange);
+      if (((channel & OpacityChannel) != 0) &&
+          ((MagickRealType) GetPixelOpacity(q) > threshold.opacity))
+        SetPixelOpacity(q,QuantumRange);
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace) &&
+          ((MagickRealType) GetPixelIndex(indexes+x)) > threshold.index)
+        SetPixelIndex(indexes+x,QuantumRange);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
