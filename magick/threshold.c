@@ -109,8 +109,8 @@ struct _ThresholdMap
 };
 
 /*
- *   Static declarations.
- *   */
+  Static declarations.
+*/
 static const char
   *MinimalThresholdMap =
     "<?xml version=\"1.0\"?>"
