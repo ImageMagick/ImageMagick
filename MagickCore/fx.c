@@ -600,8 +600,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  edge_image=EdgeImage(clone_image,GetOptimalKernelWidth1D(radius,1.0),
-    exception);
+  edge_image=EdgeImage(clone_image,radius,exception);
   clone_image=DestroyImage(clone_image);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
