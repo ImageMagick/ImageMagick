@@ -8554,7 +8554,6 @@ Mogrify(ref,...)
                   */
                   mask_image=CloneImage(argument_list[10].image_reference,0,0,
                     MagickTrue,exception);
-                  (void) NegateImage(mask_image,MagickFalse,exception);
                   (void) SetImageMask(composite_image,mask_image,exception);
                   mask_image=DestroyImage(mask_image);
                 }
@@ -10226,7 +10225,6 @@ Mogrify(ref,...)
             }
           mask_image=CloneImage(argument_list[0].image_reference,0,0,MagickTrue,
             exception);
-          (void) NegateImage(mask_image,MagickFalse,exception);
           (void) SetImageMask(image,mask_image,exception);
           mask_image=DestroyImage(mask_image);
           break;
@@ -10320,7 +10318,6 @@ Mogrify(ref,...)
             }
           mask_image=CloneImage(argument_list[0].image_reference,0,0,
             MagickTrue,exception);
-          (void) NegateImage(mask_image,MagickFalse,exception);
           (void) SetImageMask(image,mask_image,exception);
           mask_image=DestroyImage(mask_image);
           break;
