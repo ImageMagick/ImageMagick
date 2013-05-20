@@ -4185,12 +4185,12 @@ static void LogPixelChannels(const Image *image)
       }
       case ReadMaskPixelChannel:
       {
-        name="maskR";
+        name="read-mask";
         break;
       }
       case WriteMaskPixelChannel:
       {
-        name="maskW";
+        name="write-mask";
         break;
       }
       case MetaPixelChannel:
