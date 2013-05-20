@@ -3675,7 +3675,7 @@ MAGICK_PATCHLEVEL_VERSION=8
 
 MAGICK_VERSION=6.8.5-8
 
-MAGICK_SVN_REVISION=12315:12316M
+MAGICK_SVN_REVISION=12315:12333M
 
 
 # Substitute library versioning
@@ -31929,7 +31929,7 @@ fi
 if test "${with_webp+set}" = set; then :
   withval=$with_webp; with_webp=$withval
 else
-  with_webp='no'
+  with_webp='yes'
 fi
 
 
