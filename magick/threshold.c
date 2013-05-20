@@ -633,7 +633,6 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
       threshold.opacity*=(MagickRealType) (QuantumRange/100.0);
       threshold.index*=(MagickRealType) (QuantumRange/100.0);
     }
-  intensity=MagickPixelIntensity(&threshold);
   if ((IsMagickGray(&threshold) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
     (void) SetImageColorspace(image,sRGBColorspace);
@@ -2258,7 +2257,6 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
       threshold.opacity*=(MagickRealType) (QuantumRange/100.0);
       threshold.index*=(MagickRealType) (QuantumRange/100.0);
     }
-  intensity=MagickPixelIntensity(&threshold);
   if ((IsMagickGray(&threshold) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
     (void) SetImageColorspace(image,sRGBColorspace);
