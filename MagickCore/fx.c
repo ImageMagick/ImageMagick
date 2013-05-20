@@ -4485,8 +4485,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   random_image=DestroyImage(random_image);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  dodge_image=EdgeImage(blur_image,GetOptimalKernelWidth1D(radius,0.5),
-    exception);
+  dodge_image=EdgeImage(blur_image,radius,exception);
   blur_image=DestroyImage(blur_image);
   if (dodge_image == (Image *) NULL)
     return((Image *) NULL);
