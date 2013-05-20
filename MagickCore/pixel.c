@@ -70,95 +70,6 @@
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 
-#define LogPixelChannels(image) \
-{ \
-  register ssize_t \
-    i; \
- \
-  (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%.20g]", \
-    image->filename,(double) image->number_channels); \
-  for (i=0; i < (ssize_t) image->number_channels; i++) \
-  { \
-    char \
-      traits[MaxTextExtent]; \
- \
-    const char \
-      *name; \
- \
-    PixelChannel \
-      channel; \
- \
-    switch (GetPixelChannelChannel(image,i)) \
-    { \
-      case RedPixelChannel: \
-      { \
-        name="red"; \
-        if (image->colorspace == CMYKColorspace) \
-          name="cyan"; \
-        if (image->colorspace == GRAYColorspace) \
-          name="gray"; \
-        break; \
-      } \
-      case GreenPixelChannel: \
-      { \
-        name="green"; \
-        if (image->colorspace == CMYKColorspace) \
-          name="magenta"; \
-        break; \
-      } \
-      case BluePixelChannel: \
-      { \
-        name="blue"; \
-        if (image->colorspace == CMYKColorspace) \
-          name="yellow"; \
-        break; \
-      } \
-      case BlackPixelChannel: \
-      { \
-        name="black"; \
-        if (image->storage_class == PseudoClass) \
-          name="index"; \
-        break; \
-      } \
-      case IndexPixelChannel: \
-      { \
-        name="index"; \
-        break; \
-      } \
-      case AlphaPixelChannel: \
-      { \
-        name="alpha"; \
-        break; \
-      } \
-      case ReadMaskPixelChannel: \
-      { \
-        name="mask"; \
-        break; \
-      } \
-      case MetaPixelChannel: \
-      { \
-        name="meta"; \
-        break; \
-      } \
-      default: \
-        name="undefined"; \
-    } \
-    channel=GetPixelChannelChannel(image,i); \
-    *traits='\0'; \
-    if ((GetPixelChannelTraits(image,channel) & UpdatePixelTrait) != 0) \
-      (void) ConcatenateMagickString(traits,"update,",MaxTextExtent); \
-    if ((GetPixelChannelTraits(image,channel) & BlendPixelTrait) != 0) \
-      (void) ConcatenateMagickString(traits,"blend,",MaxTextExtent); \
-    if ((GetPixelChannelTraits(image,channel) & CopyPixelTrait) != 0) \
-      (void) ConcatenateMagickString(traits,"copy,",MaxTextExtent); \
-    if (*traits == '\0') \
-      (void) ConcatenateMagickString(traits,"undefined,",MaxTextExtent); \
-    traits[strlen(traits)-1]='\0'; \
-    (void) LogMagickEvent(PixelEvent,GetMagickModule(),"  %.20g: %s (%s)", \
-      (double) i,name,traits); \
-  } \
-}
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4211,6 +4122,101 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
 %    o image: the image.
 %
 */
+
+static void LogPixelChannels(const Image *image)
+{
+  register ssize_t
+    i;
+
+  (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%.20g]",
+    image->filename,(double) image->number_channels);
+  for (i=0; i < (ssize_t) image->number_channels; i++)
+  {
+    char
+      traits[MaxTextExtent];
+
+    const char
+      *name;
+
+    PixelChannel
+      channel;
+
+    switch (GetPixelChannelChannel(image,i))
+    {
+      case RedPixelChannel:
+      {
+        name="red";
+        if (image->colorspace == CMYKColorspace)
+          name="cyan";
+        if (image->colorspace == GRAYColorspace)
+          name="gray";
+        break;
+      }
+      case GreenPixelChannel:
+      {
+        name="green";
+        if (image->colorspace == CMYKColorspace)
+          name="magenta";
+        break;
+      }
+      case BluePixelChannel:
+      {
+        name="blue";
+        if (image->colorspace == CMYKColorspace)
+          name="yellow";
+        break;
+      }
+      case BlackPixelChannel:
+      {
+        name="black";
+        if (image->storage_class == PseudoClass)
+          name="index";
+        break;
+      }
+      case IndexPixelChannel:
+      {
+        name="index";
+        break;
+      }
+      case AlphaPixelChannel:
+      {
+        name="alpha";
+        break;
+      }
+      case ReadMaskPixelChannel:
+      {
+        name="maskR";
+        break;
+      }
+      case WriteMaskPixelChannel:
+      {
+        name="maskW";
+        break;
+      }
+      case MetaPixelChannel:
+      {
+        name="meta";
+        break;
+      }
+      default:
+        name="undefined";
+    }
+    channel=GetPixelChannelChannel(image,i);
+    *traits='\0';
+    if ((GetPixelChannelTraits(image,channel) & UpdatePixelTrait) != 0)
+      (void) ConcatenateMagickString(traits,"update,",MaxTextExtent);
+    if ((GetPixelChannelTraits(image,channel) & BlendPixelTrait) != 0)
+      (void) ConcatenateMagickString(traits,"blend,",MaxTextExtent);
+    if ((GetPixelChannelTraits(image,channel) & CopyPixelTrait) != 0)
+      (void) ConcatenateMagickString(traits,"copy,",MaxTextExtent);
+    if (*traits == '\0')
+      (void) ConcatenateMagickString(traits,"undefined,",MaxTextExtent);
+    traits[strlen(traits)-1]='\0';
+    (void) LogMagickEvent(PixelEvent,GetMagickModule(),"  %.20g: %s (%s)",
+      (double) i,name,traits);
+  }
+}
+
 MagickExport void InitializePixelChannelMap(Image *image)
 {
   PixelTrait
@@ -4431,8 +4437,8 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
             x_offset--;
             y_offset--;
           }
-      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,(size_t) count,(size_t)
-        count,exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,(size_t) count,
+        (size_t) count,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
@@ -4592,45 +4598,6 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         pixels[13]+cx[2]*pixels[14]+cx[3]*pixels[15]));
       break;
     }
-#if 0
-    /* deprecated useless and very slow interpolator */
-    case FilterInterpolatePixel:
-    {
-      CacheView
-        *filter_view;
-
-      Image
-        *excerpt_image,
-        *filter_image;
-
-      RectangleInfo
-        geometry;
-
-      geometry.width=4L;
-      geometry.height=4L;
-      geometry.x=x_offset-1;
-      geometry.y=y_offset-1;
-      excerpt_image=ExcerptImage(image,&geometry,exception);
-      if (excerpt_image == (Image *) NULL)
-        {
-          status=MagickFalse;
-          break;
-        }
-      filter_image=ResizeImage(excerpt_image,1,1,image->filter,exception);
-      excerpt_image=DestroyImage(excerpt_image);
-      if (filter_image == (Image *) NULL)
-        break;
-      filter_view=AcquireVirtualCacheView(filter_image,exception);
-      p=GetCacheViewVirtualPixels(filter_view,0,0,1,1,exception);
-      if (p == (const Quantum *) NULL)
-        status=MagickFalse;
-      else
-        *pixel=(double) GetPixelChannel(image,channel,p);
-      filter_view=DestroyCacheView(filter_view);
-      filter_image=DestroyImage(filter_image);
-      break;
-    }
-#endif
     case IntegerInterpolatePixel:
     {
       p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,1,1,exception);
@@ -5120,57 +5087,6 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
       }
       break;
     }
-#if 0
-    /* deprecated useless and very slow interpolator */
-    case FilterInterpolatePixel:
-    {
-      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
-      {
-        CacheView
-          *filter_view;
-
-        Image
-          *excerpt_source,
-          *filter_source;
-
-        RectangleInfo
-          geometry;
-
-        PixelChannel channel=GetPixelChannelChannel(source,i);
-        PixelTrait traits=GetPixelChannelTraits(source,channel);
-        PixelTrait destination_traits=GetPixelChannelTraits(destination,
-          channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (destination_traits == UndefinedPixelTrait))
-          continue;
-        geometry.width=4L;
-        geometry.height=4L;
-        geometry.x=x_offset-1;
-        geometry.y=y_offset-1;
-        excerpt_source=ExcerptImage(source,&geometry,exception);
-        if (excerpt_source == (Image *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        filter_source=ResizeImage(excerpt_source,1,1,source->filter,exception);
-        excerpt_source=DestroyImage(excerpt_source);
-        if (filter_source == (Image *) NULL)
-          continue;
-        filter_view=AcquireVirtualCacheView(filter_source,exception);
-        p=GetCacheViewVirtualPixels(filter_view,0,0,1,1,exception);
-        if (p == (const Quantum *) NULL)
-          status=MagickFalse;
-        else
-          {
-            SetPixelChannel(destination,channel,p[i],pixel);
-          }
-        filter_view=DestroyCacheView(filter_view);
-        filter_source=DestroyImage(filter_source);
-      }
-      break;
-    }
-#endif
     case IntegerInterpolatePixel:
     {
       p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,1,1,exception);
@@ -5505,8 +5421,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           x_offset--;
           y_offset--;
         }
-      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,(size_t) count,(size_t)
-        count,exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,(size_t) count,
+        (size_t) count,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
@@ -5690,43 +5606,6 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         cx[1]*pixels[13].alpha+cx[2]*pixels[14].alpha+cx[3]*pixels[15].alpha));
       break;
     }
-#if 0
-    /* deprecated useless and very slow interpolator */
-    case FilterInterpolatePixel:
-    {
-      CacheView
-        *filter_view;
-
-      Image
-        *excerpt_image,
-        *filter_image;
-
-      RectangleInfo
-        geometry;
-
-      geometry.width=4L;
-      geometry.height=4L;
-      geometry.x=x_offset-1;
-      geometry.y=y_offset-1;
-      excerpt_image=ExcerptImage(image,&geometry,exception);
-      if (excerpt_image == (Image *) NULL)
-        {
-          status=MagickFalse;
-          break;
-        }
-      filter_image=ResizeImage(excerpt_image,1,1,image->filter,exception);
-      excerpt_image=DestroyImage(excerpt_image);
-      if (filter_image == (Image *) NULL)
-        break;
-      filter_view=AcquireVirtualCacheView(filter_image,exception);
-      p=GetCacheViewVirtualPixels(filter_view,0,0,1,1,exception);
-      if (p != (const Quantum *) NULL)
-        GetPixelInfoPixel(image,p,pixel);
-      filter_view=DestroyCacheView(filter_view);
-      filter_image=DestroyImage(filter_image);
-      break;
-    }
-#endif
     case IntegerInterpolatePixel:
     {
       p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,1,1,exception);
