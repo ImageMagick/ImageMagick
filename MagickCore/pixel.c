@@ -6080,17 +6080,15 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
   if ((p->fuzz == 0.0) && (q->fuzz == 0.0))
     return(IsPixelInfoEquivalent(p,q));
   if (p->fuzz == 0.0)
-    fuzz=MagickMax(q->fuzz,(double) MagickSQ1_2)*MagickMax(q->fuzz,
-      (double) MagickSQ1_2);
+    fuzz=MagickMax(q->fuzz,(double) MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
   else if (q->fuzz == 0.0)
-    fuzz=MagickMax(p->fuzz,(double) MagickSQ1_2)*MagickMax(p->fuzz,
-      (double) MagickSQ1_2);
+    fuzz=MagickMax(p->fuzz,(double) MagickSQ1_2)*MagickMax(p->fuzz,MagickSQ1_2);
   else
-    fuzz=MagickMax(p->fuzz,(double) MagickSQ1_2)*MagickMax(q->fuzz,
-      (double) MagickSQ1_2);
+    fuzz=MagickMax(p->fuzz,(double) MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
   scale=1.0;
   distance=0.0;
-  if ((p->alpha_trait == BlendPixelTrait) || (q->alpha_trait == BlendPixelTrait))
+  if ((p->alpha_trait == BlendPixelTrait) ||
+      (q->alpha_trait == BlendPixelTrait))
     {
       /*
         Transparencies are involved - set alpha distance.
