@@ -367,6 +367,10 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
           (void) SetImageColorspace(destination_image,sRGBColorspace,exception);
         if (LocaleCompare(token,"alpha") == 0)
           (void) SetImageAlpha(destination_image,OpaqueAlpha,exception);
+        if (LocaleCompare(token,"maskR") == 0)
+          destination_image->read_mask=MagickTrue;
+        if (LocaleCompare(token,"maskW") == 0)
+          destination_image->write_mask=MagickTrue;
         if (i >= (ssize_t) GetPixelChannels(destination_image))
           (void) SetPixelMetaChannels(destination_image,(size_t) (i-
             GetPixelChannels(destination_image)+1),exception);
