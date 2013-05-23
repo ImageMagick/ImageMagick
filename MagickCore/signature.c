@@ -542,7 +542,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
           continue;
         pixel=QuantumScale*p[i];
         for (j=0; j < (ssize_t) sizeof(pixel); j++)
-          *q++=(unsigned char) (&pixel)[j];
+          *q++=(unsigned char) ((unsigned char *) &pixel)[j];
       }
       p+=GetPixelChannels(image);
     }
