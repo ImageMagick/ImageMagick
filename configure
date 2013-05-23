@@ -3679,7 +3679,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=12315:12320M
+MAGICK_SVN_REVISION=12315:12337M
 
 
 # Substitute library versioning
@@ -23240,98 +23240,6 @@ $as_echo "#define HAVE_UNSIGNED_LONG_LONG_INT 1" >>confdefs.h
   fi
 
 
-# Float_t and double_t are intended to be the the most efficient type.
-ac_fn_c_check_type "$LINENO" "float_t" "ac_cv_type_float_t" "#include <math.h>
-"
-if test "x$ac_cv_type_float_t" = xyes; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_FLOAT_T 1
-_ACEOF
-
-
-fi
-
-ac_fn_c_check_type "$LINENO" "double_t" "ac_cv_type_double_t" "#include <math.h>
-"
-if test "x$ac_cv_type_double_t" = xyes; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_DOUBLE_T 1
-_ACEOF
-
-
-fi
-
-# The cast to long int works around a bug in the HP C Compiler
-# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
-# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
-# This bug is HP SR number 8606223364.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of float_t" >&5
-$as_echo_n "checking size of float_t... " >&6; }
-if ${ac_cv_sizeof_float_t+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (float_t))" "ac_cv_sizeof_float_t"        "#include <math.h>
-"; then :
-
-else
-  if test "$ac_cv_type_float_t" = yes; then
-     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error 77 "cannot compute sizeof (float_t)
-See \`config.log' for more details" "$LINENO" 5; }
-   else
-     ac_cv_sizeof_float_t=0
-   fi
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_float_t" >&5
-$as_echo "$ac_cv_sizeof_float_t" >&6; }
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define SIZEOF_FLOAT_T $ac_cv_sizeof_float_t
-_ACEOF
-
-
-# The cast to long int works around a bug in the HP C Compiler
-# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
-# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
-# This bug is HP SR number 8606223364.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of double_t" >&5
-$as_echo_n "checking size of double_t... " >&6; }
-if ${ac_cv_sizeof_double_t+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (double_t))" "ac_cv_sizeof_double_t"        "#include <math.h>
-"; then :
-
-else
-  if test "$ac_cv_type_double_t" = yes; then
-     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error 77 "cannot compute sizeof (double_t)
-See \`config.log' for more details" "$LINENO" 5; }
-   else
-     ac_cv_sizeof_double_t=0
-   fi
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_double_t" >&5
-$as_echo "$ac_cv_sizeof_double_t" >&6; }
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define SIZEOF_DOUBLE_T $ac_cv_sizeof_double_t
-_ACEOF
-
-
-
 # Get size of float, double and long double for comparaison.
 # The cast to long int works around a bug in the HP C Compiler
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
@@ -23396,39 +23304,6 @@ $as_echo "$ac_cv_sizeof_double" >&6; }
 
 cat >>confdefs.h <<_ACEOF
 #define SIZEOF_DOUBLE $ac_cv_sizeof_double
-_ACEOF
-
-
-# The cast to long int works around a bug in the HP C Compiler
-# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
-# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
-# This bug is HP SR number 8606223364.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of long double" >&5
-$as_echo_n "checking size of long double... " >&6; }
-if ${ac_cv_sizeof_long_double+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (long double))" "ac_cv_sizeof_long_double"        "$ac_includes_default"; then :
-
-else
-  if test "$ac_cv_type_long_double" = yes; then
-     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error 77 "cannot compute sizeof (long double)
-See \`config.log' for more details" "$LINENO" 5; }
-   else
-     ac_cv_sizeof_long_double=0
-   fi
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_long_double" >&5
-$as_echo "$ac_cv_sizeof_long_double" >&6; }
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define SIZEOF_LONG_DOUBLE $ac_cv_sizeof_long_double
 _ACEOF
 
 
@@ -23712,111 +23587,6 @@ $as_echo "$ac_cv_sizeof_unsigned_long_long" >&6; }
 
 cat >>confdefs.h <<_ACEOF
 #define SIZEOF_UNSIGNED_LONG_LONG $ac_cv_sizeof_unsigned_long_long
-_ACEOF
-
-
-
-# Obtain size of off_t and define as SIZEOF_OFF_T
-# The cast to long int works around a bug in the HP C Compiler
-# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
-# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
-# This bug is HP SR number 8606223364.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of off_t" >&5
-$as_echo_n "checking size of off_t... " >&6; }
-if ${ac_cv_sizeof_off_t+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (off_t))" "ac_cv_sizeof_off_t"        "$ac_includes_default"; then :
-
-else
-  if test "$ac_cv_type_off_t" = yes; then
-     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error 77 "cannot compute sizeof (off_t)
-See \`config.log' for more details" "$LINENO" 5; }
-   else
-     ac_cv_sizeof_off_t=0
-   fi
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_off_t" >&5
-$as_echo "$ac_cv_sizeof_off_t" >&6; }
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define SIZEOF_OFF_T $ac_cv_sizeof_off_t
-_ACEOF
-
-
-
-# Obtain size of size_t and define as SIZEOF_SIZE_T
-# The cast to long int works around a bug in the HP C Compiler
-# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
-# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
-# This bug is HP SR number 8606223364.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of size_t" >&5
-$as_echo_n "checking size of size_t... " >&6; }
-if ${ac_cv_sizeof_size_t+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (size_t))" "ac_cv_sizeof_size_t"        "$ac_includes_default"; then :
-
-else
-  if test "$ac_cv_type_size_t" = yes; then
-     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error 77 "cannot compute sizeof (size_t)
-See \`config.log' for more details" "$LINENO" 5; }
-   else
-     ac_cv_sizeof_size_t=0
-   fi
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_size_t" >&5
-$as_echo "$ac_cv_sizeof_size_t" >&6; }
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define SIZEOF_SIZE_T $ac_cv_sizeof_size_t
-_ACEOF
-
-
-
-# Obtain size of ssize_t and define as SIZEOF_SSIZE_T
-# The cast to long int works around a bug in the HP C Compiler
-# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
-# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
-# This bug is HP SR number 8606223364.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of ssize_t" >&5
-$as_echo_n "checking size of ssize_t... " >&6; }
-if ${ac_cv_sizeof_ssize_t+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (ssize_t))" "ac_cv_sizeof_ssize_t"        "$ac_includes_default"; then :
-
-else
-  if test "$ac_cv_type_ssize_t" = yes; then
-     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error 77 "cannot compute sizeof (ssize_t)
-See \`config.log' for more details" "$LINENO" 5; }
-   else
-     ac_cv_sizeof_ssize_t=0
-   fi
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_ssize_t" >&5
-$as_echo "$ac_cv_sizeof_ssize_t" >&6; }
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define SIZEOF_SSIZE_T $ac_cv_sizeof_ssize_t
 _ACEOF
 
 

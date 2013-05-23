@@ -230,9 +230,7 @@
 /* #undef HAVE_DOPRNT */
 
 /* Define to 1 if the system has the type `double_t'. */
-#ifndef MAGICKCORE_HAVE_DOUBLE_T
-#define MAGICKCORE_HAVE_DOUBLE_T 1
-#endif
+/* #undef HAVE_DOUBLE_T */
 
 /* Define to 1 if you have the <errno.h> header file. */
 #ifndef MAGICKCORE_HAVE_ERRNO_H
@@ -255,9 +253,7 @@
 #endif
 
 /* Define to 1 if the system has the type `float_t'. */
-#ifndef MAGICKCORE_HAVE_FLOAT_T
-#define MAGICKCORE_HAVE_FLOAT_T 1
-#endif
+/* #undef HAVE_FLOAT_T */
 
 /* Define to 1 if you have the `floor' function. */
 #ifndef MAGICKCORE_HAVE_FLOOR
@@ -1294,9 +1290,7 @@
 #endif
 
 /* The size of `double_t', as computed by sizeof. */
-#ifndef MAGICKCORE_SIZEOF_DOUBLE_T
-#define MAGICKCORE_SIZEOF_DOUBLE_T 8
-#endif
+/* #undef SIZEOF_DOUBLE_T */
 
 /* The size of `float', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_FLOAT
@@ -1304,19 +1298,13 @@
 #endif
 
 /* The size of `float_t', as computed by sizeof. */
-#ifndef MAGICKCORE_SIZEOF_FLOAT_T
-#define MAGICKCORE_SIZEOF_FLOAT_T 4
-#endif
+/* #undef SIZEOF_FLOAT_T */
 
 /* The size of `long double', as computed by sizeof. */
-#ifndef MAGICKCORE_SIZEOF_LONG_DOUBLE
-#define MAGICKCORE_SIZEOF_LONG_DOUBLE 16
-#endif
+/* #undef SIZEOF_LONG_DOUBLE */
 
 /* The size of `off_t', as computed by sizeof. */
-#ifndef MAGICKCORE_SIZEOF_OFF_T
-#define MAGICKCORE_SIZEOF_OFF_T 8
-#endif
+/* #undef SIZEOF_OFF_T */
 
 /* The size of `signed int', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_SIGNED_INT
@@ -1339,14 +1327,10 @@
 #endif
 
 /* The size of `size_t', as computed by sizeof. */
-#ifndef MAGICKCORE_SIZEOF_SIZE_T
-#define MAGICKCORE_SIZEOF_SIZE_T 8
-#endif
+/* #undef SIZEOF_SIZE_T */
 
 /* The size of `ssize_t', as computed by sizeof. */
-#ifndef MAGICKCORE_SIZEOF_SSIZE_T
-#define MAGICKCORE_SIZEOF_SSIZE_T 8
-#endif
+/* #undef SIZEOF_SSIZE_T */
 
 /* The size of `unsigned int', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_UNSIGNED_INT
@@ -1432,7 +1416,9 @@
 #endif
 
 /* Define if you have WEBP library */
-/* #undef WEBP_DELEGATE */
+#ifndef MAGICKCORE_WEBP_DELEGATE
+#define MAGICKCORE_WEBP_DELEGATE 1
+#endif
 
 /* Define to use the Windows GDI32 library */
 /* #undef WINGDI32_DELEGATE */
