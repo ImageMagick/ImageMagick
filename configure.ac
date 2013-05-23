@@ -965,15 +965,6 @@ AC_CHECK_SIZEOF(signed long long)
 # supported then the value defined is zero.
 AC_CHECK_SIZEOF(unsigned long long)
 
-# Obtain size of off_t and define as SIZEOF_OFF_T
-AC_CHECK_SIZEOF(off_t)
-
-# Obtain size of size_t and define as SIZEOF_SIZE_T
-AC_CHECK_SIZEOF(size_t)
-
-# Obtain size of ssize_t and define as SIZEOF_SSIZE_T
-AC_CHECK_SIZEOF(ssize_t)
-
 # Obtain size of an unsigned int pointer and define as SIZEOF_UNSIGNED_INTP
 AC_CHECK_SIZEOF(unsigned int*)
 
