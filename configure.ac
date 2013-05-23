@@ -934,16 +934,9 @@ AC_TYPE_UINTMAX_T
 AC_TYPE_UINTPTR_T
 AC_TYPE_UNSIGNED_LONG_LONG_INT
 
-# Float_t and double_t are intended to be the the most efficient type.
-AC_CHECK_TYPES([float_t], [], [], [[#include <math.h>]])
-AC_CHECK_TYPES([double_t], [], [], [[#include <math.h>]])
-AC_CHECK_SIZEOF([float_t], [], [[#include <math.h>]])
-AC_CHECK_SIZEOF([double_t], [], [[#include <math.h>]])
-
 # Get size of float, double and long double for comparaison.
 AC_CHECK_SIZEOF([float])
 AC_CHECK_SIZEOF([double])
-AC_CHECK_SIZEOF([long double])
 
 # Obtain size of an 'signed short' and define as SIZEOF_SIGNED_SHORT
 AC_CHECK_SIZEOF(signed short)
