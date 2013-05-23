@@ -230,7 +230,9 @@
 /* #undef HAVE_DOPRNT */
 
 /* Define to 1 if the system has the type `double_t'. */
-/* #undef HAVE_DOUBLE_T */
+#ifndef MAGICKCORE_HAVE_DOUBLE_T
+#define MAGICKCORE_HAVE_DOUBLE_T 1
+#endif
 
 /* Define to 1 if you have the <errno.h> header file. */
 #ifndef MAGICKCORE_HAVE_ERRNO_H
@@ -253,7 +255,9 @@
 #endif
 
 /* Define to 1 if the system has the type `float_t'. */
-/* #undef HAVE_FLOAT_T */
+#ifndef MAGICKCORE_HAVE_FLOAT_T
+#define MAGICKCORE_HAVE_FLOAT_T 1
+#endif
 
 /* Define to 1 if you have the `floor' function. */
 #ifndef MAGICKCORE_HAVE_FLOOR
@@ -1290,7 +1294,9 @@
 #endif
 
 /* The size of `double_t', as computed by sizeof. */
-/* #undef SIZEOF_DOUBLE_T */
+#ifndef MAGICKCORE_SIZEOF_DOUBLE_T
+#define MAGICKCORE_SIZEOF_DOUBLE_T 8
+#endif
 
 /* The size of `float', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_FLOAT
@@ -1298,13 +1304,19 @@
 #endif
 
 /* The size of `float_t', as computed by sizeof. */
-/* #undef SIZEOF_FLOAT_T */
+#ifndef MAGICKCORE_SIZEOF_FLOAT_T
+#define MAGICKCORE_SIZEOF_FLOAT_T 4
+#endif
 
 /* The size of `long double', as computed by sizeof. */
-/* #undef SIZEOF_LONG_DOUBLE */
+#ifndef MAGICKCORE_SIZEOF_LONG_DOUBLE
+#define MAGICKCORE_SIZEOF_LONG_DOUBLE 16
+#endif
 
 /* The size of `off_t', as computed by sizeof. */
-/* #undef SIZEOF_OFF_T */
+#ifndef MAGICKCORE_SIZEOF_OFF_T
+#define MAGICKCORE_SIZEOF_OFF_T 8
+#endif
 
 /* The size of `signed int', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_SIGNED_INT
@@ -1327,10 +1339,14 @@
 #endif
 
 /* The size of `size_t', as computed by sizeof. */
-/* #undef SIZEOF_SIZE_T */
+#ifndef MAGICKCORE_SIZEOF_SIZE_T
+#define MAGICKCORE_SIZEOF_SIZE_T 8
+#endif
 
 /* The size of `ssize_t', as computed by sizeof. */
-/* #undef SIZEOF_SSIZE_T */
+#ifndef MAGICKCORE_SIZEOF_SSIZE_T
+#define MAGICKCORE_SIZEOF_SSIZE_T 8
+#endif
 
 /* The size of `unsigned int', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_UNSIGNED_INT
