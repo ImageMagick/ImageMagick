@@ -4,6 +4,8 @@
 2013-05-20  6.8.5-8 Cristy  <quetzlzacatenango@image...>
   * The -white-threshold option is symetrical with -black-threshold (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23441);
+  * Fix multi-line PNM comments (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23442).
 
 2013-05-20  6.8.5-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-7, SVN revision 12310.
