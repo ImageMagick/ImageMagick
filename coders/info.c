@@ -203,7 +203,6 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
         if (text != (char *) NULL)
           {
             (void) WriteBlobString(image,text);
-            (void) WriteBlobString(image,"\n");
             text=DestroyString(text);
           }
       }
