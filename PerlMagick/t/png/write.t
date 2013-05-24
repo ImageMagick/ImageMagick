@@ -19,7 +19,7 @@ chdir 't/png' || die 'Cd failed';
 # 
 print( "1-bit grayscale PNG ...\n" );
 testReadWrite( 'input_bw.png', 'output_bw.png', q/quality=>95/,
-  'b0ed82ae119a2baa1e8bf714fab26415708c47b8f07771fb5506ff101a550dbc');
+  '5a5b600153abaaf82dc9086272d01bedc4201d14b614c18cb4e9c6d1581c9023');
 
 #
 # 2) Test monochrome image
@@ -28,7 +28,7 @@ testReadWrite( 'input_bw.png', 'output_bw.png', q/quality=>95/,
 print( "8-bit grayscale PNG ...\n" );
 testReadWrite( 'input_mono.png',
   'output_mono.png', '',
-  '1502b4e5747ed8805fe9103f56f9c4097f60440b3a867fa6b1ae0ba81f12a90d');
+  'a8d79029f6ced36f904659dda5ea67a6bab5e602b1033aa29c7f1b45b35c1178');
 #
 # 3) Test 16-bit Portable Network Graphics
 # 
@@ -38,7 +38,7 @@ testReadWrite( 'input_16.png',
   'output_16.png',
   q/quality=>55/,
   'd4bed86abb1849f69f1a5afb7c5cf8798e8192ba228357f189c277198c14f5a0',
-  '07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541' );
+  '4036b56c00d731a2865470815eabc177dc158af2abacb34ef95c7e716ec2da60' );
 #
 # 4) Test pseudocolor image
 #
@@ -47,7 +47,7 @@ print( "8-bit indexed-color PNG ...\n" );
 testReadWrite( 'input_256.png',
   'output_256.png',
   q/quality=>54/,
-  '4404bce58d768dda28165b81ad6618e6fd6553996a44e62486f4d46c6ac7e593' );
+  '26687d6be46b4e1ca5201a47caa7dad660245c5f4517835ab6e19f2f84fc4a03' );
 #
 # 5) Test truecolor image
 #
@@ -56,7 +56,7 @@ print( "24-bit Truecolor PNG ...\n" );
 testReadWrite( 'input_truecolor.png',
   'output_truecolor.png',
   q/quality=>55/,
-  '610257576e33bcbf79aa1edb7f56ad2b5cfa1d9b7413db632d0b29f412a7e194' );
+  '76f43f03e51c8608bfca7ff96d3936148ad855782968a017ea03cccbeebff64d' );
 #
 # 6) Test Multiple-image Network Graphics
 #
@@ -65,4 +65,4 @@ print( "MNG with 24-bit Truecolor PNGs ...\n" );
 testReadWrite( 'input.mng',
   'output.mng',
   q/quality=>55/,
-  'ece756f9de4c618819cf88c8561630518a9cf39ce09a81bf7c78445d9f00e09d' );
+  '5a883e67c29d7bb27897ec7a3f3cb3fb0330fb43aef4360e8314503cb37fae09' );

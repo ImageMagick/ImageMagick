@@ -18,7 +18,7 @@ chdir 't/zlib' || die 'Cd failed';
 # 1) Test reading Zip compressed MIFF
 # 
 testRead( 'input.miff',
-  '6a4a257921582768b774aeeac549b7c0c0b51f665395eddf921cce53a0ad2a33' );
+  'f7b3db46d6f696ea8392f0ad0be945dd502a806e2c1e9c082efef517191758f7' );
 
 #
 # 3) Test reading Zip stream-compressed MIFF (.gz extension)
@@ -26,4 +26,4 @@ testRead( 'input.miff',
 print("Reading Zip stream-compressed MIFF (.gz extension) ...\n");
 ++$test;
 testRead( 'input.miff.gz',
-  '6a4a257921582768b774aeeac549b7c0c0b51f665395eddf921cce53a0ad2a33' );
+  'f7b3db46d6f696ea8392f0ad0be945dd502a806e2c1e9c082efef517191758f7' );
