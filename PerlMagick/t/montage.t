@@ -29,7 +29,7 @@ chdir 't' || die 'Cd failed';
 #
 testMontage( q//,
   q/background=>'#696e7e'/,
-  '4aac8269bd31defb14971e475d23e0774c5fc929a60babddf8c3ecbcb01bfabd');
+  'd29f905749426e5491bbd8c4f58b7c14dc1a72250632b7e7b542910e0cbb7c77');
 
 #
 # 2) Test Center gravity
@@ -38,7 +38,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'Center'/,
-  'a1825dab28dcb3f3fad641a2ec688199ad4c43253f5ea3fb13fafffe49a74818');
+  '21ab4077722e45db67c945b2364cfc1365d3f939d57fc6fb2c7b77f161381c2e');
 
 #
 # 3) Test NorthWest gravity
@@ -47,7 +47,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'NorthWest'/,
-  'd41d7fb9cf59ab0d8f86545b4561fd267f555c0ab434a23d9b4d52e7b55fe64b');
+  'a518ad6aa1c3ad2b117864525d610481c1b3b9ead2c624c773fb427f85ef897b');
 
 #
 # 4) Test North gravity
@@ -56,7 +56,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'North'/,
-  '0c04c47f966d7769e99f99b0be4d8d1679e42a71543ce24efd2296afa9491073');
+  '4126725283eb699545d755a6b30c5fc6cee9ac16a1e8310cdbbedcbd054bebf6');
 
 #
 # 5) Test NorthEast gravity
@@ -65,7 +65,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'NorthEast'/,
-  '7110c0432bfd90f2173e547dbefe4c693757e7bf6bf731c8a97f72c71c723830');
+  'e144c8d0da144864063753903838a286d46da56ca9ea0ce0b6080f84c6feac6c');
 
 #
 # 6) Test West gravity
@@ -74,7 +74,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'West'/,
-  '2a6f10fc376136ec74d53d7dd52c60e420edf851548377868bfb7f47d0e8a1e6');
+  '67286cf1ed572e836f6b67c5d733a039bba9e6a7ef18d25397e46c17223b206f');
 
 #
 # 7) Test East gravity
@@ -83,7 +83,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'East'/,
-  '6a1517b10841950912b5a4e9fb852559268a3c64e86d6b391024c0e3ea7cc3e3');
+  'decf855bf26dfc3f7401769a09e302d8bac53cba6c27fd456cdfbc35e494be01');
 
 #
 # 8) Test SouthWest gravity
@@ -92,7 +92,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'SouthWest'/,
-  '6df59cabd0ccb84da56cf4a13516cfd8fc0bc215c438c8ee5bdbe6db82d52830');
+  '848fda241866b1a191ab4794b42272b5756dbeacac5b58ef5227a34a8c72817d');
 
 #
 # 9) Test South gravity
@@ -101,7 +101,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'South'/,
-  '227064c0fdd574d6c659a71bc24591d67fd604b4bb44c5466774446d9c7592f1');
+  'f5cccb291b3bea8cb62e5cd7a6c8e154eedfd8e12c20409a8e663231e62411c4');
 
 #
 # 10) Test SouthEast gravity
@@ -110,7 +110,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'SouthEast'/,
-  '1b1eadf70f68f9ddea212b75d68d3109fcafe4e7db988cb90e148ca33be4691f');
+  'a19748d933fefe536b29b8ba98ce0024e3f2dc98102a1f56307a229bc3042f1c');
 
 #
 # 11) Test Framed Montage
@@ -122,8 +122,8 @@ testMontage( q//,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+3+3>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  'a2b51a92bfa701b5121930caba4c39fca5de2d5d539570667b6a14aed1a1d0bd',
-  'a2b51a92bfa701b5121930caba4c39fca5de2d5d539570667b6a14aed1a1d0bd',
+  'be7fa3545e2d1b3966bcf145680460593c4aae665e58bcffba7cbe5c189998b5',
+  'be7fa3545e2d1b3966bcf145680460593c4aae665e58bcffba7cbe5c189998b5',
   '72a7587a058c71cd62226e59b64c335190a37d7dd990d68534cf05df61084783');
 
 #
@@ -133,8 +133,8 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
-  'e4e2f293481151f49888cca594b38beaa37e168ba1efa6a590e166521490b338',
-  'e4e2f293481151f49888cca594b38beaa37e168ba1efa6a590e166521490b338',
+  'f33ede0769eb18a0c6bef1fc0dbf9facfda5937f7cd0b5a200a7b4090c907af7',
+  'f33ede0769eb18a0c6bef1fc0dbf9facfda5937f7cd0b5a200a7b4090c907af7',
   '2d9b191eea778b1d1d98f9d997558f96e6f6d273a1d92787c9f70866b4382cd4');
 
 #
@@ -144,9 +144,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
-  'e4e2f293481151f49888cca594b38beaa37e168ba1efa6a590e166521490b338',
-  'e4e2f293481151f49888cca594b38beaa37e168ba1efa6a590e166521490b338',
-  '5210498e650a30748341b7b93da4fefe1707a900a6914d63df03cf4a309feb3d');
+  '141676dc76f19de34180b7939de27db0226e4c1940fed4fa594ce4d0864eef24');
 
 #
 # 14) Test Un-bordered, Un-framed Montage
@@ -155,8 +153,8 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', mode=>'Unframe',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  '2b108aac04c0d339dbae55161a050dd788d2fd09a35f2ad5a0810b7c546ada44',
-  '2b108aac04c0d339dbae55161a050dd788d2fd09a35f2ad5a0810b7c546ada44',
+  '245f9fbee901f99e08458aad797ade92ea17e68b230212510ad2eca96e169e39',
+  '245f9fbee901f99e08458aad797ade92ea17e68b230212510ad2eca96e169e39',
   'ab07c5591848f1aa8bfffc46c094be40cf662e18f68b19229f1f7e9d9eec4692');
 
 #
@@ -166,8 +164,8 @@ testMontage( q//,
 testMontage( q/bordercolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', mode=>'Unframe',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
-  'eb2db2e5e0558563d814da22c8ca9be993a3217744eaba53d6921b223c6e6f3f',
-  'eb2db2e5e0558563d814da22c8ca9be993a3217744eaba53d6921b223c6e6f3f',
+  '611833bd0e13681a82d34c4c40b2a263bf245ac879de240114df874f9eaca7f0',
+  '611833bd0e13681a82d34c4c40b2a263bf245ac879de240114df874f9eaca7f0',
   '65bb1cd11a0dbbd90ca46b07ce58b2ba5fcfadc0869356e5a08eda53510e0126');
 
 #
@@ -177,8 +175,8 @@ testMontage( q/bordercolor=>'red'/,
 testMontage( q/bordercolor=>'red'/, 
   q/ tile=>'4x4', geometry=>'90x80+6+6>', mode=>'UnFrame',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
-  'eb2db2e5e0558563d814da22c8ca9be993a3217744eaba53d6921b223c6e6f3f',
-  'eb2db2e5e0558563d814da22c8ca9be993a3217744eaba53d6921b223c6e6f3f',
+  '611833bd0e13681a82d34c4c40b2a263bf245ac879de240114df874f9eaca7f0',
+  '611833bd0e13681a82d34c4c40b2a263bf245ac879de240114df874f9eaca7f0',
   '65bb1cd11a0dbbd90ca46b07ce58b2ba5fcfadc0869356e5a08eda53510e0126');
 
 #
@@ -188,8 +186,8 @@ testMontage( q/bordercolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e',  tile=>'16x1', geometry=>'90x80+0+0>', mode=>'Unframe',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  '26ba497f978db17009459907d6634abe0084f4dc26f2edc4435e15087a5a7918',
-  '26ba497f978db17009459907d6634abe0084f4dc26f2edc4435e15087a5a7918',
+  '49bf08b9ae34c7c8acee15b123c29e414ae6fb9bdf2a15dbdd3a33a753b8e7ff',
+  '49bf08b9ae34c7c8acee15b123c29e414ae6fb9bdf2a15dbdd3a33a753b8e7ff',
   'c42d5f2bef5f30167f02d6ba85504ee82e06c16d9404bc6fc0f6e75c0f8f53e9');
 
 #

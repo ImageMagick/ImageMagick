@@ -361,6 +361,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (LocaleCompare(keyword,"endhdr") == 0)
             break;
           while (isspace((int) ((unsigned char) c)) != 0)
+            c=ReadBlobByte(image);
           p=value;
           while (isalnum(c) || (c == '_'))
           {
@@ -445,7 +446,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM image to pixel packets.
         */
-        )(void) SetImageColorspace(image,GRAYColorspace,exception);
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
@@ -1157,7 +1158,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PFM raster image to pixel packets.
         */
         if (format == 'f')
-          SetImageColorspace(image,GRAYColorspace,exception);
+          (void) SetImageColorspace(image,GRAYColorspace,exception);
         quantum_type=format == 'f' ? GrayQuantum : RGBQuantum;
         image->endian=quantum_scale < 0.0 ? LSBEndian : MSBEndian;
         image->depth=32;
