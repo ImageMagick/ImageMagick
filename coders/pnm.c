@@ -148,69 +148,70 @@ static inline ssize_t ConstrainPixel(Image *image,const ssize_t offset,
   return(offset);
 }
 
-static size_t PNMInteger(Image *image,const unsigned int base,
-  ExceptionInfo *exception)
+static void PNMComment(Image *image,ExceptionInfo *exception)
 {
-  char
-    *comment;
-
   int
     c;
+
+  char
+    *comment;
 
   register char
     *p;
 
   size_t
-    extent,
+    extent;
+
+  /*
+    Read comment.
+  */
+  comment=AcquireString(GetImageProperty(image,"comment",exception));
+  extent=strlen(comment);
+  p=comment+strlen(comment);
+  for (c='#'; (c != EOF) && (c != (int) '\n'); p++)
+  {
+    if ((size_t) (p-comment+1) >= extent)
+      {
+        extent<<=1;
+        comment=(char *) ResizeQuantumMemory(comment,extent+MaxTextExtent,
+          sizeof(*comment));
+        if (comment == (char *) NULL)
+          break;
+        p=comment+strlen(comment);
+      }
+    c=ReadBlobByte(image);
+    if (c != EOF)
+      {
+        *p=(char) c;
+        *(p+1)='\0';
+      }
+  }
+  if (comment == (char *) NULL)
+    return;
+  (void) SetImageProperty(image,"comment",comment,exception);
+  comment=DestroyString(comment);
+}
+
+static size_t PNMInteger(Image *image,const unsigned int base,
+  ExceptionInfo *exception)
+{
+  int
+    c;
+
+  size_t
     value;
 
   /*
     Skip any leading whitespace.
   */
-  extent=MaxTextExtent;
-  comment=(char *) NULL;
-  p=comment;
   do
   {
     c=ReadBlobByte(image);
     if (c == EOF)
       return(0);
     if (c == (int) '#')
-      {
-        /*
-          Read comment.
-        */
-        if (comment == (char *) NULL)
-          comment=AcquireString((char *) NULL);
-        p=comment+strlen(comment);
-        for ( ; (c != EOF) && (c != (int) '\n'); p++)
-        {
-          if ((size_t) (p-comment+1) >= extent)
-            {
-              extent<<=1;
-              comment=(char *) ResizeQuantumMemory(comment,extent+MaxTextExtent,
-                sizeof(*comment));
-              if (comment == (char *) NULL)
-                break;
-              p=comment+strlen(comment);
-            }
-          c=ReadBlobByte(image);
-          if (c != (int) '\n')
-            {
-              *p=(char) c;
-              *(p+1)='\0';
-            }
-        }
-        if (comment == (char *) NULL)
-          return(0);
-        continue;
-      }
+      PNMComment(image,exception);
   } while (isdigit(c) == MagickFalse);
-  if (comment != (char *) NULL)
-    {
-      (void) SetImageProperty(image,"comment",comment,exception);
-      comment=DestroyString(comment);
-    }
   if (base == 2)
     return((size_t) (c-(int) '0'));
   /*
@@ -344,8 +345,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Comment.
               */
-              while ((c != EOF) && (c != '\n'))
-                c=ReadBlobByte(image);
+              PNMComment(image,exception);
+              c=ReadBlobByte(image);
               while (isspace((int) ((unsigned char) c)) != 0)
                 c=ReadBlobByte(image);
             }
@@ -360,7 +361,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (LocaleCompare(keyword,"endhdr") == 0)
             break;
           while (isspace((int) ((unsigned char) c)) != 0)
-            c=ReadBlobByte(image);
           p=value;
           while (isalnum(c) || (c == '_'))
           {
@@ -383,23 +383,23 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(value,"BLACKANDWHITE") == 0)
                 {
-                  SetImageColorspace(image,GRAYColorspace,exception);
+                  (void) SetImageColorspace(image,GRAYColorspace,exception);
                   quantum_type=GrayQuantum;
                 }
               if (LocaleCompare(value,"BLACKANDWHITE_ALPHA") == 0)
                 {
-                  SetImageColorspace(image,GRAYColorspace,exception);
+                  (void) SetImageColorspace(image,GRAYColorspace,exception);
                   image->alpha_trait=BlendPixelTrait;
                   quantum_type=GrayAlphaQuantum;
                 }
               if (LocaleCompare(value,"GRAYSCALE") == 0)
                 {
                   quantum_type=GrayQuantum;
-                  SetImageColorspace(image,GRAYColorspace,exception);
+                  (void) SetImageColorspace(image,GRAYColorspace,exception);
                 }
               if (LocaleCompare(value,"GRAYSCALE_ALPHA") == 0)
                 {
-                  SetImageColorspace(image,GRAYColorspace,exception);
+                  (void) SetImageColorspace(image,GRAYColorspace,exception);
                   image->alpha_trait=BlendPixelTrait;
                   quantum_type=GrayAlphaQuantum;
                 }
@@ -410,12 +410,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (LocaleCompare(value,"CMYK") == 0)
                 {
-                  SetImageColorspace(image,CMYKColorspace,exception);
+                  (void) SetImageColorspace(image,CMYKColorspace,exception);
                   quantum_type=CMYKQuantum;
                 }
               if (LocaleCompare(value,"CMYK_ALPHA") == 0)
                 {
-                  SetImageColorspace(image,CMYKColorspace,exception);
+                  (void) SetImageColorspace(image,CMYKColorspace,exception);
                   image->alpha_trait=BlendPixelTrait;
                   quantum_type=CMYKAQuantum;
                 }
@@ -445,7 +445,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM image to pixel packets.
         */
-        SetImageColorspace(image,GRAYColorspace,exception);
+        )(void) SetImageColorspace(image,GRAYColorspace,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
@@ -484,7 +484,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM image to pixel packets.
         */
-        SetImageColorspace(image,GRAYColorspace,exception);
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
         scale=(Quantum *) NULL;
         if (max_value != (1U*QuantumRange))
           {
@@ -603,7 +603,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM raw image to pixel packets.
         */
-        SetImageColorspace(image,GRAYColorspace,exception);
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
         quantum_type=GrayQuantum;
         if (image->storage_class == PseudoClass)
           quantum_type=IndexQuantum;
@@ -678,7 +678,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM raw image to pixel packets.
         */
-        SetImageColorspace(image,GRAYColorspace,exception);
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
         range=GetQuantumRange(image->depth);
         quantum_type=GrayQuantum;
         extent=(image->depth <= 8 ? 1 : 2)*image->columns;
@@ -1542,9 +1542,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         for (p=value; *p != '\0'; p++)
         {
           (void) WriteBlobByte(image,(unsigned char) *p);
-          if ((*p == '\r') && (*(p+1) != '\0'))
-            (void) WriteBlobByte(image,'#');
-          if ((*p == '\n') && (*(p+1) != '\0'))
+          if ((*p == '\n') || (*p == '\r'))
             (void) WriteBlobByte(image,'#');
         }
         (void) WriteBlobByte(image,'\n');
