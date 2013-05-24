@@ -1,3 +1,6 @@
+2013-05-23  6.8.5-8 Glenn Randers-Pehrson <glennrp@image...>
+  * Stopped a "-fsanitize-address" warning in the JNG coder.
+
 2013-05-20  6.8.5-8 Cristy  <quetzlzacatenango@image...>
   * The -white-threshold option is symetrical with -black-threshold (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23441);
