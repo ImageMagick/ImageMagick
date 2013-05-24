@@ -3521,14 +3521,14 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
 
           for (i=0; i < (ssize_t) GetPixelChannels(morph_image); i++)
           {
-            PixelChannel channel=GetPixelChannelChannel(image,i);
-            PixelTrait traits=GetPixelChannelTraits(image,channel);
-            PixelTrait morph_traits=GetPixelChannelTraits(morph_image,channel);
+            PixelChannel channel=GetPixelChannelChannel(morph_image,i);
+            PixelTrait traits=GetPixelChannelTraits(morph_image,channel);
+            PixelTrait morph_traits=GetPixelChannelTraits(morph_images,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (morph_traits == UndefinedPixelTrait))
               continue;
             if (((morph_traits & CopyPixelTrait) != 0) ||
-                (GetPixelReadMask(image,p) == 0))
+                (GetPixelReadMask(morph_images,p) == 0))
               {
                 SetPixelChannel(morph_image,channel,p[i],q);
                 continue;
