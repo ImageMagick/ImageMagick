@@ -3716,7 +3716,7 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+        q[i]=PlasmaPixel(random_info,(u[i]+v[i])/2.0,plasma);
       }
       (void) SyncCacheViewAuthenticPixels(image_view,exception);
       if (segment->x1 != segment->x2)
@@ -3739,7 +3739,7 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
             PixelTrait traits=GetPixelChannelTraits(image,channel);
             if (traits == UndefinedPixelTrait)
               continue;
-            q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+            q[i]=PlasmaPixel(random_info,(u[i]+v[i])/2.0,plasma);
           }
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
         }
@@ -3766,7 +3766,7 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
             PixelTrait traits=GetPixelChannelTraits(image,channel);
             if (traits == UndefinedPixelTrait)
               continue;
-            q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+            q[i]=PlasmaPixel(random_info,(u[i]+v[i])/2.0,plasma);
           }
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
         }
@@ -3790,7 +3790,7 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
             PixelTrait traits=GetPixelChannelTraits(image,channel);
             if (traits == UndefinedPixelTrait)
               continue;
-            q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+            q[i]=PlasmaPixel(random_info,(u[i]+v[i])/2.0,plasma);
           }
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
         }
@@ -3816,7 +3816,7 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+        q[i]=PlasmaPixel(random_info,(u[i]+v[i])/2.0,plasma);
       }
       (void) SyncCacheViewAuthenticPixels(image_view,exception);
     }
