@@ -647,7 +647,7 @@ void Magick::Image::colorMatrix (const size_t order_,
     order_*sizeof(*kernel_info->values));
   if (kernel_info->values != (MagickRealType *) NULL)
     {
-      for (ssize_t i=0; i < (order_*order_); i++)
+      for (ssize_t i=0; i < (ssize_t) (order_*order_); i++)
         kernel_info->values[i]=color_matrix_[i];
       MagickCore::Image* newImage =
         ColorMatrixImage( image(), kernel_info, &exceptionInfo );
@@ -769,7 +769,7 @@ void Magick::Image::convolve ( const size_t order_,
     order_*sizeof(*kernel_info->values));
   if (kernel_info->values != (MagickRealType *) NULL)
     {
-      for (ssize_t i=0; i < (order_*order_); i++)
+      for (ssize_t i=0; i < (ssize_t) (order_*order_); i++)
         kernel_info->values[i]=kernel_[i];
       MagickCore::Image* newImage =
         ConvolveImage ( image(), kernel_info, &exceptionInfo );
