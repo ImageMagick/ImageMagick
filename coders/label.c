@@ -131,9 +131,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   label=GetImageProperty(image,"label",exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=ConstantString(label);
+  status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if ((image->columns == 0) && (image->rows == 0))
     {
-      status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
       image->columns=(size_t) (metrics.width+draw_info->stroke_width+0.5);
       image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
     }
