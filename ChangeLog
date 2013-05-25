@@ -1,3 +1,6 @@
+2013-05-60  6.8.5-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.5-8, SVN revision 12362.
+
 2013-05-23  6.8.5-8 Glenn Randers-Pehrson <glennrp@image...>
   * Stopped a "-fsanitize-address" warning in the JNG coder.
 
