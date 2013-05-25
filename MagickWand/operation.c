@@ -833,7 +833,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("features",option+1) == 0)
         {
           (void) SetImageOption(_image_info,"identify:features",
-                    ArgBooleanString);
+            ArgBooleanString);
           if (IfSetOption)
             (void) SetImageArtifact(_image,"verbose","true");
           break;
@@ -2467,16 +2467,17 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             *text;
 
           format=GetImageOption(_image_info,"format");
-          if (format == (char *) NULL) {
-            (void) IdentifyImage(_image,stdout,_image_info->verbose,_exception);
-            break;
-          }
+          if (format == (char *) NULL)
+            {
+              (void) IdentifyImage(_image,stdout,_image_info->verbose,
+                _exception);
+              break;
+            }
           text=InterpretImageProperties(_image_info,_image,format,_exception);
           if (text == (char *) NULL)
             CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
-                 option);
+              option);
           (void) fputs(text,stdout);
-          (void) fputc('\n',stdout);
           text=DestroyString((char *)text);
           break;
         }
