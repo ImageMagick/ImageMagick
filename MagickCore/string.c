@@ -1114,6 +1114,7 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
 #endif
   for (i=0; (length >= bytes) && (units[i+1] != (const char *) NULL); i++)
     length/=bytes;
+  count=0;
   for (j=2; j < 12; j++)
   {
     count=FormatLocaleString(format,MaxTextExtent,"%.*g%sB",(int) (i+j),length,
