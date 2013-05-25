@@ -2350,7 +2350,8 @@ static inline double LevelPixel(const double black_point,
     scale;
 
   scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
-  level_pixel=QuantumRange*gamma_pow(scale*((double) pixel-black_point),gamma);
+  level_pixel=QuantumRange*gamma_pow(scale*((double) pixel-black_point),
+    1.0/gamma);
   return(level_pixel);
 }
 
