@@ -1657,7 +1657,6 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
           GetExceptionMessage(errno));
       (void) ConcatenateString(&(*metadata),text);
-      (void) ConcatenateString(&(*metadata),"\n");
       text=DestroyString(text);
     }
   images=DestroyImage(images);
