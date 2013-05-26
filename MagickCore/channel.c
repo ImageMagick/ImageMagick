@@ -426,10 +426,10 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       case ExtractChannelOp:
       {
         if (delete_channel == MagickFalse)
-          channel_mask=(ChannelType) (channel_mask &~
+          channel_mask=(ChannelType) (channel_mask |
             (1 << destination_channel));
         else
-          channel_mask=(ChannelType) (channel_mask |
+          channel_mask=(ChannelType) (channel_mask &~
             (1 << destination_channel));
         destination_channel=(PixelChannel) (destination_channel+1);
         break;
