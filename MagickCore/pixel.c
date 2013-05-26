@@ -1466,7 +1466,8 @@ static void ExportLongLongPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=ScaleQuantumToLongLong(ClampToQuantum(GetPixelIntensity(image,p)));
+            *q=ScaleQuantumToLongLong(ClampToQuantum(
+              GetPixelIntensity(image,p)));
             break;
           }
           default:
@@ -1894,9 +1895,9 @@ static void ExportShortPixel(Image *image,const RectangleInfo *roi,
   }
 }
 
-MagickExport MagickBooleanType ExportImagePixels(Image *image,
-  const ssize_t x,const ssize_t y,const size_t width,const size_t height,
-  const char *map,const StorageType type,void *pixels,ExceptionInfo *exception)
+MagickExport MagickBooleanType ExportImagePixels(Image *image,const ssize_t x,
+  const ssize_t y,const size_t width,const size_t height,const char *map,
+  const StorageType type,void *pixels,ExceptionInfo *exception)
 {
   QuantumType
     *quantum_map;
@@ -4344,11 +4345,10 @@ static inline void SplineWeights(const double x,double (*weights)[4])
     beta;
 
   /*
-    Nicolas Robidoux' 12 flops (6* + 5- + 1+) refactoring of the
-    computation of the standard four 1D cubic B-spline smoothing
-    weights. The sampling location is assumed between the second and
-    third input pixel locations, and x is the position relative to the
-    second input pixel location.
+    Nicolas Robidoux' 12 flops (6* + 5- + 1+) refactoring of the computation
+    of the standard four 1D cubic B-spline smoothing weights. The sampling
+    location is assumed between the second and third input pixel locations,
+    and x is the position relative to the second input pixel location.
   */
   alpha=(double) 1.0-x;
   (*weights)[3]=(double) (1.0/6.0)*x*x*x;
@@ -4378,13 +4378,16 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
   const PixelInterpolateMethod method,const double x,const double y,
   double *pixel,ExceptionInfo *exception)
 {
-  MagickBooleanType
-    status;
-
   double
     alpha[16],
     gamma,
     pixels[16];
+
+  MagickBooleanType
+    status;
+
+  PixelInterpolateMethod
+    interpolate;
 
   PixelTrait
     traits;
@@ -4398,9 +4401,6 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
   ssize_t
     x_offset,
     y_offset;
-
-  PixelInterpolateMethod
-    interpolate;
 
   assert(image != (Image *) NULL);
   assert(image != (Image *) NULL);
@@ -4416,9 +4416,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     interpolate = image->interpolate;
   switch (interpolate)
   {
-    case AverageInterpolatePixel:        /* nearest 4 neighbours */
-    case Average9InterpolatePixel:       /* nearest 9 neighbours */
-    case Average16InterpolatePixel:      /* nearest 16 neighbours */
+    case AverageInterpolatePixel:  /* nearest 4 neighbours */
+    case Average9InterpolatePixel:  /* nearest 9 neighbours */
+    case Average16InterpolatePixel:  /* nearest 16 neighbours */
     {
       ssize_t
         count;
@@ -4444,7 +4444,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      count*=count;   /* Number of pixels to Average */
+      count*=count;  /* Number of pixels to average */
       if ((traits & BlendPixelTrait) == 0)
         for (i=0; i < (ssize_t) count; i++)
         {
@@ -4523,7 +4523,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
             GetPixelChannels(image));
           pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
         }
-      gamma=1.0;    /* number of pixels blended together (its variable) */
+      gamma=1.0;  /* number of pixels blended together (its variable) */
       for (i=0; i <= 1L; i++) {
         if ((y-y_offset) >= 0.75)
           {
@@ -4551,9 +4551,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
             pixels[0]+=pixels[1];
           }
       if (channel != AlphaPixelChannel)
-        gamma=PerceptibleReciprocal(alpha[0]); /* (color) 1/alpha_weights */
+        gamma=PerceptibleReciprocal(alpha[0]);  /* (color) 1/alpha_weights */
       else
-        gamma=PerceptibleReciprocal(gamma); /* (alpha) 1/number_of_pixels */
+        gamma=PerceptibleReciprocal(gamma);  /* (alpha) 1/number_of_pixels */
       *pixel=gamma*pixels[0];
       break;
     }
@@ -4836,9 +4836,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     interpolate = source->interpolate;
   switch (interpolate)
   {
-    case AverageInterpolatePixel:        /* nearest 4 neighbours */
-    case Average9InterpolatePixel:       /* nearest 9 neighbours */
-    case Average16InterpolatePixel:      /* nearest 16 neighbours */
+    case AverageInterpolatePixel:  /* nearest 4 neighbours */
+    case Average9InterpolatePixel:  /* nearest 9 neighbours */
+    case Average16InterpolatePixel:  /* nearest 16 neighbours */
     {
       ssize_t
         count;
@@ -4864,7 +4864,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           status=MagickFalse;
           break;
         }
-      count*=count;  /* Number of pixels to Average */
+      count*=count;  /* Number of pixels to average */
       for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         double
@@ -5006,7 +5006,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           else
             if ((y-y_offset) > 0.25)
               {
-                gamma=2.0;              /* blend both pixels in row */
+                gamma=2.0;  /* blend both pixels in row */
                 alpha[j]+=alpha[j+2];  /* add up alpha weights */
                 pixels[j]+=pixels[j+2];
               }
@@ -5024,9 +5024,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                pixels[0]+=pixels[1];
              }
         if ((traits & BlendPixelTrait) == 0)
-          gamma=PerceptibleReciprocal(alpha[0]); /* (color) 1/alpha_weights */
+          gamma=PerceptibleReciprocal(alpha[0]);  /* (color) 1/alpha_weights */
         else
-          gamma=PerceptibleReciprocal(gamma); /* (alpha) 1/number_of_pixels */
+          gamma=PerceptibleReciprocal(gamma);  /* (alpha) 1/number_of_pixels */
         SetPixelChannel(destination,channel,ClampToQuantum(gamma*pixels[0]),
           pixel);
       }
@@ -5401,9 +5401,9 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     interpolate = image->interpolate;
   switch (interpolate)
   {
-    case AverageInterpolatePixel:        /* nearest 4 neighbours */
-    case Average9InterpolatePixel:       /* nearest 9 neighbours */
-    case Average16InterpolatePixel:      /* nearest 16 neighbours */
+    case AverageInterpolatePixel:  /* nearest 4 neighbours */
+    case Average9InterpolatePixel:  /* nearest 9 neighbours */
+    case Average16InterpolatePixel:  /* nearest 16 neighbours */
     {
       ssize_t
         count;
@@ -5433,7 +5433,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       pixel->blue=0.0;
       pixel->black=0.0;
       pixel->alpha=0.0;
-      count*=count;         /* number of pixels - square of size */
+      count*=count;  /* number of pixels - square of size */
       for (i=0; i < (ssize_t) count; i++)
       {
         AlphaBlendPixelInfo(image,p,pixels,alpha);
@@ -5538,7 +5538,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         if ((x-x_offset) > 0.25)
           {
             gamma*=2.0;  /* blend both rows */
-            alpha[0]+= alpha[1];      /* add up alpha weights */
+            alpha[0]+= alpha[1];  /* add up alpha weights */
             pixels[0].red+=pixels[1].red;
             pixels[0].green+=pixels[1].green;
             pixels[0].blue+=pixels[1].blue;
@@ -6010,9 +6010,9 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
       (p->colorspace == HWBColorspace))
     {
       /*
-        This calculates a arc distance for hue-- it should be a vector angle
-        of 'S'/'W' length with 'L'/'B' forming appropriate cones.  In other
-        words this is a hack - Anthony.
+        This calculates a arc distance for hue-- it should be a vector
+        angle of 'S'/'W' length with 'L'/'B' forming appropriate cones.
+        In other words this is a hack - Anthony.
       */
       if (fabs((double) pixel) > (QuantumRange/2))
         pixel-=QuantumRange;
