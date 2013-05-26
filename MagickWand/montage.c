@@ -1,4 +1,3 @@
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -1790,7 +1789,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             ThrowMontageException(ResourceLimitError,"MemoryAllocationFailed",
               GetExceptionMessage(errno));
           (void) ConcatenateString(&(*metadata),text);
-          (void) ConcatenateString(&(*metadata),"\n");
           text=DestroyString(text);
         }
     }

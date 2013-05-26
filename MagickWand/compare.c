@@ -1009,7 +1009,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                   (reconstruct_image->rows != image->rows))
                 (void) FormatLocaleFile(stderr," @ %.20g,%.20g",(double)
                   difference_image->page.x,(double) difference_image->page.y);
-              (void) FormatLocaleFile(stderr,"\n");
               break;
             }
             case AbsoluteErrorMetric:
@@ -1021,7 +1020,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                   (reconstruct_image->rows != image->rows))
                 (void) FormatLocaleFile(stderr," @ %.20g,%.20g",(double)
                   difference_image->page.x,(double) difference_image->page.y);
-              (void) FormatLocaleFile(stderr,"\n");
               break;
             }
             case MeanErrorPerPixelMetric:
@@ -1033,7 +1031,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                   (reconstruct_image->rows != image->rows))
                 (void) FormatLocaleFile(stderr," @ %.20g,%.20g",(double)
                   difference_image->page.x,(double) difference_image->page.y);
-              (void) FormatLocaleFile(stderr,"\n");
               break;
             }
             case UndefinedMetric:
@@ -1194,7 +1191,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             ThrowCompareException(ResourceLimitError,"MemoryAllocationFailed",
               GetExceptionMessage(errno));
           (void) ConcatenateString(&(*metadata),text);
-          (void) ConcatenateString(&(*metadata),"\n");
           text=DestroyString(text);
         }
       difference_image=DestroyImageList(difference_image);

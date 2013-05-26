@@ -731,8 +731,8 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             method=ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
               argv[i]);
             if (method < 0)
-              ThrowStreamException(OptionError,
-                "UnrecognizedVirtualPixelMethod",argv[i]);
+              ThrowStreamException(OptionError,"UnrecognizedVirtualPixelMethod",
+                argv[i]);
             break;
           }
         ThrowStreamException(OptionError,"UnrecognizedOption",option)
