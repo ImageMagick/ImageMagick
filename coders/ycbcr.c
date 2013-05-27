@@ -43,6 +43,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
