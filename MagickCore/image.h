@@ -528,7 +528,6 @@ extern MagickExport ImageInfo
 extern MagickExport MagickBooleanType
   ClipImage(Image *,ExceptionInfo *),
   ClipImagePath(Image *,const char *,const MagickBooleanType,ExceptionInfo *),
-  GetImageAlphaChannel(const Image *),
   IsTaintImage(const Image *),
   IsHighDynamicRangeImage(const Image *,ExceptionInfo *),
   IsImageObject(const Image *),
@@ -536,7 +535,6 @@ extern MagickExport MagickBooleanType
   ModifyImage(Image **,ExceptionInfo *),
   ResetImagePage(Image *,const char *),
   SetImageAlpha(Image *,const Quantum,ExceptionInfo *),
-  SetImageAlphaChannel(Image *,const AlphaChannelOption,ExceptionInfo *),
   SetImageBackgroundColor(Image *,ExceptionInfo *),
   SetImageColor(Image *,const PixelInfo *,ExceptionInfo *),
   SetImageExtent(Image *,const size_t,const size_t,ExceptionInfo *),
