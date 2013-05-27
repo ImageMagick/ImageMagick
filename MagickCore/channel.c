@@ -253,24 +253,14 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   channel_op=ExtractChannelOp;
   for (channels=0; *token != '\0'; )
   {
-    MagickBooleanType
-      delete_channel;
-
     ssize_t
       i;
 
     /*
       Interpret channel expression.
     */
-    delete_channel=MagickFalse;
     switch (*token)
     {
-      case '~':
-      {
-        delete_channel=MagickTrue;
-        GetMagickToken(p,&p,token);
-        break;
-      }
       case ',':
       {
         GetMagickToken(p,&p,token);
@@ -428,12 +418,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     {
       case ExtractChannelOp:
       {
-        if (delete_channel == MagickFalse)
-          channel_mask=(ChannelType) (channel_mask |
-            (1 << destination_channel));
-        else
-          channel_mask=(ChannelType) (channel_mask &~
-            (1 << destination_channel));
+        channel_mask=(ChannelType) (channel_mask | (1 << destination_channel));
         destination_channel=(PixelChannel) (destination_channel+1);
         break;
       }
