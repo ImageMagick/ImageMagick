@@ -354,6 +354,33 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         break;
       }
       case ExchangeChannelOp:
+      {
+        PixelChannelMap
+          channel_map;
+
+        i=ParsePixelChannelOption(token);
+        if (i < 0)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+              "UnrecognizedChannelType","`%s'",token);
+            destination_image=DestroyImageList(destination_image);
+            return(destination_image);
+          }
+        destination_channel=(PixelChannel) i;
+        if ((source_channel >= GetPixelChannels(image)) ||
+            (destination_channel >= GetPixelChannels(image)))
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+              "NoSuchImageChannel","`%s'",token);
+            destination_image=DestroyImageList(destination_image);
+            return(destination_image);
+          }
+         channel_map=destination_image->channel_map[destination_channel];
+         destination_image->channel_map[destination_channel]=
+           destination_image->channel_map[source_channel];
+         destination_image->channel_map[source_channel]=channel_map;
+         break;
+      }
       case TransferChannelOp:
       {
         i=ParsePixelChannelOption(token);

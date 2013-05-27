@@ -110,8 +110,8 @@
         <message name="ImageDoesNotHaveAClipMask">
           image does not have a clip mask
         </message>
-        <message name="ImageDoesNotHaveAAlphaChannel">
-          image does not have a alpha channel
+        <message name="ImageDoesNotHaveAnAlphaChannel">
+          image does not have an alpha channel
         </message>
         <message name="ImageDoesNotHaveAThumbnail">
           image does not have a EXIF thumbnail
@@ -691,6 +691,9 @@
         </message>
         <message name="NoSuchImage">
           no such image
+        </message>
+        <message name="NoSuchImageChannel">
+          no such image channel
         </message>
         <message name="NoSuchOption">
           no such option
