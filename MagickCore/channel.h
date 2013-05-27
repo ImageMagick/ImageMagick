@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include <MagickCore/image.h>
+
 extern MagickExport Image
   *ChannelFxImage(const Image *,const char *,ExceptionInfo *),
   *CombineImages(const Image *,const ColorspaceType,ExceptionInfo *),

@@ -44,6 +44,7 @@
 #include "MagickCore/artifact.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-view.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/distort.h"

@@ -49,6 +49,7 @@
 #include "MagickCore/attribute.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache-private.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/composite.h"

@@ -42,6 +42,7 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
