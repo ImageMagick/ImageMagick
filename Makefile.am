@@ -233,14 +233,21 @@ dist-hook:
 
 # Install HTML files
 pkgdocdir = $(DOCUMENTATION_PATH)
-DOCDIRS = images images/patterns www www/api www/source www/api/MagickCore www/api/MagickWand www/Magick++
+DOCDIRSDOXYGEN = www/api/MagickCore www/api/MagickWand
+DOCDIRSMANUAL = images images/patterns www www/api www/source www/Magick++
+DOCDIRS= $(DOCDIRSMANUAL) $(DOCDIRSDOXYGEN)
 HTML_INSTALL_DATA_TARGETS = install-data-html
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
 	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
 	@for dir in $(DOCDIRS) ; do \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
-	  for file in $(srcdir)/$$dir/*.* ; do \
+	  if test -d $(builddir)/$$dir ; then \
+  		docsrcdir=$(builddir)/$$dir; \
+	  else \
+  		docsrcdir=$(srcdir)/$$dir; \
+	  fi; \
+	  for file in $$docsrcdir/*.* ; do \
 	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
 	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	  done ; \
@@ -277,9 +284,18 @@ libtool: $(LIBTOOL_DEPS)
 
 # Format C API documentation
 html:
-	doxygen config/MagickCore.dox
-	doxygen config/MagickWand.dox
-	doxygen config/Magick++.dox
+	$(MKDIR_P) -p $(top_builddir)/www/api
+	cd config && doxygen MagickCore.dox
+	cd config && doxygen MagickWand.dox
+	cd config && doxygen Magick++.dox
+	for dir in $(DOCDIRSMANUAL) ; do \
+		$(MKDIR_P) $(top_builddir)/$$dir ;\
+		for file in $$dir/*.* ; do \
+			if ! test -f $(top_builddir)/$$file; then \
+				cp -f $(top_srcdir)/$$file $(top_builddir)/$$dir ; \
+			fi; \
+		done ; \
+	done;
 
 #
 # Build Windows source Zip and 7Zip balls
