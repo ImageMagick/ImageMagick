@@ -176,7 +176,7 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
     y;
 
   if (image->alpha_trait != BlendPixelTrait)
-    ThrowWriterException(CoderError,"ImageDoesNotHaveAAlphaChannel");
+    ThrowWriterException(CoderError,"ImageDoesNotHaveAnAlphaChannel");
   matte_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (matte_image == (Image *) NULL)
     return(MagickFalse);
