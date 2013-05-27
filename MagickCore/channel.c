@@ -273,7 +273,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       }
       case ',':
       {
-        destination_channel=(PixelChannel) ((ssize_t) destination_channel+1);
         GetMagickToken(p,&p,token);
         break;
       }
