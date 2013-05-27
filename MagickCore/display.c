@@ -45,6 +45,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-private.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/client.h"
 #include "MagickCore/color.h"
 #include "MagickCore/colorspace.h"

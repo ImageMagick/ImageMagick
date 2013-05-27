@@ -51,6 +51,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-view.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/color.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/composite.h"

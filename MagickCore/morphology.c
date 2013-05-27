@@ -52,6 +52,7 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/cache-view.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"

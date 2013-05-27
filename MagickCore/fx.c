@@ -46,6 +46,7 @@
 #include "MagickCore/attribute.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-view.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colorspace-private.h"
