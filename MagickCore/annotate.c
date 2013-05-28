@@ -47,6 +47,7 @@
 #include "MagickCore/annotate-private.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/cache-view.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/client.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
