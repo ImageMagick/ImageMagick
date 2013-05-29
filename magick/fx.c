@@ -1366,7 +1366,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
           if (*p == '.')
             p++;
         }
-      if ((isalpha((int) *(p+1)) == 0) && (*p == 'p'))
+      if ((*p == 'p') && (isalpha((int) *(p+1)) == 0))
         {
           p++;
           if (*p == '{')
