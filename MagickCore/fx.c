@@ -1351,7 +1351,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           if (*p == '.')
             p++;
         }
-      if ((isalpha((int) *(p+1)) == 0) && (*p == 'p'))
+      if ((*p == 'p') && (isalpha((int) *(p+1)) == 0))
         {
           p++;
           if (*p == '{')
