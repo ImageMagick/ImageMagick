@@ -1878,7 +1878,7 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
         register unsigned char
           *p;
 
-        tag_length=14;
+        tag_length=strlen(ICC_PROFILE);
         p=GetStringInfoDatum(custom_profile);
         (void) CopyMagickMemory(p,ICC_PROFILE,tag_length);
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65519L)
