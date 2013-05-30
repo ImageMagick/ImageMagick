@@ -253,11 +253,10 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           else
             high=draw_info->pointsize-1.0;
       }
-      draw_info->pointsize=(low+high)/2.0-1.0;
+      draw_info->pointsize=(low+high)/2.0;
     }
   (void) CloneString(&draw_info->text,caption);
-  i=FormatMagickCaption(image,draw_info,split,&metrics,&caption,
-    exception);
+  i=FormatMagickCaption(image,draw_info,split,&metrics,&caption,exception);
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
       image=DestroyImageList(image);
