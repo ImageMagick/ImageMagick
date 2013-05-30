@@ -110,6 +110,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     *image;
 
   MagickBooleanType
+    split,
     status;
 
   register ssize_t
@@ -157,10 +158,11 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   if (gravity != (char *) NULL)
     draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
       MagickFalse,gravity);
+  split=MagickFalse;
   if (image->columns == 0)
     {
       text=AcquireString(caption);
-      i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
+      i=FormatMagickCaption(image,draw_info,split,&metrics,&text,
         exception);
       (void) CloneString(&draw_info->text,text);
       text=DestroyString(text);
@@ -174,8 +176,9 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     }
   if (image->rows == 0)
     {
+      split=MagickTrue;
       text=AcquireString(caption);
-      i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
+      i=FormatMagickCaption(image,draw_info,split,&metrics,&text,
         exception);
       (void) CloneString(&draw_info->text,text);
       text=DestroyString(text);
@@ -199,7 +202,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for ( ; ; draw_info->pointsize*=2.0)
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
+        i=FormatMagickCaption(image,draw_info,split,&metrics,&text,
           exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
@@ -225,7 +228,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       {
         draw_info->pointsize=(low+high)/2.0;
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
+        i=FormatMagickCaption(image,draw_info,split,&metrics,&text,
           exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
@@ -253,7 +256,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       draw_info->pointsize=(low+high)/2.0-1.0;
     }
   (void) CloneString(&draw_info->text,caption);
-  i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&caption,
+  i=FormatMagickCaption(image,draw_info,split,&metrics,&caption,
     exception);
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
