@@ -168,7 +168,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
               break;
         }
         high=draw_info->pointsize;
-        for (low=1.0; (high-low) > 1.0; )
+        for (low=1.0; (high-low) > 0.5; )
         {
           draw_info->pointsize=(low+high)/2.0;
           (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
@@ -181,18 +181,18 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           if ((image->columns != 0) && (image->rows != 0))
             {
               if ((width < image->columns) && (height < image->rows))
-                low=draw_info->pointsize+1.0;
+                low=draw_info->pointsize+0.5;
               else
-                high=draw_info->pointsize-1.0;
+                high=draw_info->pointsize-0.5;
             }
           else
             if (((image->columns != 0) && (width < image->columns)) ||
                 ((image->rows != 0) && (height < image->rows)))
-              low=draw_info->pointsize+1.0;
+              low=draw_info->pointsize+0.5;
             else
-              high=draw_info->pointsize-1.0;
+              high=draw_info->pointsize-0.5;
         }
-        draw_info->pointsize=(low+high)/2.0;
+        draw_info->pointsize=(low+high)/2.0-0.5;
       }
   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
