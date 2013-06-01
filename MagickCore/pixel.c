@@ -2139,10 +2139,12 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %    Rec601Luminance  0.298839R + 0.586811G + 0.114350B
 %    Rec709Luma       0.21260R' + 0.71520G' + 0.07220B'
 %    Rec709Luminance  0.21260R + 0.71520G + 0.07220B
-%    Brightness       max(R, G, B)
-%    Lightness        (min(R, G, B) + max(R, G, B)) / 2.0
-%    RMS              (R'^2 + G'^2 + B'^2) / 3.0
-%    Average          (R' + G' + B') / 3.0
+%    Brightness       max(R', G', B')
+%    Lightness        (min(R', G', B') + max(R', G', B')) / 2.0
+% 
+%    MS               (R^2 + G^2 + B^2) / 3.0
+%    RMS              sqrt((R^2 + G^2 + B^2) / 3.0
+%    Average          (R + G + B') / 3.0
 %
 %  The format of the GetPixelIntensity method is:
 %
@@ -2201,7 +2203,8 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
     }
     case LightnessPixelIntensityMethod:
     {
-      intensity=MagickMin(MagickMin(red,green),blue);
+      intensity=(MagickMin(MagickMin(red,green),blue)+
+        MagickMax(MagickMin(red,green),blue))/2.0;
       break;
     }
     case MSPixelIntensityMethod:
@@ -2212,6 +2215,12 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
     }
     case Rec601LumaPixelIntensityMethod:
     {
+      if (image->colorspace == RGBColorspace)
+        {
+          red=EncodePixelGamma(red);
+          green=EncodePixelGamma(green);
+          blue=EncodePixelGamma(blue);
+        }
       intensity=0.298839*red+0.586811*green+0.114350*blue;
       break;
     }
@@ -2229,6 +2238,12 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
     case Rec709LumaPixelIntensityMethod:
     default:
     {
+      if (image->colorspace == RGBColorspace)
+        {
+          red=EncodePixelGamma(red);
+          green=EncodePixelGamma(green);
+          blue=EncodePixelGamma(blue);
+        }
       intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
       break;
     }
