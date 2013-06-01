@@ -2204,7 +2204,7 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
     case LightnessPixelIntensityMethod:
     {
       intensity=(MagickMin(MagickMin(red,green),blue)+
-        MagickMax(MagickMin(red,green),blue))/2.0;
+        MagickMax(MagickMax(red,green),blue))/2.0;
       break;
     }
     case MSPixelIntensityMethod:
