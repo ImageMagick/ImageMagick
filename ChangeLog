@@ -1,3 +1,6 @@
+2013-06-01  6.8.5-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.5-8, SVN revision 12401.
+
 2013-05-30  6.8.5-0 Cristy  <quetzlzacatenango@image...>
   * Caption no longer clips long words (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23504).
