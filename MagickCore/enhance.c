@@ -2047,7 +2047,8 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         }
         case LightnessPixelIntensityMethod:
         {
-          intensity=MagickMin(MagickMin(red,green),blue);
+          intensity=(MagickMin(MagickMin(red,green),blue)+
+            MagickMax(MagickMax(red,green),blue))/2.0;
           break;
         }
         case MSPixelIntensityMethod:
@@ -2058,22 +2059,46 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         }
         case Rec601LumaPixelIntensityMethod:
         {
+          if (image->colorspace == RGBColorspace)
+            {
+              red=EncodePixelGamma(red);
+              green=EncodePixelGamma(green);
+              blue=EncodePixelGamma(blue);
+            }
           intensity=0.298839*red+0.586811*green+0.114350*blue;
           break;
         }
         case Rec601LuminancePixelIntensityMethod:
         {
+          if (image->colorspace == sRGBColorspace)
+            {
+              red=DecodePixelGamma(red);
+              green=DecodePixelGamma(green);
+              blue=DecodePixelGamma(blue);
+            }
           intensity=0.298839*red+0.586811*green+0.114350*blue;
           break;
         }
         case Rec709LumaPixelIntensityMethod:
-        case UndefinedPixelIntensityMethod:
+        default:
         {
+          if (image->colorspace == RGBColorspace)
+            {
+              red=EncodePixelGamma(red);
+              green=EncodePixelGamma(green);
+              blue=EncodePixelGamma(blue);
+            }
           intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
           break;
         }
         case Rec709LuminancePixelIntensityMethod:
         {
+          if (image->colorspace == sRGBColorspace)
+            {
+              red=DecodePixelGamma(red);
+              green=DecodePixelGamma(green);
+              blue=DecodePixelGamma(blue);
+            }
           intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
           break;
         }
@@ -2083,13 +2108,11 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
             blue*blue)/sqrt(3.0));
           break;
         }
-        default:
-          break;
       }
       SetPixelGray(image,ClampToQuantum(intensity),q);
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)))
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
