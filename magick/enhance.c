@@ -2535,8 +2535,6 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
             blue*blue)/sqrt(3.0));
           break;
         }
-        default:
-          break;
       }
       SetPixelGray(q,ClampToQuantum(intensity));
       q++;
