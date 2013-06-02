@@ -2474,7 +2474,8 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         }
         case LightnessPixelIntensityMethod:
         {
-          intensity=MagickMin(MagickMin(red,green),blue);
+          intensity=(MagickMin(MagickMin(red,green),blue)+
+            MagickMax(MagickMax(red,green),blue))/2.0;
           break;
         }
         case MSPixelIntensityMethod:
@@ -2485,22 +2486,46 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         }
         case Rec601LumaPixelIntensityMethod:
         {
+          if (image->colorspace == RGBColorspace)
+            {
+              red=EncodePixelGamma(red);
+              green=EncodePixelGamma(green);
+              blue=EncodePixelGamma(blue);
+            }
           intensity=0.298839*red+0.586811*green+0.114350*blue;
           break;
         }
         case Rec601LuminancePixelIntensityMethod:
-        case UndefinedPixelIntensityMethod:
         {
+          if (image->colorspace == sRGBColorspace)
+            {
+              red=DecodePixelGamma(red);
+              green=DecodePixelGamma(green);
+              blue=DecodePixelGamma(blue);
+            }
           intensity=0.298839*red+0.586811*green+0.114350*blue;
           break;
         }
         case Rec709LumaPixelIntensityMethod:
+        default:
         {
+          if (image->colorspace == RGBColorspace)
+            {
+              red=EncodePixelGamma(red);
+              green=EncodePixelGamma(green);
+              blue=EncodePixelGamma(blue);
+            }
           intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
           break;
         }
         case Rec709LuminancePixelIntensityMethod:
         {
+          if (image->colorspace == sRGBColorspace)
+            {
+              red=DecodePixelGamma(red);
+              green=DecodePixelGamma(green);
+              blue=DecodePixelGamma(blue);
+            }
           intensity=0.21260f*red+0.71520f*green+0.07220f*blue;
           break;
         }
