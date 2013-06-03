@@ -1,4 +1,4 @@
-/*
+a*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -109,7 +109,7 @@ static const ColorMapInfo
     { "cyan", 0, 255, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
     { "blue", 0, 0, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
     { "yellow", 255, 255, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
-    { "white", 255, 255, 255, 1, SVGCompliance | X11Compliance },
+    { "white", 255, 255, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
     { "AliceBlue", 240, 248, 255, 1, SVGCompliance | X11Compliance | XPMCompliance },
     { "AntiqueWhite", 250, 235, 215, 1, SVGCompliance | X11Compliance | XPMCompliance },
     { "AntiqueWhite1", 255, 239, 219, 1, X11Compliance },
