@@ -162,7 +162,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   an array of floating point values than call SparseColorImage().
   Argument is a complex mix of floating-point pixel coodinates, and color
   specifications (or direct floating point numbers).  The number of floats
-  needed to represent a color varies depending on teh current channel
+  needed to represent a color varies depending on the current channel
   setting.
 
   This really should be in MagickCore, so that other API's can make use of it.
@@ -603,8 +603,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("channel",option+1) == 0)
         {
-          arg1=ArgOption("default");
-          parse=ParseChannelOption(arg1);
+          parse=ParseChannelOption(ArgOption("Default"));
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedChannelType",
                  option,arg1);

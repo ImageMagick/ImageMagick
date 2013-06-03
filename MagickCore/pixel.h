@@ -43,10 +43,10 @@ typedef enum
   BlackChannel = 0x0008,
   AlphaChannel = 0x0010,
   OpacityChannel = 0x0010,
-  IndexChannel = 0x0020,
-  ReadMaskChannel = 0x0040,
-  WriteMaskChannel = 0x0080,
-  MetaChannel = 0x0100,
+  IndexChannel = 0x0020,             /* Color Index Table? */
+  ReadMaskChannel = 0x0040,          /* Pixel is Not Readable? */
+  WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
+  MetaChannel = 0x0100,              /* ???? */
   CompositeChannels = 0x002F,
   AllChannels = 0x7ffffff,
   /*
@@ -54,6 +54,7 @@ typedef enum
     FUTURE: are these needed any more - they are more like hacks
     SyncChannels for example is NOT a real channel but a 'flag'
     It really says -- "User has not defined channels"
+    Though it does have extra meaning in the "-auto-level" operator
   */
   TrueAlphaChannel = 0x0100, /* extract actual alpha channel from opacity */
   RGBChannels = 0x0200,      /* set alpha from grayscale mask in RGB */
@@ -84,9 +85,9 @@ typedef enum
   ReadMaskPixelChannel = 6,
   WriteMaskPixelChannel = 7,
   MetaPixelChannel = 8,
-  IntensityPixelChannel = MaxPixelChannels,
-  CompositePixelChannel = MaxPixelChannels,
-  SyncPixelChannel = MaxPixelChannels+1
+  IntensityPixelChannel = MaxPixelChannels,  /* ???? */
+  CompositePixelChannel = MaxPixelChannels,  /* ???? */
+  SyncPixelChannel = MaxPixelChannels+1      /* not a real channel */
 } PixelChannel;  /* must correspond to ChannelType */
 
 typedef enum
@@ -116,7 +117,7 @@ typedef enum
   IntegerInterpolatePixel,    /* Integer (floor) interpolation */
   MeshInterpolatePixel,       /* Triangular Mesh interpolation */
   NearestInterpolatePixel,    /* Nearest Neighbour Only */
-  SplineInterpolatePixel     /* Cubic Spline (blurred) interpolation */
+  SplineInterpolatePixel      /* Cubic Spline (blurred) interpolation */
   /* FilterInterpolatePixel,  ** Use resize filter - (very slow) */
 } PixelInterpolateMethod;
 
