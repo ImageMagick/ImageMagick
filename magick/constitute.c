@@ -634,13 +634,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
     }
   if (GetBlobError(image) != MagickFalse)
-    {
-      ThrowFileException(exception,FileOpenError,
-        "AnErrorHasOccurredReadingFromFile",read_info->filename);
-      image=DestroyImageList(image);
-      read_info=DestroyImageInfo(read_info);
-      return((Image *) NULL);
-    }
+    ThrowFileException(exception,FileOpenError,
+      "AnErrorHasOccurredReadingFromFile",read_info->filename);
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     char
