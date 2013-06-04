@@ -459,6 +459,9 @@
     <file>
       <open>
         <error>
+          <message name="AnErrorHasOccurredReadingFromFile">
+            an error has occurred reading from file
+          </message>
           <message name="UnableToCreateTemporaryFile">
             impossible de créer un fichier temporaire
           </message>
