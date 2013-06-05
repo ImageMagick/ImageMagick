@@ -23,8 +23,8 @@ Installation
 
     Get the PerlMagick distribution and type the following: 
 
-        gunzip ImageMagick-6.8.3-0.tar.gz
-        tar xvf ImageMagick-6.8.3
+        gunzip ImageMagick-6.8.6-0.tar.gz
+        tar xvf ImageMagick-6.8.6
 
     Follow the ImageMagick installation instructions in INSTALL-unix.txt
 		then type
