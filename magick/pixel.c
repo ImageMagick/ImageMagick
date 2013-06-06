@@ -1062,7 +1062,8 @@ static void ExportIntegerPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(unsigned int) ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
+          *q++=(unsigned int) ScaleQuantumToLong(ClampToQuantum(
+            GetPixelIntensity(image,p)));
           p++;
         }
       }
@@ -1175,7 +1176,8 @@ static void ExportIntegerPixel(Image *image,const RectangleInfo *roi,
           }
           case IndexQuantum:
           {
-            *q=(unsigned int) ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
+            *q=(unsigned int) ScaleQuantumToLong(ClampToQuantum(
+              GetPixelIntensity(image,p)));
             break;
           }
           default:
