@@ -197,7 +197,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80>', mode=>'Concatenate'/,
-  '3f42ab1a8a19594ab6a0c7990a35a34d92d9fff2a4ed59c5202a660d27c3ef36');
+  'b46f6d6c6305ab1d5f05f89030e775fca2f01dd5d40a8340372bd31dafaa4e83');
 #
 # 19) Test concatenated thumbnail Montage (concatentated by setting params to zero)
 #     Thumbnails should be compacted tightly together in a grid
@@ -206,6 +206,6 @@ testMontage( q//,
 testMontage( q//, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'+0+0', mode=>'Unframe', shadow=>'False',
   borderwidth=>'0', background=>'gray'/,
-  '3f42ab1a8a19594ab6a0c7990a35a34d92d9fff2a4ed59c5202a660d27c3ef36',
-  '3f42ab1a8a19594ab6a0c7990a35a34d92d9fff2a4ed59c5202a660d27c3ef36',
+  'b46f6d6c6305ab1d5f05f89030e775fca2f01dd5d40a8340372bd31dafaa4e83',
+  'b46f6d6c6305ab1d5f05f89030e775fca2f01dd5d40a8340372bd31dafaa4e83',
   '6c61a8ad7be5f8c368dcb591f766349e648b623cbc41e6699ba3ea53ef182510');
