@@ -2578,9 +2578,6 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   MagickBooleanType
     status;
 
-  PixelInfo
-    zero;
-
   ssize_t
     y;
 
@@ -2609,7 +2606,6 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     }
   status=MagickTrue;
   scale=PerceptibleReciprocal(scale);
-  (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
