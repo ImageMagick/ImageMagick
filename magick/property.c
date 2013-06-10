@@ -2496,12 +2496,18 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleCompare("channels",property) == 0)
         {
+          ColorspaceType
+            colorspace;
+
           /*
             Image channels.
           */
+          colorspace=image->colorspace;
+          if (IsGrayImage(image,&image->exception) != MagickFalse)
+            colorspace=GRAYColorspace;
           (void) FormatLocaleString(value,MaxTextExtent,"%s",
             CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-            image->colorspace));
+            colorspace));
           LocaleLower(value);
           if (image->matte != MagickFalse)
             (void) ConcatenateMagickString(value,"a",MaxTextExtent);
