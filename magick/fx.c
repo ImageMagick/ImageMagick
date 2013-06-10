@@ -5313,8 +5313,8 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
         (weight*weight)));
       SetPixelRed(q,ClampToQuantum(pixel.red));
       weight=QuantumScale*GetPixelGreen(p)-0.5;
-      pixel.green=(MagickRealType) GetPixelGreen(p)+color_vector.green*(1.0-(4.0*
-        (weight*weight)));
+      pixel.green=(MagickRealType) GetPixelGreen(p)+color_vector.green*(1.0-
+        (4.0*(weight*weight)));
       SetPixelGreen(q,ClampToQuantum(pixel.green));
       weight=QuantumScale*GetPixelBlue(p)-0.5;
       pixel.blue=(MagickRealType) GetPixelBlue(p)+color_vector.blue*(1.0-(4.0*
