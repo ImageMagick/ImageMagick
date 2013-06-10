@@ -2137,8 +2137,10 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %
 %    Rec601Luma       0.298839R' + 0.586811G' + 0.114350B'
 %    Rec601Luminance  0.298839R + 0.586811G + 0.114350B
-%    Rec709Luma       0.212656R' + 0.715158G' + 0.072186B'
-%    Rec709Luminance  0.212656R + 0.715158G + 0.072186B
+%    Rec709Luma       0.21258623078559555160R' + 0.71517030370341084990G' +
+%                     0.07220049864333622685B'
+%    Rec709Luminance  0.21258623078559555160R + 0.71517030370341084990G +
+%                     0.07220049864333622685B
 %    Brightness       max(R', G', B')
 %    Lightness        (min(R', G', B') + max(R', G', B')) / 2.0
 % 
@@ -2244,7 +2246,8 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
           green=EncodePixelGamma(green);
           blue=EncodePixelGamma(blue);
         }
-      intensity=0.212656*red+0.715158*green+0.072186*blue;
+      intensity=0.21258623078559555160*red+0.71517030370341084990*green+
+        0.07220049864333622685*blue;
       break;
     }
     case Rec709LuminancePixelIntensityMethod:
@@ -2255,7 +2258,8 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
           green=DecodePixelGamma(green);
           blue=DecodePixelGamma(blue);
         }
-      intensity=0.212656*red+0.715158*green+0.072186*blue;
+      intensity=0.21258623078559555160*red+0.71517030370341084990*green+
+        0.07220049864333622685*blue;
       break;
     }
     case RMSPixelIntensityMethod:
