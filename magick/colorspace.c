@@ -833,22 +833,23 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       /*
         Initialize Rec709 luma tables:
 
-          G = 0.212656*R+0.715158*G+0.072186*B
+          G = 0.21258623078559555160*R+0.71517030370341084990*G+
+              0.07220049864333622685*B
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) (0.212656*(double) i);
-        y_map[i].x=(MagickRealType) (0.715158*(double) i);
-        z_map[i].x=(MagickRealType) (0.072186*(double) i);
-        x_map[i].y=(MagickRealType) (0.212656*(double) i);
-        y_map[i].y=(MagickRealType) (0.715158*(double) i);
-        z_map[i].y=(MagickRealType) (0.072186*(double) i);
-        x_map[i].z=(MagickRealType) (0.212656*(double) i);
-        y_map[i].z=(MagickRealType) (0.715158*(double) i);
-        z_map[i].z=(MagickRealType) (0.072186*(double) i);
+        x_map[i].x=(MagickRealType) (0.21258623078559555160*(double) i);
+        y_map[i].x=(MagickRealType) (0.71517030370341084990*(double) i);
+        z_map[i].x=(MagickRealType) (0.07220049864333622685*(double) i);
+        x_map[i].y=(MagickRealType) (0.21258623078559555160*(double) i);
+        y_map[i].y=(MagickRealType) (0.71517030370341084990*(double) i);
+        z_map[i].y=(MagickRealType) (0.07220049864333622685*(double) i);
+        x_map[i].z=(MagickRealType) (0.21258623078559555160*(double) i);
+        y_map[i].z=(MagickRealType) (0.71517030370341084990*(double) i);
+        z_map[i].z=(MagickRealType) (0.07220049864333622685*(double) i);
       }
       break;
     }
@@ -857,7 +858,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       /*
         Initialize YCbCr tables (ITU-R BT.709):
 
-          Y =  0.212656*R+0.715158*G+0.072186*B
+          Y =  0.21258623078559555160*R+0.71517030370341084990*G+
+               0.07220049864333622685*B
           Cb= -0.114572*R-0.385428*G+0.500000*B
           Cr=  0.500000*R-0.454153*G-0.045847*B
 
@@ -872,9 +874,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) (0.212656*(double) i);
-        y_map[i].x=(MagickRealType) (0.715158*(double) i);
-        z_map[i].x=(MagickRealType) (0.072186*(double) i);
+        x_map[i].x=(MagickRealType) (0.21258623078559555160*(double) i);
+        y_map[i].x=(MagickRealType) (0.71517030370341084990*(double) i);
+        z_map[i].x=(MagickRealType) (0.07220049864333622685*(double) i);
         x_map[i].y=(MagickRealType) (-0.114572*(double) i);
         y_map[i].y=(MagickRealType) (-0.385428*(double) i);
         z_map[i].y=(MagickRealType) (0.500000*(double) i);
