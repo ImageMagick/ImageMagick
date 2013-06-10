@@ -2088,8 +2088,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
               green=EncodePixelGamma(green);
               blue=EncodePixelGamma(blue);
             }
-          intensity=0.21258623078559555160*red+0.71517030370341084990*
-            green+0.07220049864333622685*blue;
+          intensity=0.212656*red+0.715158*green+0.072186*blue;
           break;
         }
         case Rec709LuminancePixelIntensityMethod:
@@ -2100,8 +2099,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
               green=DecodePixelGamma(green);
               blue=DecodePixelGamma(blue);
             }
-          intensity=0.21258623078559555160*red+0.71517030370341084990*
-            green+0.07220049864333622685*blue;
+          intensity=0.212656*red+0.715158*green+0.072186*blue;
           break;
         }
         case RMSPixelIntensityMethod:
