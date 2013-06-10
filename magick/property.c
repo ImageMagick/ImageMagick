@@ -2496,18 +2496,12 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleCompare("channels",property) == 0)
         {
-          ColorspaceType
-            colorspace;
-
           /*
             Image channels.
           */
-          colorspace=image->colorspace;
-          if (IsGrayImage(image,&image->exception) != MagickFalse)
-            colorspace=GRAYColorspace;
           (void) FormatLocaleString(value,MaxTextExtent,"%s",
             CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-            colorspace));
+            image->colorspace));
           LocaleLower(value);
           if (image->matte != MagickFalse)
             (void) ConcatenateMagickString(value,"a",MaxTextExtent);
@@ -2515,17 +2509,11 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       if (LocaleCompare("colorspace",property) == 0)
         {
-          ColorspaceType
-            colorspace;
-
           /*
             Image storage class and colorspace.
           */
-          colorspace=image->colorspace;
-          if (IsGrayImage(image,&image->exception) != MagickFalse)
-            colorspace=GRAYColorspace;
           string=CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-            colorspace);
+            image->colorspace);
           break;
         }
       if (LocaleCompare("copyright",property) == 0)
