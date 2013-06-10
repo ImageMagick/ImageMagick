@@ -145,6 +145,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
   image->filter=clone_image->filter;
   image->blur=clone_image->blur;
   image->fuzz=clone_image->fuzz;
+  image->intensity=clone_image->intensity;
   image->interlace=clone_image->interlace;
   image->interpolate=clone_image->interpolate;
   image->endian=clone_image->endian;
