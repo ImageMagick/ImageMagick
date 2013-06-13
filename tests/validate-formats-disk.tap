@@ -20,5 +20,5 @@
 . ${srcdir}/tests/common.shi
 echo "1..1"
 
-${VALIDATE} -validate formats-on-disk && echo "ok" || echo "not ok"
+${VALIDATE} -validate formats-disk && echo "ok" || echo "not ok"
 :

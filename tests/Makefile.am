@@ -40,12 +40,13 @@ TESTS_TESTS = \
 	tests/validate-compare.tap \
 	tests/validate-composite.tap \
 	tests/validate-convert.tap \
+	tests/validate-formats-disk.tap \
+	tests/validate-formats-map.tap \
+	tests/validate-formats-memory.tap \
 	tests/validate-identify.tap \
 	tests/validate-import.tap \
 	tests/validate-montage.tap \
 	tests/validate-stream.tap \
-	tests/validate-formats-in-memory.tap \
-	tests/validate-formats-on-disk.tap \
 	tests/drawtest.tap \
 	tests/wandtest.tap
 
