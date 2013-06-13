@@ -2699,37 +2699,38 @@ int main(int argc,char **argv)
           if ((type & ConvertValidate) != 0)
             tests+=ValidateConvertCommand(image_info,reference_filename,
               output_filename,&fail,exception);
-          if ((type & FormatsInMemoryValidate) != 0)
+          if ((type & FormatsDiskValidate) != 0)
             {
-              (void) FormatLocaleFile(stdout,"[pixel-cache: memory] ");
-              tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
-                output_filename,&fail,exception);
-              (void) FormatLocaleFile(stdout,"[pixel-cache: memory-mapped] ");
               memory_resource=SetMagickResourceLimit(MemoryResource,0);
+              map_resource=SetMagickResourceLimit(MapResource,0);
+              (void) FormatLocaleFile(stdout,"[pixel-cache: disk] ");
               tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
                 output_filename,&fail,exception);
               (void) FormatLocaleFile(stdout,"[pixel-cache: disk] ");
-              map_resource=SetMagickResourceLimit(MapResource,0);
-              tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
+              tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
                 output_filename,&fail,exception);
               (void) SetMagickResourceLimit(MemoryResource,memory_resource);
               (void) SetMagickResourceLimit(MapResource,map_resource);
             }
-          if ((type & FormatsOnDiskValidate) != 0)
+          if ((type & FormatsMapValidate) != 0)
             {
-              (void) FormatLocaleFile(stdout,"[pixel-cache: memory] ");
-              tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
+              memory_resource=SetMagickResourceLimit(MemoryResource,0);
+              (void) FormatLocaleFile(stdout,"[pixel-cache: memory-mapped] ");
+              tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
                 output_filename,&fail,exception);
               (void) FormatLocaleFile(stdout,"[pixel-cache: memory-mapped] ");
-              memory_resource=SetMagickResourceLimit(MemoryResource,0);
-              tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
-                output_filename,&fail,exception);
-              (void) FormatLocaleFile(stdout,"[pixel-cache: disk] ");
-              map_resource=SetMagickResourceLimit(MapResource,0);
               tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
                 output_filename,&fail,exception);
               (void) SetMagickResourceLimit(MemoryResource,memory_resource);
-              (void) SetMagickResourceLimit(MapResource,map_resource);
+            }
+          if ((type & FormatsMemoryValidate) != 0)
+            {
+              (void) FormatLocaleFile(stdout,"[pixel-cache: memory] ");
+              tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
+                output_filename,&fail,exception);
+              (void) FormatLocaleFile(stdout,"[pixel-cache: memory] ");
+              tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
+                output_filename,&fail,exception);
             }
           if ((type & IdentifyValidate) != 0)
             tests+=ValidateIdentifyCommand(image_info,reference_filename,

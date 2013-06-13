@@ -20,5 +20,5 @@
 . ${srcdir}/tests/common.shi
 echo "1..1"
 
-${VALIDATE} -validate formats-in-memory && echo "ok" || echo "not ok"
+${VALIDATE} -validate formats-memory && echo "ok" || echo "not ok"
 :
