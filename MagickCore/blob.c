@@ -81,9 +81,6 @@
 #if !defined(MAP_FAILED)
 #define MAP_FAILED  ((void *) -1)
 #endif
-#if !defined(MS_SYNC)
-#define MS_SYNC  0x04
-#endif
 #if defined(__OS2__)
 #include <io.h>
 #define _O_BINARY O_BINARY
@@ -3901,7 +3898,7 @@ static int SyncBlob(Image *image)
       break;
     case BlobStream:
     {
-#if defined(MAGICKCORE_HAVE_MMAP_FILEIO)
+#if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && defined(MS_SYNC)
       if (image->blob->mapped != MagickFalse)
         status=msync(image->blob->data,image->blob->length,MS_SYNC);
 #endif
