@@ -100,16 +100,17 @@ typedef enum
 {
   UndefinedValidate,
   NoValidate = 0x00000,
-  CompareValidate = 0x00001,
-  CompositeValidate = 0x00002,
-  ConvertValidate = 0x00004,
-  FormatsInMemoryValidate = 0x00008,
-  FormatsOnDiskValidate = 0x00010,
-  IdentifyValidate = 0x00020,
-  ImportExportValidate = 0x00040,
-  MontageValidate = 0x00080,
-  StreamValidate = 0x00100,
-  ColorspaceValidate = 0x00200,
+  ColorspaceValidate = 0x00001,
+  CompareValidate = 0x00002,
+  CompositeValidate = 0x00004,
+  ConvertValidate = 0x00008,
+  FormatsDiskValidate = 0x00010,
+  FormatsMapValidate = 0x00020,
+  FormatsMemoryValidate = 0x00040,
+  IdentifyValidate = 0x00080,
+  ImportExportValidate = 0x00100,
+  MontageValidate = 0x00200,
+  StreamValidate = 0x00400,
   AllValidate = 0x7fffffff
 } ValidateType;
 
