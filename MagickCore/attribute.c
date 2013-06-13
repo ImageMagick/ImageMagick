@@ -232,7 +232,6 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       if (bounding_box.height > bounds.height)
         bounds.height=bounding_box.height;
     }
-  }
   image_view=DestroyCacheView(image_view);
   if ((bounds.width == 0) || (bounds.height == 0))
     (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
