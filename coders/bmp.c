@@ -506,6 +506,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   MagickBooleanType
+    mapped,
     status;
 
   MagickOffsetType
@@ -924,22 +925,34 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=(size_t) bytes_per_line*image->rows;
-    pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->rows,
-      MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
-    if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    mapped=MagickFalse;
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
       {
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Reading pixels (%.20g bytes)",(double) length);
-        count=ReadBlob(image,length,pixels);
-        if (count != (ssize_t) length)
+        if (GetBlobStreamData(image) != (unsigned char *) NULL)
           {
-            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
-            ThrowReaderException(CorruptImageError,
-              "InsufficientImageDataInFile");
+            mapped=MagickTrue;
+            pixels=GetBlobStreamData(image)+TellBlob(image);
+            if (DiscardBlobBytes(image,length) == MagickFalse)
+              ThrowReaderException(CorruptImageError,
+                "InsufficientImageDataInFile");
+          }
+        else
+          {
+            pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->rows,
+              MagickMax(bytes_per_line,image->columns)*sizeof(*pixels));
+            if (pixels == (unsigned char *) NULL)
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+            count=ReadBlob(image,length,pixels);
+            if (count != (ssize_t) length)
+              {
+                pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+                ThrowReaderException(CorruptImageError,
+                  "InsufficientImageDataInFile");
+              }
           }
       }
     else
@@ -947,6 +960,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert run-length encoded raster pixels.
         */
+        pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->rows,
+          MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
+        if (pixels == (unsigned char *) NULL)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == MagickFalse)
           {
@@ -1146,7 +1163,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
           {
-            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            if (mapped == MagickFalse)
+              pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowReaderException(CorruptImageError,
               "UnrecognizedImageCompression");
           }
@@ -1245,7 +1263,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((bmp_info.compression != BI_RGB) &&
             (bmp_info.compression != BI_BITFIELDS))
           {
-            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            if (mapped == MagickFalse)
+              pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowReaderException(CorruptImageError,
               "UnrecognizedImageCompression");
           }
@@ -1301,11 +1320,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       default:
       {
-        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+        if (mapped == MagickFalse)
+          pixels=(unsigned char *) RelinquishMagickMemory(pixels);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
     }
-    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+    if (mapped == MagickFalse)
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
