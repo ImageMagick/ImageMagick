@@ -111,9 +111,6 @@ struct _BlobInfo
     extent,
     quantum;
 
-  MapMode
-    mode;
-
   MagickBooleanType
     mapped,
     eof;
@@ -272,8 +269,8 @@ MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
     }
   for (i=0; i < length; i+=count)
   {
-    count=write(file,(const char *) blob+i,(size_t) MagickMin(length-
-      i,(MagickSizeType) SSIZE_MAX));
+    count=write(file,(const char *) blob+i,(size_t) MagickMin(length-i,
+      (MagickSizeType) SSIZE_MAX));
     if (count <= 0)
       {
         count=0;
@@ -649,7 +646,10 @@ MagickExport void DestroyBlob(Image *image)
     return;
   (void) CloseBlob(image);
   if (image->blob->mapped != MagickFalse)
-    (void) UnmapBlob(image->blob->data,image->blob->length);
+    {
+      (void) UnmapBlob(image->blob->data,image->blob->length);
+      RelinquishMagickResource(MapResource,image->blob->length);
+    }
   if (image->blob->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&image->blob->semaphore);
   image->blob->signature=(~MagickSignature);
@@ -687,7 +687,10 @@ MagickExport unsigned char *DetachBlob(BlobInfo *blob_info)
   if (blob_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (blob_info->mapped != MagickFalse)
-    (void) UnmapBlob(blob_info->data,blob_info->length);
+    {
+      (void) UnmapBlob(blob_info->data,blob_info->length);
+      RelinquishMagickResource(MapResource,blob_info->length);
+    }
   blob_info->mapped=MagickFalse;
   blob_info->length=0;
   blob_info->offset=0;
@@ -1036,8 +1039,8 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       (void) lseek(file,0,SEEK_SET);
       for (i=0; i < *length; i+=count)
       {
-        count=read(file,blob+i,(size_t) MagickMin(*length-i,
-          (MagickSizeType) SSIZE_MAX));
+        count=read(file,blob+i,(size_t) MagickMin(*length-i,(MagickSizeType)
+          SSIZE_MAX));
         if (count <= 0)
           {
             count=0;
@@ -2562,6 +2565,9 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 ExceptionInfo
                   *sans_exception;
 
+                size_t
+                  length;
+
                 struct stat
                   *properties;
 
@@ -2569,20 +2575,19 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 magick_info=GetMagickInfo(image_info->magick,sans_exception);
                 sans_exception=DestroyExceptionInfo(sans_exception);
                 properties=(&image->blob->properties);
+                length=(size_t) properties->st_size;
                 if ((magick_info != (const MagickInfo *) NULL) &&
                     (GetMagickBlobSupport(magick_info) != MagickFalse) &&
-                    (properties->st_size <= MagickMaxBufferExtent))
+                    (AcquireMagickResource(MapResource,length) != MagickFalse))
                   {
-                    size_t
-                      length;
-
                     void
                       *blob;
 
-                    length=(size_t) properties->st_size;
                     blob=MapBlob(fileno(image->blob->file_info.file),ReadMode,
                       0,length);
-                    if (blob != (void *) NULL)
+                    if (blob == (void *) NULL)
+                      RelinquishMagickResource(MapResource,length);
+                    else
                       {
                         /*
                           Format supports blobs-- use memory-mapped I/O.
@@ -2596,7 +2601,6 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                           }
                         AttachBlob(image->blob,blob,length);
                         image->blob->mapped=MagickTrue;
-                        image->blob->mode=ReadMode;
                       }
                   }
               }
@@ -3799,6 +3803,7 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
             count;
 
           (void) UnmapBlob(image->blob->data,image->blob->length);
+          RelinquishMagickResource(MapResource,image->blob->length);
           if (extent != (MagickSizeType) ((off_t) extent))
             return(MagickFalse);
           offset=SeekBlob(image,0,SEEK_END);
@@ -3826,9 +3831,9 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
             return(MagickFalse);
           image->blob->data=(unsigned char*) MapBlob(fileno(
             image->blob->file_info.file),WriteMode,0,(size_t) extent);
-          image->blob->mode=WriteMode;
           image->blob->extent=(size_t) extent;
           image->blob->length=(size_t) extent;
+          (void) AcquireMagickResource(MapResource,extent);
           (void) SyncBlob(image);
           break;
         }
@@ -3910,14 +3915,7 @@ static int SyncBlob(Image *image)
     case FifoStream:
       break;
     case BlobStream:
-    {
-#if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && defined(MS_SYNC)
-      if ((image->blob->mapped != MagickFalse) &&
-          ((image->blob->mode == WriteMode) || (image->blob->mode == IOMode)))
-        status=msync(image->blob->data,image->blob->length,MS_SYNC);
-#endif
       break;
-    }
   }
   return(status);
 }
@@ -4095,7 +4093,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
         default:
         {
           count=(ssize_t) fwrite((const char *) data,1,length,
-             image->blob->file_info.file);
+            image->blob->file_info.file);
           break;
         }
         case 2:
