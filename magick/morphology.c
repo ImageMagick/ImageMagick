@@ -2790,7 +2790,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             SetPixelBlue(q,ClampToQuantum(gamma*result.blue));
             SetPixelOpacity(q,ClampToQuantum(result.opacity));
             if (image->colorspace == CMYKColorspace)
-              SetPixelIndex(q_indexes+x,ClampToQuantum(gamma*result.index));
+              SetPixelIndex(q_indexes+y,ClampToQuantum(gamma*result.index));
           }
 
         /* Count up changed pixels */

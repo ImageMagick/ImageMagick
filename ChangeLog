@@ -5,6 +5,10 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23577).
   * Undercolor rectangle was off by one pixel (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23574).
+  * Don't msync() for a read-only memory-mapped mode (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23531).
+  * BlurChannelImage() no longer faults for certain CMYK images (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23581).
 
 2013-06-05  6.8.5-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-10, SVN revision 12419.
