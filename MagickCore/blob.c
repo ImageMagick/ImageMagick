@@ -81,9 +81,6 @@
 #if !defined(MAP_FAILED)
 #define MAP_FAILED  ((void *) -1)
 #endif
-#if !defined(MS_SYNC)
-#define MS_SYNC  0x04
-#endif
 #if defined(__OS2__)
 #include <io.h>
 #define _O_BINARY O_BINARY
@@ -273,8 +270,8 @@ MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
     }
   for (i=0; i < length; i+=count)
   {
-    count=(ssize_t) write(file,(const char *) blob+i,(size_t) MagickMin(length-
-      i,(MagickSizeType) SSIZE_MAX));
+    count=write(file,(const char *) blob+i,(size_t) MagickMin(length-i,
+      (MagickSizeType) SSIZE_MAX));
     if (count <= 0)
       {
         count=0;
@@ -985,7 +982,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       blob=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*blob));
       for (i=0; blob != (unsigned char *) NULL; i+=count)
       {
-        count=(ssize_t) read(file,blob+i,quantum);
+        count=read(file,blob+i,quantum);
         if (count <= 0)
           {
             count=0;
@@ -1043,8 +1040,8 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       (void) lseek(file,0,SEEK_SET);
       for (i=0; i < *length; i+=count)
       {
-        count=(ssize_t) read(file,blob+i,(size_t) MagickMin(*length-i,
-          (MagickSizeType) SSIZE_MAX));
+        count=read(file,blob+i,(size_t) MagickMin(*length-i,(MagickSizeType)
+          SSIZE_MAX));
         if (count <= 0)
           {
             count=0;
@@ -1169,7 +1166,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
     }
   for ( ; ; )
   {
-    count=(ssize_t) read(file,blob,quantum);
+    count=read(file,blob,quantum);
     if (count <= 0)
       {
         count=0;
@@ -1984,7 +1981,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
     }
   for (i=0; ; i+=count)
   {
-    count=(ssize_t) read(file,buffer,quantum);
+    count=read(file,buffer,quantum);
     if (count <= 0)
       {
         count=0;
@@ -3910,13 +3907,7 @@ static int SyncBlob(Image *image)
     case FifoStream:
       break;
     case BlobStream:
-    {
-#if defined(MAGICKCORE_HAVE_MMAP_FILEIO)
-      if (image->blob->mapped != MagickFalse)
-        status=msync(image->blob->data,image->blob->length,MS_SYNC);
-#endif
       break;
-    }
   }
   return(status);
 }
