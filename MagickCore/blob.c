@@ -112,6 +112,9 @@ struct _BlobInfo
     extent,
     quantum;
 
+  MapMode
+    mode;
+
   MagickBooleanType
     mapped,
     eof;
@@ -2585,6 +2588,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                           }
                         AttachBlob(image->blob,blob,length);
                         image->blob->mapped=MagickTrue;
+                        image->blob->mode=ReadMode;
                       }
                   }
               }
@@ -3816,6 +3820,7 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
             image->blob->file_info.file),WriteMode,0,(size_t) extent);
           image->blob->extent=(size_t) extent;
           image->blob->length=(size_t) extent;
+          image->blob->mode=WriteMode;
           (void) SyncBlob(image);
           break;
         }
@@ -3899,7 +3904,8 @@ static int SyncBlob(Image *image)
     case BlobStream:
     {
 #if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && defined(MS_SYNC)
-      if (image->blob->mapped != MagickFalse)
+      if ((image->blob->mapped != MagickFalse) &&
+          ((image->blob->mode == WriteMode) || (image->blob->mode == IOMode)))
         status=msync(image->blob->data,image->blob->length,MS_SYNC);
 #endif
       break;
