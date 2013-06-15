@@ -2570,6 +2570,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 length=(size_t) properties->st_size;
                 if ((magick_info != (const MagickInfo *) NULL) &&
                     (GetMagickBlobSupport(magick_info) != MagickFalse) &&
+                    (length > MagickMaxBufferExtent) &&
                     (AcquireMagickResource(MapResource,length) != MagickFalse))
                   {
                     void
@@ -3821,11 +3822,11 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
           offset=SeekBlob(image,offset,SEEK_SET);
           if (count != 1)
             return(MagickFalse);
+          (void) AcquireMagickResource(MapResource,extent);
           image->blob->data=(unsigned char*) MapBlob(fileno(
             image->blob->file_info.file),WriteMode,0,(size_t) extent);
           image->blob->extent=(size_t) extent;
           image->blob->length=(size_t) extent;
-          (void) AcquireMagickResource(MapResource,extent);
           (void) SyncBlob(image);
           break;
         }
