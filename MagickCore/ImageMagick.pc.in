@@ -2,6 +2,7 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
+includearchdir=@INCLUDEARCH_DIR@/ImageMagick-@MAGICK_MAJOR_VERSION@
 libname=MagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
  
 Name: ImageMagick
@@ -9,4 +10,4 @@ Description: ImageMagick - Convert, Edit, and Compose Images (ABI @MAGICK_ABI_SU
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -l${libname}
 Libs.private: -L${libdir} -l${libname} @MATH_LIBS@
-Cflags: -I${includedir} @MAGICK_PCFLAGS@
+Cflags:  -I${includearchdir} -I${includedir} @MAGICK_PCFLAGS@
