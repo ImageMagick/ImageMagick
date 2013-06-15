@@ -1050,19 +1050,18 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
     return(MagickTrue);
   image->colorspace=colorspace;
   image->rendering_intent=UndefinedIntent;
-  image->gamma=1.000;
+  image->gamma=1.000/2.200;
   (void) ResetMagickMemory(&image->chromaticity,0,sizeof(image->chromaticity));
   if (IsGrayColorspace(colorspace) != MagickFalse)
     {
-      if ((image->intensity != Rec601LuminancePixelIntensityMethod) &&
-          (image->intensity != Rec709LuminancePixelIntensityMethod) &&
-          (image->intensity != UndefinedPixelIntensityMethod))
-        image->gamma=1.000/2.200;
+      if ((image->intensity == Rec601LuminancePixelIntensityMethod) ||
+          (image->intensity == Rec709LuminancePixelIntensityMethod))
+        image->gamma=1.000;
       image->type=GrayscaleType;
     }
   else
-    if (IssRGBColorspace(colorspace) != MagickFalse)
-      image->gamma=1.000/2.200;
+    if (IsRGBColorspace(colorspace) != MagickFalse)
+      image->gamma=1.000;
   if (image->gamma == (1.000/2.200))
     {
       image->rendering_intent=PerceptualIntent;
@@ -1080,8 +1079,6 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
       image->chromaticity.white_point.y=0.3290;
       image->chromaticity.white_point.z=0.3583;
     }
-  if (IsGrayColorspace(colorspace) != MagickFalse)
-    image->type=GrayscaleType;
   return(SyncImagePixelCache(image,exception));
 }
 
