@@ -2560,14 +2560,10 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 size_t
                   length;
 
-                struct stat
-                  *properties;
-
                 sans_exception=AcquireExceptionInfo();
                 magick_info=GetMagickInfo(image_info->magick,sans_exception);
                 sans_exception=DestroyExceptionInfo(sans_exception);
-                properties=(&image->blob->properties);
-                length=(size_t) properties->st_size;
+                length=(size_t) image->blob->properties.st_size;
                 if ((magick_info != (const MagickInfo *) NULL) &&
                     (GetMagickBlobSupport(magick_info) != MagickFalse) &&
                     (length > MagickMaxBufferExtent) &&
