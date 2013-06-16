@@ -116,7 +116,7 @@ typedef struct _BMPInfo
     offset_bits,
     size;
 
-  ssize_t
+  int
     width,
     height;
 
@@ -209,9 +209,6 @@ static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 static MagickBooleanType DecodeImage(Image *image,const size_t compression,
   unsigned char *pixels)
 {
-  int
-    count;
-
   register ssize_t
     i,
     x;
@@ -221,6 +218,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
     *q;
 
   ssize_t
+    count,
     y;
 
   unsigned char
@@ -241,15 +239,15 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
   {
     if ((p < pixels) || (p >= q))
       break;
-    count=ReadBlobByte(image);
-    if (count == EOF)
+    count=(ssize_t) ReadBlobByte(image);
+    if ((int) count == EOF)
       break;
     if (count != 0)
       {
         /*
           Encoded mode.
         */
-        count=MagickMin(count,(int) (q-p));
+        count=MagickMin(count,(ssize_t) (q-p));
         byte=(unsigned char) ReadBlobByte(image);
         if (compression == BI_RLE8)
           {
@@ -269,7 +267,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
         /*
           Escape mode.
         */
-        count=ReadBlobByte(image);
+        count=(ssize_t) ReadBlobByte(image);
         if (count == 0x01)
           return(MagickTrue);
         switch (count)
@@ -299,7 +297,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
             /*
               Absolute mode.
             */
-            count=MagickMin(count,(int) (q-p));
+            count=MagickMin(count,(ssize_t) (q-p));
             if (compression == BI_RLE8)
               for (i=0; i < count; i++)
                 *p++=(unsigned char) ReadBlobByte(image);
@@ -327,7 +325,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
           }
         }
       }
-    if (SetImageProgress(image,LoadImageTag,y,image->rows) == MagickFalse)
+    if (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
       break;
   }
   (void) ReadBlobByte(image);  /* end of line */
@@ -851,8 +849,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression");
     }
-    image->columns=(size_t) MagickAbsoluteValue(bmp_info.width);
-    image->rows=(size_t) MagickAbsoluteValue(bmp_info.height);
+    image->columns=(size_t) MagickAbsoluteValue((ssize_t) bmp_info.width);
+    image->rows=(size_t) MagickAbsoluteValue((ssize_t) bmp_info.height);
     image->depth=bmp_info.bits_per_pixel <= 8 ? bmp_info.bits_per_pixel : 8;
     image->alpha_trait=(bmp_info.alpha_mask != 0) &&
       (bmp_info.compression == BI_BITFIELDS) ? BlendPixelTrait :
@@ -901,9 +899,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=bmp_colormap;
         for (i=0; i < (ssize_t) image->colors; i++)
         {
-          image->colormap[i].blue=ScaleCharToQuantum(*p++);
-          image->colormap[i].green=ScaleCharToQuantum(*p++);
-          image->colormap[i].red=ScaleCharToQuantum(*p++);
+          image->colormap[i].blue=(MagickRealType) ScaleCharToQuantum(*p++);
+          image->colormap[i].green=(MagickRealType) ScaleCharToQuantum(*p++);
+          image->colormap[i].red=(MagickRealType) ScaleCharToQuantum(*p++);
           if (packet_size == 4)
             p++;
         }
@@ -978,7 +976,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (bmp_info.compression == BI_RGB)
       {
         bmp_info.alpha_mask=image->alpha_trait == BlendPixelTrait ?
-          0xff000000L : 0L;
+          0xff000000U : 0U;
         bmp_info.red_mask=0x00ff0000U;
         bmp_info.green_mask=0x0000ff00U;
         bmp_info.blue_mask=0x000000ffU;
@@ -1017,19 +1015,19 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sample=shift.red;
         while (((bmp_info.red_mask << sample) & 0x80000000UL) != 0)
           sample++;
-        quantum_bits.red=(Quantum) (sample-shift.red);
+        quantum_bits.red=(MagickRealType) (sample-shift.red);
         sample=shift.green;
         while (((bmp_info.green_mask << sample) & 0x80000000UL) != 0)
           sample++;
-        quantum_bits.green=(Quantum) (sample-shift.green);
+        quantum_bits.green=(MagickRealType) (sample-shift.green);
         sample=shift.blue;
         while (((bmp_info.blue_mask << sample) & 0x80000000UL) != 0)
           sample++;
-        quantum_bits.blue=(Quantum) (sample-shift.blue);
+        quantum_bits.blue=(MagickRealType) (sample-shift.blue);
         sample=shift.alpha;
         while (((bmp_info.alpha_mask << sample) & 0x80000000UL) != 0)
           sample++;
-        quantum_bits.alpha=(Quantum) (sample-shift.alpha);
+        quantum_bits.alpha=(MagickRealType) (sample-shift.alpha);
       }
     switch (bmp_info.bits_per_pixel)
     {
@@ -1644,8 +1642,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           bmp_info.file_size+=extra_size;
           bmp_info.offset_bits+=extra_size;
         }
-    bmp_info.width=(ssize_t) image->columns;
-    bmp_info.height=(ssize_t) image->rows;
+    bmp_info.width=(int) image->columns;
+    bmp_info.height=(int) image->rows;
     bmp_info.planes=1;
     bmp_info.image_size=(unsigned int) (bytes_per_line*image->rows);
     bmp_info.file_size+=bmp_info.image_size;
@@ -1731,10 +1729,12 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       }
       case 4:
       {
+        ssize_t
+          offset;
+
         size_t
           byte,
-          nibble,
-          offset;
+          nibble;
 
         /*
           Convert PseudoClass image to a BMP monochrome image.
@@ -2078,9 +2078,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         q=bmp_colormap;
         for (i=0; i < (ssize_t) MagickMin((ssize_t) image->colors,(ssize_t) bmp_info.number_colors); i++)
         {
-          *q++=ScaleQuantumToChar(image->colormap[i].blue);
-          *q++=ScaleQuantumToChar(image->colormap[i].green);
-          *q++=ScaleQuantumToChar(image->colormap[i].red);
+          *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue));
+          *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green));
+          *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red));
           if (type > 2)
             *q++=(unsigned char) 0x0;
         }
