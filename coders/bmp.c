@@ -209,6 +209,9 @@ static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 static MagickBooleanType DecodeImage(Image *image,const size_t compression,
   unsigned char *pixels)
 {
+  int
+    count;
+
   register ssize_t
     i,
     x;
@@ -218,7 +221,6 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
     *q;
 
   ssize_t
-    count,
     y;
 
   unsigned char
@@ -239,24 +241,24 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
   {
     if ((p < pixels) || (p >= q))
       break;
-    count=(ssize_t) ReadBlobByte(image);
-    if ((int) count == EOF)
+    count=ReadBlobByte(image);
+    if (count == EOF)
       break;
     if (count != 0)
       {
         /*
           Encoded mode.
         */
-        count=MagickMin(count,(ssize_t) (q-p));
+        count=(int) MagickMin((ssize_t) count,(ssize_t) (q-p));
         byte=(unsigned char) ReadBlobByte(image);
         if (compression == BI_RLE8)
           {
-            for (i=0; i < count; i++)
+            for (i=0; i < (ssize_t) count; i++)
               *p++=(unsigned char) byte;
           }
         else
           {
-            for (i=0; i < count; i++)
+            for (i=0; i < (ssize_t) count; i++)
               *p++=(unsigned char)
                 ((i & 0x01) != 0 ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
           }
@@ -267,7 +269,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
         /*
           Escape mode.
         */
-        count=(ssize_t) ReadBlobByte(image);
+        count=ReadBlobByte(image);
         if (count == 0x01)
           return(MagickTrue);
         switch (count)
@@ -297,12 +299,12 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
             /*
               Absolute mode.
             */
-            count=MagickMin(count,(ssize_t) (q-p));
+            count=(int) MagickMin((ssize_t) count,(ssize_t) (q-p));
             if (compression == BI_RLE8)
-              for (i=0; i < count; i++)
+              for (i=0; i < (ssize_t) count; i++)
                 *p++=(unsigned char) ReadBlobByte(image);
             else
-              for (i=0; i < count; i++)
+              for (i=0; i < (ssize_t) count; i++)
               {
                 if ((i & 0x01) == 0)
                   byte=(unsigned char) ReadBlobByte(image);
