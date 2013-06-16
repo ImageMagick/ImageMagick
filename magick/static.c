@@ -172,6 +172,8 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterARTImage();
   (void) RegisterAVSImage();
   (void) RegisterBMPImage();
+  (void) RegisterBGRImage();
+  (void) RegisterBRAILLEImage();
   (void) RegisterCALSImage();
   (void) RegisterCAPTIONImage();
   (void) RegisterCINImage();
@@ -190,6 +192,9 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterDJVUImage();
 #endif
   (void) RegisterDNGImage();
+#if defined(MAGICKCORE_GVC_DELEGATE)
+  (void) RegisterDOTImage();
+#endif
 #if defined(MAGICKCORE_DPS_DELEGATE)
   (void) RegisterDPSImage();
 #endif
@@ -224,6 +229,7 @@ MagickExport void RegisterStaticModules(void)
 #if defined(MAGICKCORE_JBIG_DELEGATE)
   (void) RegisterJBIGImage();
 #endif
+  (void) RegisterJNXImage();
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   (void) RegisterJPEGImage();
 #endif
@@ -234,6 +240,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterMACImage();
   (void) RegisterMAGICKImage();
   (void) RegisterMAPImage();
+  (void) RegisterMASKImage();
   (void) RegisterMATImage();
   (void) RegisterMATTEImage();
   (void) RegisterMETAImage();
@@ -348,6 +355,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterARTImage();
   UnregisterAVSImage();
   UnregisterBMPImage();
+  UnregisterBGRImage();
   UnregisterBRAILLEImage();
   UnregisterCALSImage();
   UnregisterCAPTIONImage();
@@ -367,6 +375,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterDJVUImage();
 #endif
   UnregisterDNGImage();
+#if defined(MAGICKCORE_GVC_DELEGATE)
+  UnregisterDOTImage();
+#endif
 #if defined(MAGICKCORE_DPS_DELEGATE)
   UnregisterDPSImage();
 #endif
@@ -401,6 +412,7 @@ MagickExport void UnregisterStaticModules(void)
 #if defined(MAGICKCORE_JBIG_DELEGATE)
   UnregisterJBIGImage();
 #endif
+  UnregisterJNXImage();
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   UnregisterJPEGImage();
 #endif
@@ -411,6 +423,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterMACImage();
   UnregisterMAGICKImage();
   UnregisterMAPImage();
+  UnregisterMASKImage();
   UnregisterMATImage();
   UnregisterMATTEImage();
   UnregisterMETAImage();
