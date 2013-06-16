@@ -2572,8 +2572,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                     void
                       *blob;
 
-                    blob=MapBlob(fileno(image->blob->file_info.file),ReadMode,
-                      0,length);
+                    blob=MapBlob(fileno(image->blob->file_info.file),ReadMode,0,
+                      length);
                     if (blob == (void *) NULL)
                       RelinquishMagickResource(MapResource,length);
                     else
