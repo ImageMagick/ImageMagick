@@ -3839,12 +3839,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
       red=GetPixelRed(q);
       green=GetPixelGreen(q);
       blue=GetPixelBlue(q);
-      if (IssRGBColorspace(image->colorspace) != MagickFalse)
-        {
-          red=ClampToQuantum(DecodePixelGamma((MagickRealType) red));
-          green=ClampToQuantum(DecodePixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(DecodePixelGamma((MagickRealType) blue));
-        }
       switch (colorspace)
       {
         case HCLColorspace:
@@ -3886,12 +3880,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
           break;
         }
       }
-      if (IssRGBColorspace(image->colorspace) != MagickFalse)
-        {
-          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
-          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
-        }
       SetPixelRed(q,red);
       SetPixelGreen(q,green);
       SetPixelBlue(q,blue);
