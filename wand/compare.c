@@ -988,6 +988,12 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             channels,metric,&distortion,exception);
         else
           {
+            Image
+              *distort_image;
+
+            RectangleInfo
+              page;
+
             (void) CompositeImage(composite_image,CopyCompositeOp,
               reconstruct_image,offset.x,offset.y);
             difference_image=CompareImageChannels(image,composite_image,
@@ -998,6 +1004,21 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 difference_image->page.y=offset.y;
               }
             composite_image=DestroyImage(composite_image);
+            page.width=reconstruct_image->columns;
+            page.height=reconstruct_image->rows;
+            page.x=offset.x;
+            page.y=offset.y;
+            distort_image=CropImage(image,&page,exception);
+            if (distort_image != (Image *) NULL)
+              {
+                Image
+                  *sans_image;
+
+                sans_image=CompareImageChannels(distort_image,reconstruct_image,
+                  channels,metric,&distortion,exception);
+                if (sans_image != (Image *) NULL)
+                  sans_image=DestroyImage(sans_image);
+              }
           }
         if (difference_image != (Image *) NULL)
           {
