@@ -1016,6 +1016,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
 
                 sans_image=CompareImageChannels(distort_image,reconstruct_image,
                   channels,metric,&distortion,exception);
+                distort_image=DestroyImage(distort_image);
                 if (sans_image != (Image *) NULL)
                   sans_image=DestroyImage(sans_image);
               }
