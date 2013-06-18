@@ -70,7 +70,7 @@ div.eqn {
   }
 
 div.footer {
-  margin-left: 160px; 
+  margin-left: 150px; 
   background: white;
 }
 
@@ -98,7 +98,7 @@ div.main {
   padding-bottom: .75em;
   padding-top: 0px;
   padding-right: .75em;
-  margin-left: 160px;
+  margin-left: 150px;
   margin-right: 0px;
 }
 
@@ -172,7 +172,7 @@ div.titlebar {
 }
 
 div.westbar {
-  width: 160px; 
+  width: 150px; 
   left: 0em; 
   position: absolute; 
   /* height: 100%; */

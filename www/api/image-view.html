@@ -1,690 +1,430 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html version="-//W3C//DTD XHTML 1.1//EN"
-      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/1999/xhtml
-                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemalocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
-  <title>ImageMagick: MagickCore, C API for ImageMagick: Image View Methods</title>
-  <meta http-equiv="content-language" content="en-US"/>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, view, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <link rel="icon" href="../../images/wand.png"/>
-  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
-  <link rel="canonical" href="../../index.html" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+<meta name="generator" content="HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+<title>ImageMagick: MagickCore, C API for ImageMagick: Image View Methods</title>
+<meta http-equiv="content-language" content="en-US" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="reply-to" content="magick-users@imagemagick.org" />
+<meta name="application-name" content="ImageMagick" />
+<meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats. In addition, resize, rotate, shear, distort or transform images automagically." />
+<meta name="application-url" content="http://www.imagemagick.org" />
+<meta name="generator" content="PHP" />
+<meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, view, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand" />
+<meta name="rating" content="GENERAL" />
+<meta name="robots" content="INDEX, FOLLOW" />
+<meta name="generator" content="ImageMagick Studio LLC" />
+<meta name="author" content="ImageMagick Studio LLC" />
+<meta name="revisit-after" content="2 DAYS" />
+<meta name="resource-type" content="document" />
+<meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC" />
+<meta name="distribution" content="Global" />
+<link rel="icon" href="../../../../images/wand.png" />
+<link rel="shortcut icon" href="../../../../images/wand.ico" type="images/x-icon" />
+<link rel="canonical" href="../../../../index.html" />
+<link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" /><!-- Add jQuery library -->
 
-  <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-  
-  <!-- Add mousewheel plugin (this is optional) -->
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
-  
-  <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
-  
-  <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
-  
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
-  
-  <script type="text/javascript">
-  	$(document).ready(function() {
-  		$(".fancybox").fancybox();
-  	});
-  </script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js">
+</script><!-- Add mousewheel plugin (this is optional) -->
 
-  <!-- ImageMagick style -->
-  <style type="text/css" media="all">
-    @import url("../../www/magick.css");
-  </style>
-</head>
-
-<body id="www-imagemagick-org">
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40133312-1', 'imagemagick.org');
-  ga('send', 'pageview');
+<script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js">
+</script><!-- Add fancyBox -->
+<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6">
+</script><!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
+<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2">
 </script>
+<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0">
+</script>
+<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
+<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6">
+</script>
+<script type="text/javascript">
+//<![CDATA[
+//&lt;![CDATA[
+        $(document).ready(function() {
+                $(".fancybox").fancybox();
+        });
+//]]&gt;
+//]]>
+</script><!-- ImageMagick style -->
 
+<style type="text/css" media="all">
+/*<![CDATA[*/
+/*&lt;![CDATA[*/
+    @import url("../../../../www/magick.css");
+/*]]&gt;*/
+/*]]>*/
+</style>
+</head>
+<body id="www-imagemagick-org">
 <div class="titlebar">
-<div style="margin: 17px auto; float: left;">
-  <script type="text/javascript">
-  <!--
-    google_ad_client = "pub-3129977114552745";
-    google_ad_slot = "5439289906";
-    google_ad_width = 728;
-    google_ad_height = 90;
-  //-->
-  </script>
-  <script type="text/javascript"
-    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-  </script>
-</div>
-<a href="../../discourse-server">
-  <img src="../../images/logo.jpg"
-  alt="ImageMagick Logo"
-  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
-<a href="../../index.html">
-  <img src="../../images/sprite.jpg"
-  alt="ImageMagick Sprite"
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
-</div>
-
+<div style="margin: 17px auto; float: left;"></div>
+<a href="../../../../discourse-server"><img src="../../../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;" /></a> <a href="../../../../index.html"><img src="../../../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;" /></a></div>
 <div class="westbar">
-
-<div class="menu">
-  <a title="About ImageMagick" href="../../index.html">About ImageMagick</a>
-</div>
-<div class="menu">
-  <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: iOS" href="../../www/binary-releases.html#iOS">iOS</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../www/binary-releases.html#windows">Windows</a>
-</div>
+<div class="menu"><a title="About ImageMagick" href="../../../../index.html">About ImageMagick</a></div>
+<div class="menu"><a title="Binary Releases" href="../../../../www/binary-releases.html">Binary Releases</a></div>
+<div class="sub"><a title="Binary Release: Unix" href="../../../../www/binary-releases.html#unix">Unix</a></div>
+<div class="sub"><a title="Binary Release: MacOS X" href="../../../../www/binary-releases.html#macosx">Mac OS X</a></div>
+<div class="sub"><a title="Binary Release: iOS" href="../../../../www/binary-releases.html#iOS">iOS</a></div>
+<div class="sub"><a title="Binary Release: Windows" href="../../../../www/binary-releases.html#windows">Windows</a></div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Command-line Tools" href="../../www/command-line-tools.html">Command-line Tools</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Processing" href="../../www/command-line-processing.html">Processing</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Options" href="../../www/command-line-options.html">Options</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
-</div>
-<div class="menu">
-  <a title="Program Interfaces" href="../../www/api.html">Program Interfaces</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickWand" href="../../www/magick-wand.html">MagickWand</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickCore" href="../../www/magick-core.html">MagickCore</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: PerlMagick" href="../../www/perl-magick.html">PerlMagick</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
-</div>
+<div class="menu"><a title="Command-line Tools" href="../../../../www/command-line-tools.html">Command-line Tools</a></div>
+<div class="sub"><a title="Command-line Tools: Processing" href="../../../../www/command-line-processing.html">Processing</a></div>
+<div class="sub"><a title="Command-line Tools: Options" href="../../../../www/command-line-options.html">Options</a></div>
+<div class="sub"><a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a></div>
+<div class="menu"><a title="Program Interfaces" href="../../../../www/api.html">Program Interfaces</a></div>
+<div class="sub"><a title="Program Interface: MagickWand" href="../../../../www/magick-wand.html">MagickWand</a></div>
+<div class="sub"><a title="Program Interface: MagickCore" href="../../../../www/magick-core.html">MagickCore</a></div>
+<div class="sub"><a title="Program Interface: PerlMagick" href="../../../../www/perl-magick.html">PerlMagick</a></div>
+<div class="sub"><a title="Program Interface: Magick++" href="../../../../www/magick++.html">Magick++</a></div>
 <div class="sep"></div>
-<div  class="menu">
-   <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Unix" href="../../www/install-source.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Windows" href="../../www/install-source.html#windows">Windows</a>
- </div>
-<div class="menu">
-  <a title="Resources" href="../../www/resources.html">Resources</a>
-</div>
-<div class="menu">
-  <a title="Architecture" href="../../www/architecture.html">Architecture</a>
-</div>
-<div class="menu">
-  <a title="Download" href="../../www/download.html">Download</a>
-</div>
+<div class="menu"><a title="Install from Source" href="../../../../www/install-source.html">Install from Source</a></div>
+<div class="sub"><a title="Install from Source: Unix" href="../../../../www/install-source.html#unix">Unix</a></div>
+<div class="sub"><a title="Install from Source: Windows" href="../../../../www/install-source.html#windows">Windows</a></div>
+<div class="menu"><a title="Resources" href="../../../../www/resources.html">Resources</a></div>
+<div class="menu"><a title="Architecture" href="../../../../www/architecture.html">Architecture</a></div>
+<div class="menu"><a title="Download" href="../../../../www/download.html">Download</a></div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Search" href="http://www.imagemagick.org/script/search.php">Search</a>
-</div>
+<div class="menu"><a title="Search" href="http://www.imagemagick.org/http://www.imagemagick.org/script/search.php">Search</a></div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
-</div>
-<div  class="sub">
-  <a title="Site Map: Links" href="../../www/links.html">Links</a>
-</div>
+<div class="menu"><a title="Site Map" href="../../../../www/sitemap.html">Site Map</a></div>
+<div class="sub"><a title="Site Map: Links" href="../../../../www/links.html">Links</a></div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Sponsors" href="../../www/sponsors.html">Sponsors</a>
+<div class="menu"><a title="Support ImageMagick Development" href="../../../../www/support.html">Support ImageMagick Development</a></div>
 </div>
-</div>
-
-<div class="eastbar">
-  <div class="g-plusone" id="gplusone"></div>
-  <script type="text/javascript">
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
+<div class="eastbar"><script type="text/javascript">
+//<![CDATA[
+    /* &lt;![CDATA[ */
     (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
     })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","false");
-  </script>
-  <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Click to flattr ImageMagick" title="Click to flattr ImageMagick" width="93" height="20" /></a>
-</div>
-
+    /* ]]&gt; */
+//]]>
+</script>
+<div><a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../../../index.html"></a></div>
+<noscript><a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a></noscript></div>
 <div class="main">
-
 <h1>Module image-view Methods</h1>
-<p class="navigation-index">[<a href="image-view.html#CloneImageView">CloneImageView</a> &bull; <a href="image-view.html#DestroyImageView">DestroyImageView</a> &bull; <a href="image-view.html#DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a> &bull; <a href="image-view.html#GetImageViewAuthenticIndexes">GetImageViewAuthenticIndexes</a> &bull; <a href="image-view.html#GetImageViewAuthenticPixels">GetImageViewAuthenticPixels</a> &bull; <a href="image-view.html#GetImageViewException">GetImageViewException</a> &bull; <a href="image-view.html#GetImageViewExtent">GetImageViewExtent</a> &bull; <a href="image-view.html#GetImageViewImage">GetImageViewImage</a> &bull; <a href="image-view.html#GetImageViewIterator">GetImageViewIterator</a> &bull; <a href="image-view.html#GetImageViewVirtualIndexes">GetImageViewVirtualIndexes</a> &bull; <a href="image-view.html#GetImageViewVirtualPixels">GetImageViewVirtualPixels</a> &bull; <a href="image-view.html#IsImageView">IsImageView</a> &bull; <a href="image-view.html#NewImageView">NewImageView</a> &bull; <a href="image-view.html#NewImageViewRegion">NewImageViewRegion</a> &bull; <a href="image-view.html#SetImageViewDescription">SetImageViewDescription</a> &bull; <a href="image-view.html#SetImageViewIterator">SetImageViewIterator</a> &bull; <a href="image-view.html#SetImageViewThreads">SetImageViewThreads</a> &bull; <a href="image-view.html#TransferImageViewIterator">TransferImageViewIterator</a> &bull; <a href="image-view.html#UpdateImageViewIterator">UpdateImageViewIterator</a>]</p>
-
+<p class="navigation-index">[<a href="image-view.html#CloneImageView">CloneImageView</a> • <a href="image-view.html#DestroyImageView">DestroyImageView</a> • <a href="image-view.html#DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a> • <a href="image-view.html#GetImageViewAuthenticIndexes">GetImageViewAuthenticIndexes</a> • <a href="image-view.html#GetImageViewAuthenticPixels">GetImageViewAuthenticPixels</a> • <a href="image-view.html#GetImageViewException">GetImageViewException</a> • <a href="image-view.html#GetImageViewExtent">GetImageViewExtent</a> • <a href="image-view.html#GetImageViewImage">GetImageViewImage</a> • <a href="image-view.html#GetImageViewIterator">GetImageViewIterator</a> • <a href="image-view.html#GetImageViewVirtualIndexes">GetImageViewVirtualIndexes</a> • <a href="image-view.html#GetImageViewVirtualPixels">GetImageViewVirtualPixels</a> • <a href="image-view.html#IsImageView">IsImageView</a> • <a href="image-view.html#NewImageView">NewImageView</a> • <a href=
+"image-view.html#NewImageViewRegion">NewImageViewRegion</a> • <a href="image-view.html#SetImageViewDescription">SetImageViewDescription</a> • <a href="image-view.html#SetImageViewIterator">SetImageViewIterator</a> • <a href="image-view.html#SetImageViewThreads">SetImageViewThreads</a> • <a href="image-view.html#TransferImageViewIterator">TransferImageViewIterator</a> • <a href="image-view.html#UpdateImageViewIterator">UpdateImageViewIterator</a>]</p>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="CloneImageView">CloneImageView</a></h2>
 <div class="doc-section">
-
 <p>CloneImageView() makes a copy of the specified image view.</p>
-
 <p>The format of the CloneImageView method is:</p>
-
 <pre class="code">
   ImageView *CloneImageView(const ImageView *image_view)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="DestroyImageView">DestroyImageView</a></h2>
 <div class="doc-section">
-
 <p>DestroyImageView() deallocates memory associated with a image view.</p>
-
 <p>The format of the DestroyImageView method is:</p>
-
 <pre class="code">
   ImageView *DestroyImageView(ImageView *image_view)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a></h2>
 <div class="doc-section">
-
-<p>DuplexTransferImageViewIterator() iterates over three image views in parallel and calls your transfer method for each scanline of the view.  The source and duplex pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  However, the destination image view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p>
-
+<p>DuplexTransferImageViewIterator() iterates over three image views in parallel and calls your transfer method for each scanline of the view. The source and duplex pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension. However, the destination image view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p>
 <p>The callback signature is:</p>
-
 <pre class="text">
   MagickBooleanType DuplexTransferImageViewMethod(const ImageView *source,
     const ImageView *duplex,ImageView *destination,const ssize_t y,
     const int thread_id,void *context)
 </pre>
-
 <p>Use this pragma if the view is not single threaded:</p>
-
 <pre class="text">
       #pragma omp critical
 </pre>
-
 <p>to define a section of code in your callback transfer method that must be executed by a single thread at a time.</p>
-
 <p>The format of the DuplexTransferImageViewIterator method is:</p>
-
 <pre class="code">
   MagickBooleanType DuplexTransferImageViewIterator(ImageView *source,
     ImageView *duplex,ImageView *destination,
     DuplexTransferImageViewMethod transfer,void *context)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>source</h5>
 <p>the source image view.</p>
-
 <h5>duplex</h5>
 <p>the duplex image view.</p>
-
 <h5>destination</h5>
 <p>the destination image view.</p>
-
 <h5>transfer</h5>
 <p>the transfer callback method.</p>
-
 <h5>context</h5>
 <p>the user defined context.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewAuthenticIndexes">GetImageViewAuthenticIndexes</a></h2>
 <div class="doc-section">
-
 <p>GetImageViewAuthenticIndexes() returns the image view authentic indexes.</p>
-
 <p>The format of the GetImageViewAuthenticPixels method is:</p>
-
 <pre class="code">
   IndexPacket *GetImageViewAuthenticIndexes(const ImageView *image_view)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewAuthenticPixels">GetImageViewAuthenticPixels</a></h2>
 <div class="doc-section">
-
 <p>GetImageViewAuthenticPixels() returns the image view authentic pixels.</p>
-
 <p>The format of the GetImageViewAuthenticPixels method is:</p>
-
 <pre class="code">
   PixelPacket *GetImageViewAuthenticPixels(const ImageView *image_view)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewException">GetImageViewException</a></h2>
 <div class="doc-section">
-
 <p>GetImageViewException() returns the severity, reason, and description of any error that occurs when utilizing a image view.</p>
-
 <p>The format of the GetImageViewException method is:</p>
-
 <pre class="code">
   char *GetImageViewException(const PixelImage *image_view,
     ExceptionType *severity)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the pixel image_view.</p>
-
 <h5>severity</h5>
 <p>the severity of the error is returned here.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewExtent">GetImageViewExtent</a></h2>
 <div class="doc-section">
-
 <p>GetImageViewExtent() returns the image view extent.</p>
-
 <p>The format of the GetImageViewExtent method is:</p>
-
 <pre class="code">
   RectangleInfo GetImageViewExtent(const ImageView *image_view)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewImage">GetImageViewImage</a></h2>
 <div class="doc-section">
-
 <p>GetImageViewImage() returns the image associated with the image view.</p>
-
 <p>The format of the GetImageViewImage method is:</p>
-
 <pre class="code">
   MagickCore *GetImageViewImage(const ImageView *image_view)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewIterator">GetImageViewIterator</a></h2>
 <div class="doc-section">
-
-<p>GetImageViewIterator() iterates over the image view in parallel and calls your get method for each scanline of the view.  The pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  Any updates to the pixels in your callback are ignored.</p>
-
+<p>GetImageViewIterator() iterates over the image view in parallel and calls your get method for each scanline of the view. The pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension. Any updates to the pixels in your callback are ignored.</p>
 <p>The callback signature is:</p>
-
 <pre class="text">
   MagickBooleanType GetImageViewMethod(const ImageView *source,
     const ssize_t y,const int thread_id,void *context)
 </pre>
-
 <p>Use this pragma if the view is not single threaded:</p>
-
 <pre class="text">
       #pragma omp critical
 </pre>
-
 <p>to define a section of code in your callback get method that must be executed by a single thread at a time.</p>
-
 <p>The format of the GetImageViewIterator method is:</p>
-
 <pre class="code">
   MagickBooleanType GetImageViewIterator(ImageView *source,
     GetImageViewMethod get,void *context)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>source</h5>
 <p>the source image view.</p>
-
 <h5>get</h5>
 <p>the get callback method.</p>
-
 <h5>context</h5>
 <p>the user defined context.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewVirtualIndexes">GetImageViewVirtualIndexes</a></h2>
 <div class="doc-section">
-
 <p>GetImageViewVirtualIndexes() returns the image view virtual indexes.</p>
-
 <p>The format of the GetImageViewVirtualIndexes method is:</p>
-
 <pre class="code">
   const IndexPacket *GetImageViewVirtualIndexes(
     const ImageView *image_view)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewVirtualPixels">GetImageViewVirtualPixels</a></h2>
 <div class="doc-section">
-
 <p>GetImageViewVirtualPixels() returns the image view virtual pixels.</p>
-
 <p>The format of the GetImageViewVirtualPixels method is:</p>
-
 <pre class="code">
   const PixelPacket *GetImageViewVirtualPixels(const ImageView *image_view)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="IsImageView">IsImageView</a></h2>
 <div class="doc-section">
-
 <p>IsImageView() returns MagickTrue if the the parameter is verified as a image view object.</p>
-
 <p>The format of the IsImageView method is:</p>
-
 <pre class="code">
   MagickBooleanType IsImageView(const ImageView *image_view)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="NewImageView">NewImageView</a></h2>
 <div class="doc-section">
-
 <p>NewImageView() returns a image view required for all other methods in the Image View API.</p>
-
 <p>The format of the NewImageView method is:</p>
-
 <pre class="code">
   ImageView *NewImageView(MagickCore *wand)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>wand</h5>
 <p>the wand.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="NewImageViewRegion">NewImageViewRegion</a></h2>
 <div class="doc-section">
-
 <p>NewImageViewRegion() returns a image view required for all other methods in the Image View API.</p>
-
 <p>The format of the NewImageViewRegion method is:</p>
-
 <pre class="code">
   ImageView *NewImageViewRegion(MagickCore *wand,const ssize_t x,
     const ssize_t y,const size_t width,const size_t height)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>wand</h5>
 <p>the magick wand.</p>
-
 <h5>x,y,columns,rows</h5>
 <p>These values define the perimeter of a extent of pixel_wands view.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="SetImageViewDescription">SetImageViewDescription</a></h2>
 <div class="doc-section">
-
 <p>SetImageViewDescription() associates a description with an image view.</p>
-
 <p>The format of the SetImageViewDescription method is:</p>
-
 <pre class="code">
   void SetImageViewDescription(ImageView *image_view,
     const char *description)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
 <h5>description</h5>
 <p>the image view description.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="SetImageViewIterator">SetImageViewIterator</a></h2>
 <div class="doc-section">
-
-<p>SetImageViewIterator() iterates over the image view in parallel and calls your set method for each scanline of the view.  The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension.  The pixels are initiallly undefined and any settings you make in the callback method are automagically synced back to your image.</p>
-
+<p>SetImageViewIterator() iterates over the image view in parallel and calls your set method for each scanline of the view. The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension. The pixels are initiallly undefined and any settings you make in the callback method are automagically synced back to your image.</p>
 <p>The callback signature is:</p>
-
 <pre class="text">
   MagickBooleanType SetImageViewMethod(ImageView *destination,
     const ssize_t y,const int thread_id,void *context)
 </pre>
-
 <p>Use this pragma if the view is not single threaded:</p>
-
 <pre class="text">
       #pragma omp critical
 </pre>
-
 <p>to define a section of code in your callback set method that must be executed by a single thread at a time.</p>
-
 <p>The format of the SetImageViewIterator method is:</p>
-
 <pre class="code">
   MagickBooleanType SetImageViewIterator(ImageView *destination,
     SetImageViewMethod set,void *context)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>destination</h5>
 <p>the image view.</p>
-
 <h5>set</h5>
 <p>the set callback method.</p>
-
 <h5>context</h5>
 <p>the user defined context.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="SetImageViewThreads">SetImageViewThreads</a></h2>
 <div class="doc-section">
-
 <p>SetImageViewThreads() sets the number of threads in a thread team.</p>
-
 <p>The format of the SetImageViewDescription method is:</p>
-
 <pre class="code">
   void SetImageViewThreads(ImageView *image_view,
     const size_t number_threads)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>image_view</h5>
 <p>the image view.</p>
-
 <h5>number_threads</h5>
 <p>the number of threads in a thread team.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="TransferImageViewIterator">TransferImageViewIterator</a></h2>
 <div class="doc-section">
-
-<p>TransferImageViewIterator() iterates over two image views in parallel and calls your transfer method for each scanline of the view.  The source pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension. However, the destination image view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p>
-
+<p>TransferImageViewIterator() iterates over two image views in parallel and calls your transfer method for each scanline of the view. The source pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension. However, the destination image view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p>
 <p>The callback signature is:</p>
-
 <pre class="text">
   MagickBooleanType TransferImageViewMethod(const ImageView *source,
     ImageView *destination,const ssize_t y,const int thread_id,
     void *context)
 </pre>
-
 <p>Use this pragma if the view is not single threaded:</p>
-
 <pre class="text">
       #pragma omp critical
 </pre>
-
 <p>to define a section of code in your callback transfer method that must be executed by a single thread at a time.</p>
-
 <p>The format of the TransferImageViewIterator method is:</p>
-
 <pre class="code">
   MagickBooleanType TransferImageViewIterator(ImageView *source,
     ImageView *destination,TransferImageViewMethod transfer,void *context)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>source</h5>
 <p>the source image view.</p>
-
 <h5>destination</h5>
 <p>the destination image view.</p>
-
 <h5>transfer</h5>
 <p>the transfer callback method.</p>
-
 <h5>context</h5>
 <p>the user defined context.</p>
-
- </div>
+</div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="UpdateImageViewIterator">UpdateImageViewIterator</a></h2>
 <div class="doc-section">
-
-<p>UpdateImageViewIterator() iterates over the image view in parallel and calls your update method for each scanline of the view.  The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.  Updates to pixels in your callback are automagically synced back to the image.</p>
-
+<p>UpdateImageViewIterator() iterates over the image view in parallel and calls your update method for each scanline of the view. The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted. Updates to pixels in your callback are automagically synced back to the image.</p>
 <p>The callback signature is:</p>
-
 <pre class="text">
   MagickBooleanType UpdateImageViewMethod(ImageView *source,
     const ssize_t y,const int thread_id,void *context)
 </pre>
-
 <p>Use this pragma if the view is not single threaded:</p>
-
 <pre class="text">
       #pragma omp critical
 </pre>
-
 <p>to define a section of code in your callback update method that must be executed by a single thread at a time.</p>
-
 <p>The format of the UpdateImageViewIterator method is:</p>
-
 <pre class="code">
   MagickBooleanType UpdateImageViewIterator(ImageView *source,
     UpdateImageViewMethod update,void *context)
 </pre>
-
 <p>A description of each parameter follows:</p>
-
 <h5>source</h5>
 <p>the source image view.</p>
-
 <h5>update</h5>
 <p>the update callback method.</p>
-
 <h5>context</h5>
 <p>the user defined context.</p>
-
- </div>
-
 </div>
-
-<div id="linkbar">
-    <span id="linkbar-west">&nbsp;</span>
-    <span id="linkbar-center">
-      <a href="../../discourse-server">Discourse Server</a> &bull;
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &bull;
-      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
-    </span>
-    <span id="linkbar-east">&nbsp;</span>
-  </div>
-  <div class="footer">
-    <span id="footer-west">&copy; 1999-2013 ImageMagick Studio LLC</span>
-    <span id="footer-east"> <a href="../../www/contact.html">Contact the Wizards</a></span>
-  </div>
-  <div style="clear: both; margin: 0; width: 100%; "></div>
+</div>
+<div id="linkbar"><span id="linkbar-west">&nbsp;</span> <span id="linkbar-center"><a href="../../../../discourse-server">Discourse Server</a> • <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> • <a href="http://jqmagick.imagemagick.org/">JqMagick</a></span> <span id="linkbar-east">&nbsp;</span></div>
+<div class="footer"><span id="footer-west">© 1999-2013 ImageMagick Studio LLC</span> <span id="footer-east"><a href="../../../../www/contact.html">Contact the Wizards</a></span></div>
+<div style="clear: both; margin: 0; width: 100%;"></div>
 </body>
 </html>
