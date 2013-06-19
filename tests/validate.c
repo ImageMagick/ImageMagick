@@ -497,7 +497,7 @@ static void ConvertLCHabToRGB(const double luma,const double chroma,
     Y,
     Z;
 
-  ConvertLCHabToXYZ(luma*100.0,255.0*(chroma-0.5),255.0*(hue-0.5),&X,&Y,&Z);
+  ConvertLCHabToXYZ(luma*100.0,255.0*(chroma-0.5),360.0*(hue-0.5),&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -544,10 +544,8 @@ static inline void ConvertXYZToLCHab(const double X,const double Y,
     b;
 
   ConvertXYZToLab(X,Y,Z,luma,&a,&b);
-  *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5));
-  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI;
-  *chroma=(*chroma)/255.0+0.5;
-  *hue=(*hue)/255.0+0.5;
+  *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5))/255.0+0.5;
+  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI/360.0+0.5;
   if (*hue < 0.0)
     *hue+=1.0;
 }
@@ -905,7 +903,7 @@ static MagickBooleanType ValidateLchToRGB()
     r;
 
   (void) FormatLocaleFile(stdout,"  LchToRGB");
-  ConvertLCHabToRGB(88.456154/100.0,75.219797/255.0+0.5,136.620717/255.0+0.5,
+  ConvertLCHabToRGB(88.456154/100.0,75.219797/255.0+0.5,136.620717/360.0+0.5,
     &r,&g,&b);
   if ((fabs(r-0.545877*QuantumRange) >= ReferenceEpsilon) ||
       (fabs(g-0.966567*QuantumRange) >= ReferenceEpsilon) ||
