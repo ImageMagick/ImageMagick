@@ -903,7 +903,7 @@ static MagickBooleanType ValidateLchToRGB()
     r;
 
   (void) FormatLocaleFile(stdout,"  LchToRGB");
-  ConvertLCHabToRGB(88.456154/100.0,75.219797/255.0+0.5,136.620717/360.0+0.5,
+  ConvertLCHabToRGB(88.456154/100.0,75.219797/255.0+0.5,136.620717/360.0,
     &r,&g,&b);
   if ((fabs(r-0.545877*QuantumRange) >= ReferenceEpsilon) ||
       (fabs(g-0.966567*QuantumRange) >= ReferenceEpsilon) ||
