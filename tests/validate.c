@@ -544,12 +544,11 @@ static inline void ConvertXYZToLCHab(const double X,const double Y,
     b;
 
   ConvertXYZToLab(X,Y,Z,luma,&a,&b);
-  *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5));
-  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI;
-  *chroma=(*chroma)/255.0+0.5;
-  *hue=(*hue)/255.0+0.5;
+  *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5))/255.0+0.5;
+  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI/360.0;
   if (*hue < 0.0)
     *hue+=1.0;
+  *hue+=0.5;
 }
 
 static void ConvertRGBToLCHab(const double red,const double green,
