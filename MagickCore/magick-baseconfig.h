@@ -37,7 +37,7 @@
 
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
-#define MAGICKCORE_CONFIGURE_PATH "/usr/etc/ImageMagick-7/"
+#define MAGICKCORE_CONFIGURE_PATH "/etc/ImageMagick-7/"
 #endif
 
 /* Subdirectory of lib where architecture-dependent configuration files live.
@@ -1118,7 +1118,7 @@
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
-#define MAGICKCORE_LIBRARY_PATH "/usr/lib/ImageMagick-7.0.0/"
+#define MAGICKCORE_LIBRARY_PATH "/usr/lib64/ImageMagick-7.0.0/"
 #endif
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
