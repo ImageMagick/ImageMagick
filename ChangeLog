@@ -1,7 +1,5 @@
 2013-06-16  6.8.6-1 Cristy  <quetzlzacatenango@image...>
   * Don't decompand RGB for the -modulate option.
-  * LCHuv scaling corrected (reference
-     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=23596).
 
 2013-06-16  6.8.6-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-0, SVN revision 12475.
