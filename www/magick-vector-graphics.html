@@ -1,104 +1,188 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemalocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-<meta name="generator" content="HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-<title>ImageMagick: Magick Vector Graphics</title>
-<meta http-equiv="content-language" content="en-US" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta http-equiv="reply-to" content="magick-users@imagemagick.org" />
-<meta name="application-name" content="ImageMagick" />
-<meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats. In addition, resize, rotate, shear, distort or transform images automagically." />
-<meta name="application-url" content="http://www.imagemagick.org" />
-<meta name="generator" content="PHP" />
-<meta name="keywords" content="magick, vector, graphics, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand" />
-<meta name="rating" content="GENERAL" />
-<meta name="robots" content="INDEX, FOLLOW" />
-<meta name="generator" content="ImageMagick Studio LLC" />
-<meta name="author" content="ImageMagick Studio LLC" />
-<meta name="revisit-after" content="2 DAYS" />
-<meta name="resource-type" content="document" />
-<meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC" />
-<meta name="distribution" content="Global" />
-<link rel="icon" href="../images/wand.png" />
-<link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon" />
-<link rel="canonical" href="../index.html" />
-<link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" /><!-- Add jQuery library -->
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <title>ImageMagick: Magick Vector Graphics</title>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magick, vector, graphics, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js">
-</script><!-- Add mousewheel plugin (this is optional) -->
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Add mousewheel plugin (this is optional) -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  
+  <!-- Optionally add helpers - button, thumbnail and/or media -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
 
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js">
-</script><!-- Add fancyBox -->
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6">
-</script><!-- Optionally add helpers - button, thumbnail and/or media -->
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2">
-</script>
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0">
-</script>
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6">
-</script>
-<script type="text/javascript">
-//<![CDATA[
-//&lt;![CDATA[
-        $(document).ready(function() {
-                $(".fancybox").fancybox();
-        });
-//]]&gt;
-//]]>
-</script><!-- ImageMagick style -->
-
-<style type="text/css" media="all">
-/*<![CDATA[*/
-/*&lt;![CDATA[*/
+  <!-- ImageMagick style -->
+  <style type="text/css" media="all">
     @import url("../www/magick.css");
-/*]]&gt;*/
-/*]]>*/
-</style>
+  </style>
 </head>
+
 <body id="www-imagemagick-org">
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//127.0.0.1/analytics.js','ga');
+
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
+
 <div class="titlebar">
-<div style="margin: 17px auto; float: left;"></div>
-<a href="../discourse-server"><img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;" /></a> <a href="../index.html"><img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;" /></a></div>
-<div class="westbar">
-<div class="menu"><a title="About ImageMagick" href="../index.html">About ImageMagick</a></div>
-<div class="menu"><a title="Binary Releases" href="binary-releases.html">Binary Releases</a></div>
-<div class="sub"><a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a></div>
-<div class="sub"><a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a></div>
-<div class="sub"><a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a></div>
-<div class="sub"><a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a></div>
-<div class="sub"><a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a></div>
-<div class="sub"><a title="Command-line Tools: Options" href="command-line-options.html">Options</a></div>
-<div class="sub"><a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a></div>
-<div class="menu"><a title="Program Interfaces" href="api.html">Program Interfaces</a></div>
-<div class="sub"><a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a></div>
-<div class="sub"><a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a></div>
-<div class="sub"><a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a></div>
-<div class="sub"><a title="Program Interface: Magick++" href="magick++.html">Magick++</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Install from Source" href="install-source.html">Install from Source</a></div>
-<div class="sub"><a title="Install from Source: Unix" href="install-source.html#unix">Unix</a></div>
-<div class="sub"><a title="Install from Source: Windows" href="install-source.html#windows">Windows</a></div>
-<div class="menu"><a title="Resources" href="resources.html">Resources</a></div>
-<div class="menu"><a title="Architecture" href="architecture.html">Architecture</a></div>
-<div class="menu"><a title="Download" href="download.html">Download</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Search" href="search.html">Search</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Site Map" href="sitemap.html">Site Map</a></div>
-<div class="sub"><a title="Site Map: Links" href="links.html">Links</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a></div>
+<div style="margin: 17px auto; float: left;">
+  <script type="text/javascript">
+  <!--
+    google_ad_client = "pub-3129977114552745";
+    google_ad_slot = "5439289906";
+    google_ad_width = 728;
+    google_ad_height = 90;
+  //-->
+  </script>
+  <script type="text/javascript"
+    src="http://127.0.0.1/pagead/show_ads.js">
+  </script>
 </div>
-<div class="eastbar"><script type="text/javascript">
-//<![CDATA[
-    /* &lt;![CDATA[ */
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="westbar">
+
+<div class="menu">
+  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+</div>
+<div class="menu">
+  <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Options" href="command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a title="Program Interfaces" href="api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a title="Install from Source" href="install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Unix" href="install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Windows" href="install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a title="Resources" href="resources.html">Resources</a>
+</div>
+<div class="menu">
+  <a title="Architecture" href="architecture.html">Architecture</a>
+</div>
+<div class="menu">
+  <a title="Download" href="download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Search" href="search.html">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Site Map" href="sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+  <a title="Site Map: Links" href="links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
+</div>
+</div>
+
+<div class="eastbar">
+  <script type="text/javascript">
+    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -107,48 +191,274 @@
         var script = document.getElementsByTagName('offline-script')[0];
         script.parentNode.insertBefore(po, script);
     })();
-    /* ]]&gt; */
-//]]>
-</script>
-<div><a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
-<noscript><a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a></noscript></div>
+    /* ]]> */
+  </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
+  <noscript>
+    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
+  </noscript>
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://127.0.0.1/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
+</div>
+
 <div class="main">
+
+
 <h1>ImageMagick Magick Vector Graphics</h1>
-<p class="navigation-index">[<a href="magick-vector-graphics.html#intro">Introduction to Vector Graphics</a> • <a href="magick-vector-graphics.html#overview">MVG Overview</a> • <a href="magick-vector-graphics.html#primitives">Drawing Primitives</a>]</p>
+<p class="navigation-index">[<a href="magick-vector-graphics.html#intro">Introduction to Vector Graphics</a> &bull; <a href="magick-vector-graphics.html#overview">MVG Overview</a> &bull; <a href="magick-vector-graphics.html#primitives">Drawing Primitives</a>]</p>
+
 <a id="intro"></a>
 <div class="doc-section">
-<p>This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick. You can use the language to draw from the command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="api.html">program interfaces</a>. Use this command, for example, to render an arc:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">convert -size 100x60 canvas:skyblue -fill white -stroke black \<br />
--draw "path 'M 30,40 A 30,20 20 0,0 70,20 A 30,20 20 1,0 30,40 Z '" \<br />
-arc.png</span></p>
+
+<p>This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick.  You can use the language to draw from the
+command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/" >SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="api.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 100x60 canvas:skyblue -fill white -stroke black \  <br/>
+    -draw "path 'M 30,40  A 30,20  20  0,0 70,20 A 30,20  20  1,0 30,40 Z '" \ <br/>
+    arc.png</span></p>
 <p>and here is the result:</p>
-<p class="image"><a href="../images/arc.png"><img src="../images/arc.png" width="100" height="60" alt="arc" /></a></p>
+
+<p class="image">
+  <a href="../images/arc.png"><img src="../images/arc.png" width="100" height="60" alt="arc" /></a>
+</p>
+
 <p>When the drawing gets sufficiently complex, we recommend you assemble the graphic primitives into a MVG file. For our example, we use <a href="../source/piechart.mvg">piechart.mvg</a>:</p>
-<div class="viewport">push graphic-context viewbox 0 0 624 369 affine 0.283636 0 0 0.283846 -0 -0 push graphic-context push graphic-context fill 'darkslateblue' stroke 'blue' stroke-width 1 rectangle 1,1 2199,1299 pop graphic-context push graphic-context font-size 40 fill 'white' stroke-width 1 text 600,1100 'Average: 20.0' pop graphic-context push graphic-context fill 'red' stroke 'black' stroke-width 5 path 'M700.0,600.0 L340.0,600.0 A360.0,360.0 0 0,1 408.1452123287954,389.2376150414973 z' pop graphic-context push graphic-context font-size 40 fill 'white' stroke-width 1 text 1400,140 'MagickWand for PHP' pop graphic-context push graphic-context font-size 30 fill 'white' stroke-width 1 text 1800,140 '(10.0%)' pop graphic-context push graphic-context fill 'red' stroke 'black' stroke-width 4 rectangle 1330,100 1370,140 pop graphic-context push graphic-context fill 'yellow' stroke 'black' stroke-width 5 path 'M700.0,600.0 L408.1452123287954,389.2376150414973 A360.0,360.0 0 0,1
-976.5894480359858,369.56936567559273 z' pop graphic-context push graphic-context font-size 40 fill 'white' stroke-width 1 text 1400,220 'MagickCore' pop graphic-context push graphic-context font-size 30 fill 'white' stroke-width 1 text 1800,220 '(29.0%)' pop graphic-context push graphic-context fill 'yellow' stroke 'black' stroke-width 4 rectangle 1330,180 1370,220 pop graphic-context push graphic-context fill 'fuchsia' stroke 'black' stroke-width 5 path 'M700.0,600.0 L976.5894480359858,369.56936567559273 A360.0,360.0 0 0,1 964.2680466142854,844.4634932636567 z' pop graphic-context push graphic-context font-size 40 fill 'white' stroke-width 1 text 1400,300 'MagickWand' pop graphic-context push graphic-context font-size 30 fill 'white' stroke-width 1 text 1800,300 '(22.9%)' pop graphic-context push graphic-context fill 'fuchsia' stroke 'black' stroke-width 4 rectangle 1330,260 1370,300 pop graphic-context push graphic-context fill 'blue' stroke 'black' stroke-width 5 path 'M700.0,600.0
-L964.2680466142854,844.4634932636567 A360.0,360.0 0 0,1 757.853099990584,955.3210081341651 z' pop graphic-context push graphic-context font-size 40 fill 'white' stroke-width 1 text 1400,380 'JMagick' pop graphic-context push graphic-context font-size 30 fill 'white' stroke-width 1 text 1800,380 '(10.6%)' pop graphic-context push graphic-context fill 'blue' stroke 'black' stroke-width 4 rectangle 1330,340 1370,380 pop graphic-context push graphic-context fill 'lime' stroke 'black' stroke-width 5 path 'M700.0,600.0 L757.853099990584,955.3210081341651 A360.0,360.0 0 0,1 340.0,600.0 z' pop graphic-context push graphic-context font-size 40 fill 'white' stroke-width 1 text 1400,460 'Magick++' pop graphic-context push graphic-context font-size 30 fill 'white' stroke-width 1 text 1800,460 '(27.5%)' pop graphic-context push graphic-context fill 'lime' stroke 'black' stroke-width 4 rectangle 1330,420 1370,460 pop graphic-context push graphic-context font-size 100 fill 'white' stroke-width 1 text 100,150 'ImageMagick'
-pop graphic-context push graphic-context fill 'none' stroke 'black' stroke-width 5 circle 700,600 700,960 pop graphic-context pop graphic-context pop graphic-context</div>
-<p>to render a pie chart with this command:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">convert piechart.mvg piechart.png</span></p>
-<p>which produces this rendering:</p>
-<p class="image"><a href="../images/piechart.png"><img src="../images/piechart.png" width="624" height="369" alt="piechart" /></a></p>
-<p>However, in general, MVG is sufficiently difficult to work with that you probably want to use a program to generate your graphics in the SVG format. ImageMagick automagically converts SVG to MVG and renders your image, for example, we render <a href="../source/piechart.svg">piechart.svg</a> with this command:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">convert piechart.svg piechart.jpg</span></p>
-<p>to produce the same pie chart we created with the MVG language.</p>
-<p>Drawing is available from many of the ImageMagick <a href="api.html">program interfaces</a> as well. ImageMagick converts the drawing API calls to MVG and renders it. Here is example code written in the <a href="magick-wand.html">MagickWand</a> language:</p>
-<div class="viewport">(void) PushDrawingWand(draw_wand); { const PointInfo points[6] = { { 180,504 }, { 282.7,578.6 }, { 243.5,699.4 }, { 116.5,699.4 }, { 77.26,578.6 }, { 180,504 } }; DrawSetStrokeAntialias(draw_wand,True); DrawSetStrokeWidth(draw_wand,9); DrawSetStrokeLineCap(draw_wand,RoundCap); DrawSetStrokeLineJoin(draw_wand,RoundJoin); (void) DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL); (void) PixelSetColor(color,"#4000c2"); DrawSetStrokeColor(draw_wand,color); DrawSetFillRule(draw_wand,EvenOddRule); (void) PixelSetColor(color,"#800000"); DrawSetFillColor(draw_wand,color); DrawPolygon(draw_wand,6,points); } (void) PopDrawingWand(draw_wand);</div>
+
+<div class="viewport">
+  push graphic-context
+    viewbox 0 0 624 369
+    affine 0.283636 0 0 0.283846 -0 -0
+    push graphic-context
+      push graphic-context
+        fill 'darkslateblue'
+        stroke 'blue'
+        stroke-width 1
+        rectangle 1,1 2199,1299
+      pop graphic-context
+      push graphic-context
+        font-size 40
+        fill 'white'
+        stroke-width 1
+        text 600,1100 'Average: 20.0'
+      pop graphic-context
+      push graphic-context
+        fill 'red'
+        stroke 'black'
+        stroke-width 5
+        path 'M700.0,600.0 L340.0,600.0 A360.0,360.0 0 0,1 408.1452123287954,389.2376150414973 z'
+      pop graphic-context
+      push graphic-context
+        font-size 40
+        fill 'white'
+        stroke-width 1
+        text 1400,140 'MagickWand for PHP'
+      pop graphic-context
+      push graphic-context
+        font-size 30
+        fill 'white'
+        stroke-width 1
+        text 1800,140 '(10.0%)'
+      pop graphic-context
+      push graphic-context
+        fill 'red'
+        stroke 'black'
+        stroke-width 4
+        rectangle 1330,100 1370,140
+      pop graphic-context
+      push graphic-context
+        fill 'yellow'
+        stroke 'black'
+        stroke-width 5
+        path 'M700.0,600.0 L408.1452123287954,389.2376150414973 A360.0,360.0 0 0,1 976.5894480359858,369.56936567559273 z'
+      pop graphic-context
+      push graphic-context
+        font-size 40
+        fill 'white'
+        stroke-width 1
+        text 1400,220 'MagickCore'
+      pop graphic-context
+      push graphic-context
+        font-size 30
+        fill 'white'
+        stroke-width 1
+        text 1800,220 '(29.0%)'
+      pop graphic-context
+      push graphic-context
+        fill 'yellow'
+        stroke 'black'
+        stroke-width 4
+        rectangle 1330,180 1370,220
+      pop graphic-context
+      push graphic-context
+        fill 'fuchsia'
+        stroke 'black'
+        stroke-width 5
+        path 'M700.0,600.0 L976.5894480359858,369.56936567559273 A360.0,360.0 0 0,1 964.2680466142854,844.4634932636567 z'
+      pop graphic-context
+      push graphic-context
+        font-size 40
+        fill 'white'
+        stroke-width 1
+        text 1400,300 'MagickWand'
+      pop graphic-context
+      push graphic-context
+        font-size 30
+        fill 'white'
+        stroke-width 1
+        text 1800,300 '(22.9%)'
+      pop graphic-context
+      push graphic-context
+        fill 'fuchsia'
+        stroke 'black'
+        stroke-width 4
+        rectangle 1330,260 1370,300
+      pop graphic-context
+      push graphic-context
+        fill 'blue'
+        stroke 'black'
+        stroke-width 5
+        path 'M700.0,600.0 L964.2680466142854,844.4634932636567 A360.0,360.0 0 0,1 757.853099990584,955.3210081341651 z'
+      pop graphic-context
+      push graphic-context
+        font-size 40
+        fill 'white'
+        stroke-width 1
+        text 1400,380 'JMagick'
+      pop graphic-context
+      push graphic-context
+        font-size 30
+        fill 'white'
+        stroke-width 1
+        text 1800,380 '(10.6%)'
+      pop graphic-context
+      push graphic-context
+        fill 'blue'
+        stroke 'black'
+        stroke-width 4
+        rectangle 1330,340 1370,380
+      pop graphic-context
+      push graphic-context
+        fill 'lime'
+        stroke 'black'
+        stroke-width 5
+        path 'M700.0,600.0 L757.853099990584,955.3210081341651 A360.0,360.0 0 0,1 340.0,600.0 z'
+      pop graphic-context
+      push graphic-context
+        font-size 40
+        fill 'white'
+        stroke-width 1
+        text 1400,460 'Magick++'
+      pop graphic-context
+      push graphic-context
+        font-size 30
+        fill 'white'
+        stroke-width 1
+        text 1800,460 '(27.5%)'
+      pop graphic-context
+      push graphic-context
+        fill 'lime'
+        stroke 'black'
+        stroke-width 4
+        rectangle 1330,420 1370,460
+      pop graphic-context
+      push graphic-context
+        font-size 100
+        fill 'white'
+        stroke-width 1
+        text 100,150 'ImageMagick'
+      pop graphic-context
+      push graphic-context
+        fill 'none'
+        stroke 'black'
+        stroke-width 5
+        circle 700,600 700,960
+      pop graphic-context
+    pop graphic-context
+  pop graphic-context
 </div>
+
+<p>to render a pie chart with this command:</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert piechart.mvg piechart.png</span></p>
+<p>which produces this rendering:</p>
+
+<p class="image">
+  <a href="../images/piechart.png"><img src="../images/piechart.png" width="624" height="369" alt="piechart" /></a>
+</p>
+
+<p>However, in general, MVG is sufficiently difficult to work with that you probably want to use a program to generate your graphics in the SVG format.  ImageMagick automagically converts SVG to MVG and renders your image, for example, we render <a href="../source/piechart.svg">piechart.svg</a> with this command:</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert piechart.svg piechart.jpg</span></p>
+
+<p>to produce the same pie chart we created with the MVG language.</p>
+
+<p>Drawing is available from many of the ImageMagick <a href="api.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="magick-wand.html">MagickWand</a> language: </p>
+
+<div class="viewport">
+   (void) PushDrawingWand(draw_wand);
+   {
+     const PointInfo points[6] =
+     {
+       { 180,504 },
+       { 282.7,578.6 },
+       { 243.5,699.4 },
+       { 116.5,699.4 },
+       { 77.26,578.6 },
+       { 180,504 }
+     };
+
+     DrawSetStrokeAntialias(draw_wand,True);
+     DrawSetStrokeWidth(draw_wand,9);
+     DrawSetStrokeLineCap(draw_wand,RoundCap);
+     DrawSetStrokeLineJoin(draw_wand,RoundJoin);
+     (void) DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
+     (void) PixelSetColor(color,"#4000c2");
+     DrawSetStrokeColor(draw_wand,color);
+     DrawSetFillRule(draw_wand,EvenOddRule);
+     (void) PixelSetColor(color,"#800000");
+     DrawSetFillColor(draw_wand,color);
+     DrawPolygon(draw_wand,6,points);
+   }
+   (void) PopDrawingWand(draw_wand);
+</div>
+
+</div>
+
 <h2><a id="overview"></a>MVG Overview</h2>
 <div class="doc-section">
+
 <p>MVG ignores all white-space between commands. This allows multiple MVG commands per line. It is common convention to terminate each MVG command with a new line to make MVG easier to edit and read. This syntax description uses indentation in MVG sequences to aid with understanding. Indentation is supported but is not required.</p>
+
 <p>Metafile wrapper syntax (to support stand-alone MVG files):</p>
+
 <pre class="text">
   push graphic-context
     viewbox 0 0 width height
     [ any other MVG commands ]
   pop graphic-context
 </pre>
+
 <p>Pattern syntax (saving and restoring context):</p>
+
 <pre class="text">
   push pattern id x,y width,height
    push graphic-context
@@ -156,7 +466,9 @@ pop graphic-context push graphic-context fill 'none' stroke 'black' stroke-width
    pop graphic-context
   pop pattern
 </pre>
+
 <p>an example is (%s is a identifier string):</p>
+
 <pre class="text">
   push defs
    push pattern %s 10,10 20,20
@@ -171,21 +483,29 @@ pop graphic-context push graphic-context fill 'none' stroke 'black' stroke-width
    pop pattern
   pop defs
 </pre>
+
 <p>For image tiling use:</p>
+
 <pre class="text">
   push pattern id x,y width,height
    image Copy ...
   pop pattern
 </pre>
+
 <p>Note you can use the pattern for either the fill or stroke like:</p>
+
 <pre class="text">
   stroke url(#%s)
 </pre>
+
 <p>or</p>
+
 <pre class="text">
   fill url(#%s)
 </pre>
-<p>The clip path defines a clipping area, where only the contained area to be drawn upon. Areas outside of the clipping areare masked.</p>
+
+<p>The clip path defines a clipping area, where only the contained area to be drawn upon.  Areas outside of the clipping areare masked.</p>
+
 <pre class="text">
   push defs
    push clip-path %s
@@ -195,64 +515,146 @@ pop graphic-context push graphic-context fill 'none' stroke 'black' stroke-width
    pop clip-path
   pop defs
   clip-path url(#%s)
-</pre></div>
+</pre>
+
+</div>
+
 <h2><a id="primitives"></a>Drawing Primitives</h2>
 <div class="doc-section">
+
 <p>Here is a complete description of the MVG drawing primitives:</p>
+
 <dl class="doc">
-<dt class="doc"><a id="affine"></a>affine <em class="option">s<sub>x</sub></em>,<em class="option">r<sub>x</sub></em>,<em class="option">r<sub>y</sub></em>,<em class="option">s<sub>y</sub></em>,<em class="option">t<sub>x</sub></em>,<em class="option">t<sub>y</sub></em></dt>
-<dt class="doc"><a id="arc"></a>arc <em class="option">x<sub>0</sub></em>,<em class="option">y<sub>0</sub></em>&nbsp; &nbsp;<em class="option">x<sub>1</sub></em>,<em class="option">y<sub>1</sub></em>&nbsp; &nbsp;<em class="option">a<sub>0</sub></em>,<em class="option">a<sub>1</sub></em></dt>
-<dt class="doc"><a id="bezier"></a>bezier <em class="option">x<sub>0</sub></em>,<em class="option">y<sub>0</sub></em> ... <em class="option">x<sub>n</sub></em>,<em class="option">y<sub>n</sub></em></dt>
-<dd>
-<p><code>Bezier</code> (spline) requires three or more x,y coordinates to define its shape. The first and last points are the knots (preserved coordinates) and any intermediate coordinates are the control points. If two control points are specified, the line between each end knot and its sequentially respective control point determines the tangent direction of the curve at that end. If one control point is specified, the lines from the end knots to the one control point determines the tangent directions of the curve at each end. If more than two control points are specified, then the additional control points act in combination to determine the intermediate shape of the curve. In order to draw complex curves, it is highly recommended either to use the <code>Path</code> primitive or to draw multiple four-point bezier segments with the start and end knots of each successive segment repeated.</p>
-</dd>
-<dt class="doc"><a id="border-color"></a>border-color <em class="option">color</em></dt>
-<dt class="doc"><a id="circle"></a>circle <em class="option">origin<sub>x</sub></em>,<em class="option">origin<sub>y</sub></em>&nbsp; &nbsp;<em class="option">perimeter<sub>x</sub></em>,<em class="option">perimeter<sub>y</sub></em></dt>
-<dt class="doc"><a id="clip-path"></a>clip-path url(<em class="option">name</em>)</dt>
-<dt class="doc"><a id="clip-rule"></a>clip-rule <em class="option">rule</em></dt>
-<dd>Choose from these rule types:
-<p class="text">evenodd<br />
-nonzero</p>
-</dd>
-<dt class="doc"><a id="clip-units"></a>clip-units <em class="option">units</em></dt>
-<dd>Choose from these unit types:
-<p class="text">userSpace<br />
-userSpaceOnUse<br />
-objectBoundingBox<br /></p>
-</dd>
-<dt class="doc"><a id="color"></a>color <em class="option">x</em>,<em class="option">y</em> <em class="option">method</em></dt>
+
+  <dt class="doc"><a id="affine"></a>affine <em class="option">s<sub>x</sub></em>,<em class="option">r<sub>x</sub></em>,<em class="option">r<sub>y</sub></em>,<em class="option">s<sub>y</sub></em>,<em class="option">t<sub>x</sub></em>,<em class="option">t<sub>y</sub></em></dt>
+
+  <dd></dd>
+
+
+
+  <dt class="doc"><a id="arc"></a>arc <em class="option">x<sub>0</sub></em>,<em class="option">y<sub>0</sub></em>&nbsp; &nbsp;<em class="option">x<sub>1</sub></em>,<em class="option">y<sub>1</sub></em>&nbsp; &nbsp;<em class="option">a<sub>0</sub></em>,<em class="option">a<sub>1</sub></em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="bezier"></a>bezier <em class="option">x<sub>0</sub></em>,<em class="option">y<sub>0</sub></em> ... <em class="option">x<sub>n</sub></em>,<em class="option">y<sub>n</sub></em></dt>
+
+  <dd>
+  <p><code>Bezier</code> (spline) requires three or more x,y coordinates to define its shape. The first and last points are the knots (preserved coordinates) and any intermediate coordinates are the control points. If two control points are specified, the line between each end knot and its sequentially respective control point determines the tangent direction of the curve at that end. If one control point is specified, the lines from the end knots to the one control point determines the tangent directions of the curve at each end. If more than two control points are specified, then the additional control points act in combination to determine the intermediate shape of the curve. In order to
+  draw complex curves, it is highly recommended either to use the <code>Path</code> primitive or to draw multiple four-point bezier segments with the start and end knots of each successive segment repeated.</p>
+  </dd>
+
+  <dt class="doc"><a id="border-color"></a>border-color <em class="option">color</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="circle"></a>circle <em class="option">origin<sub>x</sub></em>,<em class="option">origin<sub>y</sub></em>&nbsp; &nbsp;<em class="option">perimeter<sub>x</sub></em>,<em class="option">perimeter<sub>y</sub></em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="clip-path"></a>clip-path url(<em class="option">name</em>)</dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="clip-rule"></a>clip-rule <em class="option">rule</em></dt>
+
+  <dd>Choose from these rule types:
+
+	<p class="text">
+	  evenodd <br/>
+	  nonzero
+	</p>
+   </dd>
+
+  <dt class="doc"><a id="clip-units"></a>clip-units <em class="option">units</em></dt>
+
+  <dd>Choose from these unit types:
+
+	<p class="text">
+	  userSpace <br/>
+	  userSpaceOnUse  <br/>
+	  objectBoundingBox <br/>
+	</p>
+  </dd>
+
+  <dt class="doc"><a id="color"></a>color <em class="option">x</em>,<em class="option">y</em> <em class="option">method</em></dt>
+
+
+
+
+
+
+
+
+
+
+
 <dd>Choose from these method types:
+
 <pre class="text">
   point
   replace
   floodfill
   filltoborder
   reset
-</pre></dd>
-<dt class="doc"><a id="decorate"></a>decorate <em class="option">type</em></dt>
+</pre>
+
+</dd>
+
+  <dt class="doc"><a id="decorate"></a>decorate <em class="option">type</em></dt>
+
+
 <dd>Choose from these types of decorations:
+
 <pre class="text">
   none
   line-through
   overline
   underline
-</pre></dd>
-<dt class="doc"><a id="ellipse"></a>ellipse <em class="option">center<sub>x</sub></em>,<em class="option">center<sub>y</sub></em>&nbsp; &nbsp;<em class="option">radius<sub>x</sub></em>,<em class="option">radius<sub>y</sub></em>&nbsp; &nbsp;<em class="option">arc<sub>start</sub></em>,<em class="option">arc<sub>stop</sub></em></dt>
-<dt class="doc"><a id="fill"></a>fill <em class="option">color</em></dt>
-<dd>Choose from any of these <a href="color.html">colors</a>.</dd>
-<dt class="doc"><a id="fill-opacity"></a>fill-opacity <em class="option">opacity</em></dt>
-<dd>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).</dd>
-<dt class="doc"><a id="fill-rule"></a>fill-rule <em class="option">rule</em></dt>
+</pre>
+
+</dd>
+
+  <dt class="doc"><a id="ellipse"></a>ellipse <em class="option">center<sub>x</sub></em>,<em class="option">center<sub>y</sub></em>&nbsp; &nbsp;<em class="option">radius<sub>x</sub></em>,<em class="option">radius<sub>y</sub></em>&nbsp; &nbsp;<em class="option">arc<sub>start</sub></em>,<em class="option">arc<sub>stop</sub></em></dt>
+
+  <dt class="doc"><a id="fill"></a>fill <em class="option">color</em></dt>
+
+<dd>Choose from any of these <a href="color.html">colors</a>.
+</dd>
+
+  <dt class="doc"><a id="fill-opacity"></a>fill-opacity <em class="option">opacity</em></dt>
+
+
+<dd>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).
+</dd>
+
+  <dt class="doc"><a id="fill-rule"></a>fill-rule <em class="option">rule</em></dt>
+
+
 <dd>Choose from these rule types:
+
 <pre class="text">
   evenodd
   nonzero
-</pre></dd>
-<dt class="doc"><a id="font"></a>font <em class="option">name</em></dt>
-<dt class="doc"><a id="font-family"></a>font-family <em class="option">family</em></dt>
-<dt class="doc"><a id="font-size"></a>font-size <em class="option">point-size</em></dt>
-<dt class="doc"><a id="font-stretch"></a>font-stretch <em class="option">type</em></dt>
+</pre>
+
+</dd>
+
+  <dt class="doc"><a id="font"></a>font <em class="option">name</em></dt>
+
+<dd></dd>
+
+  <dt class="doc"><a id="font-family"></a>font-family <em class="option">family</em></dt>
+
+<dd></dd>
+
+  <dt class="doc"><a id="font-size"></a>font-size <em class="option">point-size</em></dt>
+
+<dd></dd>
+
+  <dt class="doc"><a id="font-stretch"></a>font-stretch <em class="option">type</em></dt>
+
 <dd>Choose from these stretch types:
+
 <pre class="text">
   all
   normal
@@ -264,17 +666,28 @@ objectBoundingBox<br /></p>
   expanded
   extra-expanded
   ultra-expanded
-</pre></dd>
-<dt class="doc"><a id="font-style"></a>font-style <em class="option">style</em></dt>
+</pre>
+
+</dd>
+
+  <dt class="doc"><a id="font-style"></a>font-style <em class="option">style</em></dt>
+
+
 <dd>Choose from these styles:
+
 <pre class="text">
   all
   normal
   italic
   oblique
-</pre></dd>
-<dt class="doc"><a id="font-weight"></a>font-weight <em class="option">weight</em></dt>
+</pre>
+
+</dd>
+
+  <dt class="doc"><a id="font-weight"></a>font-weight <em class="option">weight</em></dt>
+
 <dd>Choose from these weights:
+
 <pre class="text">
   all
   normal
@@ -288,16 +701,26 @@ objectBoundingBox<br /></p>
   700
   800
   900
-</pre></dd>
-<dt class="doc"><a id="gradient-units"></a>gradient-units <em class="option">units</em></dt>
+</pre>
+
+</dd>
+
+  <dt class="doc"><a id="gradient-units"></a>gradient-units <em class="option">units</em></dt>
+
 <dd>Choose from these units:
+
 <pre class="text">
   userSpace
   userSpaceOnUse
   objectBoundingBox
-</pre></dd>
-<dt class="doc"><a id="gravity"></a>gravity <em class="option">type</em></dt>
+</pre>
+
+</dd>
+
+  <dt class="doc"><a id="gravity"></a>gravity <em class="option">type</em></dt>
+
 <dd>Choose from these gravity types:
+
 <pre class="text">
   NorthWest
   North
@@ -308,208 +731,409 @@ objectBoundingBox<br /></p>
   SouthWest
   South
   SouthEast
-</pre></dd>
-<dt class="doc"><a id="compose"></a>image <em class="option">compose x,y width,height 'filename'</em></dt>
-<dd>Choose from these compose operations:
-<table id="table" cellpadding="2" cellspacing="0" style="width: 93%">
-<tbody>
-<tr valign="top">
-<th align="left" style="width: 8%">Method</th>
-<th align="left">Description</th>
-</tr>
-<tr valign="top">
-<td valign="top">clear</td>
-<td valign="top">Both the color and the alpha of the destination are cleared. Neither the source nor the destination are used as input.</td>
-</tr>
-<tr valign="top">
-<td valign="top">src</td>
-<td valign="top">The source is copied to the destination. The destination is not used as input.</td>
-</tr>
-<tr valign="top">
-<td valign="top">dst</td>
-<td valign="top">The destination is left untouched.</td>
-</tr>
-<tr valign="top">
-<td valign="top"><b>src-over</b></td>
-<td valign="top">The source is composited over the destination.</td>
-</tr>
-<tr valign="top">
-<td valign="top">dst-over</td>
-<td valign="top">The destination is composited over the source and the result replaces the destination.</td>
-</tr>
-<tr valign="top">
-<td valign="top">src-in</td>
-<td valign="top">The part of the source lying inside of the destination replaces the destination.</td>
-</tr>
-<tr valign="top">
-<td valign="top">dst-in</td>
-<td valign="top">The part of the destination lying inside of the source replaces the destination.</td>
-</tr>
-<tr valign="top">
-<td valign="top">src-out</td>
-<td valign="top">The part of the source lying outside of the destination replaces the destination.</td>
-</tr>
-<tr valign="top">
-<td valign="top">dst-out</td>
-<td valign="top">The part of the destination lying outside of the source replaces the destination.</td>
-</tr>
-<tr valign="top">
-<td valign="top">src-atop</td>
-<td valign="top">The part of the source lying inside of the destination is composited onto the destination.</td>
-</tr>
-<tr valign="top">
-<td valign="top">dst-atop</td>
-<td valign="top">The part of the destination lying inside of the source is composited over the source and replaces the destination.</td>
-</tr>
-<tr valign="top">
-<td valign="top">multiply</td>
-<td valign="top">The source is multiplied by the destination and replaces the destination. The resultant color is always at least as dark as either of the two constituent colors. Multiplying any color with black produces black. Multiplying any color with white leaves the original color unchanged.</td>
-</tr>
-<tr valign="top">
-<td valign="top">screen</td>
-<td valign="top">The source and destination are complemented and then multiplied and then replace the destination. The resultant color is always at least as light as either of the two constituent colors. Screening any color with white produces white. Screening any color with black leaves the original color unchanged.</td>
-</tr>
-<tr valign="top">
-<td valign="top">overlay</td>
-<td valign="top">Multiplies or screens the colors, dependent on the destination color. Source colors overlay the destination whilst preserving its highlights and shadows. The destination color is not replaced, but is mixed with the source color to reflect the lightness or darkness of the destination.</td>
-</tr>
-<tr valign="top">
-<td valign="top">darken</td>
-<td valign="top">Selects the darker of the destination and source colors. The destination is replaced with the source when the source is darker, otherwise it is left unchanged.</td>
-</tr>
-<tr valign="top">
-<td valign="top">lighten</td>
-<td valign="top">Selects the lighter of the destination and source colors. The destination is replaced with the source when the source is lighter, otherwise it is left unchanged.</td>
-</tr>
-<tr valign="top">
-<td valign="top">linear-light</td>
-<td valign="top">Increase contrast slightly with an impact on the foreground's tonal values.</td>
-</tr>
-<tr valign="top">
-<td valign="top">color-dodge</td>
-<td valign="top">Brightens the destination color to reflect the source color. Painting with black produces no change.</td>
-</tr>
-<tr valign="top">
-<td valign="top">color-burn</td>
-<td valign="top">Darkens the destination color to reflect the source color. Painting with white produces no change.</td>
-</tr>
-<tr valign="top">
-<td valign="top">hard-light</td>
-<td valign="top">Multiplies or screens the colors, dependent on the source color value. If the source color is lighter than 0.5, the destination is lightened as if it were screened. If the source color is darker than 0.5, the destination is darkened, as if it were multiplied. The degree of lightening or darkening is proportional to the difference between the source color and 0.5. If it is equal to 0.5 the destination is unchanged. Painting with pure black or white produces black or white.</td>
-</tr>
-<tr valign="top">
-<td valign="top">soft-light</td>
-<td valign="top">Darkens or lightens the colors, dependent on the source color value. If the source color is lighter than 0.5, the destination is lightened. If the source color is darker than 0.5, the destination is darkened, as if it were burned in. The degree of darkening or lightening is proportional to the difference between the source color and 0.5. If it is equal to 0.5, the destination is unchanged. Painting with pure black or white produces a distinctly darker or lighter area, but does not result in pure black or white.</td>
-</tr>
-<tr valign="top">
-<td valign="top">plus</td>
-<td valign="top">The source is added to the destination and replaces the destination. This operator is useful for animating a dissolve between two images.</td>
-</tr>
-<tr valign="top">
-<td valign="top">add</td>
-<td valign="top">As per 'plus' but transparency data is treated as matte values. As such any transparent areas in either image remain transparent.</td>
-</tr>
-<tr valign="top">
-<td valign="top">minus</td>
-<td valign="top">Subtract the colors in the source image from the destination image. When transparency is involved, Opaque areas will be subtracted from any destination opaque areas.</td>
-</tr>
-<tr valign="top">
-<td valign="top">subtract</td>
-<td valign="top">Subtract the colors in the source image from the destination image. When transparency is involved transparent areas are subtracted, so only the opaque areas in the source remain opaque in the destination image.</td>
-</tr>
-<tr valign="top">
-<td valign="top">difference</td>
-<td valign="top">Subtracts the darker of the two constituent colors from the lighter. Painting with white inverts the destination color. Painting with black produces no change.</td>
-</tr>
-<tr valign="top">
-<td valign="top">exclusion</td>
-<td valign="top">Produces an effect similar to that of 'difference', but appears as lower contrast. Painting with white inverts the destination color. Painting with black produces no change.</td>
-</tr>
-<tr valign="top">
-<td valign="top">xor</td>
-<td valign="top">The part of the source that lies outside of the destination is combined with the part of the destination that lies outside of the source.</td>
-</tr>
-<tr valign="top">
-<td valign="top">copy-*</td>
-<td valign="top">Copy the specificed channel in the source image to the same channel in the destination image. If the channel specified in the source image does not exist, (which can only happen for methods, '<code>copy-opacity</code>' or '<code>copy-black</code>') then it is assumed that the source image is a special grayscale channel image of the values to be copied.</td>
-</tr>
-<tr valign="top">
-<td valign="top">change-mask</td>
-<td valign="top">Replace any destination pixel that is the similar to the source images pixel (as defined by the current <a href="magick-vector-graphics.html#fuzz">-fuzz</a> factor), with transparency.</td>
-</tr>
-</tbody>
-</table>
+</pre>
+
 </dd>
-<dt class="doc"><a id="interline-spacing"></a>interline-spacing <em class="option">pixels</em></dt>
-<dt class="doc"><a id="interword-spacing"></a>interword-spacing <em class="option">pixels</em></dt>
-<dt class="doc"><a id="kerning"></a>kerning <em class="option">pixels</em></dt>
-<dt class="doc"><a id="line"></a>line <em class="option">x,y x<sub>1</sub>,y<sub>1</sub></em></dt>
-<dt class="doc"><a id="matte"></a>matte <em class="option">x,y method</em></dt>
+
+  <dt class="doc"><a id="compose"></a>image <em class="option">compose x,y width,height 'filename'</em></dt>
+
+<dd>Choose from these compose operations:
+
+<table id="table" cellpadding="2" cellspacing="0" style="width: 93%">
+  <tbody>
+  <tr valign="top">
+    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">clear</td>
+    <td valign="top">Both the color and the alpha of the destination are cleared. Neither the source nor the destination are used as input.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">src</td>
+    <td valign="top">The source is copied to the destination. The destination is not used as input.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">dst</td>
+    <td valign="top">The destination is left untouched.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top"><b>src-over</b></td>
+    <td valign="top">The source is composited over the destination.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">dst-over</td>
+    <td valign="top">The destination is composited over the source and the result replaces the destination.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">src-in</td>
+    <td valign="top">The part of the source lying inside of the destination replaces the destination.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">dst-in</td>
+    <td valign="top">The part of the destination lying inside of the source replaces the destination.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">src-out</td>
+    <td valign="top">The part of the source lying outside of the destination replaces the destination.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">dst-out</td>
+    <td valign="top">The part of the destination lying outside of the source         replaces the destination.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">src-atop</td>
+    <td valign="top">The part of the source lying inside of the destination is  composited onto the destination.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">dst-atop</td>
+    <td valign="top">The part of the destination lying inside of the source is composited over the source and replaces the destination.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">multiply</td>
+    <td valign="top">The source is multiplied by the destination and replaces the destination. The resultant color is always at least as dark as either of the two constituent colors. Multiplying any color with black produces black. Multiplying any color with white leaves the original color unchanged.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">screen</td>
+    <td valign="top">The source and destination are complemented and then multiplied and then replace the destination. The resultant color is always at least as light as either of the two constituent colors. Screening any color with white produces white. Screening any color with black leaves the original color unchanged.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">overlay</td>
+    <td valign="top">Multiplies or screens the colors, dependent on the destination color. Source colors overlay the destination whilst preserving its highlights and shadows. The destination color is not replaced, but is mixed with the source color to reflect the lightness or darkness of the destination.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">darken</td>
+    <td valign="top">Selects the darker of the destination and source colors.  The destination is replaced with the source when the source is darker, otherwise it is left unchanged.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">lighten</td>
+    <td valign="top">Selects the lighter of the destination and source colors.  The destination is replaced with the source when the source is lighter, otherwise it is left unchanged.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">linear-light</td>
+    <td valign="top">Increase contrast slightly with an impact on the foreground's tonal values.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">color-dodge</td>
+    <td valign="top">Brightens the destination color to reflect the source color. Painting with black produces no change.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">color-burn</td>
+    <td valign="top">Darkens the destination color to reflect the source color.  Painting with white produces no change.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">hard-light</td>
+    <td valign="top">Multiplies or screens the colors, dependent on the source color value. If the source color is lighter than 0.5, the destination is lightened as if it were screened. If the source color is darker than 0.5, the destination is darkened, as if it were multiplied. The degree of lightening or darkening is proportional to the difference between the source color and 0.5. If it is equal to 0.5 the destination is unchanged. Painting with pure black or white produces black or white.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">soft-light</td>
+    <td valign="top">Darkens or lightens the colors, dependent on the source color value. If the source color is lighter than 0.5, the destination is lightened. If the source color is darker than 0.5, the destination is darkened, as if it were burned in. The degree of darkening or lightening is proportional to the difference between the source color and 0.5. If it is equal to 0.5, the destination is unchanged. Painting with pure black or white produces a distinctly darker or lighter area, but does not result in pure black or white.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">plus</td>
+    <td valign="top">The source is added to the destination and replaces the destination. This operator is useful for animating a dissolve between two images.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">add</td>
+    <td valign="top">As per 'plus' but transparency data is treated as matte
+        values. As such any transparent areas in either image remain
+        transparent. </td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">minus</td>
+    <td valign="top">Subtract the colors in the source image from the
+        destination image. When transparency is involved, Opaque areas will be
+        subtracted from any destination opaque areas. </td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">subtract</td>
+    <td valign="top">Subtract the colors in the source image from the
+        destination image. When transparency is involved transparent areas are
+        subtracted, so only the opaque areas in the source remain opaque in
+        the destination image. </td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">difference</td>
+    <td valign="top">Subtracts the darker of the two constituent colors from the lighter. Painting with white inverts the destination color. Painting with black produces no change.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">exclusion</td>
+    <td valign="top">Produces an effect similar to that of 'difference', but appears as lower contrast. Painting with white inverts the destination color. Painting with black produces no change.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">xor</td>
+    <td valign="top">The part of the source that lies outside of the destination is combined with the part of the destination that lies outside of the source.</td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">copy-*</td>
+    <td valign="top">Copy the specificed channel in the source image to the
+        same channel in the destination image.  If the channel specified in
+        the source image does not exist, (which can only happen for methods,
+        '<code>copy-opacity</code>' or '<code>copy-black</code>') then it is
+        assumed that the source image is a special grayscale channel image
+        of the values to be copied. </td>
+    </tr>
+
+  <tr valign="top">
+    <td valign="top">change-mask</td>
+    <td valign="top">Replace any destination pixel that is the similar to the source images pixel (as defined by the current <a href="magick-vector-graphics.html#fuzz">-fuzz</a> factor), with transparency. </td>
+  </tr>
+  </tbody>
+</table>
+
+</dd>
+
+  <dt class="doc"><a id="interline-spacing"></a>interline-spacing <em class="option">pixels</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="interword-spacing"></a>interword-spacing <em class="option">pixels</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="kerning"></a>kerning <em class="option">pixels</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="line"></a>line <em class="option">x,y x<sub>1</sub>,y<sub>1</sub></em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="matte"></a>matte <em class="option">x,y method</em></dt>
+
 <dd>Choose from these methods:
+
 <pre class="text">
   point
   replace
   floodfill
   filltoborder
   reset
-</pre></dd>
-<dt class="doc"><a id="offset"></a>offset <em class="option">offset</em></dt>
-<dt class="doc"><a id="opacity"></a>opacity <em class="option">opacity</em></dt>
+</pre>
+
+</dd>
+
+  <dt class="doc"><a id="offset"></a>offset <em class="option">offset</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="opacity"></a>opacity <em class="option">opacity</em></dt>
+
 <dd>Use percent (e.g. 50%).</dd>
-<dt class="doc"><a id="path"></a>path <em class="option">path</em></dt>
-<dt class="doc"><a id="point"></a>point <em class="option">x,y</em></dt>
-<dt class="doc"><a id="polygon"></a>polygon <em class="option">x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></em></dt>
-<dt class="doc"><a id="polyline"></a>polyline <em class="option">x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></em></dt>
-<dt class="doc"><a id="pop-clip-path"></a>pop clip-path</dt>
-<dt class="doc"><a id="pop-defs"></a>pop defs</dt>
-<dt class="doc"><a id="pop-gradient"></a>pop gradient</dt>
-<dt class="doc"><a id="pop-graphic-context"></a>pop graphic-context</dt>
-<dt class="doc"><a id="pop-pattern"></a>pop pattern</dt>
-<dt class="doc"><a id="push"></a>push clip-path <em class="option">name</em></dt>
-<dt class="doc"><a id="push-defs"></a>push defs</dt>
-<dt class="doc"><a id="push-gradient-linear"></a>push gradient <em class="option">id linear x,y x<sub>1</sub>,y<sub>1</sub></em></dt>
-<dt class="doc"><a id="push-gradient-radial"></a>push gradient <em class="option">id radial x<sub>c</sub>,c<sub>y</sub> x<sub>f</sub>,y<sub>f</sub> radius</em></dt>
-<dt class="doc"><a id="push-graphic-context"></a>push graphic-context</dt>
-<dt class="doc"><a id="push-pattern"></a>push pattern <em class="option">id radial x,y width,height</em></dt>
-<dt class="doc"><a id="rectangle"></a>rectangle <em class="option">x,y x<sub>1</sub>,y<sub>1</sub></em></dt>
-<dt class="doc"><a id="rotate"></a>rotate <em class="option">angle</em></dt>
-<dt class="doc"><a id="roundrectangle"></a>roundrectangle <em class="option">x,y x<sub>1</sub>,y<sub>1</sub> width,height</em></dt>
-<dt class="doc"><a id="scale"></a>scale <em class="option">x,y</em></dt>
-<dt class="doc"><a id="skewX"></a>skewX <em class="option">angle</em></dt>
-<dt class="doc"><a id="skewY"></a>skewX <em class="option">angle</em></dt>
-<dt class="doc"><a id="stop-color"></a>stop-color <em class="option">color offset</em></dt>
-<dt class="doc"><a id="stroke"></a>stroke <em class="option">color</em></dt>
-<dt class="doc"><a id="stroke-antialias"></a>stroke-antialias <em class="option">0 • 1</em></dt>
-<dt class="doc"><a id="stroke-dasharray"></a>stroke-dasharray <em class="option">none • numeric-list</em></dt>
-<dt class="doc"><a id="stroke-dashoffset"></a>stroke-dashoffset <em class="option">offset</em></dt>
-<dt class="doc"><a id="stroke-linecap"></a>stroke-linecap <em class="option">type</em></dt>
-<dd>Choose from these cap types:
+
+  <dt class="doc"><a id="path"></a>path <em class="option">path</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="point"></a>point <em class="option">x,y</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="polygon"></a>polygon <em class="option">x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="polyline"></a>polyline <em class="option">x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="pop-clip-path"></a>pop clip-path</dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="pop-defs"></a>pop defs</dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="pop-gradient"></a>pop gradient</dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="pop-graphic-context"></a>pop graphic-context</dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="pop-pattern"></a>pop pattern</dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="push"></a>push clip-path <em class="option">name</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="push-defs"></a>push defs</dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="push-gradient-linear"></a>push gradient <em class="option">id linear x,y x<sub>1</sub>,y<sub>1</sub></em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="push-gradient-radial"></a>push gradient <em class="option">id radial x<sub>c</sub>,c<sub>y</sub> x<sub>f</sub>,y<sub>f</sub> radius</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="push-graphic-context"></a>push graphic-context</dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="push-pattern"></a>push pattern <em class="option">id radial x,y width,height</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="rectangle"></a>rectangle <em class="option">x,y x<sub>1</sub>,y<sub>1</sub></em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="rotate"></a>rotate <em class="option">angle</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="roundrectangle"></a>roundrectangle <em class="option">x,y x<sub>1</sub>,y<sub>1</sub> width,height</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="scale"></a>scale <em class="option">x,y</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="skewX"></a>skewX <em class="option">angle</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="skewY"></a>skewX <em class="option">angle</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="stop-color"></a>stop-color <em class="option">color offset</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="stroke"></a>stroke <em class="option">color</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="stroke-antialias"></a>stroke-antialias <em class="option">0 &bull; 1</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="stroke-dasharray"></a>stroke-dasharray <em class="option">none &bull; numeric-list</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="stroke-dashoffset"></a>stroke-dashoffset <em class="option">offset</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="stroke-linecap"></a>stroke-linecap <em class="option">type</em></dt>
+
+
+  <dd>Choose from these cap types:
+
 <pre class="text">
   butt
   round
   square
-</pre></dd>
-<dt class="doc"><a id="stroke-linejoin"></a>stroke-linejoin <em class="option">type</em></dt>
-<dd>Choose from these join types:
+</pre>
+
+  </dd>
+
+  <dt class="doc"><a id="stroke-linejoin"></a>stroke-linejoin <em class="option">type</em></dt>
+
+  <dd>Choose from these join types:
+
 <pre class="text">
   bevel
   miter
   round
-</pre></dd>
-<dt class="doc"><a id="stroke-miterlimit"></a>stroke-miterlimit <em class="option">limit</em></dt>
-<dt class="doc"><a id="stroke-opacity"></a>stroke-opacity <em class="option">opacity</em></dt>
-<dd>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).</dd>
-<dt class="doc"><a id="stroke-width"></a>stroke-width <em class="option">width</em></dt>
-<dt class="doc"><a id="text"></a>text <em class="option">"text"</em></dt>
-<dt class="doc"><a id="text-antialias"></a>text-antialias <em class="option">0 • 1</em></dt>
-<dt class="doc"><a id="text-undercolor"></a>text-undercolor <em class="option">color</em></dt>
-<dt class="doc"><a id="translate"></a>translate <em class="option">x,y</em></dt>
-<dt class="doc"><a id="viewbox"></a>viewbox <em class="option">x,y x<sub>1</sub>,y<sub>1</sub></em></dt>
+</pre>
+
+  </dd>
+
+  <dt class="doc"><a id="stroke-miterlimit"></a>stroke-miterlimit <em class="option">limit</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="stroke-opacity"></a>stroke-opacity <em class="option">opacity</em></dt>
+
+  <dd>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).
+  </dd>
+
+  <dt class="doc"><a id="stroke-width"></a>stroke-width <em class="option">width</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="text"></a>text <em class="option">"text"</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="text-antialias"></a>text-antialias <em class="option">0 &bull; 1</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="text-undercolor"></a>text-undercolor <em class="option">color</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="translate"></a>translate <em class="option">x,y</em></dt>
+
+  <dd></dd>
+
+  <dt class="doc"><a id="viewbox"></a>viewbox <em class="option">x,y x<sub>1</sub>,y<sub>1</sub></em></dt>
+
+  <dd></dd>
+
 </dl>
+
 </div>
+
+
+
 </div>
-<div id="linkbar"><span id="linkbar-west">&nbsp;</span> <span id="linkbar-center"><a href="../discourse-server">Discourse Server</a> • <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> • <a href="http://jqmagick.imagemagick.org/">JqMagick</a></span> <span id="linkbar-east">&nbsp;</span></div>
-<div class="footer"><span id="footer-west">© 1999-2013 ImageMagick Studio LLC</span> <span id="footer-east"><a href="contact.html">Contact the Wizards</a></span></div>
-<div style="clear: both; margin: 0; width: 100%;"></div>
+
+<div id="linkbar">
+    <span id="linkbar-west">&nbsp;</span>
+
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &bull;
+      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2013 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>

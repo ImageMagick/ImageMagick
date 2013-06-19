@@ -1,104 +1,188 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemalocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-<meta name="generator" content="HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-<title>ImageMagick: Exceptions</title>
-<meta http-equiv="content-language" content="en-US" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta http-equiv="reply-to" content="magick-users@imagemagick.org" />
-<meta name="application-name" content="ImageMagick" />
-<meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats. In addition, resize, rotate, shear, distort or transform images automagically." />
-<meta name="application-url" content="http://www.imagemagick.org" />
-<meta name="generator" content="PHP" />
-<meta name="keywords" content="exceptions, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand" />
-<meta name="rating" content="GENERAL" />
-<meta name="robots" content="INDEX, FOLLOW" />
-<meta name="generator" content="ImageMagick Studio LLC" />
-<meta name="author" content="ImageMagick Studio LLC" />
-<meta name="revisit-after" content="2 DAYS" />
-<meta name="resource-type" content="document" />
-<meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC" />
-<meta name="distribution" content="Global" />
-<link rel="icon" href="../images/wand.png" />
-<link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon" />
-<link rel="canonical" href="../index.html" />
-<link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" /><!-- Add jQuery library -->
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <title>ImageMagick: Exceptions</title>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="exceptions, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js">
-</script><!-- Add mousewheel plugin (this is optional) -->
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Add mousewheel plugin (this is optional) -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  
+  <!-- Optionally add helpers - button, thumbnail and/or media -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
 
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js">
-</script><!-- Add fancyBox -->
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6">
-</script><!-- Optionally add helpers - button, thumbnail and/or media -->
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2">
-</script>
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0">
-</script>
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6">
-</script>
-<script type="text/javascript">
-//<![CDATA[
-//&lt;![CDATA[
-        $(document).ready(function() {
-                $(".fancybox").fancybox();
-        });
-//]]&gt;
-//]]>
-</script><!-- ImageMagick style -->
-
-<style type="text/css" media="all">
-/*<![CDATA[*/
-/*&lt;![CDATA[*/
+  <!-- ImageMagick style -->
+  <style type="text/css" media="all">
     @import url("../www/magick.css");
-/*]]&gt;*/
-/*]]>*/
-</style>
+  </style>
 </head>
+
 <body id="www-imagemagick-org">
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//127.0.0.1/analytics.js','ga');
+
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
+
 <div class="titlebar">
-<div style="margin: 17px auto; float: left;"></div>
-<a href="../discourse-server"><img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;" /></a> <a href="../index.html"><img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;" /></a></div>
-<div class="westbar">
-<div class="menu"><a title="About ImageMagick" href="../index.html">About ImageMagick</a></div>
-<div class="menu"><a title="Binary Releases" href="binary-releases.html">Binary Releases</a></div>
-<div class="sub"><a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a></div>
-<div class="sub"><a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a></div>
-<div class="sub"><a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a></div>
-<div class="sub"><a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a></div>
-<div class="sub"><a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a></div>
-<div class="sub"><a title="Command-line Tools: Options" href="command-line-options.html">Options</a></div>
-<div class="sub"><a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a></div>
-<div class="menu"><a title="Program Interfaces" href="api.html">Program Interfaces</a></div>
-<div class="sub"><a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a></div>
-<div class="sub"><a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a></div>
-<div class="sub"><a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a></div>
-<div class="sub"><a title="Program Interface: Magick++" href="magick++.html">Magick++</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Install from Source" href="install-source.html">Install from Source</a></div>
-<div class="sub"><a title="Install from Source: Unix" href="install-source.html#unix">Unix</a></div>
-<div class="sub"><a title="Install from Source: Windows" href="install-source.html#windows">Windows</a></div>
-<div class="menu"><a title="Resources" href="resources.html">Resources</a></div>
-<div class="menu"><a title="Architecture" href="architecture.html">Architecture</a></div>
-<div class="menu"><a title="Download" href="download.html">Download</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Search" href="search.html">Search</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Site Map" href="sitemap.html">Site Map</a></div>
-<div class="sub"><a title="Site Map: Links" href="links.html">Links</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a></div>
+<div style="margin: 17px auto; float: left;">
+  <script type="text/javascript">
+  <!--
+    google_ad_client = "pub-3129977114552745";
+    google_ad_slot = "5439289906";
+    google_ad_width = 728;
+    google_ad_height = 90;
+  //-->
+  </script>
+  <script type="text/javascript"
+    src="http://127.0.0.1/pagead/show_ads.js">
+  </script>
 </div>
-<div class="eastbar"><script type="text/javascript">
-//<![CDATA[
-    /* &lt;![CDATA[ */
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="westbar">
+
+<div class="menu">
+  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+</div>
+<div class="menu">
+  <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Options" href="command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a title="Program Interfaces" href="api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a title="Install from Source" href="install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Unix" href="install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Windows" href="install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a title="Resources" href="resources.html">Resources</a>
+</div>
+<div class="menu">
+  <a title="Architecture" href="architecture.html">Architecture</a>
+</div>
+<div class="menu">
+  <a title="Download" href="download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Search" href="search.html">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Site Map" href="sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+  <a title="Site Map: Links" href="links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
+</div>
+</div>
+
+<div class="eastbar">
+  <script type="text/javascript">
+    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -107,186 +191,250 @@
         var script = document.getElementsByTagName('offline-script')[0];
         script.parentNode.insertBefore(po, script);
     })();
-    /* ]]&gt; */
-//]]>
-</script>
-<div><a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
-<noscript><a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a></noscript></div>
+    /* ]]> */
+  </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
+  <noscript>
+    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
+  </noscript>
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://127.0.0.1/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
+</div>
+
 <div class="main">
+
 <h1>ImageMagick Exceptions</h1>
 <p class="navigation-index"></p>
+
 <div class="doc-section">
-<p>ImageMagick returns a status of 0 whenever a command or algorithm successfully complete without complaint. A warning code generally is typically just a notice that something unusual occurred but the command or algorithm still completed and most likely the results are still usable. An error means the command or algorithm could not complete as expected and any results are unreliable. A fatal error means the command or algorithm could not complete and the process exits prematurely and no results are returned.</p>
+<p>ImageMagick returns a status of 0 whenever a command or algorithm successfully complete without complaint.  A warning code generally is typically just a notice that something unusual occurred but the command or algorithm still completed and most likely the results are still usable.  An error means the command or algorithm could not complete as expected and any results are unreliable.  A fatal error means the command or algorithm could not complete and the process exits prematurely and no results are returned.</p>
+
 <table class="doc">
-<caption>ImageMagick Error and Warning Codes</caption>
-<tbody>
-<tr>
-<th style="width: 15%">Domain</th>
-<th>Description</th>
-<th>Warning</th>
-<th>Error</th>
-<th>Fatal Error</th>
-</tr>
-<tr>
-<td valign="top">Success</td>
-<td valign="top">the command or algorithm completed successfully without complaint</td>
-<td valign="top">0</td>
-<td valign="top">0</td>
-<td valign="top">0</td>
-</tr>
-<tr>
-<td valign="top">Resource Limit</td>
-<td valign="top">a program resource is exhausted (e.g. not enough memory)</td>
-<td valign="top">300</td>
-<td valign="top">400</td>
-<td valign="top">700</td>
-</tr>
-<tr>
-<td valign="top">Type</td>
-<td valign="top">A font is unavailable; a substitution may have occurred</td>
-<td valign="top">305</td>
-<td valign="top">405</td>
-<td valign="top">705</td>
-</tr>
-<tr>
-<td valign="top">Option</td>
-<td valign="top">a command-line option was malformed</td>
-<td valign="top">310</td>
-<td valign="top">410</td>
-<td valign="top">710</td>
-</tr>
-<tr>
-<td valign="top">Delegate</td>
-<td valign="top">an ImageMagick <i>delegate</i> failed to complete</td>
-<td valign="top">315</td>
-<td valign="top">415</td>
-<td valign="top">715</td>
-</tr>
-<tr>
-<td valign="top">Missing Delegate</td>
-<td valign="top">the image type can not be read or written because the appropriate <i>Delegate</i> is missing</td>
-<td valign="top">320</td>
-<td valign="top">420</td>
-<td valign="top">720</td>
-</tr>
-<tr>
-<td valign="top">Corrupt Image</td>
-<td valign="top">the image file may be corrupt</td>
-<td valign="top">325</td>
-<td valign="top">425</td>
-<td valign="top">725</td>
-</tr>
-<tr>
-<td valign="top">FileOpen</td>
-<td valign="top">the image file could not be opened for reading or writing</td>
-<td valign="top">330</td>
-<td valign="top">430</td>
-<td valign="top">730</td>
-</tr>
-<tr>
-<td valign="top">Blob</td>
-<td valign="top">a binary large object could not be allocated, read, or written</td>
-<td valign="top">335</td>
-<td valign="top">435</td>
-<td valign="top">735</td>
-</tr>
-<tr>
-<td valign="top">Stream</td>
-<td valign="top">there was a problem reading or writing from a stream</td>
-<td valign="top">340</td>
-<td valign="top">440</td>
-<td valign="top">740</td>
-</tr>
-<tr>
-<td valign="top">Cache</td>
-<td valign="top">pixels could not be read or written to the pixel cache</td>
-<td valign="top">345</td>
-<td valign="top">445</td>
-<td valign="top">745</td>
-</tr>
-<tr>
-<td valign="top">Coder</td>
-<td valign="top">there was a problem with an image coder</td>
-<td valign="top">350</td>
-<td valign="top">450</td>
-<td valign="top">750</td>
-</tr>
-<tr>
-<td valign="top">Module</td>
-<td valign="top">there was a problem with an image module</td>
-<td valign="top">355</td>
-<td valign="top">455</td>
-<td valign="top">755</td>
-</tr>
-<tr>
-<td valign="top">Draw</td>
-<td valign="top">a drawing operation failed</td>
-<td valign="top">360</td>
-<td valign="top">460</td>
-<td valign="top">760</td>
-</tr>
-<tr>
-<td valign="top">Image</td>
-<td valign="top">the operation could not complete due to an incompatible image</td>
-<td valign="top">365</td>
-<td valign="top">465</td>
-<td valign="top">765</td>
-</tr>
-<tr>
-<td valign="top">Wand</td>
-<td valign="top">there was a problem specific to the MagickWand API</td>
-<td valign="top">370</td>
-<td valign="top">470</td>
-<td valign="top">770</td>
-</tr>
-<tr>
-<td valign="top">Random</td>
-<td valign="top">there is a problem generating a true or pseudo-random number</td>
-<td valign="top">375</td>
-<td valign="top">475</td>
-<td valign="top">775</td>
-</tr>
-<tr>
-<td valign="top">XServer</td>
-<td valign="top">an X resource is unavailable</td>
-<td valign="top">380</td>
-<td valign="top">480</td>
-<td valign="top">780</td>
-</tr>
-<tr>
-<td valign="top">Monitor</td>
-<td valign="top">there was a problem activating the progress monitor</td>
-<td valign="top">385</td>
-<td valign="top">485</td>
-<td valign="top">785</td>
-</tr>
-<tr>
-<td valign="top">Registry</td>
-<td valign="top">there was a problem getting or setting the registry</td>
-<td valign="top">390</td>
-<td valign="top">490</td>
-<td valign="top">790</td>
-</tr>
-<tr>
-<td valign="top">Configure</td>
-<td valign="top">there was a problem getting a configuration file</td>
-<td valign="top">395</td>
-<td valign="top">495</td>
-<td valign="top">795</td>
-</tr>
-<tr>
-<td valign="top">Policy</td>
-<td valign="top">a policy denies access to a delegate, coder, filter, path, or resource.</td>
-<td valign="top">399</td>
-<td valign="top">499</td>
-<td valign="top">799</td>
-</tr>
-</tbody>
+  <caption>ImageMagick Error and Warning Codes</caption>
+  <tbody>
+  <tr>
+    <th style="width: 15%">Domain</th>
+    <th>Description</th>
+    <th>Warning</th>
+    <th>Error</th>
+    <th>Fatal Error</th>
+  </tr>
+
+  <tr>
+    <td valign="top">Success</td>
+    <td valign="top">the command or algorithm completed successfully without complaint</td>
+    <td valign="top">0</td>
+    <td valign="top">0</td>
+    <td valign="top">0</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Resource Limit</td>
+    <td valign="top">a program resource is exhausted (e.g. not enough memory)</td>
+    <td valign="top">300</td>
+    <td valign="top">400</td>
+    <td valign="top">700</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Type</td>
+    <td valign="top">A font is unavailable; a substitution may have occurred</td>
+    <td valign="top">305</td>
+    <td valign="top">405</td>
+    <td valign="top">705</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Option</td>
+    <td valign="top">a command-line option was malformed</td>
+    <td valign="top">310</td>
+    <td valign="top">410</td>
+    <td valign="top">710</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Delegate</td>
+    <td valign="top">an ImageMagick <i>delegate</i> failed to complete</td>
+    <td valign="top">315</td>
+    <td valign="top">415</td>
+    <td valign="top">715</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Missing Delegate</td>
+    <td valign="top">the image type can not be read or written because the appropriate <i>Delegate</i> is missing</td>
+    <td valign="top">320</td>
+    <td valign="top">420</td>
+    <td valign="top">720</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Corrupt Image</td>
+    <td valign="top">the image file may be corrupt</td>
+    <td valign="top">325</td>
+    <td valign="top">425</td>
+    <td valign="top">725</td>
+  </tr>
+
+  <tr>
+    <td valign="top">FileOpen</td>
+    <td valign="top">the image file could not be opened for reading or writing</td>
+    <td valign="top">330</td>
+    <td valign="top">430</td>
+    <td valign="top">730</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Blob</td>
+    <td valign="top">a binary large object could not be allocated, read, or written</td>
+    <td valign="top">335</td>
+    <td valign="top">435</td>
+    <td valign="top">735</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Stream</td>
+    <td valign="top">there was a problem reading or writing from a stream</td>
+    <td valign="top">340</td>
+    <td valign="top">440</td>
+    <td valign="top">740</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Cache</td>
+    <td valign="top">pixels could not be read or written to the pixel cache</td>
+    <td valign="top">345</td>
+    <td valign="top">445</td>
+    <td valign="top">745</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Coder</td>
+    <td valign="top">there was a problem with an image coder</td>
+    <td valign="top">350</td>
+    <td valign="top">450</td>
+    <td valign="top">750</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Module</td>
+    <td valign="top">there was a problem with an image module</td>
+    <td valign="top">355</td>
+    <td valign="top">455</td>
+    <td valign="top">755</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Draw</td>
+    <td valign="top">a drawing operation failed</td>
+    <td valign="top">360</td>
+    <td valign="top">460</td>
+    <td valign="top">760</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Image</td>
+    <td valign="top">the operation could not complete due to an incompatible image</td>
+    <td valign="top">365</td>
+    <td valign="top">465</td>
+    <td valign="top">765</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Wand</td>
+    <td valign="top">there was a problem specific to the MagickWand API</td>
+    <td valign="top">370</td>
+    <td valign="top">470</td>
+    <td valign="top">770</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Random</td>
+    <td valign="top">there is a problem generating a true or pseudo-random number</td>
+    <td valign="top">375</td>
+    <td valign="top">475</td>
+    <td valign="top">775</td>
+  </tr>
+
+  <tr>
+    <td valign="top">XServer</td>
+    <td valign="top">an X resource is unavailable</td>
+    <td valign="top">380</td>
+    <td valign="top">480</td>
+    <td valign="top">780</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Monitor</td>
+    <td valign="top">there was a problem activating the progress monitor</td>
+    <td valign="top">385</td>
+    <td valign="top">485</td>
+    <td valign="top">785</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Registry</td>
+    <td valign="top">there was a problem getting or setting the registry</td>
+    <td valign="top">390</td>
+    <td valign="top">490</td>
+    <td valign="top">790</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Configure</td>
+    <td valign="top">there was a problem getting a configuration file</td>
+    <td valign="top">395</td>
+    <td valign="top">495</td>
+    <td valign="top">795</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Policy</td>
+    <td valign="top">a policy denies access to a delegate, coder, filter, path, or resource.</td>
+    <td valign="top">399</td>
+    <td valign="top">499</td>
+    <td valign="top">799</td>
+  </tr>
+  </tbody>
 </table>
+
 </div>
+
 </div>
-<div id="linkbar"><span id="linkbar-west">&nbsp;</span> <span id="linkbar-center"><a href="../discourse-server">Discourse Server</a> • <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> • <a href="http://jqmagick.imagemagick.org/">JqMagick</a></span> <span id="linkbar-east">&nbsp;</span></div>
-<div class="footer"><span id="footer-west">© 1999-2013 ImageMagick Studio LLC</span> <span id="footer-east"><a href="contact.html">Contact the Wizards</a></span></div>
-<div style="clear: both; margin: 0; width: 100%;"></div>
+
+<div id="linkbar">
+    <span id="linkbar-west">&nbsp;</span>
+
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &bull;
+      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2013 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>

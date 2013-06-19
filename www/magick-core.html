@@ -1,104 +1,189 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemalocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-<meta name="generator" content="HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-<title>ImageMagick: MagickCore, Low-level C API for ImageMagick</title>
-<meta http-equiv="content-language" content="en-US" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta http-equiv="reply-to" content="magick-users@imagemagick.org" />
-<meta name="application-name" content="ImageMagick" />
-<meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats. In addition, resize, rotate, shear, distort or transform images automagically." />
-<meta name="application-url" content="http://www.imagemagick.org" />
-<meta name="generator" content="PHP" />
-<meta name="keywords" content="magickcore, low-level, c, api, for, imagemagick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand" />
-<meta name="rating" content="GENERAL" />
-<meta name="robots" content="INDEX, FOLLOW" />
-<meta name="generator" content="ImageMagick Studio LLC" />
-<meta name="author" content="ImageMagick Studio LLC" />
-<meta name="revisit-after" content="2 DAYS" />
-<meta name="resource-type" content="document" />
-<meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC" />
-<meta name="distribution" content="Global" />
-<link rel="icon" href="../images/wand.png" />
-<link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon" />
-<link rel="canonical" href="../index.html" />
-<link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" /><!-- Add jQuery library -->
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <title>ImageMagick: MagickCore, Low-level C API for ImageMagick</title>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, low-level, c, api, for, imagemagick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js">
-</script><!-- Add mousewheel plugin (this is optional) -->
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Add mousewheel plugin (this is optional) -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  
+  <!-- Optionally add helpers - button, thumbnail and/or media -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
 
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js">
-</script><!-- Add fancyBox -->
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6">
-</script><!-- Optionally add helpers - button, thumbnail and/or media -->
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2">
-</script>
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0">
-</script>
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6">
-</script>
-<script type="text/javascript">
-//<![CDATA[
-//&lt;![CDATA[
-        $(document).ready(function() {
-                $(".fancybox").fancybox();
-        });
-//]]&gt;
-//]]>
-</script><!-- ImageMagick style -->
-
-<style type="text/css" media="all">
-/*<![CDATA[*/
-/*&lt;![CDATA[*/
+  <!-- ImageMagick style -->
+  <style type="text/css" media="all">
     @import url("../www/magick.css");
-/*]]&gt;*/
-/*]]>*/
-</style>
+  </style>
 </head>
+
 <body id="www-imagemagick-org">
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//127.0.0.1/analytics.js','ga');
+
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
+
 <div class="titlebar">
-<div style="margin: 17px auto; float: left;"></div>
-<a href="../discourse-server"><img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;" /></a> <a href="../index.html"><img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;" /></a></div>
-<div class="westbar">
-<div class="menu"><a title="About ImageMagick" href="../index.html">About ImageMagick</a></div>
-<div class="menu"><a title="Binary Releases" href="binary-releases.html">Binary Releases</a></div>
-<div class="sub"><a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a></div>
-<div class="sub"><a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a></div>
-<div class="sub"><a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a></div>
-<div class="sub"><a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a></div>
-<div class="sub"><a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a></div>
-<div class="sub"><a title="Command-line Tools: Options" href="command-line-options.html">Options</a></div>
-<div class="sub"><a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a></div>
-<div class="menu"><a title="Program Interfaces" href="api.html">Program Interfaces</a></div>
-<div class="sub"><a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a></div>
-<div class="sub"><a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a></div>
-<div class="sub"><a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a></div>
-<div class="sub"><a title="Program Interface: Magick++" href="magick++.html">Magick++</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Install from Source" href="install-source.html">Install from Source</a></div>
-<div class="sub"><a title="Install from Source: Unix" href="install-source.html#unix">Unix</a></div>
-<div class="sub"><a title="Install from Source: Windows" href="install-source.html#windows">Windows</a></div>
-<div class="menu"><a title="Resources" href="resources.html">Resources</a></div>
-<div class="menu"><a title="Architecture" href="architecture.html">Architecture</a></div>
-<div class="menu"><a title="Download" href="download.html">Download</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Search" href="search.html">Search</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Site Map" href="sitemap.html">Site Map</a></div>
-<div class="sub"><a title="Site Map: Links" href="links.html">Links</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a></div>
+<div style="margin: 17px auto; float: left;">
+  <script type="text/javascript">
+  <!--
+    google_ad_client = "pub-3129977114552745";
+    google_ad_slot = "5439289906";
+    google_ad_width = 728;
+    google_ad_height = 90;
+  //-->
+  </script>
+  <script type="text/javascript"
+    src="http://127.0.0.1/pagead/show_ads.js">
+  </script>
 </div>
-<div class="eastbar"><script type="text/javascript">
-//<![CDATA[
-    /* &lt;![CDATA[ */
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="westbar">
+
+<div class="menu">
+  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+</div>
+<div class="menu">
+  <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Options" href="command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a title="Program Interfaces" href="api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a title="Install from Source" href="install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Unix" href="install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Windows" href="install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a title="Resources" href="resources.html">Resources</a>
+</div>
+<div class="menu">
+  <a title="Architecture" href="architecture.html">Architecture</a>
+</div>
+<div class="menu">
+  <a title="Download" href="download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Search" href="search.html">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Site Map" href="sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+  <a title="Site Map: Links" href="links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
+</div>
+</div>
+
+<div class="eastbar">
+  <script type="text/javascript">
+    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -107,82 +192,307 @@
         var script = document.getElementsByTagName('offline-script')[0];
         script.parentNode.insertBefore(po, script);
     })();
-    /* ]]&gt; */
-//]]>
-</script>
-<div><a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
-<noscript><a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a></noscript></div>
+    /* ]]> */
+  </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
+  <noscript>
+    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
+  </noscript>
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://127.0.0.1/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
+</div>
+
 <div class="main">
+
 <h1>MagickCore C API</h1>
+
 <div class="doc-section">
-<p>The <a href="http://www.imagemagick.org/api/MagickCore/index.html">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only. Unlike the <a href="magick-wand.html">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exlusively access the structure members directly. A description of the MagickCore public methods are found here:</p>
+
+<p>The <a href="http://magick.imagemagick.org/api/MagickCore/index.html">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only.  Unlike the <a href="magick-wand.html">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exlusively access the structure members directly.  A description of the MagickCore public methods are found here:</p>
+
 <ul>
-<li><a href="../api/magick.html">Initialize or Destroy the ImageMagick Environment</a></li>
-<li><a href="../api/constitute.html">Constitute an Image</a></li>
-<li><a href="../api/composite.html">Composite an Image</a></li>
-<li><a href="../api/image.html">Image Methods</a></li>
-<li><a href="../api/channel.html">Image Channel Methods</a></li>
-<li><a href="../api/color.html">Count the Colors in an Image</a></li>
-<li><a href="../api/colormap.html">Colormap Methods</a></li>
-<li><a href="../api/distort.html">Image Distortions</a></li>
-<li><a href="../api/layer.html">Dealing with Image Layers</a></li>
-<li><a href="../api/profile.html">Dealing with Image Profiles</a></li>
-<li><a href="../api/quantize.html">Reduce the Number of Unique Colors in an Image</a></li>
-<li><a href="../api/histogram.html">Image Histograms</a></li>
-<li><a href="../api/segment.html">Segment an Image with Thresholding Fuzzy c-Means</a></li>
-<li><a href="../api/resize.html">Resize an Image</a></li>
-<li><a href="../api/transform.html">Transform an Image</a></li>
-<li><a href="../api/shear.html">Shear or Rotate an Image by an Arbitrary Angle</a></li>
-<li><a href="../api/enhance.html">Enhance an Image</a></li>
-<li><a href="../api/effect.html">Add an Effect</a></li>
-<li><a href="../api/morphology.html">Morphological Erosions, Dilations, Openings, and Closings</a></li>
-<li><a href="../api/fx.html">Add a Special Effect</a></li>
-<li><a href="../api/decorate.html">Decorate an Image</a></li>
-<li><a href="../api/attribute.html">Get/Set an Image Attribute</a></li>
-<li><a href="../api/property.html">Get/Set Image Properties</a></li>
-<li><a href="../api/statistic.html">Get Image Statistics</a></li>
-<li><a href="../api/feature.html">Get Image Features</a></li>
-<li><a href="../api/annotate.html">Annotate an Image</a></li>
-<li><a href="../api/paint.html">Paint on an Image</a></li>
-<li><a href="../api/draw.html">Draw on an Image</a></li>
-<li><a href="../api/montage.html">Create an Image Thumbnail</a></li>
-<li><a href="../api/fourier.html">Compute the discrete Fourier transform (DFT)</a></li>
-<li><a href="../api/compare.html">Compare an Image to a Reconstructed Image</a></li>
-<li><a href="../api/display.html">Interactively Display and Edit an Image</a></li>
-<li><a href="../api/animate.html">Interactively Animate an Image Sequence</a></li>
-<li><a href="../api/cipher.html">Convert to and from Cipher Pixels</a></li>
-<li><a href="../api/list.html">Working with Image Lists</a></li>
-<li><a href="../api/image-view.html">Image View Methods</a></li>
-<li><a href="../api/cache.html">Get or Set Image Pixels</a></li>
-<li><a href="../api/cache-view.html">Working with Cache Views</a></li>
-<li><a href="../api/stream.html">The Pixel FIFO</a></li>
-<li><a href="../api/blob.html">Read or Write Binary Large OBjects</a></li>
-<li><a href="../api/module.html">Loadable Modules</a></li>
-<li><a href="../api/signature.html">Compute a Message Digest for an Image</a></li>
-<li><a href="../api/registry.html">The Image Registry</a></li>
-<li><a href="../api/exception.html">Dealing with Exceptions</a></li>
-<li><a href="../api/memory.html">Memory Allocation</a></li>
-<li><a href="../api/resource.html">Monitor or Limit Resource Consumption</a></li>
-<li><a href="../api/monitor.html">Monitor the Progress of an Image Operation</a></li>
-<li><a href="../api/version.html">Get the Version and Copyrights</a></li>
-<li><a href="../api/deprecate.html">Deprecated Methods</a></li>
-<li><a href="exception.html">Error and Warning Codes</a></li>
+  <li><a href="../api/magick.html">Initialize or Destroy the ImageMagick Environment</a></li>
+  <li><a href="../api/constitute.html">Constitute an Image</a></li>
+  <li><a href="../api/composite.html">Composite an Image</a></li>
+  <li><a href="../api/image.html">Image Methods</a></li>
+  <li><a href="../api/channel.html">Image Channel Methods</a></li>
+  <li><a href="../api/color.html">Count the Colors in an Image</a></li>
+  <li><a href="../api/colormap.html">Colormap Methods</a></li>
+  <li><a href="../api/distort.html">Image Distortions</a></li>
+  <li><a href="../api/layer.html">Dealing with Image Layers</a></li>
+  <li><a href="../api/profile.html">Dealing with Image Profiles</a></li>
+  <li><a href="../api/quantize.html">Reduce the Number of Unique Colors in an Image</a></li>
+  <li><a href="../api/histogram.html">Image Histograms</a></li>
+  <li><a href="../api/segment.html">Segment an Image with Thresholding Fuzzy c-Means</a></li>
+  <li><a href="../api/resize.html">Resize an Image</a></li>
+  <li><a href="../api/transform.html">Transform an Image</a></li>
+  <li><a href="../api/shear.html">Shear or Rotate an Image by an Arbitrary Angle</a></li>
+  <li><a href="../api/enhance.html">Enhance an Image</a></li>
+  <li><a href="../api/effect.html">Add an Effect</a></li>
+  <li><a href="../api/morphology.html">Morphological Erosions, Dilations, Openings, and Closings</a></li>
+  <li><a href="../api/fx.html">Add a Special Effect</a></li>
+  <li><a href="../api/decorate.html">Decorate an Image</a></li>
+  <li><a href="../api/attribute.html">Get/Set an Image Attribute</a></li>
+  <li><a href="../api/property.html">Get/Set Image Properties</a></li>
+  <li><a href="../api/statistic.html">Get Image Statistics</a></li>
+  <li><a href="../api/feature.html">Get Image Features</a></li>
+  <li><a href="../api/annotate.html">Annotate an Image</a></li>
+  <li><a href="../api/paint.html">Paint on an Image</a></li>
+  <li><a href="../api/draw.html">Draw on an Image</a></li>
+  <li><a href="../api/montage.html">Create an Image Thumbnail</a></li>
+  <li><a href="../api/fourier.html">Compute the discrete Fourier transform (DFT)</a></li>
+  <li><a href="../api/compare.html">Compare an Image to a Reconstructed Image</a></li>
+  <li><a href="../api/display.html">Interactively Display and Edit an Image</a></li>
+  <li><a href="../api/animate.html">Interactively Animate an Image Sequence</a></li>
+  <li><a href="../api/cipher.html">Convert to and from Cipher Pixels</a></li>
+  <li><a href="../api/list.html">Working with Image Lists</a></li>
+  <li><a href="../api/image-view.html">Image View Methods</a></li>
+  <li><a href="../api/cache.html">Get or Set Image Pixels</a></li>
+  <li><a href="../api/cache-view.html">Working with Cache Views</a></li>
+  <li><a href="../api/stream.html">The Pixel FIFO</a></li>
+  <li><a href="../api/blob.html">Read or Write Binary Large OBjects</a></li>
+  <li><a href="../api/module.html">Loadable Modules</a></li>
+  <li><a href="../api/signature.html">Compute a Message Digest for an Image</a></li>
+  <li><a href="../api/registry.html">The Image Registry</a></li>
+  <li><a href="../api/exception.html">Dealing with Exceptions</a></li>
+  <li><a href="../api/memory.html">Memory Allocation</a></li>
+  <li><a href="../api/resource.html">Monitor or Limit Resource Consumption</a></li>
+  <li><a href="../api/monitor.html">Monitor the Progress of an Image Operation</a></li>
+  <li><a href="../api/version.html">Get the Version and Copyrights</a></li>
+  <li><a href="../api/deprecate.html">Deprecated Methods</a></li>
+  <li><a href="exception.html">Error and Warning Codes</a></li>
 </ul>
+
 <p>After you write your MagickCore program, compile it like this:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">cc -o core `pkg-config --cflags --libs MagickCore` core.c</span></p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cc -o core `pkg-config --cflags --libs MagickCore` core.c</span></p>
 <p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
-<p>Here is a example program that utilizes the MagickCore API to get you started, <a href="../source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
-<div class="viewport">#include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; #include &lt;time.h&gt; #include &lt;magick/MagickCore.h&gt; int main(int argc,char **argv) { ExceptionInfo *exception; Image *image, *images, *resize_image, *thumbnails; ImageInfo *image_info; if (argc != 3) { (void) fprintf(stdout,"Usage: %s image thumbnail\n",argv[0]); exit(0); } /* Initialize the image info structure and read an image. */ MagickCoreGenesis(*argv,MagickTrue); exception=AcquireExceptionInfo(); image_info=CloneImageInfo((ImageInfo *) NULL); (void) strcpy(image_info-&gt;filename,argv[1]); images=ReadImage(image_info,exception); if (exception-&gt;severity != UndefinedException) CatchException(exception); if (images == (Image *) NULL) exit(1); /* Convert the image to a thumbnail. */ thumbnails=NewImageList(); while ((image=RemoveFirstImageFromList(&amp;images)) != (Image *) NULL) { resize_image=ResizeImage(image,106,80,LanczosFilter,1.0,exception); if (resize_image == (Image *) NULL)
-MagickError(exception-&gt;severity,exception-&gt;reason,exception-&gt;description); (void) AppendImageToList(&amp;thumbnails,resize_image); DestroyImage(image); } /* Write the image thumbnail. */ (void) strcpy(thumbnails-&gt;filename,argv[2]); WriteImage(image_info,thumbnails); /* Destroy the image thumbnail and exit. */ thumbnails=DestroyImageList(thumbnails); image_info=DestroyImageInfo(image_info); exception=DestroyExceptionInfo(exception); MagickCoreTerminus(); return(0); }</div>
-<p><a id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views. The <a href="../source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
-<div class="viewport">#include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;math.h&gt; #include &lt;magick/MagickCore.h&gt; static MagickBooleanType SigmoidalContrast(ImageView *contrast_view, const ssize_t y,const int id,void *context) { #define QuantumScale ((MagickRealType) 1.0/(MagickRealType) QuantumRange) #define SigmoidalContrast(x) \ (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503) RectangleInfo extent; register IndexPacket *indexes; register PixelPacket *pixels; register ssize_t x; extent=GetImageViewExtent(contrast_view); pixels=GetImageViewAuthenticPixels(contrast_view); for (x=0; x &lt; (ssize_t) (extent.width-extent.x); x++) { SetPixelRed(pixels,RoundToQuantum(SigmoidalContrast(GetPixelRed(pixels))); SetPixelGreen(pixels,RoundToQuantum(SigmoidalContrast(GetPixelGreen(pixels))); SetPixelBlue(pixels,RoundToQuantum(SigmoidalContrast(GetPixelBlue(pixels))); SetPixelOpacity(pixels,RoundToQuantum(SigmoidalContrast(GetPixelOpacity(pixels))); pixels++; }
-indexes=GetImageViewAuthenticIndexes(contrast_view); if (indexes != (IndexPacket *) NULL) for (x=0; x &lt; (ssize_t) (extent.width-extent.x); x++) SetPixelIndex(indexes+x,RoundToQuantum(SigmoidalContrast(GetPixelIndex(indexes+x)))); return(MagickTrue); } int main(int argc,char **argv) { #define ThrowImageException(image) \ { \ \ CatchException(exception); \ if (contrast_image != (Image *) NULL) \ contrast_image=DestroyImage(contrast_image); \ exit(-1); \ } #define ThrowViewException(view) \ { \ char \ *description; \ \ ExceptionType \ severity; \ \ description=GetImageViewException(view,&amp;severity); \ (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \ description=DestroyString(description); \ exit(-1); \ } ExceptionInfo *exception; Image *contrast_image; ImageInfo *image_info; ImageView *contrast_view; MagickBooleanType status; if (argc != 3) { (void) fprintf(stdout,"Usage: %s image sigmoidal-image\n",argv[0]); exit(0); } /* Read an image. */ MagickCoreGenesis(*argv,MagickTrue);
-image_info=AcquireImageInfo(); (void) CopyMagickString(image_info-&gt;filename,argv[1],MaxTextExtent); exception=AcquireExceptionInfo(); contrast_image=ReadImage(image_info,exception); if (contrast_image == (Image *) NULL) ThrowImageException(contrast_image); /* Sigmoidal non-linearity contrast control. */ contrast_view=NewImageView(contrast_image); if (contrast_view == (ImageView *) NULL) ThrowImageException(contrast_image); status=UpdateImageViewIterator(contrast_view,SigmoidalContrast,(void *) NULL); if (status == MagickFalse) ThrowImageException(contrast_image); contrast_view=DestroyImageView(contrast_view); /* Write the image then destroy it. */ status=WriteImages(image_info,contrast_image,argv[2],exception); if (status == MagickFalse) ThrowImageException(contrast_image); contrast_image=DestroyImage(contrast_image); exception=DestroyExceptionInfo(exception); image_info=DestroyImageInfo(image_info); MagickCoreTerminus(); return(0); }</div>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
+<p>Here is a example program that utilizes the MagickCore API to get you started, <a href="http://magick.imagemagick.org/source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
+
+<div class="viewport">
+  #include &lt;stdio.h>
+  #include &lt;stdlib.h>
+  #include &lt;string.h>
+  #include &lt;time.h>
+  #include &lt;magick/MagickCore.h>
+
+  int main(int argc,char **argv)
+  {
+    ExceptionInfo
+      *exception;
+
+    Image
+      *image,
+      *images,
+      *resize_image,
+      *thumbnails;
+
+    ImageInfo
+      *image_info;
+
+    if (argc != 3)
+      {
+        (void) fprintf(stdout,"Usage: %s image thumbnail\n",argv[0]);
+        exit(0);
+      }
+    /*
+      Initialize the image info structure and read an image.
+    */
+    MagickCoreGenesis(*argv,MagickTrue);
+    exception=AcquireExceptionInfo();
+    image_info=CloneImageInfo((ImageInfo *) NULL);
+    (void) strcpy(image_info-&gt;filename,argv[1]);
+    images=ReadImage(image_info,exception);
+    if (exception-&gt;severity != UndefinedException)
+      CatchException(exception);
+    if (images == (Image *) NULL)
+      exit(1);
+    /*
+      Convert the image to a thumbnail.
+    */
+    thumbnails=NewImageList();
+    while ((image=RemoveFirstImageFromList(&amp;images)) != (Image *) NULL)
+    {
+      resize_image=ResizeImage(image,106,80,LanczosFilter,1.0,exception);
+      if (resize_image == (Image *) NULL)
+        MagickError(exception-&gt;severity,exception-&gt;reason,exception-&gt;description);
+      (void) AppendImageToList(&amp;thumbnails,resize_image);
+      DestroyImage(image);
+    }
+    /*
+      Write the image thumbnail.
+    */
+    (void) strcpy(thumbnails-&gt;filename,argv[2]);
+    WriteImage(image_info,thumbnails);
+    /*
+      Destroy the image thumbnail and exit.
+    */
+    thumbnails=DestroyImageList(thumbnails);
+    image_info=DestroyImageInfo(image_info);
+    exception=DestroyExceptionInfo(exception);
+    MagickCoreTerminus();
+    return(0);
+  }
+</div>
+<p><a id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
+
+<div class="viewport">
+#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;math.h>
+#include &lt;magick/MagickCore.h>
+
+static MagickBooleanType SigmoidalContrast(ImageView *contrast_view,
+  const ssize_t y,const int id,void *context)
+{
+#define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
+#define SigmoidalContrast(x) \
+  (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
+
+  RectangleInfo
+    extent;
+
+  register IndexPacket
+    *indexes;
+
+  register PixelPacket
+    *pixels;
+
+  register ssize_t
+    x;
+
+  extent=GetImageViewExtent(contrast_view);
+  pixels=GetImageViewAuthenticPixels(contrast_view);
+  for (x=0; x &lt; (ssize_t) (extent.width-extent.x); x++)
+  {
+    SetPixelRed(pixels,RoundToQuantum(SigmoidalContrast(GetPixelRed(pixels)));
+    SetPixelGreen(pixels,RoundToQuantum(SigmoidalContrast(GetPixelGreen(pixels)));
+    SetPixelBlue(pixels,RoundToQuantum(SigmoidalContrast(GetPixelBlue(pixels)));
+    SetPixelOpacity(pixels,RoundToQuantum(SigmoidalContrast(GetPixelOpacity(pixels)));
+    pixels++;
+  }
+  indexes=GetImageViewAuthenticIndexes(contrast_view);
+  if (indexes != (IndexPacket *) NULL)
+    for (x=0; x &lt; (ssize_t) (extent.width-extent.x); x++)
+      SetPixelIndex(indexes+x,RoundToQuantum(SigmoidalContrast(GetPixelIndex(indexes+x))));
+  return(MagickTrue);
+}
+
+int main(int argc,char **argv)
+{
+#define ThrowImageException(image) \
+{ \
+ \
+  CatchException(exception); \
+  if (contrast_image != (Image *) NULL) \
+    contrast_image=DestroyImage(contrast_image); \
+  exit(-1); \
+}
+#define ThrowViewException(view) \
+{ \
+  char \
+    *description; \
+ \
+  ExceptionType \
+    severity; \
+ \
+  description=GetImageViewException(view,&amp;severity); \
+  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  description=DestroyString(description); \
+  exit(-1); \
+}
+
+  ExceptionInfo
+    *exception;
+
+  Image
+    *contrast_image;
+
+  ImageInfo
+    *image_info;
+
+  ImageView
+    *contrast_view;
+
+  MagickBooleanType
+    status;
+
+  if (argc != 3)
+    {
+      (void) fprintf(stdout,"Usage: %s image sigmoidal-image\n",argv[0]);
+      exit(0);
+    }
+  /*
+    Read an image.
+  */
+  MagickCoreGenesis(*argv,MagickTrue);
+  image_info=AcquireImageInfo();
+  (void) CopyMagickString(image_info->filename,argv[1],MaxTextExtent);
+  exception=AcquireExceptionInfo();
+  contrast_image=ReadImage(image_info,exception);
+  if (contrast_image == (Image *) NULL)
+    ThrowImageException(contrast_image);
+  /*
+    Sigmoidal non-linearity contrast control.
+  */
+  contrast_view=NewImageView(contrast_image);
+  if (contrast_view == (ImageView *) NULL)
+    ThrowImageException(contrast_image);
+  status=UpdateImageViewIterator(contrast_view,SigmoidalContrast,(void *) NULL);
+  if (status == MagickFalse)
+    ThrowImageException(contrast_image);
+  contrast_view=DestroyImageView(contrast_view);
+  /*
+    Write the image then destroy it.
+  */
+  status=WriteImages(image_info,contrast_image,argv[2],exception);
+  if (status == MagickFalse)
+    ThrowImageException(contrast_image);
+  contrast_image=DestroyImage(contrast_image);
+  exception=DestroyExceptionInfo(exception);
+  image_info=DestroyImageInfo(image_info);
+  MagickCoreTerminus();
+  return(0);
+}
 </div>
 </div>
-<div id="linkbar"><span id="linkbar-west">&nbsp;</span> <span id="linkbar-center"><a href="../discourse-server">Discourse Server</a> • <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> • <a href="http://jqmagick.imagemagick.org/">JqMagick</a></span> <span id="linkbar-east">&nbsp;</span></div>
-<div class="footer"><span id="footer-west">© 1999-2013 ImageMagick Studio LLC</span> <span id="footer-east"><a href="contact.html">Contact the Wizards</a></span></div>
-<div style="clear: both; margin: 0; width: 100%;"></div>
+
+</div>
+
+<div id="linkbar">
+    <span id="linkbar-west">&nbsp;</span>
+
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &bull;
+      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2013 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>

@@ -1,104 +1,188 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemalocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-<meta name="generator" content="HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-<title>ImageMagick: Command-line Tools: Identify</title>
-<meta http-equiv="content-language" content="en-US" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta http-equiv="reply-to" content="magick-users@imagemagick.org" />
-<meta name="application-name" content="ImageMagick" />
-<meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats. In addition, resize, rotate, shear, distort or transform images automagically." />
-<meta name="application-url" content="http://www.imagemagick.org" />
-<meta name="generator" content="PHP" />
-<meta name="keywords" content="command-line, tools:, identify, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand" />
-<meta name="rating" content="GENERAL" />
-<meta name="robots" content="INDEX, FOLLOW" />
-<meta name="generator" content="ImageMagick Studio LLC" />
-<meta name="author" content="ImageMagick Studio LLC" />
-<meta name="revisit-after" content="2 DAYS" />
-<meta name="resource-type" content="document" />
-<meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC" />
-<meta name="distribution" content="Global" />
-<link rel="icon" href="../images/wand.png" />
-<link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon" />
-<link rel="canonical" href="../index.html" />
-<link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf" /><!-- Add jQuery library -->
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <title>ImageMagick: Command-line Tools: Identify</title>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="command-line, tools:, identify, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js">
-</script><!-- Add mousewheel plugin (this is optional) -->
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Add mousewheel plugin (this is optional) -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  
+  <!-- Optionally add helpers - button, thumbnail and/or media -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
 
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js">
-</script><!-- Add fancyBox -->
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6">
-</script><!-- Optionally add helpers - button, thumbnail and/or media -->
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2">
-</script>
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0">
-</script>
-<link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
-<script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6">
-</script>
-<script type="text/javascript">
-//<![CDATA[
-//&lt;![CDATA[
-        $(document).ready(function() {
-                $(".fancybox").fancybox();
-        });
-//]]&gt;
-//]]>
-</script><!-- ImageMagick style -->
-
-<style type="text/css" media="all">
-/*<![CDATA[*/
-/*&lt;![CDATA[*/
+  <!-- ImageMagick style -->
+  <style type="text/css" media="all">
     @import url("../www/magick.css");
-/*]]&gt;*/
-/*]]>*/
-</style>
+  </style>
 </head>
+
 <body id="www-imagemagick-org">
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//127.0.0.1/analytics.js','ga');
+
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
+
 <div class="titlebar">
-<div style="margin: 17px auto; float: left;"></div>
-<a href="../discourse-server"><img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;" /></a> <a href="../index.html"><img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;" /></a></div>
-<div class="westbar">
-<div class="menu"><a title="About ImageMagick" href="../index.html">About ImageMagick</a></div>
-<div class="menu"><a title="Binary Releases" href="binary-releases.html">Binary Releases</a></div>
-<div class="sub"><a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a></div>
-<div class="sub"><a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a></div>
-<div class="sub"><a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a></div>
-<div class="sub"><a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a></div>
-<div class="sub"><a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a></div>
-<div class="sub"><a title="Command-line Tools: Options" href="command-line-options.html">Options</a></div>
-<div class="sub"><a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a></div>
-<div class="menu"><a title="Program Interfaces" href="api.html">Program Interfaces</a></div>
-<div class="sub"><a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a></div>
-<div class="sub"><a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a></div>
-<div class="sub"><a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a></div>
-<div class="sub"><a title="Program Interface: Magick++" href="magick++.html">Magick++</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Install from Source" href="install-source.html">Install from Source</a></div>
-<div class="sub"><a title="Install from Source: Unix" href="install-source.html#unix">Unix</a></div>
-<div class="sub"><a title="Install from Source: Windows" href="install-source.html#windows">Windows</a></div>
-<div class="menu"><a title="Resources" href="resources.html">Resources</a></div>
-<div class="menu"><a title="Architecture" href="architecture.html">Architecture</a></div>
-<div class="menu"><a title="Download" href="download.html">Download</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Search" href="search.html">Search</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Site Map" href="sitemap.html">Site Map</a></div>
-<div class="sub"><a title="Site Map: Links" href="links.html">Links</a></div>
-<div class="sep"></div>
-<div class="menu"><a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a></div>
+<div style="margin: 17px auto; float: left;">
+  <script type="text/javascript">
+  <!--
+    google_ad_client = "pub-3129977114552745";
+    google_ad_slot = "5439289906";
+    google_ad_width = 728;
+    google_ad_height = 90;
+  //-->
+  </script>
+  <script type="text/javascript"
+    src="http://127.0.0.1/pagead/show_ads.js">
+  </script>
 </div>
-<div class="eastbar"><script type="text/javascript">
-//<![CDATA[
-    /* &lt;![CDATA[ */
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="westbar">
+
+<div class="menu">
+  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+</div>
+<div class="menu">
+  <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Options" href="command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a title="Program Interfaces" href="api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a title="Install from Source" href="install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Unix" href="install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Windows" href="install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a title="Resources" href="resources.html">Resources</a>
+</div>
+<div class="menu">
+  <a title="Architecture" href="architecture.html">Architecture</a>
+</div>
+<div class="menu">
+  <a title="Download" href="download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Search" href="search.html">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Site Map" href="sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+  <a title="Site Map: Links" href="links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
+</div>
+</div>
+
+<div class="eastbar">
+  <script type="text/javascript">
+    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -107,256 +191,351 @@
         var script = document.getElementsByTagName('offline-script')[0];
         script.parentNode.insertBefore(po, script);
     })();
-    /* ]]&gt; */
-//]]>
-</script>
-<div><a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
-<noscript><a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a></noscript></div>
-<div class="main">
-<h1>ImageMagick Identify Command-line Tool</h1>
-<p class="navigation-index">[<a href="identify.html#usage">Example Usage</a> • <a href="identify.html#options">Option Summary</a>]</p>
-<div class="doc-section">
-<p>The <code>identify</code> program describes the format and characteristics of one or more image files. It also reports if an image is incomplete or corrupt. The information returned includes the image number, the file name, the width and height of the image, whether the image is colormapped or not, the number of colors in the image, the number of bytes in the image, the format of the image (JPEG, PNM, etc.), and finally the number of seconds it took to read and process the image. Many more attributes are available with the verbose option. See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>identify</code> command or see below for example usages of the command.</p>
+    /* ]]> */
+  </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
+  <noscript>
+    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
+  </noscript>
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://127.0.0.1/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
 </div>
+
+<div class="main">
+
+
+
+<h1>ImageMagick Identify Command-line Tool</h1>
+<p class="navigation-index">[<a href="identify.html#usage">Example Usage</a> &bull; <a href="identify.html#options">Option Summary</a>]</p>
+
+<div class="doc-section">
+<p>The <code>identify</code> program describes the format and characteristics of one or more image files. It also reports if an image is incomplete or corrupt. The information returned includes the image number, the file name, the width and height of the image, whether the image is colormapped or not, the number of colors in the image, the number of bytes in the image, the format of the image (JPEG, PNM, etc.), and finally the number of seconds it took to read and process the image.  Many more attributes are available with the verbose option.  See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>identify</code> command or see below for example usages of the command.</p>
+</div>
+
 <h2><a id="usage"></a>Example Usage</h2>
 <div class="doc-section">
+
 <p>We list a few examples of the <code>identify</code> command here to illustrate its usefulness and ease of use. To get started, lets identify an image in the JPEG format:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">identify rose.jpg</span> <span class="crtout">rose.jpg JPEG 640x480 sRGB 87kb 0.050u 0:01</span></p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify rose.jpg</span><span class='crtout'> rose.jpg JPEG 640x480 sRGB 87kb 0.050u 0:01</span></p>
 <p>Next, we look at the same image in greater detail:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">identify -verbose rose.jpg</span><span class="crtout">Image: rose.jpg<br />
-Format: JPEG (Joint Photographic Experts Group JFIF format)<br />
-Class: DirectClass<br />
-Geometry: 70x46+0+0<br />
-Resolution: 72x72<br />
-Print size: 0.972222x0.638889<br />
-Units: PixelsPerInch<br />
-Type: TrueColor<br />
-Endianess: Undefined<br />
-Colorspace: RGB<br />
-Depth: 8-bit<br />
-Channel depth:<br />
-red: 8-bit<br />
-green: 8-bit<br />
-blue: 8-bit<br />
-Channel statistics:<br />
-red:<br />
-min: 37 (0.145098)<br />
-max: 255 (1)<br />
-mean: 145.58 (0.5709)<br />
-standard deviation: 67.3195 (0.263998)<br />
-green:<br />
-min: 31 (0.121569)<br />
-max: 255 (1)<br />
-mean: 89.2512 (0.350005)<br />
-standard deviation: 52.0488 (0.204113)<br />
-blue:<br />
-min: 17 (0.0666667)<br />
-max: 255 (1)<br />
-mean: 80.4075 (0.315323)<br />
-standard deviation: 54.0052 (0.211785)<br />
-Rendering intent: Undefined<br />
-Interlace: None<br />
-Background color: white<br />
-Border color: rgb(223,223,223)<br />
-Matte color: grey74<br />
-Transparent color: black<br />
-Page geometry: 70x46+0+0<br />
-Dispose: Undefined<br />
-Iterations: 0<br />
-Compression: JPEG<br />
-Quality: 100<br />
-Orientation: Undefined<br />
-Properties:<br />
-date:create: 2008-01-08T11:08:52-05:00<br />
-date:modify: 2005-04-07T12:48:13-04:00<br />
-jpeg:colorspace: 2<br />
-jpeg:sampling-factor: 2x2,1x1,1x1<br />
-signature: dcd00d6303f80f4fa53f991804cb026151c1e851b7a96255e82da87299583ebc<br />
-Artifacts:<br />
-verbose: true<br />
-Tainted: False<br />
-Filesize: 3.97266kb<br />
-Number pixels: 3.14453kb<br />
-Version: ImageMagick 6.8.6-0 2013-06-16 Q16 http://www.imagemagick.org</span></p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -verbose rose.jpg</span><span class='crtout'>Image: rose.jpg  <br/>
+    Format: JPEG (Joint Photographic Experts Group JFIF format)  <br/>
+    Class: DirectClass  <br/>
+    Geometry: 70x46+0+0  <br/>
+    Resolution: 72x72  <br/>
+    Print size: 0.972222x0.638889  <br/>
+    Units: PixelsPerInch  <br/>
+    Type: TrueColor  <br/>
+    Endianess: Undefined  <br/>
+    Colorspace: RGB  <br/>
+    Depth: 8-bit  <br/>
+    Channel depth:  <br/>
+      red: 8-bit  <br/>
+      green: 8-bit  <br/>
+      blue: 8-bit  <br/>
+    Channel statistics:  <br/>
+      red:  <br/>
+        min: 37 (0.145098)  <br/>
+        max: 255 (1)  <br/>
+        mean: 145.58 (0.5709)  <br/>
+        standard deviation: 67.3195 (0.263998)  <br/>
+      green:  <br/>
+        min: 31 (0.121569)  <br/>
+        max: 255 (1)  <br/>
+        mean: 89.2512 (0.350005)  <br/>
+        standard deviation: 52.0488 (0.204113)  <br/>
+      blue:  <br/>
+        min: 17 (0.0666667)  <br/>
+        max: 255 (1)  <br/>
+        mean: 80.4075 (0.315323)  <br/>
+        standard deviation: 54.0052 (0.211785)  <br/>
+    Rendering intent: Undefined  <br/>
+    Interlace: None  <br/>
+    Background color: white  <br/>
+    Border color: rgb(223,223,223)  <br/>
+    Matte color: grey74  <br/>
+    Transparent color: black  <br/>
+    Page geometry: 70x46+0+0  <br/>
+    Dispose: Undefined  <br/>
+    Iterations: 0  <br/>
+    Compression: JPEG  <br/>
+    Quality: 100  <br/>
+    Orientation: Undefined  <br/>
+    Properties:  <br/>
+      date:create: 2008-01-08T11:08:52-05:00  <br/>
+      date:modify: 2005-04-07T12:48:13-04:00  <br/>
+      jpeg:colorspace: 2  <br/>
+      jpeg:sampling-factor: 2x2,1x1,1x1  <br/>
+      signature: dcd00d6303f80f4fa53f991804cb026151c1e851b7a96255e82da87299583ebc  <br/>
+    Artifacts:  <br/>
+      verbose: true  <br/>
+    Tainted: False  <br/>
+    Filesize: 3.97266kb  <br/>
+    Number pixels: 3.14453kb  <br/>
+    Version: ImageMagick 6.8.6-0 2013-06-16 Q16 http://www.imagemagick.org</span></p>
 <p>To get the print size in inches of an image at 72 DPI, use:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png</span><span class="crtout">8.5 x 11 inches</span></p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png</span><span class='crtout'>8.5 x 11 inches</span></p>
 <p>The depth and dimensions of a raw image must be specified on the command line:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">identify -depth 8 -size 640x480 image.raw</span><span class="crtout">image.raw RGB 640x480 sRGB 9kb 0.000u 0:01</span></p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -depth 8 -size 640x480 image.raw</span><span class='crtout'>image.raw RGB 640x480 sRGB 9kb 0.000u 0:01</span></p>
 <p>Here we display the image texture features and the number of unique colors in the image:</p>
-<p class="crt"><span class="crtprompt">$</span> <span class="crtin">identify -verbose -features 1 -unique image.png</span></p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -verbose -features 1 -unique image.png</span></p>
 <p>You can find additional examples of using <code>identify</code> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
+
 </div>
+
 <h2><a id="options"></a>Option Summary</h2>
 <div class="doc-section">
-<p>The <code>identify</code> command recognizes these options. Click on an option to get more details about how that option works.</p>
+
+<p>The <code>identify</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
+
 <table class="doc">
-<tbody>
-<tr>
-<th align="left">Option</th>
-<th align="left">Description</th>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#alpha">-alpha</a></td>
-<td valign="top">on, activate, off, deactivate, set, opaque, copy", transparent, extract, background, or shape the alpha channel</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#antialias">-antialias</a></td>
-<td valign="top">remove pixel-aliasing</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#authenticate">-authenticate <em class="option">value</em></a></td>
-<td valign="top">decrypt image with this password</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#channel">-channel <em class="option">type</em></a></td>
-<td valign="top">apply option to select image channels</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#clip">-clip</a></td>
-<td valign="top">clip along the first path from the 8BIM profile</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#clip-mask">-clip-mask</a> <em class="option">filename</em></td>
-<td valign="top">associate clip mask with the image</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#clip-path">-clip-path <em class="option">id</em></a></td>
-<td valign="top">clip along a named path from the 8BIM profile</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#colorspace">-colorspace <em class="option">type</em></a></td>
-<td valign="top">set image colorspace</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#crop">-crop <em class="option">geometry</em></a></td>
-<td valign="top">crop the image</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#debug">-debug <em class="option">events</em></a></td>
-<td valign="top">display copious debugging information</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#define">-define <em class="option">format:option</em></a></td>
-<td valign="top">define one or more image format options</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#density">-density <em class="option">geometry</em></a></td>
-<td valign="top">horizontal and vertical density of the image</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#depth">-depth <em class="option">value</em></a></td>
-<td valign="top">image depth</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#endian">-endian <em class="option">type</em></a></td>
-<td valign="top">endianness (MSB or LSB) of the image</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#extract">-extract <em class="option">geometry</em></a></td>
-<td valign="top">extract area from image</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#features">-features <em class="option">distance</em></a></td>
-<td valign="top">analyze image features (e.g. contract, correlations, etc.).</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#format_identify_">-format <em class="option">string</em></a></td>
-<td valign="top">output formatted image characteristics</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#gamma">-gamma <em class="option">value</em></a></td>
-<td valign="top">level of gamma correction</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#help">-help</a></td>
-<td valign="top">print program options</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#interlace">-interlace <em class="option">type</em></a></td>
-<td valign="top">type of image interlacing scheme</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#interpolate">-interpolate <em class="option">method</em></a></td>
-<td valign="top">pixel color interpolation method</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#limit">-limit <em class="option">type value</em></a></td>
-<td valign="top">pixel cache resource limit</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#list">-list <em class="option">type</em></a></td>
-<td valign="top">Color, Configure, Delegate, Format, Magic, Module, Resource, or Type</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#log">-log <em class="option">format</em></a></td>
-<td valign="top">format of debugging information</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#mask">-mask <em class="option">filename</em></a></td>
-<td valign="top">associate a mask with the image</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#monitor">-monitor</a></td>
-<td valign="top">monitor progress</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#negate">-negate</a></td>
-<td valign="top">replace each pixel with its complementary color</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#quiet">-quiet</a></td>
-<td valign="top">suppress all warning messages</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#regard-warnings">-regard-warnings</a></td>
-<td valign="top">pay attention to warning messages.</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#respect-parentheses">-respect-parentheses</a></td>
-<td valign="top">settings remain in effect until parenthesis boundary.</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#sampling-factor">-sampling-factor <em class="option">geometry</em></a></td>
-<td valign="top">horizontal and vertical sampling factor</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#set">-set <em class="option">attribute value</em></a></td>
-<td valign="top">set an image attribute</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#size">-size <em class="option">geometry</em></a></td>
-<td valign="top">width and height of image</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#strip">-strip</a></td>
-<td valign="top">strip image of all profiles and comments</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#unique">-unique</a></td>
-<td valign="top">display image the number of unique colors in the image.</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#units">-units <em class="option">type</em></a></td>
-<td valign="top">the units of image resolution</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#verbose">-verbose</a></td>
-<td valign="top">print detailed information about the image</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#version">-version</a></td>
-<td valign="top">print version information</td>
-</tr>
-<tr>
-<td valign="top"><a href="command-line-options.html#virtual-pixel">-virtual-pixel <em class="option">method</em></a></td>
-<td valign="top">access method for pixels outside the boundaries of the image</td>
-</tr>
-</tbody>
+  <tbody>
+  <tr>
+    <th align="left">Option</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#alpha">-alpha</a></td>
+    <td valign="top">on, activate, off, deactivate, set, opaque, copy",
+transparent, extract, background, or shape the alpha channel</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#antialias">-antialias</a></td>
+    <td valign="top">remove pixel-aliasing</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#authenticate">-authenticate <em class="option">value</em></a></td>
+    <td valign="top">decrypt image with this password</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#channel">-channel <em class="option">type</em></a></td>
+    <td valign="top">apply option to select image channels</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#clip">-clip</a></td>
+    <td valign="top">clip along the first path from the 8BIM profile</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#clip-mask">-clip-mask</a> <em class="option">filename</em></td>
+    <td valign="top">associate clip mask with the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#clip-path">-clip-path <em class="option">id</em></a></td>
+    <td valign="top">clip along a named path from the 8BIM profile</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#colorspace">-colorspace <em class="option">type</em></a></td>
+    <td valign="top">set image colorspace</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#crop">-crop <em class="option">geometry</em></a></td>
+    <td valign="top">crop the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#debug">-debug <em class="option">events</em></a></td>
+    <td valign="top">display copious debugging information</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#define">-define <em class="option">format:option</em></a></td>
+    <td valign="top">define one or more image format options</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#density">-density <em class="option">geometry</em></a></td>
+    <td valign="top">horizontal and vertical density of the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#depth">-depth <em class="option">value</em></a></td>
+    <td valign="top">image depth</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#endian">-endian <em class="option">type</em></a></td>
+    <td valign="top">endianness (MSB or LSB) of the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#extract">-extract <em class="option">geometry</em></a></td>
+    <td valign="top">extract area from image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#features">-features <em class="option">distance</em></a></td>
+    <td valign="top">analyze image features (e.g. contract, correlations, etc.).</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#format_identify_">-format <em class="option">string</em></a></td>
+    <td valign="top">output formatted image characteristics</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#gamma">-gamma <em class="option">value</em></a></td>
+    <td valign="top">level of gamma correction</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#help">-help</a></td>
+    <td valign="top">print program options</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#interlace">-interlace <em class="option">type</em></a></td>
+    <td valign="top">type of image interlacing scheme</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#interpolate">-interpolate <em class="option">method</em></a></td>
+    <td valign="top">pixel color interpolation method</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#limit">-limit <em class="option">type value</em></a></td>
+    <td valign="top">pixel cache resource limit</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#list">-list <em class="option">type</em></a></td>
+    <td valign="top">Color, Configure, Delegate, Format, Magic, Module, Resource, or Type</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#log">-log <em class="option">format</em></a></td>
+    <td valign="top">format of debugging information</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#mask">-mask <em class="option">filename</em></a></td>
+    <td valign="top">associate a mask with the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#monitor">-monitor</a></td>
+    <td valign="top">monitor progress</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#negate">-negate</a></td>
+    <td valign="top">replace each pixel with its complementary color </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#quiet">-quiet</a></td>
+    <td valign="top">suppress all warning messages</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#regard-warnings">-regard-warnings</a></td>
+    <td valign="top">pay attention to warning messages.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#respect-parentheses">-respect-parentheses</a></td>
+    <td valign="top">settings remain in effect until parenthesis boundary.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#sampling-factor">-sampling-factor <em class="option">geometry</em></a></td>
+    <td valign="top">horizontal and vertical sampling factor</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#set">-set <em class="option">attribute value</em></a></td>
+    <td valign="top">set an image attribute</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#size">-size <em class="option">geometry</em></a></td>
+    <td valign="top">width and height of image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#strip">-strip</a></td>
+    <td valign="top">strip image of all profiles and comments</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#unique">-unique</a></td>
+    <td valign="top">display image the number of unique colors in the image.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#units">-units <em class="option">type</em></a></td>
+    <td valign="top">the units of image resolution</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#verbose">-verbose</a></td>
+    <td valign="top">print detailed information about the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#version">-version</a></td>
+    <td valign="top">print version information</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#virtual-pixel">-virtual-pixel <em class="option">method</em></a></td>
+    <td valign="top">access method for pixels outside the boundaries of the image</td>
+  </tr>
+
+  </tbody>
 </table>
+
 </div>
+
 </div>
-<div id="linkbar"><span id="linkbar-west">&nbsp;</span> <span id="linkbar-center"><a href="../discourse-server">Discourse Server</a> • <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> • <a href="http://jqmagick.imagemagick.org/">JqMagick</a></span> <span id="linkbar-east">&nbsp;</span></div>
-<div class="footer"><span id="footer-west">© 1999-2013 ImageMagick Studio LLC</span> <span id="footer-east"><a href="contact.html">Contact the Wizards</a></span></div>
-<div style="clear: both; margin: 0; width: 100%;"></div>
+
+<div id="linkbar">
+    <span id="linkbar-west">&nbsp;</span>
+
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &bull;
+      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2013 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
