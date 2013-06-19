@@ -772,7 +772,7 @@ MagickExport void ConvertLCHabToRGB(const double luma,const double chroma,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  ConvertLCHabToXYZ(luma*100.0,255.0*(chroma-0.5),360.0*(hue-0.5),&X,&Y,&Z);
+  ConvertLCHabToXYZ(luma*100.0,255.0*(chroma-0.5),360.0*hue,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -825,7 +825,7 @@ MagickExport void ConvertLCHuvToRGB(const double luma,const double chroma,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  ConvertLCHuvToXYZ(100.0*luma,255.0*(chroma-0.5),360.0*(hue-0.5),&X,&Y,&Z);
+  ConvertLCHuvToXYZ(100.0*luma,255.0*(chroma-0.5),360.0*hue,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -1351,10 +1351,8 @@ static inline void ConvertXYZToLCHab(const double X,const double Y,
     b;
 
   ConvertXYZToLab(X,Y,Z,luma,&a,&b);
-  *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5));
-  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI;
-  *chroma=(*chroma)/255.0+0.5;
-  *hue=(*hue)/360.0+0.5;
+  *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5))/255.0+0.5;
+  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI/360.0;
   if (*hue < 0.0)
     *hue+=1.0;
 }
@@ -1415,7 +1413,7 @@ static inline void ConvertXYZToLCHuv(const double X,const double Y,
 
   ConvertXYZToLuv(X,Y,Z,luma,&u,&v);
   *chroma=hypot(354.0*u-134.0,262.0*v-140.0)/255.0+0.5;
-  *hue=180.0*atan2(262.0*v-140.0,354.0*u-134.0)/MagickPI/360.0+0.5;
+  *hue=180.0*atan2(262.0*v-140.0,354.0*u-134.0)/MagickPI/360.0;
   if (*hue < 0.0)
     *hue+=1.0;
 }

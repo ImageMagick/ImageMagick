@@ -251,7 +251,7 @@ static inline void ConvertXYZToLCHab(const double X,const double Y,
 
   ConvertXYZToLab(X,Y,Z,luma,&a,&b);
   *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5))/255.0+0.5;
-  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI/360.0+0.5;
+  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI/360.0;
   if (*hue < 0.0)
     *hue+=1.0;
 }
@@ -597,7 +597,7 @@ static MagickBooleanType ValidateLchToRGB()
     r;
 
   (void) FormatLocaleFile(stdout,"  LchToRGB");
-  ConvertLCHabToRGB(88.456154/100.0,75.219797/255.0+0.5,136.620717/360.0+0.5,
+  ConvertLCHabToRGB(88.456154/100.0,75.219797/255.0+0.5,136.620717/360.0,
     &r,&g,&b);
   if ((fabs(r-0.545877*QuantumRange) >= ReferenceEpsilon) ||
       (fabs(g-0.966567*QuantumRange) >= ReferenceEpsilon) ||
