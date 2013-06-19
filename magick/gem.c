@@ -1413,12 +1413,11 @@ static inline void ConvertXYZToLCHuv(const double X,const double Y,
     v;
 
   ConvertXYZToLuv(X,Y,Z,luma,&u,&v);
-  *chroma=hypot(354.0*u-134.0,262.0*v-140.0);
-  *hue=180.0*atan2(262.0*v-140.0,354.0*u-134.0)/MagickPI;
-  *chroma=(*chroma+134.0)/354.0;
-  *hue=(*hue+140.0)/262.0;
+  *chroma=(hypot(354.0*u-134.0,262.0*v-140.0)+134.0)/354.0;
+  *hue=180.0*atan2(262.0*v-140.0,354.0*u-134.0)/MagickPI/360.0;
   if (*hue < 0.0)
     *hue+=1.0;
+  *hue=(255.0**hue+140.0)/262.0;
 }
 
 MagickExport void ConvertRGBToLCHuv(const Quantum red,const Quantum green,
