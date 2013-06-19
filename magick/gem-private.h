@@ -165,7 +165,6 @@ static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
   *blue=ClampToQuantum((MagickRealType) EncodePixelGamma(QuantumRange*b));
 }
 
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
