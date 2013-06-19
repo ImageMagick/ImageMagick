@@ -1,7 +1,7 @@
 #! /bin/sh
 # depcomp - compile a program generating dependencies as side-effects
 
-scriptversion=2012-10-18.11; # UTC
+scriptversion=2013-05-30.07; # UTC
 
 # Copyright (C) 1999-2013 Free Software Foundation, Inc.
 
@@ -552,6 +552,7 @@ $ {
   G
   p
 }' >> "$depfile"
+  echo >> "$depfile" # make sure the fragment doesn't end with a backslash
   rm -f "$tmpdepfile"
   ;;
 
