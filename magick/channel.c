@@ -186,7 +186,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelRed(q,ClampToQuantum(GetPixelIntensity(image,p)));
+          SetPixelRed(q,ClampToQuantum(GetPixelGray(p)));
           p++;
           q++;
         }
@@ -202,7 +202,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelGreen(q,ClampToQuantum(GetPixelIntensity(image,p)));
+          SetPixelGreen(q,ClampToQuantum(GetPixelGray(p)));
           p++;
           q++;
         }
@@ -218,7 +218,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelBlue(q,ClampToQuantum(GetPixelIntensity(image,p)));
+          SetPixelBlue(q,ClampToQuantum(GetPixelGray(p)));
           p++;
           q++;
         }
@@ -234,7 +234,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelAlpha(q,ClampToQuantum(GetPixelIntensity(image,p)));
+          SetPixelAlpha(q,ClampToQuantum(GetPixelGray(p)));
           p++;
           q++;
         }
@@ -254,7 +254,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         indexes=GetCacheViewAuthenticIndexQueue(combine_view);
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelIndex(indexes+x,ClampToQuantum(GetPixelIntensity(image,p)));
+          SetPixelIndex(indexes+x,ClampToQuantum(GetPixelGray(p)));
           p++;
         }
         image_view=DestroyCacheView(image_view);
