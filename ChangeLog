@@ -1,3 +1,6 @@
+2013-06-20  6.8.6.2 Glenn Randers-Pehrson <glennrp@image...>
+  * Quiet two warnings about uninitialized variables in coders/png.c
+
 2013-06-20  6.8.6-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-1, SVN revision 12509.
 
