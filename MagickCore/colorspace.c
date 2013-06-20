@@ -1669,7 +1669,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           double
             gray;
 
-          gray=EncodePixelGamma((MagickRealType) GetPixelGray(image,q));
+          gray=(double) GetPixelGray(image,q);
           SetPixelRed(image,ClampToQuantum(gray),q);
           SetPixelGreen(image,ClampToQuantum(gray),q);
           SetPixelBlue(image,ClampToQuantum(gray),q);
