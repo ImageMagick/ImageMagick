@@ -1,3 +1,6 @@
+2013-06-20  6.8.6-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.6-1, SVN revision 12509.
+
 2013-06-16  6.8.6-1 Cristy  <quetzlzacatenango@image...>
   * Don't decompand RGB for the -modulate option.
   * Improve LCHab and LCHuv roundtrip to / from sRGB (reference
