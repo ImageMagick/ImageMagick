@@ -2282,6 +2282,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   ping_found_gAMA = MagickFalse;
   ping_found_iCCP = MagickFalse;
   ping_found_sRGB = MagickFalse;
+  ping_found_sRGB_cHRM = MagickFalse;
   ping_preserve_iCCP = MagickFalse;
 
   {
@@ -12369,6 +12370,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   status=MagickTrue;
   transparent=image_info->type==GrayscaleMatteType ||
      image_info->type==TrueColorMatteType || image->alpha_trait == BlendPixelTrait;
+
+  jng_alpha_sample_depth = 0;
 
   jng_quality=image_info->quality == 0UL ? 75UL : image_info->quality%1000;
 
