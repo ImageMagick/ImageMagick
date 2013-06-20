@@ -7,13 +7,13 @@
                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name="google-site-verification" content="MxsMq6bdLOx0KSuz1MY6yG9ZTIJ7_7DVRfl5NCAT5Yg"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: Changelog</title>
   <meta http-equiv="content-language" content="en-US"/>
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
   <meta name="keywords" content="changelog, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
@@ -23,42 +23,55 @@
   <meta name="author" content="ImageMagick Studio LLC"/>
   <meta name="revisit-after" content="2 DAYS"/>
   <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2013 ImageMagick Studio LLC"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
   
-  <!-- Optionaly include easing and/or mousewheel plugins -->
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  <!-- Add mousewheel plugin (this is optional) -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.4"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
   
-  <!-- Optionaly include button and/or thumbnail helpers -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.4" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.4"></script>
+  <!-- Optionally add helpers - button, thumbnail and/or media -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.4" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.4"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  
   <script type="text/javascript">
   	$(document).ready(function() {
   		$(".fancybox").fancybox();
   	});
   </script>
+
   <!-- ImageMagick style -->
-  <link rel="stylesheet" href="http://www.localhost/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
 </head>
 
 <body id="www-imagemagick-org">
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//127.0.0.1/analytics.js','ga');
+
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
+
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
   <script type="text/javascript">
@@ -70,10 +83,10 @@
   //-->
   </script>
   <script type="text/javascript"
-    src="http://localhost/pagead/show_ads.js">
+    src="http://127.0.0.1/pagead/show_ads.js">
   </script>
 </div>
-<a href="../discourse-server">
+<a href="http://www.imagemagick.org/discourse-server/">
   <img src="../images/logo.jpg"
   alt="ImageMagick Logo"
   style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
@@ -152,7 +165,7 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Search" href="http://www.imagemagick.org/script/search.php">Search</a>
+  <a title="Search" href="search.html">Search</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
@@ -163,115 +176,726 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a rel="follow" title="Sponsors" href="support.html">Sponsors:</a>
-
-  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
-  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201208010120 mickey@163... -->
-<div class="sponsbox">
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: The Fastest &amp; Easiest Way to Find Images" href="http://www.graphicsfactory.com">The Fastest &amp; Easiest Way to Find Images</a><!-- 201210010270 graphicsfac... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201209010090 barsh@inter... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Werbebanner Werbeplane" href="http://www.allesbanner.de">Werbebanner Werbeplane</a><!-- 201212010450 info@druck... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Entertainment News &amp; Photos" href="http://www.zimbio.com">Entertainment News &amp; Photos</a><!-- 201211010540 bd@zimb... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: LED24" href="http://led24.de/">LED24</a><!-- 201207010270 info@led24... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Best Website Hosting" href="http://www.top-cheap-web-hosting.com">Best Website Hosting</a><!-- 201304010090 eunge.liu-->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201208010120 mickey@163... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012090100150 brooks@stripes...-->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012120100150 racent marketing@webhosting...-->
-</div>
-</div>
+  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
 </div>
 </div>
 
 <div class="eastbar">
-  <div class="g-plusone" id="gplusone"></div>
   <script type="text/javascript">
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
+    /* <![CDATA[ */
     (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript'; po.async = true;
-      po.src = 'https://apis.localhost/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
     })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","false");
+    /* ]]> */
   </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
+  <noscript>
+    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
+  </noscript>
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://127.0.0.1/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
 </div>
 
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2012-05-31  6.7.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.8-0, SVN revision 8099.</dd>
-<dt>2012-05-31  6.7.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2013-06-16  7.0.0-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Don't decompand RGB for the -modulate option.</dd>
+<dt>2013-06-16  7.0.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 7.0.0-0, SVN revision 12475.</dd>
+<dt>2013-06-10  7.0.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Clone image->intensity in CloneImageProperties() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23569).</dd>
+  <dd> Split test suite into smaller tests (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23577).</dd>
+  <dd> Undercolor rectangle was off by one pixel (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23574).</dd>
+  <dd> Don't msync() for a read-only memory-mapped mode (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23531).</dd>
+  <dd> BlurChannelImage() no longer faults for certain CMYK images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23581).</dd>
+  <dd> Reduce memory requirements for large BMP images.</dd>
+<dt>2013-06-05  6.8.5-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-10, SVN revision 12419.</dd>
+<dt>2013-06-02  6.8.5-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Improve caption formatting (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23522).</dd>
+<dt>2013-06-01  6.8.5-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-9, SVN revision 12401.</dd>
+<dt>2013-05-30  6.8.5-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Caption no longer clips long words (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23504).</dd>
+  <dd> The lightness intensity is (min(R',G',B')+max(R',G',B'))/2.0 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23517).</dd>
+<dt>2013-05-25  6.8.5-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-8, SVN revision 12362.</dd>
+<dt>2013-05-23  6.8.5-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Stopped a "-fsanitize-address" warning in the JNG coder.</dd>
+<dt>2013-05-20  6.8.5-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The -white-threshold option is symetrical with -black-threshold (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23441);</dd>
+  <dd> Fix multi-line PNM comments (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23442).</dd>
+  <dd> The -format option should not automatically append a newline since the    user can specify a newline in the formatting expression.</dd>
+  <dd> The -level option is no longer returning a darkened image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23479).</dd>
+<dt>2013-05-20  6.8.5-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-7, SVN revision 12310.</dd>
+<dt>2013-05-14  6.8.5-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Recognize PNG iCCP chunks that contain the sRGB profile and replace    them with the PNG sRGB chunk.  Use "-define png:preserve-iCCP" to    get the previous behavior, of simply copying the iCCP chunk.</dd>
+<dt>2013-05-11  6.8.5-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Sometimes an sRGB image is masquerading as grayscale (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23370).</dd>
+  <dd> Labels no longer overflow (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22964).</dd>
+  <dd> If more then one exception, return the highest security exception.</dd>
+  <dd> A grayscale image returns a color JPEG for -type TrueColor (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=23421).</dd>
+  <dd> Read PAM comment (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23442).</dd>
+<dt>2013-05-10  6.8.5-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-6, SVN revision 12257.</dd>
+<dt>2013-05-09  6.8.5-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The stream utility no longer faults when exporting float pixels (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23394).</dd>
+<dt>2013-05-08  6.8.5-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-5, SVN revision 12227.</dd>
+<dt>2013-05-07  6.8.5-5 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <dd> Change the sample JPEG quantization table xml to something that works    really well with 2x2 Chroma subsampling around quality 75.</dd>
+<dt>2013-05-06  6.8.5-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Eliminate whitespace from image properties that hold PNG chunk data.</dd>
+<dt>2013-05-05  6.8.5-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The -poly option treats the opacity channel as alpha (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23346).</dd>
+  <dd> The -threshold 50% option returns a 50-50 black and white image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23354).</dd>
+  <dd> Let user override the TIFF rows per strip  (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=23307).</dd>
+  <dd> Fix transient bug in the -separate option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23335).</dd>
+<dt>2013-05-01  6.8.5-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-4, SVN revision 12089.</dd>
+<dt>2013-05-01  6.8.5-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Add DeleteImageArtifact() for jpeg:extent artifact (thanks to    Jimmy Xie @ Microsoft).</dd>
+  <dd> Track morphology changes per thread to avoid a critical section.</dd>
+<dt>2013-04-28  6.8.5-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-3, SVN revision 12025.</dd>
+<dt>2013-04-29  6.8.5-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Add DeleteImageArtifact() for jpeg:extent artifact (thanks to    Jimmy Xie @ Microsoft).</dd>
+  <dd> Add support for JXR / WDP image format.</dd>
+<dt>2013-04-28  6.8.5-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-2, SVN revision 12013.</dd>
+<dt>2013-04-28  6.8.5-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Use GetImageOption() for webp options (e.g. webp:lossless).</dd>
+<dt>2013-04-27  6.8.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-1, SVN revision 12000.</dd>
+<dt>2013-04-26  6.8.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Recognize xc:gray50 is non-linear.</dd>
+  <dd> Loop over read() until requested bytes are consumed (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?t=23268).</dd>
+  <dd> Don't use gamma lookup map when HDRI is enabled.</dd>
+<dt>2013-04-24  6.8.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.5-0, SVN revision 11979.</dd>
+<dt>2013-04-16  6.8.5-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Handle benign errors as warnings in the PNG coder.</dd>
+<dt>2013-04-16  6.8.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Don't modify channel values for -separate (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23193).</dd>
+  <dd> The -adaptive-sharpen option is now sharpening properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23211).</dd>
+  <dd> Sometimes an image says its grayscale when its not (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23217).</dd>
+  <dd> Use malloc() to allocate X image data (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23221).</dd>
+  <dd> If there are more components than quantization tables, the last table is    replicated.</dd>
+  <dd> Removed the ICC profile from the logo: image definition in coders/magick.c;    libpng16 detected that it was a broken sRGB profile.</dd>
+  <dd> Negatives raised to a non-integer power returns NaN's (reference   http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23234).</dd>
+<dt>2013-04-15  6.8.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-10, SVN revision 11851.</dd>
+<dt>2013-04-11  6.8.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Ensure -define jpeg:extent is resticted to at most 7 iterations (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23179).</dd>
+  <dd> Move X11 font support from annotate.c source module to xwindow.c.</dd>
+<dt>2013-04-10  6.8.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-9, SVN revision 11818.</dd>
+<dt>2013-04-10  6.8.4-9 Bastien Roucaries  &lt;roucaries.basti...&gt;</dt>
+  <dd> Respect --program-suffix configure script option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23143).</dd>
+  <dd> Update to the newest AX_CHECK_PTHREAD macro from autoconf-archive.</dd>
+<dt>2013-04-10  6.8.4-9 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Save the calculated angle for "deskew" as the artifact "deskew:angle"</dd>
+<dt>2013-04-08  6.8.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Pass JP2 format type to decoder (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23038).</dd>
+  <dd> Previously tinting a grayscale image returned dark results.</dd>
+  <dd> The -page option only affects new images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23172).</dd>
+  <dd> Revert 'Move binaries to lib subdirectory and link are created from binary<dt>	  package' patch.  We're getting too many bug reports.</dt>
+  <dd><dt>2013-04-07  6.8.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-8, SVN revision 11743.</dd>
+<dt>2013-04-06  6.8.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Include intensity type in the MIFF metadata.</dd>
+<dt>2013-04-06  6.8.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-7, SVN revision 11720.</dd>
+<dt>2013-04-05  6.8.4-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Fix -sample sampling point to midpoints of sampling areas</dd>
+  <dd> add a "sample:offset=" define to allow users to adjust this    sampling point position in terms of percentage (default = 50x50)</dd>
+<dt>2013-04-02  6.8.4-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Don't write a PNG gAMA or cHRM chunk when writing the iCCP or sRGB chunk.</dd>
+<dt>2013-04-02  6.8.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Return MagickWand for the library name for Wand.pc.</dd>
+  <dd> The LCH colorspace makes the round-trip now.</dd>
+  <dd> Revert the default upsampling algortithm for JPEG (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23100).</dd>
+  <dd> Prevent fault when temporary directory is not-writable (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23117).</dd>
+<dt>2013-04-01  6.8.4-7 Bastien Roucaries  &lt;roucaries.basti...&gt;</dt>
+  <dd> Prepare X11 support as a plugin.</dd>
+  <dd> Fix compilation under HPUX of perlmagick</dd>
+<dt>2013-04-01  6.8.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-6, SVN revision 11640.</dd>
+<dt>2013-04-01  6.8.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The -clut option return a luma grayscale instead of the expected luminance.</dd>
+  <dd> Add moduledir variable to MagickCore.pc to support the MagickFilter and    MagickCore kits.</dd>
+  <dd> Caption fits the sized area (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23085).</dd>
+<dt>2013-03-31  6.8.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-5, SVN revision 11619.</dd>
+<dt>2013-03-30  6.8.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix transient bug when writing grayscale MIFF images.</dd>
+  <dd> Adding noise to a gray image returns a gray image as expected.</dd>
+  <dd> Image interlace no longer overwritten by proper cloning for GIF format.</dd>
+  <dd> Extract the clipping path from an image file with clip:myimage.</dd>
+<dt>2013-03-29  6.8.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-4, SVN revision 11591.</dd>
+<dt>2013-03-29  6.8.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Update unit test signatures for Q8.</dd>
+  <dd> Resolve send() / recv() socket problems under MinGW.</dd>
+<dt>2013-03-28  6.8.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-3, SVN revision 11581.</dd>
+<dt>2013-03-28  6.8.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Revert patch to ContrastStretchImage() to match results from 6.8.3-3.</dd>
+<dt>2013-03-27  6.8.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-2, SVN revision 11558.</dd>
+<dt>2013-03-27  6.8.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Use MorphologyApply() rather than MorphologyImage() for -sharpen / -blur.</dd>
+<dt>2013-03-27  6.8.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-1, SVN revision 11552.</dd>
+<dt>2013-03-26  6.8.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Sync 'intensity' option with current image.</dd>
+  <dd> Normalize sharpen kernel to match that of 6.8.3-3.</dd>
+<dt>2013-03-26  6.8.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.4-0, SVN revision 11531.</dd>
+<dt>2013-03-20  6.8.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Do not write zero-length TIFF tags (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22957).</dd>
+  <dd> Math library should be private for *.pc.in configuration files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=22986).</dd>
+  <dd> Do not split words for caption (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=17123).</dd>
+  <dd> Modify the configure script check for the webp delegate library (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=23025).</dd>
+  <dd> The -blur, -guassian-blur, and -sharpen are now convenience methods    for -morphology convolve.</dd>
+  <dd> Fix infinite loop for 'display -window' (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23028).</dd>
+  <dd> Revert -auto-level patch to match the results of ImageMagick 6.8.3-4.</dd>
+  <dd> Revert g_type_init() patch in svg.c (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=23035).</dd>
+<dt>2013-03-18  6.8.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-10, SVN revision 11413.</dd>
+<dt>2013-03-15  6.8.3-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Added IM, libpng, and zlib version info to debug output.</dd>
+<dt>2013-03-10  6.8.3-10 Bastien Roucaries  &lt;roucaries.basti...&gt;</dt>
+  <dd> Move PerlMagick arch independant part to 'default' folder.</dd>
+  <dd> Move binaries to lib subdirectory and link are created from binary package.</dd>
+<dt>2013-03-10  6.8.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The TXT image format can now generate output compatible with the    -sparse-color option (e.g. convert image.png sparse-color:image.txt).</dd>
+  <dd> Support -intensity option: method to generate an intensity value from a    pixel.</dd>
+  <dd> Add -similarity-threshold option to the compare utility, the minimum    distortion for a (sub)image match.</dd>
+  <dd> Avoid seq-fault in AcquireQuantumInfo() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22973).</dd>
+  <dd> Comment resource initializers in magick/resource.c.</dd>
+<dt>2013-03-10  6.8.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-9, SVN revision 11294.</dd>
+<dt>2013-03-09  6.8.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Add a space after the LastPage option in coders/ps.c (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22940).</dd>
+<dt>2013-03-08  6.8.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-8, SVN revision 11283.</dd>
+<dt>2013-03-05  6.8.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> GIF comments are no longer displaced by 1 for animated GIFs (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22901).</dd>
+  <dd> A blur kernel with a zero sigma is unity.</dd>
+<dt>2013-03-03  6.8.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-7, SVN revision 11249.</dd>
+<dt>2013-03-02  6.8.3-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Do not replace gAMA found in input with 1/2.2</dd>
+  <dd> Avoid a libpng16 warning about storing unknown chunks.</dd>
+<dt>2013-03-01  6.8.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Improve performance when rendering a caption.</dd>
+  <dd> The compare 'map' image should not be transparent.</dd>
+  <dd> Use only major version for decorating include path.</dd>
+<dt>2013-02-28  6.8.3-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-6, SVN revision 11210.</dd>
+<dt>2013-02-25  6.8.3-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support built-in 1x1 and 2x1 threshold maps (reference     http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=22861).</dd>
+  <dd> Check for webp version (reference     http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22867).</dd>
+<dt>2013-02-25  6.8.3-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Relocated png_set_bKGD(), etc., after png_set_IHDR() because they    might depend on members of info_ptr that are set by png_set_IHDR().</dd>
+<dt>2013-02-25  6.8.3-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-5, SVN revision 11170.</dd>
+<dt>2013-02-23  6.8.3-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Read the WebP extended file format (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=22809).</dd>
+  <dd> Add arch annotation to include path to distinquish ImageMagick versions    6 & 7.</dd>
+<dt>2013-02-22  6.8.3-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-4, SVN revision 11127.</dd>
+<dt>2013-02-22  6.8.3-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Reduce default memory resource limit under Windows.</dd>
+<dt>2013-02-19  6.8.3-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-3, SVN revision 11105.</dd>
+<dt>2013-02-19  6.8.3-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Set WEBP lossless / lossy property properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=22809).</dd>
+<dt>2013-02-18  6.8.3-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-2, SVN revision 11087.</dd>
+<dt>2013-02-17  6.8.3-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Semaphore is now unlocked when an X11 annotation exception is thrown.</dd>
+  <dd> WEBP coder enhancement and memory leak patch (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=22809).</dd>
+<dt>2013-02-16  6.8.3-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-1, SVN revision 11060.</dd>
+<dt>2013-02-16  6.8.3-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Disable FORTIFY_SOURCE to fix a bug in LVVM / OpenMP support.</dd>
+<dt>2013-02-15  6.8.3-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.3-0, SVN revision 11045.</dd>
+<dt>2013-02-14  6.8.3-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Webp requires alpha, not opacity (reference     http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22793).</dd>
+<dt>2013-02-12  6.8.3-0 Bastien Roucaries  &lt;roucaries.basti...&gt;</dt>
+  <dd> Allow PerlMagick to be multi-quantum (e.g. Image::Magick::Q16).</dd>
+<dt>2013-02-11  6.8.2-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-10, SVN revision 11004.</dd>
+<dt>2013-02-11  6.8.2-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The XPM regression tests passes now.</dd>
+<dt>2013-02-09  6.8.2-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-9, SVN revision 10995.</dd>
+<dt>2013-02-09  6.8.2-9 Bastien Roucaries  &lt;roucaries.basti...&gt;</dt>
+  <dd> Export versioning to automake in order to use it for library prefix.</dd>
+  <dd> So bump was incomplete due to no changing map file.</dd>
+  <dd> Change abi name by adding major version to lib name (will simplify    next imagemagick major version release work) and reset release version    to 1 (due to changing abi name).</dd>
+<dt>2013-02-09  6.8.2-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The DOT coders now compiles with GraphViz 2.30 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22767).</dd>
+<dt>2013-02-09  6.8.2-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-8, SVN revision 10986.</dd>
+<dt>2013-02-09  6.8.2-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> MagickStatisticImage() method signature was corrected, SO bump required.</dd>
+<dt>2013-02-08  6.8.2-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-7, SVN revision 10965.</dd>
+<dt>2013-02-08  6.8.2-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Ensure MagickCore compiles with a C++ compiler.</dd>
+<dt>2013-02-07  6.8.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-6, SVN revision 10961.</dd>
+<dt>2013-02-07  6.8.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Don't destroy an image that's already destroyed (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22747).</dd>
+  <dd> Montage is now invarient to the font when no label image label exists.</dd>
+<dt>2013-02-06  6.8.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-5, SVN revision 10952.</dd>
+<dt>2013-02-05  6.8.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> FITS now properly renders the 16 bit signed integer format.</dd>
+<dt>2013-02-04  6.8.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-4, SVN revision 10909.</dd>
+<dt>2013-02-02  6.8.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Do not subsample raw CMYK JPEG images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22731).</dd>
+<dt>2013-02-02  6.8.2-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-3, SVN revision 10894.</dd>
+<dt>2013-02-01  6.8.2-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Respect endian for FITS image format.</dd>
+  <dd> Remove artifact when drawing a circle (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22724).</dd>
+<dt>2013-02-01  6.8.2-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Deleted some code added to the PNG decoder in SVN revision 10825; it    was failing to handle transparency in paletted images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22720).</dd>
+  <dd> Compare alpha to "QuantumRange-OpaqueOpacity" not just "OpaqueOpacity"    when detecting transparency in the PNG encoder.</dd>
+<dt>2013-02-01  6.8.2-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-2, SVN revision 10883.</dd>
+<dt>2013-01-30  6.8.2-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Properly initialize new throttle resource limit.</dd>
+<dt>2013-01-29  6.8.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-1, SVN revision 10859.</dd>
+<dt>2013-01-28  6.8.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix 'format not a string literal' problem (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22656).</dd>
+<dt>2013-01-28  6.8.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.2-0, SVN revision 10831.</dd>
+<dt>2013-01-21  6.8.2-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Impose a 32k limit on the number of text chunks that will be read.</dd>
+  <dd> Implemented PNG00, PNG48 and PNG64 PNG subformats.</dd>
+  <dd> Avoid reading back PNG pixel rows while reading a transparent PNG (    by using a local "alpha" value instead of GetPixelOpacity()).</dd>
+<dt>2013-01-21  6.8.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Avoid a rare thread lock for timeout event (e.g. MAGICK_TIME_LIMIT=30).</dd>
+  <dd> Support a distributed pixel cache.</dd>
+  <dd> Fix numerical stability problem for convolution.</dd>
+  <dd> Increase segment stack size for -draw option.</dd>
+<dt>2013-01-18  6.8.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-10, SVN revision 10667.</dd>
+<dt>2013-01-08  6.8.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Add the same noise value to each channel of a grayscale image (+noise).</dd>
+  <dd> Fix recursive descent within XGetWindowImage() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22550).</dd>
+  <dd> Multi-plane MatLab images now render properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22586).</dd>
+<dt>2013-01-06  6.8.1-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed LBR01 (left-bit-replication) macro in coders/png.c; problem reported    by the clang compiler.</dd>
+  <dd> Chromaticity values were read in the wrong order in the cHRM chunk    when it accompanied the sRGB chunk. Libpng applications built with    libpng16 and later will detect this and issue a warning (PNG files    previously written with the cHRM chunk are OK).  Removed the    troublesome redundant png_set_cHRM() and png_set_sRGB() calls.</dd>
+  <dd> Look for libpng17 and libpng16 while configuring PNG support.</dd>
+<dt>2013-01-06  6.8.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-9, SVN revision 10518.</dd>
+<dt>2013-01-06  6.8.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Type correction in blob code.</dd>
+<dt>2013-01-02  6.8.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-8, SVN revision 10481.</dd>
+<dt>2013-01-02  6.8.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Check for a density of zero when rendering with Pango (reference    http://www.imagemagick.org/discourse-server/viewforum.html?f=3).</dd>
+<dt>2013-01-01  6.8.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-7, SVN revision 10468.</dd>
+<dt>2013-01-01  6.8.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> magick-baseconfig.h is architecture dependant;    make headers quantum depth neutral ( reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=22509).</dd>
+<dt>2013-01-01  6.8.1-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-6, SVN revision 10461.</dd>
+<dt>2012-12-31  6.8.1-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Repair numerical stability issue with gradients (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22507).</dd>
+<dt>2012-12-30  6.8.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-5, SVN revision 10428.</dd>
+<dt>2012-12-29  6.8.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Correction to scientific notation for the -evaluate log option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=22496).</dd>
+<dt>2012-12-29  6.8.1-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-4, SVN revision 10420.</dd>
+<dt>2012-12-28  6.8.1-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support scientific notation for the -evaluate log option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=22496).</dd>
+<dt>2012-12-25  6.8.1-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-3, SVN revision 10394.</dd>
+<dt>2012-12-25  6.8.1-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Remove pow() dependency from public header.</dd>
+<dt>2012-12-24  6.8.1-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-2, SVN revision 10385.</dd>
+<dt>2012-12-23  6.8.1-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Magickcore headers recently used pow() in the inline functions inside    public headers.  Thus in order to avoid library depends problem, put -lm    in library depends (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22483).</dd>
+  <dd> Negative exponentiation bug fix (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22484).</dd>
+<dt>2012-12-23  6.8.1-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-1, SVN revision 10350.</dd>
+<dt>2012-12-23  6.8.1-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> More large image performance tuning.</dd>
+<dt>2012-12-20  6.8.1-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.1-0, SVN revision 10327.</dd>
+<dt>2012-12-16  6.8.1-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Return non-zero exit status if two images differ for the compare utility.</dd>
+  <dd> Large image performance tuning.</dd>
+<dt>2012-12-15  6.8.0-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-10, SVN revision 10236.</dd>
+<dt>2012-12-13  6.8.0-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Improve exception reporting when AcquireAuthenticCacheView() fails.</dd>
+<dt>2012-12-13  6.8.0-10 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Minor tweeks and commenting of Virtual Pixel shortcuts in    resampling filters.</dd>
+  <dd> Added -define "shepards:power" to control the power setting (def=2)    for Shepards Method in -distort and  -sparse-color    http://www.imagemagick.org/discourse-server/viewtopic.html?t=22416</dd>
+<dt>2012-12-13  6.8.0-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-9, SVN revision 10182.</dd>
+<dt>2012-12-10  6.8.0-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Prepended "Acquire" and "Relinquish" to debugging log messages in    magick/resource.c that only showed the filename.</dd>
+  <dd> Added temporary file-count diagnostics to tests/validate.c (this required    exporting GetPathTemplate() from magick/resource.c</dd>
+  <dd> Eliminate file leak when writing the JNG image format.</dd>
+<dt>2012-12-09  6.8.0-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Further support for associating quantum depth with ABI (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22352).</dd>
+  <dd> Check for negative square root when resampling (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22398).</dd>
+<dt>2012-12-07  6.8.0-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-8, SVN revision 10118.</dd>
+<dt>2012-11-28  6.8.0-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed problem with writing grayscale PNG, bug introduced in version    6.8.0-0 or 6.8.0-1 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22355).</dd>
+<dt>2012-11-28  6.8.0-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Allow temporary-path policy to override temporary path environment    variables (e.g. MAGICK_TMPDIR).</dd>
+  <dd> Implement symbol versioning (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22352).</dd>
+  <dd> ABI is incompatible if quantum depth change. Add abi indication to library    name, thanks to Bastien Roucaries (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22352).</dd>
+  <dd> The stream utility no longer returns a black image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22046).</dd>
+<dt>2012-11-26  6.8.0-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-7, SVN revision 10029.</dd>
+<dt>2012-11-25  6.8.0-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Width value is optional for label coder (e.g. -size x40 label:Magick).</dd>
+<dt>2012-11-20  6.8.0-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-6, SVN revision 10024.</dd>
+<dt>2012-11-21  6.8.0-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed an old bug in chromaticity decoding in coders/bmp.c (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22294).</dd>
+  <dd> Fixed bug in coders/bmp.c that failed to read a paletted image    properly (fix by J. Summers, reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22316).</dd>
+<dt>2012-11-21  6.8.0-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fixed bug in coders/bmp.c that failed to read transparency    properly (fix by J. Summers, reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22312).</dd>
+<dt>2012-11-20  6.8.0-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-5, SVN revision 10001.</dd>
+<dt>2012-11-15  6.8.0-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Added % escape prefixes %[artifact:..] and %[option:..]    Including glob search,  EG:  -print "__Options__\n%[option:*]"    (backport from IMv7 changes)</dd>
+<dt>2012-11-10  6.8.0-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Revert HCL saturation strategy patch, it improperly clips white to black.</dd>
+  <dd> Default to -dEPSCrop for Ghostscript unless eps:use-crop=false (reference    https://bugzilla.redhat.com/show_bug.cgi?id=832690#c2).</dd>
+  <dd> Add support for -poly, build a polynomial from the image sequence and the    corresponding terms (coefficients and degree pairs).</dd>
+  <dd> Support the OLE Macintosh image format (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=22257).</dd>
+<dt>2012-11-08  6.8.0-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Implemented faster decoding of interlaced PNG images.</dd>
+<dt>2012-11-03  6.8.0-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Skip PNG palette-building when it is not needed.</dd>
+  <dd> Let libpng expand sub-8-bit pixels while reading a PNG file.</dd>
+<dt>2012-11-01  6.8.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-4, SVN revision 9832.</dd>
+<dt>2012-10-31  6.8.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> PFM images are grayscale, not sRGB (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22178).</dd>
+  <dd> Keep YCbCR JPEG compressed TIFF images in the YCbCr colorspace (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22148).</dd>
+<dt>2012-10-27  6.7.9-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Don't write sRGB chunk if image->gamma isn't close to (1/2.2), i.e.,    (0.45 &lt;= gamma &lt;= 0.46) (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22139).</dd>
+<dt>2012-10-25  6.8.0-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-3, SVN revision 9783.</dd>
+<dt>2012-10-21  6.8.0-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> TIFF positional information must be positive (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22106).</dd>
+  <dd> Set the compression quality for the Webp image format.</dd>
+<dt>2012-10-21  6.8.0-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-2, SVN revision 9738.</dd>
+<dt>2012-10-20  6.8.0-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Wait for more bytes if the number of returned bytes is less than    requested in ReadBlob().</dd>
+  <dd> Prefer fullname property for font, if it exists, otherwise famly + style.</dd>
+<dt>2012-10-17  6.8.0-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Added LanczosRadius filter, that blurs an EWA Lanczos to a integer    support size. Equivalent to Lanczos in tensor resize case.</dd>
+<dt>2012-10-16  6.8.0-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-1, SVN revision 9632.</dd>
+<dt>2012-10-12  6.8.0-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix color management for the -solarize option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22059).</dd>
+  <dd> Some colormap unit tests failed for a quantum depth of 32 (problem    report from Glenn Randers-Pehrson).</dd>
+<dt>2012-10-12  6.8.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.0-0, SVN revision 9594.</dd>
+<dt>2012-10-07  6.8.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Check -fx expression early to prevent fault.</dd>
+  <dd> Performance boost for iOS / Android requires a SO major version increment.</dd>
+  <dd> Corrupt PNG image could cause a memory leak (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22024).</dd>
+<dt>2012-10-06  6.7.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-10, SVN revision 9514.</dd>
+<dt>2012-10-01  6.7.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> SVG specs says "1pt" equals "1.25px" (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21967).</dd>
+  <dd> Support TIFF proprietary tag 34118.</dd>
+  <dd> The define option is no longer "lazy" interpretation (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=22007).</dd>
+<dt>2012-10-01  6.7.9-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-9, SVN revision 9473.</dd>
+<dt>2012-09-27  6.7.9-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix memory leak in JPEG decoder when reading a corrupt image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21948).</dd>
+  <dd> Add exif:thumbnail namespace to distiguish orientation tag (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21938).</dd>
+  <dd> Respect DPX data offsets (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21960).</dd>
+<dt>2012-09-26  6.7.9-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-8, SVN revision 9437.</dd>
+<dt>2012-09-24  6.7.9-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Off-by-one error in DrawPolygonPrimitive().</dd>
+  <dd> Fix memory leak in WebP decoder (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21943).</dd>
+  <dd> Certain caption phrases were cut off (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21550).</dd>
+<dt>2012-09-22  6.7.9-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-7, SVN revision 9410.</dd>
+<dt>2012-09-20  6.7.9-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> jpeg:sampling-factor might be an image property or an option (reference<dt>http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=21884).</dt>
+  <dd><dt>2012-09-15  6.7.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-6, SVN revision 9375.</dd>
+<dt>2012-09-14  6.7.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Don't compand the YCC colorspace, its already companded.</dd>
+<dt>2012-09-12  6.7.9-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-5, SVN revision 9358.</dd>
+<dt>2012-09-12  6.7.9-5 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <dd> Merge static inline Sigmoidal functions from IM7 to IM6.</dd>
+<dt>2012-09-12  6.7.8-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> All untapered windowing filters Welch and Cosine changed to use a 3 lobe    support (like Lanczos). These were not part of the original 'zoom' program.</dd>
+<dt>2012-09-11  6.7.9-5 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <dd> sigmoidal-contrast: prevent out of range argument.</dd>
+<dt>2012-09-09  6.7.9-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The number of default OpenMP threads is 1 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=23&t=21838).</dd>
+  <dd> Only first image of raw grayscale image was set to GRAY (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21428).</dd>
+  <dd> Change sigmoidal-contrast define to inline method to conform with ANSI-C    requirements.</dd>
+<dt>2012-09-10  6.7.9-5 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <dd> enhance.c improvements:</dd>
+  <dd> Add tanh/atanh clone of legacy sigmoidal map (faster & more accurate);</dd>
+  <dd> Add final ClampToQuantum in sigmoidal colormap loop;</dd>
+  <dd> Remove OpenMP for threads that do not loop over rows;</dd>
+  <dd> Immediate no-op exit from sigmoidal-contrast if contrast&lt;MagickEpsilon.</dd>
+<dt>2012-09-08  6.7.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-4, SVN revision 9282.</dd>
+<dt>2012-09-05  6.7.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Identify image files with embedded '%d' (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21798).</dd>
+  <dd> Don't include TIFF header for compress.c source module    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21800).</dd>
+<dt>2012-09-01  6.7.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-3, SVN revision 9202.</dd>
+<dt>2012-08-28  6.7.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support -channel sync option for -equalize (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21746).</dd>
+  <dd> Don't remove color profile when setting the image colorspace (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21747).</dd>
+  <dd> Recognize ICO format in URL (e.g. http://www.google.com/favicon.ico).</dd>
+  <dd> Don't define HAVE_BOOLEAN for JPEG under MinGW (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?t=14071).</dd>
+<dt>2012-08-26  6.7.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-2, SVN revision 9120.</dd>
+<dt>2012-08-25  6.7.9-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed bug in Q32 builds that erroneously read grayscale 16-bit PNGs    as PseudoColor.</dd>
+<dt>2012-08-24  6.7.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support -channel option for -solarize (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21738).</dd>
+<dt>2012-08-23  6.7.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-1, SVN revision 9095.</dd>
+<dt>2012-08-22  6.7.9-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> The gAMA chunk with gamma==1.0 was ignored while deciding whether to set    the image colorspace to GRAY when reading grayscale PNG images.</dd>
+<dt>2012-08-16  6.7.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Adjust scaling for Luv colorspace conversion (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21664).</dd>
+  <dd> Copy alpha channel of the -median option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=21694).</dd>
+  <dd> Don't add matte channel for -coalesce if input images don't have one.</dd>
+  <dd> Prevent memory leak in ImageToBlob() if image write fails.</dd>
+  <dd> In rare cases, label would not auto-size properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21716).</dd>
+  <dd> Identify command now reports the image colorspace for non-verbose results.</dd>
+  <dd> Account for stroke width when rendering a caption (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=21721).</dd>
+  <dd> Don't colorize alpha channel if it is not active (reference   http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21547</dd>
+<dt>2012-08-15  6.7.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.9-0, SVN revision 8970.</dd>
+<dt>2012-08-14  6.7.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> RGB -> HCL, return correct hue when g < b < r (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=21646).</dd>
+  <dd> Prefer inkscape for best SVG compliance.</dd>
+  <dd> HCL -&gt; RGB conversion enhancement (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=21663).</dd>
+  <dd> Utilize inkscape if it is in your execution path otherwise RSVG.  If    neither is available, revert to the internal SVG renderer.</dd>
+  <dd> Initialize image-&gt;x_resolution and y_resolution to 0 in image.c    (previously they were initialized to DefaultResolution, which is 72.0).</dd>
+<dt>2012-08-12  6.7.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-10, SVN revision 8915.</dd>
+<dt>2012-08-10  6.7.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Respect the image mask for option -selective-blur (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21631).</dd>
+  <dd> Fix multiple issues with BMPv5 colorimetry (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21640).</dd>
+<dt>2012-08-10  6.7.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-9, SVN revision 8902.</dd>
+<dt>2012-08-07  6.7.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Selective blur stopped working after version 6.7.4-10 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21604).</dd>
+  <dd> Color reduction now handles transparent pixel properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18463).</dd>
+  <dd> ClipImagePath() now returns a valid SVG XML for Windows x64 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21617).</dd>
+<dt>2012-08-05  6.7.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-8, SVN revision 8845.</dd>
+<dt>2012-08-03  6.7.8-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Added 2d named convolution kernel Binomial (for Fred Wienhaus)</dd>
+<dt>2012-08-01  6.7.8-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <dd> Clean up sigmoidal-contrast.</dd>
+<dt>2012-07-31  6.7.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Use ConcatenateString() for multi-block GIF comments.</dd>
+  <dd> Caption no longer chops off text (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21558).</dd>
+  <dd> Support LUV colorspace.</dd>
+  <dd> Support HCL colorspace.</dd>
+  <dd> Don't transform the composite image colorspace, set it instead.</dd>
+  <dd> Interpret -border 5% as 5% of width and 5% of height (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21537).</dd>
+  <dd> Don't normalize zero-sum kernels (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21584).</dd>
+  <dd> Transform grayscale to linear RGB if fill color is non-gray (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21586).</dd>
+<dt>2012-07-30  6.7.8-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-7, SVN revision 8766.</dd>
+<dt>2012-07-28  6.7.8-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Update certain typecasts for libpng < and >= 1.4.0 to allow memory    allocation &gt; 4GB and prevent a DOS.</dd>
+<dt>2012-07-28  6.7.8-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Set DICOM grayscale images to the gray colorspace.</dd>
+  <dd> Missing grestore from ps3.c (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20445).</dd>
+  <dd> Use GetMagickResourceLimit(ThreadResource) to set the # threads (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21543).</dd>
+<dt>2012-07-22  6.7.8-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Only report sRGB, iCCP, gAMA, cHRM chunks in "identify" output when    these chunks were actually present in input, and not when they were    inserted by the PNG decoder.</dd>
+<dt>2012-07-22  6.7.8-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-6, SVN revision 8720.</dd>
+<dt>2012-07-21  6.7.8-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Make sure "intent" is initialized in the PNG decoder.</dd>
+<dt>2012-07-21  6.7.8-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-5, SVN revision 8717.</dd>
+<dt>2012-07-20  6.7.8-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Corrected an error in the logic introduced in 6.7.8-3 to always write    a color PNG when image-&gt;colorspace is sRGB.</dd>
+<dt>2012-07-19  6.7.8-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Inverse YUV colorspace now produces pure red as expected.</dd>
+  <dd> Support halted streams:    cat image.pnm | convert 'pnm:fd:0[0]' 'pnm:fd:0[0]' x:.</dd>
+<dt>2012-07-18  6.7.8-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-4, SVN revision 8697.</dd>
+<dt>2012-07-17  6.7.8-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Write ICON subimage as PNG32, only when its dimensions are 256x256    and image-&gt;compression is UndefinedCompression or ZipCompression.</dd>
+<dt>2012-07-16  6.7.8-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> sRGB color gradients should be in a non-linear colorspace.</dd>
+  <dd> Fix -fx to interpret scientific notation properly.</dd>
+  <dd> The draw epsilon was too sensitive.</dd>
+<dt>2012-07-15  6.7.8-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-3, SVN revision 8675.</dd>
+<dt>2012-07-14  6.7.8-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Always write a color PNG when image->colorspace is sRGB.</dd>
+<dt>2012-07-08  6.7.8-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Attenuate random noise (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21387).</dd>
+  <dd> Return linear grayscale for gradient:white-black.</dd>
+  <dd> Promote linear grayscale to linear RGB when compositing.</dd>
+  <dd> gradient:white-black is sRGB whereas gradient:'icc-color(rgb,255,255,255)-    icc-color(rgb,0,0,0)' is linear RGB whereas gradient:'gray(255)-gray(0)' is    linear grayscale.</dd>
+  <dd> Revert sigmoidal contrast define (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=22&t=21415).</dd>
+<dt>2012-07-08  6.7.8-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-2, SVN revision 8621.</dd>
+<dt>2012-07-02  6.7.8-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Set the colorspace to linear gray when reading intensity values (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21362).</dd>
+  <dd> Don't overrun pixel buffer on inverse fourier for odd image widths.</dd>
+  <dd> Change LAB encoding to permit blurring, resize, etc.    (signed A and B channel values now stored using a 50% bias)</dd>
+    Additional.. This removes a non-linear discontinuity from stored LAB space    values. As a result you can now Blur, Compose, Resize and Distort in LAB    colorspace, without problems that previously existed.</dd>
+<dt>2012-07-04  6.7.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-1, SVN revision 8595.</dd>
+<dt>2012-07-02  6.7.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> A single argument -stereo option now works as documented (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21348).</dd>
+  <dd> The -separate option returns channels as linear grayscale.</dd>
+  <dd> Remove the sRGB color profile when converting to grayscale (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=21355).</dd>
+<dt>2012-06-29  6.7.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.8-0, SVN revision 8554.</dd>
+<dt>2012-06-28  6.8.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Increase epsilon value, smallest difference between two points (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=15870).</dd>
+<dt>2012-06-28  6.7.7-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-10, SVN revision 8534.</dd>
+<dt>2012-06-26  6.7.7-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Don't attempt to use Z_RLE compression strategy with old zlib (prior to    zlib-1.2.0) that does not support it.</dd>
+  <dd> Increase PLTE chunk length to accommodate background color in indexed PNG    (reference www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=21288).</dd>
+  <dd> Added png:PLTE.number_colors to verbose output</dd>
+<dt>2012-06-25  6.7.7-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Permit linear RGB for PNM and TIFF image formats.</dd>
+  <dd> Fix conflicting types for 'GenerateDifferentialNoise' (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21286).</dd>
+  <dd> Fix cast to pointer from integer of different size (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21286).</dd>
+  <dd> Fix broken MSL profile tag (reference    http://www.imagemagick.org/discourse-server/viewforum.html?f=9).</dd>
+  <dd> Better recognition of a CMYK PDF.</dd>
+<dt>2012-06-24  6.7.7-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-9, SVN revision 8460.</dd>
+<dt>2012-06-23  6.7.7-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Some options were incorrectly promoting linear gray to sRGB.</dd>
+<dt>2012-06-22  6.7.7-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-8, SVN revision 8432.</dd>
+<dt>2012-06-15  6.7.7-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support the -features option in convert / mogrify.</dd>
+  <dd> Add support for the %[type] property.</dd>
+<dt>2012-06-15  6.7.7-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Geometry arguments accept multiple sign character for offsets    EG: "-10-10", "-+10-+10", or "+-10+-10" generate negative offsets    while "+10+10", "++10++10", or "--10--10" generate positive offsets,    that is, you can not only optionally have a sign in offset variable    substitutions, but can negate that substitution if you so desire.</dd>
+<dt>2012-06-12  6.7.7-8 Nicolas Robidoux &lt;nicolas.robidoux@gmail...&gt;</dt>
+  <dd> Refactor Catmull-Rom and Spline "interpolation" using    state-of-the-art unpublished formulas</dd>
+  <dd> Fix incorrect transparency handling of "interpolative" cubic    B-spline smoothing</dd>
+<dt>2012-06-09  6.7.7-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Initialize alpha channel when floodfill fill color is not opaque.</dd>
+  <dd> XYZ and Lab colorspace conversion tweaked (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21161).</dd>
+<dt>2012-06-08  6.7.7-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-7, SVN revision 8219.</dd>
+<dt>2012-06-06  6.7.7-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Disabled the new libpng-1.5.10 test for invalid palette index when    reading a PNG or MNG (for speed), or when writing a MNG (because a    zero-length PLTE is valid in a MNG when the global PLTE is used).</dd>
+  <dd> Display the PNG colortype as a string in "identify -verbose" output.</dd>
+<dt>2012-06-06  6.7.7-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Small refactor of Average Interpolators (save some multiplies)</dd>
+  <dd> Added 'Spline' as a filter type as an alias to 'Cubic'. this brings both    Catrom and Spline -filter and -interpolate methods in line.  Cubic should    only be used when defining a general cubic using expert settings or    when listed in "filter:verbose" debugging output.</dd>
+<dt>2012-06-05  6.7.7-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-6, SVN revision 8164.</dd>
+<dt>2012-06-05  6.7.7-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Renamed 'Bicubic' interpolation the more precise definition 'Catrom'    Old name kept (but hidden) for backward compatibility in bit CLI and    API interfaces.</dd>
+<dt>2012-06-01  6.7.7-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The -set colorspace option sets the colorspace, it does not transform it.</dd>
+  <dd> Assume grayscale images in the GIF format are linear.</dd>
+  <dd> Add Nicolas Robidoux's bicubic interpolation method (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=21118).    This replaces the old 'bicubic' which was very extreme 'cardinal' cubic.</dd>
+  <dd> Add DuPont & XFIG copyright to NOTICE.</dd>
+  <dd> sRGB.icc has an unfriendly license, remove it.</dd>
+  <dd> MinGW does not define KEY_WOW64_32KEY (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=21155).</dd>
+  <dd> -evaluate log properly handles negative pixel values.</dd>
+  <dd> The display program displays the ImageMagick logo on EOF.</dd>
+<dt>2012-05-31  6.7.7-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-5, SVN revision 8099.</dd>
+<dt>2012-05-31  6.7.7-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Set terminal character for GIF comment.</dd>
-<dt>2012-05-30  6.7.8-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.8-4, SVN revision 8096.</dd>
-<dt>2012-05-30  6.7.8-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-05-30  6.7.7-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-4, SVN revision 8096.</dd>
+<dt>2012-05-30  6.7.7-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> 'convert 1-bit.tif -rotate 90 ...' returns a 1-bit TIFF image as expected.</dd>
-<dt>2012-05-29  6.7.8-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<dt>2012-05-29  6.7.7-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Ignore APNG chunks even when libpng is built with the "APNG patch".</dd>
-<dt>2012-05-29  6.7.8-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.8-3, SVN revision 8089.</dd>
-<dt>2012-05-28  6.7.8-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-05-29  6.7.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-3, SVN revision 8089.</dd>
+<dt>2012-05-28  6.7.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix bug with stroke-dasharray (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21090).</dd>
   <dd> In rare cases, caption would not word-wrap properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21106).</dd>
   <dd> Don't set alpha pixels in SetImageVirtualPixelMethod() unless    image area is well defined (i.e. != 0) (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?t=21110).</dd>
-<dt>2012-05-27  6.7.8-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <dd> Trialing the addition of new interpolation methods      Average16         average of 16 pixels around sampling point      Average9          9 pixels around nearest pixel      Average4          Average of 4 pixels around sampling point      Background        Background color (for resampling error checking)      Blend             Blend of closest 1, 2 or 4 pixel neighbors    NOTE: 'Average' is now equivelent to 'Average4',    previous to this version it was equivelent to 'Average16'.    The 'Background' method is for showing 'resample errors' be it    accidental, or on purpose.  See IM Examples, Cylindrical Filters.</dd>
-<dt>2012-05-26  6.7.8-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.8-2, SVN revision 8066.</dd>
-<dt>2012-05-26  6.7.8-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-05-27  6.7.7-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Trialing the addition of new interpolation methods      Average16         average of 16 pixels around sampling point      Average9          9 pixels around nearest pixel      Average4          Average of 4 pixels around sampling point      Background        Background color (for resampling error checking)      Blend             Blend of closest 1, 2 or 4 pixel neighbors    NOTE: 'Average' is now equivalent to 'Average4',    previous to this version it was equivalent to 'Average16'.    The 'Background' method is for showing 'resample errors' be it    accidental, or on purpose.  See IM Examples, Cylindrical Filters.</dd>
+  <dd> added -interpolative-resize added around this version</dd>
+<dt>2012-05-26  6.7.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-2, SVN revision 8066.</dd>
+<dt>2012-05-26  6.7.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> MagickDelay() is in microseconds, not milliseconds.</dd>
-<dt>2012-05-25  6.7.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.8-1, SVN revision 8059.</dd>
-<dt>2012-05-20  6.7.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-05-25  6.7.7-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-1, SVN revision 8059.</dd>
+<dt>2012-05-20  6.7.7-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> In rare cases, caption would not word-wrap properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21044).</dd>
   <dd> Set the JPEG image colorspace after the columns / rows are set (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21059).</dd>
   <dd> Potential gray images are in either the gray or RGB colorspaces.</dd>
   <dd> Restore MagickSetImageEndian() method (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?t=20425&p=81525).</dd>
   <dd> Respect resolution when rendering SVG (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21076).</dd>
-<dt>2012-05-20  6.7.8-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<dt>2012-05-20  6.7.7-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Delegates now 'spawn' faster (replaced 2 second sleep!) (for "show:")</dd>
-<dt>2012-05-17  6.7.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.8-0, SVN revision 7980.</dd>
-<dt>2012-05-17  6.7.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-05-17  6.7.7-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-0, SVN revision 7980.</dd>
+<dt>2012-05-17  6.7.7-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Group4-compressed TIFF / PDF image formats stopped working (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=21039).</dd>
   <dd> Auto convert images in the grayscale colorspace to sRGB (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21031).</dd>
 <dt>2012-05-16  6.7.6-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -384,7 +1008,7 @@
 <dt>2012-03-02  6.7.5-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.5-8, SVN revision 7027.</dd>
 <dt>2012-03-02  6.7.5-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <dd> non-verbose identify now reports DirectClass for transparent PNG images     to agree with the report by identify -verbose.  (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20448 and    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=15482).</dd>
+  <dd> non-verbose identify now reports DirectClass for transparent PNG images    to agree with the report by identify -verbose.  (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20448 and    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=15482).</dd>
 <dt>2012-02-29  6.7.5-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Support infinite caption lengths.</dd>
   <dd> Permit custome JPEG quantization tables (e.g.<dt>	  -define jpeg:q-table=quantization-table.xml).</dt>
@@ -492,7 +1116,8 @@
 <dt>2011-11-29  6.7.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Add GetQuantumFormat() method to return the quantum format (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=19961).</dd>
   <dd> Allow unspecified width/height in geometries with the aspect flag (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19964).</dd>
-  <dd> MagickGetImageDepth() no longer returns the depth setting but instead    computes the depth of the image.   <dt>2011-12-02  6.7.4-0 Anthony  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> MagickGetImageDepth() no longer returns the depth setting but instead    computes the depth of the image.</dd>
+<dt>2011-12-02  6.7.4-0 Anthony  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fixed Equal-Area Cropping (size and minimum of delta increments)</dd>
 <dt>2011-12-01  6.7.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.3-10, SVN revision 6106.</dd>
@@ -649,9 +1274,9 @@
   <dd> Properly handled continued JPEG embedded profiles.</dd>
 <dt>2011-08-12  6.7.1-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Yet another attempt to read Japanese filenames under Windows.</dd>
-<dt>2011-08-0  6.7.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2011-08-10  6.7.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.1-5.</dd>
-<dt>2011-08-0  6.7.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2011-08-10  6.7.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Revert -colorspace sRGB option patch (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19256).</dd>
   <dd> Revert -type PaletteMatte option patch (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19263</dd>
 <dt>2011-08-09  6.7.1-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -737,7 +1362,7 @@
 <dt>2011-05-20  6.6.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.9-10.</dd>
 <dt>2011-05-20  6.6.9-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <dd> The PNG encoder now respects the -depth setting, including 1, 2, 4.    Previously settings other than 8 and 16 were ignored (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18412). </dd>
+  <dd> The PNG encoder now respects the -depth setting, including 1, 2, 4.    Previously settings other than 8 and 16 were ignored (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18412).</dd>
 <dt>2011-05-16  6.6.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Don't use comma as a separator for stroked text (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18742).</dd>
   <dd> Use C locale when generating or interpreting SVG.</dd>
@@ -839,9 +1464,9 @@
   <dd> Remove version from etc folder and instead use /etc/ImageMagick.</dd>
 <dt>2011-03-28  6.6.9-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Separated complex cropping function from TransformImage() as a new    function CropImageToTiles().  This new function returns either the    new cropped image, or a list of tiles, according to geometry, without    replacing the source image. The Source image may be part of a larger list    of images, without the function 'losing' the other images of the list.</dd>
-<dt>2011-03-27  6.6.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.6.8-0.</dd>
-<dt>2011-03-27  6.6.8-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<dt>2011-03-27  6.6.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.6.8-10.</dd>
+<dt>2011-03-27  6.6.8-10 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Modified image handling in MogrifyImages() and MogrifyImage()    which improves overall handling, and allows correct %p, %n and the    %[fx:..] 't' and 'n' escape usage to work correctly.</dd>
   <dd> Added -duplicate as a multi-image sequence operator</dd>
 <dt>2011-03-26  6.6.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1181,7 +1806,7 @@
   <dd> Add -subimage-search option to the compare utility.</dd>
 <dt>2010-08-12  6.6.3-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> The -fx 2e+6/1e+5 argument no longer returns the wrong results (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16833).</dd>
-<dt>2010-08-0  6.6.3-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<dt>2010-08-10  6.6.3-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Emit a warning if the PNG encoder can't satisfy the color type and    bit depth requested with a "-define" directive.</dd>
 <dt>2010-08-07  6.6.3-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> The orient option sometimes improperly set "undefined" (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16795).</dd>
@@ -1609,7 +2234,7 @@
   <dd> Addition of -auto-level and -auto-gamma  image enhancements    (under trial not yet final)</dd>
   <dd> Addition of a special -channel flag 'sync' which means that the specified    channels are to be modified together by the same amount.  The flag is    enabled by default.  This replaces the current 'channels not modified'    type handling thought IM.</dd>
   <dd> Modified -channel parsing to continue looking for words, after handling    any shorthand channel options.  For example:  -channel RGB,sync</dd>
-<dt>2009-08-0  6.5.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2009-08-10  6.5.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> identify -format %c logo.png returns the image comment as expected.</dd>
   <dd> Clone ImageInfo members scene and number_scenes (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=14437).</dd>
   <dd> Fix memory leak with the -remote option of the animate program (bug report    from Anthony).</dd>
@@ -1876,7 +2501,7 @@
   <dd> JPEG to PDF was not always reversible (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13020).</dd>
 <dt>2009-01-30  6.4.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Stroking when annotating failed for stroke widths > 2 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13009).</dd>
-<dt>2009-01-24  6.4.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2009-01-24  6.4.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> TransformImageColorspace() returns GRAYColorspace when set (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=12990).</dd>
   <dd> Don;t assume CMYK unless document process colors include Cyan, Magenta,    or Yellow.</dd>
 <dt>2009-01-23  6.4.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -2033,29 +2658,29 @@
   <dd> Do not set image colorspace for the MSL modulate tag.</dd>
 <dt>2008-11-01  6.4.5-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Off by one error when computing affine in DrawAffineImage() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=12391.</dd>
-<dt>2008-0-30  6.4.5-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2008-10-30  6.4.5-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fixed local adaptive thresholding  when using an offset (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=12371.</dd>
   <dd> Set SetImagePixels() rather than SyncImagePixelCache() to update    the pixel cache morphology.</dd>
-<dt>2008-0-26  6.4.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2008-10-26  6.4.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Set explicit image format for BlobToImage() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=12340).</dd>
   <dd> p_thread_t is an aggregate under MinGW.</dd>
-<dt>2008-0-20  6.4.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2008-10-20  6.4.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> pthread_t can be aggregate so stop treating it like its atomic.</dd>
   <dd> default the WPG image size to 1 top avoid "no pixels defined in cache"    exceptions.</dd>
-<dt>2008-0-17  6.4.4-8 Anthony  &lt;A.Thyssen@griffith...&gt;</dt>
+<dt>2008-10-17  6.4.4-8 Anthony  &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> slight modification of the added "radial-gradient:" image generator    so the radius goes to an edge rather than the corner, allowing more user    control based on image size.</dd>
   <dd> fix -raise N to mean -raise NxN</dd>
-<dt>2008-0-15  6.4.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2008-10-15  6.4.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Add support for inline images.</dd>
-<dt>2008-0-10  6.4.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2008-10-10  6.4.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> MinGW supports both Posix threads and Windows critical sections.</dd>
-<dt>2008-0-06  6.4.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2008-10-06  6.4.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> pthread_self() can be an aggregate value.</dd>
   <dd> Scale pixel quantum to match PNG tRNS range (i.e. 0-255).</dd>
-<dt>2008-0-06  6.4.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2008-10-06  6.4.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Set sentinel byte for MVG coder.</dd>
   <dd> fx:standard_deviation returns standard deviation now instead of mean.</dd>
-<dt>2008-0-01  6.4.4-1 Florent Monnier  &lt;monnier.florent@gmail...&gt;</dt>
+<dt>2008-10-01  6.4.4-1 Florent Monnier  &lt;monnier.florent@gmail...&gt;</dt>
   <dd> Support radial gradients in DrawGradientImage().</dd>
 <dt>2008-09-26  6.4.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix memory leak when XMP profile is corrupt.</dd>
@@ -2127,7 +2752,7 @@
   <dd> The -draw option no longer returns an error when for # like .6 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11879).</dd>
 <dt>2008-08-14  6.4.2-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New dithering selection option, -dither Floyd-Steinberg or    -dither Riemersma.</dd>
-<dt>2008-08-0  6.4.2-8 Anthony &lt;anthony@griffith...&gt;</dt>
+<dt>2008-08-10  6.4.2-8 Anthony &lt;anthony@griffith...&gt;</dt>
   <dd> Added new distort "Polar" and "DePolar" due to Forum Discussions</dd>
 <dt>2008-08-07  6.4.2-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Change MPEG delegate from mpeg2decode/mpeg2encode to ffmpeg (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11827).</dd>
@@ -2181,12 +2806,12 @@
 <dt>2008-06-18  6.4.1-9 Anthony &lt;anthony@griffith...&gt;</dt>
   <dd> Added a  LevelizeImageChannels() which is similar to LevelImageChannels()    Function maps black and white values to the given level values.    Rather than mapping the given level values to black and white.    Bacically a 'reverse-level' function, with different input args.</dd>
   <dd> Set  +level  or a '!' flag in -level or LevelImage() to call    the new 'reverse-level' function LevelizeImageChannels().</dd>
-  <dd> More work on IsMagickColorSimular() to fix relationship between    transparent-black and opaque-black, which was matched as 'similar'.    Also attempts to fix 'K' channel handling for CMYK colorspace.    More work on this to come.</dd>
+  <dd> More work on IsMagickColorSimilar() to fix relationship between    transparent-black and opaque-black, which was matched as 'similar'.    Also attempts to fix 'K' channel handling for CMYK colorspace.    More work on this to come.</dd>
 <dt>2008-06-25  6.4.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> The TXT format correctly reports alpha channel (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11478).</dd>
   <dd> MONOTCHROME1 Dicom images are not longer inverted (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11492).</dd>
 <dt>2008-06-13  6.4.1-8 Anthony &lt;anthony@griffith...&gt;</dt>
-  <dd> Fixed IsMagickColorSimular() as used by -opauqe and -transparent    so as to understand that the Hue Channel is cyclic by nature</dd>
+  <dd> Fixed IsMagickColorSimilar() as used by -opaque and -transparent    so as to understand that the Hue Channel is cyclic by nature</dd>
 <dt>2008-06-08  6.4.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> The -sketch option is working again (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11454).</dd>
 <dt>2008-06-08  6.4.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -2307,7 +2932,7 @@
   <dd> Fixed a small memory leak (8 bytes) in TransformImages().</dd>
   <dd> Render to Cairo surface rather than a GDK buffer when rendering SVG.</dd>
   <dd> Identify now reports both actual and reported image depths (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=10716).</dd>
-<dt>2008-02-17  6.3.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2008-02-17  6.3.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Speed up converting large PDF/PS images when only selecting a few pages    (e.g. pdffile.pdf[195-199]).</dd>
   <dd> Deprecate HSLTransform() and TransformHSL().</dd>
 <dt>2008-02-16  6.3.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -2658,9 +3283,11 @@
 
 <div id="linkbar">
     <span id="linkbar-west">&nbsp;</span>
+
     <span id="linkbar-center">
-      <a href="../discourse-server">Discourse Server</a> &bull;
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &bull;
+      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
@@ -2669,16 +3296,5 @@
     <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-17690367-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('offline-script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.localhost/ga.js';
-      var s = document.getElementsByTagName('offline-script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
 </body>
 </html>
