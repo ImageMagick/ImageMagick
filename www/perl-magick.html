@@ -7,13 +7,13 @@
                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name="google-site-verification" content="MxsMq6bdLOx0KSuz1MY6yG9ZTIJ7_7DVRfl5NCAT5Yg"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: PerlMagick, Perl API for ImageMagick</title>
   <meta http-equiv="content-language" content="en-US"/>
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
   <meta name="keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
@@ -23,42 +23,55 @@
   <meta name="author" content="ImageMagick Studio LLC"/>
   <meta name="revisit-after" content="2 DAYS"/>
   <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2013 ImageMagick Studio LLC"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
   
-  <!-- Optionaly include easing and/or mousewheel plugins -->
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  <!-- Add mousewheel plugin (this is optional) -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.4"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
   
-  <!-- Optionaly include button and/or thumbnail helpers -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.4" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.4"></script>
+  <!-- Optionally add helpers - button, thumbnail and/or media -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.4" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.4"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  
   <script type="text/javascript">
   	$(document).ready(function() {
   		$(".fancybox").fancybox();
   	});
   </script>
+
   <!-- ImageMagick style -->
-  <link rel="stylesheet" href="http://www.localhost/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
 </head>
 
 <body id="www-imagemagick-org">
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//127.0.0.1/analytics.js','ga');
+
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
+
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
   <script type="text/javascript">
@@ -70,10 +83,10 @@
   //-->
   </script>
   <script type="text/javascript"
-    src="http://localhost/pagead/show_ads.js">
+    src="http://127.0.0.1/pagead/show_ads.js">
   </script>
 </div>
-<a href="../discourse-server">
+<a href="http://www.imagemagick.org/discourse-server/">
   <img src="../images/logo.jpg"
   alt="ImageMagick Logo"
   style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
@@ -152,7 +165,7 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Search" href="http://www.imagemagick.org/script/search.php">Search</a>
+  <a title="Search" href="search.html">Search</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
@@ -163,75 +176,48 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a rel="follow" title="Sponsors" href="support.html">Sponsors:</a>
-
-  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
-  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201208010120 mickey@163... -->
-<div class="sponsbox">
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: The Fastest &amp; Easiest Way to Find Images" href="http://www.graphicsfactory.com">The Fastest &amp; Easiest Way to Find Images</a><!-- 201210010270 graphicsfac... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201209010090 barsh@inter... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Werbebanner Werbeplane" href="http://www.allesbanner.de">Werbebanner Werbeplane</a><!-- 201212010450 info@druck... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Entertainment News &amp; Photos" href="http://www.zimbio.com">Entertainment News &amp; Photos</a><!-- 201211010540 bd@zimb... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: LED24" href="http://led24.de/">LED24</a><!-- 201207010270 info@led24... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Best Website Hosting" href="http://www.top-cheap-web-hosting.com">Best Website Hosting</a><!-- 201304010090 eunge.liu-->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201208010120 mickey@163... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2012080100030 Temurbas atlas-multimedia-->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012120100150 racent marketing@webhosting...-->
-</div>
-</div>
+  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
 </div>
 </div>
 
 <div class="eastbar">
-  <div class="g-plusone" id="gplusone"></div>
   <script type="text/javascript">
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
+    /* <![CDATA[ */
     (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript'; po.async = true;
-      po.src = 'https://apis.localhost/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
     })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","false");
+    /* ]]> */
   </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
+  <noscript>
+    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
+  </noscript>
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://127.0.0.1/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
 </div>
 
 <div class="main">
@@ -254,22 +240,34 @@
 
 <p><b>UNIX</b></p>
 
-<p>The following instructions for Unix apply only to the unbundled PerlMagick as obtained from CPAN. PerlMagick is included as a subdirectory (PerlMagick) of the ImageMagick source distribution, and may be configured and built using the instructions provided in the ImageMagick distribution's README.txt file. It is usually most convenient to install PerlMagick as part of the ImageMagick distribution.</p>
+<p>Is PerlMagick available from your system RPM repository?  For example, on our CentOS system, we install PerlMagick thusly:</p>
 
-<p>ImageMagick must already be installed on your system. Next, get
-the <a href="download.html">PerlMagick</a> distribution corresponding to the installed ImageMagick distribution
-(e.g., PerlMagick 6.77 for
-ImageMagick 6.7.8) and unpack it as shown below:</p>
+<pre class="text">
+yum install ImageMagick-perl
+</pre>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz PerlMagick-6.77.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd PerlMagick</span></p>
-<p>Next, edit <kbd>Makefile.PL</kbd> and change LIBS and INC to include the appropriate path information to the required <kbd>MagickCore</kbd> library. You may need paths to JPEG, PNG, TIFF, etc.  delegates if they were included with your installed version of ImageMagick. Build and install it like this:</p>
+<p>If not, you must install PerlMagick from the ImageMagick source distribution.  Download the latest <a href="http://www.imagemagick.org/download/ImageMagick.tar.gz">source</a> release.</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>perl Makefile.PL</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make install</span></p>
-<p>For Unix, you typically need to be <kbd>root</kbd> to install the software. There are ways around this. Consult the Perl manual pages for more information.</p>
+<p>Unpack the distribution with this command:</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz ImageMagick.tar.gz</span></p>
+<p>Next configure and compile ImageMagick:</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-7.0.0</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span></p>
+<p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p>
+<p>You may need to configure the dynamic linker run-time bindings:</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>sudo ldconfig /usr/local/lib</span></p>
+<p>Finally, verify the PerlMagick install worked properly, type</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>perl -e "use Image::Magick; print Image::Magick->QuantumDepth"</span></p>
+<p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images.</p>
 
 <p><b>Windows XP / Windows 2000</b></p>
 
-<p>ImageMagick must already be installed on your system. Also, the ImageMagick source distribution for <a href="download.html">Windows 2000</a> is required. You must also have the <kbd>nmake</kbd> from the Visual C++ or J++ development environment. Copy <kbd>\bin\IMagick.dll</kbd> and <kbd>\bin\X11.dll</kbd> to a directory in your dynamic load path such as <kbd>c:\perl\site\5.00502</kbd>.</p>
+<p>ImageMagick must already be installed on your system. Also, the ImageMagick source distribution for <a href="download.html">Windows 2000</a> is required. You must also have the <code>nmake</code> from the Visual C++ or J++ development environment. Copy <code>\bin\IMagick.dll</code> and <code>\bin\X11.dll</code> to a directory in your dynamic load path such as <code>c:\perl\site\5.00502</code>.</p>
 
 <p>Next, type</p>
 
@@ -281,7 +279,7 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
 <p>To verify a correct installation, type</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>make test</span></p>
-<p>Use <kbd>nmake test</kbd> under Windows. There are a few demonstration scripts available to exercise many of the functions PerlMagick can perform. Type</p>
+<p>Use <code>nmake test</code> under Windows. There are a few demonstration scripts available to exercise many of the functions PerlMagick can perform. Type</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd demo</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span></p>
 <p>You are now ready to utilize the PerlMagick methods from within your Perl scripts.</p>
@@ -296,24 +294,32 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
 <pre class="code">
   use Image::Magick;
 
-  $image=Image::Magick-&gt;new;
+  $image = Image::Magick-&gt;new;
+</pre>
+
+<p>PerlMagick is <em>quantum</em> aware.  You can request a specific quantum depth when you instantiate an image object:</p>
+
+<pre class="code">
+  use Image::Magick::Q16;
+
+  $image = Image::Magick::Q16-&gt;new;
 </pre>
 
 <p>The new() method takes the same parameters as <a href="perl-magick.html#set-attribute">SetAttribute</a> . For example,</p>
 
 <pre class="code">
-  $image=Image::Magick-&gt;new(size=&gt;'384x256');
+  $image = Image::Magick-&gt;new(size=&gt;'384x256');
 </pre>
 
 <p>Next you will want to read an image or image sequence, manipulate it, and then display or write it. The input and output methods for PerlMagick are defined in <a href="perl-magick.html#read">Read or Write an Image</a>. See <a href="perl-magick.html#set-attribute">Set an Image Attribute</a> for methods that affect the way an image is read or written. Refer to <a href="perl-magick.html#manipulate">Manipulate an Image</a> for a list of methods to transform an image. <a href="perl-magick.html#get-attribute">Get an Image Attribute</a> describes how to retrieve an attribute for an image. Refer to <a href="perl-magick.html#montage">Create an Image Montage</a> for details about tiling your images as thumbnails on a background. Finally, some methods do not neatly fit into any of the categories just mentioned. Review <a href="perl-magick.html#misc">Miscellaneous Methods</a> for a list of these methods.</p>
 
-<p>Once you are finished with a PerlMagick object you should consider destroying it. Each image in an image sequence is stored in virtual memory. This can potentially add up to mebibytes of memory. Upon destroying a PerlMagick object, the memory is returned for use by other Perl methods. The recommended way to destroy an object is with <kbd>undef</kbd>:</p>
+<p>Once you are finished with a PerlMagick object you should consider destroying it. Each image in an image sequence is stored in virtual memory. This can potentially add up to mebibytes of memory. Upon destroying a PerlMagick object, the memory is returned for use by other Perl methods. The recommended way to destroy an object is with <code>undef</code>:</p>
 
 <pre class="code">
   undef $image;
 </pre>
 
-<p>To delete all the images but retain the <kbd>Image::Magick</kbd> object use</p>
+<p>To delete all the images but retain the <code>Image::Magick</code> object use</p>
 
 <pre class="code">
   @$image = ();
@@ -478,7 +484,7 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
   $image-&gt;Write(filename=&gt;'image.png', compression=&gt;'None');
 </pre>
 
-<p>Use <kbd>-</kbd> as the filename to method Read() to read from standard in or to method Write() to write to standard out:</p>
+<p>Use <code>-</code> as the filename to method Read() to read from standard in or to method Write() to write to standard out:</p>
 
 <pre class="code">
   binmode STDOUT;
@@ -505,7 +511,7 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
 
 <p>Note, reading from or writing to a Perl filehandle may fail under Windows due to different versions of the C-runtime libraries between ImageMagick and the ActiveState Perl distributions or if one of the DLL's is linked with the /MT option.  See <a href="http://msdn.microsoft.com/en-us/library/ms235460.aspx">Potential Errors Passing CRT Objects Across DLL Boundaries</a> for an explanation.</p>
 
-<p>If <kbd>%0Nd, %0No, or %0Nx</kbd> appears in the filename, it is interpreted as a printf format specification and the specification is replaced with the specified decimal, octal, or hexadecimal encoding of the scene number. For example,</p>
+<p>If <code>%0Nd, %0No, or %0Nx</code> appears in the filename, it is interpreted as a printf format specification and the specification is replaced with the specified decimal, octal, or hexadecimal encoding of the scene number. For example,</p>
 
 <pre class="text">
   image%03d.miff
@@ -547,7 +553,7 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
   <tr>
     <td valign="top">AdaptiveResize</td>
     <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, filter=&gt;{Point, Box, Triangle, Hermite, Hanning, Hamming, Blackman, Gaussian, Quadratic, Cubic, Catrom, Mitchell, Lanczos, Bessel, Sinc}, support=&gt;<i>double</i>, blur=&gt;<i>double</i></td>
-    <td valign="top">adaptively resize image using data dependant triangulation. Specify <kbd>blur</kbd> &gt; 1 for blurry or &lt; 1 for sharp</td>
+    <td valign="top">adaptively resize image using data dependant triangulation. Specify <code>blur</code> &gt; 1 for blurry or &lt; 1 for sharp</td>
   </tr>
 
   <tr>
@@ -601,7 +607,7 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
   <tr>
     <td valign="top">AutoOrient</td>
     <td valign="top"><br /></td>
-    <td valign="top">automagically orient the image</td>
+    <td valign="top">adjusts an image so that its orientation is suitable for viewing (i.e. top-left orientation)</td>
   </tr>
 
   <tr>
@@ -642,8 +648,8 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Clamp</td>
-    <td valign="top"><br /></td>
-    <td valign="top">restrict color values from 0 to the quantum depth.</td>
+    <td valign="top">channel=&gt;{Red, RGB, All, etc.}</td>
+    <td valign="top">set each pixel whose value is below zero to zero and any the pixel whose value is above the quantum range to the quantum range (e.g. 65535) otherwise the pixel value remains unchanged.</td>
   </tr>
 
   <tr>
@@ -660,7 +666,7 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Clut</td>
-    <td valign="top">image=&gt;<i>image-handle</i>,  interpolate={Average, Bicubic, Bilinear, Filter, Integer, Mesh, NearestNeighbor}, channel=&gt;{Red, RGB, CMYK, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black, or All}</td>
+    <td valign="top">image=&gt;<i>image-handle</i>,  interpolate={Average, Bicubic, Bilinear, Filter, Integer, Mesh, NearestNeighbor}, channel=&gt;{Red, RGB, All, etc.}</td>
     <td valign="top">apply a color lookup table to an image sequence</td>
   </tr>
 
@@ -720,7 +726,7 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">ContrastStretch</td>
-    <td valign="top">levels=&gt;<i>string</i>, 'black-point'=&gt;<i>double</i>, 'white-point'=&gt;<i>double</i>, channel=&gt;{Red, RGB, CMYK, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black, or All}</td>
+    <td valign="top">levels=&gt;<i>string</i>, 'black-point'=&gt;<i>double</i>, 'white-point'=&gt;<i>double</i>, channel=&gt;{Red, RGB, All, etc.}</td>
     <td valign="top">improve the contrast in an image by `stretching' the range of intensity values</td>
   </tr>
 
@@ -893,8 +899,14 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
   </tr>
 
   <tr>
+    <td valign="top">Grayscale</td>
+    <td valign="top">channel=&gt;{Average, Brightness, Lightness, Rec601Luma, Rec601Luminance, Rec709Luma, Rec709Luminance, RMS}</td>
+    <td valign="top">convert image to grayscale</td>
+  </tr>
+
+  <tr>
     <td valign="top">HaldClut</td>
-    <td valign="top">image=&gt;<i>image-handle</i>,  channel=&gt;{Red, RGB, CMYK, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black, or All}</td>
+    <td valign="top">image=&gt;<i>image-handle</i>,  channel=&gt;{Red, RGB, All, etc.}</td>
     <td valign="top">apply a Hald color lookup table to an image sequence</td>
   </tr>
 
@@ -930,13 +942,13 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Level</td>
-    <td valign="top">levels=&gt;<i>string</i>, 'black-point'=&gt;<i>double</i>, 'gamma'=&gt;<i>double</i>, 'white-point'=&gt;<i>double</i>, channel=&gt;{Red, RGB, CMYK, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black, or All}</td>
+    <td valign="top">levels=&gt;<i>string</i>, 'black-point'=&gt;<i>double</i>, 'gamma'=&gt;<i>double</i>, 'white-point'=&gt;<i>double</i>, channel=&gt;{Red, RGB, All, etc.}</td>
     <td valign="top">adjust the level of image contrast</td>
   </tr>
 
   <tr>
     <td valign="top">LevelColors</td>
-    <td valign="top">invert=&gt;&gt;{True, False}, 'black-point'=&gt;<i>string</i>,  'white-point'=&gt;<i>string</i>, channel=&gt;{Red, RGB, CMYK, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black, or All}</td>
+    <td valign="top">invert=&gt;&gt;{True, False}, 'black-point'=&gt;<i>string</i>,  'white-point'=&gt;<i>string</i>, channel=&gt;{Red, RGB, All, etc.}</td>
     <td valign="top">level image with the given colors</td>
   </tr>
 
@@ -955,7 +967,7 @@ ImageMagick 6.7.8) and unpack it as shown below:</p>
   <tr>
     <td valign="top">Magnify</td>
     <td valign="top"><br /></td>
-    <td valign="top">double the size of an image</td>
+    <td valign="top">double the size of the image with pixel art scaling</td>
   </tr>
 
   <tr>
@@ -1038,6 +1050,12 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
   </tr>
 
   <tr>
+    <td valign="top">Perceptible</td>
+    <td valign="top">epsilon=&gt;<i>double</i>, channel=&gt;{Red, RGB, All, etc.}</td>
+    <td valign="top">set each pixel whose value is less than |<em>epsilon</em>| to <em>-epsilon</em> or <em>epsilon</em> (whichever is closer) otherwise the pixel value remains unchanged..</td>
+  </tr>
+
+  <tr>
     <td valign="top">Polaroid</td>
     <td valign="top">caption=&gt;<i>string</i>, angle=&gt;<i>double</i>, pointsize=&gt;<i>double</i>, font=&gt;<i>string</i>, stroke=&gt; <i><a href="color.html">color name</a></i>, strokewidth=&gt;<i>integer</i>, fill=&gt;<i><a href="color.html">color name</a></i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast},  background=&gt;<i><a href="color.html">color name</a></i></td>
     <td valign="top">simulate a Polaroid picture.</td>
@@ -1052,7 +1070,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
   <tr>
     <td valign="top">Profile</td>
     <td valign="top">name=&gt;<i>string</i>, profile=&gt;<i>blob</i>, rendering-intent=&gt;{Undefined, Saturation, Perceptual, Absolute, Relative}, black-point-compensation=&gt;{True, False}</td>
-    <td valign="top">add or remove ICC or IPTC image profile; name is formal name (e.g. ICC or filename; set profile to <kbd>''</kbd> to remove profile</td>
+    <td valign="top">add or remove ICC or IPTC image profile; name is formal name (e.g. ICC or filename; set profile to <code>''</code> to remove profile</td>
   </tr>
 
   <tr>
@@ -1088,13 +1106,13 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
   <tr>
     <td valign="top">Resample</td>
     <td valign="top">density=&gt;<i>geometry</i>, x=&gt;<i>double</i>, y=&gt;<i>double</i>, filter=&gt;{Point, Box, Triangle, Hermite, Hanning, Hamming, Blackman, Gaussian, Quadratic, Cubic, Catrom, Mitchell, Lanczos, Bessel, Sinc}, support=&gt;<i>double</i></td>
-    <td valign="top">resample image to desired resolution. Specify <kbd>blur</kbd> &gt; 1 for blurry or &lt; 1 for sharp</td>
+    <td valign="top">resample image to desired resolution. Specify <code>blur</code> &gt; 1 for blurry or &lt; 1 for sharp</td>
   </tr>
 
   <tr>
     <td valign="top">Resize</td>
     <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, filter=&gt;{Point, Box, Triangle, Hermite, Hanning, Hamming, Blackman, Gaussian, Quadratic, Cubic, Catrom, Mitchell, Lanczos, Bessel, Sinc}, support=&gt;<i>double</i>, blur=&gt;<i>double</i></td>
-    <td valign="top">scale image to desired size. Specify <kbd>blur</kbd> &gt; 1 for blurry or &lt; 1 for sharp</td>
+    <td valign="top">scale image to desired size. Specify <code>blur</code> &gt; 1 for blurry or &lt; 1 for sharp</td>
   </tr>
 
   <tr>
@@ -1134,7 +1152,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
   </tr>
   <tr>
     <td valign="top">Separate</td>
-    <td valign="top">channel=&gt;{Red, RGB, CMYK, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black, or All}</td>
+    <td valign="top">channel=&gt;{Red, RGB, All, etc.}</td>
     <td valign="top">separate a channel from the image into a grayscale image</td>
   </tr>
 
@@ -1176,7 +1194,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td valign="top">SigmoidalContrast</td>
-    <td valign="top">geometry=&gt;<i>string</i>, 'contrast'=&gt;<i>double</i>, 'mid-point'=&gt;<i>double</i> channel=&gt;{Red, RGB, CMYK, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black, or All}, sharpen=&gt;{True, False}</td>
+    <td valign="top">geometry=&gt;<i>string</i>, 'contrast'=&gt;<i>double</i>, 'mid-point'=&gt;<i>double</i> channel=&gt;{Red, RGB, All, etc.}, sharpen=&gt;{True, False}</td>
     <td valign="top">sigmoidal non-lineraity contrast control.  Increase the contrast of the image using a sigmoidal transfer function without saturating highlights or shadows. <em class="option">Contrast</em> indicates how much to increase the contrast (0 is none; 3 is typical; 20 is a lot);  <em class="option">mid-point</em> indicates where midtones fall in the resultant image (0 is white; 50% is middle-gray; 100% is black). To decrease contrast, set sharpen to False.</td>
   </tr>
 
@@ -1194,7 +1212,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td valign="top">Solarize</td>
-    <td valign="top">geometry=&gt;<i>string</i>,threshold=&gt;<i>double</i></td>
+    <td valign="top">geometry=&gt;<i>string</i>, threshold=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">negate all pixels above the threshold level</td>
   </tr>
 
@@ -1295,7 +1313,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td valign="top">UnsharpMask</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, amount=&gt;<i>double</i>, threshold=&gt;<i>double</i></td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, gain=&gt;<i>double</i>, threshold=&gt;<i>double</i></td>
     <td valign="top">sharpen the image with the unsharp mask algorithm.</td>
   </tr>
 
@@ -1319,9 +1337,9 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 </tbody>
 </table>
 
-<p>Note, that the <kbd>geometry</kbd> parameter is a short cut for the <kbd>width</kbd> and <kbd>height</kbd> parameters (e.g.  <kbd>geometry=&gt;'106x80'</kbd> is equivalent to <kbd>width=&gt;106, height=&gt;80</kbd> ).</p>
+<p>Note, that the <code>geometry</code> parameter is a short cut for the <code>width</code> and <code>height</code> parameters (e.g.  <code>geometry=&gt;'106x80'</code> is equivalent to <code>width=&gt;106, height=&gt;80</code> ).</p>
 
-<p>You can specify <kbd>@filename</kbd> in both Annotate() and Draw(). This reads the text or graphic primitive instructions from a file on disk. For example,</p>
+<p>You can specify <code>@filename</code> in both Annotate() and Draw(). This reads the text or graphic primitive instructions from a file on disk. For example,</p>
 
 <pre class="code">
    $image-&gt;Draw(fill=&gt;'red', primitive=&gt;'rectangle',
@@ -1334,7 +1352,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
    $image-&gt;Draw(fill=&gt;'red', primitive=&gt;'@draw.txt');
 </pre>
 
-<p>Where <kbd>draw.txt</kbd> is a file on disk that contains this:</p>
+<p>Where <code>draw.txt</code> is a file on disk that contains this:</p>
 
 <pre class="text">
   rectangle 20, 20 100, 100
@@ -1805,7 +1823,7 @@ can use the integers 1 and 0.</p>
   </tbody>
 </table>
 
-<p>Note, that the <kbd>geometry</kbd> parameter is a short cut for the <kbd>width</kbd> and <kbd>height</kbd> parameters (e.g.  <kbd>geometry=&gt;'106x80'</kbd> is equivalent to <kbd>width=&gt;106, height=&gt;80</kbd>).</p>
+<p>Note, that the <code>geometry</code> parameter is a short cut for the <code>width</code> and <code>height</code> parameters (e.g.  <code>geometry=&gt;'106x80'</code> is equivalent to <code>width=&gt;106, height=&gt;80</code>).</p>
 
 <p>SetAttribute() is an alias for method Set().</p>
 
@@ -2250,7 +2268,7 @@ South, SouthEast</td>
   </tbody>
 </table>
 
-<p>Note, that the <kbd>geometry</kbd> parameter is a short cut for the <kbd>width</kbd> and <kbd>height</kbd> parameters (e.g.  <kbd>geometry=&gt;'106x80'</kbd> is equivalent to <kbd>width=&gt;106, height=&gt;80</kbd>).</p>
+<p>Note, that the <code>geometry</code> parameter is a short cut for the <code>width</code> and <code>height</code> parameters (e.g.  <code>geometry=&gt;'106x80'</code> is equivalent to <code>width=&gt;106, height=&gt;80</code>).</p>
 
 <p>MontageImage() is an alias for method Montage().</p>
 
@@ -2369,7 +2387,7 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
   $p = $image-&gt;Append(stack=&gt;{true,false});
 </pre>
 
-<p>appends all the images associated with object <kbd>$image</kbd>. By default, images are stacked left-to-right. Set <kbd>stack</kbd> to True to stack them top-to-bottom.</p>
+<p>appends all the images associated with object <code>$image</code>. By default, images are stacked left-to-right. Set <code>stack</code> to True to stack them top-to-bottom.</p>
 
 <p>The Clone() method copies a set of images. For example,</p>
 
@@ -2377,7 +2395,7 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
   $q = $p-&gt;Clone();
 </pre>
 
-<p>copies all the images from object <kbd>$p</kbd> to <kbd>$q</kbd>. You can use this method for single or multi-image sequences.</p>
+<p>copies all the images from object <code>$p</code> to <code>$q</code>. You can use this method for single or multi-image sequences.</p>
 
 <p>The EvaluateImages() method applies an arithemtic, logical or relational expression to a set of images. For example,</p>
 
@@ -2385,7 +2403,7 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
   $p = $image-&gt;EvaluateImages('mean');
 </pre>
 
-<p>averages all the images associated with object <kbd>$image</kbd>.</p>
+<p>averages all the images associated with object <code>$image</code>.</p>
 
 <p>The Features() method returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second momentum, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance, difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  Values in RGB, CMYK, RGBA, or CMYKA order (depending on the image type).</p>
 
@@ -2452,7 +2470,15 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
   ($width, $height, $size, $format) = $image-&gt;Ping(blob=&gt;$blob);
 </pre>
 
-<p>This a more efficient and less memory intensive way to query if an image exists and what its characteristics are.  <kbd>PreviewImage()</kbd> tiles 9 thumbnails of the specified image with an image processing operation applied at varying strengths. This may be helpful pin-pointing an appropriate parameter for a particular image processing operation. Choose from these operations: <kbd>Rotate, Shear, Roll, Hue, Saturation, Brightness, Gamma, Spiff, Dull, Grayscale, Quantize, Despeckle, ReduceNoise, AddNoise, Sharpen, Blur, Threshold, EdgeDetect, Spread, Solarize, Shade, Raise, Segment, Swirl, Implode, Wave, OilPaint, CharcoalDrawing, JPEG</kbd>. Here is an example:</p>
+<p>This a more efficient and less memory intensive way to query if an image exists and what its characteristics are.</p>
+
+<p>Poly() builds a polynomial from the image sequence and the corresponding terms (coefficients and degree pairs):</p>
+
+<pre class="code">
+  $p = $image-&gt;Poly([0.5,1.0,0.25,2.0,1.0,1.0]);
+</pre>
+
+<p>PreviewImage() tiles 9 thumbnails of the specified image with an image processing operation applied at varying strengths. This may be helpful pin-pointing an appropriate parameter for a particular image processing operation. Choose from these operations: <code>Rotate, Shear, Roll, Hue, Saturation, Brightness, Gamma, Spiff, Dull, Grayscale, Quantize, Despeckle, ReduceNoise, AddNoise, Sharpen, Blur, Threshold, EdgeDetect, Spread, Solarize, Shade, Raise, Segment, Swirl, Implode, Wave, OilPaint, CharcoalDrawing, JPEG</code>. Here is an example:</p>
 
 <pre class="code">
   $preview = $image-&gt;Preview('Gamma');
@@ -2515,7 +2541,7 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
             = $image-&gt;QueryFormat('gif');
 </pre>
 
-<p>Call MagickToMime() with the image format name to get its MIME type such as <kbd>images/tiff</kbd> from <kbd>tif</kbd>.</p>
+<p>Call MagickToMime() with the image format name to get its MIME type such as <code>images/tiff</code> from <code>tif</code>.</p>
 
 <pre class="code">
   $mime = $image-&gt;MagickToMime('tif');
@@ -2533,7 +2559,7 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
   $p = $image-&gt;Smush(stack=&gt;{true,false},offset=&gt;<em>integer</em>);
 </pre>
 
-<p>smushes together all the images associated with object <kbd>$image</kbd>. By default, images are smushed left-to-right. Set <kbd>stack</kbd> to True to smushed them top-to-bottom.</p>
+<p>smushes together all the images associated with object <code>$image</code>. By default, images are smushed left-to-right. Set <code>stack</code> to True to smushed them top-to-bottom.</p>
 
 <p>Statistics() returns the image statistics for each channel in the image. The returned values are an array of depth, minima, maxima, mean, standard deviation, kurtosis, and skewness values in RGB, CMYK, RGBA, or CMYKA order (depending on the image type).</p>
 
@@ -2664,9 +2690,11 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
 
 <div id="linkbar">
     <span id="linkbar-west">&nbsp;</span>
+
     <span id="linkbar-center">
-      <a href="../discourse-server">Discourse Server</a> &bull;
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &bull;
+      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
@@ -2675,16 +2703,5 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
     <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-17690367-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('offline-script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.localhost/ga.js';
-      var s = document.getElementsByTagName('offline-script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
 </body>
 </html>
