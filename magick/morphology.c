@@ -2665,8 +2665,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
 
       if (status == MagickFalse)
         continue;
-      p=GetCacheViewVirtualPixels(p_view, x,  -offy,1,
-          image->rows+kernel->height-1, exception);
+      p=GetCacheViewVirtualPixels(p_view,x,-offy,1,image->rows+kernel->height-1,
+        exception);
       q=GetCacheViewAuthenticPixels(q_view,x,0,1,result_image->rows,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         {
@@ -2748,7 +2748,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               SetPixelOpacity(q,ClampToQuantum(result.opacity));
             if (((channel & IndexChannel) != 0) &&
                 (image->colorspace == CMYKColorspace))
-              SetPixelIndex(q_indexes+x,ClampToQuantum(result.index));
+              SetPixelIndex(q_indexes+y,ClampToQuantum(result.index));
           }
         else
           { /* Channel 'Sync' Flag, and Alpha Channel enabled.
@@ -2799,7 +2799,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             || ( p[r].blue != GetPixelBlue(q))
             || ( p[r].opacity != GetPixelOpacity(q))
             || ( image->colorspace == CMYKColorspace &&
-                GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x) ) )
+                GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+y) ) )
           changes[id]++;
         p++;
         q++;
