@@ -31,7 +31,7 @@ typedef void
   *(*ResizeMemoryHandler)(void *,size_t) magick_alloc_size(2);
 
 extern MagickExport MemoryInfo
-  *AcquireMemoryInfo(const size_t),
+  *AcquireMemoryInfo(const size_t,const size_t),
   *RelinquishMemoryInfo(const MemoryInfo *);
 
 extern MagickExport void
