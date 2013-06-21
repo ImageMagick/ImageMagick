@@ -47,7 +47,7 @@ extern MagickExport void
   GetMagickMemoryMethods(AcquireMemoryHandler *,ResizeMemoryHandler *,
     DestroyMemoryHandler *),
   *GetMemoryInfoMemory(const MemoryInfo *,const size_t,const size_t)
-    magick_attribute((__malloc__)) magick_alloc_sizes(2,3),
+    magick_alloc_sizes(2,3),
   *RelinquishAlignedMemory(void *),
   *RelinquishMagickMemory(void *),
   *ResetMagickMemory(void *,int,const size_t),
