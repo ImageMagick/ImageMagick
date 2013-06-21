@@ -126,6 +126,9 @@ typedef struct _MemoryInfo
 
   void
     *memory;
+
+  size_t
+    signature;
 } MemoryInfo;
 
 typedef struct _MemoryPool
@@ -492,6 +495,7 @@ MagickExport MemoryInfo *AcquireMemoryInfo(void)
   if (memory_info == (MemoryInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(memory_info,0,sizeof(*memory_info));
+  memory_info->signature=MagickSignature;
   return(memory_info);
 }
 
@@ -768,22 +772,23 @@ MagickExport void GetMagickMemoryMethods(
 %
 %  The format of the GetMemoryInfoMemory method is:
 %
-%      void *GetMemoryInfoMemory(const MemoryInfo *memory_info,
-%        const size_t count,const size_t quantum)
+%      void *GetMemoryInfoMemory(MemoryInfo *memory_info,const size_t count,
+%        const size_t quantum)
 %
 %  A description of each parameter follows:
 %
-%    o memory: A pointer to a block of memory to free for reuse.
+%    o memory_info: The MemoryInfo structure.
 %
 %    o count: the number of quantum elements to allocate.
 %
 %    o quantum: the number of bytes in each quantum.
 %
 */
-MagickExport void *GetMemoryInfoMemory(const MemoryInfo *memory_info,
+MagickExport void *GetMemoryInfoMemory(MemoryInfo *memory_info,
   const size_t count,const size_t quantum)
 {
   assert(memory_info != (const MemoryInfo *) NULL);
+  assert(memory_info->signature == MagickSignature);
   return(memory_info->memory);
 }
 
@@ -903,20 +908,26 @@ MagickExport void *RelinquishMagickMemory(void *memory)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RelinquishMemoryInfo() frees memory acquired with AcquireMemoryInfo()
-%  or reuse.
+%  RelinquishMemoryInfo() destroys the MemoryInfo structure returned by a
+%  previous call to AcquireMemoryInfo().
 %
 %  The format of the RelinquishMemoryInfo method is:
 %
-%      void *RelinquishMemoryInfo(const MemoryInfo *memory_info)
+%      MemoryInfo *RelinquishMemoryInfo(MemoryInfo *memory_info)
 %
 %  A description of each parameter follows:
 %
 %    o memory_info: A pointer to a block of memory to free for reuse.
 %
 */
-MagickExport MemoryInfo *RelinquishMemoryInfo(const MemoryInfo *memory_info)
+MagickExport MemoryInfo *RelinquishMemoryInfo(MemoryInfo *memory_info)
 {
+  assert(memory_info != (MemoryInfo *) NULL);
+  assert(memory_info->signature == MagickSignature);
+  if (memory_info->memory != (void *) NULL)
+    memory_info->memory=(void *) NULL;
+  memory_info->signature=(~MagickSignature);
+  memory_info=(MemoryInfo *) RelinquishAlignedMemory(memory_info);
   return((MemoryInfo *) NULL);
 }
 
