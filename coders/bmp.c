@@ -116,7 +116,7 @@ typedef struct _BMPInfo
     offset_bits,
     size;
 
-  int
+  ssize_t
     width,
     height;
 
@@ -299,12 +299,12 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
             /*
               Absolute mode.
             */
-            count=(int) MagickMin((ssize_t) count,(ssize_t) (q-p));
+            count=MagickMin(count,(int) (q-p));
             if (compression == BI_RLE8)
-              for (i=0; i < (ssize_t) count; i++)
+              for (i=0; i < count; i++)
                 *p++=(unsigned char) ReadBlobByte(image);
             else
-              for (i=0; i < (ssize_t) count; i++)
+              for (i=0; i < count; i++)
               {
                 if ((i & 0x01) == 0)
                   byte=(unsigned char) ReadBlobByte(image);
@@ -327,7 +327,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
           }
         }
       }
-    if (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
+    if (SetImageProgress(image,LoadImageTag,y,image->rows) == MagickFalse)
       break;
   }
   (void) ReadBlobByte(image);  /* end of line */
@@ -509,7 +509,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     index;
 
   MagickBooleanType
-    mapped,
     status;
 
   MagickOffsetType
@@ -854,8 +853,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression");
     }
-    image->columns=(size_t) MagickAbsoluteValue((ssize_t) bmp_info.width);
-    image->rows=(size_t) MagickAbsoluteValue((ssize_t) bmp_info.height);
+    image->columns=(size_t) MagickAbsoluteValue(bmp_info.width);
+    image->rows=(size_t) MagickAbsoluteValue(bmp_info.height);
     image->depth=bmp_info.bits_per_pixel <= 8 ? bmp_info.bits_per_pixel : 8;
     image->matte=(bmp_info.alpha_mask != 0) &&
       (bmp_info.compression == BI_BITFIELDS) ? MagickTrue : MagickFalse;
@@ -931,34 +930,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    mapped=MagickFalse;
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
       {
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Reading pixels (%.20g bytes)",(double) length);
-        if (GetBlobStreamData(image) != (unsigned char *) NULL)
+        count=ReadBlob(image,length,pixels);
+        if (count != (ssize_t) length)
           {
-            mapped=MagickTrue;
-            pixels=GetBlobStreamData(image)+TellBlob(image);
-            if (DiscardBlobBytes(image,length) == MagickFalse)
-              ThrowReaderException(CorruptImageError,
-                "InsufficientImageDataInFile");
-          }
-        else
-          {
-            pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->rows,
-              MagickMax(bytes_per_line,image->columns)*sizeof(*pixels));
-            if (pixels == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-            count=ReadBlob(image,length,pixels);
-            if (count != (ssize_t) length)
-              {
-                pixels=(unsigned char *) RelinquishMagickMemory(pixels);
-                ThrowReaderException(CorruptImageError,
-                  "InsufficientImageDataInFile");
-              }
+            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
           }
       }
     else
@@ -966,10 +949,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert run-length encoded raster pixels.
         */
-        pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->rows,
-          MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
-        if (pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == MagickFalse)
           {
@@ -983,7 +962,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (bmp_info.compression == BI_RGB)
       {
-        bmp_info.alpha_mask=image->matte != MagickFalse ? 0xff000000U : 0U;
+        bmp_info.alpha_mask=image->matte != MagickFalse ? 0xff000000L : 0L;
         bmp_info.red_mask=0x00ff0000U;
         bmp_info.green_mask=0x0000ff00U;
         bmp_info.blue_mask=0x000000ffU;
@@ -1169,8 +1148,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
           {
-            if (mapped == MagickFalse)
-              pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowReaderException(CorruptImageError,
               "UnrecognizedImageCompression");
           }
@@ -1270,8 +1248,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((bmp_info.compression != BI_RGB) &&
             (bmp_info.compression != BI_BITFIELDS))
           {
-            if (mapped == MagickFalse)
-              pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowReaderException(CorruptImageError,
               "UnrecognizedImageCompression");
           }
@@ -1327,13 +1304,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       default:
       {
-        if (mapped == MagickFalse)
-          pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
     }
-    if (mapped == MagickFalse)
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -1648,8 +1623,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.file_size+=extra_size;
           bmp_info.offset_bits+=extra_size;
         }
-    bmp_info.width=(int) image->columns;
-    bmp_info.height=(int) image->rows;
+    bmp_info.width=(ssize_t) image->columns;
+    bmp_info.height=(ssize_t) image->rows;
     bmp_info.planes=1;
     bmp_info.image_size=(unsigned int) (bytes_per_line*image->rows);
     bmp_info.file_size+=bmp_info.image_size;
