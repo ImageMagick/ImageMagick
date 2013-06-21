@@ -32,7 +32,7 @@ typedef void
 
 extern MagickExport MemoryInfo
   *AcquireMemoryInfo(void),
-  *RelinquishMemoryInfo(const MemoryInfo *);
+  *RelinquishMemoryInfo(MemoryInfo *);
 
 extern MagickExport void
   *AcquireAlignedMemory(const size_t,const size_t)
@@ -46,7 +46,7 @@ extern MagickExport void
   DestroyMagickMemory(void),
   GetMagickMemoryMethods(AcquireMemoryHandler *,ResizeMemoryHandler *,
     DestroyMemoryHandler *),
-  *GetMemoryInfoMemory(const MemoryInfo *,const size_t,const size_t)
+  *GetMemoryInfoMemory(MemoryInfo *,const size_t,const size_t)
     magick_alloc_sizes(2,3),
   *RelinquishAlignedMemory(void *),
   *RelinquishMagickMemory(void *),
