@@ -480,14 +480,17 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 %
 %  The format of the AcquireMemoryInfo method is:
 %
-%      MagickInfo *AcquireMemoryInfo(const size_t size)
+%      MagickInfo *AcquireMemoryInfo(const size_t count,const size_t quantum)
 %
 %  A description of each parameter follows:
 %
-%    o size: the size of the virtual memory in bytes to allocate.
+%    o count: the number of quantum elements to allocate.
+%
+%    o quantum: the number of bytes in each quantum.
 %
 */
-MagickExport MemoryInfo *AcquireMemoryInfo(const size_t size)
+MagickExport MemoryInfo *AcquireMemoryInfo(const size_t count,
+  const size_t quantum)
 {
   return((MemoryInfo *) NULL);
 }
