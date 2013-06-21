@@ -2566,7 +2566,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 length=(size_t) image->blob->properties.st_size;
                 if ((magick_info != (const MagickInfo *) NULL) &&
                     (GetMagickBlobSupport(magick_info) != MagickFalse) &&
-                    (length > MagickMaxBufferExtent) &&
+                    (length <= MagickMaxBufferExtent) &&
                     (AcquireMagickResource(MapResource,length) != MagickFalse))
                   {
                     void
@@ -2790,7 +2790,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
 
       for (i=0; i < (ssize_t) length; i+=count)
       {
-        count=read(fileno(image->blob->file_info.file),q+i,(size_t) 
+        count=read(fileno(image->blob->file_info.file),q+i,(size_t)
           MagickMin(length-i,(MagickSizeType) SSIZE_MAX));
         if (count <= 0)
           {
