@@ -1,3 +1,6 @@
+2013-06-21  6.8.6-2 Cristy  <quetzlzacatenango@image...>
+  * Fix memory corruption in the MorphologyApply() method.
+
 2013-06-20  6.8.6.2 Glenn Randers-Pehrson <glennrp@image...>
   * Quiet two warnings about uninitialized variables in coders/png.c
 
