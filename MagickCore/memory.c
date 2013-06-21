@@ -485,7 +485,15 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 */
 MagickExport MemoryInfo *AcquireMemoryInfo(void)
 {
-  return((MemoryInfo *) NULL);
+  MemoryInfo
+    *memory_info;
+
+  memory_info=(MemoryInfo *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    sizeof(*memory_info)));
+  if (memory_info == (MemoryInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(memory_info,0,sizeof(*memory_info));
+  return(memory_info);
 }
 
 /*
