@@ -480,7 +480,7 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 %
 %  The format of the AcquireMemoryInfo method is:
 %
-%      MagickInfo *AcquireMemoryInfo(const size_t count,const size_t quantum)
+%      MemoryInfo *AcquireMemoryInfo(const size_t count,const size_t quantum)
 %
 %  A description of each parameter follows:
 %
