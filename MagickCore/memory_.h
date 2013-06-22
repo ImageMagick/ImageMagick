@@ -31,8 +31,8 @@ typedef void
   *(*ResizeMemoryHandler)(void *,size_t) magick_alloc_size(2);
 
 extern MagickExport MemoryInfo
-  *AcquireMemoryInfo(void),
-  *RelinquishMemoryInfo(MemoryInfo *);
+  *AcquireVirtualMemory(const size_t,const size_t) magick_alloc_sizes(1,2),
+  *RelinquishVirtualMemory(MemoryInfo *);
 
 extern MagickExport void
   *AcquireAlignedMemory(const size_t,const size_t)
@@ -46,8 +46,7 @@ extern MagickExport void
   DestroyMagickMemory(void),
   GetMagickMemoryMethods(AcquireMemoryHandler *,ResizeMemoryHandler *,
     DestroyMemoryHandler *),
-  *GetMemoryInfoMemory(MemoryInfo *,const size_t,const size_t)
-    magick_alloc_sizes(2,3),
+  *GetVirtualMemoryBlob(const MemoryInfo *),
   *RelinquishAlignedMemory(void *),
   *RelinquishMagickMemory(void *),
   *ResetMagickMemory(void *,int,const size_t),
