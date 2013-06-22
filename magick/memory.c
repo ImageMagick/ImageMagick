@@ -60,6 +60,7 @@
 #include "magick/exception-private.h"
 #include "magick/memory_.h"
 #include "magick/memory-private.h"
+#include "magick/resource_.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"
 
