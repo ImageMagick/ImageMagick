@@ -291,6 +291,9 @@ typedef struct _CubeInfo
   Nodes
     *node_queue;
 
+  MemoryInfo
+    *memory_info;
+
   ssize_t
     *cache;
 
@@ -1345,8 +1348,8 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
       cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (Nodes *) NULL);
-  if (cube_info->cache != (ssize_t *) NULL)
-    cube_info->cache=(ssize_t *) RelinquishMagickMemory(cube_info->cache);
+  if (cube_info->memory_info != (MemoryInfo *) NULL)
+    cube_info->memory_info=RelinquishVirtualMemory(cube_info->memory_info);
   cube_info->quantize_info=DestroyQuantizeInfo(cube_info->quantize_info);
   cube_info=(CubeInfo *) RelinquishMagickMemory(cube_info);
 }
@@ -2045,10 +2048,10 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
     Initialize dither resources.
   */
   length=(size_t) (1UL << (4*(8-CacheShift)));
-  cube_info->cache=(ssize_t *) AcquireQuantumMemory(length,
-    sizeof(*cube_info->cache));
-  if (cube_info->cache == (ssize_t *) NULL)
+  cube_info->memory_info=AcquireVirtualMemory(length,sizeof(*cube_info->cache));
+  if (cube_info->memory_info == (MemoryInfo *) NULL)
     return((CubeInfo *) NULL);
+  cube_info->cache=(ssize_t *) GetVirtualMemoryBlob(cube_info->memory_info);
   /*
     Initialize color cache.
   */
