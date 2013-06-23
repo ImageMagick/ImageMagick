@@ -63,6 +63,7 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/utility-private.h"
 
 /*
   Define declarations.
@@ -117,7 +118,7 @@ typedef struct _MagickMemoryMethods
     destroy_memory_handler;
 } MagickMemoryMethods;
 
-typedef struct _MemoryInfo
+struct _MemoryInfo
 {
   char
     filename[MaxTextExtent];
@@ -125,12 +126,15 @@ typedef struct _MemoryInfo
   MagickBooleanType
     mapped;
 
+  size_t
+    length;
+
   void
     *blob;
 
   size_t
     signature;
-} MemoryInfo;
+};
 
 typedef struct _MemoryPool
 {
@@ -473,46 +477,6 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e V i r t u a l M e m o r y                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireVirtualMemory() allocates a pointer to a block of memory at least size
-%  bytes suitably aligned for any use.
-%
-%  The format of the AcquireVirtualMemory method is:
-%
-%      MemoryInfo *AcquireVirtualMemory(const size_t count,const size_t quantum)
-%
-%  A description of each parameter follows:
-%
-%    o count: the number of quantum elements to allocate.
-%
-%    o quantum: the number of bytes in each quantum.
-%
-*/
-MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
-  const size_t quantum)
-{
-  MemoryInfo
-    *memory_info;
-
-  memory_info=(MemoryInfo *) MagickAssumeAligned(AcquireAlignedMemory(1,
-    sizeof(*memory_info)));
-  if (memory_info == (MemoryInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(memory_info,0,sizeof(*memory_info));
-  memory_info->signature=MagickSignature;
-  return(memory_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   A c q u i r e Q u a n t u m M e m o r y                                   %
 %                                                                             %
 %                                                                             %
@@ -545,6 +509,87 @@ MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
       return((void *) NULL);
     }
   return(AcquireMagickMemory(size));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e V i r t u a l M e m o r y                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireVirtualMemory() allocates a pointer to a block of memory at least size
+%  bytes suitably aligned for any use.
+%
+%  The format of the AcquireVirtualMemory method is:
+%
+%      MemoryInfo *AcquireVirtualMemory(const size_t count,const size_t quantum)
+%
+%  A description of each parameter follows:
+%
+%    o count: the number of quantum elements to allocate.
+%
+%    o quantum: the number of bytes in each quantum.
+%
+*/
+MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
+  const size_t quantum)
+{
+  MemoryInfo
+    *memory_info;
+
+  size_t
+    length;
+
+  length=count*quantum;
+  if ((count == 0) || (quantum != (length/count)))
+    {
+      errno=ENOMEM;
+      return((void *) NULL);
+    }
+  memory_info=(MemoryInfo *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    sizeof(*memory_info)));
+  if (memory_info == (MemoryInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(memory_info,0,sizeof(*memory_info));
+  memory_info->length=length;
+  memory_info->signature=MagickSignature;
+  memory_info->blob=AcquireMagickMemory(length);
+  if (memory_info->blob == NULL)
+    {
+      /*
+        Heap memory failed, try anonymous memory mapping.
+      */
+      memory_info->mapped=MagickTrue;
+      memory_info->blob=MapBlob(-1,IOMode,0,length);
+    }
+  if (memory_info->blob == NULL)
+    {
+      int
+        file;
+
+      /*
+        Anonymous memory mapping failed, try file-backed memory mapping.
+      */
+      file=AcquireUniqueFileResource(memory_info->filename);
+      file=open_utf8(memory_info->filename,O_RDWR | O_CREAT | O_BINARY | O_EXCL,
+        S_MODE);
+      if (file == -1)
+        file=open_utf8(memory_info->filename,O_RDWR | O_BINARY,S_MODE);
+      if (file != -1)
+        {
+          if ((lseek(file,length-1,SEEK_SET) >= 0) && (write(file,"",1) == 1))
+            memory_info->blob=MapBlob(file,IOMode,0,length);
+          (void) close(file);
+        }
+    }
+  if (memory_info->blob == NULL)
+    return(RelinquishVirtualMemory(memory_info));
+  return(memory_info);
 }
 
 /*
@@ -926,7 +971,17 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
   assert(memory_info != (MemoryInfo *) NULL);
   assert(memory_info->signature == MagickSignature);
   if (memory_info->blob != (void *) NULL)
-    memory_info->blob=(void *) NULL;
+    {
+      if (memory_info->mapped == MagickFalse)
+        memory_info->blob=RelinquishMagickMemory(memory_info->blob);
+      else
+        {
+          (void) UnmapBlob(memory_info->blob,memory_info->length);
+          memory_info->blob=NULL;
+          if (*memory_info->filename != '\0')
+            (void) RelinquishUniqueFileResource(memory_info->filename);
+        }
+    }
   memory_info->signature=(~MagickSignature);
   memory_info=(MemoryInfo *) RelinquishAlignedMemory(memory_info);
   return(memory_info);
