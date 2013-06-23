@@ -2103,4 +2103,4 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
   } while (image_info->adjoin != MagickFalse);
   (void) CloseBlob(image);
   return(MagickTrue);
-}
+
