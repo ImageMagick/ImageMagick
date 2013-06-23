@@ -1050,7 +1050,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
-  jpeg_pixels=(JSAMPLE *) NULL;
+  memory_info=(MemoryInfo *) NULL;
   error_manager.exception=exception;
   error_manager.image=image;
   if (setjmp(error_manager.error_recovery) != 0)
@@ -2084,7 +2084,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   error_manager.exception=exception;
   error_manager.image=image;
-  jpeg_pixels=(JSAMPLE *) NULL;
+  memory_info=(MemoryInfo *) NULL;
   if (setjmp(error_manager.error_recovery) != 0)
     {
       jpeg_destroy_compress(&jpeg_info);
