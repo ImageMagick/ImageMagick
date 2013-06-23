@@ -997,6 +997,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   MagickSizeType
     number_pixels;
 
+  MemoryInfo
+    *memory_info;
+
   Quantum
     index;
 
@@ -1265,17 +1268,18 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
-  jpeg_pixels=(JSAMPLE *) AcquireQuantumMemory((size_t) image->columns,
-    jpeg_info.output_components*sizeof(JSAMPLE));
-  if (jpeg_pixels == (JSAMPLE *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  memory_info=AcquireVirtualMemory((size_t) image->columns,
+    jpeg_info.output_components*sizeof(*jpeg_pixels));
+  if (memory_info == (MemoryInfo *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
   /*
     Convert JPEG pixels to pixel packets.
   */
   if (setjmp(error_manager.error_recovery) != 0)
     {
-      if (jpeg_pixels != (JSAMPLE *) NULL)
-        jpeg_pixels=(JSAMPLE *) RelinquishMagickMemory(jpeg_pixels);
+      if (memory_info != (MemoryInfo *) NULL)
+        memory_info=RelinquishVirtualMemory(memory_info);
       jpeg_destroy_decompress(&jpeg_info);
       (void) CloseBlob(image);
       number_pixels=(MagickSizeType) image->columns*image->rows;
@@ -1429,7 +1433,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     Free jpeg resources.
   */
   jpeg_destroy_decompress(&jpeg_info);
-  jpeg_pixels=(JSAMPLE *) RelinquishMagickMemory(jpeg_pixels);
+  memory_info=RelinquishVirtualMemory(memory_info);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
@@ -2036,6 +2040,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  MemoryInfo
+    *memory_info;
+
   register JSAMPLE
     *q;
 
@@ -2577,15 +2584,16 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   /*
     Convert MIFF to JPEG raster pixels.
   */
-  jpeg_pixels=(JSAMPLE *) AcquireQuantumMemory((size_t) image->columns,
+  memory_info=AcquireVirtualMemory((size_t) image->columns,
     jpeg_info.input_components*sizeof(*jpeg_pixels));
-  if (jpeg_pixels == (JSAMPLE *) NULL)
+  if (memory_info == (MemoryInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
   if (setjmp(error_manager.error_recovery) != 0)
     {
       jpeg_destroy_compress(&jpeg_info);
-      if (jpeg_pixels != (JSAMPLE *) NULL)
-        jpeg_pixels=(JSAMPLE *) RelinquishMagickMemory(jpeg_pixels);
+      if (memory_info != (MemoryInfo *) NULL)
+        memory_info=RelinquishVirtualMemory(memory_info);
       (void) CloseBlob(image);
       return(MagickFalse);
     }
@@ -2774,7 +2782,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     Relinquish resources.
   */
   jpeg_destroy_compress(&jpeg_info);
-  jpeg_pixels=(JSAMPLE *) RelinquishMagickMemory(jpeg_pixels);
+  memory_info=RelinquishVirtualMemory(memory_info);
   (void) CloseBlob(image);
   return(MagickTrue);
 }
