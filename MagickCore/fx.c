@@ -1708,12 +1708,20 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             &lightness);
           return(lightness);
         }
+      if (LocaleCompare(symbol,"luma") == 0)
+        {
+          double
+            luma;
+
+          luma=0.212656*pixel.red+0.715158*pixel.green+0.072186*pixel.blue;
+          return(QuantumScale*luma);
+        }
       if (LocaleCompare(symbol,"luminance") == 0)
         {
           double
             luminence;
 
-          luminence=0.21267f*pixel.red+0.71516f*pixel.green+0.07217f*pixel.blue;
+          luminence=0.212656*pixel.red+0.715158*pixel.green+0.072186*pixel.blue;
           return(QuantumScale*luminence);
         }
       break;
