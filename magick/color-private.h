@@ -89,7 +89,7 @@ static inline MagickRealType MagickPixelIntensity(
 {
   if (pixel->colorspace == GRAYColorspace)
     return(pixel->red);
-  return(0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue);
+  return(0.212656*pixel->red+0.715158*pixel->green+0.072186*pixel->blue);
 }
 
 static inline Quantum MagickPixelIntensityToQuantum(
@@ -97,8 +97,8 @@ static inline Quantum MagickPixelIntensityToQuantum(
 {
   if (pixel->colorspace == GRAYColorspace)
     return(ClampToQuantum(pixel->red));
-  return(ClampToQuantum(0.21267*pixel->red+0.71516*pixel->green+
-    0.07217*pixel->blue));
+  return(ClampToQuantum(0.212656*pixel->red+0.715158*pixel->green+
+    0.072186*pixel->blue));
 }
 
 static inline MagickRealType MagickPixelLuma(
@@ -112,11 +112,11 @@ static inline MagickRealType MagickPixelLuma(
   if (pixel->colorspace == GRAYColorspace)
     return(pixel->red);
   if (pixel->colorspace == sRGBColorspace)
-    return(0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue);
+    return(0.212656*pixel->red+0.715158*pixel->green+0.072186*pixel->blue);
   red=EncodePixelGamma(pixel->red);
   green=EncodePixelGamma(pixel->green);
   blue=EncodePixelGamma(pixel->blue);
-  return(0.21267*red+0.71516*green+0.07217*blue);
+  return(0.212656*red+0.715158*green+0.072186*blue);
 }
 
 static inline MagickRealType MagickPixelLuminance(
@@ -130,11 +130,11 @@ static inline MagickRealType MagickPixelLuminance(
   if (pixel->colorspace == GRAYColorspace)
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
-    return(0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue);
+    return(0.212656*pixel->red+0.715158*pixel->green+0.072186*pixel->blue);
   red=DecodePixelGamma(pixel->red);
   green=DecodePixelGamma(pixel->green);
   blue=DecodePixelGamma(pixel->blue);
-  return(0.21267*red+0.71516*green+0.07217*blue);
+  return(0.212656*red+0.715158*green+0.072186*blue);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
