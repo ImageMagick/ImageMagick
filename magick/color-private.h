@@ -87,22 +87,21 @@ static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
 static inline MagickRealType MagickPixelIntensity(
   const MagickPixelPacket *pixel)
 {
-  MagickRealType
-    blue,
-    green,
-    red;
-
   if (pixel->colorspace == GRAYColorspace)
     return(pixel->red);
-  if (pixel->colorspace != sRGBColorspace)
-    return(0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue);
-  red=DecodePixelGamma(pixel->red);
-  green=DecodePixelGamma(pixel->green);
-  blue=DecodePixelGamma(pixel->blue);
-  return(0.298839*red+0.586811*green+0.114350*blue);
+  return(0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue);
 }
 
 static inline Quantum MagickPixelIntensityToQuantum(
+  const MagickPixelPacket *pixel)
+{
+  if (pixel->colorspace == GRAYColorspace)
+    return(ClampToQuantum(pixel->red));
+  return(ClampToQuantum(0.21267*pixel->red+0.71516*pixel->green+
+    0.07217*pixel->blue));
+}
+
+static inline MagickRealType MagickPixelLuma(
   const MagickPixelPacket *pixel)
 {
   MagickRealType
@@ -111,14 +110,13 @@ static inline Quantum MagickPixelIntensityToQuantum(
     red;
 
   if (pixel->colorspace == GRAYColorspace)
-    return(ClampToQuantum(pixel->red));
-  if (pixel->colorspace != sRGBColorspace)
-    return(ClampToQuantum(0.298839*pixel->red+0.586811*pixel->green+
-      0.114350*pixel->blue));
-  red=DecodePixelGamma(pixel->red);
-  green=DecodePixelGamma(pixel->green);
-  blue=DecodePixelGamma(pixel->blue);
-  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
+    return(pixel->red);
+  if (pixel->colorspace == sRGBColorspace)
+    return(0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue);
+  red=EncodePixelGamma(pixel->red);
+  green=EncodePixelGamma(pixel->green);
+  blue=EncodePixelGamma(pixel->blue);
+  return(0.21267*red+0.71516*green+0.07217*blue);
 }
 
 static inline MagickRealType MagickPixelLuminance(
@@ -132,11 +130,11 @@ static inline MagickRealType MagickPixelLuminance(
   if (pixel->colorspace == GRAYColorspace)
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
-    return(0.21267f*pixel->red+0.71516f*pixel->green+0.07217f*pixel->blue);
+    return(0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue);
   red=DecodePixelGamma(pixel->red);
   green=DecodePixelGamma(pixel->green);
   blue=DecodePixelGamma(pixel->blue);
-  return(0.21267f*red+0.71516f*green+0.07217f*blue);
+  return(0.21267*red+0.71516*green+0.07217*blue);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

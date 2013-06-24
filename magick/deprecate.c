@@ -3768,8 +3768,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       }
       delta.x=x-floor(x);
       delta.y=y-floor(y);
-      luminance.x=MagickPixelLuminance(pixels+0)-MagickPixelLuminance(pixels+3);
-      luminance.y=MagickPixelLuminance(pixels+1)-MagickPixelLuminance(pixels+2);
+      luminance.x=MagickPixelLuma(pixels+0)-MagickPixelLuma(pixels+3);
+      luminance.y=MagickPixelLuma(pixels+1)-MagickPixelLuma(pixels+2);
       if (fabs(luminance.x) < fabs(luminance.y))
         {
           /*

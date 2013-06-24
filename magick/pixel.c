@@ -4550,7 +4550,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     {
       PointInfo
         delta,
-        luminance;
+        luma;
 
       p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,2,2,
         exception);
@@ -4564,11 +4564,9 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels+i,alpha+i);
       delta.x=x-x_offset;
       delta.y=y-y_offset;
-      luminance.x=fabs(MagickPixelLuminance(pixels+0)-
-        MagickPixelLuminance(pixels+3));
-      luminance.y=fabs(MagickPixelLuminance(pixels+1)-
-        MagickPixelLuminance(pixels+2));
-      if (luminance.x < luminance.y)
+      luma.x=fabs(MagickPixelLuma(pixels+0)-MagickPixelLuma(pixels+3));
+      luma.y=fabs(MagickPixelLuma(pixels+1)-MagickPixelLuma(pixels+2));
+      if (luma.x < luma.y)
         {
           /*
             Diagonal 0-3 NW-SE.
