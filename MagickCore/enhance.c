@@ -3334,6 +3334,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
             &red,&green,&blue);
           break;
         }
+        case HSVColorspace:
+        {
+          ModulateHSV(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
         case HWBColorspace:
         {
           ModulateHWB(percent_hue,percent_saturation,percent_brightness,
