@@ -156,7 +156,7 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
     intensity;
 
   if ((pixel->red  == pixel->green) && (pixel->green == pixel->blue))
-    return((MagickRealType) pixel->red);
+    return(pixel->red);
   intensity=0.212656*pixel->red+0.715158*pixel->green+0.072186*pixel->blue;
   return(ClampToQuantum(intensity));
 }
