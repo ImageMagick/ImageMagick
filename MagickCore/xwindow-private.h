@@ -601,14 +601,12 @@ extern MagickExport XrmDatabase
 static inline double XPixelIntensity(const XColor *pixel)
 {
   double
-    blue,
-    green,
-    red;
+    intensity;
 
-  red=DecodePixelGamma((MagickRealType) pixel->red);
-  green=DecodePixelGamma((MagickRealType) pixel->green);
-  blue=DecodePixelGamma((MagickRealType) pixel->blue);
-  return(0.298839*red+0.586811*green+0.114350*blue);
+  if ((pixel->red  == pixel->green) && (pixel->green == pixel->blue))
+    return((double) pixel->red);
+  intensity=0.212656*pixel->red+0.715158*pixel->green+0.072186*pixel->blue;
+  return(intensity);
 }
 
 #endif
