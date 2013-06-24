@@ -2459,7 +2459,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       red=(MagickRealType) q->red;
       green=(MagickRealType) q->green;
       blue=(MagickRealType) q->blue;
-      intensity=0;
+      intensity=0.0;
       switch (method)
       {
         case AveragePixelIntensityMethod:
