@@ -153,14 +153,12 @@ static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
 static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
 {
   MagickRealType
-    blue,
-    green,
-    red;
+    intensity;
 
-  red=DecodePixelGamma((MagickRealType) pixel->red);
-  green=DecodePixelGamma((MagickRealType) pixel->green);
-  blue=DecodePixelGamma((MagickRealType) pixel->blue);
-  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
+  if ((pixel->red  == pixel->green) && (pixel->green == pixel->blue))
+    return((MagickRealType) pixel->red);
+  intensity=0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue;
+  return(ClampToQuantum(intensity));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
