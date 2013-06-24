@@ -4664,10 +4664,10 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         }
       delta.x=x-x_offset;
       delta.y=y-y_offset;
-      luminance.x=GetPixelLuminance(image,p)-(double)
-        GetPixelLuminance(image,p+3*GetPixelChannels(image));
-      luminance.y=GetPixelLuminance(image,p+GetPixelChannels(image))-(double)
-        GetPixelLuminance(image,p+2*GetPixelChannels(image));
+      luminance.x=GetPixelLuma(image,p)-(double)
+        GetPixelLuma(image,p+3*GetPixelChannels(image));
+      luminance.y=GetPixelLuma(image,p+GetPixelChannels(image))-(double)
+        GetPixelLuma(image,p+2*GetPixelChannels(image));
       if (fabs(luminance.x) < fabs(luminance.y))
         {
           /*
@@ -5190,10 +5190,10 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           }
         delta.x=x-x_offset;
         delta.y=y-y_offset;
-        luminance.x=fabs((double) (GetPixelLuminance(source,p)-
-          GetPixelLuminance(source,p+3*GetPixelChannels(source))));
-        luminance.y=fabs((double) (GetPixelLuminance(source,p+
-          GetPixelChannels(source))-GetPixelLuminance(source,p+2*
+        luminance.x=fabs((double) (GetPixelLuma(source,p)-
+          GetPixelLuma(source,p+3*GetPixelChannels(source))));
+        luminance.y=fabs((double) (GetPixelLuma(source,p+
+          GetPixelChannels(source))-GetPixelLuma(source,p+2*
           GetPixelChannels(source))));
         if (luminance.x < luminance.y)
           {
@@ -5646,10 +5646,10 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         }
       delta.x=x-x_offset;
       delta.y=y-y_offset;
-      luminance.x=GetPixelLuminance(image,p)-(double)
-        GetPixelLuminance(image,p+3*GetPixelChannels(image));
-      luminance.y=GetPixelLuminance(image,p+GetPixelChannels(image))-(double)
-        GetPixelLuminance(image,p+2*GetPixelChannels(image));
+      luminance.x=GetPixelLuma(image,p)-(double)
+        GetPixelLuma(image,p+3*GetPixelChannels(image));
+      luminance.y=GetPixelLuma(image,p+GetPixelChannels(image))-(double)
+        GetPixelLuma(image,p+2*GetPixelChannels(image));
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
       AlphaBlendPixelInfo(image,p+GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
