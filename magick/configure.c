@@ -1250,9 +1250,8 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
     i;
 
   /*
-    Load built-in configure map.
+    Load external configure map.
   */
-  status=MagickFalse;
   if (configure_list == (LinkedListInfo *) NULL)
     {
       configure_list=NewLinkedList(0);
@@ -1263,6 +1262,19 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
           return(MagickFalse);
         }
     }
+  status=MagickTrue;
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    status|=LoadConfigureList((const char *) GetStringInfoDatum(option),
+      GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  /*
+    Load built-in configure map.
+  */
   for (i=0; i < (ssize_t) (sizeof(ConfigureMap)/sizeof(*ConfigureMap)); i++)
   {
     ConfigureInfo
@@ -1287,23 +1299,11 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
     configure_info->value=(char *) p->value;
     configure_info->exempt=MagickTrue;
     configure_info->signature=MagickSignature;
-    status=AppendValueToLinkedList(configure_list,configure_info);
+    status|=AppendValueToLinkedList(configure_list,configure_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",
         configure_info->name);
   }
-  /*
-    Load external configure map.
-  */
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    status|=LoadConfigureList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
   return(status != 0 ? MagickTrue : MagickFalse);
 }

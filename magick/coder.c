@@ -893,9 +893,8 @@ static MagickBooleanType LoadCoderLists(const char *filename,
     i;
 
   /*
-    Load built-in coder map.
+    Load external coder map.
   */
-  status=MagickFalse;
   if (coder_list == (SplayTreeInfo *) NULL)
     {
       coder_list=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
@@ -907,6 +906,19 @@ static MagickBooleanType LoadCoderLists(const char *filename,
           return(MagickFalse);
         }
     }
+  status=MagickTrue;
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    status|=LoadCoderList((const char *) GetStringInfoDatum(option),
+      GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  /*
+    Load built-in coder map.
+  */
   for (i=0; i < (ssize_t) (sizeof(CoderMap)/sizeof(*CoderMap)); i++)
   {
     CoderInfo
@@ -929,23 +941,11 @@ static MagickBooleanType LoadCoderLists(const char *filename,
     coder_info->name=(char *) p->name;
     coder_info->exempt=MagickTrue;
     coder_info->signature=MagickSignature;
-    status=AddValueToSplayTree(coder_list,ConstantString(coder_info->magick),
+    status|=AddValueToSplayTree(coder_list,ConstantString(coder_info->magick),
       coder_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",coder_info->name);
   }
-  /*
-    Load external coder map.
-  */
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    status|=LoadCoderList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
   return(status != 0 ? MagickTrue : MagickFalse);
 }

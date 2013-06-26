@@ -887,9 +887,8 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
     i;
 
   /*
-    Load built-in policy map.
+    Load external policy map.
   */
-  status=MagickFalse;
   if (policy_list == (LinkedListInfo *) NULL)
     {
       policy_list=NewLinkedList(0);
@@ -900,6 +899,19 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
           return(MagickFalse);
         }
     }
+  status=MagickTrue;
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    status|=LoadPolicyList((const char *) GetStringInfoDatum(option),
+      GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  /*
+    Load built-in policy map.
+  */
   for (i=0; i < (ssize_t) (sizeof(PolicyMap)/sizeof(*PolicyMap)); i++)
   {
     PolicyInfo
@@ -925,23 +937,11 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
     policy_info->value=(char *) p->value;
     policy_info->exempt=MagickTrue;
     policy_info->signature=MagickSignature;
-    status=AppendValueToLinkedList(policy_list,policy_info);
+    status|=AppendValueToLinkedList(policy_list,policy_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",policy_info->name);
   }
-  /*
-    Load external policy map.
-  */
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    status|=LoadPolicyList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
