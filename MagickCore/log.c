@@ -156,21 +156,21 @@ typedef struct _LogMapInfo
 static const HandlerInfo
   LogHandlers[] =
   {
-    { "console", ConsoleHandler },
-    { "debug", DebugHandler },
-    { "event", EventHandler },
-    { "file", FileHandler },
-    { "none", NoHandler },
-    { "stderr", StderrHandler },
-    { "stdout", StdoutHandler },
+    { "Console", ConsoleHandler },
+    { "Debug", DebugHandler },
+    { "Event", EventHandler },
+    { "File", FileHandler },
+    { "None", NoHandler },
+    { "Stderr", StderrHandler },
+    { "Stdout", StdoutHandler },
     { (char *) NULL, UndefinedHandler }
   };
 
 static const LogMapInfo
   LogMap[] =
   {
-    { NoEvents, ConsoleHandler, "Magick-%d.log",
-      "%t %r %u %v %d %c[%p]: %m/%f/%l/%d\n  %e" }
+    { NoEvents, ConsoleHandler, "Magick-%g.log",
+      "%t %r %u %v %d %c[%p]: %m/%f/%l/%d\\n  %e" }
   };
 
 static char
@@ -232,8 +232,7 @@ MagickExport void CloseMagickLog(void)
   LockSemaphoreInfo(log_semaphore);
   if (log_info->file != (FILE *) NULL)
     {
-      if (log_info->append == MagickFalse)
-        (void) FormatLocaleFile(log_info->file,"</log>\n");
+      (void) FormatLocaleFile(log_info->file,"</log>\n");
       (void) fclose(log_info->file);
       log_info->file=(FILE *) NULL;
     }
@@ -611,9 +610,6 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
 {
 #define MegabytesToBytes(value) ((MagickSizeType) (value)*1024*1024)
 
-  char
-    limit[MaxTextExtent];
-
   const char
     *path;
 
@@ -643,13 +639,29 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
     if ((path == (const char *) NULL) ||
         (LocaleCompare(path,log_info[i]->path) != 0))
       {
+        size_t
+          length;
+
         if (log_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",log_info[i]->path);
-        (void) FormatLocaleFile(file,
-          "Filename       Generations     Limit  Format\n");
-        (void) FormatLocaleFile(file,
-          "-------------------------------------------------"
-          "------------------------------\n");
+        length=0;
+        for (j=0; j < (ssize_t) (8*sizeof(LogHandlerType)); j++)
+        {
+          size_t
+            mask;
+
+          mask=1U << j;
+          if ((log_info[i]->handler_mask & mask) != 0)
+            {
+              (void) FormatLocaleFile(file,"%s ",LogHandlers[j].name);
+              length+=strlen(LogHandlers[j].name);
+            }
+        }
+        for (j=(ssize_t) length; j <= 12; j++)
+          (void) FormatLocaleFile(file," ");
+        (void) FormatLocaleFile(file," Generations     Limit  Format\n");
+        (void) FormatLocaleFile(file,"-----------------------------------------"
+          "--------------------------------------\n");
       }
     path=log_info[i]->path;
     if (log_info[i]->filename != (char *) NULL)
@@ -659,9 +671,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
           (void) FormatLocaleFile(file," ");
       }
     (void) FormatLocaleFile(file,"%9g  ",(double) log_info[i]->generations);
-    (void) FormatMagickSize(MegabytesToBytes(log_info[i]->limit),MagickFalse,
-      limit);
-    (void) FormatLocaleFile(file,"%8sB  ",limit);
+    (void) FormatLocaleFile(file,"%8g   ",(double) log_info[i]->limit);
     if (log_info[i]->format != (char *) NULL)
       (void) FormatLocaleFile(file,"%s",log_info[i]->format);
     (void) FormatLocaleFile(file,"\n");
@@ -722,8 +732,7 @@ static void *DestroyLogElement(void *log_info)
   p=(LogInfo *) log_info;
   if (p->file != (FILE *) NULL)
     {
-      if (p->append == MagickFalse)
-        (void) FormatLocaleFile(p->file,"</log>\n");
+      (void) FormatLocaleFile(p->file,"</log>\n");
       (void) fclose(p->file);
       p->file=(FILE *) NULL;
     }
@@ -1208,13 +1217,11 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
             }
           log_info->generation++;
           if (log_info->append == MagickFalse)
-            {
-              (void) FormatLocaleFile(log_info->file,"<?xml version=\"1.0\" "
-                "encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-              (void) FormatLocaleFile(log_info->file,"<log>\n");
-            }
+            (void) FormatLocaleFile(log_info->file,"<?xml version=\"1.0\" "
+              "encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+          (void) FormatLocaleFile(log_info->file,"<log>\n");
         }
-      (void) FormatLocaleFile(log_info->file,"%s\n",text);
+      (void) FormatLocaleFile(log_info->file,"   <event>%s</event>\n",text);
       (void) fflush(log_info->file);
     }
   if ((log_info->handler_mask & StdoutHandler) != 0)
@@ -1537,9 +1544,8 @@ static MagickBooleanType LoadLogLists(const char *filename,
     i;
 
   /*
-    Load built-in log map.
+    Load external log map.
   */
-  status=MagickFalse;
   if (log_list == (LinkedListInfo *) NULL)
     {
       log_list=NewLinkedList(0);
@@ -1550,6 +1556,19 @@ static MagickBooleanType LoadLogLists(const char *filename,
           return(MagickFalse);
         }
     }
+  status=MagickTrue;
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    status|=LoadLogList((const char *) GetStringInfoDatum(option),
+      GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  /*
+    Load built-in log map.
+  */
   for (i=0; i < (ssize_t) (sizeof(LogMap)/sizeof(*LogMap)); i++)
   {
     LogInfo
@@ -1575,23 +1594,11 @@ static MagickBooleanType LoadLogLists(const char *filename,
     log_info->format=ConstantString(p->format);
     log_info->exempt=MagickTrue;
     log_info->signature=MagickSignature;
-    status=AppendValueToLinkedList(log_list,log_info);
+    status|=AppendValueToLinkedList(log_list,log_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",log_info->name);
   }
-  /*
-    Load external log map.
-  */
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    status|=LoadLogList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 

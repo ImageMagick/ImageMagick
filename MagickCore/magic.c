@@ -942,9 +942,8 @@ static MagickBooleanType LoadMagicLists(const char *filename,
     i;
 
   /*
-    Load built-in magic map.
+    Load external magic map.
   */
-  status=MagickFalse;
   if (magic_list == (LinkedListInfo *) NULL)
     {
       magic_list=NewLinkedList(0);
@@ -955,6 +954,21 @@ static MagickBooleanType LoadMagicLists(const char *filename,
           return(MagickFalse);
         }
     }
+  status=MagickTrue;
+  *path='\0';
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
+    status|=LoadMagicList((const char *) GetStringInfoDatum(option),
+      GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  /*
+    Load built-in magic map.
+  */
   for (i=0; i < (ssize_t) (sizeof(MagicMap)/sizeof(*MagicMap)); i++)
   {
     MagicInfo
@@ -980,25 +994,11 @@ static MagickBooleanType LoadMagicLists(const char *filename,
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
     magic_info->signature=MagickSignature;
-    status=AppendValueToLinkedList(magic_list,magic_info);
+    status|=AppendValueToLinkedList(magic_list,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
   }
-  /*
-    Load external magic map.
-  */
-  *path='\0';
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
-    status|=LoadMagicList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
