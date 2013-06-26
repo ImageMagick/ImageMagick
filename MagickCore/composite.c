@@ -221,8 +221,7 @@ static void HCLComposite(const MagickRealType hue,const MagickRealType chroma,
     h,
     m,
     r,
-    x,
-    z;
+    x;
 
   /*
     Convert HCL to RGB colorspace.
@@ -272,21 +271,9 @@ static void HCLComposite(const MagickRealType hue,const MagickRealType chroma,
                 b=x;
               }
   m=luma-(0.298839*r+0.586811*g+0.114350*b);
-  z=1.0;
-  if (m < 0.0)
-    {
-      z=luma/(luma-m);
-      m=0.0;
-    }
-  else
-    if (m+c > 1.0)
-      {
-        z=(1.0-luma)/(m+c-luma);
-        m=1.0-z*c;
-      }
-  *red=QuantumRange*(z*r+m);
-  *green=QuantumRange*(z*g+m);
-  *blue=QuantumRange*(z*b+m);
+  *red=QuantumRange*(r+m);
+  *green=QuantumRange*(g+m);
+  *blue=QuantumRange*(b+m);
 }
 
 static void CompositeHCL(const MagickRealType red,const MagickRealType green,
