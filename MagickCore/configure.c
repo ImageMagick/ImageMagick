@@ -1264,7 +1264,7 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
           return(MagickFalse);
         }
     }
-  status=MagickeTrue;
+  status=MagickTrue;
   options=GetConfigureOptions(filename,exception);
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
