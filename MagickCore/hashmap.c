@@ -1238,8 +1238,6 @@ MagickExport MagickBooleanType IsLinkedListEmpty(
 {
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(IsMagickTrue(list_info->elements == 0));
 }
 
