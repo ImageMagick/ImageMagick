@@ -1890,10 +1890,10 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
           length=MagickMin(GetStringInfoLength(profile)-i,65519L);
           p[12]=(unsigned char) ((i/65519L)+1);
           p[13]=(unsigned char) (GetStringInfoLength(profile)/65519L+1);
-          (void) CopyMagickMemory(p+tag_length,GetStringInfoDatum(profile)+i,
+          (void) CopyMagickMemory(p+tag_length+3,GetStringInfoDatum(profile)+i,
             length);
           jpeg_write_marker(jpeg_info,ICC_MARKER,GetStringInfoDatum(
-            custom_profile),(unsigned int) (length+tag_length));
+            custom_profile),(unsigned int) (length+tag_length+3));
         }
       }
     if (((LocaleCompare(name,"IPTC") == 0) ||
