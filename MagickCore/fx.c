@@ -1422,8 +1422,8 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   (void) InterpolatePixelInfo(image,fx_info->view[i],image->interpolate,
     point.x,point.y,&pixel,exception);
   if ((strlen(p) > 2) && (LocaleCompare(p,"intensity") != 0) &&
-      (LocaleCompare(p,"luminance") != 0) && (LocaleCompare(p,"hue") != 0) &&
-      (LocaleCompare(p,"saturation") != 0) &&
+      (LocaleCompare(p,"luma") != 0) && (LocaleCompare(p,"luminance") != 0) &&
+      (LocaleCompare(p,"hue") != 0) && (LocaleCompare(p,"saturation") != 0) &&
       (LocaleCompare(p,"lightness") != 0))
     {
       char
