@@ -344,7 +344,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           case 32:
           {
             /*
-              8 bits each of blue, green and red.
+              8 bits each of blue, green, red, and alpha.
             */
             pixel.blue=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
             pixel.green=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
