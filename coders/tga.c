@@ -229,8 +229,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=tga_info.width;
   image->rows=tga_info.height;
   alpha_bits=(tga_info.attributes & 0x0FU);
-  image->matte=(alpha_bits > 0) || (tga_info.bits_per_pixel == 32) ?
-    MagickTrue : MagickFalse;
+  image->matte=(alpha_bits > 0) || (tga_info.bits_per_pixel == 32) ||
+    (tga_info.colormap_size == 32) ?  MagickTrue : MagickFalse;
   if ((tga_info.image_type != TGAColormap) &&
       (tga_info.image_type != TGARLEColormap))
     image->depth=(size_t) ((tga_info.bits_per_pixel <= 8) ? 8 :
@@ -332,6 +332,15 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
           case 24:
+          {
+            /*
+              8 bits each of blue, green and red.
+            */
+            pixel.blue=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+            pixel.green=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+            pixel.red=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+            break;
+          }
           case 32:
           {
             /*
@@ -340,6 +349,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             pixel.blue=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
             pixel.green=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
             pixel.red=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+            pixel.opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(
+              (unsigned char) ReadBlobByte(image)));
             break;
           }
         }
