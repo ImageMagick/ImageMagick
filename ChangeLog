@@ -5,6 +5,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23640).
   * Do log in the IsLinkedListEmpty() method to prevent overflow (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23640).
+  * Fix bug loading TGA image with 32-bit palette (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17889).
 
 2013-06-24  6.8.6-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-2, SVN revision 12561.

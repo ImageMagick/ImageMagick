@@ -1438,6 +1438,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     point.x,point.y,&pixel,exception);
   if ((strlen(p) > 2) &&
       (LocaleCompare(p,"intensity") != 0) &&
+      (LocaleCompare(p,"luma") != 0) &&
       (LocaleCompare(p,"luminance") != 0) &&
       (LocaleCompare(p,"hue") != 0) &&
       (LocaleCompare(p,"saturation") != 0) &&
