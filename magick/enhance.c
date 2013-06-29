@@ -1832,21 +1832,29 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetCacheViewVirtualIndexQueue(image_view);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if ((channel & RedChannel) != 0)
-        histogram[ScaleQuantumToMap(GetPixelRed(p))].red++;
-      if ((channel & GreenChannel) != 0)
-        histogram[ScaleQuantumToMap(GetPixelGreen(p))].green++;
-      if ((channel & BlueChannel) != 0)
-        histogram[ScaleQuantumToMap(GetPixelBlue(p))].blue++;
-      if ((channel & OpacityChannel) != 0)
-        histogram[ScaleQuantumToMap(GetPixelOpacity(p))].opacity++;
-      if (((channel & IndexChannel) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        histogram[ScaleQuantumToMap(GetPixelIndex(indexes+x))].index++;
-      p++;
-    }
+    if ((channel & SyncChannels) != 0)
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        MagickRealType intensity=GetPixelIntensity(image,p);
+        histogram[ScaleQuantumToMap(ClampToQuantum(intensity))].red++;
+        p++;
+      }
+   else
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        if ((channel & RedChannel) != 0)
+          histogram[ScaleQuantumToMap(GetPixelRed(p))].red++;
+        if ((channel & GreenChannel) != 0)
+          histogram[ScaleQuantumToMap(GetPixelGreen(p))].green++;
+        if ((channel & BlueChannel) != 0)
+          histogram[ScaleQuantumToMap(GetPixelBlue(p))].blue++;
+        if ((channel & OpacityChannel) != 0)
+          histogram[ScaleQuantumToMap(GetPixelOpacity(p))].opacity++;
+        if (((channel & IndexChannel) != 0) &&
+            (image->colorspace == CMYKColorspace))
+          histogram[ScaleQuantumToMap(GetPixelIndex(indexes+x))].index++;
+        p++;
+      }
   }
   image_view=DestroyCacheView(image_view);
   /*
