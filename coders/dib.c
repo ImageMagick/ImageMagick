@@ -469,6 +469,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
+  MemoryInfo
+    *pixel_info;
+
   register IndexPacket
     *indexes;
 
@@ -610,10 +613,11 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dib_info.bits_per_pixel<<=1;
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
   length=bytes_per_line*image->rows;
-  pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->rows,
-    MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
-  if (pixels == (unsigned char *) NULL)
+  pixel_info=AcquireVirtualMemory((size_t) image->rows,MagickMax(
+    bytes_per_line,image->columns+256UL)*sizeof(*pixels));
+  if (pixel_info == (MemoryInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
   if ((dib_info.compression == BI_RGB) ||
       (dib_info.compression == BI_BITFIELDS))
     {
@@ -848,7 +852,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     default:
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
-  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  pixel_info=RelinquishVirtualMemory(pixel_info);
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
