@@ -405,6 +405,9 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   MagickOffsetType
     scene;
 
+  MemoryInfo
+    *pixel_info;
+
   register const PixelPacket
     *p;
 
@@ -450,10 +453,10 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace);
     number_packets=(image->columns+7)/8;
-    pixels=(unsigned char *) AcquireQuantumMemory(number_packets,
-      image->rows*sizeof(*pixels));
-    if (pixels == (unsigned char *) NULL)
+    pixel_info=AcquireVirtualMemory(number_packets,image->rows*sizeof(*pixels));
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     /*
       Convert pixels to a bitmap.
     */
@@ -536,7 +539,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
     */
     jbg_enc_out(&jbig_info);
     jbg_enc_free(&jbig_info);
-    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

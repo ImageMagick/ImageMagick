@@ -126,6 +126,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  MemoryInfo
+    *pixel_info;
+
   PangoAlignment
     align;
 
@@ -377,14 +380,14 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   */
   stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
     image->columns);
-  pixels=(unsigned char *) AcquireQuantumMemory(image->rows,stride*
-    sizeof(*pixels));
-  if (pixels == (unsigned char *) NULL)
+  pixel_info=AcquireVirtualMemory(image->rows,stride*sizeof(*pixels));
+  if (pixel_info == (MemoryInfo *) NULL)
     {
       draw_info=DestroyDrawInfo(draw_info);
       caption=DestroyString(caption);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
+  pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
   surface=cairo_image_surface_create_for_data(pixels,CAIRO_FORMAT_ARGB32,
     image->columns,image->rows,stride);
   cairo_image=cairo_create(surface);
@@ -447,7 +450,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   /*
     Relinquish resources.
   */
-  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  pixel_info=RelinquishVirtualMemory(pixel_info);
   draw_info=DestroyDrawInfo(draw_info);
   caption=DestroyString(caption);
   return(GetFirstImageInList(image));

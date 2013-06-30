@@ -265,7 +265,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     packet,
     *pcx_colormap,
-    *pcx_pixels,
+    *pixels,
     *scanline;
 
   /*
@@ -386,17 +386,17 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line*
       pcx_info.planes;
-    pcx_pixels=(unsigned char *) AcquireQuantumMemory(pcx_packets,
-      sizeof(*pcx_pixels));
+    pixels=(unsigned char *) AcquireQuantumMemory(pcx_packets,
+      sizeof(*pixels));
     scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
       pcx_info.bytes_per_line),MagickMax(8,pcx_info.planes)*sizeof(*scanline));
-    if ((pcx_pixels == (unsigned char *) NULL) ||
+    if ((pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     /*
       Uncompress image data.
     */
-    p=pcx_pixels;
+    p=pixels;
     if (pcx_info.encoding == 0)
       while (pcx_packets != 0)
       {
@@ -476,7 +476,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
+      p=pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
@@ -628,7 +628,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     scanline=(unsigned char *) RelinquishMagickMemory(scanline);
     if (pcx_colormap != (unsigned char *) NULL)
       pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
-    pcx_pixels=(unsigned char *) RelinquishMagickMemory(pcx_pixels);
+    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -839,6 +839,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
     *page_table,
     scene;
 
+  MemoryInfo
+    *pixel_info;
+
   PCXInfo
     pcx_info;
 
@@ -863,7 +866,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
 
   unsigned char
     *pcx_colormap,
-    *pcx_pixels;
+    *pixels;
 
   /*
     Open output image file.
@@ -982,29 +985,27 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < 58; i++)
       (void) WriteBlobByte(image,'\0');
     length=(size_t) pcx_info.bytes_per_line;
-    pcx_pixels=(unsigned char *) AcquireQuantumMemory(length,pcx_info.planes*
-      sizeof(*pcx_pixels));
-    if (pcx_pixels == (unsigned char *) NULL)
+    pixel_info=AcquireVirtualMemory(length,pcx_info.planes*sizeof(*pixels));
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    q=pcx_pixels;
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
+    q=pixels;
     if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
         const PixelPacket
-          *pixels;
+          *p;
 
         /*
           Convert DirectClass image to PCX raster pixels.
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          pixels=GetVirtualPixels(image,0,y,image->columns,1,
-            &image->exception);
-          if (pixels == (const PixelPacket *) NULL)
+          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
-          q=pcx_pixels;
+          q=pixels;
           for (i=0; i < pcx_info.planes; i++)
           {
-            p=pixels;
             switch ((int) i)
             {
               case 0:
@@ -1047,7 +1048,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               }
             }
           }
-          if (PCXWritePixels(&pcx_info,pcx_pixels,image) == MagickFalse)
+          if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
             break;
           if (image->previous == (Image *) NULL)
             {
@@ -1067,10 +1068,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
             if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetVirtualIndexQueue(image);
-            q=pcx_pixels;
+            q=pixels;
             for (x=0; x < (ssize_t) image->columns; x++)
               *q++=(unsigned char) GetPixelIndex(indexes+x);
-            if (PCXWritePixels(&pcx_info,pcx_pixels,image) == MagickFalse)
+            if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
               break;
             if (image->previous == (Image *) NULL)
               {
@@ -1107,7 +1108,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               indexes=GetVirtualIndexQueue(image);
               bit=0;
               byte=0;
-              q=pcx_pixels;
+              q=pixels;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte<<=1;
@@ -1124,7 +1125,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               }
               if (bit != 0)
                 *q++=byte << (8-bit);
-              if (PCXWritePixels(&pcx_info,pcx_pixels,image) == MagickFalse)
+              if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
                 break;
               if (image->previous == (Image *) NULL)
                 {
@@ -1138,7 +1139,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,pcx_info.colormap_signature);
         (void) WriteBlob(image,3*256,pcx_colormap);
       }
-    pcx_pixels=(unsigned char *) RelinquishMagickMemory(pcx_pixels);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
     if (page_table == (MagickOffsetType *) NULL)
       break;
