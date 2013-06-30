@@ -149,6 +149,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickSizeType
     number_pixels;
 
+  MemoryInfo
+    *pixel_info;
+
   register ssize_t
     x;
 
@@ -177,7 +180,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *colormap,
     pixel,
     plane,
-    *rle_pixels;
+    *pixels;
 
   /*
     Open image file.
@@ -292,10 +295,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if ((number_pixels*number_planes) != (size_t) (number_pixels*number_planes))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    rle_pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
-      image->rows*number_planes*sizeof(*rle_pixels));
-    if (rle_pixels == (unsigned char *) NULL)
+    pixel_info=AcquireVirtualMemory(image->columns,image->rows*number_planes*
+      sizeof(*pixels));
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     if ((flags & 0x01) && !(flags & 0x02))
       {
         ssize_t
@@ -304,7 +308,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Set background color.
         */
-        p=rle_pixels;
+        p=pixels;
         for (i=0; i < (ssize_t) number_pixels; i++)
         {
           if (image->alpha_trait != BlendPixelTrait)
@@ -360,7 +364,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           operand=ReadBlobByte(image);
           if (opcode & 0x40)
             operand=(int) ReadBlobLSBShort(image);
-          p=rle_pixels+((image->rows-y-1)*image->columns*number_planes)+
+          p=pixels+((image->rows-y-1)*image->columns*number_planes)+
             x*number_planes+plane;
           operand++;
           for (i=0; i < (ssize_t) operand; i++)
@@ -384,7 +388,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pixel=(unsigned char) ReadBlobByte(image);
           (void) ReadBlobByte(image);
           operand++;
-          p=rle_pixels+((image->rows-y-1)*image->columns*number_planes)+
+          p=pixels+((image->rows-y-1)*image->columns*number_planes)+
             x*number_planes+plane;
           for (i=0; i < (ssize_t) operand; i++)
           {
@@ -410,7 +414,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Apply colormap affineation to image.
         */
         mask=(MagickStatusType) (map_length-1);
-        p=rle_pixels;
+        p=pixels;
         if (number_colormaps == 1)
           for (i=0; i < (ssize_t) number_pixels; i++)
           {
@@ -434,7 +438,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert raster image to DirectClass pixel packets.
         */
-        p=rle_pixels;
+        p=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -489,7 +493,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->colormap[i].blue=ScaleCharToQuantum(*(p+map_length*2));
               p++;
             }
-        p=rle_pixels;
+        p=pixels;
         if (image->alpha_trait != BlendPixelTrait)
           {
             /*
@@ -553,7 +557,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (number_colormaps != 0)
       colormap=(unsigned char *) RelinquishMagickMemory(colormap);
-    rle_pixels=(unsigned char *) RelinquishMagickMemory(rle_pixels);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
