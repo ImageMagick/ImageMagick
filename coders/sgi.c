@@ -270,6 +270,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickSizeType
     number_pixels;
 
+  MemoryInfo
+    *pixel_info;
+
   register IndexPacket
     *indexes;
 
@@ -296,7 +299,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     z;
 
   unsigned char
-    *iris_pixels;
+    *pixels;
 
   /*
     Open image file.
@@ -378,10 +381,11 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((4*bytes_per_pixel*number_pixels) != ((MagickSizeType) (size_t)
         (4*bytes_per_pixel*number_pixels)))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    iris_pixels=(unsigned char *) AcquireQuantumMemory(iris_info.columns,
-      iris_info.rows*4*bytes_per_pixel*sizeof(*iris_pixels));
-    if (iris_pixels == (unsigned char *) NULL)
+    pixel_info=AcquireVirtualMemory(iris_info.columns,iris_info.rows*4*
+      bytes_per_pixel*sizeof(*pixels));
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     if ((int) iris_info.storage != 0x01)
       {
         unsigned char
@@ -396,7 +400,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (z=0; z < (ssize_t) iris_info.depth; z++)
         {
-          p=iris_pixels+bytes_per_pixel*z;
+          p=pixels+bytes_per_pixel*z;
           for (y=0; y < (ssize_t) iris_info.rows; y++)
           {
             count=ReadBlob(image,bytes_per_pixel*iris_info.columns,scanline);
@@ -421,6 +425,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     else
       {
+        MemoryInfo
+          *packet_info;
+
         size_t
           *runlength;
 
@@ -439,14 +446,23 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         offsets=(ssize_t *) AcquireQuantumMemory((size_t) iris_info.rows,
           iris_info.depth*sizeof(*offsets));
-        packets=(unsigned char *) AcquireQuantumMemory((size_t)
-          iris_info.columns+10UL,4UL*sizeof(*packets));
         runlength=(size_t *) AcquireQuantumMemory(iris_info.rows,
           iris_info.depth*sizeof(*runlength));
+        packet_info=AcquireVirtualMemory((size_t) iris_info.columns+10UL,4UL*
+          sizeof(*packets));
         if ((offsets == (ssize_t *) NULL) ||
-            (packets == (unsigned char *) NULL) ||
-            (runlength == (size_t *) NULL))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+            (runlength == (size_t *) NULL) ||
+            (packet_info == (MemoryInfo *) NULL))
+          {
+            if (offsets == (ssize_t *) NULL)
+              offsets=(ssize_t *) RelinquishMagickMemory(offsets);
+            if (runlength == (size_t *) NULL)
+              runlength=(size_t *) RelinquishMagickMemory(runlength);
+            if (packet_info == (MemoryInfo *) NULL)
+              packet_info=RelinquishVirtualMemory(packet_info);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          }
+        packets=(unsigned char *) GetVirtualMemoryBlob(packet_info);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
           offsets[i]=(int) ReadBlobMSBLong(image);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
@@ -472,7 +488,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (z=0; z < (ssize_t) iris_info.depth; z++)
             {
-              p=iris_pixels;
+              p=pixels;
               for (y=0; y < (ssize_t) iris_info.rows; y++)
               {
                 if (offset != offsets[y+z*iris_info.rows])
@@ -500,7 +516,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               position;
 
             position=TellBlob(image);
-            p=iris_pixels;
+            p=pixels;
             for (y=0; y < (ssize_t) iris_info.rows; y++)
             {
               for (z=0; z < (ssize_t) iris_info.depth; z++)
@@ -525,8 +541,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             offset=(ssize_t) SeekBlob(image,position,SEEK_SET);
           }
+        packet_info=RelinquishVirtualMemory(packet_info);
         runlength=(size_t *) RelinquishMagickMemory(runlength);
-        packets=(unsigned char *) RelinquishMagickMemory(packets);
         offsets=(ssize_t *) RelinquishMagickMemory(offsets);
       }
     /*
@@ -547,7 +563,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=iris_pixels+(image->rows-y-1)*8*image->columns;
+              p=pixels+(image->rows-y-1)*8*image->columns;
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
               if (q == (PixelPacket *) NULL)
                 break;
@@ -580,7 +596,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            p=iris_pixels+(image->rows-y-1)*4*image->columns;
+            p=pixels+(image->rows-y-1)*4*image->columns;
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
@@ -620,7 +636,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=iris_pixels+(image->rows-y-1)*8*image->columns;
+              p=pixels+(image->rows-y-1)*8*image->columns;
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
               if (q == (PixelPacket *) NULL)
                 break;
@@ -647,7 +663,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            p=iris_pixels+(image->rows-y-1)*4*image->columns;
+            p=pixels+(image->rows-y-1)*4*image->columns;
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (PixelPacket *) NULL)
               break;
@@ -670,7 +686,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         (void) SyncImage(image);
       }
-    iris_pixels=(unsigned char *) RelinquishMagickMemory(iris_pixels);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -864,6 +880,9 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
   MagickSizeType
     number_pixels;
 
+  MemoryInfo
+    *pixel_info;
+
   SGIInfo
     iris_info;
 
@@ -882,7 +901,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
     z;
 
   unsigned char
-    *iris_pixels,
+    *pixels,
     *packets;
 
   /*
@@ -966,10 +985,11 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
     if ((4*iris_info.bytes_per_pixel*number_pixels) !=
         ((MagickSizeType) (size_t) (4*iris_info.bytes_per_pixel*number_pixels)))
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    iris_pixels=(unsigned char *) AcquireQuantumMemory((size_t) number_pixels,
-      4*iris_info.bytes_per_pixel*sizeof(*iris_pixels));
-    if (iris_pixels == (unsigned char *) NULL)
+    pixel_info=AcquireVirtualMemory((size_t) number_pixels,4*
+      iris_info.bytes_per_pixel*sizeof(*pixels));
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     /*
       Convert image pixels to uncompressed SGI pixels.
     */
@@ -984,7 +1004,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
           register unsigned char
             *q;
 
-          q=(unsigned char *) iris_pixels;
+          q=(unsigned char *) pixels;
           q+=((iris_info.rows-1)-y)*(4*iris_info.columns)+4*x;
           *q++=ScaleQuantumToChar(GetPixelRed(p));
           *q++=ScaleQuantumToChar(GetPixelGreen(p));
@@ -998,7 +1018,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
           register unsigned short
             *q;
 
-          q=(unsigned short *) iris_pixels;
+          q=(unsigned short *) pixels;
           q+=((iris_info.rows-1)-y)*(4*iris_info.columns)+4*x;
           *q++=ScaleQuantumToShort(GetPixelRed(p));
           *q++=ScaleQuantumToShort(GetPixelGreen(p));
@@ -1031,7 +1051,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
                 register unsigned char
                   *q;
 
-                q=(unsigned char *) iris_pixels;
+                q=(unsigned char *) pixels;
                 q+=y*(4*iris_info.columns)+4*x+z;
                 (void) WriteBlobByte(image,*q);
               }
@@ -1041,7 +1061,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
                 register unsigned short
                   *q;
 
-                q=(unsigned short *) iris_pixels;
+                q=(unsigned short *) pixels;
                 q+=y*(4*iris_info.columns)+4*x+z;
                 (void) WriteBlobMSBShort(image,*q);
               }
@@ -1051,6 +1071,9 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
       }
       default:
       {
+        MemoryInfo
+          *packet_info;
+
         size_t
           length,
           number_packets,
@@ -1065,17 +1088,26 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
         */
         offsets=(ssize_t *) AcquireQuantumMemory(iris_info.rows*iris_info.depth,
           sizeof(*offsets));
-        packets=(unsigned char *) AcquireQuantumMemory((2*(size_t)
-          iris_info.columns+10)*image->rows,4*sizeof(*packets));
         runlength=(size_t *) AcquireQuantumMemory(iris_info.rows,
           iris_info.depth*sizeof(*runlength));
+        packet_info=AcquireVirtualMemory((2*(size_t) iris_info.columns+10)*
+          image->rows,4*sizeof(*packets));
         if ((offsets == (ssize_t *) NULL) ||
-            (packets == (unsigned char *) NULL) ||
-            (runlength == (size_t *) NULL))
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            (runlength == (size_t *) NULL) ||
+            (packet_info == (MemoryInfo *) NULL))
+          {
+            if (offsets != (ssize_t *) NULL)
+              offsets=(ssize_t *) RelinquishMagickMemory(offsets);
+            if (runlength != (size_t *) NULL)
+              runlength=(size_t *) RelinquishMagickMemory(runlength);
+            if (packet_info != (MemoryInfo *) NULL)
+              packet_info=RelinquishVirtualMemory(packet_info);
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+          }
+        packets=(unsigned char *) GetVirtualMemoryBlob(packet_info);
         offset=512+4*2*((ssize_t) iris_info.rows*iris_info.depth);
         number_packets=0;
-        q=iris_pixels;
+        q=pixels;
         for (y=0; y < (ssize_t) iris_info.rows; y++)
         {
           for (z=0; z < (ssize_t) iris_info.depth; z++)
@@ -1100,13 +1132,13 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
         /*
           Relinquish resources.
         */
-        runlength=(size_t *) RelinquishMagickMemory(runlength);
-        packets=(unsigned char *) RelinquishMagickMemory(packets);
         offsets=(ssize_t *) RelinquishMagickMemory(offsets);
+        runlength=(size_t *) RelinquishMagickMemory(runlength);
+        packet_info=RelinquishVirtualMemory(packet_info);
         break;
       }
     }
-    iris_pixels=(unsigned char *) RelinquishMagickMemory(iris_pixels);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
