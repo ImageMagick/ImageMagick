@@ -2107,6 +2107,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     ping_preserve_iCCP,
     status;
 
+  MemoryInfo
+    *volatile pixel_info;
+
   PixelInfo
     transparent_color;
 
@@ -2161,7 +2164,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     j;
 
   unsigned char
-    *volatile ping_pixels;
+    *ping_pixels;
 
 #ifdef PNG_UNKNOWN_CHUNKS_SUPPORTED
   png_byte unused_chunks[]=
@@ -2330,7 +2333,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
 
-  ping_pixels=(unsigned char *) NULL;
+  pixel_info=(MemoryInfo *) NULL;
 
   if (setjmp(png_jmpbuf(ping)))
     {
@@ -2343,8 +2346,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
 
-      if (ping_pixels != (unsigned char *) NULL)
-        ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
+      if (pixel_info != (MemoryInfo *) NULL)
+        pixel_info=RelinquishVirtualMemory(pixel_info);
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3240,15 +3243,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       "    Reading PNG IDAT chunk(s)");
 
   if (num_passes > 1)
-    ping_pixels=(unsigned char *) AcquireQuantumMemory(image->rows,
-      ping_rowbytes*sizeof(*ping_pixels));
-
-  else
-    ping_pixels=(unsigned char *) AcquireQuantumMemory(ping_rowbytes,
+    pixel_info=AcquireVirtualMemory(image->rows,ping_rowbytes*
       sizeof(*ping_pixels));
+  else
+    pixel_info=AcquireVirtualMemory(ping_rowbytes,sizeof(*ping_pixels));
 
-  if (ping_pixels == (unsigned char *) NULL)
+  if (pixel_info == (MemoryInfo *) NULL)
     png_error(ping,"Memory allocation failed");
+  ping_pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3595,7 +3597,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (ssize_t) image_info->first_scene && image->delay != 0)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-      ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       image->colors=2;
       (void) SetImageBackgroundColor(image,exception);
 #ifdef PNG_SETJMP_NOT_THREAD_SAFE
@@ -3984,7 +3986,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   */
   png_destroy_read_struct(&ping,&ping_info,&end_info);
 
-  ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
+  pixel_info=RelinquishVirtualMemory(pixel_info);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7892,6 +7894,13 @@ static MagickBooleanType Magick_png_write_chunk_from_profile(Image *image,
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   const ImageInfo *IMimage_info,Image *IMimage,ExceptionInfo *exception)
 {
+  char
+    im_vers[32],
+    libpng_runv[32],
+    libpng_vers[32],
+    zlib_runv[32],
+    zlib_vers[32];
+
   Image
     *image;
 
@@ -7977,6 +7986,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     tried_333,
     tried_444;
 
+  MemoryInfo
+    *pixel_info;
+
   QuantumInfo
     *quantum_info;
 
@@ -7988,14 +8000,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     x;
 
   unsigned char
-    *volatile ping_pixels;
-
-  char
-    im_vers[32],
-    libpng_runv[32],
-    libpng_vers[32],
-    zlib_runv[32],
-    zlib_vers[32];
+    *ping_pixels;
 
   volatile int
     image_colors,
@@ -9451,7 +9456,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
-  ping_pixels=(unsigned char *) NULL;
+  pixel_info=(MemoryInfo *) NULL;
 
   if (setjmp(png_jmpbuf(ping)))
     {
@@ -9467,8 +9472,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
 
-      if (ping_pixels != (unsigned char *) NULL)
-        ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
+      if (pixel_info != (MemoryInfo *) NULL)
+        pixel_info=RelinquishVirtualMemory(pixel_info);
 
       if (quantum_info != (QuantumInfo *) NULL)
         quantum_info=DestroyQuantumInfo(quantum_info);
@@ -10900,11 +10905,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Allocating %.20g bytes of memory for pixels",(double) rowbytes);
     }
-  ping_pixels=(unsigned char *) AcquireQuantumMemory(rowbytes,
-    sizeof(*ping_pixels));
-
-  if (ping_pixels == (unsigned char *) NULL)
+  pixel_info=AcquireVirtualMemory(rowbytes,sizeof(*ping_pixels));
+  if (pixel_info == (MemoryInfo *) NULL)
     png_error(ping,"Allocation of memory for pixels failed");
+  ping_pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
 
   /*
     Initialize image scanlines.
@@ -11347,7 +11351,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   png_destroy_write_struct(&ping,&ping_info);
 
-  ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
+  pixel_info=RelinquishVirtualMemory(pixel_info);
 
   if (ping_have_blob != MagickFalse)
      (void) CloseBlob(image);
