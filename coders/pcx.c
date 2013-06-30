@@ -236,6 +236,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset,
     *page_table;
 
+  MemoryInfo
+    *pixel_info;
+
   PCXInfo
     pcx_info;
 
@@ -382,15 +385,20 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line*
-      pcx_info.planes;
-    pixels=(unsigned char *) AcquireQuantumMemory(pcx_packets,
-      sizeof(*pixels));
+    pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line*pcx_info.planes;
     scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
       pcx_info.bytes_per_line),MagickMax(8,pcx_info.planes)*sizeof(*scanline));
-    if ((pixels == (unsigned char *) NULL) ||
-        (scanline == (unsigned char *) NULL))
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    pixel_info=AcquireVirtualMemory(pcx_packets,sizeof(*pixels));
+    if ((scanline == (unsigned char *) NULL) ||
+        (pixel_info == (MemoryInfo *) NULL))
+      {
+        if (scanline != (unsigned char *) NULL)
+          scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+        if (pixel_info != (MemoryInfo *) NULL)
+          pixel_info=RelinquishVirtualMemory(pixel_info);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     /*
       Uncompress image data.
     */
@@ -623,10 +631,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->storage_class == PseudoClass)
       (void) SyncImage(image,exception);
-    scanline=(unsigned char *) RelinquishMagickMemory(scanline);
     if (pcx_colormap != (unsigned char *) NULL)
       pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
-    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+    scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -993,20 +1001,17 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     q=pixels;
     if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
-        const Quantum
-          *p;
-
         /*
           Convert DirectClass image to PCX raster pixels.
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-          if (p == (const Quantum *) NULL)
-            break;
           q=pixels;
           for (i=0; i < pcx_info.planes; i++)
           {
+            p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+            if (p == (const Quantum *) NULL)
+              break;
             switch ((int) i)
             {
               case 0:
