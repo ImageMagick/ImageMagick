@@ -181,7 +181,7 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
     Read extended header.
   */
   offset=RIFF_HEADER_SIZE+TAG_SIZE+CHUNK_SIZE_BYTES+VP8X_CHUNK_SIZE;
-  while (offset <= length)
+  while (offset <= (ssize_t) length)
   {
     uint32_t
       chunk_size,
@@ -429,14 +429,14 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  MemoryInfo
+    *pixel_info;
+
   register uint32_t
     *restrict q;
 
   ssize_t
     y;
-
-  uint32_t
-    *pixels;
 
   WebPConfig
     configure;
@@ -472,8 +472,9 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   picture.use_argb=1;
   if (image->quality != UndefinedCompressionQuality)
     configure.quality=(float) image->quality;
-  if (image->quality >= 100)
-    configure.lossless=1;
+  else
+    if (image->quality >= 100)
+      configure.lossless=1;
   value=GetImageOption(image_info,"webp:lossless");
   if (value != (char *) NULL)
     configure.lossless=ParseCommandOption(MagickBooleanOptions,MagickFalse,
@@ -545,14 +546,15 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   /*
     Allocate memory for pixels.
   */
-  pixels=(uint32_t *) AcquireQuantumMemory(image->columns,image->rows*
-    sizeof(*pixels));
-  if (pixels == (uint32_t *) NULL)
+  pixel_info=AcquireVirtualMemory(image->columns,image->rows*
+    sizeof(*picture.argb));
+  if (pixel_info == (MemoryInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  picture.argb=(uint32_t *) GetVirtualMemoryBlob(pixel_info);
   /*
     Convert image to WebP raster pixels.
   */
-  q=pixels;
+  q=picture.argb;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
@@ -578,10 +580,9 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
-  picture.argb=pixels;
   webp_status=WebPEncode(&configure,&picture);
   WebPPictureFree(&picture);
-  pixels=(uint32_t *) RelinquishMagickMemory(pixels);
+  pixel_info=RelinquishVirtualMemory(pixel_info);
   (void) CloseBlob(image);
   return(webp_status == 0 ? MagickFalse : MagickTrue);
 }

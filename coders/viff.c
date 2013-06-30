@@ -249,7 +249,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
 
   unsigned char
     buffer[7],
-    *viff_pixels;
+    *pixels;
 
   ViffInfo
     viff_info;
@@ -511,11 +511,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       max_packets=((image->columns+7UL) >> 3UL)*image->rows;
     else
       max_packets=(size_t) (number_pixels*viff_info.number_data_bands);
-    viff_pixels=(unsigned char *) AcquireQuantumMemory(max_packets,
-      bytes_per_pixel*sizeof(*viff_pixels));
-    if (viff_pixels == (unsigned char *) NULL)
+    pixels=(unsigned char *) AcquireQuantumMemory(max_packets,
+      bytes_per_pixel*sizeof(*pixels));
+    if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    count=ReadBlob(image,bytes_per_pixel*max_packets,viff_pixels);
+    count=ReadBlob(image,bytes_per_pixel*max_packets,pixels);
     lsb_first=1;
     if (*(char *) &lsb_first &&
         ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
@@ -524,13 +524,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       {
         case VFF_TYP_2_BYTE:
         {
-          MSBOrderShort(viff_pixels,bytes_per_pixel*max_packets);
+          MSBOrderShort(pixels,bytes_per_pixel*max_packets);
           break;
         }
         case VFF_TYP_4_BYTE:
         case VFF_TYP_FLOAT:
         {
-          MSBOrderLong(viff_pixels,bytes_per_pixel*max_packets);
+          MSBOrderLong(pixels,bytes_per_pixel*max_packets);
           break;
         }
         default: break;
@@ -548,11 +548,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         */
         switch ((int) viff_info.data_storage_type)
         {
-          case VFF_TYP_2_BYTE: value=1.0*((short *) viff_pixels)[0]; break;
-          case VFF_TYP_4_BYTE: value=1.0*((int *) viff_pixels)[0]; break;
-          case VFF_TYP_FLOAT: value=((float *) viff_pixels)[0]; break;
-          case VFF_TYP_DOUBLE: value=((double *) viff_pixels)[0]; break;
-          default: value=1.0*viff_pixels[0]; break;
+          case VFF_TYP_2_BYTE: value=1.0*((short *) pixels)[0]; break;
+          case VFF_TYP_4_BYTE: value=1.0*((int *) pixels)[0]; break;
+          case VFF_TYP_FLOAT: value=((float *) pixels)[0]; break;
+          case VFF_TYP_DOUBLE: value=((double *) pixels)[0]; break;
+          default: value=1.0*pixels[0]; break;
         }
         max_value=value;
         min_value=value;
@@ -560,11 +560,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         {
           switch ((int) viff_info.data_storage_type)
           {
-            case VFF_TYP_2_BYTE: value=1.0*((short *) viff_pixels)[i]; break;
-            case VFF_TYP_4_BYTE: value=1.0*((int *) viff_pixels)[i]; break;
-            case VFF_TYP_FLOAT: value=((float *) viff_pixels)[i]; break;
-            case VFF_TYP_DOUBLE: value=((double *) viff_pixels)[i]; break;
-            default: value=1.0*viff_pixels[i]; break;
+            case VFF_TYP_2_BYTE: value=1.0*((short *) pixels)[i]; break;
+            case VFF_TYP_4_BYTE: value=1.0*((int *) pixels)[i]; break;
+            case VFF_TYP_FLOAT: value=((float *) pixels)[i]; break;
+            case VFF_TYP_DOUBLE: value=((double *) pixels)[i]; break;
+            default: value=1.0*pixels[i]; break;
           }
           if (value > max_value)
             max_value=value;
@@ -586,16 +586,16 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Convert pixels to Quantum size.
     */
-    p=(unsigned char *) viff_pixels;
+    p=(unsigned char *) pixels;
     for (i=0; i < (ssize_t) max_packets; i++)
     {
       switch ((int) viff_info.data_storage_type)
       {
-        case VFF_TYP_2_BYTE: value=1.0*((short *) viff_pixels)[i]; break;
-        case VFF_TYP_4_BYTE: value=1.0*((int *) viff_pixels)[i]; break;
-        case VFF_TYP_FLOAT: value=((float *) viff_pixels)[i]; break;
-        case VFF_TYP_DOUBLE: value=((double *) viff_pixels)[i]; break;
-        default: value=1.0*viff_pixels[i]; break;
+        case VFF_TYP_2_BYTE: value=1.0*((short *) pixels)[i]; break;
+        case VFF_TYP_4_BYTE: value=1.0*((int *) pixels)[i]; break;
+        case VFF_TYP_FLOAT: value=((float *) pixels)[i]; break;
+        case VFF_TYP_DOUBLE: value=((double *) pixels)[i]; break;
+        default: value=1.0*pixels[i]; break;
       }
       if (viff_info.map_scheme == VFF_MS_NONE)
         {
@@ -612,7 +612,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Convert VIFF raster image to pixel packets.
     */
-    p=(unsigned char *) viff_pixels;
+    p=(unsigned char *) pixels;
     if (viff_info.data_storage_type == VFF_TYP_BIT)
       {
         /*
@@ -721,7 +721,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               }
           }
         }
-    viff_pixels=(unsigned char *) RelinquishMagickMemory(viff_pixels);
+    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     if (image->storage_class == PseudoClass)
       (void) SyncImage(image);
     if (EOFBlob(image) != MagickFalse)
@@ -928,6 +928,9 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     number_pixels,
     packets;
 
+  MemoryInfo
+    *pixel_info;
+
   register const IndexPacket
     *indexes;
 
@@ -948,7 +951,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
 
   unsigned char
     buffer[8],
-    *viff_pixels;
+    *pixels;
 
   ViffInfo
     viff_info;
@@ -1080,11 +1083,11 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     /*
       Convert MIFF to VIFF raster pixels.
     */
-    viff_pixels=(unsigned char *) AcquireQuantumMemory((size_t) packets,
-      sizeof(*viff_pixels));
-    if (viff_pixels == (unsigned char *) NULL)
+    pixel_info=AcquireVirtualMemory((size_t) packets,sizeof(*pixels));
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    q=viff_pixels;
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
+    q=pixels;
     if (image->storage_class == DirectClass)
       {
         /*
@@ -1141,7 +1144,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
           /*
             Convert PseudoClass packet to VIFF colormapped pixels.
           */
-          q=viff_pixels;
+          q=pixels;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
@@ -1176,8 +1179,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             (void) SetImageType(image,BilevelType);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               indexes=GetVirtualIndexQueue(image);
@@ -1232,8 +1234,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
                 }
             }
           }
-    (void) WriteBlob(image,(size_t) packets,viff_pixels);
-    viff_pixels=(unsigned char *) RelinquishMagickMemory(viff_pixels);
+    (void) WriteBlob(image,(size_t) packets,pixels);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

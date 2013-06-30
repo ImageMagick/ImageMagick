@@ -1663,6 +1663,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       case ReadGenericMethod:
       default:
       {
+        MemoryInfo
+          *pixel_info;
+
         register uint32
           *p;
 
@@ -1679,15 +1682,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        pixels=(uint32 *) AcquireQuantumMemory(image->columns,image->rows*
+        pixel_info=AcquireVirtualMemory(image->columns,image->rows*
           sizeof(uint32));
-        if (pixels == (uint32 *) NULL)
+        if (pixel_info == (MemoryInfo *) NULL)
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,
-          (uint32) image->rows,(uint32 *) pixels,0);
+        pixels=(uint32 *) GetVirtualMemoryBlob(pixel_info);
+        (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
+          image->rows,(uint32 *) pixels,0);
         /*
           Convert image to DirectClass pixel packets.
         */
@@ -1706,15 +1710,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q+=image->columns-1;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(q,ScaleCharToQuantum((unsigned char)
-              TIFFGetR(*p)));
-            SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
-              TIFFGetG(*p)));
-            SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
-              TIFFGetB(*p)));
+            SetPixelRed(q,ScaleCharToQuantum((unsigned char) TIFFGetR(*p)));
+            SetPixelGreen(q,ScaleCharToQuantum((unsigned char) TIFFGetG(*p)));
+            SetPixelBlue(q,ScaleCharToQuantum((unsigned char) TIFFGetB(*p)));
             if (image->matte != MagickFalse)
-              SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
-                TIFFGetA(*p)));
+              SetPixelAlpha(q,ScaleCharToQuantum((unsigned char) TIFFGetA(*p)));
             p--;
             q--;
           }
@@ -1728,7 +1728,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 break;
             }
         }
-        pixels=(uint32 *) RelinquishMagickMemory(pixels);
+        pixel_info=RelinquishVirtualMemory(pixel_info);
         break;
       }
     }
