@@ -235,7 +235,7 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
 }
 
 static MagickBooleanType SerializeImage(const ImageInfo *image_info,
-  Image *image,unsigned char **pixels,size_t *length)
+  Image *image,MemoryInfo **pixel_info,size_t *length)
 {
   MagickBooleanType
     status;
@@ -262,10 +262,10 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
   status=MagickTrue;
   *length=(image->colorspace == CMYKColorspace ? 4 : 3)*(size_t)
     image->columns*image->rows;
-  *pixels=(unsigned char *) AcquireQuantumMemory(*length,sizeof(**pixels));
-  if (*pixels == (unsigned char *) NULL)
+  *pixel_info=AcquireVirtualMemory(*length,sizeof(*q));
+  if (*pixel_info == (MemoryInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  q=(*pixels);
+  q=(unsigned char *) GetVirtualMemoryBlob(*pixel_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
@@ -298,12 +298,12 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
       }
   }
   if (status == MagickFalse)
-    *pixels=(unsigned char *) RelinquishMagickMemory(*pixels);
+    *pixel_info=RelinquishVirtualMemory(*pixel_info);
   return(status);
 }
 
 static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
-  Image *image,unsigned char **pixels,size_t *length)
+  Image *image,MemoryInfo **pixel_info,size_t *length)
 {
   MagickBooleanType
     status;
@@ -336,10 +336,10 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
   pack=IsMonochromeImage(image,&image->exception) == MagickFalse ? 1UL : 8UL;
   padded_columns=((image->columns+pack-1)/pack)*pack;
   *length=(size_t) padded_columns*image->rows/pack;
-  *pixels=(unsigned char *) AcquireQuantumMemory(*length,sizeof(**pixels));
-  if (*pixels == (unsigned char *) NULL)
+  *pixel_info=AcquireVirtualMemory(*length,sizeof(*q));
+  if (*pixel_info == (MemoryInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  q=(*pixels);
+  q=(unsigned char *) GetVirtualMemoryBlob(*pixel_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
@@ -375,12 +375,12 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
       break;
   }
   if (status == MagickFalse)
-    *pixels=(unsigned char *) RelinquishMagickMemory(*pixels);
+    *pixel_info=RelinquishVirtualMemory(*pixel_info);
   return(status);
 }
 
 static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
-  Image *image,unsigned char **pixels,size_t *length)
+  Image *image,MemoryInfo **pixel_info,size_t *length)
 {
   MagickBooleanType
     status;
@@ -406,10 +406,10 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
   *length=(size_t) image->columns*image->rows;
-  *pixels=(unsigned char *) AcquireQuantumMemory(*length,sizeof(**pixels));
-  if (*pixels == (unsigned char *) NULL)
+  *pixel_info=AcquireVirtualMemory(*length,sizeof(*q));
+  if (*pixel_info == (MemoryInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  q=(*pixels);
+  q=(unsigned char *) GetVirtualMemoryBlob(*pixel_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
@@ -427,7 +427,7 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
       }
   }
   if (status == MagickFalse)
-    *pixels=(unsigned char *) RelinquishMagickMemory(*pixels);
+    *pixel_info=RelinquishVirtualMemory(*pixel_info);
   return(status);
 }
 
@@ -447,6 +447,9 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     offset,
     start,
     stop;
+
+  MemoryInfo
+    *pixel_info;
 
   register ssize_t
     i;
@@ -538,14 +541,15 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     case NoCompression:
     default:
     {
-      status=SerializeImageChannel(image_info,mask_image,&pixels,&length);
+      status=SerializeImageChannel(image_info,mask_image,&pixel_info,&length);
       if (status == MagickFalse)
         break;
+      pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
       Ascii85Initialize(image);
       for (i=0; i < (ssize_t) length; i++)
         Ascii85Encode(image,pixels[i]);
       Ascii85Flush(image);
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       break;
     }
     case FaxCompression:
@@ -560,29 +564,31 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     }
     case LZWCompression:
     {
-      status=SerializeImageChannel(image_info,mask_image,&pixels,&length);
+      status=SerializeImageChannel(image_info,mask_image,&pixel_info,&length);
       if (status == MagickFalse)
         break;
+      pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
       status=LZWEncodeImage(image,length,pixels);
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       break;
     }
     case RLECompression:
     {
-      status=SerializeImageChannel(image_info,mask_image,&pixels,&length);
+      status=SerializeImageChannel(image_info,mask_image,&pixel_info,&length);
       if (status == MagickFalse)
         break;
+      pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
       status=PackbitsEncodeImage(image,length,pixels);
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       break;
     }
     case ZipCompression:
     {
-      status=SerializeImageChannel(image_info,mask_image,&pixels,&length);
+      status=SerializeImageChannel(image_info,mask_image,&pixel_info,&length);
       if (status == MagickFalse)
         break;
       status=ZLIBEncodeImage(image,length,pixels);
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       break;
     }
   }
@@ -830,6 +836,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
 
   MagickStatusType
     flags;
+
+  MemoryInfo
+    *pixel_info;
 
   PointInfo
     delta,
@@ -1315,12 +1324,14 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
             }
           else
             {
-              status=SerializeImageChannel(image_info,image,&pixels,&length);
+              status=SerializeImageChannel(image_info,image,&pixel_info,
+                &length);
               if (status == MagickFalse)
                 {
                   (void) CloseBlob(image);
                   return(MagickFalse);
                 }
+              pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
               switch (compression)
               {
                 case NoCompression:
@@ -1349,7 +1360,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
                   break;
                 }
               }
-              pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+              pixel_info=RelinquishVirtualMemory(pixel_info);
             }
       }
     else
@@ -1400,12 +1411,13 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
               /*
                 Stream based compressions.
               */
-              status=SerializeImage(image_info,image,&pixels,&length);
+              status=SerializeImage(image_info,image,&pixel_info,&length);
               if (status == MagickFalse)
                 {
                   (void) CloseBlob(image);
                   return(MagickFalse);
                 }
+              pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
               switch (compression)
               {
                 case NoCompression:
@@ -1434,7 +1446,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
                   break;
                 }
               }
-              pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+              pixel_info=RelinquishVirtualMemory(pixel_info);
             }
           }
         else
@@ -1508,12 +1520,13 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
                 }
                 Ascii85Flush(image);
               }
-            status=SerializeImageIndexes(image_info,image,&pixels,&length);
+            status=SerializeImageIndexes(image_info,image,&pixel_info,&length);
             if (status == MagickFalse)
               {
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             switch (compression)
             {
               case NoCompression:
@@ -1548,7 +1561,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
                 break;
               }
             }
-            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
           }
     (void) WriteBlobByte(image,'\n');
     if (status == MagickFalse)
