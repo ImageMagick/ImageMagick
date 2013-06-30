@@ -1513,10 +1513,10 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   equalize_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
     GetPixelChannels(image)*sizeof(*equalize_map));
-  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,
-    GetPixelChannels(image)*sizeof(*histogram));
-  map=(double *) AcquireQuantumMemory(MaxMap+1UL,
-    GetPixelChannels(image)*sizeof(*map));
+  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,GetPixelChannels(image)*
+    sizeof(*histogram));
+  map=(double *) AcquireQuantumMemory(MaxMap+1UL,GetPixelChannels(image)*
+    sizeof(*map));
   if ((equalize_map == (double *) NULL) || (histogram == (double *) NULL) ||
       (map == (double *) NULL))
     {
