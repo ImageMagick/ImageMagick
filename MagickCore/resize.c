@@ -1780,6 +1780,9 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   MagickBooleanType
     status;
 
+  MemoryInfo
+    *pixel_info;
+
   register gfloat
     *q;
 
@@ -1823,10 +1826,11 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       resize_image=DestroyImage(resize_image);
       return(rescale_image);
     }
-  pixels=(gfloat *) AcquireQuantumMemory(image->columns,image->rows*
+  pixel_info=AcquireVirtualMemory(image->columns,image->rows*
     GetPixelChannels(image)*sizeof(*pixels));
-  if (pixels == (gfloat *) NULL)
+  if (pixel_info == (MemoryInfo *) NULL)
     return((Image *) NULL);
+  pixels=(gfloat *) GetVirtualMemoryBlob(pixel_info);
   status=MagickTrue;
   q=pixels;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1861,7 +1865,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     GetPixelChannels(image),LQR_COLDEPTH_32F);
   if (carver == (LqrCarver *) NULL)
     {
-      pixels=(gfloat *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   lqr_status=lqr_carver_init(carver,(int) delta_x,rigidity);
@@ -1871,12 +1875,12 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     lqr_carver_get_height(carver),MagickTrue,exception);
   if (rescale_image == (Image *) NULL)
     {
-      pixels=(gfloat *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       return((Image *) NULL);
     }
   if (SetImageStorageClass(rescale_image,DirectClass,exception) == MagickFalse)
     {
-      pixels=(gfloat *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       rescale_image=DestroyImage(rescale_image);
       return((Image *) NULL);
     }
@@ -1916,6 +1920,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       break;
   }
   rescale_view=DestroyCacheView(rescale_view);
+  pixel_info=RelinquishVirtualMemory(pixel_info);
   lqr_carver_destroy(carver);
   return(rescale_image);
 }

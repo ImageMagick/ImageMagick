@@ -3362,8 +3362,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
     image->colormap[i].alpha=(double) i;
   qsort((void *) image->colormap,image->colors,sizeof(PixelInfo),
     IntensityCompare);
-  colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,
-    sizeof(*colormap));
+  colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,sizeof(*colormap));
   if (colormap == (PixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);

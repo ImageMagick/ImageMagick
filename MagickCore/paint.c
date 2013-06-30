@@ -140,6 +140,9 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     skip,
     status;
 
+  MemoryInfo
+    *segment_info;
+
   PixelInfo
     fill_color,
     pixel;
@@ -190,14 +193,14 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   (void) QueryColorCompliance("#000",AllCompliance,
     &floodplane_image->background_color,exception);
   (void) SetImageBackgroundColor(floodplane_image,exception);
-  segment_stack=(SegmentInfo *) AcquireQuantumMemory(MaxStacksize,
-    sizeof(*segment_stack));
-  if (segment_stack == (SegmentInfo *) NULL)
+  segment_info=AcquireVirtualMemory(MaxStacksize,sizeof(*segment_stack));
+  if (segment_info == (MemoryInfo *) NULL)
     {
       floodplane_image=DestroyImage(floodplane_image);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
+  segment_stack=(SegmentInfo *) GetVirtualMemoryBlob(segment_info);
   /*
     Push initial segment on stack.
   */
@@ -349,7 +352,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   }
   floodplane_view=DestroyCacheView(floodplane_view);
   image_view=DestroyCacheView(image_view);
-  segment_stack=(SegmentInfo *) RelinquishMagickMemory(segment_stack);
+  segment_info=RelinquishVirtualMemory(segment_info);
   floodplane_image=DestroyImage(floodplane_image);
   return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
