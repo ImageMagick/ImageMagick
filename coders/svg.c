@@ -2875,6 +2875,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         cairo_t
           *cairo_image;
 
+        MemoryInfo
+          *pixel_info;
+
         register unsigned char
           *p;
 
@@ -2886,7 +2889,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 #else
         GdkPixbuf
-          *pixel_info;
+          *pixel_buffer;
 
         register const guchar
           *p;
@@ -2932,12 +2935,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         rsvg_handle_get_dimensions(svg_handle,&dimension_info);
         image->columns=image->resolution.x*dimension_info.width/72.0;
         image->rows=image->resolution.y*dimension_info.height/72.0;
-        pixels=(unsigned char *) NULL;
+        pixel_info=(MemoryInfo *) NULL;
 #else
-        pixel_info=rsvg_handle_get_pixbuf(svg_handle);
+        pixel_buffer=rsvg_handle_get_pixbuf(svg_handle);
         rsvg_handle_free(svg_handle);
-        image->columns=gdk_pixbuf_get_width(pixel_info);
-        image->rows=gdk_pixbuf_get_height(pixel_info);
+        image->columns=gdk_pixbuf_get_width(pixel_buffer);
+        image->rows=gdk_pixbuf_get_height(pixel_buffer);
 #endif
         image->alpha_trait=BlendPixelTrait;
         SetImageProperty(image,"svg:base-uri",
@@ -2945,7 +2948,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((image->columns == 0) || (image->rows == 0))
           {
 #if !defined(MAGICKCORE_CAIRO_DELEGATE)
-            g_object_unref(G_OBJECT(pixel_info));
+            g_object_unref(G_OBJECT(pixel_buffer));
 #endif
             g_object_unref(svg_handle);
             ThrowReaderException(MissingDelegateError,
@@ -2962,14 +2965,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
               image->columns);
 #endif
-            pixels=(unsigned char *) AcquireQuantumMemory(stride,image->rows*
-              sizeof(*pixels));
-            if (pixels == (unsigned char *) NULL)
+            pixel_info=AcquireVirtualMemory(stride,image->rows*sizeof(*pixels));
+            if (pixel_info == (MemoryInfo *) NULL)
               {
                 g_object_unref(svg_handle);
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
 #endif
             (void) SetImageBackgroundColor(image,exception);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
@@ -2977,7 +2980,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               CAIRO_FORMAT_ARGB32,image->columns,image->rows,stride);
             if (cairo_surface == (cairo_surface_t *) NULL)
               {
-                pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+                pixel_info=RelinquishVirtualMemory(pixel_info);
                 g_object_unref(svg_handle);
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
@@ -2994,7 +2997,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             g_object_unref(svg_handle);
             p=pixels;
 #else
-            p=gdk_pixbuf_get_pixels(pixel_info);
+            p=gdk_pixbuf_get_pixels(pixel_buffer);
 #endif
             GetPixelInfo(image,&fill_color);
             for (y=0; y < (ssize_t) image->rows; y++)
@@ -3042,10 +3045,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
-        if (pixels != (unsigned char *) NULL)
-          pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+        if (pixel_info != (MemoryInfo *) NULL)
+          pixel_info=RelinquishVirtualMemory(pixel_info);
 #else
-        g_object_unref(G_OBJECT(pixel_info));
+        g_object_unref(G_OBJECT(pixel_buffer));
 #endif
         (void) CloseBlob(image);
         return(GetFirstImageInList(image));

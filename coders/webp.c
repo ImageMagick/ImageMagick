@@ -191,7 +191,7 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
     if (chunk_size > MAX_CHUNK_PAYLOAD)
       break;
     chunk_size_pad=(CHUNK_HEADER_SIZE+chunk_size+1) & ~1;
-    if (memcmp( stream+offset,VP8_CHUNK_HEADER,VP8_CHUNK_HEADER_SIZE) == 0)
+    if (memcmp(stream+offset,VP8_CHUNK_HEADER,VP8_CHUNK_HEADER_SIZE) == 0)
       return(*(stream+offset+VP8_CHUNK_HEADER_SIZE) == LOSSLESS_FLAG ?
         MagickTrue : MagickFalse);
     offset+=chunk_size_pad;
@@ -430,6 +430,9 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  MemoryInfo
+    *pixel_info;
+
   register uint32_t
     *restrict q;
 
@@ -544,10 +547,11 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   /*
     Allocate memory for pixels.
   */
-  picture.argb=(uint32_t *) AcquireQuantumMemory(image->columns,image->rows*
+  pixel_info=AcquireVirtualMemory(image->columns,image->rows*
     sizeof(*picture.argb));
-  if (picture.argb == (uint32_t *) NULL)
+  if (pixel_info == (MemoryInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  picture.argb=(uint32_t *) GetVirtualMemoryBlob(pixel_info);
   /*
     Convert image to WebP raster pixels.
   */
@@ -579,7 +583,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   }
   webp_status=WebPEncode(&configure,&picture);
   WebPPictureFree(&picture);
-  picture.argb=(uint32_t *) RelinquishMagickMemory(picture.argb);
+  pixel_info=RelinquishVirtualMemory(pixel_info);
   (void) CloseBlob(image);
   return(webp_status == 0 ? MagickFalse : MagickTrue);
 }
