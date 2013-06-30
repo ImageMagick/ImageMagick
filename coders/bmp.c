@@ -513,7 +513,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     start_position;
 
   MemoryInfo
-    *memory_info;
+    *pixel_info;
 
   Quantum
     index;
@@ -927,11 +927,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=(size_t) bytes_per_line*image->rows;
-    memory_info=AcquireVirtualMemory((size_t) image->rows,
+    pixel_info=AcquireVirtualMemory((size_t) image->rows,
       MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
-    if (memory_info == (MemoryInfo *) NULL)
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    pixels=(unsigned char *) GetVirtualMemoryBlob(memory_info);
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
       {
@@ -941,7 +941,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count=ReadBlob(image,length,pixels);
         if (count != (ssize_t) length)
           {
-            memory_info=RelinquishVirtualMemory(memory_info);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
             ThrowReaderException(CorruptImageError,
               "InsufficientImageDataInFile");
           }
@@ -954,7 +954,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == MagickFalse)
           {
-            memory_info=RelinquishVirtualMemory(memory_info);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
             ThrowReaderException(CorruptImageError,
               "UnableToRunlengthDecodeImage");
           }
@@ -1150,7 +1150,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
           {
-            memory_info=RelinquishVirtualMemory(memory_info);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
             ThrowReaderException(CorruptImageError,
               "UnrecognizedImageCompression");
           }
@@ -1249,7 +1249,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((bmp_info.compression != BI_RGB) &&
             (bmp_info.compression != BI_BITFIELDS))
           {
-            memory_info=RelinquishVirtualMemory(memory_info);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
             ThrowReaderException(CorruptImageError,
               "UnrecognizedImageCompression");
           }
@@ -1305,11 +1305,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       default:
       {
-        memory_info=RelinquishVirtualMemory(memory_info);
+        pixel_info=RelinquishVirtualMemory(pixel_info);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
     }
-    memory_info=RelinquishVirtualMemory(memory_info);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -1496,7 +1496,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     scene;
 
   MemoryInfo
-    *memory_info;
+    *pixel_info;
 
   register const Quantum
     *p;
@@ -1657,11 +1657,11 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     /*
       Convert MIFF to BMP raster pixels.
     */
-    memory_info=AcquireVirtualMemory((size_t) bmp_info.image_size,
+    pixel_info=AcquireVirtualMemory((size_t) bmp_info.image_size,
       sizeof(*pixels));
-    if (memory_info == (MemoryInfo *) NULL)
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    pixels=(unsigned char *) GetVirtualMemoryBlob(memory_info);
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     (void) ResetMagickMemory(pixels,0,(size_t) bmp_info.image_size);
     switch (bmp_info.bits_per_pixel)
     {
@@ -1868,7 +1868,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
             (image->rows+2)*sizeof(*pixels));
           if (rle_info == (MemoryInfo *) NULL)
             {
-              memory_info=RelinquishVirtualMemory(memory_info);
+              pixel_info=RelinquishVirtualMemory(pixel_info);
               ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
             }
           bmp_data=(unsigned char *) GetVirtualMemoryBlob(rle_info);
@@ -1876,8 +1876,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           bmp_info.image_size=(unsigned int) EncodeImage(image,bytes_per_line,
             pixels,bmp_data);
           bmp_info.file_size+=bmp_info.image_size;
-          memory_info=RelinquishVirtualMemory(memory_info);
-          memory_info=rle_info;
+          pixel_info=RelinquishVirtualMemory(pixel_info);
+          pixel_info=rle_info;
           pixels=bmp_data;
           bmp_info.compression=BI_RLE8;
         }
@@ -2092,7 +2092,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Pixels:  %u bytes",bmp_info.image_size);
     (void) WriteBlob(image,(size_t) bmp_info.image_size,pixels);
-    memory_info=RelinquishVirtualMemory(memory_info);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

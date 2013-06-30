@@ -1608,14 +1608,17 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           case RLECompression:
           default:
           {
+            MemoryInfo
+              *pixel_info;
+
             /*
               Allocate pixel array.
             */
             length=(size_t) number_pixels;
-            pixels=(unsigned char *) AcquireQuantumMemory(length,
-              sizeof(*pixels));
-            if (pixels == (unsigned char *) NULL)
+            pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
+            if (pixel_info == (MemoryInfo *) NULL)
               ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
               Dump Runlength encoded pixels.
             */
@@ -1647,7 +1650,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 status=LZWEncodeImage(image,length,pixels,exception);
               else
                 status=PackbitsEncodeImage(image,length,pixels,exception);
-            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
                 (void) CloseBlob(image);
@@ -1714,15 +1717,18 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           case RLECompression:
           default:
           {
+            MemoryInfo
+              *pixel_info;
+
             /*
               Allocate pixel array.
             */
             length=(size_t) number_pixels;
-            pixels=(unsigned char *) AcquireQuantumMemory(length,
-              4*sizeof(*pixels));
             length*=image->colorspace == CMYKColorspace ? 4UL : 3UL;
-            if (pixels == (unsigned char *) NULL)
+            pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
+            if (pixel_info == (MemoryInfo *) NULL)
               ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
               Dump runoffset encoded pixels.
             */
@@ -1758,7 +1764,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 status=LZWEncodeImage(image,length,pixels,exception);
               else
                 status=PackbitsEncodeImage(image,length,pixels,exception);
-            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
                 (void) CloseBlob(image);
@@ -1809,15 +1815,18 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             case RLECompression:
             default:
             {
+              MemoryInfo
+                *pixel_info;
+
               /*
                 Allocate pixel array.
               */
               length=(size_t) number_pixels;
-              pixels=(unsigned char *) AcquireQuantumMemory(length,
-                sizeof(*pixels));
-              if (pixels == (unsigned char *) NULL)
+              pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
+              if (pixel_info == (MemoryInfo *) NULL)
                 ThrowWriterException(ResourceLimitError,
                   "MemoryAllocationFailed");
+              pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
               /*
                 Dump Runlength encoded pixels.
               */
@@ -1849,7 +1858,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                   status=LZWEncodeImage(image,length,pixels,exception);
                 else
                   status=PackbitsEncodeImage(image,length,pixels,exception);
-              pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+              pixel_info=RelinquishVirtualMemory(pixel_info);
               if (status == MagickFalse)
                 {
                   (void) CloseBlob(image);
@@ -2058,20 +2067,23 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           case RLECompression:
           default:
           {
+            MemoryInfo
+              *pixel_info;
+
             /*
               Allocate pixel array.
             */
             length=(size_t) number_pixels;
-            pixels=(unsigned char *) AcquireQuantumMemory(length,
-              sizeof(*pixels));
-            if (pixels == (unsigned char *) NULL)
+            pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
+            if (pixel_info == (MemoryInfo *) NULL)
               {
                 tile_image=DestroyImage(tile_image);
                 ThrowWriterException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
-              Dump Runlength encoded pixels.
+              Dump runlength encoded pixels.
             */
             q=pixels;
             for (y=0; y < (ssize_t) tile_image->rows; y++)
@@ -2096,7 +2108,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 status=LZWEncodeImage(image,length,pixels,exception);
               else
                 status=PackbitsEncodeImage(image,length,pixels,exception);
-            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
                 (void) CloseBlob(image);
@@ -2158,21 +2170,24 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           case RLECompression:
           default:
           {
+            MemoryInfo
+              *pixel_info;
+
             /*
               Allocate pixel array.
             */
             length=(size_t) number_pixels;
-            pixels=(unsigned char *) AcquireQuantumMemory(length,4*
-              sizeof(*pixels));
             length*=tile_image->colorspace == CMYKColorspace ? 4UL : 3UL;
-            if (pixels == (unsigned char *) NULL)
+            pixel_info=AcquireVirtualMemory(length,4*sizeof(*pixels));
+            if (pixel_info == (MemoryInfo *) NULL)
               {
                 tile_image=DestroyImage(tile_image);
                 ThrowWriterException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
-              Dump runoffset encoded pixels.
+              Dump runlength encoded pixels.
             */
             q=pixels;
             for (y=0; y < (ssize_t) tile_image->rows; y++)
@@ -2200,7 +2215,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 status=LZWEncodeImage(image,length,pixels,exception);
               else
                 status=PackbitsEncodeImage(image,length,pixels,exception);
-            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
                 (void) CloseBlob(image);
@@ -2248,20 +2263,23 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             case RLECompression:
             default:
             {
+              MemoryInfo
+                *pixel_info;
+
               /*
                 Allocate pixel array.
               */
               length=(size_t) number_pixels;
-              pixels=(unsigned char *) AcquireQuantumMemory(length,
-                sizeof(*pixels));
-              if (pixels == (unsigned char *) NULL)
+              pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
+              if (pixel_info == (MemoryInfo *) NULL)
                 {
                   tile_image=DestroyImage(tile_image);
                   ThrowWriterException(ResourceLimitError,
                     "MemoryAllocationFailed");
                 }
+              pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
               /*
-                Dump Runlength encoded pixels.
+                Dump runlength encoded pixels.
               */
               q=pixels;
               for (y=0; y < (ssize_t) tile_image->rows; y++)
@@ -2285,7 +2303,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                   status=LZWEncodeImage(image,length,pixels,exception);
                 else
                   status=PackbitsEncodeImage(image,length,pixels,exception);
-              pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+              pixel_info=RelinquishVirtualMemory(pixel_info);
               if (status == MagickFalse)
                 {
                   (void) CloseBlob(image);
@@ -2457,18 +2475,21 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           case RLECompression:
           default:
           {
+            MemoryInfo
+              *pixel_info;
+
             /*
               Allocate pixel array.
             */
             length=(size_t) number_pixels;
-            pixels=(unsigned char *) AcquireQuantumMemory(length,
-              sizeof(*pixels));
-            if (pixels == (unsigned char *) NULL)
+            pixel_info=AcquireVirtualMemory(length,4*sizeof(*pixels));
+            if (pixel_info == (MemoryInfo *) NULL)
               {
                 image=DestroyImage(image);
                 ThrowWriterException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
               Dump Runlength encoded pixels.
             */
@@ -2493,7 +2514,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 status=LZWEncodeImage(image,length,pixels,exception);
               else
                 status=PackbitsEncodeImage(image,length,pixels,exception);
-            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
                 (void) CloseBlob(image);
