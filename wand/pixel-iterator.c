@@ -162,8 +162,7 @@ WandExport PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
   assert(iterator->signature == WandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
-  clone_iterator=(PixelIterator *) AcquireMagickMemory(
-    sizeof(*clone_iterator));
+  clone_iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*clone_iterator));
   if (clone_iterator == (PixelIterator *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       iterator->name);
