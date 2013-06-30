@@ -1761,6 +1761,9 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
 
   MagickPixelPacket
     pixel;
+ 
+  MemoryInfo
+    *pixel_info;
 
   unsigned char
     *pixels;
@@ -1814,19 +1817,20 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     }
   pixels=(unsigned char *) AcquireQuantumMemory(image->columns,image->rows*
     strlen(map)*sizeof(*pixels));
-  if (pixels == (unsigned char *) NULL)
+  if (pixel_info == (MemoryInfo *) NULL)
     return((Image *) NULL);
+  pixels=(gfloat *) GetVirtualMemoryBlob(pixel_info);
   status=ExportImagePixels(image,0,0,image->columns,image->rows,map,CharPixel,
     pixels,exception);
   if (status == MagickFalse)
     {
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   carver=lqr_carver_new(pixels,image->columns,image->rows,strlen(map));
   if (carver == (LqrCarver *) NULL)
     {
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   lqr_status=lqr_carver_init(carver,(int) delta_x,rigidity);
@@ -1836,7 +1840,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     lqr_carver_get_height(carver),MagickTrue,exception);
   if (rescale_image == (Image *) NULL)
     {
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       return((Image *) NULL);
     }
   if (SetImageStorageClass(rescale_image,DirectClass) == MagickFalse)
@@ -1882,6 +1886,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   /*
     Relinquish resources.
   */
+  pixel_info=RelinquishVirtualMemory(pixel_info);
   lqr_carver_destroy(carver);
   return(rescale_image);
 }
