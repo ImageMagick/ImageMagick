@@ -15,7 +15,9 @@
 /* #undef BUILD_MODULES */
 
 /* Define if you have the bzip2 library */
-/* #undef BZLIB_DELEGATE */
+#ifndef MAGICKCORE_BZLIB_DELEGATE
+#define MAGICKCORE_BZLIB_DELEGATE 1
+#endif
 
 /* Define if you have CAIRO library */
 /* #undef CAIRO_DELEGATE */
@@ -45,7 +47,9 @@
 #endif
 
 /* Define if you have DJVU library */
-/* #undef DJVU_DELEGATE */
+#ifndef MAGICKCORE_DJVU_DELEGATE
+#define MAGICKCORE_DJVU_DELEGATE 1
+#endif
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
@@ -64,7 +68,9 @@
 #endif
 
 /* Define if you have FFTW library */
-/* #undef FFTW_DELEGATE */
+#ifndef MAGICKCORE_FFTW_DELEGATE
+#define MAGICKCORE_FFTW_DELEGATE 1
+#endif
 
 /* filter subdirectory. */
 #ifndef MAGICKCORE_FILTER_DIRNAME
@@ -72,13 +78,17 @@
 #endif
 
 /* Define if you have FONTCONFIG library */
-/* #undef FONTCONFIG_DELEGATE */
+#ifndef MAGICKCORE_FONTCONFIG_DELEGATE
+#define MAGICKCORE_FONTCONFIG_DELEGATE 1
+#endif
 
 /* Define if you have FlashPIX library */
 /* #undef FPX_DELEGATE */
 
 /* Define if you have FREETYPE library */
-/* #undef FREETYPE_DELEGATE */
+#ifndef MAGICKCORE_FREETYPE_DELEGATE
+#define MAGICKCORE_FREETYPE_DELEGATE 1
+#endif
 
 /* Define if you have Ghostscript library or framework */
 /* #undef GS_DELEGATE */
@@ -120,7 +130,9 @@
 #endif
 
 /* define if bool is a built-in type */
-/* #undef HAVE_BOOL */
+#ifndef MAGICKCORE_HAVE_BOOL
+#define MAGICKCORE_HAVE_BOOL /**/
+#endif
 
 /* Define to 1 if you have the `cabs' function. */
 #ifndef MAGICKCORE_HAVE_CABS
@@ -358,7 +370,9 @@
 #endif
 
 /* Define if you have the <lcms2.h> header file. */
-/* #undef HAVE_LCMS2_H */
+#ifndef MAGICKCORE_HAVE_LCMS2_H
+#define MAGICKCORE_HAVE_LCMS2_H 1
+#endif
 
 /* Define if you have the <lcms2/lcms2.h> header file. */
 /* #undef HAVE_LCMS2_LCMS2_H */
@@ -463,10 +477,14 @@
 #endif
 
 /* define if the compiler implements namespaces */
-/* #undef HAVE_NAMESPACES */
+#ifndef MAGICKCORE_HAVE_NAMESPACES
+#define MAGICKCORE_HAVE_NAMESPACES /**/
+#endif
 
 /* Define if g++ supports namespace std. */
-/* #undef HAVE_NAMESPACE_STD */
+#ifndef MAGICKCORE_HAVE_NAMESPACE_STD
+#define MAGICKCORE_HAVE_NAMESPACE_STD /**/
+#endif
 
 /* Define to 1 if you have the `nanosleep' function. */
 #ifndef MAGICKCORE_HAVE_NANOSLEEP
@@ -611,10 +629,14 @@
 #endif
 
 /* X11 server supports shape extension */
-/* #undef HAVE_SHAPE */
+#ifndef MAGICKCORE_HAVE_SHAPE
+#define MAGICKCORE_HAVE_SHAPE 1
+#endif
 
 /* X11 server supports shared memory extension */
-/* #undef HAVE_SHARED_MEMORY */
+#ifndef MAGICKCORE_HAVE_SHARED_MEMORY
+#define MAGICKCORE_HAVE_SHARED_MEMORY 1
+#endif
 
 /* Define to 1 if you have the `sigaction' function. */
 #ifndef MAGICKCORE_HAVE_SIGACTION
@@ -665,7 +687,9 @@
 #endif
 
 /* define if the compiler supports ISO C++ standard library */
-/* #undef HAVE_STD_LIBS */
+#ifndef MAGICKCORE_HAVE_STD_LIBS
+#define MAGICKCORE_HAVE_STD_LIBS /**/
+#endif
 
 /* Define to 1 if you have the `strcasecmp' function. */
 #ifndef MAGICKCORE_HAVE_STRCASECMP
@@ -863,31 +887,49 @@
 #endif
 
 /* Define to 1 if you have the <tiffconf.h> header file. */
-/* #undef HAVE_TIFFCONF_H */
+#ifndef MAGICKCORE_HAVE_TIFFCONF_H
+#define MAGICKCORE_HAVE_TIFFCONF_H 1
+#endif
 
 /* Define to 1 if you have the `TIFFIsBigEndian' function. */
-/* #undef HAVE_TIFFISBIGENDIAN */
+#ifndef MAGICKCORE_HAVE_TIFFISBIGENDIAN
+#define MAGICKCORE_HAVE_TIFFISBIGENDIAN 1
+#endif
 
 /* Define to 1 if you have the `TIFFIsCODECConfigured' function. */
-/* #undef HAVE_TIFFISCODECCONFIGURED */
+#ifndef MAGICKCORE_HAVE_TIFFISCODECCONFIGURED
+#define MAGICKCORE_HAVE_TIFFISCODECCONFIGURED 1
+#endif
 
 /* Define to 1 if you have the `TIFFMergeFieldInfo' function. */
-/* #undef HAVE_TIFFMERGEFIELDINFO */
+#ifndef MAGICKCORE_HAVE_TIFFMERGEFIELDINFO
+#define MAGICKCORE_HAVE_TIFFMERGEFIELDINFO 1
+#endif
 
 /* Define to 1 if you have the `TIFFReadEXIFDirectory' function. */
-/* #undef HAVE_TIFFREADEXIFDIRECTORY */
+#ifndef MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY
+#define MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY 1
+#endif
 
 /* Define to 1 if you have the `TIFFSetErrorHandlerExt' function. */
-/* #undef HAVE_TIFFSETERRORHANDLEREXT */
+#ifndef MAGICKCORE_HAVE_TIFFSETERRORHANDLEREXT
+#define MAGICKCORE_HAVE_TIFFSETERRORHANDLEREXT 1
+#endif
 
 /* Define to 1 if you have the `TIFFSetTagExtender' function. */
-/* #undef HAVE_TIFFSETTAGEXTENDER */
+#ifndef MAGICKCORE_HAVE_TIFFSETTAGEXTENDER
+#define MAGICKCORE_HAVE_TIFFSETTAGEXTENDER 1
+#endif
 
 /* Define to 1 if you have the `TIFFSetWarningHandlerExt' function. */
-/* #undef HAVE_TIFFSETWARNINGHANDLEREXT */
+#ifndef MAGICKCORE_HAVE_TIFFSETWARNINGHANDLEREXT
+#define MAGICKCORE_HAVE_TIFFSETWARNINGHANDLEREXT 1
+#endif
 
 /* Define to 1 if you have the `TIFFSwabArrayOfTriples' function. */
-/* #undef HAVE_TIFFSWABARRAYOFTRIPLES */
+#ifndef MAGICKCORE_HAVE_TIFFSWABARRAYOFTRIPLES
+#define MAGICKCORE_HAVE_TIFFSWABARRAYOFTRIPLES 1
+#endif
 
 /* Define to 1 if you have the `times' function. */
 #ifndef MAGICKCORE_HAVE_TIMES
@@ -1064,13 +1106,19 @@
 /* #undef JBIG_DELEGATE */
 
 /* Define if you have JPEG version 2 "Jasper" library */
-/* #undef JP2_DELEGATE */
+#ifndef MAGICKCORE_JP2_DELEGATE
+#define MAGICKCORE_JP2_DELEGATE 1
+#endif
 
 /* Define if you have JPEG library */
-/* #undef JPEG_DELEGATE */
+#ifndef MAGICKCORE_JPEG_DELEGATE
+#define MAGICKCORE_JPEG_DELEGATE 1
+#endif
 
 /* Define if you have LCMS (v1.11 or later) library */
-/* #undef LCMS_DELEGATE */
+#ifndef MAGICKCORE_LCMS_DELEGATE
+#define MAGICKCORE_LCMS_DELEGATE 1
+#endif
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
@@ -1102,7 +1150,9 @@
 #endif
 
 /* Define if you have LZMA library */
-/* #undef LZMA_DELEGATE */
+#ifndef MAGICKCORE_LZMA_DELEGATE
+#define MAGICKCORE_LZMA_DELEGATE 1
+#endif
 
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
@@ -1140,7 +1190,9 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
-/* #undef OPENEXR_DELEGATE */
+#ifndef MAGICKCORE_OPENEXR_DELEGATE
+#define MAGICKCORE_OPENEXR_DELEGATE 1
+#endif
 
 /* Name of package */
 #ifndef MAGICKCORE_PACKAGE
@@ -1178,13 +1230,19 @@
 #endif
 
 /* Define if you have PANGOCAIRO library */
-/* #undef PANGOCAIRO_DELEGATE */
+#ifndef MAGICKCORE_PANGOCAIRO_DELEGATE
+#define MAGICKCORE_PANGOCAIRO_DELEGATE 1
+#endif
 
 /* Define if you have PANGO library */
-/* #undef PANGO_DELEGATE */
+#ifndef MAGICKCORE_PANGO_DELEGATE
+#define MAGICKCORE_PANGO_DELEGATE 1
+#endif
 
 /* Define if you have PNG library */
-/* #undef PNG_DELEGATE */
+#ifndef MAGICKCORE_PNG_DELEGATE
+#define MAGICKCORE_PNG_DELEGATE 1
+#endif
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
@@ -1344,7 +1402,9 @@
 #endif
 
 /* Define if you have TIFF library */
-/* #undef TIFF_DELEGATE */
+#ifndef MAGICKCORE_TIFF_DELEGATE
+#define MAGICKCORE_TIFF_DELEGATE 1
+#endif
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #ifndef MAGICKCORE_TIME_WITH_SYS_TIME
@@ -1382,7 +1442,9 @@
 #endif
 
 /* Define if you have WEBP library */
-/* #undef WEBP_DELEGATE */
+#ifndef MAGICKCORE_WEBP_DELEGATE
+#define MAGICKCORE_WEBP_DELEGATE 1
+#endif
 
 /* Define to use the Windows GDI32 library */
 /* #undef WINGDI32_DELEGATE */
@@ -1414,21 +1476,25 @@
 #endif
 
 /* Define if you have X11 library */
-/* #undef X11_DELEGATE */
+#ifndef MAGICKCORE_X11_DELEGATE
+#define MAGICKCORE_X11_DELEGATE 1
+#endif
 
 /* Define if you have XML library */
-/* #undef XML_DELEGATE */
+#ifndef MAGICKCORE_XML_DELEGATE
+#define MAGICKCORE_XML_DELEGATE 1
+#endif
 
 /* Define to 1 if the X Window System is missing or not being used. */
-#ifndef MAGICKCORE_X_DISPLAY_MISSING
-#define MAGICKCORE_X_DISPLAY_MISSING 1
-#endif
+/* #undef X_DISPLAY_MISSING */
 
 /* Build self-contained, embeddable, zero-configuration ImageMagick */
 /* #undef ZERO_CONFIGURATION_SUPPORT */
 
 /* Define if you have zlib compression library */
-/* #undef ZLIB_DELEGATE */
+#ifndef MAGICKCORE_ZLIB_DELEGATE
+#define MAGICKCORE_ZLIB_DELEGATE 1
+#endif
 
 /* Enable large inode numbers on Mac OS X 10.5.  */
 #ifndef _DARWIN_USE_64_BIT_INODE
