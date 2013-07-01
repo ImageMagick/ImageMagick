@@ -3710,7 +3710,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::Width",value);
   (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     image->magick_rows);
-  (void) SetImageProperty(thumbnail_image,"Thumb::Image::height",value);
+  (void) SetImageProperty(thumbnail_image,"Thumb::Image::Height",value);
   (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     GetImageListLength(image));
   (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value);
