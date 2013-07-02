@@ -424,12 +424,13 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     *source_pixels;
 
   fftw_complex
-    *fourier;
+    *destination_pixels;
 
   fftw_plan
     fftw_r2c_plan;
 
   MemoryInfo
+    *destination_info,
     *source_info;
 
   register const Quantum
@@ -500,20 +501,21 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     }
   }
   image_view=DestroyCacheView(image_view);
-  fourier=(fftw_complex *) AcquireQuantumMemory((size_t) fourier_info->height,
-    fourier_info->center*sizeof(*fourier));
-  if (fourier == (fftw_complex *) NULL)
+  destination_info=AcquireVirtualMemory((size_t) fourier_info->height,
+    fourier_info->center*sizeof(*destination_pixels));
+  if (destination_info == (MemoryInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       source_info=(MemoryInfo *) RelinquishVirtualMemory(source_info);
       return(MagickFalse);
     }
+  destination_pixels=(fftw_complex *) GetVirtualMemoryBlob(destination_info);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_ForwardFourierTransform)
 #endif
   fftw_r2c_plan=fftw_plan_dft_r2c_2d(fourier_info->width,fourier_info->height,
-    source_pixels,fourier,FFTW_ESTIMATE);
+    source_pixels,destination_pixels,FFTW_ESTIMATE);
   fftw_execute(fftw_r2c_plan);
   fftw_destroy_plan(fftw_r2c_plan);
   source_info=(MemoryInfo *) RelinquishVirtualMemory(source_info);
@@ -526,10 +528,10 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     for (x=0L; x < (ssize_t) fourier_info->center; x++)
     {
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
-      fourier[i]/=n;
+      destination_pixels[i]/=n;
 #else
-      fourier[i][0]/=n;
-      fourier[i][1]/=n;
+      destination_pixels[i][0]/=n;
+      destination_pixels[i][1]/=n;
 #endif
       i++;
     }
@@ -541,19 +543,19 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     for (y=0L; y < (ssize_t) fourier_info->height; y++)
       for (x=0L; x < (ssize_t) fourier_info->center; x++)
       {
-        magnitude[i]=cabs(fourier[i]);
-        phase[i]=carg(fourier[i]);
+        magnitude[i]=cabs(destination_pixels[i]);
+        phase[i]=carg(destination_pixels[i]);
         i++;
       }
   else
     for (y=0L; y < (ssize_t) fourier_info->height; y++)
       for (x=0L; x < (ssize_t) fourier_info->center; x++)
       {
-        magnitude[i]=creal(fourier[i]);
-        phase[i]=cimag(fourier[i]);
+        magnitude[i]=creal(destination_pixels[i]);
+        phase[i]=cimag(destination_pixels[i]);
         i++;
       }
-  fourier=(fftw_complex *) RelinquishMagickMemory(fourier);
+  destination_info=(MemoryInfo *) RelinquishVirtualMemory(destination_info);
   return(MagickTrue);
 }
 
