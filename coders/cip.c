@@ -239,10 +239,10 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
     for (x=0; x < ((ssize_t) image->columns-3); x+=4)
     {
       byte=(unsigned char)
-        ((((size_t) (4*ClampToQuantum(GetPixelLuma(image,p+3))/QuantumRange) & 0x03) << 6) |
-         (((size_t) (4*ClampToQuantum(GetPixelLuma(image,p+2))/QuantumRange) & 0x03) << 4) |
-         (((size_t) (4*ClampToQuantum(GetPixelLuma(image,p+1))/QuantumRange) & 0x03) << 2) |
-         (((size_t) (4*ClampToQuantum(GetPixelLuma(image,p+0))/QuantumRange) & 0x03) << 0));
+        ((((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+3))/QuantumRange) & 0x03) << 6) |
+         (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+2))/QuantumRange) & 0x03) << 4) |
+         (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+1))/QuantumRange) & 0x03) << 2) |
+         (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+0))/QuantumRange) & 0x03) << 0));
       (void) FormatLocaleString(buffer,MaxTextExtent,"%02x",byte);
       (void) WriteBlobString(image,buffer);
       p+=4;
@@ -251,10 +251,10 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
       {
         i=(ssize_t) image->columns % 4;
         byte=(unsigned char)
-          ((((size_t) (4*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,3)))/QuantumRange) & 0x03) << 6) |
-           (((size_t) (4*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,2)))/QuantumRange) & 0x03) << 4) |
-           (((size_t) (4*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,1)))/QuantumRange) & 0x03) << 2) |
-           (((size_t) (4*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,0)))/QuantumRange) & 0x03) << 0));
+          ((((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,3)))/QuantumRange) & 0x03) << 6) |
+           (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,2)))/QuantumRange) & 0x03) << 4) |
+           (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,1)))/QuantumRange) & 0x03) << 2) |
+           (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,0)))/QuantumRange) & 0x03) << 0));
         (void) FormatLocaleString(buffer,MaxTextExtent,"%02x",~byte);
         (void) WriteBlobString(image,buffer);
       }
