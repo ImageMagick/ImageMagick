@@ -1,6 +1,8 @@
 2013-07-01  6.8.6-4 Cristy  <quetzlzacatenango@image...>
   * Thumb property need Height, not height (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23661).
+  * White pixels previously were written as black for the CIP format (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23677).
 
 2013-07-01  6.8.6-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-3, SVN revision 12579.
