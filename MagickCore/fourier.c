@@ -564,17 +564,18 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   Image *fourier_image,ExceptionInfo *exception)
 {
   double
-    *magnitude,
-    *phase;
-
-  fftw_complex
-    *fourier;
+    *magnitude_pixels,
+    *phase_pixels;
 
   FourierInfo
     fourier_info;
 
   MagickBooleanType
     status;
+
+  MemoryInfo
+    *magnitude_info,
+    *phase_info;
 
   size_t
     extent;
@@ -590,40 +591,30 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   fourier_info.center=(ssize_t) floor((double) fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
-  magnitude=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
-    fourier_info.center*sizeof(*magnitude));
-  if (magnitude == (double *) NULL)
+  magnitude_info=AcquireVirtualMemory((size_t) fourier_info.height,
+    fourier_info.center*sizeof(*magnitude_pixels));
+  phase_info=AcquireVirtualMemory((size_t) fourier_info.height,
+    fourier_info.center*sizeof(*phase_pixels));
+  if ((magnitude_info == (MemoryInfo *) NULL) ||
+      (phase_info == (MemoryInfo *) NULL))
     {
+      if (phase_info != (MemoryInfo *) NULL)
+        phase_info=RelinquishVirtualMemory(phase_info);
+      if (magnitude_info == (MemoryInfo *) NULL)
+        magnitude_info=RelinquishVirtualMemory(magnitude_info);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
-  phase=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
-    fourier_info.center*sizeof(*phase));
-  if (phase == (double *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      magnitude=(double *) RelinquishMagickMemory(magnitude);
-      return(MagickFalse);
-    }
-  fourier=(fftw_complex *) AcquireQuantumMemory((size_t) fourier_info.height,
-    fourier_info.center*sizeof(*fourier));
-  if (fourier == (fftw_complex *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      phase=(double *) RelinquishMagickMemory(phase);
-      magnitude=(double *) RelinquishMagickMemory(magnitude);
-      return(MagickFalse);
-    }
-  status=ForwardFourierTransform(&fourier_info,image,magnitude,phase,exception);
+  magnitude_pixels=(double *) GetVirtualMemoryBlob(magnitude_info);
+  phase_pixels=(double *) GetVirtualMemoryBlob(phase_info);
+  status=ForwardFourierTransform(&fourier_info,image,magnitude_pixels,
+    phase_pixels,exception);
   if (status != MagickFalse)
-    status=ForwardFourier(&fourier_info,fourier_image,magnitude,phase,
-      exception);
-  fourier=(fftw_complex *) RelinquishMagickMemory(fourier);
-  phase=(double *) RelinquishMagickMemory(phase);
-  magnitude=(double *) RelinquishMagickMemory(magnitude);
+    status=ForwardFourier(&fourier_info,fourier_image,magnitude_pixels,
+      phase_pixels,exception);
+  phase_info=RelinquishVirtualMemory(phase_info);
+  magnitude_info=RelinquishVirtualMemory(magnitude_info);
   return(status);
 }
 #endif
