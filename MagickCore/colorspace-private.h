@@ -109,8 +109,8 @@ static inline MagickBooleanType IssRGBCompatibleColorspace(
   const ColorspaceType colorspace)
 {
   if ((colorspace == sRGBColorspace) || (colorspace == RGBColorspace) ||
-      (colorspace == scRGBColorspace) || (colorspace == GRAYColorspace) ||
-      (colorspace == TransparentColorspace))
+      (colorspace == scRGBColorspace) || 
+      (IsGrayColorspace(colorspace) != MagickFalse))
     return(MagickTrue);
   return(MagickFalse);
 }
