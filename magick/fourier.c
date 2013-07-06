@@ -842,7 +842,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     *phase_view;
 
   double
-    *buffer_pixels,
+    *inverse_pixels,
     *magnitude_pixels,
     *phase_pixels;
 
@@ -850,7 +850,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     status;
 
   MemoryInfo
-    *buffer_info,
+    *inverse_info,
     *magnitude_info,
     *phase_info;
 
@@ -874,18 +874,18 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     fourier_info->width*sizeof(*magnitude_pixels));
   phase_info=AcquireVirtualMemory((size_t) fourier_info->height,
     fourier_info->width*sizeof(*phase_pixels));
-  buffer_info=AcquireVirtualMemory((size_t) fourier_info->height,
-    fourier_info->center*sizeof(*buffer_pixels));
+  inverse_info=AcquireVirtualMemory((size_t) fourier_info->height,
+    fourier_info->center*sizeof(*inverse_pixels));
   if ((magnitude_info == (MemoryInfo *) NULL) ||
       (phase_info == (MemoryInfo *) NULL) ||
-      (buffer_info == (MemoryInfo *) NULL))
+      (inverse_info == (MemoryInfo *) NULL))
     {
       if (magnitude_info != (MemoryInfo *) NULL)
         magnitude_info=RelinquishVirtualMemory(magnitude_info);
       if (phase_info != (MemoryInfo *) NULL)
         phase_info=RelinquishVirtualMemory(phase_info);
-      if (buffer_info != (MemoryInfo *) NULL)
-        buffer_info=RelinquishVirtualMemory(buffer_info);
+      if (inverse_info != (MemoryInfo *) NULL)
+        inverse_info=RelinquishVirtualMemory(inverse_info);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",
         magnitude_image->filename);
@@ -893,7 +893,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     }
   magnitude_pixels=(double *) GetVirtualMemoryBlob(magnitude_info);
   phase_pixels=(double *) GetVirtualMemoryBlob(phase_info);
-  buffer_pixels=(double *) GetVirtualMemoryBlob(buffer_info);
+  inverse_pixels=(double *) GetVirtualMemoryBlob(inverse_info);
   i=0L;
   magnitude_view=AcquireVirtualCacheView(magnitude_image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
@@ -945,8 +945,8 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   }
   magnitude_view=DestroyCacheView(magnitude_view);
   status=InverseQuadrantSwap(fourier_info->width,fourier_info->height,
-    magnitude_pixels,buffer_pixels);
-  (void) CopyMagickMemory(magnitude_pixels,buffer_pixels,fourier_info->height*
+    magnitude_pixels,inverse_pixels);
+  (void) CopyMagickMemory(magnitude_pixels,inverse_pixels,fourier_info->height*
     fourier_info->center*sizeof(*magnitude_pixels));
   i=0L;
   phase_view=AcquireVirtualCacheView(phase_image,exception);
@@ -1012,10 +1012,10 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   CorrectPhaseLHS(fourier_info->width,fourier_info->width,phase_pixels);
   if (status != MagickFalse)
     status=InverseQuadrantSwap(fourier_info->width,fourier_info->height,
-      phase_pixels,buffer_pixels);
-  (void) CopyMagickMemory(phase_pixels,buffer_pixels,fourier_info->height*
+      phase_pixels,inverse_pixels);
+  (void) CopyMagickMemory(phase_pixels,inverse_pixels,fourier_info->height*
     fourier_info->center*sizeof(*phase_pixels));
-  buffer_info=RelinquishVirtualMemory(buffer_info);
+  inverse_info=RelinquishVirtualMemory(inverse_info);
   /*
     Merge two sets.
   */
