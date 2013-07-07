@@ -1385,7 +1385,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     kernel_info,UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
-    (void) EqualizeImage(emboss_image);
+    (void) EqualizeImageChannel(emboss_image,AllChannels &~ SyncChannels);
   return(emboss_image);
 }
 
