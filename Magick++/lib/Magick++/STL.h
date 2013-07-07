@@ -1858,25 +1858,23 @@ namespace Magick
     MagickCore::Image* previous = 0;
     ::ssize_t scene = 0;
     for ( InputIterator iter = first_; iter != last_; ++iter )
-      {
-  // Unless we reduce the reference count to one, the same image
-  // structure may occur more than once in the container, causing
-  // the linked list to fail.
-  iter->modifyImage();
+    {
+      // Unless we reduce the reference count to one, the same image
+      // structure may occur more than once in the container, causing
+      // the linked list to fail.
+      iter->modifyImage();
 
-  MagickCore::Image* current = iter->image();
+      MagickCore::Image* current = iter->image();
 
-  current->previous = previous;
-  current->next     = 0;
+      current->previous = previous;
+      current->next = 0;
+      current->scene = scene++;
 
-  if ( previous != 0)
-    previous->next = current;
+      if ( previous != 0)
+        previous->next = current;
 
-  current->scene=scene;
-  ++scene;
-
-  previous = current;
-      }
+      previous = current;
+    }
   }
 
   // Remove links added by linkImages. This should be called after the
