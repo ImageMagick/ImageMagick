@@ -3178,7 +3178,8 @@ static ssize_t SmushYGap(const Image *smush_image,const Image *images,
     {
       p=GetCacheViewVirtualPixels(top_view,top_geometry.x+x,y,1,1,exception);
       if ((p == (const PixelPacket *) NULL) ||
-          (GetPixelOpacity(p) != TransparentOpacity) || ((top_image->rows-y-1) >= gap))
+          (GetPixelOpacity(p) != TransparentOpacity) ||
+          ((top_image->rows-y-1) >= gap))
         break;
     }
     i=(ssize_t) top_image->rows-y-1;
@@ -3187,7 +3188,8 @@ static ssize_t SmushYGap(const Image *smush_image,const Image *images,
       p=GetCacheViewVirtualPixels(bottom_view,bottom_geometry.x+x,y,1,1,
         exception);
       if ((p == (const PixelPacket *) NULL) ||
-          (GetPixelOpacity(p) != TransparentOpacity) || ((y+i) >= (ssize_t) gap))
+          (GetPixelOpacity(p) != TransparentOpacity) ||
+          ((y+i) >= (ssize_t) gap))
         break;
     }
     if ((y+i) < (ssize_t) gap)
