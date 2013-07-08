@@ -621,7 +621,7 @@ static MagickBooleanType ClonePixelCacheRepository(
       (cache_info->rows == clone_info->rows) &&
       (cache_info->active_index_channel == clone_info->active_index_channel))
     {
-      MagickSizeType
+      size_t
         extent;
 
       /*
@@ -633,7 +633,7 @@ static MagickBooleanType ClonePixelCacheRepository(
         sizeof(*cache_info->pixels));
 #else
       {
-        register MagickSizeType
+        register size_t
           i;
 
         #pragma omp parallel for
