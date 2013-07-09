@@ -516,26 +516,8 @@ static MagickBooleanType ClonePixelCacheRepository(
       (memcmp(cache_info->channel_map,clone_info->channel_map,length) == 0) &&
       (cache_info->metacontent_extent == clone_info->metacontent_extent))
     {
-      size_t
-        extent;
-
-      /*
-        Identical pixel cache morphology.
-      */
-      extent=cache_info->columns*cache_info->number_channels*cache_info->rows;
-#if !defined(MAGICKCORE_OPENMP_SUPPORT) || (MAGICKCORE_QUANTUM_DEPTH <= 8)
-      (void) memcpy(clone_info->pixels,cache_info->pixels,extent*
-        sizeof(*cache_info->pixels));
-#else
-      {
-        register size_t
-          i;
-
-        #pragma omp parallel for
-        for (i=0; i < extent; i++)
-          clone_info->pixels[i]=cache_info->pixels[i];
-      }
-#endif
+      CopyPixels(clone_info->pixels,cache_info->pixels,cache_info->columns*
+        cache_info->number_channels*cache_info->rows);
       if (cache_info->metacontent_extent != 0)
         (void) memcpy(clone_info->metacontent,cache_info->metacontent,
           cache_info->columns*cache_info->rows*clone_info->metacontent_extent*

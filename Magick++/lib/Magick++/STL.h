@@ -2148,7 +2148,26 @@ namespace Magick
     histogram_array=(MagickCore::PixelInfo *)
       MagickCore::RelinquishMagickMemory(histogram_array);
   }
-                      
+
+  // Combines one or more images into a single image. The grayscale value of
+  // the pixels of each image in the sequence is assigned in order to the
+  // specified channels of the combined image. The typical ordering would be
+  // image 1 => Red, 2 => Green, 3 => Blue, etc.
+  template <class InputIterator >
+  void combineImages( Image *combinedImage_,
+                      InputIterator first_,
+                      InputIterator last_,
+                      const ChannelType channel_ ) {
+    MagickCore::ExceptionInfo exceptionInfo;
+    MagickCore::GetExceptionInfo( &exceptionInfo );
+    linkImages( first_, last_ );
+    MagickCore::Image* image = CombineImages( first_->image(), channel_, &exceptionInfo );
+    unlinkImages( first_, last_ );
+    combinedImage_->replaceImage( image );
+    throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+  }
+
   // Break down an image sequence into constituent parts.  This is
   // useful for creating GIF or MNG animation sequences.
   template <class InputIterator, class Container >
@@ -2187,6 +2206,25 @@ namespace Magick
     linkImages( first_, last_ );
     MagickCore::DisplayImages( first_->imageInfo(), first_->image() );
     unlinkImages( first_, last_ );
+    throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+  }
+
+  // Applies a value to the image with an arithmetic, relational,
+  // or logical operator to an image. Use these operations to lighten or darken
+  // an image, to increase or decrease contrast in an image, or to produce the
+  // "negative" of an image.
+  template <class InputIterator >
+  void evaluateImages( Image *evaluatedImage_,
+                       InputIterator first_,
+                       InputIterator last_,
+                       const MagickEvaluateOperator operator_ ) {
+    MagickCore::ExceptionInfo exceptionInfo;
+    MagickCore::GetExceptionInfo( &exceptionInfo );
+    linkImages( first_, last_ );
+    MagickCore::Image* image = EvaluateImages( first_->image(), operator_, &exceptionInfo );
+    unlinkImages( first_, last_ );
+    evaluatedImage_->replaceImage( image );
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
@@ -2308,6 +2346,23 @@ namespace Magick
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
+  // Composes all the image layers from the current given
+  // image onward to produce a single image of the merged layers.
+  template <class InputIterator >
+  void mergeImageLayers( Image *mergedImage_,
+                         InputIterator first_,
+                         InputIterator last_,
+                         const LayerMethod method_ ) {
+    MagickCore::ExceptionInfo exceptionInfo;
+    MagickCore::GetExceptionInfo( &exceptionInfo );
+    linkImages( first_, last_ );
+    MagickCore::Image* image = MergeImageLayers( first_->image(), method_, &exceptionInfo );
+    unlinkImages( first_, last_ );
+    mergedImage_->replaceImage( image );
+    throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+  }
+
   // Create a composite image by combining several separate images.
   template <class Container, class InputIterator>
   void montageImages( Container *montageImages_,
@@ -2405,6 +2460,53 @@ namespace Magick
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
+  // Compares each image the GIF disposed forms of the previous image in
+  // the sequence. From this it attempts to select the smallest cropped
+  // image to replace each frame, while preserving the results of the
+  // GIF animation.
+  template <class InputIterator, class Container >
+  void optimizeImageLayers( Container *optimizedImages_,
+                            InputIterator first_,
+                            InputIterator last_ ) {
+    MagickCore::ExceptionInfo exceptionInfo;
+    MagickCore::GetExceptionInfo( &exceptionInfo );
+
+    linkImages( first_, last_ );
+    MagickCore::Image* images = OptimizeImageLayers( first_->image(), &exceptionInfo );
+
+    unlinkImages( first_, last_ );
+
+    optimizedImages_->clear();
+
+    insertImages( optimizedImages_, images );
+
+    throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+  }
+  
+  // optimizeImagePlusLayers is exactly as optimizeImageLayers, but may
+  // also add or even remove extra frames in the animation, if it improves
+  // the total number of pixels in the resulting GIF animation.
+  template <class InputIterator, class Container >
+  void optimizePlusImageLayers( Container *optimizedImages_,
+                                InputIterator first_,
+                                InputIterator last_ ) {
+    MagickCore::ExceptionInfo exceptionInfo;
+    MagickCore::GetExceptionInfo( &exceptionInfo );
+
+    linkImages( first_, last_ );
+    MagickCore::Image* images = OptimizePlusImageLayers( first_->image(), &exceptionInfo );
+
+    unlinkImages( first_, last_ );
+
+    optimizedImages_->clear();
+
+    insertImages( optimizedImages_, images );
+
+    throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+  }
+
   // Quantize colors in images using current quantization settings
   // Set measureError_ to true in order to measure quantization error
   template <class InputIterator>
@@ -2469,6 +2571,24 @@ namespace Magick
                    blob_.length(), &exceptionInfo );
     MagickCore::DestroyImageInfo(imageInfo);
     insertImages( sequence_, images );
+    throwException( exceptionInfo );
+    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+  }
+
+  // Returns a separate grayscale image for each channel specified.
+  template <class Container >
+  void separateImages( Container *separatedImages_,
+                       const Image &image_,
+                       const ChannelType channel_ ) {
+    MagickCore::ExceptionInfo exceptionInfo;
+    MagickCore::GetExceptionInfo( &exceptionInfo );
+
+    MagickCore::Image* images = MagickCore::SeparateImages( image_.constImage(), channel_, &exceptionInfo );
+
+    separatedImages_->clear();
+
+    insertImages( separatedImages_, images );
+
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
