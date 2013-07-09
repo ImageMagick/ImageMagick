@@ -5,6 +5,8 @@
   * Added support for the fill area flag ('^') and the pixel area
     count limit flag ('@') to the Geometry class of Magick++ (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=23704).
+  * Enabled automatic linking for static Magick++ in Visual Studio (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=23558).
 
 2013-07-01  6.8.6-4 Cristy  <quetzlzacatenango@image...>
   * Thumb property need Height, not height (reference
