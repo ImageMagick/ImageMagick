@@ -2583,7 +2583,7 @@ namespace Magick
     MagickCore::ExceptionInfo exceptionInfo;
     MagickCore::GetExceptionInfo( &exceptionInfo );
 
-    MagickCore::Image* images = MagickCore::SeparateImages( image_.constImage(), channel_, &exceptionInfo );
+    MagickCore::Image* images = MagickCore::SeparateImages( image_.constImage(), &exceptionInfo );
 
     separatedImages_->clear();
 
