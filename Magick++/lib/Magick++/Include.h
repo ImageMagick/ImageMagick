@@ -106,6 +106,88 @@ namespace MagickCore
 #    if defined(_VISUALC_)
 #      pragma message( "Magick++ lib static interface" )
 #    endif
+#    if defined(_MSC_VER) && defined(STATIC_MAGICK) && !defined(NOAUTOLINK_MAGICK)
+#      if defined(_DEBUG)
+#        if defined(MAGICKCORE_BZLIB_DELEGATE)
+#          pragma comment(lib, "CORE_DB_bzlib_.lib")
+#        endif
+#        pragma comment(lib, "CORE_DB_coders_.lib")
+#        pragma comment(lib, "CORE_DB_filters_.lib")
+#        if defined(MAGICKCORE_JBIG_DELEGATE)
+#          pragma comment(lib, "CORE_DB_jbig_.lib")
+#        endif
+#        if defined(MAGICKCORE_JP2_DELEGATE)
+#          pragma comment(lib, "CORE_DB_jp2_.lib")
+#        endif
+#        if defined(MAGICKCORE_JPEG_DELEGATE)
+#          pragma comment(lib, "CORE_DB_jpeg_.lib")
+#        endif
+#        if defined(MAGICKCORE_LCMS_DELEGATE)
+#          pragma comment(lib, "CORE_DB_lcms_.lib")
+#        endif
+#        pragma comment(lib, "CORE_DB_libxml_.lib")
+#        pragma comment(lib, "CORE_DB_magick_.lib")
+#        pragma comment(lib, "CORE_DB_Magick++_.lib")
+#        if defined(MAGICKCORE_PNG_DELEGATE)
+#          pragma comment(lib, "CORE_DB_png_.lib")
+#        endif
+#        if defined(MAGICKCORE_TIFF_DELEGATE)
+#          pragma comment(lib, "CORE_DB_tiff_.lib")
+#        endif
+#        if defined(MAGICKCORE_FREETYPE_DELEGATE)
+#          pragma comment(lib, "CORE_DB_ttf_.lib")
+#        endif
+#        pragma comment(lib, "CORE_DB_wand_.lib")
+#        if defined(MAGICKCORE_WMF_DELEGATE)
+#          pragma comment(lib, "CORE_DB_wmf_.lib")
+#        endif
+#        if defined(MAGICKCORE_ZLIB_DELEGATE)
+#          pragma comment(lib, "CORE_DB_zlib_.lib")
+#        endif
+#      else
+#        if defined(MAGICKCORE_BZLIB_DELEGATE)
+#          pragma comment(lib, "CORE_RL_bzlib_.lib")
+#        endif
+#        pragma comment(lib, "CORE_RL_filters_.lib")
+#        pragma comment(lib, "CORE_RL_coders_.lib")
+#        if defined(MAGICKCORE_JBIG_DELEGATE)
+#          pragma comment(lib, "CORE_RL_jbig_.lib")
+#        endif
+#        if defined(MAGICKCORE_JP2_DELEGATE)
+#          pragma comment(lib, "CORE_RL_jp2_.lib")
+#        endif
+#        if defined(MAGICKCORE_JPEG_DELEGATE)
+#          pragma comment(lib, "CORE_RL_jpeg_.lib")
+#        endif
+#        if defined(MAGICKCORE_LCMS_DELEGATE)
+#          pragma comment(lib, "CORE_RL_lcms_.lib")
+#        endif
+#        pragma comment(lib, "CORE_RL_libxml_.lib")
+#        pragma comment(lib, "CORE_RL_magick_.lib")
+#        pragma comment(lib, "CORE_RL_Magick++_.lib")
+#        if defined(MAGICKCORE_PNG_DELEGATE)
+#          pragma comment(lib, "CORE_RL_png_.lib")
+#        endif
+#        if defined(MAGICKCORE_TIFF_DELEGATE)
+#          pragma comment(lib, "CORE_RL_tiff_.lib")
+#        endif
+#        if defined(MAGICKCORE_FREETYPE_DELEGATE)
+#          pragma comment(lib, "CORE_RL_ttf_.lib")
+#        endif
+#        pragma comment(lib, "CORE_RL_wand_.lib")
+#        if defined(MAGICKCORE_WMF_DELEGATE)
+#          pragma comment(lib, "CORE_RL_wmf_.lib")
+#        endif
+#        if defined(MAGICKCORE_ZLIB_DELEGATE)
+#          pragma comment(lib, "CORE_RL_zlib_.lib")
+#        endif
+#      endif
+#      if defined(_WIN32_WCE)
+#        pragma comment(lib, "wsock32.lib")
+#      else
+#        pragma comment(lib, "ws2_32.lib")
+#      endif
+#    endif
 #  endif
 #else
 # if __GNUC__ >= 4
