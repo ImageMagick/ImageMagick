@@ -585,12 +585,20 @@ static inline void CopyPixels(PixelPacket *destination,
 #if !defined(MAGICKCORE_OPENMP_SUPPORT) || (MAGICKCORE_QUANTUM_DEPTH <= 8)
   (void) memcpy(destination,source,(size_t) number_pixels*sizeof(*source));
 #else
-  register MagickSizeType
-    i;
+  {
+    register MagickSizeType
+      i;
 
-  #pragma omp parallel for
-  for (i=0; i < number_pixels; i++)
-    destination[i]=source[i];
+    if ((number_pixels*sizeof(*source)) < MagickMaxBufferExtent)
+      {
+        (void) memcpy(destination,source,(size_t) number_pixels*
+          sizeof(*source));
+        return;
+      }
+    #pragma omp parallel for
+    for (i=0; i < number_pixels; i++)
+      destination[i]=source[i];
+  }
 #endif
 }
 
@@ -639,7 +647,7 @@ static MagickBooleanType ClonePixelCacheRepository(
       /*
         Identical pixel cache morphology.
       */
-      ClonePixels(clone_info->pixels,cache_info->pixels,cache_info->columns*
+      CopyPixels(clone_info->pixels,cache_info->pixels,cache_info->columns*
         cache_info->rows);
       if (cache_info->active_index_channel != MagickFalse)
         (void) memcpy(clone_info->indexes,cache_info->indexes,
