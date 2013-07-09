@@ -304,14 +304,12 @@ static inline void CompositeColorBurn(const MagickPixelPacket *p,
 static MagickRealType ColorDodge(const MagickRealType Sca,
   const MagickRealType Sa, const MagickRealType Dca,const MagickRealType Da)
 {
-#if 0
   /*
     Oct 2004 SVG specification.
   */
   if ((Sca*Da+Dca*Sa) >= Sa*Da)
-    return( Sa*Da + Sca*(1.0-Da) + Dca*(1.0-Sa) );
-  return( Dca*Sa*Sa/(Sa-Sca) + Sca*(1.0-Da) + Dca*(1.0-Sa) );
-#endif
+    return(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
+  return(Dca*Sa*Sa/(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
 #if 0
   /*
     New specification, March 2009 SVG specification.  This specification was
@@ -323,6 +321,7 @@ static MagickRealType ColorDodge(const MagickRealType Sca,
     return(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
   return(Sa*MagickMin(Da,Dca*Sa/(Sa-Sca)));
 #endif
+#if 0
   /*
     Working from first principles using the original formula:
 
@@ -336,6 +335,7 @@ static MagickRealType ColorDodge(const MagickRealType Sca,
   if (fabs(Sca-Sa) < MagickEpsilon)
     return(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
   return(Dca*Sa*Sa/(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
+#endif
 }
 
 static inline void CompositeColorDodge(const MagickPixelPacket *p,
