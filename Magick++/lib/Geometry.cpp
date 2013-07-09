@@ -26,18 +26,19 @@ int Magick::operator == ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return (
-	  ( left_.isValid()   == right_.isValid() ) &&
-	  ( left_.width()     == right_.width() ) &&
-	  ( left_.height()    == right_.height() ) &&
-	  ( left_.xOff()      == right_.xOff() ) &&
-	  ( left_.yOff()      == right_.yOff() ) &&
-	  ( left_.xNegative() == right_.xNegative() ) &&
-	  ( left_.yNegative() == right_.yNegative() ) &&
-	  ( left_.percent()   == right_.percent() ) &&
-	  ( left_.aspect()    == right_.aspect() ) &&
-	  ( left_.greater()   == right_.greater() ) &&
-	  ( left_.less()      == right_.less() ) &&
-	  ( left_.fillArea()  == right_.fillArea() )
+	  ( left_.isValid()     == right_.isValid() ) &&
+	  ( left_.width()       == right_.width() ) &&
+	  ( left_.height()      == right_.height() ) &&
+	  ( left_.xOff()        == right_.xOff() ) &&
+	  ( left_.yOff()        == right_.yOff() ) &&
+	  ( left_.xNegative()   == right_.xNegative() ) &&
+	  ( left_.yNegative()   == right_.yNegative() ) &&
+	  ( left_.percent()     == right_.percent() ) &&
+	  ( left_.aspect()      == right_.aspect() ) &&
+	  ( left_.greater()     == right_.greater() ) &&
+	  ( left_.less()        == right_.less() ) &&
+	  ( left_.fillArea()    == right_.fillArea() ) &&
+	  ( left_.limitPixels() == right_.limitPixels() )
 	  );
 }
 int Magick::operator != ( const Magick::Geometry& left_,
@@ -88,7 +89,8 @@ Magick::Geometry::Geometry ( size_t width_,
     _aspect( false ),
     _greater( false ),
     _less( false ),
-    _fillArea( false )
+    _fillArea( false ),
+    _limitPixels( false )
 {
 }
 
@@ -105,7 +107,8 @@ Magick::Geometry::Geometry ( const std::string &geometry_ )
     _aspect( false ),
     _greater( false ),
     _less( false ),
-    _fillArea( false )
+    _fillArea( false ),
+    _limitPixels( false )
 {
   *this = geometry_; // Use assignment operator
 }
@@ -124,25 +127,27 @@ Magick::Geometry::Geometry ( const char *geometry_ )
     _aspect( false ),
     _greater( false ),
     _less( false ),
-    _fillArea( false )
+    _fillArea( false ),
+    _limitPixels( false )
 {
   *this = geometry_; // Use assignment operator
 }
 
 // Copy constructor
 Magick::Geometry::Geometry ( const Geometry &geometry_ )
-  :  _width( geometry_._width ),
-     _height( geometry_._height ),
-     _xOff( geometry_._xOff ),
-     _yOff( geometry_._yOff ),
-     _xNegative( geometry_._xNegative ),
-     _yNegative( geometry_._yNegative ),
-     _isValid ( geometry_._isValid ),
-     _percent( geometry_._percent ),
-     _aspect( geometry_._aspect ),
-     _greater( geometry_._greater ),
-     _less( geometry_._less ),
-     _fillArea( geometry_._fillArea )
+  : _width( geometry_._width ),
+    _height( geometry_._height ),
+    _xOff( geometry_._xOff ),
+    _yOff( geometry_._yOff ),
+    _xNegative( geometry_._xNegative ),
+    _yNegative( geometry_._yNegative ),
+    _isValid ( geometry_._isValid ),
+    _percent( geometry_._percent ),
+    _aspect( geometry_._aspect ),
+    _greater( geometry_._greater ),
+    _less( geometry_._less ),
+    _fillArea( geometry_._fillArea ),
+    _limitPixels( geometry_._limitPixels )
 {
 }
 
@@ -159,7 +164,8 @@ Magick::Geometry::Geometry ( void )
     _aspect( false ),
     _greater( false ),
     _less( false ),
-    _fillArea( false )
+    _fillArea( false ),
+    _limitPixels( false )
 {
 }
 
@@ -185,6 +191,7 @@ Magick::Geometry& Magick::Geometry::operator = ( const Geometry& geometry_ )
       _greater = geometry_._greater;
       _less = geometry_._less;
       _fillArea = geometry_._fillArea;
+      _limitPixels = geometry_._limitPixels;
     }
   return *this;
 }
@@ -272,6 +279,9 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
   if ( ( flags & MinimumValue ) != 0 )
     _fillArea = true;
 
+  if ( ( flags & AreaValue ) != 0 )
+    _limitPixels = true;
+
   return *this;
 }
 
@@ -341,23 +351,27 @@ Magick::Geometry::operator std::string() const
   if ( _fillArea )
     geometry += '^';
 
+  if ( _limitPixels )
+    geometry += '@';
+
   return geometry;
 }
 
 // Construct from RectangleInfo
 Magick::Geometry::Geometry ( const MagickCore::RectangleInfo &rectangle_ )
-  : _width(static_cast<size_t>(rectangle_.width)),
-    _height(static_cast<size_t>(rectangle_.height)),
-    _xOff(static_cast<ssize_t>(rectangle_.x)),
-    _yOff(static_cast<ssize_t>(rectangle_.y)),
-    _xNegative(rectangle_.x < 0 ? true : false),
-    _yNegative(rectangle_.y < 0 ? true : false),
-    _isValid(true),
-    _percent(false),
-    _aspect(false),
-    _greater(false),
-    _less(false),
-    _fillArea(false)
+  : _width(static_cast<size_t>( rectangle_.width )),
+    _height(static_cast<size_t>( rectangle_.height )),
+    _xOff(static_cast<ssize_t>( rectangle_.x )),
+    _yOff(static_cast<ssize_t>( rectangle_.y )),
+    _xNegative( rectangle_.x < 0 ? true : false ),
+    _yNegative( rectangle_.y < 0 ? true : false ),
+    _isValid( true ),
+    _percent( false ),
+    _aspect( false ),
+    _greater( false ),
+    _less( false ),
+    _fillArea( false ),
+    _limitPixels( false )
 {
 }
 
