@@ -86,6 +86,14 @@ namespace Magick
     void          fillArea ( bool fillArea_ );
     bool          fillArea ( void ) const;
     
+    // Resize the image based on the smallest fitting dimension (^)
+    void          fillArea ( bool fillArea_ );
+    bool          fillArea ( void ) const;
+    
+    // Resize using a pixel area count limit (@)
+    void          limitPixels ( bool limitPixels_ );
+    bool          limitPixels ( void ) const;
+    
     // Does object contain valid geometry?
     void          isValid ( bool isValid_ );
     bool          isValid ( void ) const;

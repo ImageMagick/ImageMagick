@@ -269,6 +269,12 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
   if ( ( flags & MinimumValue ) != 0 )
     _fillArea = true;
 
+  if ( ( flags & MinimumValue ) != 0 )
+    _fillArea = true;
+
+  if ( ( flags & AreaValue ) != 0 )
+    _limitPixels = true;
+
   return *this;
 }
 
