@@ -1723,7 +1723,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if ((Sca*Da+Dca*Sa) >= Sa*Da)
               {
-                pixel=QuantumRange*gamma*(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa))
+                pixel=QuantumRange*gamma*(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
                 break;
               }
             pixel=QuantumRange*gamma*(Dca*Sa*Sa/(Sa-Sca)+Sca*(1.0-Da)+Dca*
