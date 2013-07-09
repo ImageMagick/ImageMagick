@@ -600,12 +600,12 @@ static MagickBooleanType ClonePixelCacheRepository(
   MagickBooleanType
     status;
 
+  MagickSizeType
+    number_pixels;
+
   NexusInfo
     **restrict cache_nexus,
     **restrict clone_nexus;
-
-  size_t
-    length;
 
   ssize_t
     y;
@@ -621,29 +621,11 @@ static MagickBooleanType ClonePixelCacheRepository(
       (cache_info->rows == clone_info->rows) &&
       (cache_info->active_index_channel == clone_info->active_index_channel))
     {
-      size_t
-        extent;
-
-      /*
-        Identical pixel cache morphology.
-      */
-      extent=cache_info->columns*cache_info->rows;
-#if !defined(MAGICKCORE_OPENMP_SUPPORT)
-      (void) memcpy(clone_info->pixels,cache_info->pixels,extent*
-        sizeof(*cache_info->pixels));
-#else
-      {
-        register size_t
-          i;
-
-        #pragma omp parallel for
-        for (i=0; i < extent; i++)
-          clone_info->pixels[i]=cache_info->pixels[i];
-      }
-#endif
+      number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
+      CopyPixels(clone_info->pixels,cache_info->pixels,number_pixels);
       if (cache_info->active_index_channel != MagickFalse)
-        (void) memcpy(clone_info->indexes,cache_info->indexes,
-          cache_info->columns*cache_info->rows*sizeof(*cache_info->indexes));
+        (void) memcpy(clone_info->indexes,cache_info->indexes,number_pixels*
+          sizeof(*cache_info->indexes));
       return(MagickTrue);
     }
   /*
@@ -654,8 +636,8 @@ static MagickBooleanType ClonePixelCacheRepository(
   if ((cache_nexus == (NexusInfo **) NULL) ||
       (clone_nexus == (NexusInfo **) NULL))
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  length=(size_t) MagickMin(cache_info->columns,clone_info->columns)*
-    sizeof(*cache_info->pixels);
+  number_pixels=(MagickSizeType) MagickMin(cache_info->columns,
+    clone_info->columns);
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
@@ -692,7 +674,8 @@ static MagickBooleanType ClonePixelCacheRepository(
       clone_nexus[id],exception);
     if (pixels == (PixelPacket *) NULL)
       continue;
-    (void) memcpy(clone_nexus[id]->pixels,cache_nexus[id]->pixels,length);
+    (void) CopyPixels(clone_nexus[id]->pixels,cache_nexus[id]->pixels,
+      number_pixels);
     status=WritePixelCachePixels(clone_info,clone_nexus[id],exception);
   }
   if ((cache_info->active_index_channel != MagickFalse) &&
@@ -701,8 +684,6 @@ static MagickBooleanType ClonePixelCacheRepository(
       /*
         Clone indexes.
       */
-      length=(size_t) MagickMin(cache_info->columns,clone_info->columns)*
-        sizeof(*cache_info->indexes);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         cache_threads(cache_info,clone_info,cache_info->rows)
@@ -738,7 +719,8 @@ static MagickBooleanType ClonePixelCacheRepository(
           clone_nexus[id],exception);
         if (pixels == (PixelPacket *) NULL)
           continue;
-        (void) memcpy(clone_nexus[id]->indexes,cache_nexus[id]->indexes,length);
+        (void) memcpy(clone_nexus[id]->indexes,cache_nexus[id]->indexes,
+          number_pixels*sizeof(*cache_info->indexes));
         status=WritePixelCacheIndexes(clone_info,clone_nexus[id],exception);
       }
     }
@@ -2705,16 +2687,17 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
     if ((virtual_pixel_method == EdgeVirtualPixelMethod) ||
         (virtual_pixel_method == UndefinedVirtualPixelMethod))
       y_offset=EdgeY(y_offset,cache_info->rows);
-    for (u=0; u < (ssize_t) columns; u+=length)
+    for (u=0; u < (ssize_t) columns; u+=number_pixels)
     {
       ssize_t
         x_offset;
 
       x_offset=x+u;
-      length=(MagickSizeType) MagickMin(cache_info->columns-x_offset,columns-u);
+      number_pixels=(MagickSizeType) MagickMin(cache_info->columns-x_offset,
+        columns-u);
       if (((x_offset < 0) || (x_offset >= (ssize_t) cache_info->columns)) ||
           ((y_offset < 0) || (y_offset >= (ssize_t) cache_info->rows)) ||
-          (length == 0))
+          (number_pixels == 0))
         {
           MagickModulo
             x_modulo,
@@ -2723,7 +2706,7 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
           /*
             Transfer a single pixel.
           */
-          length=(MagickSizeType) 1;
+          number_pixels=(MagickSizeType) 1;
           switch (virtual_pixel_method)
           {
             case BackgroundVirtualPixelMethod:
@@ -2883,18 +2866,18 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
         Transfer a run of pixels.
       */
       p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x_offset,y_offset,
-        (size_t) length,1UL,*virtual_nexus,exception);
+        (size_t) number_pixels,1UL,*virtual_nexus,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       virtual_indexes=GetVirtualIndexesFromNexus(cache_info,*virtual_nexus);
-      (void) memcpy(q,p,(size_t) length*sizeof(*p));
-      q+=length;
+      CopyPixels(q,p,number_pixels);
+      q+=number_pixels;
       if ((indexes != (IndexPacket *) NULL) &&
           (virtual_indexes != (const IndexPacket *) NULL))
         {
-          (void) memcpy(indexes,virtual_indexes,(size_t) length*
+          (void) memcpy(indexes,virtual_indexes,(size_t) number_pixels*
             sizeof(*virtual_indexes));
-          indexes+=length;
+          indexes+=number_pixels;
         }
     }
   }
