@@ -1,3 +1,11 @@
+2013-07-09  6.8.6-4 Dirk Lemstra <dirk@snakeware...>
+  * Added combineImages, evaluateImages, mergeImageLayers, optimizeImageLayers
+    optimizePlusImageLayers and separateImages to STL.h (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=23699).
+  * Added support for the fill area flag ('^') and the pixel area
+    count limit flag ('@') to the Geometry class of Magick++ (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=23704).
+
 2012-08-23  6.7.9-2 Cristy  <quetzlzacatenango@image...>
   * On rare occasions, PNG warnings triggered an assertion (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=23&t=21737).

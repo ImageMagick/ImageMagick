@@ -569,6 +569,7 @@ namespace Magick
   using MagickCore::AcquireExceptionInfo;
   using MagickCore::GetCacheViewVirtualPixels;
   using MagickCore::AcquireImage;
+  using MagickCore::AreaValue;
   using MagickCore::GetVirtualPixels;
   using MagickCore::AcquireKernelInfo;
   using MagickCore::AcquireMagickMemory;
