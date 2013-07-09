@@ -825,6 +825,7 @@ namespace Magick
   using MagickCore::MagnifyImage;
   using MagickCore::MergeImageLayers;
   using MagickCore::MinifyImage;
+  using MagickCore::MinimumValue;
   using MagickCore::MissingDelegateError;
   using MagickCore::MissingDelegateFatalError;
   using MagickCore::MissingDelegateWarning;
