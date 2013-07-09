@@ -22,21 +22,6 @@
 extern "C" {
 #endif
 
-static inline void CopyPixels(Quantum *destination,const Quantum *source,
-  const MagickSizeType number_pixels)
-{
-#if !defined(MAGICKCORE_OPENMP_SUPPORT) || (MAGICKCORE_QUANTUM_DEPTH <= 8)
-  (void) memcpy(destination,source,(size_t) number_pixels*sizeof(*source));
-#else
-  register MagickSizeType
-    i;
-  
-  #pragma omp parallel for
-  for (i=0; i < number_pixels; i++)
-    destination[i]=source[i];
-#endif
-}   
-
 static inline double PerceptibleReciprocal(const double x)
 {
   double
