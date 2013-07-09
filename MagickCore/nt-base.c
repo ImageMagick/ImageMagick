@@ -1828,8 +1828,11 @@ MagickPrivate MagickBooleanType NTReportEvent(const char *event,
 */
 MagickPrivate unsigned char *NTResourceToBlob(const char *id)
 {
+
+#ifndef MAGICKCORE_LIBRARY_NAME
   char
     path[MaxTextExtent];
+#endif
 
   DWORD
     length;
@@ -1849,12 +1852,16 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
 
   assert(id != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",id);
+#ifdef MAGICKCORE_LIBRARY_NAME
+  handle=GetModuleHandle(MAGICKCORE_LIBRARY_NAME);
+#else
   (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",GetClientPath(),
     DirectorySeparator,GetClientName());
   if (IsPathAccessible(path) != MagickFalse)
     handle=GetModuleHandle(path);
   else
     handle=GetModuleHandle(0);
+#endif
   if (!handle)
     return((unsigned char *) NULL);
   resource=FindResource(handle,id,"IMAGEMAGICK");

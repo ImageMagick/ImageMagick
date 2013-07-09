@@ -585,7 +585,6 @@ namespace Magick
   using MagickCore::AdaptiveBlurImage;
   using MagickCore::AdaptiveThresholdImage;
   using MagickCore::AddNoiseImage;
-  using MagickCore::AddNoiseImage;
   using MagickCore::AffineMatrix;
   using MagickCore::AffineTransformImage;
   using MagickCore::AnnotateImage;
@@ -597,7 +596,6 @@ namespace Magick
   using MagickCore::BlobFatalError;
   using MagickCore::BlobToImage;
   using MagickCore::BlobWarning;
-  using MagickCore::BlurImage;
   using MagickCore::BlurImage;
   using MagickCore::BorderImage;
   using MagickCore::CacheError;
@@ -742,7 +740,6 @@ namespace Magick
   using MagickCore::EnhanceImage;
   using MagickCore::EqualizeImage;
   using MagickCore::EvaluateImage;
-  using MagickCore::EvaluateImage;
   using MagickCore::ExceptionInfo;
   using MagickCore::ExceptionType;
   using MagickCore::ExportImagePixels;
@@ -759,7 +756,6 @@ namespace Magick
   using MagickCore::FrameImage;
   using MagickCore::FrameInfo;
   using MagickCore::FxImage;
-  using MagickCore::GammaImage;
   using MagickCore::GammaImage;
   using MagickCore::GaussianBlurImage;
   using MagickCore::GaussianBlurImage;
@@ -822,7 +818,6 @@ namespace Magick
   using MagickCore::KernelInfo;
   using MagickCore::LessValue;
   using MagickCore::LevelImage;
-  using MagickCore::LevelImage;
   using MagickCore::LocaleCompare;
   using MagickCore::LogMagickEvent;
   using MagickCore::MagickCoreTerminus;
@@ -833,6 +828,7 @@ namespace Magick
   using MagickCore::MagnifyImage;
   using MagickCore::MergeImageLayers;
   using MagickCore::MinifyImage;
+  using MagickCore::MinimumValue;
   using MagickCore::MissingDelegateError;
   using MagickCore::MissingDelegateFatalError;
   using MagickCore::MissingDelegateWarning;
