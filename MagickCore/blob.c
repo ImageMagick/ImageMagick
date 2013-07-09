@@ -2157,9 +2157,6 @@ MagickExport unsigned char *MapBlob(int file,const MapMode mode,
   if (file == -1)
 #if defined(MAP_ANONYMOUS)
     flags|=MAP_ANONYMOUS;
-#if defined(MAGICKCORE_HAVE_HUGEPAGES) && defined(MAP_HUGETLB)
-    flags|=MAP_HUGETLB;
-#endif
 #else
     return((unsigned char *) NULL);
 #endif
@@ -2170,31 +2167,31 @@ MagickExport unsigned char *MapBlob(int file,const MapMode mode,
     {
       protection=PROT_READ;
       flags|=MAP_PRIVATE;
-      map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
-        (off_t) offset);
       break;
     }
     case WriteMode:
     {
       protection=PROT_WRITE;
       flags|=MAP_SHARED;
-      map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
-        (off_t) offset);
-#if defined(MAGICKCORE_HAVE_POSIX_MADVISE)
-      (void) posix_madvise(map,length,POSIX_MADV_SEQUENTIAL |
-        POSIX_MADV_WILLNEED);
-#endif
       break;
     }
     case IOMode:
     {
       protection=PROT_READ | PROT_WRITE;
       flags|=MAP_SHARED;
-      map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
-        (off_t) offset);
       break;
     }
   }
+#if !defined(MAGICKCORE_HAVE_HUGEPAGES) || !defined(MAP_HUGETLB)
+  map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
+    (off_t) offset);
+#else
+  map=(unsigned char *) mmap((char *) NULL,length,protection,flags | 
+    MAP_HUGETLB,file,(off_t) offset);
+  if (map == (unsigned char *) MAP_FAILED)
+    map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
+      (off_t) offset);
+#endif
   if (map == (unsigned char *) MAP_FAILED)
     return((unsigned char *) NULL);
   return(map);
