@@ -1,3 +1,6 @@
+2013-08-10  6.8.6-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.6-4, SVN revision 12659.
+
 2013-07-09  6.8.6-4 Dirk Lemstra <dirk@snakeware...>
   * Added combineImages, evaluateImages, mergeImageLayers, optimizeImageLayers
     optimizePlusImageLayers and separateImages to STL.h (reference
