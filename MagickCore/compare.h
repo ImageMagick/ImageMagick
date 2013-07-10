@@ -26,16 +26,16 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedMetric,
+  UndefinedErrorMetric,
   AbsoluteErrorMetric,
+  FuzzErrorMetric,
   MeanAbsoluteErrorMetric,
   MeanErrorPerPixelMetric,
   MeanSquaredErrorMetric,
+  NormalizedCrossCorrelationErrorMetric,
   PeakAbsoluteErrorMetric,
   PeakSignalToNoiseRatioMetric,
-  RootMeanSquaredErrorMetric,
-  NormalizedCrossCorrelationErrorMetric,
-  FuzzErrorMetric
+  RootMeanSquaredErrorMetric
 } MetricType;
 
 extern MagickExport double

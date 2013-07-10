@@ -881,7 +881,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   progress=0;
   for (i=0; i <= MaxPixelChannels; i++)
     distortion[i]=0.0;
-  area=1.0/((double) image->columns*image->rows-1);
+  area=1.0/((double) image->columns*image->rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
