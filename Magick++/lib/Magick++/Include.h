@@ -141,6 +141,9 @@ namespace MagickCore
 #        if defined(MAGICKCORE_WMF_DELEGATE)
 #          pragma comment(lib, "CORE_DB_wmf_.lib")
 #        endif
+#        if defined(MAGICKCORE_X11_DELEGATE)
+#          pragma comment(lib, "CORE_DB_xlib_.lib")
+#        endif
 #        if defined(MAGICKCORE_ZLIB_DELEGATE)
 #          pragma comment(lib, "CORE_DB_zlib_.lib")
 #        endif
@@ -177,6 +180,9 @@ namespace MagickCore
 #        pragma comment(lib, "CORE_RL_wand_.lib")
 #        if defined(MAGICKCORE_WMF_DELEGATE)
 #          pragma comment(lib, "CORE_RL_wmf_.lib")
+#        endif
+#        if defined(MAGICKCORE_X11_DELEGATE)
+#          pragma comment(lib, "CORE_RL_xlib_.lib")
 #        endif
 #        if defined(MAGICKCORE_ZLIB_DELEGATE)
 #          pragma comment(lib, "CORE_RL_zlib_.lib")
