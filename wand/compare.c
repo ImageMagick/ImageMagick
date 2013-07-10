@@ -174,6 +174,7 @@ static MagickBooleanType CompareUsage(void)
 WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
+#define CompareEpsilon  (1.0e-06)
 #define DefaultDissimilarityThreshold  0.31830988618379067154
 #define DefaultSimilarityThreshold  (-1.0)
 #define DestroyCompare() \
@@ -279,7 +280,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   format=(char *) NULL;
   j=1;
   k=0;
-  metric=UndefinedMetric;
+  metric=UndefinedErrorMetric;
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
@@ -1076,7 +1077,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                   difference_image->page.x,(double) difference_image->page.y);
               break;
             }
-            case UndefinedMetric:
+            case UndefinedErrorMetric:
               break;
           }
         }
@@ -1216,7 +1217,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 image->error.normalized_maximum_error);
               break;
             }
-            case UndefinedMetric:
+            case UndefinedErrorMetric:
               break;
           }
           channel_distortion=(double *) RelinquishMagickMemory(
@@ -1238,5 +1239,14 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       difference_image=DestroyImageList(difference_image);
     }
   DestroyCompare();
-  return((status != 0) || (distortion != 0.0) ? MagickTrue : MagickFalse);
+  if ((metric == NormalizedCrossCorrelationErrorMetric) ||
+      (metric == UndefinedErrorMetric))
+    {
+      if (fabs(distortion-1.0) > CompareEpsilon)
+        return(MagickTrue);
+    }
+  else
+    if (fabs(distortion) > CompareEpsilon)
+      return(MagickTrue);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
