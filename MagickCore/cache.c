@@ -477,7 +477,7 @@ static inline void CopyPixels(Quantum *destination,const Quantum *source,
   (void) memcpy(destination,source,(size_t) number_pixels*sizeof(*source));
 #else
   {
-    register MagickSizeType
+    register MagickOffsetType
       i;
 
     if ((number_pixels*sizeof(*source)) < MagickMaxBufferExtent)
@@ -487,7 +487,7 @@ static inline void CopyPixels(Quantum *destination,const Quantum *source,
         return;
       }
     #pragma omp parallel for
-    for (i=0; i < number_pixels; i++)
+    for (i=0; i < (MagickOffsetType) number_pixels; i++)
       destination[i]=source[i];
   }
 #endif
