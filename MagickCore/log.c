@@ -650,7 +650,8 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
           size_t
             mask;
 
-          mask=1U << j;
+          mask=1;
+          mask<<=j;
           if ((log_info[i]->handler_mask & mask) != 0)
             {
               (void) FormatLocaleFile(file,"%s ",LogHandlers[j].name);
