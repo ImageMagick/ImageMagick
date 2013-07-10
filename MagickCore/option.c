@@ -1324,7 +1324,7 @@ static const OptionInfo
   },
   MetricOptions[] =
   {
-    { "Undefined", UndefinedMetric, UndefinedOptionFlag, MagickTrue },
+    { "Undefined", UndefinedErrorMetric, UndefinedOptionFlag, MagickTrue },
     { "AE", AbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "Fuzz", FuzzErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "MAE", MeanAbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
@@ -1334,7 +1334,7 @@ static const OptionInfo
     { "PAE", PeakAbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "PSNR", PeakSignalToNoiseRatioMetric, UndefinedOptionFlag, MagickFalse },
     { "RMSE", RootMeanSquaredErrorMetric, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedMetric, UndefinedOptionFlag, MagickFalse }
+    { (char *) NULL, UndefinedErrorMetric, UndefinedOptionFlag, MagickFalse }
   },
   MethodOptions[] =
   {
