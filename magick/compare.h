@@ -35,7 +35,8 @@ typedef enum
   PeakSignalToNoiseRatioMetric,
   RootMeanSquaredErrorMetric,
   NormalizedCrossCorrelationErrorMetric,
-  FuzzErrorMetric
+  FuzzErrorMetric,
+  UndefinedErrorMetric = 0
 } MetricType;
 
 extern MagickExport double
