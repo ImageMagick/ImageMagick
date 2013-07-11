@@ -4189,7 +4189,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           compare_image=GetImageFromList(_images,1);
 
           /* Comparision Metric */
-          metric=UndefinedMetric;
+          metric=UndefinedErrorMetric;
           value=GetImageOption(_image_info,"metric");
           if (value != (const char *) NULL)
             metric=(MetricType) ParseCommandOption(MagickMetricOptions,
