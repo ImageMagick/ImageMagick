@@ -56,6 +56,7 @@
 #include "magick/cache-private.h"
 #include "magick/cache-view.h"
 #include "magick/color-private.h"
+#include "magick/delegate-private.h"
 #include "magick/enhance.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
@@ -312,8 +313,8 @@ static char
     "    output[index].w=ClampToQuantum(sum.w);\n"
     "}\n";
 
-static void ConvolveNotify(const char *message,const void *data,size_t length,
-  void *user_context)
+static MagickDLLCall void ConvolveNotify(const char *message,const void *data,
+  size_t length,void *user_context)
 {
   ExceptionInfo
     *exception;
