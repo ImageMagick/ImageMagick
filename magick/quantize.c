@@ -1802,7 +1802,6 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
               break;
             node_info=node_info->child[id];
           }
-          node_info=node_info->parent;
           /*
             Find closest color among siblings and their children.
           */
