@@ -1,5 +1,7 @@
 2013-07-12  6.8.6-5 Dirk Lemstra <dirk@snakeware...>
   * Fixed calculation of pixel area count limit flag ('@').
+  * Added option to enable OpenMP to configure.exe and improved creation
+    of x64 project file
 
 2013-07-10  6.8.6-5 Cristy  <quetzlzacatenango@image...>
   * compare exits with a non-zero exit code when no error (reference
