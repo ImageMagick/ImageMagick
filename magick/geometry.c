@@ -1385,8 +1385,23 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       scale.y=(double) former_height/(distance/sqrt(area));
       if ((scale.x < (double) *width) || (scale.y < (double) *height))
         {
-          *width=(size_t) (former_width/(distance/sqrt(area))+0.5);
-          *height=(size_t) (former_height/(distance/sqrt(area))+0.5);
+          scale.x=MagickMax((size_t) floor(scale.x+0.5),1.0);
+          scale.y=MagickMax((size_t) floor(scale.y+0.5),1.0);
+          if (scale.x > 1 && scale.y > 1 && scale.x * scale.y > geometry_info.rho)
+            {
+              if (scale.x > scale.y)
+                {
+                  scale.x=(double) former_width/((double) former_height/--scale.y);
+                  scale.x=MagickMax((size_t) floor(scale.x+0.5),1.0);
+                }
+              else
+                {
+                  scale.y=(double) former_height/((double) former_width/--scale.x);
+                  scale.y=MagickMax((size_t) floor(scale.y+0.5),1.0);
+                }
+            }
+          *width=(size_t) scale.x;
+          *height=(size_t) scale.y;
         }
       former_width=(*width);
       former_height=(*height);
