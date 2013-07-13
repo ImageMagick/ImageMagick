@@ -2972,6 +2972,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
 #endif
             (void) SetImageBackgroundColor(image);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
