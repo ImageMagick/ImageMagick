@@ -1,3 +1,6 @@
+2013-07-15  6.8.6-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.6-5, SVN revision 12682.
+
 2013-07-12  6.8.6-5 Dirk Lemstra <dirk@snakeware...>
   * Fixed calculation of pixel area count limit flag ('@').
   * Added option to enable OpenMP to configure.exe and improved creation
