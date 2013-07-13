@@ -247,6 +247,8 @@ namespace Magick
   using MagickCore::AllChannels;
   
   // Color-space types
+  using MagickCore::ColorspaceType;
+
   using MagickCore::CMYColorspace;
   using MagickCore::CMYKColorspace;
   using MagickCore::GRAYColorspace;
