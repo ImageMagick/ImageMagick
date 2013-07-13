@@ -885,7 +885,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         if (cube_info->associate_alpha != MagickFalse)
           error.alpha=QuantumScale*(pixel.alpha-mid.alpha);
         node_info->quantize_error+=count*sqrt((double) (error.red*error.red+
-          count*error.green*error.green+count*error.blue*error.blue+count*
+          error.green*error.green+error.blue*error.blue+
           error.alpha*error.alpha));
         cube_info->root->quantize_error+=node_info->quantize_error;
         index--;
@@ -981,7 +981,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         if (cube_info->associate_alpha != MagickFalse)
           error.alpha=QuantumScale*(pixel.alpha-mid.alpha);
         node_info->quantize_error+=count*sqrt((double) (error.red*error.red+
-          count*error.green*error.green+count*error.blue*error.blue+count*
+          error.green*error.green+error.blue*error.blue+
           error.alpha*error.alpha));
         cube_info->root->quantize_error+=node_info->quantize_error;
         index--;
