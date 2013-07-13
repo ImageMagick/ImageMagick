@@ -247,20 +247,34 @@ namespace Magick
   using MagickCore::AllChannels;
   
   // Color-space types
+  using MagickCore::CMYColorspace;
   using MagickCore::CMYKColorspace;
-  using MagickCore::ColorspaceType;
   using MagickCore::GRAYColorspace;
+  using MagickCore::HCLColorspace;
+  using MagickCore::HCLpColorspace;
+  using MagickCore::HSBColorspace;
+  using MagickCore::HSIColorspace;
   using MagickCore::HSLColorspace;
+  using MagickCore::HSVColorspace;
   using MagickCore::HWBColorspace;
+  using MagickCore::LabColorspace;
+  using MagickCore::LCHColorspace;
+  using MagickCore::LCHabColorspace;
+  using MagickCore::LCHuvColorspace;
   using MagickCore::LogColorspace;
+  using MagickCore::LMSColorspace;
+  using MagickCore::LuvColorspace;
   using MagickCore::OHTAColorspace;
+  using MagickCore::Rec601YCbCrColorspace;
+  using MagickCore::Rec709YCbCrColorspace;
   using MagickCore::RGBColorspace;
+  using MagickCore::scRGBColorspace;
   using MagickCore::sRGBColorspace;
   using MagickCore::TransparentColorspace;
-  using MagickCore::UndefinedColorspace;
   using MagickCore::XYZColorspace;
   using MagickCore::YCbCrColorspace;
   using MagickCore::YCCColorspace;
+  using MagickCore::YDbDrColorspace;
   using MagickCore::YIQColorspace;
   using MagickCore::YPbPrColorspace;
   using MagickCore::YUVColorspace;
