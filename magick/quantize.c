@@ -862,8 +862,8 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         if (cube_info->associate_alpha != MagickFalse)
           error.opacity=QuantumScale*(pixel.opacity-mid.opacity);
         node_info->quantize_error+=count*sqrt((double) (error.red*error.red+
-          count*error.green*error.green+count*error.blue*error.blue+
-          count*error.opacity*error.opacity));
+          error.green*error.green+error.blue*error.blue+
+          error.opacity*error.opacity));
         cube_info->root->quantize_error+=node_info->quantize_error;
         index--;
       }
@@ -952,8 +952,8 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         if (cube_info->associate_alpha != MagickFalse)
           error.opacity=QuantumScale*(pixel.opacity-mid.opacity);
         node_info->quantize_error+=count*sqrt((double) (error.red*error.red+
-          count*error.green*error.green+count*error.blue*error.blue+
-          count*error.opacity*error.opacity));
+          error.green*error.green+error.blue*error.blue+
+          error.opacity*error.opacity));
         cube_info->root->quantize_error+=node_info->quantize_error;
         index--;
       }
