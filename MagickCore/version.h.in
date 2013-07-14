@@ -34,6 +34,11 @@ extern "C" {
 #define MagickLibAddendum  "@PACKAGE_VERSION_ADDENDUM@"
 #define MagickLibInterface  @MAGICK_LIBRARY_CURRENT@
 #define MagickLibMinInterface  @MAGICK_LIBRARY_CURRENT_MIN@
+#define MagickppLibVersionText  "@MAGICKPP_LIB_VERSION_TEXT@"
+#define MagickppLibVersionNumber  @MAGICKPP_LIB_VERSION_NUMBER@
+#define MagickppLibAddendum  "@PACKAGE_VERSION_ADDENDUM@"
+#define MagickppLibInterface  @MAGICKPP_LIBRARY_CURRENT@
+#define MagickppLibMinInterface  @MAGICKPP_LIBRARY_CURRENT_MIN@
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
