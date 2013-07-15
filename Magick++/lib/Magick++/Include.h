@@ -249,6 +249,7 @@ namespace Magick
   // Color-space types
   using MagickCore::ColorspaceType;
 
+  using MagickCore::UndefinedColorspace;
   using MagickCore::CMYColorspace;
   using MagickCore::CMYKColorspace;
   using MagickCore::GRAYColorspace;
