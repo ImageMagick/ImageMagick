@@ -1523,7 +1523,7 @@ static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
         }
       UnlockSemaphoreInfo(color_semaphore);
     }
-  return(IfMagickTrue(color_list != (LinkedListInfo *) NULL));
+  return(color_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -2113,7 +2113,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
   }
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

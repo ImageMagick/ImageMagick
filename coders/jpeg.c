@@ -1271,7 +1271,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     jpeg_info.output_components*sizeof(*jpeg_pixels));
   if (memory_info == (MemoryInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      jpeg_destroy_decompress(&jpeg_info);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
   /*
     Convert JPEG pixels to pixel packets.

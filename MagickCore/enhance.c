@@ -152,7 +152,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
     if( IfMagickFalse(status) )
       break;
   }
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -2788,7 +2788,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
           (void) SetImageChannelMask(image,channel_mask);
         }
     }
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
