@@ -39,11 +39,11 @@ extern "C" {
 #define MagickppLibAddendum  "-6"
 #define MagickppLibInterface  2
 #define MagickppLibMinInterface  2
-#define MagickReleaseDate  "2013-07-14"
+#define MagickReleaseDate  "2013-07-16"
 #define MagickChangeDate   "20130715"
 #define MagickFeatures "DPC OpenMP"
 #define MagickDelegates "bzlib djvu fftw fontconfig freetype jng jp2 jpeg lcms lzma openexr pango png ps tiff x xml zlib"
-#define MagickHomeURL  "file:///usr/share/doc/ImageMagick-6/index.html"
+#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6/index.html"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
