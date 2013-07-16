@@ -37,7 +37,7 @@
 
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
-#define MAGICKCORE_CONFIGURE_PATH "/usr/etc/ImageMagick-7/"
+#define MAGICKCORE_CONFIGURE_PATH "/usr/local/etc/ImageMagick-7/"
 #endif
 
 /* Subdirectory of lib where architecture-dependent configuration files live.
@@ -53,7 +53,7 @@
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
-#define MAGICKCORE_DOCUMENTATION_PATH "/usr/share/doc/ImageMagick-7/"
+#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-7/"
 #endif
 
 /* Define if you have Display Postscript */
@@ -64,7 +64,7 @@
 
 /* Directory where executables are installed. */
 #ifndef MAGICKCORE_EXECUTABLE_PATH
-#define MAGICKCORE_EXECUTABLE_PATH "/usr/bin/"
+#define MAGICKCORE_EXECUTABLE_PATH "/usr/local/bin/"
 #endif
 
 /* Define if you have FFTW library */
@@ -467,9 +467,7 @@
 #endif
 
 /* Define to 1 if you have a working `mmap' system call. */
-#ifndef MAGICKCORE_HAVE_MMAP_FILEIO
-#define MAGICKCORE_HAVE_MMAP_FILEIO 1
-#endif
+/* #undef HAVE_MMAP_FILEIO */
 
 /* Define to 1 if you have the `munmap' function. */
 #ifndef MAGICKCORE_HAVE_MUNMAP
@@ -1050,9 +1048,7 @@
 /* #undef HAVE__ALIGNED_MALLOC */
 
 /* Define to 1 if the system has the type `_Bool'. */
-#ifndef MAGICKCORE_HAVE__BOOL
-#define MAGICKCORE_HAVE__BOOL 1
-#endif
+/* #undef HAVE__BOOL */
 
 /* Define to 1 if you have the `_exit' function. */
 #ifndef MAGICKCORE_HAVE__EXIT
@@ -1089,12 +1085,12 @@
 
 /* Directory where ImageMagick architecture headers live. */
 #ifndef MAGICKCORE_INCLUDEARCH_PATH
-#define MAGICKCORE_INCLUDEARCH_PATH "/usr/include/ImageMagick-7/"
+#define MAGICKCORE_INCLUDEARCH_PATH "/usr/local/include/ImageMagick-7/"
 #endif
 
 /* Directory where ImageMagick headers live. */
 #ifndef MAGICKCORE_INCLUDE_PATH
-#define MAGICKCORE_INCLUDE_PATH "/usr/include/ImageMagick-7/"
+#define MAGICKCORE_INCLUDE_PATH "/usr/local/include/ImageMagick-7/"
 #endif
 
 /* ImageMagick is formally installed under prefix */
@@ -1122,7 +1118,7 @@
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
-#define MAGICKCORE_LIBRARY_PATH "/usr/lib/ImageMagick-7.0.0/"
+#define MAGICKCORE_LIBRARY_PATH "/usr/local/lib/ImageMagick-7.0.0/"
 #endif
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
@@ -1289,7 +1285,7 @@
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHARE_PATH
-#define MAGICKCORE_SHARE_PATH "/usr/share/ImageMagick-7/"
+#define MAGICKCORE_SHARE_PATH "/usr/local/share/ImageMagick-7/"
 #endif
 
 /* Subdirectory of lib where architecture-independent configuration files
