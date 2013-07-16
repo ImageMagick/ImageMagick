@@ -1815,11 +1815,11 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       if (image->matte == MagickFalse)
         map="CMYKA";
     }
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,image->rows*
-    strlen(map)*sizeof(*pixels));
+  pixel_info=AcquireVirtualMemory(image->columns,image->rows*strlen(map)*
+    sizeof(*pixels));
   if (pixel_info == (MemoryInfo *) NULL)
     return((Image *) NULL);
-  pixels=(gfloat *) GetVirtualMemoryBlob(pixel_info);
+  pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
   status=ExportImagePixels(image,0,0,image->columns,image->rows,map,CharPixel,
     pixels,exception);
   if (status == MagickFalse)
