@@ -558,14 +558,22 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   (void) ResetMagickMemory(memory_info,0,sizeof(*memory_info));
   memory_info->length=length;
   memory_info->signature=MagickSignature;
-  memory_info->blob=AcquireMagickMemory(length);
-  if (memory_info->blob == NULL)
+  if (AcquireMagickResource(MemoryResource,length) != MagickFalse)
+    {
+      memory_info->blob=AcquireMagickMemory(length);
+      if (memory_info->blob == NULL)
+        RelinquishMagickResource(MemoryResource,length);
+    }
+  if ((memory_info->blob == NULL) &&
+      (AcquireMagickResource(MapResource,length) != MagickFalse))
     {
       /*
         Heap memory failed, try anonymous memory mapping.
       */
       memory_info->mapped=MagickTrue;
       memory_info->blob=MapBlob(-1,IOMode,0,length);
+      if (memory_info->blob == NULL)
+        RelinquishMagickResource(MapResource,length);
     }
   if (memory_info->blob == NULL)
     {
@@ -583,7 +591,13 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
       if (file != -1)
         {
           if ((lseek(file,length-1,SEEK_SET) >= 0) && (write(file,"",1) == 1))
-            memory_info->blob=MapBlob(file,IOMode,0,length);
+            {
+              (void) AcquireMagickResource(MapResource,length);
+              memory_info->mapped=MagickTrue;
+              memory_info->blob=MapBlob(file,IOMode,0,length);
+              if (memory_info->blob == NULL)
+                RelinquishMagickResource(MapResource,length);
+            }
           (void) close(file);
         }
     }
@@ -973,10 +987,14 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
   if (memory_info->blob != (void *) NULL)
     {
       if (memory_info->mapped == MagickFalse)
-        memory_info->blob=RelinquishMagickMemory(memory_info->blob);
+        {
+          memory_info->blob=RelinquishMagickMemory(memory_info->blob);
+          RelinquishMagickResource(MemoryResource,memory_info->length);
+        }
       else
         {
           (void) UnmapBlob(memory_info->blob,memory_info->length);
+          RelinquishMagickResource(MapResource,memory_info->length);
           memory_info->blob=NULL;
           if (*memory_info->filename != '\0')
             (void) RelinquishUniqueFileResource(memory_info->filename);
