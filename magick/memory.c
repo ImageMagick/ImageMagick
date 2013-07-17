@@ -584,10 +584,6 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         Anonymous memory mapping failed, try file-backed memory mapping.
       */
       file=AcquireUniqueFileResource(memory_info->filename);
-      file=open_utf8(memory_info->filename,O_RDWR | O_CREAT | O_BINARY | O_EXCL,
-        S_MODE);
-      if (file == -1)
-        file=open_utf8(memory_info->filename,O_RDWR | O_BINARY,S_MODE);
       if (file != -1)
         {
           if ((lseek(file,length-1,SEEK_SET) >= 0) && (write(file,"",1) == 1))
