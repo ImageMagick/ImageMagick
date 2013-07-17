@@ -1,8 +1,13 @@
+2013-07-15  6.8.6-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.6-6, SVN revision 12714.
+
 2013-07-16  6.8.6-6 Cristy  <quetzlzacatenango@image...>
   * JPEG ICC folor profile requires null after ICC tag (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23756).
   * Don't sync channels for the -unsharp option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23740).
+  * Magick++ version so bump (reference
+   http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23752).
 
 2013-07-15  6.8.6-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-5, SVN revision 12684.
