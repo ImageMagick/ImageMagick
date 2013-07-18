@@ -1,4 +1,8 @@
-2013-07-15  6.8.6-6 Cristy  <quetzlzacatenango@image...>
+2013-07-17  6.8.6-7 Dirk Lemstra <dirk@snakeware...>
+  * Fix memory leak in CloneImageArtifacts and CloneImageProfiles.
+  * Minor fix for the clipMask property in Magick++.
+
+2013-07-16  6.8.6-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-6, SVN revision 12718.
 
 2013-07-16  6.8.6-6 Cristy  <quetzlzacatenango@image...>
