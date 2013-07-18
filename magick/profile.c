@@ -137,8 +137,12 @@ MagickExport MagickBooleanType CloneImageProfiles(Image *image,
   image->iptc_profile.length=clone_image->iptc_profile.length;
   image->iptc_profile.info=clone_image->iptc_profile.info;
   if (clone_image->profiles != (void *) NULL)
-    image->profiles=CloneSplayTree((SplayTreeInfo *) clone_image->profiles,
-      (void *(*)(void *)) ConstantString,(void *(*)(void *)) CloneStringInfo);
+    {
+      if (image->profiles != (void *) NULL)
+        DestroyImageProfiles(image);
+      image->profiles=CloneSplayTree((SplayTreeInfo *) clone_image->profiles,
+        (void *(*)(void *)) ConstantString,(void *(*)(void *)) CloneStringInfo);
+   }
   return(MagickTrue);
 }
 

@@ -110,8 +110,12 @@ MagickExport MagickBooleanType CloneImageArtifacts(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       clone_image->filename);
   if (clone_image->artifacts != (void *) NULL)
-    image->artifacts=CloneSplayTree((SplayTreeInfo *) clone_image->artifacts,
-      (void *(*)(void *)) ConstantString,(void *(*)(void *)) ConstantString);
+    {
+      if (image->artifacts != (void *) NULL)
+        DestroyImageArtifacts(image);
+      image->artifacts=CloneSplayTree((SplayTreeInfo *) clone_image->artifacts,
+        (void *(*)(void *)) ConstantString,(void *(*)(void *)) ConstantString);
+    }
   return(MagickTrue);
 }
 

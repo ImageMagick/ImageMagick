@@ -2587,7 +2587,10 @@ Magick::Image Magick::Image::clipMask ( void  ) const
         GetImageClipMask( constImage(), &exceptionInfo );
       throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
-      return Magick::Image( image );
+      if (image == (MagickCore::Image *) NULL)
+        return Magick::Image();
+      else
+        return Magick::Image( image );
 }
 
 void Magick::Image::colorFuzz ( const double fuzz_ )
