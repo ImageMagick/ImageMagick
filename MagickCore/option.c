@@ -1800,8 +1800,12 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
   assert(clone_info != (const ImageInfo *) NULL);
   assert(clone_info->signature == MagickSignature);
   if (clone_info->options != (void *) NULL)
-    image_info->options=CloneSplayTree((SplayTreeInfo *) clone_info->options,
-      (void *(*)(void *)) ConstantString,(void *(*)(void *)) ConstantString);
+    {
+      if (image_info->options != (void *) NULL)
+        DestroyImageOptions(image_info);
+      image_info->options=CloneSplayTree((SplayTreeInfo *) clone_info->options,
+        (void *(*)(void *)) ConstantString,(void *(*)(void *)) ConstantString);
+    }
   return(MagickTrue);
 }
 
