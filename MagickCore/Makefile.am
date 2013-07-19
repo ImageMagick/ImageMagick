@@ -198,6 +198,9 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/nt-base.h \
   MagickCore/nt-base-private.h \
 	MagickCore/nt-feature.h \
+	MagickCore/opencl.c \
+	MagickCore/opencl.h \
+	MagickCore/opencl-private.h \
 	MagickCore/option.c \
 	MagickCore/option.h \
 	MagickCore/paint.c \
@@ -370,6 +373,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/montage.h \
 	MagickCore/morphology.h \
 	MagickCore/nt-base.h \
+	MagickCore/opencl.h \
 	MagickCore/option.h \
 	MagickCore/paint.h \
 	MagickCore/pixel.h \
@@ -443,6 +447,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/morphology-private.h \
 	MagickCore/nt-base.h \
 	MagickCore/nt-feature.h \
+	MagickCore/opencl-private.h \
  	MagickCore/pixel-private.h \
  	MagickCore/policy-private.h \
  	MagickCore/profile-private.h \
