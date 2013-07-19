@@ -200,6 +200,9 @@ MAGICK_BASE_SRCS = \
 	magick/morphology-private.h \
 	magick/nt-base.h \
 	magick/nt-feature.h \
+	magick/opencl.c \
+	magick/opencl.h \
+	magick/opencl-private.h \
 	magick/option.c \
 	magick/option.h \
 	magick/paint.c \
@@ -367,6 +370,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/monitor.h \
 	magick/montage.h \
 	magick/morphology.h \
+	magick/opencl.h \
 	magick/option.h \
 	magick/paint.h \
 	magick/pixel.h \
@@ -425,6 +429,7 @@ MAGICK_NOINST_HDRS = \
 	magick/morphology-private.h \
 	magick/nt-base.h \
 	magick/nt-feature.h \
+	magick/opencl.h \
 	magick/pixel-private.h \
 	magick/quantum-private.h \
 	magick/random-private.h \
