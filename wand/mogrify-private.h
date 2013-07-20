@@ -62,7 +62,7 @@ extern "C" {
             pend=MagickFalse; \
           } \
     }
-#define MaxImageStackDepth  32
+#define MaxImageStackDepth  128
 #define NewImageStack() \
 { \
   image_stack[0].image_info=CloneImageInfo(image_info); \
