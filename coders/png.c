@@ -11238,8 +11238,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
       value=GetImageProperty(image,property,exception);
 
-      /* Don't write any "png:" properties; those are just for "identify" */
-      if (LocaleNCompare(property,"png:",4) != 0 &&
+      /* Don't write any "png:" or "jpeg:" properties; those are just for
+       * "identify" or for passing through to another JPEG
+       */
+      if ((LocaleNCompare(property,"png:",4) != 0 &&
+           LocaleNCompare(property,"jpeg:",5)) &&
+
 
           /* Suppress density and units if we wrote a pHYs chunk */
           (ping_exclude_pHYs != MagickFalse      ||
