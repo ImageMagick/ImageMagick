@@ -703,8 +703,8 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info,
       a0 = (unsigned char) ReadBlobByte(image);
       a1 = (unsigned char) ReadBlobByte(image);
       
-      alpha_bits = (MagickSizeType)ReadBlobLSBLong(image)
-                 | ((MagickSizeType)ReadBlobLSBShort(image) << 32);
+      alpha_bits = (MagickSizeType)ReadBlobLSBLong(image);
+      alpha_bits = alpha_bits | ((MagickSizeType)ReadBlobLSBShort(image) << 32);
       
       /* Read 8 bytes of data from the image */
       c0 = ReadBlobLSBShort(image);
@@ -734,7 +734,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info,
               else if (a0 > a1)
                 alpha = ((8-alpha_code) * a0 + (alpha_code-1) * a1) / 7;
               else if (alpha_code == 6)
-                alpha = alpha_code;
+                alpha = 0;
               else if (alpha_code == 7)
                 alpha = 255;
               else
