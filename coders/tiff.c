@@ -3201,10 +3201,12 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             /*
               Set image position.
             */
-            (void) TIFFSetField(tiff,TIFFTAG_XPOSITION,(float) image->page.x/
-              image->resolution.x);
-            (void) TIFFSetField(tiff,TIFFTAG_YPOSITION,(float) image->page.y/
-              image->resolution.y);
+            if (image->resolution.x != 0.0)
+              (void) TIFFSetField(tiff,TIFFTAG_XPOSITION,(float) image->page.x/
+               image->resolution.x);
+            if (image->resolution.y != 0.0)
+              (void) TIFFSetField(tiff,TIFFTAG_YPOSITION,(float) image->page.y/
+                image->resolution.y);
           }
       }
     if (image->chromaticity.white_point.x != 0.0)
