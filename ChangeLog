@@ -1,3 +1,7 @@
+2013-07-24  6.8.6-7 Cristy  <quetzlzacatenango@image...>
+  * Missing case for HCLpColorspace (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23811).
+
 2013-07-21  6.8.6.7 Glenn Randers-Pehrson <glennrp@image...>
   * Do not write "jpeg:" properties in a PNG output file (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23794).
