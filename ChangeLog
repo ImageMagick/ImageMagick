@@ -1,3 +1,6 @@
+2013-07-25  6.8.6-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.6-7, SVN revision 12752.
+
 2013-07-24  6.8.6-7 Cristy  <quetzlzacatenango@image...>
   * Missing case for HCLpColorspace (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23811).
