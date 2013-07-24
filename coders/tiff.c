@@ -1272,6 +1272,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if ((photometric != PHOTOMETRIC_SEPARATED) &&
         (interlace == PLANARCONFIG_SEPARATE) && (bits_per_sample < 64))
       method=ReadGenericMethod;
+    if (image->compression == JPEGCompression)
+      method=ReadGenericMethod;
     if (TIFFIsTiled(tiff) != MagickFalse)
       method=ReadTileMethod;
     quantum_info->endian=LSBEndian;
