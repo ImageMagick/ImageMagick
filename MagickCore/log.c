@@ -1174,6 +1174,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
     {
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
       OutputDebugString(text);
+      OutputDebugString("\n");
 #endif
     }
   if ((log_info->handler_mask & EventHandler) != 0)
