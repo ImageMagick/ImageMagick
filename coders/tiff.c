@@ -3178,18 +3178,25 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) TIFFSetField(tiff,TIFFTAG_RESOLUTIONUNIT,(uint16) units);
         (void) TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->x_resolution);
         (void) TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->y_resolution);
-        if (((image->page.x > 0) && (image->page.y >= 0)) ||
-            ((image->page.y > 0) && (image->page.x >= 0)))
+        if ((image->page.x < 0) || (image->page.y < 0))
+          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+            CoderError,"TIFF: negative image positions unsupported","%s",
+            image->filename);
+        if ((image->page.x > 0) && (image->x_resolution > 0.0))
           {
             /*
-              Set image position.
+              Set horizontal image position.
             */
-            if (image->x_resolution != 0.0)
-              (void) TIFFSetField(tiff,TIFFTAG_XPOSITION,(float) image->page.x/
-                image->x_resolution);
-            if (image->y_resolution != 0.0)
-              (void) TIFFSetField(tiff,TIFFTAG_YPOSITION,(float) image->page.y/
-                image->y_resolution);
+            (void) TIFFSetField(tiff,TIFFTAG_XPOSITION,(float) image->page.x/
+              image->x_resolution);
+          }
+        if ((image->page.y > 0) && (image->y_resolution > 0.0))
+          {
+            /*
+              Set vertical image position.
+            */
+            (void) TIFFSetField(tiff,TIFFTAG_YPOSITION,(float) image->page.y/
+              image->y_resolution);
           }
       }
     if (image->chromaticity.white_point.x != 0.0)
