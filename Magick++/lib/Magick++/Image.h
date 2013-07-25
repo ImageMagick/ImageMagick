@@ -162,6 +162,13 @@ namespace Magick
     // gravity.
     void            annotate ( const std::string &text_,
              const GravityType gravity_ );
+
+    // Inserts the artifact with the specified name and value into
+    // the artifact tree of the image.
+    void            artifact ( const std::string &name_,
+                               const std::string &value_ );
+    // Returns the value of the artifact with the specified name.
+    std::string     artifact ( const std::string &name_ );
     
     // Blur image with specified blur factor
     // The radius_ parameter specifies the radius of the Gaussian, in

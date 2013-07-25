@@ -481,6 +481,21 @@ void Magick::Image::annotate ( const std::string &text_,
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::artifact ( const std::string &name_,
+                               const std::string &value_ )
+{
+  modifyImage();
+  (void) SetImageArtifact ( image(), name_.c_str(), value_.c_str() );
+}
+
+std::string Magick::Image::artifact ( const std::string &name_ )
+{
+  const char *value = GetImageArtifact ( image(), name_.c_str() );
+  if (value)
+    return std::string( value );
+  return std::string( );
+}
+
 // Blur image
 void Magick::Image::blur( const double radius_, const double sigma_ )
 {
