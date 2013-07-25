@@ -60,7 +60,7 @@
 #define D65X  0.950456
 #define D65Y  1.0
 #define D65Z  1.088754
-#define ReferenceEpsilon  (QuantumRange*1.0e-4)
+#define ReferenceEpsilon  (QuantumRange*1.0e-2)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
