@@ -2142,7 +2142,7 @@ MagickPrivate MagickBooleanType IsBlobTemporary(const Image *image)
 MagickExport unsigned char *MapBlob(int file,const MapMode mode,
   const MagickOffsetType offset,const size_t length)
 {
-#if defined(MAGICKCORE_HAVE_MMAP_FILEIO)
+#if defined(MAGICKCORE_HAVE_MMAP)
   int
     flags,
     protection;
@@ -3999,7 +3999,7 @@ MagickExport MagickOffsetType TellBlob(const Image *image)
 */
 MagickExport MagickBooleanType UnmapBlob(void *map,const size_t length)
 {
-#if defined(MAGICKCORE_HAVE_MMAP_FILEIO)
+#if defined(MAGICKCORE_HAVE_MMAP)
   int
     status;
 
