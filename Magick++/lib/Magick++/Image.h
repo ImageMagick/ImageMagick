@@ -112,7 +112,23 @@ namespace Magick
     // specifies the standard deviation of the Laplacian, in pixels.
     void            adaptiveBlur ( const double radius_ = 0.0,
                            const double sigma_ = 1.0  );
-    
+
+    // This is shortcut function for a fast interpolative resize using mesh
+    // interpolation.  It works well for small resizes of less than +/- 50%
+    // of the original image size.  For larger resizing on images a full
+    // filtered and slower resize function should be used instead.
+    void            adaptiveResize ( const Geometry &geometry_ );
+
+    // Adaptively sharpens the image by sharpening more intensely near image
+    // edges and less intensely far from edges. We sharpen the image with a 
+    // Gaussian operator of the given radius and standard deviation (sigma).
+    // For reasonable results, radius should be larger than sigma.
+    void            adaptiveSharpen ( const double radius_ = 0.0,
+                                      const double sigma_ = 1.0 );
+    void            adaptiveSharpenChannel ( const ChannelType channel_,
+                                             const double radius_ = 0.0,
+                                             const double sigma_ = 1.0 );
+
     // Local adaptive threshold image
     // http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm
     // Width x height define the size of the pixel neighborhood
