@@ -466,11 +466,6 @@
 #define MAGICKCORE_HAVE_MMAP 1
 #endif
 
-/* Define to 1 if you have a working `mmap' system call. */
-#ifndef MAGICKCORE_HAVE_MMAP_FILEIO
-#define MAGICKCORE_HAVE_MMAP_FILEIO 1
-#endif
-
 /* Define to 1 if you have the `munmap' function. */
 #ifndef MAGICKCORE_HAVE_MUNMAP
 #define MAGICKCORE_HAVE_MUNMAP 1
