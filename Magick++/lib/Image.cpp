@@ -306,6 +306,52 @@ void Magick::Image::adaptiveBlur( const double radius_, const double sigma_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::adaptiveResize ( const Geometry &geometry_ )
+{
+  ssize_t x = 0;
+  ssize_t y = 0;
+  size_t width = columns();
+  size_t height = rows();
+
+  ParseMetaGeometry( static_cast<std::string>(geometry_).c_str(),
+                     &x, &y,
+                     &width, &height );
+
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    AdaptiveResizeImage( constImage(), width, height, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::adaptiveSharpen ( const double radius_,
+                                      const double sigma_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    AdaptiveSharpenImage( constImage(), radius_, sigma_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::adaptiveSharpenChannel ( const ChannelType channel_,
+                                             const double radius_,
+                                             const double sigma_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    AdaptiveSharpenImageChannel( constImage(), channel_, radius_, sigma_,
+                                 &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Local adaptive threshold image
 // http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm
 // Width x height define the size of the pixel neighborhood
