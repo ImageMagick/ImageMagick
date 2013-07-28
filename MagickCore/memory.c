@@ -597,7 +597,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         }
     }
   if (memory_info->blob == NULL)
-    return(RelinquishVirtualMemory(memory_info));
+    memory_info->blob=AcquireMagickMemory(length);
   return(memory_info);
 }
 
