@@ -2488,6 +2488,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
       }
   }
   image_view=DestroyCacheView(image_view);
+  (void) ClampImage(image,exception);
   return(status);
 }
 
