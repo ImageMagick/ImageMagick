@@ -1,3 +1,5 @@
+#  http://svn.saurik.com/repos/cycript/trunk/framework.m4
+
 # AC_CHECK_FRAMEWORK(FRAMEWORK, FUNCTION,
 #              [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND],
 #              [OTHER-LIBRARIES])
