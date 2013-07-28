@@ -686,6 +686,9 @@ namespace Magick
   using MagickCore::AcquireString;
   using MagickCore::AcquireStringInfo;
   using MagickCore::AdaptiveBlurImage;
+  using MagickCore::AdaptiveResizeImage;
+  using MagickCore::AdaptiveSharpenImage;
+  using MagickCore::AdaptiveSharpenImageChannel;
   using MagickCore::AdaptiveThresholdImage;
   using MagickCore::AddNoiseImage;
   using MagickCore::AddNoiseImageChannel;
