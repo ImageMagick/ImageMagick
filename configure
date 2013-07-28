@@ -3686,7 +3686,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=12766:12770M
+MAGICK_SVN_REVISION=12766:12773M
 
 
 # Substitute library versioning
@@ -24030,7 +24030,6 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 # Check for functions
 #
 ########
-MAGICK_FUNC_MMAP_FILEIO
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether closedir returns void" >&5
 $as_echo_n "checking whether closedir returns void... " >&6; }
 if ${ac_cv_func_closedir_void+:} false; then :
