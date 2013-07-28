@@ -311,9 +311,6 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterXCFImage();
   (void) RegisterXPMImage();
   (void) RegisterXPSImage();
-#if defined(_VISUALC_)
-  (void) RegisterXTRNImage();
-#endif
 #if defined(MAGICKCORE_X11_DELEGATE)
   (void) RegisterXWDImage();
 #endif
@@ -488,9 +485,6 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterXCFImage();
   UnregisterXPMImage();
   UnregisterXPSImage();
-#if defined(_VISUALC_)
-  UnregisterXTRNImage();
-#endif
 #if defined(MAGICKCORE_X11_DELEGATE)
   UnregisterXWDImage();
 #endif
