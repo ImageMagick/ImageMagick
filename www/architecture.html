@@ -491,7 +491,7 @@ File         Area       Memory          Map         Disk    Thread         Time
 </div>
 
 
-<h3></a>Distributed Pixel Cache</h3>
+<h3>Distributed Pixel Cache</h3>
 <div class="doc-section">
 <p>A distributed pixel cache is an extension of the traditional pixel cache available on a single host.  The distributed pixel cache may span multiple servers so that it can grow in size and transactional capacity to support very large images.  Start up the pixel cache server on one or more machines.  When you read or operate on an image and the local pixel cache resources are exhausted, ImageMagick contacts one or more of these remote pixel servers to store or retrieve pixels.</p>
 </div>
@@ -655,8 +655,8 @@ if (profile != (StringInfo *) NULL)
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -monitor -limit memory 2GiB -limit map 4GiB -define registry:temporary-path=/data/tmp \ <br/>     logo: -resize 250000x250000 logo.miff</span></p><p>For really large images, or if there is limited resources on your host, you can utilize a distributed pixel cache on one or more remote hosts:</p>
 <pre class="text">
-convert -distribute-cache 6668 &  // start on 192.168.100.50
-convert -distribute-cache 6668 &  // start on 192.168.100.51
+convert -distribute-cache 6668 &amp;  // start on 192.168.100.50
+convert -distribute-cache 6668 &amp;  // start on 192.168.100.51
 convert -limit memory 2mb -limit map 2mb -limit disk 2gb \
   -define registry:cache:hosts=192.168.100.50:6668,192.168.100.51:6668 \
   myhugeimage.jpg -sharpen 5x2 myhugeimage.png
@@ -1542,17 +1542,17 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
 </div>
 
 <div id="linkbar">
-    <span id="linkbar-west">&nbsp;</span>
+    <span id="linkbar-west"> </span>
 
     <span id="linkbar-center">
       <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &#8226;
       <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &#8226;
       <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
-    <span id="linkbar-east">&nbsp;</span>
+    <span id="linkbar-east"> </span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2013 ImageMagick Studio LLC</span>
+    <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>
