@@ -3039,6 +3039,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
+  (void) ClampImage(image);
   return(status);
 }
 
