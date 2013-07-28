@@ -345,7 +345,6 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/m4/magick_check_pthread_lib.m4 \
-	$(top_srcdir)/m4/magick_func_mmap_fileio.m4 \
 	$(top_srcdir)/m4/pkg.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -3017,7 +3016,6 @@ M4_EXTRA_DIST = \
 	ltsugar.m4  \
 	ltversion.m4  \
 	magick_check_pthread_lib.m4  \
-	magick_func_mmap_fileio.m4  \
 	pkg.m4  
 
 

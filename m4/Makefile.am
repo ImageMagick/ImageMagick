@@ -36,5 +36,4 @@ M4_EXTRA_DIST =  \
 	ltsugar.m4  \
 	ltversion.m4  \
 	magick_check_pthread_lib.m4  \
-	magick_func_mmap_fileio.m4  \
 	pkg.m4  
