@@ -570,9 +570,10 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
       /*
         Heap memory failed, try anonymous memory mapping.
       */
-      memory_info->mapped=MagickTrue;
       memory_info->blob=MapBlob(-1,IOMode,0,length);
-      if (memory_info->blob == NULL)
+      if (memory_info->blob != NULL)
+        memory_info->mapped=MagickTrue;
+      else
         RelinquishMagickResource(MapResource,length);
     }
   if (memory_info->blob == NULL)
@@ -588,16 +589,18 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         {
           if ((lseek(file,length-1,SEEK_SET) >= 0) && (write(file,"",1) == 1))
             {
-              memory_info->mapped=MagickTrue;
               memory_info->blob=MapBlob(file,IOMode,0,length);
               if (memory_info->blob != NULL)
-                (void) AcquireMagickResource(MapResource,length);
+                {
+                  memory_info->mapped=MagickTrue;
+                  (void) AcquireMagickResource(MapResource,length);
+                }
             }
           (void) close(file);
         }
     }
   if (memory_info->blob == NULL)
-    return(RelinquishVirtualMemory(memory_info));
+    memory_info->blob=AcquireMagickMemory(length);
   return(memory_info);
 }
 
