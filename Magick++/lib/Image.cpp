@@ -344,9 +344,10 @@ void Magick::Image::adaptiveSharpenChannel ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  ChannelType channel_mask = SetImageChannelMask( image(), channel_);
   MagickCore::Image* newImage =
-    AdaptiveSharpenImageChannel( constImage(), channel_, radius_, sigma_,
-                                 &exceptionInfo );
+    AdaptiveSharpenImage( constImage(), radius_, sigma_, &exceptionInfo );
+  (void) SetPixelChannelMask( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
