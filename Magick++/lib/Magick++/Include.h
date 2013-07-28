@@ -697,7 +697,6 @@ namespace Magick
   using MagickCore::AdaptiveBlurImage;
   using MagickCore::AdaptiveResizeImage;
   using MagickCore::AdaptiveSharpenImage;
-  using MagickCore::AdaptiveSharpenImageChannel;
   using MagickCore::AdaptiveThresholdImage;
   using MagickCore::AddNoiseImage;
   using MagickCore::AffineMatrix;
