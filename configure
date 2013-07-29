@@ -3686,7 +3686,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=12786:12793
+MAGICK_SVN_REVISION=12786:12797M
 
 
 # Substitute library versioning
@@ -35440,6 +35440,9 @@ if test "$have_tiff"   = 'yes' ; then
 fi
 if test "$have_ttf"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ttf"
+fi
+if test "$have_webp"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES webp"
 fi
 if test "$have_wmf"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES wmf"

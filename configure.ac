@@ -3860,6 +3860,9 @@ fi
 if test "$have_ttf"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ttf"
 fi
+if test "$have_webp"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES webp"
+fi
 if test "$have_wmf"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES wmf"
 fi
