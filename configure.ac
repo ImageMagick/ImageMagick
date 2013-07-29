@@ -603,7 +603,7 @@ fi
 AM_CONDITIONAL(WITH_MODULES, test "$build_modules" != 'no')
 
 # Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf wmf xml zlib)
+# delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf webp wmf xml zlib)
 AC_ARG_ENABLE([delegate-build],
     [AC_HELP_STRING([--enable-delegate-build],
                     [look for delegate libraries in build directory])],
@@ -3862,6 +3862,9 @@ if test "$have_tiff"   = 'yes' ; then
 fi
 if test "$have_ttf"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ttf"
+fi
+if test "$have_webp"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES webp"
 fi
 if test "$have_wmf"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES wmf"
