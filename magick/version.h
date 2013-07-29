@@ -39,7 +39,7 @@ extern "C" {
 #define MagickppLibAddendum  "-8"
 #define MagickppLibInterface  2
 #define MagickppLibMinInterface  2
-#define MagickReleaseDate  "2013-07-28"
+#define MagickReleaseDate  "2013-07-29"
 #define MagickChangeDate   "20130725"
 #define MagickFeatures "DPC OpenMP"
 #define MagickDelegates "bzlib djvu fftw fontconfig freetype jng jp2 jpeg lcms lzma openexr pango png ps tiff webp x xml zlib"
