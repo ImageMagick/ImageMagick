@@ -10,6 +10,8 @@ The \fBcompare\fP program is a member of the ImageMagick(1) suite of tools.  Use
 For more information about the compare command, point your browser to file://@DOCUMENTATION_PATH@/www/compare.html or http://www.imagemagick.org/script/compare.php.
 .SH DESCRIPTION
 Image Settings:
+  \-alpha option        on, activate, off, deactivate, set, opaque, copy
+  \                     transparent, extract, background, or shape
   \-authenticate value  decrypt image with this password
   \-channel type        apply option to select image channels
   \-colorspace type     alternate image colorspace
@@ -40,12 +42,13 @@ Image Settings:
   \-quiet               suppress all warning messages
   \-quantize colorspace reduce colors in this colorspace
   \-regard-warnings     pay attention to warning messages
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-seed value          seed a new sequence of pseudo-random numbers
   \-set attribute value set an image attribute
   \-similarity-threshold value
-                        minumum distortion for (sub)image match
+                        minimum distortion for (sub)image match
   \-size geometry       width and height of image
   \-subimage-search     search for subimage
   \-synchronize         synchronize image to storage device

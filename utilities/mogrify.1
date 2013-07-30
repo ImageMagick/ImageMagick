@@ -14,6 +14,7 @@ Image Settings:
   \-affine matrix       affine transform matrix
   \-antialias           remove pixel-aliasing
   \-authenticate value  decrypt image with this password
+  \-attenuate value     lessen (or intensify) when adding noise to an image
   \-background color    background color
   \-bias value          add bias when convolving an image
   \-black-point-compensation
@@ -52,9 +53,12 @@ Image Settings:
   \-fuzz distance       colors within this distance are considered equal
   \-gravity type        horizontal and vertical text placement
   \-green-primary point chromaticity green primary point
+  \-intensity method    method to generate intensity value from pixel
   \-intent type         type of rendering intent when managing the image color
   \-interlace type      type of image interlacing scheme
+  \-interline-spacing   value set the space between two text lines
   \-interpolate method  pixel color interpolation method
+  \-interword-spacing   value set the space between two words
   \-kerning value       set the space between two letters
   \-label string        assign a label to an image
   \-limit type value    pixel cache resource limit
@@ -66,18 +70,20 @@ Image Settings:
   \-morphology method kernel
                        apply a morphology method to the image
   \-orient type         image orientation
-  \-origin geometry     image origin
   \-page geometry       size and location of an image canvas (setting)
   \-path path           write images to this path on disk
   \-perceptible epsilon
                        pixel value less than |epsilon| become epsilon or -epsilon
   \-ping                efficiently determine image attributes
   \-pointsize value     font point size
+  \-precision value     maximum number of significant digits to print
   \-preview type        image preview type
   \-quality value       JPEG/MIFF/PNG compression level
   \-quiet               suppress all warning messages
   \-red-primary point   chromaticity red primary point
   \-regard-warnings     pay attention to warning messages
+  \-remap filename      transform image colors to match this set of colors
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-scene value         image scene number
@@ -87,7 +93,6 @@ Image Settings:
   \-stroke color        graphic primitive stroke color
   \-strokewidth value   graphic primitive stroke width
   \-style type          render text with this font style
-  \-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp
   \-synchronize         synchronize image to storage device
   \-taint               declare the image as modified
   \-texture filename    name of texture to tile onto the image background
@@ -112,13 +117,21 @@ Image Operators:
                        adaptively resize image with data dependent triangulation
   \-adaptive-sharpen geometry
                        adaptively sharpen pixels; increase effect near edges
+  \-alpha option        on, activate, off, deactivate, set, opaque, copy
+                       transparent, extract, background, or shape
   \-annotate geometry text
                        annotate the image with text
+  \-auto-gamma          automagically adjust gamma level of image
+  \-auto-level          automagically adjust color levels of image
   \-auto-orient         automatically orient image
+  \-bench iterations    measure performance
   \-black-threshold value
                        force all pixels below the threshold into black
+  \-blue-shift          simulate a scene at nighttime in the moonlight
   \-blur geometry       reduce image noise and reduce detail levels
   \-border geometry     surround image with a border of color
+  \-brightness-contrast geometry
+                       improve brightness / contrast of the image
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
   \-clamp               keep pixel values in range (0-QuantumRange)
@@ -133,7 +146,10 @@ Image Operators:
   \-convolve coefficients
                        apply a convolution kernel to the image
   \-cycle amount        cycle the image colormap
+  \-deskew threshold    straighten an image
   \-despeckle           reduce the speckles within an image
+  \-distort method args
+                       distort images according to given method ad args
   \-draw string         annotate the image with a graphic primitive
   \-edge radius         apply a filter to detect edges in the image
   \-emboss radius       emboss an image
@@ -158,11 +174,17 @@ Image Operators:
   \-help                print program options
   \-identify            identify the format and characteristics of the image
   \-implode amount      implode image pixels about the center
+  \-interpolative-resize geometry
+                       resize image using interpolation
   \-lat geometry        local adaptive thresholding
   \-layers method       optimize or compare image layers
   \-level value         adjust the level of image contrast
+  \-level-colors color,color
+                       level image with the given colors
   \-linear-stretch geometry
                        improve contrast by `stretching with saturation' the intensity range
+  \-liquid-rescale geometry
+                       rescale image with seam-carving
   \-magnify             double the size of the image with pixel art scaling
   \-median geometry     apply a median filter to the image
   \-mode geometry       make each pixel the 'predominant color' of the neighborhood
@@ -210,6 +232,8 @@ Image Operators:
                        lightness rescaling using sigmoidal contrast enhancement
   \-sketch geometry     simulate a pencil sketch
   \-solarize threshold  negate all pixels above the threshold level
+  \-sparse-color method args
+                       fill in a image based on a few color points
   \-splice geometry     splice the background color into the image
   \-spread amount       displace image pixels by a random amount
   \-statistic type geometry
@@ -234,12 +258,9 @@ Image Operators:
                        force all pixels above the threshold into white
 
 Image Channel Operators:
-  \-channel-extract channel-list
-                        extract the channels in order
-  \-channel-inject channel-list
-                        inject the channels in order
-  \-channel-swap channel,channel
-                        swap the channels
+  \-channel-fx expression
+                       exchange, extract, or transfer one or more image channels
+  \-separate            separate an image channel into a grayscale image
 
 Image Sequence Operators:
   \-affinity filename   transform image colors to match this set of colors
@@ -268,10 +289,13 @@ Image Stack Operators:
   \-duplicate count,indexes
                        duplicate an image one or more times
   \-insert index        insert last image into the image sequence
+  \-reverse             reverse image sequence
   \-swap indexes        swap two images in the image sequence
 
 Miscellaneous Options:
   \-debug events        display copious debugging information
+  \-distribute-cache port
+                       distributed pixel cache spanning one or more servers
   \-help                print program options
   \-log format          format of debugging information
   \-list type           print a list of supported option arguments

@@ -3327,6 +3327,7 @@ static MagickBooleanType MogrifyUsage(void)
       "                     improve contrast by 'stretching with saturation'",
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
+      "-magnify             double the size of the image with pixel art scaling",
       "-median geometry     apply a median filter to the image",
       "-mode geometry       make each pixel the 'predominant color' of the",
       "                     neighborhood",
@@ -3408,6 +3409,7 @@ static MagickBooleanType MogrifyUsage(void)
     },
     *sequence_operators[]=
     {
+      "-affinity filename   transform image colors to match this set of colors",
       "-append              append an image sequence",
       "-clut                apply a color lookup table to the image",
       "-coalesce            merge a sequence of images",
@@ -3486,10 +3488,12 @@ static MagickBooleanType MogrifyUsage(void)
       "-limit type value    pixel cache resource limit",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-mask filename       associate a mask with the image",
+      "-matte               store matte channel if the image has one",
       "-mattecolor color    frame color",
       "-monitor             monitor progress",
       "-orient type         image orientation",
       "-page geometry       size and location of an image canvas (setting)",
+      "-path path           write images to this path on disk",
       "-ping                efficiently determine image attributes",
       "-pointsize value     font point size",
       "-precision value     maximum number of significant digits to print",

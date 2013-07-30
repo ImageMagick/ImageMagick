@@ -28,6 +28,7 @@ Image Settings:
   \-encipher filename   convert plain pixels to cipher pixels
   \-endian type         endianness (MSB or LSB) of the image
   \-encoding type       text encoding type
+  \-filter type         use this filter when resizing an image
   \-format "string"     output formatted image characteristics
   \-frame               include window manager frame
   \-gravity direction   which direction to gravitate towards
@@ -43,6 +44,7 @@ Image Settings:
   \-quality value       JPEG/MIFF/PNG compression level
   \-quiet               suppress all warning messages
   \-regard-warnings     pay attention to warning messages
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-scene value         image scene number
