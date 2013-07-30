@@ -172,6 +172,7 @@ static MagickBooleanType ImportUsage(void)
       "-set property value  set an image property",
       "-silent              operate silently, i.e. don't ring any bells ",
       "-snaps value         number of screen snapshots",
+      "-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp",
       "-synchronize         synchronize image to storage device",
       "-taint               declare the image as modified",
       "-transparent-color color",

@@ -140,6 +140,8 @@ static MagickBooleanType CompareUsage(void)
       "                     minimum distortion for (sub)image match",
       "-size geometry       width and height of image",
       "-subimage-search     search for subimage",
+      "-synchronize         synchronize image to storage device",
+      "-taint               declare the image as modified",
       "-transparent-color color",
       "                     transparent color",
       "-type type           image type",

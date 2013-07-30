@@ -28,6 +28,7 @@ Image Settings:
   \-quantize colorspace reduce colors in this colorspace
   \-quiet               suppress all warning messages
   \-regard-warnings     pay attention to warning messages
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-seed value          seed a new sequence of pseudo-random numbers
@@ -35,6 +36,7 @@ Image Settings:
   \-size geometry       width and height of image
   \-storage-type type   pixel storage type
   \-synchronize         synchronize image to storage device
+  \-taint               declare the image as modified
   \-transparent-color color
                        transparent color
   \-verbose             print detailed information about the image
