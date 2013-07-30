@@ -10,6 +10,8 @@ The \fBdisplay\fP program is a member of the ImageMagick(1) suite of tools.  Use
 For more information about the display command, point your browser to file:///usr/share/doc/ImageMagick-6/www/display.html or http://www.imagemagick.org/script/display.php.
 .SH DESCRIPTION
 Image Settings:
+  \-alpha option        on, activate, off, deactivate, set, opaque, copy
+  \                     transparent, extract, background, or shape
   \-antialias           remove pixel-aliasing
   \-authenticate value  decrypt image with this password
   \-backdrop            display image centered on a backdrop
@@ -19,6 +21,7 @@ Image Settings:
   \-comment string      annotate image with comment
   \-compress type       type of pixel compression when writing the image
   \-decipher filename   convert cipher pixels to plain pixels
+  \-deskew threshold    straighten an image
   \-define format:option
                        define one or more image format options
   \-delay value         display the next image after pausing
@@ -52,6 +55,7 @@ Image Settings:
   \-regard-warnings     pay attention to warning messages
   \-remote command      execute a command in an remote display process
   \-repage geometry     size and location of an image canvas (operator)
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-scenes range        image scene range
@@ -90,6 +94,7 @@ Image Operators:
   \-gamma value         level of gamma correction
   \-monochrome          transform image to black and white
   \-negate              replace each pixel with its complementary color
+  \-normalize           transform image to span the full range of colors
   \-raise value         lighten/darken image edges to create a 3-D effect
   \-resample geometry   change the resolution of an image
   \-resize geometry     resize the image
@@ -99,6 +104,8 @@ Image Operators:
   \-segment value       segment an image
   \-sharpen geometry    sharpen the image
   \-strip               strip image of all profiles and comments
+  \-threshold value     threshold the image
+  \-thumbnail geometry  create a thumbnail of the image
   \-trim                trim image edges
 
 Image Sequence Operators:

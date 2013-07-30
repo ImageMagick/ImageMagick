@@ -12,9 +12,12 @@ For more information about the montage command, point your browser to file:///us
 Image Settings:
   \-adjoin              join images into a single multi-image file
   \-affine matrix       affine transform matrix
+  \-alpha option        on, activate, off, deactivate, set, opaque, copy
+  \                     transparent, extract, background, or shape
   \-authenticate value  decrypt image with this password
   \-blue-primary point  chromaticity blue primary point
   \-bordercolor color   border color
+  \-caption string      assign a caption to an image
   \-channel type        apply option to select image channels
   \-colors value        preferred number of colors in the image
   \-colorspace type     alternate image colorsapce
@@ -50,6 +53,7 @@ Image Settings:
   \-mattecolor color    frame color
   \-mode type           framing style
   \-monitor             monitor progress
+  \-origin geometry     image origin
   \-page geometry       size and location of an image canvas (setting)
   \-pointsize value     font point size
   \-profile filename    add, delete, or apply an image profile
@@ -58,6 +62,7 @@ Image Settings:
   \-quiet               suppress all warning messages
   \-red-primary point   chromaticity red primary point
   \-regard-warnings     pay attention to warning messages
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-scenes range        image scene range
@@ -68,6 +73,7 @@ Image Settings:
   \-stroke color        color to use when stroking a graphic primitive
   \-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp
   \-synchronize         synchronize image to storage device
+  \-taint               declare the image as modified
   \-texture filename    name of texture to tile onto the image background
   \-thumbnail geometry  create a thumbnail of the image
   \-tile geometry       number of tiles per row and column
@@ -87,9 +93,11 @@ Image Operators:
                        adaptively sharpen pixels; increase effect near edges
   \-annotate geometry text
                        annotate the image with text
+  \-auto-orient         automagically orient image
   \-blur geometry      reduce image noise and reduce detail levels
   \-border geometry     surround image with a border of color
   \-crop geometry       preferred size and location of the cropped image
+  \-extent geometry     set the image size
   \-flatten             flatten a sequence of images
   \-flip                flip image in the vertical direction
   \-flop                flop image in the horizontal direction
@@ -101,12 +109,14 @@ Image Operators:
   \-rotate degrees      apply Paeth rotation to the image
   \-strip               strip image of all profiles and comments
   \-transform           affine transform image
+  \-transpose           flip image vertically and rotate 90 degrees
   \-transparent color   make this color transparent within the image
   \-type type           image type
   \-unsharp geometry    sharpen the image
 
 Image Sequence Operators:
   \-coalesce            merge a sequence of images
+  \-composite           composite image
 
 Image Stack Operators:
   \-clone indexes       clone an image
@@ -114,6 +124,7 @@ Image Stack Operators:
   \-duplicate count,indexes
                         duplicate an image one or more times
   \-insert index        insert last image into the image sequence
+  \-reverse             reverse image sequence
   \-swap indexes        swap two images in the image sequence
 
 Miscellaneous Options:

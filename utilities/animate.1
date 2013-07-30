@@ -10,6 +10,8 @@ The \fBanimate\fP program is a member of the ImageMagick(1) suite of tools.  Use
 For more information about the animate command, point your browser to file:///usr/share/doc/ImageMagick-6/www/animate.html or http://www.imagemagick.org/script/animate.php.
 .SH DESCRIPTION
 Image Settings:
+  \-alpha option        on, activate, off, deactivate, set, opaque, copy
+                        transparent, extract, background, or shape
   \-authenticate value  decrypt image with this password
   \-backdrop            display image centered on a backdrop
   \-channel type        apply option to select image channels
@@ -24,6 +26,7 @@ Image Settings:
   \-display server      display image to this X server
   \-dispose method      layer disposal method
   \-dither method       apply error diffusion to image
+  \-filter type         use this filter when resizing an image
   \-format "string"     output formatted image characteristics
   \-gamma value         level of gamma correction
   \-geometry geometry   preferred size and location of the Image window
@@ -43,6 +46,7 @@ Image Settings:
   \-quiet               suppress all warning messages
   \-regard-warnings     pay attention to warning messages
   \-remote command      execute a command in an remote display process
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-scenes range        image scene range
@@ -69,6 +73,7 @@ Image Operators:
   \-resize geometry     resize the image
   \-rotate degrees      apply Paeth rotation to the image
   \-strip               strip image of all profiles and comments
+  \-thumbnail geometry  create a thumbnail of the image
   \-trim                trim image edges
 
 Image Sequence Operators:
