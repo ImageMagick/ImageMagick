@@ -185,7 +185,20 @@ namespace Magick
                                const std::string &value_ );
     // Returns the value of the artifact with the specified name.
     std::string     artifact ( const std::string &name_ );
-    
+
+    // Extracts the 'mean' from the image and adjust the image to try
+    // make set its gamma appropriatally.
+    void            autoGamma ( void );
+    void            autoGammaChannel ( const ChannelType channel_ );
+
+    // Adjusts the levels of a particular image channel by scaling the
+    // minimum and maximum values to the full quantum range.
+    void            autoLevel ( void );
+    void            autoLevelChannel ( const ChannelType channel_ );
+
+    // Adjusts an image so that its orientation is suitable for viewing.
+    void            autoOrient ( void );
+
     // Blur image with specified blur factor
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
