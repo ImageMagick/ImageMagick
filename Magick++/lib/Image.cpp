@@ -543,6 +543,65 @@ std::string Magick::Image::artifact ( const std::string &name_ )
   return std::string( );
 }
 
+void Magick::Image::autoGamma ( void )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  AutoGammaImage( image(), &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::autoGammaChannel ( const ChannelType channel_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  ChannelType channel_mask = SetImageChannelMask( image(), channel_ );
+  AutoGammaImage( image(), &exceptionInfo);
+  (void) SetPixelChannelMask( image(), channel_mask );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::autoLevel ( void )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  AutoLevelImage( image(), &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::autoLevelChannel ( const ChannelType channel_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  ChannelType channel_mask = SetImageChannelMask( image(), channel_ );
+  AutoLevelImage( image(), &exceptionInfo);
+  (void) SetPixelChannelMask( image(), channel_mask );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::autoOrient ( void )
+{
+  if (image()->orientation == UndefinedOrientation ||
+      image()->orientation == TopLeftOrientation)
+    return;
+
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    AutoOrientImage( constImage(), image()->orientation, &exceptionInfo);
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Blur image
 void Magick::Image::blur( const double radius_, const double sigma_ )
 {
