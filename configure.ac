@@ -472,11 +472,15 @@ AC_SUBST([pkgconfigdir])
 
 #
 # Enable support for threads
+#
+# Find Posix threads library
+#
 AC_ARG_WITH([threads],
     [AC_HELP_STRING([--without-threads], [disable threads support])],
     [with_threads=$withval],
     [with_threads='yes'])
 
+THREAD_LIBS=''
 have_threads=no
 if test "$with_threads" != 'no'; then
     AX_PTHREAD()
@@ -485,6 +489,7 @@ if test "$with_threads" != 'no'; then
         DEF_THREAD="$PTHREAD_CFLAGS"
         CFLAGS="$CFLAGS $DEF_THREAD"
         CXXFLAGS="$CXXFLAGS $DEF_THREAD"
+	THREAD_LIBS="$PTHREAD_LIBS"
         if test "$CC" != "$PTHREAD_CC"; then
             AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
             CC="$PTHREAD_CC"
@@ -492,6 +497,8 @@ if test "$with_threads" != 'no'; then
         AC_DEFINE(THREAD_SUPPORT,1,[Define if you have POSIX threads libraries and header files.])
     fi
 fi
+LIBS="$LIBS $THREAD_LIBS"
+AC_SUBST(THREAD_LIBS)
 
 # Enable support for OpenMP
 if test "$have_threads" != 'yes'; then
@@ -1400,29 +1407,7 @@ if test "$enable_openmp" != 'no'; then
 fi
 AC_SUBST(GOMP_LIBS)
 
-#
-# Find Posix threads library
-#
-THREAD_LIBS=''
-if test "$with_threads" != 'no' && test "$have_threads" = 'yes'; then
 
-    if test "x$PTHREAD_LIBS" = "x"; then
-    case "${host_cpu}-${host_os}" in
-      *-freebsd*)
-        MAGICK_CHECK_PTHREAD_LIB(c_r,PTHREAD_LIBS=-lc_r) ;;
-    esac
-    fi
-
-    for lib in pthread pthreads; do
-        if test "x$PTHREAD_LIBS" = "x"; then
-            MAGICK_CHECK_PTHREAD_LIB([$lib],[PTHREAD_LIBS=-l$lib])
-        fi
-    done
-
-    THREAD_LIBS="$PTHREAD_LIBS"
-    LIBS="$LIBS $THREAD_LIBS"
-fi
-AC_SUBST(THREAD_LIBS)
 
 #
 # Check for umem.

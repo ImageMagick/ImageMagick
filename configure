@@ -865,7 +865,6 @@ CCMALLOCDelegate
 UMEM_LIBS
 HasUMEM_FALSE
 HasUMEM_TRUE
-THREAD_LIBS
 GOMP_LIBS
 WITH_MAGICK_PLUS_PLUS_FALSE
 WITH_MAGICK_PLUS_PLUS_TRUE
@@ -928,6 +927,7 @@ LFS_CPPFLAGS
 CL_LIBS
 CL_CFLAGS
 OPENMP_CFLAGS
+THREAD_LIBS
 PTHREAD_CFLAGS
 PTHREAD_LIBS
 PTHREAD_CC
@@ -3686,7 +3686,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=12786:12797M
+MAGICK_SVN_REVISION=12801:12802M
 
 
 # Substitute library versioning
@@ -9119,6 +9119,9 @@ fi
 
 #
 # Enable support for threads
+#
+# Find Posix threads library
+#
 
 # Check whether --with-threads was given.
 if test "${with_threads+set}" = set; then :
@@ -9128,6 +9131,7 @@ else
 fi
 
 
+THREAD_LIBS=''
 have_threads=no
 if test "$with_threads" != 'no'; then
 
@@ -9546,6 +9550,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
         DEF_THREAD="$PTHREAD_CFLAGS"
         CFLAGS="$CFLAGS $DEF_THREAD"
         CXXFLAGS="$CXXFLAGS $DEF_THREAD"
+	THREAD_LIBS="$PTHREAD_LIBS"
         if test "$CC" != "$PTHREAD_CC"; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads." >&5
 $as_echo "$as_me: WARNING: Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads." >&2;}
@@ -9556,6 +9561,8 @@ $as_echo "#define THREAD_SUPPORT 1" >>confdefs.h
 
     fi
 fi
+LIBS="$LIBS $THREAD_LIBS"
+
 
 # Enable support for OpenMP
 if test "$have_threads" != 'yes'; then
@@ -26279,144 +26286,6 @@ fi
 fi
 
 
-#
-# Find Posix threads library
-#
-THREAD_LIBS=''
-if test "$with_threads" != 'no' && test "$have_threads" = 'yes'; then
-
-    if test "x$PTHREAD_LIBS" = "x"; then
-    case "${host_cpu}-${host_os}" in
-      *-freebsd*)
-
-
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-magick_pthread_lib_ok=no
-
-LIB=-lc_r
-save_LIBS="$LIBS"
-LIBS="$LIBS $LIB"
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for the pthreads library $LIB" >&5
-$as_echo_n "checking for the pthreads library $LIB... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <pthread.h>
-int
-main ()
-{
-  pthread_t th;
-  pthread_join(th, 0);
-  pthread_attr_init(0);
-  pthread_cleanup_push(0, 0);
-  pthread_create(0,0,0,0);
-  pthread_cleanup_pop(0);
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  magick_pthread_lib_ok=yes
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${magick_pthread_lib_ok}" >&5
-$as_echo "${magick_pthread_lib_ok}" >&6; }
-if test "$magick_pthread_lib_ok" = yes
-then
-  PTHREAD_LIBS=-lc_r
-  :
-else
-
-  :
-fi
-
-LIBS="$save_LIBS"
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
- ;;
-    esac
-    fi
-
-    for lib in pthread pthreads; do
-        if test "x$PTHREAD_LIBS" = "x"; then
-
-
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-magick_pthread_lib_ok=no
-
-LIB=-l$lib
-save_LIBS="$LIBS"
-LIBS="$LIBS $LIB"
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for the pthreads library $LIB" >&5
-$as_echo_n "checking for the pthreads library $LIB... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <pthread.h>
-int
-main ()
-{
-  pthread_t th;
-  pthread_join(th, 0);
-  pthread_attr_init(0);
-  pthread_cleanup_push(0, 0);
-  pthread_create(0,0,0,0);
-  pthread_cleanup_pop(0);
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  magick_pthread_lib_ok=yes
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${magick_pthread_lib_ok}" >&5
-$as_echo "${magick_pthread_lib_ok}" >&6; }
-if test "$magick_pthread_lib_ok" = yes
-then
-  PTHREAD_LIBS=-l$lib
-  :
-else
-
-  :
-fi
-
-LIBS="$save_LIBS"
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-        fi
-    done
-
-    THREAD_LIBS="$PTHREAD_LIBS"
-    LIBS="$LIBS $THREAD_LIBS"
-fi
 
 
 #
