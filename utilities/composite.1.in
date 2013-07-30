@@ -11,6 +11,8 @@ For more information about the composite command, point your browser to file://@
 .SH DESCRIPTION
 Image Settings:
   \-affine matrix       affine transform matrix
+  \-alpha option        on, activate, off, deactivate, set, opaque, copy
+  \                     transparent, extract, background, or shape
   \-authenticate value  decrypt image with this password
   \-blue-primary point  chromaticity blue primary point
   \-channel type        apply option to select image channels
@@ -46,6 +48,7 @@ Image Settings:
   \-quiet               suppress all warning messages
   \-red-primary point   chromaticity red primary point
   \-regard-warnings     pay attention to warning messages
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-scene value         image scene number
@@ -66,9 +69,12 @@ Image Settings:
 
 Image Operators:
   \-blend geometry      blend images
+  \-border geometry     surround image with a border of color
+  \-bordercolor color   border color
   \-colors value        preferred number of colors in the image
   \-displace geometry   shift image pixels defined by a displacement map
   \-dissolve value      dissolve the two images a given percent
+  \-distort geometry    shift lookup according to a absolute distortion map
   \-extract geometry    extract area from image
   \-geometry geometry   location of the composite image
   \-identify            identify the format and characteristics of the image
@@ -80,6 +86,7 @@ Image Operators:
   \-rotate degrees      apply Paeth rotation to the image
   \-resize geometry     resize the image
   \-sharpen geometry    sharpen the image
+  \-shave geometry      shave pixels from the image edges
   \-stegano offset      hide watermark within an image
   \-stereo              combine two image to create a stereo anaglyph
   \-strip               strip image of all profiles and comments
@@ -89,6 +96,9 @@ Image Operators:
   \-unsharp geometry    sharpen the image
   \-watermark geometry  percent brightness and saturation of a watermark
   \-write filename      write images to this file
+
+Image Stack Operators:
+  \-swap indexes        swap two images in the image sequence
 
 Miscellaneous Options:
   \-debug events        display copious debugging information

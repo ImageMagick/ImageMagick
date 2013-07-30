@@ -10,12 +10,15 @@ The \fBidentify\fP program is a member of the ImageMagick(1) suite of tools.  It
 For more information about the identify command, point your browser to file:///usr/share/doc/ImageMagick-7/www/identify.html or http://www.imagemagick.org/script/identify.php.
 .SH DESCRIPTION
 Image Settings:
+  \-alpha option        on, activate, off, deactivate, set, opaque, copy
+                       transparent, extract, background, or shape
   \-antialias           remove pixel-aliasing
   \-authenticate value  decrypt image with this password
   \-channel type        apply option to select image channels
   \-clip                clip along the first path from the 8BIM profile
   \-clip-mask filename  associate a clip mask with the image
   \-clip-path id        clip along a named path from the 8BIM profile
+  \-colorspace type     alternate image colorspace
   \-crop geometry       cut out a rectangular region of the image
   \-define format:option
                        define one or more image format options
@@ -27,6 +30,7 @@ Image Settings:
   \-features distance   analyze image features (e.g. contrast, correlation)
   \-format "string"     output formatted image characteristics
   \-fuzz distance       colors within this distance are considered equal
+  \-gamma value         of gamma correction
   \-interlace type      type of image interlacing scheme
   \-interpolate method  pixel color interpolation method
   \-limit type value    pixel cache resource limit
@@ -38,6 +42,7 @@ Image Settings:
   \-ping                efficiently determine image attributes
   \-quiet               suppress all warning messages
   \-regard-warnings     pay attention to warning messages
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-seed value          seed a new sequence of pseudo-random numbers
@@ -56,8 +61,8 @@ Image Operators:
 Miscellaneous Options:
   \-debug events        display copious debugging information
   \-help                print program options
-  \-log format          format of debugging information
   \-list type           print a list of supported option arguments
+  \-log format          format of debugging information
   \-version             print version information
 
 By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.

@@ -137,6 +137,7 @@ static MagickBooleanType IdentifyUsage(void)
       "-interpolate method  pixel color interpolation method",
       "-limit type value    pixel cache resource limit",
       "-mask filename       associate a mask with the image",
+      "-matte               store matte channel if the image has one",
       "-monitor             monitor progress",
       "-ping                efficiently determine image attributes",
       "-quiet               suppress all warning messages",

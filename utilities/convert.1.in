@@ -12,8 +12,10 @@ For more information about the convert command, point your browser to file://@DO
 Image Settings:
   \-adjoin              join images into a single multi-image file
   \-affine matrix       affine transform matrix
+  \-alpha option        activate, deactivate, reset, or set the alpha channel
   \-antialias           remove pixel-aliasing
   \-authenticate value  decrypt image with this password
+  \-attenuate value     lessen (or intensify) when adding noise to an image
   \-background color    background color
   \-bias value          add bias when convolving an image
   \-black-point-compensation
@@ -54,9 +56,14 @@ Image Settings:
   \-fuzz distance       colors within this distance are considered equal
   \-gravity type        horizontal and vertical text placement
   \-green-primary point chromaticity green primary point
+  \-intensity method    method to generate intensity value from pixel
   \-intent type         type of rendering intent when managing the image color
   \-interlace type      type of image interlacing scheme
+  \-interline-spacing value
+  \                     set the space between two text lines
   \-interpolate method  pixel color interpolation method
+  \-interword-spacing value
+  \                     set the space between two words
   \-kerning value       set the space between two letters
   \-label string        assign a label to an image
   \-limit type value    pixel cache resource limit
@@ -66,15 +73,17 @@ Image Settings:
   \-mattecolor color    frame color
   \-monitor             monitor progress
   \-orient type         image orientation
-  \-origin geometry     image origin
   \-page geometry       size and location of an image canvas (setting)
   \-ping                efficiently determine image attributes
   \-pointsize value     font point size
+  \-precision value     maximum number of significant digits to print
   \-preview type        image preview type
   \-quality value       JPEG/MIFF/PNG compression level
   \-quiet               suppress all warning messages
   \-red-primary point   chromaticity red primary point
   \-regard-warnings     pay attention to warning messages
+  \-remap filename      transform image colors to match this set of colors
+  \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
   \-scene value         image scene number
@@ -113,14 +122,23 @@ Image Operators:
                        adaptively sharpen pixels; increase effect near edges
   \-annotate geometry text
                        annotate the image with text
+  \-auto-gamma          automagically adjust gamma level of image
+  \-auto-level          automagically adjust color levels of image
   \-auto-orient         automatically orient image
+  \-bench iterations    measure performance
   \-black-threshold value
                        force all pixels below the threshold into black
+  \-blue-shift factor   simulate a scene at nighttime in the moonlight
   \-blur geometry       reduce image noise and reduce detail levels
   \-border geometry     surround image with a border of color
+  \-brightness-contrast geometry
+  \                     improve brightness / contrast of the image
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
   \-clamp               keep pixel values in range (0-QuantumRange)
+  \-clip                clip along the first path from the 8BIM profile
+  \-clip-mask filename  associate a clip mask with the image
+  \-clip-path id        clip along a named path from the 8BIM profile
   \-colorize value      colorize the image with the fill color
   \-color-matrix matrix apply color correction to the image
   \-contrast            enhance or reduce the image contrast
@@ -129,7 +147,10 @@ Image Operators:
   \-convolve coefficients
                        apply a convolution kernel to the image
   \-cycle amount        cycle the image colormap
+  \-deskew threshold    straighten an image
   \-despeckle           reduce the speckles within an image
+  \-distort method args
+  \                     distort images according to given method ad args
   \-draw string         annotate the image with a graphic primitive
   \-edge radius         apply a filter to detect edges in the image
   \-emboss radius       emboss an image
@@ -157,9 +178,12 @@ Image Operators:
   \-lat geometry        local adaptive thresholding
   \-layers method       optimize or compare image layers
   \-level value         adjust the level of image contrast
+  \-level-colors color,color
+  \                     level image with the given colors
   \-linear-stretch geometry
                        improve contrast by `stretching with saturation' the intensity range
-  \-magnify             double the size of the image with pixel art scaling
+  \-liquid-rescale geometry
+  \                     rescale image with seam-carving
   \-median geometry     apply a median filter to the image
   \-mode geometry       make each pixel the 'predominant color' of the neighborhood
   \-modulate value      vary the brightness, saturation, and hue
@@ -210,6 +234,8 @@ Image Operators:
                        lightness rescaling using sigmoidal contrast enhancement
   \-sketch geometry     simulate a pencil sketch
   \-solarize threshold  negate all pixels above the threshold level
+  \-sparse-color method args
+  \                     fill in a image based on a few color points
   \-splice geometry     splice the background color into the image
   \-spread amount       displace image pixels by a random amount
   \-strip               strip image of all profiles and comments
@@ -233,15 +259,11 @@ Image Operators:
 
 
 Image Channel Operators:
-  \-channel-extract channel-list
-                        extract the channels in order
-  \-channel-inject channel-list
-                        inject the channels in order
-  \-channel-swap channel,channel
-                        swap the channels
+  \-channel-fx expression
+                       exchange, extract, or transfer one or more image channels
+  \-separate            separate an image channel into a grayscale image
 
 Image Sequence Operators:
-  \-affinity filename   transform image colors to match this set of colors
   \-append              append an image sequence top to bottom (use +append for left to right)
   \-clut                apply a color lookup table to the image
   \-coalesce            merge a sequence of images
@@ -255,10 +277,9 @@ Image Sequence Operators:
   \-fx expression       apply mathematical expression to an image channel(s)
   \-hald-clut           apply a Hald color lookup table to the image
   \-morph value         morph an image sequence
-  \- osaic              create a mosaic from an image sequence
+  \-mosaic              create a mosaic from an image sequence
   \-poly terms          build a polynomial from the image sequence and the corresponding terms (coefficients and degree pairs)
   \-process arguments   process the image with a custom image filter
-  \-separate            separate an image channel into a grayscale image
   \-smush geometry      smush an image sequence together
   \-write filename      write images to this file
 
@@ -268,10 +289,13 @@ Image Stack Operators:
   \-duplicate count,indexes
                        duplicate an image one or more times
   \-insert index        insert last image into the image sequence
+  \-reverse             reverse image sequence
   \-swap indexes        swap two images in the image sequence
 
 Miscellaneous Options:
   \-debug events        display copious debugging information
+  \-distribute-cache port
+                       distributed pixel cache spanning one or more servers
   \-help                print program options
   \-log format          format of debugging information
   \-list type           print a list of supported option arguments
