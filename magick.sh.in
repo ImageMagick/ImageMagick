@@ -35,7 +35,7 @@ then
   echo "$@"
 fi
 env \
-  LD_LIBRARY_PATH="${top_builddir}/magick/.libs:${top_builddir}/wand/.libs:${LD_LIBRARY_PATH}" \
+  LD_LIBRARY_PATH="${top_builddir}/magick/.libs:${top_builddir}/wand/.libs${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
   MAGICK_CODER_MODULE_PATH="${MAGICK_CODER_MODULE_PATH}" \
   MAGICK_CONFIGURE_PATH="${MAGICK_CONFIGURE_BUILD_PATH}${DIRSEP}${MAGICK_CONFIGURE_SRC_PATH}" \
   MAGICK_FILTER_MODULE_PATH="${MAGICK_FILTER_MODULE_PATH}" \
