@@ -3145,16 +3145,13 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
     normal SVG 'Over' blending specifications, (see next for override)
     Note that this does NOT include the "Plus" composition method which has
     SVG definition for it to use a 'Plus' blending rather than 'Over' blending.
-
   * By default mathematical compositions work as per SVG definition. That is
     the results are synchronized with 'Over' alpha-blending (except "Plus"
     which uses 'plus' alpha-blending).
-
   * By removing the default 'sync' flag from the -channel setting however
     Break this inter-channel synchronization and do the mathematical operations
     only on the individual channels as specified by the -channel setting.
     That is do 'channel' math rather than 'SVG' composition.
-
   * With this change you can then use mathematical composition methods on
     individual channels or even with the alpha channel of images.
 
