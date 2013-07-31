@@ -134,6 +134,5 @@ Alexander Zimmermann
      Responsible for the ImageMagick Linux binary distributions for many years.
      His efforts are very much appreciated.
 
-
 Bastien ROUCARIÈS
-    Various patch from debian downstream
+    Various patch from Debian downstream.
