@@ -320,12 +320,12 @@ static int ReadBlobLZWByte(LZWInfo *lzw_info)
   int
     code;
 
-  ssize_t
-    count;
-
   size_t
     one,
     value;
+
+  ssize_t
+    count;
 
   if (lzw_info->stack->index != lzw_info->stack->codes)
     return(PopLZWStack(lzw_info->stack));
@@ -334,8 +334,7 @@ static int ReadBlobLZWByte(LZWInfo *lzw_info)
       lzw_info->genesis=MagickFalse;
       do
       {
-        lzw_info->first_code=(size_t) GetNextLZWCode(lzw_info,
-          lzw_info->bits);
+        lzw_info->first_code=(size_t) GetNextLZWCode(lzw_info,lzw_info->bits);
         lzw_info->last_code=lzw_info->first_code;
       } while (lzw_info->first_code == lzw_info->clear_code);
       return((int) lzw_info->first_code);
@@ -398,12 +397,15 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
   int
     c;
 
-  ssize_t
-    offset,
-    y;
+  InterlaceType
+    interlace;
 
   LZWInfo
     *lzw_info;
+
+  ssize_t
+    offset,
+    y;
 
   unsigned char
     data_size;
@@ -426,6 +428,9 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   exception=(&image->exception);
+  interlace=image->interlace;
+  if (image->rows < 8)
+    interlace=NoInterlace;
   pass=0;
   offset=0;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -451,14 +456,16 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
       index=ConstrainColormapIndex(image,(size_t) c);
       SetPixelIndex(indexes+x,index);
       SetPixelRGBO(q,image->colormap+(ssize_t) index);
-      SetPixelOpacity(q,(ssize_t) index == opacity ?
-        TransparentOpacity : OpaqueOpacity);
+      SetPixelOpacity(q,(ssize_t) index == opacity ? TransparentOpacity :
+        OpaqueOpacity);
       x++;
       q++;
     }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
     if (x < (ssize_t) image->columns)
       break;
-    if (image->interlace == NoInterlace)
+    if (interlace == NoInterlace)
       offset++;
     else
       switch (pass)
@@ -500,8 +507,6 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
           break;
         }
       }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      break;
   }
   lzw_info=RelinquishLZWInfo(lzw_info);
   if (y < (ssize_t) image->rows)
