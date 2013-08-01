@@ -31,20 +31,20 @@ namespace Magick
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison
   int MagickPPExport operator == ( const Magick::Image& left_,
-                                  const Magick::Image& right_ );
+                                   const Magick::Image& right_ );
   int MagickPPExport operator != ( const Magick::Image& left_,
-                                  const Magick::Image& right_ );
+                                   const Magick::Image& right_ );
   int MagickPPExport operator >  ( const Magick::Image& left_,
-                                  const Magick::Image& right_ );
+                                   const Magick::Image& right_ );
   int MagickPPExport operator <  ( const Magick::Image& left_,
-                                  const Magick::Image& right_ );
+                                   const Magick::Image& right_ );
   int MagickPPExport operator >= ( const Magick::Image& left_,
-                                  const Magick::Image& right_ );
+                                   const Magick::Image& right_ );
   int MagickPPExport operator <= ( const Magick::Image& left_,
-                                  const Magick::Image& right_ );
+                                   const Magick::Image& right_ );
 
   // C library initialization routine
-  void MagickPPExport InitializeMagick(const char *path_);
+  void MagickPPExport InitializeMagick ( const char *path_ );
 
   //
   // Image is the representation of an image.  In reality, it actually
@@ -55,10 +55,10 @@ namespace Magick
   {
   public:
     // Construct from image file or image specification
-    Image( const std::string &imageSpec_ );
+    Image ( const std::string &imageSpec_ );
     
     // Construct a blank image canvas of specified size and color
-    Image( const Geometry &size_, const Color &color_ );
+    Image ( const Geometry &size_, const Color &color_ );
 
     // Construct Image from in-memory BLOB
     Image ( const Blob &blob_ );
@@ -89,14 +89,14 @@ namespace Magick
             const void *pixels_ );
 
     // Default constructor
-    Image( void );
-    
+    Image ( void );
+
     // Destructor
-    virtual ~Image();
-    
+    virtual ~Image ();
+
     /// Copy constructor
     Image ( const Image & image_ );
-    
+
     // Assignment operator
     Image& operator= ( const Image &image_ );
 
@@ -111,7 +111,7 @@ namespace Magick
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.
     void            adaptiveBlur ( const double radius_ = 0.0,
-                           const double sigma_ = 1.0  );
+                                   const double sigma_ = 1.0 );
 
     // This is shortcut function for a fast interpolative resize using mesh
     // interpolation.  It works well for small resizes of less than +/- 50%
@@ -140,7 +140,7 @@ namespace Magick
     // Add noise to image with specified noise type
     void            addNoise ( const NoiseType noiseType_ );
     void            addNoiseChannel ( const ChannelType channel_,
-                                      const NoiseType noiseType_);
+                                      const NoiseType noiseType_ );
 
     // Transform image by specified affine (or free transform) matrix.
     void            affineTransform ( const DrawableAffine &affine );
@@ -162,22 +162,22 @@ namespace Magick
 
     // Annotate using specified text, and placement location
     void            annotate ( const std::string &text_,
-             const Geometry &location_ );
+                               const Geometry &location_ );
     // Annotate using specified text, bounding area, and placement
     // gravity
     void            annotate ( const std::string &text_,
-             const Geometry &boundingArea_,
-             const GravityType gravity_ );
+                               const Geometry &boundingArea_,
+                               const GravityType gravity_ );
     // Annotate with text using specified text, bounding area,
     // placement gravity, and rotation.
     void            annotate ( const std::string &text_,
-             const Geometry &boundingArea_,
-             const GravityType gravity_,
-             const double degrees_ );
+                               const Geometry &boundingArea_,
+                               const GravityType gravity_,
+                               const double degrees_ );
     // Annotate with text (bounding area is entire image) and placement
     // gravity.
     void            annotate ( const std::string &text_,
-             const GravityType gravity_ );
+                               const GravityType gravity_ );
 
     // Inserts the artifact with the specified name and value into
     // the artifact tree of the image.
@@ -199,6 +199,12 @@ namespace Magick
     // Adjusts an image so that its orientation is suitable for viewing.
     void            autoOrient ( void );
 
+    // Forces all pixels below the threshold into black while leaving all
+    // pixels at or above the threshold unchanged.
+    void            blackThreshold ( const std::string &threshold_ );
+    void            blackThresholdChannel ( const ChannelType channel_,
+                                            const std::string &threshold_ );
+
     // Blur image with specified blur factor
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
@@ -207,8 +213,8 @@ namespace Magick
                            const double sigma_ = 1.0  );
     void            blurChannel ( const ChannelType channel_,
                                   const double radius_ = 0.0,
-                                  const double sigma_ = 1.0  );
-    
+                                  const double sigma_ = 1.0 );
+
     // Border image (add border to image)
     void            border ( const Geometry &geometry_
                              = borderGeometryDefault );
@@ -754,7 +760,13 @@ namespace Magick
     // Map image pixels to a sine wave
     void            wave ( const double amplitude_ = 25.0,
                            const double wavelength_ = 150.0 );
-    
+
+    // Forces all pixels below the threshold into black while leaving all
+    // pixels at or below the threshold unchanged.
+    void            whiteThreshold ( const std::string &threshold_ );
+    void            whiteThresholdChannel ( const ChannelType channel_,
+                                            const std::string &threshold_ );
+
     // Write single image frame to a file
     void            write ( const std::string &imageSpec_ );
 
@@ -762,10 +774,10 @@ namespace Magick
     // format and adjoin parameters.
     void            write ( Blob *blob_ );
     void            write ( Blob *blob_,
-          const std::string &magick_ );
+                            const std::string &magick_ );
     void            write ( Blob *blob_,
-          const std::string &magick_,
-          const size_t depth_ );
+                            const std::string &magick_,
+                            const size_t depth_ );
 
     // Write single image frame to an array of pixels with storage
     // type specified by user (DispatchImage), e.g.
