@@ -2326,42 +2326,42 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-        fabs(image->resolution.x) > MagickEpsilon ? 72.0 : image->resolution.x);
+        fabs(image->resolution.x) > MagickEpsilon ? image->resolution.x : 72.0);
       break;
     }
     case 'y': /* Image vertical resolution (with units) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-        fabs(image->resolution.y) > MagickEpsilon ? 72.0 : image->resolution.y);
+        fabs(image->resolution.y) > MagickEpsilon ? image->resolution.y : 72.0);
       break;
     }
     case 'z': /* Image depth as read in */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-           (double) image->depth);
+        (double) image->depth);
       break;
     }
     case 'A': /* Image alpha channel  */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       string=CommandOptionToMnemonic(MagickBooleanOptions,
-           (ssize_t) image->alpha_trait);
+        (ssize_t) image->alpha_trait);
       break;
     }
     case 'C': /* Image compression method.  */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       string=CommandOptionToMnemonic(MagickCompressOptions,
-           (ssize_t) image->compression);
+        (ssize_t) image->compression);
       break;
     }
     case 'D': /* Image dispose method.  */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       string=CommandOptionToMnemonic(MagickDisposeOptions,
-           (ssize_t) image->dispose);
+        (ssize_t) image->dispose);
       break;
     }
     case 'G': /* Image size as geometry = "%wx%h" */
@@ -2375,7 +2375,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-           (double) image->page.height);
+        (double) image->page.height);
       break;
     }
     case 'M': /* Magick filename - filename given incl. coder & read mods */
@@ -2427,7 +2427,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-               image->delay);
+        image->delay);
       break;
     }
     case 'W': /* layer canvas width */
