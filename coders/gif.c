@@ -321,12 +321,12 @@ static int ReadBlobLZWByte(LZWInfo *lzw_info)
   int
     code;
 
-  ssize_t
-    count;
-
   size_t
     one,
     value;
+
+  ssize_t
+    count;
 
   if (lzw_info->stack->index != lzw_info->stack->codes)
     return(PopLZWStack(lzw_info->stack));
@@ -335,8 +335,7 @@ static int ReadBlobLZWByte(LZWInfo *lzw_info)
       lzw_info->genesis=MagickFalse;
       do
       {
-        lzw_info->first_code=(size_t) GetNextLZWCode(lzw_info,
-          lzw_info->bits);
+        lzw_info->first_code=(size_t) GetNextLZWCode(lzw_info,lzw_info->bits);
         lzw_info->last_code=lzw_info->first_code;
       } while (lzw_info->first_code == lzw_info->clear_code);
       return((int) lzw_info->first_code);
@@ -450,6 +449,8 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
       x++;
       q+=GetPixelChannels(image);
     }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
     if (x < (ssize_t) image->columns)
       break;
     if (image->interlace == NoInterlace)
@@ -494,8 +495,6 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
           break;
         }
       }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      break;
   }
   lzw_info=RelinquishLZWInfo(lzw_info);
   if (y < (ssize_t) image->rows)
