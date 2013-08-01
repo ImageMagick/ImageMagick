@@ -42,39 +42,39 @@ static bool magick_initialized=false;
 //
 
 MagickPPExport int Magick::operator == ( const Magick::Image& left_,
-                                        const Magick::Image& right_ )
+                                         const Magick::Image& right_ )
 {
   // If image pixels and signature are the same, then the image is identical
   return ( ( left_.rows() == right_.rows() ) &&
-	   ( left_.columns() == right_.columns() ) &&
-	   ( left_.signature() == right_.signature() )
-	   );
+           ( left_.columns() == right_.columns() ) &&
+           ( left_.signature() == right_.signature() )
+         );
 }
 MagickPPExport int Magick::operator != ( const Magick::Image& left_,
-                                        const Magick::Image& right_ )
+                                         const Magick::Image& right_ )
 {
   return ( ! (left_ == right_) );
 }
 MagickPPExport int Magick::operator >  ( const Magick::Image& left_,
-                                        const Magick::Image& right_ )
+                                         const Magick::Image& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
 MagickPPExport int Magick::operator <  ( const Magick::Image& left_,
-                                        const Magick::Image& right_ )
+                                         const Magick::Image& right_ )
 {
   // If image pixels are less, then image is smaller
   return ( ( left_.rows() * left_.columns() ) <
-	   ( right_.rows() * right_.columns() )
-	   );
+           ( right_.rows() * right_.columns() )
+         );
 }
 MagickPPExport int Magick::operator >= ( const Magick::Image& left_,
-                                        const Magick::Image& right_ )
+                                         const Magick::Image& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
 MagickPPExport int Magick::operator <= ( const Magick::Image& left_,
-                                        const Magick::Image& right_ )
+                                         const Magick::Image& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
 }
@@ -84,7 +84,7 @@ MagickPPExport int Magick::operator <= ( const Magick::Image& left_,
 //
 
 // Construct from image file or image specification
-Magick::Image::Image( const std::string &imageSpec_ )
+Magick::Image::Image ( const std::string &imageSpec_ )
   : _imgRef(new ImageRef)
 {
   try
@@ -105,8 +105,8 @@ Magick::Image::Image( const std::string &imageSpec_ )
 }
 
 // Construct a blank image canvas of specified size and color
-Magick::Image::Image( const Geometry &size_,
-		      const Color &color_ )
+Magick::Image::Image ( const Geometry &size_,
+                       const Color &color_ )
   : _imgRef(new ImageRef)
 {
   // xc: prefix specifies an X11 color string
@@ -156,7 +156,7 @@ Magick::Image::Image ( const Blob &blob_ )
 
 // Construct Image of specified size from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_,
-		       const Geometry &size_ )
+                       const Geometry &size_ )
   : _imgRef(new ImageRef)
 {
   try
@@ -178,8 +178,8 @@ Magick::Image::Image ( const Blob &blob_,
 
 // Construct Image of specified size and depth from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_,
-		       const Geometry &size_,
-		       const size_t depth_ )
+                       const Geometry &size_,
+                       const size_t depth_ )
   : _imgRef(new ImageRef)
 {
   try
@@ -201,9 +201,9 @@ Magick::Image::Image ( const Blob &blob_,
 
 // Construct Image of specified size, depth, and format from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_,
-		       const Geometry &size_,
-		       const size_t depth_,
-		       const std::string &magick_ )
+                       const Geometry &size_,
+                       const size_t depth_,
+                       const std::string &magick_ )
   : _imgRef(new ImageRef)
 {
   try
@@ -225,8 +225,8 @@ Magick::Image::Image ( const Blob &blob_,
 
 // Construct Image of specified size, and format from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_,
-		       const Geometry &size_,
-		       const std::string &magick_ )
+                       const Geometry &size_,
+                       const std::string &magick_ )
   : _imgRef(new ImageRef)
 {
   try
@@ -272,14 +272,14 @@ Magick::Image::Image ( const size_t width_,
 }
 
 // Default constructor
-Magick::Image::Image( void )
+Magick::Image::Image ( void )
   : _imgRef(new ImageRef)
 {
 }
 
 // Destructor
 /* virtual */
-Magick::Image::~Image()
+Magick::Image::~Image ()
 {
   bool doDelete = false;
   {
@@ -301,7 +301,7 @@ void Magick::Image::adaptiveBlur( const double radius_, const double sigma_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    AdaptiveBlurImage( image(), radius_, sigma_, &exceptionInfo);
+    AdaptiveBlurImage( constImage(), radius_, sigma_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -364,35 +364,32 @@ void Magick::Image::adaptiveThreshold ( const size_t width_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    AdaptiveThresholdImage( constImage(), width_, height_, offset_, &exceptionInfo );
+    AdaptiveThresholdImage( constImage(), width_, height_, offset_,
+                            &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Add noise to image
-void Magick::Image::addNoise( const NoiseType noiseType_ )
+void Magick::Image::addNoise ( const NoiseType noiseType_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    AddNoiseImage ( image(),
-		    noiseType_,
-		    &exceptionInfo );
+    AddNoiseImage ( constImage(), noiseType_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
-void Magick::Image::addNoiseChannel( const ChannelType channel_,
+void Magick::Image::addNoiseChannel ( const ChannelType channel_,
                                      const NoiseType noiseType_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    AddNoiseImageChannel ( image(),
-                           channel_,
-                           noiseType_,
+    AddNoiseImageChannel ( constImage(), channel_, noiseType_,
                            &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -404,17 +401,17 @@ void Magick::Image::affineTransform ( const DrawableAffine &affine_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  
+
   AffineMatrix _affine;
   _affine.sx = affine_.sx();
   _affine.sy = affine_.sy();
   _affine.rx = affine_.rx();
   _affine.ry = affine_.ry();
-  _affine.tx = affine_.tx();  
+  _affine.tx = affine_.tx();
   _affine.ty = affine_.ty();
-  
+
   MagickCore::Image* newImage =
-    AffineTransformImage( image(), &_affine, &exceptionInfo);     
+    AffineTransformImage( constImage(), &_affine, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -422,23 +419,23 @@ void Magick::Image::affineTransform ( const DrawableAffine &affine_ )
 
 // Annotate using specified text, and placement location
 void Magick::Image::annotate ( const std::string &text_,
-			       const Geometry &location_ )
+                               const Geometry &location_ )
 {
   annotate ( text_, location_,  NorthWestGravity, 0.0 );
 }
 // Annotate using specified text, bounding area, and placement gravity
 void Magick::Image::annotate ( const std::string &text_,
-			       const Geometry &boundingArea_,
-			       const GravityType gravity_ )
+                               const Geometry &boundingArea_,
+                               const GravityType gravity_ )
 {
   annotate ( text_, boundingArea_, gravity_, 0.0 );
 }
 // Annotate with text using specified text, bounding area, placement
 // gravity, and rotation.
 void Magick::Image::annotate ( const std::string &text_,
-			       const Geometry &boundingArea_,
-			       const GravityType gravity_,
-			       const double degrees_ )
+                               const Geometry &boundingArea_,
+                               const GravityType gravity_,
+                               const double degrees_ )
 {
   modifyImage();
 
@@ -450,19 +447,20 @@ void Magick::Image::annotate ( const std::string &text_,
   char boundingArea[MaxTextExtent];
 
   drawInfo->geometry = 0;
-  if ( boundingArea_.isValid() ){
-    if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
-      {
-        FormatLocaleString( boundingArea, MaxTextExtent, "%+.20g%+.20g",
-          (double) boundingArea_.xOff(), (double) boundingArea_.yOff() );
-      }
-    else
-      {
-        (void) CopyMagickString( boundingArea, string(boundingArea_).c_str(),
-          MaxTextExtent);
-      }
-    drawInfo->geometry = boundingArea;
-  }
+  if ( boundingArea_.isValid() )
+    {
+      if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
+        {
+          FormatLocaleString( boundingArea, MaxTextExtent, "%+.20g%+.20g",
+            (double) boundingArea_.xOff(), (double) boundingArea_.yOff() );
+        }
+      else
+        {
+          (void) CopyMagickString( boundingArea, string(boundingArea_).c_str(),
+            MaxTextExtent);
+        }
+      drawInfo->geometry = boundingArea;
+    }
 
   drawInfo->gravity = gravity_;
 
@@ -502,7 +500,7 @@ void Magick::Image::annotate ( const std::string &text_,
 }
 // Annotate with text (bounding area is entire image) and placement gravity.
 void Magick::Image::annotate ( const std::string &text_,
-			       const GravityType gravity_ )
+                               const GravityType gravity_ )
 {
   modifyImage();
 
@@ -573,31 +571,50 @@ void Magick::Image::autoOrient ( void )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    AutoOrientImage( constImage(), image()->orientation, &exceptionInfo);
+    AutoOrientImage( constImage(), image()->orientation, &exceptionInfo );
   replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::blackThreshold ( const std::string &threshold_ )
+{
+  modifyImage();
+  BlackThresholdImage( image(), threshold_.c_str() );
+  throwImageException();
+}
+
+void Magick::Image::blackThresholdChannel ( const ChannelType channel_,
+                                            const std::string &threshold_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  BlackThresholdImageChannel( image(), channel_, threshold_.c_str(),
+                              &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Blur image
-void Magick::Image::blur( const double radius_, const double sigma_ )
+void Magick::Image::blur ( const double radius_, const double sigma_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    BlurImage( image(), radius_, sigma_, &exceptionInfo);
+    BlurImage( constImage(), radius_, sigma_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
-void Magick::Image::blurChannel( const ChannelType channel_,
-                                 const double radius_, const double sigma_ )
+void Magick::Image::blurChannel ( const ChannelType channel_,
+                                  const double radius_, const double sigma_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    BlurImageChannel( image(), channel_,radius_, sigma_, &exceptionInfo);
+    BlurImageChannel( constImage(), channel_,radius_, sigma_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2303,21 +2320,37 @@ void Magick::Image::wave ( const double amplitude_, const double wavelength_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    WaveImage( image(),
-	       amplitude_,
-	       wavelength_,
-	       &exceptionInfo);
+    WaveImage( constImage(), amplitude_, wavelength_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::whiteThreshold( const std::string &threshold_ )
+{
+  modifyImage();
+  WhiteThresholdImage( image(), threshold_.c_str() );
+  throwImageException();
+}
+
+void Magick::Image::whiteThresholdChannel ( const ChannelType channel_,
+                                            const std::string &threshold_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  WhiteThresholdImageChannel( image(), channel_, threshold_.c_str(),
+                              &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Write image to file
-void Magick::Image::write( const std::string &imageSpec_ )
+void Magick::Image::write ( const std::string &imageSpec_ )
 {
   modifyImage();
   fileName( imageSpec_ );
-  WriteImage( imageInfo(), image() );
+  WriteImage( constImageInfo(), image() );
   throwImageException();
 }
 
@@ -2328,35 +2361,31 @@ void Magick::Image::write ( Blob *blob_ )
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = ImagesToBlob( imageInfo(),
-			    image(),
-			    &length,
-			    &exceptionInfo);
+  void* data = ImagesToBlob( constImageInfo(), image(), &length,
+                             &exceptionInfo );
   throwException( exceptionInfo );
   blob_->updateNoCopy( data, length, Blob::MallocAllocator );
   throwImageException();
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 void Magick::Image::write ( Blob *blob_,
-			    const std::string &magick_ )
+                            const std::string &magick_ )
 {
   modifyImage();
   magick(magick_);
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = ImagesToBlob( imageInfo(),
-			    image(),
-			    &length,
-			    &exceptionInfo);
+  void* data = ImagesToBlob( constImageInfo(), image(), &length,
+                             &exceptionInfo );
   throwException( exceptionInfo );
   blob_->updateNoCopy( data, length, Blob::MallocAllocator );
   throwImageException();
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 void Magick::Image::write ( Blob *blob_,
-			    const std::string &magick_,
-			    const size_t depth_ )
+                            const std::string &magick_,
+                            const size_t depth_ )
 {
   modifyImage();
   magick(magick_);
@@ -2364,10 +2393,8 @@ void Magick::Image::write ( Blob *blob_,
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = ImagesToBlob( imageInfo(),
-			    image(),
-			    &length,
-			    &exceptionInfo);
+  void* data = ImagesToBlob( constImageInfo(), image(), &length,
+                             &exceptionInfo );
   throwException( exceptionInfo );
   blob_->updateNoCopy( data, length, Blob::MallocAllocator );
   throwImageException();
@@ -2388,14 +2415,14 @@ void Magick::Image::write ( const ssize_t x_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   ExportImagePixels( image(), x_, y_, columns_, rows_, map_.c_str(), type_,
-                 pixels_,
+                     pixels_,
     &exceptionInfo);
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Zoom image
-void Magick::Image::zoom( const Geometry &geometry_ )
+void Magick::Image::zoom ( const Geometry &geometry_ )
 {
   // Calculate new size.  This code should be supported using binary arguments
   // in the ImageMagick library.
@@ -2411,12 +2438,8 @@ void Magick::Image::zoom( const Geometry &geometry_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    ResizeImage( image(),
-               width,
-               height,
-               image()->filter,
-               image()->blur,
-               &exceptionInfo);
+    ResizeImage( constImage(), width, height, image()->filter, image()->blur,
+                 &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
