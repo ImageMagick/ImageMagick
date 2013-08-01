@@ -44,6 +44,7 @@
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/client.h"
+#include "magick/colorspace-private.h"
 #include "magick/display.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
