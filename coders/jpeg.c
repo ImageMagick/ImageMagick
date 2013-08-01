@@ -2531,7 +2531,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         case RGBColorspace:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Image colorspace is sRGB");
+            "Image colorspace is RGB");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Sampling factors: %dx%d,%dx%d,%dx%d",
             jpeg_info.comp_info[0].h_samp_factor,
