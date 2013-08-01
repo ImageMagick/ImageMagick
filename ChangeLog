@@ -1,6 +1,8 @@
 2013-08-31  6.8.6-8 Cristy  <quetzlzacatenango@image...>
   * Properly handle interlaced GIF images with less than 8 rows (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23812).
+  * Ensure image colorspace is sRGB when writing WebP format (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=23841).
 
 2013-07-25  6.8.6-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-7, SVN revision 12752.
