@@ -2325,17 +2325,15 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'x': /* Image horizontal resolution (with units) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MaxTextExtent,"%g %s",
-        image->resolution.x,CommandOptionToMnemonic(
-        MagickResolutionOptions,(ssize_t)image->units));
+      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+        fabs(image->resolution.x) > MagickEpsilon ? 72.0 : image->resolution.x);
       break;
     }
     case 'y': /* Image vertical resolution (with units) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MaxTextExtent,"%g %s",
-        image->resolution.y,CommandOptionToMnemonic(MagickResolutionOptions,
-        (ssize_t) image->units));
+      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+        fabs(image->resolution.y) > MagickEpsilon ? 72.0 : image->resolution.y);
       break;
     }
     case 'z': /* Image depth as read in */
