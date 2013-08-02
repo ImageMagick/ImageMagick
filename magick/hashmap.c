@@ -161,8 +161,6 @@ MagickExport MagickBooleanType AppendValueToLinkedList(
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
   list_info->debug=IsEventLogging();
-  if (list_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (list_info->elements == list_info->capacity)
     return(MagickFalse);
   next=(ElementInfo *) AcquireMagickMemory(sizeof(*next));
@@ -418,8 +416,6 @@ MagickExport LinkedListInfo *DestroyLinkedList(LinkedListInfo *list_info,
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (list_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(list_info->semaphore);
   for (next=list_info->head; next != (ElementInfo *) NULL; )
   {
@@ -827,8 +823,6 @@ MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (list_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (index >= list_info->elements)
     return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
