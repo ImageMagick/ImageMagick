@@ -840,7 +840,6 @@ MagickExport char *DestroyString(char *string)
 */
 MagickExport StringInfo *DestroyStringInfo(StringInfo *string_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   if (string_info->datum != (unsigned char *) NULL)
