@@ -84,9 +84,6 @@ struct _LinkedListInfo
     *tail,
     *next;
 
-  MagickBooleanType
-    debug;
-
   SemaphoreInfo
     *semaphore;
 
@@ -116,9 +113,6 @@ struct _HashmapInfo
 
   LinkedListInfo
     **map;
-
-  MagickBooleanType
-    debug;
 
   SemaphoreInfo
     *semaphore;
@@ -160,7 +154,6 @@ MagickExport MagickBooleanType AppendValueToLinkedList(
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  list_info->debug=IsEventLogging();
   if (list_info->elements == list_info->capacity)
     return(MagickFalse);
   next=(ElementInfo *) AcquireMagickMemory(sizeof(*next));
@@ -218,8 +211,6 @@ MagickExport void ClearLinkedList(LinkedListInfo *list_info,
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(list_info->semaphore);
   next=list_info->head;
   while (next != (ElementInfo *) NULL)
@@ -343,8 +334,6 @@ MagickExport HashmapInfo *DestroyHashmap(HashmapInfo *hashmap_info)
 
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickSignature);
-  if (IfMagickTrue(hashmap_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(hashmap_info->semaphore);
   for (i=0; i < (ssize_t) hashmap_info->capacity; i++)
   {
@@ -456,8 +445,6 @@ MagickExport void *GetLastValueInLinkedList(LinkedListInfo *list_info)
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (list_info->elements == 0)
     return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
@@ -501,8 +488,6 @@ MagickExport void *GetNextKeyInHashmap(HashmapInfo *hashmap_info)
 
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickSignature);
-  if (IfMagickTrue(hashmap_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(hashmap_info->semaphore);
   while (hashmap_info->next < hashmap_info->capacity)
   {
@@ -564,8 +549,6 @@ MagickExport void *GetNextValueInHashmap(HashmapInfo *hashmap_info)
 
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickSignature);
-  if (IfMagickTrue(hashmap_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(hashmap_info->semaphore);
   while (hashmap_info->next < hashmap_info->capacity)
   {
@@ -621,8 +604,6 @@ MagickExport void *GetNextValueInLinkedList(LinkedListInfo *list_info)
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(list_info->semaphore);
   if (list_info->next == (ElementInfo *) NULL)
     {
@@ -662,8 +643,6 @@ MagickExport size_t GetNumberOfEntriesInHashmap(
 {
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickSignature);
-  if (IfMagickTrue(hashmap_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(hashmap_info->entries);
 }
 
@@ -696,8 +675,6 @@ MagickExport size_t GetNumberOfElementsInLinkedList(
 {
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(list_info->elements);
 }
 
@@ -742,8 +719,6 @@ MagickExport void *GetValueFromHashmap(HashmapInfo *hashmap_info,
 
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickSignature);
-  if (IfMagickTrue(hashmap_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (key == (const void *) NULL)
     return((void *) NULL);
   LockSemaphoreInfo(hashmap_info->semaphore);
@@ -1017,8 +992,6 @@ MagickExport MagickBooleanType InsertValueInLinkedList(
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (value == (const void *) NULL)
     return(MagickFalse);
   if ((index > list_info->elements) ||
@@ -1124,8 +1097,6 @@ MagickExport MagickBooleanType InsertValueInSortedLinkedList(
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((compare == (int (*)(const void *,const void *)) NULL) ||
       (value == (const void *) NULL))
     return(MagickFalse);
@@ -1200,8 +1171,6 @@ MagickExport MagickBooleanType IsHashmapEmpty(const HashmapInfo *hashmap_info)
 {
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickSignature);
-  if (IfMagickTrue(hashmap_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(IsMagickTrue(hashmap_info->entries == 0));
 }
 
@@ -1271,8 +1240,6 @@ MagickExport MagickBooleanType LinkedListToArray(LinkedListInfo *list_info,
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (array == (void **) NULL)
     return(MagickFalse);
   LockSemaphoreInfo(list_info->semaphore);
@@ -1359,7 +1326,6 @@ MagickExport HashmapInfo *NewHashmap(const size_t capacity,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(hashmap_info->map,0,(size_t) capacity*
     sizeof(*hashmap_info->map));
-  hashmap_info->debug=IsEventLogging();
   hashmap_info->semaphore=AllocateSemaphoreInfo();
   hashmap_info->signature=MagickSignature;
   return(hashmap_info);
@@ -1402,7 +1368,6 @@ MagickExport LinkedListInfo *NewLinkedList(const size_t capacity)
   list_info->head=(ElementInfo *) NULL;
   list_info->tail=(ElementInfo *) NULL;
   list_info->next=(ElementInfo *) NULL;
-  list_info->debug=MagickFalse;
   list_info->semaphore=AllocateSemaphoreInfo();
   list_info->signature=MagickSignature;
   return(list_info);
@@ -1534,8 +1499,6 @@ MagickExport MagickBooleanType PutEntryInHashmap(HashmapInfo *hashmap_info,
 
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickSignature);
-  if (IfMagickTrue(hashmap_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((key == (void *) NULL) || (value == (void *) NULL))
     return(MagickFalse);
   next=(EntryInfo *) AcquireMagickMemory(sizeof(*next));
@@ -1631,8 +1594,6 @@ MagickExport void *RemoveElementByValueFromLinkedList(LinkedListInfo *list_info,
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((list_info->elements == 0) || (value == (const void *) NULL))
     return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
@@ -1711,8 +1672,6 @@ MagickExport void *RemoveElementFromLinkedList(LinkedListInfo *list_info,
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (index >= list_info->elements)
     return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
@@ -1791,8 +1750,6 @@ MagickExport void *RemoveEntryFromHashmap(HashmapInfo *hashmap_info,
 
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickSignature);
-  if (IfMagickTrue(hashmap_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (key == (const void *) NULL)
     return((void *) NULL);
   LockSemaphoreInfo(hashmap_info->semaphore);
@@ -1867,8 +1824,6 @@ MagickExport void *RemoveLastElementFromLinkedList(LinkedListInfo *list_info)
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (list_info->elements == 0)
     return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
@@ -1925,8 +1880,6 @@ MagickExport void ResetHashmapIterator(HashmapInfo *hashmap_info)
 {
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickSignature);
-  if (IfMagickTrue(hashmap_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(hashmap_info->semaphore);
   hashmap_info->next=0;
   hashmap_info->head_of_list=MagickFalse;
@@ -1961,8 +1914,6 @@ MagickExport void ResetLinkedListIterator(LinkedListInfo *list_info)
 {
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickSignature);
-  if (IfMagickTrue(list_info->debug))
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(list_info->semaphore);
   list_info->next=list_info->head;
   UnlockSemaphoreInfo(list_info->semaphore);

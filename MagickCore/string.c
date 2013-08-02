@@ -267,7 +267,6 @@ MagickExport char *CloneString(char **destination,const char *source)
   size_t
     length;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(destination != (char **) NULL);
   if (source == (const char *) NULL)
     {
@@ -320,7 +319,6 @@ MagickExport StringInfo *CloneStringInfo(const StringInfo *string_info)
   StringInfo
     *clone_info;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   clone_info=AcquireStringInfo(string_info->length);
@@ -369,7 +367,6 @@ MagickExport int CompareStringInfo(const StringInfo *target,
   int
     status;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(target != (StringInfo *) NULL);
   assert(target->signature == MagickSignature);
   assert(source != (StringInfo *) NULL);
@@ -544,7 +541,6 @@ MagickExport void ConcatenateStringInfo(StringInfo *string_info,
   size_t
     length;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   assert(source != (const StringInfo *) NULL);
@@ -927,7 +923,6 @@ MagickExport char *EscapeString(const char *source,const char escape)
   size_t
     length;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(source != (const char *) NULL);
   length=strlen(source);
   for (p=source; *p != '\0'; p++)
@@ -1734,7 +1729,6 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
     j;
 
   assert(id != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",id);
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   p=(char *) string_info->datum;
@@ -1809,7 +1803,6 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
 */
 MagickExport void ResetStringInfo(StringInfo *string_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   (void) ResetMagickMemory(string_info->datum,0,string_info->length);
@@ -1842,7 +1835,6 @@ MagickExport void ResetStringInfo(StringInfo *string_info)
 MagickExport void SetStringInfo(StringInfo *string_info,
   const StringInfo *source)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   assert(source != (StringInfo *) NULL);
@@ -1883,7 +1875,6 @@ MagickExport void SetStringInfo(StringInfo *string_info,
 MagickExport void SetStringInfoDatum(StringInfo *string_info,
   const unsigned char *source)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   if (string_info->length != 0)
@@ -1917,7 +1908,6 @@ MagickExport void SetStringInfoDatum(StringInfo *string_info,
 MagickExport void SetStringInfoLength(StringInfo *string_info,
   const size_t length)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   if (~length < MaxTextExtent)
@@ -1959,7 +1949,6 @@ MagickExport void SetStringInfoLength(StringInfo *string_info,
 */
 MagickExport void SetStringInfoPath(StringInfo *string_info,const char *path)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   assert(path != (const char *) NULL);
@@ -1994,7 +1983,6 @@ MagickExport StringInfo *SplitStringInfo(StringInfo *string_info,
   StringInfo
     *split_info;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   if (offset > string_info->length)
@@ -2569,7 +2557,6 @@ MagickExport StringInfo *StringToStringInfo(const char *string)
   StringInfo
     *string_info;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string != (const char *) NULL);
   string_info=AcquireStringInfo(strlen(string));
   SetStringInfoDatum(string_info,(const unsigned char *) string);
