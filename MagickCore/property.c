@@ -2402,7 +2402,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-        (image->quality == 0 ? 92 : image->quality);
+        (image->quality == 0 ? 92 : image->quality));
       break;
     }
     case 'S': /* Number of scenes in image list.  */
