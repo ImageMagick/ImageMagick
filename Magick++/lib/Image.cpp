@@ -384,7 +384,7 @@ void Magick::Image::addNoise ( const NoiseType noiseType_ )
 }
 
 void Magick::Image::addNoiseChannel ( const ChannelType channel_,
-                                     const NoiseType noiseType_ )
+                                      const NoiseType noiseType_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -423,6 +423,7 @@ void Magick::Image::annotate ( const std::string &text_,
 {
   annotate ( text_, location_,  NorthWestGravity, 0.0 );
 }
+
 // Annotate using specified text, bounding area, and placement gravity
 void Magick::Image::annotate ( const std::string &text_,
                                const Geometry &boundingArea_,
@@ -430,6 +431,7 @@ void Magick::Image::annotate ( const std::string &text_,
 {
   annotate ( text_, boundingArea_, gravity_, 0.0 );
 }
+
 // Annotate with text using specified text, bounding area, placement
 // gravity, and rotation.
 void Magick::Image::annotate ( const std::string &text_,
@@ -498,6 +500,7 @@ void Magick::Image::annotate ( const std::string &text_,
 
   throwImageException();
 }
+
 // Annotate with text (bounding area is entire image) and placement gravity.
 void Magick::Image::annotate ( const std::string &text_,
                                const GravityType gravity_ )
@@ -596,6 +599,17 @@ void Magick::Image::blackThresholdChannel ( const ChannelType channel_,
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::blueShift ( const double factor_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    BlueShiftImage( constImage(), factor_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Blur image
 void Magick::Image::blur ( const double radius_, const double sigma_ )
 {
@@ -634,6 +648,23 @@ void Magick::Image::border( const Geometry &geometry_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::brightnessContrast ( const double brightness_,
+                                         const double contrast_ )
+{
+  modifyImage();
+  BrightnessContrastImage( image(), brightness_, contrast_ );
+  throwImageException();
+}
+
+void Magick::Image::brightnessContrastChannel ( const ChannelType channel_,
+                                                const double brightness_,
+                                                const double contrast_ )
+{
+  modifyImage();
+  BrightnessContrastImageChannel( image(), channel_, brightness_, contrast_ );
+  throwImageException();
+}
+
 // Extract channel from image
 void Magick::Image::channel ( const ChannelType channel_ )
 {
@@ -650,6 +681,7 @@ void Magick::Image::channelDepth ( const ChannelType channel_,
   SetImageChannelDepth( image(), channel_, depth_);
   throwImageException();
 }
+
 size_t Magick::Image::channelDepth ( const ChannelType channel_ )
 {
   size_t channel_depth;
@@ -663,9 +695,8 @@ size_t Magick::Image::channelDepth ( const ChannelType channel_ )
   return channel_depth;
 }
 
-
 // Charcoal-effect image
-void Magick::Image::charcoal( const double radius_, const double sigma_ )
+void Magick::Image::charcoal ( const double radius_, const double sigma_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -677,7 +708,7 @@ void Magick::Image::charcoal( const double radius_, const double sigma_ )
 }
 
 // Chop image
-void Magick::Image::chop( const Geometry &geometry_ )
+void Magick::Image::chop ( const Geometry &geometry_ )
 {
   RectangleInfo chopInfo = geometry_;
   ExceptionInfo exceptionInfo;
@@ -698,32 +729,59 @@ void Magick::Image::cdl ( const std::string &cdl_ )
   throwImageException();
 }
 
+void Magick::Image::clamp ( void )
+{
+  modifyImage();
+  ClampImage( image() );
+  throwImageException();
+}
+
+void Magick::Image::clampChannel ( const ChannelType channel_ )
+{
+  modifyImage();
+  ClampImageChannel( image(), channel_ );
+  throwImageException();
+}
+
+void Magick::Image::clut ( const Image &clutImage_ )
+{
+  modifyImage();
+  ClutImage( image(), clutImage_.constImage() );
+  throwImageException();
+}
+
+void Magick::Image::clutChannel ( const Image &clutImage_,
+                                  const ChannelType channel_ )
+{
+  modifyImage();
+  ClutImageChannel( image(), channel_, clutImage_.constImage() );
+  throwImageException();
+}
+
 // Colorize
 void Magick::Image::colorize ( const unsigned int opacityRed_,
                                const unsigned int opacityGreen_,
                                const unsigned int opacityBlue_,
-			       const Color &penColor_ )
+                               const Color &penColor_ )
 {
   if ( !penColor_.isValid() )
-  {
-    throwExceptionExplicit( OptionError,
-			    "Pen color argument is invalid");
-  }
+    throwExceptionExplicit( OptionError, "Pen color argument is invalid" );
 
   char opacity[MaxTextExtent];
-  FormatLocaleString(opacity,MaxTextExtent,"%u/%u/%u",opacityRed_,opacityGreen_,opacityBlue_);
+  FormatLocaleString(opacity, MaxTextExtent, "%u/%u/%u",
+                              opacityRed_, opacityGreen_, opacityBlue_ );
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-  ColorizeImage ( image(), opacity,
-		  penColor_, &exceptionInfo );
+  ColorizeImage ( image(), opacity, penColor_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
+
 void Magick::Image::colorize ( const unsigned int opacity_,
-			       const Color &penColor_ )
+                               const Color &penColor_ )
 {
   colorize( opacity_, opacity_, opacity_, penColor_ );
 }
@@ -731,7 +789,7 @@ void Magick::Image::colorize ( const unsigned int opacity_,
 // Apply a color matrix to the image channels.  The user supplied
 // matrix may be of order 1 to 6 (1x1 through 6x6).
 void Magick::Image::colorMatrix (const size_t order_,
-         const double *color_matrix_)
+                                 const double *color_matrix_)
 {
   KernelInfo
     *kernel_info;
@@ -745,7 +803,7 @@ void Magick::Image::colorMatrix (const size_t order_,
   MagickCore::Image* newImage =
     ColorMatrixImage( image(), kernel_info, &exceptionInfo );
   kernel_info->values=(double *) NULL;
-  kernel_info=DestroyKernelInfo(kernel_info);
+  kernel_info=DestroyKernelInfo( kernel_info );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -764,24 +822,22 @@ bool Magick::Image::compare ( const Image &reference_ )
 
 // Composite two images
 void Magick::Image::composite ( const Image &compositeImage_,
-				const ssize_t xOffset_,
-				const ssize_t yOffset_,
-				const CompositeOperator compose_ )
+                                const ssize_t xOffset_,
+                                const ssize_t yOffset_,
+                                const CompositeOperator compose_ )
 {
   // Image supplied as compositeImage is composited with current image and
   // results in updating current image.
   modifyImage();
 
-  CompositeImage( image(),
-		  compose_,
-		  compositeImage_.constImage(),
-		  xOffset_,
-                  yOffset_ );
+  CompositeImage( image(), compose_, compositeImage_.constImage(),
+                  xOffset_, yOffset_ );
   throwImageException();
 }
+
 void Magick::Image::composite ( const Image &compositeImage_,
-				const Geometry &offset_,
-				const CompositeOperator compose_ )
+                                const Geometry &offset_,
+                                const CompositeOperator compose_ )
 {
   modifyImage();
 
@@ -790,19 +846,17 @@ void Magick::Image::composite ( const Image &compositeImage_,
   size_t width = columns();
   size_t height = rows();
 
-  ParseMetaGeometry (static_cast<std::string>(offset_).c_str(),
-		      &x, &y,
-		      &width, &height );
+  ParseMetaGeometry ( static_cast<std::string>(offset_).c_str(),
+                      &x, &y,
+                      &width, &height );
 
-  CompositeImage( image(),
-		  compose_,
-		  compositeImage_.constImage(),
-		  x, y );
+  CompositeImage( image(), compose_, compositeImage_.constImage(), x, y );
   throwImageException();
 }
+
 void Magick::Image::composite ( const Image &compositeImage_,
-				const GravityType gravity_,
-				const CompositeOperator compose_ )
+                                const GravityType gravity_,
+                                const CompositeOperator compose_ )
 {
   modifyImage();
 
@@ -811,10 +865,8 @@ void Magick::Image::composite ( const Image &compositeImage_,
   SetGeometry(compositeImage_.constImage(), &geometry);
   GravityAdjustGeometry(columns(), rows(), gravity_, &geometry);
 
-  CompositeImage( image(),
-		  compose_,
-		  compositeImage_.constImage(),
-		  geometry.x, geometry.y );
+  CompositeImage( image(), compose_, compositeImage_.constImage(),
+                  geometry.x, geometry.y );
   throwImageException();
 }
 
@@ -823,6 +875,24 @@ void Magick::Image::contrast ( const size_t sharpen_ )
 {
   modifyImage();
   ContrastImage ( image(), (MagickBooleanType) sharpen_ );
+  throwImageException();
+}
+
+void Magick::Image::contrastStretch ( const double black_point_,
+                                      const double white_point_ )
+{
+  modifyImage();
+  ContrastStretchImageChannel( image(), DefaultChannels, black_point_,
+                               white_point_ );
+  throwImageException();
+}
+
+void Magick::Image::contrastStretchChannel ( const ChannelType channel_,
+                                             const double black_point_,
+                                             const double white_point_ )
+{
+  modifyImage();
+  ContrastStretchImageChannel( image(), channel_, black_point_, white_point_ );
   throwImageException();
 }
 
@@ -2841,7 +2911,6 @@ Magick::ColorspaceType Magick::Image::colorspaceType ( void ) const
   return constOptions()->colorspaceType();
 }
 
-
 // Comment string
 void Magick::Image::comment ( const std::string &comment_ )
 {
@@ -2851,6 +2920,7 @@ void Magick::Image::comment ( const std::string &comment_ )
     SetImageProperty( image(), "Comment", comment_.c_str() );
   throwImageException();
 }
+
 std::string Magick::Image::comment ( void ) const
 {
   const char *value = GetImageProperty( constImage(), "Comment" );
