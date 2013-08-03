@@ -265,8 +265,8 @@ namespace Magick
 
     // Apply a color lookup table (CLUT) to the image.
     void            clut ( const Image &clutImage_ );
-    void            clutChannel ( const Image &clutImage_,
-                                  const ChannelType channel_ );
+    void            clutChannel ( const ChannelType channel_,
+                                  const Image &clutImage_);
 
     // Colorize image with pen color, using specified percent opacity
     // for red, green, and blue quantums
@@ -327,13 +327,23 @@ namespace Magick
 
     // Crop image (subregion of original image)
     void            crop ( const Geometry &geometry_ );
-    
+
     // Cycle image colormap
     void            cycleColormap ( const ::ssize_t amount_ );
-    
+
+    // Converts cipher pixels to plain pixels.
+    void            decipher ( const std::string &passphrase_ );
+
+    // Removes skew from the image. Skew is an artifact that occurs in scanned
+    // images because of the camera being misaligned, imperfections in the
+    // scanning or surface, or simply because the paper was not placed
+    // completely flat when scanned. The value of threshold_ ranges from 0
+    // to QuantumRange.
+    void            deskew ( const double threshold_ );
+
     // Despeckle image (reduce speckle noise)
     void            despeckle ( void );
-    
+
     // Display image on screen
     void            display ( void );
 
@@ -351,31 +361,38 @@ namespace Magick
 
     // Draw on image using a drawable list
     void            draw ( const std::list<Magick::Drawable> &drawable_ );
-    
+
     // Edge image (hilight edges in image)
     void            edge ( const double radius_ = 0.0 );
-    
+
     // Emboss image (hilight edges with 3D effect)
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.
     void            emboss ( const double radius_ = 0.0,
                              const double sigma_ = 1.0);
-    
+
+    // Converts pixels to cipher-pixels.
+    void            encipher ( const std::string &passphrase_ );
+
     // Enhance image (minimize noise)
     void            enhance ( void );
-    
+
     // Equalize image (histogram equalization)
     void            equalize ( void );
 
     // Erase image to current "background color"
     void            erase ( void );
-    
+
     // Extend the image as defined by the geometry.
     void            extent ( const Geometry &geometry_ );
-    void            extent ( const Geometry &geometry_, const Color &backgroundColor );
-    void            extent ( const Geometry &geometry_, const GravityType gravity_ );
-    void            extent ( const Geometry &geometry_, const Color &backgroundColor, const GravityType gravity_ );
+    void            extent ( const Geometry &geometry_,
+                             const Color &backgroundColor );
+    void            extent ( const Geometry &geometry_,
+                             const GravityType gravity_ );
+    void            extent ( const Geometry &geometry_,
+                             const Color &backgroundColor,
+                             const GravityType gravity_ );
 
     // Flip image (reflect each scanline in the vertical direction)
     void            flip ( void );
@@ -383,22 +400,22 @@ namespace Magick
     // Flood-fill color across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( const ::ssize_t x_,
-                                    const ::ssize_t y_,
-            const Color &fillColor_ );
-    void            floodFillColor( const Geometry &point_,
-            const Color &fillColor_ );
+    void            floodFillColor ( const ::ssize_t x_,
+                                     const ::ssize_t y_,
+                                     const Color &fillColor_ );
+    void            floodFillColor ( const Geometry &point_,
+                                     const Color &fillColor_ );
 
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( const ::ssize_t x_,
-                                    const ::ssize_t y_,
-            const Color &fillColor_,
-            const Color &borderColor_ );
-    void            floodFillColor( const Geometry &point_,
-            const Color &fillColor_,
-            const Color &borderColor_ );
+    void            floodFillColor ( const ::ssize_t x_,
+                                     const ::ssize_t y_,
+                                     const Color &fillColor_,
+                                     const Color &borderColor_ );
+    void            floodFillColor ( const Geometry &point_,
+                                     const Color &fillColor_,
+                                     const Color &borderColor_ );
 
     // Floodfill pixels matching color (within fuzz factor) of target
     // pixel(x,y) with replacement opacity value using method.
@@ -410,26 +427,26 @@ namespace Magick
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( const ::ssize_t x_,
-                                      const ::ssize_t y_,
-              const Image &texture_ );
-    void            floodFillTexture( const Geometry &point_,
-              const Image &texture_ );
+    void            floodFillTexture ( const ::ssize_t x_,
+                                       const ::ssize_t y_,
+                                       const Image &texture_ );
+    void            floodFillTexture ( const Geometry &point_,
+                                       const Image &texture_ );
 
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( const ::ssize_t x_,
-                                      const ::ssize_t y_,
-              const Image &texture_,
-              const Color &borderColor_ );
-    void            floodFillTexture( const Geometry &point_,
-              const Image &texture_,
-              const Color &borderColor_ );
-    
+    void            floodFillTexture ( const ::ssize_t x_,
+                                       const ::ssize_t y_,
+                                       const Image &texture_,
+                                       const Color &borderColor_ );
+    void            floodFillTexture ( const Geometry &point_,
+                                       const Image &texture_,
+                                       const Color &borderColor_ );
+
     // Flop image (reflect each scanline in the horizontal direction)
     void            flop ( void );
-    
+
     // Frame image
     void            frame ( const Geometry &geometry_ = frameGeometryDefault );
     void            frame ( const size_t width_,
@@ -441,12 +458,12 @@ namespace Magick
     void            fx ( const std::string expression );
     void            fx ( const std::string expression,
                          const Magick::ChannelType channel );
-    
+
     // Gamma correct image
     void            gamma ( const double gamma_ );
     void            gamma ( const double gammaRed_,
-          const double gammaGreen_,
-          const double gammaBlue_ );
+                            const double gammaGreen_,
+                            const double gammaBlue_ );
 
     // Gaussian blur image
     // The number of neighbor pixels to be included in the convolution
@@ -460,16 +477,15 @@ namespace Magick
     // Apply a color lookup table (Hald CLUT) to the image.
     void            haldClut ( const Image &clutImage_ );
 
-    
     // Implode image (special effect)
     void            implode ( const double factor_ );
-    
-    // implements the inverse discrete Fourier transform (DFT) of the image
+
+    // Implements the inverse discrete Fourier transform (DFT) of the image
     // either as a magnitude / phase or real / imaginary image pair.
-    //
     void            inverseFourierTransform ( const Image &phase_ );
     void            inverseFourierTransform ( const Image &phase_,
                                               const bool magnitude_ );
+
     // Label image
     void            label ( const std::string &label_ );
 
@@ -503,6 +519,18 @@ namespace Magick
                                    const double black_point,
                                    const double white_point,
                                    const double mid_point=1.0 );
+
+    // Maps the given color to "black" and "white" values, linearly spreading
+    // out the colors, and level values on a channel by channel bases, as
+    // per level(). The given colors allows you to specify different level
+    // ranges for each of the color channels separately.
+    void            levelColors ( const Color &whiteColor_,
+                                  const Color &blackColor_,
+                                  const bool invert_ );
+    void            levelColorsChannel ( const ChannelType channel_,
+                                         const Color &whiteColor_,
+                                         const Color &blackColor_,
+                                         const bool invert_ = false );
 
     // Magnify image by integral size
     void            magnify ( void );
