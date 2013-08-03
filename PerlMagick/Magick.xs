@@ -246,7 +246,7 @@ static struct
       {"channel", MagickChannelOptions} } },
     { "Roll", { {"geometry", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
-    { "Rotate", { {"degrees", RealReference}, 
+    { "Rotate", { {"degrees", RealReference},
       {"background", StringReference} } },
     { "Sample", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference} } },
@@ -7020,6 +7020,8 @@ Layers(ref,...)
     }
     if (layers != (Image *) NULL)
       image=layers;
+    else
+      image=CloneImage(image,0,0,MagickTrue,exception);
     if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
@@ -10941,7 +10943,7 @@ Mogrify(ref,...)
         {
           /*
             Composite region.
-          */ 
+          */
           status=CompositeImage(region_image,image,CopyCompositeOp,MagickTrue,
             region_info.x,region_info.y,exception);
           (void) status;
