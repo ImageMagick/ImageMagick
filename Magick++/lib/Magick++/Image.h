@@ -205,6 +205,9 @@ namespace Magick
     void            blackThresholdChannel ( const ChannelType channel_,
                                             const std::string &threshold_ );
 
+     // Simulate a scene at nighttime in the moonlight.
+    void            blueShift ( const double factor_ = 1.5 );
+
     // Blur image with specified blur factor
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
@@ -219,12 +222,21 @@ namespace Magick
     void            border ( const Geometry &geometry_
                              = borderGeometryDefault );
 
+    // Changes the brightness and/or contrast of an image. It converts the
+    // brightness and contrast parameters into slope and intercept and calls
+    // a polynomical function to apply to the image.
+    void            brightnessContrast ( const double brightness_ = 0.0,
+                                         const double contrast_ = 0.0);
+    void            brightnessContrastChannel ( const ChannelType channel_,
+                                                const double brightness_ = 0.0,
+                                                const double contrast_ = 0.0 );
+
     // Extract channel from image
     void            channel ( const ChannelType channel_ );
 
     // Set or obtain modulus channel depth
     void            channelDepth ( const size_t depth_ );
-    size_t    channelDepth ( );
+    size_t          channelDepth ( );
 
     // Charcoal effect image (looks like charcoal sketch)
     // The radius_ parameter specifies the radius of the Gaussian, in
@@ -243,29 +255,34 @@ namespace Magick
     // (CCC) file which solely contains one or more color corrections and
     // applies the correction to the image.
     void            cdl ( const std::string &cdl_ );
-    
+
+    // Set each pixel whose value is below zero to zero and any the
+    // pixel whose value is above the quantum range to the quantum range (e.g.
+    // 65535) otherwise the pixel value remains unchanged.
+    void            clamp ( void );
+    void            clampChannel ( const ChannelType channel_ );
+
+    // Apply a color lookup table (CLUT) to the image.
+    void            clut ( const Image &clutImage_,
+                           const PixelInterpolateMethod method );
+    void            clutChannel ( const Image &clutImage_,
+                                  const PixelInterpolateMethod method,
+                                  const ChannelType channel_ );
+
     // Colorize image with pen color, using specified percent alpha
     // for red, green, and blue quantums
     void            colorize ( const unsigned int alphaRed_,
                                const unsigned int alphaGreen_,
                                const unsigned int alphaBlue_,
-             const Color &penColor_ );
+                               const Color &penColor_ );
     // Colorize image with pen color, using specified percent alpha.
     void            colorize ( const unsigned int alpha_,
-             const Color &penColor_ );
+                               const Color &penColor_ );
     
     // Apply a color matrix to the image channels.  The user supplied
     // matrix may be of order 1 to 5 (1x1 through 5x5).
-    void            colorMatrix (const size_t order_,
-         const double *color_matrix_);
-
-    // Comment image (add comment string to image)
-    void            comment ( const std::string &comment_ );
-
-    // Composition operator to be used when composition is implicitly
-    // used (such as for image flattening).
-    void            compose (const CompositeOperator compose_);
-    CompositeOperator compose ( void ) const;
+    void            colorMatrix ( const size_t order_,
+                                  const double *color_matrix_);
 
     // Compare current image with another image
     // Sets meanErrorPerPixel, normalizedMaxError, and normalizedMeanError
@@ -275,21 +292,33 @@ namespace Magick
     // Compose an image onto another at specified offset and using
     // specified algorithm
     void            composite ( const Image &compositeImage_,
-        const ::ssize_t xOffset_,
-        const ::ssize_t yOffset_,
-        const CompositeOperator compose_
-                                = InCompositeOp );
+                                const ::ssize_t xOffset_,
+                                const ::ssize_t yOffset_,
+                                const CompositeOperator compose_
+                                  = InCompositeOp );
     void            composite ( const Image &compositeImage_,
-        const Geometry &offset_,
-        const CompositeOperator compose_
-                                = InCompositeOp );
+                                const Geometry &offset_,
+                                const CompositeOperator compose_
+                                  = InCompositeOp );
     void            composite ( const Image &compositeImage_,
-        const GravityType gravity_,
-        const CompositeOperator compose_
-                                = InCompositeOp );
-    
+                                const GravityType gravity_,
+                                const CompositeOperator compose_
+                                  = InCompositeOp );
+
     // Contrast image (enhance intensity differences in image)
     void            contrast ( const size_t sharpen_ );
+
+    // A simple image enhancement technique that attempts to improve the
+    // contrast in an image by 'stretching' the range of intensity values
+    // it contains to span a desired range of values. It differs from the
+    // more sophisticated histogram equalization in that it can only apply a
+    // linear scaling function to the image pixel values. As a result the
+    // 'enhancement' is less harsh.
+    void            contrastStretch ( const double black_point_,
+                                      const double white_point_ );
+    void            contrastStretchChannel ( const ChannelType channel_,
+                                             const double black_point_,
+                                             const double white_point_ );
 
     // Convolve image.  Applies a user-specified convolution to the image.
     //  order_ represents the number of columns and rows in the filter kernel.
@@ -909,11 +938,17 @@ namespace Magick
     ColorspaceType  colorspaceType ( void ) const;
 
     // Image width
-    size_t    columns ( void ) const;
-    
-    // Image comment
+    size_t          columns ( void ) const;
+
+    // Comment image (add comment string to image)
+    void            comment ( const std::string &comment_ );
     std::string     comment ( void ) const;
-    
+
+    // Composition operator to be used when composition is implicitly
+    // used (such as for image flattening).
+    void              compose ( const CompositeOperator compose_ );
+    CompositeOperator compose ( void ) const;
+
     // Compression type
     void            compressType ( const CompressionType compressType_ );
     CompressionType compressType ( void ) const;

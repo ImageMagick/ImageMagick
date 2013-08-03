@@ -533,6 +533,21 @@ namespace Magick
   using MagickCore::FillToBorderMethod;
   using MagickCore::ResetMethod;
 
+  // PixelInterpolate methods
+  using MagickCore::PixelInterpolateMethod;
+  using MagickCore::UndefinedInterpolatePixel;
+  using MagickCore::AverageInterpolatePixel;
+  using MagickCore::Average9InterpolatePixel;
+  using MagickCore::Average16InterpolatePixel;
+  using MagickCore::BackgroundInterpolatePixel;
+  using MagickCore::BilinearInterpolatePixel;
+  using MagickCore::BlendInterpolatePixel;
+  using MagickCore::CatromInterpolatePixel;
+  using MagickCore::IntegerInterpolatePixel;
+  using MagickCore::MeshInterpolatePixel;
+  using MagickCore::NearestInterpolatePixel;
+  using MagickCore::SplineInterpolatePixel;
+
   // Pixel traits
   using MagickCore::UndefinedPixelTrait;
   using MagickCore::BlendPixelTrait;
