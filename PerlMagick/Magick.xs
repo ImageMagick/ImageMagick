@@ -6928,7 +6928,9 @@ Layers(ref,...)
         break;
       }
     }
-    if (layers != (Image *) NULL)
+    if (layers == (Image *) NULL)
+      image=CloneImage(image,0,0,MagickTrue,exception);
+    else
       {
         InheritException(&(layers->exception),exception);
         image=layers;
