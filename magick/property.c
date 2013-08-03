@@ -2391,7 +2391,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     case 'Q': /* image compression quality */
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-        image->quality);
+        (image->quality == 0 ? 92 : image->quality);
       break;
     }
     case 'S': /* Image scenes  ???? */
