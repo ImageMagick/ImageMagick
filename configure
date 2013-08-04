@@ -692,6 +692,8 @@ ZipDelegate
 XPSDelegate
 WWWDecodeDelegate
 WMFDecodeDelegate
+WebPEncodeDelegate
+WebPDecodeDelegate
 UniconvertorDelegate
 TXTDelegate
 SVGDecodeDelegate
@@ -3686,7 +3688,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=12854:12879
+MAGICK_SVN_REVISION=12854:12892M
 
 
 # Substitute library versioning
@@ -32449,6 +32451,8 @@ SCANDecodeDelegateDefault='scanimage'
 SVGDecodeDelegateDefault='inkscape'
 TXTDelegateDefault='enscript'
 UniconvertorDelegateDefault='uniconvertor'
+WebPDecodeDelegateDefault='dwebp'
+WebPEncodeDelegateDefault='cwebp'
 WMFDecodeDelegateDefault='wmf2eps'
 WWWDecodeDelegateDefault='curl'
 XPSDelegateDefault='gxps'
@@ -34146,6 +34150,88 @@ $as_echo "no" >&6; }
 fi
 
 
+# Extract the first word of ""$WebPDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$WebPDecodeDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_WebPDecodeDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $WebPDecodeDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_WebPDecodeDelegate="$WebPDecodeDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_WebPDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_WebPDecodeDelegate" && ac_cv_path_WebPDecodeDelegate=""$WebPDecodeDelegateDefault""
+  ;;
+esac
+fi
+WebPDecodeDelegate=$ac_cv_path_WebPDecodeDelegate
+if test -n "$WebPDecodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $WebPDecodeDelegate" >&5
+$as_echo "$WebPDecodeDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+# Extract the first word of ""$WebPEncodeDelegateDefault"", so it can be a program name with args.
+set dummy "$WebPEncodeDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_WebPEncodeDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $WebPEncodeDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_WebPEncodeDelegate="$WebPEncodeDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_WebPEncodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_WebPEncodeDelegate" && ac_cv_path_WebPEncodeDelegate=""$WebPEncodeDelegateDefault""
+  ;;
+esac
+fi
+WebPEncodeDelegate=$ac_cv_path_WebPEncodeDelegate
+if test -n "$WebPEncodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $WebPEncodeDelegate" >&5
+$as_echo "$WebPEncodeDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
 # Extract the first word of ""$WMFDecodeDelegateDefault"", so it can be a program name with args.
 set dummy "$WMFDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -34482,6 +34568,8 @@ if test "$with_frozenpaths" != 'yes'; then
   ShowImageDelegate="$ShowImageDelegateDefault"
   TXTDelegate="$TXTDelegateDefault"
   UniconvertorDelegate="$UniconvertorDelegateDefault"
+  WebPDecodeDelegate="$WebPDecodeDelegateDefault"
+  WebPEncodeDelegate="$WebPEncodeDelegateDefault"
   WMFDecodeDelegate="$WMFDecodeDelegateDefault"
   WWWDecodeDelegate="$WWWDecodeDelegateDefault"
   XPSDelegate="$XPSDelegateDefault"
@@ -34489,6 +34577,8 @@ if test "$with_frozenpaths" != 'yes'; then
 fi
 
 # Delegate substitutions
+
+
 
 
 
