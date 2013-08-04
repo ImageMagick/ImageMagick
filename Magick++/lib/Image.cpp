@@ -418,6 +418,22 @@ void Magick::Image::affineTransform ( const DrawableAffine &affine_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+// Set or attenuate the alpha channel. If the image pixels are
+// opaque then they are set to the specified alpha value, otherwise
+// they are blended with the supplied alpha value.  The value of
+// alpha_ ranges from 0 (completely opaque) to QuantumRange. The defines
+// OpaqueAlpha and TransparentAlpha are available to specify
+// completely opaque or completely transparent, respectively.
+void Magick::Image::alpha ( const unsigned int alpha_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageAlpha( image(), alpha_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Annotate using specified text, and placement location
 void Magick::Image::annotate ( const std::string &text_,
                                const Geometry &location_ )
@@ -1618,29 +1634,29 @@ void Magick::Image::inverseFourierTransform ( const Image &phase_,
 // image.  Colors brighter than the white point are set to the maximum
 // quantum value. The black and white point have the valid range 0 to
 // QuantumRange while gamma has a useful range of 0 to ten.
-void Magick::Image::level ( const double black_point_,
-                            const double white_point_,
+void Magick::Image::level ( const double blackPoint_,
+                            const double whitePoint_,
                             const double gamma_ )
 {
   modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  (void) LevelImage( image(), black_point_, white_point_, gamma_,
+  (void) LevelImage( image(), blackPoint_, whitePoint_, gamma_,
                      &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 void Magick::Image::levelChannel ( const ChannelType channel_,
-                                   const double black_point_,
-                                   const double white_point_,
+                                   const double blackPoint_,
+                                   const double whitePoint_,
                                    const double gamma_ )
 {
   modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   ChannelType channel_mask = SetImageChannelMask( image(), channel_ );
-  (void) LevelImage( image(), black_point_, white_point_, gamma_,
+  (void) LevelImage( image(), blackPoint_, whitePoint_, gamma_,
                      &exceptionInfo );
   SetPixelChannelMask( image(), channel_mask );
   throwException( exceptionInfo );
@@ -1710,7 +1726,36 @@ void Magick::Image::levelColorsChannel ( const ChannelType channel_,
   SetPixelChannelMask( image(), channel_mask );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
+}
 
+void Magick::Image::linearStretch ( const double blackPoint_,
+                                    const double whitePoint_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  LinearStretchImage( image(), blackPoint_, whitePoint_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::liquidRescale ( const Geometry &geometry_ )
+{
+  ssize_t x = 0;
+  ssize_t y = 0;
+  size_t width = columns();
+  size_t height = rows();
+
+  ParseMetaGeometry( static_cast<std::string>(geometry_).c_str(),
+                     &x, &y,
+                     &width, &height );
+
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  LiquidRescaleImage( image(), width, height, x, y, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Magnify image by integral size
@@ -1737,11 +1782,12 @@ void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
+
 // Floodfill designated area with replacement alpha value
 void Magick::Image::matteFloodfill ( const Color &target_ ,
-				     const unsigned int alpha_,
-				     const ssize_t x_, const ssize_t y_,
-				     const Magick::PaintMethod method_ )
+                                     const unsigned int alpha_,
+                                     const ssize_t x_, const ssize_t y_,
+                                     const Magick::PaintMethod method_ )
 {
   modifyImage();
   PixelInfo target;
@@ -1767,22 +1813,8 @@ void Magick::Image::medianFilter ( const double radius_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    StatisticImage ( image(), MedianStatistic, (size_t) radius_, (size_t)
-    radius_,&exceptionInfo );
-  replaceImage( newImage );
-  throwException( exceptionInfo );
-  (void) DestroyExceptionInfo( &exceptionInfo );
-}
-
-// Merge layers
-void Magick::Image::mergeLayers( const LayerMethod layerMethod_ )
-{
-  ExceptionInfo exceptionInfo;
-  GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* newImage =
-    MergeImageLayers ( image(),
-        layerMethod_,
-        &exceptionInfo );
+    StatisticImage ( image(), MedianStatistic, (size_t) radius_,
+                    (size_t) radius_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1802,12 +1834,12 @@ void Magick::Image::minify ( void )
 
 // Modulate percent hue, saturation, and brightness of an image
 void Magick::Image::modulate ( const double brightness_,
-			       const double saturation_,
-			       const double hue_ )
+                               const double saturation_,
+                               const double hue_ )
 {
   char modulate[MaxTextExtent + 1];
   FormatLocaleString( modulate, MaxTextExtent, "%3.6f,%3.6f,%3.6f",
-		brightness_, saturation_, hue_);
+                      brightness_, saturation_, hue_);
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1823,9 +1855,9 @@ void Magick::Image::modulate ( const double brightness_,
 // specifies the standard deviation of the Laplacian, in pixels.
 // The angle_ parameter specifies the angle the object appears
 // to be comming from (zero degrees is from the right).
-void            Magick::Image::motionBlur ( const double radius_,
-                                            const double sigma_,
-                                            const double angle_ )
+void Magick::Image::motionBlur ( const double radius_,
+                                 const double sigma_,
+                                 const double angle_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1843,8 +1875,8 @@ void Magick::Image::negate ( const bool grayscale_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  NegateImage ( image(), grayscale_ == true ? MagickTrue : MagickFalse, 
-    &exceptionInfo );
+  NegateImage ( image(), grayscale_ == true ? MagickTrue : MagickFalse,
+                &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1872,36 +1904,15 @@ void Magick::Image::oilPaint ( const double radius_, const double sigma_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
-// Set or attenuate the alpha channel. If the image pixels are
-// opaque then they are set to the specified alpha value, otherwise
-// they are blended with the supplied alpha value.  The value of
-// alpha_ ranges from 0 (completely opaque) to QuantumRange. The defines
-// OpaqueAlpha and TransparentAlpha are available to specify
-// completely opaque or completely transparent, respectively.
-void Magick::Image::alpha ( const unsigned int alpha_ )
-{
-  modifyImage();
-  ExceptionInfo exceptionInfo;
-  GetExceptionInfo( &exceptionInfo );
-  SetImageAlpha( image(), alpha_, &exceptionInfo );
-  throwException( exceptionInfo );
-  (void) DestroyExceptionInfo( &exceptionInfo );
-}
-
 // Change the color of an opaque pixel to the pen color.
 void Magick::Image::opaque ( const Color &opaqueColor_,
-			     const Color &penColor_ )
+                             const Color &penColor_ )
 {
   if ( !opaqueColor_.isValid() )
-  {
-    throwExceptionExplicit( OptionError,
-			    "Opaque color argument is invalid" );
-  }
+    throwExceptionExplicit( OptionError, "Opaque color argument is invalid" );
+
   if ( !penColor_.isValid() )
-  {
-    throwExceptionExplicit( OptionError,
-			    "Pen color argument is invalid" );
-  }
+    throwExceptionExplicit( OptionError, "Pen color argument is invalid" );
 
   modifyImage();
   std::string opaqueColor = opaqueColor_;
@@ -1911,11 +1922,21 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
   PixelInfo pen;
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  (void) QueryColorCompliance(std::string(opaqueColor_).c_str(),
-    AllCompliance, &opaque, &exceptionInfo);
-  (void) QueryColorCompliance(std::string(penColor_).c_str(),
-    AllCompliance, &pen, &exceptionInfo);
+  (void) QueryColorCompliance( std::string(opaqueColor_).c_str(),
+                               AllCompliance, &opaque, &exceptionInfo );
+  (void) QueryColorCompliance( std::string(penColor_).c_str(),
+                               AllCompliance, &pen, &exceptionInfo );
   OpaquePaintImage ( image(), &opaque, &pen, MagickFalse, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::perceptible ( const double epsilon_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  PerceptibleImage( image(), epsilon_, &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1951,11 +1972,38 @@ void Magick::Image::ping ( const Blob& blob_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::polaroid ( const std::string &caption_,
+                               const double angle_,
+                               const PixelInterpolateMethod method_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* image =
+    PolaroidImage( constImage(), options()->drawInfo(), caption_.c_str(),
+                   angle_, method_, &exceptionInfo );
+  replaceImage( image );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::posterize ( const size_t levels_,
+                                const DitherMethod method_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  PosterizeImage( image(), levels_, method_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Execute a named process module using an argc/argv syntax similar to
 // that accepted by a C 'main' routine. An exception is thrown if the
 // requested process module doesn't exist, fails to load, or fails during
 // execution.
-void Magick::Image::process( std::string name_, const ssize_t argc, const char **argv )
+void Magick::Image::process( std::string name_,
+                             const ssize_t argc,
+                             const char **argv )
 {
   modifyImage();
 

@@ -145,6 +145,15 @@ namespace Magick
     // Transform image by specified affine (or free transform) matrix.
     void            affineTransform ( const DrawableAffine &affine );
 
+    // Set or attenuate the alpha channel in the image. If the image
+    // pixels are opaque then they are set to the specified alpha
+    // value, otherwise they are blended with the supplied alpha
+    // value.  The value of alpha_ ranges from 0 (completely opaque)
+    // to QuantumRange. The defines OpaqueAlpha and TransparentAlpha are
+    // available to specify completely opaque or completely
+    // transparent, respectively.
+    void            alpha ( const unsigned int alpha_ );
+
     //
     // Annotate image (draw text on image)
     //
@@ -503,8 +512,8 @@ namespace Magick
     // white point are set to the maximum quantum value. The black and
     // white point have the valid range 0 to QuantumRange while mid (gamma)
     // has a useful range of 0 to ten.
-    void            level ( const double black_point_,
-                            const double white_point_,
+    void            level ( const double blackPoint_,
+                            const double whitePoint_,
                             const double gamma_=1.0 );
 
     // Level image channel. Adjust the levels of the image channel by
@@ -519,8 +528,8 @@ namespace Magick
     // quantum value. The black and white point have the valid range 0
     // to QuantumRange while mid (gamma) has a useful range of 0 to ten.
     void            levelChannel ( const ChannelType channel_,
-                                   const double black_point_,
-                                   const double white_point_,
+                                   const double blackPoint_,
+                                   const double whitePoint_,
                                    const double gamma_=1.0 );
 
     // Maps the given color to "black" and "white" values, linearly spreading
@@ -535,31 +544,39 @@ namespace Magick
                                          const Color &blackColor_,
                                          const bool invert_ = false );
 
+    // Discards any pixels below the black point and above the white point and
+    // levels the remaining pixels.
+    void            linearStretch ( const double blackPoint_,
+                                    const double whitePoint_ );
+
+    // Rescales image with seam carving.
+    void            liquidRescale ( const Geometry &geometry_ );
+
     // Magnify image by integral size
     void            magnify ( void );
-    
+
     // Remap image colors with closest color from reference image
     void            map ( const Image &mapImage_ ,
                           const bool dither_ = false );
-    
+
     // Floodfill designated area with replacement alpha value
     void            matteFloodfill ( const Color &target_ ,
-             const unsigned int alpha_,
-             const ::ssize_t x_, const ::ssize_t y_,
-             const PaintMethod method_ );
+                                     const unsigned int alpha_,
+                                     const ::ssize_t x_, const ::ssize_t y_,
+                                     const PaintMethod method_ );
 
     // Filter image by replacing each pixel component with the median
     // color in a circular neighborhood
     void            medianFilter ( const double radius_ = 0.0 );
-    
+
     // Reduce image by integral size
     void            minify ( void );
-    
+
     // Modulate percent hue, saturation, and brightness of an image
     void            modulate ( const double brightness_,
-             const double saturation_,
-             const double hue_ );
-    
+                               const double saturation_,
+                               const double hue_ );
+
     // Motion blur image with specified blur factor
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
@@ -569,42 +586,56 @@ namespace Magick
     void            motionBlur ( const double radius_,
                                  const double sigma_,
                                  const double angle_ );
-    
+
     // Negate colors in image.  Set grayscale to only negate grayscale
     // values in image.
     void            negate ( const bool grayscale_ = false );
-    
+
     // Normalize image (increase contrast by normalizing the pixel
     // values to span the full range of color values)
     void            normalize ( void );
-    
-    // Oilpaint image (image looks like oil painting)
-    void            oilPaint ( const double radius_ = 0.0, const double sigma = 1.0 );
 
-    // Set or attenuate the alpha channel in the image. If the image
-    // pixels are opaque then they are set to the specified alpha
-    // value, otherwise they are blended with the supplied alpha
-    // value.  The value of alpha_ ranges from 0 (completely opaque)
-    // to QuantumRange. The defines OpaqueAlpha and TransparentAlpha are
-    // available to specify completely opaque or completely
-    // transparent, respectively.
-    void            alpha ( const unsigned int alpha_ );
+    // Oilpaint image (image looks like oil painting)
+    void            oilPaint ( const double radius_ = 0.0,
+                               const double sigma = 1.0 );
 
     // Change color of opaque pixel to specified pen color.
     void            opaque ( const Color &opaqueColor_,
-           const Color &penColor_ );
+                             const Color &penColor_ );
+
+    // Set each pixel whose value is less than epsilon to epsilon or
+    // -epsilon (whichever is closer) otherwise the pixel value remains
+    // unchanged.
+    void            perceptible ( const double epsilon_ );
 
     // Ping is similar to read except only enough of the image is read
     // to determine the image columns, rows, and filesize.  Access the
     // columns(), rows(), and fileSize() attributes after invoking
     // ping.  The image data is not valid after calling ping.
     void            ping ( const std::string &imageSpec_ );
-    
+
     // Ping is similar to read except only enough of the image is read
     // to determine the image columns, rows, and filesize.  Access the
     // columns(), rows(), and fileSize() attributes after invoking
     // ping.  The image data is not valid after calling ping.
     void            ping ( const Blob &blob_ );
+
+    // Simulates a Polaroid picture.
+    void            polaroid ( const std::string &caption_,
+                               const double angle_,
+                               const PixelInterpolateMethod method_ );
+
+    // Reduces the image to a limited number of colors for a "poster" effect.
+    void            posterize ( const size_t levels_,
+                                const DitherMethod method_ );
+
+    // Execute a named process module using an argc/argv syntax similar to
+    // that accepted by a C 'main' routine. An exception is thrown if the
+    // requested process module doesn't exist, fails to load, or fails during
+    // execution.
+    void            process ( std::string name_,
+                              const ::ssize_t argc_,
+                              const char **argv_ );
 
     // Quantize image (reduce number of colors)
     void            quantize ( const bool measureError_ = false );
@@ -619,14 +650,6 @@ namespace Magick
                                       const ChannelType channel_,
                                       const MagickEvaluateOperator operator_,
                                       const double rvalue_);
-
-    // Execute a named process module using an argc/argv syntax similar to
-    // that accepted by a C 'main' routine. An exception is thrown if the
-    // requested process module doesn't exist, fails to load, or fails during
-    // execution.
-    void            process ( std::string name_,
-                              const ::ssize_t argc_,
-                              const char **argv_ );
 
     // Raise image (lighten or darken the edges of an image to give a
     // 3-D raised or lowered effect)
@@ -1161,9 +1184,6 @@ typedef struct _ImageStatistics
     void            matteColor ( const Color &matteColor_ );
     Color           matteColor ( void ) const;
 
-    // Merge image layers
-    void            mergeLayers ( const LayerMethod layerType_ );
-    
     // The mean error per pixel computed when an image is color reduced
     double          meanErrorPerPixel ( void ) const;
 
