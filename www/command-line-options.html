@@ -1271,15 +1271,15 @@ the end of the current image sequence. Outside parenthesis
 
 <p>Specify the image by its index in the sequence.  The first image is index
 0.  Negative indexes are relative to the end of the sequence; for
-example, <code>&minus;1</code>
+example, <code>-1</code>
 represents the last image of the sequence.  Specify a range of images with a
-dash (e.g. <code>0&minus;4</code>).  Separate multiple indexes with commas but no
-spaces (e.g. <code>0,2,5</code>).  A value of '<code>0&minus;&minus;1</code> will
+dash (e.g. <code>0-4</code>).  Separate multiple indexes with commas but no
+spaces (e.g. <code>0,2,5</code>).  A value of '<code>0--1</code> will
 effectively clone all the images. </p>
 
 <p>The <a href="command-line-options.html#clone">+clone</a> will simply make a copy of the last image
 in the image sequence, and is thus equivalent to using a argument of
-'<code>&minus;1</code>'. </p>
+'<code>-1</code>'. </p>
 
 <div style="margin: auto;">
   <h4><a id="clut"></a>-clut</h4>
@@ -1444,14 +1444,14 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 <table class="doc">
         <caption>Conversion of RGB to Other Color Spaces</caption>
         <tr><th align="left" valign="middle">CMY</th></tr>
-        <tr><td align="left" valign="middle">C=<em class="QR">QuantumRange</em>&minus;R</td></tr>
-        <tr><td align="left" valign="middle">M=<em class="QR">QuantumRange</em>&minus;G</td></tr>
-        <tr><td align="left" valign="middle">Y=<em class="QR">QuantumRange</em>&minus;B</td></tr>
+        <tr><td align="left" valign="middle">C=<em class="QR">QuantumRange</em>-R</td></tr>
+        <tr><td align="left" valign="middle">M=<em class="QR">QuantumRange</em>-G</td></tr>
+        <tr><td align="left" valign="middle">Y=<em class="QR">QuantumRange</em>-B</td></tr>
         <tr><th align="left" valign="middle">CMYK &mdash; starts with CMY from above</th></tr>
         <tr><td align="left" valign="middle">K=min(C,Y,M)</td></tr>
-        <tr><td align="left" valign="middle">C=<em class="QR">QuantumRange</em>*(C&minus;K)/(<em class="QR">QuantumRange</em>&minus;K)</td></tr>
-        <tr><td align="left" valign="middle">M=<em class="QR">QuantumRange</em>*(M&minus;K)/(<em class="QR">QuantumRange</em>&minus;K)</td></tr>
-        <tr><td align="left" valign="middle">Y=<em class="QR">QuantumRange</em>*(Y&minus;K)/(<em class="QR">QuantumRange</em>&minus;K)</td></tr>
+        <tr><td align="left" valign="middle">C=<em class="QR">QuantumRange</em>*(C-K)/(<em class="QR">QuantumRange</em>-K)</td></tr>
+        <tr><td align="left" valign="middle">M=<em class="QR">QuantumRange</em>*(M-K)/(<em class="QR">QuantumRange</em>-K)</td></tr>
+        <tr><td align="left" valign="middle">Y=<em class="QR">QuantumRange</em>*(Y-K)/(<em class="QR">QuantumRange</em>-K)</td></tr>
 
         <tr><th align="left" valign="middle">Gray</th></tr>
         <tr><td align="left" valign="middle">Gray = 0.298839*R+0.586811*G+0.114350*B</td></tr>
@@ -1483,24 +1483,24 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 
         <tr><th align="left" valign="middle">OHTA &mdash; approximates principal components transformation</th></tr>
         <tr><td align="left" valign="middle">I1=0.33333*R+0.33334*G+0.33333*B; <em>intensity-like</em></td></tr>
-        <tr><td align="left" valign="middle">I2=(0.50000*R+0.00000*G&minus;0.50000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
-        <tr><td align="left" valign="middle">I3=(&minus;0.25000*R+0.50000*G&minus;0.25000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">I2=(0.50000*R+0.00000*G-0.50000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">I3=(-0.25000*R+0.50000*G-0.25000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
 
         <tr><th align="left" valign="middle">Rec601Luma</th></tr>
         <tr><td align="left" valign="middle">Gray = 0.298839*R+0.586811*G+0.114350*B</td></tr>
 
         <tr><th align="left" valign="middle">Rec601YCbCr</th></tr>
         <tr><td align="left" valign="middle">Y=0.2988390*R+0.5868110*G+0.1143500*B; <em>intensity-like</em></td></tr>
-        <tr><td align="left" valign="middle">Cb=(&minus;0.168736*R-0.331264*G+0.500000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
-        <tr><td align="left" valign="middle">Cr=(0.500000*R&minus;0.418688*G&minus;0.081312*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">Cb=(-0.168736*R-0.331264*G+0.500000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">Cr=(0.500000*R-0.418688*G-0.081312*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
 
         <tr><th align="left" valign="middle">Rec709Luma</th></tr>
         <tr><td align="left" valign="middle">Gray=0.212656*R+0.715158*G+0.072186*B</td></tr>
 
         <tr><th align="left" valign="middle">Rec709YCbCr</th></tr>
         <tr><td align="left" valign="middle">Y=0.212656*R+0.715158*G+0.072186*B; <em>intensity-like</em></td></tr>
-        <tr><td align="left" valign="middle">Cb=(&minus;0.114572*R&minus;0.385428*G+0.500000*B)+(<em class="QR">QuantumRange</em>+1)/2</td></tr>
-        <tr><td align="left" valign="middle">Cr=(0.500000*R&minus;0.454153*G&minus;0.045847*B)+(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">Cb=(-0.114572*R-0.385428*G+0.500000*B)+(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">Cr=(0.500000*R-0.454153*G-0.045847*B)+(<em class="QR">QuantumRange</em>+1)/2</td></tr>
 
         <tr><th align="left" valign="middle">sRGB</th></tr>
         <tr><td align="left" valign="middle">if R &le; .0.0031308 then Rs=R/12.92 else Rs=1.055 R ^ (1.0 / 2.4) ? 0.055</td></tr>
@@ -1514,28 +1514,28 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 
         <tr><th align="left" valign="middle">YCC</th></tr>
         <tr><td align="left" valign="middle">Y=(0.298839*R+0.586811*G+0.114350*B) (with complicated scaling); <em>intensity-like</em></td></tr>
-        <tr><td align="left" valign="middle">C1=(&minus;0.298839*R&minus;0.586811*G+0.88600*B) (with complicated scaling)</td></tr>
-        <tr><td align="left" valign="middle">C2=(0.70100*R&minus;0.586811*G&minus;0.114350*B) (with complicated scaling)</td></tr>
+        <tr><td align="left" valign="middle">C1=(-0.298839*R-0.586811*G+0.88600*B) (with complicated scaling)</td></tr>
+        <tr><td align="left" valign="middle">C2=(0.70100*R-0.586811*G-0.114350*B) (with complicated scaling)</td></tr>
 
         <tr><th align="left" valign="middle">YCbCr</th></tr>
         <tr><td align="left" valign="middle">Y=0.2988390*R+0.5868110*G+0.1143500*B; <em>intensity-like</em></td></tr>
-        <tr><td align="left" valign="middle">Cb=(&minus;0.168736*R&minus;0.331264*G+0.500000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
-        <tr><td align="left" valign="middle">Cr=(0.500000*R&minus;0.418688*G&minus;0.081312*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">Cb=(-0.168736*R-0.331264*G+0.500000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">Cr=(0.500000*R-0.418688*G-0.081312*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
 
         <tr><th align="left" valign="middle">YIQ</th></tr>
         <tr><td align="left" valign="middle">Y=0.298839*R+0.586811*G+0.114350*B; <em>intensity-like</em></td></tr>
-        <tr><td align="left" valign="middle">I=(0.59600*R&minus;0.27400*G&minus;0.32200*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
-        <tr><td align="left" valign="middle">Q=(0.21100*R&minus;0.52300*G+0.31200*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">I=(0.59600*R-0.27400*G-0.32200*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">Q=(0.21100*R-0.52300*G+0.31200*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
 
         <tr><th align="left" valign="middle">YPbPr</th></tr>
         <tr><td align="left" valign="middle">Y=0.2988390*R+0.5868110*G+0.1143500*B; <em>intensity-like</em></td></tr>
-        <tr><td align="left" valign="middle">Pb=(&minus;0.168736*R&minus;0.331264*G+0.500000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
-        <tr><td align="left" valign="middle">Pr=(0.500000*R&minus;0.418688*G&minus;0.081312*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">Pb=(-0.168736*R-0.331264*G+0.500000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">Pr=(0.500000*R-0.418688*G-0.081312*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
 
         <tr><th align="left" valign="middle">YUV</th></tr>
         <tr><td align="left" valign="middle">Y=0.298839*R+0.586811*G+0.114350*B; <em>intensity-like</em></td></tr>
-        <tr><td align="left" valign="middle">U=(&minus;0.14740*R&minus;0.28950*G+0.43690*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
-        <tr><td align="left" valign="middle">V=(0.61500*R&minus;0.51500*G&minus;0.10000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">U=(-0.14740*R-0.28950*G+0.43690*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
+        <tr><td align="left" valign="middle">V=(0.61500*R-0.51500*G-0.10000*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
 </table>
 
 <p>Note the scRGB colorspace requires HDRI support otherwise it behaves just like linear RGB.</p>
@@ -3893,7 +3893,7 @@ calculations are handled.</p>
 
 <p>This is can be considered a multi-argument version of the <a
 href="command-line-options.html#evaluate">-evaluate</a> operator. (Added in
-ImageMagick 6.4.8&minus;8.)</p>
+ImageMagick 6.4.8-8.)</p>
 
 <p>Here,  <em class="arg">parameters</em> is a comma-separated list of
 numerical values. The number of values varies depending on which <em
@@ -3954,7 +3954,7 @@ correspondences follow.</p>
   </tr>
   <tr>
         <td>-evaluate Subtract <em class="arg">value</em> </td>
-        <td>-function Polynomial 1,&minus;<em class="arg">value</em></td>
+        <td>-function Polynomial 1,-<em class="arg">value</em></td>
   </tr>
   <tr>
         <td>-evaluate Multiply <em class="arg">value</em> </td>
@@ -3994,7 +3994,7 @@ The result is that if a pixel's normalized channel value is originally
 
 <p> For example, the following generates a curve that starts and ends at 0.9
 (when <b><em>u</em></b>=0 and 1, resp.), oscillating three times between
-.7&minus;.2=.5 and .7+.2=.9. </p>
+.7-.2=.5 and .7+.2=.9. </p>
 
 <p class="crtsnip">
    -function Sinusoid 3,-90,.2,.7
@@ -4205,10 +4205,10 @@ offset, the offset is usually applied to the point within the image suggested
 by the <a href="command-line-options.html#gravity">-gravity</a> argument.  Thus, in the following
 command, for example, suppose the file <code>image.png</code> has dimensions
 200x100. The offset specified by the argument to <a href="command-line-options.html#region">-region</a>
-is (&minus;40,+20). The argument to <a href="command-line-options.html#gravity">-gravity</a> is
+is (-40,+20). The argument to <a href="command-line-options.html#gravity">-gravity</a> is
 <code>Center</code>, which suggests the midpoint of the image, at the point
-(100,50). The offset (&minus;40,20) is applied to that point, giving
-(100&minus;40,50+20)=(60,70), so the specified 10x10 region is located at
+(100,50). The offset (-40,20) is applied to that point, giving
+(100-40,50+20)=(60,70), so the specified 10x10 region is located at
 that point. (In addition, the <a href="command-line-options.html#gravity">-gravity</a> affects the
 region itself, which is <em>centered</em> at the pixel
 coordinate (60,70). (See <a href="command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.)</p>
@@ -5948,7 +5948,7 @@ CMYK with profile, a CMYK-CMYK-RGB conversion results.</p>
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert CMYK.tif -profile "CMYK.icc" -profile "RGB.icc" RGB.tiff</span></p>
 <p>Furthermore, since ICC profiles are not necessarily symmetric, extra
 conversion steps can yield unwanted results.  CMYK profiles are often very
-asymmetric since they involve 3&minus;&gt;4 and 4&minus;&gt;3 channel mapping.
+asymmetric since they involve 3-&gt;4 and 4-&gt;3 channel mapping.
 </p>
 
 <div style="margin: auto;">
