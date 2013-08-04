@@ -3684,7 +3684,7 @@ MAGICK_PATCHLEVEL_VERSION=8
 
 MAGICK_VERSION=6.8.6-8
 
-MAGICK_SVN_REVISION=12854:12881M
+MAGICK_SVN_REVISION=12854:12903M
 
 
 # Substitute library versioning
@@ -34593,6 +34593,8 @@ if test "$with_frozenpaths" != 'yes'; then
 fi
 
 # Delegate substitutions
+
+
 
 
 
