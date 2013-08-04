@@ -254,7 +254,6 @@ namespace Magick
   
   // Color-space types
   using MagickCore::ColorspaceType;
-
   using MagickCore::UndefinedColorspace;
   using MagickCore::CMYColorspace;
   using MagickCore::CMYKColorspace;
@@ -292,12 +291,12 @@ namespace Magick
   using MagickCore::AllCompliance;
 
   // Composition operations
+  using MagickCore::CompositeOperator;
   using MagickCore::AtopCompositeOp;
   using MagickCore::BlendCompositeOp;
   using MagickCore::BumpmapCompositeOp;
   using MagickCore::ClearCompositeOp;
   using MagickCore::ColorizeCompositeOp;
-  using MagickCore::CompositeOperator;
   using MagickCore::CopyBlueCompositeOp;
   using MagickCore::CopyCompositeOp;
   using MagickCore::CopyCyanCompositeOp;
@@ -371,6 +370,7 @@ namespace Magick
   using MagickCore::SentinelDistortion;
 
   // Dither methods
+  using MagickCore::DitherMethod;
   using MagickCore::UndefinedDitherMethod;
   using MagickCore::NoDitherMethod;
   using MagickCore::RiemersmaDitherMethod;
@@ -383,6 +383,7 @@ namespace Magick
   using MagickCore::MSBEndian;
 
   // Evaluate options
+  using MagickCore::MagickEvaluateOperator;
   using MagickCore::UndefinedEvaluateOperator;
   using MagickCore::AddEvaluateOperator;
   using MagickCore::AndEvaluateOperator;
@@ -396,7 +397,6 @@ namespace Magick
   using MagickCore::SetEvaluateOperator;
   using MagickCore::SubtractEvaluateOperator;
   using MagickCore::XorEvaluateOperator;
-  using MagickCore::MagickEvaluateOperator;
 
   // Fill rules
   using MagickCore::FillRule;
