@@ -5862,8 +5862,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
     distance,
     scale;
 
-  fuzz=MagickMax(source->fuzz,(double) MagickSQ1_2)*MagickMax(
-    destination->fuzz,(double) MagickSQ1_2);
+  fuzz=(double) MagickMax(source->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(
+    destination->fuzz,(MagickRealType) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
   if (source->alpha_trait == BlendPixelTrait)
@@ -5974,11 +5974,14 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
   if ((p->fuzz == 0.0) && (q->fuzz == 0.0))
     return(IsPixelInfoEquivalent(p,q));
   if (p->fuzz == 0.0)
-    fuzz=MagickMax(q->fuzz,(double) MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
+    fuzz=MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2)*
+      MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2);
   else if (q->fuzz == 0.0)
-    fuzz=MagickMax(p->fuzz,(double) MagickSQ1_2)*MagickMax(p->fuzz,MagickSQ1_2);
+    fuzz=MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2)*
+      MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2);
   else
-    fuzz=MagickMax(p->fuzz,(double) MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
+    fuzz=MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2)*
+      MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
   if ((p->alpha_trait == BlendPixelTrait) ||
