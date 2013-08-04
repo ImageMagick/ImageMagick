@@ -87,7 +87,6 @@
   <delegate decode="https" command="&quot;@WWWDecodeDelegate@&quot; -s -k -o &quot;%o&quot; &quot;https:%M&quot;"/>
   <delegate decode="ilbm" command="&quot;@ILBMDecodeDelegate@&quot; &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="jxr" command="mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.pnm&quot;; mv &quot;%i.jxr&quot; &quot;%i&quot;; mv &quot;%o.pnm&quot; &quot;%o&quot;"/>
-  <delegate decode="wdp" command="mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.pnm&quot;; mv &quot;%i.jxr&quot; &quot;%i&quot;; mv &quot;%o.pnm&quot; &quot;%o&quot;"/>
   <delegate decode="man" command="&quot;@MANDelegate@&quot; -man -Tps &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="miff" encode="show" spawn="True" command="&quot;@DisplayDelegate@&quot; -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
   <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;@DisplayDelegate@&quot; -immutable -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
@@ -98,6 +97,7 @@
   <delegate decode="pdf" encode="eps" mode="bi" command="&quot;@PSDelegate@&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSEPSDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="pdf" encode="ps" mode="bi" command="&quot;@PSDelegate@&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSPSDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="plt" command="&quot;@EchoDelegate@&quot; &quot;set size 1.25,0.62; set terminal postscript portrait color solid; set output \'%o\'; load \'%i\'&quot; &gt; &quot;%u&quot;;&quot;@GnuplotDecodeDelegate@&quot; &quot;%u&quot;"/>
+  <delegate decode="png" encode="webp" command="&quot;@WebPEncodeDelegate@&quot; -quiet -q %Q &quot;%i&quot; -o &quot;%o&quot;"/>
   <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;@ILBMEncodeDelegate@&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="pnm" encode="jxr" command="mv &quot;%i&quot; &quot;%i.pnm&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.pnm&quot; -o &quot;%o.jxr&quot;; mv &quot;%i.pnm&quot; &quot;%i&quot;; mv &quot;%o.jxr&quot; &quot;%o&quot;"/>
   <delegate decode="pnm" encode="wdp" command="mv &quot;%i&quot; &quot;%i.pnm&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.pnm&quot; -o &quot;%o.jxr&quot;; mv &quot;%i.pnm&quot; &quot;%i&quot;; mv &quot;%o.jxr&quot; &quot;%o&quot;"/>
@@ -118,6 +118,8 @@
   <delegate decode="svg:decode" stealth="True" command="&quot;@SVGDecodeDelegate@&quot; &quot;%s&quot; --export-png=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot; 2&gt;&amp;1"/>
   <delegate decode="tiff" encode="launch" mode="encode" command="&quot;@LaunchDelegate@&quot; &quot;%i&quot;"/>
   <delegate decode="txt" encode="ps" mode="bi" command="&quot;@TXTDelegate@&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="wdp" command="mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.pnm&quot;; mv &quot;%i.jxr&quot; &quot;%i&quot;; mv &quot;%o.pnm&quot; &quot;%o&quot;"/>
+  <delegate decode="webp" command="&quot;@WebPDecodeDelegate@&quot; -pam &quot;%i&quot; -o &quot;%o&quot;"/>
   <delegate decode="wmf" command="&quot;@WMFDecodeDelegate@&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="xps:cmyk" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="xps:color" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSColorDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
