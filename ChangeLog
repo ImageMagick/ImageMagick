@@ -1,3 +1,6 @@
+2013-08-06  6.8.6-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.6-8, SVN revision 12918.
+
 2013-08-04  6.8.6-8 Dirk Lemstra <dirk@snakeware...>
   * Added support for WebP to the Windows distribution (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=23856).
