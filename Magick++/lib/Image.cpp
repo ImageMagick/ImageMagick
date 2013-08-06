@@ -1536,8 +1536,8 @@ void Magick::Image::levelColors ( const Color &blackColor_,
   white.blue=pixel.blue;
   white.opacity=pixel.opacity;
 
-  (void) LevelImageColors( image(), DefaultChannels, &black, &white,
-                           invert_ == true ? MagickTrue : MagickFalse);
+  (void) LevelColorsImageChannel( image(), DefaultChannels, &black, &white,
+                                  invert_ == true ? MagickTrue : MagickFalse);
   throwImageException();
 }
 
@@ -1566,8 +1566,8 @@ void Magick::Image::levelColorsChannel ( const ChannelType channel_,
   white.blue=pixel.blue;
   white.opacity=pixel.opacity;
 
-  (void) LevelImageColors( image(), channel_, &black, &white,
-                           invert_ == true ? MagickTrue : MagickFalse);
+  (void) LevelColorsImageChannel( image(), channel_, &black, &white,
+                                  invert_ == true ? MagickTrue : MagickFalse);
   throwImageException();
 }
 
@@ -3803,17 +3803,11 @@ void Magick::Image::profile( const std::string name_,
 // an existing generic profile name.
 Magick::Blob Magick::Image::profile( const std::string name_ ) const
 {
-  const MagickCore::Image* image = constImage();
-                                                                                
-  const StringInfo * profile = GetImageProfile( image, name_.c_str() );
-                                                                                
-  if ( profile != (StringInfo *) NULL)
-      return Blob( (void*) GetStringInfoDatum(profile), GetStringInfoLength(profile));
-                                                                                
-  Blob blob;
-  Image temp_image = *this;
-  temp_image.write( &blob, name_ );
-  return blob;
+  const StringInfo * profile = GetImageProfile( constImage(), name_.c_str() );
+
+  if ( profile == (StringInfo *) NULL)
+    return Blob( 0, 0 );
+  return Blob( (void*) GetStringInfoDatum(profile), GetStringInfoLength(profile));
 }
 
 void Magick::Image::quality ( const size_t quality_ )
