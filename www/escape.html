@@ -1,35 +1,29 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html version="-//W3C//DTD XHTML 1.1//EN"
-      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/1999/xhtml
-                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
   <title>ImageMagick: Format and Print Image Properties</title>
-  <meta http-equiv="content-language" content="en-US"/>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="format, print, image, properties, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
-  <link rel="canonical" href="http://www.imagemagick.org" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <meta http-equiv="content-language" content="en-US"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
+  <meta name="application-name" content="ImageMagick"></meta>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
+  <meta name="application-url" content="http://www.imagemagick.org"></meta>
+  <meta name="generator" content="PHP"></meta>
+  <meta name="keywords" content="format, print, image, properties, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
+  <meta name="rating" content="GENERAL"></meta>
+  <meta name="robots" content="INDEX, FOLLOW"></meta>
+  <meta name="generator" content="ImageMagick Studio LLC"></meta>
+  <meta name="author" content="ImageMagick Studio LLC"></meta>
+  <meta name="revisit-after" content="2 DAYS"></meta>
+  <meta name="resource-type" content="document"></meta>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
+  <meta name="distribution" content="Global"></meta>
+  <link rel="icon" href="../images/wand.png"></link>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
+  <link rel="canonical" href="../index.html"></link>
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
   <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -38,15 +32,15 @@
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
   
   <script type="text/javascript">
@@ -63,15 +57,7 @@
 
 <body id="www-imagemagick-org">
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'offline-script','//127.0.0.1/analytics.js','ga');
 
-  ga('create', 'UA-40133312-1', 'imagemagick.org');
-  ga('send', 'pageview');
-</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -83,18 +69,12 @@
     google_ad_height = 90;
   //-->
   </script>
-  <script type="text/javascript"
-    src="http://127.0.0.1/pagead/show_ads.js">
-  </script>
+  
 </div>
-<a href="http://www.imagemagick.org/discourse-server/">
-  <img src="../images/logo.jpg"
-  alt="ImageMagick Logo"
-  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../discourse-server">
+  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
 <a href="../index.html">
-  <img src="../images/sprite.jpg"
-  alt="ImageMagick Sprite"
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
@@ -146,7 +126,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -172,7 +152,7 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div  class="sub">
+<div class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -182,43 +162,14 @@
 </div>
 
 <div class="eastbar">
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    (function() {
-        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-    })();
-    /* ]]> */
-  </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
+  
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
   </noscript>
-    <div class="g-plusone" id="gplusone"></div>
-    <script type="text/javascript">
-      /* <![CDATA[ */
-      window.___gcfg = {
-        lang: 'en-US'
-      };
-
-      (function() {
-        var po = document.createElement('offline-script');
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'https://127.0.0.1/js/plusone.js';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-      })();
-      var gplusone = document.getElementById("gplusone");
-      gplusone.setAttribute("data-size","medium");
-      gplusone.setAttribute("data-count","true");
-      /* ]]> */
-    </script>
+    
+    
 </div>
 
 <div class="main">
@@ -234,18 +185,16 @@ display, or for various calculations, or in modifying the behaviour of later
 image processing operations.</p>
 
 <p>Percent Escapes (of Image Propertes) are used in a number of options, for
-example in <a href="command-line-options.html#format_identify_"
->-format</a> or in montage <a href="command-line-options.html#label"
->-label</a>, to print various properties and other settings associated with an
+example in <a href="command-line-options.html#format_identify_">-format</a> or in montage <a href="command-line-options.html#label">-label</a>, to print various properties and other settings associated with an
 image. </p>
 
-<p><table>
-<tr valign=top>
+<table>
+<tr valign="top">
     <td><b>Profile Data</b></td>
     <td>Such as EXIF: data, containing focal lengths, exposures, dates, and in
         come cases GPS locations.
     </td></tr>
-<tr valign=top>
+<tr valign="top">
     <td><b>Attributes</b></td>
     <td>These are directly involved with image data, and more commonly
         modified as part of normal image processing.  These include
@@ -253,26 +202,26 @@ image. </p>
         background color. Most specific percent escapes is to access this
         information.
     </td></tr>
-<tr valign=top>
+<tr valign="top">
     <td><b>Properties</b></td>
     <td>These are stored as a table of free form strings, and are (if posible)
         saved with the image (especially in MIFF and PNG image file formats).
         These include: Labels, Captions, Comments.
     </td></tr>
-<tr valign=top>
+<tr valign="top">
     <td><b>Artifacts</b></td>
     <td>These are various operational (expert) settings that are saved for
         use by various operators, or by the user for future use.  It is just
         a table of free-form strings.  They are not saved with the image when
         written.  See Artifacts and Options below for details.
     </td></tr>
-<tr valign=top>
+<tr valign="top">
     <td><b>Options</b></td>
     <td>Also operational (expert) settings that are saved for
         use by various operators, but are set globally for use by a whole
         image list (also not saved).  See Artifacts and Options below.
     </td></tr>
-</table></p>
+</table>
 
 <h3>Percent Escape Handling</h3>
 
@@ -280,7 +229,7 @@ image. </p>
 is looked for in the following order until the first match has been
 found...</p>
 
-<p><ol>
+<ol>
 <li>Handle special prefixes such as 'artifact:' 'option:' 'exif:', or
     'fx:'.  This includes and calculations and or globs of those prefixes such
     as 'exif:*' or 'artifact:*' (see below).</li>
@@ -296,7 +245,7 @@ found...</p>
 <li>Search for setting as a free-form 'option'</li>
 
 <li>Replace escape with empty string, and perhaps produce a warning.</li>
-</ol></p>
+</ol>
 
 <p>Remember, all long name forms of percent escapes are handled in a is case
 insensitive manner. </p>
@@ -369,7 +318,7 @@ filename, type, width, height. </p>
 <p>Here is a sample command and its output for an image with filename
 <code>bird.miff</code> and whose width is 512 and height is 480.</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -format "%m:%f %wx%h" bird.miff</span><span class='crtout'>MIFF:bird.miff 512x480</span></p>
+<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -format "%m:%f %wx%h" bird.miff</span><span class="crtout">MIFF:bird.miff 512x480</span></p>
 <p>Note that all single letter percent escapes can also be used using long
 form (from IM version 6.7.6-9, see next). For example <code>%[f]</code> is
 equivelent to the <code>%f</code> short form. </p>
@@ -394,6 +343,7 @@ when enclosed in braces (long form):</p>
    %[colorspace]           Colorspace of Image Data (excluding transparency)
    %[copyright]            ImageMagick Copyright String
    %[depth]                depth of image for write (as input unless changed)
+   %[deskew:angle]         The deskew angle in degrees of rotation
    %[directory]            directory part of filename (as %d)
    %[extension]            extention part of filename (as %e)
    %[gamma]                value of image gamma
@@ -406,6 +356,7 @@ when enclosed in braces (long form):</p>
    %[min]                  CALCULATED: minimum value statistic of image
    %[name]                 The original name of the image
    %[opaque]               CALCULATED: is image fully-opaque?
+   %[orientation]          image orientation
    %[page]                 Virtual canvas (page) geometry
    %[resolution.y]         X density (resolution) without units
    %[resolution.x]         Y density (resolution) without units
@@ -428,20 +379,16 @@ up that name specific data sources. </p>
 
 <p>The primary search space (if not a specific attribute listed above) is
 a free-form property string.  Such strings are associated and saved with
-images, and are typically set using either the <a href="command-line-options.html#set" >-set</a>
+images, and are typically set using either the <a href="command-line-options.html#set">-set</a>
 CLI option (or API equivelent), or from special convenience options
-(such as <a href="command-line-options.html#label"
->-label</a>, <a href="command-line-options.html#comment"
->-comment</a>, <a href="command-line-options.html#caption"
->-caption</a>). </p>
+(such as <a href="command-line-options.html#label">-label</a>, <a href="command-line-options.html#comment">-comment</a>, <a href="command-line-options.html#caption">-caption</a>). </p>
 
-These convenience options are globally saved (as 'global options' so thay can
+<p>These convenience options are globally saved (as 'global options' so thay can
 be set before images are read), and later are transfered to the property of
 individual images, only when they are read in. At that time any internal
 percent escape present is then handled. </p>
 
-To change a property of an image already in memory, you need to use <a
-href="command-line-options.html#set" >-set</a>.
+<p>To change a property of an image already in memory, you need to use <a href="command-line-options.html#set">-set</a>.
 </p>
 
 <p>Note that properties, like attributes (and profiles), are saved with
@@ -457,15 +404,14 @@ Properties. Which is the original and primary focus of such percent escapes.
 <p>However there are many operational settings that are used by various
 ImageMagick operators that can be useful to set and later access.  These
 consist of per-image Artifacts, and Global options (associated with a list of
-images, typically the current image list).
+images, typically the current image list).</p>
 
 <p>Note that the major difference between an artifact and a property is that
 artifacts, being an internal operational setting, is not saved with images (if
 such is possible). </p>
 
 <p>For example when you use <code>-define 'distort:viewport=100x100'</code> you
-are in fact generating a global option, which the <a href="command-line-options.html#distort"
->-distort</a> operator will use to modify its behaviour (distorted output
+are in fact generating a global option, which the <a href="command-line-options.html#distort">-distort</a> operator will use to modify its behaviour (distorted output
 image 'view'). </p>
 
 <p>An Option is essentually a Artifact that has been stored globally as part
@@ -485,7 +431,7 @@ Global Options. As such, continuing the previous example, the
 a 'viewport' has been provided to it. </p>
 
 <p>How Global Options are used when a library function requests an Artifact is
-one of the key differences between IMv6 and IMv7.
+one of the key differences between IMv6 and IMv7.</p>
 
 <p>In <b>ImageMagick version 6</b>... before each operator, any global Options
 are copied to per-image Artifacts, for every image in the current image list.
@@ -509,9 +455,9 @@ Artifact. </p>
 
 <h3>Glob-Pattern Listing of Properties, Artifacts and Options</h3>
 
-The <em class="arg">setting</em> can contain a glob pattern. As such you can
+<p>The <em class="arg">setting</em> can contain a glob pattern. As such you can
 now list all free-form string properties, artifacts, and options, (but not
-specific image attributes) using...
+specific image attributes) using...</p>
 
 <pre class="text">
   convert ... \
@@ -531,7 +477,7 @@ used for image processing use. </p>
 
 <h3>Calculated Percent Escape Prefixes</h3>
 
-There are some special prefixes (before the first ':') which performs
+<p>There are some special prefixes (before the first ':') which performs
 calculations based on the user provided string that follows that prefix.  For
 example you can do a numerical calculation use <code>%[fx:...]</code> to
 evaluate the given <a href="fx.html">FX</a> expressions:</p>
@@ -540,8 +486,7 @@ evaluate the given <a href="fx.html">FX</a> expressions:</p>
    %[fx:<em class="arg">expression</em>]
 </pre>
 
-<p>Use <code>pixel:</code> to evaluate a pixel color as defined by the <a
-href="fx.html">FX</a>
+<p>Use <code>pixel:</code> to evaluate a pixel color as defined by the <a href="fx.html">FX</a>
 expression:</p>
 
 <pre class="text">
@@ -694,7 +639,7 @@ the following:</p>
       2:30  Release Date
       2:35  Release Time
       2:37  Expiration Date
-      2:35  Expiration Time
+      2:38  Expiration Time
       2:40  Special Instructions
       2:42  Action Advised
       2:45  Reference Service
@@ -749,23 +694,23 @@ the following:</p>
 </pre>
 </div>
 
-
 </div>
 
 <div id="linkbar">
     <span id="linkbar-west"> </span>
 
     <span id="linkbar-center">
-      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &#8226;
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &#8226;
+      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+      <a href="../discourse-server">Discourse Server</a> •
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
       <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
     <span id="linkbar-east"> </span>
-  </div>
-  <div class="footer">
-    <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
-    <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
-  </div>
-  <div style="clear: both; margin: 0; width: 100%; "></div>
+</div>
+<div class="footer">
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
+  <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
+</div>
+<div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>

@@ -1,35 +1,29 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html version="-//W3C//DTD XHTML 1.1//EN"
-      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/1999/xhtml
-                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
   <title>ImageMagick: Porting to ImageMagick Version 7</title>
-  <meta http-equiv="content-language" content="en-US"/>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="porting, to, imagemagick, version, 7, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
-  <link rel="canonical" href="http://www.imagemagick.org" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <meta http-equiv="content-language" content="en-US"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
+  <meta name="application-name" content="ImageMagick"></meta>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
+  <meta name="application-url" content="http://www.imagemagick.org"></meta>
+  <meta name="generator" content="PHP"></meta>
+  <meta name="keywords" content="porting, to, imagemagick, version, 7, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
+  <meta name="rating" content="GENERAL"></meta>
+  <meta name="robots" content="INDEX, FOLLOW"></meta>
+  <meta name="generator" content="ImageMagick Studio LLC"></meta>
+  <meta name="author" content="ImageMagick Studio LLC"></meta>
+  <meta name="revisit-after" content="2 DAYS"></meta>
+  <meta name="resource-type" content="document"></meta>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
+  <meta name="distribution" content="Global"></meta>
+  <link rel="icon" href="../images/wand.png"></link>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
+  <link rel="canonical" href="../index.html"></link>
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
   <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -38,15 +32,15 @@
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
   
   <script type="text/javascript">
@@ -63,15 +57,7 @@
 
 <body id="www-imagemagick-org">
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'offline-script','//127.0.0.1/analytics.js','ga');
 
-  ga('create', 'UA-40133312-1', 'imagemagick.org');
-  ga('send', 'pageview');
-</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -83,18 +69,12 @@
     google_ad_height = 90;
   //-->
   </script>
-  <script type="text/javascript"
-    src="http://127.0.0.1/pagead/show_ads.js">
-  </script>
+  
 </div>
-<a href="http://www.imagemagick.org/discourse-server/">
-  <img src="../images/logo.jpg"
-  alt="ImageMagick Logo"
-  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../discourse-server">
+  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
 <a href="../index.html">
-  <img src="../images/sprite.jpg"
-  alt="ImageMagick Sprite"
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
@@ -146,7 +126,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -172,7 +152,7 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div  class="sub">
+<div class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -182,50 +162,21 @@
 </div>
 
 <div class="eastbar">
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    (function() {
-        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-    })();
-    /* ]]> */
-  </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
+  
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
   </noscript>
-    <div class="g-plusone" id="gplusone"></div>
-    <script type="text/javascript">
-      /* <![CDATA[ */
-      window.___gcfg = {
-        lang: 'en-US'
-      };
-
-      (function() {
-        var po = document.createElement('offline-script');
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'https://127.0.0.1/js/plusone.js';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-      })();
-      var gplusone = document.getElementById("gplusone");
-      gplusone.setAttribute("data-size","medium");
-      gplusone.setAttribute("data-count","true");
-      /* ]]> */
-    </script>
+    
+    
 </div>
 
 <div class="main">
 
 <h1>ImageMagick Version 7 Porting Guide</h1>
 
-<p class="navigation-index">[<a href="porting.html#imv7">ImageMagick Version 7</a> &#8226; <a href="porting.html#hdri">High Dynamic Range Imaging</a> &#8226; <a href="porting.html#channels">Pixel Channels</a> &#8226; <a href="porting.html#alpha">Alpha</a> &#8226; <a href="porting.html#grayscale">Grayscale</a> &#8226; <a href="porting.html#mask">Masks</a> &#8226; <a href="porting.html#core">MagickCore API</a> &#8226; <a href="porting.html#headers">Header Files</a>  &#8226; <a href="porting.html#deprecate">Deprecated Features Removed</a> &#8226; <a href="porting.html#cli">Command-line Interface</a> &#8226; <a href="porting.html#summary">Version 7 Change Summary</a> ]</p>
+<p class="navigation-index">[<a href="porting.html#imv7">ImageMagick Version 7</a> • <a href="porting.html#hdri">High Dynamic Range Imaging</a> • <a href="porting.html#channels">Pixel Channels</a> • <a href="porting.html#alpha">Alpha</a> • <a href="porting.html#grayscale">Grayscale</a> • <a href="porting.html#mask">Masks</a> • <a href="porting.html#core">MagickCore API</a> • <a href="porting.html#headers">Header Files</a>  • <a href="porting.html#deprecate">Deprecated Features Removed</a> • <a href="porting.html#cli">Command-line Interface</a> • <a href="porting.html#summary">Version 7 Change Summary</a> ]</p>
 
 <h2><a id="imv7"></a>ImageMagick Version 7</h2>
 <div class="doc-section">
@@ -245,7 +196,7 @@ better reporting of which option failed, the consolidation and deprecation of
 options, and more global use of 'image properities' (more commonly known as
 'percent escapes' in option arguments. </p>
 
-<p>ImageMagick version 7 is available now as an <a href="http://www.imagemagick.org/download/alpha/">Alpha</a> release.  Look for a Beta release around mid-April 2013.  An official ImageMagick version 7 release depends on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.<p>
+<p>ImageMagick version 7 is available now as an <a href="http://www.imagemagick.org/download/alpha/">Alpha</a> release.  Look for a Beta release around mid-April 2013.  An official ImageMagick version 7 release depends on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.</p>
 
 <p>During the ImageMagick version 7 development cycle and release, we will continue to support and enhance version 6 for a minimum of 10 years.</p>
 </div>
@@ -254,13 +205,14 @@ options, and more global use of 'image properities' (more commonly known as
 <div class="doc-section">
 <p>ImageMagick version 7 enables <a href="high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  To disable HDRI (recommended for smart phone builds such as iOS), simply add --disable-hdri to the configure script command line when building ImageMagick.</p>
 </div>
+
 <h2><a id="channels"></a>Pixel Channels</h2>
 <div class="doc-section">
 <p>A pixel is comprised of one or more color values, or <em>channels</em> (e.g. red pixel channel).</p>
 <p>Prior versions of ImageMagick (4-6), support 4 to 5 pixel channels (RGBA or CMYKA).  The first 4 channels are accessed with the PixelPacket data structure.   The structure includes 4 members of type Quantum (typically 16-bits) of red, green, blue, and opacity.  The black channel or colormap indexes are supported by a separate method and structure, IndexPacket.  As an example, here is a code snippet from ImageMagick version 6 that negates the color components (but not the alpha component) of the image pixels:</p>
 
 <pre class="code">
-  for (y=0; y &lt; (ssize_t) image->rows; y++)
+  for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
   {
     register IndexPacket
       *indexes;
@@ -268,23 +220,23 @@ options, and more global use of 'image properities' (more commonly known as
     register PixelPacket
       *q;
 
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image-&gt;columns,1,exception);
     if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x &lt; (ssize_t) image->columns; x++)
+    for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
     {
-      if ((channel & RedChannel) != 0)
-        q->red=(Quantum) QuantumRange-q->red;
-      if ((channel & GreenChannel) != 0)
-        q->green=(Quantum) QuantumRange-q->green;
-      if ((channel & BlueChannel) != 0)
-        q->blue=(Quantum) QuantumRange-q->blue;
-      if (((channel & IndexChannel) != 0) &&
-          (image->colorspace == CMYKColorspace))
+      if ((channel &amp; RedChannel) != 0)
+        q-&gt;red=(Quantum) QuantumRange-q-&gt;red;
+      if ((channel &amp; GreenChannel) != 0)
+        q-&gt;green=(Quantum) QuantumRange-q-&gt;green;
+      if ((channel &amp; BlueChannel) != 0)
+        q-&gt;blue=(Quantum) QuantumRange-q-&gt;blue;
+      if (((channel &amp; IndexChannel) != 0) &amp;&amp;
+          (image-&gt;colorspace == CMYKColorspace))
         indexes[x]=(IndexPacket) QuantumRange-indexes[x];
       q++;
     }
@@ -296,28 +248,28 @@ options, and more global use of 'image properities' (more commonly known as
 <p>ImageMagick version 7 supports any number of channels from 1 to 32 (and beyond) and simplifies access with a single method that returns an array of pixel channels of type Quantum.   Source code that compiles against prior versions of ImageMagick requires refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's naively refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
 
 <pre class="code">
-  for (y=0; y &lt; (ssize_t) image->rows; y++)
+  for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
   {
     register Quantum
       *q;
 
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image-&gt;columns,1,exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    for (x=0; x &lt; (ssize_t) image->columns; x++)
+    for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelRed(image,QuantumRange-GetPixelRed(image,q),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelGreen(image,QuantumRange-GetPixelGreen(image,q),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelBlue(image,QuantumRange-GetPixelBlue(image,q),q);
-      if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelBlackTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelBlack(image,QuantumRange-GetPixelBlack(image,q),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelAlpha(image,QuantumRange-GetPixelAlpha(image,q),q);
       q+=GetPixelChannels(image);
     }
@@ -328,18 +280,18 @@ options, and more global use of 'image properities' (more commonly known as
 
 <p>Let's do that again but take full advantage of the new variable pixel channel support:</p>
 <pre class="code">
-  for (y=0; y &lt; (ssize_t) image->rows; y++)
+  for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
   {
     register Quantum
       *q;
 
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image-&gt;columns,1,exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    for (x = 0; x &lt; (ssize_t) image->columns; x++)
+    for (x = 0; x &lt; (ssize_t) image-&gt;columns; x++)
     {
       register ssize_t
         i;
@@ -363,7 +315,7 @@ options, and more global use of 'image properities' (more commonly known as
 
 <p>The colormap indexes and black pixel channel (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue().  Instead they are now a pixel channel and accessed with the convenience pixel accessor methods GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</p>
 
-<h4></a>Pixel Accessors</h4>
+<h4>Pixel Accessors</h4>
 <p>Use accessors to get or set pixel channels:</p>
 
 <pre class="text">
@@ -391,17 +343,17 @@ options, and more global use of 'image properities' (more commonly known as
 
 <p>You can find these accessors defined in the header file, <code>MagickCore/pixel-accessor.h</code></p>
 
-<h4></a>Pixel Traits</h4>
+<h4>Pixel Traits</h4>
 <p>Each pixel channel includes one or more of these traits:</p>
 <dl>
 <dt>Undefined</dt>
-<dd>no traits associated with this pixel channel<dd>
+<dd>no traits associated with this pixel channel</dd>
 <dt>Copy</dt>
-<dd>do not update this pixel channel, just copy it<dd>
+<dd>do not update this pixel channel, just copy it</dd>
 <dt>Update</dt>
-<dd>update this pixel channel<dd>
+<dd>update this pixel channel</dd>
 <dt>Blend</dt>
-<dd>blend this pixel channel with the alpha mask if it's enabled<dd>
+<dd>blend this pixel channel with the alpha mask if it's enabled</dd>
 </dl>
 <p>We provide these methods to set and get pixel traits:</p>
 <pre class="text">
@@ -437,9 +389,9 @@ options, and more global use of 'image properities' (more commonly known as
   (void) SetPixelChannelMap(image,channel_mask);
 </pre>
 
-<h4></a>Pixel User Channels</h4>
+<h4>Pixel User Channels</h4>
 <p>In version 7, we introduce pixel user channels.  Traditionally we utilize 4 channels, red, green, blue, and alpha.   For CMYK we also have a black channel.  User channels are designed to contain whatever additional channel information that makes sense for your application.  Some examples include extra channels in TIFF or PSD images or perhaps you require a channel with infrared information for the pixel.  You can associate traits with the user channels so that they when they are acted upon by an image processing algorithm (e.g. blur) the pixels are copied, acted upon by the algorithm, or even blended with the alpha channel if that makes sense.</p>
-<h4></a>Pixel Metacontent</h4>
+<h4>Pixel Metacontent</h4>
 <p>In version 7, we introduce pixel metacontent.  Metacontent is content about content. So rather than being the content itself, it's something that describes or is associated with the content.  Here the content is a pixel.  The pixel metacontent is for your exclusive use and is accessed with these MagickCore API methods:</p>
 <pre class="text">
   SetImageMetacontentExtent()
@@ -462,7 +414,7 @@ options, and more global use of 'image properities' (more commonly known as
 
 <h2><a id="mask"></a>Masks</h2>
 <div class="doc-section">
-<p>Version 7 supports masks for most image operators.  As an example, here are two methods to compute the statistics of any pixel selected by the image mask:</>
+<p>Version 7 supports masks for most image operators.  As an example, here are two methods to compute the statistics of any pixel selected by the image mask:</p>
 <pre class="text">
 identify -verbose -clip r statue.tif
 identify -verbose -mask r mask.png statue.tif
@@ -484,8 +436,8 @@ identify -verbose -mask r mask.png statue.tif
 <div class="doc-section">
 <p>Prior versions of ImageMagick (4-6) reference the ImageMagick header files as <code>magick/</code> and <code>wand/</code>.  ImageMagick 7 instead uses <code>MagickCore/</code> and <code>MagickWand/</code> respectively.  For example,</p>
 <pre class="code">
-#include &lt;MagickCore/MagickCore.h>
-#include &lt;MagickWand/MagickWand.h>
+#include &lt;MagickCore/MagickCore.h&gt;
+#include &lt;MagickWand/MagickWand.h&gt;
 </pre>
 </div>
 
@@ -499,7 +451,7 @@ identify -verbose -mask r mask.png statue.tif
 </pre>
 <p>The FilterImage() method has been removed.  Use ConvolveImage() instead.</p>
 
-<p>In addition, all deprecated <a href="../api/deprecate.html">MagickCore</a> and <a href="../api/magick-deprecate.html">MagickWand</a> methods are no longer available in version 7.</p>
+<p>In addition, all deprecated <a href="http://magick.imagemagick.org/api/deprecate.html">MagickCore</a> and <a href="http://magick.imagemagick.org/api/magick-deprecate.html">MagickWand</a> methods are no longer available in version 7.</p>
 </div>
 
 
@@ -586,7 +538,7 @@ scripts.</p>
     "image_info" structure).  This is automatically done with parenthesis (EG:
     '<code>(</code>' and '<code>)</code>') is "<code>-regard-parenthesis</code>" has
     been set, just as in IMv6.  Caution is advised to prevent un-balanced
-    braces errors.</dd> </dd>
+    braces errors.</dd>
 
 <dt>--</dt>
 <dd>End of options, to be used in IMv7 "<code>mogrify</code>" command to
@@ -612,7 +564,7 @@ scripts.</p>
   =       assign a constant value to a channel (e.g. red=50%)
   ,       write new image with channels in the specified order (e.g. red, green)
   ;       add a new output image for the next set of channel operations (e.g. red; green; blue)
-  |       move to the next input image for the source of channel data (e.g. | gray=>alpha)
+  |       move to the next input image for the source of channel data (e.g. | gray=&gt;alpha)
 </pre>
 
 <p>For example, to create 3 grayscale images from the red, green, and blue channels of an image, use:</p>
@@ -625,11 +577,11 @@ scripts.</p>
 
 <p>Here we take an sRGB image and a grayscale image and inject the grayscale image into the alpha channel:</p>
 <pre class="text">
-  convert wizard.png mask.pgm -channel-fx '| gray=>alpha' wizard-alpha.png 
+  convert wizard.png mask.pgm -channel-fx '| gray=&gt;alpha' wizard-alpha.png 
 </pre>
 <p>Use a similar command to define a read mask:</p>
 <pre class="text">
-  convert wizard.png mask.pgm -channel-fx '| gray=>read-mask' wizard-mask.png 
+  convert wizard.png mask.pgm -channel-fx '| gray=&gt;read-mask' wizard-mask.png 
 </pre>
 
 <p>Add <code>-debug pixel</code> prior to the <code>-channel-fx</code> option to track the channel morphology.</p>
@@ -676,9 +628,8 @@ scripts.</p>
 <dt>-convolve</dt>
 <dd>option no longer normalizes the kernel argument (unless some type of
     masking is involved, such as alpha blending) and accepts named kernels
-    (see <a href="http://www.imagemagick.org/Usage/convolve/" >IM Examples,
-    Convolve</a> ) as well as non-square <a
-    href="http://www.imagemagick.org/Usage/morphology/#user">user defined
+    (see <a href="http://www.imagemagick.org/Usage/convolve/">IM Examples,
+    Convolve</a> ) as well as non-square <a href="http://www.imagemagick.org/Usage/morphology/#user">user defined
     kernels</a>. Use <code>-define convolve:normalize=true</code> on the command-line to force normalization.</dd>
 
 </dl>
@@ -710,7 +661,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 
 <dl>
 <dt>-affinity</dt>
-<dd>Replaced by <dd>-affinity</code>.</dd>
+<dd>Replaced by <code>-affinity</code>.</dd>
 <dt>-maximum</dt>
 <dd>Replaced by <code>-evaluate-sequence Max</code>.</dd>
 <dt>-median</dt>
@@ -718,7 +669,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <dt>-minimum</dt>
 <dd>Replaced by <code>-evaluate-sequence Min</code>.</dd>
 <dt>-recolor</dt>
-<dd>Replaced by <dd>-color-matrix</code>.</dd>
+<dd>Replaced by <code>-color-matrix</code>.</dd>
 </dl>
 
 <h3>Removed / Replaced Options ("no such option" error and abort)</h3>
@@ -727,10 +678,11 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <dt>-origin</dt>
 <dd>old option, unknown meaning.</dd>
 <dt>-pen</dt>
-<dd>Replaced by <dd>-fill</code>.</dd>
+<dd>Replaced by <code>-fill</code>.</dd>
 <dt>-passphrase</dt>
 <dd>old option, unknown meaning</dd>
 </dl>
+</div>
 <h2><a id="summary"></a>Version 7 Change Summary</h2>
 <div class="doc-section">
 <p>Changes from ImageMagick version 6 to version 7 are summarized here:</p>
@@ -778,23 +730,23 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 </dl>
 </div>
 
-
 </div>
 
 <div id="linkbar">
     <span id="linkbar-west"> </span>
 
     <span id="linkbar-center">
-      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &#8226;
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &#8226;
+      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+      <a href="../discourse-server">Discourse Server</a> •
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
       <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
     <span id="linkbar-east"> </span>
-  </div>
-  <div class="footer">
-    <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
-    <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
-  </div>
-  <div style="clear: both; margin: 0; width: 100%; "></div>
+</div>
+<div class="footer">
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
+  <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
+</div>
+<div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
