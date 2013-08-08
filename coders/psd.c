@@ -926,6 +926,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ParseImageResourceBlocks(image,blocks,(size_t) length);
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
+   /*
+     If we are only "pinging" the image, then we're done - so return.
+   */
+  if (image_info->ping != MagickFalse)
+    {
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
+    }
   /*
     Layer and mask block.
   */
