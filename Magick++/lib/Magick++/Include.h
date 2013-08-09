@@ -231,6 +231,21 @@ namespace Magick
   using MagickCore::MagickFalse;
   using MagickCore::MagickTrue;
 
+  // Alpha channel types
+  using MagickCore::AlphaChannelType;
+  using MagickCore::UndefinedAlphaChannel;
+  using MagickCore::ActivateAlphaChannel;
+  using MagickCore::BackgroundAlphaChannel;
+  using MagickCore::CopyAlphaChannel;
+  using MagickCore::DeactivateAlphaChannel;
+  using MagickCore::ExtractAlphaChannel;
+  using MagickCore::OpaqueAlphaChannel;
+  using MagickCore::SetAlphaChannel;
+  using MagickCore::ShapeAlphaChannel;
+  using MagickCore::TransparentAlphaChannel;
+  using MagickCore::FlattenAlphaChannel;
+  using MagickCore::RemoveAlphaChannel;
+
   // Image class types
   using MagickCore::ClassType;
   using MagickCore::UndefinedClass;
