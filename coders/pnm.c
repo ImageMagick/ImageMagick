@@ -1329,7 +1329,6 @@ ModuleExport size_t RegisterPNMImage(void)
   entry->encoder=(EncodeImageHandler *) WritePNMImage;
   entry->endian_support=MagickTrue;
   entry->description=ConstantString("Portable float format");
-  entry->mime_type=ConstantString("image/x-portable-pixmap");
   entry->module=ConstantString("PFM");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PGM");
