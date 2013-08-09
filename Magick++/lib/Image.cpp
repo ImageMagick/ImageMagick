@@ -1695,8 +1695,8 @@ void Magick::Image::levelColors ( const Color &blackColor_,
 }
 
 void Magick::Image::levelColorsChannel ( const ChannelType channel_,
-                                         const Color &whiteColor_,
                                          const Color &blackColor_,
+                                         const Color &whiteColor_,
                                          const bool invert_ )
 {
   modifyImage();
