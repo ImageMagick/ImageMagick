@@ -389,7 +389,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if ((magick_info == (const MagickInfo *) NULL) ||
       (GetMagickMimeType(magick_info) != (const char *) NULL))
     (void) FormatLocaleFile(file,"  Mime type: %s\n",GetMagickMimeType(
-      magick_info);
+      magick_info));
   (void) FormatLocaleFile(file,"  Class: %s\n",CommandOptionToMnemonic(
     MagickClassOptions,(ssize_t) image->storage_class));
   (void) FormatLocaleFile(file,"  Geometry: %.20gx%.20g%+.20g%+.20g\n",(double)
