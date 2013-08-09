@@ -502,7 +502,7 @@ namespace Magick
     // has a useful range of 0 to ten.
     void            level ( const double black_point,
                             const double white_point,
-                            const double mid_point=1.0 );
+                            const double mid_point = 1.0 );
 
     // Level image channel. Adjust the levels of the image channel by
     // scaling the values falling between specified white and black
@@ -518,7 +518,7 @@ namespace Magick
     void            levelChannel ( const ChannelType channel,
                                    const double black_point,
                                    const double white_point,
-                                   const double mid_point=1.0 );
+                                   const double mid_point = 1.0 );
 
     // Maps the given color to "black" and "white" values, linearly spreading
     // out the colors, and level values on a channel by channel bases, as
@@ -526,7 +526,7 @@ namespace Magick
     // ranges for each of the color channels separately.
     void            levelColors ( const Color &blackColor_,
                                   const Color &whiteColor_,
-                                  const bool invert_ );
+                                  const bool invert_ = false );
     void            levelColorsChannel ( const ChannelType channel_,
                                          const Color &blackColor_,
                                          const Color &whiteColor_,
