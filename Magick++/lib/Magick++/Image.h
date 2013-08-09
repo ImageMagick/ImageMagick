@@ -145,6 +145,9 @@ namespace Magick
     // Transform image by specified affine (or free transform) matrix.
     void            affineTransform ( const DrawableAffine &affine );
 
+    // Activates, deactivates, resets, or sets the alpha channel.
+    void            alphaChannel ( AlphaChannelType alphaType_ );
+
     //
     // Annotate image (draw text on image)
     //

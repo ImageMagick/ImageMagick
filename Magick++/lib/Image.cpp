@@ -417,6 +417,13 @@ void Magick::Image::affineTransform ( const DrawableAffine &affine_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::alphaChannel ( AlphaChannelType alphaType_ )
+{
+  modifyImage();
+  SetImageAlphaChannel( image(), alphaType_ );
+  throwImageException();
+}
+
 // Annotate using specified text, and placement location
 void Magick::Image::annotate ( const std::string &text_,
                                const Geometry &location_ )
