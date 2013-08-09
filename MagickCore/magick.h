@@ -51,6 +51,7 @@ typedef struct _MagickInfo
     *name,
     *description,
     *version,
+    *mime_type,
     *note,
     *module;
 
@@ -93,7 +94,8 @@ extern MagickExport char
   **GetMagickList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const char
-  *GetMagickDescription(const MagickInfo *);
+  *GetMagickDescription(const MagickInfo *),
+  *GetMagickMimeType(const MagickInfo *);
 
 extern MagickExport DecodeImageHandler
   *GetImageDecoder(const MagickInfo *);
