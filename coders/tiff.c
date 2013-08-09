@@ -1889,6 +1889,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
   entry->description=ConstantString("Raw CCITT Group4");
+  entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PTIF");
@@ -1900,6 +1901,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
   entry->description=ConstantString("Pyramid encoded TIFF");
+  entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIF");
@@ -1914,6 +1916,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIFF");
@@ -1928,6 +1931,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIFF64");
@@ -1942,6 +1946,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->description=ConstantString("Tagged Image File Format (64-bit)");
   if (*version != '\0')
     entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
