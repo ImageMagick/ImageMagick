@@ -538,11 +538,11 @@ namespace Magick
     // ranges for each of the color channels separately.
     void            levelColors ( const Color &blackColor_,
                                   const Color &whiteColor_,
-                                  const bool invert_ = false );
+                                  const bool invert_ = true );
     void            levelColorsChannel ( const ChannelType channel_,
                                          const Color &blackColor_,
                                          const Color &whiteColor_,
-                                         const bool invert_ = false );
+                                         const bool invert_ = true );
 
     // Discards any pixels below the black point and above the white point and
     // levels the remaining pixels.
