@@ -1459,6 +1459,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/jpeg");
   entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
@@ -1471,6 +1472,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/jpeg");
   entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PJPEG");
@@ -1483,6 +1485,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/jpeg");
   entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
