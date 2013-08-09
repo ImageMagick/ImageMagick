@@ -154,6 +154,10 @@ namespace Magick
     // transparent, respectively.
     void            alpha ( const unsigned int alpha_ );
 
+    // AlphaChannel() activates, deactivates, resets, or sets the alpha
+    // channel.
+    void            alphaChannel ( AlphaChannelOption alphaOption_ );
+
     //
     // Annotate image (draw text on image)
     //

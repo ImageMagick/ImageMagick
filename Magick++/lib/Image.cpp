@@ -434,6 +434,16 @@ void Magick::Image::alpha ( const unsigned int alpha_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::alphaChannel ( AlphaChannelOption alphaOption_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageAlphaChannel( image(), alphaOption_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Annotate using specified text, and placement location
 void Magick::Image::annotate ( const std::string &text_,
                                const Geometry &location_ )
