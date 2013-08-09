@@ -261,7 +261,7 @@
   * Removed the ICC profile from the logo: image definition in coders/magick.c;
     libpng16 detected that it was a broken sRGB profile.
   * Negatives raised to a non-integer power returns NaN's (reference
-   http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23234).
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23234).
 
 2013-04-15  6.8.4-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-10, SVN revision 11851.
@@ -289,7 +289,7 @@
   * The -page option only affects new images (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23172).
   * Revert 'Move binaries to lib subdirectory and link are created from binary
-	  package' patch.  We're getting too many bug reports.
+    package' patch.  We're getting too many bug reports.
 
 2013-04-07  6.8.4-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.4-8, SVN revision 11743.
@@ -530,7 +530,7 @@
 2013-02-07  6.8.2-6 Cristy  <quetzlzacatenango@image...>
   * Don't destroy an image that's already destroyed (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22747).
-  * Montage is now invarient to the font when no label image label exists.
+  * Montage is now invariant to the font when no label image label exists.
 
 2013-02-06  6.8.2-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.2-5, SVN revision 10952.
@@ -801,7 +801,7 @@
 2012-10-20  6.8.0-2 Cristy  <quetzlzacatenango@image...>
   * Wait for more bytes if the number of returned bytes is less than
     requested in ReadBlob().
-  * Prefer fullname property for font, if it exists, otherwise famly + style.
+  * Prefer fullname property for font, if it exists, otherwise family + style.
 
 2012-10-17  6.8.0-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Added LanczosRadius filter, that blurs an EWA Lanczos to a integer
@@ -1113,7 +1113,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
     zlib-1.2.0) that does not support it.
   * Increase PLTE chunk length to accommodate background color in indexed PNG
     (reference www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=21288).
-  * Added png:PLTE.number_colors to verbose output
+  * Added png:PLTE.number_colors to verbose output.
 
 2012-06-25  6.7.7-10 Cristy  <quetzlzacatenango@image...>
   * Permit linear RGB for PNM and TIFF image formats.
@@ -1147,9 +1147,9 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
 
 2012-06-12  6.7.7-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Refactor Catmull-Rom and Spline "interpolation" using
-    state-of-the-art unpublished formulas
+    state-of-the-art unpublished formulas.
   * Fix incorrect transparency handling of "interpolative" cubic
-    B-spline smoothing
+    B-spline smoothing.
 
 2012-06-09  6.7.7-8 Cristy  <quetzlzacatenango@image...>
   * Initialize alpha channel when floodfill fill color is not opaque.
@@ -1167,7 +1167,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
 
 2012-06-06  6.7.7-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Small refactor of Average Interpolators (save some multiplies)
-  * Added 'Spline' as a filter type as an alias to 'Cubic'. this brings both
+  * Added 'Spline' as a filter type as an alias to 'Cubic'. This brings both
     Catrom and Spline -filter and -interpolate methods in line.  Cubic should
     only be used when defining a general cubic using expert settings or
     when listed in "filter:verbose" debugging output.
@@ -1322,7 +1322,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
   * Added the RobidouxSharp filter (originally defined Dec 2011)
   * Fixed Variable Blur - bad blur area calculation
     Also Gaussian is sampling properly. Substitute the faster Cubic for now.
-  * Convert no longer will do an implicit write to a single space image
+  * Convert no longer will do an implicit write to a single space image.
 
 2012-04-21  6.7.6-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-7, SVN revision 7587.
@@ -1467,8 +1467,8 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
 
 2012-02-29  6.7.5-8 Cristy  <quetzlzacatenango@image...>
   * Support infinite caption lengths.
-  * Permit custome JPEG quantization tables (e.g.
-	  -define jpeg:q-table=quantization-table.xml).
+  * Permit custom JPEG quantization tables (e.g.
+    -define jpeg:q-table=quantization-table.xml).
   * Missing grestore from ps2.c (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20445).
 
