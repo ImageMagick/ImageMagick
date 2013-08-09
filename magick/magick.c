@@ -643,6 +643,36 @@ MagickExport char **GetMagickList(const char *pattern,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t M a g i c k M i m e T y p e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickMimeType() returns the magick mime type.
+%
+%  The format of the GetMagickMimeType method is:
+%
+%      const char *GetMagickMimeType(const MagickInfo *magick_info)
+%
+%  A mime_type of each parameter follows:
+%
+%    o magick_info:  The magick info.
+%
+*/
+MagickExport const char *GetMagickMimeType(const MagickInfo *magick_info)
+{
+  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  assert(magick_info != (MagickInfo *) NULL);
+  assert(magick_info->signature == MagickSignature);
+  return(magick_info->mime_type);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M a g i c k P r e c i s i o n                                       %
 %                                                                             %
 %                                                                             %
@@ -786,16 +816,18 @@ static void *DestroyMagickNode(void *magick_info)
     *p;
 
   p=(MagickInfo *) magick_info;
-  if (p->name != (char *) NULL)
-    p->name=DestroyString(p->name);
-  if (p->description != (char *) NULL)
-    p->description=DestroyString(p->description);
-  if (p->version != (char *) NULL)
-    p->version=DestroyString(p->version);
-  if (p->note != (char *) NULL)
-    p->note=DestroyString(p->note);
   if (p->module != (char *) NULL)
     p->module=DestroyString(p->module);
+  if (p->note != (char *) NULL)
+    p->note=DestroyString(p->note);
+  if (p->mime_type != (char *) NULL)
+    p->mime_type=DestroyString(p->mime_type);
+  if (p->version != (char *) NULL)
+    p->version=DestroyString(p->version);
+  if (p->description != (char *) NULL)
+    p->description=DestroyString(p->description);
+  if (p->name != (char *) NULL)
+    p->name=DestroyString(p->name);
   return(RelinquishMagickMemory(p));
 }
 

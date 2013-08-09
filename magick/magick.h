@@ -91,13 +91,17 @@ typedef struct _MagickInfo
 
   size_t
     signature;
+
+  char
+    *mime_type;
 } MagickInfo;
 
 extern MagickExport char
   **GetMagickList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const char
-  *GetMagickDescription(const MagickInfo *);
+  *GetMagickDescription(const MagickInfo *),
+  *GetMagickMimeType(const MagickInfo *);
 
 extern MagickExport DecodeImageHandler
   *GetImageDecoder(const MagickInfo *);
