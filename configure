@@ -794,6 +794,9 @@ OPENEXR_DELEGATE_FALSE
 OPENEXR_DELEGATE_TRUE
 OPENEXR_LIBS
 OPENEXR_CFLAGS
+MUPDF_LIBS
+MUPDF_DELEGATE_FALSE
+MUPDF_DELEGATE_TRUE
 LZMA_DELEGATE_FALSE
 LZMA_DELEGATE_TRUE
 LZMA_LIBS
@@ -821,9 +824,6 @@ GVC_CFLAGS
 GS_LIBS
 GS_DELEGATE_FALSE
 GS_DELEGATE_TRUE
-FITZ_LIBS
-FITZ_DELEGATE_FALSE
-FITZ_DELEGATE_TRUE
 FREETYPE_DELEGATE_FALSE
 FREETYPE_DELEGATE_TRUE
 FREETYPE_LIBS
@@ -1176,7 +1176,6 @@ with_fftw
 with_fpx
 with_fontconfig
 with_freetype
-with_fitz
 with_gslib
 with_fontpath
 with_gs_font_dir
@@ -1188,6 +1187,7 @@ with_lcms
 with_lcms2
 with_lqr
 with_lzma
+with_mupdf
 with_openexr
 with_pango
 with_png
@@ -1945,7 +1945,6 @@ Optional Packages:
   --without-fpx           disable FlashPIX support
   --without-fontconfig    disable fontconfig support
   --without-freetype      disable Freetype support
-  --without-fitz          disable FITZ support
   --with-gslib            enable Ghostscript library support
   --with-fontpath=DIR     prepend to default font search path
   --with-gs-font-dir=DIR  Ghostscript font directory
@@ -1957,6 +1956,7 @@ Optional Packages:
   --without-lcms2         disable lcms (v2.X) support
   --without-lqr           disable Liquid Rescale support
   --without-lzma          disable LZMA support
+  --with-mupdf            enable MUPDF support
   --without-openexr       disable OpenEXR support
   --without-pango         disable PANGO support
   --without-png           disable PNG support
@@ -3693,7 +3693,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=12978M
+MAGICK_SVN_REVISION=12978:12983M
 
 
 # Substitute library versioning
@@ -25964,7 +25964,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in bzlib fftw fitz fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick png tiff/libtiff ttf/include wand webp wmf/include xml/include zlib; do
+    for dir in bzlib fftw mupdf fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick png tiff/libtiff ttf/include wand webp wmf/include xml/include zlib; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -25975,7 +25975,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib fitz fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
+    for dir in bzlib mupdf fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
@@ -29000,116 +29000,6 @@ fi
 
 
 #
-# Check for FITZ delegate library.
-#
-
-# Check whether --with-fitz was given.
-if test "${with_fitz+set}" = set; then :
-  withval=$with_fitz; with_fitz=$withval
-else
-  with_fitz='yes'
-fi
-
-
-if test "$with_fitz" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fitz=$with_fitz "
-fi
-
-have_fitz='no'
-FITZ_LIBS=''
-if test "$with_fitz" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FITZ" >&5
-$as_echo_n "checking for FITZ... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "fitz.h" "ac_cv_header_fitz_h" "$ac_includes_default"
-if test "x$ac_cv_header_fitz_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for fz_new_context in -lfitz" >&5
-$as_echo_n "checking for fz_new_context in -lfitz... " >&6; }
-if ${ac_cv_lib_fitz_fz_new_context+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lfitz -lfitz $FREETYPE_LIBS $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char fz_new_context ();
-int
-main ()
-{
-return fz_new_context ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_fitz_fz_new_context=yes
-else
-  ac_cv_lib_fitz_fz_new_context=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_fitz_fz_new_context" >&5
-$as_echo "$ac_cv_lib_fitz_fz_new_context" >&6; }
-if test "x$ac_cv_lib_fitz_fz_new_context" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if FITZ package is complete" >&5
-$as_echo_n "checking if FITZ package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_fitz='no (failed tests)'
-        else
-            FITZ_LIBS='-lfitz'
-            LIBS="$FITZ_LIBS $LIBS"
-
-$as_echo "#define FITZ_DELEGATE 1" >>confdefs.h
-
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_fitz='yes'
-        fi
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    fi
-fi
- if test "$have_fitz" = 'yes'; then
-  FITZ_DELEGATE_TRUE=
-  FITZ_DELEGATE_FALSE='#'
-else
-  FITZ_DELEGATE_TRUE='#'
-  FITZ_DELEGATE_FALSE=
-fi
-
-
-
-
-#
 # Check for Ghostscript library or framework.
 #
 # Test for iapi.h & test for gsapi_new_instance in -lgs
@@ -30308,6 +30198,116 @@ else
   LZMA_DELEGATE_FALSE=
 fi
 
+
+
+
+
+#
+# Check for MUPDF delegate library.
+#
+
+# Check whether --with-mupdf was given.
+if test "${with_mupdf+set}" = set; then :
+  withval=$with_mupdf; with_mupdf=$withval
+else
+  with_mupdf='no'
+fi
+
+
+if test "$with_mupdf" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-mupdf=$with_mupdf "
+fi
+
+have_mupdf='no'
+MUPDF_LIBS=''
+if test "$with_mupdf" != 'no'; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for MUPDF" >&5
+$as_echo_n "checking for MUPDF... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+    failed=0
+    passed=0
+    ac_fn_c_check_header_mongrel "$LINENO" "mupdf/fitz.h" "ac_cv_header_mupdf_fitz_h" "$ac_includes_default"
+if test "x$ac_cv_header_mupdf_fitz_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for fz_new_context in -lmupdf" >&5
+$as_echo_n "checking for fz_new_context in -lmupdf... " >&6; }
+if ${ac_cv_lib_mupdf_fz_new_context+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmupdf -lmupdf $FREETYPE_LIBS $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char fz_new_context ();
+int
+main ()
+{
+return fz_new_context ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_mupdf_fz_new_context=yes
+else
+  ac_cv_lib_mupdf_fz_new_context=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mupdf_fz_new_context" >&5
+$as_echo "$ac_cv_lib_mupdf_fz_new_context" >&6; }
+if test "x$ac_cv_lib_mupdf_fz_new_context" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if MUPDF package is complete" >&5
+$as_echo_n "checking if MUPDF package is complete... " >&6; }
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+            have_mupdf='no (failed tests)'
+        else
+            MUPDF_LIBS='-lmupdf'
+            LIBS="$MUPDF_LIBS $LIBS"
+
+$as_echo "#define MUPDF_DELEGATE 1" >>confdefs.h
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+            have_mupdf='yes'
+        fi
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    fi
+fi
+ if test "$have_mupdf" = 'yes'; then
+  MUPDF_DELEGATE_TRUE=
+  MUPDF_DELEGATE_FALSE='#'
+else
+  MUPDF_DELEGATE_TRUE='#'
+  MUPDF_DELEGATE_FALSE=
+fi
 
 
 
@@ -35443,8 +35443,8 @@ fi
 if test "$have_ffmpeg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES mpeg"
 fi
-if test "$have_fitz"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES fitz"
+if test "$have_mupdf"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES mupdf"
 fi
 if test "$have_fftw"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES fftw"
@@ -35969,10 +35969,6 @@ if test -z "${FREETYPE_DELEGATE_TRUE}" && test -z "${FREETYPE_DELEGATE_FALSE}"; 
   as_fn_error $? "conditional \"FREETYPE_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${FITZ_DELEGATE_TRUE}" && test -z "${FITZ_DELEGATE_FALSE}"; then
-  as_fn_error $? "conditional \"FITZ_DELEGATE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
 if test -z "${GS_DELEGATE_TRUE}" && test -z "${GS_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"GS_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -36003,6 +35999,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${LZMA_DELEGATE_TRUE}" && test -z "${LZMA_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"LZMA_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${MUPDF_DELEGATE_TRUE}" && test -z "${MUPDF_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"MUPDF_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${OPENEXR_DELEGATE_TRUE}" && test -z "${OPENEXR_DELEGATE_FALSE}"; then
@@ -38754,7 +38754,6 @@ Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_fo
 DJVU              --with-djvu=$with_djvu		$have_djvu
 DPS               --with-dps=$with_dps		$have_dps
 FFTW              --with-fftw=$with_fftw		$have_fftw
-FITZ              --with-fitz=$with_fitz		$have_fitz
 FlashPIX          --with-fpx=$with_fpx		$have_fpx
 FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
 FreeType          --with-freetype=$with_freetype		$have_freetype
@@ -38773,6 +38772,7 @@ LQR               --with-lqr=$with_lqr		$have_lqr
 LTDL              --with-ltdl=$with_ltdl		$have_ltdl
 LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
+MUPDF             --with-mupdf=$with_mupdf		$have_mupdf
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
 PANGO             --with-pango=$with_pango		$have_pango
 PERL              --with-perl=$with_perl		$have_perl
@@ -38833,7 +38833,6 @@ Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_fo
 DJVU              --with-djvu=$with_djvu		$have_djvu
 DPS               --with-dps=$with_dps		$have_dps
 FFTW              --with-fftw=$with_fftw		$have_fftw
-FITZ              --with-fitz=$with_fitz		$have_fitz
 FlashPIX          --with-fpx=$with_fpx		$have_fpx
 FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
 FreeType          --with-freetype=$with_freetype		$have_freetype
@@ -38852,6 +38851,7 @@ LQR               --with-lqr=$with_lqr		$have_lqr
 LTDL              --with-ltdl=$with_ltdl		$have_ltdl
 LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
+MUPDF             --with-mupdf=$with_mupdf		$have_mupdf
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
 PANGO             --with-pango=$with_pango		$have_pango
 PERL              --with-perl=$with_perl		$have_perl

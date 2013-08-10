@@ -2589,7 +2589,6 @@ FGREP = @FGREP@
 FIGDecodeDelegate = @FIGDecodeDelegate@
 FILTER_DIRNAME = @FILTER_DIRNAME@
 FILTER_PATH = @FILTER_PATH@
-FITZ_LIBS = @FITZ_LIBS@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FPX_LIBS = @FPX_LIBS@
@@ -2722,6 +2721,7 @@ MODULES_RELATIVE_PATH = @MODULES_RELATIVE_PATH@
 MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
+MUPDF_LIBS = @MUPDF_LIBS@
 MVDelegate = @MVDelegate@
 MogrifyDelegate = @MogrifyDelegate@
 MrSIDDecodeDelegate = @MrSIDDecodeDelegate@
@@ -4055,7 +4055,7 @@ coders_xpm_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_xps_la_SOURCES = coders/xps.c
 coders_xps_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_xps_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_xps_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(FITZ_LIBS) $(FREETYPE_LIBS)
+coders_xps_la_LIBADD = $(MAGICKCORE_LIBS) $(MUPDF_LIBS) $(FREETYPE_LIBS) $(MATH_LIBS)
 
 # XWD coder module
 coders_xwd_la_SOURCES = coders/xwd.c
