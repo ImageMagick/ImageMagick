@@ -1833,7 +1833,7 @@ void Magick::Image::polaroid ( const std::string &caption_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  (void) SetImageOption( imageInfo(), "Caption", caption_.c_str() );
+  (void) SetImageProperty( image(), "Caption", caption_.c_str() );
   MagickCore::Image* image =
     PolaroidImage( constImage(), options()->drawInfo(), angle_,
                    &exceptionInfo );
@@ -1845,7 +1845,17 @@ void Magick::Image::polaroid ( const std::string &caption_,
 void Magick::Image::posterize ( const size_t levels_, const bool dither_ )
 {
   modifyImage();
-  PosterizeImage( image(), levels_, dither_ == true ? MagickTrue : MagickFalse );
+  PosterizeImage( image(), levels_, (MagickBooleanType) dither_);
+  throwImageException();
+}
+
+void Magick::Image::posterizeChannel ( const ChannelType channel_,
+                                       const size_t levels_,
+                                       const bool dither_ )
+{
+  modifyImage();
+  PosterizeImageChannel( image(), channel_, levels_,
+                        (MagickBooleanType) dither_);
   throwImageException();
 }
 
