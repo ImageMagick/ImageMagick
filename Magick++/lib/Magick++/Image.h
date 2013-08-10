@@ -611,6 +611,8 @@ namespace Magick
     // -epsilon (whichever is closer) otherwise the pixel value remains
     // unchanged.
     void            perceptible ( const double epsilon_ );
+    void            perceptibleChannel ( const ChannelType channel_,
+                                         const double epsilon_ );
 
     // Ping is similar to read except only enough of the image is read
     // to determine the image columns, rows, and filesize.  Access the
