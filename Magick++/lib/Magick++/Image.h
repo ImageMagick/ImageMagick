@@ -868,7 +868,7 @@ namespace Magick
     void            wave ( const double amplitude_ = 25.0,
                            const double wavelength_ = 150.0 );
 
-    // Forces all pixels below the threshold into black while leaving all
+    // Forces all pixels above the threshold into white while leaving all
     // pixels at or below the threshold unchanged.
     void            whiteThreshold ( const std::string &threshold_ );
     void            whiteThresholdChannel ( const ChannelType channel_,
