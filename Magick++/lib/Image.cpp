@@ -2020,6 +2020,20 @@ void Magick::Image::posterize ( const size_t levels_,
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::posterizeChannel ( const ChannelType channel_,
+                                       const size_t levels_,
+                                       const DitherMethod method_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  ChannelType channel_mask = SetImageChannelMask( image(), channel_ );
+  PosterizeImage( image(), levels_, method_, &exceptionInfo );
+  SetPixelChannelMask( image(), channel_mask );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Execute a named process module using an argc/argv syntax similar to
 // that accepted by a C 'main' routine. An exception is thrown if the
 // requested process module doesn't exist, fails to load, or fails during
