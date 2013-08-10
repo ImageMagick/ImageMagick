@@ -77,6 +77,11 @@
 #define MAGICKCORE_FILTER_DIRNAME "filters"
 #endif
 
+/* Define if you have FITZ library */
+#ifndef MAGICKCORE_FITZ_DELEGATE
+#define MAGICKCORE_FITZ_DELEGATE 1
+#endif
+
 /* Define if you have FONTCONFIG library */
 #ifndef MAGICKCORE_FONTCONFIG_DELEGATE
 #define MAGICKCORE_FONTCONFIG_DELEGATE 1
