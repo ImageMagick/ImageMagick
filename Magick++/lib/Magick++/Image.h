@@ -628,6 +628,9 @@ namespace Magick
     // Reduces the image to a limited number of colors for a "poster" effect.
     void            posterize ( const size_t levels_,
                                 const bool dither_ = false );
+    void            posterizeChannel ( const ChannelType channel_,
+                                       const size_t levels_,
+                                       const bool dither_ = false );
 
     // Execute a named process module using an argc/argv syntax similar to
     // that accepted by a C 'main' routine. An exception is thrown if the
