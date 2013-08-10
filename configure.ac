@@ -2010,10 +2010,10 @@ dnl ===========================================================================
 # Check for FITZ delegate library.
 #
 AC_ARG_WITH(fitz,
-    [AC_HELP_STRING([--without-fitz],
-                    [disable FITZ support])],
+    [AC_HELP_STRING([--with-fitz],
+                    [enable FITZ support])],
     [with_fitz=$withval],
-    [with_fitz='yes'])
+    [with_fitz='no'])
 
 if test "$with_fitz" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fitz=$with_fitz "
