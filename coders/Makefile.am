@@ -1032,7 +1032,7 @@ coders_xpm_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_xps_la_SOURCES      = coders/xps.c
 coders_xps_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_xps_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_xps_la_LIBADD       = $(MAGICKCORE_LIBS) $(FITZ_LIBS) $(FREETYPE_LIBS) $(MATH_LIBS)
+coders_xps_la_LIBADD       = $(MAGICKCORE_LIBS) $(MUPDF_LIBS) $(FREETYPE_LIBS) $(MATH_LIBS)
 
 # XWD coder module
 coders_xwd_la_SOURCES      = coders/xwd.c
