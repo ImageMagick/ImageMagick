@@ -1951,6 +1951,19 @@ void Magick::Image::perceptible ( const double epsilon_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::perceptibleChannel ( const ChannelType channel_,
+                                         const double epsilon_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  ChannelType channel_mask = SetImageChannelMask( image(), channel_ );
+  PerceptibleImage( image(), epsilon_, &exceptionInfo );
+  SetPixelChannelMask( image(), channel_mask );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Ping is similar to read except only enough of the image is read to
 // determine the image columns, rows, and filesize.  Access the
 // columns(), rows(), and fileSize() attributes after invoking ping.
