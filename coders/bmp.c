@@ -59,6 +59,7 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/option.h"
 #include "magick/pixel-accessor.h"
 #include "magick/profile.h"
 #include "magick/quantum-private.h"
@@ -1484,6 +1485,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
   BMPInfo
     bmp_info;
 
+  const char
+    *value;
+
   const StringInfo
     *profile;
 
@@ -1539,6 +1543,22 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
   else
     if (LocaleCompare(image_info->magick,"BMP3") == 0)
       type=3;
+
+  value=GetImageOption(image_info,"bmp:format");
+
+  if (value != (char *) NULL)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "  Format=%s",value);
+
+      if (LocaleCompare(value,"bmp2") == 0)
+        type=2;
+      if (LocaleCompare(value,"bmp3") == 0)
+        type=3;
+      if (LocaleCompare(value,"bmp4") == 0)
+        type=4;
+    }
+
   scene=0;
   do
   {
