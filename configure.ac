@@ -1284,7 +1284,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick png tiff/libtiff ttf/include wand webp wmf/include xml/include zlib; do
+    for dir in bzlib fftw fitz fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick png tiff/libtiff ttf/include wand webp wmf/include xml/include zlib; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -1295,7 +1295,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
+    for dir in bzlib fitz fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
@@ -2003,6 +2003,50 @@ fi
 AM_CONDITIONAL(FREETYPE_DELEGATE, test "$have_freetype" = 'yes')
 AC_SUBST(FREETYPE_CFLAGS)
 AC_SUBST(FREETYPE_LIBS)
+
+dnl ===========================================================================
+
+#
+# Check for FITZ delegate library.
+#
+AC_ARG_WITH(fitz,
+    [AC_HELP_STRING([--without-fitz],
+                    [disable FITZ support])],
+    [with_fitz=$withval],
+    [with_fitz='yes'])
+
+if test "$with_fitz" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fitz=$with_fitz "
+fi
+
+have_fitz='no'
+FITZ_LIBS=''
+if test "$with_fitz" != 'no'; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    AC_MSG_CHECKING([for FITZ])
+    AC_MSG_RESULT([])
+    failed=0
+    passed=0
+    AC_CHECK_HEADER(fitz.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(fitz,fz_new_context,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-lfitz $FREETYPE_LIBS)
+    AC_MSG_CHECKING([if FITZ package is complete])
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            AC_MSG_RESULT([no -- some components failed test])
+            have_fitz='no (failed tests)'
+        else
+            FITZ_LIBS='-lfitz'
+            LIBS="$FITZ_LIBS $LIBS"
+            AC_DEFINE(FITZ_DELEGATE,1,Define if you have FITZ library)
+            AC_MSG_RESULT([yes])
+            have_fitz='yes'
+        fi
+    else
+        AC_MSG_RESULT([no])
+    fi
+fi
+AM_CONDITIONAL(FITZ_DELEGATE,test "$have_fitz" = 'yes')
+AC_SUBST(FITZ_LIBS)
 
 dnl ===========================================================================
 
@@ -3781,6 +3825,9 @@ fi
 if test "$have_ffmpeg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES mpeg"
 fi
+if test "$have_fitz"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES fitz"
+fi
 if test "$have_fftw"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES fftw"
 fi
@@ -4017,6 +4064,7 @@ Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_fo
 DJVU              --with-djvu=$with_djvu		$have_djvu
 DPS               --with-dps=$with_dps		$have_dps
 FFTW              --with-fftw=$with_fftw		$have_fftw
+FITZ              --with-fitz=$with_fitz		$have_fitz
 FlashPIX          --with-fpx=$with_fpx		$have_fpx
 FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
 FreeType          --with-freetype=$with_freetype		$have_freetype
