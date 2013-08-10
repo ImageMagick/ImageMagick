@@ -7496,7 +7496,7 @@ ModuleExport size_t RegisterPNGImage(void)
   if (*version != '\0')
     entry->version=ConstantString(version);
 
-  entry->mime_type=ConstantString("image/x-mng");
+  entry->mime_type=ConstantString("video/x-mng");
   entry->module=ConstantString("PNG");
   entry->note=ConstantString(MNGNote);
   (void) RegisterMagickInfo(entry);
