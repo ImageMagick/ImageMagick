@@ -52,6 +52,9 @@
 /* filter subdirectory. */
 #undef FILTER_DIRNAME
 
+/* Define if you have FITZ library */
+#undef FITZ_DELEGATE
+
 /* Define if you have FONTCONFIG library */
 #undef FONTCONFIG_DELEGATE
 
