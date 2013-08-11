@@ -1051,7 +1051,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     encoding_type;
 
   FT_Error
-    status;
+    ft_status;
 
   FT_Face
     face;
@@ -1074,6 +1074,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   GlyphInfo
     glyph,
     last_glyph;
+
+  MagickBooleanType
+    status;
 
   PointInfo
     point,
@@ -1102,8 +1105,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Initialize Truetype library.
   */
-  status=FT_Init_FreeType(&library);
-  if (status != 0)
+  ft_status=FT_Init_FreeType(&library);
+  if (ft_status != 0)
     ThrowBinaryException(TypeError,"UnableToInitializeFreetypeLibrary",
       image->filename);
   args.flags=FT_OPEN_PATHNAME;
@@ -1115,9 +1118,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     else
       args.pathname=ConstantString(draw_info->font+1);
   face=(FT_Face) NULL;
-  status=FT_Open_Face(library,&args,(long) draw_info->face,&face);
+  ft_status=FT_Open_Face(library,&args,(long) draw_info->face,&face);
   args.pathname=DestroyString(args.pathname);
-  if (status != 0)
+  if (ft_status != 0)
     {
       (void) FT_Done_FreeType(library);
       (void) ThrowMagickException(&image->exception,GetMagickModule(),TypeError,
@@ -1128,9 +1131,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       (IsPathAccessible(draw_info->metrics) != MagickFalse))
     (void) FT_Attach_File(face,draw_info->metrics);
   encoding_type=ft_encoding_unicode;
-  status=FT_Select_Charmap(face,encoding_type);
-  if ((status != 0) && (face->num_charmaps != 0))
-    status=FT_Set_Charmap(face,face->charmaps[0]);
+  ft_status=FT_Select_Charmap(face,encoding_type);
+  if ((ft_status != 0) && (face->num_charmaps != 0))
+    ft_status=FT_Set_Charmap(face,face->charmaps[0]);
   if (encoding != (const char *) NULL)
     {
       if (LocaleCompare(encoding,"AdobeCustom") == 0)
@@ -1163,8 +1166,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_unicode;
       if (LocaleCompare(encoding,"Wansung") == 0)
         encoding_type=ft_encoding_wansung;
-      status=FT_Select_Charmap(face,encoding_type);
-      if (status != 0)
+      ft_status=FT_Select_Charmap(face,encoding_type);
+      if (ft_status != 0)
         ThrowBinaryException(TypeError,"UnrecognizedFontEncoding",encoding);
     }
   /*
@@ -1186,7 +1189,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if ((flags & SigmaValue) == 0)
         resolution.y=resolution.x;
     }
-  status=FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
+  ft_status=FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
     (FT_F26Dot6) (64.0*draw_info->pointsize),(FT_UInt) resolution.x,
     (FT_UInt) resolution.y);
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
@@ -1279,6 +1282,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if (utf8 != (unsigned char *) NULL)
         p=(char *) utf8;
     }
+  status=MagickTrue;
   for (code=0; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
   {
     /*
@@ -1297,22 +1301,22 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
               FT_Vector
                 kerning;
 
-              status=FT_Get_Kerning(face,last_glyph.id,glyph.id,
+              ft_status=FT_Get_Kerning(face,last_glyph.id,glyph.id,
                 ft_kerning_default,&kerning);
-              if (status == 0)
+              if (ft_status == 0)
                 origin.x+=(FT_Pos) (direction*kerning.x);
             }
         }
     glyph.origin=origin;
-    status=FT_Load_Glyph(face,glyph.id,flags);
-    if (status != 0)
+    ft_status=FT_Load_Glyph(face,glyph.id,flags);
+    if (ft_status != 0)
       continue;
-    status=FT_Get_Glyph(face->glyph,&glyph.image);
-    if (status != 0)
+    ft_status=FT_Get_Glyph(face->glyph,&glyph.image);
+    if (ft_status != 0)
       continue;
-    status=FT_Outline_Get_BBox(&((FT_OutlineGlyph) glyph.image)->outline,
+    ft_status=FT_Outline_Get_BBox(&((FT_OutlineGlyph) glyph.image)->outline,
       &bounds);
-    if (status != 0)
+    if (ft_status != 0)
       continue;
     if ((p == draw_info->text) || (bounds.xMin < metrics->bounds.x1))
       metrics->bounds.x1=(double) bounds.xMin;
@@ -1322,23 +1326,25 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       metrics->bounds.x2=(double) bounds.xMax;
     if ((p == draw_info->text) || (bounds.yMax > metrics->bounds.y2))
       metrics->bounds.y2=(double) bounds.yMax;
-    if (draw_info->render != MagickFalse)
-      if ((draw_info->stroke.opacity != TransparentOpacity) ||
-          (draw_info->stroke_pattern != (Image *) NULL))
-        {
-          /*
-            Trace the glyph.
-          */
-          annotate_info->affine.tx=glyph.origin.x/64.0;
-          annotate_info->affine.ty=glyph.origin.y/64.0;
-          (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->
-            outline,&OutlineMethods,annotate_info);
+    if ((draw_info->stroke.opacity != TransparentOpacity) ||
+        (draw_info->stroke_pattern != (Image *) NULL))
+      {
+        if ((status != MagickFalse) && (draw_info->render != MagickFalse))
+          {
+            /*
+              Trace the glyph.
+            */
+            annotate_info->affine.tx=glyph.origin.x/64.0;
+            annotate_info->affine.ty=glyph.origin.y/64.0;
+            (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->
+              outline,&OutlineMethods,annotate_info);
+          }
         }
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
-    status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
+    ft_status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
       (FT_Vector *) NULL,MagickTrue);
-    if (status != 0)
+    if (ft_status != 0)
       continue;
     bitmap=(FT_BitmapGlyph) glyph.image;
     point.x=offset->x+bitmap->left;
@@ -1353,16 +1359,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         ExceptionInfo
           *exception;
 
-        MagickBooleanType
-          status;
-
         register unsigned char
           *p;
 
         /*
           Rasterize the glyph.
         */
-        status=MagickTrue;
         exception=(&image->exception);
         p=bitmap->bitmap.buffer;
         image_view=AcquireAuthenticCacheView(image,exception);
@@ -1469,7 +1471,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if ((draw_info->stroke.opacity != TransparentOpacity) ||
       (draw_info->stroke_pattern != (Image *) NULL))
     {
-      if (draw_info->render != MagickFalse)
+      if ((status != MagickFalse) && (draw_info->render != MagickFalse))
         {
           /*
             Draw text stroke.
@@ -1486,19 +1488,19 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   */
   glyph.id=FT_Get_Char_Index(face,'_');
   glyph.origin=origin;
-  status=FT_Load_Glyph(face,glyph.id,flags);
-  if (status == 0)
+  ft_status=FT_Load_Glyph(face,glyph.id,flags);
+  if (ft_status == 0)
     {
-      status=FT_Get_Glyph(face->glyph,&glyph.image);
-      if (status == 0)
+      ft_status=FT_Get_Glyph(face->glyph,&glyph.image);
+      if (ft_status == 0)
         {
-          status=FT_Outline_Get_BBox(&((FT_OutlineGlyph) glyph.image)->outline,
-            &bounds);
-          if (status == 0)
+          ft_status=FT_Outline_Get_BBox(&((FT_OutlineGlyph) glyph.image)->
+            outline,&bounds);
+          if (ft_status == 0)
             {
               FT_Vector_Transform(&glyph.origin,&affine);
               (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
-              status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
+              ft_status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
                 (FT_Vector *) NULL,MagickTrue);
               bitmap=(FT_BitmapGlyph) glyph.image;
               if (bitmap->left > metrics->width)
@@ -1521,7 +1523,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   annotate_info=DestroyDrawInfo(annotate_info);
   (void) FT_Done_Face(face);
   (void) FT_Done_FreeType(library);
-  return(MagickTrue);
+  return(status);
 }
 #else
 static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
