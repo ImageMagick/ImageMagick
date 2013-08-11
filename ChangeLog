@@ -1,3 +1,15 @@
+2013-08-11  6.8.6-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.6-9, SVN revision 12991.
+
+2013-08-10  6.8.6-9 Dirk Lemstra <dirk@snakeware...>
+  * added the following command line options to configure.exe:
+      /x64, set 64 bit build)
+      /mtd, set project type to: multi threaded dll
+      /sts, set project type to: single threaded static
+      /mts, set project type to: multi threaded static
+      /mtsd, set project type to: multi threaded static dll
+      /noWizard, skip the wizard and generate the project/solution files
+
 2013-08-10  6.8.6.9 Glenn Randers-Pehrson <glennrp@image...>
   * Added "-define bmp:format=bmp2|bmp3|bmp4" option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=23875).
