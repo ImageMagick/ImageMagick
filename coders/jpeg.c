@@ -2267,7 +2267,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           (void) DeleteImageArtifact(jpeg_image,"jpeg:extent");
           (void) AcquireUniqueFilename(jpeg_image->filename);
           maximum=101;
-          for (minimum=2; minimum != maximum; )
+          for (minimum=2; minimum < maximum; )
           {
             jpeg_image->quality=minimum+(maximum-minimum+1)/2;
             status=WriteJPEGImage(jpeg_info,jpeg_image,exception);
