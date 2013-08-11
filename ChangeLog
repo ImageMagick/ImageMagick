@@ -2,9 +2,6 @@
   * Fixed infinite loop with jpeg:extent (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23314).
 
-2013-08-11  6.8.6-9 Cristy  <quetzlzacatenango@image...>
-  * New version 6.8.6-9, SVN revision 12991.
-
 2013-08-10  6.8.6-9 Dirk Lemstra <dirk@snakeware...>
   * Added the following command line options to configure.exe:
       /x64, set 64 bit build
