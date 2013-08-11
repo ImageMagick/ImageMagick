@@ -24,6 +24,6 @@ done
 
 for filter in bessel blackman box catrom cubic gaussian hamming hanning hermite lanczos mitchell point quadratic sample scale sinc triangle
 do
-  ./zoom -filter $filter -geometry 600x600 ${SRCDIR}/model.miff  ${executable}_${filter}_out.miff && echo "ok" || echo "not ok"
+  ./zoom -filter $filter -geometry 600x600 ${SRCDIR}/model.miff  zoom_${filter}_out.miff && echo "ok" || echo "not ok"
 done
 :
