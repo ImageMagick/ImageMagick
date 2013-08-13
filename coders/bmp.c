@@ -59,7 +59,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
-#include "magick/option.h"
+#include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/quantum-private.h"
