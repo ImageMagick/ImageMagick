@@ -2118,8 +2118,8 @@ MagickExport MagickBooleanType GammaImage(Image *image,const char *level)
   else
     {
       status=GammaImageChannel(image,RedChannel,(double) gamma.red);
-      status|=GammaImageChannel(image,GreenChannel,(double) gamma.green);
-      status|=GammaImageChannel(image,BlueChannel,(double) gamma.blue);
+      status&=GammaImageChannel(image,GreenChannel,(double) gamma.green);
+      status&=GammaImageChannel(image,BlueChannel,(double) gamma.blue);
     }
   return(status != 0 ? MagickTrue : MagickFalse);
 }
@@ -3291,41 +3291,41 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
   if (invert == MagickFalse)
     {
       if ((channel & RedChannel) != 0)
-        status|=LevelImageChannel(image,RedChannel,black_color->red,
+        status&=LevelImageChannel(image,RedChannel,black_color->red,
           white_color->red,(double) 1.0);
       if ((channel & GreenChannel) != 0)
-        status|=LevelImageChannel(image,GreenChannel,black_color->green,
+        status&=LevelImageChannel(image,GreenChannel,black_color->green,
           white_color->green,(double) 1.0);
       if ((channel & BlueChannel) != 0)
-        status|=LevelImageChannel(image,BlueChannel,black_color->blue,
+        status&=LevelImageChannel(image,BlueChannel,black_color->blue,
           white_color->blue,(double) 1.0);
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        status|=LevelImageChannel(image,OpacityChannel,black_color->opacity,
+        status&=LevelImageChannel(image,OpacityChannel,black_color->opacity,
           white_color->opacity,(double) 1.0);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        status|=LevelImageChannel(image,IndexChannel,black_color->index,
+        status&=LevelImageChannel(image,IndexChannel,black_color->index,
           white_color->index,(double) 1.0);
     }
   else
     {
       if ((channel & RedChannel) != 0)
-        status|=LevelizeImageChannel(image,RedChannel,black_color->red,
+        status&=LevelizeImageChannel(image,RedChannel,black_color->red,
           white_color->red,(double) 1.0);
       if ((channel & GreenChannel) != 0)
-        status|=LevelizeImageChannel(image,GreenChannel,black_color->green,
+        status&=LevelizeImageChannel(image,GreenChannel,black_color->green,
           white_color->green,(double) 1.0);
       if ((channel & BlueChannel) != 0)
-        status|=LevelizeImageChannel(image,BlueChannel,black_color->blue,
+        status&=LevelizeImageChannel(image,BlueChannel,black_color->blue,
           white_color->blue,(double) 1.0);
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        status|=LevelizeImageChannel(image,OpacityChannel,black_color->opacity,
+        status&=LevelizeImageChannel(image,OpacityChannel,black_color->opacity,
           white_color->opacity,(double) 1.0);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        status|=LevelizeImageChannel(image,IndexChannel,black_color->index,
+        status&=LevelizeImageChannel(image,IndexChannel,black_color->index,
           white_color->index,(double) 1.0);
     }
   return(status == 0 ? MagickFalse : MagickTrue);

@@ -921,8 +921,8 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,const char *level)
   if ((flags & XiValue) == 0)
     threshold.blue=threshold.red;
   status=BilevelImageChannel(image,RedChannel,threshold.red);
-  status|=BilevelImageChannel(image,GreenChannel,threshold.green);
-  status|=BilevelImageChannel(image,BlueChannel,threshold.blue);
+  status&=BilevelImageChannel(image,GreenChannel,threshold.green);
+  status&=BilevelImageChannel(image,BlueChannel,threshold.blue);
   return(status);
 }
 

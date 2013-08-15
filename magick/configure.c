@@ -1267,7 +1267,7 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status|=LoadConfigureList((const char *) GetStringInfoDatum(option),
+    status&=LoadConfigureList((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
@@ -1299,7 +1299,7 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
     configure_info->value=(char *) p->value;
     configure_info->exempt=MagickTrue;
     configure_info->signature=MagickSignature;
-    status|=AppendValueToLinkedList(configure_list,configure_info);
+    status&=AppendValueToLinkedList(configure_list,configure_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",

@@ -3554,7 +3554,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if ((source_info.storage_class != UndefinedClass) &&
                   (mode != ReadMode))
                 {
-                  status|=ClonePixelCacheRepository(cache_info,&source_info,
+                  status&=ClonePixelCacheRepository(cache_info,&source_info,
                     exception);
                   RelinquishPixelCachePixels(&source_info);
                 }

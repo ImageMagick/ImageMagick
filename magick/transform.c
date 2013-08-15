@@ -1607,14 +1607,14 @@ MagickExport Image *RollImage(const Image *image,const ssize_t x_offset,
     (size_t) offset.y,(ssize_t) image->columns-offset.x,(ssize_t) image->rows-
     offset.y,0,0,exception);
   (void) SetImageProgress(image,RollImageTag,0,3);
-  status|=CopyImageRegion(roll_image,image,image->columns-offset.x,
+  status&=CopyImageRegion(roll_image,image,image->columns-offset.x,
     (size_t) offset.y,0,(ssize_t) image->rows-offset.y,offset.x,0,
     exception);
   (void) SetImageProgress(image,RollImageTag,1,3);
-  status|=CopyImageRegion(roll_image,image,(size_t) offset.x,image->rows-
+  status&=CopyImageRegion(roll_image,image,(size_t) offset.x,image->rows-
     offset.y,(ssize_t) image->columns-offset.x,0,0,offset.y,exception);
   (void) SetImageProgress(image,RollImageTag,2,3);
-  status|=CopyImageRegion(roll_image,image,image->columns-offset.x,image->rows-
+  status&=CopyImageRegion(roll_image,image,image->columns-offset.x,image->rows-
     offset.y,0,0,offset.x,offset.y,exception);
   (void) SetImageProgress(image,RollImageTag,3,3);
   roll_image->type=image->type;
@@ -2151,7 +2151,7 @@ MagickExport MagickBooleanType TransformImages(Image **images,
   for (i=0; image_list[i] != (Image *) NULL; i++)
   {
     image=image_list[i];
-    status|=TransformImage(&image,crop_geometry,image_geometry);
+    status&=TransformImage(&image,crop_geometry,image_geometry);
     AppendImageToList(&transform_images,image);
   }
   *images=transform_images;

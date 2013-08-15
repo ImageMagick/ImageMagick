@@ -1343,7 +1343,7 @@ static MagickBooleanType LoadLocaleLists(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status|=LoadLocaleList((const char *) GetStringInfoDatum(option),
+    status&=LoadLocaleList((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),locale,0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
@@ -1355,7 +1355,7 @@ static MagickBooleanType LoadLocaleLists(const char *filename,
       option=(const StringInfo *) GetNextValueInLinkedList(options);
       while (option != (const StringInfo *) NULL)
       {
-        status|=LoadLocaleList((const char *) GetStringInfoDatum(option),
+        status&=LoadLocaleList((const char *) GetStringInfoDatum(option),
           GetStringInfoPath(option),locale,0,exception);
         option=(const StringInfo *) GetNextValueInLinkedList(options);
       }
@@ -1363,7 +1363,7 @@ static MagickBooleanType LoadLocaleLists(const char *filename,
     }
   if ((locale_list == (SplayTreeInfo *) NULL) ||
       (GetNumberOfNodesInSplayTree(locale_list) == 0))
-    status|=LoadLocaleList(LocaleMap,"built-in",locale,0,exception);
+    status&=LoadLocaleList(LocaleMap,"built-in",locale,0,exception);
   return(status != 0 ? MagickTrue : MagickFalse);
 #endif
 }

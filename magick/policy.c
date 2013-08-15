@@ -904,7 +904,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status|=LoadPolicyList((const char *) GetStringInfoDatum(option),
+    status&=LoadPolicyList((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
@@ -937,7 +937,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
     policy_info->value=(char *) p->value;
     policy_info->exempt=MagickTrue;
     policy_info->signature=MagickSignature;
-    status|=AppendValueToLinkedList(policy_list,policy_info);
+    status&=AppendValueToLinkedList(policy_list,policy_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",policy_info->name);
