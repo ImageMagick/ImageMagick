@@ -971,14 +971,14 @@ MagickExport MagickBooleanType LoadMimeLists(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status|=LoadMimeList((const char *) GetStringInfoDatum(option),
+    status&=LoadMimeList((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
   if ((mime_list == (LinkedListInfo *) NULL) ||
       (IsLinkedListEmpty(mime_list) != MagickFalse))
-    status|=LoadMimeList(MimeMap,"built-in",0,exception);
+    status&=LoadMimeList(MimeMap,"built-in",0,exception);
   else
     ClearMagickException(exception);
   return(status != 0 ? MagickTrue : MagickFalse);

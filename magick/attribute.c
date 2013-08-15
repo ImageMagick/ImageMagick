@@ -347,13 +347,13 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
           status=0;
           range=GetQuantumRange(current_depth[id]);
           if ((channel & RedChannel) != 0)
-            status|=image->colormap[i].red != ScaleAnyToQuantum(
+            status&=image->colormap[i].red != ScaleAnyToQuantum(
               ScaleQuantumToAny(image->colormap[i].red,range),range);
           if ((channel & GreenChannel) != 0)
-            status|=image->colormap[i].green != ScaleAnyToQuantum(
+            status&=image->colormap[i].green != ScaleAnyToQuantum(
               ScaleQuantumToAny(image->colormap[i].green,range),range);
           if ((channel & BlueChannel) != 0)
-            status|=image->colormap[i].blue != ScaleAnyToQuantum(
+            status&=image->colormap[i].blue != ScaleAnyToQuantum(
               ScaleQuantumToAny(image->colormap[i].blue,range),range);
           if (status == 0)
             break;
@@ -516,20 +516,20 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
         status=0;
         range=GetQuantumRange(current_depth[id]);
         if ((channel & RedChannel) != 0)
-          status|=GetPixelRed(p) != ScaleAnyToQuantum(
+          status&=GetPixelRed(p) != ScaleAnyToQuantum(
             ScaleQuantumToAny(GetPixelRed(p),range),range);
         if ((channel & GreenChannel) != 0)
-          status|=GetPixelGreen(p) != ScaleAnyToQuantum(
+          status&=GetPixelGreen(p) != ScaleAnyToQuantum(
             ScaleQuantumToAny(GetPixelGreen(p),range),range);
         if ((channel & BlueChannel) != 0)
-          status|=GetPixelBlue(p) != ScaleAnyToQuantum(
+          status&=GetPixelBlue(p) != ScaleAnyToQuantum(
             ScaleQuantumToAny(GetPixelBlue(p),range),range);
         if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
-          status|=GetPixelOpacity(p) != ScaleAnyToQuantum(
+          status&=GetPixelOpacity(p) != ScaleAnyToQuantum(
             ScaleQuantumToAny(GetPixelOpacity(p),range),range);
         if (((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace))
-          status|=GetPixelIndex(indexes+x) != ScaleAnyToQuantum(
+          status&=GetPixelIndex(indexes+x) != ScaleAnyToQuantum(
             ScaleQuantumToAny(GetPixelIndex(indexes+x),range),range);
         if (status == 0)
           break;

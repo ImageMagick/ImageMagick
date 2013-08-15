@@ -1489,14 +1489,14 @@ static MagickBooleanType LoadDelegateLists(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status|=LoadDelegateList((const char *) GetStringInfoDatum(option),
+    status&=LoadDelegateList((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
   if ((delegate_list == (LinkedListInfo *) NULL) ||
       (IsLinkedListEmpty(delegate_list) != MagickFalse))
-    status|=LoadDelegateList(DelegateMap,"built-in",0,exception);
+    status&=LoadDelegateList(DelegateMap,"built-in",0,exception);
   return(status != 0 ? MagickTrue : MagickFalse);
 #endif
 }

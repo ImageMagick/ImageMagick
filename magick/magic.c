@@ -958,7 +958,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
   while (option != (const StringInfo *) NULL)
   {
     (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
-    status|=LoadMagicList((const char *) GetStringInfoDatum(option),
+    status&=LoadMagicList((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
@@ -990,7 +990,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
     magic_info->signature=MagickSignature;
-    status|=AppendValueToLinkedList(magic_list,magic_info);
+    status&=AppendValueToLinkedList(magic_list,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);

@@ -911,7 +911,7 @@ static MagickBooleanType LoadCoderLists(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status|=LoadCoderList((const char *) GetStringInfoDatum(option),
+    status&=LoadCoderList((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
@@ -941,7 +941,7 @@ static MagickBooleanType LoadCoderLists(const char *filename,
     coder_info->name=(char *) p->name;
     coder_info->exempt=MagickTrue;
     coder_info->signature=MagickSignature;
-    status|=AddValueToSplayTree(coder_list,ConstantString(coder_info->magick),
+    status&=AddValueToSplayTree(coder_list,ConstantString(coder_info->magick),
       coder_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),

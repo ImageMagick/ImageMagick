@@ -2089,18 +2089,18 @@ MagickExport const char *GetImageProperty(const Image *image,
           status=FxEvaluateChannelExpression(fx_info,RedChannel,0,0,&alpha,
             exception);
           pixel.red=(MagickRealType) QuantumRange*alpha;
-          status|=FxEvaluateChannelExpression(fx_info,GreenChannel,0,0,&alpha,
+          status&=FxEvaluateChannelExpression(fx_info,GreenChannel,0,0,&alpha,
             exception);
           pixel.green=(MagickRealType) QuantumRange*alpha;
-          status|=FxEvaluateChannelExpression(fx_info,BlueChannel,0,0,&alpha,
+          status&=FxEvaluateChannelExpression(fx_info,BlueChannel,0,0,&alpha,
             exception);
           pixel.blue=(MagickRealType) QuantumRange*alpha;
-          status|=FxEvaluateChannelExpression(fx_info,OpacityChannel,0,0,&alpha,
+          status&=FxEvaluateChannelExpression(fx_info,OpacityChannel,0,0,&alpha,
             exception);
           pixel.opacity=(MagickRealType) QuantumRange*(1.0-alpha);
           if (image->colorspace == CMYKColorspace)
             {
-              status|=FxEvaluateChannelExpression(fx_info,BlackChannel,0,0,
+              status&=FxEvaluateChannelExpression(fx_info,BlackChannel,0,0,
                 &alpha,exception);
               pixel.index=(MagickRealType) QuantumRange*alpha;
             }

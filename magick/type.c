@@ -1314,7 +1314,7 @@ static MagickBooleanType LoadTypeLists(const char *filename,
   while (option != (const StringInfo *) NULL)
   {
     (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
-    status|=LoadTypeList((const char *) GetStringInfoDatum(option),
+    status&=LoadTypeList((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
@@ -1333,14 +1333,14 @@ static MagickBooleanType LoadTypeLists(const char *filename,
       option=FileToString(path,~0,exception);
       if (option != (void *) NULL)
         {
-          status|=LoadTypeList(option,path,0,exception);
+          status&=LoadTypeList(option,path,0,exception);
           option=DestroyString(option);
         }
       font_path=DestroyString(font_path);
     }
   if ((type_list == (SplayTreeInfo *) NULL) ||
       (GetNumberOfNodesInSplayTree(type_list) == 0))
-    status|=LoadTypeList(TypeMap,"built-in",0,exception);
+    status&=LoadTypeList(TypeMap,"built-in",0,exception);
   return(status != 0 ? MagickTrue : MagickFalse);
 #endif
 }
