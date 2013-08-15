@@ -2714,21 +2714,21 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,RedChannel);
-          status|=LevelImage(image,black_color->red,white_color->red,1.0,
+          status&=LevelImage(image,black_color->red,white_color->red,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,GreenChannel);
-          status|=LevelImage(image,black_color->green,white_color->green,1.0,
+          status&=LevelImage(image,black_color->green,white_color->green,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,BlueChannel);
-          status|=LevelImage(image,black_color->blue,white_color->blue,1.0,
+          status&=LevelImage(image,black_color->blue,white_color->blue,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
@@ -2736,7 +2736,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
           (image->colorspace == CMYKColorspace))
         {
           channel_mask=SetImageChannelMask(image,BlackChannel);
-          status|=LevelImage(image,black_color->black,white_color->black,1.0,
+          status&=LevelImage(image,black_color->black,white_color->black,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
@@ -2744,7 +2744,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
           (image->alpha_trait == BlendPixelTrait))
         {
           channel_mask=SetImageChannelMask(image,AlphaChannel);
-          status|=LevelImage(image,black_color->alpha,white_color->alpha,1.0,
+          status&=LevelImage(image,black_color->alpha,white_color->alpha,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
@@ -2754,21 +2754,21 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,RedChannel);
-          status|=LevelizeImage(image,black_color->red,white_color->red,1.0,
+          status&=LevelizeImage(image,black_color->red,white_color->red,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,GreenChannel);
-          status|=LevelizeImage(image,black_color->green,white_color->green,1.0,
+          status&=LevelizeImage(image,black_color->green,white_color->green,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,BlueChannel);
-          status|=LevelizeImage(image,black_color->blue,white_color->blue,1.0,
+          status&=LevelizeImage(image,black_color->blue,white_color->blue,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
@@ -2776,7 +2776,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
           (image->colorspace == CMYKColorspace))
         {
           channel_mask=SetImageChannelMask(image,BlackChannel);
-          status|=LevelizeImage(image,black_color->black,white_color->black,1.0,
+          status&=LevelizeImage(image,black_color->black,white_color->black,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
@@ -2784,7 +2784,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
           (image->alpha_trait == BlendPixelTrait))
         {
           channel_mask=SetImageChannelMask(image,AlphaChannel);
-          status|=LevelizeImage(image,black_color->alpha,white_color->alpha,1.0,
+          status&=LevelizeImage(image,black_color->alpha,white_color->alpha,1.0,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
