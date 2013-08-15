@@ -16,8 +16,10 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=23875).
 
 2013-08-07  6.8.6-9 Cristy  <quetzlzacatenango@image...>
-  * Free disk resource if case resources are exhausted (reference
+  * Free disk resource if cache resources are exhausted (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23877).
+  * Return proper EXIF:ISOSpeedRating property value for TIFF images (reference
+  http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23913).
 
 2013-08-06  6.8.6-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-8, SVN revision 12918.
