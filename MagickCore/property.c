@@ -3289,19 +3289,19 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &value,exception);
           pixel.red=(double) QuantumRange*value;
-          status|=FxEvaluateChannelExpression(fx_info,GreenPixelChannel,0,0,
+          status&=FxEvaluateChannelExpression(fx_info,GreenPixelChannel,0,0,
             &value,exception);
           pixel.green=(double) QuantumRange*value;
-          status|=FxEvaluateChannelExpression(fx_info,BluePixelChannel,0,0,
+          status&=FxEvaluateChannelExpression(fx_info,BluePixelChannel,0,0,
             &value,exception);
           pixel.blue=(double) QuantumRange*value;
           if (image->colorspace == CMYKColorspace)
             {
-              status|=FxEvaluateChannelExpression(fx_info,BlackPixelChannel,0,0,
+              status&=FxEvaluateChannelExpression(fx_info,BlackPixelChannel,0,0,
                 &value,exception);
               pixel.black=(double) QuantumRange*value;
             }
-          status|=FxEvaluateChannelExpression(fx_info,AlphaPixelChannel,0,0,
+          status&=FxEvaluateChannelExpression(fx_info,AlphaPixelChannel,0,0,
             &value,exception);
           pixel.alpha=(double) QuantumRange*value;
           fx_info=DestroyFxInfo(fx_info);

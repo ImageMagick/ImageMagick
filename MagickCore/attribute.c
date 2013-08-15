@@ -331,15 +331,15 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           status=0;
           range=GetQuantumRange(current_depth[id]);
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            status|=ClampToQuantum(image->colormap[i].red) !=
+            status&=ClampToQuantum(image->colormap[i].red) !=
               ScaleAnyToQuantum(ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].red),range),range);
           if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            status|=ClampToQuantum(image->colormap[i].green) !=
+            status&=ClampToQuantum(image->colormap[i].green) !=
               ScaleAnyToQuantum(ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].green),range),range);
           if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            status|=ClampToQuantum(image->colormap[i].blue) !=
+            status&=ClampToQuantum(image->colormap[i].blue) !=
               ScaleAnyToQuantum(ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].blue),range),range);
           if (status == 0)
