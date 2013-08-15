@@ -1,8 +1,4 @@
-2013-08-11  6.8.6-9 Dirk Lemstra <dirk@snakeware..>
-  * Fixed infinite loop with jpeg:extent (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23314).
-
-2013-08-10  6.8.6-9 Dirk Lemstra <dirk@snakeware...>
+2013-08-10  6.8.6-9 Dirk Lemstra <dirk@snakeware..>
   * Added the following command line options to configure.exe:
       /x64, set 64 bit build
       /mtd, set project type to: multi threaded dll
@@ -10,6 +6,8 @@
       /mts, set project type to: multi threaded static
       /mtsd, set project type to: multi threaded static dll
       /noWizard, skip the wizard and generate the project/solution files
+  * Fixed infinite loop with jpeg:extent (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23314).
 
 2013-08-10  6.8.6.9 Glenn Randers-Pehrson <glennrp@image...>
   * Added "-define bmp:format=bmp2|bmp3|bmp4" option (reference
@@ -19,7 +17,7 @@
   * Free disk resource if cache resources are exhausted (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23877).
   * Return proper EXIF:ISOSpeedRating property value for TIFF images (reference
-  http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23913).
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23913).
 
 2013-08-06  6.8.6-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-8, SVN revision 12918.
