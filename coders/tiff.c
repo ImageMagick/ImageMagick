@@ -710,7 +710,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       case TIFF_SHORT:
       {
         uint16
-          shorty[2] = { 0, 0};
+          shorty[2] = { 0, 0 };
 
         if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%d",(int) shorty[0]);
