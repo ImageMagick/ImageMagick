@@ -1673,7 +1673,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
           continue;
         pixel=(double) p[i];
         if ((pixel < 0.0) || (pixel > QuantumRange) ||
-            (pixel != (QuantumAny) pixel))
+            (pixel != (double) ((QuantumAny) pixel)))
           break;
       }
       p+=GetPixelChannels(image);
