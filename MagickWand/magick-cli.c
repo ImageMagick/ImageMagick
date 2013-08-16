@@ -714,7 +714,8 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   /* Special Case: Version Information and Abort */
   if (argc == 2) {
-    if (LocaleCompare("-version",argv[1]) == 0) { /* just version */
+    if ((LocaleCompare("-version",argv[1]) == 0)   || /* GNU standard option */
+        (LocaleCompare("--version",argv[1]) == 0) ) { /* just version */
       CLIOption(cli_wand, "-version");
       goto Magick_Command_Exit;
     }
