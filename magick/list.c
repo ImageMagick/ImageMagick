@@ -382,7 +382,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   */
   for (p=(char *) scenes; *p != '\0';)
   {
-    while ((isspace((int) *p) != 0) || (*p == ','))
+    while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
       p++;
     first=strtol(p,&p,10);
     if (first < 0)
