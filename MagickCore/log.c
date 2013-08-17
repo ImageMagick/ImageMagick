@@ -127,7 +127,6 @@ struct _LogInfo
 
   MagickBooleanType
     append,
-    exempt,
     stealth;
 
   TimerInfo
@@ -743,15 +742,12 @@ static void *DestroyLogElement(void *log_info)
       (void) fclose(p->file);
       p->file=(FILE *) NULL;
     }
-  if (p->exempt == MagickFalse)
-    {
-      if (p->format != (char *) NULL)
-        p->format=DestroyString(p->format);
-      if (p->path != (char *) NULL)
-        p->path=DestroyString(p->path);
-      if (p->filename != (char *) NULL)
-        p->filename=DestroyString(p->filename);
-    }
+  if (p->format != (char *) NULL)
+    p->format=DestroyString(p->format);
+  if (p->path != (char *) NULL)
+    p->path=DestroyString(p->path);
+  if (p->filename != (char *) NULL)
+    p->filename=DestroyString(p->filename);
   p=(LogInfo *) RelinquishMagickMemory(p);
   return((void *) NULL);
 }
@@ -1406,7 +1402,6 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
         (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
         log_info->path=ConstantString(filename);
         GetTimerInfo((TimerInfo *) &log_info->timer);
-        log_info->exempt=MagickFalse;
         log_info->signature=MagickSignature;
         continue;
       }
@@ -1594,13 +1589,12 @@ static MagickBooleanType LoadLogLists(const char *filename,
         continue;
       }
     (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
-    log_info->path=(char *) "[built-in]";
+    log_info->path=ConstantString("[built-in]");
     GetTimerInfo((TimerInfo *) &log_info->timer);
     log_info->event_mask=p->event_mask;
     log_info->handler_mask=p->handler_mask;
     log_info->filename=ConstantString(p->filename);
     log_info->format=ConstantString(p->format);
-    log_info->exempt=MagickTrue;
     log_info->signature=MagickSignature;
     status&=AppendValueToLinkedList(log_list,log_info);
     if (status == MagickFalse)
