@@ -739,29 +739,29 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
         if (pixel.colorspace == GRAYColorspace)
-          ConcatenateColorComponent(&pixel,GrayPixelChannel,X11Compliance,
+          ConcatenateColorComponent(&pixel,GrayPixelChannel,NoCompliance,
             tuple);
         else
           {
-            ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,
+            ConcatenateColorComponent(&pixel,RedPixelChannel,NoCompliance,
               tuple);
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,GreenPixelChannel,X11Compliance,
+            ConcatenateColorComponent(&pixel,GreenPixelChannel,NoCompliance,
               tuple);
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,BluePixelChannel,X11Compliance,
+            ConcatenateColorComponent(&pixel,BluePixelChannel,NoCompliance,
               tuple);
           }
         if (pixel.colorspace == CMYKColorspace)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,BlackPixelChannel,X11Compliance,
+            ConcatenateColorComponent(&pixel,BlackPixelChannel,NoCompliance,
               tuple);
           }
         if (pixel.alpha_trait == BlendPixelTrait)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,AlphaPixelChannel,X11Compliance,
+            ConcatenateColorComponent(&pixel,AlphaPixelChannel,NoCompliance,
               tuple);
           }
         (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
