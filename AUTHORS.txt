@@ -16,6 +16,10 @@ Nathan Brown
 Mike Chiarappa
      Created a Borland C++ Builder 6.0 build environment for ImageMagick.
 
+Siu Chi Chan
+     Accelerate numerous image filters with OpenCL under AMD, Intel, and
+     NVidia.  Adapted from MulticoreWare OpenCL contribution.
+
 Thomas R Crimmins
      Inventor of the eight hull algorithm used for speckle reduction.
 
