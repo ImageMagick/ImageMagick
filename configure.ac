@@ -517,6 +517,7 @@ fi
 # Enable support for OpenCL
 AX_OPENCL([C])
 CFLAGS="$CL_CFLAGS $CFLAGS"
+CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
 LIBS="$CL_LIBS $LIBS"
 AC_SUBST(CL_CFLAGS)
 if test "$enable_opencl" != no; then

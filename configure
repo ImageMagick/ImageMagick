@@ -3693,7 +3693,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=12978:12983M
+MAGICK_SVN_REVISION=13015:13034M
 
 
 # Substitute library versioning
@@ -10113,6 +10113,9 @@ $as_echo "$ax_cv_c_compiler_ms" >&6; }
 fi
 
   ax_save_CPPFLAGS=$CPPFLAGS
+  ax_save_CL_CFLAGS=$CL_CFLAGS
+
+  found_opencl_header='no'
   CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
   for ac_header in CL/cl.h OpenCL/cl.h
 do :
@@ -10122,12 +10125,40 @@ if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
 #define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
 _ACEOF
-
+ found_opencl_header='yes'
+                    break;
+else
+  found_opencl_header='no'
 fi
 
 done
 
-  CPPFLAGS=$ax_save_CPPFLAGS
+
+  if test X$found_opencl_header = Xno; then :
+  { ac_cv_header_CL_cl_h=; unset ac_cv_header_CL_cl_h;}
+         { ac_cv_header_OpenCL_cl_h=; unset ac_cv_header_OpenCL_cl_h;}
+         CL_CFLAGS="-I$AMDAPPSDKROOT/include"
+         CPPFLAGS="$ax_save_CPPFLAGS $CL_CFLAGS"
+         for ac_header in CL/cl.h OpenCL/cl.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+ found_opencl_header='yes'
+                           break;
+else
+  found_opencl_header='no'
+fi
+
+done
+
+
+fi
+
+  CPPFLAGS="$ax_save_CPPFLAGS"
 
   for ac_header in windows.h
 do :
@@ -10151,8 +10182,12 @@ if ${ax_cv_check_cl_libcl+:} false; then :
 else
   ax_cv_check_cl_libcl=no
   case $host_cpu in
-    x86_64) ax_check_cl_libdir=lib64 ;;
-    *)      ax_check_cl_libdir=lib ;;
+    x86_64) ax_check_cl_libdir=lib64
+            ax_check_cl_amd_libdir=x86_64
+	    ;;
+    *)      ax_check_cl_libdir=lib
+            ax_check_cl_amd_libdir=x86
+            ;;
   esac
   ax_save_CPPFLAGS=$CPPFLAGS
   CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
@@ -10239,6 +10274,37 @@ clCreateContextFromType(0,0,0,0,0)
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_dylib_flag"; break
+else
+  ax_check_cl_amd_flags="-L$AMDAPPSDKROOT/lib/$ax_check_cl_amd_libdir" LIBS="$ax_try_lib $ax_check_cl_amd_flags $CL_LIBS $ax_save_LIBS"
+						                                   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+  # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+  #   include <windows.h>
+  # endif
+  # ifdef HAVE_CL_CL_H
+  #   include <CL/cl.h>
+  # elif defined(HAVE_OPENCL_CL_H)
+  #   include <OpenCL/cl.h>
+  # else
+  #   error no CL.h
+  # endif
+int
+main ()
+{
+clCreateContextFromType(0,0,0,0,0)
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_amd_flags"; break
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
@@ -10305,6 +10371,7 @@ fi
 
 
 CFLAGS="$CL_CFLAGS $CFLAGS"
+CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
 LIBS="$CL_LIBS $LIBS"
 
 if test "$enable_opencl" != no; then
@@ -25964,7 +26031,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in bzlib fftw mupdf fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick png tiff/libtiff ttf/include wand webp wmf/include xml/include zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick mupdf png tiff/libtiff ttf/include wand webp wmf/include xml/include zlib; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -25975,7 +26042,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib mupdf fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick mupdf png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
