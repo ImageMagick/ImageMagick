@@ -1322,7 +1322,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
           for (i=0; i < (ssize_t) length; i++)
             if (isspace((int) ((unsigned char) value[i])) != 0)
               break;
-          if (i == (ssize_t) length)
+          if ((i == (ssize_t) length) && (i != 0))
             (void) WriteBlob(image,length,(const unsigned char *) value);
           else
             {
