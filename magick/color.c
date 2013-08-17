@@ -1057,6 +1057,12 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
     default:
       break;
   }
+  if (compliance == NoCompliance)
+    {
+      (void) FormatLocaleString(component,MaxTextExtent,"%g",color);
+      (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
+      return;
+    }
   if (compliance != SVGCompliance)
     {
       if (pixel->depth > 16)

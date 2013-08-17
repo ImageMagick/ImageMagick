@@ -716,20 +716,20 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,RedChannel,X11Compliance,tuple);
+        ConcatenateColorComponent(&pixel,RedChannel,NoCompliance,tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,GreenChannel,X11Compliance,tuple);
+        ConcatenateColorComponent(&pixel,GreenChannel,NoCompliance,tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,BlueChannel,X11Compliance,tuple);
+        ConcatenateColorComponent(&pixel,BlueChannel,NoCompliance,tuple);
         if (pixel.colorspace == CMYKColorspace)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,IndexChannel,X11Compliance,tuple);
+            ConcatenateColorComponent(&pixel,IndexChannel,NoCompliance,tuple);
           }
         if (pixel.matte != MagickFalse)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,AlphaChannel,X11Compliance,tuple);
+            ConcatenateColorComponent(&pixel,AlphaChannel,NoCompliance,tuple);
           }
         (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
         (void) WriteBlobString(image,tuple);
