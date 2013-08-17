@@ -1,3 +1,7 @@
+2013-08-16  6.8.6-9  Siu Chi Chan <...@amd.com>
+  * Accelerate numerous image filters with OpenCL under AMD, Intel, and
+    NVidia.  Adapted from MulticoreWare OpenCL contribution.
+
 2013-08-10  6.8.6-9 Dirk Lemstra <dirk@snakeware..>
   * Added the following command line options to configure.exe:
       /x64, set 64 bit build
