@@ -201,7 +201,7 @@ struct dirent *readdir(DIR *directory)
     Skip any directory component and just copy the name.
   */
   p=buffer;
-  while (isspace((unsigned char) *p) == 0)
+  while (isspace((int) ((unsigned char) *p)) == 0)
     p++;
   *p='\0';
   p=strchr(buffer,']');
