@@ -810,7 +810,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
 
-  //blur_image = AccelerateConvolveImage(image, channel, kernel_info, exception);
+  /* blur_image = AccelerateConvolveImage(image, channel, kernel_info, exception); */
   if (blur_image==NULL) 
   {
     blur_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
