@@ -1887,7 +1887,7 @@ static const char *FxOperatorPrecedence(const char *expression,
   while (*expression != '\0')
   {
     precedence=UndefinedPrecedence;
-    if ((isspace((int) ((char) *expression)) != 0) || (c == (int) '@'))
+    if ((isspace((int) ((unsigned char) *expression)) != 0) || (c == (int) '@'))
       {
         expression++;
         continue;
@@ -2116,7 +2116,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
   *beta=0.0;
   if (exception->severity != UndefinedException)
     return(0.0);
-  while (isspace((int) *expression) != 0)
+  while (isspace((int) ((unsigned char) *expression)) != 0)
     expression++;
   if (*expression == '\0')
     {
