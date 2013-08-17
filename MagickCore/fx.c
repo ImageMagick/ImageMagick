@@ -1977,13 +1977,13 @@ static const char *FxOperatorPrecedence(const char *expression,
         }
         default:
         {
-          if (((c != 0) && ((isdigit((int) ((char) c)) != 0) ||
-               (strchr(")",c) != (char *) NULL))) &&
-              (((islower((int) ((char) *expression)) != 0) ||
-               (strchr("(",(int) *expression) != (char *) NULL)) ||
-               ((isdigit((int) ((char) c)) == 0) &&
-                (isdigit((int) ((char) *expression)) != 0))) &&
-              (strchr("xy",(int) *expression) == (char *) NULL))
+          if (((c != 0) && ((isdigit((int) ((unsigned char) c)) != 0) ||
+               (strchr(")",(int) ((unsigned char) c)) != (char *) NULL))) &&
+              (((islower((int) ((unsigned char) *expression)) != 0) ||
+               (strchr("(",(int) ((unsigned char) *expression)) != (char *) NULL)) ||
+               ((isdigit((int) ((unsigned char) c)) == 0) &&
+                (isdigit((int) ((unsigned char) *expression)) != 0))) &&
+              (strchr("xy",(int) ((unsigned char) *expression)) == (char *) NULL))
             precedence=MultiplyPrecedence;
           break;
         }
