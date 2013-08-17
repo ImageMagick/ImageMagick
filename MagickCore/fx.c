@@ -205,7 +205,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression,
   (void) SubstituteString(&fx_info->expression,"E-1.0*","E-");
   (void) SubstituteString(&fx_info->expression,"e-1.0*","e-");
   /*
-    Convert complex to simple operators.
+    Convert compound to simple operators.
   */
   fx_op[1]='\0';
   *fx_op=(char) LeftShiftOperator;
