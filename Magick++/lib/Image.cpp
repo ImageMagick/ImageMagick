@@ -1781,7 +1781,7 @@ void Magick::Image::magnify ( void )
 }
 
 // Remap image colors with closest color from reference image
-void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
+void Magick::Image::map ( const Image &mapImage_, const bool dither_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1794,7 +1794,7 @@ void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
 }
 
 // Floodfill designated area with replacement alpha value
-void Magick::Image::matteFloodfill ( const Color &target_ ,
+void Magick::Image::matteFloodfill ( const Color &target_,
                                      const unsigned int alpha_,
                                      const ssize_t x_, const ssize_t y_,
                                      const Magick::PaintMethod method_ )
@@ -1877,7 +1877,7 @@ void Magick::Image::motionBlur ( const double radius_,
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
-    
+
 // Negate image.  Set grayscale_ to true to effect grayscale values
 // only
 void Magick::Image::negate ( const bool grayscale_ )
@@ -1885,8 +1885,20 @@ void Magick::Image::negate ( const bool grayscale_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  NegateImage ( image(), grayscale_ == true ? MagickTrue : MagickFalse,
-                &exceptionInfo );
+  NegateImage( image(), (MagickBooleanType) grayscale_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::negateChannel ( const ChannelType channel_,
+                                    const bool grayscale_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  modifyImage();
+  ChannelType channel_mask = SetImageChannelMask( image(), channel_ );
+  NegateImage( image(), (MagickBooleanType) grayscale_, &exceptionInfo );
+  SetPixelChannelMask( image(), channel_mask );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
