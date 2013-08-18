@@ -1618,17 +1618,16 @@ void Magick::Image::magnify ( void )
 }
 
 // Remap image colors with closest color from reference image
-void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
+void Magick::Image::map ( const Image &mapImage_, const bool dither_ )
 {
   modifyImage();
   options()->quantizeDither( dither_ );
-  RemapImage ( options()->quantizeInfo(), image(),
-             mapImage_.constImage());
+  RemapImage ( options()->quantizeInfo(), image(), mapImage_.constImage());
   throwImageException();
 }
 
 // Floodfill designated area with replacement opacity value
-void Magick::Image::matteFloodfill ( const Color &target_ ,
+void Magick::Image::matteFloodfill ( const Color &target_,
                                      const unsigned int opacity_,
                                      const ssize_t x_, const ssize_t y_,
                                      const Magick::PaintMethod method_ )
@@ -1716,13 +1715,21 @@ void Magick::Image::motionBlur ( const double radius_,
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
-    
+
 // Negate image.  Set grayscale_ to true to effect grayscale values
 // only
 void Magick::Image::negate ( const bool grayscale_ )
 {
   modifyImage();
-  NegateImage ( image(), grayscale_ == true ? MagickTrue : MagickFalse );
+  NegateImage( image(), (MagickBooleanType) grayscale_);
+  throwImageException();
+}
+
+void Magick::Image::negateChannel ( const ChannelType channel_,
+                                    const bool grayscale_)
+{
+  modifyImage();
+  NegateImageChannel( image(), channel_, (MagickBooleanType) grayscale_);
   throwImageException();
 }
 
