@@ -289,12 +289,12 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   phase_pixels=(double *) GetVirtualMemoryBlob(phase_info);
   (void) ResetMagickMemory(phase_pixels,0,fourier_info->height*
     fourier_info->width*sizeof(*phase_pixels));
-  status=ForwardQuadrantSwap(fourier_info->height,fourier_info->height,
+  status=ForwardQuadrantSwap(fourier_info->width,fourier_info->height,
     magnitude,magnitude_pixels);
   if (status != MagickFalse)
-    status=ForwardQuadrantSwap(fourier_info->height,fourier_info->height,phase,
+    status=ForwardQuadrantSwap(fourier_info->width,fourier_info->height,phase,
       phase_pixels);
-  CorrectPhaseLHS(fourier_info->height,fourier_info->height,phase_pixels);
+  CorrectPhaseLHS(fourier_info->width,fourier_info->height,phase_pixels);
   if (fourier_info->modulus != MagickFalse)
     {
       i=0L;
@@ -525,7 +525,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   /*
     Normalize Fourier transform.
   */
-  n=(double) fourier_info->width*(double) fourier_info->width;
+  n=(double) fourier_info->width*(double) fourier_info->height;
   i=0L;
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
     for (x=0L; x < (ssize_t) fourier_info->center; x++)
@@ -980,7 +980,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         }
     }
   phase_view=DestroyCacheView(phase_view);
-  CorrectPhaseLHS(fourier_info->width,fourier_info->width,phase_pixels);
+  CorrectPhaseLHS(fourier_info->width,fourier_info->height,phase_pixels);
   if (status != MagickFalse)
     status=InverseQuadrantSwap(fourier_info->width,fourier_info->height,
       phase_pixels,inverse_pixels);
