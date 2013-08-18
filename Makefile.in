@@ -1400,34 +1400,34 @@ filters_analyze_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @WITH_MODULES_TRUE@am_filters_analyze_la_rpath = -rpath $(filtersdir)
 am__magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST =  \
 	magick/ImageMagick.h magick/MagickCore.h magick/accelerate.c \
-	magick/accelerate.h magick/animate.c magick/animate.h \
-	magick/animate-private.h magick/annotate.c magick/annotate.h \
-	magick/api.h magick/artifact.c magick/artifact.h \
-	magick/attribute.c magick/attribute.h magick/blob.c \
-	magick/blob.h magick/blob-private.h magick/cache.c \
-	magick/cache.h magick/cache-private.h magick/cache-view.c \
-	magick/cache-view.h magick/channel.c magick/channel.h \
-	magick/cipher.c magick/cipher.h magick/client.c \
-	magick/client.h magick/coder.c magick/coder.h magick/color.c \
-	magick/color.h magick/color-private.h magick/colormap.c \
-	magick/colormap.h magick/colormap-private.h \
-	magick/colorspace.c magick/colorspace.h \
-	magick/colorspace-private.h magick/compare.c magick/compare.h \
-	magick/composite.c magick/composite.h \
-	magick/composite-private.h magick/compress.c magick/compress.h \
-	magick/configure.c magick/configure.h magick/constitute.c \
-	magick/constitute.h magick/decorate.c magick/decorate.h \
-	magick/distribute-cache.c magick/distribute-cache.h \
-	magick/distribute-cache-private.h magick/delegate.c \
-	magick/delegate.h magick/delegate-private.h magick/deprecate.c \
-	magick/deprecate.h magick/display.c magick/display.h \
-	magick/display-private.h magick/distort.c magick/distort.h \
-	magick/draw.c magick/draw.h magick/draw-private.h \
-	magick/effect.c magick/effect.h magick/enhance.c \
-	magick/enhance.h magick/exception.c magick/exception.h \
-	magick/exception-private.h magick/feature.c magick/feature.h \
-	magick/fourier.c magick/fourier.h magick/fx.c magick/fx.h \
-	magick/fx-private.h magick/gem.c magick/gem.h \
+	magick/accelerate.h magick/accelerate-private.h \
+	magick/animate.c magick/animate.h magick/animate-private.h \
+	magick/annotate.c magick/annotate.h magick/api.h \
+	magick/artifact.c magick/artifact.h magick/attribute.c \
+	magick/attribute.h magick/blob.c magick/blob.h \
+	magick/blob-private.h magick/cache.c magick/cache.h \
+	magick/cache-private.h magick/cache-view.c magick/cache-view.h \
+	magick/channel.c magick/channel.h magick/cipher.c \
+	magick/cipher.h magick/client.c magick/client.h magick/coder.c \
+	magick/coder.h magick/color.c magick/color.h \
+	magick/color-private.h magick/colormap.c magick/colormap.h \
+	magick/colormap-private.h magick/colorspace.c \
+	magick/colorspace.h magick/colorspace-private.h \
+	magick/compare.c magick/compare.h magick/composite.c \
+	magick/composite.h magick/composite-private.h \
+	magick/compress.c magick/compress.h magick/configure.c \
+	magick/configure.h magick/constitute.c magick/constitute.h \
+	magick/decorate.c magick/decorate.h magick/distribute-cache.c \
+	magick/distribute-cache.h magick/distribute-cache-private.h \
+	magick/delegate.c magick/delegate.h magick/delegate-private.h \
+	magick/deprecate.c magick/deprecate.h magick/display.c \
+	magick/display.h magick/display-private.h magick/distort.c \
+	magick/distort.h magick/draw.c magick/draw.h \
+	magick/draw-private.h magick/effect.c magick/effect.h \
+	magick/enhance.c magick/enhance.h magick/exception.c \
+	magick/exception.h magick/exception-private.h magick/feature.c \
+	magick/feature.h magick/fourier.c magick/fourier.h magick/fx.c \
+	magick/fx.h magick/fx-private.h magick/gem.c magick/gem.h \
 	magick/gem-private.h magick/geometry.c magick/geometry.h \
 	magick/hashmap.c magick/hashmap.h magick/histogram.c \
 	magick/histogram.h magick/identify.c magick/identify.h \
@@ -4094,6 +4094,7 @@ MAGICK_BASE_SRCS = \
 	magick/MagickCore.h \
 	magick/accelerate.c \
 	magick/accelerate.h \
+	magick/accelerate-private.h \
 	magick/animate.c \
 	magick/animate.h \
 	magick/animate-private.h \
@@ -4427,6 +4428,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/xwindow.h
 
 MAGICK_NOINST_HDRS = \
+	magick/accelerate-private.h \
 	magick/animate-private.h \
 	magick/blob-private.h \
 	magick/cache-private.h \
