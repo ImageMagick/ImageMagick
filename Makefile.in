@@ -436,34 +436,35 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LINK =  \
 am__DEPENDENCIES_1 =
 am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST =  \
 	MagickCore/MagickCore.h MagickCore/accelerate.c \
-	MagickCore/accelerate.h MagickCore/animate.c \
-	MagickCore/animate.h MagickCore/animate-private.h \
-	MagickCore/annotate.c MagickCore/annotate.h \
-	MagickCore/artifact.c MagickCore/artifact.h \
-	MagickCore/attribute.c MagickCore/attribute.h \
-	MagickCore/blob.c MagickCore/blob.h MagickCore/blob-private.h \
-	MagickCore/cache.c MagickCore/cache.h \
-	MagickCore/cache-private.h MagickCore/cache-view.c \
-	MagickCore/cache-view.h MagickCore/channel.c \
-	MagickCore/channel.h MagickCore/cipher.c MagickCore/cipher.h \
-	MagickCore/client.c MagickCore/client.h MagickCore/coder.c \
-	MagickCore/coder.h MagickCore/color.c MagickCore/color.h \
-	MagickCore/color-private.h MagickCore/colormap.c \
-	MagickCore/colormap.h MagickCore/colormap-private.h \
-	MagickCore/colorspace.c MagickCore/colorspace.h \
-	MagickCore/colorspace-private.h MagickCore/compare.c \
-	MagickCore/compare.h MagickCore/composite.c \
-	MagickCore/composite.h MagickCore/composite-private.h \
-	MagickCore/compress.c MagickCore/compress.h \
-	MagickCore/configure.c MagickCore/configure.h \
-	MagickCore/constitute.c MagickCore/constitute.h \
-	MagickCore/decorate.c MagickCore/decorate.h \
-	MagickCore/delegate.c MagickCore/delegate.h \
-	MagickCore/delegate-private.h MagickCore/deprecate.c \
-	MagickCore/deprecate.h MagickCore/display.c \
-	MagickCore/display.h MagickCore/display-private.h \
-	MagickCore/distort.c MagickCore/distort.h \
-	MagickCore/distribute-cache.c MagickCore/distribute-cache.h \
+	MagickCore/accelerate.h MagickCore/accelerate-private.h \
+	MagickCore/animate.c MagickCore/animate.h \
+	MagickCore/animate-private.h MagickCore/annotate.c \
+	MagickCore/annotate.h MagickCore/artifact.c \
+	MagickCore/artifact.h MagickCore/attribute.c \
+	MagickCore/attribute.h MagickCore/blob.c MagickCore/blob.h \
+	MagickCore/blob-private.h MagickCore/cache.c \
+	MagickCore/cache.h MagickCore/cache-private.h \
+	MagickCore/cache-view.c MagickCore/cache-view.h \
+	MagickCore/channel.c MagickCore/channel.h MagickCore/cipher.c \
+	MagickCore/cipher.h MagickCore/client.c MagickCore/client.h \
+	MagickCore/coder.c MagickCore/coder.h MagickCore/color.c \
+	MagickCore/color.h MagickCore/color-private.h \
+	MagickCore/colormap.c MagickCore/colormap.h \
+	MagickCore/colormap-private.h MagickCore/colorspace.c \
+	MagickCore/colorspace.h MagickCore/colorspace-private.h \
+	MagickCore/compare.c MagickCore/compare.h \
+	MagickCore/composite.c MagickCore/composite.h \
+	MagickCore/composite-private.h MagickCore/compress.c \
+	MagickCore/compress.h MagickCore/configure.c \
+	MagickCore/configure.h MagickCore/constitute.c \
+	MagickCore/constitute.h MagickCore/decorate.c \
+	MagickCore/decorate.h MagickCore/delegate.c \
+	MagickCore/delegate.h MagickCore/delegate-private.h \
+	MagickCore/deprecate.c MagickCore/deprecate.h \
+	MagickCore/display.c MagickCore/display.h \
+	MagickCore/display-private.h MagickCore/distort.c \
+	MagickCore/distort.h MagickCore/distribute-cache.c \
+	MagickCore/distribute-cache.h \
 	MagickCore/distribute-cache-private.h MagickCore/draw.c \
 	MagickCore/draw.h MagickCore/draw-private.h \
 	MagickCore/effect.c MagickCore/effect.h MagickCore/enhance.c \
@@ -4116,6 +4117,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/MagickCore.h \
 	MagickCore/accelerate.c \
 	MagickCore/accelerate.h \
+	MagickCore/accelerate-private.h \
 	MagickCore/animate.c \
 	MagickCore/animate.h \
 	MagickCore/animate-private.h \
@@ -4455,6 +4457,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/xwindow.h
 
 MAGICKCORE_NOINST_HDRS = \
+	MagickCore/accelerate-private.h \
 	MagickCore/animate-private.h \
 	MagickCore/annotate-private.h \
 	MagickCore/blob-private.h \
