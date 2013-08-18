@@ -560,11 +560,11 @@ namespace Magick
     void            magnify ( void );
 
     // Remap image colors with closest color from reference image
-    void            map ( const Image &mapImage_ ,
+    void            map ( const Image &mapImage_,
                           const bool dither_ = false );
 
     // Floodfill designated area with replacement alpha value
-    void            matteFloodfill ( const Color &target_ ,
+    void            matteFloodfill ( const Color &target_,
                                      const unsigned int alpha_,
                                      const ::ssize_t x_, const ::ssize_t y_,
                                      const PaintMethod method_ );
@@ -594,6 +594,8 @@ namespace Magick
     // Negate colors in image.  Set grayscale to only negate grayscale
     // values in image.
     void            negate ( const bool grayscale_ = false );
+    void            negateChannel ( const ChannelType channel_,
+                                    const bool grayscale_ = false );
 
     // Normalize image (increase contrast by normalizing the pixel
     // values to span the full range of color values)
