@@ -4102,7 +4102,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
     {
       quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
       (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        OptionError,"UnrecognizedPixelMap","`%s'",map);
+        OptionError,"UnrecognizedStorageType","`%d'",type);
       break;
     }
   }
