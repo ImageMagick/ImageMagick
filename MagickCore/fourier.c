@@ -204,7 +204,7 @@ static MagickBooleanType ForwardQuadrantSwap(const size_t width,
       forward_pixels[y*width+x+width/2L]=source_pixels[y*center+x];
   for (y=1; y < (ssize_t) height; y++)
     for (x=0L; x < (ssize_t) (width/2L-1L); x++)
-      forward_pixels[width*(height-y)+width/2L-x-1L]=
+      forward_pixels[(height-y)*width+width/2L-x-1L]=
         source_pixels[y*center+x+1L];
   for (x=0L; x < (ssize_t) (width/2L); x++)
     forward_pixels[-x+width/2L-1L]=forward_pixels[x+width/2L+1L];
@@ -811,7 +811,7 @@ static MagickBooleanType InverseQuadrantSwap(const size_t width,
   center=(ssize_t) floor((double) width/2L)+1L;
   for (y=1L; y < (ssize_t) height; y++)
     for (x=0L; x < (ssize_t) (width/2L+1L); x++)
-      destination[center*(height-y)-x+width/2L]=source[y*width+x];
+      destination[(height-y)*center-x+width/2L]=source[y*width+x];
   for (y=0L; y < (ssize_t) height; y++)
     destination[y*center]=source[y*width+width/2L];
   for (x=0L; x < center; x++)
