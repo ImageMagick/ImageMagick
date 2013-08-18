@@ -69,6 +69,7 @@ MAGICK_BASE_SRCS = \
 	magick/MagickCore.h \
 	magick/accelerate.c \
 	magick/accelerate.h \
+	magick/accelerate-private.h \
 	magick/animate.c \
 	magick/animate.h \
 	magick/animate-private.h \
@@ -407,6 +408,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/xwindow.h
 
 MAGICK_NOINST_HDRS = \
+	magick/accelerate-private.h \
 	magick/animate-private.h \
 	magick/blob-private.h \
 	magick/cache-private.h \
