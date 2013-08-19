@@ -1063,8 +1063,8 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   }
   if (compliance == NoCompliance)
     {
-      (void) FormatLocaleString(component,MaxTextExtent,"%g",color);
-      (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
+      (void) FormatLocaleString(text,MaxTextExtent,"%g",color);
+      (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
       return;
     }
   if (compliance != SVGCompliance)
