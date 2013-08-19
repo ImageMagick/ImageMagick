@@ -12,6 +12,8 @@
       /noWizard, skip the wizard and generate the project/solution files
   * Fixed infinite loop with jpeg:extent (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23314).
+  * Fixed performance issue when converting jpeg to png (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23922).
 
 2013-08-10  6.8.6.9 Glenn Randers-Pehrson <glennrp@image...>
   * Added "-define bmp:format=bmp2|bmp3|bmp4" option (reference
