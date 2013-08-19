@@ -4182,8 +4182,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
         /*
           Does target window intersect top level window?
         */
-        import=
-          ((window_info[id].bounds.x2 >= window_info[0].bounds.x1) &&
+        import=((window_info[id].bounds.x2 >= window_info[0].bounds.x1) &&
            (window_info[id].bounds.x1 <= window_info[0].bounds.x2) &&
            (window_info[id].bounds.y2 >= window_info[0].bounds.y1) &&
            (window_info[id].bounds.y1 <= window_info[0].bounds.y2)) ?
@@ -4199,7 +4198,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
                   (window_info[id].bounds.x2 <= window_info[j].bounds.x2) &&
                   (window_info[id].bounds.y1 >= window_info[j].bounds.y1) &&
                   (window_info[id].bounds.y2 <= window_info[j].bounds.y2))
-                  import=MagickFalse;
+                import=MagickFalse;
             }
         if (import == MagickFalse)
           continue;
