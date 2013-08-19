@@ -38,7 +38,8 @@
 %
 %
 */
-
+
+
 /*
   Include declarations.
 */
@@ -105,7 +106,8 @@
 #include "lcms.h"
 #endif
 #endif
-
+
+
 /*
   Define declarations.
 */
@@ -114,7 +116,8 @@
 #define cmsUInt32Number  DWORD
 #endif
 #endif
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -782,8 +785,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       (void) FormatLocaleFile(file,"  Scene: %.20g\n",(double) image->scene);
   (void) FormatLocaleFile(file,"  Compression: %s\n",CommandOptionToMnemonic(
     MagickCompressOptions,(ssize_t) image->compression));
-  if (image->quality != UndefinedCompressionQuality)
-    (void) FormatLocaleFile(file,"  Quality: %.20g\n",(double) image->quality);
+  property = GetImageProperty(image, "jpeg:quality");
+  if (property != (char *) NULL)
+    (void) FormatLocaleFile(file,"  Quality: %s\n",property,exception);
   (void) FormatLocaleFile(file,"  Orientation: %s\n",CommandOptionToMnemonic(
     MagickOrientationOptions,(ssize_t) image->orientation));
   if (image->montage != (char *) NULL)
