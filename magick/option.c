@@ -279,6 +279,8 @@ static const OptionInfo
     { "-combine", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+comment", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-comment", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "+compare", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
+    { "-compare", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+compose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-compose", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+composite", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
