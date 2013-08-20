@@ -787,7 +787,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     MagickCompressOptions,(ssize_t) image->compression));
   property = GetImageProperty(image, "jpeg:quality");
   if (property != (char *) NULL)
-    (void) FormatLocaleFile(file,"  Quality: %s\n",property,exception);
+    (void) FormatLocaleFile(file,"  Quality: %s\n",property);
   (void) FormatLocaleFile(file,"  Orientation: %s\n",CommandOptionToMnemonic(
     MagickOrientationOptions,(ssize_t) image->orientation));
   if (image->montage != (char *) NULL)
