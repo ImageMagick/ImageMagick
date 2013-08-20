@@ -6905,6 +6905,14 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
               &image_info->matte_color,exception);
             break;
           }
+        if (LocaleCompare("metric",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) DeleteImageOption(image_info,option+1);
+            else
+              (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
         if (LocaleCompare("monitor",option+1) == 0)
           {
             (void) SetImageInfoProgressMonitor(image_info,MonitorProgress,
@@ -7336,9 +7344,6 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
   MagickStatusType
     status;
 
-  MetricType
-    metric;
-
   PixelInterpolateMethod
    interpolate_method;
 
@@ -7514,6 +7519,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("compare",option+1) == 0)
           {
+            const char
+              *option;
+
             double
               distortion;
 
@@ -7521,6 +7529,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               *difference_image,
               *image,
               *reconstruct_image;
+
+            MetricType
+              metric;
 
             /*
               Mathematically and visually annotate the difference between an
@@ -7534,6 +7545,11 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 status=MagickFalse;
                 break;
               }
+            metric=UndefinedMetric;
+            option=GetImageOption(image_info,"metric");
+            if (option != (const char *) NULL)
+              metric=(MetricType) ParseCommandOption(MagickMetricOptions,
+                MagickFalse,option);
             difference_image=CompareImages(image,reconstruct_image,metric,
               &distortion,exception);
             if (difference_image == (Image *) NULL)
@@ -8068,18 +8084,6 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               }
             *images=DestroyImageList(*images);
             *images=maximum_image;
-            break;
-          }
-        if (LocaleCompare("metric",option+1) == 0)
-          {
-            ssize_t
-              type;
-
-            if (*option == '+')
-              break;
-            i++;
-            type=ParseCommandOption(MagickMetricOptions,MagickTrue,argv[i]);
-            metric=(MetricType) type;
             break;
           }
         if (LocaleCompare("minimum",option+1) == 0)
