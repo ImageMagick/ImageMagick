@@ -314,6 +314,7 @@ static MagickBooleanType ConvertUsage(void)
       "-clut                apply a color lookup table to the image",
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
+      "-compare             mathematically and visually annotate the difference between an image and its reconstruction",
       "-composite           composite image",
       "-crop geometry       cut out a rectangular region of the image",
       "-deconstruct         break down an image sequence into constituent parts",
@@ -1047,6 +1048,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("compare",option+1) == 0)
+          break;
         if (LocaleCompare("compose",option+1) == 0)
           {
             ssize_t
@@ -2017,6 +2020,22 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("metric",option+1) == 0)
+          {
+            ssize_t
+              type;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            type=ParseCommandOption(MagickMetricOptions,MagickTrue,argv[i]);
+            if (type < 0)
+              ThrowConvertException(OptionError,"UnrecognizedMetricType",
+                argv[i]);
             break;
           }
         if (LocaleCompare("minimum",option+1) == 0)
