@@ -7373,7 +7373,6 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
   interpolate_method=UndefinedInterpolatePixel;
   mogrify_info=CloneImageInfo(image_info);
   quantize_info=AcquireQuantizeInfo(mogrify_info);
-  metric=UndefinedErrorMetric;
   status=MagickTrue;
   for (i=0; i < (ssize_t) argc; i++)
   {
@@ -7545,7 +7544,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 status=MagickFalse;
                 break;
               }
-            metric=UndefinedMetric;
+            metric=UndefinedErrorMetric;
             option=GetImageOption(image_info,"metric");
             if (option != (const char *) NULL)
               metric=(MetricType) ParseCommandOption(MagickMetricOptions,
