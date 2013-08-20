@@ -5136,10 +5136,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               break;
             i++;
             if (i == (ssize_t) argc)
-              ThrowConvertException(OptionError,"MissingArgument",option);
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
             type=ParseCommandOption(MagickMetricOptions,MagickTrue,argv[i]);
             if (type < 0)
-              ThrowConvertException(OptionError,"UnrecognizedMetricType",
+              ThrowMogrifyException(OptionError,"UnrecognizedMetricType",
                 argv[i]);
             break;
           }
