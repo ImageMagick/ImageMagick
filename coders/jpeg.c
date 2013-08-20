@@ -820,7 +820,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
             continue;
           if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
             {
-              FormatLocaleString(quality,4,"%d",i+1);
+              FormatLocaleString(quality,4,"%.20g",(double) i+1);
               SetImageProperty(image,"jpeg:quality",quality);
             }
           if (image->debug != MagickFalse)
@@ -872,7 +872,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
               continue;
             if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
               {
-                FormatLocaleString(quality,4,"%d",i+1);
+                FormatLocaleString(quality,4,"%.20g",(double) i+1);
                 SetImageProperty(image,"jpeg:quality",quality);
               }
             if (image->debug != MagickFalse)
