@@ -62,6 +62,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/statistic.h"
@@ -1200,6 +1201,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   }
   *distortion=channel_distortion[CompositePixelChannel];
   channel_distortion=(double *) RelinquishMagickMemory(channel_distortion);
+  (void) FormatImageProperty(image,"distortion","%.20g",*distortion);
   return(status);
 }
 

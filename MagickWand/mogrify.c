@@ -3414,6 +3414,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-clut                apply a color lookup table to the image",
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
+      "-compare             mathematically and visually annotate the difference between an image and its reconstruction",
       "-composite           composite image",
       "-crop geometry       cut out a rectangular region of the image",
       "-deconstruct         break down an image sequence into constituent parts",
@@ -4152,6 +4153,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
+        if (LocaleCompare("compare",option+1) == 0)
+          break;
         if (LocaleCompare("comment",option+1) == 0)
           {
             if (*option == '+')
@@ -5093,6 +5096,22 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("maximum",option+1) == 0)
           break;
+        if (LocaleCompare("metric",option+1) == 0)
+          {
+            ssize_t
+              type;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            type=ParseCommandOption(MagickMetricOptions,MagickTrue,argv[i]);
+            if (type < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedMetricType",
+                argv[i]);
+            break;
+          }
         if (LocaleCompare("minimum",option+1) == 0)
           break;
         if (LocaleCompare("modulate",option+1) == 0)
@@ -7317,6 +7336,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
   MagickStatusType
     status;
 
+  MetricType
+    metric;
+
   PixelInterpolateMethod
    interpolate_method;
 
@@ -7346,6 +7368,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
   interpolate_method=UndefinedInterpolatePixel;
   mogrify_info=CloneImageInfo(image_info);
   quantize_info=AcquireQuantizeInfo(mogrify_info);
+  metric=UndefinedErrorMetric;
   status=MagickTrue;
   for (i=0; i < (ssize_t) argc; i++)
   {
@@ -7489,6 +7512,37 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             *images=combine_image;
             break;
           }
+        if (LocaleCompare("compare",option+1) == 0)
+          {
+            double
+              distortion;
+
+            Image
+              *difference_image,
+              *image,
+              *reconstruct_image;
+
+            /*
+              Mathematically and visually annotate the difference between an
+              image and its reconstruction.
+            */
+            (void) SyncImagesSettings(mogrify_info,*images,exception);
+            image=RemoveFirstImageFromList(images);
+            reconstruct_image=RemoveFirstImageFromList(images);
+            if (reconstruct_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            difference_image=CompareImages(image,reconstruct_image,metric,
+              &distortion,exception);
+            if (difference_image == (Image *) NULL)
+              break;
+            if (*images != (Image *) NULL)
+              *images=DestroyImage(*images);
+            *images=difference_image;
+            break;
+          }
         if (LocaleCompare("composite",option+1) == 0)
           {
             const char
@@ -7514,7 +7568,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 "compose:clip-to-self")); /* if this is true */
             if (IsMagickFalse(clip_to_self)) /* or */
               clip_to_self=IfMagickFalse(IsStringNotFalse(GetImageOption(
-                mogrify_info,"compose:outside-overlay"))) ? MagickTrue : MagickFalse; /* this false */
+                mogrify_info,"compose:outside-overlay"))) ? MagickTrue :
+                MagickFalse; /* this false */
             image=RemoveFirstImageFromList(images);
             composite_image=RemoveFirstImageFromList(images);
             if (composite_image == (Image *) NULL)
@@ -8013,6 +8068,18 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               }
             *images=DestroyImageList(*images);
             *images=maximum_image;
+            break;
+          }
+        if (LocaleCompare("metric",option+1) == 0)
+          {
+            ssize_t
+              type;
+
+            if (*option == '+')
+              break;
+            i++;
+            type=ParseCommandOption(MagickMetricOptions,MagickTrue,argv[i]);
+            metric=(MetricType) type;
             break;
           }
         if (LocaleCompare("minimum",option+1) == 0)
