@@ -2005,8 +2005,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 &graphic_context[n]->fill_pattern);
             else
               {
+                double
+                  opacity;
+
+                opacity=graphic_context[n]->fill.opacity;
                 status&=QueryColorDatabase(token,&graphic_context[n]->fill,
                   &image->exception);
+                graphic_context[n]->fill.opacity=opacity;
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2531,8 +2536,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 &graphic_context[n]->stroke_pattern);
             else
               {
+                double
+                  opacity;
+
+                opacity=graphic_context[n]->stroke.opacity;
                 status&=QueryColorDatabase(token,&graphic_context[n]->stroke,
                   &image->exception);
+                graphic_context[n]->stroke.opacity=opacity;
                 if (status == MagickFalse)
                   {
                     ImageInfo
