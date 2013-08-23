@@ -701,6 +701,8 @@ MagickBooleanType GenerateCLBinaryFileFromCLSource( cl_program program , const c
   char **binaries;
 
   status = clGetProgramInfo(program, CL_PROGRAM_NUM_DEVICES,sizeof(numDevices),&numDevices,NULL);
+  if (status!=CL_SUCCESS)
+    return MagickFalse;
 
   devices = (cl_device_id *)malloc( sizeof(cl_device_id) * numDevices );
   if(devices == NULL)
@@ -708,10 +710,16 @@ MagickBooleanType GenerateCLBinaryFileFromCLSource( cl_program program , const c
 
   /* grab the handles to all of the devices in the program. */
   status = clGetProgramInfo(program, CL_PROGRAM_DEVICES, sizeof(cl_device_id) * numDevices,devices,NULL);
+  if (status!=CL_SUCCESS)
+    return MagickFalse;
+
 
   /* figure out the sizes of each of the binaries. */
   binarySizes = (size_t*)malloc( sizeof(size_t) * numDevices );
   status = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES,sizeof(size_t) * numDevices, binarySizes, NULL);
+  if (status!=CL_SUCCESS)
+    return MagickFalse;
+
 
   /* copy over all of the generated binaries. */
   binaries = (char **)malloc( sizeof(char *) * numDevices );
@@ -730,6 +738,9 @@ MagickBooleanType GenerateCLBinaryFileFromCLSource( cl_program program , const c
       binaries[i] = NULL;
   }
   status = clGetProgramInfo(program, CL_PROGRAM_BINARIES,sizeof(char *) * numDevices, binaries, NULL);
+  if (status!=CL_SUCCESS)
+    return MagickFalse;
+
 
   /* dump out each binary into its own separate file. */
   for(i = 0; i < numDevices; i++)
@@ -832,10 +843,8 @@ MagickBooleanType CompileCLfile(const char *filename, char* accelerate_kernel[],
   idx = gpu_info->file_count;
 
   binaryExisted = IsGeneratedCLBinaryByCLSource(gpu_info->context,filename);
-  status = clGetContextInfo(gpu_info->context, CL_CONTEXT_NUM_DEVICES, sizeof(numDevices), &numDevices, NULL);
-  if (status != CL_SUCCESS)
-    return MagickFalse;
-
+  
+  numDevices = 1;
   if (binaryExisted == MagickTrue)
   {
     int b_error;
@@ -849,7 +858,7 @@ MagickBooleanType CompileCLfile(const char *filename, char* accelerate_kernel[],
 
      /* grab the handles to all of the devices in the context. */
     devices = (cl_device_id *) AcquireMagickMemory( sizeof(cl_device_id) * numDevices );
-    if (devices == NULL)
+    if (devices == (cl_device_id*)NULL)
       return MagickFalse;
     status = clGetContextInfo(gpu_info->context, CL_CONTEXT_DEVICES, sizeof(cl_device_id) * numDevices, devices, NULL);
     if (status!=CL_SUCCESS)
@@ -1155,8 +1164,6 @@ MagickBooleanType RunCLKernel(const char *kernel_name, void **userdata)
   strcpy(env.kernel_name, kernel_name);
   if (status == MagickTrue)
   {
-    if(&function == NULL) 
-      return(MagickFalse);
     return(function(userdata, &env));
   }
   return(MagickFalse);
