@@ -31,8 +31,7 @@ extern "C" {
 
 char* accelerate_kernels[] =
 {
-  {
-     STRINGIFY(
+  STRINGIFY(
      typedef enum
      {
        UndefinedChannel,
@@ -60,35 +59,27 @@ char* accelerate_kernels[] =
        DefaultChannels = ((AllChannels | SyncChannels) &~ OpacityChannel)
      } ChannelType;
      )
-  },
-
-  
-  {
-    "inline int ClampToCanvas(const int offset,const int range)\n"
-      "{\n"
-      "	return clamp(offset, (int)0, range-1);\n"
-      "}\n"
-      "\n"
-  },
-
-  {
-    "inline CLQuantum ClampToQuantum(const float value)\n"
-      "{\n"
-      "	return (CLQuantum) (clamp(value, 0.0f, (float) QuantumRange) + 0.5f);\n"
-      "}\n"
-      "\n"
-  },
-  {
-    "inline float PerceptibleReciprocal(const float x)\n"
-    "{\n"
-    "  float sign = x < (float) 0.0 ? (float) -1.0 : (float) 1.0;\n"
-    "  return((sign*x) >= MagickEpsilon ? (float) 1.0/x : sign*((float) 1.0/\n"
-    "    MagickEpsilon));\n"
-    "}\n"
-    "\n"
-  },
-  {
-    STRINGIFY(
+  ,
+  STRINGIFY(
+    inline int ClampToCanvas(const int offset,const int range)
+      {
+      	return clamp(offset, (int)0, range-1);
+      }
+  ),
+  STRINGIFY(
+    inline CLQuantum ClampToQuantum(const float value)
+      {
+      	return (CLQuantum) (clamp(value, 0.0f, (float) QuantumRange) + 0.5f);
+      }
+  ),
+  STRINGIFY(
+    inline float PerceptibleReciprocal(const float x)
+    {
+      float sign = x < (float) 0.0 ? (float) -1.0 : (float) 1.0;
+      return((sign*x) >= MagickEpsilon ? (float) 1.0/x : sign*((float) 1.0/MagickEpsilon));
+    }
+  ),
+  STRINGIFY(
       __kernel 
       void ConvolveOptimized(const __global CLPixelType *input, __global CLPixelType *output,
                                       const unsigned int imageWidth, const unsigned int imageHeight,
@@ -212,8 +203,8 @@ char* accelerate_kernels[] =
 
           output[imageIndex.y * imageWidth + imageIndex.x] = outputPixel;
       }
-    )
-  },
+  )
+  ,
   NULL   // Last entry has to be NULL
 };
 
