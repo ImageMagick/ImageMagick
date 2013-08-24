@@ -4117,21 +4117,29 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if ((channel & RedChannel) != 0)
-        SetPixelRed(q,QuantumRange-GetPixelRed(q));
-      if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,QuantumRange-GetPixelGreen(q));
-      if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,QuantumRange-GetPixelBlue(q));
-      if ((channel & OpacityChannel) != 0)
-        SetPixelOpacity(q,QuantumRange-GetPixelOpacity(q));
-      if (((channel & IndexChannel) != 0) &&
-          (image->colorspace == CMYKColorspace))
+    if (channel == DefaultChannels)
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        SetPixelRed(q+x,QuantumRange-GetPixelRed(q+x));
+        SetPixelGreen(q+x,QuantumRange-GetPixelGreen(q+x));
+        SetPixelBlue(q+x,QuantumRange-GetPixelBlue(q+x));
+      }
+    else
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        if ((channel & RedChannel) != 0)
+          SetPixelRed(q+x,QuantumRange-GetPixelRed(q+x));
+        if ((channel & GreenChannel) != 0)
+          SetPixelGreen(q+x,QuantumRange-GetPixelGreen(q+x));
+        if ((channel & BlueChannel) != 0)
+          SetPixelBlue(q+x,QuantumRange-GetPixelBlue(q+x));
+        if ((channel & OpacityChannel) != 0)
+          SetPixelOpacity(q+x,QuantumRange-GetPixelOpacity(q+x));
+      }
+    if (((channel & IndexChannel) != 0) &&
+        (image->colorspace == CMYKColorspace))
+      for (x=0; x < (ssize_t) image->columns; x++)
         SetPixelIndex(indexes+x,QuantumRange-GetPixelIndex(indexes+x));
-      q++;
-    }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
