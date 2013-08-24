@@ -72,6 +72,7 @@ Include declarations.
 #include "magick/quantum.h"
 #include "magick/resample.h"
 #include "magick/resource_.h"
+#include "magick/semaphore.h"
 #include "magick/splay-tree.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
@@ -121,6 +122,7 @@ Include declarations.
 #define CLCharQuantumScale 72340172838076673.0f
 #endif
 
+static SemaphoreInfo* gpu_env_semaphore = (SemaphoreInfo*)NULL;
 GPUEnv gpu_env;
 
 /* 
@@ -289,12 +291,6 @@ static MagickBooleanType initCLPlatform(GPUEnv* gpu_info, ExceptionInfo *excepti
     }
     RelinquishMagickMemory(platforms);
   }
-  if (gpu_info->platform == NULL)
-  {
-    (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
-      "NULL OpenCL platform found.",".");
-    return(MagickFalse);
-  }
   return MagickTrue;
 }
 
@@ -349,8 +345,11 @@ MagickBooleanType InitializeCLEnv(GPUEnv *gpu_info, ExceptionInfo *exception)
     status = initCLPlatform(gpu_info,exception);
     if (status==MagickFalse)
       return MagickFalse;
-  }
 
+    // no OpenCL platform found, quit
+    if (gpu_info->platform==NULL)
+      return MagickTrue;
+  }
   status = initCLDevice(gpu_info, exception);
   return status;
 }
@@ -1037,6 +1036,8 @@ MagickBooleanType InitCLKernelEnv(const char *build_option,
                                   const char *filename, char* accelerate_kernels[],
                                   ExceptionInfo *exception)
 {
+  MagickBooleanType initCLStatus = MagickTrue;
+
   MagickBooleanType status = MagickFalse;
   cl_int clStatus;
   cl_uint numKernels = 0;
@@ -1045,7 +1046,10 @@ MagickBooleanType InitCLKernelEnv(const char *build_option,
   clBeginPerfMarkerAMD(__FUNCTION__,"");
 #endif
 
-  //PPA_INIT();
+  if (gpu_env_semaphore == (SemaphoreInfo*)NULL)
+    AcquireSemaphoreInfo(&gpu_env_semaphore);
+  LockSemaphoreInfo(gpu_env_semaphore);
+
   if(!gpu_env.isInited)
   {
     char options[MaxTextExtent];
@@ -1066,7 +1070,15 @@ MagickBooleanType InitCLKernelEnv(const char *build_option,
       (void) ThrowMagickException(
         exception, GetMagickModule(), DelegateWarning,
         "InitializeCLEnv failed.", ".");
-      return(MagickFalse);
+     
+      initCLStatus = MagickFalse;
+      goto unlock;
+    }
+    if (gpu_env.platform == NULL) 
+    { 
+      // no OpenCL platform found
+      gpu_env.isInited = 1;
+      goto unlock;
     }
 
     /*initialize program, kernel_name, kernel_count*/
@@ -1076,7 +1088,8 @@ MagickBooleanType InitCLKernelEnv(const char *build_option,
       (void) ThrowMagickException(
         exception, GetMagickModule(), DelegateWarning,
         "CompileCLfile failed.", ".");
-      return(MagickFalse);
+       initCLStatus = MagickFalse;
+       goto unlock;  
     }
 
     /* Get the name of all the kernels */
@@ -1088,7 +1101,9 @@ MagickBooleanType InitCLKernelEnv(const char *build_option,
       {
         (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
           "clGetProgramInfo with CL_PROGRAM_NUM_KERNELS failed.", ".");
-        return(MagickFalse);
+        
+        initCLStatus = MagickFalse;
+        goto unlock;  
       }
 
 
@@ -1103,7 +1118,8 @@ MagickBooleanType InitCLKernelEnv(const char *build_option,
           {
             (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
               "clGetKernelInfo with CL_KERNEL_FUNCTION_NAME failed.", ".");
-            return(MagickFalse);
+            initCLStatus = MagickFalse;
+            goto unlock;  
           }
           strcpy(gpu_env.kernel_names[gpu_env.kernel_count++], kernelName);
 	  clReleaseKernel(kernels[i]);
@@ -1116,16 +1132,19 @@ MagickBooleanType InitCLKernelEnv(const char *build_option,
     {
       (void) ThrowMagickException(
         exception, GetMagickModule(), DelegateWarning, "No kernels.", ".");
-      return(MagickFalse);
+      initCLStatus = MagickFalse;
+      goto unlock;  
     }
     gpu_env.isInited = 1;
   }
-
+  
+unlock:
+  UnlockSemaphoreInfo(gpu_env_semaphore);
 
 #ifdef MAGICKCORE_CLPERFMARKER
   clEndPerfMarkerAMD();
 #endif
-  return(MagickTrue);
+  return(initCLStatus);
 }
 
 
@@ -1180,6 +1199,8 @@ MagickBooleanType AccelerateFunctionCL( cl_kernel_function function,
     char *build_option = NULL;
     InitCLKernelEnv(build_option, filename, accelerate_kernels, exception);
   }
+  if (gpu_env.platform == NULL)
+     return MagickFalse;
   RegisterKernelWrapper(kernelName, function);
   return(RunCLKernel(kernelName, usrdata));
 }

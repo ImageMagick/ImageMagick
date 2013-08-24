@@ -540,8 +540,8 @@ Image* AccelerateConvolveImage(const Image *image, const ChannelType channel, co
     }
     if (status == MagickFalse)
     {
-      InheritException(exception,&filtered_image->exception);
-      filtered_image=DestroyImage(filtered_image);      
+      DestroyImage(filtered_image);
+      filtered_image = (Image*)NULL;      
     }
   }
 
