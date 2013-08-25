@@ -1,3 +1,6 @@
+2013-08-26  6.8.6-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.6-9, SVN revision 13087.
+
 2013-08-16  6.8.6-9  Siu Chi Chan <...@amd.com>
   * Accelerate numerous image filters with OpenCL under AMD, Intel, and
     NVidia.  Adapted from MulticoreWare OpenCL contribution.
