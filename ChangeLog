@@ -29,13 +29,13 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23913).
   * Escape MIFF properties with null values (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23931).
-  * Allow negate pixel values in TXT image format (reference
+  * Allow negative pixel values in TXT image format (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23923).
   * The -fx option no longer crashes for certain expressions (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23932).
   * Add support for the -compare option (e.g. convert image.png reference.png
     -metric RMSE -compare -format "%[distortion]" info:).
-  * The internal SVG rendered are now invariant for the "fill" and "opacity"
+  * The internal SVG renderer is now invariant for the "fill" and "opacity"
     keywords.
 
 2013-08-06  6.8.6-8 Cristy  <quetzlzacatenango@image...>
