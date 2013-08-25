@@ -2851,8 +2851,8 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         s+=image->columns+neighbor_width;
       }
       GetMagickPixelPacket(image,&pixel);
-      SetMagickPixelPacket(image,p+neighbor_width*neighbor_height/2,indexes+
-        neighbor_width*neighbor_height/2+x,&pixel);
+      SetMagickPixelPacket(image,p+neighbor_width*neighbor_height/2,indexes+x+
+        neighbor_width*neighbor_height/2,&pixel);
       switch (type)
       {
         case GradientStatistic:
