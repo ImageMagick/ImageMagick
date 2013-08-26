@@ -3,18 +3,18 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                         M   M   OOO   N   N   OOO                           %
-%                         MM MM  O   O  NN  N  O   O                          %
-%                         M M M  O   O  N N N  O   O                          %
-%                         M   M  O   O  N  NN  O   O                          %
-%                         M   M   OOO   N   N   OOO                           %
+%                            RRRR    GGG   FFFFF                              %
+%                            R   R  G      F                                  %
+%                            RRRR   G  GG  FFF                                %
+%                            R  R   G   G  F                                  %
+%                            R   R   GGG   F                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write Raw Bi-Level Bitmap Format                     %
+%                  Read/Write LEGO Mindstorms EV3 Robot Graphics File         %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
-%                                 July 1992                                   %
+%                               Brian Wheeler                                 %
+%                               August 2013                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization      %
@@ -62,32 +62,32 @@
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/module.h"
+#include "magick/utility.h"
 
 /*
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMONOImage(const ImageInfo *,Image *);
+  WriteRGFImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M O N O I m a g e                                                 %
+%   R e a d X B M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadMONOImage() reads an image of raw bites in LSB order and returns
-%  it.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.
+%  ReadRGFImage() reads an RGF bitmap image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
 %
-%  The format of the ReadMONOImage method is:
+%  The format of the ReadRGFImage method is:
 %
-%      Image *ReadMONOImage(const ImageInfo *image_info,
-%        ExceptionInfo *exception)
+%      Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -96,8 +96,38 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadMONOImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+
+static int RGFInteger(Image *image,short int *hex_digits)
+{
+  int
+    c,
+    flag,
+    value;
+
+  value=0;
+  flag=0;
+  for ( ; ; )
+  {
+    c=ReadBlobByte(image);
+    if (c == EOF)
+      {
+        value=(-1);
+        break;
+      }
+    c&=0xff;
+    if (isxdigit(c) != MagickFalse)
+      {
+        value=(int) ((size_t) value << 4)+hex_digits[c];
+        flag++;
+        continue;
+      }
+    if ((hex_digits[c]) < 0 && (flag != 0))
+      break;
+  }
+  return(value);
+}
+
+static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -112,14 +142,27 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     *q;
 
   register ssize_t
+    i,
     x;
+
+  register unsigned char
+    *p;
 
   size_t
     bit,
-    byte;
+    byte,
+    bytes_per_line,
+    length,
+    padding,
+    value,
+    version;
 
   ssize_t
     y;
+
+  unsigned char
+    *data;
+
 
   /*
     Open image file.
@@ -132,31 +175,59 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AcquireImage(image_info);
-  if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize");
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if (DiscardBlobBytes(image,image->offset) == MagickFalse)
-    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-      image->filename);
   /*
-    Initialize image colormap.
+    Read RGF header.
   */
-  image->depth=1;
-  if (AcquireImageColormap(image,2) == MagickFalse)
+  image->columns = (unsigned long) ReadBlobByte(image);
+  image->rows = (unsigned long) ReadBlobByte(image);
+  image->depth=8;
+  image->storage_class=PseudoClass;
+  image->colors=2;
+  /*
+    Initialize image structure.
+  */
+  if (AcquireImageColormap(image,image->colors) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  /*
+    Initialize colormap.
+  */
+  image->colormap[0].red=QuantumRange;
+  image->colormap[0].green=QuantumRange;
+  image->colormap[0].blue=QuantumRange;
+  image->colormap[1].red=(Quantum) 0;
+  image->colormap[1].green=(Quantum) 0;
+  image->colormap[1].blue=(Quantum) 0;
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+
+
   /*
-    Convert bi-level image to pixel packets.
+    Read hex image data.
   */
+  length=(size_t) image->rows;
+  data=(unsigned char *) AcquireQuantumMemory(image->rows,image->columns*
+    sizeof(*data));
+  if (data == (unsigned char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  p=data;
+  for (i=0; i < (ssize_t) (image->columns * image->rows); i++) 
+    {
+      *p++=ReadBlobByte(image);
+    }
+
+  /*
+    Convert RGF image to pixel packets.
+  */
+  p=data;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -168,15 +239,12 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (bit == 0)
-        byte=(size_t) ReadBlobByte(image);
-      if (image_info->endian == LSBEndian)
-        SetPixelIndex(indexes+x,((byte & 0x01) != 0) ? 0x00 : 0x01);
-      else
-        SetPixelIndex(indexes+x,((byte & 0x01) != 0) ? 0x01 : 0x00);
+        byte=(size_t) (*p++);
+      SetPixelIndex(indexes+x,(Quantum) ((byte & 0x01) != 0 ? 0x01 : 0x00));
       bit++;
+      byte>>=1;
       if (bit == 8)
         bit=0;
-      byte>>=1;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -185,10 +253,8 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
+  data=(unsigned char *) RelinquishMagickMemory(data);
   (void) SyncImage(image);
-  if (EOFBlob(image) != MagickFalse)
-    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-      image->filename);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
@@ -198,37 +264,36 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r M O N O I m a g e                                         %
+%   R e g i s t e r R G F I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterMONOImage() adds attributes for the MONO image format to
+%  RegisterRGFImage() adds attributes for the RGF image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterMONOImage method is:
+%  The format of the RegisterRGFImage method is:
 %
-%      size_t RegisterMONOImage(void)
+%      size_t RegisterRGFImage(void)
 %
 */
-ModuleExport size_t RegisterMONOImage(void)
+ModuleExport size_t RegisterRGFImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("MONO");
-  entry->decoder=(DecodeImageHandler *) ReadMONOImage;
-  entry->encoder=(EncodeImageHandler *) WriteMONOImage;
-  entry->raw=MagickTrue;
-  entry->endian_support=MagickTrue;
+  entry=SetMagickInfo("RGF");
+  entry->decoder=(DecodeImageHandler *) ReadRGFImage;
+  entry->encoder=(EncodeImageHandler *) WriteRGFImage;
   entry->adjoin=MagickFalse;
-  entry->description=ConstantString("Raw bi-level bitmap");
-  entry->module=ConstantString("MONO");
+  entry->description=ConstantString(
+    "LEGO Mindstorms EV3 Robot Graphic Format (black and white)");
+  entry->module=ConstantString("RGF");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -238,23 +303,23 @@ ModuleExport size_t RegisterMONOImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M O N O I m a g e                                     %
+%   U n r e g i s t e r R G F I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnregisterMONOImage() removes format registrations made by the
-%  MONO module from the list of supported formats.
+%  UnregisterRGFImage() removes format registrations made by the
+%  RGF module from the list of supported formats.
 %
-%  The format of the UnregisterMONOImage method is:
+%  The format of the UnregisterRGFImage method is:
 %
-%      UnregisterMONOImage(void)
+%      UnregisterRGFImage(void)
 %
 */
-ModuleExport void UnregisterMONOImage(void)
+ModuleExport void UnregisterRGFImage(void)
 {
-  (void) UnregisterMagickInfo("MONO");
+  (void) UnregisterMagickInfo("RGF");
 }
 
 /*
@@ -262,18 +327,18 @@ ModuleExport void UnregisterMONOImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e M O N O I m a g e                                               %
+%   W r i t e R G F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteMONOImage() writes an image of raw bits in LSB order to a file.
+%  WriteRGFImage() writes an image to a file in the X bitmap format.
 %
-%  The format of the WriteMONOImage method is:
+%  The format of the WriteRGFImage method is:
 %
-%      MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
-%        Image *image)
+%      MagickBooleanType WriteRGFImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -281,9 +346,11 @@ ModuleExport void UnregisterMONOImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
-  Image *image)
+static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -310,44 +377,52 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace);
+  if((image->columns > 255L) || (image->rows > 255L))
+    ThrowWriterException(ImageError,"Dimensions must be less than 255x255");
+
   /*
-    Convert image to a bi-level image.
+    Write header (just the image dimensions)
+   */
+  (void)WriteBlobByte(image,image->rows & 0xff);
+  (void)WriteBlobByte(image,image->columns & 0xff);
+
+  /*
+    Convert MIFF to bit pixels.
   */
   (void) SetImageType(image,BilevelType);
+  bit=0;
+  byte=0;
+  x=0;
+  y=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    bit=0;
-    byte=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte>>=1;
-      if (image->endian == LSBEndian)
-        {
-          if (GetPixelLuma(image,p) < (QuantumRange/2.0))
-            byte|=0x80;
-        }
-      else
-        if (GetPixelLuma(image,p) >= (QuantumRange/2.0))
-          byte|=0x80;
+      if (GetPixelLuma(image,p) < (QuantumRange/2))
+        byte|=0x80;
       bit++;
       if (bit == 8)
         {
-          (void) WriteBlobByte(image,(unsigned char) byte);
+          /*
+            Write a bitmap byte to the image file.
+          */
+       	  (void) WriteBlobByte(image,byte);
           bit=0;
           byte=0;
         }
-      p++;
-    }
-    if (bit != 0)
-      (void) WriteBlobByte(image,(unsigned char) (byte >> (8-bit)));
+        p++;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
