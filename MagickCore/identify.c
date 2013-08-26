@@ -771,7 +771,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   (void) FormatLocaleFile(file,"  Compression: %s\n",CommandOptionToMnemonic(
     MagickCompressOptions,(ssize_t) image->compression));
   if (image->quality != UndefinedCompressionQuality)
-    (void) FormatLocaleFile(file,"  Quality: %.20g\n",(double) image->quality)
+    (void) FormatLocaleFile(file,"  Quality: %.20g\n",(double) image->quality);
   (void) FormatLocaleFile(file,"  Orientation: %s\n",CommandOptionToMnemonic(
     MagickOrientationOptions,(ssize_t) image->orientation));
   if (image->montage != (char *) NULL)
