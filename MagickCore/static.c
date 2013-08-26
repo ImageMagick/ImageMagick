@@ -271,6 +271,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterPWPImage();
   (void) RegisterRAWImage();
   (void) RegisterRGBImage();
+  (void) RegisterRGFImage();
   (void) RegisterRLAImage();
   (void) RegisterRLEImage();
   (void) RegisterSCRImage();
@@ -445,6 +446,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterPWPImage();
   UnregisterRAWImage();
   UnregisterRGBImage();
+  UnregisterRGFImage();
   UnregisterRLAImage();
   UnregisterRLEImage();
   UnregisterSCRImage();
