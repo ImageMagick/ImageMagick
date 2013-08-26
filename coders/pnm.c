@@ -245,6 +245,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     *scale;
 
+  QuantumAny
+    max_value;
+
   QuantumInfo
     *quantum_info;
 
@@ -257,7 +260,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     depth,
     extent,
-    max_value,
     packet_size;
 
   ssize_t
@@ -516,7 +518,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(q,intensity);
             if (scale != (Quantum *) NULL)
               SetPixelRed(q,scale[ConstrainPixel(image,(ssize_t)
-                intensity,max_value)]);
+                intensity,(size_t) max_value)]);
             SetPixelGreen(q,GetPixelRed(q));
             SetPixelBlue(q,GetPixelRed(q));
             q++;
@@ -576,11 +578,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (scale != (Quantum *) NULL)
               {
                 pixel.red=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
-                  pixel.red,max_value)];
+                  pixel.red,(size_t) max_value)];
                 pixel.green=(MagickRealType) scale[ConstrainPixel(image,
-                  (ssize_t) pixel.green,max_value)];
+                  (ssize_t) pixel.green,(size_t) max_value)];
                 pixel.blue=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
-                  pixel.blue,max_value)];
+                  pixel.blue,(size_t) max_value)];
               }
             SetPixelRed(q,pixel.red);
             SetPixelGreen(q,pixel.green);
@@ -1447,7 +1449,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
 
   size_t
     extent,
-    max_value,
     packet_size;
 
   ssize_t
@@ -1469,6 +1470,9 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    QuantumAny
+      max_value;
+
     /*
       Write PNM file header.
     */
