@@ -463,9 +463,9 @@ MagickBooleanType AccelerateConvolveImage_KernelWrapper(
 %
 %  The format of the AccelerateConvolveImage method is:
 %
-%      MagickBooleanType AccelerateConvolveImage(
-%         const Image *image, const KernelInfo *kernel, Image *filtered_image,
-%         ExceptionInfo *exception)
+%      MagickBooleanType AccelerateConvolveImage(const Image *image,
+%        const KernelInfo *kernel,Image *filtered_image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -509,8 +509,15 @@ static MagickBooleanType checkAccelerateConvolveCondition(const Image* image, co
   return MagickTrue;
 }
 
+MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
+  const KernelInfo *kernel,Image *convolve_image,ExceptionInfo *exception)
+{
+  /* legacy, do not use */
+  return(MagickFalse);
+}
 
-Image* AccelerateConvolveImage(const Image *image, const ChannelType channel, const KernelInfo *kernel, ExceptionInfo *exception)
+MagickExport Image *AccelerateConvolveImageChannel(const Image *image,
+  const ChannelType channel,const KernelInfo *kernel,ExceptionInfo *exception)
 {
   MagickBooleanType status;
   Image* filtered_image = NULL;
@@ -555,7 +562,15 @@ Image* AccelerateConvolveImage(const Image *image, const ChannelType channel, co
 
 #else  // MAGICKCORE_OPENCL_SUPPORT 
 
-Image* AccelerateConvolveImage(const Image *image, const ChannelType channel, const KernelInfo *kernel, ExceptionInfo *exception)
+MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
+  const KernelInfo *kernel,Image *convolve_image,ExceptionInfo *exception)
+{
+  /* legacy, do not use */
+  return(MagickFalse);
+}
+
+MagickExport Image *AccelerateConvolveImageChannel(const Image *image,
+  const ChannelType channel,const KernelInfo *kernel,ExceptionInfo *exception)
 {
   return NULL;
 }
