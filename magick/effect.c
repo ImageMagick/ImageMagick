@@ -810,7 +810,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
 
-  /* blur_image = AccelerateConvolveImage(image, channel, kernel_info, exception); */
+  /* blur_image = AccelerateConvolveImageChannel(image,channel,kernel_info,exception); */
   if (blur_image==NULL) 
   {
     blur_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
@@ -905,7 +905,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   for (i=0; i < (ssize_t) (order*order); i++)
     kernel_info->values[i]=kernel[i];
 
-  convolve_image = AccelerateConvolveImage(image, channel, kernel_info, exception);
+  convolve_image=AccelerateConvolveImageChannel(image,channel,kernel_info,
+    exception);
   if (convolve_image==NULL) 
   {
     convolve_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
@@ -1299,7 +1300,8 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     kernel_info->values[i]=(-1.0);
   kernel_info->values[i/2]=(double) kernel_info->width*kernel_info->height-1.0;
 
-  edge_image = AccelerateConvolveImage(image, DefaultChannels, kernel_info, exception);
+  edge_image=AccelerateConvolveImageChannel(image,DefaultChannels,kernel_info,
+    exception);
   if (edge_image==NULL) 
   {
     edge_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
@@ -1411,8 +1413,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
 
-  
-  emboss_image=AccelerateConvolveImage(image, DefaultChannels, kernel_info, exception);
+  emboss_image=AccelerateConvolveImageChannel(image,DefaultChannels,kernel_info,    exception);
   if (emboss_image == NULL)
   {
     emboss_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
@@ -1549,8 +1550,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
       message=DestroyString(message);
     }
 
-
-  filter_image = AccelerateConvolveImage(image,channel,kernel,exception);
+  filter_image=AccelerateConvolveImageChannel(image,channel,kernel,exception);
   if (filter_image != NULL) 
   {
 #ifdef MAGICKCORE_CLPERFMARKER
@@ -1882,7 +1882,8 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
 
-  blur_image = AccelerateConvolveImage(image, channel, kernel_info, exception);
+  blur_image=AccelerateConvolveImageChannel(image,channel,kernel_info,
+    exception);
   if (blur_image==NULL)
   {
     blur_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
