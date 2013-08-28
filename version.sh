@@ -26,7 +26,7 @@ PACKAGE_CHANGE_DATE=`awk '/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/ { print 
 #
 # Package version addendum.  This is an arbitrary suffix (if any) appended
 # to the package version. (e.g. "beta1")
-PACKAGE_VERSION_ADDENDUM="-${PACKAGE_RELEASE}~beta`date`"
+PACKAGE_VERSION_ADDENDUM="-${PACKAGE_RELEASE}"
 
 #
 # Versions are denoted using a standard triplet of integers:
