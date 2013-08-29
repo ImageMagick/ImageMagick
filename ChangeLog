@@ -1,3 +1,7 @@
+2013-08-29  6.8.6-10 Cristy  <quetzlzacatenango@image...>
+  * Call SVG / MSL xmlCleanupParser() / xmlInitParser() once (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23991).
+
 2013-08-26  6.8.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-9, SVN revision 13087.
 
