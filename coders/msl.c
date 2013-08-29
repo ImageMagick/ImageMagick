@@ -7792,7 +7792,6 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
     (void) xmlParseChunk(msl_info.parser," ",1,MagickTrue);
   xmlFreeParserCtxt(msl_info.parser);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
-  xmlCleanupParser();
   msl_info.group_info=(MSLGroupInfo *) RelinquishMagickMemory(
     msl_info.group_info);
   if (*image == (Image *) NULL)
@@ -7851,6 +7850,9 @@ ModuleExport size_t RegisterMSLImage(void)
   MagickInfo
     *entry;
 
+#if defined(MAGICKCORE_XML_DELEGATE)
+  xmlInitParser();
+#endif
   entry=SetMagickInfo("MSL");
 #if defined(MAGICKCORE_XML_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadMSLImage;
@@ -8172,6 +8174,9 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
 ModuleExport void UnregisterMSLImage(void)
 {
   (void) UnregisterMagickInfo("MSL");
+#if defined(MAGICKCORE_XML_DELEGATE)
+  xmlCleanupParser();
+#endif
 }
 
 #if defined(MAGICKCORE_XML_DELEGATE)
