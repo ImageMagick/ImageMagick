@@ -824,7 +824,9 @@ bool Magick::Image::compare ( const Image &reference_ )
   modifyImage();
   Image ref = reference_;
   ref.modifyImage();
-  return static_cast<bool>(IsImagesEqual(image(), ref.image()));
+  bool status = static_cast<bool>(IsImagesEqual(image(), ref.image()));
+  throwImageException();
+  return status;
 }
 
 // Composite two images
