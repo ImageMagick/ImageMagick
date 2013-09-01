@@ -223,7 +223,6 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
     n,
     y;
   
-  (void) FormatLocaleFile(file,"  %s:",name);
   switch (type)
   {
     case MaximumStatistic:
@@ -243,6 +242,8 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       break;
     }
   }
+  (void) FormatLocaleFile(file,"  %s: %.20g (%.20g)",name,target,QuantumScale*
+    target);
   exception=AcquireExceptionInfo();
   n=0;
   for (y=0; y < (ssize_t) image->rows; y++)
