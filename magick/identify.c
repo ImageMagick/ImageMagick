@@ -216,9 +216,6 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
   double
     target;
 
-  MagickBooleanType
-    match;
-
   ExceptionInfo
     *exception;
 
@@ -261,6 +258,9 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      MagickBooleanType
+        match;
+
       match=MagickFalse;
       switch (channel)
       {
