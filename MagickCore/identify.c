@@ -242,8 +242,8 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       break;
     }
   }
-  (void) FormatLocaleFile(file,"  %s: %.20g (%.20g)",name,target,QuantumScale*
-    target);
+  (void) FormatLocaleFile(file,"  %s: %.*g (%.*g)",name,GetMagickPrecision(),
+    target,GetMagickPrecision(),QuantumScale*target);
   exception=AcquireExceptionInfo();
   n=0;
   for (y=0; y < (ssize_t) image->rows; y++)
