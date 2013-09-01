@@ -5,6 +5,9 @@
     by bdwheele@ind.../
   * Since glib-2.35.0 g_type_init() was removed (reference
     https://bugs.gentoo.org/show_bug.cgi?id=481042).
+  * New identify define to output the location of the minimum, maximum, or
+    mean pixel of the image (e.g. identify -define identify:locate=maximum
+    -define identify:limit=7 rose).
 
 2013-08-26  6.8.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-9, SVN revision 13087.
