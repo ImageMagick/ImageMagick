@@ -141,6 +141,7 @@ static MagickBooleanType IdentifyUsage(void)
       "-matte               store matte channel if the image has one",
       "-monitor             monitor progress",
       "-ping                efficiently determine image attributes",
+      "-precision value     maximum number of significant digits to print",
       "-quiet               suppress all warning messages",
       "-regard-warnings     pay attention to warning messages",
       "-respect-parentheses settings remain in effect until parenthesis boundary",
@@ -773,6 +774,17 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("ping",option+1) == 0)
           break;
+        if (LocaleCompare("precision",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowIdentifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowIdentifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         ThrowIdentifyException(OptionError,"UnrecognizedOption",option)
       }
       case 'q':
