@@ -699,6 +699,9 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 MagickExport MagickBooleanType IsGrayImage(const Image *image,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   ImageType
     type;
 
@@ -722,9 +725,10 @@ MagickExport MagickBooleanType IsGrayImage(const Image *image,
       (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
     return(MagickFalse);
   type=BilevelType;
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -741,6 +745,7 @@ MagickExport MagickBooleanType IsGrayImage(const Image *image,
     if (type == UndefinedType)
       break;
   }
+  image_view=DestroyCacheView(image_view);
   if (type == UndefinedType)
     return(MagickFalse);
   ((Image *) image)->colorspace=GRAYColorspace;
@@ -780,6 +785,9 @@ MagickExport MagickBooleanType IsGrayImage(const Image *image,
 MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   ImageType
     type;
 
@@ -802,9 +810,10 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
       (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
     return(MagickFalse);
   type=BilevelType;
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -819,6 +828,7 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
     if (type == UndefinedType)
       break;
   }
+  image_view=DestroyCacheView(image_view);
   if (type == UndefinedType)
     return(MagickFalse);
   ((Image *) image)->colorspace=GRAYColorspace;
@@ -855,6 +865,9 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
 MagickExport MagickBooleanType IsOpaqueImage(const Image *image,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   register const PixelPacket
     *p;
 
@@ -873,9 +886,10 @@ MagickExport MagickBooleanType IsOpaqueImage(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->matte == MagickFalse)
     return(MagickTrue);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -887,6 +901,7 @@ MagickExport MagickBooleanType IsOpaqueImage(const Image *image,
     if (x < (ssize_t) image->columns)
       break;
   }
+  image_view=DestroyCacheView(image_view);
   return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);
 }
 
