@@ -107,6 +107,7 @@ static MagickBooleanType IdentifyUsage(void)
     },
     *operators[]=
     {
+      "-grayscale method    convert image to grayscale",
       "-negate              replace every pixel with its complementary color ",
       (char *) NULL
     },
@@ -600,6 +601,34 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("gamma",option+1) == 0)
           {
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowIdentifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowIdentifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("grayscale",option+1) == 0)
+          {
+            ssize_t
+              method;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowIdentifyException(OptionError,"MissingArgument",option);
+            method=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,
+              argv[i]);
+            if (method < 0)
+              ThrowIdentifyException(OptionError,"UnrecognizedIntensityMethod",
+                argv[i]);
+            break;
+          }
+        if (LocaleCompare("green-primary",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowIdentifyException(OptionError,"MissingArgument",option);
