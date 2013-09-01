@@ -96,37 +96,6 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static int RGFInteger(Image *image,short int *hex_digits)
-{
-  int
-    c,
-    flag,
-    value;
-
-  value=0;
-  flag=0;
-  for ( ; ; )
-  {
-    c=ReadBlobByte(image);
-    if (c == EOF)
-      {
-        value=(-1);
-        break;
-      }
-    c&=0xff;
-    if (isxdigit(c) != MagickFalse)
-      {
-        value=(int) ((size_t) value << 4)+hex_digits[c];
-        flag++;
-        continue;
-      }
-    if ((hex_digits[c]) < 0 && (flag != 0))
-      break;
-  }
-  return(value);
-}
-
 static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
@@ -147,12 +116,7 @@ static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     bit,
-    byte,
-    bytes_per_line,
-    length,
-    padding,
-    value,
-    version;
+    byte;
 
   ssize_t
     y;
@@ -210,7 +174,6 @@ static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read hex image data.
   */
-  length=(size_t) image->rows;
   data=(unsigned char *) AcquireQuantumMemory(image->rows,image->columns*
     sizeof(*data));
   if (data == (unsigned char *) NULL)
@@ -363,7 +326,6 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
     byte;
 
   ssize_t
-    count,
     y;
 
   /*
@@ -397,7 +359,6 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
   (void) SetImageType(image,BilevelType,exception);
   bit=0;
   byte=0;
-  count=0;
   x=0;
   y=0;
   for (y=0; y < (ssize_t) image->rows; y++)
