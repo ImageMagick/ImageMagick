@@ -209,6 +209,100 @@ static ssize_t PrintChannelFeatures(FILE *file,const ChannelType channel,
   return(n);
 }
 
+static ssize_t PrintChannelLocations(FILE *file,const Image *image,
+  const ChannelType channel,const char *name,const StatisticType type,
+  const size_t max_locations,const ChannelStatistics *channel_statistics)
+{
+  double
+    target;
+
+  MagickBooleanType
+    match;
+
+  ExceptionInfo
+    *exception;
+
+  register const PixelPacket
+    *p;
+
+  ssize_t
+    n,
+    y;
+  
+  (void) FormatLocaleFile(file,"  %s:",name);
+  switch (type)
+  {
+    case MaximumStatistic:
+    default:
+    {
+      target=channel_statistics[channel].maxima;
+      break;
+    }
+    case MeanStatistic:
+    {
+      target=channel_statistics[channel].mean;
+      break;
+    }
+    case MinimumStatistic:
+    {
+      target=channel_statistics[channel].minima;
+      break;
+    }
+  }
+  exception=AcquireExceptionInfo();
+  n=0;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    ssize_t
+      x;
+
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      match=MagickFalse;
+      switch (channel)
+      {
+        case RedChannel:
+        {
+          match=fabs((double) p->red-target) < 0.5;
+          break;
+        }
+        case GreenChannel:
+        {
+          match=fabs((double) p->green-target) < 0.5;
+          break;
+        }
+        case BlueChannel:
+        {
+          match=fabs((double) p->blue-target) < 0.5;
+          break;
+        }
+        case AlphaChannel:
+        {
+          match=fabs((double) p->opacity-target) < 0.5;
+          break;
+        }
+        default:
+          break;
+      }
+      if (match != MagickFalse)
+        {
+          if ((max_locations != 0) && (n >= max_locations))
+            break;
+          (void) FormatLocaleFile(file," %.20g,%.20g",(double) x,(double) y);
+          n++;
+        }
+      p++;
+    }
+    if (x < (ssize_t) image->columns)
+      break;
+  }
+  (void) FormatLocaleFile(file,"\n");
+  return(n);
+}
+
 static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
   const char *name,const double scale,
   const ChannelStatistics *channel_statistics)
@@ -267,6 +361,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
   const char
     *artifact,
+    *locate,
     *name,
     *property,
     *registry,
@@ -308,6 +403,72 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (file == (FILE *) NULL)
     file=stdout;
+  exception=AcquireExceptionInfo();
+  locate=GetImageArtifact(image,"identify:locate");
+  if (locate != (const char *) NULL)
+    {
+      const char
+        *limit;
+
+      size_t
+        max_locations;
+
+      StatisticType
+        statistic;
+
+      /*
+        Display minimum, maximum, or mean pixel locations.
+      */
+      statistic=(StatisticType) ParseCommandOption(MagickStatisticOptions,
+        MagickFalse,locate);
+      limit=GetImageArtifact(image,"identify:limit");
+      max_locations=0;
+      if (limit != (const char *) NULL)
+        max_locations=StringToUnsignedLong(limit);
+      channel_statistics=GetImageChannelStatistics(image,exception);
+      colorspace=image->colorspace;
+      if (IsGrayImage(image,exception) != MagickFalse)
+        colorspace=GRAYColorspace;
+      (void) FormatLocaleFile(file,"Channel %s locations:\n",locate);
+      switch (colorspace)
+      {
+        case RGBColorspace:
+        default:
+        {
+          (void) PrintChannelLocations(file,image,RedChannel,"Red",
+            statistic,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,GreenChannel,"Green",
+            statistic,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,BlueChannel,"Blue",
+            statistic,max_locations,channel_statistics);
+          break;
+        }
+        case CMYKColorspace:
+        {
+          (void) PrintChannelLocations(file,image,CyanChannel,"Cyan",
+            statistic,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,MagentaChannel,"Magenta",
+            statistic,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,YellowChannel,"Yellow",
+            statistic,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,BlackChannel,"Black",
+            statistic,max_locations,channel_statistics);
+          break;
+        }
+        case GRAYColorspace:
+        {
+          (void) PrintChannelLocations(file,image,GrayChannel,"Gray",
+            statistic,max_locations,channel_statistics);
+          break;
+        }
+      }
+      if (image->matte != MagickFalse)
+        (void) PrintChannelLocations(file,image,AlphaChannel,"Alpha",
+          statistic,max_locations,channel_statistics);
+      channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+        channel_statistics);
+      return(ferror(file) != 0 ? MagickFalse : MagickTrue);
+    }
   *format='\0';
   elapsed_time=GetElapsedTime(&image->timer);
   user_time=GetUserTime(&image->timer);
@@ -383,7 +544,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   /*
     Display verbose info about the image.
   */
-  exception=AcquireExceptionInfo();
   pixels=GetVirtualPixels(image,0,0,1,1,exception);
   exception=DestroyExceptionInfo(exception);
   ping=pixels == (const PixelPacket *) NULL ? MagickTrue : MagickFalse;
@@ -451,13 +611,12 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       size_t
         depth;
 
-      channel_statistics=GetImageChannelStatistics(image,&image->exception);
+      channel_statistics=GetImageChannelStatistics(image,exception);
       artifact=GetImageArtifact(image,"identify:features");
       if (artifact != (const char *) NULL)
         {
           distance=StringToUnsignedLong(artifact);
-          channel_features=GetImageChannelFeatures(image,distance,
-            &image->exception);
+          channel_features=GetImageChannelFeatures(image,distance,exception);
         }
       depth=GetImageDepth(image,&image->exception);
       if (image->depth == depth)
