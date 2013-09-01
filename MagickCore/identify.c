@@ -223,7 +223,6 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
     n,
     y;
   
-  (void) FormatLocaleFile(file,"  %s:",name);
   switch (type)
   {
     case MaximumStatistic:
@@ -243,6 +242,8 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       break;
     }
   }
+  (void) FormatLocaleFile(file,"  %s: %.20g (%.20g)",name,target,QuantumScale*
+    target);
   exception=AcquireExceptionInfo();
   n=0;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -394,35 +395,35 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         case RGBColorspace:
         default:
         {
-          (void) PrintChannelLocations(file,image,RedPixelChannel,"red",
+          (void) PrintChannelLocations(file,image,RedPixelChannel,"Red",
             statistic,max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,GreenPixelChannel,"green",
+          (void) PrintChannelLocations(file,image,GreenPixelChannel,"Green",
             statistic,max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,BluePixelChannel,"blue",
+          (void) PrintChannelLocations(file,image,BluePixelChannel,"Blue",
             statistic,max_locations,channel_statistics);
           break;
         }
         case CMYKColorspace:
         {
-          (void) PrintChannelLocations(file,image,CyanPixelChannel,"cyan",
+          (void) PrintChannelLocations(file,image,CyanPixelChannel,"Cyan",
             statistic,max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,MagentaPixelChannel,"magenta",
+          (void) PrintChannelLocations(file,image,MagentaPixelChannel,"Magenta",
             statistic,max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,YellowPixelChannel,"yellow",
+          (void) PrintChannelLocations(file,image,YellowPixelChannel,"Yellow",
             statistic,max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,BlackPixelChannel,"black",
+          (void) PrintChannelLocations(file,image,BlackPixelChannel,"Black",
             statistic,max_locations,channel_statistics);
           break;
         }
         case GRAYColorspace:
         {
-          (void) PrintChannelLocations(file,image,GrayPixelChannel,"gray",
+          (void) PrintChannelLocations(file,image,GrayPixelChannel,"Gray",
             statistic,max_locations,channel_statistics);
           break;
         }
       }
       if (image->alpha_trait == BlendPixelTrait)
-        (void) PrintChannelLocations(file,image,AlphaPixelChannel,"alpha",
+        (void) PrintChannelLocations(file,image,AlphaPixelChannel,"Alpha",
           statistic,max_locations,channel_statistics);
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
@@ -591,29 +592,29 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         case RGBColorspace:
         default:
         {
-          (void) FormatLocaleFile(file,"    red: %.20g-bit\n",(double)
+          (void) FormatLocaleFile(file,"    Red: %.20g-bit\n",(double)
             channel_statistics[RedPixelChannel].depth);
-          (void) FormatLocaleFile(file,"    green: %.20g-bit\n",(double)
+          (void) FormatLocaleFile(file,"    Green: %.20g-bit\n",(double)
             channel_statistics[GreenPixelChannel].depth);
-          (void) FormatLocaleFile(file,"    blue: %.20g-bit\n",(double)
+          (void) FormatLocaleFile(file,"    Blue: %.20g-bit\n",(double)
             channel_statistics[BluePixelChannel].depth);
           break;
         }
         case CMYKColorspace:
         {
-          (void) FormatLocaleFile(file,"    cyan: %.20g-bit\n",(double)
+          (void) FormatLocaleFile(file,"    Cyan: %.20g-bit\n",(double)
             channel_statistics[CyanPixelChannel].depth);
-          (void) FormatLocaleFile(file,"    magenta: %.20g-bit\n",(double)
+          (void) FormatLocaleFile(file,"    Magenta: %.20g-bit\n",(double)
             channel_statistics[MagentaPixelChannel].depth);
-          (void) FormatLocaleFile(file,"    yellow: %.20g-bit\n",(double)
+          (void) FormatLocaleFile(file,"    Yellow: %.20g-bit\n",(double)
             channel_statistics[YellowPixelChannel].depth);
-          (void) FormatLocaleFile(file,"    black: %.20g-bit\n",(double)
+          (void) FormatLocaleFile(file,"    Black: %.20g-bit\n",(double)
             channel_statistics[BlackPixelChannel].depth);
           break;
         }
         case GRAYColorspace:
         {
-          (void) FormatLocaleFile(file,"    gray: %.20g-bit\n",(double)
+          (void) FormatLocaleFile(file,"    Gray: %.20g-bit\n",(double)
             channel_statistics[GrayPixelChannel].depth);
           break;
         }
