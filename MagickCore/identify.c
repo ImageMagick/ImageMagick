@@ -222,7 +222,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
   ssize_t
     n,
     y;
-  
+
   switch (type)
   {
     case MaximumStatistic:
@@ -252,6 +252,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       *p;
 
     ssize_t
+      offset,
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -265,7 +266,8 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       PixelTrait traits=GetPixelChannelTraits(image,channel);
       if (traits == UndefinedPixelTrait)
         continue;
-      match=fabs((double) p[channel]-target) < 0.5 ? MagickTrue : MagickFalse;
+      offset=GetPixelChannelOffset(image,channel);
+      match=fabs((double) p[offset]-target) < 0.5 ? MagickTrue : MagickFalse;
       if (match != MagickFalse)
         {
           if ((max_locations != 0) && (n >= max_locations))
@@ -273,7 +275,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
           (void) FormatLocaleFile(file," %.20g,%.20g",(double) x,(double) y);
           n++;
         }
-      p++;
+      p+=GetPixelChannels(image);
     }
     if (x < (ssize_t) image->columns)
       break;
