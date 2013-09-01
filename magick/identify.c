@@ -222,9 +222,6 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
   ExceptionInfo
     *exception;
 
-  register const PixelPacket
-    *p;
-
   ssize_t
     n,
     y;
@@ -253,6 +250,9 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
   n=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    register const PixelPacket
+      *p;
+
     ssize_t
       x;
 
