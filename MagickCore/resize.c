@@ -2264,9 +2264,8 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
 %
 %  The format of the ResizeImage method is:
 %
-%      Image *ResizeImage(Image *image,const size_t columns,
-%        const size_t rows,const FilterTypes filter,const double blur,
-%        ExceptionInfo *exception)
+%      Image *ResizeImage(Image *image,const size_t columns,const size_t rows,
+%        const FilterTypes filter,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2277,9 +2276,6 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
 %    o rows: the number of rows in the scaled image.
 %
 %    o filter: Image filter to use.
-%
-%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.  Typically set
-%      this to 1.0.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -2808,7 +2804,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   if ((columns == 0) || (rows == 0))
     ThrowImageException(ImageError,"NegativeOrZeroImageSize");
   if ((columns == image->columns) && (rows == image->rows) &&
-      (filter == UndefinedFilter) && (blur == 1.0))
+      (filter == UndefinedFilter))
     return(CloneImage(image,0,0,MagickTrue,exception));
   resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (resize_image == (Image *) NULL)
