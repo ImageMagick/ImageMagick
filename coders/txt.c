@@ -689,18 +689,23 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
   scene=0;
   do
   {
+    ComplianceType
+      compliance;
+
     (void) CopyMagickString(colorspace,CommandOptionToMnemonic(
       MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->alpha_trait == BlendPixelTrait)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
+    compliance=NoCompliance;
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,
           "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
           image->columns,(double) image->rows,(double) QuantumRange,colorspace);
         (void) WriteBlobString(image,buffer);
+        compliance=SVGCompliance;
       }
     GetPixelInfo(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -738,29 +743,27 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
         if (pixel.colorspace == GRAYColorspace)
-          ConcatenateColorComponent(&pixel,GrayPixelChannel,NoCompliance,
+          ConcatenateColorComponent(&pixel,GrayPixelChannel,compliance,
             tuple);
         else
           {
-            ConcatenateColorComponent(&pixel,RedPixelChannel,NoCompliance,
+            ConcatenateColorComponent(&pixel,RedPixelChannel,compliance,tuple);
+            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            ConcatenateColorComponent(&pixel,GreenPixelChannel,compliance,
               tuple);
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,GreenPixelChannel,NoCompliance,
-              tuple);
-            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,BluePixelChannel,NoCompliance,
-              tuple);
+            ConcatenateColorComponent(&pixel,BluePixelChannel,compliance,tuple);
           }
         if (pixel.colorspace == CMYKColorspace)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,BlackPixelChannel,NoCompliance,
+            ConcatenateColorComponent(&pixel,BlackPixelChannel,compliance,
               tuple);
           }
         if (pixel.alpha_trait == BlendPixelTrait)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,AlphaPixelChannel,NoCompliance,
+            ConcatenateColorComponent(&pixel,AlphaPixelChannel,compliance,
               tuple);
           }
         (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
