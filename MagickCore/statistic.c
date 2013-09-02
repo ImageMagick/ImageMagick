@@ -1534,7 +1534,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
     MaxPixelChannels+1,sizeof(*channel_statistics));
   if (channel_statistics == (ChannelStatistics *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    return(MagickFalse);
   (void) ResetMagickMemory(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
@@ -1671,6 +1671,9 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       channel_statistics[i].mean)*(standard_deviation*standard_deviation*
       standard_deviation*standard_deviation)-3.0;
   }
+  if (y < (ssize_t) image->rows)
+    channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+      channel_statistics);
   return(channel_statistics);
 }
 

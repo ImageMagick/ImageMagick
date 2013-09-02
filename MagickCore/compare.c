@@ -878,6 +878,17 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   */
   image_statistics=GetImageStatistics(image,exception);
   reconstruct_statistics=GetImageStatistics(reconstruct_image,exception);
+  if ((image_statistics == (ChannelStatistics *) NULL) ||
+      (reconstruct_statistics == (ChannelStatistics *) NULL))
+    {
+      if (image_statistics != (ChannelStatistics *) NULL)
+        image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+          image_statistics);
+      if (reconstruct_statistics != (ChannelStatistics *) NULL)
+        reconstruct_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+          reconstruct_statistics);
+      return(MagickFalse);
+    }
   status=MagickTrue;
   progress=0;
   for (i=0; i <= MaxPixelChannels; i++)
