@@ -154,9 +154,6 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   ChannelStatistics
     *channel_statistics;
 
-  MagickStatusType
-    status;
-
   register ssize_t
     i;
 
@@ -475,6 +472,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (limit != (const char *) NULL)
         max_locations=StringToUnsignedLong(limit);
       channel_statistics=GetLocationStatistics(image,type,exception);
+      if (channel_statistics == (ChannelStatistics *) NULL)
+        return(MagickFalse);
       colorspace=image->colorspace;
       if (IsImageGray(image,exception) != MagickFalse)
         colorspace=GRAYColorspace;
@@ -660,6 +659,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         depth;
 
       channel_statistics=GetImageStatistics(image,exception);
+      if (channel_statistics == (ChannelStatistics *) NULL)
+        return(MagickFalse);
       artifact=GetImageArtifact(image,"identify:features");
       if (artifact != (const char *) NULL)
         {
