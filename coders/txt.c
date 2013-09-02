@@ -664,18 +664,24 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    ComplianceType
+      compliance;
+
     (void) CopyMagickString(colorspace,CommandOptionToMnemonic(
       MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->matte != MagickFalse)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
+    compliance=NoCompliance;
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,
           "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
-          image->columns,(double) image->rows,(double) QuantumRange,colorspace);
+          image->columns,(double) image->rows,(double)
+          GetQuantumRange(image->depth),colorspace);
         (void) WriteBlobString(image,buffer);
+        compliance=SVGCompliance;
       }
     GetMagickPixelPacket(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -715,20 +721,20 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,RedChannel,NoCompliance,tuple);
+        ConcatenateColorComponent(&pixel,RedChannel,compliance,tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,GreenChannel,NoCompliance,tuple);
+        ConcatenateColorComponent(&pixel,GreenChannel,compliance,tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,BlueChannel,NoCompliance,tuple);
+        ConcatenateColorComponent(&pixel,BlueChannel,compliance,tuple);
         if (pixel.colorspace == CMYKColorspace)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,IndexChannel,NoCompliance,tuple);
+            ConcatenateColorComponent(&pixel,IndexChannel,compliance,tuple);
           }
         if (pixel.matte != MagickFalse)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,AlphaChannel,NoCompliance,tuple);
+            ConcatenateColorComponent(&pixel,AlphaChannel,compliance,tuple);
           }
         (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
         (void) WriteBlobString(image,tuple);
