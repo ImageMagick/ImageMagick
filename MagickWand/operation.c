@@ -3631,6 +3631,39 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           new_images=CombineImages(_images,(ColorspaceType) parse,_exception);
           break;
         }
+      if (LocaleCompare("compare",option+1) == 0)
+        {
+          double
+            distortion;
+
+          Image
+            *image,
+            *reconstruct_image;
+
+          MetricType
+            metric;
+
+          /*
+            Mathematically and visually annotate the difference between an
+            image and its reconstruction.
+          */
+          image=RemoveFirstImageFromList(&_images);
+          reconstruct_image=RemoveFirstImageFromList(&_images);
+          /* FUTURE - produce Exception, rather than silent fail */
+          if (reconstruct_image == (Image *) NULL)
+            break;
+          metric=UndefinedErrorMetric;
+          option=GetImageOption(_image_info,"metric");
+          if (option != (const char *) NULL)
+            metric=(MetricType) ParseCommandOption(MagickMetricOptions,
+              MagickFalse,option);
+          new_images=CompareImages(image,reconstruct_image,metric,&distortion,
+            _exception);
+          (void) distortion;
+          reconstruct_image=DestroyImage(reconstruct_image);
+          image=DestroyImage(image);
+          break;
+        }
       if (LocaleCompare("composite",option+1) == 0)
         {
           CompositeOperator
@@ -4027,6 +4060,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           (void) RemapImages(_quantize_info,_images,(Image *) NULL,_exception);
           break;
         }
+      if (LocaleCompare("metric",option+1) == 0)
+        break;
       if (LocaleCompare("morph",option+1) == 0)
         {
           Image

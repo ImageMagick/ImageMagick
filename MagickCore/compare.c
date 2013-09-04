@@ -1212,7 +1212,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   }
   *distortion=channel_distortion[CompositePixelChannel];
   channel_distortion=(double *) RelinquishMagickMemory(channel_distortion);
-  (void) FormatImageProperty(image,"distortion","%.20g",*distortion);
+  (void) FormatImageProperty(image,"distortion","%.*g",GetMagickPercision(),
+    *distortion);
   return(status);
 }
 
