@@ -20,9 +20,9 @@ namespace Magick
   public:
 
     enum MatchType {
-      AnyMatch,		// match any coder
-      TrueMatch,	// match coder if true
-      FalseMatch	// match coder if false
+      AnyMatch,  // match any coder
+      TrueMatch, // match coder if true
+      FalseMatch // match coder if false
     };
 
     // Default constructor
@@ -37,11 +37,11 @@ namespace Magick
     // Destructor
     ~CoderInfo ( void );
 
-    // Format name
-    std::string name( void ) const;
-
     // Format description
     std::string description( void ) const;
+
+    // Format supports multiple frames
+    bool isMultiFrame( void ) const;
 
     // Format is readable
     bool isReadable( void ) const;
@@ -49,11 +49,14 @@ namespace Magick
     // Format is writeable
     bool isWritable( void ) const;
 
-    // Format supports multiple frames
-    bool isMultiFrame( void ) const;
+    // Format mime type
+    std::string mimeType( void ) const;
+
+    // Format name
+    std::string name( void ) const;
 
     // Assignment operator
-    CoderInfo& operator= (const CoderInfo &coder_ );
+    CoderInfo& operator= ( const CoderInfo &coder_ );
 
     //
     // Implemementation methods
@@ -62,12 +65,13 @@ namespace Magick
 
   private:
 
-    std::string		_name;
-    std::string		_description;
-    bool		_isReadable;
-    bool		_isWritable;
-    bool		_isMultiFrame;
-    
+    std::string _description;
+    bool        _isReadable;
+    bool        _isWritable;
+    bool        _isMultiFrame;
+    std::string _mimeType;
+    std::string _name;
+
   };
 } // namespace Magick
 
