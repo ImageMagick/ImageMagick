@@ -350,8 +350,8 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
   /*
     Write header (just the image dimensions)
    */
-  (void)WriteBlobByte(image,image->rows & 0xff);
-  (void)WriteBlobByte(image,image->columns & 0xff);
+  (void) WriteBlobByte(image,image->columns & 0xff);
+  (void) WriteBlobByte(image,image->rows & 0xff);
 
   /*
     Convert MIFF to bit pixels.
