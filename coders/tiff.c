@@ -3197,6 +3197,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
+    if ((image->rows/rows_per_strip) >= (1UL << 15))
+      rows_per_strip=(image->rows >> 15);
     (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
     if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
       {
