@@ -8,6 +8,8 @@
   * New identify define to output the location of the minimum, maximum, or
     mean pixel of the image (e.g. identify -define identify:locate=maximum
     -define identify:limit=7 rose).
+  * Column columns / rows no longer inverted for RGF image format (patch
+    from Brian Wheeler <bdwheele@india...>.
 
 2013-08-26  6.8.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-9, SVN revision 13087.
