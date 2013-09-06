@@ -703,8 +703,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,
           "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
-          image->columns,(double) image->rows,(double)
-          GetQuantumRange(image->depth),colorspace);
+          image->columns,(double) image->rows,(double) ((MagickOffsetType)
+          GetQuantumRange(image->depth)),colorspace);
         (void) WriteBlobString(image,buffer);
         compliance=SVGCompliance;
       }
