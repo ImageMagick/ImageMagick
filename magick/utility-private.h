@@ -234,7 +234,7 @@ static inline int stat_utf8(const char *path,struct stat *attributes)
    if (path_wide == (WCHAR *) NULL)
      return(-1);
    count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
-   status=_wstat64(path_wide,attributes);
+   status=wstat(path_wide,attributes);
    path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
    return(status);
 #endif
