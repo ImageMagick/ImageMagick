@@ -360,8 +360,6 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
     Convert MIFF to bit pixels.
   */
   (void) SetImageType(image,BilevelType);
-  bit=0;
-  byte=0;
   x=0;
   y=0;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -369,6 +367,8 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
+    bit=0;
+    byte=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte>>=1;
@@ -384,8 +384,10 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
           bit=0;
           byte=0;
         }
-        p++;
-      }
+      p++;
+    }
+    if (bit != 0)
+      (void) WriteBlobByte(image,byte);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
