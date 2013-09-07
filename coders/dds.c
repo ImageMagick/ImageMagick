@@ -10,11 +10,13 @@
 %                            DDDD   DDDD   SSSSS                              %
 %                                                                             %
 %                                                                             %
-%              Read Microsoft Direct Draw Surface Image Format                %
+%           Read/Write Microsoft Direct Draw Surface Image Format             %
 %                                                                             %
 %                              Software Design                                %
 %                             Bianca van Schaik                               %
 %                                March 2008                                   %
+%                               Dirk Lemstra                                  %
+%                              September 2013                                 %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization      %
@@ -64,6 +66,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/compress.h"
@@ -74,6 +77,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/static.h"
@@ -111,6 +115,10 @@
 #define DDSCAPS2_CUBEMAP_POSITIVEZ  0x00004000
 #define DDSCAPS2_CUBEMAP_NEGATIVEZ  0x00008000
 #define DDSCAPS2_VOLUME   0x00200000
+
+#ifndef SIZE_MAX
+#define SIZE_MAX ((size_t) -1)
+#endif
 
 /*
   Structure declarations.
@@ -152,8 +160,566 @@ typedef struct _DDSColors
     a[4];
 } DDSColors;
 
+typedef struct _DDSVector4
+{
+  float
+    x,
+    y,
+    z,
+    w;
+} DDSVector4;
+
+typedef struct _DDSVector3
+{
+  float
+    x,
+    y,
+    z;
+} DDSVector3;
+
+typedef struct _DDSSourceBlock
+{
+  unsigned char
+    start,
+    end,
+    error;
+} DDSSourceBlock;
+
+typedef struct _DDSSingleColourLookup
+{
+  DDSSourceBlock sources[2];
+} DDSSingleColourLookup;
+
 typedef MagickBooleanType
-  DDSDecoder(Image *,DDSInfo *,ExceptionInfo *);
+  DDSDecoder(Image *, DDSInfo *, ExceptionInfo *);
+
+static const DDSSingleColourLookup DDSLookup_5_4[] =
+{
+  { { { 0, 0, 0 }, { 0, 0, 0 } } },
+  { { { 0, 0, 1 }, { 0, 1, 1 } } },
+  { { { 0, 0, 2 }, { 0, 1, 0 } } },
+  { { { 0, 0, 3 }, { 0, 1, 1 } } },
+  { { { 0, 0, 4 }, { 0, 2, 1 } } },
+  { { { 1, 0, 3 }, { 0, 2, 0 } } },
+  { { { 1, 0, 2 }, { 0, 2, 1 } } },
+  { { { 1, 0, 1 }, { 0, 3, 1 } } },
+  { { { 1, 0, 0 }, { 0, 3, 0 } } },
+  { { { 1, 0, 1 }, { 1, 2, 1 } } },
+  { { { 1, 0, 2 }, { 1, 2, 0 } } },
+  { { { 1, 0, 3 }, { 0, 4, 0 } } },
+  { { { 1, 0, 4 }, { 0, 5, 1 } } },
+  { { { 2, 0, 3 }, { 0, 5, 0 } } },
+  { { { 2, 0, 2 }, { 0, 5, 1 } } },
+  { { { 2, 0, 1 }, { 0, 6, 1 } } },
+  { { { 2, 0, 0 }, { 0, 6, 0 } } },
+  { { { 2, 0, 1 }, { 2, 3, 1 } } },
+  { { { 2, 0, 2 }, { 2, 3, 0 } } },
+  { { { 2, 0, 3 }, { 0, 7, 0 } } },
+  { { { 2, 0, 4 }, { 1, 6, 1 } } },
+  { { { 3, 0, 3 }, { 1, 6, 0 } } },
+  { { { 3, 0, 2 }, { 0, 8, 0 } } },
+  { { { 3, 0, 1 }, { 0, 9, 1 } } },
+  { { { 3, 0, 0 }, { 0, 9, 0 } } },
+  { { { 3, 0, 1 }, { 0, 9, 1 } } },
+  { { { 3, 0, 2 }, { 0, 10, 1 } } },
+  { { { 3, 0, 3 }, { 0, 10, 0 } } },
+  { { { 3, 0, 4 }, { 2, 7, 1 } } },
+  { { { 4, 0, 4 }, { 2, 7, 0 } } },
+  { { { 4, 0, 3 }, { 0, 11, 0 } } },
+  { { { 4, 0, 2 }, { 1, 10, 1 } } },
+  { { { 4, 0, 1 }, { 1, 10, 0 } } },
+  { { { 4, 0, 0 }, { 0, 12, 0 } } },
+  { { { 4, 0, 1 }, { 0, 13, 1 } } },
+  { { { 4, 0, 2 }, { 0, 13, 0 } } },
+  { { { 4, 0, 3 }, { 0, 13, 1 } } },
+  { { { 4, 0, 4 }, { 0, 14, 1 } } },
+  { { { 5, 0, 3 }, { 0, 14, 0 } } },
+  { { { 5, 0, 2 }, { 2, 11, 1 } } },
+  { { { 5, 0, 1 }, { 2, 11, 0 } } },
+  { { { 5, 0, 0 }, { 0, 15, 0 } } },
+  { { { 5, 0, 1 }, { 1, 14, 1 } } },
+  { { { 5, 0, 2 }, { 1, 14, 0 } } },
+  { { { 5, 0, 3 }, { 0, 16, 0 } } },
+  { { { 5, 0, 4 }, { 0, 17, 1 } } },
+  { { { 6, 0, 3 }, { 0, 17, 0 } } },
+  { { { 6, 0, 2 }, { 0, 17, 1 } } },
+  { { { 6, 0, 1 }, { 0, 18, 1 } } },
+  { { { 6, 0, 0 }, { 0, 18, 0 } } },
+  { { { 6, 0, 1 }, { 2, 15, 1 } } },
+  { { { 6, 0, 2 }, { 2, 15, 0 } } },
+  { { { 6, 0, 3 }, { 0, 19, 0 } } },
+  { { { 6, 0, 4 }, { 1, 18, 1 } } },
+  { { { 7, 0, 3 }, { 1, 18, 0 } } },
+  { { { 7, 0, 2 }, { 0, 20, 0 } } },
+  { { { 7, 0, 1 }, { 0, 21, 1 } } },
+  { { { 7, 0, 0 }, { 0, 21, 0 } } },
+  { { { 7, 0, 1 }, { 0, 21, 1 } } },
+  { { { 7, 0, 2 }, { 0, 22, 1 } } },
+  { { { 7, 0, 3 }, { 0, 22, 0 } } },
+  { { { 7, 0, 4 }, { 2, 19, 1 } } },
+  { { { 8, 0, 4 }, { 2, 19, 0 } } },
+  { { { 8, 0, 3 }, { 0, 23, 0 } } },
+  { { { 8, 0, 2 }, { 1, 22, 1 } } },
+  { { { 8, 0, 1 }, { 1, 22, 0 } } },
+  { { { 8, 0, 0 }, { 0, 24, 0 } } },
+  { { { 8, 0, 1 }, { 0, 25, 1 } } },
+  { { { 8, 0, 2 }, { 0, 25, 0 } } },
+  { { { 8, 0, 3 }, { 0, 25, 1 } } },
+  { { { 8, 0, 4 }, { 0, 26, 1 } } },
+  { { { 9, 0, 3 }, { 0, 26, 0 } } },
+  { { { 9, 0, 2 }, { 2, 23, 1 } } },
+  { { { 9, 0, 1 }, { 2, 23, 0 } } },
+  { { { 9, 0, 0 }, { 0, 27, 0 } } },
+  { { { 9, 0, 1 }, { 1, 26, 1 } } },
+  { { { 9, 0, 2 }, { 1, 26, 0 } } },
+  { { { 9, 0, 3 }, { 0, 28, 0 } } },
+  { { { 9, 0, 4 }, { 0, 29, 1 } } },
+  { { { 10, 0, 3 }, { 0, 29, 0 } } },
+  { { { 10, 0, 2 }, { 0, 29, 1 } } },
+  { { { 10, 0, 1 }, { 0, 30, 1 } } },
+  { { { 10, 0, 0 }, { 0, 30, 0 } } },
+  { { { 10, 0, 1 }, { 2, 27, 1 } } },
+  { { { 10, 0, 2 }, { 2, 27, 0 } } },
+  { { { 10, 0, 3 }, { 0, 31, 0 } } },
+  { { { 10, 0, 4 }, { 1, 30, 1 } } },
+  { { { 11, 0, 3 }, { 1, 30, 0 } } },
+  { { { 11, 0, 2 }, { 4, 24, 0 } } },
+  { { { 11, 0, 1 }, { 1, 31, 1 } } },
+  { { { 11, 0, 0 }, { 1, 31, 0 } } },
+  { { { 11, 0, 1 }, { 1, 31, 1 } } },
+  { { { 11, 0, 2 }, { 2, 30, 1 } } },
+  { { { 11, 0, 3 }, { 2, 30, 0 } } },
+  { { { 11, 0, 4 }, { 2, 31, 1 } } },
+  { { { 12, 0, 4 }, { 2, 31, 0 } } },
+  { { { 12, 0, 3 }, { 4, 27, 0 } } },
+  { { { 12, 0, 2 }, { 3, 30, 1 } } },
+  { { { 12, 0, 1 }, { 3, 30, 0 } } },
+  { { { 12, 0, 0 }, { 4, 28, 0 } } },
+  { { { 12, 0, 1 }, { 3, 31, 1 } } },
+  { { { 12, 0, 2 }, { 3, 31, 0 } } },
+  { { { 12, 0, 3 }, { 3, 31, 1 } } },
+  { { { 12, 0, 4 }, { 4, 30, 1 } } },
+  { { { 13, 0, 3 }, { 4, 30, 0 } } },
+  { { { 13, 0, 2 }, { 6, 27, 1 } } },
+  { { { 13, 0, 1 }, { 6, 27, 0 } } },
+  { { { 13, 0, 0 }, { 4, 31, 0 } } },
+  { { { 13, 0, 1 }, { 5, 30, 1 } } },
+  { { { 13, 0, 2 }, { 5, 30, 0 } } },
+  { { { 13, 0, 3 }, { 8, 24, 0 } } },
+  { { { 13, 0, 4 }, { 5, 31, 1 } } },
+  { { { 14, 0, 3 }, { 5, 31, 0 } } },
+  { { { 14, 0, 2 }, { 5, 31, 1 } } },
+  { { { 14, 0, 1 }, { 6, 30, 1 } } },
+  { { { 14, 0, 0 }, { 6, 30, 0 } } },
+  { { { 14, 0, 1 }, { 6, 31, 1 } } },
+  { { { 14, 0, 2 }, { 6, 31, 0 } } },
+  { { { 14, 0, 3 }, { 8, 27, 0 } } },
+  { { { 14, 0, 4 }, { 7, 30, 1 } } },
+  { { { 15, 0, 3 }, { 7, 30, 0 } } },
+  { { { 15, 0, 2 }, { 8, 28, 0 } } },
+  { { { 15, 0, 1 }, { 7, 31, 1 } } },
+  { { { 15, 0, 0 }, { 7, 31, 0 } } },
+  { { { 15, 0, 1 }, { 7, 31, 1 } } },
+  { { { 15, 0, 2 }, { 8, 30, 1 } } },
+  { { { 15, 0, 3 }, { 8, 30, 0 } } },
+  { { { 15, 0, 4 }, { 10, 27, 1 } } },
+  { { { 16, 0, 4 }, { 10, 27, 0 } } },
+  { { { 16, 0, 3 }, { 8, 31, 0 } } },
+  { { { 16, 0, 2 }, { 9, 30, 1 } } },
+  { { { 16, 0, 1 }, { 9, 30, 0 } } },
+  { { { 16, 0, 0 }, { 12, 24, 0 } } },
+  { { { 16, 0, 1 }, { 9, 31, 1 } } },
+  { { { 16, 0, 2 }, { 9, 31, 0 } } },
+  { { { 16, 0, 3 }, { 9, 31, 1 } } },
+  { { { 16, 0, 4 }, { 10, 30, 1 } } },
+  { { { 17, 0, 3 }, { 10, 30, 0 } } },
+  { { { 17, 0, 2 }, { 10, 31, 1 } } },
+  { { { 17, 0, 1 }, { 10, 31, 0 } } },
+  { { { 17, 0, 0 }, { 12, 27, 0 } } },
+  { { { 17, 0, 1 }, { 11, 30, 1 } } },
+  { { { 17, 0, 2 }, { 11, 30, 0 } } },
+  { { { 17, 0, 3 }, { 12, 28, 0 } } },
+  { { { 17, 0, 4 }, { 11, 31, 1 } } },
+  { { { 18, 0, 3 }, { 11, 31, 0 } } },
+  { { { 18, 0, 2 }, { 11, 31, 1 } } },
+  { { { 18, 0, 1 }, { 12, 30, 1 } } },
+  { { { 18, 0, 0 }, { 12, 30, 0 } } },
+  { { { 18, 0, 1 }, { 14, 27, 1 } } },
+  { { { 18, 0, 2 }, { 14, 27, 0 } } },
+  { { { 18, 0, 3 }, { 12, 31, 0 } } },
+  { { { 18, 0, 4 }, { 13, 30, 1 } } },
+  { { { 19, 0, 3 }, { 13, 30, 0 } } },
+  { { { 19, 0, 2 }, { 16, 24, 0 } } },
+  { { { 19, 0, 1 }, { 13, 31, 1 } } },
+  { { { 19, 0, 0 }, { 13, 31, 0 } } },
+  { { { 19, 0, 1 }, { 13, 31, 1 } } },
+  { { { 19, 0, 2 }, { 14, 30, 1 } } },
+  { { { 19, 0, 3 }, { 14, 30, 0 } } },
+  { { { 19, 0, 4 }, { 14, 31, 1 } } },
+  { { { 20, 0, 4 }, { 14, 31, 0 } } },
+  { { { 20, 0, 3 }, { 16, 27, 0 } } },
+  { { { 20, 0, 2 }, { 15, 30, 1 } } },
+  { { { 20, 0, 1 }, { 15, 30, 0 } } },
+  { { { 20, 0, 0 }, { 16, 28, 0 } } },
+  { { { 20, 0, 1 }, { 15, 31, 1 } } },
+  { { { 20, 0, 2 }, { 15, 31, 0 } } },
+  { { { 20, 0, 3 }, { 15, 31, 1 } } },
+  { { { 20, 0, 4 }, { 16, 30, 1 } } },
+  { { { 21, 0, 3 }, { 16, 30, 0 } } },
+  { { { 21, 0, 2 }, { 18, 27, 1 } } },
+  { { { 21, 0, 1 }, { 18, 27, 0 } } },
+  { { { 21, 0, 0 }, { 16, 31, 0 } } },
+  { { { 21, 0, 1 }, { 17, 30, 1 } } },
+  { { { 21, 0, 2 }, { 17, 30, 0 } } },
+  { { { 21, 0, 3 }, { 20, 24, 0 } } },
+  { { { 21, 0, 4 }, { 17, 31, 1 } } },
+  { { { 22, 0, 3 }, { 17, 31, 0 } } },
+  { { { 22, 0, 2 }, { 17, 31, 1 } } },
+  { { { 22, 0, 1 }, { 18, 30, 1 } } },
+  { { { 22, 0, 0 }, { 18, 30, 0 } } },
+  { { { 22, 0, 1 }, { 18, 31, 1 } } },
+  { { { 22, 0, 2 }, { 18, 31, 0 } } },
+  { { { 22, 0, 3 }, { 20, 27, 0 } } },
+  { { { 22, 0, 4 }, { 19, 30, 1 } } },
+  { { { 23, 0, 3 }, { 19, 30, 0 } } },
+  { { { 23, 0, 2 }, { 20, 28, 0 } } },
+  { { { 23, 0, 1 }, { 19, 31, 1 } } },
+  { { { 23, 0, 0 }, { 19, 31, 0 } } },
+  { { { 23, 0, 1 }, { 19, 31, 1 } } },
+  { { { 23, 0, 2 }, { 20, 30, 1 } } },
+  { { { 23, 0, 3 }, { 20, 30, 0 } } },
+  { { { 23, 0, 4 }, { 22, 27, 1 } } },
+  { { { 24, 0, 4 }, { 22, 27, 0 } } },
+  { { { 24, 0, 3 }, { 20, 31, 0 } } },
+  { { { 24, 0, 2 }, { 21, 30, 1 } } },
+  { { { 24, 0, 1 }, { 21, 30, 0 } } },
+  { { { 24, 0, 0 }, { 24, 24, 0 } } },
+  { { { 24, 0, 1 }, { 21, 31, 1 } } },
+  { { { 24, 0, 2 }, { 21, 31, 0 } } },
+  { { { 24, 0, 3 }, { 21, 31, 1 } } },
+  { { { 24, 0, 4 }, { 22, 30, 1 } } },
+  { { { 25, 0, 3 }, { 22, 30, 0 } } },
+  { { { 25, 0, 2 }, { 22, 31, 1 } } },
+  { { { 25, 0, 1 }, { 22, 31, 0 } } },
+  { { { 25, 0, 0 }, { 24, 27, 0 } } },
+  { { { 25, 0, 1 }, { 23, 30, 1 } } },
+  { { { 25, 0, 2 }, { 23, 30, 0 } } },
+  { { { 25, 0, 3 }, { 24, 28, 0 } } },
+  { { { 25, 0, 4 }, { 23, 31, 1 } } },
+  { { { 26, 0, 3 }, { 23, 31, 0 } } },
+  { { { 26, 0, 2 }, { 23, 31, 1 } } },
+  { { { 26, 0, 1 }, { 24, 30, 1 } } },
+  { { { 26, 0, 0 }, { 24, 30, 0 } } },
+  { { { 26, 0, 1 }, { 26, 27, 1 } } },
+  { { { 26, 0, 2 }, { 26, 27, 0 } } },
+  { { { 26, 0, 3 }, { 24, 31, 0 } } },
+  { { { 26, 0, 4 }, { 25, 30, 1 } } },
+  { { { 27, 0, 3 }, { 25, 30, 0 } } },
+  { { { 27, 0, 2 }, { 28, 24, 0 } } },
+  { { { 27, 0, 1 }, { 25, 31, 1 } } },
+  { { { 27, 0, 0 }, { 25, 31, 0 } } },
+  { { { 27, 0, 1 }, { 25, 31, 1 } } },
+  { { { 27, 0, 2 }, { 26, 30, 1 } } },
+  { { { 27, 0, 3 }, { 26, 30, 0 } } },
+  { { { 27, 0, 4 }, { 26, 31, 1 } } },
+  { { { 28, 0, 4 }, { 26, 31, 0 } } },
+  { { { 28, 0, 3 }, { 28, 27, 0 } } },
+  { { { 28, 0, 2 }, { 27, 30, 1 } } },
+  { { { 28, 0, 1 }, { 27, 30, 0 } } },
+  { { { 28, 0, 0 }, { 28, 28, 0 } } },
+  { { { 28, 0, 1 }, { 27, 31, 1 } } },
+  { { { 28, 0, 2 }, { 27, 31, 0 } } },
+  { { { 28, 0, 3 }, { 27, 31, 1 } } },
+  { { { 28, 0, 4 }, { 28, 30, 1 } } },
+  { { { 29, 0, 3 }, { 28, 30, 0 } } },
+  { { { 29, 0, 2 }, { 30, 27, 1 } } },
+  { { { 29, 0, 1 }, { 30, 27, 0 } } },
+  { { { 29, 0, 0 }, { 28, 31, 0 } } },
+  { { { 29, 0, 1 }, { 29, 30, 1 } } },
+  { { { 29, 0, 2 }, { 29, 30, 0 } } },
+  { { { 29, 0, 3 }, { 29, 30, 1 } } },
+  { { { 29, 0, 4 }, { 29, 31, 1 } } },
+  { { { 30, 0, 3 }, { 29, 31, 0 } } },
+  { { { 30, 0, 2 }, { 29, 31, 1 } } },
+  { { { 30, 0, 1 }, { 30, 30, 1 } } },
+  { { { 30, 0, 0 }, { 30, 30, 0 } } },
+  { { { 30, 0, 1 }, { 30, 31, 1 } } },
+  { { { 30, 0, 2 }, { 30, 31, 0 } } },
+  { { { 30, 0, 3 }, { 30, 31, 1 } } },
+  { { { 30, 0, 4 }, { 31, 30, 1 } } },
+  { { { 31, 0, 3 }, { 31, 30, 0 } } },
+  { { { 31, 0, 2 }, { 31, 30, 1 } } },
+  { { { 31, 0, 1 }, { 31, 31, 1 } } },
+  { { { 31, 0, 0 }, { 31, 31, 0 } } }
+};
+
+static const DDSSingleColourLookup DDSLookup_6_4[] =
+{
+  { { { 0, 0, 0 }, { 0, 0, 0 } } },
+  { { { 0, 0, 1 }, { 0, 1, 0 } } },
+  { { { 0, 0, 2 }, { 0, 2, 0 } } },
+  { { { 1, 0, 1 }, { 0, 3, 1 } } },
+  { { { 1, 0, 0 }, { 0, 3, 0 } } },
+  { { { 1, 0, 1 }, { 0, 4, 0 } } },
+  { { { 1, 0, 2 }, { 0, 5, 0 } } },
+  { { { 2, 0, 1 }, { 0, 6, 1 } } },
+  { { { 2, 0, 0 }, { 0, 6, 0 } } },
+  { { { 2, 0, 1 }, { 0, 7, 0 } } },
+  { { { 2, 0, 2 }, { 0, 8, 0 } } },
+  { { { 3, 0, 1 }, { 0, 9, 1 } } },
+  { { { 3, 0, 0 }, { 0, 9, 0 } } },
+  { { { 3, 0, 1 }, { 0, 10, 0 } } },
+  { { { 3, 0, 2 }, { 0, 11, 0 } } },
+  { { { 4, 0, 1 }, { 0, 12, 1 } } },
+  { { { 4, 0, 0 }, { 0, 12, 0 } } },
+  { { { 4, 0, 1 }, { 0, 13, 0 } } },
+  { { { 4, 0, 2 }, { 0, 14, 0 } } },
+  { { { 5, 0, 1 }, { 0, 15, 1 } } },
+  { { { 5, 0, 0 }, { 0, 15, 0 } } },
+  { { { 5, 0, 1 }, { 0, 16, 0 } } },
+  { { { 5, 0, 2 }, { 1, 15, 0 } } },
+  { { { 6, 0, 1 }, { 0, 17, 0 } } },
+  { { { 6, 0, 0 }, { 0, 18, 0 } } },
+  { { { 6, 0, 1 }, { 0, 19, 0 } } },
+  { { { 6, 0, 2 }, { 3, 14, 0 } } },
+  { { { 7, 0, 1 }, { 0, 20, 0 } } },
+  { { { 7, 0, 0 }, { 0, 21, 0 } } },
+  { { { 7, 0, 1 }, { 0, 22, 0 } } },
+  { { { 7, 0, 2 }, { 4, 15, 0 } } },
+  { { { 8, 0, 1 }, { 0, 23, 0 } } },
+  { { { 8, 0, 0 }, { 0, 24, 0 } } },
+  { { { 8, 0, 1 }, { 0, 25, 0 } } },
+  { { { 8, 0, 2 }, { 6, 14, 0 } } },
+  { { { 9, 0, 1 }, { 0, 26, 0 } } },
+  { { { 9, 0, 0 }, { 0, 27, 0 } } },
+  { { { 9, 0, 1 }, { 0, 28, 0 } } },
+  { { { 9, 0, 2 }, { 7, 15, 0 } } },
+  { { { 10, 0, 1 }, { 0, 29, 0 } } },
+  { { { 10, 0, 0 }, { 0, 30, 0 } } },
+  { { { 10, 0, 1 }, { 0, 31, 0 } } },
+  { { { 10, 0, 2 }, { 9, 14, 0 } } },
+  { { { 11, 0, 1 }, { 0, 32, 0 } } },
+  { { { 11, 0, 0 }, { 0, 33, 0 } } },
+  { { { 11, 0, 1 }, { 2, 30, 0 } } },
+  { { { 11, 0, 2 }, { 0, 34, 0 } } },
+  { { { 12, 0, 1 }, { 0, 35, 0 } } },
+  { { { 12, 0, 0 }, { 0, 36, 0 } } },
+  { { { 12, 0, 1 }, { 3, 31, 0 } } },
+  { { { 12, 0, 2 }, { 0, 37, 0 } } },
+  { { { 13, 0, 1 }, { 0, 38, 0 } } },
+  { { { 13, 0, 0 }, { 0, 39, 0 } } },
+  { { { 13, 0, 1 }, { 5, 30, 0 } } },
+  { { { 13, 0, 2 }, { 0, 40, 0 } } },
+  { { { 14, 0, 1 }, { 0, 41, 0 } } },
+  { { { 14, 0, 0 }, { 0, 42, 0 } } },
+  { { { 14, 0, 1 }, { 6, 31, 0 } } },
+  { { { 14, 0, 2 }, { 0, 43, 0 } } },
+  { { { 15, 0, 1 }, { 0, 44, 0 } } },
+  { { { 15, 0, 0 }, { 0, 45, 0 } } },
+  { { { 15, 0, 1 }, { 8, 30, 0 } } },
+  { { { 15, 0, 2 }, { 0, 46, 0 } } },
+  { { { 16, 0, 2 }, { 0, 47, 0 } } },
+  { { { 16, 0, 1 }, { 1, 46, 0 } } },
+  { { { 16, 0, 0 }, { 0, 48, 0 } } },
+  { { { 16, 0, 1 }, { 0, 49, 0 } } },
+  { { { 16, 0, 2 }, { 0, 50, 0 } } },
+  { { { 17, 0, 1 }, { 2, 47, 0 } } },
+  { { { 17, 0, 0 }, { 0, 51, 0 } } },
+  { { { 17, 0, 1 }, { 0, 52, 0 } } },
+  { { { 17, 0, 2 }, { 0, 53, 0 } } },
+  { { { 18, 0, 1 }, { 4, 46, 0 } } },
+  { { { 18, 0, 0 }, { 0, 54, 0 } } },
+  { { { 18, 0, 1 }, { 0, 55, 0 } } },
+  { { { 18, 0, 2 }, { 0, 56, 0 } } },
+  { { { 19, 0, 1 }, { 5, 47, 0 } } },
+  { { { 19, 0, 0 }, { 0, 57, 0 } } },
+  { { { 19, 0, 1 }, { 0, 58, 0 } } },
+  { { { 19, 0, 2 }, { 0, 59, 0 } } },
+  { { { 20, 0, 1 }, { 7, 46, 0 } } },
+  { { { 20, 0, 0 }, { 0, 60, 0 } } },
+  { { { 20, 0, 1 }, { 0, 61, 0 } } },
+  { { { 20, 0, 2 }, { 0, 62, 0 } } },
+  { { { 21, 0, 1 }, { 8, 47, 0 } } },
+  { { { 21, 0, 0 }, { 0, 63, 0 } } },
+  { { { 21, 0, 1 }, { 1, 62, 0 } } },
+  { { { 21, 0, 2 }, { 1, 63, 0 } } },
+  { { { 22, 0, 1 }, { 10, 46, 0 } } },
+  { { { 22, 0, 0 }, { 2, 62, 0 } } },
+  { { { 22, 0, 1 }, { 2, 63, 0 } } },
+  { { { 22, 0, 2 }, { 3, 62, 0 } } },
+  { { { 23, 0, 1 }, { 11, 47, 0 } } },
+  { { { 23, 0, 0 }, { 3, 63, 0 } } },
+  { { { 23, 0, 1 }, { 4, 62, 0 } } },
+  { { { 23, 0, 2 }, { 4, 63, 0 } } },
+  { { { 24, 0, 1 }, { 13, 46, 0 } } },
+  { { { 24, 0, 0 }, { 5, 62, 0 } } },
+  { { { 24, 0, 1 }, { 5, 63, 0 } } },
+  { { { 24, 0, 2 }, { 6, 62, 0 } } },
+  { { { 25, 0, 1 }, { 14, 47, 0 } } },
+  { { { 25, 0, 0 }, { 6, 63, 0 } } },
+  { { { 25, 0, 1 }, { 7, 62, 0 } } },
+  { { { 25, 0, 2 }, { 7, 63, 0 } } },
+  { { { 26, 0, 1 }, { 16, 45, 0 } } },
+  { { { 26, 0, 0 }, { 8, 62, 0 } } },
+  { { { 26, 0, 1 }, { 8, 63, 0 } } },
+  { { { 26, 0, 2 }, { 9, 62, 0 } } },
+  { { { 27, 0, 1 }, { 16, 48, 0 } } },
+  { { { 27, 0, 0 }, { 9, 63, 0 } } },
+  { { { 27, 0, 1 }, { 10, 62, 0 } } },
+  { { { 27, 0, 2 }, { 10, 63, 0 } } },
+  { { { 28, 0, 1 }, { 16, 51, 0 } } },
+  { { { 28, 0, 0 }, { 11, 62, 0 } } },
+  { { { 28, 0, 1 }, { 11, 63, 0 } } },
+  { { { 28, 0, 2 }, { 12, 62, 0 } } },
+  { { { 29, 0, 1 }, { 16, 54, 0 } } },
+  { { { 29, 0, 0 }, { 12, 63, 0 } } },
+  { { { 29, 0, 1 }, { 13, 62, 0 } } },
+  { { { 29, 0, 2 }, { 13, 63, 0 } } },
+  { { { 30, 0, 1 }, { 16, 57, 0 } } },
+  { { { 30, 0, 0 }, { 14, 62, 0 } } },
+  { { { 30, 0, 1 }, { 14, 63, 0 } } },
+  { { { 30, 0, 2 }, { 15, 62, 0 } } },
+  { { { 31, 0, 1 }, { 16, 60, 0 } } },
+  { { { 31, 0, 0 }, { 15, 63, 0 } } },
+  { { { 31, 0, 1 }, { 24, 46, 0 } } },
+  { { { 31, 0, 2 }, { 16, 62, 0 } } },
+  { { { 32, 0, 2 }, { 16, 63, 0 } } },
+  { { { 32, 0, 1 }, { 17, 62, 0 } } },
+  { { { 32, 0, 0 }, { 25, 47, 0 } } },
+  { { { 32, 0, 1 }, { 17, 63, 0 } } },
+  { { { 32, 0, 2 }, { 18, 62, 0 } } },
+  { { { 33, 0, 1 }, { 18, 63, 0 } } },
+  { { { 33, 0, 0 }, { 27, 46, 0 } } },
+  { { { 33, 0, 1 }, { 19, 62, 0 } } },
+  { { { 33, 0, 2 }, { 19, 63, 0 } } },
+  { { { 34, 0, 1 }, { 20, 62, 0 } } },
+  { { { 34, 0, 0 }, { 28, 47, 0 } } },
+  { { { 34, 0, 1 }, { 20, 63, 0 } } },
+  { { { 34, 0, 2 }, { 21, 62, 0 } } },
+  { { { 35, 0, 1 }, { 21, 63, 0 } } },
+  { { { 35, 0, 0 }, { 30, 46, 0 } } },
+  { { { 35, 0, 1 }, { 22, 62, 0 } } },
+  { { { 35, 0, 2 }, { 22, 63, 0 } } },
+  { { { 36, 0, 1 }, { 23, 62, 0 } } },
+  { { { 36, 0, 0 }, { 31, 47, 0 } } },
+  { { { 36, 0, 1 }, { 23, 63, 0 } } },
+  { { { 36, 0, 2 }, { 24, 62, 0 } } },
+  { { { 37, 0, 1 }, { 24, 63, 0 } } },
+  { { { 37, 0, 0 }, { 32, 47, 0 } } },
+  { { { 37, 0, 1 }, { 25, 62, 0 } } },
+  { { { 37, 0, 2 }, { 25, 63, 0 } } },
+  { { { 38, 0, 1 }, { 26, 62, 0 } } },
+  { { { 38, 0, 0 }, { 32, 50, 0 } } },
+  { { { 38, 0, 1 }, { 26, 63, 0 } } },
+  { { { 38, 0, 2 }, { 27, 62, 0 } } },
+  { { { 39, 0, 1 }, { 27, 63, 0 } } },
+  { { { 39, 0, 0 }, { 32, 53, 0 } } },
+  { { { 39, 0, 1 }, { 28, 62, 0 } } },
+  { { { 39, 0, 2 }, { 28, 63, 0 } } },
+  { { { 40, 0, 1 }, { 29, 62, 0 } } },
+  { { { 40, 0, 0 }, { 32, 56, 0 } } },
+  { { { 40, 0, 1 }, { 29, 63, 0 } } },
+  { { { 40, 0, 2 }, { 30, 62, 0 } } },
+  { { { 41, 0, 1 }, { 30, 63, 0 } } },
+  { { { 41, 0, 0 }, { 32, 59, 0 } } },
+  { { { 41, 0, 1 }, { 31, 62, 0 } } },
+  { { { 41, 0, 2 }, { 31, 63, 0 } } },
+  { { { 42, 0, 1 }, { 32, 61, 0 } } },
+  { { { 42, 0, 0 }, { 32, 62, 0 } } },
+  { { { 42, 0, 1 }, { 32, 63, 0 } } },
+  { { { 42, 0, 2 }, { 41, 46, 0 } } },
+  { { { 43, 0, 1 }, { 33, 62, 0 } } },
+  { { { 43, 0, 0 }, { 33, 63, 0 } } },
+  { { { 43, 0, 1 }, { 34, 62, 0 } } },
+  { { { 43, 0, 2 }, { 42, 47, 0 } } },
+  { { { 44, 0, 1 }, { 34, 63, 0 } } },
+  { { { 44, 0, 0 }, { 35, 62, 0 } } },
+  { { { 44, 0, 1 }, { 35, 63, 0 } } },
+  { { { 44, 0, 2 }, { 44, 46, 0 } } },
+  { { { 45, 0, 1 }, { 36, 62, 0 } } },
+  { { { 45, 0, 0 }, { 36, 63, 0 } } },
+  { { { 45, 0, 1 }, { 37, 62, 0 } } },
+  { { { 45, 0, 2 }, { 45, 47, 0 } } },
+  { { { 46, 0, 1 }, { 37, 63, 0 } } },
+  { { { 46, 0, 0 }, { 38, 62, 0 } } },
+  { { { 46, 0, 1 }, { 38, 63, 0 } } },
+  { { { 46, 0, 2 }, { 47, 46, 0 } } },
+  { { { 47, 0, 1 }, { 39, 62, 0 } } },
+  { { { 47, 0, 0 }, { 39, 63, 0 } } },
+  { { { 47, 0, 1 }, { 40, 62, 0 } } },
+  { { { 47, 0, 2 }, { 48, 46, 0 } } },
+  { { { 48, 0, 2 }, { 40, 63, 0 } } },
+  { { { 48, 0, 1 }, { 41, 62, 0 } } },
+  { { { 48, 0, 0 }, { 41, 63, 0 } } },
+  { { { 48, 0, 1 }, { 48, 49, 0 } } },
+  { { { 48, 0, 2 }, { 42, 62, 0 } } },
+  { { { 49, 0, 1 }, { 42, 63, 0 } } },
+  { { { 49, 0, 0 }, { 43, 62, 0 } } },
+  { { { 49, 0, 1 }, { 48, 52, 0 } } },
+  { { { 49, 0, 2 }, { 43, 63, 0 } } },
+  { { { 50, 0, 1 }, { 44, 62, 0 } } },
+  { { { 50, 0, 0 }, { 44, 63, 0 } } },
+  { { { 50, 0, 1 }, { 48, 55, 0 } } },
+  { { { 50, 0, 2 }, { 45, 62, 0 } } },
+  { { { 51, 0, 1 }, { 45, 63, 0 } } },
+  { { { 51, 0, 0 }, { 46, 62, 0 } } },
+  { { { 51, 0, 1 }, { 48, 58, 0 } } },
+  { { { 51, 0, 2 }, { 46, 63, 0 } } },
+  { { { 52, 0, 1 }, { 47, 62, 0 } } },
+  { { { 52, 0, 0 }, { 47, 63, 0 } } },
+  { { { 52, 0, 1 }, { 48, 61, 0 } } },
+  { { { 52, 0, 2 }, { 48, 62, 0 } } },
+  { { { 53, 0, 1 }, { 56, 47, 0 } } },
+  { { { 53, 0, 0 }, { 48, 63, 0 } } },
+  { { { 53, 0, 1 }, { 49, 62, 0 } } },
+  { { { 53, 0, 2 }, { 49, 63, 0 } } },
+  { { { 54, 0, 1 }, { 58, 46, 0 } } },
+  { { { 54, 0, 0 }, { 50, 62, 0 } } },
+  { { { 54, 0, 1 }, { 50, 63, 0 } } },
+  { { { 54, 0, 2 }, { 51, 62, 0 } } },
+  { { { 55, 0, 1 }, { 59, 47, 0 } } },
+  { { { 55, 0, 0 }, { 51, 63, 0 } } },
+  { { { 55, 0, 1 }, { 52, 62, 0 } } },
+  { { { 55, 0, 2 }, { 52, 63, 0 } } },
+  { { { 56, 0, 1 }, { 61, 46, 0 } } },
+  { { { 56, 0, 0 }, { 53, 62, 0 } } },
+  { { { 56, 0, 1 }, { 53, 63, 0 } } },
+  { { { 56, 0, 2 }, { 54, 62, 0 } } },
+  { { { 57, 0, 1 }, { 62, 47, 0 } } },
+  { { { 57, 0, 0 }, { 54, 63, 0 } } },
+  { { { 57, 0, 1 }, { 55, 62, 0 } } },
+  { { { 57, 0, 2 }, { 55, 63, 0 } } },
+  { { { 58, 0, 1 }, { 56, 62, 1 } } },
+  { { { 58, 0, 0 }, { 56, 62, 0 } } },
+  { { { 58, 0, 1 }, { 56, 63, 0 } } },
+  { { { 58, 0, 2 }, { 57, 62, 0 } } },
+  { { { 59, 0, 1 }, { 57, 63, 1 } } },
+  { { { 59, 0, 0 }, { 57, 63, 0 } } },
+  { { { 59, 0, 1 }, { 58, 62, 0 } } },
+  { { { 59, 0, 2 }, { 58, 63, 0 } } },
+  { { { 60, 0, 1 }, { 59, 62, 1 } } },
+  { { { 60, 0, 0 }, { 59, 62, 0 } } },
+  { { { 60, 0, 1 }, { 59, 63, 0 } } },
+  { { { 60, 0, 2 }, { 60, 62, 0 } } },
+  { { { 61, 0, 1 }, { 60, 63, 1 } } },
+  { { { 61, 0, 0 }, { 60, 63, 0 } } },
+  { { { 61, 0, 1 }, { 61, 62, 0 } } },
+  { { { 61, 0, 2 }, { 61, 63, 0 } } },
+  { { { 62, 0, 1 }, { 62, 62, 1 } } },
+  { { { 62, 0, 0 }, { 62, 62, 0 } } },
+  { { { 62, 0, 1 }, { 62, 63, 0 } } },
+  { { { 62, 0, 2 }, { 63, 62, 0 } } },
+  { { { 63, 0, 1 }, { 63, 63, 1 } } },
+  { { { 63, 0, 0 }, { 63, 63, 0 } } }
+};
+
+static const DDSSingleColourLookup*
+  DDS_LOOKUP[] =
+{
+  DDSLookup_5_4,
+  DDSLookup_6_4,
+  DDSLookup_5_4
+};
 
 /*
   Macros
@@ -168,37 +734,920 @@ typedef MagickBooleanType
 
 #define DIV2(x)  ((x) > 1 ? ((x) >> 1) : 1)
 
+#define FixRange(min, max, steps) \
+if (min > max) \
+  min = max; \
+if (max - min < steps) \
+  max = Min(min + steps, 255); \
+if (max - min < steps) \
+  min = Max(min - steps, 0)
+
+#define Dot(left, right) (left.x*right.x) + (left.y*right.y) + (left.z*right.z)
+
+#define VectorInit(vector, value) vector.x = vector.y = vector.z = vector.w \
+  = value
+#define VectorInit3(vector, value) vector.x = vector.y = vector.z = value
+
 /*
   Forward declarations
 */
 static MagickBooleanType
-  ReadDDSInfo(Image *image, DDSInfo *dds_info);
+  ConstructOrdering(const size_t, const DDSVector4 *, const DDSVector3,
+  DDSVector4 *, DDSVector4 *, unsigned char *, size_t);
+
+static MagickBooleanType
+  ReadDDSInfo(Image *, DDSInfo *);
 
 static void
-  CalculateColors(unsigned short c0, unsigned short c1,
-    DDSColors *c, MagickBooleanType ignoreAlpha);
+  CalculateColors(unsigned short, unsigned short,
+    DDSColors *, MagickBooleanType);
 
 static MagickBooleanType
-  ReadDXT1(Image *, DDSInfo *,ExceptionInfo *);
+  ReadDXT1(Image *, DDSInfo *, ExceptionInfo *);
 
 static MagickBooleanType
-  ReadDXT3(Image *image, DDSInfo *dds_info,ExceptionInfo *);
+  ReadDXT3(Image *, DDSInfo *, ExceptionInfo *);
 
 static MagickBooleanType
-  ReadDXT5(Image *image, DDSInfo *dds_info,ExceptionInfo *);
+  ReadDXT5(Image *, DDSInfo *, ExceptionInfo *);
 
 static MagickBooleanType
-  ReadUncompressedRGB(Image *image, DDSInfo *dds_info,ExceptionInfo *);
+  ReadUncompressedRGB(Image *, DDSInfo *, ExceptionInfo *);
 
 static MagickBooleanType
-  ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,ExceptionInfo *);
+  ReadUncompressedRGBA(Image *, DDSInfo *, ExceptionInfo *);
 
 static void
-  SkipDXTMipmaps(Image *image, DDSInfo *dds_info, int texel_size);
+  RemapIndices(const ssize_t *, const unsigned char *, unsigned char *);
 
 static void
-  SkipRGBMipmaps(Image *image, DDSInfo *dds_info, int pixel_size);
-
+  SkipDXTMipmaps(Image *, DDSInfo *, int);
+
+static void
+  SkipRGBMipmaps(Image *, DDSInfo *, int);
+
+static
+  MagickBooleanType WriteDDSImage(const ImageInfo *, Image *, ExceptionInfo *);
+
+static void
+  WriteDDSInfo(Image *, const size_t, const size_t, const size_t);
+
+static void
+  WriteFourCC(Image *, const size_t, const MagickBooleanType,
+    const MagickBooleanType, ExceptionInfo *);
+
+static void
+  WriteImageData(Image *, const size_t, const size_t, const MagickBooleanType,
+  const MagickBooleanType, ExceptionInfo *);
+
+static void
+  WriteIndices(Image *, const DDSVector3, const DDSVector3, unsigned char *);
+
+static MagickBooleanType
+  WriteMipmaps(Image *, const size_t, const size_t, const size_t,
+    const MagickBooleanType, const MagickBooleanType, ExceptionInfo *);
+
+static void
+  WriteSingleColorFit(Image *, const DDSVector4 *, const ssize_t *);
+
+static void
+  WriteUncompressed(Image *, ExceptionInfo *);
+
+static inline size_t Max(size_t one, size_t two)
+{
+  if (one > two)
+    return one;
+  return two;
+}
+
+static inline float MaxF(float one, float two)
+{
+  if (one > two)
+    return one;
+  return two;
+}
+
+static inline size_t Min(size_t one, size_t two)
+{
+  if (one < two)
+    return one;
+  return two;
+}
+
+static inline float MinF(float one, float two)
+{
+  if (one < two)
+    return one;
+  return two;
+}
+
+static inline void VectorAdd(const DDSVector4 left, const DDSVector4 right,
+  DDSVector4 *destination)
+{
+  destination->x = left.x + right.x;
+  destination->y = left.y + right.y;
+  destination->z = left.z + right.z;
+  destination->w = left.w + right.w;
+}
+
+static inline void VectorClamp(DDSVector4 *value)
+{
+  value->x = MinF(1.0f,MaxF(0.0f,value->x));
+  value->y = MinF(1.0f,MaxF(0.0f,value->y));
+  value->z = MinF(1.0f,MaxF(0.0f,value->z));
+  value->w = MinF(1.0f,MaxF(0.0f,value->w));
+}
+
+static inline void VectorClamp3(DDSVector3 *value)
+{
+  value->x = MinF(1.0f,MaxF(0.0f,value->x));
+  value->y = MinF(1.0f,MaxF(0.0f,value->y));
+  value->z = MinF(1.0f,MaxF(0.0f,value->z));
+}
+
+static inline void VectorCopy43(const DDSVector4 source,
+  DDSVector3 *destination)
+{
+  destination->x = source.x;
+  destination->y = source.y;
+  destination->z = source.z;
+}
+
+static inline void VectorCopy44(const DDSVector4 source,
+  DDSVector4 *destination)
+{
+  destination->x = source.x;
+  destination->y = source.y;
+  destination->z = source.z;
+  destination->w = source.w;
+}
+
+static inline void VectorNegativeMultiplySubtract(const DDSVector4 a,
+  const DDSVector4 b, const DDSVector4 c, DDSVector4 *destination)
+{
+  destination->x = c.x - (a.x * b.x);
+  destination->y = c.y - (a.y * b.y);
+  destination->z = c.z - (a.z * b.z);
+  destination->w = c.w - (a.w * b.w);
+}
+
+static inline void VectorMultiply(const DDSVector4 left,
+  const DDSVector4 right, DDSVector4 *destination)
+{
+  destination->x = left.x * right.x;
+  destination->y = left.y * right.y;
+  destination->z = left.z * right.z;
+  destination->w = left.w * right.w;
+}
+
+static inline void VectorMultiply3(const DDSVector3 left,
+  const DDSVector3 right, DDSVector3 *destination)
+{
+  destination->x = left.x * right.x;
+  destination->y = left.y * right.y;
+  destination->z = left.z * right.z;
+}
+
+static inline void VectorMultiplyAdd(const DDSVector4 a, const DDSVector4 b,
+  const DDSVector4 c, DDSVector4 *destination)
+{
+  destination->x = (a.x * b.x) + c.x;
+  destination->y = (a.y * b.y) + c.y;
+  destination->z = (a.z * b.z) + c.z;
+  destination->w = (a.w * b.w) + c.w;
+}
+
+static inline void VectorMultiplyAdd3(const DDSVector3 a, const DDSVector3 b,
+  const DDSVector3 c, DDSVector3 *destination)
+{
+  destination->x = (a.x * b.x) + c.x;
+  destination->y = (a.y * b.y) + c.y;
+  destination->z = (a.z * b.z) + c.z;
+}
+
+static inline void VectorReciprocal(const DDSVector4 value,
+  DDSVector4 *destination)
+{
+  destination->x = 1.0f / value.x;
+  destination->y = 1.0f / value.y;
+  destination->z = 1.0f / value.z;
+  destination->w = 1.0f / value.w;
+}
+
+static inline void VectorSubtract(const DDSVector4 left,
+  const DDSVector4 right, DDSVector4 *destination)
+{
+  destination->x = left.x - right.x;
+  destination->y = left.y - right.y;
+  destination->z = left.z - right.z;
+  destination->w = left.w - right.w;
+}
+
+static inline void VectorSubtract3(const DDSVector3 left,
+  const DDSVector3 right, DDSVector3 *destination)
+{
+  destination->x = left.x - right.x;
+  destination->y = left.y - right.y;
+  destination->z = left.z - right.z;
+}
+
+static inline void VectorTruncate(DDSVector4 *value)
+{
+  value->x = value->x > 0.0f ? floor(value->x) : ceil(value->x);
+  value->y = value->y > 0.0f ? floor(value->y) : ceil(value->y);
+  value->z = value->z > 0.0f ? floor(value->z) : ceil(value->z);
+  value->w = value->w > 0.0f ? floor(value->w) : ceil(value->w);
+}
+
+static inline void VectorTruncate3(DDSVector3 *value)
+{
+  value->x = value->x > 0.0f ? floor(value->x) : ceil(value->x);
+  value->y = value->y > 0.0f ? floor(value->y) : ceil(value->y);
+  value->z = value->z > 0.0f ? floor(value->z) : ceil(value->z);
+}
+
+static void CalculateColors(unsigned short c0, unsigned short c1,
+  DDSColors *c, MagickBooleanType ignoreAlpha)
+{
+  c->a[0] = c->a[1] = c->a[2] = c->a[3] = 0;
+
+  c->r[0] = (unsigned char) C565_red(c0);
+  c->g[0] = (unsigned char) C565_green(c0);
+  c->b[0] = (unsigned char) C565_blue(c0);
+
+  c->r[1] = (unsigned char) C565_red(c1);
+  c->g[1] = (unsigned char) C565_green(c1);
+  c->b[1] = (unsigned char) C565_blue(c1);
+
+  if (ignoreAlpha == MagickTrue || c0 > c1)
+    {
+      c->r[2] = (unsigned char) ((2 * c->r[0] + c->r[1]) / 3);
+      c->g[2] = (unsigned char) ((2 * c->g[0] + c->g[1]) / 3);
+      c->b[2] = (unsigned char) ((2 * c->b[0] + c->b[1]) / 3);
+
+      c->r[3] = (unsigned char) ((c->r[0] + 2 * c->r[1]) / 3);
+      c->g[3] = (unsigned char) ((c->g[0] + 2 * c->g[1]) / 3);
+      c->b[3] = (unsigned char) ((c->b[0] + 2 * c->b[1]) / 3);
+    }
+  else
+    {
+      c->r[2] = (unsigned char) ((c->r[0] + c->r[1]) / 2);
+      c->g[2] = (unsigned char) ((c->g[0] + c->g[1]) / 2);
+      c->b[2] = (unsigned char) ((c->b[0] + c->b[1]) / 2);
+
+      c->r[3] = c->g[3] = c->b[3] = 0;
+      c->a[3] = 255;
+    }
+}
+
+static size_t CompressAlpha(const size_t min, const size_t max,
+  const size_t steps, const ssize_t *alphas, unsigned char* indices)
+{
+  unsigned char
+    codes[8];
+
+  register ssize_t
+    i;
+
+  size_t
+    error,
+    index,
+    j,
+    least,
+    value;
+
+  codes[0] = (unsigned char) min;
+  codes[1] = (unsigned char) max;
+  codes[6] = 0;
+  codes[7] = 255;
+
+  for (i=1; i < steps; i++)
+    codes[i+1] = (unsigned char) (((steps-i)*min + i*max) / steps);
+
+  error = 0;
+  for (i=0; i<16; i++)
+  {
+    if (alphas[i] == -1)
+      {
+        indices[i] = 0;
+        continue;
+      }
+
+    value = alphas[i];
+    least = SIZE_MAX;
+    index = 0;
+    for (j=0; j<8; j++)
+    {
+      size_t
+        dist;
+
+      dist = value - (size_t)codes[j];
+      dist *= dist;
+
+      if (dist < least)
+        {
+          least = dist;
+          index = j;
+        }
+    }
+
+    indices[i] = (unsigned char)index;
+    error += least;
+  }
+
+  return error;
+}
+
+static void CompressClusterFit(const size_t count,
+  const DDSVector4 *points, const ssize_t *map, const DDSVector3 principle,
+  const DDSVector4 metric, DDSVector3 *start, DDSVector3* end,
+  unsigned char *indices)
+{
+  DDSVector3
+    axis;
+
+  DDSVector4
+    grid,
+    gridrcp,
+    half,
+    onethird_onethird2,
+    part0,
+    part1,
+    part2,
+    part3,
+    pointsWeights[16],
+    two,
+    twonineths,
+    twothirds_twothirds2,
+    xSumwSum;
+
+  float
+    bestError = 1e+37f;
+
+  size_t
+    bestIteration = 0,
+    besti = 0,
+    bestj = 0,
+    bestk = 0,
+    iterationIndex,
+    i,
+    j,
+    k,
+    kmin;
+
+  unsigned char
+    *o,
+    order[128],
+    unordered[16];
+
+  VectorInit(half,0.5f);
+  VectorInit(two,2.0f);
+
+  VectorInit(onethird_onethird2,1.0f/3.0f);
+  onethird_onethird2.w = 1.0f/9.0f;
+  VectorInit(twothirds_twothirds2,2.0f/3.0f);
+  twothirds_twothirds2.w = 4.0f/9.0f;
+  VectorInit(twonineths,2.0f/9.0f);
+
+  grid.x = 31.0f;
+  grid.y = 63.0f;
+  grid.z = 31.0f;
+  grid.w = 0.0f;
+
+  gridrcp.x = 1.0f/31.0f;
+  gridrcp.y = 1.0f/63.0f;
+  gridrcp.z = 1.0f/31.0f;
+  gridrcp.w = 0.0f;
+
+  ConstructOrdering(count,points,principle,pointsWeights,&xSumwSum,order,0);
+
+  for (iterationIndex = 0;;)
+  {
+    VectorInit(part0,0.0f);
+    for (i=0; i < count; i++)
+    {
+      VectorInit(part1,0.0f);
+      for (j=i;;)
+      {
+        if (j == 0)
+          {
+            VectorCopy44(pointsWeights[0],&part2);
+            kmin = 1;
+          }
+          else
+          {
+            VectorInit(part2,0.0f);
+            kmin = j;
+          }
+
+        for (k=kmin;;)
+        {
+          DDSVector4
+            a,
+            alpha2_sum,
+            alphax_sum,
+            alphabeta_sum,
+            b,
+            beta2_sum,
+            betax_sum,
+            e1,
+            e2,
+            factor;
+
+          float
+            error;
+
+          VectorSubtract(xSumwSum,part2,&part3);
+          VectorSubtract(part3,part1,&part3);
+          VectorSubtract(part3,part0,&part3);
+
+          VectorMultiplyAdd(part1,twothirds_twothirds2,part0,&alphax_sum);
+          VectorMultiplyAdd(part2,onethird_onethird2,alphax_sum,&alphax_sum);
+          VectorInit(alpha2_sum,alphax_sum.w);
+
+          VectorMultiplyAdd(part2,twothirds_twothirds2,part3,&betax_sum);
+          VectorMultiplyAdd(part1,onethird_onethird2,betax_sum,&betax_sum);
+          VectorInit(beta2_sum,betax_sum.w);
+
+          VectorAdd(part1,part2,&alphabeta_sum);
+          VectorInit(alphabeta_sum,alphabeta_sum.w);
+          VectorMultiply(twonineths,alphabeta_sum,&alphabeta_sum);
+
+          VectorMultiply(alpha2_sum,beta2_sum,&factor);
+          VectorNegativeMultiplySubtract(alphabeta_sum,alphabeta_sum,factor,
+            &factor);
+          VectorReciprocal(factor,&factor);
+
+          VectorMultiply(alphax_sum,beta2_sum,&a);
+          VectorNegativeMultiplySubtract(betax_sum,alphabeta_sum,a,&a);
+          VectorMultiply(a,factor,&a);
+
+          VectorMultiply(betax_sum,alpha2_sum,&b);
+          VectorNegativeMultiplySubtract(alphax_sum,alphabeta_sum,b,&b);
+          VectorMultiply(b,factor,&b);
+
+          VectorClamp(&a);
+          VectorMultiplyAdd(grid,a,half,&a);
+          VectorTruncate(&a);
+          VectorMultiply(a,gridrcp,&a);
+
+          VectorClamp(&b);
+          VectorMultiplyAdd(grid,b,half,&b);
+          VectorTruncate(&b);
+          VectorMultiply(b,gridrcp,&b);
+
+          VectorMultiply(b,b,&e1);
+          VectorMultiply(e1,beta2_sum,&e1);
+          VectorMultiply(a,a,&e2);
+          VectorMultiplyAdd(e2,alpha2_sum,e1,&e1);
+
+          VectorMultiply(a,b,&e2);
+          VectorMultiply(e2,alphabeta_sum,&e2);
+          VectorNegativeMultiplySubtract(a,alphax_sum,e2,&e2);
+          VectorNegativeMultiplySubtract(b,betax_sum,e2,&e2);
+          VectorMultiplyAdd(two,e2,e1,&e2);
+          VectorMultiply(e2,metric,&e2);
+
+          error = e2.x + e2.y + e2.z;
+
+          if (error < bestError)
+          {
+            VectorCopy43(a,start);
+            VectorCopy43(b,end);
+            bestError = error;
+            besti = i;
+            bestj = j;
+            bestk = k;
+            bestIteration = iterationIndex;
+          }
+
+          if (k == count)
+            break;
+
+          VectorAdd(pointsWeights[k],part2,&part2);
+          k++;
+        }
+
+        if (j == count)
+          break;
+
+        VectorAdd(pointsWeights[j],part1,&part1);
+        j++;
+      }
+
+      VectorAdd(pointsWeights[i],part0,&part0);
+    }
+
+    if (bestIteration != iterationIndex)
+      break;
+
+    iterationIndex++;
+    if (iterationIndex == 8)
+      break;
+
+    VectorSubtract3(*end,*start,&axis);
+    if (ConstructOrdering(count,points,axis,pointsWeights,&xSumwSum,order,
+      iterationIndex) == MagickFalse)
+      break;
+  }
+
+  o = order + (16*bestIteration);
+
+  for (i=0; i < besti; i++)
+    unordered[o[i]] = 0;
+  for (i=besti; i < bestj; i++)
+    unordered[o[i]] = 2;
+  for (i=bestj; i < bestk; i++)
+    unordered[o[i]] = 3;
+  for (i=bestk; i < count; i++)
+    unordered[o[i]] = 1;
+
+  RemapIndices(map,unordered,indices);
+}
+
+static void CompressRangeFit(const size_t count,
+  const DDSVector4* points, const ssize_t *map, const DDSVector3 principle,
+  const DDSVector4 metric, DDSVector3 *start, DDSVector3 *end,
+  unsigned char *indices)
+{
+  float
+    d,
+    bestDist,
+    max,
+    min,
+    val;
+
+  DDSVector3
+    codes[4],
+    grid,
+    gridrcp,
+    half,
+    dist;
+
+  register ssize_t
+    i;
+
+  size_t
+    bestj,
+    j;
+
+  unsigned char
+    closest[16];
+
+  VectorInit3(half,0.5f);
+
+  grid.x = 31.0f;
+  grid.y = 63.0f;
+  grid.z = 31.0f;
+
+  gridrcp.x = 1.0f/31.0f;
+  gridrcp.y = 1.0f/63.0f;
+  gridrcp.z = 1.0f/31.0f;
+
+  if (count > 0)
+    {
+      VectorCopy43(points[0],start);
+      VectorCopy43(points[0],end);
+
+      min = max = Dot(points[0],principle);
+      for (i=1; i < count; i++)
+      {
+        val = Dot(points[i],principle);
+        if (val < min)
+        {
+          VectorCopy43(points[i],start);
+          min = val;
+        }
+        else if (val > max)
+        {
+          VectorCopy43(points[i],end);
+          max = val;
+        }
+      }
+    }
+
+  VectorClamp3(start);
+  VectorMultiplyAdd3(grid,*start,half,start);
+  VectorTruncate3(start);
+  VectorMultiply3(*start,gridrcp,start);
+
+  VectorClamp3(end);
+  VectorMultiplyAdd3(grid,*end,half,end);
+  VectorTruncate3(end);
+  VectorMultiply3(*end,gridrcp,end);
+
+  codes[0] = *start;
+  codes[1] = *end;
+  codes[2].x = (start->x * (2.0f/3.0f)) + (end->x * (1.0f/3.0f));
+  codes[2].y = (start->y * (2.0f/3.0f)) + (end->y * (1.0f/3.0f));
+  codes[2].z = (start->z * (2.0f/3.0f)) + (end->z * (1.0f/3.0f));
+  codes[3].x = (start->x * (1.0f/3.0f)) + (end->x * (2.0f/3.0f));
+  codes[3].y = (start->y * (1.0f/3.0f)) + (end->y * (2.0f/3.0f));
+  codes[3].z = (start->z * (1.0f/3.0f)) + (end->z * (2.0f/3.0f));
+
+  for (i=0; i < count; i++)
+  {
+    bestDist = 1e+37f;
+    bestj = 0;
+    for (j=0; j < 4; j++)
+    {
+      dist.x = (points[i].x - codes[j].x) * metric.x;
+      dist.y = (points[i].y - codes[j].y) * metric.y;
+      dist.z = (points[i].z - codes[j].z) * metric.z;
+
+      d = Dot(dist,dist);
+      if (d < bestDist)
+        {
+          bestDist = d;
+          bestj = j;
+        }
+    }
+
+    closest[i] = (unsigned char) bestj;
+  }
+
+  RemapIndices(map, closest, indices);
+}
+
+static void ComputeEndPoints(const DDSSingleColourLookup *lookup[],
+  const unsigned char *color, DDSVector3 *start, DDSVector3 *end,
+  unsigned char *index)
+{
+  register ssize_t
+    i;
+
+  size_t
+    c,
+    maxError = SIZE_MAX;
+
+  for (i=0; i < 2; i++)
+  {
+    const DDSSourceBlock*
+      sources[3];
+
+      size_t
+        error = 0;
+
+    for (c=0; c < 3; c++)
+    {
+      sources[c] = &lookup[c][color[c]].sources[i];
+      error += ((size_t) sources[c]->error) * ((size_t) sources[c]->error);
+    }
+
+    if (error > maxError)
+      continue;
+
+    start->x = (float) sources[0]->start / 31.0f;
+    start->y = (float) sources[1]->start / 63.0f;
+    start->z = (float) sources[2]->start / 31.0f;
+
+    end->x = (float) sources[0]->end / 31.0f;
+    end->y = (float) sources[1]->end / 63.0f;
+    end->z = (float) sources[2]->end / 31.0f;
+
+    *index = (unsigned char) (2*i);
+    maxError = error;
+  }
+}
+
+static void ComputePrincipleComponent(const float *covariance,
+  DDSVector3 *principle)
+{
+  DDSVector4
+    row0,
+    row1,
+    row2,
+    v;
+
+  register ssize_t
+    i;
+
+  row0.x = covariance[0];
+  row0.y = covariance[1];
+  row0.z = covariance[2];
+  row0.w = 0.0f;
+
+  row1.x = covariance[1];
+  row1.y = covariance[3];
+  row1.z = covariance[4];
+  row1.w = 0.0f;
+
+  row2.x = covariance[2];
+  row2.y = covariance[4];
+  row2.z = covariance[5];
+  row2.w = 0.0f;
+
+  VectorInit(v,1.0f);
+
+  for (i=0; i < 8; i++)
+  {
+    DDSVector4
+      w;
+
+    float
+      a;
+
+    w.x = row0.x * v.x;
+    w.y = row0.y * v.x;
+    w.z = row0.z * v.x;
+    w.w = row0.w * v.x;
+
+    w.x = (row1.x * v.y) + w.x;
+    w.y = (row1.y * v.y) + w.y;
+    w.z = (row1.z * v.y) + w.z;
+    w.w = (row1.w * v.y) + w.w;
+
+    w.x = (row2.x * v.z) + w.x;
+    w.y = (row2.y * v.z) + w.y;
+    w.z = (row2.z * v.z) + w.z;
+    w.w = (row2.w * v.z) + w.w;
+
+    a = 1.0f / MaxF(w.x,MaxF(w.y,w.z));
+
+    v.x = w.x * a;
+    v.y = w.y * a;
+    v.z = w.z * a;
+    v.w = w.w * a;
+  }
+
+  VectorCopy43(v,principle);
+}
+
+static void ComputeWeightedCovariance(const size_t count,
+  const DDSVector4 *points, float *covariance)
+{
+  DDSVector3
+    centroid;
+
+  float
+    total;
+
+  size_t
+    i;
+
+  total = 0.0f;
+  VectorInit3(centroid,0.0f);
+
+  for (i=0; i < count; i++)
+  {
+    total += points[i].w;
+    centroid.x += (points[i].x * points[i].w);
+    centroid.y += (points[i].y * points[i].w);
+    centroid.z += (points[i].z * points[i].w);
+  }
+
+  if( total > 1.192092896e-07F)
+    {
+      centroid.x /= total;
+      centroid.y /= total;
+      centroid.z /= total;
+    }
+
+  for (i=0; i < 6; i++)
+    covariance[i] = 0.0f;
+
+  for (i = 0; i < count; i++)
+  {
+    DDSVector3
+      a,
+      b;
+
+    a.x = points[i].x - centroid.x;
+    a.y = points[i].y - centroid.y;
+    a.z = points[i].z - centroid.z;
+
+    b.x = points[i].w * a.x;
+    b.y = points[i].w * a.y;
+    b.z = points[i].w * a.z;
+
+    covariance[0] += a.x*b.x;
+    covariance[1] += a.x*b.y;
+    covariance[2] += a.x*b.z;
+    covariance[3] += a.y*b.y;
+    covariance[4] += a.y*b.z;
+    covariance[5] += a.z*b.z;
+  }
+}
+
+static MagickBooleanType ConstructOrdering(const size_t count,
+  const DDSVector4 *points, const DDSVector3 axis, DDSVector4 *pointsWeights,
+  DDSVector4 *xSumwSum, unsigned char *order, size_t iteration)
+{
+  float
+     dps[16],
+     f;
+
+  register ssize_t
+    i;
+
+  size_t
+    j;
+
+  unsigned char
+    c,
+    *o,
+    *p;
+
+  o = order + (16*iteration);
+
+  for (i=0; i < count; i++)
+  {
+    dps[i] = Dot(points[i],axis);
+    o[i] = (unsigned char)i;
+  }
+
+  for (i=0; i < count; i++)
+  {
+    for (j=i; j > 0 && dps[j] < dps[j - 1]; j--)
+    {
+      f = dps[j];
+      dps[j] = dps[j - 1];
+      dps[j - 1] = f;
+
+      c = o[j];
+      o[j] = o[j - 1];
+      o[j - 1] = c;
+    }
+  }
+
+  for (i=0; i < iteration; i++)
+  {
+    MagickBooleanType
+      same;
+
+    p = order + (16*i);
+    same = MagickTrue;
+
+    for (j=0; j < count; j++)
+    {
+      if (o[j] != p[j])
+        {
+          same = MagickFalse;
+          break;
+        }
+    }
+
+    if (same == MagickTrue)
+      return MagickFalse;
+  }
+
+  xSumwSum->x = 0;
+  xSumwSum->y = 0;
+  xSumwSum->z = 0;
+  xSumwSum->w = 0;
+
+  for (i=0; i < count; i++)
+  {
+    DDSVector4
+      v;
+
+    j = (size_t) o[i];
+
+    v.x = points[j].w * points[j].x;
+    v.y = points[j].w * points[j].y;
+    v.z = points[j].w * points[j].z;
+    v.w = points[j].w * 1.0f;
+
+    VectorCopy44(v,&pointsWeights[i]);
+    VectorAdd(*xSumwSum,v,xSumwSum);
+  }
+
+  return MagickTrue;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s D D S                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsDDS() returns MagickTrue if the image format type, identified by the
+%  magick string, is DDS.
+%
+%  The format of the IsDDS method is:
+%
+%      MagickBooleanType IsDDS(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o magick: compare image format pattern against these bytes.
+%
+%    o length: Specifies the length of the magick string.
+%
+*/
+static MagickBooleanType IsDDS(const unsigned char *magick, const size_t length)
+{
+  if (length < 4)
+    return(MagickFalse);
+  if (LocaleNCompare((char *) magick,"DDS ", 4) == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -225,13 +1674,6 @@ static void
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline size_t Min(size_t one, size_t two)
-{
-  if (one < two)
-    return one;
-  return two;
-}
 
 static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -457,40 +1899,6 @@ static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
   (void) SeekBlob(image, 12, SEEK_CUR); /* 3 reserved DWORDs */
   
   return MagickTrue;
-}
-
-static void CalculateColors(unsigned short c0, unsigned short c1,
-  DDSColors *c, MagickBooleanType ignoreAlpha)
-{
-  c->a[0] = c->a[1] = c->a[2] = c->a[3] = 0;
-  
-  c->r[0] = (unsigned char) C565_red(c0);
-  c->g[0] = (unsigned char) C565_green(c0);
-  c->b[0] = (unsigned char) C565_blue(c0);
-  
-  c->r[1] = (unsigned char) C565_red(c1);
-  c->g[1] = (unsigned char) C565_green(c1);
-  c->b[1] = (unsigned char) C565_blue(c1);
-  
-  if (ignoreAlpha == MagickTrue || c0 > c1)
-    {
-      c->r[2] = (unsigned char) ((2 * c->r[0] + c->r[1]) / 3);
-      c->g[2] = (unsigned char) ((2 * c->g[0] + c->g[1]) / 3);
-      c->b[2] = (unsigned char) ((2 * c->b[0] + c->b[1]) / 3);
-      
-      c->r[3] = (unsigned char) ((c->r[0] + 2 * c->r[1]) / 3);
-      c->g[3] = (unsigned char) ((c->g[0] + 2 * c->g[1]) / 3);
-      c->b[3] = (unsigned char) ((c->b[0] + 2 * c->b[1]) / 3);
-    }
-  else
-    {
-      c->r[2] = (unsigned char) ((c->r[0] + c->r[1]) / 2);
-      c->g[2] = (unsigned char) ((c->g[0] + c->g[1]) / 2);
-      c->b[2] = (unsigned char) ((c->b[0] + c->b[1]) / 2);
-      
-      c->r[3] = c->g[3] = c->b[3] = 0;
-      c->a[3] = 255;
-    }
 }
 
 static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info,
@@ -830,6 +2238,76 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,
   
   return MagickTrue;
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r D D S I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RegisterDDSImage() adds attributes for the DDS image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterDDSImage method is:
+%
+%      RegisterDDSImage(void)
+%
+*/
+ModuleExport size_t RegisterDDSImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry = SetMagickInfo("DDS");
+  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
+  entry->encoder = (EncodeImageHandler *) WriteDDSImage;
+  entry->magick = (IsImageFormatHandler *) IsDDS;
+  entry->seekable_stream=MagickTrue;
+  entry->description = ConstantString("Microsoft DirectDraw Surface");
+  entry->module = ConstantString("DDS");
+  (void) RegisterMagickInfo(entry);
+  entry = SetMagickInfo("DXT1");
+  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
+  entry->encoder = (EncodeImageHandler *) WriteDDSImage;
+  entry->magick = (IsImageFormatHandler *) IsDDS;
+  entry->seekable_stream=MagickTrue;
+  entry->description = ConstantString("Microsoft DirectDraw Surface");
+  entry->module = ConstantString("DDS");
+  (void) RegisterMagickInfo(entry);
+  entry = SetMagickInfo("DXT5");
+  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
+  entry->encoder = (EncodeImageHandler *) WriteDDSImage;
+  entry->magick = (IsImageFormatHandler *) IsDDS;
+  entry->seekable_stream=MagickTrue;
+  entry->description = ConstantString("Microsoft DirectDraw Surface");
+  entry->module = ConstantString("DDS");
+  (void) RegisterMagickInfo(entry);
+  return(MagickImageCoderSignature);
+}
+
+static void RemapIndices(const ssize_t *map, const unsigned char *source,
+  unsigned char *target)
+{
+  register ssize_t
+    i;
+
+  for (i = 0; i < 16; i++)
+  {
+    if (map[i] == -1)
+      target[i] = 3;
+    else
+      target[i] = source[map[i]];
+  }
+}
 
 /*
   Skip the mipmap images for compressed (DXTn) dds files
@@ -914,79 +2392,6 @@ static void SkipRGBMipmaps(Image *image, DDSInfo *dds_info, int pixel_size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I s D D S                                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsDDS() returns MagickTrue if the image format type, identified by the
-%  magick string, is DDS.
-%
-%  The format of the IsDDS method is:
-%
-%      MagickBooleanType IsDDS(const unsigned char *magick,const size_t length)
-%
-%  A description of each parameter follows:
-%
-%    o magick: compare image format pattern against these bytes.
-%
-%    o length: Specifies the length of the magick string.
-%
-*/
-static MagickBooleanType IsDDS(const unsigned char *magick,const size_t length)
-{
-  if (length < 4)
-    return(MagickFalse);
-  if (LocaleNCompare((char *) magick,"DDS ", 4) == 0)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e g i s t e r D D S I m a g e                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RegisterDDSImage() adds attributes for the DDS image format to
-%  the list of supported formats.  The attributes include the image format
-%  tag, a method to read and/or write the format, whether the format
-%  supports the saving of more than one frame to the same file or blob,
-%  whether the format supports native in-memory I/O, and a brief
-%  description of the format.
-%
-%  The format of the RegisterDDSImage method is:
-%
-%      RegisterDDSImage(void)
-%
-*/
-ModuleExport size_t RegisterDDSImage(void)
-{
-  MagickInfo
-    *entry;
-
-  entry = SetMagickInfo("DDS");
-  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
-  entry->magick = (IsImageFormatHandler *) IsDDS;
-  entry->seekable_stream=MagickTrue;
-  entry->description = ConstantString("Microsoft DirectDraw Surface");
-  entry->module = ConstantString("DDS");
-  (void) RegisterMagickInfo(entry);
-  return(MagickImageCoderSignature);
-}
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   U n r e g i s t e r D D S I m a g e                                       %
 %                                                                             %
 %                                                                             %
@@ -1004,5 +2409,592 @@ ModuleExport size_t RegisterDDSImage(void)
 ModuleExport void UnregisterDDSImage(void)
 {
   (void) UnregisterMagickInfo("DDS");
+  (void) UnregisterMagickInfo("DXT1");
+  (void) UnregisterMagickInfo("DXT5");
 }
 
+static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
+  size_t max5, size_t min7, size_t max7)
+{
+  register ssize_t
+    i;
+
+  size_t
+    err5,
+    err7,
+    j;
+
+  unsigned char
+    indices5[16],
+    indices7[16];
+
+  FixRange(min5,max5,5);
+  err5 = CompressAlpha(min5,max5,5,alphas,indices5);
+
+  FixRange(min7,max7,7);
+  err7 = CompressAlpha(min7,max7,7,alphas,indices7);
+
+  if (err7 < err5)
+  {
+    for (i=0; i < 16; i++)
+    {
+      unsigned char
+        index;
+
+      index = indices7[i];
+      if( index == 0 )
+        indices5[i] = 1;
+      else if (index == 1)
+        indices5[i] = 0;
+      else
+        indices5[i] = 9 - index;
+    }
+
+    min5 = max7;
+    max5 = min7;
+  }
+  
+  (void) WriteBlobByte(image,(unsigned char) min5);
+  (void) WriteBlobByte(image,(unsigned char) max5);
+  
+  for(i=0; i < 2; i++)
+  {
+    size_t
+      value = 0;
+
+    for (j=0; j < 8; j++)
+    {
+      size_t index = (size_t) indices5[j + i*8];
+      value |= ( index << 3*j );
+    }
+
+    for (j=0; j < 3; j++)
+    {
+      size_t byte = (value >> 8*j) & 0xff;
+      (void) WriteBlobByte(image,(unsigned char) byte);
+    }
+  }
+}
+
+static void WriteCompressed(Image *image, const size_t count,
+  DDSVector4 *points, const ssize_t *map, const MagickBooleanType clusterFit)
+{
+  float
+    covariance[16];
+
+  DDSVector3
+    end,
+    principle,
+    start;
+
+  DDSVector4
+    metric;
+
+  unsigned char
+    indices[16];
+
+  VectorInit(metric,1.0f);
+  VectorInit3(start,0.0f);
+  VectorInit3(end,0.0f);
+
+  ComputeWeightedCovariance(count,points,covariance);
+  ComputePrincipleComponent(covariance,&principle);
+
+  if (clusterFit == MagickFalse || count == 0)
+    CompressRangeFit(count,points,map,principle,metric,&start,&end,indices);
+  else
+    CompressClusterFit(count,points,map,principle,metric,&start,&end,indices);
+
+  WriteIndices(image,start,end,indices);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e D D S I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteDDSImage() writes a DirectDraw Surface image file in the DXT5 format.
+%
+%  The format of the WriteBMPImage method is:
+%
+%     MagickBooleanType WriteDDSImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+*/
+static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
+  Image *image, ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  size_t
+    compression,
+    columns,
+    mipmaps,
+    pixelFormat,
+    rows;
+
+  MagickBooleanType
+    clusterFit,
+    status,
+    weightByAlpha;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(status);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+
+  pixelFormat=DDPF_FOURCC;
+  compression=FOURCC_DXT5;
+
+  if (image->alpha_trait != BlendPixelTrait)
+    compression=FOURCC_DXT1;
+
+  if (LocaleCompare(image_info->magick,"dxt1") == 0)
+    compression=FOURCC_DXT1;
+
+  value=GetImageOption(image_info,"dds:compression");
+  if (value != (char *) NULL)
+    {
+       if (LocaleCompare(value,"dxt1") == 0)
+         compression=FOURCC_DXT1;
+       if (LocaleCompare(value,"none") == 0)
+         pixelFormat=DDPF_RGB;
+    }
+
+  clusterFit=MagickFalse;
+  weightByAlpha=MagickFalse;
+
+  if (pixelFormat == DDPF_FOURCC)
+    {
+      value=GetImageOption(image_info,"dds:cluster-fit");
+      if (value != (char *) NULL && LocaleCompare(value,"true") == 0)
+        {
+          clusterFit=MagickFalse;
+          if (compression != FOURCC_DXT1)
+            {
+              value=GetImageOption(image_info,"dds:weight-by-alpha");
+              if (value != (char *) NULL && LocaleCompare(value,"true") == 0)
+                weightByAlpha = MagickTrue;
+            }
+        }
+    }
+
+  mipmaps=0;
+  if ((image->columns & (image->columns - 1)) == 0 &&
+      (image->rows & (image->rows - 1)) == 0)
+    {
+      value=GetImageOption(image_info,"dds:mipmaps");
+      if (value == (char *) NULL || LocaleCompare(value,"false") != 0)
+        {
+          columns = image->columns;
+          rows = image->rows;
+          while (columns != 1 || rows != 1)
+          {
+            columns = DIV2(columns);
+            rows = DIV2(rows);
+            mipmaps++;
+          }
+        }
+    }
+
+  WriteDDSInfo(image,pixelFormat,compression,mipmaps);
+
+  WriteImageData(image,pixelFormat,compression,clusterFit,weightByAlpha,
+    exception);
+
+  if (mipmaps > 0 && WriteMipmaps(image,pixelFormat,compression,mipmaps,
+        clusterFit,weightByAlpha,exception) == MagickFalse)
+    return(MagickFalse);
+
+  (void) CloseBlob(image);
+  return(MagickTrue);
+}
+
+static void WriteDDSInfo(Image *image, const size_t pixelFormat,
+  const size_t compression, const size_t mipmaps)
+{
+  register ssize_t
+    i;
+
+  unsigned int
+    format,
+    caps,
+    flags;
+
+  flags=(unsigned int) (DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT |
+    DDSD_PIXELFORMAT | DDSD_LINEARSIZE);
+  caps=(unsigned int) DDSCAPS_TEXTURE;
+  format=(unsigned int) pixelFormat;
+
+  if (mipmaps > 0)
+    {
+      flags=flags | (unsigned int) DDSD_MIPMAPCOUNT;
+      caps=caps | (unsigned int) (DDSCAPS_MIPMAP | DDSCAPS_COMPLEX);
+    }
+
+  if (format != DDPF_FOURCC && image->alpha_trait == BlendPixelTrait)
+    format=format | DDPF_ALPHAPIXELS;
+
+  (void) WriteBlob(image,4,(unsigned char *) "DDS ");
+  (void) WriteBlobLSBLong(image,124);
+  (void) WriteBlobLSBLong(image,flags);
+  (void) WriteBlobLSBLong(image,image->rows);
+  (void) WriteBlobLSBLong(image,image->columns);
+
+  if (compression == FOURCC_DXT1)
+    (void) WriteBlobLSBLong(image,
+             (unsigned int) (Max(1,(image->columns+3)/4) * 8));
+  else
+    (void) WriteBlobLSBLong(image,
+             (unsigned int) (Max(1,(image->columns+3)/4) * 16));
+
+  (void) WriteBlobLSBLong(image,0x00);
+  (void) WriteBlobLSBLong(image,(unsigned int) mipmaps+1);
+  (void) WriteBlob(image,44,(unsigned char *) "IMAGEMAGICK");
+
+  (void) WriteBlobLSBLong(image,32);
+  (void) WriteBlobLSBLong(image,format);
+
+  if (pixelFormat == DDPF_FOURCC)
+    {
+      (void) WriteBlobLSBLong(image,(unsigned int) compression);
+      for(i=0;i < 5;i++) // bitcount / masks
+        (void) WriteBlobLSBLong(image,0x00);
+    }
+  else
+    {
+      (void) WriteBlobLSBLong(image,0x00);
+      if (image->alpha_trait == BlendPixelTrait)
+        {
+          (void) WriteBlobLSBLong(image,32);
+          (void) WriteBlobLSBLong(image,0xff0000);
+          (void) WriteBlobLSBLong(image,0xff00);
+          (void) WriteBlobLSBLong(image,0xff);
+          (void) WriteBlobLSBLong(image,0xff000000);
+        }
+      else
+        {
+          (void) WriteBlobLSBLong(image,24);
+          (void) WriteBlobLSBLong(image,0xff);
+          (void) WriteBlobLSBLong(image,0x00);
+          (void) WriteBlobLSBLong(image,0x00);
+          (void) WriteBlobLSBLong(image,0x00);
+        }
+    }
+  
+  (void) WriteBlobLSBLong(image,caps);
+  for(i=0;i < 4;i++) // ddscaps2 + reserved region
+    (void) WriteBlobLSBLong(image,0x00);
+}
+
+static void WriteFourCC(Image *image, const size_t compression,
+  const MagickBooleanType clusterFit, const MagickBooleanType weightByAlpha,
+  ExceptionInfo *exception)
+{
+  register ssize_t
+    x;
+
+  ssize_t
+    i,
+    y,
+    bx,
+    by;
+
+  register const Quantum
+    *p;
+
+  for (y=0; y < (ssize_t) image->rows; y+=4)
+  {
+    for (x=0; x < (ssize_t) image->columns; x+=4)
+    {
+      MagickBooleanType
+        match;
+
+      DDSVector4
+        point,
+        points[16];
+
+      size_t
+        count = 0,
+        max5 = 0,
+        max7 = 0,
+        min5 = 255,
+        min7 = 255,
+        columns = 4,
+        rows = 4;
+
+      ssize_t
+        alphas[16],
+        map[16];
+
+      unsigned char
+        alpha;
+
+      if (x + columns >= image->columns)
+        columns = image->columns - x;
+
+      if (y + rows >= image->rows)
+        rows = image->rows - y;
+
+      p=GetVirtualPixels(image,x,y,columns,rows,exception);
+
+      for (i=0; i<16; i++)
+      {
+        map[i] = -1;
+        alphas[i] = -1;
+      }
+
+      for (by=0; by < rows; by++)
+      {
+        for (bx=0; bx < columns; bx++)
+        {
+          if (compression == FOURCC_DXT5)
+            alpha = ScaleQuantumToChar(GetPixelAlpha(image,p));
+          else
+            alpha = 255;
+
+          alphas[4*by + bx] = (size_t)alpha;
+
+          point.x = (float)ScaleQuantumToChar(GetPixelRed(image,p)) / 255.0f;
+          point.y = (float)ScaleQuantumToChar(GetPixelGreen(image,p)) / 255.0f;
+          point.z = (float)ScaleQuantumToChar(GetPixelBlue(image,p)) / 255.0f;
+          point.w = weightByAlpha ? (float)(alpha + 1) / 256.0f : 1.0f;
+          p+=GetPixelChannels(image);
+
+          match = MagickFalse;
+          for (i=0; i < count; i++)
+          {
+            if ((points[i].x == point.x) &&
+                (points[i].y == point.y) &&
+                (points[i].z == point.z) &&
+                (alpha       >= 128 || compression == FOURCC_DXT5))
+              {
+                points[i].w += point.w;
+                map[4*by + bx] = i;
+                match = MagickTrue;
+                break;
+              }
+            }
+
+            if (match == MagickTrue)
+              continue;
+
+            points[count].x = point.x;
+            points[count].y = point.y;
+            points[count].z = point.z;
+            points[count].w = point.w;
+            map[4*by + bx] = count;
+            count++;
+
+            if (compression == FOURCC_DXT5)
+              {
+                if (alpha < min7)
+                  min7 = alpha;
+                if (alpha > max7)
+                  max7 = alpha;
+                if (alpha != 0 && alpha < min5)
+                  min5 = alpha;
+                if (alpha != 255 && alpha > max5)
+                  max5 = alpha;
+              }
+          }
+        }
+
+      for (i=0; i < count; i++)
+        points[i].w = sqrt(points[i].w);
+
+      if (compression == FOURCC_DXT5)
+        WriteAlphas(image,alphas,min5,max5,min7,max7);
+
+      if (count == 1)
+        WriteSingleColorFit(image,points,map);
+      else
+        WriteCompressed(image,count,points,map,clusterFit);
+    }
+  }
+}
+
+static void WriteImageData(Image *image, const size_t pixelFormat,
+  const size_t compression,const MagickBooleanType clusterFit,
+  const MagickBooleanType weightByAlpha, ExceptionInfo *exception)
+{
+  if (pixelFormat == DDPF_FOURCC)
+    WriteFourCC(image,compression,clusterFit,weightByAlpha,exception);
+  else
+    WriteUncompressed(image,exception);
+}
+
+static inline size_t ClampToLimit(const float value, const size_t limit)
+{
+  size_t
+    result = (int) (value + 0.5f);
+
+  if (result < 0.0f)
+    return(0);
+  if (result > limit)
+    return(limit);
+  return result;
+}
+
+static inline size_t ColorTo565(const DDSVector3 point)
+{
+  size_t r = ClampToLimit(31.0f*point.x,31);
+  size_t g = ClampToLimit(63.0f*point.y,63);
+  size_t b = ClampToLimit(31.0f*point.z,31);
+
+  return (r << 11) | (g << 5) | b;
+}
+
+static void WriteIndices(Image *image, const DDSVector3 start,
+  const DDSVector3 end, unsigned char *indices)
+{
+  register ssize_t
+    i;
+
+  size_t
+    a,
+    b;
+
+  unsigned char
+    remapped[16];
+
+  const unsigned char
+    *ind;
+
+  a = ColorTo565(start);
+  b = ColorTo565(end);
+
+  for (i=0; i<16; i++)
+  {
+    if( a < b )
+      remapped[i] = (indices[i] ^ 0x1) & 0x3;
+    else if( a == b )
+      remapped[i] = 0;
+    else
+      remapped[i] = indices[i];
+  }
+
+  if( a < b )
+    Swap(a,b);
+
+  (void) WriteBlobByte(image,(unsigned char) (a & 0xff));
+  (void) WriteBlobByte(image,(unsigned char) (a >> 8));
+  (void) WriteBlobByte(image,(unsigned char) (b & 0xff));
+  (void) WriteBlobByte(image,(unsigned char) (b >> 8));
+
+  for (i=0; i<4; i++)
+  {
+     ind = remapped + 4*i;
+     (void) WriteBlobByte(image,ind[0] | (ind[1] << 2) | (ind[2] << 4) |
+       (ind[3] << 6));
+  }
+}
+
+static MagickBooleanType WriteMipmaps(Image *image, const size_t pixelFormat,
+  const size_t compression, const size_t mipmaps,
+  const MagickBooleanType clusterFit, const MagickBooleanType weightByAlpha,
+  ExceptionInfo *exception)
+{
+  Image*
+    resize_image;
+
+  register ssize_t
+    i;
+
+  size_t
+    columns,
+    rows;
+
+  columns = image->columns;
+  rows = image->rows;
+
+  for (i=0; i<mipmaps; i++)
+  {
+    resize_image = ResizeImage(image,columns/2,rows/2,TriangleFilter,
+      exception);
+
+    if (resize_image == (Image *) NULL)
+      return(MagickFalse);
+
+    DestroyBlob(resize_image);
+    resize_image->blob=ReferenceBlob(image->blob);
+
+    WriteImageData(resize_image,pixelFormat,compression,weightByAlpha,
+      clusterFit,exception);
+
+    resize_image=DestroyImage(resize_image);
+
+    columns = DIV2(columns);
+    rows = DIV2(rows);
+  }
+
+  return(MagickTrue);
+}
+
+static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
+  const ssize_t *map)
+{
+  unsigned char
+    color[3],
+    index,
+    indices[16];
+
+  DDSVector3
+    start,
+    end;
+
+  color[0] = ClampToLimit(255.0f*points->x,255);
+  color[1] = ClampToLimit(255.0f*points->y,255);
+  color[2] = ClampToLimit(255.0f*points->z,255);
+
+  ComputeEndPoints(DDS_LOOKUP,color,&start,&end,&index);
+
+  RemapIndices(map,&index,indices);
+  WriteIndices(image,start,end,indices);
+}
+
+static void WriteUncompressed(Image *image, ExceptionInfo *exception)
+{
+  register const Quantum
+    *p;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelBlue(image,p)));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(image,p)));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(image,p)));
+      if (image->alpha_trait == BlendPixelTrait)
+        (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(image,p)));
+      p+=GetPixelChannels(image);
+    }
+  }
+}
