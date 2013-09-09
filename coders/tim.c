@@ -181,6 +181,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case 3: bits_per_pixel=24; break;
       default: bits_per_pixel=4; break;
     }
+    image->depth=8;
     if (has_clut)
       {
         unsigned char
