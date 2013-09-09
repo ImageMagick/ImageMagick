@@ -2268,6 +2268,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           depth=4*(n/4);
         }
       color->colorspace=sRGBColorspace;
+      color->depth=depth;
       color->alpha_trait=UndefinedPixelTrait;
       range=GetQuantumRange(depth);
       color->red=(double) ScaleAnyToQuantum(pixel.red,range);
@@ -2336,7 +2337,10 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
         }
       color->colorspace=(ColorspaceType) type;
       if (IfMagickFalse(icc_color) && (color->colorspace == RGBColorspace))
-        color->colorspace=sRGBColorspace;  /* as required by SVG standard */
+        {
+          color->colorspace=sRGBColorspace;  /* as required by SVG standard */
+          color->depth=8;
+        }
       SetGeometryInfo(&geometry_info);
       flags=ParseGeometry(name+i+1,&geometry_info);
       if (flags == 0)
@@ -2453,6 +2457,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   if (p == (const ColorInfo *) NULL)
     return(MagickFalse);
   color->colorspace=sRGBColorspace;
+  color->depth=8;
   color->alpha_trait=p->color.alpha != OpaqueAlpha ? BlendPixelTrait :
     UndefinedPixelTrait;
   color->red=(double) p->color.red;

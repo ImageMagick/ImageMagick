@@ -319,7 +319,6 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count != 4) || (width > 10) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  image->depth=16;
   /*
     Remove unquoted characters.
   */
@@ -347,6 +346,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image colormap.
   */
+  image->depth=1;
   next=NextXPMLine(xpm_buffer);
   for (j=0; (j < (ssize_t) image->colors) && (next != (char*) NULL); j++)
   {
@@ -382,6 +382,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       exception);
     if (status == MagickFalse)
       break;
+    if (image->depth < image->colormap[j].depth)
+      image->depth=image->colormap[j].depth;
   }
   if (j < (ssize_t) image->colors)
     ThrowReaderException(CorruptImageError,"CorruptImage");
