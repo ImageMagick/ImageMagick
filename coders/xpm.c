@@ -390,9 +390,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (status == MagickFalse)
       break;
     status=QueryMagickColorCompliance(target,XPMCompliance,&pixel,exception);
-    if (status != MagickFalse)
-      if (pixel.depth > image->depth)
-        image->depth=pixel.depth;
+    if (image->depth < pixel.depth)
+      image->depth=pixel.depth;
   }
   if (j < (ssize_t) image->colors)
     ThrowReaderException(CorruptImageError,"CorruptImage");
