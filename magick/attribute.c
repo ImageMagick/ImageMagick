@@ -334,8 +334,6 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
         const int
           id = GetOpenMPThreadId();
 
-        if (status == MagickFalse)
-          continue;
         while (current_depth[id] < MAGICKCORE_QUANTUM_DEPTH)
         {
           MagickStatusType
