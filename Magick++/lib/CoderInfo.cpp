@@ -58,7 +58,7 @@ Magick::CoderInfo::CoderInfo ( const std::string &name_ )
     {
       _name         = string(magickInfo->name);
       _description  = string(magickInfo->description);
-      _mimeType     = string(magickInfo->mime_type);
+      _mimeType     = string(magickInfo->mime_type ? magickInfo->mime_type : "");
       _isReadable   = ((magickInfo->decoder == 0) ? false : true);
       _isWritable   = ((magickInfo->encoder == 0) ? false : true);
       _isMultiFrame = ((magickInfo->adjoin == 0) ? false : true);
