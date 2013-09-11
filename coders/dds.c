@@ -82,6 +82,7 @@
 #include "MagickCore/quantum.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 
 /*
   Definitions
@@ -2536,11 +2537,12 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
   Image *image, ExceptionInfo *exception)
 {
   const char
-    *value;
+    *option;
 
   size_t
     compression,
     columns,
+    maxMipmaps,
     mipmaps,
     pixelFormat,
     rows;
@@ -2571,12 +2573,12 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
   if (LocaleCompare(image_info->magick,"dxt1") == 0)
     compression=FOURCC_DXT1;
 
-  value=GetImageOption(image_info,"dds:compression");
-  if (value != (char *) NULL)
+  option=GetImageOption(image_info,"dds:compression");
+  if (option != (char *) NULL)
     {
-       if (LocaleCompare(value,"dxt1") == 0)
+       if (LocaleCompare(option,"dxt1") == 0)
          compression=FOURCC_DXT1;
-       if (LocaleCompare(value,"none") == 0)
+       if (LocaleCompare(option,"none") == 0)
          pixelFormat=DDPF_RGB;
     }
 
@@ -2585,32 +2587,36 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
 
   if (pixelFormat == DDPF_FOURCC)
     {
-      value=GetImageOption(image_info,"dds:cluster-fit");
-      if (value != (char *) NULL && LocaleCompare(value,"true") == 0)
+      option=GetImageOption(image_info,"dds:cluster-fit");
+      if (option != (char *) NULL && LocaleCompare(option,"true") == 0)
         {
           clusterFit=MagickFalse;
           if (compression != FOURCC_DXT1)
             {
-              value=GetImageOption(image_info,"dds:weight-by-alpha");
-              if (value != (char *) NULL && LocaleCompare(value,"true") == 0)
-                weightByAlpha = MagickTrue;
+              option=GetImageOption(image_info,"dds:weight-by-alpha");
+              if (option != (char *) NULL && LocaleCompare(option,"true") == 0)
+                weightByAlpha=MagickTrue;
             }
         }
     }
 
+  maxMipmaps=-1;
   mipmaps=0;
   if ((image->columns & (image->columns - 1)) == 0 &&
       (image->rows & (image->rows - 1)) == 0)
     {
-      value=GetImageOption(image_info,"dds:mipmaps");
-      if (value == (char *) NULL || LocaleCompare(value,"false") != 0)
+      option=GetImageOption(image_info,"dds:mipmaps");
+      if (option == (char *) NULL)
+        maxMipmaps=StringToUnsignedLong(option);
+
+      if (maxMipmaps != 0)
         {
-          columns = image->columns;
-          rows = image->rows;
-          while (columns != 1 || rows != 1)
+          columns=image->columns;
+          rows=image->rows;
+          while (columns != 1 || rows != 1 && mipmaps != maxMipmaps)
           {
-            columns = DIV2(columns);
-            rows = DIV2(rows);
+            columns=DIV2(columns);
+            rows=DIV2(rows);
             mipmaps++;
           }
         }
