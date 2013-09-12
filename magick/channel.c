@@ -136,7 +136,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) SetImageColorspace(combine_image,sRGBColorspace);
   if ((channel & OpacityChannel) != 0)
     combine_image->matte=MagickTrue;
