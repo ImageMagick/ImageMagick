@@ -91,7 +91,7 @@ static int DisplayMain(int argc,char **argv)
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
@@ -116,6 +116,6 @@ int wmain(int argc,wchar_t *argv[])
   for (i=0; i < argc; i++)
     utf8[i]=DestroyString(utf8[i]);
   utf8=(char **) RelinquishMagickMemory(utf8);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 #endif

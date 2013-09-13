@@ -201,7 +201,7 @@ WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
     status;
 
   status=MagickAdaptiveBlurImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickAdaptiveBlurImageChannel(MagickWand *wand,
@@ -314,7 +314,7 @@ WandExport MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
     status;
 
   status=MagickAdaptiveSharpenImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickAdaptiveSharpenImageChannel(MagickWand *wand,
@@ -534,7 +534,7 @@ WandExport MagickBooleanType MagickAddNoiseImage(MagickWand *wand,
     status;
 
   status=MagickAddNoiseImageChannel(wand,DefaultChannels,noise_type);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickAddNoiseImageChannel(MagickWand *wand,
@@ -677,7 +677,7 @@ WandExport MagickBooleanType MagickAnnotateImage(MagickWand *wand,
   draw_info=DestroyDrawInfo(draw_info);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -719,7 +719,7 @@ WandExport MagickBooleanType MagickAnimateImages(MagickWand *wand,
   status=AnimateImages(wand->image_info,wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -805,7 +805,7 @@ WandExport MagickBooleanType MagickAutoGammaImage(MagickWand *wand)
     status;
 
   status=MagickAutoGammaImageChannel(wand,DefaultChannels);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickAutoGammaImageChannel(MagickWand *wand,
@@ -823,7 +823,7 @@ WandExport MagickBooleanType MagickAutoGammaImageChannel(MagickWand *wand,
   status=AutoGammaImageChannel(wand->images,channel);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -859,7 +859,7 @@ WandExport MagickBooleanType MagickAutoLevelImage(MagickWand *wand)
     status;
 
   status=MagickAutoLevelImageChannel(wand,DefaultChannels);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickAutoLevelImageChannel(MagickWand *wand,
@@ -877,7 +877,7 @@ WandExport MagickBooleanType MagickAutoLevelImageChannel(MagickWand *wand,
   status=AutoLevelImageChannel(wand->images,channel);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -929,7 +929,7 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
   status=BlackThresholdImage(wand->images,thresholds);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1020,7 +1020,7 @@ WandExport MagickBooleanType MagickBlurImage(MagickWand *wand,
     status;
 
   status=MagickBlurImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickBlurImageChannel(MagickWand *wand,
@@ -1144,7 +1144,7 @@ WandExport MagickBooleanType MagickBrightnessContrastImage(MagickWand *wand,
 
   status=MagickBrightnessContrastImageChannel(wand,DefaultChannels,brightness,
     contrast);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickBrightnessContrastImageChannel(
@@ -1164,7 +1164,7 @@ WandExport MagickBooleanType MagickBrightnessContrastImageChannel(
     contrast);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1305,7 +1305,7 @@ WandExport MagickBooleanType MagickClampImage(MagickWand *wand)
     status;
 
   status=MagickClampImageChannel(wand,DefaultChannels);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickClampImageChannel(MagickWand *wand,
@@ -1323,7 +1323,7 @@ WandExport MagickBooleanType MagickClampImageChannel(MagickWand *wand,
   status=ClampImageChannel(wand->images,channel);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1363,7 +1363,7 @@ WandExport MagickBooleanType MagickClipImage(MagickWand *wand)
   status=ClipImage(wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1413,7 +1413,7 @@ WandExport MagickBooleanType MagickClipImagePath(MagickWand *wand,
   status=ClipImagePath(wand->images,pathname,inside);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1451,7 +1451,7 @@ WandExport MagickBooleanType MagickClutImage(MagickWand *wand,
     status;
 
   status=MagickClutImageChannel(wand,DefaultChannels,clut_wand);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickClutImageChannel(MagickWand *wand,
@@ -1469,7 +1469,7 @@ WandExport MagickBooleanType MagickClutImageChannel(MagickWand *wand,
   status=ClutImageChannel(wand->images,channel,clut_wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1574,7 +1574,7 @@ WandExport MagickBooleanType MagickColorDecisionListImage(MagickWand *wand,
   status=ColorDecisionListImage(wand->images,color_correction_collection);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1774,7 +1774,7 @@ WandExport MagickBooleanType MagickCommentImage(MagickWand *wand,
   status=SetImageProperty(wand->images,"comment",comment);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1986,7 +1986,7 @@ WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
 
   status=MagickCompositeImageChannel(wand,DefaultChannels,source_wand,
     compose,x,y);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
@@ -2007,7 +2007,7 @@ WandExport MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
     source_wand->images,x,y);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2080,7 +2080,7 @@ WandExport MagickBooleanType MagickCompositeLayers(MagickWand *wand,
   CompositeLayers(wand->images,compose,source_wand->images,x,y,
     &wand->images->exception);
   status=MagickTrue;  /* FUTURE: determine status from exceptions */
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2126,7 +2126,7 @@ WandExport MagickBooleanType MagickContrastImage(MagickWand *wand,
   status=ContrastImage(wand->images,sharpen);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2173,7 +2173,7 @@ WandExport MagickBooleanType MagickContrastStretchImage(MagickWand *wand,
 
   status=MagickContrastStretchImageChannel(wand,DefaultChannels,black_point,
     white_point);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickContrastStretchImageChannel(MagickWand *wand,
@@ -2192,7 +2192,7 @@ WandExport MagickBooleanType MagickContrastStretchImageChannel(MagickWand *wand,
     white_point);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2235,7 +2235,7 @@ WandExport MagickBooleanType MagickConvolveImage(MagickWand *wand,
     status;
 
   status=MagickConvolveImageChannel(wand,DefaultChannels,order,kernel);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickConvolveImageChannel(MagickWand *wand,
@@ -2359,7 +2359,7 @@ WandExport MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
   status=CycleColormapImage(wand->images,displace);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2672,7 +2672,7 @@ WandExport MagickBooleanType MagickDisplayImage(MagickWand *wand,
   if (status == MagickFalse)
     InheritException(wand->exception,&image->exception);
   image=DestroyImage(image);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2714,7 +2714,7 @@ WandExport MagickBooleanType MagickDisplayImages(MagickWand *wand,
   status=DisplayImages(wand->image_info,wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2853,7 +2853,7 @@ WandExport MagickBooleanType MagickDrawImage(MagickWand *wand,
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -3063,7 +3063,7 @@ WandExport MagickBooleanType MagickEqualizeImage(MagickWand *wand)
     status;
 
   status=MagickEqualizeImageChannel(wand,DefaultChannels);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickEqualizeImageChannel(MagickWand *wand,
@@ -3081,7 +3081,7 @@ WandExport MagickBooleanType MagickEqualizeImageChannel(MagickWand *wand,
   status=EqualizeImageChannel(wand->images,channel);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -3137,7 +3137,7 @@ WandExport MagickBooleanType MagickEvaluateImage(MagickWand *wand,
   status=EvaluateImage(wand->images,op,value,&wand->images->exception);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickWand *MagickEvaluateImages(MagickWand *wand,
@@ -3172,7 +3172,7 @@ WandExport MagickBooleanType MagickEvaluateImageChannel(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=EvaluateImageChannel(wand->images,channel,op,value,
     &wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -3243,7 +3243,7 @@ WandExport MagickBooleanType MagickExportImagePixels(MagickWand *wand,
     storage,pixels,wand->exception);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -3342,7 +3342,7 @@ WandExport MagickBooleanType MagickFilterImage(MagickWand *wand,
     status;
 
   status=MagickFilterImageChannel(wand,DefaultChannels,kernel);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickFilterImageChannel(MagickWand *wand,
@@ -3483,7 +3483,7 @@ WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -3700,7 +3700,7 @@ WandExport MagickBooleanType MagickFunctionImage(MagickWand *wand,
     &wand->images->exception);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickFunctionImageChannel(MagickWand *wand,
@@ -3718,7 +3718,7 @@ WandExport MagickBooleanType MagickFunctionImageChannel(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=FunctionImageChannel(wand->images,channel,function,number_arguments,
     arguments,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -3820,7 +3820,7 @@ WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
     status;
 
   status=MagickGammaImageChannel(wand,DefaultChannels,gamma);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickGammaImageChannel(MagickWand *wand,
@@ -3838,7 +3838,7 @@ WandExport MagickBooleanType MagickGammaImageChannel(MagickWand *wand,
   status=GammaImageChannel(wand->images,channel,gamma);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -3884,7 +3884,7 @@ WandExport MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
     status;
 
   status=MagickGaussianBlurImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickGaussianBlurImageChannel(MagickWand *wand,
@@ -4331,7 +4331,7 @@ WandExport MagickBooleanType MagickGetImageChannelDistortion(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageChannelDistortion(wand->images,reference->images,channel,
     metric,distortion,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -4485,7 +4485,7 @@ WandExport MagickBooleanType MagickGetImageChannelKurtosis(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageChannelKurtosis(wand->images,channel,kurtosis,skewness,
     wand->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -4532,7 +4532,7 @@ WandExport MagickBooleanType MagickGetImageChannelMean(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageChannelMean(wand->images,channel,mean,standard_deviation,
     wand->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -4578,7 +4578,7 @@ WandExport MagickBooleanType MagickGetImageChannelRange(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageChannelRange(wand->images,channel,minima,maxima,
     wand->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -4971,7 +4971,7 @@ WandExport MagickBooleanType MagickGetImageDistortion(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageDistortion(wand->images,reference->images,metric,distortion,
     &wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -5744,7 +5744,7 @@ WandExport MagickBooleanType MagickGetImageRange(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageRange(wand->images,minima,maxima,wand->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -6343,7 +6343,7 @@ WandExport MagickBooleanType MagickHaldClutImage(MagickWand *wand,
     status;
 
   status=MagickHaldClutImageChannel(wand,DefaultChannels,hald_wand);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickHaldClutImageChannel(MagickWand *wand,
@@ -6361,7 +6361,7 @@ WandExport MagickBooleanType MagickHaldClutImageChannel(MagickWand *wand,
   status=HaldClutImageChannel(wand->images,channel,hald_wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -6613,7 +6613,7 @@ WandExport MagickBooleanType MagickImportImagePixels(MagickWand *wand,
   status=ImportImagePixels(wand->images,x,y,columns,rows,map,storage,pixels);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -6715,7 +6715,7 @@ WandExport MagickBooleanType MagickLabelImage(MagickWand *wand,
   status=SetImageProperty(wand->images,"label",label);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -6768,7 +6768,7 @@ WandExport MagickBooleanType MagickLevelImage(MagickWand *wand,
 
   status=MagickLevelImageChannel(wand,DefaultChannels,black_point,gamma,
     white_point);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickLevelImageChannel(MagickWand *wand,
@@ -6787,7 +6787,7 @@ WandExport MagickBooleanType MagickLevelImageChannel(MagickWand *wand,
   status=LevelImageChannel(wand->images,channel,black_point,white_point,gamma);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -6835,7 +6835,7 @@ WandExport MagickBooleanType MagickLinearStretchImage(MagickWand *wand,
   status=LinearStretchImage(wand->images,black_point,white_point);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -7088,7 +7088,7 @@ WandExport MagickBooleanType MagickModulateImage(MagickWand *wand,
   status=ModulateImage(wand->images,modulate);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -7295,7 +7295,7 @@ WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
 
   status=MagickMorphologyImageChannel(wand,DefaultChannels,method,iterations,
     kernel);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
@@ -7368,7 +7368,7 @@ WandExport MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
     status;
 
   status=MagickMotionBlurImageChannel(wand,DefaultChannels,radius,sigma,angle);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickMotionBlurImageChannel(MagickWand *wand,
@@ -7434,7 +7434,7 @@ WandExport MagickBooleanType MagickNegateImage(MagickWand *wand,
     status;
 
   status=MagickNegateImageChannel(wand,DefaultChannels,gray);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickNegateImageChannel(MagickWand *wand,
@@ -7452,7 +7452,7 @@ WandExport MagickBooleanType MagickNegateImageChannel(MagickWand *wand,
   status=NegateImageChannel(wand->images,channel,gray);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -7603,7 +7603,7 @@ WandExport MagickBooleanType MagickNormalizeImage(MagickWand *wand)
     status;
 
   status=MagickNormalizeImageChannel(wand,DefaultChannels);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickNormalizeImageChannel(MagickWand *wand,
@@ -7621,7 +7621,7 @@ WandExport MagickBooleanType MagickNormalizeImageChannel(MagickWand *wand,
   status=NormalizeImageChannel(wand->images,channel);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -7723,7 +7723,7 @@ WandExport MagickBooleanType MagickOpaquePaintImage(MagickWand *wand,
 
   status=MagickOpaquePaintImageChannel(wand,DefaultChannels,target,fill,fuzz,
     invert);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickOpaquePaintImageChannel(MagickWand *wand,
@@ -7750,7 +7750,7 @@ WandExport MagickBooleanType MagickOpaquePaintImageChannel(MagickWand *wand,
     &fill_pixel,invert);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -7892,7 +7892,7 @@ WandExport MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,
     status;
 
   status=MagickOrderedPosterizeImageChannel(wand,DefaultChannels,threshold_map);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickOrderedPosterizeImageChannel(
@@ -7909,7 +7909,7 @@ WandExport MagickBooleanType MagickOrderedPosterizeImageChannel(
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=OrderedPosterizeImageChannel(wand->images,channel,threshold_map,
     wand->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -8154,7 +8154,7 @@ WandExport MagickBooleanType MagickPosterizeImage(MagickWand *wand,
   status=PosterizeImage(wand->images,levels,dither);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -8340,7 +8340,7 @@ WandExport MagickBooleanType MagickQuantizeImage(MagickWand *wand,
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -8421,7 +8421,7 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -8460,7 +8460,7 @@ WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
     status;
 
   status=MagickRadialBlurImageChannel(wand,DefaultChannels,angle);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickRadialBlurImageChannel(MagickWand *wand,
@@ -8538,7 +8538,7 @@ WandExport MagickBooleanType MagickRaiseImage(MagickWand *wand,
   status=RaiseImage(wand->images,&raise_info,raise);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -8581,7 +8581,7 @@ WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
     status;
 
   status=MagickRandomThresholdImageChannel(wand,DefaultChannels,low,high);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickRandomThresholdImageChannel(MagickWand *wand,
@@ -8604,7 +8604,7 @@ WandExport MagickBooleanType MagickRandomThresholdImageChannel(MagickWand *wand,
     wand->exception);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -8801,7 +8801,7 @@ WandExport MagickBooleanType MagickRemapImage(MagickWand *wand,
   quantize_info=DestroyQuantizeInfo(quantize_info);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -9255,7 +9255,7 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
     smooth_threshold);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -9305,7 +9305,7 @@ WandExport MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
 
   status=MagickSelectiveBlurImageChannel(wand,DefaultChannels,radius,sigma,
     threshold);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickSelectiveBlurImageChannel(MagickWand *wand,
@@ -9371,7 +9371,7 @@ WandExport MagickBooleanType MagickSeparateImageChannel(MagickWand *wand,
   status=SeparateImageChannel(wand->images,channel);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -9788,7 +9788,7 @@ WandExport MagickBooleanType MagickSetImageColor(MagickWand *wand,
   status=SetImageColor(wand->images,&pixel);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -10669,7 +10669,7 @@ WandExport MagickBooleanType MagickSetImageOpacity(MagickWand *wand,
     QuantumRange-QuantumRange*alpha));
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -11315,7 +11315,7 @@ WandExport MagickBooleanType MagickSharpenImage(MagickWand *wand,
     status;
 
   status=MagickSharpenImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickSharpenImageChannel(MagickWand *wand,
@@ -11500,7 +11500,7 @@ WandExport MagickBooleanType MagickSigmoidalContrastImage(MagickWand *wand,
 
   status=MagickSigmoidalContrastImageChannel(wand,DefaultChannels,sharpen,
     alpha,beta);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickSigmoidalContrastImageChannel(
@@ -11519,7 +11519,7 @@ WandExport MagickBooleanType MagickSigmoidalContrastImageChannel(
   status=SigmoidalContrastImageChannel(wand->images,channel,sharpen,alpha,beta);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -11717,7 +11717,7 @@ WandExport MagickBooleanType MagickSolarizeImage(MagickWand *wand,
     status;
 
   status=MagickSolarizeImageChannel(wand,DefaultChannels,threshold);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickSolarizeImageChannel(MagickWand *wand,
@@ -11733,7 +11733,7 @@ WandExport MagickBooleanType MagickSolarizeImageChannel(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SolarizeImageChannel(wand->images,channel,threshold,wand->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -11954,7 +11954,7 @@ WandExport MagickBooleanType MagickStatisticImage(MagickWand *wand,
     status;
 
   status=MagickStatisticImageChannel(wand,DefaultChannels,type,width,height);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickStatisticImageChannel(MagickWand *wand,
@@ -12118,7 +12118,7 @@ WandExport MagickBooleanType MagickStripImage(MagickWand *wand)
   status=StripImage(wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -12263,7 +12263,7 @@ WandExport MagickBooleanType MagickThresholdImage(MagickWand *wand,
     status;
 
   status=MagickThresholdImageChannel(wand,DefaultChannels,threshold);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickThresholdImageChannel(MagickWand *wand,
@@ -12281,7 +12281,7 @@ WandExport MagickBooleanType MagickThresholdImageChannel(MagickWand *wand,
   status=BilevelImageChannel(wand->images,channel,threshold);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -12560,7 +12560,7 @@ WandExport MagickBooleanType MagickTransparentPaintImage(MagickWand *wand,
     (MagickRealType) QuantumRange-QuantumRange*alpha),invert);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -12785,7 +12785,7 @@ WandExport MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
 
   status=MagickUnsharpMaskImageChannel(wand,DefaultChannels,radius,sigma,
     amount,threshold);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 WandExport MagickBooleanType MagickUnsharpMaskImageChannel(MagickWand *wand,
@@ -12955,7 +12955,7 @@ WandExport MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
   status=WhiteThresholdImage(wand->images,thresholds);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -13016,7 +13016,7 @@ WandExport MagickBooleanType MagickWriteImage(MagickWand *wand,
     InheritException(wand->exception,&image->exception);
   image=DestroyImage(image);
   write_info=DestroyImageInfo(write_info);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -13072,7 +13072,7 @@ WandExport MagickBooleanType MagickWriteImageFile(MagickWand *wand,FILE *file)
   if (status == MagickFalse)
     InheritException(wand->exception,&image->exception);
   image=DestroyImage(image);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -13123,7 +13123,7 @@ WandExport MagickBooleanType MagickWriteImages(MagickWand *wand,
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   write_info=DestroyImageInfo(write_info);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -13172,5 +13172,5 @@ WandExport MagickBooleanType MagickWriteImagesFile(MagickWand *wand,FILE *file)
   write_info=DestroyImageInfo(write_info);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }

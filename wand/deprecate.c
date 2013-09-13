@@ -475,7 +475,7 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -681,7 +681,7 @@ WandExport MagickBooleanType GetPixelViewIterator(PixelView *source,
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1178,7 +1178,7 @@ WandExport MagickBooleanType MagickColorFloodfillImage(MagickWand *wand,
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1351,7 +1351,7 @@ WandExport MagickBooleanType MagickGetImageChannelExtrema(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageChannelExtrema(wand->images,channel,minima,maxima,
     wand->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1394,7 +1394,7 @@ WandExport MagickBooleanType MagickGetImageExtrema(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageExtrema(wand->images,minima,maxima,wand->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1570,7 +1570,7 @@ WandExport MagickBooleanType MagickMapImage(MagickWand *wand,
   status=MapImage(wand->images,map_wand->images,dither);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1645,7 +1645,7 @@ WandExport MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1914,7 +1914,7 @@ WandExport MagickBooleanType MagickPaintFloodfillImage(MagickWand *wand,
 
   status=MagickFloodfillPaintImage(wand,channel,fill,fuzz,bordercolor,x,y,
     MagickFalse);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1973,7 +1973,7 @@ WandExport MagickBooleanType MagickPaintOpaqueImageChannel(MagickWand *wand,
 
   status=MagickOpaquePaintImageChannel(wand,channel,target,fill,fuzz,
     MagickFalse);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2782,7 +2782,7 @@ WandExport MagickBooleanType SetPixelViewIterator(PixelView *destination,
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2953,7 +2953,7 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -3086,6 +3086,6 @@ WandExport MagickBooleanType UpdatePixelViewIterator(PixelView *source,
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 #endif

@@ -64,6 +64,9 @@ static int CompareMain(int argc,char **argv)
   char
     *metadata;
 
+  const char
+    *option;
+
   ExceptionInfo
     *exception;
 
@@ -71,6 +74,7 @@ static int CompareMain(int argc,char **argv)
     *image_info;
 
   MagickBooleanType
+    dissimilar,
     status;
 
   MagickCoreGenesis(*argv,MagickTrue);
@@ -81,10 +85,14 @@ static int CompareMain(int argc,char **argv)
     &metadata,exception);
   if (metadata != (char *) NULL)
     metadata=DestroyString(metadata);
+  option=GetImageOption(image_info,"compare:dissimilar");
+  dissimilar=IsMagickTrue(option);
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
-  return(status);
+  if (dissimilar != MagickFalse)
+    return(1);
+  return(status == MagickFalse ? 0 : 2);
 }
 
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
@@ -109,6 +117,6 @@ int wmain(int argc,wchar_t *argv[])
   for (i=0; i < argc; i++)
     utf8[i]=DestroyString(utf8[i]);
   utf8=(char **) RelinquishMagickMemory(utf8);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 #endif
