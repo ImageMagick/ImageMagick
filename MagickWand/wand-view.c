@@ -381,7 +381,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -588,7 +588,7 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -998,7 +998,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1160,7 +1160,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -1293,5 +1293,5 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
           status=MagickFalse;
       }
   }
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }

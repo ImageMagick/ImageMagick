@@ -1224,10 +1224,10 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       (metric == UndefinedErrorMetric))
     {
       if (fabs(distortion-1.0) > CompareEpsilon)
-        return(MagickTrue);
+        (void) SetImageOption(image_info,"compare:dissimilar","true");
     }
   else
     if (fabs(distortion) > CompareEpsilon)
-      return(MagickTrue);
+      (void) SetImageOption(image_info,"compare:dissimilar","true");
   return(status != 0 ? MagickTrue : MagickFalse);
 }

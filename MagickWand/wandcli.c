@@ -253,7 +253,7 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
   if ( IfMagickFalse(status) || IfMagickTrue(all_exceptions) )
     CatchException(cli_wand->wand.exception); /* output and clear exceptions */
 
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -299,7 +299,7 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
   va_end(operands);
 
 
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -349,5 +349,5 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
               module,function,line,
               severity,tag,new_format,operands);
   va_end(operands);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
