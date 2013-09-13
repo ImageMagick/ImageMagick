@@ -228,6 +228,9 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
     *reconstruct_image,
     *similarity_image;
 
+  ImageInfo
+    *restore_info;
+
   ImageStack
     image_stack[MaxImageStackDepth+1];
 
@@ -273,6 +276,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
     }
   if (argc < 3)
     return(CompareUsage());
+  restore_info=image_info;
   channels=CompositeChannels;
   difference_image=NewImageList();
   similarity_image=NewImageList();
@@ -1241,14 +1245,15 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       difference_image=DestroyImageList(difference_image);
     }
   DestroyCompare();
+  image_info=restore_info;
   if ((metric == NormalizedCrossCorrelationErrorMetric) ||
       (metric == UndefinedErrorMetric))
     {
       if (fabs(distortion-1.0) > CompareEpsilon)
-        return(MagickTrue);
+        (void) SetImageOption(image_info,"compare:dissimilar","true");
     }
   else
     if (fabs(distortion) > CompareEpsilon)
-      return(MagickTrue);
+      (void) SetImageOption(image_info,"compare:dissimilar","true");
   return(status != 0 ? MagickTrue : MagickFalse);
 }

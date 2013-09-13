@@ -4320,7 +4320,7 @@ WandExport MagickBooleanType DrawRender(DrawingWand *wand)
   status=DrawImage(wand->image,CurrentContext);
   InheritException(wand->exception,&wand->image->exception);
   CurrentContext->primitive=(char *) NULL;
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*

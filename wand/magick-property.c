@@ -1738,7 +1738,7 @@ WandExport MagickBooleanType MagickProfileImage(MagickWand *wand,
   status=ProfileImage(wand->images,name,profile,length,MagickTrue);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2214,7 +2214,7 @@ WandExport MagickBooleanType MagickSetGravity(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   status=SetImageOption(wand->image_info,"gravity",CommandOptionToMnemonic(
     MagickGravityOptions,(ssize_t) type));
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2259,7 +2259,7 @@ WandExport MagickBooleanType MagickSetImageArtifact(MagickWand *wand,
   status=SetImageArtifact(wand->images,artifact,value);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2315,7 +2315,7 @@ WandExport MagickBooleanType MagickSetImageProfile(MagickWand *wand,
   profile_info=DestroyStringInfo(profile_info);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2360,7 +2360,7 @@ WandExport MagickBooleanType MagickSetImageProperty(MagickWand *wand,
   status=SetImageProperty(wand->images,property,value);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
@@ -2437,7 +2437,7 @@ WandExport MagickBooleanType MagickSetInterpolateMethod(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   status=SetImageOption(wand->image_info,"interpolate",
     CommandOptionToMnemonic(MagickInterpolateOptions,(ssize_t) method));
-  return(status);
+  return(status == MagickFalse ? 0 : 1);
 }
 
 /*
