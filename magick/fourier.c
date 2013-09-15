@@ -43,6 +43,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/artifact.h"
 #include "magick/blob.h"
 #include "magick/cache.h"
 #include "magick/image.h"
@@ -53,6 +54,7 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/pixel-accessor.h"
+#include "magick/pixel-private.h"
 #include "magick/property.h"
 #include "magick/quantum-private.h"
 #include "magick/resource_.h"
@@ -427,8 +429,10 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   CacheView
     *image_view;
 
+  const char
+    *value;
+
   double
-    gamma,
     *source_pixels;
 
   fftw_complex
@@ -536,22 +540,29 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   fftw_execute(fftw_r2c_plan);
   fftw_destroy_plan(fftw_r2c_plan);
   source_info=(MemoryInfo *) RelinquishVirtualMemory(source_info);
-  /*
-    Normalize Fourier transform.
-  */
-  i=0L;
-  gamma=PerceptibleReciprocal((double) fourier_info->width*
-    fourier_info->height);
-  for (y=0L; y < (ssize_t) fourier_info->height; y++)
-    for (x=0L; x < (ssize_t) fourier_info->center; x++)
+  value=GetImageArtifact(image,"fourier:normalize");
+  if ((value == (const char *) NULL) || (LocaleCompare(value,"fft") == 0))
     {
+      double
+        gamma;
+
+      /*
+        Normalize inverse transform.
+      */
+      i=0L;
+      gamma=PerceptibleReciprocal((double) fourier_info->width*
+        fourier_info->height);
+      for (y=0L; y < (ssize_t) fourier_info->height; y++)
+        for (x=0L; x < (ssize_t) fourier_info->center; x++)
+        {
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
-      forward_pixels[i]*=gamma;
+          forward_pixels[i]*=gamma;
 #else
-      forward_pixels[i][0]*=gamma;
-      forward_pixels[i][1]*=gamma;
+          forward_pixels[i][0]*=gamma;
+          forward_pixels[i][1]*=gamma;
 #endif
-      i++;
+          i++;
+        }
     }
   /*
     Generate magnitude and phase (or real and imaginary).
@@ -1060,6 +1071,9 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   double
     *source_pixels;
 
+  const char
+    *value;
+
   fftw_plan
     fftw_c2r_plan;
 
@@ -1088,6 +1102,30 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
       return(MagickFalse);
     }
   source_pixels=(double *) GetVirtualMemoryBlob(source_info);
+  value=GetImageArtifact(image,"fourier:normalize");
+  if ((value == (const char *) NULL) || (LocaleCompare(value,"ift") == 0))
+    {
+      double
+        gamma;
+
+      /*
+        Normalize Fourier transform.
+      */
+      i=0L;
+      gamma=PerceptibleReciprocal((double) fourier_info->width*
+        fourier_info->height);
+      for (y=0L; y < (ssize_t) fourier_info->height; y++)
+        for (x=0L; x < (ssize_t) fourier_info->center; x++)
+        {
+#if defined(MAGICKCORE_HAVE_COMPLEX_H)
+          fourier_pixels[i]*=gamma;
+#else
+          fourier_pixels[i][0]*=gamma;
+          fourier_pixels[i][1]*=gamma;
+#endif
+          i++;
+        }
+    }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_InverseFourierTransform)
 #endif
