@@ -548,8 +548,8 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
       forward_pixels[i]*=gamma;
 #else
-      forward_pixels[i][0]/=gamma;
-      forward_pixels[i][1]/=gamma;
+      forward_pixels[i][0]*=gamma;
+      forward_pixels[i][1]*=gamma;
 #endif
       i++;
     }
