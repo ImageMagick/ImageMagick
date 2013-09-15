@@ -1103,7 +1103,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
     }
   source_pixels=(double *) GetVirtualMemoryBlob(source_info);
   value=GetImageArtifact(image,"fourier:normalize");
-  if ((value == (const char *) NULL) || (LocaleCompare(value,"ift") == 0))
+  if (LocaleCompare(value,"ift") == 0)
     {
       double
         gamma;
