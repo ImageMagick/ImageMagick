@@ -423,7 +423,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     *image_view;
 
   double
-    n,
+    gamma,
     *source_pixels;
 
   fftw_complex
@@ -525,16 +525,17 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   /*
     Normalize Fourier transform.
   */
-  n=(double) fourier_info->width*(double) fourier_info->height;
   i=0L;
+  gamma=PerceptibleReciprocal((double) fourier_info->width*
+    fourier_info->height);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
     for (x=0L; x < (ssize_t) fourier_info->center; x++)
     {
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
-      forward_pixels[i]/=n;
+      forward_pixels[i]*=gamma;
 #else
-      forward_pixels[i][0]/=n;
-      forward_pixels[i][1]/=n;
+      forward_pixels[i][0]*=gamma;
+      forward_pixels[i][1]*=gamma;
 #endif
       i++;
     }
