@@ -13,6 +13,10 @@
     -define identify:limit=7 rose).
   * Column columns / rows no longer inverted for RGF image format (patch
     from Brian Wheeler <bdwheele@india...>.
+  * 16bit PSD images might have a 65536 colormap (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24102).
+  * Ascii map is now declare as AsciiMap (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24106).
 
 2013-08-26  6.8.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-9, SVN revision 13087.
