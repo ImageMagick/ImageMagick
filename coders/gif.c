@@ -397,9 +397,6 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
   int
     c;
 
-  InterlaceType
-    interlace;
-
   LZWInfo
     *lzw_info;
 
@@ -428,9 +425,6 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   exception=(&image->exception);
-  interlace=image->interlace;
-  if (image->rows < 8)
-    interlace=NoInterlace;
   pass=0;
   offset=0;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -465,40 +459,26 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
       break;
     if (x < (ssize_t) image->columns)
       break;
-    if (interlace == NoInterlace)
+    if (image->interlace == NoInterlace)
       offset++;
     else
+    {
       switch (pass)
       {
         case 0:
         default:
         {
           offset+=8;
-          if (offset >= (ssize_t) image->rows)
-            {
-              pass++;
-              offset=4;
-            }
           break;
         }
         case 1:
         {
           offset+=8;
-          if (offset >= (ssize_t) image->rows)
-            {
-              pass++;
-              offset=2;
-            }
           break;
         }
         case 2:
         {
           offset+=4;
-          if (offset >= (ssize_t) image->rows)
-            {
-              pass++;
-              offset=1;
-            }
           break;
         }
         case 3:
@@ -507,6 +487,19 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
           break;
         }
       }
+      if (pass == 0 && offset >= (ssize_t) image->rows) {
+        pass++;
+        offset=4;
+      }
+      if (pass == 1 && offset >= (ssize_t) image->rows) {
+        pass++;
+        offset=2;
+      }
+      if (pass == 2 && offset >= (ssize_t) image->rows) {
+        pass++;
+        offset=1;
+      }
+    }
   }
   lzw_info=RelinquishLZWInfo(lzw_info);
   if (y < (ssize_t) image->rows)
