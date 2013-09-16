@@ -456,45 +456,47 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
     if (image->interlace == NoInterlace)
       offset++;
     else
-      switch (pass)
       {
-        case 0:
-        default:
+        switch (pass)
         {
-          offset+=8;
-          if (offset >= (ssize_t) image->rows)
-            {
-              pass++;
-              offset=4;
-            }
-          break;
+          case 0:
+          default:
+          {
+            offset+=8;
+            break;
+          }
+          case 1:
+          {
+            offset+=8;
+            break;
+          }
+          case 2:
+          {
+            offset+=4;
+            break;
+          }
+          case 3:
+          {
+            offset+=2;
+            break;
+          }
         }
-        case 1:
+      if ((pass == 0) && (offset >= (ssize_t) image->rows))
         {
-          offset+=8;
-          if (offset >= (ssize_t) image->rows)
-            {
-              pass++;
-              offset=2;
-            }
-          break;
+          pass++;
+          offset=4;
         }
-        case 2:
+      if ((pass == 1) && (offset >= (ssize_t) image->rows))
         {
-          offset+=4;
-          if (offset >= (ssize_t) image->rows)
-            {
-              pass++;
-              offset=1;
-            }
-          break;
+          pass++;
+          offset=2;
         }
-        case 3:
+      if ((pass == 2) && (offset >= (ssize_t) image->rows))
         {
-          offset+=2;
-          break;
+          pass++;
+          offset=1;
         }
-      }
+    }
   }
   lzw_info=RelinquishLZWInfo(lzw_info);
   if (y < (ssize_t) image->rows)

@@ -849,7 +849,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (psd_info.mode == DuotoneMode))
     {
       psd_info.color_channels=1;
-      if (AcquireImageColormap(image,256,exception) == MagickFalse)
+      if (AcquireImageColormap(image,psd_info.depth != 16 ? 256 : 65536,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       image->alpha_trait=psd_info.channels >= 2 ? BlendPixelTrait : 
         UndefinedPixelTrait;
