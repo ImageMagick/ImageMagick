@@ -851,7 +851,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (psd_info.mode == DuotoneMode))
     {
       psd_info.color_channels=1;
-      if (AcquireImageColormap(image,psd_info.depth != 16 ? 256 : 65536) == MagickFalse)
+      status=AcquireImageColormap(image,psd_info.depth != 16 ? 256 : 65536);
+      if (status == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
