@@ -65,13 +65,12 @@ namespace Magick
 
   private:
 
+    std::string _name;
     std::string _description;
+    std::string _mimeType;
     bool        _isReadable;
     bool        _isWritable;
     bool        _isMultiFrame;
-    std::string _mimeType;
-    std::string _name;
-
   };
 } // namespace Magick
 
