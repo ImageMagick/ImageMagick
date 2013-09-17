@@ -1577,7 +1577,8 @@ MagickPrivate void *NTOpenLibrary(const char *filename)
   void
     *handle;
 
-  mode=SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
+  mode=GetErrorMode();
+  mode=SetErrorMode(mode | SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
   handle=(void *) LoadLibraryEx(filename,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
   if ((handle != (void *) NULL) || (GetSearchPath() == (char *) NULL))
     {
