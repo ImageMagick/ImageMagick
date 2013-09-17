@@ -2606,14 +2606,14 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
       (image->rows & (image->rows - 1)) == 0)
     {
       option=GetImageOption(image_info,"dds:mipmaps");
-      if (option == (char *) NULL)
+      if (option != (char *) NULL)
         maxMipmaps=StringToUnsignedLong(option);
 
       if (maxMipmaps != 0)
         {
           columns=image->columns;
           rows=image->rows;
-          while (columns != 1 || rows != 1 && mipmaps != maxMipmaps)
+          while (columns != 1 && rows != 1 && mipmaps != maxMipmaps)
           {
             columns=DIV2(columns);
             rows=DIV2(rows);
