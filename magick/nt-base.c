@@ -1017,8 +1017,16 @@ static BOOL NTIs64BitPlatform()
 #if defined(_WIN64) || !defined(KEY_WOW64_32KEY)
   return(TRUE);
 #else
+#if defined(__MINGW32__) || defined(__MINGW64__)
+#if defined(__MINGW32__)
+  return(FALSE);
+#else
+  return(TRUE);
+#endif
+#else
   BOOL is64=FALSE;
   return(IsWow64Process(GetCurrentProcess(), &is64) && is64);
+#endif
 #endif
 }
 
