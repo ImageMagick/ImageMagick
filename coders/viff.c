@@ -394,9 +394,12 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             /*
               Create linear color ramp.
             */
-            image->colors=image->depth <= 8 ? 256UL : 65536UL;
             if (viff_info.data_storage_type == VFF_TYP_BIT)
               image->colors=2;
+            else if (viff_info.data_storage_type == VFF_MAPTYP_1_BYTE)
+              image->colors=256UL;
+            else
+              image->colors=image->depth <= 8 ? 256UL : 65536UL;
             if (AcquireImageColormap(image,image->colors) == MagickFalse)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
