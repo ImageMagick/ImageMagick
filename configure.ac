@@ -3216,14 +3216,12 @@ AutotraceDecodeDelegateDefault='autotrace'
 BlenderDecodeDelegateDefault='blender'
 BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='xdg-open'
-CGMDecodeDelegateDefault='ralcgm'
 CatDelegateDefault='cat'
 DNGDecodeDelegateDefault='ufraw-batch'
 GVCDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
 EchoDelegateDefault='echo'
 EditorDelegateDefault='xterm'
-FIGDecodeDelegateDefault='fig2dev'
 ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
 DisplayDelegateDefault=`echo display | sed ${configure_transform_name}`
 MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
@@ -3271,14 +3269,12 @@ AC_PATH_PROG(AutotraceDecodeDelegate, "$AutotraceDecodeDelegateDefault", "$Autot
 AC_PATH_PROG(BlenderDecodeDelegate, "$BlenderDecodeDelegateDefault", "$BlenderDecodeDelegateDefault")
 AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
 AC_PATH_PROGS(BrowseDelegate, "$BrowseDelegateDefault" google-chrome firefox konqueror mozilla lynx, "$BrowseDelegateDefault")
-AC_PATH_PROG(CGMDecodeDelegate, "$CGMDecodeDelegateDefault", "$CGMDecodeDelegateDefault")
 AC_PATH_PROG(CatDelegate, "$CatDelegateDefault", "$CatDelegateDefault")
 AC_PATH_PROG(DNGDecodeDelegate, "$DNGDecodeDelegateDefault", "$DNGDecodeDelegateDefault")
 AC_PATH_PROG(GVCDecodeDelegate, "$GVCDecodeDelegateDefault", "$GVCDecodeDelegateDefault")
 AC_PATH_PROG(DVIDecodeDelegate, "$DVIDecodeDelegateDefault", "$DVIDecodeDelegateDefault")
 AC_PATH_PROG(EchoDelegate, "$EchoDelegateDefault", "$EchoDelegateDefault")
 AC_PATH_PROG(EditorDelegate, "$EditorDelegateDefault", "$EditorDelegateDefault")
-AC_PATH_PROG(FIGDecodeDelegate, "$FIGDecodeDelegateDefault", "$FIGDecodeDelegateDefault")
 AC_PATH_PROG(ConvertDelegate, "$ConvertDelegateDefault", "$ConvertDelegateDefault")
 AC_PATH_PROG(DisplayDelegate, "$DisplayDelegateDefault", "$DisplayDelegateDefault")
 AC_PATH_PROG(MogrifyDelegate, "$MogrifyDelegateDefault", "$MogrifyDelegateDefault")
@@ -3330,14 +3326,12 @@ MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
 
 # Set delegate booleans
 have_ffmpeg='no'; if test "$MPEGDecodeDelegate" != "$MPEGDecodeDelegateDefault" ; then have_ffmpeg='yes'; fi
-have_fig2dev='no'    ; if test "$FIGDecodeDelegate" != "$FIGDecodeDelegateDefault" ; then have_fig2dev='yes'; fi
 have_gs='no'         ; if test "$PSDelegate" != "$PSDelegateDefault"; then have_gs='yes'; fi
 have_hp2xx='no'      ; if test "$HPGLDecodeDelegate" !=  "$HPGLDecodeDelegateDefault" ; then have_hp2xx='yes'; fi
 have_ilbmtoppm='no'  ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefault" ; then have_ilbmtoppm='yes'; fi
 have_mrsid='no'; if test "$MrSIDDecodeDelegate" != "$MrSIDDecodeDelegateDefault" ; then have_mrsid='yes'; fi
 have_pcl='no'        ; if test "$PCLDelegate" != "$PCLDelegateDefault"; then have_pcl='yes'; fi
 have_ppmtoilbm='no'  ; if test "$ILBMEncodeDelegate" != "$ILBMEncodeDelegateDefault" ; then have_ppmtoilbm='yes'; fi
-have_ralcgm='no'     ; if test "$CGMDecodeDelegate" != "$CGMDecodeDelegateDefault" ; then have_ralcgm='yes'; fi
 have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then have_xps='yes'; fi
 
 #
@@ -3443,7 +3437,6 @@ if test "$with_frozenpaths" != 'yes'; then
   BlenderDecodeDelegate="$BlenderDecodeDelegateDefault"
   BZIPDelegate="$BZIPDelegateDefault"
   BrowseDelegate="$BrowseDelegateDefault"
-  CGMDecodeDelegate="$CGMDecodeDelegateDefault"
   CatDelegate="$CatDelegateDefault"
   ConvertDelegate="$ConvertDelegateDefault"
   DisplayDelegate="$DisplayDelegateDefault"
@@ -3451,7 +3444,6 @@ if test "$with_frozenpaths" != 'yes'; then
   DVIDecodeDelegate="$DVIDecodeDelegateDefault"
   EchoDelegate="$EchoDelegateDefault"
   EditorDelegate="$EditorDelegateDefault"
-  FIGDecodeDelegate="$FIGDecodeDelegateDefault"
   GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
   GVCDecodeDelegate="$GVCDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
@@ -3493,14 +3485,12 @@ AC_SUBST(AutotraceDecodeDelegate)
 AC_SUBST(BlenderDecodeDelegate)
 AC_SUBST(BZIPDelegate)
 AC_SUBST(BrowseDelegate)
-AC_SUBST(CGMDecodeDelegate)
 AC_SUBST(CatDelegate)
 AC_SUBST(ConvertDelegate)
 AC_SUBST(GVCDecodeDelegate)
 AC_SUBST(DVIDecodeDelegate)
 AC_SUBST(EchoDelegate)
 AC_SUBST(EditorDelegate)
-AC_SUBST(FIGDecodeDelegate)
 AC_SUBST(GnuplotDecodeDelegate)
 AC_SUBST(HPGLDecodeDelegate)
 AC_SUBST(HTMLDecodeDelegate)
@@ -3832,9 +3822,6 @@ fi
 if test "$have_fftw"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES fftw"
 fi
-if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES xfig"
-fi
 if test "$have_fpx"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES fpx"
 fi
@@ -3885,9 +3872,6 @@ if test "$have_dps"    = 'yes' || \
 fi
 if test "$have_ps"     = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ps"
-fi
-if test "$have_ralcgm" = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES cgm"
 fi
 if test "$have_ra_ppm" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES rad"
