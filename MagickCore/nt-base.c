@@ -1574,9 +1574,7 @@ static UINT ChangeErrorMode(void)
   if (handle == (HMODULE) NULL)
     return SetErrorMode(mode);
 
-  if (getErrorMode == (GETERRORMODE) NULL)
-    getErrorMode=(GETERRORMODE) NTGetLibrarySymbol(handle,"GetErrorMode");
-
+  getErrorMode=(GETERRORMODE) NTGetLibrarySymbol(handle,"GetErrorMode");
   if (getErrorMode != (GETERRORMODE) NULL)
     mode=getErrorMode() | SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX;
 
