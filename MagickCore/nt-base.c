@@ -952,7 +952,7 @@ static int NTLocateGhostscript(DWORD flags,const char **product_family,int *majo
   /*
     Find the most recent version of Ghostscript.
   */
-  status=FALSE;
+  status=MagickFalse;
   *product_family=NULL;
   *major_version=5;
   *minor_version=49; /* min version of Ghostscript is 5.50 */
@@ -999,13 +999,13 @@ static int NTLocateGhostscript(DWORD flags,const char **product_family,int *majo
               *product_family=products[i];
               *major_version=major;
               *minor_version=minor;
-              status=TRUE;
+              status=MagickTrue;
             }
        }
        (void) RegCloseKey(hkey);
      }
   }
-  if (status == FALSE)
+  if (status == MagickFalse)
     {
       *major_version=0;
       *minor_version=0;
@@ -1545,7 +1545,7 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
 %
 */
 
-static const char *GetSearchPath( void )
+static inline const char *GetSearchPath(void)
 {
 #if defined(MAGICKCORE_LTDL_DELEGATE)
   return(lt_dlgetsearchpath());
@@ -1554,9 +1554,38 @@ static const char *GetSearchPath( void )
 #endif
 }
 
+static UINT ChangeErrorMode(void)
+{
+  typedef UINT
+    (CALLBACK *GETERRORMODE)(void);
+
+  GETERRORMODE
+    getErrorMode;
+
+  HMODULE
+    handle;
+
+  UINT
+    mode;
+
+  mode=SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX;
+
+  handle=GetModuleHandle("kernel32.dll");
+  if (handle == (HMODULE) NULL)
+    return SetErrorMode(mode);
+
+  if (getErrorMode == (GETERRORMODE) NULL)
+    getErrorMode=(GETERRORMODE) NTGetLibrarySymbol(handle,"GetErrorMode");
+
+  if (getErrorMode != (GETERRORMODE) NULL)
+    mode=getErrorMode() | SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX;
+
+  return SetErrorMode(mode);
+}
+
 MagickPrivate void *NTOpenLibrary(const char *filename)
 {
-#define MaxPathElements  31
+#define MaxPathElements 31
 
   char
     buffer[MaxTextExtent];
@@ -1577,10 +1606,7 @@ MagickPrivate void *NTOpenLibrary(const char *filename)
   void
     *handle;
 
-#if (_WIN32_WINNT >= 0x0600)
-  mode=GetErrorMode();
-#endif
-  mode=SetErrorMode(mode | SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
+  mode=ChangeErrorMode();
   handle=(void *) LoadLibraryEx(filename,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
   if ((handle != (void *) NULL) || (GetSearchPath() == (char *) NULL))
     {
