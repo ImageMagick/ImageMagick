@@ -132,6 +132,7 @@ static const CoderMapInfo
     { "H", "MAGICK" },
     { "HTM", "HTML" },
     { "HTTP", "URL" },
+    { "HTTPS", "URL" },
     { "ICB", "TGA" },
     { "ICC", "META" },
     { "ICM", "META" },
