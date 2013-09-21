@@ -70,7 +70,11 @@
 #  include <libxml/nanoftp.h>
 #  include <libxml/nanohttp.h>
 #endif
-
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
+    !(defined(__MINGW32__) || defined(__MINGW64__))
+#  include <urlmon.h>
+#endif
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -169,6 +173,18 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CopyMagickString(read_info->filename,image_info->filename+2,
         MaxTextExtent);
     }
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
+    !(defined(__MINGW32__) || defined(__MINGW64__))
+  (void) fclose(file);
+  if (URLDownloadToFile(NULL,filename,read_info->filename,NULL,NULL) != S_OK)
+    {
+      ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
+        filename);
+      (void) RelinquishUniqueFileResource(read_info->filename);
+      read_info=DestroyImageInfo(read_info);
+      return((Image *) NULL);
+    }
+#else
 #if defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_FTP_ENABLED)
   if (LocaleCompare(read_info->magick,"ftp") == 0)
     {
@@ -217,6 +233,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 #endif
   (void) fclose(file);
+#endif
   {
     ExceptionInfo
       *sans;
@@ -278,15 +295,28 @@ ModuleExport size_t RegisterURLImage(void)
     *entry;
 
   entry=SetMagickInfo("HTTP");
-#if defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_HTTP_ENABLED)
+#if (defined(MAGICKCORE_WINDOWS_SUPPORT) && \
+    !(defined(__MINGW32__) || defined(__MINGW64__))) || \
+    (defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_HTTP_ENABLED))
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
   entry->description=ConstantString("Uniform Resource Locator (http://)");
   entry->module=ConstantString("URL");
   entry->stealth=MagickTrue;
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("HTTPS");
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
+    !(defined(__MINGW32__) || defined(__MINGW64__))
+  entry->decoder=(DecodeImageHandler *) ReadURLImage;
+#endif
+  entry->description=ConstantString("Uniform Resource Locator (https://)");
+  entry->module=ConstantString("URL");
+  entry->stealth=MagickTrue;
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("FTP");
-#if defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_FTP_ENABLED)
+#if (defined(MAGICKCORE_WINDOWS_SUPPORT) && \
+    !(defined(__MINGW32__) || defined(__MINGW64__))) || \
+    (defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_FTP_ENABLED))
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
   entry->description=ConstantString("Uniform Resource Locator (ftp://)");
