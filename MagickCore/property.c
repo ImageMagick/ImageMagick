@@ -2826,6 +2826,14 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           string=image_info->unique;
           break;
         }
+      if (LocaleCompare("units",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          string=CommandOptionToMnemonic(MagickResolutionOptions,(ssize_t)
+            image->units);
+          break;
+        }
+      if (LocaleCompare("copyright",property) == 0)
       break;
     }
     case 'v':
