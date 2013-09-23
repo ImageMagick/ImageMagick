@@ -4786,7 +4786,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   exception=AcquireExceptionInfo();
   (void) QueryColorCompliance("#000F",AllCompliance,&draw_info->fill,
     exception);
-  (void) QueryColorCompliance("#FFF0",AllCompliance,&draw_info->stroke,
+  (void) QueryColorCompliance("#FFFF",AllCompliance,&draw_info->stroke,
     exception);
   draw_info->stroke_width=1.0;
   draw_info->alpha=OpaqueAlpha;
