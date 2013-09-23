@@ -2771,6 +2771,15 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           string=image_info->unique;
           break;
         }
+      if (LocaleCompare("units",property) == 0)
+        {
+          /*
+            Image resolution units.
+          */
+          string=CommandOptionToMnemonic(MagickResolutionOptions,(ssize_t)
+            image->units);
+          break;
+        }
       break;
     }
     case 'v':
