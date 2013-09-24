@@ -1,10 +1,10 @@
 body {
-  background: white;
-  color: black;
-  font-family: Candara, Sans-Serif;
-  margin: 0px;
-  padding: 0px;
-  font-size: 10pt;
+  margin:0;
+  font-family:Arial,sans-serif;
+  font-size:13px;
+  line-height:18.98px;
+  color:#616161;
+  background-color:#fff
 }
 
 a {
