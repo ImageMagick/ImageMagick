@@ -10288,7 +10288,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
      10's digit:
 
-        0: Use Z_HUFFMAN_ONLY strategy with the
+        0 or omitted: Use Z_HUFFMAN_ONLY strategy with the
            zlib default compression level
 
         1-9: the zlib compression level
@@ -10304,13 +10304,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         6:   libpng adaptive filtering
 
         7:   "LOCO" filtering (intrapixel differing) if writing
-             a MNG, othewise "none".  Did not work in IM-6.7.0-9
+             a MNG, otherwise "none".  Did not work in IM-6.7.0-9
              and earlier because of a missing "else".
 
-        8:   Z_RLE strategy, all filters
-             Unused prior to IM-6.7.0-10, was same as 6
+        8:   Z_RLE strategy (or Z_HUFFMAN_ONLY if quality < 10), adaptive
+             filtering. Unused prior to IM-6.7.0-10, was same as 6
 
-        9:   Z_RLE strategy, no PNG filters
+        9:   Z_RLE strategy (or Z_HUFFMAN_ONLY if quality < 10), no PNG filters
              Unused prior to IM-6.7.0-10, was same as 6
 
     Note that using the -quality option, not all combinations of
