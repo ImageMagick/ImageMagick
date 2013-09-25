@@ -2173,6 +2173,10 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.write_JFIF_header=MagickTrue;
       jpeg_info.X_density=(UINT16) floor(image->resolution.x+0.5);
       jpeg_info.Y_density=(UINT16) floor(image->resolution.y+0.5);
+      /*
+        Set image resolution units.
+      */
+      jpeg_info.density_unit=(UINT8) 0;
       if (image->units == PixelsPerInchResolution)
         jpeg_info.density_unit=(UINT8) 1;
       if (image->units == PixelsPerCentimeterResolution)
