@@ -2119,7 +2119,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.in_color_space=JCS_GRAYSCALE;
     }
   jpeg_set_defaults(&jpeg_info);
-  if (jpeg_info.in_color_space == JCS_CMYK) 
+  if (jpeg_info.in_color_space == JCS_CMYK)
     jpeg_set_colorspace(&jpeg_info,JCS_YCCK);
   if ((jpeg_info.data_precision != 12) && (image->depth <= 8))
     jpeg_info.data_precision=8;
@@ -2139,6 +2139,10 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.write_JFIF_header=MagickTrue;
       jpeg_info.X_density=(UINT16) floor(image->x_resolution+0.5);
       jpeg_info.Y_density=(UINT16) floor(image->y_resolution+0.5);
+      /*
+        Set image resolution units.
+      */
+      jpeg_info.density_unit=(UINT8) 0;
       if (image->units == PixelsPerInchResolution)
         jpeg_info.density_unit=(UINT8) 1;
       if (image->units == PixelsPerCentimeterResolution)
