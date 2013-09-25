@@ -3147,7 +3147,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
           default:
+          {
+            (void) FormatLocaleFile(stderr,"(%04x,%04x) %d %d "
+              "not found in dictionary",(int) group,(int) element,(int) length,
+              datum);
             break;
+          }
         }
         break;
       }
@@ -3377,6 +3382,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             break;
           }
+          default:
+          {
+            (void) FormatLocaleFile(stderr,"(%04x,%04x) %d %d "
+              "not found in dictionary",(int) group,(int) element,(int) length,
+              datum);
+            break;
+          }
         }
         break;
       }
@@ -3392,12 +3404,22 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
           default:
+          {
+            (void) FormatLocaleFile(stderr,"(%04x,%04x) %d %d "
+              "not found in dictionary",(int) group,(int) element,(int) length,
+              datum);
             break;
+          }
         }
         break;
       }
       default:
+      {
+        (void) FormatLocaleFile(stderr,"(%04x,%04x) %d %d "
+          "not found in dictionary",(int) group,(int) element,(int) length,
+          datum);
         break;
+      }
     }
     if (data != (unsigned char *) NULL)
       {
