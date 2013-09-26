@@ -2815,9 +2815,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickBooleanType
     explicit_file,
-    use_explicit,
     explicit_retry,
-    polarity;
+    polarity,
+    sequence,
+    use_explicit;
 
   MagickOffsetType
     offset;
@@ -2860,7 +2861,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     scene,
     window_center,
     y;
-
 
   unsigned char
     *data;
@@ -2923,6 +2923,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   number_scenes=1;
   samples_per_pixel=1;
   scale=(Quantum *) NULL;
+  sequence=MagickFalse;
   signed_data=(~0UL);
   significant_bits=0;
   use_explicit=MagickFalse;
@@ -2930,7 +2931,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   width=0;
   window_center=0;
   window_width=0;
-  for (group=0; (group != 0x7FE0) || (element != 0x0010); )
+  for (group=0; (group != 0x7FE0) || (element != 0x0010) ||
+                (sequence != MagickFalse); )
   {
     /*
       Read a group.
@@ -2952,9 +2954,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Check for "explicitness", but meta-file headers always explicit.
     */
     if ((explicit_file == MagickFalse) && (group != 0x0002))
-      explicit_file=(isupper((int) *explicit_vr) != MagickFalse) &&
-        (isupper((int) *(explicit_vr+1)) != MagickFalse) ? MagickTrue :
-        MagickFalse;
+      explicit_file=(isupper((unsigned char) *explicit_vr) != MagickFalse) &&
+        (isupper((unsigned char) *(explicit_vr+1)) != MagickFalse) ?
+        MagickTrue : MagickFalse;
     use_explicit=((group == 0x0002) && (explicit_retry == MagickFalse)) ||
       (explicit_file != MagickFalse) ? MagickTrue : MagickFalse;
     if ((use_explicit != MagickFalse) && (strcmp(implicit_vr,"xs") == 0))
@@ -3032,7 +3034,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) FormatLocaleFile(stdout," %s",dicom_info[i].description);
         (void) FormatLocaleFile(stdout,": ");
       }
-    if ((group == 0x7FE0) && (element == 0x0010))
+    if ((sequence == MagickFalse) && (group == 0x7FE0) && (element == 0x0010))
       {
         if (image_info->verbose != MagickFalse)
           (void) FormatLocaleFile(stdout,"\n");
@@ -3071,6 +3073,22 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               data[length*quantum]='\0';
             }
+          else
+            if (datum == 0xFFFFFFFF)
+              {
+                sequence=MagickTrue;
+                continue;
+              }
+
+    if (((group << 16) | element) == 0xFFFEE0DD)
+      {
+        sequence=MagickFalse;
+        continue;
+      }
+
+    if (sequence == MagickTrue)
+      continue;
+
     switch (group)
     {
       case 0x0002:
