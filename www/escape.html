@@ -179,13 +179,11 @@
 
 <div class="doc-section">
 
-<p>Images in memory a lot of extra data assocated with them, beyond the actual
-image data (cache) itself. This data can be very useful to users, either for
+<p>There is a copious amount of extra data assocated with images (metadata), beyond the actual image pixels. This metadata can be useful, either for
 display, or for various calculations, or in modifying the behaviour of later
 image processing operations.</p>
 
-<p>Percent Escapes (of Image Propertes) are used in a number of options, for
-example in <a href="command-line-options.html#format_identify_">-format</a> or in montage <a href="command-line-options.html#label">-label</a>, to print various properties and other settings associated with an
+<p>You can utilize percent escapes in a number of options, for example in <a href="command-line-options.html#format_identify_">-format</a> or in montage <a href="command-line-options.html#label">-label</a>, to print various properties and other settings associated with an
 image. </p>
 
 <table>
@@ -269,9 +267,9 @@ filename, type, width, height. </p>
 <pre class="text">
    \n   newline
    \r   carriage return
-  &amp;lt;  less-than character.
-  &amp;gt;  greater-than character.
-  &amp;amp; ampersand character.
+   &lt;    less-than character.
+   &gt;    greater-than character.
+   &amp;    ampersand character.
    %%   a percent sign
    %b   file size of image read in
    %c   comment meta-data property
@@ -345,11 +343,13 @@ when enclosed in braces (long form):</p>
    %[depth]                depth of image for write (as input unless changed)
    %[deskew:angle]         The deskew angle in degrees of rotation
    %[directory]            directory part of filename (as %d)
+   %[distortion]           how well an image resembles a reference image (<a href="command-line-options.html#compare">-compare</a>)
    %[extension]            extention part of filename (as %e)
    %[gamma]                value of image gamma
    %[group]                ??? window group ???
    %[height]               original height of image (when it was read in)
    %[kurtosis]             CALCULATED: kurtosis statistic of image
+   %[label]                label meta-data property
    %[magick]               coder used to read image (not the file suffix)
    %[max]                  CALCULATED: maximum value statistic of image
    %[mean]                 CALCULATED: average value statistic of image
@@ -366,6 +366,7 @@ when enclosed in braces (long form):</p>
    %[standard-deviation]   CALCULATED: standard-deviation statistic of image
    %[type]                 CALCULATED: image type
    %[unique]               unique temporary filename ???
+   %[units]                image resolution units
    %[version]              Version Information of this running ImageMagick
    %[width]                original width of image (when it was read in)
    %[zero]                 zero (unique filename for delegate use)
@@ -694,14 +695,15 @@ the following:</p>
 </pre>
 </div>
 
+
 </div>
 
 <div id="linkbar">
     <span id="linkbar-west"> </span>
 
     <span id="linkbar-center">
-      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
       <a href="../discourse-server">Discourse Server</a> •
+      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
       <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
       <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
