@@ -199,6 +199,7 @@ namespace MagickCore
 #      else
 #        pragma comment(lib, "ws2_32.lib")
 #      endif
+#      pragma comment(lib, "urlmon.lib")
 #    endif
 #  endif
 #else
