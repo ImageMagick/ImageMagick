@@ -1618,7 +1618,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  switch (image->colorspace)
+  switch (colorspace)
   {
     case CMYKColorspace:
     {
@@ -1817,7 +1817,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           X=QuantumScale*GetPixelRed(q);
           Y=QuantumScale*GetPixelGreen(q);
           Z=QuantumScale*GetPixelBlue(q);
-          switch (image->colorspace)
+          switch (colorspace)
           {
             case CMYColorspace:
             {
@@ -2132,7 +2132,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  switch (image->colorspace)
+  switch (colorspace)
   {
     case OHTAColorspace:
     {
@@ -2333,7 +2333,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x;
           pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y;
           pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z;
-          if (image->colorspace == YCCColorspace)
+          if (colorspace == YCCColorspace)
             {
               pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.red/
                 (double) MaxMap)];
@@ -2398,7 +2398,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x;
         pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y;
         pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z;
-        if (image->colorspace == YCCColorspace)
+        if (colorspace == YCCColorspace)
           {
             pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.red/
               (double) MaxMap)];
