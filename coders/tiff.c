@@ -713,11 +713,10 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         void
           *shorty;
 
+        shorty=(void *) NULL;
         if (exif_info[i].variable_length != 0)
           {
-            void
-              *shorty;
-
+            shorty=(void *) NULL;
             if (TIFFGetField(tiff,exif_info[i].tag,&sans,&shorty,&sans) != 0)
               (void) FormatLocaleString(value,MaxTextExtent,"%d",(int)
                 (*(uint16 *) shorty));
@@ -733,6 +732,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         void
           *longy;
 
+        longy=(void *) NULL;
         if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%d",
             (*(uint32 *) &longy));
@@ -744,6 +744,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         void
           *longy;
 
+        longy=(void *) NULL;
         if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             ((MagickOffsetType) (*(uint64 *) &longy)));
@@ -758,6 +759,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         void
           *rational;
 
+        rational=(void *) NULL;
         if (TIFFGetField(tiff,exif_info[i].tag,&rational,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
             *((float *) &rational));
