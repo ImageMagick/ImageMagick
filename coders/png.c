@@ -9262,8 +9262,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Merging two dark red background colors to 3-3-2-1");
 
-9196a9187,9190
-
       if (ScaleQuantumToChar(image->background_color.red) == 0x49 &&
           ScaleQuantumToChar(image->background_color.green) == 0x00 &&
           ScaleQuantumToChar(image->background_color.blue) == 0x00)
