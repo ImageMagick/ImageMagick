@@ -725,7 +725,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
           }
         if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%d",(int)
-            (uint16) shorty);
+            (*(uint16 *) &shorty));
         break;
       }
       case TIFF_LONG:
@@ -734,7 +734,8 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
           *longy;
 
         if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d", (uint32) longy);
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",
+            (*(uint32 *) &longy));
         break;
       }
 #if defined(TIFF_VERSION_BIG)
@@ -745,7 +746,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
 
         if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-            ((MagickOffsetType) (uint64) longy));
+            ((MagickOffsetType) (*(uint64 *) &longy)));
         break;
       }
 #endif
