@@ -246,16 +246,15 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetPixelGreen(chroma_pixels,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelGreen(chroma_pixels,ScaleShortToQuantum(
-                  ((*p) << 8) | *(p+1)));
+                SetPixelGreen(chroma_pixels,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
             if (quantum == 1)
               SetPixelRed(q,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelRed(q,ScaleShortToQuantum(((*p) << 8) |
-                  *(p+1)));
+                SetPixelRed(q,ScaleShortToQuantum(((*p) << 8) | *(p+1)));
                 p+=2;
               }
             SetPixelGreen(q,0);
@@ -267,16 +266,15 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetPixelBlue(chroma_pixels,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelBlue(chroma_pixels,ScaleShortToQuantum(
-                  ((*p) << 8) | *(p+1)));
+                SetPixelBlue(chroma_pixels,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
             if (quantum == 1)
               SetPixelRed(q,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelRed(q,ScaleShortToQuantum(((*p) << 8) |
-                  *(p+1)));
+                SetPixelRed(q,ScaleShortToQuantum(((*p) << 8) | *(p+1)));
                 p+=2;
               }
             chroma_pixels++;
@@ -297,8 +295,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetPixelRed(q,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelRed(q,ScaleShortToQuantum(((*p) << 8) |
-                  *(p+1)));
+                SetPixelRed(q,ScaleShortToQuantum(((*p) << 8) | *(p+1)));
                 p+=2;
               }
             SetPixelGreen(q,0);
@@ -347,8 +344,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetPixelGreen(q,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelGreen(q,ScaleShortToQuantum(((*p) << 8) |
-                  *(p+1)));
+                SetPixelGreen(q,ScaleShortToQuantum(((*p) << 8) | *(p+1)));
                 p+=2;
               }
             SetPixelBlue(q,0);
@@ -382,8 +378,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelBlue(q,ScaleCharToQuantum(*p++));
           else
             {
-              SetPixelBlue(q,ScaleShortToQuantum(((*p) << 8) |
-                *(p+1)));
+              SetPixelBlue(q,ScaleShortToQuantum(((*p) << 8) | *(p+1)));
               p+=2;
             }
           q++;
