@@ -200,8 +200,9 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   do
   {
-    chroma_image=CloneImage(image,image->columns/horizontal_factor,
-      image->rows/vertical_factor,MagickTrue,exception);
+    chroma_image=CloneImage(image,(image->columns + horizontal_factor - 1) /
+      horizontal_factor, (image->rows + vertical_factor - 1) / vertical_factor,
+      MagickTrue,exception);
     if (chroma_image == (Image *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     /*
