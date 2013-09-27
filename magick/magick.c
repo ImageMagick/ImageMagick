@@ -871,7 +871,6 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
               message=GetExceptionMessage(errno);
               ThrowFatalException(ResourceLimitFatalError,
                 "MemoryAllocationFailed");
-              message=DestroyString(message);
             }
 #if defined(MAGICKCORE_MODULES_SUPPORT)
           (void) GetModuleInfo((char *) NULL,exception);

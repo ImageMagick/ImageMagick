@@ -4171,13 +4171,14 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("combine",option+1) == 0)
+          {
             if (*option == '-')
               break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
-          break;
+          }
         if (LocaleCompare("comment",option+1) == 0)
           {
             if (*option == '+')
