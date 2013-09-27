@@ -1,3 +1,7 @@
+2013-09-27  6.8.7-1 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed problem with PNG8 reduction in coders/png.c (special case where
+    exactly 256 colors plus one transparent color are present).
+
 2013-09-26  6.8.7-1 Dirk Lemstra <dirk@snakeware...>
   * Fixed incorrect size of DICOM image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24135).
