@@ -1182,7 +1182,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   (void) DeleteImageProfile(image,"icc");
   (void) DeleteImageProfile(image,"icm");
   if (IssRGBColorspace(colorspace) != MagickFalse)
-    return(TransformRGBImage(image,colorspace));
+    return(TransformRGBImage(image,image->colorspace));
   status=MagickTrue;
   if (IssRGBColorspace(image->colorspace) == MagickFalse)
     status=TransformRGBImage(image,image->colorspace);
