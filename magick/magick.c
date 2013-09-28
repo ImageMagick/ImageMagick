@@ -864,14 +864,8 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
           magick_info->stealth=MagickTrue;
           status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
           if (status == MagickFalse)
-            {
-              char
-                *message;
-
-              message=GetExceptionMessage(errno);
-              ThrowFatalException(ResourceLimitFatalError,
-                "MemoryAllocationFailed");
-            }
+            ThrowFatalException(ResourceLimitFatalError,
+              "MemoryAllocationFailed");
 #if defined(MAGICKCORE_MODULES_SUPPORT)
           (void) GetModuleInfo((char *) NULL,exception);
 #endif
