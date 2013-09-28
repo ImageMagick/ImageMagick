@@ -824,7 +824,6 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
     i;
 
   size_t
-    length,
     memory_limit;
 
   ssize_t
@@ -992,11 +991,15 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
     quantum_type=GrayQuantum;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    size_t
+      length;
+
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
     length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
       quantum_type,pixels,&image->exception);
+    (void) length;
     fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
     if (fpx_status != FPX_OK)
       break;
