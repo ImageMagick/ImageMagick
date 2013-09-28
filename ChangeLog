@@ -46,6 +46,10 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24106).
   * Return label for identify -format "%l" (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24105).
+  * Add option to perform Fourier normalization in either the forward or
+    inverse transform (e.g -define fourier:normalize=inverse). The default
+    remains as it was in the forward transform (i.e. -define
+    fourier:normalize=forward)
 
 2013-08-26  6.8.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-9, SVN revision 13087.
