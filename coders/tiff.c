@@ -750,7 +750,6 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       case TIFF_RATIONAL:
       case TIFF_SRATIONAL:
       case TIFF_FLOAT:
-      case TIFF_DOUBLE:
       {
         float
           floaty;
@@ -758,6 +757,16 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         floaty=0.0;
         if (TIFFGetField(tiff,exif_info[i].tag,&floaty,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%g",(double) floaty);
+        break;
+      }
+      case TIFF_DOUBLE:
+      {
+        double
+          doubley;
+
+        doubley=0.0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&doubley,&sans,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",doubley);
         break;
       }
       default:
