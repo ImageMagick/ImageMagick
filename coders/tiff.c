@@ -761,7 +761,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
       }
       case TIFF_DOUBLE:
       {
-        float
+        double
           doubley;
 
         doubley=0.0;
