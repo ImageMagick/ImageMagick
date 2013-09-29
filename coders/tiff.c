@@ -710,44 +710,40 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       }
       case TIFF_SHORT:
       {
-        void
-          *shorty;
+        uint16
+          shorty;
 
-        shorty=(void *) NULL;
+        shorty=0;
         if (exif_info[i].variable_length != 0)
           {
-            shorty=(void *) NULL;
             if (TIFFGetField(tiff,exif_info[i].tag,&sans,&shorty,&sans) != 0)
-              (void) FormatLocaleString(value,MaxTextExtent,"%d",(int)
-                (*(uint16 *) shorty));
+              (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty);
             break;
           }
         if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d",(int)
-            (*(uint16 *) &shorty));
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty);
         break;
       }
       case TIFF_LONG:
       {
-        void
-          *longy;
+        uint32
+          longy;
 
-        longy=(void *) NULL;
+        longy=0;
         if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d",
-            (*(uint32 *) &longy));
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",longy);
         break;
       }
 #if defined(TIFF_VERSION_BIG)
       case TIFF_LONG8:
       {
-        void
-          *longy;
+        uint64
+          longy;
 
-        longy=(void *) NULL;
+        longy=0;
         if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-            ((MagickOffsetType) (*(uint64 *) &longy)));
+            ((MagickOffsetType) longy));
         break;
       }
 #endif
@@ -756,13 +752,12 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       case TIFF_FLOAT:
       case TIFF_DOUBLE:
       {
-        void
-          *rational;
+        float
+          floaty;
 
-        rational=(void *) NULL;
-        if (TIFFGetField(tiff,exif_info[i].tag,&rational,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",
-            *((float *) &rational));
+        floaty=0.0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&floaty,&sans,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",(double) floaty);
         break;
       }
       default:
