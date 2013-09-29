@@ -243,9 +243,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  Quantum
-    *scale;
-
   QuantumAny
     max_value;
 
@@ -254,9 +251,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   QuantumType
     quantum_type;
-
-  register ssize_t
-    i;
 
   size_t
     depth,
@@ -429,7 +423,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((image->columns == 0) || (image->rows == 0))
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
-    if (max_value >= 65536)
+    if (max_value >= 4294967295)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     for (depth=1; GetQuantumRange(depth) < max_value; depth++) ;
     image->depth=depth;
@@ -488,19 +482,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PGM image to pixel packets.
         */
         (void) SetImageColorspace(image,GRAYColorspace,exception);
-        scale=(Quantum *) NULL;
-        if (max_value != (1U*QuantumRange))
-          {
-            /*
-              Compute pixel scaling table.
-            */
-            scale=(Quantum *) AcquireQuantumMemory((size_t) max_value+1UL,
-              sizeof(*scale));
-            if (scale == (Quantum *) NULL)
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-            for (i=0; i <= (ssize_t) max_value; i++)
-              scale[i]=(Quantum) (((double) QuantumRange*i)/max_value+0.5);
-          }
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
@@ -514,11 +495,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            intensity=PNMInteger(image,10,exception);
-            SetPixelGray(image,(Quantum) intensity,q);
-            if (scale != (Quantum *) NULL)
-              SetPixelGray(image,scale[ConstrainPixel(image,(ssize_t) intensity,
-                (size_t) max_value,exception)],q);
+            intensity=ScaleAnyToQuantum(PNMInteger(image,10,exception),max_value);
+            SetPixelGray(image,intensity,q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -532,8 +510,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
         }
         image->type=GrayscaleType;
-        if (scale != (Quantum *) NULL)
-          scale=(Quantum *) RelinquishMagickMemory(scale);
         break;
       }
       case '3':
@@ -544,19 +520,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PNM image to pixel packets.
         */
-        scale=(Quantum *) NULL;
-        if (max_value != (1U*QuantumRange))
-          {
-            /*
-              Compute pixel scaling table.
-            */
-            scale=(Quantum *) AcquireQuantumMemory((size_t) max_value+1UL,
-              sizeof(*scale));
-            if (scale == (Quantum *) NULL)
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-            for (i=0; i <= (ssize_t) max_value; i++)
-              scale[i]=(Quantum) (((double) QuantumRange*i)/max_value+0.5);
-          }
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
@@ -570,21 +533,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            pixel.red=(double) PNMInteger(image,10,exception);
-            pixel.green=(double) PNMInteger(image,10,exception);
-            pixel.blue=(double) PNMInteger(image,10,exception);
-            if (scale != (Quantum *) NULL)
-              {
-                pixel.red=(double) scale[ConstrainPixel(image,(ssize_t)
-                  pixel.red,(size_t) max_value,exception)];
-                pixel.green=(double) scale[ConstrainPixel(image,
-                  (ssize_t) pixel.green,(size_t) max_value,exception)];
-                pixel.blue=(double) scale[ConstrainPixel(image,(ssize_t)
-                  pixel.blue,(size_t) max_value,exception)];
-              }
-            SetPixelRed(image,ClampToQuantum(pixel.red),q);
-            SetPixelGreen(image,ClampToQuantum(pixel.green),q);
-            SetPixelBlue(image,ClampToQuantum(pixel.blue),q);
+            double
+              pixel;
+
+            pixel=ScaleAnyToQuantum(PNMInteger(image,10,exception),max_value);
+            SetPixelRed(image,pixel,q);
+            pixel=ScaleAnyToQuantum(PNMInteger(image,10,exception),max_value);
+            SetPixelGreen(image,pixel,q);
+            pixel=ScaleAnyToQuantum(PNMInteger(image,10,exception),max_value);
+            SetPixelBlue(image,pixel,q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -597,8 +554,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
         }
-        if (scale != (Quantum *) NULL)
-          scale=(Quantum *) RelinquishMagickMemory(scale);
         break;
       }
       case '4':
@@ -680,7 +635,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         (void) SetImageColorspace(image,GRAYColorspace,exception);
         quantum_type=GrayQuantum;
-        extent=(image->depth <= 8 ? 1 : 2)*image->columns;
+        if (image->depth <= 8)
+          extent=image->columns;
+        else
+          if (image->depth <= 16)
+            extent=2*image->columns;
+          else
+            extent=4*image->columns;
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -732,34 +693,56 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               continue;
             }
           p=pixels;
-          if ((image->depth == 8) || (image->depth == 16))
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              quantum_type,pixels,exception);
-          else
-            if (image->depth <= 8)
-              {
-                unsigned char
-                  pixel;
+          switch (image->depth)
+          {
+            case 8:
+            case 16:
+            case 32:
+            {
+              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                quantum_type,pixels,exception);
+              break;
+            }
+            default:
+            {
+              unsigned int
+                pixel;
 
-                for (x=0; x < (ssize_t) image->columns; x++)
+              if (image->depth <= 8)
                 {
-                  p=PushCharPixel(p,&pixel);
-                  SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
-                  q+=GetPixelChannels(image);
-                }
-              }
-            else
-              {
-                unsigned short
-                  pixel;
+                  unsigned char
+                    pixel;
 
-                for (x=0; x < (ssize_t) image->columns; x++)
-                {
-                  p=PushShortPixel(MSBEndian,p,&pixel);
-                  SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
-                  q+=GetPixelChannels(image);
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    p=PushCharPixel(p,&pixel);
+                    SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    q+=GetPixelChannels(image);
+                  }
+                  break;
                 }
+              if (image->depth <= 16)
+                {
+                  unsigned short
+                    pixel;
+
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    p=PushShortPixel(MSBEndian,p,&pixel);
+                    SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    q+=GetPixelChannels(image);
+                  }
+                  break;
+                }
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                p=PushLongPixel(MSBEndian,p,&pixel);
+                SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
+                q+=GetPixelChannels(image);
               }
+              break;
+            }
+          }
           sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
             status=MagickFalse;
@@ -829,34 +812,61 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               continue;
             }
           p=pixels;
-          if (image->depth == 8)
-            for (x=0; x < (ssize_t) image->columns; x++)
+          switch (image->depth)
+          {
+            case 8:
             {
-              SetPixelRed(image,ScaleCharToQuantum(*p++),q);
-              SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
-              SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-              SetPixelAlpha(image,OpaqueAlpha,q);
-              q+=GetPixelChannels(image);
-            }
-          else
-            if (image->depth == 16)
+              for (x=0; x < (ssize_t) image->columns; x++)
               {
-                unsigned short
-                  pixel;
-
-                for (x=0; x < (ssize_t) image->columns; x++)
-                {
-                  p=PushShortPixel(MSBEndian,p,&pixel);
-                  SetPixelRed(image,ScaleShortToQuantum(pixel),q);
-                  p=PushShortPixel(MSBEndian,p,&pixel);
-                  SetPixelGreen(image,ScaleShortToQuantum(pixel),q);
-                  p=PushShortPixel(MSBEndian,p,&pixel);
-                  SetPixelBlue(image,ScaleShortToQuantum(pixel),q);
-                  SetPixelAlpha(image,OpaqueAlpha,q);
-                  q+=GetPixelChannels(image);
-                }
+                SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+                SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
+                SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+                SetPixelAlpha(image,OpaqueAlpha,q);
+                q+=GetPixelChannels(image);
               }
-            else
+              break;
+            }
+            case 16:
+            {
+              unsigned short
+                pixel;
+
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                p=PushShortPixel(MSBEndian,p,&pixel);
+                SetPixelRed(image,ScaleShortToQuantum(pixel),q);
+                p=PushShortPixel(MSBEndian,p,&pixel);
+                SetPixelGreen(image,ScaleShortToQuantum(pixel),q);
+                p=PushShortPixel(MSBEndian,p,&pixel);
+                SetPixelBlue(image,ScaleShortToQuantum(pixel),q);
+                SetPixelAlpha(image,OpaqueAlpha,q);
+                q+=GetPixelChannels(image);
+              }
+              break;
+            }
+            case 32:
+            {
+              unsigned int
+                pixel;
+
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                p=PushLongPixel(MSBEndian,p,&pixel);
+                SetPixelRed(image,ScaleLongToQuantum(pixel),q);
+                p=PushLongPixel(MSBEndian,p,&pixel);
+                SetPixelGreen(image,ScaleLongToQuantum(pixel),q);
+                p=PushLongPixel(MSBEndian,p,&pixel);
+                SetPixelBlue(image,ScaleLongToQuantum(pixel),q);
+                SetPixelAlpha(image,OpaqueAlpha,q);
+                q+=GetPixelChannels(image);
+              }
+              break;
+            }
+            default:
+            {
+              unsigned int
+                pixel;
+
               if (image->depth <= 8)
                 {
                   unsigned char
@@ -873,8 +883,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     SetPixelAlpha(image,OpaqueAlpha,q);
                     q+=GetPixelChannels(image);
                   }
+                  break;
                 }
-              else
+              if (image->depth <= 16)
                 {
                   unsigned short
                     pixel;
@@ -890,7 +901,22 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     SetPixelAlpha(image,OpaqueAlpha,q);
                     q+=GetPixelChannels(image);
                   }
+                  break;
                 }
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                p=PushLongPixel(MSBEndian,p,&pixel);
+                SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
+                p=PushLongPixel(MSBEndian,p,&pixel);
+                SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                p=PushLongPixel(MSBEndian,p,&pixel);
+                SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                SetPixelAlpha(image,OpaqueAlpha,q);
+                q+=GetPixelChannels(image);
+              }
+              break;
+            }
+          }
           sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
             status=MagickFalse;
@@ -930,7 +956,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         if (image->alpha_trait == BlendPixelTrait)
           channels++;
-        extent=channels*(image->depth <= 8 ? 1 : 2)*image->columns;
+        if (image->depth <= 8)
+          extent=channels*image->columns;
+        else
+          if (image->depth <= 16)
+            extent=2*channels*image->columns;
+          else
+            extent=4*channels*image->columns;
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -982,155 +1014,230 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               continue;
             }
           p=pixels;
-          if ((image->depth == 8) || (image->depth == 16))
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              quantum_type,pixels,exception);
-          else
-            switch (quantum_type)
+          switch (image->depth)
+          {
+            case 8:
+            case 16:
+            case 32:
             {
-              case GrayQuantum:
-              case GrayAlphaQuantum:
+              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                quantum_type,pixels,exception);
+              break;
+            }
+            default:
+            {
+              switch (quantum_type)
               {
-                if (image->depth <= 8)
-                  {
-                    unsigned char
-                      pixel;
+                case GrayQuantum:
+                case GrayAlphaQuantum:
+                {
+                  unsigned int
+                    pixel;
 
-                    for (x=0; x < (ssize_t) image->columns; x++)
+                  if (image->depth <= 8)
                     {
-                      p=PushCharPixel(p,&pixel);
-                      SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          p=PushCharPixel(p,&pixel);
-                          SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
-                        }
-                      q+=GetPixelChannels(image);
-                    }
-                  }
-                else
-                  {
-                    unsigned short
-                      pixel;
+                      unsigned char
+                        pixel;
 
-                    for (x=0; x < (ssize_t) image->columns; x++)
-                    {
-                      p=PushShortPixel(MSBEndian,p,&pixel);
-                      SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          p=PushShortPixel(MSBEndian,p,&pixel);
-                          SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
-                        }
-                      q+=GetPixelChannels(image);
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        p=PushCharPixel(p,&pixel);
+                        SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelAlpha(image,OpaqueAlpha,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            p=PushCharPixel(p,&pixel);
+                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
+                              max_value),q);
+                          }
+                        q+=GetPixelChannels(image);
+                      }
+                      break;
                     }
-                  }
-                break;
-              }
-              case CMYKQuantum:
-              case CMYKAQuantum:
-              {
-                if (image->depth <= 8)
-                  {
-                    unsigned char
-                      pixel;
+                  if (image->depth <= 16)
+                    {
+                      unsigned short
+                        pixel;
 
-                    for (x=0; x < (ssize_t) image->columns; x++)
-                    {
-                      p=PushCharPixel(p,&pixel);
-                      SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushCharPixel(p,&pixel);
-                      SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushCharPixel(p,&pixel);
-                      SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushCharPixel(p,&pixel);
-                      SetPixelBlack(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          p=PushCharPixel(p,&pixel);
-                          SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
-                        }
-                      q+=GetPixelChannels(image);
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        p=PushShortPixel(MSBEndian,p,&pixel);
+                        SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelAlpha(image,OpaqueAlpha,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            p=PushShortPixel(MSBEndian,p,&pixel);
+                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
+                              max_value),q);
+                          }
+                        q+=GetPixelChannels(image);
+                      }
+                      break;
                     }
-                  }
-                else
+                  for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    unsigned short
-                      pixel;
-
-                    for (x=0; x < (ssize_t) image->columns; x++)
-                    {
-                      p=PushShortPixel(MSBEndian,p,&pixel);
-                      SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushShortPixel(MSBEndian,p,&pixel);
-                      SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushShortPixel(MSBEndian,p,&pixel);
-                      SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushShortPixel(MSBEndian,p,&pixel);
-                      SetPixelBlack(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          p=PushShortPixel(MSBEndian,p,&pixel);
-                          SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
-                        }
-                      q+=GetPixelChannels(image);
-                    }
+                    p=PushLongPixel(MSBEndian,p,&pixel);
+                    SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    SetPixelAlpha(image,OpaqueAlpha,q);
+                    if (image->alpha_trait == BlendPixelTrait)
+                      {
+                        p=PushLongPixel(MSBEndian,p,&pixel);
+                        SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
+                      }
+                    q+=GetPixelChannels(image);
                   }
-                break;
-              }
-              default:
-              {
-                if (image->depth <= 8)
+                  break;
+                }
+                case CMYKQuantum:
+                case CMYKAQuantum:
+                {
+                  unsigned int
+                    pixel;
+
+                  if (image->depth <= 8)
+                    {
+                      unsigned char
+                        pixel;
+
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        p=PushCharPixel(p,&pixel);
+                        SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushCharPixel(p,&pixel);
+                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushCharPixel(p,&pixel);
+                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushCharPixel(p,&pixel);
+                        SetPixelBlack(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelAlpha(image,OpaqueAlpha,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            p=PushCharPixel(p,&pixel);
+                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
+                              max_value),q);
+                          }
+                        q+=GetPixelChannels(image);
+                      }
+                      break;
+                    }
+                  if (image->depth <= 16)
+                    {
+                      unsigned short
+                        pixel;
+
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        p=PushShortPixel(MSBEndian,p,&pixel);
+                        SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushShortPixel(MSBEndian,p,&pixel);
+                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushShortPixel(MSBEndian,p,&pixel);
+                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushShortPixel(MSBEndian,p,&pixel);
+                        SetPixelBlack(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelAlpha(image,OpaqueAlpha,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            p=PushShortPixel(MSBEndian,p,&pixel);
+                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
+                              max_value),q);
+                          }
+                        q+=GetPixelChannels(image);
+                      }
+                    }
+                  for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    unsigned char
-                      pixel;
-
-                    for (x=0; x < (ssize_t) image->columns; x++)
-                    {
-                      p=PushCharPixel(p,&pixel);
-                      SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushCharPixel(p,&pixel);
-                      SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushCharPixel(p,&pixel);
-                      SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          p=PushCharPixel(p,&pixel);
-                          SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
-                        }
-                      q+=GetPixelChannels(image);
-                    }
+                    p=PushLongPixel(MSBEndian,p,&pixel);
+                    SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    p=PushLongPixel(MSBEndian,p,&pixel);
+                    SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    p=PushLongPixel(MSBEndian,p,&pixel);
+                    SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    p=PushLongPixel(MSBEndian,p,&pixel);
+                    SetPixelBlack(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    SetPixelAlpha(image,OpaqueAlpha,q);
+                    if (image->alpha_trait == BlendPixelTrait)
+                      {
+                        p=PushLongPixel(MSBEndian,p,&pixel);
+                        SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
+                      }
+                    q+=GetPixelChannels(image);
                   }
-                else
+                  break;
+                }
+                default:
+                {
+                  unsigned int
+                    pixel;
+
+                  if (image->depth <= 8)
+                    {
+                      unsigned char
+                        pixel;
+
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        p=PushCharPixel(p,&pixel);
+                        SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushCharPixel(p,&pixel);
+                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushCharPixel(p,&pixel);
+                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelAlpha(image,OpaqueAlpha,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            p=PushCharPixel(p,&pixel);
+                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
+                          }
+                        q+=GetPixelChannels(image);
+                      }
+                      break;
+                    }
+                  if (image->depth <= 16)
+                    {
+                      unsigned short
+                        pixel;
+
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        p=PushShortPixel(MSBEndian,p,&pixel);
+                        SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushShortPixel(MSBEndian,p,&pixel);
+                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        p=PushShortPixel(MSBEndian,p,&pixel);
+                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelAlpha(image,OpaqueAlpha,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            p=PushShortPixel(MSBEndian,p,&pixel);
+                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
+                              max_value),q);
+                          }
+                        q+=GetPixelChannels(image);
+                      }
+                      break;
+                    }
+                  for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    unsigned short
-                      pixel;
-
-                    for (x=0; x < (ssize_t) image->columns; x++)
-                    {
-                      p=PushShortPixel(MSBEndian,p,&pixel);
-                      SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushShortPixel(MSBEndian,p,&pixel);
-                      SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      p=PushShortPixel(MSBEndian,p,&pixel);
-                      SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
-                      SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          p=PushShortPixel(MSBEndian,p,&pixel);
-                          SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
-                        }
-                      q+=GetPixelChannels(image);
-                    }
+                    p=PushLongPixel(MSBEndian,p,&pixel);
+                    SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    p=PushLongPixel(MSBEndian,p,&pixel);
+                    SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    p=PushLongPixel(MSBEndian,p,&pixel);
+                    SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                    SetPixelAlpha(image,OpaqueAlpha,q);
+                    if (image->alpha_trait == BlendPixelTrait)
+                      {
+                        p=PushLongPixel(MSBEndian,p,&pixel);
+                        SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
+                      }
+                    q+=GetPixelChannels(image);
                   }
-                break;
+                  break;
+                }
               }
             }
+          }
           sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
             status=MagickFalse;
@@ -1597,8 +1704,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             packet_size++;
             (void) ConcatenateMagickString(type,"_ALPHA",MaxTextExtent);
           }
-        if (image->depth > 16)
-          image->depth=16;
+        if (image->depth > 32)
+          image->depth=32;
         (void) FormatLocaleString(buffer,MaxTextExtent,
           "DEPTH %.20g\nMAXVAL %.20g\n",(double) packet_size,(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
@@ -1672,7 +1779,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (image->depth <= 8)
           (void) WriteBlobString(image,"255\n");
         else
-          (void) WriteBlobString(image,"65535\n");
+          if (image->depth <= 16)
+            (void) WriteBlobString(image,"65535\n");
+          else
+            (void) WriteBlobString(image,"4294967295\n");
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1692,8 +1802,12 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
               count=(ssize_t) FormatLocaleString(buffer,MaxTextExtent,"%u ",
                 ScaleQuantumToChar(index));
             else
-              count=(ssize_t) FormatLocaleString(buffer,MaxTextExtent,"%u ",
-                ScaleQuantumToShort(index));
+              if (image->depth <= 16)
+                count=(ssize_t) FormatLocaleString(buffer,MaxTextExtent,"%u ",
+                  ScaleQuantumToShort(index));
+              else
+                count=(ssize_t) FormatLocaleString(buffer,MaxTextExtent,"%u ",
+                  ScaleQuantumToLong(index));
             extent=(size_t) count;
             (void) strncpy((char *) q,buffer,extent);
             q+=extent;
@@ -1733,7 +1847,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (image->depth <= 8)
           (void) WriteBlobString(image,"255\n");
         else
-          (void) WriteBlobString(image,"65535\n");
+          if (image->depth <= 16)
+            (void) WriteBlobString(image,"65535\n");
+          else
+            (void) WriteBlobString(image,"4294967295\n");
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1754,10 +1871,16 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 ScaleQuantumToChar(GetPixelGreen(image,p)),
                 ScaleQuantumToChar(GetPixelBlue(image,p)));
             else
-              count=(ssize_t) FormatLocaleString(buffer,MaxTextExtent,
-                "%u %u %u ",ScaleQuantumToShort(GetPixelRed(image,p)),
-                ScaleQuantumToShort(GetPixelGreen(image,p)),
-                ScaleQuantumToShort(GetPixelBlue(image,p)));
+              if (image->depth <= 16)
+                count=(ssize_t) FormatLocaleString(buffer,MaxTextExtent,
+                  "%u %u %u ",ScaleQuantumToShort(GetPixelRed(image,p)),
+                  ScaleQuantumToShort(GetPixelGreen(image,p)),
+                  ScaleQuantumToShort(GetPixelBlue(image,p)));
+              else
+                count=(ssize_t) FormatLocaleString(buffer,MaxTextExtent,
+                  "%u %u %u ",ScaleQuantumToLong(GetPixelRed(image,p)),
+                  ScaleQuantumToLong(GetPixelGreen(image,p)),
+                  ScaleQuantumToLong(GetPixelBlue(image,p)));
             extent=(size_t) count;
             (void) strncpy((char *) q,buffer,extent);
             q+=extent;
@@ -1824,7 +1947,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PGM image.
         */
-        if (image->depth > 8)
+        if (image->depth > 32)
           image->depth=16;
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
@@ -1847,45 +1970,75 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           if (p == (const Quantum *) NULL)
             break;
           q=pixels;
-          if ((image->depth == 8) || (image->depth == 16))
-            extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              GrayQuantum,pixels,exception);
-          else
+          switch (image->depth)
+          {
+            case 8:
+            case 16:
+            case 32:
+            {
+              extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                GrayQuantum,pixels,exception);
+              break;
+            }
+            default:
             {
               if (image->depth <= 8)
-                for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if (IsPixelGray(image,p) == MagickFalse)
-                    pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
-                      image,p)),max_value);
-                  else
-                    {
-                      if (image->depth == 8)
-                        pixel=ScaleQuantumToChar(GetPixelRed(image,p));
-                      else
-                        pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
-                    }
-                  q=PopCharPixel((unsigned char) pixel,q);
-                  p+=GetPixelChannels(image);
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    if (IsPixelGray(image,p) == MagickFalse)
+                      pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
+                        image,p)),max_value);
+                    else
+                      {
+                        if (image->depth == 8)
+                          pixel=ScaleQuantumToChar(GetPixelRed(image,p));
+                        else
+                          pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                      }
+                    q=PopCharPixel((unsigned char) pixel,q);
+                    p+=GetPixelChannels(image);
+                  }
+                  break;
                 }
-              else
-                for (x=0; x < (ssize_t) image->columns; x++)
+              if (image->depth <= 16)
                 {
-                  if (IsPixelGray(image,p) == MagickFalse)
-                    pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
-                      image,p)),max_value);
-                  else
-                    {
-                      if (image->depth == 16)
-                        pixel=ScaleQuantumToShort(GetPixelRed(image,p));
-                      else
-                        pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
-                    }
-                  q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                  p+=GetPixelChannels(image);
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    if (IsPixelGray(image,p) == MagickFalse)
+                      pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
+                        image,p)),max_value);
+                    else
+                      {
+                        if (image->depth == 16)
+                          pixel=ScaleQuantumToShort(GetPixelRed(image,p));
+                        else
+                          pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                      }
+                    q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                    p+=GetPixelChannels(image);
+                  }
+                  break;
                 }
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                if (IsPixelGray(image,p) == MagickFalse)
+                  pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
+                    image,p)),max_value);
+                else
+                  {
+                    if (image->depth == 16)
+                      pixel=ScaleQuantumToLong(GetPixelRed(image,p));
+                    else
+                      pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                  }
+                q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                p+=GetPixelChannels(image);
+              }
               extent=(size_t) (q-pixels);
+              break;
             }
+          }
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent)
             break;
@@ -1907,8 +2060,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         */
         if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
           (void) TransformImageColorspace(image,sRGBColorspace,exception);
-        if (image->depth > 8)
-          image->depth=16;
+        if (image->depth > 32)
+          image->depth=32;
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
         (void) WriteBlobString(image,buffer);
@@ -1930,35 +2083,60 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           if (p == (const Quantum *) NULL)
             break;
           q=pixels;
-          if ((image->depth == 8) || (image->depth == 16))
-            extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              quantum_type,pixels,exception);
-          else
+          switch (image->depth)
+          {
+            case 8:
+            case 16:
+            case 32:
+            {
+              extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                quantum_type,pixels,exception);
+              break;
+            }
+            default:
             {
               if (image->depth <= 8)
-                for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
-                  q=PopCharPixel((unsigned char) pixel,q);
-                  pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
-                  q=PopCharPixel((unsigned char) pixel,q);
-                  pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
-                  q=PopCharPixel((unsigned char) pixel,q);
-                  p+=GetPixelChannels(image);
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                    q=PopCharPixel((unsigned char) pixel,q);
+                    pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
+                    q=PopCharPixel((unsigned char) pixel,q);
+                    pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
+                    q=PopCharPixel((unsigned char) pixel,q);
+                    p+=GetPixelChannels(image);
+                  }
+                  break;
                 }
-              else
-                for (x=0; x < (ssize_t) image->columns; x++)
+              if (image->depth <= 16)
                 {
-                  pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
-                  q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                  pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
-                  q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                  pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
-                  q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                  p+=GetPixelChannels(image);
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                    q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                    pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
+                    q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                    pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
+                    q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                    p+=GetPixelChannels(image);
+                  }
+                  break;
                 }
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
+                q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
+                q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                p+=GetPixelChannels(image);
+              }
               extent=(size_t) (q-pixels);
+              break;
             }
+          }
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent)
             break;
@@ -1978,8 +2156,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PAM.
         */
-        if (image->depth > 16)
-          image->depth=16;
+        if (image->depth > 32)
+          image->depth=32;
         quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
         pixels=GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
@@ -1994,10 +2172,17 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           if (p == (const Quantum *) NULL)
             break;
           q=pixels;
-          if ((image->depth == 8) || (image->depth == 16))
-            extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              quantum_type,pixels,exception);
-          else
+          switch (image->depth)
+          {
+            case 8:
+            case 16:
+            case 32:
+            {
+              extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                quantum_type,pixels,exception);
+              break;
+            }
+            default:
             {
               switch (quantum_type)
               {
@@ -2005,119 +2190,184 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 case GrayAlphaQuantum:
                 {
                   if (image->depth <= 8)
-                    for (x=0; x < (ssize_t) image->columns; x++)
                     {
-                      pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
-                        image,p)),max_value);
-                      q=PopCharPixel((unsigned char) pixel,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          pixel=(unsigned char) ScaleQuantumToAny(
-                            GetPixelAlpha(image,p),max_value);
-                          q=PopCharPixel((unsigned char) pixel,q);
-                        }
-                      p+=GetPixelChannels(image);
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
+                          image,p)),max_value);
+                        q=PopCharPixel((unsigned char) pixel,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            pixel=(unsigned char) ScaleQuantumToAny(
+                              GetPixelAlpha(image,p),max_value);
+                            q=PopCharPixel((unsigned char) pixel,q);
+                          }
+                        p+=GetPixelChannels(image);
+                      }
+                      break;
                     }
-                  else
-                    for (x=0; x < (ssize_t) image->columns; x++)
+                  if (image->depth <= 16)
                     {
-                      pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
-                        image,p)),max_value);
-                      q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          pixel=(unsigned char) ScaleQuantumToAny(
-                            GetPixelAlpha(image,p),max_value);
-                          q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                        }
-                      p+=GetPixelChannels(image);
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(
+                          image,p)),max_value);
+                        q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            pixel=(unsigned char) ScaleQuantumToAny(
+                              GetPixelAlpha(image,p),max_value);
+                            q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                          }
+                        p+=GetPixelChannels(image);
+                      }
+                      break;
                     }
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    pixel=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(image,p)),
+                      max_value);
+                    q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                    if (image->alpha_trait == BlendPixelTrait)
+                      {
+                        pixel=(unsigned char) ScaleQuantumToAny(
+                          GetPixelAlpha(image,p),max_value);
+                        q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                      }
+                    p+=GetPixelChannels(image);
+                  }
                   break;
                 }
                 case CMYKQuantum:
                 case CMYKAQuantum:
                 {
                   if (image->depth <= 8)
-                    for (x=0; x < (ssize_t) image->columns; x++)
                     {
-                      pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
-                      q=PopCharPixel((unsigned char) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
-                      q=PopCharPixel((unsigned char) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
-                      q=PopCharPixel((unsigned char) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelBlack(image,p),max_value);
-                      q=PopCharPixel((unsigned char) pixel,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),
-                            max_value);
-                          q=PopCharPixel((unsigned char) pixel,q);
-                        }
-                      p+=GetPixelChannels(image);
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                        q=PopCharPixel((unsigned char) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
+                        q=PopCharPixel((unsigned char) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
+                        q=PopCharPixel((unsigned char) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelBlack(image,p),max_value);
+                        q=PopCharPixel((unsigned char) pixel,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),
+                              max_value);
+                            q=PopCharPixel((unsigned char) pixel,q);
+                          }
+                        p+=GetPixelChannels(image);
+                      }
+                      break;
                     }
-                  else
-                    for (x=0; x < (ssize_t) image->columns; x++)
+                  if (image->depth <= 16)
                     {
-                      pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
-                      q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
-                      q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
-                      q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelBlack(image,p),max_value);
-                      q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),
-                            max_value);
-                          q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                        }
-                      p+=GetPixelChannels(image);
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                        q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
+                        q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
+                        q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelBlack(image,p),max_value);
+                        q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),
+                              max_value);
+                            q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                          }
+                        p+=GetPixelChannels(image);
+                      }
+                      break;
                     }
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                    q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                    pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
+                    q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                    pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
+                    q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                    pixel=ScaleQuantumToAny(GetPixelBlack(image,p),max_value);
+                    q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                    if (image->alpha_trait == BlendPixelTrait)
+                      {
+                        pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),max_value);
+                        q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                      }
+                    p+=GetPixelChannels(image);
+                  }
                   break;
                 }
                 default:
                 {
                   if (image->depth <= 8)
-                    for (x=0; x < (ssize_t) image->columns; x++)
                     {
-                      pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
-                      q=PopCharPixel((unsigned char) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
-                      q=PopCharPixel((unsigned char) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
-                      q=PopCharPixel((unsigned char) pixel,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),
-                            max_value);
-                          q=PopCharPixel((unsigned char) pixel,q);
-                        }
-                      p+=GetPixelChannels(image);
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                        q=PopCharPixel((unsigned char) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
+                        q=PopCharPixel((unsigned char) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
+                        q=PopCharPixel((unsigned char) pixel,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),
+                              max_value);
+                            q=PopCharPixel((unsigned char) pixel,q);
+                          }
+                        p+=GetPixelChannels(image);
+                      }
+                      break;
                     }
-                  else
-                    for (x=0; x < (ssize_t) image->columns; x++)
+                  if (image->depth <= 16)
                     {
-                      pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
-                      q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
-                      q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
-                      q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      if (image->alpha_trait == BlendPixelTrait)
-                        {
-                          pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),
-                            max_value);
-                          q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                        }
-                      p+=GetPixelChannels(image);
+                      for (x=0; x < (ssize_t) image->columns; x++)
+                      {
+                        pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                        q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
+                        q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                        pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
+                        q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                        if (image->alpha_trait == BlendPixelTrait)
+                          {
+                            pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),
+                              max_value);
+                            q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
+                          }
+                        p+=GetPixelChannels(image);
+                      }
+                      break;
                     }
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
+                    q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                    pixel=ScaleQuantumToAny(GetPixelGreen(image,p),max_value);
+                    q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                    pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
+                    q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                    if (image->alpha_trait == BlendPixelTrait)
+                      {
+                        pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),max_value);
+                        q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
+                      }
+                    p+=GetPixelChannels(image);
+                  }
                   break;
                 }
               }
               extent=(size_t) (q-pixels);
+              break;
             }
+          }
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent)
             break;
