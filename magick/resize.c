@@ -1807,12 +1807,12 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       return(rescale_image);
     }
   map="RGB";
-  if (image->matte == MagickFalse)
+  if (image->matte != MagickFalse)
     map="RGBA";
   if (image->colorspace == CMYKColorspace)
     {
       map="CMYK";
-      if (image->matte == MagickFalse)
+      if (image->matte != MagickFalse)
         map="CMYKA";
     }
   pixel_info=AcquireVirtualMemory(image->columns,image->rows*strlen(map)*
