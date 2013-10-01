@@ -1868,6 +1868,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       pixel_info=RelinquishVirtualMemory(pixel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
+  lqr_carver_set_preserve_input_image(carver);
   lqr_status=lqr_carver_init(carver,(int) delta_x,rigidity);
   lqr_status=lqr_carver_resize(carver,columns,rows);
   (void) lqr_status;
