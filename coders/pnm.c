@@ -1087,7 +1087,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (image->matte != MagickFalse)
                           {
                             p=PushShortPixel(MSBEndian,p,&pixel);
-                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,max_value));
+                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,
+                              max_value));
                           }
                         q++;
                       }
@@ -1135,7 +1136,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (image->matte != MagickFalse)
                           {
                             p=PushCharPixel(p,&pixel);
-                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,max_value));
+                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,
+                              max_value));
                           }
                         q++;
                       }
@@ -1161,7 +1163,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (image->matte != MagickFalse)
                           {
                             p=PushShortPixel(MSBEndian,p,&pixel);
-                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,max_value));
+                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,
+                              max_value));
                           }
                         q++;
                       }
@@ -1209,7 +1212,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (image->matte != MagickFalse)
                           {
                             p=PushCharPixel(p,&pixel);
-                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,max_value));
+                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,
+                              max_value));
                           }
                         q++;
                       }
@@ -1232,7 +1236,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (image->matte != MagickFalse)
                           {
                             p=PushShortPixel(MSBEndian,p,&pixel);
-                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,max_value));
+                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,
+                              max_value));
                           }
                         q++;
                       }
