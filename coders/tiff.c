@@ -700,50 +700,50 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       case TIFF_ASCII:
       {
         char
-          *ascii;
+          *field;
 
-        ascii=(char *) NULL;
-        if ((TIFFGetField(tiff,exif_info[i].tag,&ascii,&sans,&sans) != 0) &&
-            (ascii != (char *) NULL) && (*ascii != '\0'))
-          (void) CopyMagickString(value,ascii,MaxTextExtent);
+        field=(char *) NULL;
+        if ((TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0) &&
+            (field != (char *) NULL) && (*field != '\0'))
+          (void) CopyMagickString(value,field,MaxTextExtent);
         break;
       }
       case TIFF_SHORT:
       {
         uint16
-          shorty;
+          field;
 
-        shorty=0;
+        field=0;
         if (exif_info[i].variable_length != 0)
           {
-            if (TIFFGetField(tiff,exif_info[i].tag,&sans,&shorty,&sans) != 0)
-              (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty);
+            if (TIFFGetField(tiff,exif_info[i].tag,&sans,&field,&sans,&sans) != 0)
+              (void) FormatLocaleString(value,MaxTextExtent,"%d",field);
             break;
           }
-        if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty);
+        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",field);
         break;
       }
       case TIFF_LONG:
       {
         uint32
-          longy;
+          field;
 
-        longy=0;
-        if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d",longy);
+        field=0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",field);
         break;
       }
 #if defined(TIFF_VERSION_BIG)
       case TIFF_LONG8:
       {
         uint64
-          longy;
+          field;
 
-        longy=0;
-        if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
+        field=0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-            ((MagickOffsetType) longy));
+            ((MagickOffsetType) field));
         break;
       }
 #endif
@@ -752,21 +752,21 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       case TIFF_FLOAT:
       {
         float
-          floaty;
+          field;
 
-        floaty=0.0;
-        if (TIFFGetField(tiff,exif_info[i].tag,&floaty,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",(double) floaty);
+        field=0.0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",(double) field);
         break;
       }
       case TIFF_DOUBLE:
       {
         double
-          doubley;
+          field;
 
-        doubley=0.0;
-        if (TIFFGetField(tiff,exif_info[i].tag,&doubley,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",doubley);
+        field=0.0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",field);
         break;
       }
       default:
@@ -2626,29 +2626,29 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image,
       case TIFF_SHORT:
       {
         uint16
-          shorty;
+          field;
 
-        shorty=(uint16) StringToLong(value);
-        (void) TIFFSetField(tiff,exif_info[i].tag,shorty);
+        field=(uint16) StringToLong(value);
+        (void) TIFFSetField(tiff,exif_info[i].tag,field);
         break;
       }
       case TIFF_LONG:
       {
         uint16
-          ssize_ty;
+          field;
 
-        ssize_ty=(uint16) StringToLong(value);
-        (void) TIFFSetField(tiff,exif_info[i].tag,ssize_ty);
+        field=(uint16) StringToLong(value);
+        (void) TIFFSetField(tiff,exif_info[i].tag,field);
         break;
       }
       case TIFF_RATIONAL:
       case TIFF_SRATIONAL:
       {
         float
-          rational;
+          field;
 
-        rational=StringToDouble(value,(char **) NULL);
-        (void) TIFFSetField(tiff,exif_info[i].tag,rational);
+        field=StringToDouble(value,(char **) NULL);
+        (void) TIFFSetField(tiff,exif_info[i].tag,field);
         break;
       }
       default:
