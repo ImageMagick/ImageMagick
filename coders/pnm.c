@@ -652,11 +652,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           register const unsigned char
             *restrict p;
 
-          register ssize_t
-            x;
-
           register PixelPacket
             *restrict q;
+
+          register ssize_t
+            x;
 
           ssize_t
             count,
