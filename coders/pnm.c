@@ -1065,7 +1065,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (image->matte != MagickFalse)
                           {
                             p=PushCharPixel(p,&pixel);
-                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,max_value));
+                            SetPixelOpacity(q,ScaleAnyToQuantum(pixel,
+                               max_value));
                           }
                         q++;
                       }
