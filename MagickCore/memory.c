@@ -560,7 +560,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   memory_info->signature=MagickSignature;
   if (AcquireMagickResource(MemoryResource,length) != MagickFalse)
     {
-      memory_info->blob=AcquireMagickMemory(length);
+      memory_info->blob=AcquireAlignedMemory(1,length);
       if (memory_info->blob == NULL)
         RelinquishMagickResource(MemoryResource,length);
     }
@@ -987,7 +987,7 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
     {
       if (memory_info->mapped == MagickFalse)
         {
-          memory_info->blob=RelinquishMagickMemory(memory_info->blob);
+          memory_info->blob=RelinquishAlignedMemory(memory_info->blob);
           RelinquishMagickResource(MemoryResource,memory_info->length);
         }
       else
