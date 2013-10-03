@@ -2108,6 +2108,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                     q=PopCharPixel((unsigned char) pixel,q);
                     p+=GetPixelChannels(image);
                   }
+                  extent=(size_t) (q-pixels);
                   break;
                 }
               if (image->depth <= 16)
@@ -2122,6 +2123,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                     q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                     p+=GetPixelChannels(image);
                   }
+                  extent=(size_t) (q-pixels);
                   break;
                 }
               for (x=0; x < (ssize_t) image->columns; x++)
