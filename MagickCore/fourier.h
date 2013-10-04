@@ -22,7 +22,16 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+  UndefinedComplexOperator,
+  ConjugateComplexOperator,
+  DivideComplexOperator,
+  MultiplyComplexOperator
+} ComplexOperator;
+
 extern MagickExport Image
+ *ComplexImages(const Image *,const ComplexOperator,ExceptionInfo *),
  *ForwardFourierTransformImage(const Image *,const MagickBooleanType,
    ExceptionInfo *),
  *InverseFourierTransformImage(const Image *,const Image *,

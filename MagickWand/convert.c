@@ -315,6 +315,7 @@ static MagickBooleanType ConvertUsage(void)
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
       "-compare             mathematically and visually annotate the difference between an image and its reconstruction",
+      "-complex operator    perform complex mathematics on an image sequence",
       "-composite           composite image",
       "-crop geometry       cut out a rectangular region of the image",
       "-deconstruct         break down an image sequence into constituent parts",
@@ -1050,6 +1051,23 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("compare",option+1) == 0)
           break;
+        if (LocaleCompare("complex",option+1) == 0)
+          {
+            ssize_t
+              operator;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            operator=ParseCommandOption(MagickComplexOptions,MagickFalse,
+              argv[i]);
+            if (operator < 0)
+              ThrowConvertException(OptionError,"UnrecognizedComplexOperator",
+                argv[i]);
+            break;
+          }
         if (LocaleCompare("compose",option+1) == 0)
           {
             ssize_t
