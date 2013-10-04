@@ -3456,6 +3456,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
       "-compare             mathematically and visually annotate the difference between an image and its reconstruction",
+      "-complex operator    perform complex mathematics on an image sequence",
       "-composite           composite image",
       "-crop geometry       cut out a rectangular region of the image",
       "-deconstruct         break down an image sequence into constituent parts",
@@ -4190,6 +4191,23 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("compare",option+1) == 0)
           break;
+        if (LocaleCompare("complex",option+1) == 0)
+          {
+            ssize_t
+              operator;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            operator=ParseCommandOption(MagickComplexOptions,MagickFalse,
+              argv[i]);
+            if (operator < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedComplexOperator",
+                argv[i]);
+            break;
+          }
         if (LocaleCompare("composite",option+1) == 0)
           break;
         if (LocaleCompare("compress",option+1) == 0)
@@ -4404,7 +4422,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,argv[i]);
+            dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,
+              argv[i]);
             if (dispose < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedDisposeMethod",
                 argv[i]);
@@ -7642,6 +7661,27 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if (*images != (Image *) NULL)
               *images=DestroyImage(*images);
             *images=difference_image;
+            break;
+          }
+        if (LocaleCompare("complex",option+1) == 0)
+          {
+            ComplexOperator
+              operator;
+
+            Image
+              *complex_image;
+
+            (void) SyncImageSettings(mogrify_info,*images);
+            operator=(ComplexOperator) ParseCommandOption(MagickComplexOptions,
+              MagickFalse,argv[i+1]);
+            complex_image=ComplexImages(*images,operator,exception);
+            if (complex_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=complex_image;
             break;
           }
         if (LocaleCompare("composite",option+1) == 0)
