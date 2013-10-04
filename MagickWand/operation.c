@@ -3664,6 +3664,16 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           image=DestroyImage(image);
           break;
         }
+      if (LocaleCompare("complex",option+1) == 0)
+        {
+          parse=ParseCommandOption(MagickComplexOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedEvaluateOperator",
+              option,arg1);
+          new_images=ComplexImages(_images,(MagickComplexOperator) parse,
+            _exception);
+          break;
+        }
       if (LocaleCompare("composite",option+1) == 0)
         {
           CompositeOperator
@@ -3804,12 +3814,12 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("evaluate-sequence",option+1) == 0)
         {
-          parse = ParseCommandOption(MagickEvaluateOptions,MagickFalse,arg1);
-          if ( parse < 0 )
+          parse=ParseCommandOption(MagickEvaluateOptions,MagickFalse,arg1);
+          if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedEvaluateOperator",
-                 option,arg1);
+              option,arg1);
           new_images=EvaluateImages(_images,(MagickEvaluateOperator)parse,
-               _exception);
+            _exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);

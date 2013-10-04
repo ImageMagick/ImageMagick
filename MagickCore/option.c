@@ -51,6 +51,7 @@
 #include "MagickCore/effect.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/fourier.h"
 #include "MagickCore/fx.h"
 #include "MagickCore/gem.h"
 #include "MagickCore/geometry.h"
@@ -299,6 +300,8 @@ static const OptionInfo
     { "-comment", 1L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "+compare", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-compare", 0L, ListOperatorFlag | FireOptionFlag, MagickFalse },
+    { "+complex", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "-complex", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+compose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-compose", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+composite", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
@@ -917,6 +920,14 @@ static const OptionInfo
     { "YUV", YUVColorspace, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedColorspace, UndefinedOptionFlag, MagickFalse }
   },
+  ComplexOptions[] =
+  {
+    { "Undefined", UndefinedComplexOperator, UndefinedOptionFlag, MagickTrue },
+    { "Conjugate", ConjugateComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "Divide", DivideComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "Multiply", MultiplyComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedComplexOperator, UndefinedOptionFlag, MagickFalse }
+  },
   DataTypeOptions[] =
   {
     { "Undefined", UndefinedData, UndefinedOptionFlag, MagickTrue },
@@ -1233,6 +1244,7 @@ static const OptionInfo
     { "Color", MagickColorOptions, UndefinedOptionFlag, MagickFalse },
     { "Colorspace", MagickColorspaceOptions, UndefinedOptionFlag, MagickFalse },
     { "Command", MagickCommandOptions, UndefinedOptionFlag, MagickFalse },
+    { "Complex", MagickComplexOptions, UndefinedOptionFlag, MagickFalse },
     { "Compose", MagickComposeOptions, UndefinedOptionFlag, MagickFalse },
     { "Compress", MagickCompressOptions, UndefinedOptionFlag, MagickFalse },
     { "Configure", MagickConfigureOptions, UndefinedOptionFlag, MagickFalse },
@@ -1711,6 +1723,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickClipPathOptions: return(ClipPathOptions);
     case MagickColorspaceOptions: return(ColorspaceOptions);
     case MagickCommandOptions: return(CommandOptions);
+    case MagickComplexOptions: return(ComplexOptions);
     case MagickComposeOptions: return(ComposeOptions);
     case MagickCompressOptions: return(CompressOptions);
     case MagickDataTypeOptions: return(DataTypeOptions);

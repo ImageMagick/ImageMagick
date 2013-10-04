@@ -103,6 +103,65 @@ typedef struct _FourierInfo
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     C o m p l e x I m a g e s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ComplexImages() performs complex mathematics on an image sequence.
+%
+%  The format of the ComplexImages method is:
+%
+%      MagickBooleanType ComplexImages(Image *images,
+%        const ComplexOperator operator,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o operator: A complex operator.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *ComplexImages(const Image *images,
+  const ComplexOperator operator,ExceptionInfo *exception)
+{
+#define ComplexImageTag  "Complex/Image"
+
+  CacheView
+    *complex_view;
+
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  size_t
+    number_images;
+
+  ssize_t
+    y;
+
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     F o r w a r d F o u r i e r T r a n s f o r m I m a g e                 %
 %                                                                             %
 %                                                                             %

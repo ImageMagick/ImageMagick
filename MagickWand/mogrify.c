@@ -3414,6 +3414,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
       "-compare             mathematically and visually annotate the difference between an image and its reconstruction",
+      "-complex operator    perform complex mathematics on an image sequence",
       "-composite           composite image",
       "-crop geometry       cut out a rectangular region of the image",
       "-deconstruct         break down an image sequence into constituent parts",
@@ -7566,6 +7567,27 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if (*images != (Image *) NULL)
               *images=DestroyImage(*images);
             *images=difference_image;
+            break;
+          }
+        if (LocaleCompare("complex",option+1) == 0)
+          {
+            Image
+              *complex_image;
+
+            ComplexOperator
+              op;
+
+            (void) SyncImageSettings(mogrify_info,*images,exception);
+            op=(MagickComplexOperator) ParseCommandOption(MagickComplexOptions,
+              MagickFalse,argv[i+1]);
+            complex_image=ComplexImages(*images,op,exception);
+            if (complex_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=complex_image;
             break;
           }
         if (LocaleCompare("composite",option+1) == 0)
