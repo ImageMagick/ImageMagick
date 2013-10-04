@@ -3670,8 +3670,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedEvaluateOperator",
               option,arg1);
-          new_images=ComplexImages(_images,(MagickComplexOperator) parse,
-            _exception);
+          new_images=ComplexImages(_images,(ComplexOperator) parse,_exception);
           break;
         }
       if (LocaleCompare("composite",option+1) == 0)
