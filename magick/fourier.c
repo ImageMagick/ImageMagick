@@ -243,6 +243,60 @@ MagickExport Image *ComplexImages(const Image *images,
       }
     for (x=0; x < (ssize_t) images->columns; x++)
     {
+      switch (operator)
+      {
+				case ConjugateComplexOperator:
+        default:
+        {
+          Cr->red=Ar->red;
+          Cr->green=Ar->green;
+          Cr->blue=Ar->blue;
+          Cr->opacity=Ar->opacity;
+          Ci->red=(-Bi->red);
+          Ci->green=(-Bi->green);
+          Ci->blue=(-Bi->blue);
+          Ci->opacity=(-Bi->opacity);
+          break;
+        }
+        case DivideComplexOperator:
+        {
+          double
+            gamma;
+
+          gamma=PerceptibleReciprocal(Br->red*Br->red+Bi->red*Bi->red);
+          Cr->red=gamma*(Ar->red*Br->red+Ai->red*Bi->red);
+          Ci->red=gamma*(Ai->red*Br->red-Ai->red*Bi->red);
+          gamma=PerceptibleReciprocal(Br->green*Br->green+Bi->green*Bi->green);
+          Cr->green=gamma*(Ar->green*Br->green+Ai->green*Bi->green);
+          Ci->green=gamma*(Ai->green*Br->green-Ai->green*Bi->green);
+          gamma=PerceptibleReciprocal(Br->blue*Br->blue+Bi->blue*Bi->blue);
+          Cr->blue=gamma*(Ar->blue*Br->blue+Ai->blue*Bi->blue);
+          Ci->blue=gamma*(Ai->blue*Br->blue-Ai->blue*Bi->blue);
+          gamma=PerceptibleReciprocal(Br->opacity*Br->opacity+Bi->opacity*
+            Bi->opacity);
+          Cr->opacity=gamma*(Ar->opacity*Br->opacity+Ai->opacity*Bi->opacity);
+          Ci->opacity=gamma*(Ai->opacity*Br->opacity-Ai->opacity*Bi->opacity);
+          break;
+        }
+        case MultiplyComplexOperator:
+        {
+          Cr->red=(Ar->red*Br->red+Ai->red*Bi->red);
+          Ci->red=(Ai->red*Br->red-Ai->red*Bi->red);
+          Cr->green=(Ar->green*Br->green+Ai->green*Bi->green);
+          Ci->green=(Ai->green*Br->green-Ai->green*Bi->green);
+          Cr->blue=(Ar->blue*Br->blue+Ai->blue*Bi->blue);
+          Ci->blue=(Ai->blue*Br->blue-Ai->blue*Bi->blue);
+          Cr->opacity=(Ar->opacity*Br->opacity+Ai->opacity*Bi->opacity);
+          Ci->opacity=(Ai->opacity*Br->opacity-Ai->opacity*Bi->opacity);
+          break;
+        }
+      }
+      Ar++;
+      Ai++;
+      Br++;
+      Bi++;
+      Cr++;
+      Ci++;
     }
     if (SyncCacheViewAuthenticPixels(Ci_view,exception) == MagickFalse)
       status=MagickFalse;
