@@ -25,9 +25,11 @@ extern "C" {
 typedef enum
 {
   UndefinedComplexOperator,
+  AddComplexOperator,
   ConjugateComplexOperator,
   DivideComplexOperator,
-  MultiplyComplexOperator
+  MultiplyComplexOperator,
+  SubtractComplexOperator
 } ComplexOperator;
 
 extern MagickExport Image

@@ -249,6 +249,12 @@ MagickExport Image *ComplexImages(const Image *images,
       {
         switch (operator)
         {
+          case AddComplexOperator:
+          {
+            Cr[i]=Ar[i]+Br[i];
+            Ci[i]=Ai[i]+Bi[i];
+            break;
+          }
           case ConjugateComplexOperator:
           default:
           {
@@ -272,7 +278,19 @@ MagickExport Image *ComplexImages(const Image *images,
             Ci[i]=(Ai[i]*Br[i]-Ai[i]*Bi[i]);
             break;
           }
+          case SubtractComplexOperator:
+          {
+            Cr[i]=Ar[i]-Br[i];
+            Ci[i]=Ai[i]-Bi[i];
+            break;
+          }
         }
+        Ar+=GetPixelChannels(Ar_image);
+        Ai+=GetPixelChannels(Ai_image);
+        Br+=GetPixelChannels(Br_image);
+        Bi+=GetPixelChannels(Bi_image);
+        Cr+=GetPixelChannels(Cr_image);
+        Ci+=GetPixelChannels(Ci_image);
       }
     }
     if (SyncCacheViewAuthenticPixels(Ci_view,exception) == MagickFalse)

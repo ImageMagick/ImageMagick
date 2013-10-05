@@ -923,9 +923,11 @@ static const OptionInfo
   ComplexOptions[] =
   {
     { "Undefined", UndefinedComplexOperator, UndefinedOptionFlag, MagickTrue },
+    { "Add", AddComplexOperator, UndefinedOptionFlag, MagickFalse },
     { "Conjugate", ConjugateComplexOperator, UndefinedOptionFlag, MagickFalse },
     { "Divide", DivideComplexOperator, UndefinedOptionFlag, MagickFalse },
     { "Multiply", MultiplyComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "Subtract", SubtractComplexOperator, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedComplexOperator, UndefinedOptionFlag, MagickFalse }
   },
   DataTypeOptions[] =
