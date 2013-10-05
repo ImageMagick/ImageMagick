@@ -36,8 +36,8 @@ typedef enum
   YIQColorspace,
   YPbPrColorspace,
   YUVColorspace,
-  CMYKColorspace,           /* negared linear RGB with black separated */
-  sRGBColorspace,           /* Default: non-lienar sRGB colorspace */
+  CMYKColorspace,           /* negated linear RGB with black separated */
+  sRGBColorspace,           /* Default: non-linear sRGB colorspace */
   HSBColorspace,
   HSLColorspace,
   HWBColorspace,
