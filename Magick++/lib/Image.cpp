@@ -822,6 +822,28 @@ void Magick::Image::clampChannel ( const ChannelType channel_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+void Magick::Image::clip ( void )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  ClipImage( image(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
+void Magick::Image::clipPath ( const std::string pathname_,
+                               const bool inside_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  ClipImagePath( image(), pathname_.c_str(), (MagickBooleanType) inside_,
+    &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 void Magick::Image::clut ( const Image &clutImage_,
                            const PixelInterpolateMethod method )
 {
