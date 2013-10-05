@@ -53,6 +53,7 @@
 #include "magick/log.h"
 #include "magick/memory_.h"
 #include "magick/monitor.h"
+#include "magick/monitor-private.h"
 #include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
 #include "magick/property.h"
@@ -130,22 +131,29 @@ MagickExport Image *ComplexImages(const Image *images,
 #define ComplexImageTag  "Complex/Image"
 
   CacheView
-    *complex_view;
+    *Ai_view,
+    *Ar_view,
+    *Bi_view,
+    *Br_view,
+    *Ci_view,
+    *Cr_view;
+
+  const Image
+    *Ai_image,
+    *Ar_image,
+    *Bi_image,
+    *Br_image;
 
   Image
-    *image;
+    *Ci_image,
+    *complex_images,
+    *Cr_image;
 
   MagickBooleanType
     status;
 
   MagickOffsetType
     progress;
-
-  MagickPixelPacket
-    **restrict complex_pixels;
-
-  size_t
-    number_images;
 
   ssize_t
     y;
@@ -156,8 +164,113 @@ MagickExport Image *ComplexImages(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=(Image *) NULL;
-  return(image);
+  if (images->next == (Image *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "ImageSequenceRequired","`%s'",images->filename);
+      return((Image *) NULL);
+    }
+  complex_images=CloneImage(images,images->columns,images->rows,MagickTrue,
+    exception);
+  if (complex_images == (Image *) NULL)
+    return((Image *) NULL);
+  complex_images->next=CloneImage(images,images->columns,images->rows,
+    MagickTrue,exception);
+  if (complex_images->next == (Image *) NULL)
+    {
+      complex_images=DestroyImageList(complex_images);
+      return(complex_images);
+    }
+  /*
+    Apply complex mathematics to image pixels.
+  */
+  Ar_image=images;
+  Ai_image=images->next;
+  if ((images->next->next == (Image *) NULL) ||
+      (images->next->next->next == (Image *) NULL))
+    {
+      Br_image=images;
+      Bi_image=images->next;
+    }
+  else
+    {
+      Br_image=images->next->next;
+      Bi_image=images->next->next->next;
+    }
+  Cr_image=complex_images;
+  Ci_image=complex_images->next;
+  Ar_view=AcquireVirtualCacheView(Ar_image,exception);
+  Ai_view=AcquireVirtualCacheView(Ai_image,exception);
+  Br_view=AcquireVirtualCacheView(Br_image,exception);
+  Bi_view=AcquireVirtualCacheView(Bi_image,exception);
+  Cr_view=AcquireAuthenticCacheView(Cr_image,exception);
+  Ci_view=AcquireAuthenticCacheView(Ci_image,exception);
+  status=MagickTrue;
+  progress=0;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+      magick_threads(images,complex_images,images->rows,1)
+#endif
+  for (y=0; y < (ssize_t) images->rows; y++)
+  {
+    register const PixelPacket
+      *restrict Ai,
+      *restrict Ar,
+      *restrict Bi,
+      *restrict Br;
+
+    register PixelPacket
+      *restrict Ci,
+      *restrict Cr;
+
+    register ssize_t
+      x;
+
+    Ar=GetCacheViewVirtualPixels(Ar_view,0,y,images->columns,1,exception);
+    Ai=GetCacheViewVirtualPixels(Ai_view,0,y,images->columns,1,exception);
+    Br=GetCacheViewVirtualPixels(Br_view,0,y,images->columns,1,exception);
+    Bi=GetCacheViewVirtualPixels(Bi_view,0,y,images->columns,1,exception);
+    Cr=QueueCacheViewAuthenticPixels(Cr_view,0,y,images->columns,1,exception);
+    Ci=QueueCacheViewAuthenticPixels(Ci_view,0,y,images->columns,1,exception);
+    if ((Ar == (const PixelPacket *) NULL) ||
+        (Ai == (const PixelPacket *) NULL) ||
+        (Br == (const PixelPacket *) NULL) ||
+        (Bi == (const PixelPacket *) NULL) ||
+        (Cr == (PixelPacket *) NULL) || (Ci == (PixelPacket *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) images->columns; x++)
+    {
+    }
+    if (SyncCacheViewAuthenticPixels(Ci_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (SyncCacheViewAuthenticPixels(Cr_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (images->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_ComplexImages)
+#endif
+        proceed=SetImageProgress(images,ComplexImageTag,progress++,
+          images->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }  
+  Cr_view=DestroyCacheView(Cr_view);
+  Ci_view=DestroyCacheView(Ci_view);
+  Br_view=DestroyCacheView(Br_view);
+  Bi_view=DestroyCacheView(Bi_view);
+  Ar_view=DestroyCacheView(Ar_view);
+  Ai_view=DestroyCacheView(Ai_view);
+  if (status == MagickFalse)
+    complex_images=DestroyImageList(complex_images);
+  return(complex_images);
 }
 
 /*

@@ -728,7 +728,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             MagickBooleanType
               proceed;
 
-#if   defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
             #pragma omp critical (MagickCore_EvaluateImages)
 #endif
             proceed=SetImageProgress(images,EvaluateImageTag,progress++,
