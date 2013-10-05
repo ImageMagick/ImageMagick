@@ -26,7 +26,7 @@ typedef enum
 {
   UndefinedColorspace,
   CMYColorspace,           /* negated linear RGB colorspace */
-  CMYKColorspace,          /* CMY with Black seperation */
+  CMYKColorspace,          /* CMY with Black separation */
   GRAYColorspace,          /* Single Channel greyscale (linear) image */
   HCLColorspace,
   HCLpColorspace,
@@ -47,7 +47,7 @@ typedef enum
   Rec709YCbCrColorspace,
   RGBColorspace,           /* Linear RGB colorspace */
   scRGBColorspace,         /* ??? */
-  sRGBColorspace,          /* Default: non-lienar sRGB colorspace */
+  sRGBColorspace,          /* Default: non-linear sRGB colorspace */
   TransparentColorspace,
   XYZColorspace,           /* IEEE Color Reference colorspace */
   YCbCrColorspace,
