@@ -245,6 +245,18 @@ MagickExport Image *ComplexImages(const Image *images,
     {
       switch (operator)
       {
+				case AddComplexOperator:
+        {
+          Cr->red=Ar->red+Br->red;
+          Cr->green=Ar->green+Br->green;
+          Cr->blue=Ar->blue+Br->blue;
+          Cr->opacity=Ar->opacity+Br->opacity;
+          Ci->red=Ai->red+Bi->red;
+          Ci->green=Ai->green+Bi->green;
+          Ci->blue=Ai->blue+Bi->blue;
+          Ci->opacity=Ai->opacity+Bi->opacity;
+          break;
+        }
 				case ConjugateComplexOperator:
         default:
         {
@@ -288,6 +300,18 @@ MagickExport Image *ComplexImages(const Image *images,
           Ci->blue=(Ai->blue*Br->blue-Ai->blue*Bi->blue);
           Cr->opacity=(Ar->opacity*Br->opacity+Ai->opacity*Bi->opacity);
           Ci->opacity=(Ai->opacity*Br->opacity-Ai->opacity*Bi->opacity);
+          break;
+        }
+				case SubtractComplexOperator:
+        {
+          Cr->red=Ar->red-Br->red;
+          Cr->green=Ar->green-Br->green;
+          Cr->blue=Ar->blue-Br->blue;
+          Cr->opacity=Ar->opacity-Br->opacity;
+          Ci->red=Ai->red-Bi->red;
+          Ci->green=Ai->green-Bi->green;
+          Ci->blue=Ai->blue-Bi->blue;
+          Ci->opacity=Ai->opacity-Bi->opacity;
           break;
         }
       }
