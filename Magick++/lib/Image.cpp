@@ -750,6 +750,21 @@ void Magick::Image::clampChannel ( const ChannelType channel_ )
   throwImageException();
 }
 
+void Magick::Image::clip ( void )
+{
+  modifyImage();
+  ClipImage( image() );
+  throwImageException();
+}
+
+void Magick::Image::clipPath ( const std::string pathname_,
+                               const bool inside_ )
+{
+  modifyImage();
+  ClipImagePath( image(), pathname_.c_str(), (MagickBooleanType) inside_);
+  throwImageException();
+}
+
 void Magick::Image::clut ( const Image &clutImage_ )
 {
   modifyImage();

@@ -266,6 +266,12 @@ namespace Magick
     void            clamp ( void );
     void            clampChannel ( const ChannelType channel_ );
 
+    // Sets the image clip mask based on any clipping path information
+    // if it exists.
+    void            clip ( void );
+    void            clipPath ( const std::string pathname_,
+                               const bool inside_ );
+
     // Apply a color lookup table (CLUT) to the image.
     void            clut ( const Image &clutImage_ );
     void            clutChannel ( const ChannelType channel_,
