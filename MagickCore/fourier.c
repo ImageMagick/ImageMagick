@@ -242,6 +242,38 @@ MagickExport Image *ComplexImages(const Image *images,
       }
     for (x=0; x < (ssize_t) images->columns; x++)
     {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(images); i++)
+      {
+        switch (operator)
+        {
+          case ConjugateComplexOperator:
+          default:
+          {
+            Cr[i]=Ar[i];
+            Ci[i]=(-Bi[i]);
+            break;
+          }
+          case DivideComplexOperator:
+          {
+            double
+              gamma;
+
+            gamma=PerceptibleReciprocal(Br[i]*Br[i]+Bi[i]*Bi[i]);
+            Cr[i]=gamma*(Ar[i]*Br[i]+Ai[i]*Bi[i]);
+            Ci[i]=gamma*(Ai[i]*Br[i]-Ai[i]*Bi[i]);
+            break;
+          }
+          case MultiplyComplexOperator:
+          {
+            Cr[i]=(Ar[i]*Br[i]+Ai[i]*Bi[i]);
+            Ci[i]=(Ai[i]*Br[i]-Ai[i]*Bi[i]);
+            break;
+          }
+        }
+      }
     }
     if (SyncCacheViewAuthenticPixels(Ci_view,exception) == MagickFalse)
       status=MagickFalse;
