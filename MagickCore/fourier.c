@@ -154,6 +154,7 @@ MagickExport Image *ComplexImages(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  image=(Image *) NULL;
   return(image);
 }
 
