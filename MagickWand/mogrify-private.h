@@ -52,9 +52,10 @@ extern "C" {
       else \
         if ((fire) != MagickFalse) \
           { \
-            status&=MogrifyImages(image_stack[k].image_info,postfix,(int) \
-              (i-j+1),(const char **) (argv+j),&image_stack[k].image, \
-              exception); \
+            if (status != 0) \
+              status&=MogrifyImages(image_stack[k].image_info,postfix,(int) \
+                (i-j+1),(const char **) (argv+j),&image_stack[k].image, \
+                exception); \
             image=image_stack[k].image; \
             if ((advance) != MagickFalse) \
               j=i+1; \

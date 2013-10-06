@@ -28,7 +28,9 @@ typedef enum
   AddComplexOperator,
   ConjugateComplexOperator,
   DivideComplexOperator,
+  MagnitudePhaseComplexOperator,
   MultiplyComplexOperator,
+  RealImaginaryComplexOperator,
   SubtractComplexOperator
 } ComplexOperator;
 

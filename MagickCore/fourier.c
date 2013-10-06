@@ -286,10 +286,22 @@ MagickExport Image *ComplexImages(const Image *images,
             Ci[i]=gamma*(Ai[i]*Br[i]-Ai[i]*Bi[i]);
             break;
           }
+          case MagnitudePhaseComplexOperator:
+          {
+            Cr[i]=(Ar[i]*Br[i]-Ai[i]*Bi[i]);
+            Ci[i]=(Ai[i]*Br[i]+Ar[i]*Bi[i]);
+            break;
+          }
           case MultiplyComplexOperator:
           {
-            Cr[i]=(Ar[i]*Br[i]+Ai[i]*Bi[i]);
-            Ci[i]=(Ai[i]*Br[i]-Ai[i]*Bi[i]);
+            Cr[i]=(Ar[i]*Br[i]-Ai[i]*Bi[i]);
+            Ci[i]=(Ai[i]*Br[i]+Ar[i]*Bi[i]);
+            break;
+          }
+          case RealImaginaryComplexOperator:
+          {
+            Cr[i]=(Ar[i]*Br[i]-Ai[i]*Bi[i]);
+            Ci[i]=(Ai[i]*Br[i]+Ar[i]*Bi[i]);
             break;
           }
           case SubtractComplexOperator:
