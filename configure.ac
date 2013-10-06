@@ -3239,8 +3239,8 @@ LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
 MANDelegateDefault='groff'
-MPEGDecodeDelegateDefault='ffmpeg'
-MPEGEncodeDelegateDefault='ffmpeg'
+MPEGDecodeDelegateDefault='avconv'
+MPEGEncodeDelegateDefault='avconv'
 MrSIDDecodeDelegateDefault='mrsidgeodecode'
 MVDelegateDefault='mv'
 PCLDelegateDefault='pcl6'
@@ -3293,7 +3293,15 @@ AC_PATH_PROG(LPRDelegate, "$LPRDelegateDefault", "$LPRDelegateDefault")
 AC_PATH_PROG(LaunchDelegate, "$LaunchDelegateDefault", "$LaunchDelegateDefault")
 AC_PATH_PROG(MANDelegate, "$MANDelegateDefault", "$MANDelegateDefault")
 AC_PATH_PROG(MPEGDecodeDelegate, "$MPEGDecodeDelegateDefault", "$MPEGDecodeDelegateDefault")
+if test "$MPEGDecodeDelegate" == "$MPEGDecodeDelegateDefault" ; then
+  MPEGDecodeDelegateDefault='ffmpeg'
+  AC_PATH_PROG(MPEGDecodeDelegate, "$MPEGDecodeDelegateDefault", "$MPEGDecodeDelegateDefault")
+fi;
 AC_PATH_PROG(MPEGEncodeDelegate, "$MPEGEncodeDelegateDefault", "$MPEGEncodeDelegateDefault")
+if test "$MPEGEncodeDelegate" == "$MPEGEncodeDelegateDefault" ; then
+  MPEGEncodeDelegateDefault='ffmpeg'
+  AC_PATH_PROG(MPEGEncodeDelegate, "$MPEGEncodeDelegateDefault", "$MPEGEncodeDelegateDefault")
+fi;
 AC_PATH_PROG(MrSIDDecodeDelegate, "$MrSIDDecodeDelegateDefault", "$MrSIDDecodeDelegateDefault")
 AC_PATH_PROG(MVDelegate, "$MVDelegateDefault", "$MVDelegateDefault")
 AC_PATH_PROG(PCLDelegate, "$PCLDelegateDefault", "$PCLDelegateDefault")
@@ -3328,7 +3336,7 @@ DisplayDelegate="${BIN_DIR}/${DisplayDelegateDefault}"
 MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
 
 # Set delegate booleans
-have_ffmpeg='no'; if test "$MPEGDecodeDelegate" != "$MPEGDecodeDelegateDefault" ; then have_ffmpeg='yes'; fi
+have_avconv='no'; if test "$MPEGDecodeDelegate" != "$MPEGDecodeDelegateDefault" ; then have_avconv='yes'; fi
 have_gs='no'         ; if test "$PSDelegate" != "$PSDelegateDefault"; then have_gs='yes'; fi
 have_hp2xx='no'      ; if test "$HPGLDecodeDelegate" !=  "$HPGLDecodeDelegateDefault" ; then have_hp2xx='yes'; fi
 have_ilbmtoppm='no'  ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefault" ; then have_ilbmtoppm='yes'; fi
@@ -3816,7 +3824,7 @@ fi
 if test "$have_djvu"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES djvu"
 fi
-if test "$have_ffmpeg"   = 'yes' ; then
+if test "$have_avconv"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES mpeg"
 fi
 if test "$have_fftw"    = 'yes' ; then
