@@ -158,7 +158,7 @@ static MagickBooleanType ImportUsage(void)
       "-limit type value    Area, Disk, Map, or Memory resource limit",
       "-monitor             monitor progress",
       "-page geometry       size and location of an image canvas",
-      "-pause value         seconds delay between snapshots",
+      "-pause seconds       seconds delay between snapshots",
       "-pointsize value     font point size",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-quiet               suppress all warning messages",
