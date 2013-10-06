@@ -83,7 +83,9 @@
 #endif
 
 /* Define if you have FlashPIX library */
-/* #undef FPX_DELEGATE */
+#ifndef MAGICKCORE_FPX_DELEGATE
+#define MAGICKCORE_FPX_DELEGATE 1
+#endif
 
 /* Define if you have FREETYPE library */
 #ifndef MAGICKCORE_FREETYPE_DELEGATE
