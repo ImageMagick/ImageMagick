@@ -148,7 +148,8 @@ MagickExport Image *ComplexImages(const Image *images,
   Image
     *Ci_image,
     *complex_images,
-    *Cr_image;
+    *Cr_image,
+    *image;
 
   MagickBooleanType
     status;
@@ -171,17 +172,28 @@ MagickExport Image *ComplexImages(const Image *images,
         "ImageSequenceRequired","`%s'",images->filename);
       return((Image *) NULL);
     }
-  complex_images=CloneImage(images,images->columns,images->rows,MagickTrue,
-    exception);
-  if (complex_images == (Image *) NULL)
+  image=CloneImage(images,images->columns,images->rows,MagickTrue,exception);
+  if (image == (Image *) NULL)
     return((Image *) NULL);
-  complex_images->next=CloneImage(images,images->columns,images->rows,
-    MagickTrue,exception);
-  if (complex_images->next == (Image *) NULL)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return(image);
+    }
+  complex_images=NewImageList();
+  AppendImageToList(&complex_images,image);
+  image=CloneImage(images,images->columns,images->rows,MagickTrue,exception);
+  if (image == (Image *) NULL)
     {
       complex_images=DestroyImageList(complex_images);
       return(complex_images);
     }
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    {
+      complex_images=DestroyImageList(complex_images);
+      return(complex_images);
+    }
+  AppendImageToList(&complex_images,image);
   /*
     Apply complex mathematics to image pixels.
   */
@@ -227,6 +239,8 @@ MagickExport Image *ComplexImages(const Image *images,
     register ssize_t
       x;
 
+    if (status == MagickFalse)
+      continue;
     Ar=GetCacheViewVirtualPixels(Ar_view,0,y,images->columns,1,exception);
     Ai=GetCacheViewVirtualPixels(Ai_view,0,y,images->columns,1,exception);
     Br=GetCacheViewVirtualPixels(Br_view,0,y,images->columns,1,exception);
