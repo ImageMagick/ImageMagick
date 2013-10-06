@@ -926,7 +926,9 @@ static const OptionInfo
     { "Add", AddComplexOperator, UndefinedOptionFlag, MagickFalse },
     { "Conjugate", ConjugateComplexOperator, UndefinedOptionFlag, MagickFalse },
     { "Divide", DivideComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "MagnitudePhase", MagnitudePhaseComplexOperator, UndefinedOptionFlag, MagickFalse },
     { "Multiply", MultiplyComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "RealImaginary", RealImaginaryComplexOperator, UndefinedOptionFlag, MagickFalse },
     { "Subtract", SubtractComplexOperator, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedComplexOperator, UndefinedOptionFlag, MagickFalse }
   },
