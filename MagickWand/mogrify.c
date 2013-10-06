@@ -7571,23 +7571,23 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("complex",option+1) == 0)
           {
-            Image
-              *complex_image;
-
             ComplexOperator
               operator;
+
+            Image
+              *complex_images;
 
             (void) SyncImageSettings(mogrify_info,*images,exception);
             operator=(ComplexOperator) ParseCommandOption(MagickComplexOptions,
               MagickFalse,argv[i+1]);
-            complex_image=ComplexImages(*images,operator,exception);
-            if (complex_image == (Image *) NULL)
+            complex_images=ComplexImages(*images,operator,exception);
+            if (complex_images == (Image *) NULL)
               {
                 status=MagickFalse;
                 break;
               }
             *images=DestroyImageList(*images);
-            *images=complex_image;
+            *images=complex_images;
             break;
           }
         if (LocaleCompare("composite",option+1) == 0)
