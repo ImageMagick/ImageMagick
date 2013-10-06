@@ -282,7 +282,7 @@ static const OptionInfo
     { "-comment", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+compare", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "-compare", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+complex", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "+complex", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-complex", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+compose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-compose", 1L, ImageInfoOptionFlag, MagickFalse },
