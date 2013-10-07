@@ -3485,7 +3485,7 @@ ComplexImages(ref)
           PackageName);
         goto PerlException;
       }
-    op=MeanComplexOperator;
+    op=UndefinedComplexOperator;
     if (items == 2)
       {
         ssize_t
