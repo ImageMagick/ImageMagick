@@ -3441,6 +3441,9 @@ ComplexImages(ref)
       *attribute,
       *p;
 
+    ComplexOperator
+      op;
+
     ExceptionInfo
       *exception;
 
@@ -3449,9 +3452,6 @@ ComplexImages(ref)
 
     Image
       *image;
-
-    MagickComplexOperator
-      op;
 
     register ssize_t
       i;
@@ -3499,7 +3499,7 @@ ComplexImages(ref)
               SvPV(ST(1),na));
             return;
           }
-        op=(MagickComplexOperator) in;
+        op=(ComplexOperator) in;
       }
     else
       for (i=2; i < items; i+=2)
@@ -3523,7 +3523,7 @@ ComplexImages(ref)
                       SvPV(ST(i),na));
                     return;
                   }
-                op=(MagickComplexOperator) in;
+                op=(ComplexOperator) in;
                 break;
               }
             ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
