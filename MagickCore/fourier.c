@@ -900,16 +900,19 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 
     size_t
       extent,
+      height,
       width;
 
     width=image->columns;
+    height=image->rows;
     if ((image->columns != image->rows) || ((image->columns % 2) != 0) ||
         ((image->rows % 2) != 0))
       {
         extent=image->columns < image->rows ? image->rows : image->columns;
         width=(extent & 0x01) == 1 ? extent+1UL : extent;
       }
-    magnitude_image=CloneImage(image,width,width,MagickTrue,exception);
+    height=width;
+    magnitude_image=CloneImage(image,width,height,MagickTrue,exception);
     if (magnitude_image != (Image *) NULL)
       {
         Image
@@ -917,7 +920,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 
         magnitude_image->storage_class=DirectClass;
         magnitude_image->depth=32UL;
-        phase_image=CloneImage(image,width,width,MagickTrue,exception);
+        phase_image=CloneImage(image,width,height,MagickTrue,exception);
         if (phase_image == (Image *) NULL)
           magnitude_image=DestroyImage(magnitude_image);
         else
