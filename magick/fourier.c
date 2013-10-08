@@ -253,7 +253,7 @@ MagickExport Image *ComplexImages(const Image *images,
     {
       switch (operator)
       {
-				case AddComplexOperator:
+        case AddComplexOperator:
         {
           Cr->red=Ar->red+Br->red;
           Ci->red=Ai->red+Bi->red;
@@ -268,7 +268,7 @@ MagickExport Image *ComplexImages(const Image *images,
             }
           break;
         }
-				case ConjugateComplexOperator:
+        case ConjugateComplexOperator:
         default:
         {
           Cr->red=Ar->red;
@@ -309,7 +309,7 @@ MagickExport Image *ComplexImages(const Image *images,
             }
           break;
         }
-				case MagnitudePhaseComplexOperator:
+        case MagnitudePhaseComplexOperator:
         {
           Cr->red=sqrt(Ar->red*Ar->red+Ai->red*Ai->red);
           Ci->red=atan2(Ai->red,Ar->red);
@@ -339,7 +339,7 @@ MagickExport Image *ComplexImages(const Image *images,
             }
           break;
         }
-				case RealImaginaryComplexOperator:
+        case RealImaginaryComplexOperator:
         {
           Cr->red=Ar->red*exp(Ai->red);
           Ci->red=Ar->red*(cos(Ai->red)+sin(Ai->red));
@@ -354,7 +354,7 @@ MagickExport Image *ComplexImages(const Image *images,
             }
           break;
         }
-				case SubtractComplexOperator:
+        case SubtractComplexOperator:
         {
           Cr->red=Ar->red-Br->red;
           Ci->red=Ai->red-Bi->red;
