@@ -843,6 +843,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
     extent;
 
   fourier_info.width=image->columns;
+  fourier_info.height=image->rows;
   if ((image->columns != image->rows) || ((image->columns % 2) != 0) ||
       ((image->rows % 2) != 0))
     {
