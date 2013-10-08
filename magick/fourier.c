@@ -256,26 +256,32 @@ MagickExport Image *ComplexImages(const Image *images,
 				case AddComplexOperator:
         {
           Cr->red=Ar->red+Br->red;
-          Cr->green=Ar->green+Br->green;
-          Cr->blue=Ar->blue+Br->blue;
-          Cr->opacity=Ar->opacity+Br->opacity;
           Ci->red=Ai->red+Bi->red;
+          Cr->green=Ar->green+Br->green;
           Ci->green=Ai->green+Bi->green;
+          Cr->blue=Ar->blue+Br->blue;
           Ci->blue=Ai->blue+Bi->blue;
-          Ci->opacity=Ai->opacity+Bi->opacity;
+          if (images->matte != MagickFalse)
+            {
+              Cr->opacity=Ar->opacity+Br->opacity;
+              Ci->opacity=Ai->opacity+Bi->opacity;
+            }
           break;
         }
 				case ConjugateComplexOperator:
         default:
         {
           Cr->red=Ar->red;
-          Cr->green=Ar->green;
-          Cr->blue=Ar->blue;
-          Cr->opacity=Ar->opacity;
           Ci->red=(-Bi->red);
+          Cr->green=Ar->green;
           Ci->green=(-Bi->green);
+          Cr->blue=Ar->blue;
           Ci->blue=(-Bi->blue);
-          Ci->opacity=(-Bi->opacity);
+          if (images->matte != MagickFalse)
+            {
+              Cr->opacity=Ar->opacity;
+              Ci->opacity=(-Bi->opacity);
+            }
           break;
         }
         case DivideComplexOperator:
@@ -292,22 +298,30 @@ MagickExport Image *ComplexImages(const Image *images,
           gamma=PerceptibleReciprocal(Br->blue*Br->blue+Bi->blue*Bi->blue);
           Cr->blue=gamma*(Ar->blue*Br->blue+Ai->blue*Bi->blue);
           Ci->blue=gamma*(Ai->blue*Br->blue-Ai->blue*Bi->blue);
-          gamma=PerceptibleReciprocal(Br->opacity*Br->opacity+Bi->opacity*
-            Bi->opacity);
-          Cr->opacity=gamma*(Ar->opacity*Br->opacity+Ai->opacity*Bi->opacity);
-          Ci->opacity=gamma*(Ai->opacity*Br->opacity-Ai->opacity*Bi->opacity);
+          if (images->matte != MagickFalse)
+            {
+              gamma=PerceptibleReciprocal(Br->opacity*Br->opacity+Bi->opacity*
+                Bi->opacity);
+              Cr->opacity=gamma*(Ar->opacity*Br->opacity+Ai->opacity*
+                Bi->opacity);
+              Ci->opacity=gamma*(Ai->opacity*Br->opacity-Ai->opacity*
+                Bi->opacity);
+            }
           break;
         }
 				case MagnitudePhaseComplexOperator:
         {
           Cr->red=Ar->red;
-          Cr->green=Ar->green;
-          Cr->blue=Ar->blue;
-          Cr->opacity=Ar->opacity;
           Ci->red=(-Bi->red);
+          Cr->green=Ar->green;
           Ci->green=(-Bi->green);
+          Cr->blue=Ar->blue;
           Ci->blue=(-Bi->blue);
-          Ci->opacity=(-Bi->opacity);
+          if (images->matte != MagickFalse)
+            {
+              Cr->opacity=Ar->opacity;
+              Ci->opacity=(-Bi->opacity);
+            }
           break;
         }
         case MultiplyComplexOperator:
@@ -318,32 +332,41 @@ MagickExport Image *ComplexImages(const Image *images,
           Ci->green=(Ai->green*Br->green+Ar->green*Bi->green);
           Cr->blue=(Ar->blue*Br->blue-Ai->blue*Bi->blue);
           Ci->blue=(Ai->blue*Br->blue+Ar->blue*Bi->blue);
-          Cr->opacity=(Ar->opacity*Br->opacity-Ai->opacity*Bi->opacity);
-          Ci->opacity=(Ai->opacity*Br->opacity+Ar->opacity*Bi->opacity);
+          if (images->matte != MagickFalse)
+            {
+              Cr->opacity=(Ar->opacity*Br->opacity-Ai->opacity*Bi->opacity);
+              Ci->opacity=(Ai->opacity*Br->opacity+Ar->opacity*Bi->opacity);
+            }
           break;
         }
 				case RealImaginaryComplexOperator:
         {
           Cr->red=Ar->red;
-          Cr->green=Ar->green;
-          Cr->blue=Ar->blue;
-          Cr->opacity=Ar->opacity;
           Ci->red=(-Bi->red);
+          Cr->green=Ar->green;
           Ci->green=(-Bi->green);
+          Cr->blue=Ar->blue;
           Ci->blue=(-Bi->blue);
-          Ci->opacity=(-Bi->opacity);
+          if (images->matte != MagickFalse)
+            {
+              Cr->opacity=Ar->opacity;
+              Ci->opacity=(-Bi->opacity);
+            }
           break;
         }
 				case SubtractComplexOperator:
         {
           Cr->red=Ar->red-Br->red;
-          Cr->green=Ar->green-Br->green;
-          Cr->blue=Ar->blue-Br->blue;
-          Cr->opacity=Ar->opacity-Br->opacity;
           Ci->red=Ai->red-Bi->red;
+          Cr->green=Ar->green-Br->green;
           Ci->green=Ai->green-Bi->green;
+          Cr->blue=Ar->blue-Br->blue;
           Ci->blue=Ai->blue-Bi->blue;
-          Ci->opacity=Ai->opacity-Bi->opacity;
+          if (images->matte != MagickFalse)
+            {
+              Cr->opacity=Ar->opacity-Br->opacity;
+              Ci->opacity=Ai->opacity-Bi->opacity;
+            }
           break;
         }
       }
