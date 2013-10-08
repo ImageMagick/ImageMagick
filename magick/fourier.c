@@ -323,16 +323,18 @@ MagickExport Image *ComplexImages(const Image *images,
         }
         case MultiplyComplexOperator:
         {
-          Cr->red=(Ar->red*Br->red-Ai->red*Bi->red);
-          Ci->red=(Ai->red*Br->red+Ar->red*Bi->red);
-          Cr->green=(Ar->green*Br->green-Ai->green*Bi->green);
-          Ci->green=(Ai->green*Br->green+Ar->green*Bi->green);
-          Cr->blue=(Ar->blue*Br->blue-Ai->blue*Bi->blue);
-          Ci->blue=(Ai->blue*Br->blue+Ar->blue*Bi->blue);
+          Cr->red=QuantumScale*(Ar->red*Br->red-Ai->red*Bi->red);
+          Ci->red=QuantumScale*(Ai->red*Br->red+Ar->red*Bi->red);
+          Cr->green=QuantumScale*(Ar->green*Br->green-Ai->green*Bi->green);
+          Ci->green=QuantumScale*(Ai->green*Br->green+Ar->green*Bi->green);
+          Cr->blue=QuantumScale*(Ar->blue*Br->blue-Ai->blue*Bi->blue);
+          Ci->blue=QuantumScale*(Ai->blue*Br->blue+Ar->blue*Bi->blue);
           if (images->matte != MagickFalse)
             {
-              Cr->opacity=(Ar->opacity*Br->opacity-Ai->opacity*Bi->opacity);
-              Ci->opacity=(Ai->opacity*Br->opacity+Ar->opacity*Bi->opacity);
+              Cr->opacity=QuantumScale*(Ar->opacity*Br->opacity-Ai->opacity*
+                Bi->opacity);
+              Ci->opacity=QuantumScale*(Ai->opacity*Br->opacity+Ar->opacity*
+                Bi->opacity);
             }
           break;
         }
