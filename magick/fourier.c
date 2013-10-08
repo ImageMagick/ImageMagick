@@ -288,20 +288,20 @@ MagickExport Image *ComplexImages(const Image *images,
 
           gamma=PerceptibleReciprocal(Br->red*Br->red+Bi->red*Bi->red);
           Cr->red=gamma*(Ar->red*Br->red+Ai->red*Bi->red);
-          Ci->red=gamma*(Ai->red*Br->red-Ai->red*Bi->red);
+          Ci->red=gamma*(Ai->red*Br->red-Ar->red*Bi->red);
           gamma=PerceptibleReciprocal(Br->green*Br->green+Bi->green*Bi->green);
           Cr->green=gamma*(Ar->green*Br->green+Ai->green*Bi->green);
-          Ci->green=gamma*(Ai->green*Br->green-Ai->green*Bi->green);
+          Ci->green=gamma*(Ai->green*Br->green-Ar->green*Bi->green);
           gamma=PerceptibleReciprocal(Br->blue*Br->blue+Bi->blue*Bi->blue);
           Cr->blue=gamma*(Ar->blue*Br->blue+Ai->blue*Bi->blue);
-          Ci->blue=gamma*(Ai->blue*Br->blue-Ai->blue*Bi->blue);
+          Ci->blue=gamma*(Ai->blue*Br->blue-Ar->blue*Bi->blue);
           if (images->matte != MagickFalse)
             {
               gamma=PerceptibleReciprocal(Br->opacity*Br->opacity+Bi->opacity*
                 Bi->opacity);
               Cr->opacity=gamma*(Ar->opacity*Br->opacity+Ai->opacity*
                 Bi->opacity);
-              Ci->opacity=gamma*(Ai->opacity*Br->opacity-Ai->opacity*
+              Ci->opacity=gamma*(Ai->opacity*Br->opacity-Ar->opacity*
                 Bi->opacity);
             }
           break;
