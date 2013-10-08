@@ -291,8 +291,8 @@ MagickExport Image *ComplexImages(const Image *images,
           }
           case MultiplyComplexOperator:
           {
-            Cr[i]=(Ar[i]*Br[i]-Ai[i]*Bi[i]);
-            Ci[i]=(Ai[i]*Br[i]+Ar[i]*Bi[i]);
+            Cr[i]=QuantumScale*(Ar[i]*Br[i]-Ai[i]*Bi[i]);
+            Ci[i]=QuantumScale*(Ai[i]*Br[i]+Ar[i]*Bi[i]);
             break;
           }
           case RealImaginaryComplexOperator:
