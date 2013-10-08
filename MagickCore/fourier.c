@@ -280,7 +280,7 @@ MagickExport Image *ComplexImages(const Image *images,
 
             gamma=PerceptibleReciprocal(Br[i]*Br[i]+Bi[i]*Bi[i]);
             Cr[i]=gamma*(Ar[i]*Br[i]+Ai[i]*Bi[i]);
-            Ci[i]=gamma*(Ai[i]*Br[i]-Ai[i]*Bi[i]);
+            Ci[i]=gamma*(Ai[i]*Br[i]-Ar[i]*Bi[i]);
             break;
           }
           case MagnitudePhaseComplexOperator:
