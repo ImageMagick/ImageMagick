@@ -199,13 +199,10 @@ MagickExport Image *ComplexImages(const Image *images,
   */
   Ar_image=images;
   Ai_image=images->next;
-  if ((images->next->next == (Image *) NULL) ||
-      (images->next->next->next == (Image *) NULL))
-    {
-      Br_image=images;
-      Bi_image=images->next;
-    }
-  else
+  Br_image=images;
+  Bi_image=images->next;
+  if ((images->next->next != (Image *) NULL) &&
+      (images->next->next->next != (Image *) NULL))
     {
       Br_image=images->next->next;
       Bi_image=images->next->next->next;
