@@ -912,7 +912,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
         extent=image->columns < image->rows ? image->rows : image->columns;
         width=(extent & 0x01) == 1 ? extent+1UL : extent;
       }
-    magnitude_image=CloneImage(image,width,width,MagickFalse,exception);
+    magnitude_image=CloneImage(image,width,width,MagickTrue,exception);
     if (magnitude_image != (Image *) NULL)
       {
         Image
@@ -920,7 +920,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 
         magnitude_image->storage_class=DirectClass;
         magnitude_image->depth=32UL;
-        phase_image=CloneImage(image,width,width,MagickFalse,exception);
+        phase_image=CloneImage(image,width,width,MagickTrue,exception);
         if (phase_image == (Image *) NULL)
           magnitude_image=DestroyImage(magnitude_image);
         else
@@ -1490,7 +1490,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
 #else
   {
     fourier_image=CloneImage(magnitude_image,magnitude_image->columns,
-      magnitude_image->rows,MagickFalse,exception);
+      magnitude_image->rows,MagickTrue,exception);
     if (fourier_image != (Image *) NULL)
       {
         MagickBooleanType
