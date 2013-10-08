@@ -340,16 +340,16 @@ MagickExport Image *ComplexImages(const Image *images,
         }
         case RealImaginaryComplexOperator:
         {
-          Cr->red=Ar->red*exp(Ai->red);
-          Ci->red=Ar->red*(cos(Ai->red)+sin(Ai->red));
-          Cr->green=Ar->green*exp(Ai->green);
-          Ci->green=Ar->green*(cos(Ai->green)+sin(Ai->green));
-          Cr->blue=Ar->blue*exp(Ai->blue);
-          Ci->blue=Ar->blue*(cos(Ai->blue)+sin(Ai->blue));
+          Cr->red=Ar->red*cos(Ai->red);
+          Ci->red=Ar->red*sin(Ai->red);
+          Cr->green=Ar->green*cos(Ai->green);
+          Ci->green=Ar->green*sin(Ai->green);
+          Cr->blue=Ar->blue*cos(Ai->blue);
+          Ci->blue=Ar->blue*sin(Ai->blue);
           if (images->matte != MagickFalse)
             {
-              Cr->opacity=Ar->opacity*exp(Ai->opacity);
-              Ci->opacity=Ar->opacity*(cos(Ai->opacity)+sin(Ai->opacity));
+               Cr->opacity=Ar->opacity*cos(Ai->opacity);
+               Ci->opacity=Ar->opacity*sin(Ai->opacity);
             }
           break;
         }
