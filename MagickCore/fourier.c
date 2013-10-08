@@ -288,8 +288,8 @@ MagickExport Image *ComplexImages(const Image *images,
           }
           case MagnitudePhaseComplexOperator:
           {
-            Cr[i]=(Ar[i]*Br[i]-Ai[i]*Bi[i]);
-            Ci[i]=(Ai[i]*Br[i]+Ar[i]*Bi[i]);
+            Cr[i]=sqrt(Ar[i]*Ar[i]+Ai[i]*Ai[i]);
+            Ci[i]=atan2(Ai[i],Ar[i]);
             break;
           }
           case MultiplyComplexOperator:
@@ -300,8 +300,8 @@ MagickExport Image *ComplexImages(const Image *images,
           }
           case RealImaginaryComplexOperator:
           {
-            Cr[i]=(Ar[i]*Br[i]-Ai[i]*Bi[i]);
-            Ci[i]=(Ai[i]*Br[i]+Ar[i]*Bi[i]);
+            Cr[i]=Ar[i]*exp(Ai[i]);
+            Ci[i]=Ar[i]*(cos(Ai[i])+sin(Ai[i]));
             break;
           }
           case SubtractComplexOperator:
