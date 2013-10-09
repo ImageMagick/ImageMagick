@@ -60,6 +60,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #if defined(MAGICKCORE_FFTW_DELEGATE)
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
@@ -139,11 +140,17 @@ MagickExport Image *ComplexImages(const Image *images,
     *Ci_view,
     *Cr_view;
 
+  const char
+    *artifact;
+
   const Image
     *Ai_image,
     *Ar_image,
     *Bi_image,
     *Br_image;
+
+  double
+    snr;
 
   Image
     *Ci_image,
@@ -197,6 +204,10 @@ MagickExport Image *ComplexImages(const Image *images,
   /*
     Apply complex mathematics to image pixels.
   */
+  artifact=GetImageArtifact(image,"complex:snr");
+  snr=0.0;
+  if (artifact != (const char *) NULL)
+    snr=StringToDouble(artifact,(char **) NULL);
   Ar_image=images;
   Ai_image=images->next;
   Br_image=images;
@@ -278,7 +289,7 @@ MagickExport Image *ComplexImages(const Image *images,
             double
               gamma;
 
-            gamma=PerceptibleReciprocal(Br[i]*Br[i]+Bi[i]*Bi[i]);
+            gamma=PerceptibleReciprocal(Br[i]*Br[i]+Bi[i]*Bi[i]+snr);
             Cr[i]=gamma*(Ar[i]*Br[i]+Ai[i]*Bi[i]);
             Ci[i]=gamma*(Ai[i]*Br[i]-Ar[i]*Bi[i]);
             break;
