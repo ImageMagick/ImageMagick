@@ -1377,6 +1377,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 
       if (GetPixelReadMask(image,p) == 0)
         {
+          SetPixelBackgoundColor(enhance_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(enhance_image);
           continue;

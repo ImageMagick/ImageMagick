@@ -3296,6 +3296,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       */
       if (GetPixelReadMask(image,p) == 0)
         {
+          SetPixelBackgoundColor(implode_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(implode_image);
           continue;
@@ -5117,6 +5118,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       */
       if (GetPixelReadMask(image,p) == 0)
         {
+          SetPixelBackgoundColor(swirl_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(swirl_image);
           continue;

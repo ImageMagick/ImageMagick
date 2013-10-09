@@ -698,6 +698,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 
       if (GetPixelReadMask(image,p) == 0)
         {
+          SetPixelBackgoundColor(crop_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(crop_image);
           continue;
@@ -1053,6 +1054,7 @@ MagickExport Image *ExcerptImage(const Image *image,
 
       if (GetPixelReadMask(image,p) == 0)
         {
+          SetPixelBackgoundColor(excerpt_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(excerpt_image);
           continue;
@@ -1253,6 +1255,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
 
       if (GetPixelReadMask(image,p) == 0)
         {
+          SetPixelBackgoundColor(flip_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(flip_image);
           continue;
@@ -1521,6 +1524,7 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
 
       if (GetPixelReadMask(source,p) == 0)
         {
+          SetPixelBackgoundColor(destination,q);
           p+=GetPixelChannels(source);
           q+=GetPixelChannels(destination);
           continue;
@@ -1839,6 +1843,7 @@ MagickExport Image *SpliceImage(const Image *image,
 
       if (GetPixelReadMask(image,p) == 0)
         {
+          SetPixelBackgoundColor(splice_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(splice_image);
           continue;
@@ -1865,6 +1870,7 @@ MagickExport Image *SpliceImage(const Image *image,
 
       if (GetPixelReadMask(image,p) == 0)
         {
+          SetPixelBackgoundColor(splice_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(splice_image);
           continue;
@@ -1934,6 +1940,7 @@ MagickExport Image *SpliceImage(const Image *image,
 
       if (GetPixelReadMask(image,q) == 0)
         {
+          SetPixelBackgoundColor(splice_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(splice_image);
           continue;
@@ -1960,6 +1967,7 @@ MagickExport Image *SpliceImage(const Image *image,
 
       if (GetPixelReadMask(image,q) == 0)
         {
+          SetPixelBackgoundColor(splice_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(splice_image);
           continue;
@@ -2269,6 +2277,7 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
 
       if (GetPixelReadMask(image,q) == 0)
         {
+          SetPixelBackgoundColor(transpose_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(transpose_image);
           continue;

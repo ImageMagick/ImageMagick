@@ -453,6 +453,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 
           if (GetPixelReadMask(image,q) == 0)
             {
+              SetPixelBackgoundColor(frame_image,q);
               p+=GetPixelChannels(image);
               q+=GetPixelChannels(frame_image);
               continue;
