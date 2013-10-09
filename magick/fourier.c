@@ -59,6 +59,7 @@
 #include "magick/property.h"
 #include "magick/quantum-private.h"
 #include "magick/resource_.h"
+#include "magick/string-private.h"
 #include "magick/thread-private.h"
 #if defined(MAGICKCORE_FFTW_DELEGATE)
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
@@ -138,11 +139,17 @@ MagickExport Image *ComplexImages(const Image *images,
     *Ci_view,
     *Cr_view;
 
+  const char
+    *artifact;
+
   const Image
     *Ai_image,
     *Ar_image,
     *Bi_image,
     *Br_image;
+
+  double
+    snr;
 
   Image
     *Ci_image,
@@ -190,6 +197,10 @@ MagickExport Image *ComplexImages(const Image *images,
   /*
     Apply complex mathematics to image pixels.
   */
+  artifact=GetImageArtifact(image,"complex:snr");
+  snr=0.0;
+  if (artifact != (const char *) NULL)
+    snr=StringToDouble(artifact,(char **) NULL);
   Ar_image=images;
   Ai_image=images->next;
   Br_image=images;
@@ -286,19 +297,20 @@ MagickExport Image *ComplexImages(const Image *images,
           double
             gamma;
 
-          gamma=PerceptibleReciprocal(Br->red*Br->red+Bi->red*Bi->red);
+          gamma=PerceptibleReciprocal(Br->red*Br->red+Bi->red*Bi->red+snr);
           Cr->red=gamma*(Ar->red*Br->red+Ai->red*Bi->red);
           Ci->red=gamma*(Ai->red*Br->red-Ar->red*Bi->red);
-          gamma=PerceptibleReciprocal(Br->green*Br->green+Bi->green*Bi->green);
+          gamma=PerceptibleReciprocal(Br->green*Br->green+Bi->green*Bi->green+
+            snr);
           Cr->green=gamma*(Ar->green*Br->green+Ai->green*Bi->green);
           Ci->green=gamma*(Ai->green*Br->green-Ar->green*Bi->green);
-          gamma=PerceptibleReciprocal(Br->blue*Br->blue+Bi->blue*Bi->blue);
+          gamma=PerceptibleReciprocal(Br->blue*Br->blue+Bi->blue*Bi->blue+snr);
           Cr->blue=gamma*(Ar->blue*Br->blue+Ai->blue*Bi->blue);
           Ci->blue=gamma*(Ai->blue*Br->blue-Ar->blue*Bi->blue);
           if (images->matte != MagickFalse)
             {
               gamma=PerceptibleReciprocal(Br->opacity*Br->opacity+Bi->opacity*
-                Bi->opacity);
+                Bi->opacity+snr);
               Cr->opacity=gamma*(Ar->opacity*Br->opacity+Ai->opacity*
                 Bi->opacity);
               Ci->opacity=gamma*(Ai->opacity*Br->opacity-Ar->opacity*
@@ -393,7 +405,7 @@ MagickExport Image *ComplexImages(const Image *images,
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
-  }  
+  }
   Cr_view=DestroyCacheView(Cr_view);
   Ci_view=DestroyCacheView(Ci_view);
   Br_view=DestroyCacheView(Br_view);
