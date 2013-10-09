@@ -579,6 +579,7 @@ MagickExport Image *AppendImages(const Image *images,
       {
         if (GetPixelReadMask(image,p) == 0)
           {
+            SetPixelBackgoundColor(append_image,q);
             p+=GetPixelChannels(image);
             q+=GetPixelChannels(append_image);
             continue;

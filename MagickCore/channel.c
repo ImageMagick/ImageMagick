@@ -737,6 +737,7 @@ MagickExport Image *SeparateImage(const Image *image,
 
       if (GetPixelReadMask(image,p) == 0)
         {
+          SetPixelBackgoundColor(separate_image,q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(separate_image);
           continue;

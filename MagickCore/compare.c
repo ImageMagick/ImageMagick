@@ -1668,6 +1668,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
         }
       if (GetPixelReadMask(similarity_image,q) == 0)
         {
+          SetPixelBackgoundColor(similarity_image,q);
           q+=GetPixelChannels(similarity_image);
           continue;
         }

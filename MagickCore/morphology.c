@@ -3481,7 +3481,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-             (GetPixelReadMask(image,p+center) == 0))
+            (GetPixelReadMask(image,p+center) == 0))
           continue;
         pixels=p;
         pixel=(double) QuantumRange;

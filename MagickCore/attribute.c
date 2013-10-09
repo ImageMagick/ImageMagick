@@ -424,7 +424,8 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
             PixelTrait traits=GetPixelChannelTraits(image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (channel == IndexPixelChannel) ||
-                (channel == ReadMaskPixelChannel) || (channel == MetaPixelChannel))
+                (channel == ReadMaskPixelChannel) ||
+                (channel == MetaPixelChannel))
               continue;
             if (depth_map[ScaleQuantumToMap(p[i])] > current_depth[id])
               current_depth[id]=depth_map[ScaleQuantumToMap(p[i])];
