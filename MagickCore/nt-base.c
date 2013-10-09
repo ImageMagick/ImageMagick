@@ -1092,7 +1092,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
     else
       is_64_bit_version=NTIs64BitPlatform();
   }
-  if (is_64_bit!=NULL)
+  if (is_64_bit != NULL)
     *is_64_bit=is_64_bit_version;
   if (product_family == NULL)
     return(FALSE);
@@ -1211,7 +1211,8 @@ MagickPrivate int NTGhostscriptEXE(char *path,int length)
     {
       p++;
       *p='\0';
-      (void) ConcatenateMagickString(program,is_64_bit_version ? "gswin64c.exe" : "gswin32c.exe",sizeof(program));
+      (void) ConcatenateMagickString(program,is_64_bit_version ?
+        "gswin64c.exe" : "gswin32c.exe",sizeof(program));
     }
   (void) CopyMagickString(path,program,length);
   return(TRUE);
