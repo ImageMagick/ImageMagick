@@ -321,15 +321,15 @@ MagickExport Image *ComplexImages(const Image *images,
         case MagnitudePhaseComplexOperator:
         {
           Cr->red=sqrt(Ar->red*Ar->red+Ai->red*Ai->red);
-          Ci->red=atan2(Ai->red,Ar->red);
+          Ci->red=atan2(Ai->red,Ar->red)/(2.0*MagickPI)+0.5;
           Cr->green=sqrt(Ar->green*Ar->green+Ai->green*Ai->green);
-          Ci->green=atan2(Ai->green,Ar->green);
+          Ci->green=atan2(Ai->green,Ar->green)/(2.0*MagickPI)+0.5;
           Cr->blue=sqrt(Ar->blue*Ar->blue+Ai->blue*Ai->blue);
-          Ci->blue=atan2(Ai->blue,Ar->blue);
+          Ci->blue=atan2(Ai->blue,Ar->blue)/(2.0*MagickPI)+0.5;
           if (images->matte != MagickFalse)
             {
               Cr->opacity=sqrt(Ar->opacity*Ar->opacity+Ai->opacity*Ai->opacity);
-              Ci->opacity=atan2(Ai->opacity,Ar->opacity);
+              Ci->opacity=atan2(Ai->opacity,Ar->opacity)/(2.0*MagickPI)+0.5;
             }
           break;
         }
@@ -352,16 +352,16 @@ MagickExport Image *ComplexImages(const Image *images,
         }
         case RealImaginaryComplexOperator:
         {
-          Cr->red=Ar->red*cos(Ai->red);
-          Ci->red=Ar->red*sin(Ai->red);
-          Cr->green=Ar->green*cos(Ai->green);
-          Ci->green=Ar->green*sin(Ai->green);
-          Cr->blue=Ar->blue*cos(Ai->blue);
-          Ci->blue=Ar->blue*sin(Ai->blue);
+          Cr->red=Ar->red*cos(2.0*MagickPI*(Ai->red-0.5));
+          Ci->red=Ar->red*sin(2.0*MagickPI*(Ai->red-0.5));
+          Cr->green=Ar->green*cos(2.0*MagickPI*(Ai->green-0.5));
+          Ci->green=Ar->green*sin(2.0*MagickPI*(Ai->green-0.5));
+          Cr->blue=Ar->blue*cos(2.0*MagickPI*(Ai->blue-0.5));
+          Ci->blue=Ar->blue*sin(2.0*MagickPI*(Ai->blue-0.5));
           if (images->matte != MagickFalse)
             {
-               Cr->opacity=Ar->opacity*cos(Ai->opacity);
-               Ci->opacity=Ar->opacity*sin(Ai->opacity);
+               Cr->opacity=Ar->opacity*cos(2.0*MagickPI*(Ai->opacity-0.5));
+               Ci->opacity=Ar->opacity*sin(2.0*MagickPI*(Ai->opacity-0.5));
             }
           break;
         }
