@@ -307,11 +307,17 @@ namespace Magick
 
   // Composition operations
   using MagickCore::CompositeOperator;
+  using MagickCore::AlphaCompositeOp;
   using MagickCore::AtopCompositeOp;
   using MagickCore::BlendCompositeOp;
+  using MagickCore::BlurCompositeOp;
   using MagickCore::BumpmapCompositeOp;
+  using MagickCore::ChangeMaskCompositeOp;
   using MagickCore::ClearCompositeOp;
+  using MagickCore::ColorBurnCompositeOp;
+  using MagickCore::ColorDodgeCompositeOp;
   using MagickCore::ColorizeCompositeOp;
+  using MagickCore::CopyBlackCompositeOp;
   using MagickCore::CopyBlueCompositeOp;
   using MagickCore::CopyCompositeOp;
   using MagickCore::CopyCyanCompositeOp;
@@ -321,31 +327,57 @@ namespace Magick
   using MagickCore::CopyRedCompositeOp;
   using MagickCore::CopyYellowCompositeOp;
   using MagickCore::DarkenCompositeOp;
+  using MagickCore::DarkenIntensityCompositeOp;
   using MagickCore::DifferenceCompositeOp;
   using MagickCore::DisplaceCompositeOp;
   using MagickCore::DissolveCompositeOp;
+  using MagickCore::DistortCompositeOp;
+  using MagickCore::DivideDstCompositeOp;
+  using MagickCore::DivideSrcCompositeOp;
+  using MagickCore::DstAtopCompositeOp;
+  using MagickCore::DstCompositeOp;
+  using MagickCore::DstInCompositeOp;
+  using MagickCore::DstOutCompositeOp;
   using MagickCore::DstOverCompositeOp;
   using MagickCore::ExclusionCompositeOp;
   using MagickCore::HardLightCompositeOp;
   using MagickCore::HueCompositeOp;
   using MagickCore::InCompositeOp;
+  using MagickCore::IntensityCompositeOp;
   using MagickCore::LightenCompositeOp;
+  using MagickCore::LightenIntensityCompositeOp;
+  using MagickCore::LinearBurnCompositeOp;
+  using MagickCore::LinearDodgeCompositeOp;
+  using MagickCore::LinearLightCompositeOp;
   using MagickCore::LuminizeCompositeOp;
+  using MagickCore::MathematicsCompositeOp;
+  using MagickCore::MinusDstCompositeOp;
+  using MagickCore::MinusSrcCompositeOp;
   using MagickCore::ModulateCompositeOp;
+  using MagickCore::ModulusAddCompositeOp;
+  using MagickCore::ModulusSubtractCompositeOp;
   using MagickCore::MultiplyCompositeOp;
   using MagickCore::NoCompositeOp;
   using MagickCore::OutCompositeOp;
   using MagickCore::OverCompositeOp;
   using MagickCore::OverlayCompositeOp;
+  using MagickCore::PegtopLightCompositeOp;
+  using MagickCore::PinLightCompositeOp;
   using MagickCore::PlusCompositeOp;
+  using MagickCore::ReplaceCompositeOp;
   using MagickCore::SaturateCompositeOp;
   using MagickCore::ScreenCompositeOp;
   using MagickCore::SoftLightCompositeOp;
+  using MagickCore::SrcAtopCompositeOp;
+  using MagickCore::SrcCompositeOp;
+  using MagickCore::SrcInCompositeOp;
+  using MagickCore::SrcOutCompositeOp;
+  using MagickCore::SrcOverCompositeOp;
   using MagickCore::ThresholdCompositeOp;
   using MagickCore::UndefinedCompositeOp;
+  using MagickCore::VividLightCompositeOp;
   using MagickCore::XorCompositeOp;
-  using MagickCore::CopyBlackCompositeOp;
-  
+
   // Compression algorithms
   using MagickCore::CompressionType;
   using MagickCore::UndefinedCompression;
