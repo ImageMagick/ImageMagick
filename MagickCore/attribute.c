@@ -672,9 +672,6 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
   ImageType
     type;
 
-  MagickBooleanType
-    status;
-
   register const Quantum
     *p;
 
@@ -720,11 +717,12 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
   if (type == UndefinedType)
     return(MagickFalse);
   ((Image *) image)->colorspace=GRAYColorspace;
-  status=SyncImagePixelCache((Image *) image,exception);
+  if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
+    return(MagickFalse);
   ((Image *) image)->type=type;
   if ((type == GrayscaleType) && (image->alpha_trait == BlendPixelTrait))
     ((Image *) image)->type=GrayscaleMatteType;
-  return(status);
+  return(MagickTrue);
 }
 
 /*
@@ -762,9 +760,6 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image,
 
   ImageType
     type;
-
-  MagickBooleanType
-    status;
 
   register ssize_t
     x;
@@ -807,9 +802,10 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image,
   if (type == UndefinedType)
     return(MagickFalse);
   ((Image *) image)->colorspace=GRAYColorspace;
-  status=SyncImagePixelCache((Image *) image,exception);
+  if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
+    return(MagickFalse);
   ((Image *) image)->type=type;
-  return(status);
+  return(MagickTrue);
 }
 
 /*
