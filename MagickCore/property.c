@@ -44,6 +44,7 @@
 #include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colorspace-private.h"
@@ -3715,7 +3716,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
               image->chromaticity.white_point.y=0.3290f;
               image->chromaticity.white_point.z=0.3583f;
             }
-          return(MagickTrue);
+          return(SyncImagePixelCache(image,exception));
+          break;
         }
       if (LocaleCompare("compose",property) == 0)
         {
