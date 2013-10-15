@@ -51,7 +51,7 @@ print("PseudoColor image (8 bits/sample + matte channel) ...\n");
 testReadWrite( 'input_256_matte.tiff',
   'output_256_matte.tiff',
   q//,
-  'f28f9d3620babcaf84c61ffbf3f92e83fcc0bc3d5904ac7b8a1318e8d796859f' );
+  '54ac4c2573e12636534bdeea4e3739e0db3191b75434025cd173b13795378a51' );
 
 #
 # 5) Test truecolor image
