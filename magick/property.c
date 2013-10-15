@@ -3487,6 +3487,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
               image->chromaticity.white_point.y=0.3290f;
               image->chromaticity.white_point.z=0.3583f;
             }
+          status=SyncImagePixelCache(image,&image->exception);
           break;
         }
       if (LocaleCompare("compose",property) == 0)
