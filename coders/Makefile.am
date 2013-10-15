@@ -506,7 +506,7 @@ coders_fits_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 coders_fpx_la_SOURCES      = coders/fpx.c
 coders_fpx_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_fpx_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_fpx_la_LIBADD       = $(MAGICKCORE_LIBS) $(FPX_LIBS) -lstdc++
+coders_fpx_la_LIBADD       = $(MAGICKCORE_LIBS) $(FPX_LIBS) $(MATH_LIBS) -lstdc++
 
 # GIF coder module
 coders_gif_la_SOURCES      = coders/gif.c
