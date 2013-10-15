@@ -1,6 +1,8 @@
 2013-10-10  6.8.7-1 Cristy  <quetzlzacatenango@image...>
   * Add support for the -complex option, perform complex mathematics on an
     image sequence.
+  * Sync pixel cache for -set colorspace cmyk option (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24173).
 
 2013-09-27  6.8.7-1 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed problem with PNG8 reduction in coders/png.c (special case where
