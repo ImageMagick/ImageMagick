@@ -132,9 +132,9 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname+4);
       icc_color=MagickTrue;
     }
-  if (IsGrayColorspace(start_pixel.colorspace) != MagickFalse)
+  if (IsGrayColorspace(start_color.colorspace) != MagickFalse)
     image->intensity=Rec601LuminancePixelIntensityMethod;
-  (void) SetImageColorspace(image,start_pixel.colorspace,exception);
+  (void) SetImageColorspace(image,start_color.colorspace,exception);
   status=QueryColorCompliance(colorname,AllCompliance,&start_color,exception);
   if (status == MagickFalse)
     {
