@@ -45,6 +45,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -136,7 +137,9 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           return((Image *) NULL);
         }
     }
-  SetImageColorspace(image,pixel.colorspace,exception);
+  if (IsGrayColorspace(pixel.colorspace) != MagickFalse)
+    image->intensity=Rec601LuminancePixelIntensityMethod;
+  (void) SetImageColorspace(image,pixel.colorspace,exception);
   image->alpha_trait=pixel.alpha_trait;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
