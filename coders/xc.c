@@ -138,7 +138,9 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  SetImageColorspace(image,color.colorspace);
+  if (IsGrayColorspace(color.colorspace) != MagickFalse)
+    image->intensity=Rec601LuminancePixelIntensityMethod;
+  (void) SetImageColorspace(image,color.colorspace);
   image->matte=color.matte;
   index=0;
   SetPixelPacket(image,&color,&pixel,&index);
