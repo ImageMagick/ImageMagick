@@ -1101,18 +1101,22 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 MagickExport MagickBooleanType SetImageColorspace(Image *image,
   const ColorspaceType colorspace)
 {
+  ImageType
+    type;
+
   if (image->colorspace == colorspace)
     return(MagickTrue);
   image->colorspace=colorspace;
   image->rendering_intent=UndefinedIntent;
   image->gamma=1.000/2.200;
   (void) ResetMagickMemory(&image->chromaticity,0,sizeof(image->chromaticity));
+  type=image->type;
   if (IsGrayColorspace(colorspace) != MagickFalse)
     {
       if ((image->intensity == Rec601LuminancePixelIntensityMethod) ||
           (image->intensity == Rec709LuminancePixelIntensityMethod))
         image->gamma=1.0;
-      image->type=GrayscaleType;
+      type=GrayscaleType;
     }
   else
     if (IsRGBColorspace(colorspace) != MagickFalse)
@@ -1134,7 +1138,9 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
       image->chromaticity.white_point.y=0.3290;
       image->chromaticity.white_point.z=0.3583;
     }
-  return(SyncImagePixelCache(image,&image->exception));
+  status=SyncImagePixelCache(image,&image->exception);
+  image->type=type;
+  return(status);
 }
 
 /*
