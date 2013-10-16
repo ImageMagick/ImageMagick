@@ -1104,6 +1104,9 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   ImageType
     type;
 
+  MagickBooleanType
+    status;
+
   if (image->colorspace == colorspace)
     return(MagickTrue);
   image->colorspace=colorspace;
