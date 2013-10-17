@@ -10,5 +10,5 @@ Description: MagickCore - C API for ImageMagick (ABI @MAGICK_ABI_SUFFIX@)
 Version: @PACKAGE_VERSION@
 Requires: MagickCore
 Libs: -L${libdir} -l${libname}
-Libs.private: -L${libdir} -l${libname} @MATH_LIBS@
+Libs.private: -L${libdir} -l${libname} @MAGICK_LIBS@ @MATH_LIBS@
 Cflags: -I${includearchdir} -I${includedir} @MAGICK_PCFLAGS@
