@@ -1742,6 +1742,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             gray;
 
           gray=(MagickRealType) GetPixelGray(q);
+          if ((image->intensity == Rec601LuminancePixelIntensityMethod) ||
+              (image->intensity == Rec709LuminancePixelIntensityMethod))
+            gray=EncodePixelGamma(gray);
           SetPixelRed(q,ClampToQuantum(gray));
           SetPixelGreen(q,ClampToQuantum(gray));
           SetPixelBlue(q,ClampToQuantum(gray));
