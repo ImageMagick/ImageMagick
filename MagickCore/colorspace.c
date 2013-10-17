@@ -1676,10 +1676,13 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           }
         for (x=(ssize_t) image->columns; x != 0; x--)
         {
-          double
+          MagickRealType
             gray;
 
-          gray=(double) GetPixelGray(image,q);
+          gray=(MagickRealType) GetPixelGray(image,q);
+          if ((image->intensity == Rec601LuminancePixelIntensityMethod) ||
+              (image->intensity == Rec709LuminancePixelIntensityMethod))
+            gray=EncodePixelGamma(gray);
           SetPixelRed(image,ClampToQuantum(gray),q);
           SetPixelGreen(image,ClampToQuantum(gray),q);
           SetPixelBlue(image,ClampToQuantum(gray),q);
