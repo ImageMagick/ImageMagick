@@ -2381,7 +2381,7 @@ static inline MagickRealType MagickMin(const MagickRealType x,
 }
 
 MagickExport MagickBooleanType GrayscaleImage(Image *image,
- const PixelIntensityMethod method)
+  const PixelIntensityMethod method)
 {
 #define GrayscaleImageTag  "Grayscale/Image"
 
