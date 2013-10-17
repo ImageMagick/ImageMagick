@@ -1973,24 +1973,6 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       if( IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
         return(MagickFalse);
     }
-  switch (image->intensity)
-  {
-    case Rec601LuminancePixelIntensityMethod:
-    case Rec709LuminancePixelIntensityMethod:
-    {
-      (void) SetImageColorspace(image,RGBColorspace,exception);
-      break;
-    }
-    case Rec601LumaPixelIntensityMethod:
-    case Rec709LumaPixelIntensityMethod:
-    case UndefinedPixelIntensityMethod:
-    {
-      (void) SetImageColorspace(image,sRGBColorspace,exception);
-      break;
-    }
-    default:
-      break;
-  }
   /*
     Grayscale image.
   */
