@@ -2478,7 +2478,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
   assert(property[0] != '\0');
   if (property[1] == '\0')  /* single letter property request */
     return(GetMagickPropertyLetter(image_info,image,*property));
-  *value='\0';  /* formated string */
+  *value='\0';  /* formatted string */
   string=(char *) NULL;  /* constant string reference */
   switch (*property)
   {
@@ -2680,18 +2680,30 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             GetImageIndexInList(image)+1);
           break;
         }
+      if (LocaleCompare("profile",property) == 0)
+        {
+          const char
+            *name;
+
+          ResetImageProfileIterator(image);
+          name=GetNextImageProfile(image);
+          while (name != (char *) NULL)
+          {
+            (void) FormatLocaleString(value,MaxTextExtent,"%s %s",value,name);
+            name=GetNextImageProfile(image);
+          }
+          break;
+        }
       break;
     }
     case 'r':
     {
-      /* This matches %[fx:resolution.x] */
       if (LocaleCompare("resolution.x",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
             image->x_resolution);
           break;
         }
-      /* This matches %[fx:resolution.y] */
       if (LocaleCompare("resolution.y",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
