@@ -2717,20 +2717,24 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
      break;
     }
-/*  OBSOLETE  The 'page' of a image, is just the images index
-    This conficts with the -set page option that sets virtual canvas info
     case 'p':
     {
-      if (LocaleCompare("page",property) == 0)
+      if (LocaleCompare("profile",property) == 0)
         {
-          WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-            GetImageIndexInList(image)+1);
+          const char
+            *name;
+
+          ResetImageProfileIterator(image);
+          name=GetNextImageProfile(image);
+          while (name != (char *) NULL)
+          {
+            (void) FormatLocaleString(value,MaxTextExtent,"%s %s",value,name);
+            name=GetNextImageProfile(image);
+          }
           break;
         }
       break;
     }
-*/
     case 'r':
     {
       if (LocaleCompare("resolution.x",property) == 0)
