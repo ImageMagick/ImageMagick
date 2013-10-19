@@ -695,6 +695,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     (void) CopyMagickString(colorspace,CommandOptionToMnemonic(
       MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
     LocaleLower(colorspace);
+    image->depth=GetImageDepth(image,exception);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->alpha_trait == BlendPixelTrait)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
