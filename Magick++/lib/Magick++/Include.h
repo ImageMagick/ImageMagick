@@ -112,7 +112,14 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_DB_bzlib_.lib")
 #        endif
 #        pragma comment(lib, "CORE_DB_coders_.lib")
+#        if defined(MAGICKCORE_LQR_DELEGATE)
+#          pragma comment(lib, "CORE_DB_ffi_.lib")
+#        endif
 #        pragma comment(lib, "CORE_DB_filters_.lib")
+#        if defined(MAGICKCORE_LQR_DELEGATE)
+#          pragma comment(lib, "CORE_DB_glib_.lib")
+#          pragma comment(lib, "winmm.lib")
+#        endif
 #        if defined(MAGICKCORE_JBIG_DELEGATE)
 #          pragma comment(lib, "CORE_DB_jbig_.lib")
 #        endif
@@ -126,6 +133,9 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_DB_lcms_.lib")
 #        endif
 #        pragma comment(lib, "CORE_DB_libxml_.lib")
+#        if defined(MAGICKCORE_LQR_DELEGATE)
+#          pragma comment(lib, "CORE_DB_lqr_.lib")
+#        endif
 #        pragma comment(lib, "CORE_DB_Magick++_.lib")
 #        pragma comment(lib, "CORE_DB_MagickCore_.lib")
 #        pragma comment(lib, "CORE_DB_MagickWand_.lib")
@@ -154,8 +164,15 @@ namespace MagickCore
 #        if defined(MAGICKCORE_BZLIB_DELEGATE)
 #          pragma comment(lib, "CORE_RL_bzlib_.lib")
 #        endif
-#        pragma comment(lib, "CORE_RL_filters_.lib")
 #        pragma comment(lib, "CORE_RL_coders_.lib")
+#        if defined(MAGICKCORE_LQR_DELEGATE)
+#          pragma comment(lib, "CORE_RL_ffi_.lib")
+#        endif
+#        pragma comment(lib, "CORE_RL_filters_.lib")
+#        if defined(MAGICKCORE_LQR_DELEGATE)
+#          pragma comment(lib, "CORE_RL_glib_.lib")
+#          pragma comment(lib, "winmm.lib")
+#        endif
 #        if defined(MAGICKCORE_JBIG_DELEGATE)
 #          pragma comment(lib, "CORE_RL_jbig_.lib")
 #        endif
@@ -167,6 +184,9 @@ namespace MagickCore
 #        endif
 #        if defined(MAGICKCORE_LCMS_DELEGATE)
 #          pragma comment(lib, "CORE_RL_lcms_.lib")
+#        endif
+#        if defined(MAGICKCORE_LQR_DELEGATE)
+#          pragma comment(lib, "CORE_RL_lqr_.lib")
 #        endif
 #        pragma comment(lib, "CORE_RL_libxml_.lib")
 #        pragma comment(lib, "CORE_RL_Magick++_.lib")
