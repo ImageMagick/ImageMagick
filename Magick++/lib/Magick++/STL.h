@@ -2137,13 +2137,10 @@ namespace Magick
     // Transfer histogram array to container
     for ( size_t i=0; i < colors; i++)
       {
-        histogram_->insert(histogram_->end(),std::pair<const Color,size_t>
-                           ( Color(MagickCore::ClampToQuantum(histogram_array[i].red),
-                                   MagickCore::ClampToQuantum(histogram_array[i].green),
-                                   MagickCore::ClampToQuantum(histogram_array[i].blue)),
-                                   (size_t) histogram_array[i].count) );
+        histogram_->insert( histogram_->end(), std::pair<const Color,size_t>
+          ( Color(histogram_array[i]), (size_t) histogram_array[i].count) );
       }
-    
+
     // Deallocate histogram array
     histogram_array=(MagickCore::PixelInfo *)
       MagickCore::RelinquishMagickMemory(histogram_array);
