@@ -2551,6 +2551,12 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           if (*value == '\0') string="";
           break;
         }
+      if (LocaleCompare("bit-depth",property) == 0)
+        {
+          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+            GetImageDepth(image, exception));
+          break;
+        }
       break;
     }
     case 'c':
