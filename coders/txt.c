@@ -670,6 +670,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
     (void) CopyMagickString(colorspace,CommandOptionToMnemonic(
       MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
     LocaleLower(colorspace);
+    image->depth=GetImageDepth(image,MagickTrue);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->matte != MagickFalse)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
