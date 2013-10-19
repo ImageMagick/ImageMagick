@@ -36,7 +36,8 @@
 %
 %
 */
-
+
+
 /*
   Include declarations.
 */
@@ -80,7 +81,19 @@
 #include "magick/utility.h"
 #include "magick/version.h"
 #include "magick/xml-tree.h"
-
+#if defined(MAGICKCORE_LCMS_DELEGATE)
+#if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)
+#include <lcms/lcms2.h>
+#elif defined(MAGICKCORE_HAVE_LCMS2_H)
+#include "lcms2.h"
+#elif defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
+#include <lcms/lcms.h>
+#else
+#include "lcms.h"
+#endif
+#endif
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -175,7 +188,8 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
     }
   return(MagickTrue);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -223,7 +237,8 @@ MagickExport MagickBooleanType DefineImageProperty(Image *image,
   *p='\0';
   return(SetImageProperty(image,key,value));
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -260,7 +275,8 @@ MagickExport MagickBooleanType DeleteImageProperty(Image *image,
     return(MagickFalse);
   return(DeleteNodeFromSplayTree((SplayTreeInfo *) image->properties,property));
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -295,7 +311,8 @@ MagickExport void DestroyImageProperties(Image *image)
     image->properties=(void *) DestroySplayTree((SplayTreeInfo *)
       image->properties);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -343,7 +360,8 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
   va_end(operands);
   return(SetImageProperty(image,property,value));
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2139,7 +2157,8 @@ MagickExport const char *GetImageProperty(const Image *image,
   }
   return(p);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2680,18 +2699,52 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             GetImageIndexInList(image)+1);
           break;
         }
-      if (LocaleCompare("profile",property) == 0)
+#if defined(MAGICKCORE_LCMS_DELEGATE)
+      if (LocaleCompare("profile:icc",property) == 0 ||
+          LocaleCompare("profile:icm",property) == 0)
+        {
+          const StringInfo
+            *profile;
+
+          cmsHPROFILE
+            icc_profile;
+
+          profile=GetImageProfile(image,property+8);
+          if (profile == (StringInfo *) NULL)
+            break;
+
+          icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
+            (cmsUInt32Number) GetStringInfoLength(profile));
+          if (icc_profile != (cmsHPROFILE *) NULL)
+            {
+#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
+              string=cmsTakeProductName(icc_profile);
+#else
+              (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,
+                "en","US",value,MaxTextExtent);
+#endif
+              (void) cmsCloseProfile(icc_profile);
+            }
+      }
+#endif
+      if (LocaleCompare("profiles",property) == 0)
         {
           const char
             *name;
 
           ResetImageProfileIterator(image);
           name=GetNextImageProfile(image);
-          while (name != (char *) NULL)
-          {
-            (void) FormatLocaleString(value,MaxTextExtent,"%s %s",value,name);
-            name=GetNextImageProfile(image);
-          }
+          if (name != (char *) NULL)
+            {
+              (void) CopyMagickString(value,name,MaxTextExtent);
+              name=GetNextImageProfile(image);
+              while (name != (char *) NULL)
+              {
+                ConcatenateMagickString(value,",",MaxTextExtent);
+                ConcatenateMagickString(value,name,MaxTextExtent);
+                name=GetNextImageProfile(image);
+              }
+            }
           break;
         }
       break;
@@ -2856,7 +2909,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
   return((char *)NULL);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2890,7 +2944,8 @@ MagickExport char *GetNextImageProperty(const Image *image)
     return((char *) NULL);
   return((char *) GetNextKeyInSplayTree((SplayTreeInfo *) image->properties));
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3301,7 +3356,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   *q='\0';
   return(interpret_text);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3347,7 +3403,8 @@ MagickExport char *RemoveImageProperty(Image *image,
     property);
   return(value);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3383,7 +3440,8 @@ MagickExport void ResetImagePropertyIterator(const Image *image)
     return;
   ResetSplayTreeIterator((SplayTreeInfo *) image->properties);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
