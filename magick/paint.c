@@ -180,7 +180,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) SetImageColorspace(image,sRGBColorspace);
   if ((image->matte == MagickFalse) &&
       (draw_info->fill.opacity != OpaqueOpacity))
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
