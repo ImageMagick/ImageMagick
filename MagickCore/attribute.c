@@ -278,7 +278,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
     status;
 
   register ssize_t
-    id;
+    i;
 
   size_t
     *current_depth,
@@ -301,13 +301,10 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
   if (current_depth == (size_t *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-  for (id=0; id < (ssize_t) number_threads; id++)
-    current_depth[id]=1;
+  for (i=0; i < (ssize_t) number_threads; i++)
+    current_depth[i]=1;
   if ((image->storage_class == PseudoClass) && (image->alpha_trait != BlendPixelTrait))
     {
-      register ssize_t
-        i;
-
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         if ((image->colors) > 256) \
@@ -321,34 +318,34 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
         while (current_depth[id] < MAGICKCORE_QUANTUM_DEPTH)
         {
           MagickStatusType
-            status;
+            state;
 
           QuantumAny
             range;
 
-          status=0;
+          state=0;
           range=GetQuantumRange(current_depth[id]);
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            status&=ClampToQuantum(image->colormap[i].red) !=
+            state!=ClampToQuantum(image->colormap[i].red) !=
               ScaleAnyToQuantum(ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].red),range),range);
           if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            status&=ClampToQuantum(image->colormap[i].green) !=
+            state!=ClampToQuantum(image->colormap[i].green) !=
               ScaleAnyToQuantum(ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].green),range),range);
           if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            status&=ClampToQuantum(image->colormap[i].blue) !=
+            state!=ClampToQuantum(image->colormap[i].blue) !=
               ScaleAnyToQuantum(ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].blue),range),range);
-          if (status == 0)
+          if (state == 0)
             break;
           current_depth[id]++;
         }
       }
       depth=current_depth[0];
-      for (id=1; id < (ssize_t) number_threads; id++)
-        if (depth < current_depth[id])
-          depth=current_depth[id];
+      for (i=1; i < (ssize_t) number_threads; i++)
+        if (depth < current_depth[i])
+          depth=current_depth[i];
       current_depth=(size_t *) RelinquishMagickMemory(current_depth);
       return(depth);
     }
@@ -356,9 +353,6 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if (QuantumRange <= MaxMap)
     {
-      register ssize_t
-        i;
-
       size_t
         *depth_map;
 
@@ -410,9 +404,6 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           continue;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          register ssize_t
-            i;
-
           if (GetPixelReadMask(image,p) == 0)
             {
               p+=GetPixelChannels(image);
@@ -437,9 +428,9 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       }
       image_view=DestroyCacheView(image_view);
       depth=current_depth[0];
-      for (id=1; id < (ssize_t) number_threads; id++)
-        if (depth < current_depth[id])
-          depth=current_depth[id];
+      for (i=1; i < (ssize_t) number_threads; i++)
+        if (depth < current_depth[i])
+          depth=current_depth[i];
       depth_map=(size_t *) RelinquishMagickMemory(depth_map);
       current_depth=(size_t *) RelinquishMagickMemory(current_depth);
       return(depth);
@@ -470,9 +461,6 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       continue;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
-        i;
-
       if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
@@ -509,9 +497,9 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
   }
   image_view=DestroyCacheView(image_view);
   depth=current_depth[0];
-  for (id=1; id < (ssize_t) number_threads; id++)
-    if (depth < current_depth[id])
-      depth=current_depth[id];
+  for (i=1; i < (ssize_t) number_threads; i++)
+    if (depth < current_depth[i])
+      depth=current_depth[i];
   current_depth=(size_t *) RelinquishMagickMemory(current_depth);
   return(depth);
 }
