@@ -1063,7 +1063,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   }
   if (compliance == NoCompliance)
     {
-      (void) FormatLocaleString(text,MaxTextExtent,"%.20g",color);
+      (void) FormatLocaleString(text,MaxTextExtent,"%.*g",GetMagickPrecision(),color);
       (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
       return;
     }
@@ -1090,7 +1090,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     }
   if (component == AlphaPixelChannel)
     {
-      (void) FormatLocaleString(text,MaxTextExtent,"%.20g",
+      (void) FormatLocaleString(text,MaxTextExtent,"%.*g",GetMagickPrecision(),
         (QuantumScale*color));
       (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
       return;
@@ -1103,14 +1103,14 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
       (pixel->colorspace == HSVColorspace) ||
       (pixel->colorspace == HWBColorspace))
     {
-      (void) FormatLocaleString(text,MaxTextExtent,"%.20g%%",
+      (void) FormatLocaleString(text,MaxTextExtent,"%.*g%%",GetMagickPrecision(),
         (100.0*QuantumScale*color));
       (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
       return;
     }
   if (pixel->depth > 8)
     {
-      (void) FormatLocaleString(text,MaxTextExtent,"%.20g%%",
+      (void) FormatLocaleString(text,MaxTextExtent,"%.*g%%",GetMagickPrecision(),
         (100.0*QuantumScale*color));
       (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
       return;
