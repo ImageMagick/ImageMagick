@@ -36,7 +36,6 @@ typedef enum
   MagickColorOptions,
   MagickColorspaceOptions,
   MagickCommandOptions,
-  MagickComplexOptions,
   MagickComposeOptions,
   MagickCompressOptions,
   MagickConfigureOptions,
@@ -94,7 +93,8 @@ typedef enum
   MagickThresholdOptions,
   MagickTypeOptions,
   MagickValidateOptions,
-  MagickVirtualPixelOptions
+  MagickVirtualPixelOptions,
+  MagickComplexOptions
 } CommandOption;
 
 typedef enum
