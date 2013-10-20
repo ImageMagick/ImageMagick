@@ -1782,10 +1782,11 @@ void Magick::Image::liquidRescale ( const Geometry &geometry_ )
                      &x, &y,
                      &width, &height );
 
-  modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  LiquidRescaleImage( image(), width, height, x, y, &exceptionInfo );
+  MagickCore::Image* newImage = LiquidRescaleImage( image(), width, height,
+    x, y, &exceptionInfo );
+  replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1795,8 +1796,7 @@ void Magick::Image::magnify ( void )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* newImage =
-    MagnifyImage( image(), &exceptionInfo );
+  MagickCore::Image* newImage = MagnifyImage( image(), &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
