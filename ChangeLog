@@ -1,6 +1,9 @@
 2013-10-20  6.8.7-2 Cristy  <quetzlzacatenango@image...>
   * Define cmsUInt32Number if LCMS version is < 2000.
 
+2013-10-20  6.8.7-2 Dirk Lemstra <dirk@snakeware...>
+  * GetImageDepth() no longer returns incorrect depth when HDRI enabled.
+
 2013-10-19  6.8.7-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-1, SVN revision 13486.
 
