@@ -271,6 +271,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 */
 MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 {
+#define IsPixelAtDepth(pixel,range) ((ClampToQuantum(pixel) == \
+  ScaleAnyToQuantum(ScaleQuantumToAny(pixel,range),range)) ? MagickTrue : MagickFalse)
+
   CacheView
     *image_view;
 
@@ -317,28 +320,19 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 
         while (current_depth[id] < MAGICKCORE_QUANTUM_DEPTH)
         {
-          MagickStatusType
-            state;
-
           QuantumAny
             range;
 
-          state=0;
           range=GetQuantumRange(current_depth[id]);
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            state!=ClampToQuantum(image->colormap[i].red) !=
-              ScaleAnyToQuantum(ScaleQuantumToAny(ClampToQuantum(
-              image->colormap[i].red),range),range);
+            if (IsPixelAtDepth(image->colormap[i].red,range) != MagickFalse)
+              break;
           if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            state!=ClampToQuantum(image->colormap[i].green) !=
-              ScaleAnyToQuantum(ScaleQuantumToAny(ClampToQuantum(
-              image->colormap[i].green),range),range);
+            if (IsPixelAtDepth(image->colormap[i].green,range) != MagickFalse)
+              break;
           if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            state!=ClampToQuantum(image->colormap[i].blue) !=
-              ScaleAnyToQuantum(ScaleQuantumToAny(ClampToQuantum(
-              image->colormap[i].blue),range),range);
-          if (state == 0)
-            break;
+            if (IsPixelAtDepth(image->colormap[i].blue,range) != MagickFalse)
+              break;
           current_depth[id]++;
         }
       }
