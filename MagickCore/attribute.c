@@ -320,19 +320,28 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 
         while (current_depth[id] < MAGICKCORE_QUANTUM_DEPTH)
         {
+          MagickBooleanType
+            atDepth;
+
           QuantumAny
             range;
 
+          atDepth=MagickTrue;
           range=GetQuantumRange(current_depth[id]);
-          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            if (IsPixelAtDepth(image->colormap[i].red,range) != MagickFalse)
-              break;
-          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            if (IsPixelAtDepth(image->colormap[i].green,range) != MagickFalse)
-              break;
-          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            if (IsPixelAtDepth(image->colormap[i].blue,range) != MagickFalse)
-              break;
+          if (atDepth == MagickTrue &&
+               (GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+            if (IsPixelAtDepth(image->colormap[i].red,range) == MagickFalse)
+              atDepth = MagickFalse;
+          if (atDepth == MagickTrue &&
+               (GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+            if (IsPixelAtDepth(image->colormap[i].green,range) == MagickFalse)
+              atDepth = MagickFalse;
+          if (atDepth == MagickTrue &&
+                (GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+            if (IsPixelAtDepth(image->colormap[i].blue,range) == MagickFalse)
+              atDepth = MagickFalse;
+          if (atDepth == MagickTrue)
+            break;
           current_depth[id]++;
         }
       }
