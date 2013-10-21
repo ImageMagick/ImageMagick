@@ -2805,7 +2805,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         {
           if (source.colorspace != CMYKColorspace)
             ConvertRGBToCMYK(&source);
-          composite.index=source.index;
+          composite.index=QuantumRange-source.index;
           break;
         }
         /* compose methods that are already handled */
