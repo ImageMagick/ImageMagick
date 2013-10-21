@@ -1765,7 +1765,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case CopyBlackCompositeOp:
           {
             if (channel == BlackPixelChannel)
-              pixel=(MagickRealType) GetPixelBlack(composite_image,p);
+              pixel=(MagickRealType) (QuantumRange-
+                GetPixelBlack(composite_image,p));
             break;
           }
           case CopyBlueCompositeOp:
