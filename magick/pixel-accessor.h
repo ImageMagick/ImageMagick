@@ -62,6 +62,8 @@ extern "C" {
 }
 #define GetPixelY(pixel) ((pixel)->red)
 #define GetPixelYellow(pixel) ((pixel)->blue)
+#define IsPixelAtDepth(pixel,range) ((ClampToQuantum(pixel) == \
+  ScaleAnyToQuantum(ScaleQuantumToAny(pixel,range),range)) ? MagickTrue : MagickFalse)
 #define SetPixela(pixel,value) ((pixel)->green=(Quantum) (value))
 #define SetPixelAlpha(pixel,value) \
   ((pixel)->opacity=(Quantum) (QuantumRange-(value)))

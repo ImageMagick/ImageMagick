@@ -1607,9 +1607,6 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   double
     area;
 
-  MagickStatusType
-    status;
-
   QuantumAny
     range;
 
@@ -1662,9 +1659,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[RedChannel].depth;
           range=GetQuantumRange(depth);
-          status=GetPixelRed(p) != ScaleAnyToQuantum(ScaleQuantumToAny(
-            GetPixelRed(p),range),range) ? MagickTrue : MagickFalse;
-          if (status != MagickFalse)
+          if (IsPixelAtDepth(GetPixelRed(p), range) == MagickFalse)
             {
               channel_statistics[RedChannel].depth++;
               continue;
@@ -1674,9 +1669,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[GreenChannel].depth;
           range=GetQuantumRange(depth);
-          status=GetPixelGreen(p) != ScaleAnyToQuantum(ScaleQuantumToAny(
-            GetPixelGreen(p),range),range) ? MagickTrue : MagickFalse;
-          if (status != MagickFalse)
+          if (IsPixelAtDepth(GetPixelGreen(p), range) == MagickFalse)
             {
               channel_statistics[GreenChannel].depth++;
               continue;
@@ -1686,9 +1679,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[BlueChannel].depth;
           range=GetQuantumRange(depth);
-          status=GetPixelBlue(p) != ScaleAnyToQuantum(ScaleQuantumToAny(
-            GetPixelBlue(p),range),range) ? MagickTrue : MagickFalse;
-          if (status != MagickFalse)
+          if (IsPixelAtDepth(GetPixelBlue(p), range) == MagickFalse)
             {
               channel_statistics[BlueChannel].depth++;
               continue;
@@ -1700,9 +1691,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
             {
               depth=channel_statistics[OpacityChannel].depth;
               range=GetQuantumRange(depth);
-              status=GetPixelOpacity(p) != ScaleAnyToQuantum(ScaleQuantumToAny(
-                GetPixelOpacity(p),range),range) ? MagickTrue : MagickFalse;
-              if (status != MagickFalse)
+              if (IsPixelAtDepth(GetPixelOpacity(p), range) == MagickFalse)
                 {
                   channel_statistics[OpacityChannel].depth++;
                   continue;
@@ -1715,10 +1704,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
             {
               depth=channel_statistics[BlackChannel].depth;
               range=GetQuantumRange(depth);
-              status=GetPixelIndex(indexes+x) != ScaleAnyToQuantum(
-                ScaleQuantumToAny(GetPixelIndex(indexes+x),range),range) ?
-                MagickTrue : MagickFalse;
-              if (status != MagickFalse)
+              if (IsPixelAtDepth(GetPixelIndex(indexes+x), range) == MagickFalse)
                 {
                   channel_statistics[BlackChannel].depth++;
                   continue;
