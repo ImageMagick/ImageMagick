@@ -62,8 +62,6 @@ extern "C" {
 }
 #define GetPixelY(pixel) ((pixel)->red)
 #define GetPixelYellow(pixel) ((pixel)->blue)
-#define IsPixelAtDepth(pixel,range) ((ClampToQuantum(pixel) == \
-  ScaleAnyToQuantum(ScaleQuantumToAny(pixel,range),range)) ? MagickTrue : MagickFalse)
 #define SetPixela(pixel,value) ((pixel)->green=(Quantum) (value))
 #define SetPixelAlpha(pixel,value) \
   ((pixel)->opacity=(Quantum) (QuantumRange-(value)))
@@ -134,6 +132,24 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
   green=DecodePixelGamma((MagickRealType) pixel->green);
   blue=DecodePixelGamma((MagickRealType) pixel->blue);
   return(0.212656f*red+0.715158f*green+0.072186f*blue);
+}
+
+static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
+  const QuantumAny range)
+{
+  Quantum
+    quantum;
+
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  quantum=(Quantum) (((MagickRealType) QuantumRange*((QuantumAny)
+    (((MagickRealType) range*pixel)/QuantumRange+0.5)))/range+0.5);
+#else
+  quantum=(Quantum) (((MagickRealType) QuantumRange*((QuantumAny)
+    (((MagickRealType) range*pixel)/QuantumRange+0.5)))/range);
+#endif
+  if (pixel != quantum)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
