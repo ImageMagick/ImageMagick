@@ -147,9 +147,7 @@ static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
   quantum=(Quantum) (((MagickRealType) QuantumRange*((QuantumAny)
     (((MagickRealType) range*pixel)/QuantumRange+0.5)))/range);
 #endif
-  if (pixel != quantum)
-    return(MagickFalse);
-  return(MagickTrue);
+  return(pixel == quantum ? MagickTrue : MagickFalse);
 }
 
 static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
