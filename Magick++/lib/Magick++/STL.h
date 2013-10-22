@@ -2537,6 +2537,24 @@ namespace Magick
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
+  // Adds the names of the profiles from the image to the container.
+  template <class Container>
+  void profileNames( Container *names_, const Image* image_ )
+  {
+    const char*
+      name;
+
+    names_->clear();
+
+    MagickCore::ResetImageProfileIterator( image_->constImage() );
+    name=MagickCore::GetNextImageProfile( image_->constImage() );
+    while (name != (const char *) NULL)
+    {
+      names_->push_back( std::string(name) );
+      name=MagickCore::GetNextImageProfile( image_->constImage() );
+    }
+  }
+
   // Quantize colors in images using current quantization settings
   // Set measureError_ to true in order to measure quantization error
   template <class InputIterator>
