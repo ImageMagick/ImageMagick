@@ -342,16 +342,16 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
 
           atDepth=MagickTrue;
           range=GetQuantumRange(current_depth[id]);
-          if (atDepth == MagickTrue && (channel & RedChannel) != 0)
+          if ((atDepth != MagickFalse) && ((channel & RedChannel) != 0))
             if (IsPixelAtDepth(image->colormap[i].red,range) == MagickFalse)
               atDepth=MagickFalse;
-          if (atDepth == MagickTrue && (channel & GreenChannel) != 0)
+          if ((atDepth != MagickFalse) && ((channel & GreenChannel) != 0))
             if (IsPixelAtDepth(image->colormap[i].green,range) == MagickFalse)
               atDepth=MagickFalse;
-          if (atDepth == MagickTrue && (channel & BlueChannel) != 0)
+          if ((atDepth != MagickFalse) && ((channel & BlueChannel) != 0))
             if (IsPixelAtDepth(image->colormap[i].blue,range) == MagickFalse)
               atDepth=MagickFalse;
-          if (atDepth == MagickTrue)
+          if ((atDepth != MagickFalse))
             break;
           current_depth[id]++;
         }
@@ -508,24 +508,24 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
 
         atDepth=MagickTrue;
         range=GetQuantumRange(current_depth[id]);
-        if (atDepth == MagickTrue && (channel & RedChannel) != 0)
+        if ((atDepth != MagickFalse) && ((channel & RedChannel) != 0))
           if (IsPixelAtDepth(GetPixelRed(p),range) == MagickFalse)
             atDepth=MagickFalse;
-        if ((atDepth == MagickTrue && channel & GreenChannel) != 0)
+        if ((atDepth != MagickFalse) && ((channel & GreenChannel) != 0))
           if (IsPixelAtDepth(GetPixelGreen(p),range) == MagickFalse)
             atDepth=MagickFalse;
-        if (atDepth == MagickTrue && (channel & BlueChannel) != 0)
+        if ((atDepth != MagickFalse) && ((channel & BlueChannel) != 0))
           if (IsPixelAtDepth(GetPixelBlue(p),range) == MagickFalse)
             atDepth=MagickFalse;
-        if (atDepth == MagickTrue && ((channel & OpacityChannel) != 0) &&
+        if ((atDepth != MagickFalse) && ((channel & OpacityChannel) != 0) &&
              (image->matte != MagickFalse))
           if (IsPixelAtDepth(GetPixelOpacity(p),range) == MagickFalse)
             atDepth=MagickTrue;
-        if (atDepth == MagickTrue && ((channel & IndexChannel) != 0) &&
+        if ((atDepth != MagickFalse) && ((channel & IndexChannel) != 0) &&
              (image->colorspace == CMYKColorspace))
           if (IsPixelAtDepth(GetPixelIndex(indexes+x),range) == MagickFalse)
             atDepth=MagickFalse;
-        if (atDepth == MagickTrue)
+        if ((atDepth != MagickFalse))
           break;
         current_depth[id]++;
       }

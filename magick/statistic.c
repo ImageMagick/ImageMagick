@@ -1659,7 +1659,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[RedChannel].depth;
           range=GetQuantumRange(depth);
-          if (IsPixelAtDepth(GetPixelRed(p), range) == MagickFalse)
+          if (IsPixelAtDepth(GetPixelRed(p),range) == MagickFalse)
             {
               channel_statistics[RedChannel].depth++;
               continue;
@@ -1669,7 +1669,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[GreenChannel].depth;
           range=GetQuantumRange(depth);
-          if (IsPixelAtDepth(GetPixelGreen(p), range) == MagickFalse)
+          if (IsPixelAtDepth(GetPixelGreen(p),range) == MagickFalse)
             {
               channel_statistics[GreenChannel].depth++;
               continue;
@@ -1679,7 +1679,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[BlueChannel].depth;
           range=GetQuantumRange(depth);
-          if (IsPixelAtDepth(GetPixelBlue(p), range) == MagickFalse)
+          if (IsPixelAtDepth(GetPixelBlue(p),range) == MagickFalse)
             {
               channel_statistics[BlueChannel].depth++;
               continue;
@@ -1691,7 +1691,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
             {
               depth=channel_statistics[OpacityChannel].depth;
               range=GetQuantumRange(depth);
-              if (IsPixelAtDepth(GetPixelOpacity(p), range) == MagickFalse)
+              if (IsPixelAtDepth(GetPixelOpacity(p),range) == MagickFalse)
                 {
                   channel_statistics[OpacityChannel].depth++;
                   continue;
@@ -1704,7 +1704,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
             {
               depth=channel_statistics[BlackChannel].depth;
               range=GetQuantumRange(depth);
-              if (IsPixelAtDepth(GetPixelIndex(indexes+x), range) == MagickFalse)
+              if (IsPixelAtDepth(GetPixelIndex(indexes+x),range) == MagickFalse)
                 {
                   channel_statistics[BlackChannel].depth++;
                   continue;
