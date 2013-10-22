@@ -271,9 +271,6 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 */
 MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 {
-#define IsPixelAtDepth(pixel,range) ((ClampToQuantum(pixel) == \
-  ScaleAnyToQuantum(ScaleQuantumToAny(pixel,range),range)) ? MagickTrue : MagickFalse)
-
   CacheView
     *image_view;
 
