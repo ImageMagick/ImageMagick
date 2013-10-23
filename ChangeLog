@@ -1,5 +1,10 @@
+2013-10-22  6.8.7-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.7-2, SVN revision 13534.
+
 2013-10-20  6.8.7-2 Cristy  <quetzlzacatenango@image...>
   * Define cmsUInt32Number if LCMS version is < 2000.
+  * Set xc:gray() intensity to Rec709Luma (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24303).
 
 2013-10-20  6.8.7-2 Dirk Lemstra <dirk@snakeware...>
   * GetImageDepth() no longer returns incorrect depth when HDRI enabled.
