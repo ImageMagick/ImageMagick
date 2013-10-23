@@ -1186,9 +1186,6 @@
 /* Define to 1 if assertions should be disabled. */
 /* #undef NDEBUG */
 
-/* Define to 1 if your C compiler doesn't accept -c and -o together. */
-/* #undef NO_MINUS_C_MINUS_O */
-
 /* Define if you have OPENEXR library */
 #ifndef MAGICKCORE_OPENEXR_DELEGATE
 #define MAGICKCORE_OPENEXR_DELEGATE 1
@@ -1211,7 +1208,7 @@
 
 /* Define to the full name and version of this package. */
 #ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.8.7-2"
+#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.8.7-3"
 #endif
 
 /* Define to the one symbol short name of this package. */
@@ -1226,7 +1223,7 @@
 
 /* Define to the version of this package. */
 #ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "6.8.7-2"
+#define MAGICKCORE_PACKAGE_VERSION "6.8.7-3"
 #endif
 
 /* Define if you have PANGOCAIRO library */
@@ -1438,7 +1435,7 @@
 
 /* Version number of package */
 #ifndef MAGICKCORE_VERSION
-#define MAGICKCORE_VERSION "6.8.7-2"
+#define MAGICKCORE_VERSION "6.8.7-3"
 #endif
 
 /* Define if you have WEBP library */
