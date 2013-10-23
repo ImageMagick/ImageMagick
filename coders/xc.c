@@ -140,7 +140,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   if (IsGrayColorspace(color.colorspace) != MagickFalse)
-    image->intensity=Rec601LuminancePixelIntensityMethod;
+    image->intensity=Rec709LumaPixelIntensityMethod;
   (void) SetImageColorspace(image,color.colorspace);
   image->matte=color.matte;
   index=0;
