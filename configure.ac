@@ -317,7 +317,6 @@ AC_SUBST(LD)
 AC_PROG_CC_C99
 AM_PROG_CC_C_O
 AX_CFLAGS_WARN_ALL
-AX_COMPILER_VENDOR
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
@@ -330,6 +329,26 @@ PKG_PROG_PKG_CONFIG
 
 # Check for linker script support 
 gl_LD_VERSION_SCRIPT 
+
+# Test for 64-bit build.
+AC_CHECK_SIZEOF([size_t])
+
+AX_COMPILER_VENDOR
+AX_CC_MAXOPT
+# The AX_CFLAGS_WARN_ALL macro doesn't currently work for sunpro
+# compiler.
+if test "$ax_cv_c_compiler_vendor" != "sun"; then
+  AX_CFLAGS_WARN_ALL
+fi
+
+if test "x$GCC" = "xyes"; then
+  CFLAGS="$CFLAGS -fexceptions"
+  touch local.exp
+else
+  cat > local.exp <<EOF
+set CC_FOR_TARGET "$CC"
+EOF
+fi
 
 #
 # Enable run-time checking.
