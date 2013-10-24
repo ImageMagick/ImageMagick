@@ -2001,8 +2001,7 @@ void Magick::Image::read ( const std::string &imageSpec_ )
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* image =
-    ReadImage( imageInfo(), &exceptionInfo );
+  MagickCore::Image* image = ReadImage( imageInfo(), &exceptionInfo );
 
   // Ensure that multiple image frames were not read.
   if ( image && image->next )
@@ -2012,21 +2011,17 @@ void Magick::Image::read ( const std::string &imageSpec_ )
       image->next = 0;
       next->previous = 0;
       DestroyImageList( next );
- 
     }
-  if ( image )
-    {
-      (void) DestroyExceptionInfo( &exceptionInfo );
-      throwException( image->exception );
-    }
+  replaceImage( image );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
-  replaceImage( image );
+  if ( image )
+    throwException( image->exception );
 }
 
 // Read image of specified size into current object
 void Magick::Image::read ( const Geometry &size_,
-			   const std::string &imageSpec_ )
+                           const std::string &imageSpec_ )
 {
   size( size_ );
   read( imageSpec_ );
@@ -2037,10 +2032,8 @@ void Magick::Image::read ( const Blob &blob_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* image =
-    BlobToImage( imageInfo(),
-		 static_cast<const void *>(blob_.data()),
-		 blob_.length(), &exceptionInfo );
+  MagickCore::Image* image = BlobToImage( imageInfo(),
+    static_cast<const void *>(blob_.data()), blob_.length(), &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2050,57 +2043,43 @@ void Magick::Image::read ( const Blob &blob_ )
 
 // Read image of specified size from in-memory BLOB
 void  Magick::Image::read ( const Blob &blob_,
-			    const Geometry &size_ )
+                            const Geometry &size_ )
 {
-  // Set image size
   size( size_ );
-  // Read from Blob
   read( blob_ );
 }
 
 // Read image of specified size and depth from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
-			   const Geometry &size_,
-			   const size_t depth_ )
+                           const Geometry &size_,
+                           const size_t depth_ )
 {
-  // Set image size
   size( size_ );
-  // Set image depth
   depth( depth_ );
-  // Read from Blob
   read( blob_ );
 }
 
 // Read image of specified size, depth, and format from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
-			   const Geometry &size_,
-			   const size_t depth_,
-			   const std::string &magick_ )
+                           const Geometry &size_,
+                           const size_t depth_,
+                           const std::string &magick_ )
 {
-  // Set image size
   size( size_ );
-  // Set image depth
   depth( depth_ );
-  // Set image magick
   magick( magick_ );
-  // Set explicit image format
   fileName( magick_ + ':');
-  // Read from Blob
   read( blob_ );
 }
 
 // Read image of specified size, and format from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
-			   const Geometry &size_,
-			   const std::string &magick_ )
+                           const Geometry &size_,
+                           const std::string &magick_ )
 {
-  // Set image size
   size( size_ );
-  // Set image magick
   magick( magick_ );
-  // Set explicit image format
   fileName( magick_ + ':');
-  // Read from Blob
   read( blob_ );
 }
 
@@ -2113,9 +2092,8 @@ void Magick::Image::read ( const size_t width_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* image =
-    ConstituteImage( width_, height_, map_.c_str(), type_, pixels_,
-                     &exceptionInfo );
+  MagickCore::Image* image = ConstituteImage( width_, height_, map_.c_str(),
+    type_, pixels_, &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
