@@ -1510,6 +1510,8 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
   ssize_t
     y;
 
+  if (columns == 0)
+    return(MagickTrue);
   status=MagickTrue;
   source_view=AcquireVirtualCacheView(source,exception);
   destination_view=AcquireAuthenticCacheView(destination,exception);

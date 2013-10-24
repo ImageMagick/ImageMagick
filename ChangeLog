@@ -1,3 +1,7 @@
+2013-10-23  6.8.7-3 Cristy  <quetzlzacatenango@image...>
+  * The -roll option is now working when the +x coordinate is +0 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24314).
+
 2013-10-22  6.8.7-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-2, SVN revision 13534.
 
