@@ -3181,6 +3181,21 @@ static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
     }
 }
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+#if defined(SIGBUS)
+static void CacheSignalHandler(int status)
+{
+  ThrowFatalException(CacheFatalError,"UnableToExtendPixelCache");
+}
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   const MapMode mode)
 {
@@ -3304,6 +3319,9 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
       if (status != 0)
         return(MagickFalse);
     }
+#endif
+#if defined(SIGBUS)
+  (void) signal(SIGBUS,CacheSignalHandler);
 #endif
   return(count != (MagickOffsetType) 1 ? MagickFalse : MagickTrue);
 }
