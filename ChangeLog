@@ -13,7 +13,7 @@
 2013-10-20  6.8.7-2 Dirk Lemstra <dirk@snakeware...>
   * GetImageDepth() no longer returns incorrect depth when HDRI enabled.
 
-2013-10-19  6.8.7-0 Cristy  <quetzlzacatenango@image...>
+2013-10-19  6.8.7-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-1, SVN revision 13486.
 
 2013-10-10  6.8.7-1 Cristy  <quetzlzacatenango@image...>
