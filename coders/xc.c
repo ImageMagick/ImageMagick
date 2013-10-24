@@ -137,8 +137,6 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           return((Image *) NULL);
         }
     }
-  if (IsGrayColorspace(pixel.colorspace) != MagickFalse)
-    image->intensity=Rec709LumaPixelIntensityMethod;
   (void) SetImageColorspace(image,pixel.colorspace,exception);
   image->alpha_trait=pixel.alpha_trait;
   for (y=0; y < (ssize_t) image->rows; y++)
