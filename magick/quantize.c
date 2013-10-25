@@ -2900,7 +2900,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 %  The format of the QuantizeImages method is:
 %
 %      size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
-%        const NodeInfo *node_info,const ssize_t offset,const size_t extent,
+%        const NodeInfo *node_info,const ssize_t offset,
 %        MagickRealType *quantize_error)
 %
 %  A description of each parameter follows.
@@ -2913,14 +2913,11 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 %
 %    o offset: quantize error offset.
 %
-%    o extent: quantize error offset maximum limit.
-%
 %    o quantize_error: the quantization error vector.
 %
 */
 static size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
-  const NodeInfo *node_info,const ssize_t offset,const size_t extent,
-  MagickRealType *quantize_error)
+  const NodeInfo *node_info,const ssize_t offset,MagickRealType *quantize_error)
 {
   register ssize_t
     i;
@@ -2929,7 +2926,7 @@ static size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
     n,
     number_children;
 
-  if (offset >= (ssize_t) extent)
+  if (offset >= (ssize_t) cube_info->nodes)
     return(0);
   quantize_error[offset]=node_info->quantize_error;
   n=1;
@@ -2937,7 +2934,7 @@ static size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
   for (i=0; i < (ssize_t) number_children ; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
       n+=QuantizeErrorFlatten(image,cube_info,node_info->child[i],offset+n,
-        extent,quantize_error);
+        quantize_error);
   return(n);
 }
 
@@ -3095,7 +3092,7 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
       if (quantize_error != (MagickRealType *) NULL)
         {
           (void) QuantizeErrorFlatten(image,cube_info,cube_info->root,0,
-            cube_info->nodes,quantize_error);
+            quantize_error);
           qsort(quantize_error,cube_info->nodes,sizeof(MagickRealType),
             MagickRealTypeCompare);
           cube_info->next_threshold=quantize_error[cube_info->nodes-
