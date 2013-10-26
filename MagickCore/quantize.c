@@ -2942,7 +2942,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  QuantizeErrorFlatten() traverses the color cube and flattens the quantization
-%  error into a sorted array.  This accelerates the color reduction process.
+%  error into a sorted 1D array.  This accelerates the color reduction process.
 %
 %  Contributed by Yoya.
 %

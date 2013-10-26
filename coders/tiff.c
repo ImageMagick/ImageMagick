@@ -2788,6 +2788,42 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     switch (compression)
     {
       case FaxCompression:
+      case Group4Compression:
+      {
+        (void) SetImageType(image,BilevelType,exception);
+        break;
+      }
+      case JPEGCompression:
+      {
+        (void) SetImageStorageClass(image,DirectClass,exception);
+        (void) SetImageDepth(image,8,exception);
+        break;
+      }
+      default:
+        break;
+    }
+    quantum_info=AcquireQuantumInfo(image_info,image);
+    if (quantum_info == (QuantumInfo *) NULL)
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    if ((image->storage_class != PseudoClass) && (image->depth >= 32) &&
+        (quantum_info->format == UndefinedQuantumFormat) &&
+        (IsHighDynamicRangeImage(image,exception) != MagickFalse))
+      {
+        status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
+        if (status == MagickFalse)
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      }
+    if ((LocaleCompare(image_info->magick,"PTIF") == 0) &&
+        (GetPreviousImageInList(image) != (Image *) NULL))
+      (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
+    if ((image->columns != (uint32) image->columns) ||
+        (image->rows != (uint32) image->rows))
+      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+    (void) TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
+    (void) TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
+    switch (compression)
+    {
+      case FaxCompression:
       {
         compress_tag=COMPRESSION_CCITTFAX3;
         SetQuantumMinIsWhite(quantum_info,MagickTrue);
@@ -2885,42 +2921,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         }
       }
 #endif
-    switch (compression)
-    {
-      case FaxCompression:
-      case Group4Compression:
-      {
-        (void) SetImageType(image,BilevelType,exception);
-        break;
-      }
-      case JPEGCompression:
-      {
-        (void) SetImageStorageClass(image,DirectClass,exception);
-        (void) SetImageDepth(image,8,exception);
-        break;
-      }
-      default:
-        break;
-    }
-    quantum_info=AcquireQuantumInfo(image_info,image);
-    if (quantum_info == (QuantumInfo *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((image->storage_class != PseudoClass) && (image->depth >= 32) &&
-        (quantum_info->format == UndefinedQuantumFormat) &&
-        (IsHighDynamicRangeImage(image,exception) != MagickFalse))
-      {
-        status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
-        if (status == MagickFalse)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-      }
-    if ((LocaleCompare(image_info->magick,"PTIF") == 0) &&
-        (GetPreviousImageInList(image) != (Image *) NULL))
-      (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
-    if ((image->columns != (uint32) image->columns) ||
-        (image->rows != (uint32) image->rows))
-      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
-    (void) TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
-    (void) TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
     if (image->colorspace == CMYKColorspace)
       {
         photometric=PHOTOMETRIC_SEPARATED;
