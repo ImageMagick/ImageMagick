@@ -23,14 +23,46 @@ extern "C" {
 #endif
 
 #include "magick/morphology.h"
+#include "magick/resample.h"
+#include "magick/resize.h"
+#include "magick/statistic.h"
 
 extern MagickExport Image
   *AccelerateConvolveImageChannel(const Image *,const ChannelType,
     const KernelInfo *,ExceptionInfo *);
 
+/* legacy, do not use */
 extern MagickExport MagickBooleanType
   AccelerateConvolveImage(const Image *,const KernelInfo *,Image *,
     ExceptionInfo *);
+
+extern MagickExport MagickBooleanType 
+  AccelerateFunctionImage(Image *image, const ChannelType channel,const MagickFunction function,
+  const size_t number_parameters,const double *parameters, ExceptionInfo *exception);
+
+extern MagickExport
+Image* AccelerateBlurImage(const Image *image, const ChannelType channel, const double radius, const double sigma,ExceptionInfo *exception);
+
+extern MagickExport
+Image* AccelerateRadialBlurImage(const Image *image, const ChannelType channel, const double angle, ExceptionInfo *exception);
+
+
+extern MagickExport
+Image* AccelerateUnsharpMaskImage(const Image *image, const ChannelType channel,const double radius,const double sigma, 
+				  const double gain,const double threshold,ExceptionInfo *exception);
+
+extern MagickExport
+Image* AccelerateResizeImage(const Image* image, const size_t columns, const size_t rows
+			    , const ResizeFilter* resizeFilter, ExceptionInfo *exception);
+
+extern MagickExport
+MagickBooleanType AccelerateContrastImage(Image* image, const MagickBooleanType sharpen, ExceptionInfo* exception);
+
+extern MagickExport
+MagickBooleanType AccelerateEqualizeImage(Image* image, const ChannelType channel, ExceptionInfo* exception);
+
+extern MagickExport
+Image* AccelerateDespeckleImage(const Image* image, ExceptionInfo* exception);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

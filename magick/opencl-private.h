@@ -27,23 +27,73 @@ Include declarations.
 extern "C" {
 #endif
 
+
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
+#include <CL/cl.h>
+#else
+  typedef void* cl_platform_id;
+  typedef void* cl_device_id;
+  typedef void* cl_context;
+  typedef void* cl_command_queue;
+  typedef void* cl_kernel;
+  typedef struct { unsigned char t[8]; } cl_device_type; // 64-bit
+#endif
 
-#define MAX_KERNEL_STRING_LEN  64              /* maximum length of kernel name */
-#define MAX_NUM_CLFILE         50              /* maximum number of .cl files */
-#define MAX_NUM_KERNEL       200             /* maximum number of kernels */
-#define CL_QUEUE_THREAD_HANDLE_AMD 0x403E      /* OpenCL handle optimization */
-#define MAX_USRDATA_ARGS       32              /* maximum number of arguments */
-#define HISTOGRAM_BIN_SIZE     256             /* number of bins in histogram */
 
-  extern ModuleExport MagickBooleanType AccelerateGetCLEnvInfo(
-    const char* build_option, void** device, void** context, 
-    void** command_queue, void** program, MagickBooleanType* download_pels);
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+#define CLOptions "-cl-single-precision-constant -cl-mad-enable -DMAGICKCORE_HDRI_SUPPORT=1 "\
+  "-DCLQuantum=float -DCLSignedQuantum=float -DCLPixelType=float4 -DQuantumRange=%f " \
+  "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
+  " -DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
+#define CLPixelPacket  cl_float4
+#define CLCharQuantumScale 1.0f
+#elif (MAGICKCORE_QUANTUM_DEPTH == 8)
+#define CLOptions "-cl-single-precision-constant -cl-mad-enable " \
+  "-DCLQuantum=uchar -DCLSignedQuantum=char -DCLPixelType=uchar4 -DQuantumRange=%f " \
+  "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
+  "-DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
+#define CLPixelPacket  cl_uchar4
+#define CLCharQuantumScale 1.0f
+#elif (MAGICKCORE_QUANTUM_DEPTH == 16)
+#define CLOptions "-cl-single-precision-constant -cl-mad-enable " \
+  "-DCLQuantum=ushort -DCLSignedQuantum=short -DCLPixelType=ushort4 -DQuantumRange=%f "\
+  "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
+  "-DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
+#define CLPixelPacket  cl_ushort4
+#define CLCharQuantumScale 257.0f
+#elif (MAGICKCORE_QUANTUM_DEPTH == 32)
+#define CLOptions "-cl-single-precision-constant -cl-mad-enable " \
+  "-DCLQuantum=uint -DCLSignedQuantum=int -DCLPixelType=uint4 -DQuantumRange=%f "\
+  "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
+  "-DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
+#define CLPixelPacket  cl_uint4
+#define CLCharQuantumScale 16843009.0f
+#elif (MAGICKCORE_QUANTUM_DEPTH == 64)
+#define CLOptions "-cl-single-precision-constant -cl-mad-enable " \
+  "-DCLQuantum=ulong -DCLSignedQuantum=long -DCLPixelType=ulong4 -DQuantumRange=%f "\
+  "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
+  "-DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
+#define CLPixelPacket  cl_ulong4
+#define CLCharQuantumScale 72340172838076673.0f
+#endif
 
-  extern  MagickBooleanType InitCLKernelEnv(
-    const char *build_option,  const char *filename, char* accelerate_kernels[], ExceptionInfo *exception);
+extern MagickExport
+  cl_context GetOpenCLContext(MagickCLEnv);
 
-#endif /* MAGICKCORE_OPENCL_SUPPORT */
+extern MagickExport
+  cl_command_queue AcquireOpenCLCommandQueue(MagickCLEnv);
+
+extern MagickExport
+  MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv, cl_command_queue);
+
+extern MagickExport
+  cl_kernel AcquireOpenCLKernel(MagickCLEnv, MagickOpenCLProgram program, const char*);
+extern MagickExport
+  MagickBooleanType RelinquishOpenCLKernel(MagickCLEnv, cl_kernel);
+
+extern MagickExport
+ unsigned long GetOpenCLDeviceLocalMemorySize(MagickCLEnv);
+
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/accelerate.h"
 #include "magick/artifact.h"
 #include "magick/cache.h"
 #include "magick/cache-view.h"
@@ -958,7 +959,6 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 
   ssize_t
     y;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -976,6 +976,11 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   /*
     Contrast enhance image.
   */
+
+  status = AccelerateContrastImage(image, sharpen, &image->exception);
+  if (status == MagickTrue)
+    return status;
+
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
@@ -1785,13 +1790,19 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   ssize_t
     y;
 
-  /*
-    Allocate and initialize histogram arrays.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+
+  // call opencl version
+  status = AccelerateEqualizeImage(image, channel, &image->exception);
+  if (status == MagickTrue)
+    return status;
+
+  /*
+    Allocate and initialize histogram arrays.
+  */
   equalize_map=(QuantumPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*equalize_map));
   histogram=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
@@ -2381,7 +2392,7 @@ static inline MagickRealType MagickMin(const MagickRealType x,
 }
 
 MagickExport MagickBooleanType GrayscaleImage(Image *image,
-  const PixelIntensityMethod method)
+ const PixelIntensityMethod method)
 {
 #define GrayscaleImageTag  "Grayscale/Image"
 
@@ -2411,6 +2422,24 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       if (SetImageStorageClass(image,DirectClass) == MagickFalse)
         return(MagickFalse);
     }
+  switch (image->intensity)
+  {
+    case Rec601LuminancePixelIntensityMethod:
+    case Rec709LuminancePixelIntensityMethod:
+    {
+      (void) SetImageColorspace(image,RGBColorspace);
+      break;
+    }
+    case Rec601LumaPixelIntensityMethod:
+    case Rec709LumaPixelIntensityMethod:
+    case UndefinedPixelIntensityMethod:
+    {
+      (void) SetImageColorspace(image,sRGBColorspace);
+      break;
+    }
+    default:
+      break;
+  }
   /*
     Grayscale image.
   */
