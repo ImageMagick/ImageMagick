@@ -2,7 +2,9 @@
   * Color reduction acceleration from Yoya (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=24324).
   * -intensity rec709luma -colorspace gray returns gamma 1.0/2.2 (reference
-				http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24330).
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24330).
+  * Handle 16-bit JPEG-comrpessed TIFF images (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24331).
 
 2013-10-23  6.8.7-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-3, SVN revision 13557.
