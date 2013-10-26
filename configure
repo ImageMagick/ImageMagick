@@ -3691,7 +3691,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=6.8.7-4
 
-MAGICK_SVN_REVISION=13556:13560M
+MAGICK_SVN_REVISION=13578M
 
 
 # Substitute library versioning
@@ -36170,7 +36170,7 @@ GSColorDevice=pnmraw
 GSCMYKDevice=pam
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
-GSPSDevice=pswrite
+GSPSDevice=ps2write
 GSEPSDevice=epswrite
 GSVersion='unknown'
 if test $have_gs = 'yes'; then
