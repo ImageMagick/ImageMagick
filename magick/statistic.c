@@ -41,7 +41,8 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/property.h"
+#include "magick/accelerate.h"
+#include "magick/animate.h"
 #include "magick/animate.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
@@ -77,6 +78,7 @@
 #include "magick/paint.h"
 #include "magick/pixel-private.h"
 #include "magick/profile.h"
+#include "magick/property.h"
 #include "magick/quantize.h"
 #include "magick/random_.h"
 #include "magick/random-private.h"
@@ -1024,6 +1026,10 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
       InheritException(exception,&image->exception);
       return(MagickFalse);
     }
+  status=AccelerateFunctionImage(image,channel,function,number_parameters,
+    parameters,exception);
+  if (status != MagickFalse)
+    return(status);
   status=MagickTrue;
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);

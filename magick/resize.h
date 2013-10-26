@@ -38,6 +38,9 @@ extern MagickExport Image
   *ScaleImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *ThumbnailImage(const Image *,const size_t,const size_t,ExceptionInfo *);
 
+typedef struct _ResizeFilter
+  ResizeFilter;
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
