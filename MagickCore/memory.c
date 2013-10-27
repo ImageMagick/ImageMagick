@@ -601,7 +601,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         }
     }
   if (memory_info->blob == NULL)
-    memory_info->blob=AcquireMagickMemory(length);
+    memory_info->blob=AcquireAlignedMemory(length);
   return(memory_info);
 }
 
