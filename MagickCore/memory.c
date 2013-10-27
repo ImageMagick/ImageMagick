@@ -89,6 +89,14 @@
 /*
   Typedef declarations.
 */
+typedef enum
+{
+  UndefinedVirtualMemory,
+  AlignedVirtualMemory,
+  MapVirtualMemory,
+  UnalignedVirtualMemory
+} VirtualMemoryType;
+
 typedef struct _DataSegmentInfo
 {
   void
@@ -123,8 +131,8 @@ struct _MemoryInfo
   char
     filename[MaxTextExtent];
 
-  MagickBooleanType
-    mapped;
+  VirtualMemoryType
+    type;
 
   size_t
     length;
@@ -561,7 +569,9 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   if (AcquireMagickResource(MemoryResource,length) != MagickFalse)
     {
       memory_info->blob=AcquireAlignedMemory(1,length);
-      if (memory_info->blob == NULL)
+      if (memory_info->blob != NULL)
+        memory_info->type=AlignedVirtualMemory;
+      else
         RelinquishMagickResource(MemoryResource,length);
     }
   if ((memory_info->blob == NULL) &&
@@ -570,10 +580,9 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
       /*
         Heap memory failed, try anonymous memory mapping.
       */
-      memory_info->mapped=MagickTrue;
       memory_info->blob=MapBlob(-1,IOMode,0,length);
       if (memory_info->blob != NULL)
-        memory_info->mapped=MagickTrue;
+        memory_info->type=MapVirtualMemory;
       else
         RelinquishMagickResource(MapResource,length);
     }
@@ -593,7 +602,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
               memory_info->blob=MapBlob(file,IOMode,0,length);
               if (memory_info->blob != NULL)
                 {
-                  memory_info->mapped=MagickTrue;
+                  memory_info->type=MapVirtualMemory;
                   (void) AcquireMagickResource(MapResource,length);
                 }
             }
@@ -601,7 +610,11 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         }
     }
   if (memory_info->blob == NULL)
-    memory_info->blob=AcquireAlignedMemory(length);
+    {
+      memory_info->blob=AcquireAlignedMemory(1,length);
+      if (memory_info->blob != NULL)
+        memory_info->type=UnalignedVirtualMemory;
+    }
   return(memory_info);
 }
 
@@ -984,20 +997,29 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
   assert(memory_info != (MemoryInfo *) NULL);
   assert(memory_info->signature == MagickSignature);
   if (memory_info->blob != (void *) NULL)
+    switch (memory_info->type)
     {
-      if (memory_info->mapped == MagickFalse)
-        {
-          memory_info->blob=RelinquishAlignedMemory(memory_info->blob);
-          RelinquishMagickResource(MemoryResource,memory_info->length);
-        }
-      else
-        {
-          (void) UnmapBlob(memory_info->blob,memory_info->length);
-          RelinquishMagickResource(MapResource,memory_info->length);
-          memory_info->blob=NULL;
-          if (*memory_info->filename != '\0')
-            (void) RelinquishUniqueFileResource(memory_info->filename);
-        }
+      case AlignedVirtualMemory:
+      {
+        memory_info->blob=RelinquishAlignedMemory(memory_info->blob);
+        RelinquishMagickResource(MemoryResource,memory_info->length);
+        break;
+      }
+      case MapVirtualMemory:
+      {
+        (void) UnmapBlob(memory_info->blob,memory_info->length);
+        memory_info->blob=NULL;
+        RelinquishMagickResource(MapResource,memory_info->length);
+        if (*memory_info->filename != '\0')
+          (void) RelinquishUniqueFileResource(memory_info->filename);
+        break;
+      }
+      case UnalignedVirtualMemory:
+      default:
+      {
+        memory_info->blob=RelinquishAlignedMemory(memory_info->blob);
+        break;
+      }
     }
   memory_info->signature=(~MagickSignature);
   memory_info=(MemoryInfo *) RelinquishAlignedMemory(memory_info);
