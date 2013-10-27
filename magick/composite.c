@@ -1137,8 +1137,8 @@ static inline MagickRealType ModulusAdd(const MagickRealType p,
 
   pixel=p+q;
   if (pixel > QuantumRange)
-    pixel-=(QuantumRange+1.0);
-  return(pixel*Sa*Da + p*Sa*(1-Da) + q*Da*(1-Sa));
+    pixel-=QuantumRangel;
+  return(pixel*Sa*Da+p*Sa*(1-Da)+q*Da*(1-Sa));
 }
 
 static inline void CompositeModulusAdd(const MagickPixelPacket *p,
@@ -1187,8 +1187,8 @@ static inline MagickRealType ModulusSubtract(const MagickRealType p,
 
   pixel=p-q;
   if (pixel < 0.0)
-    pixel+=(QuantumRange+1.0);
-  return(pixel*Sa*Da + p*Sa*(1-Da) + q*Da*(1-Sa));
+    pixel+=QuantumRange;
+  return(pixel*Sa*Da+p*Sa*(1-Da)+q*Da*(1-Sa));
 }
 
 static inline void CompositeModulusSubtract(const MagickPixelPacket *p,
