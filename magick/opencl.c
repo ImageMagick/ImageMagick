@@ -87,16 +87,16 @@ Include declarations.
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
 struct _MagickCLEnv {
-  MagickBooleanType OpenCLInitialized;  // whether OpenCL environment is initialized.
-  MagickBooleanType OpenCLDisabled;	// whether if OpenCL has been explicitely disabled. 
+  MagickBooleanType OpenCLInitialized;  /* whether OpenCL environment is initialized. */
+  MagickBooleanType OpenCLDisabled;	/* whether if OpenCL has been explicitely disabled. */
 
-  //OpenCL objects
+  /*OpenCL objects */
   cl_platform_id platform;
   cl_device_type deviceType;
   cl_device_id device;
   cl_context context;
 
-  cl_program programs[MAGICK_OPENCL_NUM_PROGRAMS]; //one program object maps one kernel source file
+  cl_program programs[MAGICK_OPENCL_NUM_PROGRAMS]; /* one program object maps one kernel source file */
 
   SemaphoreInfo* lock;
 };
@@ -630,7 +630,7 @@ static unsigned int stringSignature(const char* string)
   return signature;
 }
 
-// OpenCL kernels for accelerate.c
+/* OpenCL kernels for accelerate.c */
 extern const char *accelerateKernels, *accelerateKernels2;
 
 static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* exception) 
@@ -640,7 +640,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
   unsigned int i;
   char* accelerateKernelsBuffer = NULL;
 
-  // The index of the program strings in this array has to match the value of the enum MagickOpenCLProgram 
+  /* The index of the program strings in this array has to match the value of the enum MagickOpenCLProgram */
   const char* MagickOpenCLProgramStrings[MAGICK_OPENCL_NUM_PROGRAMS]; 
 
   char options[MaxTextExtent];
@@ -669,7 +669,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
 
   optionsSignature = stringSignature(options);
 
-  // get all the OpenCL program strings here
+  /* get all the OpenCL program strings here */
   accelerateKernelsBuffer = AcquireMagickMemory(strlen(accelerateKernels)+strlen(accelerateKernels2)+1);
   sprintf(accelerateKernelsBuffer,"%s%s",accelerateKernels,accelerateKernels2);
   MagickOpenCLProgramStrings[MAGICK_OPENCL_ACCELERATE] = accelerateKernelsBuffer;
@@ -679,13 +679,13 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
     MagickBooleanType loadSuccessful = MagickFalse;
     unsigned int programSignature = stringSignature(MagickOpenCLProgramStrings[i]) ^ optionsSignature;
 
-    // try to load the binary first
+    /* try to load the binary first */
     if (!getenv("MAGICK_OCL_REC"))
       loadSuccessful = loadBinaryCLProgram(clEnv, (MagickOpenCLProgram)i, programSignature, exception);
 
     if (loadSuccessful == MagickFalse)
     {
-      // Binary CL program unavailable, compile the program from source
+      /* Binary CL program unavailable, compile the program from source */
       size_t programLength = strlen(MagickOpenCLProgramStrings[i]);
       clEnv->programs[i] = clCreateProgramWithSource(clEnv->context, 1, &(MagickOpenCLProgramStrings[i]), &programLength, &clStatus);
       if (clStatus!=CL_SUCCESS)
@@ -705,7 +705,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
 
       if (loadSuccessful == MagickFalse)
       {
-        // dump the source into a file
+        /*  dump the source into a file */
         FILE* fileHandle = fopen("magick_badcl.cl", "wb");	
         if (fileHandle != NULL)
         {
@@ -713,7 +713,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
           fclose(fileHandle);
         }
 
-        // dump the build log
+        /* dump the build log */
         {
           char* log;
           size_t logSize;
@@ -738,7 +738,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
 
     if (loadSuccessful == MagickFalse)
     {
-      //Save the binary to a file to avoid re-compilation of the kernels in the future
+      /* Save the binary to a file to avoid re-compilation of the kernels in the future */
       saveBinaryCLProgram(clEnv, (MagickOpenCLProgram)i, programSignature, exception);
     }
 
@@ -768,7 +768,7 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
   clBeginPerfMarkerAMD(__FUNCTION__,"");
 #endif
 
-  // check if there's an environment variable overriding the device selection
+  /* check if there's an environment variable overriding the device selection */
   MAGICK_OCL_DEVICE = getenv("MAGICK_OCL_DEVICE");
   if (MAGICK_OCL_DEVICE != NULL)
   {
@@ -782,7 +782,7 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
     }
     else if (strcmp(MAGICK_OCL_DEVICE, "OFF") == 0)
     {
-      // OpenCL disabled
+      /* OpenCL disabled */
       goto cleanup;
     }
   }
@@ -815,7 +815,7 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
   {
     clEnv->device = NULL;
 
-    // Get the number of OpenCL platforms available
+    /* Get the number of OpenCL platforms available */
     status = clGetPlatformIDs(0, NULL, &numPlatforms);
     if (status != CL_SUCCESS)
     {
@@ -824,7 +824,7 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
       goto cleanup;
     }
 
-    // No OpenCL available, just leave
+    /* No OpenCL available, just leave */
     if (numPlatforms == 0) {
       goto cleanup;
     }
@@ -846,7 +846,7 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
     }
   }
 
-  // Device selection
+  /* Device selection */
   clEnv->device = NULL;
   for (j = 0; j < 2; j++) 
   {
@@ -955,14 +955,14 @@ MagickBooleanType InitOpenCLEnv(MagickCLEnv clEnv, ExceptionInfo* exception) {
     goto cleanup;
 
   clEnv->OpenCLDisabled = MagickTrue;
-  // setup the OpenCL platform and device
+  /* setup the OpenCL platform and device */
   status = InitOpenCLPlatformDevice(clEnv, exception);
   if (status == MagickFalse) {
-    // No OpenCL device available
+    /* No OpenCL device available */
     goto cleanup;
   }
 
-  // create an OpenCL context
+  /* create an OpenCL context */
   cps[0] = CL_CONTEXT_PLATFORM;
   cps[1] = (cl_context_properties)clEnv->platform;
   cps[2] = 0;
@@ -1184,7 +1184,7 @@ MagickExport
 #else
 
 struct _MagickCLEnv {
-  MagickBooleanType OpenCLInitialized;  // whether OpenCL environment is initialized.
+  MagickBooleanType OpenCLInitialized;  /* whether OpenCL environment is initialized. */
 };
 
 
@@ -1259,4 +1259,4 @@ MagickExport
   return 0;
 }
 
-#endif // MAGICKCORE_OPENCL_SUPPORT
+#endif /* MAGICKCORE_OPENCL_SUPPORT */
