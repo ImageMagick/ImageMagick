@@ -2450,6 +2450,13 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
         image->delay);
       break;
     }
+    case 'U': /* Image resolution units. */
+    {
+      WarnNoImageReturn("\"%%%c\"",letter);
+      string=CommandOptionToMnemonic(MagickResolutionOptions,
+        (ssize_t) image->units);
+      break;
+    }
     case 'W': /* layer canvas width */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
