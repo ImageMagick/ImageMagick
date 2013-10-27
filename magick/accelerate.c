@@ -81,7 +81,7 @@ Include declarations.
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
 #define ALIGNED(pointer,type) ((((long)(pointer)) & (sizeof(type)-1)) == 0)
-//#define ALIGNED(pointer,type) (0)
+/*#define ALIGNED(pointer,type) (0) */
 
 
 static MagickBooleanType checkOpenCLEnvironment(ExceptionInfo* exception)
@@ -162,7 +162,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
 
   cl_command_queue queue;
 
-  // intialize all CL objects to NULL
+  /* intialize all CL objects to NULL */
   context = NULL;
   inputImageBuffer = NULL;
   filteredImageBuffer = NULL;
@@ -187,9 +187,9 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
 
   /* Create and initialize OpenCL buffers. */
 
-  // If the host pointer is aligned to the size of CLPixelPacket, 
-  // then use the host buffer directly from the GPU; otherwise, 
-  // create a buffer on the GPU and copy the data over
+  /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
@@ -198,7 +198,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   inputImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -231,7 +231,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     mem_flags = CL_MEM_WRITE_ONLY;
     hostPtr = NULL;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   filteredImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -269,8 +269,8 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
   }
   clFlush(queue);
 
-  // Compute the local memory requirement for a 16x16 workgroup.
-  // If it's larger than 16k, reduce the workgroup size to 8x8
+  /* Compute the local memory requirement for a 16x16 workgroup.
+     If it's larger than 16k, reduce the workgroup size to 8x8 */
   localGroupSize[0] = 16;
   localGroupSize[1] = 16;
   localMemoryRequirement = (localGroupSize[0]+kernel->width-1) * (localGroupSize[1]+kernel->height-1) * sizeof(CLPixelPacket)
@@ -290,7 +290,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
   clGetDeviceInfo(device, CL_DEVICE_LOCAL_MEM_SIZE, sizeof(cl_ulong), &deviceLocalMemorySize, NULL);
   if (localMemoryRequirement <= deviceLocalMemorySize) 
   {
-    // get the OpenCL kernel
+    /* get the OpenCL kernel */
     clkernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Convolve");
     if (clkernel == NULL)
     {
@@ -298,7 +298,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
       goto cleanup;
     }
 
-    // set the kernel arguments
+    /* set the kernel arguments */
     i = 0;
     clStatus =clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
@@ -322,11 +322,11 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
       goto cleanup;
     }
 
-    // pad the global size to a multiple of the local work size dimension
+    /* pad the global size to a multiple of the local work size dimension */
     global_work_size[0] = ((inputImage->columns + localGroupSize[0]  - 1)/localGroupSize[0] ) * localGroupSize[0] ;
     global_work_size[1] = ((inputImage->rows + localGroupSize[1] - 1)/localGroupSize[1]) * localGroupSize[1];
 
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, clkernel, 2, NULL, global_work_size, localGroupSize, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
@@ -336,7 +336,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
   }
   else
   {
-    // get the OpenCL kernel
+    /* get the OpenCL kernel */
     clkernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Convolve");
     if (clkernel == NULL)
     {
@@ -344,7 +344,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
       goto cleanup;
     }
 
-    // set the kernel arguments
+    /* set the kernel arguments */
     i = 0;
     clStatus =clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
@@ -365,7 +365,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     global_work_size[0] = inputImage->columns;
     global_work_size[1] = inputImage->rows;
 
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, clkernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
@@ -391,7 +391,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     goto cleanup;
   }
 
-  // everything is fine! :)
+  /* everything is fine! :) */
   outputReady = MagickTrue;
 
 
@@ -528,7 +528,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image, const ChannelType ch
   {
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = image->columns * image->rows;
   imageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)pixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -572,7 +572,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image, const ChannelType ch
     goto cleanup;
   }
 
-  // set the kernel arguments
+  /* set the kernel arguments */
   i = 0;
   clStatus =clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   clStatus|=clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&channel);
@@ -587,7 +587,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image, const ChannelType ch
 
   globalWorkSize[0] = image->columns;
   globalWorkSize[1] = image->rows;
-  // launch the kernel
+  /* launch the kernel */
   clStatus = clEnqueueNDRangeKernel(queue, clkernel, 2, NULL, globalWorkSize, NULL, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
@@ -703,9 +703,9 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
     goto cleanup;
   }
 
-  // If the host pointer is aligned to the size of CLPixelPacket, 
-  // then use the host buffer directly from the GPU; otherwise, 
-  // create a buffer on the GPU and copy the data over
+  /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
@@ -714,7 +714,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   inputImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -755,7 +755,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
     mem_flags = CL_MEM_WRITE_ONLY;
     hostPtr = NULL;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   filteredImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -801,7 +801,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
   originalRows = inputImage->rows;
 
   {
-    // need logic to decide this value
+    /* need logic to decide this value */
     int chunkSize = 256;
 
     blurRowKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "BlurRow");
@@ -811,7 +811,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
       goto cleanup;
     };
     
-    // set the kernel arguments
+    /* set the kernel arguments */
     i = 0;
     clStatus=clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
     clStatus|=clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
@@ -827,7 +827,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
-    // launch the kernel
+    /* launch the kernel */
     {
       size_t gsize[2] = {chunkSize*((inputImage->columns+chunkSize-1)/chunkSize), inputImage->rows};
       size_t wsize[2] = {chunkSize, 1};
@@ -842,7 +842,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
   }
 
   {
-    // need logic to decide this value
+    /* need logic to decide this value */
     int chunkSize = 256;
 
     blurColumnKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "BlurColumn");
@@ -852,7 +852,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
       goto cleanup;
     };
     
-    // set the kernel arguments
+    /* set the kernel arguments */
     i = 0;
     clStatus=clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
     clStatus|=clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
@@ -868,7 +868,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
-    // launch the kernel
+    /* launch the kernel */
     {
       size_t gsize[2] = {inputImage->columns, chunkSize*((inputImage->rows+chunkSize-1)/chunkSize)};
       size_t wsize[2] = {1, chunkSize};
@@ -1037,9 +1037,9 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
     goto cleanup;
   }
 
-  // If the host pointer is aligned to the size of CLPixelPacket, 
-  // then use the host buffer directly from the GPU; otherwise, 
-  // create a buffer on the GPU and copy the data over
+  /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
@@ -1048,7 +1048,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   inputImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -1082,7 +1082,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
     mem_flags = CL_MEM_WRITE_ONLY;
     hostPtr = NULL;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   filteredImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -1096,7 +1096,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   blurRadius=hypot(blurCenter.s[0],blurCenter.s[1]);
   cossin_theta_size=(unsigned int) fabs(4.0*DegreesToRadians(angle)*sqrt((double)blurRadius)+2UL);
 
-  // create a buffer for sin_theta and cos_theta
+  /* create a buffer for sin_theta and cos_theta */
   sinThetaBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY|CL_MEM_ALLOC_HOST_PTR, cossin_theta_size * sizeof(float), NULL, &clStatus);
   if (clStatus != CL_SUCCESS)
   {
@@ -1142,7 +1142,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
     goto cleanup;
   }
 
- // get the OpenCL kernel
+  /* get the OpenCL kernel */
   radialBlurKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "RadialBlur");
   if (radialBlurKernel == NULL)
   {
@@ -1151,7 +1151,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   }
 
   
-  // set the kernel arguments
+  /* set the kernel arguments */
   i = 0;
   clStatus=clSetKernelArg(radialBlurKernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
   clStatus|=clSetKernelArg(radialBlurKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
@@ -1181,7 +1181,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
 
   global_work_size[0] = inputImage->columns;
   global_work_size[1] = inputImage->rows;
-  // launch the kernel
+  /* launch the kernel */
   clStatus = clEnqueueNDRangeKernel(queue, radialBlurKernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
@@ -1332,9 +1332,9 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
     goto cleanup;
   }
 
-  // If the host pointer is aligned to the size of CLPixelPacket, 
-  // then use the host buffer directly from the GPU; otherwise, 
-  // create a buffer on the GPU and copy the data over
+  /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
@@ -1343,7 +1343,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   inputImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -1384,7 +1384,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
     mem_flags = CL_MEM_WRITE_ONLY;
     hostPtr = NULL;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   filteredImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -1393,7 +1393,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
     goto cleanup;
   }
 
-  // create the blur kernel
+  /* create the blur kernel */
   (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
   kernel=AcquireKernelInfo(geometry);
   if (kernel == (KernelInfo *) NULL)
@@ -1439,7 +1439,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
     goto cleanup;
   };
 
-  // set the kernel arguments
+  /* set the kernel arguments */
   i = 0;
   clStatus=clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
   clStatus|=clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
@@ -1455,7 +1455,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
     (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
-  // launch the kernel
+  /* launch the kernel */
   {
     size_t gsize[2] = {chunkSize*((inputImage->columns+chunkSize-1)/chunkSize), inputImage->rows};
     size_t wsize[2] = {chunkSize, 1};
@@ -1508,7 +1508,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
   }
 
 
-  // launch the kernel
+  /* launch the kernel */
   clStatus = clEnqueueNDRangeKernel(queue, unsharpMaskBlurColumnKernel, 2, NULL, global_work_size, local_work_size, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
@@ -1693,27 +1693,27 @@ static MagickBooleanType resizeHorizontalFilter(cl_mem inputImage
     pixelPerWorkgroup = workgroupSize;
   }
 
-  // get the local memory size supported by the device
+  /* get the local memory size supported by the device */
   deviceLocalMemorySize = GetOpenCLDeviceLocalMemorySize(clEnv);
 
   while(1)
   {
-    // calculate the local memory size needed per workgroup
+    /* calculate the local memory size needed per workgroup */
     cacheRangeStart = (int) (((0 + 0.5)/xFactor+MagickEpsilon)-support+0.5);
     cacheRangeEnd = (int) ((((pixelPerWorkgroup-1) + 0.5)/xFactor+MagickEpsilon)+support+0.5);
     numCachedPixels = cacheRangeEnd - cacheRangeStart + 1;
     imageCacheLocalMemorySize = numCachedPixels * sizeof(CLPixelPacket);
     totalLocalMemorySize = imageCacheLocalMemorySize;
 
-    // local size for the pixel accumulator
+    /* local size for the pixel accumulator */
     pixelAccumulatorLocalMemorySize = chunkSize * sizeof(cl_float4);
     totalLocalMemorySize+=pixelAccumulatorLocalMemorySize;
 
-    // local memory size for the weight accumulator
+    /* local memory size for the weight accumulator */
     weightAccumulatorLocalMemorySize = chunkSize * sizeof(float);
     totalLocalMemorySize+=weightAccumulatorLocalMemorySize;
 
-    // local memory size for the gamma accumulator
+    /* local memory size for the gamma accumulator */
     if (matte == 0)
       gammaAccumulatorLocalMemorySize = sizeof(float);
     else
@@ -1729,7 +1729,7 @@ static MagickBooleanType resizeHorizontalFilter(cl_mem inputImage
       if (pixelPerWorkgroup == 0
           || chunkSize == 0)
       {
-        // quit, fallback to CPU
+        /* quit, fallback to CPU */
         goto cleanup;
       }
     }
@@ -1873,27 +1873,27 @@ static MagickBooleanType resizeVerticalFilter(cl_mem inputImage
     pixelPerWorkgroup = workgroupSize;
   }
 
-  // get the local memory size supported by the device
+  /* get the local memory size supported by the device */
   deviceLocalMemorySize = GetOpenCLDeviceLocalMemorySize(clEnv);
 
   while(1)
   {
-    // calculate the local memory size needed per workgroup
+    /* calculate the local memory size needed per workgroup */
     cacheRangeStart = (int) (((0 + 0.5)/yFactor+MagickEpsilon)-support+0.5);
     cacheRangeEnd = (int) ((((pixelPerWorkgroup-1) + 0.5)/yFactor+MagickEpsilon)+support+0.5);
     numCachedPixels = cacheRangeEnd - cacheRangeStart + 1;
     imageCacheLocalMemorySize = numCachedPixels * sizeof(CLPixelPacket);
     totalLocalMemorySize = imageCacheLocalMemorySize;
 
-    // local size for the pixel accumulator
+    /* local size for the pixel accumulator */
     pixelAccumulatorLocalMemorySize = chunkSize * sizeof(cl_float4);
     totalLocalMemorySize+=pixelAccumulatorLocalMemorySize;
 
-    // local memory size for the weight accumulator
+    /* local memory size for the weight accumulator */
     weightAccumulatorLocalMemorySize = chunkSize * sizeof(float);
     totalLocalMemorySize+=weightAccumulatorLocalMemorySize;
 
-    // local memory size for the gamma accumulator
+    /* local memory size for the gamma accumulator */
     if (matte == 0)
       gammaAccumulatorLocalMemorySize = sizeof(float);
     else
@@ -1909,7 +1909,7 @@ static MagickBooleanType resizeVerticalFilter(cl_mem inputImage
       if (pixelPerWorkgroup == 0
           || chunkSize == 0)
       {
-        // quit, fallback to CPU
+        /* quit, fallback to CPU */
         goto cleanup;
       }
     }
@@ -2037,9 +2037,9 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
     goto cleanup;
   }
 
-  // If the host pointer is aligned to the size of CLPixelPacket, 
-  // then use the host buffer directly from the GPU; otherwise, 
-  // create a buffer on the GPU and copy the data over
+  /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
@@ -2048,7 +2048,7 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   inputImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -2110,7 +2110,7 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
     hostPtr = NULL;
   }
 
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = filteredImage->columns * filteredImage->rows;
   filteredImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -2335,9 +2335,9 @@ static MagickBooleanType ComputeContrastImage(Image *inputImage, const MagickBoo
     goto cleanup;
   }
 
-  // If the host pointer is aligned to the size of CLPixelPacket, 
-  // then use the host buffer directly from the GPU; otherwise, 
-  // create a buffer on the GPU and copy the data over
+  /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_USE_HOST_PTR;
@@ -2346,7 +2346,7 @@ static MagickBooleanType ComputeContrastImage(Image *inputImage, const MagickBoo
   {
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   inputImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -2375,7 +2375,7 @@ static MagickBooleanType ComputeContrastImage(Image *inputImage, const MagickBoo
 
   global_work_size[0] = inputImage->columns;
   global_work_size[1] = inputImage->rows;
-  // launch the kernel
+  /* launch the kernel */
   queue = AcquireOpenCLCommandQueue(clEnv);
   clStatus = clEnqueueNDRangeKernel(queue, filterKernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
@@ -2465,7 +2465,6 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   ExceptionInfo
     *exception=_exception;
 
-  //MagickPixelPacket
   FloatPixelPacket
     white,
     black,
@@ -2475,7 +2474,6 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   cl_uint4
     *histogram;
 
-  //QuantumPixelPacket
   PixelPacket
     *equalize_map;
 
@@ -2527,7 +2525,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   if (histogram == (cl_uint4 *) NULL)
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed", image->filename);
 
-  // reset histogram
+  /* reset histogram */
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
 
   /*
@@ -2538,8 +2536,8 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   queue = AcquireOpenCLCommandQueue(clEnv);
 
   /* Create and initialize OpenCL buffers. */
-  // inputPixels = AcquirePixelCachePixels(inputImage, &length, exception);
-  // assume this  will get a writable image
+  /* inputPixels = AcquirePixelCachePixels(inputImage, &length, exception); */
+  /* assume this  will get a writable image */
   inputPixels = GetPixelCachePixels(inputImage, &length, exception);
 
   if (inputPixels == (void *) NULL)
@@ -2547,9 +2545,9 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     (void) ThrowMagickException(exception,GetMagickModule(),CacheError,"UnableToReadPixelCache.","`%s'",inputImage->filename);
     goto cleanup;
   }
-  // If the host pointer is aligned to the size of CLPixelPacket, 
-  // then use the host buffer directly from the GPU; otherwise, 
-  // create a buffer on the GPU and copy the data over
+  /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
@@ -2558,7 +2556,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   inputImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -2567,9 +2565,9 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     goto cleanup;
   }
   
-  // If the host pointer is aligned to the size of cl_uint, 
-  // then use the host buffer directly from the GPU; otherwise, 
-  // create a buffer on the GPU and copy the data over
+  /* If the host pointer is aligned to the size of cl_uint, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
   if (ALIGNED(histogram,cl_uint4)) 
   {
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_USE_HOST_PTR;
@@ -2580,7 +2578,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
     hostPtr = histogram;
   }
-  // create a CL buffer for histogram 
+  /* create a CL buffer for histogram  */
   length = (MaxMap+1); 
   histogramBuffer = clCreateBuffer(context, mem_flags, length * sizeof(cl_uint4), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -2599,11 +2597,11 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     break;
   default:
     {
-    // something is wrong, as we checked in checkAccelerateCondition
+    /* something is wrong, as we checked in checkAccelerateCondition */
     }
   }
 
-  // get the OpenCL kernel
+  /* get the OpenCL kernel */
   histogramKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Histogram");
   if (histogramKernel == NULL)
   {
@@ -2611,7 +2609,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     goto cleanup;
   }
 
-  // set the kernel arguments
+  /* set the kernel arguments */
   i = 0;
   clStatus=clSetKernelArg(histogramKernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
   clStatus|=clSetKernelArg(histogramKernel,i++,sizeof(ChannelType),&channel);
@@ -2623,7 +2621,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     goto cleanup;
   }
 
-  // launch the kernel
+  /* launch the kernel */
   global_work_size[0] = inputImage->columns;
   global_work_size[1] = inputImage->rows;
 
@@ -2636,7 +2634,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   }
   clFlush(queue);
 
-  // read from the kenel output
+  /* read from the kenel output */
   if (ALIGNED(histogram,cl_uint4)) 
   {
     length = (MaxMap+1); 
@@ -2653,7 +2651,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     goto cleanup;
   }
 
-  // unmap, don't block gpu to use this buffer again. 
+  /* unmap, don't block gpu to use this buffer again.  */
   if (ALIGNED(histogram,cl_uint4))
   {
     clStatus = clEnqueueUnmapMemObject(queue, histogramBuffer, histogram, 0, NULL, NULL);
@@ -2675,7 +2673,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     }
   }
 
-  // cpu stuff
+  /* cpu stuff */
   equalize_map=(PixelPacket *) AcquireQuantumMemory(MaxMap+1UL, sizeof(*equalize_map));
   if (equalize_map == (PixelPacket *) NULL)
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed", image->filename);
@@ -2708,7 +2706,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
         (image->colorspace == CMYKColorspace))
     {
       printf("something here\n");
-      //intensity.index+=histogram[i].index;
+      /*intensity.index+=histogram[i].index; */
     }
     map[i]=intensity;
   }
@@ -2790,17 +2788,17 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     Equalize image.
   */
 
-  //GPU can work on this again, image and equalize map as input
-  //image:        uchar4 (CLPixelPacket)
-  //equalize_map: uchar4 (PixelPacket)
-  //black, white: float4 (FloatPixelPacket)
+  /* GPU can work on this again, image and equalize map as input
+    image:        uchar4 (CLPixelPacket)
+    equalize_map: uchar4 (PixelPacket)
+    black, white: float4 (FloatPixelPacket) */
 
   if (inputImageBuffer!=NULL)		      
     clReleaseMemObject(inputImageBuffer);
  
-  // If the host pointer is aligned to the size of CLPixelPacket, 
-  // then use the host buffer directly from the GPU; otherwise, 
-  // create a buffer on the GPU and copy the data over
+  /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_USE_HOST_PTR;
@@ -2809,7 +2807,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   {
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   inputImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -2829,7 +2827,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
     hostPtr = equalize_map;
   }
-  // create a CL buffer for eqaulize_map 
+  /* create a CL buffer for eqaulize_map  */
   length = (MaxMap+1); 
   equalizeMapBuffer = clCreateBuffer(context, mem_flags, length * sizeof(PixelPacket), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -2838,7 +2836,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     goto cleanup;
   }
 
-  // get the OpenCL kernel
+  /* get the OpenCL kernel */
   equalizeKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Equalize");
   if (equalizeKernel == NULL)
   {
@@ -2846,7 +2844,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     goto cleanup;
   }
 
-  // set the kernel arguments
+  /* set the kernel arguments */
   i = 0;
   clStatus=clSetKernelArg(equalizeKernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
   clStatus|=clSetKernelArg(equalizeKernel,i++,sizeof(ChannelType),&channel);
@@ -2859,7 +2857,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     goto cleanup;
   }
 
-  // launch the kernel
+  /* launch the kernel */
   global_work_size[0] = inputImage->columns;
   global_work_size[1] = inputImage->rows;
 
@@ -2872,7 +2870,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   }
   clFlush(queue);
 
-  // read the data back
+  /* read the data back */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
     length = inputImage->columns * inputImage->rows;
@@ -2896,7 +2894,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
 cleanup:
 
   if (inputPixels) {
-    //ReleasePixelCachePixels();
+    /*ReleasePixelCachePixels();*/
     inputPixels = NULL;
   }
 
@@ -2956,7 +2954,7 @@ MagickBooleanType AccelerateEqualizeImage(Image* image, const ChannelType channe
   if (status == MagickFalse)
     return MagickFalse;
 
-  // ensure this is the only pass get in for now.
+  /* ensure this is the only pass get in for now. */
   if ((channel & SyncChannels) == 0)
     return MagickFalse;
 
@@ -3019,7 +3017,7 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   inputImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -3064,7 +3062,7 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
     mem_flags = CL_MEM_WRITE_ONLY;
     hostPtr = NULL;
   }
-  // create a CL buffer from image pixel buffer
+  /* create a CL buffer from image pixel buffer */
   length = inputImage->columns * inputImage->rows;
   filteredImageBuffer = clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -3127,14 +3125,14 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass1, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
@@ -3157,14 +3155,14 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass1, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
@@ -3184,14 +3182,14 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass1, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
@@ -3215,14 +3213,14 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass1, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
-    // launch the kernel
+    /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
@@ -3319,7 +3317,7 @@ Image* AccelerateDespeckleImage(const Image* image, ExceptionInfo* exception)
   return ComputeDespeckleImage(image,exception);
 }
 
-#else  // MAGICKCORE_OPENCL_SUPPORT 
+#else  /* MAGICKCORE_OPENCL_SUPPORT  */
 
 MagickExport Image* AccelerateConvolveImageChannel(const Image *image, const ChannelType channel, const KernelInfo *kernel, ExceptionInfo *exception)
 {
@@ -3385,7 +3383,7 @@ Image* AccelerateResizeImage(const Image* image, const size_t resizedColumns, co
 
 
 
-#endif // MAGICKCORE_OPENCL_SUPPORT
+#endif /* MAGICKCORE_OPENCL_SUPPORT */
 
 
 
