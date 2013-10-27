@@ -2429,6 +2429,13 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
         image->delay);
       break;
     }
+    case 'U': /* Image resolution units. */
+    {
+      (void) FormatLocaleString(value,MaxTextExtent,"%s",
+        CommandOptionToMnemonic(MagickResolutionOptions,(ssize_t)
+          image->units));
+      break;
+    }
     case 'W': /* layer canvas width */
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
