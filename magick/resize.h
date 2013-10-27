@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+typedef struct _ResizeFilter
+  ResizeFilter;
+
 extern MagickExport Image
   *AdaptiveResizeImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *InterpolativeResizeImage(const Image *,const size_t,const size_t,
@@ -37,9 +40,6 @@ extern MagickExport Image
   *SampleImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *ScaleImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *ThumbnailImage(const Image *,const size_t,const size_t,ExceptionInfo *);
-
-typedef struct _ResizeFilter
-  ResizeFilter;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

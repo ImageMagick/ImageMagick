@@ -93,7 +93,8 @@ struct _ResizeFilter
     scale,          /* dimension scaling to fit window support (usally 1.0) */
     blur,           /* x-scale (blur-sharpen) */
     coefficient[7]; /* cubic coefficents for BC-cubic filters */
- ResizeWeightingFunctionType
+
+  ResizeWeightingFunctionType
     filterWeightingType,
     windowWeightingType;
 
@@ -1492,6 +1493,54 @@ MagickExport ResizeFilter *DestroyResizeFilter(ResizeFilter *resize_filter)
 %    o filter: Image filter to use.
 %
 */
+
+MagickExport MagickRealType *GetResizeFilterCoefficient(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return((MagickRealType *) resize_filter->coefficient);
+}
+
+MagickExport MagickRealType GetResizeFilterBlur(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->blur);
+}
+
+MagickExport MagickRealType GetResizeFilterScale(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->scale);
+}
+
+extern MagickExport MagickRealType GetResizeFilterWindowSupport(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->window_support);
+}
+
+MagickExport ResizeWeightingFunctionType GetResizeFilterWeightingType(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->filterWeightingType);
+}
+
+MagickExport ResizeWeightingFunctionType GetResizeFilterWindowWeightingType(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->windowWeightingType);
+}
 MagickExport MagickRealType GetResizeFilterSupport(
   const ResizeFilter *resize_filter)
 {
@@ -1814,12 +1863,12 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       return(rescale_image);
     }
   map="RGB";
-  if (image->matte == MagickFalse)
+  if (image->matte != MagickFalse)
     map="RGBA";
   if (image->colorspace == CMYKColorspace)
     {
       map="CMYK";
-      if (image->matte == MagickFalse)
+      if (image->matte != MagickFalse)
         map="CMYKA";
     }
   pixel_info=AcquireVirtualMemory(image->columns,image->rows*strlen(map)*
@@ -1840,6 +1889,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       pixel_info=RelinquishVirtualMemory(pixel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
+  lqr_carver_set_preserve_input_image(carver);
   lqr_status=lqr_carver_init(carver,(int) delta_x,rigidity);
   lqr_status=lqr_carver_resize(carver,columns,rows);
   (void) lqr_status;
@@ -3739,54 +3789,4 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     GetImageListLength(image));
   (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value);
   return(thumbnail_image);
-}
-
-
-MagickExport MagickRealType* GetResizeFilterCoefficient(const ResizeFilter *resize_filter)
-{
-  assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
-  return (MagickRealType*)resize_filter->coefficient;
-}
-
-MagickExport MagickRealType
-  GetResizeFilterBlur(const ResizeFilter *resize_filter)
-{
-  assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
-  return resize_filter->blur;
-}
-
-MagickExport MagickRealType
-  GetResizeFilterScale(const ResizeFilter *resize_filter)
-{
-  assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
-  return resize_filter->scale;
-}
-
-extern MagickExport MagickRealType
-  GetResizeFilterWindowSupport(const ResizeFilter *resize_filter)
-{
-  assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
-  return resize_filter->window_support;
-}
-
-
-
-MagickExport ResizeWeightingFunctionType
-  GetResizeFilterWeightingType(const ResizeFilter *resize_filter)
-{
-  assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
-  return resize_filter->filterWeightingType;
-}
-
-MagickExport ResizeWeightingFunctionType
-  GetResizeFilterWindowWeightingType(const ResizeFilter *resize_filter)
-{
-  assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
-  return resize_filter->windowWeightingType;
 }
