@@ -615,6 +615,8 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
       if (memory_info->blob != NULL)
         memory_info->type=UnalignedVirtualMemory;
     }
+  if (memory_info->blob == NULL)
+    memory_info=RelinquishVirtualMemory(memory_info);
   return(memory_info);
 }
 
