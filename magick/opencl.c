@@ -1184,6 +1184,7 @@ MagickExport
 #else
 
 struct _MagickCLEnv {
+  MagickBooleanType OpenCLInitialized;  // whether OpenCL environment is initialized.
 };
 
 

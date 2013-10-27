@@ -1137,7 +1137,7 @@ static inline MagickRealType ModulusAdd(const MagickRealType p,
 
   pixel=p+q;
   if (pixel > QuantumRange)
-    pixel-=QuantumRangel;
+    pixel-=QuantumRange;
   return(pixel*Sa*Da+p*Sa*(1-Da)+q*Da*(1-Sa));
 }
 
