@@ -2077,7 +2077,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             pixel=Sc+Dc;
             if (pixel > QuantumRange)
-              pixel-=(QuantumRange+1.0);
+              pixel-=QuantumRange;
             pixel=gamma*(pixel*Sa*Da+Sa*Sc*(1.0-Da)+Da*Dc*(1.0-Sa));
             break;
           }
@@ -2085,7 +2085,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             pixel=Sc-Dc;
             if (pixel < 0.0)
-              pixel+=(QuantumRange+1.0);
+              pixel+=QuantumRange;
             pixel=gamma*(pixel*Sa*Da+Sa*Sc*(1.0-Da)+Da*Dc*(1.0-Sa));
             break;
           }
