@@ -981,7 +981,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
     SignedQuantum
       v;
 
-    // i = y*(columns+2)+1;
+    /* i = y*(columns+2)+1; */
     i=(2*y+1)+y*columns;
     
     if (polarity > 0)
@@ -991,7 +991,6 @@ static void Hull(const Image *image,const ssize_t x_offset,
         if ((SignedQuantum) r[i] >= (v+ScaleCharToQuantum(2)))
           v+=ScaleCharToQuantum(1);
         q[i]=(Quantum) v;
-
         i++;
       }
     else

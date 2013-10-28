@@ -1594,10 +1594,10 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
           break;
         value=(const char *) NULL;
 #if 0
-        // FUTURE: remove this code. -- Anthony  29 Arpil 2012
-        // Removed as GetMagickProperty() will will never match a "filename:"
-        // string as this is not a 'known' image property.
-        //
+        /* FUTURE: remove this code. -- Anthony  29 Arpil 2012
+           Removed as GetMagickProperty() will will never match a "filename:"
+           string as this is not a 'known' image property.
+        */
         if ((image_info != (const ImageInfo *) NULL) &&
             (image != (const Image *) NULL))
           value=GetMagickProperty(image_info,image,pattern);

@@ -1795,7 +1795,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
-  // call opencl version
+  /* Call OpenCL version */
   status = AccelerateEqualizeImage(image, channel, &image->exception);
   if (status == MagickTrue)
     return status;
