@@ -2237,7 +2237,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StringToArrayOfDoubles() converts a string of space or comma seperated
+%  StringToArrayOfDoubles() converts a string of space or comma separated
 %  numbers into array of floating point numbers (doubles). Any number that
 %  failes to parse properly will produce a syntax error. As will two commas
 %  without a  number between them.  However a final comma at the end will
@@ -2254,7 +2254,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %  A description of each parameter follows:
 %
-%    o string: the string containing the comma/space seperated values.
+%    o string: the string containing the comma/space separated values.
 %
 %    o count: returns number of arguments in returned array
 %

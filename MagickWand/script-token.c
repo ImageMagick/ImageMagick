@@ -389,7 +389,7 @@ WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
       if ( ( c == '#' ) ||
            ( token_info->curr_column==1 && (c == ':' || c == '@' ) ) )
         state=IN_COMMENT;
-    /* whitespace token seperator character */
+    /* whitespace token separator character */
     if (strchr(" \n\r\t",c) != (char *)NULL) {
       switch (state) {
         case IN_TOKEN:
