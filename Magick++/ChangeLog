@@ -1315,7 +1315,7 @@
 
 	* lib/Image.cpp:
 	(rotate): No longer accepts sharpen argument.
-  	User must sharpen seperately if desired.  This change is due to a
+  	User must sharpen separately if desired.  This change is due to a
  	similar change in ImageMagick 5.0.
 	(condense): Removed method.
 	(uncondense): Removed method.
