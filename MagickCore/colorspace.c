@@ -529,7 +529,12 @@ static MagickBooleanType sRGBTransformImage(Image *image,
               break;
             }
             default:
+            {
+              X=QuantumScale*red;
+              Y=QuantumScale*green;
+              Z=QuantumScale*blue;
               break;
+            }
           }
           SetPixelRed(image,ClampToQuantum(QuantumRange*X),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*Y),q);
@@ -1862,7 +1867,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
               break;
             }
             default:
+            {
+              red=QuantumRange*X;
+              green=QuantumRange*Y;
+              blue=QuantumRange*Z;
               break;
+            }
           }
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
