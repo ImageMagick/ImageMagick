@@ -94,7 +94,8 @@ typedef enum
   MagickTypeOptions,
   MagickValidateOptions,
   MagickVirtualPixelOptions,
-  MagickComplexOptions
+  MagickComplexOptions,
+  MagickIntensityOptions
 } CommandOption;
 
 typedef enum
