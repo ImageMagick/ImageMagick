@@ -533,7 +533,12 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
               break;
             }
             default:
+            {
+              X=QuantumScale*red;
+              Y=QuantumScale*green;
+              Z=QuantumScale*blue;
               break;
+            }
           }
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*X));
           SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*Y));
@@ -1926,7 +1931,12 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
               break;
             }
             default:
+            {
+              red=QuantumRange*X;
+              green=QuantumRange*Y;
+              blue=QuantumRange*Z;
               break;
+            }
           }
           SetPixelRed(q,ClampToQuantum((MagickRealType) red));
           SetPixelGreen(q,ClampToQuantum((MagickRealType) green));
