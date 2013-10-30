@@ -1063,7 +1063,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image_type == GIMP_INDEXED)
         ThrowReaderException(CoderError,"ColormapTypeNotSupported");
   (void) SetImageBackgroundColor(image,exception);
-  image->alpha_trait=BlendPixelTrait;
+  (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Read properties.
   */
@@ -1334,7 +1334,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Composite the layer data onto the main image, dispose the layer.
         */
-        (void) CompositeImage(image,layer_info[0].image,OverCompositeOp,
+        (void) CompositeImage(image,layer_info[0].image,CopyCompositeOp,
           MagickTrue,layer_info[0].offset_x,layer_info[0].offset_y,exception);
         layer_info[0].image =DestroyImage( layer_info[0].image);
       }
