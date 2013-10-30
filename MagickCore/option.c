@@ -1464,15 +1464,15 @@ static const OptionInfo
   PixelIntensityOptions[] =
   {
     { "Undefined", UndefinedPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
-    { "Average", AveragePixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
-    { "Brightness", BrightnessPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
-    { "Lightness", LightnessPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
-    { "MS", MSPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
-    { "Rec601Luma", Rec601LumaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
-    { "Rec601Luminance", Rec601LuminancePixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
-    { "Rec709Luma", Rec709LumaPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
-    { "Rec709Luminance", Rec709LuminancePixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
-    { "RMS", RMSPixelIntensityMethod, UndefinedOptionFlag, MagickTrue },
+    { "Average", AveragePixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
+    { "Brightness", BrightnessPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
+    { "Lightness", LightnessPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
+    { "MS", MSPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
+    { "Rec601Luma", Rec601LumaPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
+    { "Rec601Luminance", Rec601LuminancePixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
+    { "Rec709Luma", Rec709LumaPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
+    { "Rec709Luminance", Rec709LuminancePixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
+    { "RMS", RMSPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedPixelIntensityMethod, UndefinedOptionFlag, MagickFalse }
   },
   PixelMaskOptions[] =
