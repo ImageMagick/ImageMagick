@@ -1,3 +1,8 @@
+2013-10-30  6.8.7-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.7-4, SVN revision 13616.
+
+2013-10-23  6.8.7-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.7-3, SVN revision 13557.
 2013-10-26  6.8.7-4  Siu Chi Chan <...@amd.com>
   * major improvements to the OpenCL infrastructure.
   * new OpenCL accelerated algorithms (function image, blur, radial blur,
