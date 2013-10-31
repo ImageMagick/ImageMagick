@@ -1212,7 +1212,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   scene=0;
   do
   {
-    compression=image->compression;
+    compression=UndefinedCompression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
     switch (compression)
