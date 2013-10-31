@@ -159,14 +159,8 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_LZMA_DELEGATE)
   "lzma "
 #endif
-#if defined(MAGICKCORE_PNG_DELEGATE)
-  "mng "
-#endif
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
   "openexr "
-#endif
-#if defined(MAGICKCORE_PANGO_DELEGATE)
-  "pango "
 #endif
 #if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
   "pangocairo "
