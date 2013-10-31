@@ -159,6 +159,9 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_LZMA_DELEGATE)
   "lzma "
 #endif
+#if defined(MAGICKCORE_PNG_DELEGATE)
+  "mng "
+#endif
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
   "openexr "
 #endif
@@ -173,9 +176,6 @@ MagickExport const char *GetMagickDelegates(void)
 #endif
 #if defined(MAGICKCORE_DPS_DELEGATE) || defined(MAGICKCORE_GS_DELEGATE) || defined(WIN32)
   "ps "
-#endif
-#if defined(MAGICKCORE_PNG_DELEGATE)
-  "png "
 #endif
 #if defined(MAGICKCORE_RSVG_DELEGATE)
   "rsvg "
