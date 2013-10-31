@@ -2766,7 +2766,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if ((image_info->type != UndefinedType) &&
         (image_info->type != OptimizeType))
       (void) SetImageType(image,image_info->type);
-    compression=image->compression;
+    compression=UndefinedCompression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
     switch (compression)
@@ -3090,8 +3090,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           flags;
 
         rows_per_strip+=(16-(rows_per_strip % 16));
-        if (image->quality != 0)
-          (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image->quality);
         if (image_info->quality != UndefinedCompressionQuality)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);

@@ -747,17 +747,10 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
   image->quality=UndefinedCompressionQuality;
 #if defined(D_PROGRESSIVE_SUPPORTED)
   if (image->compression == LosslessJPEGCompression)
-    {
-      SetImageProperty(image,"jpeg:quality","100");
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Quality: 100 (lossless)");
-    }
+    image->quality=100;
   else
 #endif
   {
-    char
-      quality[4];
-
     ssize_t
       j,
       qvalue,
@@ -819,10 +812,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
           if ((qvalue < hash[i]) && (sum < sums[i]))
             continue;
           if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
-            {
-              FormatLocaleString(quality,4,"%.20g",(double) i+1);
-              SetImageProperty(image,"jpeg:quality",quality);
-            }
+            image->quality=(size_t) i+1;
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "Quality: %.20g (%s)",(double) i+1,(qvalue <= hash[i]) &&
@@ -871,10 +861,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
             if ((qvalue < hash[i]) && (sum < sums[i]))
               continue;
             if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
-              {
-                FormatLocaleString(quality,4,"%.20g",(double) i+1);
-                SetImageProperty(image,"jpeg:quality",quality);
-              }
+              image->quality=(size_t) i+1;
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "Quality: %.20g (%s)",(double) i+1,(qvalue <= hash[i]) &&

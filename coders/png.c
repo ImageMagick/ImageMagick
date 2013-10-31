@@ -10322,8 +10322,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
    */
 
-  quality=image->quality == UndefinedCompressionQuality ? 75UL :
-     image->quality;
+  quality=image_info->quality == UndefinedCompressionQuality ? 75UL :
+     image_info->quality;
 
   if (quality <= 9)
     {

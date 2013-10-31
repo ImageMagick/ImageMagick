@@ -657,6 +657,9 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
   char
     buffer[MaxTextExtent];
 
+  CompressionType
+    compression;
+
   const char
     *option;
 
@@ -786,7 +789,11 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
     (void) ResetMagickMemory(pixels,0,(length+1)*sizeof(*pixels));
     compress_pixels=(unsigned char *) NULL;
     previous_pixels=(unsigned char *) NULL;
-    switch (image->compression)
+
+    compression=UndefinedCompression;
+    if (image_info->compression != UndefinedCompression)
+      compression=image_info->compression;
+    switch (compression)
     {
       case NoCompression:
       {
@@ -899,7 +906,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
           break;
         }
       }
-      switch (image->compression)
+      switch (compression)
       {
         case NoCompression:
         {
@@ -936,7 +943,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
       }
     }
     (void) WriteBlobString(image,"\033*rB");  /* end graphics */
-    switch (image->compression)
+    switch (compression)
     {
       case NoCompression:
         break;
