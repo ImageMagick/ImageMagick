@@ -161,9 +161,6 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
   "openexr "
 #endif
-#if defined(MAGICKCORE_PANGO_DELEGATE)
-  "pango "
-#endif
 #if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
   "pangocairo "
 #endif
@@ -172,9 +169,6 @@ MagickExport const char *GetMagickDelegates(void)
 #endif
 #if defined(MAGICKCORE_DPS_DELEGATE) || defined(MAGICKCORE_GS_DELEGATE) || defined(WIN32)
   "ps "
-#endif
-#if defined(MAGICKCORE_PNG_DELEGATE)
-  "png "
 #endif
 #if defined(MAGICKCORE_RSVG_DELEGATE)
   "rsvg "
