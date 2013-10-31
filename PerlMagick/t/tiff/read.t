@@ -27,7 +27,7 @@ testRead ( 'input_mono.tiff',
 ++$test;
 print("PseudoColor (16 color)...\n");
 testRead( 'input_16.tiff',
-  'a4d1ed3f46297c587b406a8cd24f0f360d4bc176d86d895b586655b9c122629c' );
+  'c33901f8a62814e6c2c1ecca0c7d1c95b3ecb089f4815ab630652e25cae85b44' );
 
 #
 # 3) Test reading PseudoColor (16 color + matte channel)
@@ -35,7 +35,7 @@ testRead( 'input_16.tiff',
 ++$test;
 print("PseudoColor (16 color + matte channel)...\n");
 testRead( 'input_16_matte.tiff',
-  'a4d1ed3f46297c587b406a8cd24f0f360d4bc176d86d895b586655b9c122629c' );
+  'c33901f8a62814e6c2c1ecca0c7d1c95b3ecb089f4815ab630652e25cae85b44' );
 
 #
 # 4) Test reading PseudoColor (256 color)
@@ -43,7 +43,7 @@ testRead( 'input_16_matte.tiff',
 ++$test;
 print("PseudoColor (256 color) ...\n");
 testRead( 'input_256.tiff',
-  '81e7b38b6b3b87b6ee042679ada083ebb8b068f0b2bc297f4e89e9d5e1dc9cfd' );
+  '08fdfd88b1eb09649ef126c1fe5a8c5b958eb941653daa0b3615f1b9db9966df' );
 
 #
 # 5) Test reading PseudoColor (256 color + matte channel)
@@ -59,7 +59,7 @@ testRead( 'input_256_matte.tiff',
 ++$test;
 print("PseudoColor (256 color) contiguous planes ...\n");
 testRead( 'input_256_planar_contig.tiff',
-  '81e7b38b6b3b87b6ee042679ada083ebb8b068f0b2bc297f4e89e9d5e1dc9cfd' );
+  '08fdfd88b1eb09649ef126c1fe5a8c5b958eb941653daa0b3615f1b9db9966df' );
 
 #
 # 7) Test reading PseudoColor using seperate planes
@@ -67,7 +67,7 @@ testRead( 'input_256_planar_contig.tiff',
 ++$test;
 print("PseudoColor (256 color) seperate planes ...\n");
 testRead( 'input_256_planar_separate.tiff',
-  '81e7b38b6b3b87b6ee042679ada083ebb8b068f0b2bc297f4e89e9d5e1dc9cfd' );
+  '08fdfd88b1eb09649ef126c1fe5a8c5b958eb941653daa0b3615f1b9db9966df' );
 
 #
 # 8) Test Reading TrueColor (8-bit)

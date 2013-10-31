@@ -21,7 +21,7 @@ print("PseudoColor image (4 bits/sample) ...\n");
 testReadWrite( 'input_16.tiff',
   'output_16.tiff',
   q//,
-  'a4d1ed3f46297c587b406a8cd24f0f360d4bc176d86d895b586655b9c122629c');
+  'c33901f8a62814e6c2c1ecca0c7d1c95b3ecb089f4815ab630652e25cae85b44');
 
 #
 # 2) Test 8-bit pseudocolor image
@@ -31,7 +31,7 @@ print("PseudoColor image (8 bits/sample) ...\n");
 testReadWrite( 'input_256.tiff',
   'output_256.tiff',
   q//,
-  '81e7b38b6b3b87b6ee042679ada083ebb8b068f0b2bc297f4e89e9d5e1dc9cfd');
+  '08fdfd88b1eb09649ef126c1fe5a8c5b958eb941653daa0b3615f1b9db9966df');
 
 #
 # 3) Test 4-bit pseudocolor + matte channel image
@@ -41,7 +41,7 @@ print("PseudoColor image (4 bits/sample + matte channel) ...\n");
 testReadWrite( 'input_16_matte.tiff',
   'output_16_matte.tiff',
   q//,
-  'a4d1ed3f46297c587b406a8cd24f0f360d4bc176d86d895b586655b9c122629c' );
+  'c33901f8a62814e6c2c1ecca0c7d1c95b3ecb089f4815ab630652e25cae85b44' );
 
 #
 # 4) Test 8-bit pseudocolor + matte channel image
