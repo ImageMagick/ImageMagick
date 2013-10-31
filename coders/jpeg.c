@@ -747,7 +747,11 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
   image->quality=UndefinedCompressionQuality;
 #if defined(D_PROGRESSIVE_SUPPORTED)
   if (image->compression == LosslessJPEGCompression)
-    image->quality=100;
+    {
+      image->quality=100;
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Quality: 100 (lossless)");
+    }
   else
 #endif
   {
