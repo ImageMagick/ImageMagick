@@ -39,7 +39,8 @@
 %
 %
 */
-
+
+
 /*
   Include declarations.
 */
@@ -92,7 +93,8 @@
 #include "jpeglib.h"
 #include "jerror.h"
 #endif
-
+
+
 /*
   Define declarations.
 */
@@ -101,7 +103,8 @@
 #define IPTC_MARKER  (JPEG_APP0+13)
 #define XML_MARKER  (JPEG_APP0+1)
 #define MaxBufferExtent  16384
-
+
+
 /*
   Typedef declarations.
 */
@@ -168,7 +171,8 @@ typedef struct _QuantizationTable
   unsigned int
     *levels;
 } QuantizationTable;
-
+
+
 /*
   Forward declarations.
 */
@@ -176,7 +180,8 @@ typedef struct _QuantizationTable
 static MagickBooleanType
   WriteJPEGImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -210,7 +215,8 @@ static MagickBooleanType IsJPEG(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
+
+
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -777,16 +783,13 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
 #if defined(D_PROGRESSIVE_SUPPORTED)
   if (image->compression == LosslessJPEGCompression)
     {
-      SetImageProperty(image,"jpeg:quality","100",exception);
+      image->quality=100;
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Quality: 100 (lossless)");
     }
   else
 #endif
   {
-    char
-      quality[4];
-
     ssize_t
       j,
       qvalue,
@@ -848,10 +851,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
           if ((qvalue < hash[i]) && (sum < sums[i]))
             continue;
           if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
-            {
-              FormatLocaleString(quality,4,"%.20g",(double) i+1);
-              SetImageProperty(image,"jpeg:quality",quality,exception);
-            }
+            image->quality=(size_t) i+1;
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "Quality: %.20g (%s)",(double) i+1,(qvalue <= hash[i]) &&
@@ -900,10 +900,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
             if ((qvalue < hash[i]) && (sum < sums[i]))
               continue;
             if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
-              {
-                FormatLocaleString(quality,4,"%.20g",(double) i+1);
-                SetImageProperty(image,"jpeg:quality",quality,exception);
-              }
+              image->quality=(size_t)i+1;
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "Quality: %.20g (%s)",(double) i+1,(qvalue <= hash[i]) &&
@@ -1450,7 +1447,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   return(GetFirstImageInList(image));
 }
 #endif
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1531,7 +1529,8 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1557,7 +1556,8 @@ ModuleExport void UnregisterJPEGImage(void)
   (void) UnregisterMagickInfo("JPEG");
   (void) UnregisterMagickInfo("JPG");
 }
-
+
+
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
