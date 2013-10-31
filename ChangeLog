@@ -1,3 +1,7 @@
+2013-10-31  6.8.7-5 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed cut-and-paste error in version.c that caused the "png" delegate
+    to be listed twice by the "convert -version" command.
+
 2013-10-30  6.8.7-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-4, SVN revision 13616.
 
