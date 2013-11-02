@@ -233,9 +233,11 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
 MagickExport int Exit(int status)
 {
   if (IsWindows95())
-    TerminateProcess(GetCurrentProcess(),(unsigned int) status);
+    {
+      TerminateProcess(GetCurrentProcess(),(unsigned int) status);
+      return(0);
+    }
   exit(status);
-  return(0);
 }
 
 #if !defined(__MINGW32__) && !defined(__MINGW64__)
