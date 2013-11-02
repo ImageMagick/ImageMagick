@@ -2865,7 +2865,7 @@ Magick::Color Magick::Image::boxColor ( void ) const
 // subsequent pixels cache operations are to/from disk.
 // This setting is shared by all Image objects.
 /* static */
-void Magick::Image::cacheThreshold ( const MagickSizeType threshold_ )
+void Magick::Image::cacheThreshold ( const size_t threshold_ )
 {
   SetMagickResourceLimit( MemoryResource, threshold_ );
 }
