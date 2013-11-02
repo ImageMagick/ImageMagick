@@ -41,7 +41,7 @@ extern "C" {
 #    define MagickPlatform "x86"
 #  endif
 #else
-#define MagickPlatform  "@MAGICKCORE_MAGICK_TARGET_CPU@"
+#define MagickPlatform  "@MAGICK_TARGET_CPU@"
 #endif
 #define MagickppLibVersionText  "@MAGICKPP_LIB_VERSION_TEXT@"
 #define MagickppLibVersionNumber  @MAGICKPP_LIBRARY_VERSION_INFO@
