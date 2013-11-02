@@ -964,7 +964,7 @@ namespace Magick
     // Pixel cache threshold in bytes. Once this memory threshold
     // is exceeded, all subsequent pixels cache operations are to/from
     // disk.  This setting is shared by all Image objects.
-    static void     cacheThreshold ( const MagickSizeType threshold_ );
+    static void     cacheThreshold ( const size_t threshold_ );
     
     // Chromaticity blue primary point (e.g. x=0.15, y=0.06)
     void            chromaBluePrimary ( const double x_, const double y_ );
