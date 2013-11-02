@@ -72,7 +72,7 @@ extern "C" {
 #endif
 #define MagickVersion  \
   MagickPackageName " " MagickLibVersionText MagickLibAddendum " " \
-  MagickReleaseDate " " MagickQuantumDepth " " MagickPlatform " " \
+  MagickQuantumDepth " " MagickPlatform " " MagickReleaseDate " " \
   MagickAuthoritativeURL
 
 extern MagickExport char
