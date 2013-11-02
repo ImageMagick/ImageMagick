@@ -34,8 +34,17 @@ extern "C" {
 #define MagickLibAddendum  "@PACKAGE_VERSION_ADDENDUM@"
 #define MagickLibInterface  @MAGICK_LIBRARY_CURRENT@
 #define MagickLibMinInterface  @MAGICK_LIBRARY_CURRENT_MIN@
+#if defined(_WINDOWS)
+#  if defined(_WIN64)
+#    define MagickPlatform "x64"
+#  else
+#    define MagickPlatform "x86"
+#  endif
+#else
+#define MagickPlatform  "@MAGICKCORE_MAGICK_TARGET_CPU@"
+#endif
 #define MagickppLibVersionText  "@MAGICKPP_LIB_VERSION_TEXT@"
-#define MagickppLibVersionNumber  @MAGICKPP_LIB_VERSION_NUMBER@
+#define MagickppLibVersionNumber  @MAGICKPP_LIBRARY_VERSION_INFO@
 #define MagickppLibAddendum  "@PACKAGE_VERSION_ADDENDUM@"
 #define MagickppLibInterface  @MAGICKPP_LIBRARY_CURRENT@
 #define MagickppLibMinInterface  @MAGICKPP_LIBRARY_CURRENT_MIN@
@@ -63,7 +72,8 @@ extern "C" {
 #endif
 #define MagickVersion  \
   MagickPackageName " " MagickLibVersionText MagickLibAddendum " " \
-  MagickReleaseDate " " MagickQuantumDepth " " MagickAuthoritativeURL
+  MagickReleaseDate " " MagickQuantumDepth " " MagickPlatform " " \
+  MagickAuthoritativeURL
 
 extern MagickExport char
   *GetMagickHomeURL(void);
