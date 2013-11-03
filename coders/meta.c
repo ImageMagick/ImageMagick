@@ -951,8 +951,6 @@ static int jpeg_skip_till_marker(Image *ifile, int marker)
 }
 #endif
 
-static char psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
-
 /* Embed binary IPTC data into a JPEG image. */
 static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
 {
@@ -995,6 +993,9 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
 
         if (iptc != (Image *)NULL)
           {
+            char
+              psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
+
             len=(unsigned int) GetBlobSize(iptc);
             if (len & 1)
               len++; /* make the length even */
