@@ -27,19 +27,28 @@ extern "C" {
 */
 #define MagickPackageName "ImageMagick"
 #define MagickCopyright  "Copyright (C) 1999-2013 ImageMagick Studio LLC"
-#define MagickSVNRevision  "13578M"
+#define MagickSVNRevision  "13660M"
 #define MagickLibVersion  0x700
 #define MagickLibVersionText  "7.0.0"
 #define MagickLibVersionNumber  1,0,0
 #define MagickLibAddendum  "-0"
 #define MagickLibInterface  1
 #define MagickLibMinInterface  1
+#if defined(_WINDOWS)
+#  if defined(_WIN64)
+#    define MagickPlatform "x64"
+#  else
+#    define MagickPlatform "x86"
+#  endif
+#else
+#define MagickPlatform  "x86_64"
+#endif
 #define MagickppLibVersionText  "7.0.0"
-#define MagickppLibVersionNumber  @MAGICKPP_LIB_VERSION_NUMBER@
+#define MagickppLibVersionNumber  1:0:0
 #define MagickppLibAddendum  "-0"
 #define MagickppLibInterface  1
 #define MagickppLibMinInterface  1
-#define MagickReleaseDate  "2013-10-26"
+#define MagickReleaseDate  "2013-11-03"
 #define MagickChangeDate   "20120427"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickFeatures "DPC HDRI OpenMP"
@@ -63,7 +72,8 @@ extern "C" {
 #endif
 #define MagickVersion  \
   MagickPackageName " " MagickLibVersionText MagickLibAddendum " " \
-  MagickReleaseDate " " MagickQuantumDepth " " MagickAuthoritativeURL
+  MagickQuantumDepth " " MagickPlatform " " MagickReleaseDate " " \
+  MagickAuthoritativeURL
 
 extern MagickExport char
   *GetMagickHomeURL(void);

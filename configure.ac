@@ -319,14 +319,12 @@ AC_PROG_SED
 AC_PROG_AWK
 AM_WITH_DMALLOC
 AX_C___ATTRIBUTE__
-AX_GCC_ARCHFLAG([no])
 PKG_PROG_PKG_CONFIG
 
 # Test for 64-bit build.
 AC_CHECK_SIZEOF([size_t])
 
 AX_COMPILER_VENDOR
-AX_CC_MAXOPT
 # The AX_CFLAGS_WARN_ALL macro doesn't currently work for sunpro
 # compiler.
 if test "$ax_cv_c_compiler_vendor" != "sun"; then
