@@ -825,7 +825,7 @@ MagickExport XFontStruct *XBestFont(Display *display,
           fontlist=(char **) RelinquishMagickMemory(fontlist);
         }
       if (font_info == (XFontStruct *) NULL)
-        ThrowXWindowFatalException(XServerError,"UnableToLoadFont",font_name);
+        ThrowXWindowException(XServerError,"UnableToLoadFont",font_name);
     }
   /*
     Load fonts from list of fonts until one is found.
@@ -1234,7 +1234,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
                           strtol(visual_type,(char **) NULL,0);
                       }
                     else
-                      ThrowXWindowFatalException(XServerError,
+                      ThrowXWindowException(XServerError,
                         "UnrecognizedVisualSpecifier",visual_type);
     }
   /*
@@ -1249,15 +1249,14 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
       /*
         Failed to get visual;  try using the default visual.
       */
-      ThrowXWindowFatalException(XServerWarning,"UnableToGetVisual",
-        visual_type);
+      ThrowXWindowException(XServerWarning,"UnableToGetVisual",visual_type);
       visual_template.visualid=XVisualIDFromVisual(XDefaultVisual(display,
         XDefaultScreen(display)));
       visual_list=XGetVisualInfo(display,visual_mask,&visual_template,
         &number_visuals);
       if ((number_visuals == 0) || (visual_list == (XVisualInfo *) NULL))
         return((XVisualInfo *) NULL);
-      ThrowXWindowFatalException(XServerWarning,"UsingDefaultVisual",
+      ThrowXWindowException(XServerWarning,"UsingDefaultVisual",
         XVisualClassName(visual_list->klass));
     }
   resource_info->color_recovery=MagickFalse;
@@ -3033,7 +3032,7 @@ MagickExport void XGetPixelPacket(Display *display,
   status=XParseColor(display,colormap,resource_info->foreground_color,
     &pixel->foreground_color);
   if (status == False)
-    ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+    ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
       resource_info->foreground_color);
   pixel->foreground_color.pixel=
     XStandardPixel(map_info,&pixel->foreground_color);
@@ -3045,7 +3044,7 @@ MagickExport void XGetPixelPacket(Display *display,
   status=XParseColor(display,colormap,resource_info->background_color,
     &pixel->background_color);
   if (status == False)
-    ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+    ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
       resource_info->background_color);
   pixel->background_color.pixel=
     XStandardPixel(map_info,&pixel->background_color);
@@ -3058,7 +3057,7 @@ MagickExport void XGetPixelPacket(Display *display,
   status=XParseColor(display,colormap,resource_info->border_color,
     &pixel->border_color);
   if (status == False)
-    ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+    ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
       resource_info->border_color);
   pixel->border_color.pixel=XStandardPixel(map_info,&pixel->border_color);
   pixel->border_color.flags=(char) (DoRed | DoGreen | DoBlue);
@@ -3074,7 +3073,7 @@ MagickExport void XGetPixelPacket(Display *display,
       status=XParseColor(display,colormap,resource_info->matte_color,
         &pixel->matte_color);
       if (status == False)
-        ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+        ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
           resource_info->matte_color);
       pixel->matte_color.pixel=XStandardPixel(map_info,&pixel->matte_color);
       pixel->matte_color.flags=(char) (DoRed | DoGreen | DoBlue);
@@ -3137,7 +3136,7 @@ MagickExport void XGetPixelPacket(Display *display,
     status=XParseColor(display,colormap,resource_info->pen_colors[i],
       &pixel->pen_colors[i]);
     if (status == False)
-      ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+      ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
         resource_info->pen_colors[i]);
     pixel->pen_colors[i].pixel=XStandardPixel(map_info,&pixel->pen_colors[i]);
     pixel->pen_colors[i].flags=(char) (DoRed | DoGreen | DoBlue);
@@ -3452,7 +3451,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   if (LocaleCompare("shared",resource_value) == 0)
     resource_info->colormap=SharedColormap;
   if (resource_info->colormap == UndefinedColormap)
-    ThrowXWindowFatalException(OptionError,"UnrecognizedColormapType",
+    ThrowXWindowException(OptionError,"UnrecognizedColormapType",
       resource_value);
   resource_value=XGetResourceClass(database,client_name,
     "colorRecovery",(char *) "False");
@@ -4874,8 +4873,8 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
           if (target == (Window) NULL)
             target=XWindowByName(display,root,image_info->filename);
           if (target == (Window) NULL)
-            ThrowXWindowFatalException(XServerError,
-              "NoWindowWithSpecifiedIDExists",image_info->filename);
+            ThrowXWindowException(XServerError,"NoWindowWithSpecifiedIDExists",
+              image_info->filename);
         }
     }
   /*
@@ -4885,7 +4884,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
   if (target == (Window) NULL)
     target=XSelectWindow(display,&crop_info);
   if (target == (Window) NULL)
-    ThrowXWindowFatalException(XServerError,"UnableToReadXWindowImage",
+    ThrowXWindowException(XServerError,"UnableToReadXWindowImage",
       image_info->filename);
   client=target;   /* obsolete */
   if (target != root)
@@ -4991,7 +4990,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
     ximage_info->descend ? 1U : 0U);
   (void) XUngrabServer(display);
   if (image == (Image *) NULL)
-    ThrowXWindowFatalException(XServerError,"UnableToReadXWindowImage",
+    ThrowXWindowException(XServerError,"UnableToReadXWindowImage",
       image_info->filename)
   else
     {
@@ -5154,8 +5153,8 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   windows->icon_map=XAllocStandardColormap();
   if ((windows->map_info == (XStandardColormap *) NULL) ||
       (windows->icon_map == (XStandardColormap *) NULL))
-    ThrowXWindowFatalException(ResourceLimitFatalError,
-      "MemoryAllocationFailed","...");
+    ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "...");
   windows->map_info->colormap=(Colormap) NULL;
   windows->icon_map->colormap=(Colormap) NULL;
   windows->pixel_info->pixels=(unsigned long *) NULL;
@@ -5205,8 +5204,8 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   windows->manager_hints=XAllocWMHints();
   if ((windows->class_hints == (XClassHint *) NULL) ||
       (windows->manager_hints == (XWMHints *) NULL))
-    ThrowXWindowFatalException(ResourceLimitFatalError,
-      "MemoryAllocationFailed","...");
+    ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "...");
   /*
     Determine group leader if we have one.
   */
@@ -8579,7 +8578,7 @@ MagickExport MagickBooleanType XQueryColorDatabase(const char *target,
   colormap=XDefaultColormap(display,XDefaultScreen(display));
   status=XParseColor(display,colormap,(char *) target,&xcolor);
   if (status == False)
-    ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",target)
+    ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",target)
   else
     {
       color->red=xcolor.red;
