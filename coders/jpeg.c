@@ -2239,7 +2239,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           maximum=101;
           for (minimum=2; minimum < maximum; )
           {
-            jpeg_image->quality=minimum+(maximum-minimum+1)/2;
+            jpeg_info->quality=minimum+(maximum-minimum+1)/2;
             status=WriteJPEGImage(jpeg_info,jpeg_image);
             if (GetBlobSize(jpeg_image) <= extent)
               minimum=jpeg_image->quality+1;
