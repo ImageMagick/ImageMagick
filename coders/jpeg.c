@@ -1651,7 +1651,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Loading quantization tables \"%s\" ...",filename);
   table=(QuantizationTable *) NULL;
-  xml=FileToString(filename,~0,exception);
+  xml=FileToString(filename,~0U,exception);
   if (xml == (char *) NULL)
     return(table);
   quantization_tables=NewXMLTree(xml,exception);
@@ -2262,7 +2262,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         *jpeg_info;
 
       jpeg_info=CloneImageInfo(image_info);
-      jpeg_info->blob=NULL:
+      jpeg_info->blob=NULL;
       jpeg_image=CloneImage(image,0,0,MagickTrue,exception);
       if (jpeg_image != (Image *) NULL)
         {
