@@ -940,6 +940,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     ThrowCompareException(OptionError,"MissingAnImageFilename",argv[i]);
   image=GetImageFromList(image,0);
   reconstruct_image=GetImageFromList(image,1);
+  offset.x=0;
+  offset.y=0;
   if (subimage_search != MagickFalse)
     {
       similarity_image=SimilarityImage(image,reconstruct_image,metric,
