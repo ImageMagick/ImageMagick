@@ -2208,6 +2208,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Interlace: nonprogressive");
 #endif
+  quality=92;
   option=GetImageOption(image_info,"jpeg:extent");
   if (option != (const char *) NULL)
     {
@@ -2242,17 +2243,16 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             jpeg_info->quality=minimum+(maximum-minimum+1)/2;
             status=WriteJPEGImage(jpeg_info,jpeg_image);
             if (GetBlobSize(jpeg_image) <= extent)
-              minimum=jpeg_image->quality+1;
+              minimum=jpeg_info->quality+1;
             else
-              maximum=jpeg_image->quality-1;
+              maximum=jpeg_info->quality-1;
           }
           (void) RelinquishUniqueFileResource(jpeg_image->filename);
-          image->quality=minimum-1;
+          quality=minimum-1;
           jpeg_image=DestroyImage(jpeg_image);
         }
       jpeg_info=DestroyImageInfo(jpeg_info);
     }
-  quality=92;
   if ((image_info->compression != LosslessJPEGCompression) &&
       (image->quality <= 100))
     {
