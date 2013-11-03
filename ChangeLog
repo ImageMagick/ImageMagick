@@ -1,3 +1,7 @@
+2013-11-03  6.8.7-5 Cristy  <quetzlzacatenango@image...>
+  * The jpeg:extent option no longer returns double-free exception (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24366).
+
 2013-11-03  6.8.7-5 Dirk Lemstra <dirk@snakeware...>
   * Added support for pangocairo to the windows distribution.
   * Added /OpenCL option to configure.exe to enable OpenCL.
