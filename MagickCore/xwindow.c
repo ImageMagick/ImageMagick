@@ -764,8 +764,7 @@ static char **FontToList(char *font)
   fontlist=(char **) AcquireQuantumMemory((size_t) fonts+1UL,sizeof(*fontlist));
   if (fontlist == (char **) NULL)
     {
-      ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
-        font);
+      ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",font);
       return((char **) NULL);
     }
   p=font;
@@ -778,8 +777,7 @@ static char **FontToList(char *font)
       sizeof(*fontlist[i]));
     if (fontlist[i] == (char *) NULL)
       {
-        ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
-          font);
+        ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",font);
         return((char **) NULL);
       }
     (void) CopyMagickString(fontlist[i],p,(size_t) (q-p+1));
@@ -850,7 +848,7 @@ MagickPrivate XFontStruct *XBestFont(Display *display,
           fontlist=(char **) RelinquishMagickMemory(fontlist);
         }
       if (font_info == (XFontStruct *) NULL)
-        ThrowXWindowFatalException(XServerError,"UnableToLoadFont",font_name);
+        ThrowXWindowException(XServerError,"UnableToLoadFont",font_name);
     }
   /*
     Load fonts from list of fonts until one is found.
@@ -943,8 +941,8 @@ MagickPrivate void XBestIconSize(Display *display,XWindowInfo *window,
       icon_size=XAllocIconSize();
       if (icon_size == (XIconSize *) NULL)
         {
-          ThrowXWindowFatalException(ResourceLimitError,
-            "MemoryAllocationFailed",image->filename);
+          ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
+            image->filename);
           return;
         }
       icon_size->min_width=1;
@@ -1065,8 +1063,8 @@ MagickPrivate void XBestPixel(Display *display,const Colormap colormap,
       colors=(XColor *) AcquireQuantumMemory(number_colors,sizeof(*colors));
       if (colors == (XColor *) NULL)
         {
-          ThrowXWindowFatalException(ResourceLimitError,
-            "MemoryAllocationFailed","...");
+          ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
+            "...");
           return;
         }
       for (i=0; i < (int) number_colors; i++)
@@ -1265,7 +1263,7 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
                           strtol(visual_type,(char **) NULL,0);
                       }
                     else
-                      ThrowXWindowFatalException(XServerError,
+                      ThrowXWindowException(XServerError,
                         "UnrecognizedVisualSpecifier",visual_type);
     }
   /*
@@ -1280,15 +1278,14 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
       /*
         Failed to get visual;  try using the default visual.
       */
-      ThrowXWindowFatalException(XServerWarning,"UnableToGetVisual",
-        visual_type);
+      ThrowXWindowException(XServerWarning,"UnableToGetVisual",visual_type);
       visual_template.visualid=XVisualIDFromVisual(XDefaultVisual(display,
         XDefaultScreen(display)));
       visual_list=XGetVisualInfo(display,visual_mask,&visual_template,
         &number_visuals);
       if ((number_visuals == 0) || (visual_list == (XVisualInfo *) NULL))
         return((XVisualInfo *) NULL);
-      ThrowXWindowFatalException(XServerWarning,"UsingDefaultVisual",
+      ThrowXWindowException(XServerWarning,"UsingDefaultVisual",
         XVisualClassName(visual_list->klass));
     }
   resource_info->color_recovery=MagickFalse;
@@ -1362,7 +1359,7 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
         }
       if (status == False)
         {
-          ThrowXWindowFatalException(XServerError,"UnableToGetStandardColormap",
+          ThrowXWindowException(XServerError,"UnableToGetStandardColormap",
             map_type);
           return((XVisualInfo *) NULL);
         }
@@ -1384,15 +1381,15 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
             }
       if (map_info->visualid != visual_template.visualid)
         {
-          ThrowXWindowFatalException(XServerError,
+          ThrowXWindowException(XServerError,
             "UnableToMatchVisualToStandardColormap",map_type);
           return((XVisualInfo *) NULL);
         }
 #endif
       if (map_info->colormap == (Colormap) NULL)
         {
-          ThrowXWindowFatalException(XServerError,
-            "StandardColormapIsNotInitialized",map_type);
+          ThrowXWindowException(XServerError,"StandardColormapIsNotInitialized",
+            map_type);
           return((XVisualInfo *) NULL);
         }
       (void) XFree((void *) map_list);
@@ -1906,7 +1903,7 @@ MagickPrivate void XDestroyWindowColors(Display *display,Window window)
   property=XInternAtom(display,"_XSETROOT_ID",MagickFalse);
   if (property == (Atom) NULL)
     {
-      ThrowXWindowFatalException(XServerError,"UnableToCreateProperty",
+      ThrowXWindowException(XServerError,"UnableToCreateProperty",
         "_XSETROOT_ID");
       return;
     }
@@ -2188,8 +2185,8 @@ static void XDitherImage(Image *image,XImage *ximage,ExceptionInfo *exception)
           (green_map[i][j] == (unsigned char *) NULL) ||
           (blue_map[i][j] == (unsigned char *) NULL))
         {
-          ThrowXWindowFatalException(ResourceLimitError,
-            "MemoryAllocationFailed",image->filename);
+          ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
+            image->filename);
           return;
         }
     }
@@ -3095,7 +3092,7 @@ MagickPrivate void XGetPixelInfo(Display *display,
   status=XParseColor(display,colormap,resource_info->foreground_color,
     &pixel->foreground_color);
   if (status == False)
-    ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+    ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
       resource_info->foreground_color);
   pixel->foreground_color.pixel=
     XStandardPixel(map_info,&pixel->foreground_color);
@@ -3107,7 +3104,7 @@ MagickPrivate void XGetPixelInfo(Display *display,
   status=XParseColor(display,colormap,resource_info->background_color,
     &pixel->background_color);
   if (status == False)
-    ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+    ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
       resource_info->background_color);
   pixel->background_color.pixel=
     XStandardPixel(map_info,&pixel->background_color);
@@ -3120,7 +3117,7 @@ MagickPrivate void XGetPixelInfo(Display *display,
   status=XParseColor(display,colormap,resource_info->border_color,
     &pixel->border_color);
   if (status == False)
-    ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+    ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
       resource_info->border_color);
   pixel->border_color.pixel=XStandardPixel(map_info,&pixel->border_color);
   pixel->border_color.flags=(char) (DoRed | DoGreen | DoBlue);
@@ -3136,7 +3133,7 @@ MagickPrivate void XGetPixelInfo(Display *display,
       status=XParseColor(display,colormap,resource_info->matte_color,
         &pixel->matte_color);
       if (status == False)
-        ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+        ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
           resource_info->matte_color);
       pixel->matte_color.pixel=XStandardPixel(map_info,&pixel->matte_color);
       pixel->matte_color.flags=(char) (DoRed | DoGreen | DoBlue);
@@ -3199,7 +3196,7 @@ MagickPrivate void XGetPixelInfo(Display *display,
     status=XParseColor(display,colormap,resource_info->pen_colors[i],
       &pixel->pen_colors[i]);
     if (status == False)
-      ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",
+      ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
         resource_info->pen_colors[i]);
     pixel->pen_colors[i].pixel=XStandardPixel(map_info,&pixel->pen_colors[i]);
     pixel->pen_colors[i].flags=(char) (DoRed | DoGreen | DoBlue);
@@ -3518,7 +3515,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   if (LocaleCompare("shared",resource_value) == 0)
     resource_info->colormap=SharedColormap;
   if (resource_info->colormap == UndefinedColormap)
-    ThrowXWindowFatalException(OptionError,"UnrecognizedColormapType",
+    ThrowXWindowException(OptionError,"UnrecognizedColormapType",
       resource_value);
   resource_value=XGetResourceClass(database,client_name,
     "colorRecovery",(char *) "False");
@@ -4122,8 +4119,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
     }
   if (window_info == (WindowInfo *) NULL)
     {
-      ThrowXWindowFatalException(ResourceLimitError,
-        "MemoryAllocationFailed","...");
+      ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed","...");
       return((Image *) NULL);
     }
   id=number_windows++;
@@ -4919,7 +4915,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
     {
-      ThrowXWindowFatalException(XServerError,"UnableToOpenXServer",
+      ThrowXWindowException(XServerError,"UnableToOpenXServer",
         XDisplayName(image_info->server_name));
       return((Image *) NULL);
     }
@@ -4952,8 +4948,8 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
           if (target == (Window) NULL)
             target=XWindowByName(display,root,image_info->filename);
           if (target == (Window) NULL)
-            ThrowXWindowFatalException(XServerError,
-              "NoWindowWithSpecifiedIDExists",image_info->filename);
+            ThrowXWindowException(XServerError,"NoWindowWithSpecifiedIDExists",
+              image_info->filename);
         }
     }
   /*
@@ -4963,7 +4959,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
   if (target == (Window) NULL)
     target=XSelectWindow(display,&crop_info);
   if (target == (Window) NULL)
-    ThrowXWindowFatalException(XServerError,"UnableToReadXWindowImage",
+    ThrowXWindowException(XServerError,"UnableToReadXWindowImage",
       image_info->filename);
   client=target;   /* obsolete */
   if (target != root)
@@ -5018,8 +5014,8 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
       status=XGetWindowAttributes(display,target,&window_attributes);
       if (status == False)
         {
-          ThrowXWindowFatalException(XServerError,
-            "UnableToReadXWindowAttributes",image_info->filename);
+          ThrowXWindowException(XServerError,"UnableToReadXWindowAttributes",
+            image_info->filename);
           (void) XCloseDisplay(display);
           return((Image *) NULL);
         }
@@ -5070,7 +5066,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
     ximage_info->descend ? 1U : 0U,exception);
   (void) XUngrabServer(display);
   if (image == (Image *) NULL)
-    ThrowXWindowFatalException(XServerError,"UnableToReadXWindowImage",
+    ThrowXWindowException(XServerError,"UnableToReadXWindowImage",
       image_info->filename)
   else
     {
@@ -5239,8 +5235,8 @@ MagickPrivate XWindows *XInitializeWindows(Display *display,
   windows->icon_map=XAllocStandardColormap();
   if ((windows->map_info == (XStandardColormap *) NULL) ||
       (windows->icon_map == (XStandardColormap *) NULL))
-    ThrowXWindowFatalException(ResourceLimitFatalError,
-      "MemoryAllocationFailed","...");
+    ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "...");
   windows->map_info->colormap=(Colormap) NULL;
   windows->icon_map->colormap=(Colormap) NULL;
   windows->pixel_info->pixels=(unsigned long *) NULL;
@@ -5290,8 +5286,8 @@ MagickPrivate XWindows *XInitializeWindows(Display *display,
   windows->manager_hints=XAllocWMHints();
   if ((windows->class_hints == (XClassHint *) NULL) ||
       (windows->manager_hints == (XWMHints *) NULL))
-    ThrowXWindowFatalException(ResourceLimitFatalError,
-      "MemoryAllocationFailed","...");
+    ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "...");
   /*
     Determine group leader if we have one.
   */
@@ -5392,7 +5388,7 @@ MagickPrivate Cursor XMakeCursor(Display *display,Window window,
     scope_width,scope_height);
   if ((source == (Pixmap) NULL) || (mask == (Pixmap) NULL))
     {
-      ThrowXWindowFatalException(XServerError,"UnableToCreatePixmap","...");
+      ThrowXWindowException(XServerError,"UnableToCreatePixmap","...");
       return((Cursor) NULL);
     }
   (void) XParseColor(display,colormap,background_color,&background);
@@ -8692,13 +8688,13 @@ MagickPrivate MagickBooleanType XQueryColorCompliance(const char *target,
     display=XOpenDisplay((char *) NULL);
   if (display == (Display *) NULL)
     {
-      ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",target);
+      ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",target);
       return(MagickFalse);
     }
   colormap=XDefaultColormap(display,XDefaultScreen(display));
   status=XParseColor(display,colormap,(char *) target,&xcolor);
   if (status == False)
-    ThrowXWindowFatalException(XServerError,"ColorIsNotKnownToServer",target)
+    ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",target)
   else
     {
       color->red=xcolor.red;
@@ -9069,8 +9065,7 @@ MagickPrivate MagickBooleanType XRenderImage(Image *image,
   visual_info=XBestVisualInfo(display,map_info,&resource_info);
   if (visual_info == (XVisualInfo *) NULL)
     {
-      ThrowXWindowException(XServerError,"UnableToGetVisual",
-        image->filename);
+      ThrowXWindowException(XServerError,"UnableToGetVisual",image->filename);
       return(MagickFalse);
     }
   map_info->colormap=(Colormap) NULL;
@@ -9222,14 +9217,14 @@ MagickExport void XRetainWindowColors(Display *display,const Window window)
   property=XInternAtom(display,"_XSETROOT_ID",MagickFalse);
   if (property == (Atom) NULL)
     {
-      ThrowXWindowFatalException(XServerError,"UnableToCreateProperty",
+      ThrowXWindowException(XServerError,"UnableToCreateProperty",
         "_XSETROOT_ID");
       return;
     }
   pixmap=XCreatePixmap(display,window,1,1,1);
   if (pixmap == (Pixmap) NULL)
     {
-      ThrowXWindowFatalException(XServerError,"UnableToCreateBitmap","");
+      ThrowXWindowException(XServerError,"UnableToCreateBitmap","");
       return;
     }
   (void) XChangeProperty(display,window,property,XA_PIXMAP,32,PropModeReplace,
@@ -9322,7 +9317,7 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
     GrabModeAsync,root_window,target_cursor,CurrentTime);
   if (status != GrabSuccess)
     {
-      ThrowXWindowFatalException(XServerError,"UnableToGrabMouse","");
+      ThrowXWindowException(XServerError,"UnableToGrabMouse","");
       return((Window) NULL);
     }
   /*
