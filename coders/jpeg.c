@@ -2219,6 +2219,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         *jpeg_info;
 
       jpeg_info=CloneImageInfo(image_info);
+      jpeg_info->blob=NULL;
       jpeg_image=CloneImage(image,0,0,MagickTrue,&image->exception);
       if (jpeg_image != (Image *) NULL)
         {
