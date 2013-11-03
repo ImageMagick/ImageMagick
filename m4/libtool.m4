@@ -1326,10 +1326,10 @@ s390*-*linux*|s390*-*tpf*|sparc*-*linux*)
 	  x86_64-*linux*)
 	    LD="${LD-ld} -m elf_i386"
 	    ;;
-	  powerpc64le-*linux*)
+	  powerpcle-*linux*)
 	    LD="${LD-ld} -m elf32lppclinux"
 	    ;;
-	  powerpc64-*linux*)
+	  powerpc-*linux*)
 	    LD="${LD-ld} -m elf32ppclinux"
 	    ;;
 	  s390x-*linux*)
