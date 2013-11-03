@@ -83,9 +83,7 @@
 #endif
 
 /* Define if you have FlashPIX library */
-#ifndef MAGICKCORE_FPX_DELEGATE
-#define MAGICKCORE_FPX_DELEGATE 1
-#endif
+/* #undef FPX_DELEGATE */
 
 /* Define if you have FREETYPE library */
 #ifndef MAGICKCORE_FREETYPE_DELEGATE
@@ -132,9 +130,7 @@
 #endif
 
 /* define if bool is a built-in type */
-#ifndef MAGICKCORE_HAVE_BOOL
-#define MAGICKCORE_HAVE_BOOL /**/
-#endif
+/* #undef HAVE_BOOL */
 
 /* Define to 1 if you have the `cabs' function. */
 #ifndef MAGICKCORE_HAVE_CABS
@@ -474,14 +470,10 @@
 #endif
 
 /* define if the compiler implements namespaces */
-#ifndef MAGICKCORE_HAVE_NAMESPACES
-#define MAGICKCORE_HAVE_NAMESPACES /**/
-#endif
+/* #undef HAVE_NAMESPACES */
 
 /* Define if g++ supports namespace std. */
-#ifndef MAGICKCORE_HAVE_NAMESPACE_STD
-#define MAGICKCORE_HAVE_NAMESPACE_STD /**/
-#endif
+/* #undef HAVE_NAMESPACE_STD */
 
 /* Define to 1 if you have the `nanosleep' function. */
 #ifndef MAGICKCORE_HAVE_NANOSLEEP
@@ -684,9 +676,7 @@
 #endif
 
 /* define if the compiler supports ISO C++ standard library */
-#ifndef MAGICKCORE_HAVE_STD_LIBS
-#define MAGICKCORE_HAVE_STD_LIBS /**/
-#endif
+/* #undef HAVE_STD_LIBS */
 
 /* Define to 1 if you have the `strcasecmp' function. */
 #ifndef MAGICKCORE_HAVE_STRCASECMP
@@ -1185,9 +1175,6 @@
 
 /* Define to 1 if assertions should be disabled. */
 /* #undef NDEBUG */
-
-/* Define to 1 if your C compiler doesn't accept -c and -o together. */
-/* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
 #ifndef MAGICKCORE_OPENEXR_DELEGATE
