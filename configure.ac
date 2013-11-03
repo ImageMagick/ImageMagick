@@ -324,6 +324,7 @@ AC_PROG_SED
 AC_PROG_AWK
 AM_WITH_DMALLOC
 AX_C___ATTRIBUTE__
+AX_GCC_ARCHFLAG([no])
 PKG_PROG_PKG_CONFIG
 
 # Check for linker script support 
