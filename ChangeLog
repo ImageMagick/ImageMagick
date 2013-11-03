@@ -1,3 +1,7 @@
+2013-11-03  6.8.7-5 Dirk Lemstra <dirk@snakeware...>
+  * Added support for pangocairo to the windows distribution.
+  * Added /OpenCL option to configure.exe to enable OpenCL.
+
 2013-10-31  6.8.7-5 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed cut-and-paste error in version.c that caused the "png" delegate
     to be listed twice by the "convert -version" command.
@@ -6,10 +10,10 @@
   * New version 6.8.7-4, SVN revision 13616.
 
 2013-10-26  6.8.7-4  Siu Chi Chan <...@amd.com>
-  * major improvements to the OpenCL infrastructure.
-  * new OpenCL accelerated algorithms (function image, blur, radial blur,
+  * Major improvements to the OpenCL infrastructure.
+  * New OpenCL accelerated algorithms (function image, blur, radial blur,
     unsharp mask, resize, contrast, equalize, despeckle).
-  * added a new checkbox to enable OpenCL in the configure program.
+  * Added a new checkbox to enable OpenCL in the configure program.
 
 2013-10-24  6.8.7-4 Cristy  <quetzlzacatenango@image...>
   * Color reduction acceleration from Yoya (reference
