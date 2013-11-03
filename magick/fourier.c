@@ -115,19 +115,19 @@ typedef struct _FourierInfo
 %  The format of the ComplexImages method is:
 %
 %      MagickBooleanType ComplexImages(Image *images,
-%        const ComplexOperator operator,ExceptionInfo *exception)
+%        const ComplexOperator op,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o operator: A complex operator.
+%    o op: A complex operator.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *ComplexImages(const Image *images,
-  const ComplexOperator operator,ExceptionInfo *exception)
+  const ComplexOperator op,ExceptionInfo *exception)
 {
 #define ComplexImageTag  "Complex/Image"
 
@@ -259,7 +259,7 @@ MagickExport Image *ComplexImages(const Image *images,
       }
     for (x=0; x < (ssize_t) images->columns; x++)
     {
-      switch (operator)
+      switch (op)
       {
         case AddComplexOperator:
         {

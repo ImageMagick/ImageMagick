@@ -36,7 +36,8 @@
 %
 %
 */
-
+
+
 /*
   Include declarations.
 */
@@ -92,7 +93,8 @@
 #include "magick/timer.h"
 #include "magick/utility.h"
 #include "magick/version.h"
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -861,7 +863,8 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   random_info=DestroyRandomInfoThreadSet(random_info);
   return(status);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1100,7 +1103,8 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1160,7 +1164,8 @@ MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
   *maxima=(size_t) floor(max+0.5);
   return(status);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1287,7 +1292,8 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
     channel_statistics);
   return(MagickTrue);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1453,7 +1459,8 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
     }
   return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1570,7 +1577,8 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
   }
   return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1792,15 +1800,18 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   area=(double) image->columns*image->rows;
   for (i=0; i < (ssize_t) CompositeChannels; i++)
   {
-    channel_statistics[i].sum/=area;
+    double
+      sum; // 'Fix' for Visual Studio compiler optimization issue.
+
+    sum = channel_statistics[i].sum/area;
+    channel_statistics[i].sum=sum;
     channel_statistics[i].sum_squared/=area;
     channel_statistics[i].sum_cubed/=area;
     channel_statistics[i].sum_fourth_power/=area;
-    channel_statistics[i].mean=channel_statistics[i].sum;
+    channel_statistics[i].mean=sum;
     channel_statistics[i].variance=channel_statistics[i].sum_squared;
     channel_statistics[i].standard_deviation=sqrt(
-      channel_statistics[i].variance-(channel_statistics[i].mean*
-      channel_statistics[i].mean));
+      channel_statistics[i].variance-(sum*sum));
   }
   for (i=0; i < (ssize_t) CompositeChannels; i++)
   {
@@ -1868,7 +1879,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics);
   return(channel_statistics);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2098,7 +2110,8 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
   return(image);
 }
 
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

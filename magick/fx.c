@@ -1620,7 +1620,6 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
             default:
               return(0.0);
           }
-          return(0.0);
         }
       if (LocaleCompare(symbol,"c") == 0)
         return(QuantumScale*pixel.red);
