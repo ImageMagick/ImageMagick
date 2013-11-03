@@ -109,8 +109,9 @@ static inline size_t GetOpenMPMaximumThreads(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   return(omp_get_max_threads());
-#endif
+#else
   return(1);
+#endif
 }
 
 static inline int GetOpenMPThreadId(void)
