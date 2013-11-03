@@ -10198,17 +10198,13 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       */
       status=XGetCommand(display,windows->image.id,&files,&count);
       if (status == 0)
-        {
           ThrowXWindowFatalException(XServerError,"UnableToGetProperty","...");
-          return((Image *) NULL);
-        }
       filelist=(char **) AcquireQuantumMemory((size_t) count,sizeof(*filelist));
       if (filelist == (char **) NULL)
         {
+          (void) XFreeStringList(files);
           ThrowXWindowFatalException(ResourceLimitError,
             "MemoryAllocationFailed","...");
-          (void) XFreeStringList(files);
-          return((Image *) NULL);
         }
       j=0;
       for (i=1; i < count; i++)
@@ -13520,20 +13516,16 @@ static Image *XVisualDirectoryImage(Display *display,
     {
       ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
         filenames);
-      return((Image *) NULL);
     }
   number_files=1;
   filelist[0]=filenames;
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == MagickFalse) || (number_files == 0))
-    {
-      if (number_files == 0)
-        ThrowXWindowFatalException(ImageError,"NoImagesWereFound",filenames)
-      else
-        ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
+    if (number_files == 0)
+      ThrowXWindowFatalException(ImageError,"NoImagesWereFound",filenames)
+    else
+      ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
           filenames);
-      return((Image *) NULL);
-    }
   /*
     Set image background resources.
   */
@@ -13603,7 +13595,6 @@ static Image *XVisualDirectoryImage(Display *display,
       read_info=DestroyImageInfo(read_info);
       XSetCursorState(display,windows,MagickFalse);
       ThrowXWindowFatalException(ImageError,"NoImagesWereLoaded",filenames);
-      return((Image *) NULL);
     }
   /*
     Create the Visual Image Directory.
@@ -13720,7 +13711,6 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
     {
       ThrowXWindowFatalException(XServerError,"NoWindowWithSpecifiedIDExists",
         resources.window_id);
-      return(MagickFalse);
     }
   /*
     Determine window visual id.
