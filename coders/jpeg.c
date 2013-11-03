@@ -1609,7 +1609,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Loading quantization tables \"%s\" ...",filename);
   table=(QuantizationTable *) NULL;
-  xml=FileToString(filename,~0,exception);
+  xml=FileToString(filename,~0U,exception);
   if (xml == (char *) NULL)
     return(table);
   quantization_tables=NewXMLTree(xml,exception);
