@@ -1,6 +1,8 @@
 2013-11-03  6.8.7-5 Cristy  <quetzlzacatenango@image...>
   * The jpeg:extent option no longer returns double-free exception (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24366).
+  * Turn off arch-specific optimisations (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24353).
 
 2013-11-03  6.8.7-5 Dirk Lemstra <dirk@snakeware...>
   * Added support for pangocairo to the windows distribution.
