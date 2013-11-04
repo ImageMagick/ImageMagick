@@ -13513,19 +13513,19 @@ static Image *XVisualDirectoryImage(Display *display,
   */
   filelist=(char **) AcquireMagickMemory(sizeof(*filelist));
   if (filelist == (char **) NULL)
-    {
-      ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
-        filenames);
-    }
+    ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
+      filenames);
   number_files=1;
   filelist[0]=filenames;
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == MagickFalse) || (number_files == 0))
-    if (number_files == 0)
-      ThrowXWindowFatalException(ImageError,"NoImagesWereFound",filenames)
-    else
-      ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
+    {
+      if (number_files == 0)
+        ThrowXWindowFatalException(ImageError,"NoImagesWereFound",filenames)
+      else
+        ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
           filenames);
+    }
   /*
     Set image background resources.
   */
