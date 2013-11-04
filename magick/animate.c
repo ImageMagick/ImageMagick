@@ -837,8 +837,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       */
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
-        ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
-          images->filename);
+        ThrowXWindowFatalException(ResourceLimitFatalError,
+          "MemoryAllocationFailed",images->filename);
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
       /*
@@ -865,7 +865,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     XDestroyWindowColors(display,root_window);
   coalesce_image=CoalesceImages(images,&images->exception);
   if (coalesce_image == (Image *) NULL)
-    ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       images->filename);
   images=coalesce_image;
   if (resources.map_type == (char *) NULL)
@@ -901,8 +901,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   number_scenes=GetImageListLength(images);
   image_list=ImageListToArray(images,&images->exception);
   if (image_list == (Image **) NULL)
-    ThrowXWindowFatalException(ResourceLimitFatalError,
-      "MemoryAllocationFailed",images->filename);
+    ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      images->filename);
   for (i=0; i < (ssize_t) number_scenes; i++)
     if (image_list[i]->scene == 0)
       break;

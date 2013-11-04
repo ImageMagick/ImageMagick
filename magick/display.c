@@ -9528,7 +9528,7 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
   status=XMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height);
   if (status == MagickFalse)
-    ThrowXWindowFatalException(XServerError,image->exception.reason,
+    ThrowXWindowFatalException(XServerFatalError,image->exception.reason,
       image->exception.description);
   (void) XSetWindowBackgroundPixmap(display,windows->pan.id,
     windows->pan.pixmap);
@@ -10198,12 +10198,12 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       */
       status=XGetCommand(display,windows->image.id,&files,&count);
       if (status == 0)
-          ThrowXWindowFatalException(XServerError,"UnableToGetProperty","...");
+          ThrowXWindowException(XServerError,"UnableToGetProperty","...");
       filelist=(char **) AcquireQuantumMemory((size_t) count,sizeof(*filelist));
       if (filelist == (char **) NULL)
         {
           (void) XFreeStringList(files);
-          ThrowXWindowFatalException(ResourceLimitError,
+          ThrowXWindowException(ResourceLimitError,
             "MemoryAllocationFailed","...");
         }
       j=0;
@@ -13513,18 +13513,22 @@ static Image *XVisualDirectoryImage(Display *display,
   */
   filelist=(char **) AcquireMagickMemory(sizeof(*filelist));
   if (filelist == (char **) NULL)
-    ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
-      filenames);
+    {
+      ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
+        filenames);
+      return((Image *) NULL);
+    }
   number_files=1;
   filelist[0]=filenames;
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == MagickFalse) || (number_files == 0))
     {
       if (number_files == 0)
-        ThrowXWindowFatalException(ImageError,"NoImagesWereFound",filenames)
+        ThrowXWindowException(ImageError,"NoImagesWereFound",filenames)
       else
-        ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
+        ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
           filenames);
+      return((Image *) NULL);
     }
   /*
     Set image background resources.
@@ -13594,7 +13598,8 @@ static Image *XVisualDirectoryImage(Display *display,
     {
       read_info=DestroyImageInfo(read_info);
       XSetCursorState(display,windows,MagickFalse);
-      ThrowXWindowFatalException(ImageError,"NoImagesWereLoaded",filenames);
+      ThrowXWindowException(ImageError,"NoImagesWereLoaded",filenames);
+      return((Image *) NULL);
     }
   /*
     Create the Visual Image Directory.
@@ -13709,7 +13714,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
     }
   if (window_info.id == (Window) NULL)
     {
-      ThrowXWindowFatalException(XServerError,"NoWindowWithSpecifiedIDExists",
+      ThrowXWindowException(XServerError,"NoWindowWithSpecifiedIDExists",
         resources.window_id);
     }
   /*
