@@ -2997,7 +2997,7 @@ MagickPrivate int XCommandWidget(Display *display,XWindows *windows,
         sizeof(*selection_info));
       if (selection_info == (XWidgetInfo *) NULL)
         {
-          ThrowXWindowFatalException(ResourceLimitError,
+          ThrowXWindowFatalException(ResourceLimitFatalError,
             "MemoryAllocationFailed","...");
           return(id);
         }
