@@ -3,6 +3,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24366).
   * Turn off arch-specific optimisations (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24353).
+  * The -type bilevel option no longer returns black image (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24394).
 
 2013-11-03  6.8.7-5 Dirk Lemstra <dirk@snakeware...>
   * Added support for pangocairo to the windows distribution.
