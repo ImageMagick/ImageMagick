@@ -1,3 +1,6 @@
+2013-11-08  6.8.7-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.7-5, SVN revision 13682.
+
 2013-11-03  6.8.7-5 Cristy  <quetzlzacatenango@image...>
   * The jpeg:extent option no longer returns double-free exception (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24366).
