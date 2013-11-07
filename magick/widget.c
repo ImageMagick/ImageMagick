@@ -56,6 +56,8 @@
 #include "magick/widget.h"
 
 #if defined(MAGICKCORE_X11_DELEGATE)
+DisableMSCWarning(4389)
+DisableMSCWarning(4701)
 
 /*
   Define declarations.
@@ -9651,4 +9653,6 @@ MagickExport void XTextViewWidget(Display *display,
   (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
 }
+RestoreMSCWarning
+RestoreMSCWarning
 #endif

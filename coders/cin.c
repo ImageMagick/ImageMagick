@@ -42,7 +42,8 @@
 %
 %
 */
-
+
+
 /*
   Include declarations.
 */
@@ -70,7 +71,8 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/module.h"
-
+
+
 /*
   Typedef declaration.
 */
@@ -223,13 +225,15 @@ typedef struct CINInfo
   CINUserInfo
     user;
 } CINInfo;
-
+
+
 /*
   Forward declaractions.
 */
 static MagickBooleanType
   WriteCINImage(const ImageInfo *,Image *);
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -263,7 +267,8 @@ static MagickBooleanType IsCIN(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -742,7 +747,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -780,7 +786,8 @@ ModuleExport size_t RegisterCINImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -804,7 +811,8 @@ ModuleExport void UnregisterCINImage(void)
 {
   (void) UnregisterMagickInfo("CINEON");
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1150,7 +1158,9 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   quantum_type=RGBQuantum;
   pixels=GetQuantumPixels(quantum_info);
   length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
+DisableMSCWarning(4127)
   if (0)
+RestoreMSCWarning
     {
       quantum_type=GrayQuantum;
       length=GetBytesPerRow(image->columns,1UL,image->depth,MagickTrue);

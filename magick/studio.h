@@ -359,6 +359,14 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
   Magick defines.
 */
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
+#if defined(_MSC_VER)
+# define DisableMSCWarning(nr) __pragma(warning(push)) \
+  __pragma(warning(disable:nr))
+# define RestoreMSCWarning __pragma(warning(pop))
+#else
+# define DisableMSCWarning(nr)
+# define RestoreMSCWarning
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

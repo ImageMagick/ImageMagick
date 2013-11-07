@@ -5734,6 +5734,8 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
   if (thresholds == (const char *) NULL)
     return(MagickTrue);
+  lower_threshold=0;
+  upper_threshold=0;
   if (LocaleCompare(thresholds,"2x2") == 0)
     order=2;
   else
@@ -5745,8 +5747,6 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
       else
         {
           order=1;
-          lower_threshold=0;
-          upper_threshold=0;
           count=(ssize_t) sscanf(thresholds,"%lf[/x%%]%lf",&lower_threshold,
             &upper_threshold);
           if (strchr(thresholds,'%') != (char *) NULL)
