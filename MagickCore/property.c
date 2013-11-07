@@ -2864,7 +2864,8 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),skewness);
           break;
         }
-      if (LocaleCompare("standard-deviation",property) == 0)
+      if ((LocaleCompare("standard-deviation",property) == 0) ||
+          (LocaleCompare("standard_deviation",property) == 0))
         {
           double
             mean,
