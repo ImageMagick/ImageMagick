@@ -227,6 +227,9 @@ MagickExport const char *GetMagickFeatures(void)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   " OpenMP"
 #endif
+#if defined(MAGICKCORE_BUILD_MODULES) || defined(_DLL)
+  " Modules"
+#endif
   ;
 }
 
