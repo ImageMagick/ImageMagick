@@ -35,7 +35,8 @@
 %
 %
 */
-
+
+
 /*
   Include declarations.
 */
@@ -56,7 +57,8 @@
 */
 #define SignatureBlocksize  64
 #define SignatureDigestsize  32
-
+
+
 /*
   Typedef declarations.
 */
@@ -87,13 +89,15 @@ struct _SignatureInfo
   size_t
     signature;
 };
-
+
+
 /*
   Forward declarations.
 */
 static void
   TransformSignature(SignatureInfo *);
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -140,7 +144,8 @@ MagickExport SignatureInfo *AcquireSignatureInfo(void)
   InitializeSignature(signature_info);
   return(signature_info);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -180,7 +185,8 @@ MagickExport SignatureInfo *DestroySignatureInfo(SignatureInfo *signature_info)
   signature_info=(SignatureInfo *) RelinquishMagickMemory(signature_info);
   return(signature_info);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -270,7 +276,8 @@ MagickExport void FinalizeSignature(SignatureInfo *signature_info)
   high_order=0;
   low_order=0;
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -301,7 +308,8 @@ MagickExport unsigned int GetSignatureBlocksize(
   assert(signature_info->signature == MagickSignature);
   return(signature_info->blocksize);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -332,7 +340,8 @@ MagickExport const StringInfo *GetSignatureDigest(
   assert(signature_info->signature == MagickSignature);
   return(signature_info->digest);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -363,7 +372,8 @@ MagickExport unsigned int GetSignatureDigestsize(
   assert(signature_info->signature == MagickSignature);
   return(signature_info->digestsize);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -403,7 +413,8 @@ MagickExport void InitializeSignature(SignatureInfo *signature_info)
   signature_info->high_order=0;
   signature_info->offset=0;
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -439,7 +450,8 @@ MagickExport void SetSignatureDigest(SignatureInfo *signature_info,
   assert(signature_info->signature == MagickSignature);
   SetStringInfo(signature_info->digest,digest);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -550,7 +562,8 @@ MagickExport MagickBooleanType SignatureImage(Image *image)
   signature_info=DestroySignatureInfo(signature_info);
   return(MagickTrue);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -647,7 +660,9 @@ static void TransformSignature(SignatureInfo *signature_info)
   p=GetStringInfoDatum(signature_info->message);
   if (signature_info->lsb_first == MagickFalse)
     {
+DisableMSCWarning(4127)
       if (sizeof(unsigned int) <= 4)
+RestoreMSCWarning
         for (i=0; i < 16; i++)
         {
           T=(*((unsigned int *) p));
@@ -664,7 +679,9 @@ static void TransformSignature(SignatureInfo *signature_info)
         }
     }
   else
+DisableMSCWarning(4127)
     if (sizeof(unsigned int) <= 4)
+RestoreMSCWarning
       for (i=0; i < 16; i++)
       {
         T=(*((unsigned int *) p));
@@ -736,7 +753,8 @@ static void TransformSignature(SignatureInfo *signature_info)
   T2=0;
   (void) ResetMagickMemory(W,0,sizeof(W));
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
