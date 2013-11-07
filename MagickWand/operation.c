@@ -1912,7 +1912,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           /*
             Color correct with a color decision list.
           */
-          color_correction_collection=FileToString(arg1,~0,_exception);
+          color_correction_collection=FileToString(arg1,~0UL,_exception);
           if (color_correction_collection == (char *) NULL)
             break;
           (void) ColorDecisionListImage(_image,color_correction_collection,
@@ -2135,7 +2135,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           StringInfo
             *passkey;
 
-          passkey=FileToStringInfo(arg1,~0,_exception);
+          passkey=FileToStringInfo(arg1,~0UL,_exception);
           if (passkey == (StringInfo *) NULL)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
 
@@ -2252,7 +2252,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           StringInfo
             *passkey;
 
-          passkey=FileToStringInfo(arg1,~0,_exception);
+          passkey=FileToStringInfo(arg1,~0UL,_exception);
           if (passkey != (StringInfo *) NULL)
             {
               (void) PasskeyEncipherImage(_image,passkey,_exception);

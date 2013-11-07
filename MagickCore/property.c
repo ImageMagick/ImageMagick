@@ -557,7 +557,7 @@ static inline unsigned short ReadPropertyMSBShort(const unsigned char **p,
     value;
 
   if (*length < 2)
-    return((unsigned short) ~0U);
+    return((unsigned short) ~0UL);
   for (i=0; i < 2; i++)
   {
     c=(int) (*(*p)++);
@@ -3155,7 +3155,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
            OptionError,"UnableToAccessPath","%s",p);
        return((char *) NULL);
      }
-     return(FileToString(p,~0,exception));
+     return(FileToString(p,~0UL,exception));
   }
 
   /*

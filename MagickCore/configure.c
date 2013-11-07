@@ -1125,7 +1125,7 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
                     (void) CopyMagickString(path,token,MaxTextExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MaxTextExtent);
-                  xml=FileToString(path,~0,exception);
+                  xml=FileToString(path,~0UL,exception);
                   if (xml != (char *) NULL)
                     {
                       status=LoadConfigureList(xml,path,depth+1,exception);

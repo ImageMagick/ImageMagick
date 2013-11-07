@@ -1060,7 +1060,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
                   else
                     (void) ConcatenateMagickString(path,token,MaxTextExtent);
                   sans_exception=AcquireExceptionInfo();
-                  xml=FileToString(path,~0,sans_exception);
+                  xml=FileToString(path,~0UL,sans_exception);
                   sans_exception=DestroyExceptionInfo(sans_exception);
                   if (xml != (char *) NULL)
                     {
@@ -1329,7 +1329,7 @@ static MagickBooleanType LoadTypeLists(const char *filename,
       */
       (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",font_path,
         DirectorySeparator,filename);
-      option=FileToString(path,~0,exception);
+      option=FileToString(path,~0UL,exception);
       if (option != (void *) NULL)
         {
           status&=LoadTypeList(option,path,0,exception);

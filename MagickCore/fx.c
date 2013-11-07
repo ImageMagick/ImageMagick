@@ -2996,7 +2996,7 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
   if (*expression != '@')
     fx_expression=ConstantString(expression);
   else
-    fx_expression=FileToString(expression+1,~0,exception);
+    fx_expression=FileToString(expression+1,~0UL,exception);
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     MagickBooleanType

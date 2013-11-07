@@ -214,11 +214,11 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     }
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    grays[i].red=(~0U);
-    grays[i].green=(~0U);
-    grays[i].blue=(~0U);
-    grays[i].alpha=(~0U);
-    grays[i].black=(~0U);
+    grays[i].red=(~0UL);
+    grays[i].green=(~0UL);
+    grays[i].blue=(~0UL);
+    grays[i].alpha=(~0UL);
+    grays[i].black=(~0UL);
   }
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -270,17 +270,17 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   (void) ResetMagickMemory(&gray,0,sizeof(gray));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    if (grays[i].red != ~0U)
+    if (grays[i].red != ~0UL)
       grays[gray.red++].red=grays[i].red;
-    if (grays[i].green != ~0U)
+    if (grays[i].green != ~0UL)
       grays[gray.green++].green=grays[i].green;
-    if (grays[i].blue != ~0U)
+    if (grays[i].blue != ~0UL)
       grays[gray.blue++].blue=grays[i].blue;
     if (image->colorspace == CMYKColorspace)
-      if (grays[i].black != ~0U)
+      if (grays[i].black != ~0UL)
         grays[gray.black++].black=grays[i].black;
     if (image->alpha_trait == BlendPixelTrait)
-      if (grays[i].alpha != ~0U)
+      if (grays[i].alpha != ~0UL)
         grays[gray.alpha++].alpha=grays[i].alpha;
   }
   /*
