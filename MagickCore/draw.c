@@ -5280,13 +5280,14 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
     z_count;
 
   attribute=0;
+  end.x=0.0;
+  end.y=0.0;
   point.x=0.0;
   point.y=0.0;
   start.x=0.0;
   start.y=0.0;
   number_coordinates=0;
   z_count=0;
-  end=0;
   primitive_type=primitive_info->primitive;
   q=primitive_info;
   for (p=path; *p != '\0'; )
