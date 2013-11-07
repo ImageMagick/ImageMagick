@@ -967,7 +967,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Color correct with a color decision list.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            color_correction_collection=FileToString(argv[i+1],~0,exception);
+            color_correction_collection=FileToString(argv[i+1],~0UL,exception);
             if (color_correction_collection == (char *) NULL)
               break;
             (void) ColorDecisionListImage(*image,color_correction_collection);
@@ -1263,7 +1263,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Decipher pixels.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            passkey=FileToStringInfo(argv[i+1],~0,exception);
+            passkey=FileToStringInfo(argv[i+1],~0UL,exception);
             if (passkey != (StringInfo *) NULL)
               {
                 (void) PasskeyDecipherImage(*image,passkey,exception);
@@ -1459,7 +1459,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Encipher pixels.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            passkey=FileToStringInfo(argv[i+1],~0,exception);
+            passkey=FileToStringInfo(argv[i+1],~0UL,exception);
             if (passkey != (StringInfo *) NULL)
               {
                 (void) PasskeyEncipherImage(*image,passkey,exception);

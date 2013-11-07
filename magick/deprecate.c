@@ -2343,7 +2343,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       (void) FormatLocaleString(path,MaxTextExtent,"%s%s",
         MAGICKCORE_LIBRARY_PATH,filename);
       if (IsPathAccessible(path) != MagickFalse)
-        blob=FileToBlob(path,~0,length,exception);
+        blob=FileToBlob(path,~0UL,length,exception);
     }
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_PATH))
@@ -2361,7 +2361,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
           (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",key_value,
             DirectorySeparator,filename);
           if (IsPathAccessible(path) != MagickFalse)
-            blob=FileToBlob(path,~0,length,exception);
+            blob=FileToBlob(path,~0UL,length,exception);
         }
     }
 #endif
@@ -2385,7 +2385,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
             MAGICKCORE_LIBRARY_RELATIVE_PATH,filename);
 #endif
           if (IsPathAccessible(path) != MagickFalse)
-            blob=FileToBlob(path,~0,length,exception);
+            blob=FileToBlob(path,~0UL,length,exception);
           home=DestroyString(home);
         }
       home=GetEnvironmentValue("HOME");
@@ -2399,7 +2399,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
           (void) FormatLocaleString(path,MaxTextExtent,"%s%s.magick%s%s",home,
             DirectorySeparator,DirectorySeparator,filename);
           if ((IsPathAccessible(path) != MagickFalse) && (blob == (void *) NULL))
-            blob=FileToBlob(path,~0,length,exception);
+            blob=FileToBlob(path,~0UL,length,exception);
           home=DestroyString(home);
         }
     }
@@ -2422,13 +2422,13 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         MAGICKCORE_LIBRARY_RELATIVE_PATH,filename);
 #endif
       if (IsPathAccessible(path) != MagickFalse)
-        blob=FileToBlob(path,~0,length,exception);
+        blob=FileToBlob(path,~0UL,length,exception);
     }
   /*
     Search current directory.
   */
   if ((blob == (void *) NULL) && (IsPathAccessible(path) != MagickFalse))
-    blob=FileToBlob(path,~0,length,exception);
+    blob=FileToBlob(path,~0UL,length,exception);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   /*
     Search Windows registry.

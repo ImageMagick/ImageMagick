@@ -6494,7 +6494,7 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
     }
   (void) IdentifyImage(wand->images,file,MagickTrue);
   (void) fclose(file);
-  description=FileToString(filename,~0,wand->exception);
+  description=FileToString(filename,~0UL,wand->exception);
   (void) RelinquishUniqueFileResource(filename);
   return(description);
 }
