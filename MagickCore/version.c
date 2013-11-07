@@ -218,6 +218,9 @@ MagickExport const char *GetMagickDelegates(void)
 MagickExport const char *GetMagickFeatures(void)
 {
   return "DPC"
+#if defined(MAGICKCORE_BUILD_MODULES) || defined(_DLL)
+  " Modules"
+#endif
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   " HDRI"
 #endif
@@ -226,9 +229,6 @@ MagickExport const char *GetMagickFeatures(void)
 #endif
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   " OpenMP"
-#endif
-#if defined(MAGICKCORE_BUILD_MODULES) || defined(_DLL)
-  " Modules"
 #endif
   ;
 }
