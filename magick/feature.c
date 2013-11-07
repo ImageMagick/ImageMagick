@@ -214,11 +214,11 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     }
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    grays[i].red=(~0U);
-    grays[i].green=(~0U);
-    grays[i].blue=(~0U);
-    grays[i].opacity=(~0U);
-    grays[i].index=(~0U);
+    grays[i].red=(~0UL);
+    grays[i].green=(~0UL);
+    grays[i].blue=(~0UL);
+    grays[i].opacity=(~0UL);
+    grays[i].index=(~0UL);
   }
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -274,17 +274,17 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   (void) ResetMagickMemory(&gray,0,sizeof(gray));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    if (grays[i].red != ~0U)
+    if (grays[i].red != ~0UL)
       grays[(ssize_t) gray.red++].red=grays[i].red;
-    if (grays[i].green != ~0U)
+    if (grays[i].green != ~0UL)
       grays[(ssize_t) gray.green++].green=grays[i].green;
-    if (grays[i].blue != ~0U)
+    if (grays[i].blue != ~0UL)
       grays[(ssize_t) gray.blue++].blue=grays[i].blue;
     if (image->colorspace == CMYKColorspace)
-      if (grays[i].index != ~0U)
+      if (grays[i].index != ~0UL)
         grays[(ssize_t) gray.index++].index=grays[i].index;
     if (image->matte != MagickFalse)
-      if (grays[i].opacity != ~0U)
+      if (grays[i].opacity != ~0UL)
         grays[(ssize_t) gray.opacity++].opacity=grays[i].opacity;
   }
   /*

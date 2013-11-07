@@ -10277,7 +10277,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       /*
         Unknown image format.
       */
-      text=FileToString(filename,~0,exception);
+      text=FileToString(filename,~0UL,exception);
       if (text == (char *) NULL)
         return((Image *) NULL);
       textlist=StringToList(text);

@@ -1765,7 +1765,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   if (*draw_info->primitive != '@')
     primitive=AcquireString(draw_info->primitive);
   else
-    primitive=FileToString(draw_info->primitive+1,~0,&image->exception);
+    primitive=FileToString(draw_info->primitive+1,~0UL,&image->exception);
   if (primitive == (char *) NULL)
     return(MagickFalse);
   primitive_extent=(double) strlen(primitive);
@@ -5288,6 +5288,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
   start.y=0.0;
   number_coordinates=0;
   z_count=0;
+  end=0;
   primitive_type=primitive_info->primitive;
   q=primitive_info;
   for (p=path; *p != '\0'; )

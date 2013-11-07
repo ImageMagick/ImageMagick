@@ -2012,7 +2012,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   */
   (void) IdentifyImage(image,file,MagickTrue);
   (void) fclose(file);
-  text=FileToString(filename,~0,&image->exception);
+  text=FileToString(filename,~0UL,&image->exception);
   (void) RelinquishUniqueFileResource(filename);
   if (text == (char *) NULL)
     {
