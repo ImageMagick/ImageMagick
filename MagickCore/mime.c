@@ -799,7 +799,7 @@ static MagickBooleanType LoadMimeList(const char *xml,const char *filename,
               (void) CopyMagickString(path,attribute,MaxTextExtent);
             else
               (void) ConcatenateMagickString(path,attribute,MaxTextExtent);
-            xml=FileToString(path,~0,exception);
+            xml=FileToString(path,~0UL,exception);
             if (xml != (char *) NULL)
               {
                 status=LoadMimeList(xml,path,depth+1,exception);

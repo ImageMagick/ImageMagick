@@ -2059,7 +2059,7 @@ MagickPrivate void XDisplayImageInfo(Display *display,
   */
   (void) IdentifyImage(image,file,MagickTrue,exception);
   (void) fclose(file);
-  text=FileToString(filename,~0,exception);
+  text=FileToString(filename,~0UL,exception);
   (void) RelinquishUniqueFileResource(filename);
   if (text == (char *) NULL)
     {

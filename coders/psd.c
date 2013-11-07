@@ -1228,7 +1228,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Allocate layered image.
             */
             layer_info[i].image=CloneImage(image,layer_info[i].page.width,
-              layer_info[i].page.height == ~0U ? 1 : layer_info[i].page.height,
+              layer_info[i].page.height == ~0UL ? 1 : layer_info[i].page.height,
               MagickFalse,exception);
             if (layer_info[i].image == (Image *) NULL)
               {

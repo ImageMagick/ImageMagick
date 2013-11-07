@@ -834,7 +834,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
           Generate file list from file list (e.g. @filelist.txt).
         */
         exception=AcquireExceptionInfo();
-        files=FileToString(option+1,~0,exception);
+        files=FileToString(option+1,~0UL,exception);
         exception=DestroyExceptionInfo(exception);
         if (files == (char *) NULL)
           continue;
