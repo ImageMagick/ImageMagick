@@ -205,6 +205,8 @@ static inline MagickRealType Atop(const MagickRealType p,
   const MagickRealType Sa,const MagickRealType q,
   const MagickRealType magick_unused(Da))
 {
+  magick_unreferenced(Da);
+
   return(p*Sa+q*(1.0-Sa));  /* Da optimized out,  Da/gamma => 1.0 */
 }
 
@@ -752,6 +754,8 @@ static void CompositeHCL(const MagickRealType red,const MagickRealType green,
 static inline MagickRealType In(const MagickRealType p,const MagickRealType Sa,
   const MagickRealType magick_unused(q),const MagickRealType Da)
 {
+  magick_unreferenced(q);
+
   return(Sa*p*Da);
 }
 
@@ -1089,6 +1093,8 @@ static inline MagickRealType Minus(const MagickRealType Sca,
       f(Sc,Dc) = Sc - Dc
 
   */
+  magick_unreferenced(Da);
+
   return(Sca + Dca - 2*Dca*Sa);
 }
 
@@ -1278,6 +1284,8 @@ static inline MagickRealType Out(const MagickRealType p,
   const MagickRealType Sa,const MagickRealType magick_unused(q),
   const MagickRealType Da)
 {
+  magick_unreferenced(q);
+
   return(Sa*p*(1.0-Da));
 }
 

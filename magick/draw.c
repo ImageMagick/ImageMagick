@@ -491,6 +491,8 @@ static PolygonInfo *ConvertPathToPolygon(
     number_edges,
     number_points;
 
+  magick_unreferenced(draw_info);
+
   /*
     Convert a path to the more efficient sorted rendering form.
   */
@@ -729,6 +731,8 @@ static PathInfo *ConvertPrimitiveToPath(
   ssize_t
     coordinates,
     start;
+
+  magick_unreferenced(draw_info);
 
   /*
     Converts a PrimitiveInfo structure into a vector path structure.

@@ -167,6 +167,8 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
   ssize_t
     number_images;
 
+  wand_unreferenced(metadata);
+
   /*
     Set defaults.
   */

@@ -859,6 +859,8 @@ static void *DestroyModuleNode(void *module_info)
 MagickExport MagickBooleanType InitializeModuleList(
   ExceptionInfo *magick_unused(exception))
 {
+  magick_unreferenced(exception);
+
   if ((module_list == (SplayTreeInfo *) NULL) &&
       (instantiate_module == MagickFalse))
     {

@@ -396,6 +396,8 @@ static MagickBooleanType MonitorProgress(const char *text,
   register char
     *p;
 
+  wand_unreferenced(client_data);
+
   if (extent < 2)
     return(MagickTrue);
   (void) CopyMagickMemory(tag,text,MaxTextExtent);
@@ -3683,6 +3685,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
   ssize_t
     j,
     k;
+
+  wand_unreferenced(metadata);
 
   /*
     Set defaults.

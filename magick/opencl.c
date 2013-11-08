@@ -1187,75 +1187,117 @@ struct _MagickCLEnv {
   MagickBooleanType OpenCLInitialized;  /* whether OpenCL environment is initialized. */
 };
 
+extern MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
+{
+  return NULL;
+}
 
-extern MagickExport
-  MagickCLEnv AcquireMagickOpenCLEnv() { return NULL; }
+extern MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(
+  MagickCLEnv magick_unused(clEnv))
+{
+  magick_unreferenced(clEnv);
 
-extern MagickExport
-  MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv) { return MagickFalse; }
-
+  return MagickFalse;
+}
 
 /*
 * Return the OpenCL environment
 */ 
-MagickExport MagickCLEnv GetDefaultOpenCLEnv(ExceptionInfo* exception)
-{ 
-  return NULL;
-}
-MagickExport MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv clEnv)     
+MagickExport MagickCLEnv GetDefaultOpenCLEnv(
+  ExceptionInfo *magick_unused(exception))
 {
-  return NULL; 
+  magick_unreferenced(exception);
+
+  return (MagickCLEnv) NULL;
+}
+
+MagickExport MagickCLEnv SetDefaultOpenCLEnv(
+  MagickCLEnv magick_unused(clEnv))
+{
+  magick_unreferenced(clEnv);
+
+  return (MagickCLEnv) NULL;
 } 
 
-MagickExport
-  MagickBooleanType SetMagickOpenCLEnvParam(MagickCLEnv clEnv, MagickOpenCLEnvParam param
-                                          , size_t dataSize, void* data, ExceptionInfo* exception)
+MagickExport MagickBooleanType SetMagickOpenCLEnvParam(
+  MagickCLEnv magick_unused(clEnv),MagickOpenCLEnvParam magick_unused(param),
+  size_t magick_unused(dataSize),void *magick_unused(data),
+  ExceptionInfo *magick_unused(exception))
 {
+  magick_unreferenced(clEnv);
+  magick_unreferenced(param);
+  magick_unreferenced(dataSize);
+  magick_unreferenced(data);
+  magick_unreferenced(exception);
+
   return MagickFalse;
 }
 
-MagickExport
-  MagickBooleanType GetMagickOpenCLEnvParam(MagickCLEnv clEnv, MagickOpenCLEnvParam param
-                                          , size_t dataSize, void* data, ExceptionInfo* exception)
+MagickExport MagickBooleanType GetMagickOpenCLEnvParam(
+  MagickCLEnv magick_unused(clEnv),MagickOpenCLEnvParam magick_unused(param),
+  size_t magick_unused(dataSize),void *magick_unused(data),
+  ExceptionInfo *magick_unused(exception))
 {
+  magick_unreferenced(clEnv);
+  magick_unreferenced(param);
+  magick_unreferenced(dataSize);
+  magick_unreferenced(data);
+  magick_unreferenced(exception);
+
   return MagickFalse;
 }
 
-
-
-MagickExport
-MagickBooleanType InitOpenCLEnv(MagickCLEnv clEnv, ExceptionInfo* exception) 
+MagickExport MagickBooleanType InitOpenCLEnv(MagickCLEnv magick_unused(clEnv),
+  ExceptionInfo *magick_unused(exception))
 {
+  magick_unreferenced(clEnv);
+  magick_unreferenced(exception);
+
   return MagickFalse;
 }
 
-MagickExport
-cl_command_queue AcquireOpenCLCommandQueue(MagickCLEnv clEnv) 
+MagickExport cl_command_queue AcquireOpenCLCommandQueue(
+  MagickCLEnv magick_unused(clEnv))
 {
-  return NULL;
+  magick_unreferenced(clEnv);
+
+  return (cl_command_queue) NULL;
 }
 
-MagickExport
-MagickBooleanType RelinquishCommandQueue(MagickCLEnv clEnv, cl_command_queue queue) 
+MagickExport MagickBooleanType RelinquishCommandQueue(
+  MagickCLEnv magick_unused(clEnv),cl_command_queue magick_unused(queue))
 {
+  magick_unreferenced(clEnv);
+  magick_unreferenced(queue);
+
   return MagickFalse;
 }
 
-MagickExport
-  cl_kernel AcquireOpenCLKernel(MagickCLEnv clEnv, MagickOpenCLProgram program, const char* kernelName)
+MagickExport cl_kernel AcquireOpenCLKernel(
+  MagickCLEnv magick_unused(clEnv),MagickOpenCLProgram magick_unused(program),
+  const char *magick_unused(kernelName))
 {
+  magick_unreferenced(clEnv);
+  magick_unreferenced(program);
+  magick_unreferenced(kernelName);
+
   return (cl_kernel)NULL;
 }
 
-MagickExport
-  MagickBooleanType RelinquishOpenCLKernel(MagickCLEnv clEnv, cl_kernel kernel)
+MagickExport MagickBooleanType RelinquishOpenCLKernel(
+  MagickCLEnv magick_unused(clEnv),cl_kernel magick_unused(kernel))
 {
+  magick_unreferenced(clEnv);
+  magick_unreferenced(kernel);
+
   return MagickFalse;
 }
 
-MagickExport
- unsigned long GetOpenCLDeviceLocalMemorySize(MagickCLEnv clEnv)
+MagickExport unsigned long GetOpenCLDeviceLocalMemorySize(
+  MagickCLEnv magick_unused(clEnv))
 {
+  magick_unreferenced(clEnv);
+
   return 0;
 }
 

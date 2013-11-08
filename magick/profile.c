@@ -477,6 +477,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
   StringInfo
     *profile;
 
+  magick_unreferenced(clone);
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)

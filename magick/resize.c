@@ -155,6 +155,9 @@ static MagickRealType Blackman(const MagickRealType x,
     five flops.
   */
   const MagickRealType cosine=cos((double) (MagickPI*x));
+
+  magick_unreferenced(resize_filter);
+
   return(0.34+cosine*(0.5+cosine*0.16));
 }
 
@@ -171,6 +174,9 @@ static MagickRealType Bohman(const MagickRealType x,
   */
   const double cosine=cos((double) (MagickPI*x));
   const double sine=sqrt(1.0-cosine*cosine);
+
+  magick_unreferenced(resize_filter);
+
   return((MagickRealType) ((1.0-x)*cosine+(1.0/MagickPI)*sine));
 }
 
@@ -182,6 +188,9 @@ static MagickRealType Box(const MagickRealType magick_unused(x),
     DO NOT LIMIT results by support or resize point sampling will work
     as it requests points beyond its normal 0.0 support size.
   */
+  magick_unreferenced(x);
+  magick_unreferenced(resize_filter);
+
   return(1.0);
 }
 
@@ -192,6 +201,8 @@ static MagickRealType Cosine(const MagickRealType x,
     Cosine window function:
       cos((pi/2)*x).
   */
+  magick_unreferenced(resize_filter);
+
   return((MagickRealType)cos((double) (MagickPI2*x)));
 }
 
@@ -280,6 +291,9 @@ static MagickRealType Hanning(const MagickRealType x,
       0.5+0.5*cos(pi*x).
   */
   const MagickRealType cosine=cos((double) (MagickPI*x));
+
+  magick_unreferenced(resize_filter);
+
   return(0.5+0.5*cosine);
 }
 
@@ -291,6 +305,9 @@ static MagickRealType Hamming(const MagickRealType x,
      .54 + .46 cos(pi x).
   */
   const MagickRealType cosine=cos((double) (MagickPI*x));
+
+  magick_unreferenced(resize_filter);
+
   return(0.54+0.46*cosine);
 }
 
@@ -305,6 +322,8 @@ static MagickRealType Jinc(const MagickRealType x,
     The original "zoom" program by Paul Heckbert called this "Bessel".  But
     really it is more accurately named "Jinc".
   */
+  magick_unreferenced(resize_filter);
+
   if (x == 0.0)
     return((MagickRealType) (0.5*MagickPI));
   return(BesselOrderOne((MagickRealType) MagickPI*x)/x);
@@ -369,6 +388,8 @@ static MagickRealType Quadratic(const MagickRealType x,
   /*
     2rd order (quadratic) B-Spline approximation of Gaussian.
   */
+  magick_unreferenced(resize_filter);
+
   if (x < 0.5)
     return(0.75-x*x);
   if (x < 1.5)
@@ -383,6 +404,8 @@ static MagickRealType Sinc(const MagickRealType x,
     Scaled sinc(x) function using a trig call:
       sinc(x) == sin(pi x)/(pi x).
   */
+  magick_unreferenced(resize_filter);
+
   if (x != 0.0)
     {
       const MagickRealType alpha=(MagickRealType) (MagickPI*x);
@@ -418,6 +441,8 @@ static MagickRealType SincFast(const MagickRealType x,
 
     If outside of the interval of approximation, use the standard trig formula.
   */
+  magick_unreferenced(resize_filter);
+
   if (x > 4.0)
     {
       const MagickRealType alpha=(MagickRealType) (MagickPI*x);
@@ -493,6 +518,8 @@ static MagickRealType Triangle(const MagickRealType x,
     a Bartlett 2D Cone filter.  Also used as a Bartlett Windowing function
     for Sinc().
   */
+  magick_unreferenced(resize_filter);
+
   if (x < 1.0)
     return(1.0-x);
   return(0.0);
@@ -504,6 +531,8 @@ static MagickRealType Welsh(const MagickRealType x,
   /*
     Welsh parabolic windowing filter.
   */
+  magick_unreferenced(resize_filter);
+
   if (x < 1.0)
     return(1.0-x*x);
   return(0.0);
