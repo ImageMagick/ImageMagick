@@ -2262,7 +2262,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 */
 MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
-  ExceptionInfo *exception)
+  ExceptionInfo *magick_unused(exception))
 {
   char
     *q;
