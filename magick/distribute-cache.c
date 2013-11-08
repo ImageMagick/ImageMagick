@@ -395,7 +395,7 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 */
 
 static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
-  int file,const size_t session_key)
+  int magick_unused(file),const size_t session_key)
 {
   /*
     Destroy distributed pixel cache.
