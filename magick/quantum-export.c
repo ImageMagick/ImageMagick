@@ -235,9 +235,9 @@ static inline unsigned char *PopQuantumLongPixel(QuantumInfo *quantum_info,
   return(pixels);
 }
 
-static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportAlphaQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -346,9 +346,9 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportBGRQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -629,9 +629,9 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportBGRAQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -982,9 +982,9 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportBlueQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -1085,9 +1085,9 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportCbYCrYQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   Quantum
     cbcr[4];
@@ -1520,7 +1520,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
 
 static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -1774,7 +1774,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
 
 static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -1976,9 +1976,9 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportGreenQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -2427,9 +2427,9 @@ static void ExportIndexAlphaQuantum(const Image *image,
   }
 }
 
-static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportOpacityQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -2530,9 +2530,9 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportRedQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -2633,9 +2633,9 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportRGBQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -2916,9 +2916,9 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
+static void ExportRGBAQuantum(QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  unsigned char *restrict q)
 {
   QuantumAny
     range;
@@ -3266,21 +3266,18 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   {
     case AlphaQuantum:
     {
-      ExportAlphaQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportAlphaQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case BGRQuantum:
     {
-      ExportBGRQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportBGRQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case BGRAQuantum:
     case BGROQuantum:
     {
-      ExportBGRAQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportBGRAQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case BlackQuantum:
@@ -3292,14 +3289,12 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     case BlueQuantum:
     case YellowQuantum:
     {
-      ExportBlueQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportBlueQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case CbYCrYQuantum:
     {
-      ExportCbYCrYQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportCbYCrYQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case CMYKQuantum:
@@ -3317,21 +3312,19 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     }
     case GrayQuantum:
     {
-      ExportGrayQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportGrayQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case GrayAlphaQuantum:
     {
-      ExportGrayAlphaQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportGrayAlphaQuantum(image,(QuantumInfo *) quantum_info,number_pixels,
+        p,q);
       break;
     }
     case GreenQuantum:
     case MagentaQuantum:
     {
-      ExportGreenQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportGreenQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case IndexQuantum:
@@ -3342,36 +3335,32 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     }
     case IndexAlphaQuantum:
     {
-      ExportIndexAlphaQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,
-        indexes,q,exception);
+      ExportIndexAlphaQuantum(image,(QuantumInfo *) quantum_info,number_pixels,
+        p,indexes,q,exception);
       break;
     }
     case OpacityQuantum:
     {
-      ExportOpacityQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportOpacityQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case RedQuantum:
     case CyanQuantum:
     {
-      ExportRedQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportRedQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case RGBQuantum:
     case CbYCrQuantum:
     {
-      ExportRGBQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportRGBQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     case RGBAQuantum:
     case RGBOQuantum:
     case CbYCrAQuantum:
     {
-      ExportRGBAQuantum(image,(QuantumInfo *) quantum_info,number_pixels,p,q,
-        exception);
+      ExportRGBAQuantum((QuantumInfo *) quantum_info,number_pixels,p,q);
       break;
     }
     default:

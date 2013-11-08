@@ -135,6 +135,8 @@ extern "C" BOOL WINAPI
 #if defined(_DLL) && defined( ProvideDllMain )
 BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
 {
+  magick_unreferenced(lpvReserved);
+
   switch (reason)
   {
     case DLL_PROCESS_ATTACH:

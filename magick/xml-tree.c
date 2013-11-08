@@ -1352,6 +1352,8 @@ static void ParseCharacterContent(XMLTreeRoot *root,char *xml,
 static XMLTreeInfo *ParseCloseTag(XMLTreeRoot *root,char *tag,
   char *magick_unused(xml),ExceptionInfo *exception)
 {
+  magick_unreferenced(xml);
+
   if ((root->node == (XMLTreeInfo *) NULL) ||
       (root->node->tag == (char *) NULL) || (strcmp(tag,root->node->tag) != 0))
     {

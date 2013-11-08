@@ -8508,6 +8508,8 @@ MagickExport MagickBooleanType XMagickProgressMonitor(const char *tag,
   XWindows
     *windows;
 
+  magick_unreferenced(client_data);
+
   windows=XSetWindows((XWindows *) ~0);
   if (windows == (XWindows *) NULL)
     return(MagickTrue);
@@ -9535,6 +9537,8 @@ MagickExport void XWarning(const ExceptionType magick_unused(warning),
 
   XWindows
     *windows;
+
+  magick_unreferenced(warning);
 
   if (reason == (char *) NULL)
     return;

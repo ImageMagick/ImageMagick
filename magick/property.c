@@ -1621,6 +1621,9 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
     selector,
     y;
 
+  magick_unreferenced(columns);
+  magick_unreferenced(rows);
+
   path=AcquireString((char *) NULL);
   if (path == (char *) NULL)
     return((char *) NULL);

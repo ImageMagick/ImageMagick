@@ -705,6 +705,8 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     memory_limit[MaxTextExtent],
     time_limit[MaxTextExtent];
 
+  magick_unreferenced(exception);
+
   if (file == (const FILE *) NULL)
     file=stdout;
   if (resource_semaphore == (SemaphoreInfo *) NULL)

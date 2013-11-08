@@ -12566,6 +12566,8 @@ static int XPredicate(Display *magick_unused(display),XEvent *event,char *data)
   register XWindows
     *windows;
 
+  magick_unreferenced(display);
+
   windows=(XWindows *) data;
   if ((event->type == ClientMessage) &&
       (event->xclient.window == windows->image.id))

@@ -4245,6 +4245,8 @@ MagickExport MagickBooleanType MagickMonitor(const char *text,
   MagickBooleanType
     status;
 
+  magick_unreferenced(client_data);
+
   assert(text != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",text);
   ProcessPendingEvents(text);
@@ -6448,6 +6450,8 @@ MagickExport ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
 
   static ssize_t
     id = 0;
+
+  magick_unreferenced(length);
 
   (void) FormatLocaleString(key,MaxTextExtent,"%.20g\n",(double) id);
   status=SetImageRegistry(type,key,blob,exception);

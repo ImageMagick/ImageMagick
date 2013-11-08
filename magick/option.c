@@ -2239,6 +2239,8 @@ MagickExport MagickBooleanType ListCommandOptions(FILE *file,
   register ssize_t
     i;
 
+  magick_unreferenced(exception);
+
   if (file == (FILE *) NULL)
     file=stdout;
   option_info=GetOptionInfo(option);

@@ -299,6 +299,8 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   XrmDatabase
     resource_database;
 
+  wand_unreferenced(metadata);
+
   /*
     Set defaults.
   */

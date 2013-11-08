@@ -824,6 +824,8 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
   time_t
     seconds;
 
+  magick_unreferenced(type);
+
   exception=AcquireExceptionInfo();
   log_info=(LogInfo *) GetLogInfo("*",exception);
   exception=DestroyExceptionInfo(exception);
