@@ -1574,7 +1574,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     (void) strncpy(dpx.file.copyright,value,sizeof(dpx.file.copyright));
   offset+=WriteBlob(image,sizeof(dpx.file.copyright),(unsigned char *)
     dpx.file.copyright);
-  dpx.file.encrypt_key=(~0UL);
+  dpx.file.encrypt_key=(~0U);
   offset+=WriteBlobLong(image,dpx.file.encrypt_key);
   offset+=WriteBlob(image,sizeof(dpx.file.reserve),(unsigned char *)
     dpx.file.reserve);
