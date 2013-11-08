@@ -1992,13 +1992,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 &graphic_context[n]->fill_pattern,exception);
             else
               {
-                double
-                  alpha;
-
-                alpha=graphic_context[n]->fill.alpha;
                 status&=QueryColorCompliance(token,AllCompliance,
                   &graphic_context[n]->fill,exception);
-                graphic_context[n]->fill.alpha=alpha;
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2509,13 +2504,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 &graphic_context[n]->stroke_pattern,exception);
             else
               {
-                double
-                  alpha;
-
-                alpha=graphic_context[n]->stroke.alpha;
                 status&=QueryColorCompliance(token,AllCompliance,
                   &graphic_context[n]->stroke,exception);
-                graphic_context[n]->stroke.alpha=alpha;
                 if (status == MagickFalse)
                   {
                     ImageInfo
