@@ -2057,13 +2057,19 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
 
         coefficient=terms[i << 1];
         degree=terms[(i << 1)+1];
-        polynomial_pixel[x].red+=coefficient*pow(QuantumScale*p->red,degree);
-        polynomial_pixel[x].green+=coefficient*pow(QuantumScale*p->green,
-          degree);
-        polynomial_pixel[x].blue+=coefficient*pow(QuantumScale*p->blue,degree);
-        polynomial_pixel[x].opacity+=coefficient*pow(QuantumScale*
-          (QuantumRange-p->opacity),degree);
-        if (image->colorspace == CMYKColorspace)
+        if ((channel & RedChannel) != 0)
+          polynomial_pixel[x].red+=coefficient*pow(QuantumScale*p->red,degree);
+        if ((channel & GreenChannel) != 0)
+          polynomial_pixel[x].green+=coefficient*pow(QuantumScale*p->green,
+            degree);
+        if ((channel & BlueChannel) != 0)
+          polynomial_pixel[x].blue+=coefficient*pow(QuantumScale*p->blue,
+            degree);
+        if ((channel & OpacityChannel) != 0)
+          polynomial_pixel[x].opacity+=coefficient*pow(QuantumScale*
+            (QuantumRange-p->opacity),degree);
+        if (((channel & IndexChannel) != 0) &&
+            (image->colorspace == CMYKColorspace))
           polynomial_pixel[x].index+=coefficient*pow(QuantumScale*indexes[x],
             degree);
         p++;
@@ -2109,9 +2115,7 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
     image=DestroyImage(image);
   return(image);
 }
-
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
