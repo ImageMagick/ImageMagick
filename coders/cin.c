@@ -478,7 +478,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   cin.image.orientation=(unsigned char) ReadBlobByte(image);
   offset++;
-  if (cin.image.orientation != (unsigned char) (~0UL))
+  if (cin.image.orientation != (unsigned char) (~0))
     (void) FormatImageProperty(image,"dpx:image.orientation","%d",
       cin.image.orientation);
   switch (cin.image.orientation)
