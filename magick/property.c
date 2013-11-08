@@ -530,7 +530,7 @@ static inline unsigned short ReadPropertyMSBShort(const unsigned char **p,
     value;
 
   if (*length < 2)
-    return((unsigned short) ~0UL);
+    return((unsigned short) ~0);
   for (i=0; i < 2; i++)
   {
     c=(int) (*(*p)++);

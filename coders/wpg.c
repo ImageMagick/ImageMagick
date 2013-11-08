@@ -629,10 +629,10 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           break;
         case 0xFF:
           RunCount=ReadBlobByte(image);   /* WHT */
-          for(i=0; i < SampleSize*(RunCount+1); i++)
-            {
-              InsertByte6(0xFF);
-            }
+          for (i=0; i < SampleSize*(RunCount+1); i++)
+          {
+            InsertByte6(0xFF);
+          }
           break;
         default:
           RunCount=bbuf & 0x7F;
