@@ -214,11 +214,11 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     }
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    grays[i].red=(~0UL);
-    grays[i].green=(~0UL);
-    grays[i].blue=(~0UL);
-    grays[i].opacity=(~0UL);
-    grays[i].index=(~0UL);
+    grays[i].red=(~0U);
+    grays[i].green=(~0U);
+    grays[i].blue=(~0U);
+    grays[i].opacity=(~0U);
+    grays[i].index=(~0U);
   }
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
