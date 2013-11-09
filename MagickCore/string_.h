@@ -59,7 +59,7 @@ extern MagickExport const char
 
 extern MagickExport double
   InterpretSiPrefixValue(const char *restrict,char **restrict),
-  *StringToArrayOfDoubles(const char *,ssize_t *);
+  *StringToArrayOfDoubles(const char *,ssize_t *,ExceptionInfo *);
 
 extern MagickExport int
   CompareStringInfo(const StringInfo *,const StringInfo *),
