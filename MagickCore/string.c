@@ -2249,8 +2249,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %  The format of the StringToArrayOfDoubles method is:
 %
-%     double *StringToArrayOfDoubles(const char *string,size_t *count,
-%       ExceptionInfo *exception)
+%     double *StringToArrayOfDoubles(const char *string,size_t *count)
 %
 %  A description of each parameter follows:
 %
@@ -2258,11 +2257,8 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %    o count: returns number of arguments in returned array
 %
-%    o exception: return 'memory failure' exceptions
-%
 */
-MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
-  ExceptionInfo *magick_unused(exception))
+MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count)
 {
   char
     *q;
