@@ -400,6 +400,8 @@ static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
   /*
     Destroy distributed pixel cache.
   */
+  magick_unreferenced(file);
+
   return(DeleteNodeFromSplayTree(registry,(const void *) session_key));
 }
 

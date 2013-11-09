@@ -203,6 +203,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
   /*
     Convert compound to simple operators.
   */
+DisableMSCWarning(4310)
   fx_op[1]='\0';
   *fx_op=(char) LeftShiftOperator;
   (void) SubstituteString(&fx_info->expression,"<<",fx_op);
@@ -222,6 +223,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
   (void) SubstituteString(&fx_info->expression,"||",fx_op);
   *fx_op=(char) ExponentialNotation;
   (void) SubstituteString(&fx_info->expression,"**",fx_op);
+RestoreMSCWarning
   return(fx_info);
 }
 

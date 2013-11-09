@@ -533,10 +533,12 @@ static int UnpackWPGRaster(Image *image,int bpp)
 /* Helper for WPG2 reader. */
 #define InsertByte6(b) \
 { \
+DisableMSCWarning(4310) \
   if(XorMe)\
     BImgBuff[x] = (unsigned char)~b;\
   else\
     BImgBuff[x] = b;\
+RestoreMSCWarning \
   x++; \
   if((ssize_t) x >= ldblk) \
   { \
