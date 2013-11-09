@@ -1743,7 +1743,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 TIFFGetA(*p)),q);
             p--;
-            q-=GetPixelChannels(image);;
+            q-=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
