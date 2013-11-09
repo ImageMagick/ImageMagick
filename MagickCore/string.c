@@ -2303,8 +2303,11 @@ MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
   *count=i;
   array=(double *) AcquireQuantumMemory((size_t) i,sizeof(*array));
   if (array == (double *) NULL)
-    (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-      "MemoryAllocationFailed","`%s'","");
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+      return((double *) NULL);
+    }
   /*
     Fill in the floating point values.
   */
