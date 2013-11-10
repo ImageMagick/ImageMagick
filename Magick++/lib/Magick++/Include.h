@@ -139,6 +139,11 @@ namespace MagickCore
 #        pragma comment(lib, "CORE_DB_Magick++_.lib")
 #        pragma comment(lib, "CORE_DB_MagickCore_.lib")
 #        pragma comment(lib, "CORE_DB_MagickWand_.lib")
+#        if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
+#          pragma comment(lib, "CORE_DB_cairo_.lib")
+#          pragma comment(lib, "CORE_DB_pango_.lib")
+#          pragma comment(lib, "CORE_DB_pixman_.lib")
+#        endif
 #        if defined(MAGICKCORE_PNG_DELEGATE)
 #          pragma comment(lib, "CORE_DB_png_.lib")
 #        endif
@@ -192,6 +197,11 @@ namespace MagickCore
 #        pragma comment(lib, "CORE_RL_Magick++_.lib")
 #        pragma comment(lib, "CORE_RL_MagickCore_.lib")
 #        pragma comment(lib, "CORE_RL_MagickWand_.lib")
+#        if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
+#          pragma comment(lib, "CORE_RL_cairo_.lib")
+#          pragma comment(lib, "CORE_RL_pango_.lib")
+#          pragma comment(lib, "CORE_RL_pixman_.lib")
+#        endif
 #        if defined(MAGICKCORE_PNG_DELEGATE)
 #          pragma comment(lib, "CORE_RL_png_.lib")
 #        endif
