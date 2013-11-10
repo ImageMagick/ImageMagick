@@ -308,6 +308,24 @@ namespace Magick
     // in the current image. False is returned if the images are identical.
     bool            compare ( const Image &reference_ );
 
+    // Compare current image with another image
+    // Returns the distortion based on the specified metric.
+    double          compare ( const Image &reference_,
+                              const MetricType metric_ );
+    double          compareChannel ( const ChannelType channel_,
+                                     const Image &reference_,
+                                     const MetricType metric_ );
+
+    // Compare current image with another image
+    // Sets the distortion and returns the difference image.
+    Image           compare ( const Image &reference_,
+                              const MetricType metric_,
+                              double *distortion );
+    Image           compareChannel ( const ChannelType channel_,
+                                     const Image &reference_,
+                                     const MetricType metric_,
+                                     double *distortion );
+
     // Compose an image onto another at specified offset and using
     // specified algorithm
     void            composite ( const Image &compositeImage_,
