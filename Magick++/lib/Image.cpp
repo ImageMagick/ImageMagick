@@ -844,6 +844,66 @@ bool Magick::Image::compare ( const Image &reference_ )
   return status;
 }
 
+double Magick::Image::compare ( const Image &reference_,
+                                const MetricType metric_)
+{
+  double distortion = 0.0;
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  GetImageDistortion(image(), reference_.constImage(), metric_, &distortion,
+    &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+  return distortion;
+}
+
+double Magick::Image::compareChannel ( const ChannelType channel_,
+                                       const Image &reference_,
+                                       const MetricType metric_)
+{
+  double distortion = 0.0;
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  GetImageChannelDistortion(image(), reference_.constImage(), channel_,
+    metric_, &distortion, &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+  return distortion;
+}
+
+Magick::Image Magick::Image::compare ( const Image &reference_,
+                                       const MetricType metric_,
+                                       double *distortion )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage = CompareImages(image(), reference_.constImage(),
+    metric_, distortion, &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+  if (newImage == (MagickCore::Image *) NULL)
+    return Magick::Image();
+  else
+    return Magick::Image( newImage );
+}
+
+Magick::Image Magick::Image::compareChannel ( const ChannelType channel_,
+                                              const Image &reference_,
+                                              const MetricType metric_,
+                                              double *distortion )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage = CompareImageChannels(image(),
+    reference_.constImage(), channel_, metric_, distortion, &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+  if (newImage == (MagickCore::Image *) NULL)
+    return Magick::Image();
+  else
+    return Magick::Image( newImage );
+}
+
 // Composite two images
 void Magick::Image::composite ( const Image &compositeImage_,
                                 const ssize_t xOffset_,
