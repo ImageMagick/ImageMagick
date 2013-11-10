@@ -270,17 +270,17 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   (void) ResetMagickMemory(&gray,0,sizeof(gray));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    if (grays[i].red != ~0UL)
+    if (grays[i].red != ~0U)
       grays[gray.red++].red=grays[i].red;
-    if (grays[i].green != ~0UL)
+    if (grays[i].green != ~0U)
       grays[gray.green++].green=grays[i].green;
-    if (grays[i].blue != ~0UL)
+    if (grays[i].blue != ~0U)
       grays[gray.blue++].blue=grays[i].blue;
     if (image->colorspace == CMYKColorspace)
-      if (grays[i].black != ~0UL)
+      if (grays[i].black != ~0U)
         grays[gray.black++].black=grays[i].black;
     if (image->alpha_trait == BlendPixelTrait)
-      if (grays[i].alpha != ~0UL)
+      if (grays[i].alpha != ~0U)
         grays[gray.alpha++].alpha=grays[i].alpha;
   }
   /*
