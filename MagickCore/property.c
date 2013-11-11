@@ -1949,14 +1949,28 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
           }
         else
           {
+            /*
+              Handle special cases when Bezier curves are used to describe
+              corners and straight lines.
+            */
             if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
                 (point[0].x == point[1].x) && (point[0].y == point[1].y))
-              (void) FormatLocaleString(message,MaxTextExtent,"L %g,%g\n",
-                point[1].x,point[1].y);
-            else
               (void) FormatLocaleString(message,MaxTextExtent,
-                "C %g,%g %g,%g %g,%g\n",last[2].x,last[2].y,
-                point[0].x,point[0].y,point[1].x,point[1].y);
+                "  %g %g l\n",point[1].x,point[1].y);
+            else
+              if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
+                (void) FormatLocaleString(message,MaxTextExtent,
+                  "  %g %g %g %g v\n",point[0].x,point[0].y,
+                  point[1].x,point[1].y);
+              else
+                if ((point[0].x == point[1].x) && (point[0].y == point[1].y))
+                  (void) FormatLocaleString(message,MaxTextExtent,
+                    "  %g %g %g %g y\n",last[2].x,last[2].y,
+                    point[1].x,point[1].y);
+                else
+                  (void) FormatLocaleString(message,MaxTextExtent,
+                    "  %g %g %g %g %g %g c\n",last[2].x,
+                    last[2].y,point[0].x,point[0].y,point[1].x,point[1].y);
             for (i=0; i < 3; i++)
               last[i]=point[i];
           }
@@ -1968,17 +1982,29 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         */
         if (knot_count == 0)
           {
+           /*
+              Same special handling as above except we compare to the
+              first point in the path and close the path.
+            */
             if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
                 (first[0].x == first[1].x) && (first[0].y == first[1].y))
               (void) FormatLocaleString(message,MaxTextExtent,
-                "L %g,%g Z\n",first[1].x,first[1].y);
+                "  %g %g l z\n",first[1].x,first[1].y);
             else
-              {
+              if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
                 (void) FormatLocaleString(message,MaxTextExtent,
-                  "C %g,%g %g,%g %g,%g Z\n",last[2].x,
-                  last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
-                (void) ConcatenateString(&path,message);
-              }
+                  "  %g %g %g %g v z\n",first[0].x,first[0].y,
+                  first[1].x,first[1].y);
+              else
+                if ((first[0].x == first[1].x) && (first[0].y == first[1].y))
+                  (void) FormatLocaleString(message,MaxTextExtent,
+                    "  %g %g %g %g y z\n",last[2].x,last[2].y,
+                    first[1].x,first[1].y);
+                else
+                  (void) FormatLocaleString(message,MaxTextExtent,
+                    "  %g %g %g %g %g %g c z\n",last[2].x,
+                    last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
+            (void) ConcatenateString(&path,message);
             in_subpath=MagickFalse;
           }
         break;

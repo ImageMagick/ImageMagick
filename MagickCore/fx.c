@@ -208,23 +208,23 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression,
     Convert compound to simple operators.
   */
   fx_op[1]='\0';
-  *fx_op=(char) LeftShiftOperator;
+  *fx_op=(char) ((int) LeftShiftOperator);
   (void) SubstituteString(&fx_info->expression,"<<",fx_op);
-  *fx_op=(char) RightShiftOperator;
+  *fx_op=(char) ((int) RightShiftOperator);
   (void) SubstituteString(&fx_info->expression,">>",fx_op);
-  *fx_op=(char) LessThanEqualOperator;
+  *fx_op=(char) ((int) LessThanEqualOperator);
   (void) SubstituteString(&fx_info->expression,"<=",fx_op);
-  *fx_op=(char) GreaterThanEqualOperator;
+  *fx_op=(char) ((int) GreaterThanEqualOperator);
   (void) SubstituteString(&fx_info->expression,">=",fx_op);
-  *fx_op=(char) EqualOperator;
+  *fx_op=(char) ((int) EqualOperator);
   (void) SubstituteString(&fx_info->expression,"==",fx_op);
-  *fx_op=(char) NotEqualOperator;
+  *fx_op=(char) ((int) NotEqualOperator);
   (void) SubstituteString(&fx_info->expression,"!=",fx_op);
-  *fx_op=(char) LogicalAndOperator;
+  *fx_op=(char) ((int) LogicalAndOperator);
   (void) SubstituteString(&fx_info->expression,"&&",fx_op);
-  *fx_op=(char) LogicalOrOperator;
+  *fx_op=(char) ((int) LogicalOrOperator);
   (void) SubstituteString(&fx_info->expression,"||",fx_op);
-  *fx_op=(char) ExponentialNotation;
+  *fx_op=(char) ((int) ExponentialNotation);
   (void) SubstituteString(&fx_info->expression,"**",fx_op);
   return(fx_info);
 }
