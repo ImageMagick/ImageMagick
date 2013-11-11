@@ -774,7 +774,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   dpx.image.orientation=ReadBlobShort(image);
   offset+=2;
-  if (dpx.image.orientation != ~0)
+  if (dpx.image.orientation != (unsigned short) ~0)
     (void) FormatImageProperty(image,"dpx:image.orientation","%d",
       dpx.image.orientation);
   switch (dpx.image.orientation)
