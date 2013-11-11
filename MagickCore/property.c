@@ -1939,7 +1939,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         }
         if( IfMagickFalse(in_subpath) )
           {
-            (void) FormatLocaleString(message,MaxTextExtent,"M %g,%g\n",
+            (void) FormatLocaleString(message,MaxTextExtent,"  %g,%g m\n",
               point[1].x,point[1].y);
             for (i=0; i < 3; i++)
             {
