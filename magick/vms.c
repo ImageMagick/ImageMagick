@@ -195,7 +195,7 @@ struct dirent *readdir(DIR *directory)
   */
   buffer[sizeof(buffer)-1]='\0';
   for (p=buffer; *p; p++)
-    if (isupper((unsigned char) *p))
+    if (isupper((int) ((unsigned char) *p)))
       *p=tolower(*p);
   /*
     Skip any directory component and just copy the name.
