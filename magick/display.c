@@ -3080,6 +3080,10 @@ static MagickBooleanType XChopImage(Display *display,
   chop_info.height=0;
   chop_info.x=0;
   chop_info.y=0;
+  segment_info.x1=0;
+  segment_info.x2=0;
+  segment_info.y1=0;
+  segment_info.y2=0;
   distance=0;
   (void) XSetFunction(display,windows->image.highlight_context,GXinvert);
   state=DefaultState;
@@ -11217,6 +11221,10 @@ static MagickBooleanType XROIImage(Display *display,
   XQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
+  crop_info.width=0;
+  crop_info.height=0;
+  crop_info.x=0;
+  crop_info.y=0;
   roi_info.x=(ssize_t) windows->image.x+x;
   roi_info.y=(ssize_t) windows->image.y+y;
   roi_info.width=0;

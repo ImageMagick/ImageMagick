@@ -121,6 +121,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
   if ((*image)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   assert(exception != (ExceptionInfo *) NULL);
+  (void) image_info;
   status=MagickTrue;
   if (composite_image != (Image *) NULL)
     {
