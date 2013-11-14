@@ -95,16 +95,16 @@
 /*
   Define declarations.
 */
-#define LeftShiftOperator 0xf5
-#define RightShiftOperator 0xf6
-#define LessThanEqualOperator 0xf7
-#define GreaterThanEqualOperator 0xf8
-#define EqualOperator 0xf9
-#define NotEqualOperator 0xfa
-#define LogicalAndOperator 0xfb
-#define LogicalOrOperator 0xfc
-#define ExponentialNotation 0xfd
-
+#define LeftShiftOperator  0xf5U
+#define RightShiftOperator  0xf6U
+#define LessThanEqualOperator  0xf7U
+#define GreaterThanEqualOperator  0xf8U
+#define EqualOperator  0xf9U
+#define NotEqualOperator  0xfaU
+#define LogicalAndOperator  0xfbU
+#define LogicalOrOperator  0xfcU
+#define ExponentialNotation 0xfdU
+ 
 struct _FxInfo
 {
   const Image
@@ -208,23 +208,23 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression,
     Convert compound to simple operators.
   */
   fx_op[1]='\0';
-  *fx_op=(char) ((int) LeftShiftOperator);
+  *fx_op=(char) LeftShiftOperator;
   (void) SubstituteString(&fx_info->expression,"<<",fx_op);
-  *fx_op=(char) ((int) RightShiftOperator);
+  *fx_op=(char) RightShiftOperator;
   (void) SubstituteString(&fx_info->expression,">>",fx_op);
-  *fx_op=(char) ((int) LessThanEqualOperator);
+  *fx_op=(char) LessThanEqualOperator;
   (void) SubstituteString(&fx_info->expression,"<=",fx_op);
-  *fx_op=(char) ((int) GreaterThanEqualOperator);
+  *fx_op=(char) GreaterThanEqualOperator;
   (void) SubstituteString(&fx_info->expression,">=",fx_op);
-  *fx_op=(char) ((int) EqualOperator);
+  *fx_op=(char) EqualOperator;
   (void) SubstituteString(&fx_info->expression,"==",fx_op);
-  *fx_op=(char) ((int) NotEqualOperator);
+  *fx_op=(char) NotEqualOperator;
   (void) SubstituteString(&fx_info->expression,"!=",fx_op);
-  *fx_op=(char) ((int) LogicalAndOperator);
+  *fx_op=(char) LogicalAndOperator;
   (void) SubstituteString(&fx_info->expression,"&&",fx_op);
-  *fx_op=(char) ((int) LogicalOrOperator);
+  *fx_op=(char) LogicalOrOperator;
   (void) SubstituteString(&fx_info->expression,"||",fx_op);
-  *fx_op=(char) ((int) ExponentialNotation);
+  *fx_op=(char) ExponentialNotation;
   (void) SubstituteString(&fx_info->expression,"**",fx_op);
   return(fx_info);
 }
