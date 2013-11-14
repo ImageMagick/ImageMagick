@@ -2349,17 +2349,17 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_PATH))
   if (blob == (void *) NULL)
     {
-      char
+      unsigned char
         *key_value;
 
       /*
         Locate file via registry key.
       */
       key_value=NTRegistryKeyLookup("ConfigurePath");
-      if (key_value != (char *) NULL)
+      if (key_value != (unsigned char *) NULL)
         {
-          (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",key_value,
-            DirectorySeparator,filename);
+          (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",(char *)
+            key_value,DirectorySeparator,filename);
           if (IsPathAccessible(path) != MagickFalse)
             blob=FileToBlob(path,~0UL,length,exception);
         }
