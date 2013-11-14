@@ -1951,9 +1951,10 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
 */
 MagickExport void NTSeekDirectory(DIR *entry,ssize_t position)
 {
-  (void) position;
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(entry != (DIR *) NULL);
+  (void) entry;
+  (void) position;
 }
 
 /*

@@ -1284,6 +1284,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
       /*
         Choose a visual associated with a standard colormap.
       */
+      map_list=(XStandardColormap *) NULL;
       root_window=XRootWindow(display,XDefaultScreen(display));
       status=False;
       if (LocaleCompare(map_type,"list") != 0)
@@ -2627,6 +2628,7 @@ MagickExport int XError(Display *display,XErrorEvent *error)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(error != (XErrorEvent *) NULL);
+  (void) display;
   xerror_alert=MagickTrue;
   switch (error->request_code)
   {
