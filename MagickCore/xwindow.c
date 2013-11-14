@@ -4942,7 +4942,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
           /*
             Select window by ID or name.
           */
-          if (isdigit((unsigned char) *image_info->filename) != 0)
+          if (isdigit((int) ((unsigned char) *image_info->filename)) != 0)
             target=XWindowByID(display,root,(Window)
               strtol(image_info->filename,(char **) NULL,0));
           if (target == (Window) NULL)
@@ -5295,7 +5295,7 @@ MagickPrivate XWindows *XInitializeWindows(Display *display,
   windows->group_leader.id=(Window) NULL;
   if (resource_info->window_group != (char *) NULL)
     {
-      if (isdigit((unsigned char) *resource_info->window_group) != 0)
+      if (isdigit((int) ((unsigned char) *resource_info->window_group)) != 0)
         windows->group_leader.id=XWindowByID(display,root_window,(Window)
           strtol((char *) resource_info->window_group,(char **) NULL,0));
       if (windows->group_leader.id == (Window) NULL)
@@ -8929,7 +8929,7 @@ MagickExport MagickBooleanType XRemoteCommand(Display *display,
       /*
         Search window hierarchy and identify any clients by name or ID.
       */
-      if (isdigit((unsigned char) *window) != 0)
+      if (isdigit((int) ((unsigned char) *window)) != 0)
         remote_window=XWindowByID(display,root_window,(Window)
           strtol((char *) window,(char **) NULL,0));
       if (remote_window == (Window) NULL)

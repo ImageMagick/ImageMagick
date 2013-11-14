@@ -518,7 +518,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
     if ( *token != ';' ) {
 
       /* tokens starting with alpha is a Named kernel */
-      if (isalpha((int) *token) != 0)
+      if (isalpha((int) ((unsigned char) *token)) != 0)
         new_kernel = ParseKernelName(p);
       else /* otherwise a user defined kernel array */
         new_kernel = ParseKernelArray(p);
