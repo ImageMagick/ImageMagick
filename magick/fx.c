@@ -95,15 +95,15 @@
 /*
   Define declarations.
 */
-#define LeftShiftOperator 0xf5U
-#define RightShiftOperator 0xf6U
-#define LessThanEqualOperator 0xf7U
-#define GreaterThanEqualOperator 0xf8U
-#define EqualOperator 0xf9U
-#define NotEqualOperator 0xfaU
-#define LogicalAndOperator 0xfbU
-#define LogicalOrOperator 0xfcU
-#define ExponentialNotation 0xfdU
+#define LeftShiftOperator  0xf5U
+#define RightShiftOperator  0xf6U
+#define LessThanEqualOperator  0xf7U
+#define GreaterThanEqualOperator  0xf8U
+#define EqualOperator  0xf9U
+#define NotEqualOperator  0xfaU
+#define LogicalAndOperator  0xfbU
+#define LogicalOrOperator  0xfcU
+#define ExponentialNotation  0xfdU
 
 struct _FxInfo
 {
