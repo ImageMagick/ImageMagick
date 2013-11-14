@@ -1739,6 +1739,7 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
       break;
     p++;
   }
+  (void) FormatLocaleFile(file,"%s(%.20g): ",id,(double) string_info->length);
   if (i == string_info->length)
     {
       for (i=0; i < string_info->length; i++)
