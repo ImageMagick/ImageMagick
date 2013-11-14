@@ -2112,9 +2112,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   StringInfo
     *bim_profile;
 
-  unsigned char
-    layer_name[4];
-
   /*
     Open image file.
   */
@@ -2372,12 +2369,15 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         property=(const char *) GetImageProperty(next_image,"label");
         if (property == (const char *) NULL)
           {
+            char
+              layer_name[MaxTextExtent];
+
             (void) WriteBlobMSBLong(image,16);
             (void) WriteBlobMSBLong(image,0);
             (void) WriteBlobMSBLong(image,0);
-            (void) FormatLocaleString((char *) layer_name,MaxTextExtent,
-              "L%06ld",(long) layer_count++);
-            WritePascalString( image, (char*)layer_name, 4 );
+            (void) FormatLocaleString(layer_name,MaxTextExtent,"L%06ld",(long)
+              layer_count++);
+            WritePascalString(image,layer_name,4);
           }
         else
           {
