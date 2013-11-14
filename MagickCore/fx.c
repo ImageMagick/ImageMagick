@@ -1309,7 +1309,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   level=0;
   point.x=(double) x;
   point.y=(double) y;
-  if (isalpha((int) *(p+1)) == 0)
+  if (isalpha((int) ((unsigned char) *(p+1))) == 0)
     {
       if (strchr("suv",(int) *p) != (char *) NULL)
         {
@@ -1351,7 +1351,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           if (*p == '.')
             p++;
         }
-      if ((*p == 'p') && (isalpha((int) *(p+1)) == 0))
+      if ((*p == 'p') && (isalpha((int) ((unsigned char) *(p+1))) == 0))
         {
           p++;
           if (*p == '{')

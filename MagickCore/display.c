@@ -13838,7 +13838,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
     window_info.id=root_window;
   else
     {
-      if (isdigit((unsigned char) *resources.window_id) != 0)
+      if (isdigit((int) ((unsigned char) *resources.window_id)) != 0)
         window_info.id=XWindowByID(display,root_window,
           (Window) strtol((char *) resources.window_id,(char **) NULL,0));
       if (window_info.id == (Window) NULL)
