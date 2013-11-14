@@ -661,6 +661,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   assert(filename != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(exception != (ExceptionInfo *) NULL);
+  (void) exception;
   (void) CopyMagickString(path,filename,MaxTextExtent);
   paths=NewLinkedList(0);
   {
