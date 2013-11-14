@@ -842,7 +842,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       psd_info.color_channels=4;
       SetImageColorspace(image,CMYKColorspace,exception);
-      image->alpha_trait=psd_info.channels >= 5 ? BlendPixelTrait : 
+      image->alpha_trait=psd_info.channels >= 5 ? BlendPixelTrait :
         UndefinedPixelTrait;
     }
   if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
@@ -853,7 +853,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         exception);
       if (status == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      image->alpha_trait=psd_info.channels >= 2 ? BlendPixelTrait : 
+      image->alpha_trait=psd_info.channels >= 2 ? BlendPixelTrait :
         UndefinedPixelTrait;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1005,7 +1005,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           image->alpha_trait=psd_info.channels > psd_info.color_channels ?
             BlendPixelTrait : UndefinedPixelTrait;
- 
+
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               image->alpha_trait ? "  image has matte" : "  image has no matte");
@@ -2124,9 +2124,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
   StringInfo
     *bim_profile;
 
-  unsigned char
-    layer_name[4];
-
   /*
     Open image file.
   */
@@ -2386,12 +2383,15 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
         property=(const char *) GetImageProperty(next_image,"label",exception);
         if (property == (const char *) NULL)
           {
+            unsigned char
+              layer_name[MaxTextExtent];
+
             (void) WriteBlobMSBLong(image,16);
             (void) WriteBlobMSBLong(image,0);
             (void) WriteBlobMSBLong(image,0);
-            (void) FormatLocaleString((char *) layer_name,MaxTextExtent,
-              "L%06ld",(long) layer_count++);
-            WritePascalString( image, (char*)layer_name, 4 );
+            (void) FormatLocaleString(layer_name,MaxTextExtent,"L%06ld",(long)
+              layer_count++);
+            WritePascalString(image,layer_name,4);
           }
         else
           {
