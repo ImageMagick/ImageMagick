@@ -300,6 +300,7 @@ MagickExport const void *AcquirePixelCachePixels(const Image *image,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
+  (void) exception;
   *length=0;
   if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
     return((const void *) NULL);
@@ -2187,6 +2188,7 @@ MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   assert(exception->signature == MagickSignature);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
+  (void) exception;
   *length=0;
   if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
     return((void *) NULL);
