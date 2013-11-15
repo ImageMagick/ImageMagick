@@ -9824,6 +9824,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(ximage_info != (XImportInfo *) NULL);
+  (void) ximage_info;
   return((Image *) NULL);
 }
 
