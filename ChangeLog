@@ -1,6 +1,8 @@
 2013-11-14  6.8.7-6 Cristy  <quetzlzacatenango@image...>
   * Fix possible memory corruption when writing PSD images (bug report from
     Justin Grant).
+  * Constrain color reduction acceleration to positive integers (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=24459).
 
 2013-11-08  6.8.7-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-5, SVN revision 13682.
