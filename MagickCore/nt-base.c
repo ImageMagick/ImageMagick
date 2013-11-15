@@ -1480,7 +1480,7 @@ MagickPrivate void *NTMapMemory(char *address,size_t length,int protection,
 */
 MagickPrivate DIR *NTOpenDirectory(const char *path)
 {
-  char
+  wchar_t
     file_specification[MaxTextExtent];
 
   DIR
@@ -1490,28 +1490,28 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
     length;
 
   assert(path != (const char *) NULL);
-  length=CopyMagickString(file_specification,path,MaxTextExtent);
-  if (length >= (MaxTextExtent-1))
-    return((DIR *) NULL);
-  length=ConcatenateMagickString(file_specification,DirectorySeparator,
+  length=MultiByteToWideChar(CP_UTF8,0,path,-1,file_specification,
     MaxTextExtent);
-  if (length >= (MaxTextExtent-1))
+  if (length == 0)
+    return((DIR *) NULL);
+  if(wcsncat(file_specification,(const wchar_t*) DirectorySeparator,
+       MaxTextExtent) == (wchar_t*)NULL)
     return((DIR *) NULL);
   entry=(DIR *) AcquireMagickMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
     {
       entry->firsttime=TRUE;
-      entry->hSearch=FindFirstFile(file_specification,&entry->Win32FindData);
+      entry->hSearch=FindFirstFileW(file_specification,&entry->Win32FindData);
     }
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
-      length=ConcatenateMagickString(file_specification,"\\*.*",MaxTextExtent);
-      if (length >= (MaxTextExtent-1))
+      if(wcsncat(file_specification,L"*.*",
+        MaxTextExtent) == (wchar_t*)NULL)
         {
           entry=(DIR *) RelinquishMagickMemory(entry);
           return((DIR *) NULL);
         }
-      entry->hSearch=FindFirstFile(file_specification,&entry->Win32FindData);
+      entry->hSearch=FindFirstFileW(file_specification,&entry->Win32FindData);
       if (entry->hSearch == INVALID_HANDLE_VALUE)
         {
           entry=(DIR *) RelinquishMagickMemory(entry);
@@ -1675,13 +1675,13 @@ MagickPrivate struct dirent *NTReadDirectory(DIR *entry)
     return((struct dirent *) NULL);
   if (!entry->firsttime)
     {
-      status=FindNextFile(entry->hSearch,&entry->Win32FindData);
+      status=FindNextFileW(entry->hSearch,&entry->Win32FindData);
       if (status == 0)
         return((struct dirent *) NULL);
     }
-  length=CopyMagickString(entry->file_info.d_name,
-    entry->Win32FindData.cFileName,sizeof(entry->file_info.d_name));
-  if (length >= sizeof(entry->file_info.d_name))
+  length=WideCharToMultiByte(CP_UTF8,0,entry->Win32FindData.cFileName,-1,
+    entry->file_info.d_name,sizeof(entry->file_info.d_name),NULL,NULL);
+  if (length == 0)
     return((struct dirent *) NULL);
   entry->firsttime=FALSE;
   entry->file_info.d_namlen=(int) strlen(entry->file_info.d_name);
