@@ -153,6 +153,7 @@ static const OptionInfo
     { "Magenta", MagentaChannel, UndefinedOptionFlag, MagickFalse },
     { "Matte", OpacityChannel, UndefinedOptionFlag, MagickFalse },
     { "M", MagentaChannel, UndefinedOptionFlag, MagickFalse },
+    { "O", OpacityChannel, UndefinedOptionFlag, MagickFalse },
     { "Opacity", OpacityChannel, UndefinedOptionFlag, MagickFalse },
     { "Red", RedChannel, UndefinedOptionFlag, MagickFalse },
     { "R", RedChannel, UndefinedOptionFlag, MagickFalse },
