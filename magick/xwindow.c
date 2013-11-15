@@ -7469,6 +7469,7 @@ static MagickBooleanType XMakePixmap(Display *display,
   assert(display != (Display *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(window != (XWindowInfo  *) NULL);
+  (void) resource_info;
   if (window->pixmap != (Pixmap) NULL)
     {
       /*

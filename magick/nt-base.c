@@ -2205,6 +2205,7 @@ MagickExport ssize_t NTSystemConfiguration(int name)
 MagickExport ssize_t NTTellDirectory(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
+  (void) entry;
   return(0);
 }
 
