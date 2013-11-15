@@ -300,7 +300,7 @@ typedef struct _DIR
   HANDLE
     hSearch;
 
-  WIN32_FIND_DATA
+  WIN32_FIND_DATAW
     Win32FindData;
 
   BOOL
