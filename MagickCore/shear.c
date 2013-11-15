@@ -253,15 +253,17 @@ static RadonInfo *DestroyRadonInfo(RadonInfo *radon_info)
         radon_info->cells=(unsigned short *) RelinquishMagickMemory(
           radon_info->cells);
       else
-        radon_info->cells=(unsigned short *) UnmapBlob(radon_info->cells,
-          (size_t) radon_info->length);
+        {
+          (void) UnmapBlob(radon_info->cells,(size_t) radon_info->length);
+          radon_info->cells=(unsigned short *) NULL;
+        }
       RelinquishMagickResource(MemoryResource,radon_info->length);
       break;
     }
     case MapCache:
     {
-      radon_info->cells=(unsigned short *) UnmapBlob(radon_info->cells,(size_t)
-        radon_info->length);
+      (void) UnmapBlob(radon_info->cells,(size_t) radon_info->length);
+      radon_info->cells=(unsigned short *) NULL;
       RelinquishMagickResource(MapResource,radon_info->length);
     }
     case DiskCache:
