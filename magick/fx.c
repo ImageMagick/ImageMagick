@@ -1527,8 +1527,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     case 'a':
     {
       if (LocaleCompare(symbol,"a") == 0)
-        return((MagickRealType) (QuantumRange-QuantumScale*
-          GetPixelAlpha(&pixel)));
+        return((MagickRealType) (QuantumScale*GetPixelAlpha(&pixel)));
       break;
     }
     case 'B':
