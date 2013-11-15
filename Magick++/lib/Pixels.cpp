@@ -14,14 +14,7 @@
 #include "Magick++/Exception.h"
 #include "Magick++/Pixels.h"
 
-namespace Magick
-{
-
-
-}
-
-// Construct pixel view using specified image.
-Magick::Pixels::Pixels( Magick::Image &image_ )
+Magick::Pixels::Pixels(Magick::Image &image_)
   : _image(image_),
     _view(AcquireVirtualCacheView(_image.image(),&_exception)),
     _x(0),
@@ -29,96 +22,82 @@ Magick::Pixels::Pixels( Magick::Image &image_ )
     _columns(0),
     _rows(0)
 {
-  GetExceptionInfo( &_exception );
+  GetExceptionInfo(&_exception);
 
   if (!_view)
     _image.throwImageException();
 }
 
-// Destroy pixel view
-Magick::Pixels::~Pixels( void )
+Magick::Pixels::~Pixels(void)
 {
-  if ( _view )
-    _view = DestroyCacheView( _view );
-  
-  (void) DestroyExceptionInfo( &_exception );
+  if (_view)
+    _view=DestroyCacheView(_view);
+
+  (void) DestroyExceptionInfo(&_exception);
 }
 
-// Transfer pixels from the image to the pixel view as defined by
-// the specified region. Modified pixels may be subsequently
-// transferred back to the image via sync.
-Magick::PixelPacket* Magick::Pixels::get ( const ssize_t x_,
-					   const ssize_t y_,
-					   const size_t columns_,
-					   const size_t rows_ )
+Magick::PixelPacket* Magick::Pixels::get(const ssize_t x_,const ssize_t y_,
+  const size_t columns_,const size_t rows_)
 {
-  _x = x_;
-  _y = y_;
-  _columns = columns_;
-  _rows = rows_;
+  _x=x_;
+  _y=y_;
+  _columns=columns_;
+  _rows=rows_;
 
-  PixelPacket* pixels = GetCacheViewAuthenticPixels( _view, x_, y_, columns_, rows_,  &_exception);
+  PixelPacket* pixels=GetCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
+    &_exception);
 
-  if ( !pixels )
-    throwException( _exception );
-  
+  if (!pixels)
+    throwException(_exception);
+
   return pixels;
 }
 
-// Transfer read-only pixels from the image to the pixel view as
-// defined by the specified region.
-const Magick::PixelPacket* Magick::Pixels::getConst ( const ssize_t x_, const ssize_t y_,
-                                                      const size_t columns_,
-                                                      const size_t rows_ )
+const Magick::PixelPacket* Magick::Pixels::getConst(const ssize_t x_,
+  const ssize_t y_,const size_t columns_,const size_t rows_)
 {
-  _x = x_;
-  _y = y_;
-  _columns = columns_;
-  _rows = rows_;
+  _x=x_;
+  _y=y_;
+  _columns=columns_;
+  _rows=rows_;
 
-  const PixelPacket* pixels =
-    GetCacheViewVirtualPixels(_view, x_, y_, columns_, rows_, &_exception );
+  const PixelPacket* pixels=GetCacheViewVirtualPixels(_view,x_,y_,columns_,
+    rows_,&_exception);
 
-  if ( !pixels )
-    throwException( _exception );
+  if (!pixels)
+    throwException(_exception);
 
-    return pixels;
-}
-
-// Transfers the image view pixels to the image.
-void Magick::Pixels::sync ( void )
-{
-  if( !SyncCacheViewAuthenticPixels( _view, &_exception ) )
-    throwException(  _exception );
-}
-    
-// Allocate a pixel view region to store image pixels as defined
-// by the region rectangle.  This area is subsequently transferred
-// from the pixel view to the image via 'sync'.
-Magick::PixelPacket* Magick::Pixels::set ( const ssize_t x_,
-					   const ssize_t y_,
-					   const size_t columns_,
-					   const size_t rows_ )
-{
-  _x = x_;
-  _y = y_;
-  _columns = columns_;
-  _rows = rows_;
-
-  PixelPacket* pixels = QueueCacheViewAuthenticPixels( _view, x_, y_,
-                                      columns_, rows_,  &_exception );
-  if ( !pixels )
-    throwException( _exception );
-  
   return pixels;
 }
 
-// Return pixel colormap index array
-Magick::IndexPacket* Magick::Pixels::indexes ( void )
+Magick::PixelPacket* Magick::Pixels::set(const ssize_t x_,const ssize_t y_,
+  const size_t columns_,const size_t rows_)
 {
-  IndexPacket* pixel_indexes = GetCacheViewAuthenticIndexQueue( _view );
+  _x=x_;
+  _y=y_;
+  _columns=columns_;
+  _rows=rows_;
 
-  if ( !pixel_indexes )
+  PixelPacket* pixels=QueueCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
+    &_exception);
+
+  if (!pixels)
+    throwException(_exception);
+
+  return pixels;
+}
+
+void Magick::Pixels::sync(void)
+{
+  if( !SyncCacheViewAuthenticPixels(_view,&_exception))
+    throwException(_exception);
+}
+
+Magick::IndexPacket* Magick::Pixels::indexes (void)
+{
+  IndexPacket* pixel_indexes=GetCacheViewAuthenticIndexQueue(_view);
+
+  if (!pixel_indexes)
     _image.throwImageException();
 
   return pixel_indexes;
