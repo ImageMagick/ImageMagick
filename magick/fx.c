@@ -1179,8 +1179,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         depth;
 
       depth=GetImageChannelDepth(image,channel,exception);
-      (void) FormatLocaleString(statistic,MaxTextExtent,"%.20g",(double)
-        depth);
+      (void) FormatLocaleString(statistic,MaxTextExtent,"%.20g",(double) depth);
     }
   if (LocaleNCompare(symbol,"kurtosis",8) == 0)
     {
