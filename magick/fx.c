@@ -1148,6 +1148,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
   ChannelType channel,const char *symbol,ExceptionInfo *exception)
 {
   char
+    channel_symbol[MaxTextExtent],
     key[MaxTextExtent],
     statistic[MaxTextExtent];
 
@@ -1158,12 +1159,14 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
     *p;
 
   for (p=symbol; (*p != '.') && (*p != '\0'); p++) ;
+  *channel_symbol='\0';
   if (*p == '.')
     {
       ssize_t
         option;
 
-      option=ParseCommandOption(MagickChannelOptions,MagickTrue,p+1);
+      (void) CopyMagickString(channel_symbol,p+1,MaxTextExtent);
+      option=ParseCommandOption(MagickChannelOptions,MagickTrue,channel_symbol);
       if (option >= 0)
         channel=(ChannelType) option;
     }
@@ -1198,6 +1201,8 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         minima;
 
       (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
+      if (LocaleCompare(channel_symbol,"a") == 0)
+        maxima=QuantumRange-maxima;
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",maxima);
     }
   if (LocaleNCompare(symbol,"mean",4) == 0)
@@ -1208,6 +1213,8 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelMean(image,channel,&mean,&standard_deviation,
         exception);
+      if (LocaleCompare(channel_symbol,"a") == 0)
+        mean=QuantumRange-mean;
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",mean);
     }
   if (LocaleNCompare(symbol,"minima",6) == 0)
@@ -1217,6 +1224,8 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         minima;
 
       (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
+      if (LocaleCompare(channel_symbol,"a") == 0)
+        minima=QuantumRange-minima;
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",minima);
     }
   if (LocaleNCompare(symbol,"skewness",8) == 0)
