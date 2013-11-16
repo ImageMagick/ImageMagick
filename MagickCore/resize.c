@@ -1861,8 +1861,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     }
   }
   image_view=DestroyCacheView(image_view);
-  carver=lqr_carver_new_ext(pixels,image->columns,image->rows,
-    GetPixelChannels(image),LQR_COLDEPTH_32F);
+  carver=lqr_carver_new_ext(pixels,(int) image->columns,(int) image->rows,
+    (int) GetPixelChannels(image),LQR_COLDEPTH_32F);
   if (carver == (LqrCarver *) NULL)
     {
       pixel_info=RelinquishVirtualMemory(pixel_info);
@@ -1870,7 +1870,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     }
   lqr_carver_set_preserve_input_image(carver);
   lqr_status=lqr_carver_init(carver,(int) delta_x,rigidity);
-  lqr_status=lqr_carver_resize(carver,columns,rows);
+  lqr_status=lqr_carver_resize(carver,(int) columns,(int) rows);
   (void) lqr_status;
   rescale_image=CloneImage(image,lqr_carver_get_width(carver),
     lqr_carver_get_height(carver),MagickTrue,exception);
