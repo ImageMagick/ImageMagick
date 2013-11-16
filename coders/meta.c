@@ -994,7 +994,7 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
         if (iptc != (Image *)NULL)
           {
             char
-              psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
+              psheader[] = "\xFF\xED\0\0Photoshop 3.0\0" "8BIM\x04\x04\0\0\0\0";
 
             len=(unsigned int) GetBlobSize(iptc);
             if (len & 1)

@@ -2383,7 +2383,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
         property=(const char *) GetImageProperty(next_image,"label",exception);
         if (property == (const char *) NULL)
           {
-            unsigned char
+            char
               layer_name[MaxTextExtent];
 
             (void) WriteBlobMSBLong(image,16);

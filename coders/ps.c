@@ -1575,7 +1575,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
             (void) WriteBlobString(image,"\n%EndPhotoshop\n");
           }
         profile=GetImageProfile(image,"xmp");
+DisableMSCWarning(4127)
         if (0 && (profile != (StringInfo *) NULL))
+RestoreMSCWarning
           {
             /*
               Embed XML profile.

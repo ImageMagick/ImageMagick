@@ -993,7 +993,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
   do
   {
+DisableMSCWarning(4127)
     if (0 && (image_info->verbose != MagickFalse))
+RestoreMSCWarning
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
 #if defined(MAGICKCORE_HAVE_TIFFISBIGENDIAN)
     (void) SetImageProperty(image,"tiff:endian",TIFFIsBigEndian(tiff) == 0 ?
@@ -3280,7 +3282,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
     }
     (void) TIFFSetProperties(tiff,image,exception);
+DisableMSCWarning(4127)
     if (0)
+RestoreMSCWarning
       (void) TIFFSetEXIFProperties(tiff,image,exception);
     /*
       Write image scanlines.
@@ -3526,7 +3530,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if (image->colorspace == LabColorspace)
       DecodeLabImage(image,exception);
     DestroyTIFFInfo(&tiff_info);
+DisableMSCWarning(4127)
     if (0 && (image_info->verbose == MagickTrue))
+RestoreMSCWarning
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
     (void) TIFFWriteDirectory(tiff);
     image=SyncNextImageInList(image);

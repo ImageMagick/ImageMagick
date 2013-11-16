@@ -373,7 +373,9 @@ WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
   state=IN_WHITE;
   quote='\0';
   offset=0;
+DisableMSCWarning(4127)
   while(1)
+RestoreMSCWarning
   {
     /* get character */
     GetChar(c);

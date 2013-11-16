@@ -366,6 +366,18 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
   fatal_exception=DestroyExceptionInfo(fatal_exception); \
 }
 
+/*
+  Magick defines.
+*/
+#if defined(_MSC_VER)
+# define DisableMSCWarning(nr) __pragma(warning(push)) \
+  __pragma(warning(disable:nr))
+# define RestoreMSCWarning __pragma(warning(pop))
+#else
+# define DisableMSCWarning(nr)
+# define RestoreMSCWarning
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

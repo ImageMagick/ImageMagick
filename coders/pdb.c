@@ -110,8 +110,7 @@ typedef struct _PDBImage
 {
   char
     name[32],
-    version,
-    type;
+    version;
 
   size_t
     reserved_1,
@@ -125,10 +124,15 @@ typedef struct _PDBImage
     reserved_2;
 
   short int
-    x_anchor,
-    y_anchor,
     width,
     height;
+
+  unsigned char
+    type;
+
+  unsigned short
+    x_anchor,
+    y_anchor;
 } PDBImage;
 /*
   Forward declarations.
@@ -375,8 +379,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pdb_image.x_last=(short) ReadBlobMSBShort(image);
   pdb_image.y_last=(short) ReadBlobMSBShort(image);
   pdb_image.reserved_2=ReadBlobMSBLong(image);
-  pdb_image.x_anchor=(short) ReadBlobMSBShort(image);
-  pdb_image.y_anchor=(short) ReadBlobMSBShort(image);
+  pdb_image.x_anchor=ReadBlobMSBShort(image);
+  pdb_image.y_anchor=ReadBlobMSBShort(image);
   pdb_image.width=(short) ReadBlobMSBShort(image);
   pdb_image.height=(short) ReadBlobMSBShort(image);
   /*
@@ -789,17 +793,17 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   pdb_image.version=1;  /* RLE Compressed */
   switch (bits_per_pixel)
   {
-    case 1: pdb_image.type=(char) 0xff; break;  /* monochrome */
-    case 2: pdb_image.type=(char) 0x00; break;  /* 2 bit gray */
-    default: pdb_image.type=(char) 0x02;  /* 4 bit gray */
+    case 1: pdb_image.type=(unsigned char) 0xff; break;  /* monochrome */
+    case 2: pdb_image.type=(unsigned char) 0x00; break;  /* 2 bit gray */
+    default: pdb_image.type=(unsigned char) 0x02;  /* 4 bit gray */
   }
   pdb_image.reserved_1=0;
   pdb_image.note=0;
   pdb_image.x_last=0;
   pdb_image.y_last=0;
   pdb_image.reserved_2=0;
-  pdb_image.x_anchor=(short) 0xffff;
-  pdb_image.y_anchor=(short) 0xffff;
+  pdb_image.x_anchor=(unsigned short) 0xffff;
+  pdb_image.y_anchor=(unsigned short) 0xffff;
   pdb_image.width=(short) image->columns;
   if (image->columns % 16)
     pdb_image.width=(short) (16*(image->columns/16+1));
@@ -919,14 +923,14 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   */
   (void) WriteBlob(image,32,(unsigned char *) pdb_image.name);
   (void) WriteBlobByte(image,(unsigned char) pdb_image.version);
-  (void) WriteBlobByte(image,(unsigned char) pdb_image.type);
+  (void) WriteBlobByte(image,pdb_image.type);
   (void) WriteBlobMSBLong(image,(unsigned int) pdb_image.reserved_1);
   (void) WriteBlobMSBLong(image,(unsigned int) pdb_image.note);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.x_last);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.y_last);
   (void) WriteBlobMSBLong(image,(unsigned int) pdb_image.reserved_2);
-  (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.x_anchor);
-  (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.y_anchor);
+  (void) WriteBlobMSBShort(image,pdb_image.x_anchor);
+  (void) WriteBlobMSBShort(image,pdb_image.y_anchor);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.width);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.height);
   (void) WriteBlob(image,(size_t) (q-runlength),runlength);

@@ -163,14 +163,34 @@ typedef struct _MemoryPool
 /*
   Global declarations.
 */
+#if defined _MSC_VER
+static void* MSCMalloc(size_t size)
+{
+  return malloc(size);
+}
+static void* MSCRealloc(void* ptr, size_t size)
+{
+  return realloc(ptr, size);
+}
+static void MSCFree(void* ptr)
+{
+  free(ptr);
+}
+#endif
+
 static MagickMemoryMethods
   memory_methods =
   {
+#if defined _MSC_VER
+    (AcquireMemoryHandler) MSCMalloc,
+    (ResizeMemoryHandler) MSCRealloc,
+    (DestroyMemoryHandler) MSCFree
+#else
     (AcquireMemoryHandler) malloc,
     (ResizeMemoryHandler) realloc,
     (DestroyMemoryHandler) free
+#endif
   };
-
 #if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
 static MemoryPool
   memory_pool;

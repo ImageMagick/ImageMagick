@@ -870,15 +870,8 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
           magick_info->stealth=MagickTrue;
           status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
           if (status == MagickFalse)
-            {
-              char
-                *message;
-
-              message=GetExceptionMessage(errno);
-              ThrowFatalException(ResourceLimitFatalError,
-                "MemoryAllocationFailed");
-              message=DestroyString(message);
-            }
+            ThrowFatalException(ResourceLimitFatalError,
+              "MemoryAllocationFailed");
 #if defined(MAGICKCORE_MODULES_SUPPORT)
           (void) GetModuleInfo((char *) NULL,exception);
 #endif
@@ -1282,13 +1275,9 @@ MagickExport void MagickCoreGenesis(const char *path,
         debug;
 
       debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-      debug|=_CRTDBG_CHECK_ALWAYS_DF |_CRTDBG_DELAY_FREE_MEM_DF |
-        _CRTDBG_LEAK_CHECK_DF;
-      if (0)
-        {
-          debug=_CrtSetDbgFlag(debug);
-          _ASSERTE(_CrtCheckMemory());
-        }
+      debug|=_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_DELAY_FREE_MEM_DF | _CRTDBG_LEAK_CHECK_DF;
+      debug=_CrtSetDbgFlag(debug);
+      _ASSERTE(_CrtCheckMemory());
     }
 #endif
 #endif

@@ -983,7 +983,9 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     */
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
+DisableMSCWarning(4310)
     viff_info.identifier=(char) 0xab;
+RestoreMSCWarning
     viff_info.file_type=1;
     viff_info.release=1;
     viff_info.version=3;

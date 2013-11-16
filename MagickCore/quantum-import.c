@@ -1930,6 +1930,7 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
       register unsigned char
         pixel;
 
+      bit=0;
       for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
       {
         for (bit=0; bit < 8; bit+=2)

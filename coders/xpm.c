@@ -305,6 +305,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Remove comments.
   */
   count=0;
+  width=0;
   for (p=xpm_buffer; *p != '\0'; p++)
   {
     if (*p != '"')

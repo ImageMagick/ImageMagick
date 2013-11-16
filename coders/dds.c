@@ -2600,7 +2600,7 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
         }
     }
 
-  maxMipmaps=-1;
+  maxMipmaps=SIZE_MAX;
   mipmaps=0;
   if ((image->columns & (image->columns - 1)) == 0 &&
       (image->rows & (image->rows - 1)) == 0)
