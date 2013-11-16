@@ -132,13 +132,13 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname+4);
       icc_color=MagickTrue;
     }
-  (void) SetImageColorspace(image,start_color.colorspace,exception);
   status=QueryColorCompliance(colorname,AllCompliance,&start_color,exception);
   if (status == MagickFalse)
     {
       image=DestroyImage(image);
       return((Image *) NULL);
     }
+  (void) SetImageColorspace(image,start_color.colorspace,exception);
   (void) CopyMagickString(colorname,"white",MaxTextExtent);
   if (GetPixelInfoIntensity(&start_color) > (Quantum) (QuantumRange/2))
     (void) CopyMagickString(colorname,"black",MaxTextExtent);
