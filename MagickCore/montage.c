@@ -501,12 +501,12 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     }
   border_width=montage_info->border_width;
   bevel_width=0;
+  (void) ResetMagickMemory(&frame_info,0,sizeof(frame_info));
   if (montage_info->frame != (char *) NULL)
     {
       char
         absolute_geometry[MaxTextExtent];
 
-      (void) ResetMagickMemory(&frame_info,0,sizeof(frame_info));
       frame_info.width=extract_info.width;
       frame_info.height=extract_info.height;
       (void) FormatLocaleString(absolute_geometry,MaxTextExtent,"%s!",
