@@ -2420,7 +2420,9 @@ static void ExpandRotateKernelInfo(KernelInfo *kernel, const double angle)
     *last;
 
   last = kernel;
+DisableMSCWarning(4127)
   while(1) {
+RestoreMSCWarning
     clone = CloneKernelInfo(last);
     RotateKernelInfo(clone, angle);
     if ( SameKernelInfo(kernel, clone) == MagickTrue )

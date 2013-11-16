@@ -1610,7 +1610,6 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             default:
               return(0.0);
           }
-          return(0.0);
         }
       if (LocaleCompare(symbol,"c") == 0)
         return(QuantumScale*pixel.red);

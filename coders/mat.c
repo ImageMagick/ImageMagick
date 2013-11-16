@@ -820,7 +820,9 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         sample_size = 64; 
         image->depth = 64;        /* double type cell */
         (void) SetImageOption(clone_info,"quantum:format","floating-point");
+DisableMSCWarning(4127)
         if (sizeof(double) != 8)
+RestoreMSCWarning
           ThrowReaderException(CoderError, "IncompatibleSizeOfDouble");
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
   {                         /* complex double type cell */        

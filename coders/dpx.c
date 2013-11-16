@@ -902,9 +902,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         dpx.orientation.border[i]=ReadBlobShort(image);
         offset+=2;
       }
-      if ((dpx.orientation.border[0] != (unsigned short) (~0UL)) &&
-          (dpx.orientation.border[1] != (unsigned short) (~0UL)))
-        (void) FormatImageProperty(image,"dpx:orientation.border","%dx%d%+d%+d",          dpx.orientation.border[0],dpx.orientation.border[1],
+      if ((dpx.orientation.border[0] != (unsigned short) (~0)) &&
+          (dpx.orientation.border[1] != (unsigned short) (~0)))
+        (void) FormatImageProperty(image,"dpx:orientation.border","%dx%d%+d%+d",
+          dpx.orientation.border[0],dpx.orientation.border[1],
           dpx.orientation.border[2],dpx.orientation.border[3]);
       for (i=0; i < 2; i++)
       {

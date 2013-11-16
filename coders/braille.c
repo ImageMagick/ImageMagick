@@ -279,7 +279,9 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
           cell |= (GetPixelIndex(image,p+x+dx+dy*image->columns) == polarity) << bit; \
         else \
           cell |= (GetPixelGreen(image,p+x+dx+dy*image->columns) == 0) << bit; \
-} while (0) 
+DisableMSCWarning(4127) \
+} while (0) \
+RestoreMSCWarning
 
         do_cell(0,0,0);
         if (two_columns)
@@ -302,7 +304,9 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
         do_cell(0,3,6);
         if (two_columns)
           do_cell(1,3,7);
+DisableMSCWarning(4127)
       } while(0);
+RestoreMSCWarning
 
       if (unicode)
         {

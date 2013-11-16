@@ -1534,7 +1534,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
     MaxPixelChannels+1,sizeof(*channel_statistics));
   if (channel_statistics == (ChannelStatistics *) NULL)
-    return(MagickFalse);
+    return(channel_statistics);
   (void) ResetMagickMemory(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)

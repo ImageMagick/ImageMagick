@@ -814,7 +814,6 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
   if (exception->severity < ConfigureError)
     ThrowFileException(exception,ConfigureWarning,"UnableToOpenModuleFile",
       path);
-  return(MagickFalse);
 #endif
   return(MagickFalse);
 }

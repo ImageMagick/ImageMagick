@@ -149,7 +149,9 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
 
   /* Process Options from Script */
   option = arg1 = arg2 = (char*)NULL;
+DisableMSCWarning(4127)
   while (1) {
+RestoreMSCWarning
 
     { MagickBooleanType status = GetScriptToken(token_info);
       cli_wand->line=token_info->token_line;
@@ -244,7 +246,9 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
       /* Process non-specific Option */
       CLIOption(cli_wand, option, arg1, arg2);
 
+DisableMSCWarning(4127)
     } while (0); /* break block to next option */
+RestoreMSCWarning
 
 #if MagickCommandDebug >= 5
     fprintf(stderr, "Script Image Count = %ld\n",
@@ -465,7 +469,9 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       /* Process standard image option */
       CLIOption(cli_wand, option, arg1, arg2);
 
+DisableMSCWarning(4127)
     } while (0); /* break block to next option */
+RestoreMSCWarning
 
 #if MagickCommandDebug >= 5
     (void) FormatLocaleFile(stderr, "CLI-post Image Count = %ld\n",

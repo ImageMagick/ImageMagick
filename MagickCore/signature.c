@@ -659,7 +659,9 @@ static void TransformSignature(SignatureInfo *signature_info)
   p=GetStringInfoDatum(signature_info->message);
   if (signature_info->lsb_first == MagickFalse)
     {
+DisableMSCWarning(4127)
       if (sizeof(unsigned int) <= 4)
+RestoreMSCWarning
         for (i=0; i < 16; i++)
         {
           T=(*((unsigned int *) p));
@@ -676,7 +678,9 @@ static void TransformSignature(SignatureInfo *signature_info)
         }
     }
   else
+DisableMSCWarning(4127)
     if (sizeof(unsigned int) <= 4)
+RestoreMSCWarning
       for (i=0; i < 16; i++)
       {
         T=(*((unsigned int *) p));

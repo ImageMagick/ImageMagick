@@ -476,7 +476,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   cin.image.orientation=(unsigned char) ReadBlobByte(image);
   offset++;
-  if (cin.image.orientation != (unsigned char) (~0UL))
+  if (cin.image.orientation != (unsigned char) (~0))
     (void) FormatImageProperty(image,"dpx:image.orientation","%d",
       cin.image.orientation);
   switch (cin.image.orientation)
@@ -1163,7 +1163,9 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   quantum_type=RGBQuantum;
   pixels=GetQuantumPixels(quantum_info);
   length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
+DisableMSCWarning(4127)
   if (0)
+RestoreMSCWarning
     {
       quantum_type=GrayQuantum;
       length=GetBytesPerRow(image->columns,1,image->depth,MagickTrue);

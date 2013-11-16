@@ -4837,7 +4837,9 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
     CLIWandException(OptionError,"UnrecognizedOption",option);
 
+DisableMSCWarning(4127)
   } while (0);  /* break to exit code. */
+RestoreMSCWarning
 
   /* clean up percent escape interpreted strings */
   if (arg1 != arg1n )
@@ -4996,7 +4998,9 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
     if ( (option_type & ListOperatorFlag) != 0 )
       CLIListOperatorImages(cli_wand, option, arg1, arg2);
 
+DisableMSCWarning(4127)
   } while (0);  /* end Break code block */
+RestoreMSCWarning
 
   cli_wand->command = (const OptionInfo *) NULL; /* prevent re-use later */
 }

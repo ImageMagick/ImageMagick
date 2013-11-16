@@ -443,6 +443,7 @@ static inline ssize_t WriteRadonCell(const RadonInfo *radon_info,
   ssize_t
     count;
 
+  i=0;
 #if !defined(MAGICKCORE_HAVE_PWRITE)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_WriteRadonCell)

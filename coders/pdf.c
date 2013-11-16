@@ -942,6 +942,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
 #define CFormat  "/Filter [ /%s ]\n"
 #define ObjectsPerImage  14
 
+DisableMSCWarning(4310)
   static const char
     XMPProfile[]=
     {
@@ -983,6 +984,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       "<?xpacket end=\"w\"?>\n"
     },
     XMPProfileMagick[4]= { (char) 0xef, (char) 0xbb, (char) 0xbf, (char) 0x00 };
+RestoreMSCWarning
 
   char
     basename[MaxTextExtent],

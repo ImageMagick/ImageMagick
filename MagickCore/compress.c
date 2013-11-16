@@ -693,8 +693,10 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
 
 #define OutputBit(count)  \
 {  \
+DisableMSCWarning(4127) \
   if (count > 0)  \
     byte=byte | bit;  \
+RestoreMSCWarning \
   bit>>=1;  \
   if ((int) (bit & 0xff) == 0)   \
     {  \

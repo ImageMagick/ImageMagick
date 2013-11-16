@@ -557,7 +557,7 @@ static inline unsigned short ReadPropertyMSBShort(const unsigned char **p,
     value;
 
   if (*length < 2)
-    return((unsigned short) ~0UL);
+    return((unsigned short) ~0);
   for (i=0; i < 2; i++)
   {
     c=(int) (*(*p)++);
@@ -3102,6 +3102,7 @@ MagickExport char *GetNextImageProperty(const Image *image)
 
 /* common inline code to expand the interpreted text string */
 #define ExtendInterpretText(string_length)  do { \
+DisableMSCWarning(4127) \
     size_t length=(string_length); \
     if ((size_t) (q-interpret_text+length+1) >= extent) \
      { extent+=length; \
@@ -3110,10 +3111,12 @@ MagickExport char *GetNextImageProperty(const Image *image)
        if (interpret_text == (char *) NULL) \
          return((char *)NULL); \
        q=interpret_text+strlen(interpret_text); \
-   } } while (0)  /* no trailing ; */
+   } } while (0)  /* no trailing ; */ \
+RestoreMSCWarning
 
 /* same but append the given string */
 #define AppendString2Text(string)  do { \
+DisableMSCWarning(4127) \
     size_t length=strlen((string)); \
     if ((size_t) (q-interpret_text+length+1) >= extent) \
      { extent+=length; \
@@ -3125,10 +3128,12 @@ MagickExport char *GetNextImageProperty(const Image *image)
       } \
      (void) CopyMagickString(q,(string),extent); \
      q+=length; \
-   } while (0)  /* no trailing ; */
+   } while (0)  /* no trailing ; */ \
+RestoreMSCWarning
 
 /* same but append a 'key' and 'string' pair */
 #define AppendKeyValue2Text(key,string)  do { \
+DisableMSCWarning(4127) \
     size_t length=strlen(key)+strlen(string)+2; \
     if ((size_t) (q-interpret_text+length+1) >= extent) \
      { extent+=length; \
@@ -3139,7 +3144,8 @@ MagickExport char *GetNextImageProperty(const Image *image)
       q=interpret_text+strlen(interpret_text); \
      } \
      q+=FormatLocaleString(q,extent,"%s=%s\n",(key),(string)); \
-   } while (0)  /* no trailing ; */
+   } while (0)  /* no trailing ; */ \
+RestoreMSCWarning
 
 MagickExport char *InterpretImageProperties(ImageInfo *image_info,
   Image *image,const char *embed_text,ExceptionInfo *exception)

@@ -671,6 +671,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   keyword=(const char *) NULL;
   value=(char *) NULL;
   SetGeometryInfo(&geometry_info);
+  (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
   channel=DefaultChannels;
   switch (*tag)
   {

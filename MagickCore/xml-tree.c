@@ -1389,7 +1389,6 @@ static MagickBooleanType ValidateEntities(char *tag,char *xml,char **entities)
         (ValidateEntities(tag,entities[i+1],entities) == 0))
       return(MagickFalse);
   }
-  return(MagickTrue);
 }
 
 static void ParseProcessingInstructions(XMLTreeRoot *root,char *xml,

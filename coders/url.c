@@ -176,7 +176,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
     !(defined(__MINGW32__) || defined(__MINGW64__))
   (void) fclose(file);
-  if (URLDownloadToFile(NULL,filename,read_info->filename,NULL,NULL) != S_OK)
+  if (URLDownloadToFile(NULL,filename,read_info->filename,0,NULL) != S_OK)
     {
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         filename);
