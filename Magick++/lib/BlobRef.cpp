@@ -18,32 +18,29 @@
 // Implementation of Magick::BlobRef
 //
 
-// Construct with data, making private copy of data
-Magick::BlobRef::BlobRef ( const void* data_,
-			   size_t length_ )
-  : _data(0),
-    _length(length_),
-    _allocator(Magick::Blob::NewAllocator),
-    _refCount(1),
-    _mutexLock()
+Magick::BlobRef::BlobRef(const void* data_,size_t length_)
+  : data(0),
+    length(length_),
+    allocator(Magick::Blob::NewAllocator),
+    refCount(1),
+    mutexLock()
 {
-  if( data_ )
+  if (data_)
     {
-      _data = new unsigned char[length_];
-      memcpy( _data, data_, length_ );
+      data=new unsigned char[length_];
+      memcpy(data,data_, length_);
     }
 }
 
-// Destructor (actually destroys data)
-Magick::BlobRef::~BlobRef ( void )
+Magick::BlobRef::~BlobRef(void)
 {
-  if ( _allocator == Magick::Blob::NewAllocator )
+  if (allocator == Magick::Blob::NewAllocator)
     {
-      delete [] static_cast<unsigned char*>(_data);
-      _data=0;
+      delete[] static_cast<unsigned char*>(data);
+      data=0;
     }
-  else if ( _allocator == Magick::Blob::MallocAllocator )
+  else if (allocator == Magick::Blob::MallocAllocator)
     {
-      _data=(void *) RelinquishMagickMemory(_data);
+      data=(void *) RelinquishMagickMemory(data);
     }
 }

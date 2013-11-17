@@ -715,6 +715,31 @@ namespace Magick
   using MagickCore::FillToBorderMethod;
   using MagickCore::ResetMethod;
 
+  using MagickCore::PixelChannel;
+  using MagickCore::UndefinedPixelChannel;
+  using MagickCore::RedPixelChannel;
+  using MagickCore::CyanPixelChannel;
+  using MagickCore::GrayPixelChannel;
+  using MagickCore::LPixelChannel;
+  using MagickCore::YPixelChannel;
+  using MagickCore::aPixelChannel;
+  using MagickCore::GreenPixelChannel;
+  using MagickCore::MagentaPixelChannel;
+  using MagickCore::CbPixelChannel;
+  using MagickCore::bPixelChannel;
+  using MagickCore::BluePixelChannel;
+  using MagickCore::YellowPixelChannel;
+  using MagickCore::CrPixelChannel;
+  using MagickCore::BlackPixelChannel;
+  using MagickCore::AlphaPixelChannel;
+  using MagickCore::IndexPixelChannel;
+  using MagickCore::ReadMaskPixelChannel;
+  using MagickCore::WriteMaskPixelChannel;
+  using MagickCore::MetaPixelChannel;
+  using MagickCore::IntensityPixelChannel;
+  using MagickCore::CompositePixelChannel;
+  using MagickCore::SyncPixelChannel;
+
   // PixelInterpolate methods
   using MagickCore::PixelInterpolateMethod;
   using MagickCore::UndefinedInterpolatePixel;

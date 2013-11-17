@@ -26,45 +26,44 @@ namespace Magick
     };
 
     // Default constructor
-    CoderInfo ( void );
+    CoderInfo(void);
 
     // Copy constructor
-    CoderInfo ( const CoderInfo &coder_ );
+    CoderInfo(const CoderInfo &coder_);
 
     // Construct with coder name
-    CoderInfo ( const std::string &name_ );
+    CoderInfo(const std::string &name_);
 
     // Destructor
-    ~CoderInfo ( void );
+    ~CoderInfo(void);
 
     // Format description
-    std::string description( void ) const;
+    std::string description(void) const;
 
     // Format supports multiple frames
-    bool isMultiFrame( void ) const;
+    bool isMultiFrame(void) const;
 
     // Format is readable
-    bool isReadable( void ) const;
+    bool isReadable(void) const;
 
     // Format is writeable
-    bool isWritable( void ) const;
+    bool isWritable(void) const;
 
     // Format mime type
-    std::string mimeType( void ) const;
+    std::string mimeType(void) const;
 
     // Format name
-    std::string name( void ) const;
+    std::string name(void) const;
 
     // Assignment operator
-    CoderInfo& operator= ( const CoderInfo &coder_ );
+    CoderInfo& operator=(const CoderInfo &coder_);
 
     //
     // Implemementation methods
     //
-    CoderInfo ( const MagickCore::MagickInfo *magickInfo_ );
+    CoderInfo(const MagickCore::MagickInfo *magickInfo_);
 
   private:
-
     std::string _name;
     std::string _description;
     std::string _mimeType;
@@ -72,6 +71,7 @@ namespace Magick
     bool        _isWritable;
     bool        _isMultiFrame;
   };
+
 } // namespace Magick
 
 //
