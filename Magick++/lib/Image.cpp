@@ -3193,6 +3193,11 @@ void Magick::Image::cacheThreshold ( const MagickSizeType threshold_ )
   SetMagickResourceLimit( MemoryResource, threshold_ );
 }
 
+size_t Magick::Image::channels() const
+{
+  return constImage()->number_channels;
+}
+
 void Magick::Image::chromaBluePrimary ( const double x_, const double y_ )
 {
   modifyImage();
