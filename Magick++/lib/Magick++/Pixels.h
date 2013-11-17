@@ -23,25 +23,28 @@ namespace Magick
 
     // Destroy pixel view
     ~Pixels(void);
-    
+
     // Transfer pixels from the image to the pixel view as defined by
     // the specified region. Modified pixels may be subsequently
     // transferred back to the image via sync.
-    Quantum* get(const ::ssize_t x_,const ::ssize_t y_,
+    Quantum *get(const ::ssize_t x_,const ::ssize_t y_,
       const size_t columns_,const size_t rows_);
 
     // Transfer read-only pixels from the image to the pixel view as
     // defined by the specified region.
-    const Quantum* getConst(const ::ssize_t x_,const ::ssize_t y_,
+    const Quantum *getConst(const ::ssize_t x_,const ::ssize_t y_,
       const size_t columns_,const size_t rows_);
 
     // Return pixel colormap index array
-    //Quantum* metacontent(void);
+    //Quantum *metacontent(void);
+
+    // Returns the offset for the specified channel.
+    ssize_t offset(PixelChannel channel) const;
 
     // Allocate a pixel view region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel view to the image via sync.
-    Quantum* set(const ::ssize_t x_,const ::ssize_t y_,const size_t columns_,
+    Quantum *set(const ::ssize_t x_,const ::ssize_t y_,const size_t columns_,
       const size_t rows_ );
 
     // Transfers the image view pixels to the image.
@@ -66,7 +69,7 @@ namespace Magick
     const Pixels& operator=(const Pixels& pixels_);
 
     Magick::Image             _image;     // Image reference
-    MagickCore::CacheView*    _view;      // Image view handle
+    MagickCore::CacheView     *_view;     // Image view handle
     ::ssize_t                 _x;         // Left ordinate of view
     ::ssize_t                 _y;         // Top ordinate of view
     size_t                    _columns;   // Width of view

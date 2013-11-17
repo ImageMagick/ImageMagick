@@ -989,7 +989,10 @@ namespace Magick
     // is exceeded, all subsequent pixels cache operations are to/from
     // disk.  This setting is shared by all Image objects.
     static void     cacheThreshold ( const MagickSizeType threshold_ );
-    
+
+    // Returns the number of channels in this image.
+    size_t channels() const;
+
     // Chromaticity blue primary point (e.g. x=0.15, y=0.06)
     void            chromaBluePrimary ( const double x_, const double y_ );
     void            chromaBluePrimary ( double *x_, double *y_ ) const;

@@ -71,6 +71,13 @@ const Magick::Quantum* Magick::Pixels::getConst(const ssize_t x_,
   return pixels;
 }
 
+ssize_t Magick::Pixels::offset(PixelChannel channel) const
+{
+  if (_image.constImage()->channel_map[channel].traits == UndefinedPixelTrait)
+    return -1;
+  return _image.constImage()->channel_map[channel].offset;
+}
+
 Magick::Quantum* Magick::Pixels::set(const ssize_t x_,const ssize_t y_,
   const size_t columns_,const size_t rows_)
 {
