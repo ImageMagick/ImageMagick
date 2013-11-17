@@ -18,38 +18,37 @@
 // Implementation of Magick::Blob
 //
 
-// Default constructor
-Magick::Blob::Blob ( void )
-  : _blobRef(new Magick::BlobRef( 0, 0 ))
+Magick::Blob::Blob(void)
+  : _blobRef(new Magick::BlobRef(0,0))
 {
 }
 
-// Construct with data
-Magick::Blob::Blob ( const void* data_, size_t length_ )
-  : _blobRef(new Magick::BlobRef( data_, length_ ))
+Magick::Blob::Blob(const void* data_,size_t length_)
+  : _blobRef(new Magick::BlobRef(data_, length_))
 {
 }
 
-// Copy constructor (reference counted)
-Magick::Blob::Blob ( const Magick::Blob& blob_ )
+Magick::Blob::Blob(const Magick::Blob& blob_)
   : _blobRef(blob_._blobRef)
 {
   // Increase reference count
-  Lock( &_blobRef->_mutexLock );
-  ++_blobRef->_refCount;
+  Lock(&_blobRef->mutexLock);
+  ++_blobRef->refCount;
 }
 
-// Destructor (reference counted)
-Magick::Blob::~Blob ()
+Magick::Blob::~Blob()
 {
-  bool doDelete = false;
+  bool
+    doDelete;
+
+  doDelete=false;
   {
-    Lock( &_blobRef->_mutexLock );
-    if ( --_blobRef->_refCount == 0 )
-      doDelete = true;
+    Lock(&_blobRef->mutexLock);
+    if (--_blobRef->refCount == 0)
+      doDelete=true;
   }
 
-  if ( doDelete )
+  if (doDelete)
     {
       // Delete old blob reference with associated data
       delete _blobRef;
@@ -57,54 +56,67 @@ Magick::Blob::~Blob ()
   _blobRef=0;
 }
 
-// Assignment operator (reference counted)
-Magick::Blob& Magick::Blob::operator= ( const Magick::Blob& blob_ )
+Magick::Blob& Magick::Blob::operator=(const Magick::Blob& blob_)
 {
-  if(this != &blob_)
+  bool
+    doDelete;
+
+  if (this != &blob_)
     {
       {
-        Lock( &blob_._blobRef->_mutexLock );
-        ++blob_._blobRef->_refCount;
+        Lock(&blob_._blobRef->mutexLock);
+        ++blob_._blobRef->refCount;
       }
-      bool doDelete = false;
+      doDelete=false;
       {
-        Lock( &_blobRef->_mutexLock );
-        if ( --_blobRef->_refCount == 0 )
-          doDelete = true;
+        Lock(&_blobRef->mutexLock);
+        if (--_blobRef->refCount == 0)
+          doDelete=true;
       }
-      if ( doDelete )
+      if (doDelete)
         {
           delete _blobRef;
         }
-      _blobRef = blob_._blobRef;
+      _blobRef=blob_._blobRef;
     }
   return *this;
 }
 
 // Update object contents from Base64-encoded string representation.
-void Magick::Blob::base64 ( const std::string base64_ )
+void Magick::Blob::base64(const std::string base64_)
 {
-  size_t length;
+  size_t
+    length;
 
-  unsigned char *decoded =
-    Base64Decode( base64_.c_str(), &length );
+  unsigned char
+    *decoded;
+
+  decoded=Base64Decode(base64_.c_str(),&length);
 
   if(decoded)
-    updateNoCopy( static_cast<void*>(decoded), length,
-                  Magick::Blob::MallocAllocator );
+    updateNoCopy(static_cast<void*>(decoded),length,
+      Magick::Blob::MallocAllocator);
 }
 
 // Return Base64-encoded string representation.
-std::string Magick::Blob::base64 ( void )
+std::string Magick::Blob::base64(void)
 {
-  size_t encoded_length = 0;
+  size_t
+    encoded_length;
 
-  char *encoded =
-    Base64Encode(static_cast<const unsigned char*>(data()), length(), &encoded_length);
+  char
+    *encoded;
+
+  std::string
+    result;
+
+  encoded_length=0;
+  encoded=Base64Encode(static_cast<const unsigned char*>(data()),length(),
+    &encoded_length);
 
   if(encoded)
     {
-      std::string result(encoded,encoded_length);
+      result=std::string(encoded,encoded_length);
       encoded=(char *) RelinquishMagickMemory(encoded);
       return result;
     }
@@ -112,58 +124,56 @@ std::string Magick::Blob::base64 ( void )
   return std::string();
 }
 
-// Update object contents, making a copy of the supplied data.
-// Any existing data in the object is deallocated.
-void Magick::Blob::update ( const void* data_, size_t length_ )
+void Magick::Blob::update(const void* data_,size_t length_)
 {
-  bool doDelete = false;
+  bool
+    doDelete; 
+
+  doDelete=false;
   {
-    Lock( &_blobRef->_mutexLock );
-    if ( --_blobRef->_refCount == 0 )
-      doDelete = true;
+    Lock(&_blobRef->mutexLock);
+    if (--_blobRef->refCount == 0)
+      doDelete=true;
   }
-  if ( doDelete )
+  if (doDelete)
     {
       // Delete old blob reference with associated data
       delete _blobRef;
     }
 
-  _blobRef = new Magick::BlobRef( data_, length_ );
+  _blobRef=new Magick::BlobRef(data_,length_);
 }
 
-// Update object contents, using supplied pointer directly (no copy)
-// Any existing data in the object is deallocated.  The user must
-// ensure that the pointer supplied is not deleted or otherwise
-// modified after it has been supplied to this method.
-void Magick::Blob::updateNoCopy ( void* data_, size_t length_,
-                                  Magick::Blob::Allocator allocator_  )
+void Magick::Blob::updateNoCopy(void* data_,size_t length_,
+  Magick::Blob::Allocator allocator_)
 {
-  bool doDelete = false;
+  bool
+    doDelete;
+  
+  doDelete=false;
   {
-    Lock( &_blobRef->_mutexLock );
-    if ( --_blobRef->_refCount == 0 )
-      doDelete = true;
+    Lock(&_blobRef->mutexLock);
+    if (--_blobRef->refCount == 0)
+      doDelete=true;
   }
-  if ( doDelete )
+  if (doDelete)
     {
       // Delete old blob reference with associated data
       delete _blobRef;
     }
-  _blobRef = new Magick::BlobRef( 0, 0 );
-  _blobRef->_data   = data_;
-  _blobRef->_length = length_;
-  _blobRef->_allocator = allocator_;
+  _blobRef=new Magick::BlobRef(0,0);
+  _blobRef->data=data_;
+  _blobRef->length=length_;
+  _blobRef->allocator=allocator_;
 }
 
-// Obtain pointer to data
-const void* Magick::Blob::data( void ) const
+const void* Magick::Blob::data(void) const
 {
-  return _blobRef->_data;
+  return _blobRef->data;
 }
 
-// Obtain data length
-size_t Magick::Blob::length( void ) const
+size_t Magick::Blob::length(void) const
 {
-  return _blobRef->_length;
+  return _blobRef->length;
 }
 
