@@ -257,7 +257,7 @@ static inline void CompositeClear(const MagickPixelPacket *q,
 }
 
 static MagickRealType ColorBurn(const MagickRealType Sca,
-  const MagickRealType Sa, const MagickRealType Dca,const MagickRealType Da)
+  const MagickRealType Sa,const MagickRealType Dca,const MagickRealType Da)
 {
 #if 0
   /*
@@ -304,7 +304,7 @@ static inline void CompositeColorBurn(const MagickPixelPacket *p,
 
 
 static MagickRealType ColorDodge(const MagickRealType Sca,
-  const MagickRealType Sa, const MagickRealType Dca,const MagickRealType Da)
+  const MagickRealType Sa,const MagickRealType Dca,const MagickRealType Da)
 {
   /*
     Oct 2004 SVG specification.
@@ -551,7 +551,7 @@ static inline void CompositeDivide(const MagickPixelPacket *p,
 }
 
 static MagickRealType Exclusion(const MagickRealType Sca,
-  const MagickRealType Sa, const MagickRealType Dca,const MagickRealType Da)
+  const MagickRealType Sa,const MagickRealType Dca,const MagickRealType Da)
 {
   return(Sca*Da+Dca*Sa-2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
 }
@@ -1136,7 +1136,7 @@ static inline void CompositeMinus(const MagickPixelPacket *p,
 }
 
 static inline MagickRealType ModulusAdd(const MagickRealType p,
-  const MagickRealType Sa, const MagickRealType q,  const MagickRealType Da)
+  const MagickRealType Sa,const MagickRealType q,const MagickRealType Da)
 {
   MagickRealType
     pixel;
@@ -1148,7 +1148,7 @@ static inline MagickRealType ModulusAdd(const MagickRealType p,
 }
 
 static inline void CompositeModulusAdd(const MagickPixelPacket *p,
-  const MagickPixelPacket *q, const ChannelType channel,
+  const MagickPixelPacket *q,const ChannelType channel,
   MagickPixelPacket *composite)
 {
   if ( (channel & SyncChannels) != 0 ) {
@@ -1186,7 +1186,7 @@ static inline void CompositeModulusAdd(const MagickPixelPacket *p,
 }
 
 static inline MagickRealType ModulusSubtract(const MagickRealType p,
-  const MagickRealType Sa, const MagickRealType q,  const MagickRealType Da)
+  const MagickRealType Sa,const MagickRealType q,const MagickRealType Da)
 {
   MagickRealType
     pixel;
@@ -1198,7 +1198,7 @@ static inline MagickRealType ModulusSubtract(const MagickRealType p,
 }
 
 static inline void CompositeModulusSubtract(const MagickPixelPacket *p,
-  const MagickPixelPacket *q, const ChannelType channel,
+  const MagickPixelPacket *q,const ChannelType channel,
   MagickPixelPacket *composite)
 {
   if ( (channel & SyncChannels) != 0 ) {
