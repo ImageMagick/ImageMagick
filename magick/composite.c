@@ -1144,7 +1144,7 @@ static inline MagickRealType ModulusAdd(const MagickRealType p,
   pixel=p+q;
   if (pixel > QuantumRange)
     pixel-=QuantumRange;
-  return(pixel*Sa*Da+p*Sa*(1-Da)+q*Da*(1-Sa));
+  return(pixel*Sa*Da+p*Sa*(1.0-Da)+q*Da*(1.0-Sa));
 }
 
 static inline void CompositeModulusAdd(const MagickPixelPacket *p,
@@ -1194,7 +1194,7 @@ static inline MagickRealType ModulusSubtract(const MagickRealType p,
   pixel=p-q;
   if (pixel < 0.0)
     pixel+=QuantumRange;
-  return(pixel*Sa*Da+p*Sa*(1-Da)+q*Da*(1-Sa));
+  return(pixel*Sa*Da+p*Sa*(1.0-Da)+q*Da*(1.0-Sa));
 }
 
 static inline void CompositeModulusSubtract(const MagickPixelPacket *p,
@@ -1324,7 +1324,7 @@ static MagickRealType PegtopLight(const MagickRealType Sca,
   */
   if (fabs(Da) < MagickEpsilon)
     return(Sca);
-  return(Dca*Dca*(Sa-2*Sca)/Da+Sca*(2*Dca+1-Da)+Dca*(1-Sa));
+  return(Dca*Dca*(Sa-2.0*Sca)/Da+Sca*(2.0*Dca+1.0-Da)+Dca*(1.0-Sa));
 }
 
 static inline void CompositePegtopLight(const MagickPixelPacket *p,
@@ -1580,7 +1580,7 @@ static inline void CompositeVividLight(const MagickPixelPacket *p,
 static MagickRealType Xor(const MagickRealType Sca,const MagickRealType Sa,
   const MagickRealType Dca,const MagickRealType Da)
 {
-  return(Sca*(1-Da)+Dca*(1-Sa));
+  return(Sca*(1.0-Da)+Dca*(1.0-Sa));
 }
 
 static inline void CompositeXor(const MagickPixelPacket *p,
