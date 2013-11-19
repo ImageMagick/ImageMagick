@@ -200,7 +200,8 @@ static inline MagickRealType GetPixelInfoIntensity(
 {
   if (pixel_info->colorspace == GRAYColorspace)
     return(pixel_info->red);
-  return(0.212656*pixel_info->red+0.715158*pixel_info->green+0.072186*pixel_info->blue);
+  return(0.212656*pixel_info->red+0.715158*pixel_info->green+0.072186*
+    pixel_info->blue);
 }
 
 static inline MagickRealType GetPixelInfoLuma(const PixelInfo *restrict pixel)
