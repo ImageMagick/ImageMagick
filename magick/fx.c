@@ -745,7 +745,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   pixel.red=geometry_info.rho;
   pixel.green=geometry_info.rho;
   pixel.blue=geometry_info.rho;
-  pixel.opacity=geometry_info.rho;
+  pixel.opacity=(MagickRealType) OpaqueOpacity;
   if ((flags & SigmaValue) != 0)
     pixel.green=geometry_info.sigma;
   if ((flags & XiValue) != 0)
@@ -5262,28 +5262,25 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
   if (opacity == (const char *) NULL)
     return(tint_image);
   /*
-    Determine RGB values of the color.
+    Determine RGB values of the tint color.
   */
   flags=ParseGeometry(opacity,&geometry_info);
   pixel.red=geometry_info.rho;
+  pixel.green=geometry_info.rho;
+  pixel.blue=geometry_info.rho;
+  pixel.opacity=(MagickRealType) OpaqueOpacity;
   if ((flags & SigmaValue) != 0)
     pixel.green=geometry_info.sigma;
-  else
-    pixel.green=pixel.red;
   if ((flags & XiValue) != 0)
     pixel.blue=geometry_info.xi;
-  else
-    pixel.blue=pixel.red;
   if ((flags & PsiValue) != 0)
     pixel.opacity=geometry_info.psi;
-  else
-    pixel.opacity=(MagickRealType) OpaqueOpacity;
   color_vector.red=(MagickRealType) (pixel.red*tint.red/100.0-
-    GetPixelIntensity(tint_image,&tint));
+    MagickPixelIntensity(&tint));
   color_vector.green=(MagickRealType) (pixel.green*tint.green/100.0-
-    GetPixelIntensity(tint_image,&tint));
+    MagickPixelIntensity(&tint));
   color_vector.blue=(MagickRealType) (pixel.blue*tint.blue/100.0-
-    GetPixelIntensity(tint_image,&tint));
+    MagickPixelIntensity(&tint));
   /*
     Tint image.
   */
@@ -5378,7 +5375,8 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
 %  The format of the VignetteImage method is:
 %
 %      Image *VignetteImage(const Image *image,const double radius,
-%        const double sigma,const ssize_t x,const ssize_t y,ExceptionInfo *exception)
+%        const double sigma,const ssize_t x,const ssize_t y,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5403,8 +5401,8 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
     *draw_info;
 
   Image
-    *canvas_image,
     *blur_image,
+    *canvas_image,
     *oval_image,
     *vignette_image;
 
