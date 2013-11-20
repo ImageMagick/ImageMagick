@@ -2781,6 +2781,10 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("profile:icc",property) == 0 ||
           LocaleCompare("profile:icm",property) == 0)
         {
+#if !defined(LCMS_VERSION) || (LCMS_VERSION < 2000)
+#define cmsUInt32Number  DWORD
+#endif
+
           const StringInfo
             *profile;
 
