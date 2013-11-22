@@ -1535,7 +1535,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 1:
     {
-      register Quantum
+      register MagickRealType
         threshold;
 
       register unsigned char
@@ -1549,7 +1549,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
           black=0x01;
           white=0x00;
         }
-      threshold=(Quantum) (QuantumRange/2);
+      threshold=QuantumRange/2.0;
       for (x=((ssize_t) number_pixels-7); x > 0; x-=8)
       {
         *q='\0';
@@ -1789,7 +1789,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 1:
     {
-      register Quantum
+      register MagickRealType
         threshold;
 
       register unsigned char
@@ -1804,7 +1804,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
           black=0x01;
           white=0x00;
         }
-      threshold=(Quantum) (QuantumRange/2);
+      threshold=QuantumRange/2.0;
       for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
       {
         *q='\0';
