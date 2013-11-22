@@ -1724,6 +1724,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PBM image.
         */
+        (void) SetImageType(image,BilevelType,exception);
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1738,8 +1739,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            pixel=ClampToQuantum(GetPixelLuma(image,p));
-            *q++=(unsigned char) (pixel >= (Quantum) (QuantumRange/2) ?
+            *q++=(unsigned char) (GetPixelLuma(image,p) >= (QuantumRange/2.0) ?
               '0' : '1');
             *q++=' ';
             if ((q-pixels+2) >= 80)
@@ -1909,6 +1909,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PBM image.
         */
+        (void) SetImageType(image,BilevelType,exception);
         image->depth=1;
         quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
         if (quantum_info == (QuantumInfo *) NULL)
