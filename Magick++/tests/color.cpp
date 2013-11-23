@@ -24,7 +24,7 @@ int main( int /*argc*/, char **argv)
   try {
 
     //
-    // Verify conversion from named colors as well as ColorRGB constructor
+    // Verify conversion from named colors as well as ColorRGBA constructor
     //
 
     {
@@ -54,7 +54,7 @@ int main( int /*argc*/, char **argv)
 	{
 	  {
 	    Color color( colorMap[i].color );
-	    ColorRGB colorMatch( colorMap[i].red,
+	    ColorRGBA colorMatch( colorMap[i].red,
 				 colorMap[i].green,
 				 colorMap[i].blue );
 	    if ( color != colorMatch )

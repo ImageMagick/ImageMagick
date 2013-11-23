@@ -154,7 +154,7 @@ int main( int /*argc*/, char ** argv)
     //
 
     // Test default value.
-    if ( image.backgroundColor() != ColorRGB("white") )
+    if ( image.backgroundColor() != ColorRGBA("white") )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", backgroundColor default ("
@@ -288,7 +288,7 @@ int main( int /*argc*/, char ** argv)
     //
     // borderColor
     //
-    if ( image.borderColor() != ColorRGB("#dfdfdf") )
+    if ( image.borderColor() != ColorRGBA("#dfdfdf") )
       {
 	++failures;
 	cout << "Line: " << __LINE__
@@ -941,8 +941,8 @@ int main( int /*argc*/, char ** argv)
       }
 
     // Test set/get
-    image.matteColor(ColorRGB(0.5,0.5,1));
-    if ( image.matteColor() != ColorRGB(0.5,0.5,1) )
+    image.matteColor(ColorRGBA(0.5,0.5,1));
+    if ( image.matteColor() != ColorRGBA(0.5,0.5,1) )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", matteColor set/get failed" << endl;
@@ -1028,8 +1028,8 @@ int main( int /*argc*/, char ** argv)
     // penColor
     //
 
-    image.penColor(ColorRGB(0.5,0.5,1));
-    if ( image.penColor() != ColorRGB(0.5,0.5,1) )
+    image.penColor(ColorRGBA(0.5,0.5,1));
+    if ( image.penColor() != ColorRGBA(0.5,0.5,1) )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", penColor ("
@@ -1041,8 +1041,8 @@ int main( int /*argc*/, char ** argv)
     // strokeColor
     //
 
-    image.strokeColor(ColorRGB(0.5,0.5,1));
-    if ( image.strokeColor() != ColorRGB(0.5,0.5,1) )
+    image.strokeColor(ColorRGBA(0.5,0.5,1));
+    if ( image.strokeColor() != ColorRGBA(0.5,0.5,1) )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", strokeColor ("
@@ -1055,8 +1055,8 @@ int main( int /*argc*/, char ** argv)
     // fillColor
     //
 
-    image.fillColor(ColorRGB(0.5,0.5,1));
-    if ( image.fillColor() != ColorRGB(0.5,0.5,1) )
+    image.fillColor(ColorRGBA(0.5,0.5,1));
+    if ( image.fillColor() != ColorRGBA(0.5,0.5,1) )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", fillColor ("
@@ -1079,8 +1079,8 @@ int main( int /*argc*/, char ** argv)
       }
 
     // Test set/get
-    image.pixelColor(40,60, ColorRGB(0.5,1,1));
-    if ( image.pixelColor(40,60) != ColorRGB(0.5,1,1) )
+    image.pixelColor(40,60, ColorRGBA(0.5,1,1));
+    if ( image.pixelColor(40,60) != ColorRGBA(0.5,1,1) )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", pixelColor set/get failed" << endl;

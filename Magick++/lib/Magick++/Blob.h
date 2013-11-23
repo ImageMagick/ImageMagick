@@ -44,21 +44,7 @@ namespace Magick
     // Update object contents from Base64-encoded string representation.
     void base64(const std::string base64_);
     // Return Base64-encoded string representation.
-    std::string base64(void);
-
-    // Update object contents, making a copy of the supplied data.
-    // Any existing data in the object is deallocated.
-    void update(const void* data_,size_t length_);
-
-    // Update object contents, using supplied pointer directly (no
-    // copy). Any existing data in the object is deallocated.  The user
-    // must ensure that the pointer supplied is not deleted or
-    // otherwise modified after it has been supplied to this method.
-    // Specify allocator_ as "MallocAllocator" if memory is allocated
-    // via the C language malloc() function, or "NewAllocator" if
-    // memory is allocated via C++ 'new'.
-    void updateNoCopy(void* data_,size_t length_,
-      Allocator allocator_=NewAllocator);
+    std::string base64(void) const;
 
     // Obtain pointer to data. The user should never try to modify or
     // free this data since the Blob class manages its own data. The
@@ -69,6 +55,20 @@ namespace Magick
 
     // Obtain data length
     size_t length(void) const;
+
+    // Update object contents, making a copy of the supplied data.
+    // Any existing data in the object is deallocated.
+    void update(const void* data_,const size_t length_);
+
+    // Update object contents, using supplied pointer directly (no
+    // copy). Any existing data in the object is deallocated.  The user
+    // must ensure that the pointer supplied is not deleted or
+    // otherwise modified after it has been supplied to this method.
+    // Specify allocator_ as "MallocAllocator" if memory is allocated
+    // via the C language malloc() function, or "NewAllocator" if
+    // memory is allocated via C++ 'new'.
+    void updateNoCopy(void* data_,const size_t length_,
+      const Allocator allocator_=NewAllocator);
 
   private:
     BlobRef *_blobRef;

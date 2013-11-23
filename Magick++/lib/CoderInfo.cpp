@@ -71,36 +71,6 @@ Magick::CoderInfo::~CoderInfo(void)
 {
 }
 
-std::string Magick::CoderInfo::description(void) const
-{
-  return _description;
-}
-
-bool Magick::CoderInfo::isReadable(void) const
-{
-  return _isReadable;
-}
-
-bool Magick::CoderInfo::isWritable(void) const
-{
-  return _isWritable;
-}
-
-bool Magick::CoderInfo::isMultiFrame(void) const
-{
-  return _isMultiFrame;
-}
-
-std::string Magick::CoderInfo::mimeType(void) const
-{
-  return _mimeType;
-}
-
-std::string Magick::CoderInfo::name(void) const
-{
-  return _name;
-}
-
 Magick::CoderInfo& Magick::CoderInfo::operator=(const CoderInfo &coder_)
 {
   // If not being set to ourself
@@ -113,15 +83,35 @@ Magick::CoderInfo& Magick::CoderInfo::operator=(const CoderInfo &coder_)
       _isWritable=coder_._isWritable;
       _isMultiFrame=coder_._isMultiFrame;
     }
-  return *this;
+  return(*this);
 }
 
-Magick::CoderInfo::CoderInfo(const MagickCore::MagickInfo *magickInfo_)
-  : _name(string(magickInfo_->name ? magickInfo_->name : "")),
-    _description(string(magickInfo_->description ? magickInfo_->description : "")),
-    _mimeType(string(magickInfo_->mime_type ? magickInfo_->mime_type : "")),
-    _isReadable(magickInfo_->decoder ? true : false),
-    _isWritable(magickInfo_->encoder ? true : false),
-    _isMultiFrame(magickInfo_->adjoin ? true : false)
+std::string Magick::CoderInfo::description(void) const
 {
+  return(_description);
+}
+
+bool Magick::CoderInfo::isReadable(void) const
+{
+  return(_isReadable);
+}
+
+bool Magick::CoderInfo::isWritable(void) const
+{
+  return(_isWritable);
+}
+
+bool Magick::CoderInfo::isMultiFrame(void) const
+{
+  return(_isMultiFrame);
+}
+
+std::string Magick::CoderInfo::mimeType(void) const
+{
+  return(_mimeType);
+}
+
+std::string Magick::CoderInfo::name(void) const
+{
+  return(_name);
 }
