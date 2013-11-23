@@ -1,4 +1,13 @@
-2013-11-16  6.8.7-5 6risty  <quetzlzacatenango@image...>
+2013-11-23  6.8.7-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.7-7, SVN revision 13810.
+
+2013-11-23  6.8.7-7  SiuChi Chan  <...>
+  * simplified interface to initialize the OpenCL environment
+  * automatic OpenCL device selection algorithm
+  * support ModulateImage() acceleration
+  * reduce the memory requirement for accelerated blur and unsharp mask
+
+2013-11-16  6.8.7-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-6, SVN revision 13767.
 
 2013-11-14  6.8.7-6 Cristy  <quetzlzacatenango@image...>
@@ -141,7 +150,7 @@
 2013-08-26  6.8.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.6-9, SVN revision 13087.
 
-2013-08-16  6.8.6-9  Anonymous  <...@....com>
+2013-08-16  6.8.6-9  SiuChi Chan  <...>
   * Accelerate numerous image filters with OpenCL under AMD, Intel, and
     NVidia.  Adapted from MulticoreWare OpenCL contribution.
 

@@ -3807,6 +3807,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   /*
     Modulate image.
   */
+
+  /* call opencl version */
+  status = AccelerateModulateImage(image, percent_brightness, percent_hue, percent_saturation, colorspace, &image->exception);
+  if (status == MagickTrue)
+    return status;
+
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
