@@ -46,6 +46,16 @@ namespace Magick
     // Return Base64-encoded string representation.
     std::string base64(void);
 
+    // Obtain pointer to data. The user should never try to modify or
+    // free this data since the Blob class manages its own data. The
+    // user must be finished with the data before allowing the Blob to
+    // be destroyed since the pointer is invalid once the Blob is
+    // destroyed.
+    const void* data(void) const;
+
+    // Obtain data length
+    size_t length(void) const;
+
     // Update object contents, making a copy of the supplied data.
     // Any existing data in the object is deallocated.
     void update(const void* data_,size_t length_);
@@ -59,16 +69,6 @@ namespace Magick
     // memory is allocated via C++ 'new'.
     void updateNoCopy(void* data_,size_t length_,
       Allocator allocator_=NewAllocator);
-
-    // Obtain pointer to data. The user should never try to modify or
-    // free this data since the Blob class manages its own data. The
-    // user must be finished with the data before allowing the Blob to
-    // be destroyed since the pointer is invalid once the Blob is
-    // destroyed.
-    const void* data(void) const;
-
-    // Obtain data length
-    size_t length(void) const;
 
   private:
     BlobRef *_blobRef;
