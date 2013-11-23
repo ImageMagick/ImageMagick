@@ -27,7 +27,6 @@ Include declarations.
 extern "C" {
 #endif
 
-
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 #include <CL/cl.h>
 #else
@@ -36,9 +35,8 @@ extern "C" {
   typedef void* cl_context;
   typedef void* cl_command_queue;
   typedef void* cl_kernel;
-  typedef struct { unsigned char t[8]; } cl_device_type; // 64-bit
+  typedef struct { unsigned char t[8]; } cl_device_type; /* 64-bit */
 #endif
-
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 #define CLOptions "-cl-single-precision-constant -cl-mad-enable -DMAGICKCORE_HDRI_SUPPORT=1 "\
@@ -77,23 +75,43 @@ extern "C" {
 #define CLCharQuantumScale 72340172838076673.0f
 #endif
 
-extern MagickExport
-  cl_context GetOpenCLContext(MagickCLEnv);
+extern MagickExport cl_context 
+  GetOpenCLContext(MagickCLEnv);
 
-extern MagickExport
-  cl_command_queue AcquireOpenCLCommandQueue(MagickCLEnv);
+extern MagickExport cl_kernel 
+  AcquireOpenCLKernel(MagickCLEnv, MagickOpenCLProgram, const char*);
 
-extern MagickExport
-  MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv, cl_command_queue);
+extern MagickExport cl_command_queue 
+  AcquireOpenCLCommandQueue(MagickCLEnv);
 
-extern MagickExport
-  cl_kernel AcquireOpenCLKernel(MagickCLEnv, MagickOpenCLProgram program, const char*);
-extern MagickExport
-  MagickBooleanType RelinquishOpenCLKernel(MagickCLEnv, cl_kernel);
+extern MagickExport MagickBooleanType 
+  RelinquishOpenCLCommandQueue(MagickCLEnv, cl_command_queue),
+  RelinquishOpenCLKernel(MagickCLEnv, cl_kernel);
 
-extern MagickExport
- unsigned long GetOpenCLDeviceLocalMemorySize(MagickCLEnv);
+extern MagickExport unsigned long 
+  GetOpenCLDeviceLocalMemorySize(MagickCLEnv),
+  GetOpenCLDeviceMaxMemAllocSize(MagickCLEnv);
 
+extern MagickExport const char* 
+  GetOpenCLCachedFilesDirectory();
+
+extern MagickExport void 
+  OpenCLLog(const char*);
+
+/* #define ACCELERATE_LOG_EXCEPTION 1 */
+static inline void OpenCLLogException(const char* function, 
+                        const unsigned int line, 
+                        ExceptionInfo* exception) {
+#ifdef ACCELERATE_LOG_EXCEPTION
+  if (exception->severity!=0) {
+    char message[MaxTextExtent];
+    /*  dump the source into a file */
+    (void) FormatLocaleString(message,MaxTextExtent,"%s:%d Exception(%d)"
+      ,function,line,exception->severity);
+    OpenCLLog(message);
+  }
+#endif
+}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

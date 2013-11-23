@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-// OpenCL program modules
+/* OpenCL program modules */
 typedef enum {
   MAGICK_OPENCL_ACCELERATE = 0
   ,MAGICK_OPENCL_NUM_PROGRAMS   /* !!! This has to be the last entry !!! */
@@ -61,6 +61,16 @@ extern MagickExport
 
 extern MagickExport
   MagickBooleanType InitOpenCLEnv(MagickCLEnv, ExceptionInfo*);
+
+typedef enum {
+  MAGICK_OPENCL_OFF = 0
+, MAGICK_OPENCL_DEVICE_SELECT_AUTO = 1
+, MAGICK_OPENCL_DEVICE_SELECT_USER = 2
+} ImageMagickOpenCLMode ;
+
+extern MagickExport
+MagickBooleanType InitImageMagickOpenCL(ImageMagickOpenCLMode, void*, void*, ExceptionInfo*);
+
 
 
 #if defined(__cplusplus) || defined(c_plusplus)

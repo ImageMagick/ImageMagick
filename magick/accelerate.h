@@ -33,7 +33,11 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
   AccelerateFunctionImage(Image *,const ChannelType,const MagickFunction,
-    const size_t,const double *,ExceptionInfo *);
+    const size_t,const double *,ExceptionInfo *),
+  AccelerateModulateImage(Image* image, double percent_brightness, 
+    double percent_hue, double percent_saturation, 
+    ColorspaceType colorspace, ExceptionInfo* exception);
+
 
 extern MagickExport Image
   *AccelerateBlurImage(const Image *,const ChannelType,const double,
@@ -47,7 +51,6 @@ extern MagickExport Image
     const ResizeFilter *,ExceptionInfo *),
   *AccelerateUnsharpMaskImage(const Image *,const ChannelType,const double,
     const double,const double,const double,ExceptionInfo *);
-
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
