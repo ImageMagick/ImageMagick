@@ -44,6 +44,9 @@ namespace Magick
     Color(const Quantum red_,const Quantum green_,const Quantum blue_,
       const Quantum alpha_);
 
+    // Construct Color using the specified color string
+    Color(const char *color_);
+
     // Copy constructor
     Color(const Color &color_);
 

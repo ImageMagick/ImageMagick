@@ -91,6 +91,15 @@ Magick::Color::Color(const Quantum red_,const Quantum green_,
   quantumAlpha(alpha_);
 }
 
+Magick::Color::Color(const char *color_)
+  : _pixel(new PixelInfo),_pixelOwn(true),_isValid(true),_pixelType(RGBPixel)
+{
+  initPixel();
+
+  // Use operator = implementation
+  *this=color_;
+}
+
 Magick::Color::Color(const Magick::Color &color_)
   : _pixel(new PixelInfo),_pixelOwn(true),_isValid(color_._isValid),
     _pixelType(color_._pixelType)
