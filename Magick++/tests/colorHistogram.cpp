@@ -71,9 +71,9 @@ int main( int /*argc*/, char ** argv)
     while (p != histogram.end())
       {
         cout << setw(10) << (int)p->second << ": ("
-             << setw(quantum_width) << (int)p->first.redQuantum() << ","
-             << setw(quantum_width) << (int)p->first.greenQuantum() << ","
-             << setw(quantum_width) << (int)p->first.blueQuantum() << ")"
+             << setw(quantum_width) << (int)p->first.quantumRed() << ","
+             << setw(quantum_width) << (int)p->first.quantumGreen() << ","
+             << setw(quantum_width) << (int)p->first.quantumBlue() << ")"
              << endl;
         p++;
       }
