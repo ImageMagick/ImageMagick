@@ -5276,11 +5276,11 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
   if ((flags & PsiValue) != 0)
     pixel.opacity=geometry_info.psi;
   color_vector.red=(MagickRealType) (pixel.red*tint.red/100.0-
-    MagickPixelIntensity(&tint));
+    PixelPacketIntensity(&tint));
   color_vector.green=(MagickRealType) (pixel.green*tint.green/100.0-
-    MagickPixelIntensity(&tint));
+    PixelPacketIntensity(&tint));
   color_vector.blue=(MagickRealType) (pixel.blue*tint.blue/100.0-
-    MagickPixelIntensity(&tint));
+    PixelPacketIntensity(&tint));
   /*
     Tint image.
   */
