@@ -14,10 +14,6 @@
 
 #include <string.h>
 
-//
-// Implementation of Magick::Blob
-//
-
 Magick::Blob::Blob(void)
   : _blobRef(new Magick::BlobRef(0,0))
 {
@@ -79,10 +75,9 @@ Magick::Blob& Magick::Blob::operator=(const Magick::Blob& blob_)
         }
       _blobRef=blob_._blobRef;
     }
-  return *this;
+  return(*this);
 }
 
-// Update object contents from Base64-encoded string representation.
 void Magick::Blob::base64(const std::string base64_)
 {
   size_t
@@ -98,8 +93,7 @@ void Magick::Blob::base64(const std::string base64_)
       Magick::Blob::MallocAllocator);
 }
 
-// Return Base64-encoded string representation.
-std::string Magick::Blob::base64(void)
+std::string Magick::Blob::base64(void) const
 {
   size_t
     encoded_length;
@@ -121,7 +115,17 @@ std::string Magick::Blob::base64(void)
       return result;
     }
 
-  return std::string();
+  return(std::string());
+}
+
+const void* Magick::Blob::data(void) const
+{
+  return(_blobRef->data);
+}
+
+size_t Magick::Blob::length(void) const
+{
+  return(_blobRef->length);
 }
 
 void Magick::Blob::update(const void* data_,size_t length_)
@@ -165,15 +169,5 @@ void Magick::Blob::updateNoCopy(void* data_,size_t length_,
   _blobRef->data=data_;
   _blobRef->length=length_;
   _blobRef->allocator=allocator_;
-}
-
-const void* Magick::Blob::data(void) const
-{
-  return _blobRef->data;
-}
-
-size_t Magick::Blob::length(void) const
-{
-  return _blobRef->length;
 }
 

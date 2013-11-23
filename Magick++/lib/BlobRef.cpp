@@ -14,10 +14,6 @@
 
 #include <string.h>
 
-//
-// Implementation of Magick::BlobRef
-//
-
 Magick::BlobRef::BlobRef(const void* data_,size_t length_)
   : data(0),
     length(length_),
