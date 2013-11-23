@@ -37,6 +37,9 @@ namespace Magick
     // Destructor
     ~CoderInfo(void);
 
+    // Assignment operator
+    CoderInfo& operator=(const CoderInfo &coder_);
+
     // Format description
     std::string description(void) const;
 
@@ -55,9 +58,6 @@ namespace Magick
     // Format name
     std::string name(void) const;
 
-    // Assignment operator
-    CoderInfo& operator=(const CoderInfo &coder_);
-
     //
     // Implemementation methods
     //
@@ -73,10 +73,5 @@ namespace Magick
   };
 
 } // namespace Magick
-
-//
-// Inlines
-//
-
 
 #endif // Magick_CoderInfo_header
