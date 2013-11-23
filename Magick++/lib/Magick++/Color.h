@@ -59,6 +59,9 @@ namespace Magick
     // Assignment operator
     Color& operator=(const Color &color_);
 
+    // Set color via X11 color specification string
+    const Color& operator=(const char *color);
+
     // Set color via ImageMagick PixelInfo
     const Color& operator=(const PixelInfo &color_);
 

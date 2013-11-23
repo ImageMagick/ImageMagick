@@ -91,7 +91,7 @@ Magick::Color::Color(const Quantum red_,const Quantum green_,
   quantumAlpha(alpha_);
 }
 
-Magick::Color::Color(const Magick::Color & color_)
+Magick::Color::Color(const Magick::Color &color_)
   : _pixel(new PixelInfo),_pixelOwn(true),_isValid(color_._isValid),
     _pixelType(color_._pixelType)
 {
@@ -141,6 +141,12 @@ Magick::Color& Magick::Color::operator=(const Magick::Color& color_)
   return(*this);
 }
 
+const Magick::Color& Magick::Color::operator=(const char *color_)
+{
+  *this=std::string(color_);
+  return(*this);
+}
+
 const Magick::Color& Magick::Color::operator=(const MagickCore::PixelInfo &color_)
 {
   *_pixel=color_;
@@ -185,7 +191,7 @@ const Magick::Color& Magick::Color::operator=(const std::string &color_)
   return(*this);
 }
 
-inline Magick::Color::operator MagickCore::PixelInfo() const
+Magick::Color::operator MagickCore::PixelInfo() const
 {
   return *_pixel;
 }
@@ -304,7 +310,7 @@ void Magick::Color::quantumRed(const Magick::Quantum red_)
   _isValid=true;
 }
 
-inline Magick::Quantum Magick::Color::quantumRed(void) const
+Magick::Quantum Magick::Color::quantumRed(void) const
 {
   return _pixel->red;
 }
