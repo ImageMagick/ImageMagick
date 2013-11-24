@@ -85,7 +85,7 @@ Include declarations.
 #else
 #include <unistd.h>
 #include <sys/time.h>
-#include <linux/limits.h>
+#include <limits.h>
 #endif
 
 
