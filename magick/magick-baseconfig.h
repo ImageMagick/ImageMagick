@@ -393,11 +393,6 @@
 #define MAGICKCORE_HAVE_LIMITS_H 1
 #endif
 
-/* Define to 1 if you have the <linux/limits.h> header file. */
-#ifndef MAGICKCORE_HAVE_LINUX_LIMITS_H
-#define MAGICKCORE_HAVE_LINUX_LIMITS_H 1
-#endif
-
 /* Define to 1 if you have the <linux/unistd.h> header file. */
 #ifndef MAGICKCORE_HAVE_LINUX_UNISTD_H
 #define MAGICKCORE_HAVE_LINUX_UNISTD_H 1
@@ -1213,7 +1208,7 @@
 
 /* Define to the full name and version of this package. */
 #ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.8.7-8"
+#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.8.7-7"
 #endif
 
 /* Define to the one symbol short name of this package. */
@@ -1228,7 +1223,7 @@
 
 /* Define to the version of this package. */
 #ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "6.8.7-8"
+#define MAGICKCORE_PACKAGE_VERSION "6.8.7-7"
 #endif
 
 /* Define if you have PANGOCAIRO library */
@@ -1440,7 +1435,7 @@
 
 /* Version number of package */
 #ifndef MAGICKCORE_VERSION
-#define MAGICKCORE_VERSION "6.8.7-8"
+#define MAGICKCORE_VERSION "6.8.7-7"
 #endif
 
 /* Define if you have WEBP library */
