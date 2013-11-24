@@ -239,26 +239,6 @@ double Magick::Color::alpha(void) const
   return scaleQuantumToDouble(quantumAlpha());
 }
 
-void Magick::Color::blue(const double blue_)
-{
-  quantumBlue(scaleDoubleToQuantum(blue_));
-}
-
-double Magick::Color::blue(void) const
-{
-  return scaleQuantumToDouble(quantumBlue());
-}
-
-void Magick::Color::green(const double green_)
-{
-  quantumGreen(scaleDoubleToQuantum(green_));
-}
-
-double Magick::Color::green(void) const
-{
-  return scaleQuantumToDouble(quantumGreen());
-}
-
 bool Magick::Color::isValid(void) const
 {
   return(_isValid);
@@ -324,16 +304,6 @@ Magick::Quantum Magick::Color::quantumRed(void) const
   return _pixel->red;
 }
 
-void Magick::Color::red(const double red_)
-{
-  quantumRed(scaleDoubleToQuantum(red_));
-}
-
-double Magick::Color::red(void) const
-{
-  return scaleQuantumToDouble(quantumRed());
-}
-
 Magick::Color::Color(PixelInfo* rep_,PixelType pixelType_)
   : _pixel(rep_),_pixelOwn(false),_isValid(true),_pixelType(pixelType_)
 {
@@ -395,14 +365,15 @@ Magick::ColorGray::~ColorGray()
 
 void Magick::ColorGray::shade(double shade_)
 {
-  red(shade_);
-  green(shade_);
-  blue(shade_);
+  Quantum gray=scaleDoubleToQuantum(shade_);
+  quantumRed(gray);
+  quantumGreen(gray);
+  quantumBlue(gray);
 }
 
 double Magick::ColorGray::shade(void) const
 {
-  return(green());
+  return(scaleQuantumToDouble(quantumGreen()));
 }
 
 Magick::ColorGray& Magick::ColorGray::operator=(const Magick::Color& color_)
@@ -472,9 +443,9 @@ void Magick::ColorHSL::hue(const double hue_)
 
   ConvertHSLToRGB(hue,saturation,luminosity,&red,&green,&blue);
 
-  quantumRed(red);
-  quantumGreen(green);
-  quantumBlue(blue);
+  quantumRed(ClampToQuantum(red));
+  quantumGreen(ClampToQuantum(green));
+  quantumBlue(ClampToQuantum(blue));
 }
 
 double Magick::ColorHSL::hue(void) const
@@ -509,9 +480,9 @@ void Magick::ColorHSL::luminosity(const double luminosity_)
 
   ConvertHSLToRGB(hue,saturation,luminosity,&red,&green,&blue);
 
-  quantumRed(red);
-  quantumGreen(green);
-  quantumBlue(blue);
+  quantumRed(ClampToQuantum(red));
+  quantumGreen(ClampToQuantum(green));
+  quantumBlue(ClampToQuantum(blue));
 }
 
 double Magick::ColorHSL::luminosity ( void ) const
@@ -546,9 +517,9 @@ void Magick::ColorHSL::saturation(const double saturation_)
 
   ConvertHSLToRGB(hue,saturation,luminosity,&red,&green,&blue);
 
-  quantumRed(red);
-  quantumGreen(green);
-  quantumBlue(blue);
+  quantumRed(ClampToQuantum(red));
+  quantumGreen(ClampToQuantum(green));
+  quantumBlue(ClampToQuantum(blue));
 }
 
 double Magick::ColorHSL::saturation(void) const
@@ -570,9 +541,8 @@ Magick::ColorMono::ColorMono(void)
 }
 
 Magick::ColorMono::ColorMono(const bool mono_)
-  : Color((Quantum)(mono_ ? QuantumRange : 0),
-          (Quantum)(mono_ ? QuantumRange : 0),
-          (Quantum)(mono_ ? QuantumRange : 0))
+  : Color((mono_ ? QuantumRange : 0),(mono_ ? QuantumRange : 0),
+          (mono_ ? QuantumRange : 0))
 {
   quantumAlpha(OpaqueAlpha);
 }
@@ -586,10 +556,10 @@ Magick::ColorMono::~ColorMono()
 {
 }
 
-Magick::ColorMono& Magick::ColorMono::operator = ( const Magick::Color& color_ )
+Magick::ColorMono& Magick::ColorMono::operator=(const Magick::Color& color_)
 {
-  *static_cast<Magick::Color*>(this) = color_;
-  return *this;
+  *static_cast<Magick::Color*>(this)=color_;
+  return(*this);
 }
 
 void Magick::ColorMono::mono(bool mono_)
@@ -609,17 +579,17 @@ Magick::ColorMono::ColorMono(PixelInfo *rep_,PixelType pixelType_)
 {
 }
 
-Magick::ColorRGBA::ColorRGBA(void)
+Magick::ColorRGB::ColorRGB(void)
   : Color()
 {
 }
 
-Magick::ColorRGBA::ColorRGBA(const Magick::Color & color_)
+Magick::ColorRGB::ColorRGB(const Magick::Color &color_)
   : Color(color_)
 {
 }
 
-Magick::ColorRGBA::ColorRGBA(const double red_,const double green_,
+Magick::ColorRGB::ColorRGB(const double red_,const double green_,
   const double blue_)
   : Color(scaleDoubleToQuantum(red_),scaleDoubleToQuantum(green_),
           scaleDoubleToQuantum(blue_))
@@ -627,21 +597,56 @@ Magick::ColorRGBA::ColorRGBA(const double red_,const double green_,
   quantumAlpha(OpaqueAlpha);
 }
 
-Magick::ColorRGBA::ColorRGBA(const double red_,const double green_,
+Magick::ColorRGB::ColorRGB(const double red_,const double green_,
   const double blue_,const double alpha_)
   : Color(scaleDoubleToQuantum(red_),scaleDoubleToQuantum(green_),
           scaleDoubleToQuantum(blue_),scaleDoubleToQuantum(alpha_))
 {
 }
 
-Magick::ColorRGBA::~ColorRGBA(void)
+Magick::ColorRGB::~ColorRGB(void)
 {
 }
 
-Magick::ColorRGBA& Magick::ColorRGBA::operator=(const Magick::Color& color_)
+Magick::ColorRGB& Magick::ColorRGB::operator=(const Magick::Color& color_)
 {
   *static_cast<Magick::Color*>(this)=color_;
   return(*this);
+}
+
+void Magick::ColorRGB::blue(const double blue_)
+{
+  quantumBlue(scaleDoubleToQuantum(blue_));
+}
+
+double Magick::ColorRGB::blue(void) const
+{
+  return scaleQuantumToDouble(quantumBlue());
+}
+
+void Magick::ColorRGB::green(const double green_)
+{
+  quantumGreen(scaleDoubleToQuantum(green_));
+}
+
+double Magick::ColorRGB::green(void) const
+{
+  return scaleQuantumToDouble(quantumGreen());
+}
+
+void Magick::ColorRGB::red(const double red_)
+{
+  quantumRed(scaleDoubleToQuantum(red_));
+}
+
+double Magick::ColorRGB::red(void) const
+{
+  return scaleQuantumToDouble(quantumRed());
+}
+
+Magick::ColorRGB::ColorRGB(PixelInfo *rep_,PixelType pixelType_)
+  : Color(rep_,pixelType_)
+{
 }
 
 Magick::ColorYUV::ColorYUV(void)
