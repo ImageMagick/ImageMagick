@@ -81,14 +81,6 @@ namespace Magick
     void alpha(const double alpha_);
     double alpha(void) const;
 
-    // Blue color (range 0.0 to 1.0)
-    void blue(const double blue_);
-    double blue(void) const;
-
-    // Green color (range 0 to QuantumRange)
-    void green(const double green_);
-    double green(void) const;
-
     // Does object contain valid color?
     void isValid(const bool valid_);
     bool isValid(void) const;
@@ -108,10 +100,6 @@ namespace Magick
     // Red color (range 0 to QuantumRange)
     void quantumRed(const Quantum red_);
     Quantum quantumRed(void) const;
-
-    // Red color (range 0 to 1.0)
-    void red(const double red_);
-    double red(void) const;
 
   protected:
 
@@ -279,33 +267,45 @@ namespace Magick
     ColorMono(PixelInfo* rep_,PixelType pixelType_);
   };
 
-  class MagickPPExport ColorRGBA: public Color
+  class MagickPPExport ColorRGB: public Color
   {
   public:
 
     // Default constructor
-    ColorRGBA(void);
+    ColorRGB(void);
 
     // Copy constructor
-    ColorRGBA(const Color &color_);
+    ColorRGB(const Color &color_);
 
     // Construct ColorRGBA using the specified RGB values
-    ColorRGBA(const double red_,const double green_,const double blue_);
+    ColorRGB(const double red_,const double green_,const double blue_);
 
     // Construct ColorRGBA using the specified RGBA values
-    ColorRGBA(const double red_,const double green_,const double blue_,
+    ColorRGB(const double red_,const double green_,const double blue_,
       const double alpha);
 
     // Destructor
-    ~ColorRGBA(void);
+    ~ColorRGB(void);
 
     // Assignment operator from base class
-    ColorRGBA& operator=(const Color& color_);
+    ColorRGB& operator=(const Color& color_);
+
+    // Blue color (range 0.0 to 1.0)
+    void blue(const double blue_);
+    double blue(void) const;
+
+    // Green color (range 0 to QuantumRange)
+    void green(const double green_);
+    double green(void) const;
+
+    // Red color (range 0 to 1.0)
+    void red(const double red_);
+    double red(void) const;
 
   protected:
 
     // Constructor to construct with PixelInfo*
-    ColorRGBA(PixelInfo *rep_,PixelType pixelType_);
+    ColorRGB(PixelInfo *rep_,PixelType pixelType_);
   };
 
   //
