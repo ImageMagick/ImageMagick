@@ -393,6 +393,11 @@
 #define MAGICKCORE_HAVE_LIMITS_H 1
 #endif
 
+/* Define to 1 if you have the <linux/limits.h> header file. */
+#ifndef MAGICKCORE_HAVE_LINUX_LIMITS_H
+#define MAGICKCORE_HAVE_LINUX_LIMITS_H 1
+#endif
+
 /* Define to 1 if you have the <linux/unistd.h> header file. */
 #ifndef MAGICKCORE_HAVE_LINUX_UNISTD_H
 #define MAGICKCORE_HAVE_LINUX_UNISTD_H 1

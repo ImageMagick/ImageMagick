@@ -40,7 +40,6 @@
 /*
 Include declarations.
 */
-#include <string.h>
 #include "magick/studio.h"
 #include "magick/artifact.h"
 #include "magick/cache.h"
@@ -63,6 +62,7 @@ Include declarations.
 #include "magick/monitor.h"
 #include "magick/montage.h"
 #include "magick/morphology.h"
+#include "magick/nt-base.h"
 #include "magick/opencl.h"
 #include "magick/opencl-private.h"
 #include "magick/option.h"
@@ -78,16 +78,6 @@ Include declarations.
 #include "magick/string_.h"
 #include "magick/token.h"
 #include "magick/utility.h"
-
-#include <time.h>
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#include <sys/time.h>
-#include <linux/limits.h>
-#endif
-
 
 #ifdef MAGICKCORE_CLPERFMARKER
 #include "CLPerfMarker.h"
