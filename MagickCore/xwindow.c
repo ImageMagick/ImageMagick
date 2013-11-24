@@ -1315,6 +1315,7 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
       */
       root_window=XRootWindow(display,XDefaultScreen(display));
       status=False;
+      number_maps=0;
       if (LocaleCompare(map_type,"list") != 0)
         {
           /*
