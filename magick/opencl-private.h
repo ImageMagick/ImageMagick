@@ -102,15 +102,15 @@ extern MagickExport void
 static inline void OpenCLLogException(const char* function, 
                         const unsigned int line, 
                         ExceptionInfo* exception) {
-#ifdef ACCELERATE_LOG_EXCEPTION
   if (exception->severity!=0) {
     char message[MaxTextExtent];
     /*  dump the source into a file */
     (void) FormatLocaleString(message,MaxTextExtent,"%s:%d Exception(%d)"
       ,function,line,exception->severity);
+#ifdef ACCELERATE_LOG_EXCEPTION
     OpenCLLog(message);
-  }
 #endif
+  }
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
