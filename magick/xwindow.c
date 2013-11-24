@@ -1287,6 +1287,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
       map_list=(XStandardColormap *) NULL;
       root_window=XRootWindow(display,XDefaultScreen(display));
       status=False;
+      number_maps=0;
       if (LocaleCompare(map_type,"list") != 0)
         {
           /*
