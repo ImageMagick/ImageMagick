@@ -23,10 +23,34 @@ extern "C" {
 #endif
 
 #include "MagickCore/morphology.h"
+#include "MagickCore/resample.h"
+#include "MagickCore/resize.h"
+#include "MagickCore/statistic.h"
 
 extern MagickExport MagickBooleanType
+  AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
   AccelerateConvolveImage(const Image *,const KernelInfo *,Image *,
-    ExceptionInfo *);
+    ExceptionInfo *),
+  AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
+  AccelerateFunctionImage(Image *,const ChannelType,const MagickFunction,
+    const size_t,const double *,ExceptionInfo *),
+  AccelerateModulateImage(Image* image, double percent_brightness, 
+    double percent_hue, double percent_saturation, 
+    ColorspaceType colorspace, ExceptionInfo* exception);
+
+
+extern MagickExport Image
+  *AccelerateBlurImage(const Image *,const ChannelType,const double,
+    const double,ExceptionInfo *),
+  *AccelerateConvolveImageChannel(const Image *,const ChannelType,
+    const KernelInfo *,ExceptionInfo *),
+  *AccelerateDespeckleImage(const Image *,ExceptionInfo *),
+  *AccelerateRadialBlurImage(const Image *,const ChannelType,const double,
+    ExceptionInfo *),
+  *AccelerateResizeImage(const Image *,const size_t,const size_t,
+    const ResizeFilter *,ExceptionInfo *),
+  *AccelerateUnsharpMaskImage(const Image *,const ChannelType,const double,
+    const double,const double,const double,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
