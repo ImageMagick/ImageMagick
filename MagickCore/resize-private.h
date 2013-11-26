@@ -22,9 +22,6 @@
 extern "C" {
 #endif
 
-typedef struct _ResizeFilter
-  ResizeFilter;
-
 extern MagickPrivate double
   GetResizeFilterSupport(const ResizeFilter *),
   GetResizeFilterWeight(const ResizeFilter *,const double);
