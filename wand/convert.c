@@ -1035,16 +1035,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("complex",option+1) == 0)
           {
             ssize_t
-              operator;
+              op;
 
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
-            operator=ParseCommandOption(MagickComplexOptions,MagickFalse,
-              argv[i]);
-            if (operator < 0)
+            op=ParseCommandOption(MagickComplexOptions,MagickFalse,argv[i]);
+            if (op < 0)
               ThrowConvertException(OptionError,"UnrecognizedComplexOperator",
                 argv[i]);
             break;

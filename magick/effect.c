@@ -4075,13 +4075,14 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
 
-  unsharp_image = AccelerateUnsharpMaskImage(image,channel,radius,sigma,gain,threshold,exception);
+  unsharp_image=AccelerateUnsharpMaskImage(image,channel,radius,sigma,gain,
+    threshold,exception);
   if (unsharp_image != NULL)
   {
     return unsharp_image;
   }
-  unsharp_image=BlurImageChannel(image,channel &~ SyncChannels,radius,sigma,
-    exception);
+  unsharp_image=BlurImageChannel(image,(ChannelType) (channel &~ SyncChannels),
+    radius,sigma,exception);
   if (unsharp_image == (Image *) NULL)
     return((Image *) NULL);
   quantum_threshold=(MagickRealType) QuantumRange*threshold;
