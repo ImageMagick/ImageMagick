@@ -71,8 +71,6 @@ typedef enum {
 extern MagickExport
 MagickBooleanType InitImageMagickOpenCL(ImageMagickOpenCLMode, void*, void*, ExceptionInfo*);
 
-
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

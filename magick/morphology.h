@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_MORPHOLOGY_H
 #define _MAGICKCORE_MORPHOLOGY_H
 
+#include "magick/geometry.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/geometry.h"
 
 typedef enum
 {

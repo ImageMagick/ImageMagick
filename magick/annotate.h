@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_ANNOTATE_H
 #define _MAGICKCORE_ANNOTATE_H
 
+#include "magick/draw.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/draw.h"
 
 extern MagickExport MagickBooleanType
   AnnotateComponentGenesis(void),

@@ -18,17 +18,12 @@
 #ifndef _MAGICKCORE_XWINDOW_PRIVATE_H
 #define _MAGICKCORE_XWINDOW_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "magick/draw.h"
 #include "magick/exception.h"
 #include "magick/geometry.h"
 #include "magick/quantize.h"
 
 #if defined(MAGICKCORE_X11_DELEGATE)
-
 #include <X11/Xos.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -36,6 +31,14 @@ extern "C" {
 #include <X11/keysym.h>
 #include <X11/Xresource.h>
 #include <X11/Xutil.h>
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+
+#if defined(MAGICKCORE_X11_DELEGATE)
 
 #if defined(__cplusplus) || defined(c_plusplus)
 # define klass  c_class

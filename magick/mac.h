@@ -18,10 +18,6 @@
 #ifndef _MAGICKCORE_MAC_H
 #define _MAGICKCORE_MAC_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include <locale.h>
 #include <Errors.h>
 #include <Files.h>
@@ -34,6 +30,10 @@ extern "C" {
 # endif
 #else
 # include <stat.h>
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #define S_IREAD  00400
 #define S_IWRITE  00200

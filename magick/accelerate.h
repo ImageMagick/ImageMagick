@@ -18,15 +18,15 @@
 #ifndef _MAGICKCORE_ACCELERATE_H
 #define _MAGICKCORE_ACCELERATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "magick/fx.h"
 #include "magick/morphology.h"
 #include "magick/resample.h"
 #include "magick/resize.h"
 #include "magick/statistic.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 extern MagickExport MagickBooleanType
   AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
@@ -37,7 +37,6 @@ extern MagickExport MagickBooleanType
     const size_t,const double *,ExceptionInfo *),
   AccelerateModulateImage(Image*, double, double, double, 
     ColorspaceType, ExceptionInfo*);
-
 
 extern MagickExport Image
   *AccelerateAddNoiseImage(const Image*,const ChannelType,const NoiseType,

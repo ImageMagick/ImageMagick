@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_QUANTUM_PRIVATE_H
 #define _MAGICKCORE_QUANTUM_PRIVATE_H
 
+#include "magick/cache.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/cache.h"
 
 typedef struct _QuantumState
 {

@@ -18,15 +18,11 @@
 #ifndef _MAGICK_MORPHOLOGY_PRIVATE_H
 #define _MAGICK_MORPHOLOGY_PRIVATE_H
 
+#include "magick/morphology.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
-#include "magick/morphology.h"
 
 extern MagickExport Image
   *MorphologyApply(const Image *,const ChannelType,const MorphologyMethod,
@@ -37,5 +33,9 @@ extern MagickExport void
   ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags),
   UnityAddKernelInfo(KernelInfo *,const double),
   ZeroKernelNans(KernelInfo *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

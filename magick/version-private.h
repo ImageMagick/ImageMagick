@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_VERSION_PRIVATE_H
 #define _MAGICKCORE_VERSION_PRIVATE_H
 
+#include "magick/string_.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/string_.h"
 
 extern MagickExport unsigned int
   GetMagickSignature(const StringInfo *);

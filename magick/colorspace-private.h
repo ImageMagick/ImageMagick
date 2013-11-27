@@ -18,14 +18,14 @@
 #ifndef _MAGICKCORE_COLORSPACE_PRIVATE_H
 #define _MAGICKCORE_COLORSPACE_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "magick/image.h"
 #include "magick/image-private.h"
 #include "magick/pixel.h"
 #include "magick/pixel-accessor.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 static inline void ConvertRGBToCMYK(MagickPixelPacket *pixel)
 {

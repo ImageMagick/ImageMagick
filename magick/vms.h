@@ -18,10 +18,6 @@
 #ifndef _MAGICKCORE_VMS_H
 #define _MAGICKCORE_VMS_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #if defined(__DECC) || defined(__DECCXX)
 #  include <lib$routines.h>
 #  include <starlet.h>
@@ -34,6 +30,10 @@ extern "C" {
 #include <dvidef.h>
 #include <dcdef.h>
 #include <ssdef.h>
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #define DtSaverGetWindows DTSAVERGETWINDOWS
 #define XAddHosts XADDHOSTS

@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_LOCALE_H
 #define _MAGICKCORE_LOCALE_H
 
+#include "magick/hashmap.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/hashmap.h"
 
 typedef struct _LocaleInfo
 {

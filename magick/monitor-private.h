@@ -18,11 +18,11 @@
 #ifndef _MAGICK_MONITOR_PRIVATE_H
 #define _MAGICK_MONITOR_PRIVATE_H
 
+#include "magick/image.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/image.h"
 
 static inline MagickBooleanType SetImageProgress(const Image *image,
   const char *tag,const MagickOffsetType offset,const MagickSizeType extent)

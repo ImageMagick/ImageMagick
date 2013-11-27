@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_LOG_H
 #define _MAGICKCORE_LOG_H
 
+#include <stdarg.h>
+#include "magick/exception.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include <stdarg.h>
-#include "magick/exception.h"
 
 #if !defined(GetMagickModule)
 # define GetMagickModule()  __FILE__,__func__,(unsigned long) __LINE__
