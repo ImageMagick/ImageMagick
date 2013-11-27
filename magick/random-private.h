@@ -63,6 +63,12 @@ static inline RandomInfo **AcquireRandomInfoThreadSet(void)
   return(random_info);
 }
 
+extern MagickExport
+  unsigned long* GetRandomInfoSeed(RandomInfo*);
+
+extern MagickExport
+  double GetRandomInfoNormalize(RandomInfo*);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

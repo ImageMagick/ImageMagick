@@ -506,10 +506,7 @@ const char* accelerateKernels =
         const int x = get_global_id(0);  
         const int y = get_global_id(1);  
 
-        //const int columns = get_global_size(0);  
-        //const int rows = get_global_size(1);  
         const int columns = imageColumns;  
-        const int rows = imageRows;  
 
         const unsigned int radius = (width-1)/2;
         const int wsize = get_local_size(0);  
@@ -614,10 +611,7 @@ const char* accelerateKernels =
         const int x = get_global_id(0);  
         const int y = get_global_id(1);  
 
-        //const int columns = get_global_size(0);  
-        //const int rows = get_global_size(1);  
         const int columns = imageColumns;  
-        const int rows = imageRows;  
 
         const unsigned int radius = (width-1)/2;
         const int wsize = get_local_size(0);  
@@ -1784,7 +1778,7 @@ const char* accelerateKernels =
   )
 
   STRINGIFY(
- __kernel __kernel __attribute__((reqd_work_group_size(256, 1, 1)))
+ __kernel __attribute__((reqd_work_group_size(256, 1, 1)))
  void ResizeHorizontalFilter(const __global CLPixelType* inputImage, const unsigned int inputColumns, const unsigned int inputRows, const unsigned int matte
   , const float xFactor, __global CLPixelType* filteredImage, const unsigned int filteredColumns, const unsigned int filteredRows
   , const int resizeFilterType, const int resizeWindowType
@@ -1977,7 +1971,7 @@ const char* accelerateKernels =
 
 
   STRINGIFY(
- __kernel __kernel __attribute__((reqd_work_group_size(1, 256, 1)))
+ __kernel __attribute__((reqd_work_group_size(1, 256, 1)))
  void ResizeVerticalFilter(const __global CLPixelType* inputImage, const unsigned int inputColumns, const unsigned int inputRows, const unsigned int matte
   , const float yFactor, __global CLPixelType* filteredImage, const unsigned int filteredColumns, const unsigned int filteredRows
   , const int resizeFilterType, const int resizeWindowType
@@ -2148,7 +2142,7 @@ const char* accelerateKernels =
 
 
   STRINGIFY(
- __kernel __kernel __attribute__((reqd_work_group_size(1, 256, 1)))
+ __kernel __attribute__((reqd_work_group_size(1, 256, 1)))
  void ResizeVerticalFilterSinc(const __global CLPixelType* inputImage, const unsigned int inputColumns, const unsigned int inputRows, const unsigned int matte
   , const float yFactor, __global CLPixelType* filteredImage, const unsigned int filteredColumns, const unsigned int filteredRows
   , const int resizeFilterType, const int resizeWindowType
@@ -2165,7 +2159,231 @@ const char* accelerateKernels =
       ,outputPixelCache,densityCache,gammaCache);
   }
   )
+
+  STRINGIFY(
+
+
+  __kernel void randomNumberGeneratorKernel(__global uint* seeds, const float normalizeRand
+                                           , __global float* randomNumbers, const uint init
+                                           ,const uint numRandomNumbers) {
+
+    unsigned int id = get_global_id(0);
+    unsigned int seed[4];
+
+    if (init!=0) {
+      seed[0] = seeds[id*4];
+      seed[1] = 0x50a7f451;
+      seed[2] = 0x5365417e;
+      seed[3] = 0xc3a4171a;
+    }
+    else {
+      seed[0] = seeds[id*4];
+      seed[1] = seeds[id*4+1];
+      seed[2] = seeds[id*4+2];
+      seed[3] = seeds[id*4+3];
+    }
+
+    unsigned int numRandomNumbersPerItem = (numRandomNumbers+get_global_size(0)-1)/get_global_size(0);
+    for (unsigned int i = 0; i < numRandomNumbersPerItem; i++) {
+      do
+      {
+        unsigned int alpha=(unsigned int) (seed[1] ^ (seed[1] << 11));
+        seed[1]=seed[2];
+        seed[2]=seed[3];
+        seed[3]=seed[0];
+        seed[0]=(seed[0] ^ (seed[0] >> 19)) ^ (alpha ^ (alpha >> 8));
+      } while (seed[0] == ~0UL);
+      unsigned int pos = (get_group_id(0)*get_local_size(0)*numRandomNumbersPerItem) 
+                          + get_local_size(0) * i + get_local_id(0);
+
+      if (pos >= numRandomNumbers)
+        break;
+      randomNumbers[pos] = normalizeRand*seed[0];
+    }
+
+    /* save the seeds for the time*/
+    seeds[id*4]   = seed[0];
+    seeds[id*4+1] = seed[1];
+    seeds[id*4+2] = seed[2];
+    seeds[id*4+3] = seed[3];
+  }
+
+  )
+
+
+  STRINGIFY(
+  
+  typedef enum
+  {
+    UndefinedNoise,
+    UniformNoise,
+    GaussianNoise,
+    MultiplicativeGaussianNoise,
+    ImpulseNoise,
+    LaplacianNoise,
+    PoissonNoise,
+    RandomNoise
+  } NoiseType;
+
+  typedef struct {
+    const global float* rns;
+  } RandomNumbers;
+
+
+  float GetPseudoRandomValue(RandomNumbers* r) {
+    float v = *r->rns;
+    r->rns++;
+    return v;
+  }
+  )
+
+  OPENCL_DEFINE(SigmaUniform, (attenuate*0.015625f))
+  OPENCL_DEFINE(SigmaGaussian,(attenuate*0.015625f))
+  OPENCL_DEFINE(SigmaImpulse,  (attenuate*0.1f))
+  OPENCL_DEFINE(SigmaLaplacian, (attenuate*0.0390625f))
+  OPENCL_DEFINE(SigmaMultiplicativeGaussian,  (attenuate*0.5f))
+  OPENCL_DEFINE(SigmaPoisson,  (attenuate*12.5f))
+  OPENCL_DEFINE(SigmaRandom,  (attenuate))
+  OPENCL_DEFINE(TauGaussian,  (attenuate*0.078125f))
+
+  STRINGIFY(
+  float GenerateDifferentialNoise(RandomNumbers* r, CLQuantum pixel, NoiseType noise_type, float attenuate) {
+ 
+    float 
+      alpha,
+      beta,
+      noise,
+      sigma;
+
+    noise = 0.0f;
+    alpha=GetPseudoRandomValue(r);
+    switch(noise_type) {
+    case UniformNoise:
+    default:
+      {
+        noise=(pixel+QuantumRange*SigmaUniform*(alpha-0.5f));
+        break;
+      }
+    case GaussianNoise:
+      {
+        float
+          gamma,
+          tau;
+
+        if (alpha == 0.0f)
+          alpha=1.0f;
+        beta=GetPseudoRandomValue(r);
+        gamma=sqrt(-2.0f*log(alpha));
+        sigma=gamma*cospi((2.0f*beta));
+        tau=gamma*sinpi((2.0f*beta));
+        noise=(float)(pixel+sqrt((float) pixel)*SigmaGaussian*sigma+
+                      QuantumRange*TauGaussian*tau);        
+        break;
+      }
+
+
+    case ImpulseNoise:
+    {
+      if (alpha < (SigmaImpulse/2.0f))
+        noise=0.0f;
+      else
+        if (alpha >= (1.0f-(SigmaImpulse/2.0f)))
+          noise=(float)QuantumRange;
+        else
+          noise=(float)pixel;
+      break;
+    }
+    case LaplacianNoise:
+    {
+      if (alpha <= 0.5f)
+        {
+          if (alpha <= MagickEpsilon)
+            noise=(float) (pixel-QuantumRange);
+          else
+            noise=(float) (pixel+QuantumRange*SigmaLaplacian*log(2.0f*alpha)+
+              0.5f);
+          break;
+        }
+      beta=1.0f-alpha;
+      if (beta <= (0.5f*MagickEpsilon))
+        noise=(float) (pixel+QuantumRange);
+      else
+        noise=(float) (pixel-QuantumRange*SigmaLaplacian*log(2.0f*beta)+0.5f);
+      break;
+    }
+    case MultiplicativeGaussianNoise:
+    {
+      sigma=1.0f;
+      if (alpha > MagickEpsilon)
+        sigma=sqrt(-2.0f*log(alpha));
+      beta=GetPseudoRandomValue(r);
+      noise=(float) (pixel+pixel*SigmaMultiplicativeGaussian*sigma*
+        cospi((float) (2.0f*beta))/2.0f);
+      break;
+    }
+    case PoissonNoise:
+    {
+      float 
+        poisson;
+      unsigned int i;
+      poisson=exp(-SigmaPoisson*QuantumScale*pixel);
+      for (i=0; alpha > poisson; i++)
+      {
+        beta=GetPseudoRandomValue(r);
+        alpha*=beta;
+      }
+      noise=(float) (QuantumRange*i/SigmaPoisson);
+      break;
+    }
+    case RandomNoise:
+    {
+      noise=(float) (QuantumRange*SigmaRandom*alpha);
+      break;
+    }
+
+    };
+    return noise;
+  }
+
+  __kernel
+  void AddNoiseImage(const __global CLPixelType* inputImage, __global CLPixelType* filteredImage
+                    ,const unsigned int inputColumns, const unsigned int inputRows
+                    ,const ChannelType channel 
+                    ,const NoiseType noise_type, const float attenuate
+                    ,const __global float* randomNumbers, const unsigned int numRandomNumbersPerPixel
+                    ,const unsigned int rowOffset) {
+
+    unsigned int x = get_global_id(0);
+    unsigned int y = get_global_id(1) + rowOffset;
+    RandomNumbers r;
+    r.rns = randomNumbers + (get_global_id(1) * inputColumns + get_global_id(0))*numRandomNumbersPerPixel;
+
+    CLPixelType p = inputImage[y*inputColumns+x];
+    CLPixelType q = filteredImage[y*inputColumns+x];
+
+    if ((channel&RedChannel)!=0) {
+      setRed(&q,ClampToQuantum(GenerateDifferentialNoise(&r,getRed(p),noise_type,attenuate)));
+    }
+    
+    if ((channel&GreenChannel)!=0) {
+      setGreen(&q,ClampToQuantum(GenerateDifferentialNoise(&r,getGreen(p),noise_type,attenuate)));
+    }
+
+    if ((channel&BlueChannel)!=0) {
+      setBlue(&q,ClampToQuantum(GenerateDifferentialNoise(&r,getBlue(p),noise_type,attenuate)));
+    }
+
+    if ((channel & OpacityChannel) != 0) {
+      setOpacity(&q,ClampToQuantum(GenerateDifferentialNoise(&r,getOpacity(p),noise_type,attenuate)));
+    }
+
+    filteredImage[y*inputColumns+x] = q;
+  }
+
+  )
   ;
+
+
 
 
 #endif // MAGICKCORE_OPENCL_SUPPORT
