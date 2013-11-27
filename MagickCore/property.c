@@ -3807,7 +3807,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             value);
           if (colorspace < 0)
             return(MagickFalse); /* FUTURE: value exception?? */
-          return(SetImageColorspace(image,colorspace,exception));
+          return(SetImageColorspace(image,(ColorspaceType) colorspace,exception));
         }
       if (LocaleCompare("compose",property) == 0)
         {

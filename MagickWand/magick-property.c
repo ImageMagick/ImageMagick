@@ -2251,7 +2251,7 @@ WandExport MagickBooleanType MagickSetGravity(MagickWand *wand,
 
   status=SetImageOption(wand->image_info,"gravity",CommandOptionToMnemonic(
     MagickGravityOptions,(ssize_t) type));
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2346,7 +2346,7 @@ WandExport MagickBooleanType MagickSetImageProfile(MagickWand *wand,
   SetStringInfoDatum(profile_info,(unsigned char *) profile);
   status=SetImageProfile(wand->images,name,profile_info,wand->exception);
   profile_info=DestroyStringInfo(profile_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2390,7 +2390,7 @@ WandExport MagickBooleanType MagickSetImageProperty(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SetImageProperty(wand->images,property,value,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2469,7 +2469,7 @@ WandExport MagickBooleanType MagickSetInterpolateMethod(MagickWand *wand,
 
   status=SetImageOption(wand->image_info,"interpolate",
     CommandOptionToMnemonic(MagickInterpolateOptions,(ssize_t) method));
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*

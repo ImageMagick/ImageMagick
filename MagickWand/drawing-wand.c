@@ -4302,7 +4302,7 @@ WandExport MagickBooleanType DrawRender(DrawingWand *wand)
     ThrowDrawException(WandError,"ContainsNoImages",wand->name);
   status=DrawImage(wand->image,CurrentContext,wand->exception);
   CurrentContext->primitive=(char *) NULL;
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*

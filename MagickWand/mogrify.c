@@ -183,7 +183,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
             (void) fputs(*metadata,stdout);
             *metadata=DestroyString(*metadata);
           }
-      return(status == MagickFalse ? 0 : 1);
+      return(status);
     }
   number_threads=GetOpenMPMaximumThreads();
   serial=0.0;
@@ -277,7 +277,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       60.0)),(unsigned long) (1000.0*(parallel-floor(parallel))+0.5));
     timer=DestroyTimerInfo(timer);
   }
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
