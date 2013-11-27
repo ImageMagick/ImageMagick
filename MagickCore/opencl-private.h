@@ -22,6 +22,7 @@ MagickCore OpenCL private methods.
 Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/opencl.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -98,19 +99,23 @@ extern MagickExport const char*
 extern MagickExport void 
   OpenCLLog(const char*);
 
-/* #define ACCELERATE_LOG_EXCEPTION 1 */
+/* #define OPENCLLOG_ENABLED 1 */
 static inline void OpenCLLogException(const char* function, 
                         const unsigned int line, 
                         ExceptionInfo* exception) {
+#ifdef OPENCLLOG_ENABLED
   if (exception->severity!=0) {
     char message[MaxTextExtent];
     /*  dump the source into a file */
     (void) FormatLocaleString(message,MaxTextExtent,"%s:%d Exception(%d)"
       ,function,line,exception->severity);
-#ifdef ACCELERATE_LOG_EXCEPTION
     OpenCLLog(message);
-#endif
   }
+#else
+  magick_unreferenced(function);
+  magick_unreferenced(line);
+  magick_unreferenced(exception);
+#endif
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

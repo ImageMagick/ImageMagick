@@ -922,3 +922,15 @@ MagickExport void SetRandomTrueRandom(const MagickBooleanType true_random)
 {
   gather_true_random=true_random;
 }
+
+MagickPrivate unsigned long *GetRandomInfoSeed(RandomInfo *random_info)
+{
+  assert(random_info != (RandomInfo *) NULL);
+  return random_info->seed;
+}
+
+MagickPrivate double GetRandomInfoNormalize(RandomInfo *random_info)
+{
+  assert(random_info != (RandomInfo *) NULL);
+  return random_info->normalize;
+}
