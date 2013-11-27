@@ -457,10 +457,22 @@ cl_context GetOpenCLContext(MagickCLEnv clEnv) {
 static char* getBinaryCLProgramName(MagickCLEnv clEnv, MagickOpenCLProgram prog, unsigned int signature)
 {
   char* name;
+  char* ptr;
   char path[MaxTextExtent];
   char deviceName[MaxTextExtent];
   const char* prefix = "magick_opencl";
   clGetDeviceInfo(clEnv->device, CL_DEVICE_NAME, MaxTextExtent, deviceName, NULL);
+  ptr=deviceName;
+  /* strip out illegal characters for file names */
+  while (*ptr != '\0')
+  {
+    if ( *ptr == ' ' || *ptr == '\\' || *ptr == '/' || *ptr == ':' || *ptr == '*' 
+        || *ptr == '?' || *ptr == '"' || *ptr == '<' || *ptr == '>' || *ptr == '|')
+    {
+      *ptr = '_';
+    }
+    ptr++;
+  }
   (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s_%s_%02d_%08x.bin"
          ,GetOpenCLCachedFilesDirectory()
          ,DirectorySeparator,prefix,deviceName, (unsigned int)prog, signature);
@@ -2426,27 +2438,33 @@ const char* GetOpenCLCachedFilesDirectory() {
   return openclCachedFilesDirectory;
 }
 
-
-/* create a loggin function */
+/* create a function for OpenCL log */
 MagickExport
 void OpenCLLog(const char* message) {
 
+#ifdef OPENCLLOG_ENABLED
 #define OPENCL_LOG_FILE "ImageMagickOpenCL.log"
 
   FILE* log;
-  if (message) {
-    char path[MaxTextExtent];
+  if (getenv("MAGICK_OCL_LOG"))
+  {
+    if (message) {
+      char path[MaxTextExtent];
 
-    /*  dump the source into a file */
-    (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s"
-      ,GetOpenCLCachedFilesDirectory()
-      ,DirectorySeparator,OPENCL_LOG_FILE);
+      /*  dump the source into a file */
+      (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s"
+        ,GetOpenCLCachedFilesDirectory()
+        ,DirectorySeparator,OPENCL_LOG_FILE);
 
 
-    log = fopen(path, "ab");
-    fwrite(message, sizeof(char), strlen(message), log);
-    fwrite("\n", sizeof(char), 1, log);
-    fclose(log);
+      log = fopen(path, "ab");
+      fwrite(message, sizeof(char), strlen(message), log);
+      fwrite("\n", sizeof(char), 1, log);
+      fclose(log);
+    }
   }
+#else
+  magick_unreferenced(message);
+#endif
 }
 

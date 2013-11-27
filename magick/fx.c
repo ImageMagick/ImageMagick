@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/accelerate.h"
 #include "magick/annotate.h"
 #include "magick/artifact.h"
 #include "magick/attribute.h"
@@ -72,6 +73,7 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/opencl-private.h"
 #include "magick/option.h"
 #include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
@@ -311,6 +313,11 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
+  noise_image=AccelerateAddNoiseImage(image,channel,noise_type,exception);
+  if (noise_image != (Image *) NULL)
+    return(noise_image);
+
   noise_image=CloneImage(image,0,0,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
