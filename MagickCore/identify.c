@@ -354,7 +354,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       match=fabs((double) p[offset]-target) < 0.5 ? MagickTrue : MagickFalse;
       if (match != MagickFalse)
         {
-          if ((max_locations != 0) && (n >= max_locations))
+          if ((max_locations != 0) && (n >= (ssize_t) max_locations))
             break;
           (void) FormatLocaleFile(file," %.20g,%.20g",(double) x,(double) y);
           n++;

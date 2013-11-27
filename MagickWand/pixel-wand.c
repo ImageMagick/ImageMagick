@@ -1699,7 +1699,7 @@ WandExport MagickBooleanType PixelSetColor(PixelWand *wand,const char *color)
   status=QueryColorCompliance(color,AllCompliance,&pixel,wand->exception);
   if (status != MagickFalse)
     wand->pixel=pixel;
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*

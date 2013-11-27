@@ -626,7 +626,7 @@ WandExport MagickBooleanType MagickAnnotateImage(MagickWand *wand,
   (void) CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(wand->images,draw_info,wand->exception);
   draw_info=DestroyDrawInfo(draw_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -666,7 +666,7 @@ WandExport MagickBooleanType MagickAnimateImages(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) CloneString(&wand->image_info->server_name,server_name);
   status=AnimateImages(wand->image_info,wand->images,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -754,7 +754,7 @@ WandExport MagickBooleanType MagickAutoGammaImage(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=AutoGammaImage(wand->images,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -792,7 +792,7 @@ WandExport MagickBooleanType MagickAutoLevelImage(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=AutoLevelImage(wand->images,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -842,7 +842,7 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetAlphaQuantum(threshold));
   status=BlackThresholdImage(wand->images,thresholds,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -1045,7 +1045,7 @@ WandExport MagickBooleanType MagickBrightnessContrastImage(
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=BrightnessContrastImage(wand->images,brightness,contrast,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -1281,7 +1281,7 @@ WandExport MagickBooleanType MagickClipImage(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ClipImage(wand->images,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -1329,7 +1329,7 @@ WandExport MagickBooleanType MagickClipImagePath(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ClipImagePath(wand->images,pathname,inside,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -1372,7 +1372,7 @@ WandExport MagickBooleanType MagickClutImage(MagickWand *wand,
   if ((wand->images == (Image *) NULL) || (clut_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ClutImage(wand->images,clut_wand->images,method,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -1476,7 +1476,7 @@ WandExport MagickBooleanType MagickColorDecisionListImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ColorDecisionListImage(wand->images,color_correction_collection,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -1685,7 +1685,7 @@ WandExport MagickBooleanType MagickCommentImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SetImageProperty(wand->images,"comment",comment,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -1847,7 +1847,7 @@ WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=CompositeImage(wand->images,source_wand->images,compose,clip_to_self,
     x,y,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -1919,7 +1919,7 @@ WandExport MagickBooleanType MagickCompositeLayers(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   CompositeLayers(wand->images,compose,source_wand->images,x,y,wand->exception);
   status=MagickTrue;  /* FUTURE: determine status from exceptions */
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -1963,7 +1963,7 @@ WandExport MagickBooleanType MagickContrastImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ContrastImage(wand->images,sharpen,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2010,7 +2010,7 @@ WandExport MagickBooleanType MagickContrastStretchImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ContrastStretchImage(wand->images,black_point,white_point,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2156,7 +2156,7 @@ WandExport MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=CycleColormapImage(wand->images,displace,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2469,7 +2469,7 @@ WandExport MagickBooleanType MagickDisplayImage(MagickWand *wand,
   (void) CloneString(&wand->image_info->server_name,server_name);
   status=DisplayImages(wand->image_info,image,wand->exception);
   image=DestroyImage(image);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2509,7 +2509,7 @@ WandExport MagickBooleanType MagickDisplayImages(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) CloneString(&wand->image_info->server_name,server_name);
   status=DisplayImages(wand->image_info,wand->images,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2646,7 +2646,7 @@ WandExport MagickBooleanType MagickDrawImage(MagickWand *wand,
   draw_info->primitive=primitive;
   status=DrawImage(wand->images,draw_info,wand->exception);
   draw_info=DestroyDrawInfo(draw_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2859,7 +2859,7 @@ WandExport MagickBooleanType MagickEqualizeImage(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=EqualizeImage(wand->images,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2926,7 +2926,7 @@ WandExport MagickBooleanType MagickEvaluateImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=EvaluateImage(wand->images,op,value,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -2996,7 +2996,7 @@ WandExport MagickBooleanType MagickExportImagePixels(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ExportImagePixels(wand->images,x,y,columns,rows,map,
     storage,pixels,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -3170,7 +3170,7 @@ WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
   status=FloodfillPaintImage(wand->images,draw_info,&target,x,y,invert,
     wand->exception);
   draw_info=DestroyDrawInfo(draw_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -3382,7 +3382,7 @@ WandExport MagickBooleanType MagickFunctionImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=FunctionImage(wand->images,function,number_arguments,arguments,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -3470,7 +3470,7 @@ WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GammaImage(wand->images,gamma,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -3955,7 +3955,7 @@ WandExport MagickBooleanType MagickGetImageKurtosis(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageKurtosis(wand->images,kurtosis,skewness,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -4001,7 +4001,7 @@ WandExport MagickBooleanType MagickGetImageMean(MagickWand *wand,double *mean,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageMean(wand->images,mean,standard_deviation,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -4044,7 +4044,7 @@ WandExport MagickBooleanType MagickGetImageRange(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageRange(wand->images,minima,maxima,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -4474,7 +4474,7 @@ WandExport MagickBooleanType MagickGetImageDistortion(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageDistortion(wand->images,reference->images,metric,distortion,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -5813,7 +5813,7 @@ WandExport MagickBooleanType MagickHaldClutImage(MagickWand *wand,
   if ((wand->images == (Image *) NULL) || (hald_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=HaldClutImage(wand->images,hald_wand->images,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -6066,7 +6066,7 @@ WandExport MagickBooleanType MagickImportImagePixels(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ImportImagePixels(wand->images,x,y,columns,rows,map,storage,pixels,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -6215,7 +6215,7 @@ WandExport MagickBooleanType MagickLabelImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SetImageProperty(wand->images,"label",label,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -6274,7 +6274,7 @@ WandExport MagickBooleanType MagickLevelImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=LevelImage(wand->images,black_point,white_point,gamma,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -6321,7 +6321,7 @@ WandExport MagickBooleanType MagickLinearStretchImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=LinearStretchImage(wand->images,black_point,white_point,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -6572,7 +6572,7 @@ WandExport MagickBooleanType MagickModulateImage(MagickWand *wand,
   (void) FormatLocaleString(modulate,MaxTextExtent,"%g,%g,%g",
     brightness,saturation,hue);
   status=ModulateImage(wand->images,modulate,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -6883,7 +6883,7 @@ WandExport MagickBooleanType MagickNegateImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=NegateImage(wand->images,gray,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -7033,7 +7033,7 @@ WandExport MagickBooleanType MagickNormalizeImage(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=NormalizeImage(wand->images,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -7144,7 +7144,7 @@ WandExport MagickBooleanType MagickOpaquePaintImage(MagickWand *wand,
   wand->images->fuzz=fuzz;
   status=OpaquePaintImage(wand->images,&target_pixel,&fill_pixel,invert,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -7287,7 +7287,7 @@ WandExport MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=OrderedPosterizeImage(wand->images,threshold_map,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -7537,7 +7537,7 @@ WandExport MagickBooleanType MagickPosterizeImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=PosterizeImage(wand->images,levels,dither,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -7720,7 +7720,7 @@ WandExport MagickBooleanType MagickQuantizeImage(MagickWand *wand,
   quantize_info->measure_error=measure_error;
   status=QuantizeImage(quantize_info,wand->images,wand->exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -7798,7 +7798,7 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
   quantize_info->measure_error=measure_error;
   status=QuantizeImages(quantize_info,wand->images,wand->exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -7898,7 +7898,7 @@ WandExport MagickBooleanType MagickRaiseImage(MagickWand *wand,
   raise_info.x=x;
   raise_info.y=y;
   status=RaiseImage(wand->images,&raise_info,raise,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -8138,7 +8138,7 @@ WandExport MagickBooleanType MagickRemapImage(MagickWand *wand,
   status=RemapImage(quantize_info,wand->images,remap_wand->images,
     wand->exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -8585,7 +8585,7 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SegmentImage(wand->images,colorspace,verbose,cluster_threshold,
     smooth_threshold,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -9898,7 +9898,7 @@ WandExport MagickBooleanType MagickSetImageAlpha(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SetImageAlpha(wand->images,ClampToQuantum(QuantumRange*alpha),
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -10713,7 +10713,7 @@ WandExport MagickBooleanType MagickSigmoidalContrastImage(
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SigmoidalContrastImage(wand->images,sharpen,alpha,beta,
     wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -10920,7 +10920,7 @@ WandExport MagickBooleanType MagickSolarizeImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SolarizeImage(wand->images,threshold,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -11432,7 +11432,7 @@ WandExport MagickBooleanType MagickThresholdImage(MagickWand *wand,
     status;
 
   status=MagickThresholdImageChannel(wand,DefaultChannels,threshold);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 WandExport MagickBooleanType MagickThresholdImageChannel(MagickWand *wand,
@@ -11448,7 +11448,7 @@ WandExport MagickBooleanType MagickThresholdImageChannel(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=BilevelImage(wand->images,threshold,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -11733,7 +11733,7 @@ WandExport MagickBooleanType MagickTransparentPaintImage(MagickWand *wand,
   wand->images->fuzz=fuzz;
   status=TransparentPaintImage(wand->images,&target_pixel,ClampToQuantum(
     QuantumRange*alpha),invert,wand->exception);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -12167,7 +12167,7 @@ WandExport MagickBooleanType MagickWriteImage(MagickWand *wand,
   status=WriteImage(write_info,image,wand->exception);
   image=DestroyImage(image);
   write_info=DestroyImageInfo(write_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -12221,7 +12221,7 @@ WandExport MagickBooleanType MagickWriteImageFile(MagickWand *wand,FILE *file)
   status=WriteImage(write_info,image,wand->exception);
   write_info=DestroyImageInfo(write_info);
   image=DestroyImage(image);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -12270,7 +12270,7 @@ WandExport MagickBooleanType MagickWriteImages(MagickWand *wand,
   write_info->adjoin=adjoin;
   status=WriteImages(write_info,wand->images,filename,wand->exception);
   write_info=DestroyImageInfo(write_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -12317,5 +12317,5 @@ WandExport MagickBooleanType MagickWriteImagesFile(MagickWand *wand,FILE *file)
   status=WriteImages(write_info,wand->images,(const char *) NULL,
     wand->exception);
   write_info=DestroyImageInfo(write_info);
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
