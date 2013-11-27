@@ -21,11 +21,11 @@
 #ifndef _MAGICKCORE_API_DEPRECATED_H
 #define _MAGICKCORE_API_DEPRECATED_H
 
+#include "magick/MagickCore.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/MagickCore.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

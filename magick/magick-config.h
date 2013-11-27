@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_MAGICK_CONFIG_H
 #define _MAGICKCORE_MAGICK_CONFIG_H
 
+#include "magick/magick-baseconfig.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/magick-baseconfig.h"
 
 /* Compatibility block */
 #if !defined(MAGICKCORE_QUANTUM_DEPTH) && defined(MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H)

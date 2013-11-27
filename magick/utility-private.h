@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_UTILITY_PRIVATE_H
 #define _MAGICKCORE_UTILITY_PRIVATE_H
 
+#include "magick/memory_.h"
+#include "magick/nt-base.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/memory_.h"
-#include "magick/nt-base.h"
 
 extern MagickPrivate MagickBooleanType
   ShredFile(const char *);

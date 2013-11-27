@@ -18,22 +18,20 @@
 #ifndef _MAGICKCORE_NT_FEATURE_H
 #define _MAGICKCORE_NT_FEATURE_H
 
+#include "magick/splay-tree.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/splay-tree.h"
 
 extern MagickExport void
   *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),
   *ImageToHBITMAP(Image *);
 
 #if !defined(XS_VERSION)
-
 extern MagickExport MagickBooleanType
   NTIsMagickConflict(const char *),
   NTLoadTypeLists(SplayTreeInfo *,ExceptionInfo *);
-
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

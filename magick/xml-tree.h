@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_XML_TREE_H
 #define _MAGICKCORE_XML_TREE_H
 
+#include "magick/exception.h"
+#include "magick/splay-tree.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/exception.h"
-#include "magick/splay-tree.h"
 
 typedef struct _XMLTreeInfo
   XMLTreeInfo;

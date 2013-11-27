@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_MAGICK_TYPE_H
 #define _MAGICKCORE_MAGICK_TYPE_H
 
+#include "magick/magick-config.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/magick-config.h"
 
 #if !defined(MAGICKCORE_QUANTUM_DEPTH)
 #define MAGICKCORE_QUANTUM_DEPTH  16

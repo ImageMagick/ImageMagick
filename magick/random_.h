@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_RANDOM__H
 #define _MAGICKCORE_RANDOM__H
 
+#include "magick/string_.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/string_.h"
 
 /*
   Typedef declarations.

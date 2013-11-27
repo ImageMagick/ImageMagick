@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_GEM_PRIVATE_H
 #define _MAGICKCORE_GEM_PRIVATE_H
 
+#include "magick/pixel-private.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/pixel-private.h"
 
 #define D65X  0.950456
 #define D65Y  1.0

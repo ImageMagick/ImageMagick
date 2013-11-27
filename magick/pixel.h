@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_PIXEL_H
 #define _MAGICKCORE_PIXEL_H
 
+#include "magick/colorspace.h"
+#include "magick/constitute.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/colorspace.h"
-#include "magick/constitute.h"
 
 /*
   Pixel enum declarations.

@@ -18,13 +18,13 @@
 #ifndef _MAGICKCORE_PIXEL_ACCESSOR_H
 #define _MAGICKCORE_PIXEL_ACCESSOR_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include <math.h>
 #include "magick/gem.h"
 #include "magick/pixel.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #define ClampPixelRed(pixel) ClampToQuantum((pixel)->red)
 #define ClampPixelGreen(pixel) ClampToQuantum((pixel)->green)

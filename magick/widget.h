@@ -18,14 +18,15 @@
 #ifndef _MAGICKCORE_WIDGET_H
 #define _MAGICKCORE_WIDGET_H
 
+#if defined(MAGICKCORE_X11_DELEGATE)
+#include "magick/xwindow-private.h"
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 #if defined(MAGICKCORE_X11_DELEGATE)
-
-#include "magick/xwindow-private.h"
-
 extern MagickExport int
   XCommandWidget(Display *,XWindows *,const char **,XEvent *),
   XConfirmWidget(Display *,XWindows *,const char *,const char *),

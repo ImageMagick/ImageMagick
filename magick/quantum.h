@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_QUANTUM_H
 #define _MAGICKCORE_QUANTUM_H
 
+#include "magick/image.h"
+#include "magick/semaphore.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/image.h"
-#include "magick/semaphore.h"
 
 #define RoundToQuantum(quantum)  ClampToQuantum(quantum)
 

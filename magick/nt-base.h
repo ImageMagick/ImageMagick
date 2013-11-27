@@ -18,17 +18,12 @@
 #ifndef _MAGICKCORE_NT_BASE_H
 #define _MAGICKCORE_NT_BASE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-
 #include "magick/delegate.h"
 #include "magick/delegate-private.h"
 #include "magick/exception.h"
 #include "magick/geometry.h"
 
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #define _CRT_SECURE_NO_DEPRECATE  1
@@ -42,7 +37,13 @@ extern "C" {
 #if defined(_DEBUG) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #include <crtdbg.h>
 #endif
+#endif
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #define PROT_READ  0x01
 #define PROT_WRITE  0x02
 #define MAP_SHARED  0x01

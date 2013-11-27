@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_DISTRIBUTE_CACHE_PRIVATE_H
 #define _MAGICKCORE_DISTRIBUTE_CACHE_PRIVATE_H
 
+#include "magick/geometry.h"
+#include "magick/exception.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/geometry.h"
-#include "magick/exception.h"
 
 typedef struct _DistributeCacheInfo
 {

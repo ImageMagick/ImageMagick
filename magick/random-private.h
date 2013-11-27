@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_RANDOM_PRIVATE_H
 #define _MAGICKCORE_RANDOM_PRIVATE_H
 
+#include "magick/thread-private.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "magick/thread-private.h"
 
 static inline RandomInfo **DestroyRandomInfoThreadSet(
   RandomInfo **random_info)

@@ -18,13 +18,13 @@
 #ifndef _MAGICKCORE_EXCEPTION_PRIVATE_H
 #define _MAGICKCORE_EXCEPTION_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/string_.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #define ThrowBinaryException(severity,tag,context) \
 { \

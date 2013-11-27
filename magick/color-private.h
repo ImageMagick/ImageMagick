@@ -18,14 +18,14 @@
 #ifndef _MAGICKCORE_COLOR_PRIVATE_H
 #define _MAGICKCORE_COLOR_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "magick/image.h"
 #include "magick/color.h"
 #include "magick/exception-private.h"
 #include "magick/pixel-accessor.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)
