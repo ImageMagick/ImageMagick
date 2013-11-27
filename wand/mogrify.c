@@ -176,7 +176,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
             (void) fputs(*metadata,stdout);
             *metadata=DestroyString(*metadata);
           }
-      return(status == MagickFalse ? 0 : 1);
+      return(status);
     }
   number_threads=GetOpenMPMaximumThreads();
   serial=0.0;
@@ -270,7 +270,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       60.0)),(unsigned long) (1000.0*(parallel-floor(parallel))+0.5));
     timer=DestroyTimerInfo(timer);
   }
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*
@@ -4203,16 +4203,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("complex",option+1) == 0)
           {
             ssize_t
-              operator;
+              op;
 
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            operator=ParseCommandOption(MagickComplexOptions,MagickFalse,
-              argv[i]);
-            if (operator < 0)
+            op=ParseCommandOption(MagickComplexOptions,MagickFalse,argv[i]);
+            if (op < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedComplexOperator",
                 argv[i]);
             break;
@@ -7675,15 +7674,15 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
         if (LocaleCompare("complex",option+1) == 0)
           {
             ComplexOperator
-              operator;
+              op;
 
             Image
               *complex_images;
 
             (void) SyncImageSettings(mogrify_info,*images);
-            operator=(ComplexOperator) ParseCommandOption(MagickComplexOptions,
+            op=(ComplexOperator) ParseCommandOption(MagickComplexOptions,
               MagickFalse,argv[i+1]);
-            complex_images=ComplexImages(*images,operator,exception);
+            complex_images=ComplexImages(*images,op,exception);
             if (complex_images == (Image *) NULL)
               {
                 status=MagickFalse;

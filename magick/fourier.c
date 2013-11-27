@@ -126,8 +126,8 @@ typedef struct _FourierInfo
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ComplexImages(const Image *images,
-  const ComplexOperator op,ExceptionInfo *exception)
+MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
+  ExceptionInfo *exception)
 {
 #define ComplexImageTag  "Complex/Image"
 
