@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include "MagickCore/fx.h"
 #include "MagickCore/morphology.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resize.h"
@@ -34,12 +35,13 @@ extern MagickExport MagickBooleanType
   AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
   AccelerateFunctionImage(Image *,const ChannelType,const MagickFunction,
     const size_t,const double *,ExceptionInfo *),
-  AccelerateModulateImage(Image* image, double percent_brightness, 
-    double percent_hue, double percent_saturation, 
-    ColorspaceType colorspace, ExceptionInfo* exception);
+  AccelerateModulateImage(Image*, double, double, double, 
+    ColorspaceType, ExceptionInfo*);
 
 
 extern MagickExport Image
+  *AccelerateAddNoiseImage(const Image*,const ChannelType,const NoiseType,
+    ExceptionInfo *),
   *AccelerateBlurImage(const Image *,const ChannelType,const double,
     const double,ExceptionInfo *),
   *AccelerateConvolveImageChannel(const Image *,const ChannelType,
