@@ -22,8 +22,6 @@
 extern "C" {
 #endif
 
-#include <stdarg.h>
-#include <time.h>
 #include "MagickCore/exception.h"
 
 typedef struct _StringInfo
