@@ -1,5 +1,5 @@
 2013-11-27  6.8.7-8 Cristy  <quetzlzacatenango@image...>
-  * New version 6.8.7-8, SVN revision 13833.
+  * New version 6.8.7-8, SVN revision 13850.
 
 2013-11-27  6.8.7-8  SiuChi Chan  <...>
   * add an OpenCL-accelerated analog of AddNoiseImage().
