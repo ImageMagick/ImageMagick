@@ -48,7 +48,7 @@ extern "C" {
 #define MagickppLibAddendum  "-0"
 #define MagickppLibInterface  1
 #define MagickppLibMinInterface  1
-#define MagickReleaseDate  "2013-11-27"
+#define MagickReleaseDate  "2013-11-28"
 #define MagickChangeDate   "20120427"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickFeatures "DPC HDRI OpenMP"
