@@ -56,6 +56,7 @@ extern "C" {
 #include <stdarg.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <time.h>
 
 #if defined(WIN32) || defined(WIN64)
 #  define MAGICKCORE_WINDOWS_SUPPORT
