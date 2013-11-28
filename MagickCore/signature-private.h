@@ -18,13 +18,13 @@
 #ifndef _MAGICKCORE_SIGNATURE_PRIVATE_H
 #define _MAGICKCORE_SIGNATURE_PRIVATE_H
 
+#include "MagickCore/string_.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 #define MagickSignatureSize  64
-
-#include "MagickCore/string_.h"
 
 typedef struct _SignatureInfo
   SignatureInfo;

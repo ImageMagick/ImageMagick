@@ -57,6 +57,7 @@ extern "C" {
 #include <stdlib.h>
 #include <math.h>
 #include <sys/types.h>
+#include <time.h>
 
 #if defined(WIN32) || defined(WIN64)
 #  define MAGICKWAND_WINDOWS_SUPPORT

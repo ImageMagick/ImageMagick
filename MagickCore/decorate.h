@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_DECORATE_H
 #define _MAGICKCORE_DECORATE_H
 
+#include "MagickCore/image.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/image.h"
 
 typedef struct _FrameInfo
 {

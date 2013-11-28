@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_STRING_PRIVATE_H
 #define _MAGICKCORE_STRING_PRIVATE_H
 
+#include "MagickCore/locale_.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/locale_.h"
 
 static inline double SiPrefixToDoubleInterval(const char *string,
   const double interval)

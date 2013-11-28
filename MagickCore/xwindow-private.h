@@ -18,15 +18,15 @@
 #ifndef _MAGICKCORE_XWINDOW_PRIVATE_H
 #define _MAGICKCORE_XWINDOW_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantize.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #if defined(MAGICKCORE_X11_DELEGATE)
 

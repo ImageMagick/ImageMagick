@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_QUANTIZE_H
 #define _MAGICKCORE_QUANTIZE_H
 
+#include "MagickCore/colorspace.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/colorspace.h"
 
 typedef enum
 {

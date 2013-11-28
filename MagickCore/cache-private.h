@@ -18,17 +18,16 @@
 #ifndef _MAGICKCORE_CACHE_PRIVATE_H
 #define _MAGICKCORE_CACHE_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-#include <time.h>
 #include "MagickCore/cache.h"
 #include "MagickCore/distribute-cache.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/semaphore.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 typedef void
   *Cache;

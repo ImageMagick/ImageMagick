@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_GEM_H
 #define _MAGICKCORE_GEM_H
 
+#include "MagickCore/fx.h"
+#include "MagickCore/random_.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/fx.h"
-#include "MagickCore/random_.h"
 
 extern MagickExport double
   ExpandAffine(const AffineMatrix *);

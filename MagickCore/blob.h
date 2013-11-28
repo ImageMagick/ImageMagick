@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_BLOB_H
 #define _MAGICKCORE_BLOB_H
 
+#include "MagickCore/image.h"
+#include "MagickCore/stream.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/image.h"
-#include "MagickCore/stream.h"
 
 #define MagickMaxBufferExtent  (32*8192-2)
 

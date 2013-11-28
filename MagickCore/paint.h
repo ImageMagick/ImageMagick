@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_PAINT_H
 #define _MAGICKCORE_PAINT_H
 
+#include "MagickCore/color.h"
+#include "MagickCore/draw.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/color.h"
-#include "MagickCore/draw.h"
 
 extern MagickExport Image
   *OilPaintImage(const Image *,const double,const double,ExceptionInfo *);

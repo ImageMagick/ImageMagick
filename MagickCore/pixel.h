@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_PIXEL_H
 #define _MAGICKCORE_PIXEL_H
 
+#include "MagickCore/colorspace.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/colorspace.h"
 
 #define MaxPixelChannels  32
 #undef index

@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_LAYER_H
 #define _MAGICKCORE_LAYER_H
 
+#include "MagickCore/composite.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/composite.h"
 
 typedef enum
 {

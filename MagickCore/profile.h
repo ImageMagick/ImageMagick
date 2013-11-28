@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_PROFILE_H
 #define _MAGICKCORE_PROFILE_H
 
+#include "MagickCore/string_.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/string_.h"
 
 typedef struct _ProfileInfo
   ProfileInfo;

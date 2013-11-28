@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_COLOR_PRIVATE_H
 #define _MAGICKCORE_COLOR_PRIVATE_H
 
+#include "MagickCore/image.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/image.h"
 
 extern MagickPrivate MagickBooleanType
   ColorComponentGenesis(void);

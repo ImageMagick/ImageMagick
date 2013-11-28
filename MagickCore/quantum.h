@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_QUANTUM_H
 #define _MAGICKCORE_QUANTUM_H
 
+#include "MagickCore/image.h"
+#include "MagickCore/semaphore.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/image.h"
-#include "MagickCore/semaphore.h"
 
 typedef enum
 {

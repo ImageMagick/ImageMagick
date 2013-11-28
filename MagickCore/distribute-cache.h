@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_DISTRIBUTE_CACHE_H
 #define _MAGICKCORE_DISTRIBUTE_CACHE_H
 
+#include "MagickCore/exception.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/exception.h"
 
 extern MagickExport void
   DistributePixelCacheServer(const int,ExceptionInfo *);

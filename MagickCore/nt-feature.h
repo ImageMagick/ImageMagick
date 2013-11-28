@@ -18,13 +18,13 @@
 #ifndef _MAGICKCORE_NT_FEATURE_H
 #define _MAGICKCORE_NT_FEATURE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/splay-tree.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 extern MagickExport void
   *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),

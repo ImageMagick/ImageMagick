@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_COLOR_H
 #define _MAGICKCORE_COLOR_H
 
+#include "MagickCore/pixel.h"
+#include "MagickCore/exception.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/pixel.h"
-#include "MagickCore/exception.h"
 
 typedef enum
 {

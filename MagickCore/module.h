@@ -18,12 +18,11 @@
 #ifndef _MAGICKCORE_MODULE_H
 #define _MAGICKCORE_MODULE_H
 
+#include "MagickCore/version.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include <time.h>
-#include "MagickCore/version.h"
 
 #define MagickImageCoderSignature  ((size_t) \
   (((MagickLibVersion) << 8) | MAGICKCORE_QUANTUM_DEPTH))
