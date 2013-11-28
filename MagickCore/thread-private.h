@@ -18,13 +18,13 @@
 #ifndef _MAGICKCORE_THREAD_PRIVATE_H
 #define _MAGICKCORE_THREAD_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "MagickCore/cache.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/thread_.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 /*
   Single threaded unless workload justifies the threading overhead.

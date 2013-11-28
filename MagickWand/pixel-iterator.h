@@ -18,12 +18,12 @@
 #ifndef _MAGICKWAND_PIXEL_ITERATOR_H
 #define _MAGICKWAND_PIXEL_ITERATOR_H
 
+#include "MagickWand/MagickWand.h"
+#include "MagickWand/pixel-wand.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickWand/MagickWand.h"
-#include "MagickWand/pixel-wand.h"
 
 typedef struct _PixelIterator
   PixelIterator;

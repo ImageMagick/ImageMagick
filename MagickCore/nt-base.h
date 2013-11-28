@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_NT_BASE_H
 #define _MAGICKCORE_NT_BASE_H
 
+#include "MagickCore/exception.h"
+#include "MagickCore/geometry.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/exception.h"
-#include "MagickCore/geometry.h"
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 typedef struct _GhostInfo

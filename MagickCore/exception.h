@@ -18,12 +18,11 @@
 #ifndef _MAGICKCORE_EXCEPTION_H
 #define _MAGICKCORE_EXCEPTION_H
 
+#include "MagickCore/semaphore.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include <stdarg.h>
-#include "MagickCore/semaphore.h"
 
 typedef enum
 {

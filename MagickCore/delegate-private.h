@@ -18,13 +18,13 @@
 #ifndef _MAGICKCORE_DELEGATE_PRIVATE_H
 #define _MAGICKCORE_DELEGATE_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #if defined(MAGICKCORE_GS_DELEGATE)
 #include "ghostscript/iapi.h"
 #include "ghostscript/ierrors.h"
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
 #endif
 
 #ifndef gs_main_instance_DEFINED

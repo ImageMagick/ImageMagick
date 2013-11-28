@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_RANDOM_PRIVATE_H
 #define _MAGICKCORE_RANDOM_PRIVATE_H
 
+#include "MagickCore/thread-private.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/thread-private.h"
 
 extern MagickPrivate double
   GetRandomInfoNormalize(RandomInfo *);

@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_ENHANCE_H
 #define _MAGICKCORE_ENHANCE_H
 
+#include "MagickCore/pixel.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/pixel.h"
 
 extern MagickExport MagickBooleanType
   AutoGammaImage(Image *,ExceptionInfo *),

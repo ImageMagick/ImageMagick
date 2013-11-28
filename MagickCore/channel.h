@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_CHANNEL_H
 #define _MAGICKCORE_CHANNEL_H
 
+#include <MagickCore/image.h>
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include <MagickCore/image.h>
 
 extern MagickExport Image
   *ChannelFxImage(const Image *,const char *,ExceptionInfo *),

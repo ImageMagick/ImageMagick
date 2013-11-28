@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_CACHE_VIEW_H
 #define _MAGICKCORE_CACHE_VIEW_H
 
+#include "MagickCore/pixel.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/pixel.h"
 
 typedef enum
 {

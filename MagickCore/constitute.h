@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_CONSTITUTE_H
 #define _MAGICKCORE_CONSTITUTE_H
 
+#include "MagickCore/pixel.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/pixel.h"
 
 extern MagickExport Image
   *ConstituteImage(const size_t,const size_t,const char *,const StorageType,

@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_XML_TREE_PRIVATE_H
 #define _MAGICKCORE_XML_TREE_PRIVATE_H
 
+#include "MagickCore/exception.h"
+#include "MagickCore/splay-tree.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/exception.h"
-#include "MagickCore/splay-tree.h"
 
 extern MagickPrivate char
   *CanonicalXMLContent(const char *,const MagickBooleanType);

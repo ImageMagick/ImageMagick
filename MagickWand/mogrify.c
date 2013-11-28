@@ -7577,15 +7577,15 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
         if (LocaleCompare("complex",option+1) == 0)
           {
             ComplexOperator
-              operator;
+              op;
 
             Image
               *complex_images;
 
             (void) SyncImageSettings(mogrify_info,*images,exception);
-            operator=(ComplexOperator) ParseCommandOption(MagickComplexOptions,
+            op=(ComplexOperator) ParseCommandOption(MagickComplexOptions,
               MagickFalse,argv[i+1]);
-            complex_images=ComplexImages(*images,operator,exception);
+            complex_images=ComplexImages(*images,op,exception);
             if (complex_images == (Image *) NULL)
               {
                 status=MagickFalse;

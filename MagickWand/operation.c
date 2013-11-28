@@ -4327,10 +4327,10 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
   /* if new image list generated, replace existing image list */
   if (new_images == (Image *) NULL)
-    return(status);
+    return(status == 0 ? MagickFalse : MagickTrue);
   _images=DestroyImageList(_images);
   _images=GetFirstImageInList(new_images);
-  return(status);
+  return(status == 0 ? MagickFalse : MagickTrue);
 
 #undef _image_info
 #undef _images

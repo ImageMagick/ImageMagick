@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_CACHE_H
 #define _MAGICKCORE_CACHE_H
 
+#include "MagickCore/blob.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/blob.h"
 
 typedef enum
 {

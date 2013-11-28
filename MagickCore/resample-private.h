@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_RESAMPLE_PRIVATE_H
 #define _MAGICKCORE_RESAMPLE_PRIVATE_H
 
+#include "MagickCore/thread-private.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/thread-private.h"
 
 static inline ResampleFilter **DestroyResampleFilterThreadSet(
   ResampleFilter **filter)

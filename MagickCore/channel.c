@@ -197,6 +197,10 @@ static MagickBooleanType ChannelImage(Image *destination_image,
   return(status);
 }
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   ExceptionInfo *exception)
 {
@@ -441,6 +445,10 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     }
   return(GetFirstImageInList(destination_image));
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -472,6 +480,10 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 MagickExport Image *CombineImages(const Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
@@ -594,6 +606,10 @@ MagickExport Image *CombineImages(const Image *image,
     combine_image=DestroyImage(combine_image);
   return(combine_image);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -656,6 +672,10 @@ MagickExport MagickBooleanType GetImageAlphaChannel(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 MagickExport Image *SeparateImage(const Image *image,
   const ChannelType channel_type,ExceptionInfo *exception)
 {
@@ -776,6 +796,10 @@ MagickExport Image *SeparateImage(const Image *image,
     separate_image=DestroyImage(separate_image);
   return(separate_image);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -802,6 +826,10 @@ MagickExport Image *SeparateImage(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 {
   Image
@@ -831,6 +859,10 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
     images=SeparateImage(image,UndefinedChannel,exception);
   return(images);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -925,6 +957,10 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
     }
   }
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   const AlphaChannelOption alpha_type,ExceptionInfo *exception)
@@ -1095,3 +1131,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     return(status);
   return(SyncImagePixelCache(image,exception));
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif

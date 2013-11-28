@@ -18,11 +18,11 @@
 #ifndef _MAGICKWAND_DRAWING_WAND_H
 #define _MAGICKWAND_DRAWING_WAND_H
 
+#include "MagickWand/pixel-wand.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickWand/pixel-wand.h"
 
 typedef struct _DrawingWand
   DrawingWand;

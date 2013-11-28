@@ -18,13 +18,13 @@
 #ifndef _MAGICKCORE_COLORMAP_PRIVATE_H
 #define _MAGICKCORE_COLORMAP_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "MagickCore/image.h"
 #include "MagickCore/color.h"
 #include "MagickCore/exception-private.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 static inline Quantum ConstrainColormapIndex(Image *image,const size_t index,
   ExceptionInfo *exception)

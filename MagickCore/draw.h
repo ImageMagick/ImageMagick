@@ -18,14 +18,14 @@
 #ifndef _MAGICKCORE_DRAW_H
 #define _MAGICKCORE_DRAW_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "MagickCore/geometry.h"
 #include "MagickCore/image.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/type.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 typedef enum
 {

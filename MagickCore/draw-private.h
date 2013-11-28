@@ -18,13 +18,13 @@
 #ifndef _MAGICKCORE_DRAW_PRIVATE_H
 #define _MAGICKCORE_DRAW_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include "MagickCore/cache.h"
 #include "MagickCore/image.h"
 #include "MagickCore/memory_.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 static inline MagickBooleanType GetFillColor(const DrawInfo *draw_info,
   const ssize_t x,const ssize_t y,PixelInfo *fill,ExceptionInfo *exception)

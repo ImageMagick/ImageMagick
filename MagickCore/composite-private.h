@@ -18,13 +18,6 @@
 #ifndef _MAGICKCORE_COMPOSITE_PRIVATE_H
 #define _MAGICKCORE_COMPOSITE_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-/*
-  ImageMagick Alpha Composite Inline Methods (special export)
-*/
 
 #include "MagickCore/color.h"
 #include "MagickCore/image.h"
@@ -32,6 +25,13 @@ extern "C" {
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/pixel-private.h"
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+/*
+  ImageMagick Alpha Composite Inline Methods (special export)
+*/
 static inline double MagickOver_(const double p,
   const double alpha,const double q,const double beta)
 {

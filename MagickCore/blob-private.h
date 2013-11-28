@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_BLOB_PRIVATE_H
 #define _MAGICKCORE_BLOB_PRIVATE_H
 
+#include "MagickCore/nt-feature.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/nt-feature.h"
 
 #define MagickMinBlobExtent  32767L
 #if defined(MAGICKCORE_HAVE_FSEEKO)

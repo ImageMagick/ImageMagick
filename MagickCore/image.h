@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_IMAGE_H
 #define _MAGICKCORE_IMAGE_H
 
+#include "MagickCore/color.h"
+#include "MagickCore/pixel.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/color.h"
-#include "MagickCore/pixel.h"
 
 #define OpaqueAlpha  ((Quantum) QuantumRange)
 #define TransparentAlpha  ((Quantum) 0)

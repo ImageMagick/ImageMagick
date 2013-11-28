@@ -18,12 +18,12 @@
 #ifndef _MAGICKCORE_ATTRIBUTE_H
 #define _MAGICKCORE_ATTRIBUTE_H
 
+#include "MagickCore/image.h"
+#include "MagickCore/exception.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/image.h"
-#include "MagickCore/exception.h"
 
 extern MagickExport ImageType
   GetImageType(const Image *,ExceptionInfo *);

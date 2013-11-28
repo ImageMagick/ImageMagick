@@ -18,15 +18,11 @@
 #ifndef _MAGICK_MORPHOLOGY_PRIVATE_H
 #define _MAGICK_MORPHOLOGY_PRIVATE_H
 
+#include "MagickCore/morphology.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
-#include "MagickCore/morphology.h"
 
 extern MagickPrivate Image
   *MorphologyApply(const Image *,const MorphologyMethod,const ssize_t,
@@ -35,5 +31,9 @@ extern MagickPrivate Image
 extern MagickPrivate void
   ShowKernelInfo(const KernelInfo *),
   ZeroKernelNans(KernelInfo *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

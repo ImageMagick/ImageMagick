@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_STRING_H_
 #define _MAGICKCORE_STRING_H_
 
+#include "MagickCore/exception.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/exception.h"
 
 typedef struct _StringInfo
 {

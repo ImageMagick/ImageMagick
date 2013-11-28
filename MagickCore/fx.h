@@ -18,11 +18,11 @@
 #ifndef _MAGICKCORE_FX_H
 #define _MAGICKCORE_FX_H
 
+#include "MagickCore/draw.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include "MagickCore/draw.h"
 
 typedef enum
 {

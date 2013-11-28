@@ -18,14 +18,14 @@
 #ifndef _MAGICKCORE_MAC_H
 #define _MAGICKCORE_MAC_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #include <locale.h>
 #include <Errors.h>
 #include <Files.h>
 #include <errno.h>
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #if defined(_MAGICKCORE_POSIX_SUPPORT_VERSION)
 # include <dirent.h>

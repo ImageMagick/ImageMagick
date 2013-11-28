@@ -18,12 +18,11 @@
 #ifndef _MAGICKCORE_LOG_PRIVATE_H
 #define _MAGICKCORE_LOG_PRIVATE_H
 
+#include "MagickCore/exception.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#include <stdarg.h>
-#include "MagickCore/exception.h"
 
 extern MagickPrivate MagickBooleanType
   LogComponentGenesis(void);
