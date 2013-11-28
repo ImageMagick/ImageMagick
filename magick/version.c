@@ -46,6 +46,7 @@
 #include "magick/string_.h"
 #include "magick/utility.h"
 #include "magick/version.h"
+#include "magick/version-private.h"
 
 /*
   Define declarations.
@@ -457,10 +458,6 @@ static unsigned int CRC32(const unsigned char *message,const size_t length)
   return(crc ^ 0xFFFFFFFF);
 }
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
 {
   register unsigned char
@@ -493,10 +490,6 @@ MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
   version=DestroyStringInfo(version);
   return(signature);
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
