@@ -1185,6 +1185,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     {
       if (IsGrayImage(image,&image->exception) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace);
+      (void) NormalizeImage(image);
       if (IsMonochromeImage(image,&image->exception) == MagickFalse)
         {
           quantize_info=AcquireQuantizeInfo(image_info);
