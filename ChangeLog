@@ -1,3 +1,7 @@
+2013-11-30  6.8.7-9 Dirk Lemstra <dirk@snakeware...>
+  * Fixed bug in automatic selection of OpenCL device (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24542).
+
 2013-11-28  6.8.7-9 Cristy  <quetzlzacatenango@image...>
   * The -type bilevel option sometimes returned an all white image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24444).
@@ -6,7 +10,7 @@
   * New version 6.8.7-8, SVN revision 13850.
 
 2013-11-27  6.8.7-8  SiuChi Chan  <...>
-  * add an OpenCL-accelerated analog of AddNoiseImage().
+  * Add an OpenCL-accelerated analog of AddNoiseImage().
 
 2013-11-23  6.8.7-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-7, SVN revision 13827.
