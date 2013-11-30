@@ -1460,8 +1460,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   DestroyAnimate();
   return(status != 0 ? MagickTrue : MagickFalse);
 #else
-  (void) argc;
-  (void) argv;
+  magick_unreferenced(argc);
+  magick_unreferenced(argv);
+  magick_unreferenced(metadata);
+
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","`%s' (X11)",image_info->filename);
   return(AnimateUsage());

@@ -1899,8 +1899,10 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   DestroyDisplay();
   return(status != 0 ? MagickTrue : MagickFalse);
 #else
-  (void) argc;
-  (void) argv;
+  magick_unreferenced(argc);
+  magick_unreferenced(argv);
+  magick_unreferenced(metadata);
+
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","`%s' (X11)",image_info->filename);
   return(DisplayUsage());
