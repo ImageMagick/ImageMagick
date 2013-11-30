@@ -1954,12 +1954,13 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
   dash_array=(double *) NULL;
   if (n != 0)
     {
-      dash_array=(double *) AcquireQuantumMemory((size_t) n,
+      dash_array=(double *) AcquireQuantumMemory((size_t) n+1UL,
         sizeof(*dash_array));
       p=CurrentContext->dash_pattern;
       q=dash_array;
       for (i=0; i < (ssize_t) n; i++)
         *q++=(*p++);
+      *q=0.0;
     }
   return(dash_array);
 }
@@ -5482,18 +5483,17 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
           p=dash_array;
           for (i=0; i < (ssize_t) n_new; i++)
             *q++=(*p++);
-          *q=0;
+          *q=0.0;
         }
       (void) MvgPrintf(wand,"stroke-dasharray ");
       if (n_new == 0)
-        (void) MvgPrintf(wand,"none\n");
+        (void) MvgPrintf(wand,"none");
       else
         {
           p=dash_array;
           (void) MvgPrintf(wand,"%g",*p++);
           for (i=1; i < (ssize_t) n_new; i++)
             (void) MvgPrintf(wand,",%g",*p++);
-          (void) MvgPrintf(wand,"\n");
         }
     }
   return(MagickTrue);
