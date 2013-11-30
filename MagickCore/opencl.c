@@ -2138,13 +2138,12 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
     status = DS_PERF_EVALUATOR_ERROR;
     goto cleanup;
   }
-  InitOpenCLEnvInternal(clEnv, exception);
+  mStatus=InitOpenCLEnvInternal(clEnv, exception);
 
   status = releaseDSProfile(profile, AccelerateScoreRelease);
   if (status!=DS_SUCCESS) {
     (void) ThrowMagickException(exception, GetMagickModule(), ModuleWarning, "Error when releasing the profile", "'%s'", ".");
   }
-  mStatus = MagickTrue;
 
 cleanup:
 
