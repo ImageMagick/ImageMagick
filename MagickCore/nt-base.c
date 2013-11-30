@@ -2077,9 +2077,9 @@ MagickPrivate int NTSystemCommand(const char *command)
   if (background_process != MagickFalse)
     local_command[strlen(command)-1]='\0';
   if (command[strlen(command)-1] == '|')
-     local_command[strlen(command)-1]='\0';
-   else
-     startup_info.wShowWindow=SW_SHOWDEFAULT;
+    local_command[strlen(command)-1]='\0';
+  else
+    startup_info.wShowWindow=SW_HIDE;
   status=CreateProcess((LPCTSTR) NULL,local_command,(LPSECURITY_ATTRIBUTES)
     NULL,(LPSECURITY_ATTRIBUTES) NULL,(BOOL) FALSE,(DWORD)
     NORMAL_PRIORITY_CLASS,(LPVOID) NULL,(LPCSTR) NULL,&startup_info,
