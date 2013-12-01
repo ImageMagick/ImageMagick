@@ -113,7 +113,7 @@ static MagickBooleanType checkOpenCLEnvironment(ExceptionInfo* exception)
 }
 
 
-static MagickBooleanType checkAccelerateCondition(const Image* image, const ChannelType channel, ExceptionInfo *exception) 
+static MagickBooleanType checkAccelerateCondition(const Image* image, const ChannelType channel)
 {
   /* check if the image's colorspace is supported */
   if (image->colorspace != RGBColorspace
@@ -473,7 +473,7 @@ MagickExport Image* AccelerateConvolveImageChannel(const Image *image, const Cha
   if (status == MagickFalse)
     return NULL;
 
-  status = checkAccelerateCondition(image, channel, exception);
+  status = checkAccelerateCondition(image, channel);
   if (status == MagickFalse)
     return NULL;
 
@@ -645,7 +645,7 @@ MagickExport MagickBooleanType
   status = checkOpenCLEnvironment(exception);
   if (status == MagickTrue)
   {
-    status = checkAccelerateCondition(image, channel, exception);
+    status = checkAccelerateCondition(image, channel);
     if (status == MagickTrue)
     {
       status = ComputeFunctionImage(image, channel, function, number_parameters, parameters, exception);
@@ -1369,7 +1369,7 @@ Image* AccelerateBlurImage(const Image *image, const ChannelType channel, const 
   if (status == MagickFalse)
     return NULL;
 
-  status = checkAccelerateCondition(image, channel, exception);
+  status = checkAccelerateCondition(image, channel);
   if (status == MagickFalse)
     return NULL;
 
@@ -1676,7 +1676,7 @@ Image* AccelerateRadialBlurImage(const Image *image, const ChannelType channel, 
   if (status == MagickFalse)
     return NULL;
 
-  status = checkAccelerateCondition(image, channel, exception);
+  status = checkAccelerateCondition(image, channel);
   if (status == MagickFalse)
     return NULL;
 
@@ -2383,7 +2383,7 @@ Image* AccelerateUnsharpMaskImage(const Image *image, const ChannelType channel,
   if (status == MagickFalse)
     return NULL;
 
-  status = checkAccelerateCondition(image, channel, exception);
+  status = checkAccelerateCondition(image, channel);
   if (status == MagickFalse)
     return NULL;
 
@@ -2452,7 +2452,9 @@ static MagickBooleanType resizeHorizontalFilter(cl_mem inputImage
   /* get the local memory size supported by the device */
   deviceLocalMemorySize = GetOpenCLDeviceLocalMemorySize(clEnv);
 
+DisableMSCWarning(4127)
   while(1)
+RestoreMSCWarning
   {
     /* calculate the local memory size needed per workgroup */
     cacheRangeStart = (int) (((0 + 0.5)/xFactor+MagickEpsilon)-support+0.5);
@@ -2632,7 +2634,9 @@ static MagickBooleanType resizeVerticalFilter(cl_mem inputImage
   /* get the local memory size supported by the device */
   deviceLocalMemorySize = GetOpenCLDeviceLocalMemorySize(clEnv);
 
+DisableMSCWarning(4127)
   while(1)
+RestoreMSCWarning
   {
     /* calculate the local memory size needed per workgroup */
     cacheRangeStart = (int) (((0 + 0.5)/yFactor+MagickEpsilon)-support+0.5);
@@ -3047,7 +3051,7 @@ Image* AccelerateResizeImage(const Image* image, const size_t resizedColumns, co
   if (status == MagickFalse)
     return NULL;
 
-  status = checkAccelerateCondition(image, AllChannels, exception);
+  status = checkAccelerateCondition(image, AllChannels);
   if (status == MagickFalse)
     return NULL;
 
@@ -3207,7 +3211,7 @@ MagickBooleanType AccelerateContrastImage(Image* image, const MagickBooleanType 
   if (status == MagickFalse)
     return MagickFalse;
 
-  status = checkAccelerateCondition(image, AllChannels, exception);
+  status = checkAccelerateCondition(image, AllChannels);
   if (status == MagickFalse)
     return MagickFalse;
 
@@ -3415,7 +3419,7 @@ MagickBooleanType AccelerateModulateImage(Image* image, double percent_brightnes
   if (status == MagickFalse)
     return MagickFalse;
 
-  status = checkAccelerateCondition(image, AllChannels, exception);
+  status = checkAccelerateCondition(image, AllChannels);
   if (status == MagickFalse)
     return MagickFalse;
 
@@ -3921,7 +3925,7 @@ MagickBooleanType AccelerateEqualizeImage(Image* image, const ChannelType channe
   if (status == MagickFalse)
     return MagickFalse;
 
-  status = checkAccelerateCondition(image, channel, exception);
+  status = checkAccelerateCondition(image, channel);
   if (status == MagickFalse)
     return MagickFalse;
 
@@ -4284,7 +4288,7 @@ Image* AccelerateDespeckleImage(const Image* image, ExceptionInfo* exception)
   if (status == MagickFalse)
     return NULL;
 
-  status = checkAccelerateCondition(image, AllChannels, exception);
+  status = checkAccelerateCondition(image, AllChannels);
   if (status == MagickFalse)
     return NULL;
 
@@ -4809,11 +4813,13 @@ Image* AccelerateAddNoiseImage(const Image *image, const ChannelType channel,
   if (status == MagickFalse)
     return NULL;
 
-  status = checkAccelerateCondition(image, channel, exception);
+  status = checkAccelerateCondition(image, channel);
   if (status == MagickFalse)
     return NULL;
 
+DisableMSCWarning(4127)
   if (sizeof(unsigned long) == 4)
+RestoreMSCWarning
     filteredImage = ComputeAddNoiseImageOptRandomNum(image,channel,noise_type,exception);
   else
     filteredImage = ComputeAddNoiseImage(image,channel,noise_type,exception);

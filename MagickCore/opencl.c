@@ -384,7 +384,11 @@ MagickExport
   MagickBooleanType GetMagickOpenCLEnvParam(MagickCLEnv clEnv, MagickOpenCLEnvParam param
                                           , size_t dataSize, void* data, ExceptionInfo* exception)
 {
-  MagickBooleanType status;
+  MagickBooleanType
+   status;
+
+  magick_unreferenced(exception);
+
   status = MagickFalse;
 
   if (clEnv == NULL
@@ -542,7 +546,7 @@ cleanup:
   return saveSuccessful;
 }
 
-static MagickBooleanType loadBinaryCLProgram(MagickCLEnv clEnv, MagickOpenCLProgram prog, unsigned int signature, ExceptionInfo* exception)
+static MagickBooleanType loadBinaryCLProgram(MagickCLEnv clEnv, MagickOpenCLProgram prog, unsigned int signature)
 {
   MagickBooleanType loadSuccessful;
   unsigned char* binaryProgram;
@@ -701,7 +705,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
 
     /* try to load the binary first */
     if (!getenv("MAGICK_OCL_REC"))
-      loadSuccessful = loadBinaryCLProgram(clEnv, (MagickOpenCLProgram)i, programSignature, exception);
+      loadSuccessful = loadBinaryCLProgram(clEnv, (MagickOpenCLProgram)i, programSignature);
 
     if (loadSuccessful == MagickFalse)
     {
@@ -1425,11 +1429,11 @@ cleanup:
   return status;
 }
 
-/* Pointer to a function that calculates the score of a device (ex: device->score) 
- update the data size of score. The encoding and the format of the score data 
- is implementation defined. The function should return DS_SUCCESS if there's no error to be reported.
+/*
+  Pointer to a function that updates the score of a device (ex: device->score)
+  The function should return DS_SUCCESS if there's no error to be reported.
  */
-typedef ds_status (*ds_perf_evaluator)(ds_device* device, void* data);
+typedef ds_status (*ds_perf_evaluator)(ds_device* device);
 
 typedef enum {
   DS_EVALUATE_ALL
@@ -1437,7 +1441,7 @@ typedef enum {
 } ds_evaluation_type;
 
 static ds_status profileDevices(ds_profile* profile, const ds_evaluation_type type
-                         ,ds_perf_evaluator evaluator, void* evaluatorData, unsigned int* numUpdates) {
+                         ,ds_perf_evaluator evaluator, unsigned int* numUpdates) {
   ds_status status = DS_SUCCESS;
   unsigned int i;
   unsigned int updates = 0;
@@ -1458,7 +1462,7 @@ static ds_status profileDevices(ds_profile* profile, const ds_evaluation_type ty
         break;
       /*  else fall through */
     case DS_EVALUATE_ALL:
-      evaluatorStatus = evaluator(profile->devices+i, evaluatorData);
+      evaluatorStatus = evaluator(profile->devices+i);
       if (evaluatorStatus != DS_SUCCESS) {
         status = evaluatorStatus;
         return status;
@@ -1686,7 +1690,7 @@ static ds_status readProfileFromFile(ds_profile* profile, ds_score_deserializer 
     }
 
     versionStringLength = strlen(profile->version);
-    if (versionStringLength!=(dataEnd-dataStart)   
+    if (versionStringLength!=(size_t)(dataEnd-dataStart)   
         || strncmp(profile->version, dataStart, versionStringLength)!=(int)0) {
       /* version mismatch */
       status = DS_PROFILE_FILE_ERROR;
@@ -1695,7 +1699,9 @@ static ds_status readProfileFromFile(ds_profile* profile, ds_score_deserializer 
     currentPosition = dataEnd+strlen(DS_TAG_VERSION_END);
 
     /* parse the device information */
+DisableMSCWarning(4127)
     while (1) {
+RestoreMSCWarning
       unsigned int i;
 
       const char* deviceTypeStart;
@@ -1814,8 +1820,8 @@ static ds_status readProfileFromFile(ds_profile* profile, ds_score_deserializer 
             
             actualDeviceNameLength = strlen(profile->devices[i].oclDeviceName);
             driverVersionLength = strlen(profile->devices[i].oclDriverVersion);
-            if (actualDeviceNameLength == (deviceNameEnd - deviceNameStart)
-               && driverVersionLength == (deviceDriverEnd - deviceDriverStart)
+            if (actualDeviceNameLength == (size_t)(deviceNameEnd - deviceNameStart)
+               && driverVersionLength == (size_t)(deviceDriverEnd - deviceDriverStart)
                && maxComputeUnits == profile->devices[i].oclMaxComputeUnits
                && maxClockFrequency == profile->devices[i].oclMaxClockFrequency
                && strncmp(profile->devices[i].oclDeviceName, deviceNameStart, actualDeviceNameLength)==(int)0
@@ -1935,7 +1941,7 @@ double readAccelerateTimer(AccelerateTimer* timer) { return (double)timer->_cloc
 
 typedef double AccelerateScoreType;
 
-static ds_status AcceleratePerfEvaluator(ds_device* device, void* data) {
+static ds_status AcceleratePerfEvaluator(ds_device* device) {
 
   ds_status status = DS_SUCCESS;
   MagickCLEnv clEnv = NULL;
@@ -2099,7 +2105,7 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
          ,DirectorySeparator,IMAGEMAGICK_PROFILE_FILE);
 
   readProfileFromFile(profile, AccelerateScoreDeserializer, path);
-  status = profileDevices(profile, DS_EVALUATE_NEW_ONLY, AcceleratePerfEvaluator, NULL, &numDeviceProfiled);
+  status = profileDevices(profile, DS_EVALUATE_NEW_ONLY, AcceleratePerfEvaluator, &numDeviceProfiled);
   if (status!=DS_SUCCESS) {
     (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Error when initializing the profile", "'%s'", ".");
     goto cleanup;
