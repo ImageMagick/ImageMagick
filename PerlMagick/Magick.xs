@@ -19,7 +19,7 @@
 %                                                                             %
 %                            Software Design                                  %
 %                              Kyle Shorter                                   %
-%                              John Cristy                                    %
+%                                 Cristy                                      %
 %                             February 1997                                   %
 %                                                                             %
 %                                                                             %
