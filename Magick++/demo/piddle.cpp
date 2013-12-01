@@ -3,7 +3,7 @@
 // Copyright Bob Friesenhahn, 1999, 2000, 2002, 2003
 //
 // PerlMagick "piddle" demo re-implemented using Magick++ methods.
-// The PerlMagick "piddle" demo is written by John Cristy
+// The PerlMagick "piddle" demo is written by Cristy
 //
 
 #include <Magick++.h>
