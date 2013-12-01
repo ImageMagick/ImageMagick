@@ -13,7 +13,7 @@
 %                    Macintosh Utility Methods for MagickCore                 %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                September 1996                               %
 %                                                                             %
 %                                                                             %

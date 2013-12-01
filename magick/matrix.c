@@ -13,7 +13,7 @@
 %                         MagickCore Matrix Methods                           %
 %                                                                             %
 %                            Software Design                                  %
-%                              John Cristy                                    %
+%                                 Cristy                                      %
 %                              August 2007                                    %
 %                                                                             %
 %                                                                             %

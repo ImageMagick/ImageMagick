@@ -13,7 +13,7 @@
 %               Import image to a machine independent format.                 %
 %                                                                             %
 %                           Software Design                                   %
-%                             John Cristy                                     %
+%                                Cristy                                       %
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %

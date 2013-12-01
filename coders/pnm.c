@@ -13,7 +13,7 @@
 %               Read/Write PBMPlus Portable Anymap Image Format               %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

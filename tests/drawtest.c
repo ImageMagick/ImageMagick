@@ -19,7 +19,7 @@
 %                         MagickWand Drawing Tests                            %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                              Bob Friesenhahn                                %
 %                                March 2002                                   %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                     Read Pango Markup Language Format                       %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 March 2012                                  %
 %                                                                             %
 %                                                                             %

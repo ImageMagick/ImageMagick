@@ -13,7 +13,7 @@
 %            Read/Write Raw CCIR 601 4:1:1 or 4:2:2 Image Format              %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

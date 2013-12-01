@@ -13,7 +13,7 @@
 %                   Read/Write Adobe Photoshop Image Format                   %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                              Leonard Rosenthol                              %
 %                                 July 1992                                   %
 %                                                                             %

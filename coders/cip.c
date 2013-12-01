@@ -12,7 +12,7 @@
 %                  Read/Write Cisco IP Phone Image Format                     %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                April 2004                                   %
 %                                                                             %
 %                                                                             %

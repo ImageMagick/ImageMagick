@@ -12,7 +12,7 @@
 %                                                                             %
 %                     Read/Write JPEG-2000 Image Format                       %
 %                                                                             %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                Nathan Brown                                 %
 %                                 June 2001                                   %
 %                                                                             %

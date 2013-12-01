@@ -13,7 +13,7 @@
 %                    Read/Write Image from/to X11 Server.                     %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

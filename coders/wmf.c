@@ -13,7 +13,7 @@
 %                        Read Windows Metafile Format                         %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               December 2000                                 %
 %                                                                             %
 %                                                                             %

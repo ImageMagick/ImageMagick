@@ -13,7 +13,7 @@
 %                     Read/Write SMTPE DPX Image Format                       %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                March 2001                                   %
 %                                                                             %
 %                                                                             %

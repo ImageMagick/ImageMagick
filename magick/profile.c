@@ -13,7 +13,7 @@
 %                       MagickCore Image Profile Methods                      %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

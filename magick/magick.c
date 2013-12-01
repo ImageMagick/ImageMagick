@@ -14,7 +14,7 @@
 %                                                                             %
 %                            Software Design                                  %
 %                            Bob Friesenhahn                                  %
-%                              John Cristy                                    %
+%                                 Cristy                                      %
 %                             November 1998                                   %
 %                                                                             %
 %                                                                             %

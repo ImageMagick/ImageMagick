@@ -13,7 +13,7 @@
 %                     MagickCore Image Distortion Methods                     %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                              Anthony Thyssen                                %
 %                                 June 2007                                   %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                Convert an image from one format to another.                 %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                April 1992                                   %
 %                                                                             %
 %                                                                             %

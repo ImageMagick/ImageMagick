@@ -15,7 +15,7 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                             Kelly Bergougnoux                               %
 %                               October 2003                                  %
 %                                                                             %

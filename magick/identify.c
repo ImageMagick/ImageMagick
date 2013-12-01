@@ -13,7 +13,7 @@
 %               Identify an Image Format and Characteristics.                 %
 %                                                                             %
 %                           Software Design                                   %
-%                             John Cristy                                     %
+%                                Cristy                                       %
 %                            September 1994                                   %
 %                                                                             %
 %                                                                             %

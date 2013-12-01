@@ -12,7 +12,7 @@
 %                  MagickCore Methods to Import/Export Pixels                 %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                               October 1998                                  %
 %                                                                             %
 %                                                                             %

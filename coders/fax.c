@@ -13,7 +13,7 @@
 %                   Read/Write Group 3 Fax Image Format                       %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

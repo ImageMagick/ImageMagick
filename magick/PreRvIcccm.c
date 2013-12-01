@@ -13,7 +13,7 @@
 %                     MagickCore X11 Compatibility Methods                    %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                December 1994                                %
 %                                                                             %
 %                                                                             %

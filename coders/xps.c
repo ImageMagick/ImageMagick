@@ -13,7 +13,7 @@
 %             Read/Write Microsoft XML Paper Specification Format             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               January 2008                                  %
 %                                                                             %
 %                                                                             %

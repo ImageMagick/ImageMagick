@@ -13,7 +13,7 @@
 %    MagickCore Methods to Segment an Image with Thresholding Fuzzy c-Means   %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                April 1993                                   %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                       Read/Write MPEG Image Format                          %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                   MagickCore Image Special Effects Methods                  %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                 October 1996                                %
 %                                                                             %
 %                                                                             %

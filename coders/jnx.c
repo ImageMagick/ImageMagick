@@ -12,7 +12,7 @@
 %                                                                             %
 %                       Read/Write Garmin Image Format                        %
 %                                                                             %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 2012                                   %
 %                                                                             %
 %                                                                             %

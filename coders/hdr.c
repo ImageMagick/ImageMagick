@@ -13,7 +13,7 @@
 %                   Read/Write Radiance RGBE Image Format                     %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

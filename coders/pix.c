@@ -13,7 +13,7 @@
 %                    Read Alias/Wavefront RLE Image Format                    %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
