@@ -16067,6 +16067,7 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  (void) image_info;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) ThrowMagickException(&image->exception,GetMagickModule(),
