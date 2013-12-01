@@ -13,7 +13,7 @@
 %                     Stream Image to a Raw Image Format                      %
 %                                                                             %
 %                           Software Design                                   %
-%                             John Cristy                                     %
+%                                Cristy                                       %
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %

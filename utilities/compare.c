@@ -14,7 +14,7 @@
 %                                                                             %
 %                                                                             %
 %                           Software Design                                   %
-%                             John Cristy                                     %
+%                                Cristy                                       %
 %                            December 2003                                    %
 %                                                                             %
 %                                                                             %

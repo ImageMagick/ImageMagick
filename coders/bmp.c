@@ -13,7 +13,7 @@
 %             Read/Write Microsoft Windows Bitmap Image Format                %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                            Glenn Randers-Pehrson                            %
 %                               December 2001                                 %
 %                                                                             %

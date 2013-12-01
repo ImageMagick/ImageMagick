@@ -13,7 +13,7 @@
 %            Read/Write 16bit/pixel Interleaved YUV Image Format              %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

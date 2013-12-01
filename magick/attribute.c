@@ -13,7 +13,7 @@
 %                    MagickCore Get / Set Image Attributes                    %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                October 2002                                 %
 %                                                                             %
 %                                                                             %

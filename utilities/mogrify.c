@@ -13,7 +13,7 @@
 %               Transmogrify an Image or Sequence of Images.                  %
 %                                                                             %
 %                           Software Design                                   %
-%                             John Cristy                                     %
+%                                Cristy                                       %
 %                            December 1992                                    %
 %                                                                             %
 %                                                                             %

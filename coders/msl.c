@@ -13,7 +13,7 @@
 %                    Execute Magick Scripting Language Scripts.               %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                             Leonard Rosenthol                               %
 %                             William Radcliffe                               %
 %                               December 2001                                 %

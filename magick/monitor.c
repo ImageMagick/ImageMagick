@@ -13,7 +13,7 @@
 %                     MagickCore Progress Monitor Methods                     %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               December 1995                                 %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                         MagickCore VMS Utility Methods                      %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                October 1994                                 %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %           Read/Write Encapsulated Postscript Format (with preview).         %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                      Read/Write On-The-Air Image Format                     %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               January 2000                                  %
 %                                                                             %
 %                                                                             %

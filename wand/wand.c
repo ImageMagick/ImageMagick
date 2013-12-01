@@ -13,7 +13,7 @@
 %                         MagickWand Support Methods                          %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 May  2004                                   %
 %                                                                             %
 %                                                                             %

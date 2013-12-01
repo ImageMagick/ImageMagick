@@ -13,7 +13,7 @@
 %                   Read/Write Raw Bi-Level Bitmap Format                     %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

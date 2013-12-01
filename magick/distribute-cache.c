@@ -18,7 +18,7 @@
 %                 MagickCore Distributed Pixel Cache Methods                  %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                January 2013                                 %
 %                                                                             %
 %                                                                             %

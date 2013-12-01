@@ -13,7 +13,7 @@
 %             Return A Preview For A TrueType or Postscript Font              %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %            Read/Write Flexible Image Transport System Images.               %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

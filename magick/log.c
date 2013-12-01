@@ -13,7 +13,7 @@
 %                             MagickCore Log Events                           %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                September 2002                               %
 %                                                                             %
 %                                                                             %

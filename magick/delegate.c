@@ -12,7 +12,7 @@
 %             MagickCore Methods to Read/Write/Invoke Delegates               %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                               October 1998                                  %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                       MagickCore Acceleration Methods                       %
 %                                                                             %
 %                              Software Design                                %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                               SiuChi Chan                                   %
 %                               Guansong Zhang                                %
 %                               January 2010                                  %

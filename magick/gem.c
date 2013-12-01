@@ -13,7 +13,7 @@
 %                    Graphic Gems - Graphic Support Methods                   %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                 August 1996                                 %
 %                                                                             %
 %                                                                             %

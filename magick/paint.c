@@ -13,7 +13,7 @@
 %                        Methods to Paint on an Image                         %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1998                                   %
 %                                                                             %
 %                                                                             %

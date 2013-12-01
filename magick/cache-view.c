@@ -19,7 +19,7 @@
 %                        MagickCore Cache View Methods                        %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               February 2000                                 %
 %                                                                             %
 %                                                                             %

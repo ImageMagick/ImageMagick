@@ -13,7 +13,7 @@
 %                     MagickCore Image Coder Methods                          %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 May 2001                                    %
 %                                                                             %
 %                                                                             %

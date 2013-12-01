@@ -13,7 +13,7 @@
 %                  Read/Write Scalable Vector Graphics Format                 %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                             William Radcliffe                               %
 %                                March 2000                                   %
 %                                                                             %

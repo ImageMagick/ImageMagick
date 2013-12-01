@@ -13,7 +13,7 @@
 %                     MagickCore Binary Large OBjectS Methods                 %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %
