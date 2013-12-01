@@ -60,9 +60,6 @@ extern MagickExport ResizeWeightingFunctionType
   GetResizeFilterWeightingType(const ResizeFilter *),
   GetResizeFilterWindowWeightingType(const ResizeFilter *);
 
-extern MagickExport void
-  SetResizeFilterSupport(ResizeFilter *,const MagickRealType);
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

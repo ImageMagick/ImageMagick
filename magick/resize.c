@@ -1548,7 +1548,7 @@ MagickExport MagickRealType GetResizeFilterScale(
   return(resize_filter->scale);
 }
 
-extern MagickExport MagickRealType GetResizeFilterWindowSupport(
+MagickExport MagickRealType GetResizeFilterWindowSupport(
   const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
@@ -1571,6 +1571,7 @@ MagickExport ResizeWeightingFunctionType GetResizeFilterWindowWeightingType(
   assert(resize_filter->signature == MagickSignature);
   return(resize_filter->windowWeightingType);
 }
+
 MagickExport MagickRealType GetResizeFilterSupport(
   const ResizeFilter *resize_filter)
 {
