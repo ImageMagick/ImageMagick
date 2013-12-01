@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Written by jreed@itis.com, adapted by John Cristy.
+# Written by jreed@itis.com, adapted by Cristy.
 
 use Image::Magick;
 use Turtle;

@@ -1,7 +1,7 @@
 The author and maintainer of Magick++ is Bob Friesenhan
 <bfriesen@simple.dallas.tx.us>.
 
-Many thanks to John Cristy for developing the powerful ImageMagick
+Many thanks to Cristy for developing the powerful ImageMagick
 package that Magick++ is based on and for enhancing ImageMagick API
 features in order to allow a cleaner implementation.
 
