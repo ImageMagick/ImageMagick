@@ -13,7 +13,7 @@
 %                 Support PFS: 1st Publisher Clip Art Format                  %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

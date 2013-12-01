@@ -13,7 +13,7 @@
 %            Read/Write High Dynamic-Range (HDR) Image File Format            %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 April 2007                                  %
 %                                                                             %
 %                                                                             %

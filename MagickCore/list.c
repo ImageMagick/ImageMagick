@@ -13,7 +13,7 @@
 %                        MagickCore Image List Methods                        %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               December 2002                                 %
 %                                                                             %
 %                                                                             %

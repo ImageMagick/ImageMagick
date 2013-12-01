@@ -13,7 +13,7 @@
 %                    Read/Write Truevision Targa Image Format                 %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

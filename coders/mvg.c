@@ -13,7 +13,7 @@
 %                 Read/Write Magick Vector Graphics Metafiles.                %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 April 2000                                  %
 %                                                                             %
 %                                                                             %

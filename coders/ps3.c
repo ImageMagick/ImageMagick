@@ -13,7 +13,7 @@
 %                     Write Postscript Level III Format                       %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                              Lars Ruben Skyum                               %
 %                                 July 1992                                   %
 %                                                                             %

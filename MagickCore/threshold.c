@@ -13,7 +13,7 @@
 %                      MagickCore Image Threshold Methods                     %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                 October 1996                                %
 %                                                                             %
 %                                                                             %

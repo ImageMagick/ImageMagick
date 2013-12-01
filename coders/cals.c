@@ -13,7 +13,7 @@
 %                 Read/Write CALS Raster Group 1 Image Format                 %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

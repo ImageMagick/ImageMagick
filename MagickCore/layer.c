@@ -11,7 +11,7 @@
 %                      MagickCore Image Layering Methods                      %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                              Anthony Thyssen                                %
 %                               January 2006                                  %
 %                                                                             %

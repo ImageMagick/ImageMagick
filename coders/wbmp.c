@@ -13,7 +13,7 @@
 %               Read/Write Wireless Bitmap (level 0) Image Format             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               January 2000                                  %
 %                                                                             %
 %                                                                             %

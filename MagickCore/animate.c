@@ -13,7 +13,7 @@
 %              Methods to Interactively Animate an Image Sequence             %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                                July 1992                                    %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                   MagickCore Version and Copyright Methods                  %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               September 2002                                %
 %                                                                             %
 %                                                                             %

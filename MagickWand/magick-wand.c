@@ -19,7 +19,7 @@
 %                           MagickWand Wand Methods                           %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                 August 2003                                 %
 %                                                                             %
 %                                                                             %

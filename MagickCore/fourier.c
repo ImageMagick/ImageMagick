@@ -15,7 +15,7 @@
 %                              Software Design                                %
 %                                Sean Burke                                   %
 %                               Fred Weinhaus                                 %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 2009                                   %
 %                                                                             %
 %                                                                             %

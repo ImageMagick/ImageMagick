@@ -12,7 +12,7 @@
 %               MagickCore Methods to Generate Random Numbers                 %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                              December 2001                                  %
 %                                                                             %
 %                                                                             %

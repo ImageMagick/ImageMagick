@@ -13,7 +13,7 @@
 %                         Read/Write WebP Image Format                        %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 March 2011                                  %
 %                                                                             %
 %                                                                             %

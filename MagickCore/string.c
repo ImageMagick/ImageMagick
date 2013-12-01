@@ -13,7 +13,7 @@
 %                        MagickCore String Methods                            %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                               August 2003                                   %
 %                                                                             %
 %                                                                             %

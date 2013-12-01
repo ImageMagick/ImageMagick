@@ -13,7 +13,7 @@
 %                    Read/Write Image Of Uniform Color.                       %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

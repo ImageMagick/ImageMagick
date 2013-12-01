@@ -13,7 +13,7 @@
 %                Read/Write ZSoft IBM PC Paintbrush Image Format              %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

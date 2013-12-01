@@ -13,7 +13,7 @@
 %    MagickCore Methods to Shear or Rotate an Image by an Arbitrary Angle     %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                  July 1992                                  %
 %                                                                             %
 %                                                                             %

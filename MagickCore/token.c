@@ -13,7 +13,7 @@
 %                         MagickCore Token Methods                            %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                              January 1993                                   %
 %                                                                             %
 %                                                                             %

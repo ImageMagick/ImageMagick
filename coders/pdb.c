@@ -13,7 +13,7 @@
 %               Read/Write Palm Database ImageViewer Image Format             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                       Import Image from X11 Screen                          %
 %                                                                             %
 %                           Software Design                                   %
-%                             John Cristy                                     %
+%                                Cristy                                       %
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                       MagickCore Pixel Cache Methods                        %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %

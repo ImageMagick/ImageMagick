@@ -19,7 +19,7 @@
 %                          MagickWand Image Methods                           %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                 August 2003                                 %
 %                                                                             %
 %                                                                             %

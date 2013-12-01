@@ -14,7 +14,7 @@
 %                   MagickCore X11 User Interface Methods                     %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                              September 1993                                 %
 %                                                                             %
 %                                                                             %

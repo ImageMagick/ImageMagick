@@ -13,7 +13,7 @@
 %              Montage Magick Image File Format Image via X11.                %
 %                                                                             %
 %                           Software Design                                   %
-%                             John Cristy                                     %
+%                                Cristy                                       %
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %

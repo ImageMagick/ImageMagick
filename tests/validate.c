@@ -14,7 +14,7 @@
 %                        ImageMagick Validation Suite                         %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                               March 2001                                    %
 %                                                                             %
 %                                                                             %

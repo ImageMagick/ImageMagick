@@ -13,7 +13,7 @@
 %                      MagickCore Image Locale Methods                        %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 2003                                   %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %             Return a Visual Image Directory for matching images.            %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

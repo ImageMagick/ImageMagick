@@ -13,7 +13,7 @@
 %                  MagickCore Methods to Consitute an Image                   %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                               October 1998                                  %
 %                                                                             %
 %                                                                             %

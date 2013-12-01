@@ -13,7 +13,7 @@
 %                   Windows NT Utility Methods for MagickCore                 %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                December 1996                                %
 %                                                                             %
 %                                                                             %
