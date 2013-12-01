@@ -101,7 +101,7 @@ __END__
 
 =head1 NAME
 
-Image::Magick - objected-oriented Perl interface to ImageMagick. Use it to read, manipulate, or write an image or image sequence from within a Perl script.
+Image::Magick - objected-oriented Perl interface to ImageMagick. Use it to create, edit, compose, or convert bitmap images from within a Perl script.
 
 =head1 SYNOPSIS
 
