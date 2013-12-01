@@ -1429,11 +1429,11 @@ cleanup:
   return status;
 }
 
-/*
-  Pointer to a function that updates the score of a device (ex: device->score)
-  The function should return DS_SUCCESS if there's no error to be reported.
+/* Pointer to a function that calculates the score of a device (ex: device->score) 
+ update the data size of score. The encoding and the format of the score data 
+ is implementation defined. The function should return DS_SUCCESS if there's no error to be reported.
  */
-typedef ds_status (*ds_perf_evaluator)(ds_device* device);
+typedef ds_status (*ds_perf_evaluator)(ds_device* device, void* data);
 
 typedef enum {
   DS_EVALUATE_ALL
@@ -1441,7 +1441,7 @@ typedef enum {
 } ds_evaluation_type;
 
 static ds_status profileDevices(ds_profile* profile, const ds_evaluation_type type
-                         ,ds_perf_evaluator evaluator, unsigned int* numUpdates) {
+                         ,ds_perf_evaluator evaluator, void* evaluatorData, unsigned int* numUpdates) {
   ds_status status = DS_SUCCESS;
   unsigned int i;
   unsigned int updates = 0;
@@ -1462,7 +1462,7 @@ static ds_status profileDevices(ds_profile* profile, const ds_evaluation_type ty
         break;
       /*  else fall through */
     case DS_EVALUATE_ALL:
-      evaluatorStatus = evaluator(profile->devices+i);
+      evaluatorStatus = evaluator(profile->devices+i,evaluatorData);
       if (evaluatorStatus != DS_SUCCESS) {
         status = evaluatorStatus;
         return status;
@@ -1941,103 +1941,121 @@ double readAccelerateTimer(AccelerateTimer* timer) { return (double)timer->_cloc
 
 typedef double AccelerateScoreType;
 
-static ds_status AcceleratePerfEvaluator(ds_device* device) {
+static ds_status AcceleratePerfEvaluator(ds_device *device,
+  void *magick_unused(data))
+{
+#define ACCELERATE_PERF_DIMEN "2048x1536"
+#define NUM_ITER  2
+#define ReturnStatus(status) \
+{ \
+  if (clEnv!=NULL) \
+    RelinquishMagickOpenCLEnv(clEnv); \
+  if (oldClEnv!=NULL) \
+    defaultCLEnv = oldClEnv; \
+  return status; \
+}
 
-  ds_status status = DS_SUCCESS;
-  MagickCLEnv clEnv = NULL;
-  MagickCLEnv oldClEnv = NULL;
-  ExceptionInfo* exception = NULL;
-  AccelerateTimer timer;
+  AccelerateTimer
+    timer;
 
-  if (device == NULL) {
-    status = DS_PERF_EVALUATOR_ERROR;
-    goto cleanup;
-  }
+  ExceptionInfo
+    *exception=NULL;
 
-  clEnv = AcquireMagickOpenCLEnv();
-  exception = AcquireExceptionInfo();
+  MagickCLEnv
+    clEnv=NULL,
+    oldClEnv=NULL;
 
-  if (device->type == DS_DEVICE_NATIVE_CPU) {
-    /* CPU device */
-    MagickBooleanType flag = MagickTrue;
-    SetMagickOpenCLEnvParamInternal(clEnv, MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED
-                                  , sizeof(MagickBooleanType), &flag, exception);
-  }
-  else if (device->type == DS_DEVICE_OPENCL_DEVICE) {
-    /* OpenCL device */
-    SetMagickOpenCLEnvParamInternal(clEnv, MAGICK_OPENCL_ENV_PARAM_DEVICE
-      , sizeof(cl_device_id), &device->oclDeviceID,exception);
-  }
-  else {
-    status = DS_PERF_EVALUATOR_ERROR;
-    goto cleanup;
-  }
-  InitOpenCLEnvInternal(clEnv, exception);
-  oldClEnv = defaultCLEnv;
-  defaultCLEnv = clEnv;
+  magick_unreferenced(data);
+
+  if (device == NULL)
+    ReturnStatus(DS_PERF_EVALUATOR_ERROR);
+
+  clEnv=AcquireMagickOpenCLEnv();
+  exception=AcquireExceptionInfo();
+
+  if (device->type == DS_DEVICE_NATIVE_CPU)
+    {
+      /* CPU device */
+      MagickBooleanType flag=MagickTrue;
+      SetMagickOpenCLEnvParamInternal(clEnv,
+        MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED,sizeof(MagickBooleanType),
+        &flag,exception);
+    }
+  else if (device->type == DS_DEVICE_OPENCL_DEVICE)
+    {
+      /* OpenCL device */
+      SetMagickOpenCLEnvParamInternal(clEnv,MAGICK_OPENCL_ENV_PARAM_DEVICE,
+        sizeof(cl_device_id),&device->oclDeviceID,exception);
+    }
+  else
+    ReturnStatus(DS_PERF_EVALUATOR_ERROR);
+
+  InitOpenCLEnvInternal(clEnv,exception);
+  oldClEnv=defaultCLEnv;
+  defaultCLEnv=clEnv;
 
   /* microbenchmark */
   {
-#define ACCELERATE_PERF_DIMEN       "2048x1536"
-#define NUM_ITER                      2
+    Image
+      *inputImage;
 
-    Image* inputImage;
-    ImageInfo* imageInfo;
-    int i;
+    ImageInfo
+      *imageInfo;
 
-    imageInfo = AcquireImageInfo();
+    int
+      i;
+
+    imageInfo=AcquireImageInfo();
     CloneString(&imageInfo->size,ACCELERATE_PERF_DIMEN);
     CopyMagickString(imageInfo->filename,"xc:none",MaxTextExtent);
-    inputImage = ReadImage(imageInfo,exception);
+    inputImage=ReadImage(imageInfo,exception);
 
     initAccelerateTimer(&timer);
 
-    for (i = 0; i <=NUM_ITER; i++) {
-
-      Image* bluredImage;
-      Image* unsharpedImage;
-      Image* resizedImage;
+    for (i=0; i<=NUM_ITER; i++)
+    {
+      Image
+        *bluredImage,
+        *resizedImage,
+        *unsharpedImage;
 
       if (i > 0)
         startAccelerateTimer(&timer);
 
 #ifdef MAGICKCORE_CLPERFMARKER
-  clBeginPerfMarkerAMD("PerfEvaluatorRegion","");
+      clBeginPerfMarkerAMD("PerfEvaluatorRegion","");
 #endif
 
-      bluredImage = BlurImage(inputImage, 10.0f, 3.5f, exception);
-      unsharpedImage = UnsharpMaskImage(bluredImage, 2.0f,2.0f,50.0f,10.0f,exception);
-      resizedImage = ResizeImage(unsharpedImage,640,480,LanczosFilter,exception);
+      bluredImage=BlurImage(inputImage,10.0f,3.5f,exception);
+      unsharpedImage=UnsharpMaskImage(bluredImage,2.0f,2.0f,50.0f,10.0f,
+        exception);
+      resizedImage=ResizeImage(unsharpedImage,640,480,LanczosFilter,
+        exception);
 
 #ifdef MAGICKCORE_CLPERFMARKER
-  clEndPerfMarkerAMD();
+      clEndPerfMarkerAMD();
 #endif
 
       if (i > 0)
         stopAccelerateTimer(&timer);
 
-      if (bluredImage) DestroyImage(bluredImage);
-      if (unsharpedImage) DestroyImage(unsharpedImage);
-      if (resizedImage) DestroyImage(resizedImage);
+      if (bluredImage)
+        DestroyImage(bluredImage);
+      if (unsharpedImage)
+        DestroyImage(unsharpedImage);
+      if (resizedImage)
+        DestroyImage(resizedImage);
     }
     DestroyImage(inputImage);
   }
   /* end of microbenchmark */
   
-  if (device->score == NULL) {
-    device->score = malloc(sizeof(AccelerateScoreType));
-  }
-  *(AccelerateScoreType*)device->score = readAccelerateTimer(&timer);
+  if (device->score == NULL)
+    device->score=malloc(sizeof(AccelerateScoreType));
+  *(AccelerateScoreType*)device->score=readAccelerateTimer(&timer);
 
-cleanup:
-  if (clEnv!=NULL)
-    RelinquishMagickOpenCLEnv(clEnv);
-  if (oldClEnv!=NULL)
-    defaultCLEnv = oldClEnv;
-  return status;
+  ReturnStatus(DS_SUCCESS);
 }
-
-
 
 ds_status AccelerateScoreSerializer(ds_device* device, void** serializedScore, unsigned int* serializedScoreSize) {
   if (device
@@ -2105,7 +2123,7 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
          ,DirectorySeparator,IMAGEMAGICK_PROFILE_FILE);
 
   readProfileFromFile(profile, AccelerateScoreDeserializer, path);
-  status = profileDevices(profile, DS_EVALUATE_NEW_ONLY, AcceleratePerfEvaluator, &numDeviceProfiled);
+  status = profileDevices(profile, DS_EVALUATE_NEW_ONLY, AcceleratePerfEvaluator, NULL, &numDeviceProfiled);
   if (status!=DS_SUCCESS) {
     (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Error when initializing the profile", "'%s'", ".");
     goto cleanup;
