@@ -213,7 +213,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
 
   filteredImage = CloneImage(inputImage,inputImage->columns,inputImage->rows,MagickTrue,exception);
   assert(filteredImage != NULL);
-  if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+  if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
     goto cleanup;
@@ -315,7 +315,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     filterHeight = kernel->height;
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterWidth);
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterHeight);
-    matte = (inputImage->matte==MagickTrue)?1:0;
+    matte = (inputImage->alpha_trait == BlendPixelTrait)?1:0;
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&matte);
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&channel);
     clStatus|=clSetKernelArg(clkernel,i++, (localGroupSize[0] + kernel->width-1)*(localGroupSize[1] + kernel->height-1)*sizeof(CLPixelPacket),NULL);
@@ -357,7 +357,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     filterHeight = kernel->height;
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterWidth);
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterHeight);
-    matte = (inputImage->matte==MagickTrue)?1:0;
+    matte = (inputImage->alpha_trait == BlendPixelTrait)?1:0;
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&matte);
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&channel);
     if (clStatus != CL_SUCCESS)
@@ -757,7 +757,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
   {
     filteredImage = CloneImage(inputImage,inputImage->columns,inputImage->rows,MagickTrue,exception);
     assert(filteredImage != NULL);
-    if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+    if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
       goto cleanup;
@@ -1066,7 +1066,7 @@ static Image* ComputeBlurImageSection(const Image* inputImage, const ChannelType
   {
     filteredImage = CloneImage(inputImage,inputImage->columns,inputImage->rows,MagickTrue,exception);
     assert(filteredImage != NULL);
-    if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+    if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
       goto cleanup;
@@ -1406,7 +1406,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   float* cosThetaPtr;
   MagickSizeType length;
   unsigned int matte;
-  MagickPixelPacket bias;
+  PixelInfo bias;
   cl_float4 biasPixel;
   cl_float2 blurCenter;
   float blurRadius;
@@ -1463,7 +1463,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
 
   filteredImage = CloneImage(inputImage,inputImage->columns,inputImage->rows,MagickTrue,exception);
   assert(filteredImage != NULL);
-  if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+  if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
     goto cleanup;
@@ -1559,15 +1559,15 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   clStatus=clSetKernelArg(radialBlurKernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
   clStatus|=clSetKernelArg(radialBlurKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
 
-  GetMagickPixelPacket(inputImage,&bias);
+  GetPixelInfo(inputImage,&bias);
   biasPixel.s[0] = bias.red;
   biasPixel.s[1] = bias.green;
   biasPixel.s[2] = bias.blue;
-  biasPixel.s[3] = bias.opacity;
+  biasPixel.s[3] = bias.alpha;
   clStatus|=clSetKernelArg(radialBlurKernel,i++,sizeof(cl_float4), &biasPixel);
   clStatus|=clSetKernelArg(radialBlurKernel,i++,sizeof(ChannelType), &channel);
 
-  matte = (inputImage->matte == MagickTrue)?1:0;
+  matte = (inputImage->alpha_trait == BlendPixelTrait)?1:0;
   clStatus|=clSetKernelArg(radialBlurKernel,i++,sizeof(unsigned int), &matte);
 
   clStatus=clSetKernelArg(radialBlurKernel,i++,sizeof(cl_float2), &blurCenter);
@@ -1761,7 +1761,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
   {
     filteredImage = CloneImage(inputImage,inputImage->columns,inputImage->rows,MagickTrue,exception);
     assert(filteredImage != NULL);
-    if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+    if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
       goto cleanup;
@@ -2068,7 +2068,7 @@ static Image* ComputeUnsharpMaskImageSection(const Image *inputImage, const Chan
   {
     filteredImage = CloneImage(inputImage,inputImage->columns,inputImage->rows,MagickTrue,exception);
     assert(filteredImage != NULL);
-    if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+    if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
       goto cleanup;
@@ -2843,7 +2843,7 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
   if (filteredImage == NULL)
     goto cleanup;
 
-  if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+  if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
     goto cleanup;
@@ -2888,14 +2888,14 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
       goto cleanup;
     }
     
-    status = resizeHorizontalFilter(inputImageBuffer, inputImage->columns, inputImage->rows, (inputImage->matte == MagickTrue)?1:0
+    status = resizeHorizontalFilter(inputImageBuffer, inputImage->columns, inputImage->rows, (inputImage->alpha_trait == BlendPixelTrait)?1:0
           , tempImageBuffer, resizedColumns, inputImage->rows
           , resizeFilter, cubicCoefficientsBuffer
           , xFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
     
-    status = resizeVerticalFilter(tempImageBuffer, resizedColumns, inputImage->rows, (inputImage->matte == MagickTrue)?1:0
+    status = resizeVerticalFilter(tempImageBuffer, resizedColumns, inputImage->rows, (inputImage->alpha_trait == BlendPixelTrait)?1:0
        , filteredImageBuffer, resizedColumns, resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
@@ -2912,14 +2912,14 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
       goto cleanup;
     }
 
-    status = resizeVerticalFilter(inputImageBuffer, inputImage->columns, inputImage->rows, (inputImage->matte == MagickTrue)?1:0
+    status = resizeVerticalFilter(inputImageBuffer, inputImage->columns, inputImage->rows, (inputImage->alpha_trait == BlendPixelTrait)?1:0
        , tempImageBuffer, inputImage->columns, resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
 
-    status = resizeHorizontalFilter(tempImageBuffer, inputImage->columns, resizedRows, (inputImage->matte == MagickTrue)?1:0
+    status = resizeHorizontalFilter(tempImageBuffer, inputImage->columns, resizedRows, (inputImage->alpha_trait == BlendPixelTrait)?1:0
        , filteredImageBuffer, resizedColumns, resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , xFactor, clEnv, queue, exception);
@@ -3672,7 +3672,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     if ((channel & BlueChannel) != 0)
       intensity.blue+=histogram[i].s[0];
     if ((channel & OpacityChannel) != 0)
-      intensity.opacity+=histogram[i].s[3];
+      intensity.alpha+=histogram[i].s[3];
     if (((channel & IndexChannel) != 0) &&
         (image->colorspace == CMYKColorspace))
     {
@@ -3702,9 +3702,9 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     if (((channel & BlueChannel) != 0) && (white.blue != black.blue))
       equalize_map[i].blue=ScaleMapToQuantum((MagickRealType) ((MaxMap*
         (map[i].blue-black.blue))/(white.blue-black.blue)));
-    if (((channel & OpacityChannel) != 0) && (white.opacity != black.opacity))
-      equalize_map[i].opacity=ScaleMapToQuantum((MagickRealType) ((MaxMap*
-        (map[i].opacity-black.opacity))/(white.opacity-black.opacity)));
+    if (((channel & OpacityChannel) != 0) && (white.alpha != black.alpha))
+      equalize_map[i].alpha=ScaleMapToQuantum((MagickRealType) ((MaxMap*
+        (map[i].alpha-black.alpha))/(white.alpha-black.alpha)));
     /*
     if ((((channel & IndexChannel) != 0) &&
         (image->colorspace == CMYKColorspace)) &&
@@ -3734,8 +3734,8 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
                   ScaleQuantumToMap(image->colormap[i].green)].red;
                 image->colormap[i].blue=equalize_map[
                   ScaleQuantumToMap(image->colormap[i].blue)].red;
-                image->colormap[i].opacity=equalize_map[
-                  ScaleQuantumToMap(image->colormap[i].opacity)].red;
+                image->colormap[i].alpha=equalize_map[
+                  ScaleQuantumToMap(image->colormap[i].alpha)].red;
               }
             continue;
           }
@@ -3749,9 +3749,9 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
           image->colormap[i].blue=equalize_map[
             ScaleQuantumToMap(image->colormap[i].blue)].blue;
         if (((channel & OpacityChannel) != 0) &&
-            (white.opacity != black.opacity))
-          image->colormap[i].opacity=equalize_map[
-            ScaleQuantumToMap(image->colormap[i].opacity)].opacity;
+            (white.alpha != black.alpha))
+          image->colormap[i].alpha=equalize_map[
+            ScaleQuantumToMap(image->colormap[i].alpha)].alpha;
       }
   }
 
@@ -4013,7 +4013,7 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
 
   filteredImage = CloneImage(inputImage,inputImage->columns,inputImage->rows,MagickTrue,exception);
   assert(filteredImage != NULL);
-  if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+  if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
     goto cleanup;
@@ -4053,7 +4053,7 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
   clStatus |=clSetKernelArg(hullPass1,2,sizeof(unsigned int),(void *)&imageWidth);
   imageHeight = inputImage->rows;
   clStatus |=clSetKernelArg(hullPass1,3,sizeof(unsigned int),(void *)&imageHeight);
-  matte = (inputImage->matte==MagickFalse)?0:1;
+  matte = (inputImage->alpha_trait == BlendPixelTrait)?1:0;
   clStatus |=clSetKernelArg(hullPass1,6,sizeof(int),(void *)&matte);
   if (clStatus != CL_SUCCESS)
   {
@@ -4067,7 +4067,7 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
   clStatus |=clSetKernelArg(hullPass2,2,sizeof(unsigned int),(void *)&imageWidth);
   imageHeight = inputImage->rows;
   clStatus |=clSetKernelArg(hullPass2,3,sizeof(unsigned int),(void *)&imageHeight);
-  matte = (inputImage->matte==MagickFalse)?0:1;
+  matte = (inputImage->alpha_trait == BlendPixelTrait)?1:0;
   clStatus |=clSetKernelArg(hullPass2,6,sizeof(int),(void *)&matte);
   if (clStatus != CL_SUCCESS)
   {
@@ -4364,7 +4364,7 @@ static Image* ComputeAddNoiseImage(const Image* inputImage,
 
   filteredImage = CloneImage(inputImage,inputImage->columns,inputImage->rows,MagickTrue,exception);
   assert(filteredImage != NULL);
-  if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+  if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
     goto cleanup;
@@ -4601,7 +4601,7 @@ static Image* ComputeAddNoiseImageOptRandomNum(const Image* inputImage,
 
   filteredImage = CloneImage(inputImage,inputImage->columns,inputImage->rows,MagickTrue,exception);
   assert(filteredImage != NULL);
-  if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+  if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
     goto cleanup;

@@ -95,6 +95,10 @@ struct _ResizeFilter
     blur,           /* x-scale (blur-sharpen) */
     coefficient[7]; /* cubic coefficents for BC-cubic filters */
 
+  ResizeWeightingFunctionType
+    filterWeightingType,
+    windowWeightingType;
+
   size_t
     signature;
 };
@@ -1493,6 +1497,55 @@ MagickPrivate ResizeFilter *DestroyResizeFilter(ResizeFilter *resize_filter)
 %    o filter: Image filter to use.
 %
 */
+
+MagickPrivate double *GetResizeFilterCoefficient(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return((double *) resize_filter->coefficient);
+}
+
+MagickPrivate double GetResizeFilterBlur(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->blur);
+}
+
+MagickPrivate double GetResizeFilterScale(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->scale);
+}
+
+MagickPrivate double GetResizeFilterWindowSupport(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->window_support);
+}
+
+MagickPrivate ResizeWeightingFunctionType GetResizeFilterWeightingType(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->filterWeightingType);
+}
+
+MagickPrivate ResizeWeightingFunctionType GetResizeFilterWindowWeightingType(
+  const ResizeFilter *resize_filter)
+{
+  assert(resize_filter != (ResizeFilter *) NULL);
+  assert(resize_filter->signature == MagickSignature);
+  return(resize_filter->windowWeightingType);
+}
+
 MagickPrivate double GetResizeFilterSupport(
   const ResizeFilter *resize_filter)
 {

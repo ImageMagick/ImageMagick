@@ -22,7 +22,32 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+  BoxWeightingFunction = 0,
+  TriangleWeightingFunction,
+  CubicBCWeightingFunction,
+  HanningWeightingFunction,
+  HammingWeightingFunction,
+  BlackmanWeightingFunction,
+  GaussianWeightingFunction,
+  QuadraticWeightingFunction,
+  JincWeightingFunction,
+  SincWeightingFunction,
+  SincFastWeightingFunction,
+  KaiserWeightingFunction,
+  WelshWeightingFunction,
+  BohmanWeightingFunction,
+  LagrangeWeightingFunction,
+  CosineWeightingFunction,
+  LastWeightingFunction
+} ResizeWeightingFunctionType;
+
 extern MagickPrivate double
+  *GetResizeFilterCoefficient(const ResizeFilter*),
+  GetResizeFilterBlur(const ResizeFilter *),
+  GetResizeFilterScale(const ResizeFilter *),
+  GetResizeFilterWindowSupport(const ResizeFilter *),
   GetResizeFilterSupport(const ResizeFilter *),
   GetResizeFilterWeight(const ResizeFilter *,const double);
 
@@ -30,6 +55,10 @@ extern MagickPrivate ResizeFilter
   *AcquireResizeFilter(const Image *,const FilterTypes,const MagickBooleanType,
     ExceptionInfo *),
   *DestroyResizeFilter(ResizeFilter *);
+
+extern MagickPrivate ResizeWeightingFunctionType
+  GetResizeFilterWeightingType(const ResizeFilter *),
+  GetResizeFilterWindowWeightingType(const ResizeFilter *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
