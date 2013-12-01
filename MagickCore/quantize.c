@@ -13,7 +13,7 @@
 %    MagickCore Methods to Reduce the Number of Unique Colors in an Image     %
 %                                                                             %
 %                           Software Design                                   %
-%                             John Cristy                                     %
+%                                Cristy                                       %
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %

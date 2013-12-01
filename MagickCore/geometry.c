@@ -13,7 +13,7 @@
 %                       MagickCore Geometry Methods                           %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                              January 2003                                   %
 %                                                                             %
 %                                                                             %

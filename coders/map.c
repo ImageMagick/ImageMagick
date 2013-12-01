@@ -13,7 +13,7 @@
 %                  Read/Write Image Colormaps As An Image File.               %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

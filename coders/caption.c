@@ -13,7 +13,7 @@
 %                             Read Text Caption.                              %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               February 2002                                 %
 %                                                                             %
 %                                                                             %

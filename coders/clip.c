@@ -13,7 +13,7 @@
 %                        Write Clip Mask To MIFF File.                        %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

@@ -18,7 +18,7 @@
 %                 MagickCore Methods to Import Quantum Pixels                 %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                               October 1998                                  %
 %                                                                             %
 %                                                                             %

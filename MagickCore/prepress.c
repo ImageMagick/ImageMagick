@@ -13,7 +13,7 @@
 %                         MagickCore Prepress Methods                         %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                October 2001                                 %
 %                                                                             %
 %                                                                             %

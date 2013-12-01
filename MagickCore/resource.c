@@ -13,7 +13,7 @@
 %                        Get/Set MagickCore Resources                         %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               September 2002                                %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %              Read/Write Portable Network Graphics Image Format              %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                           Glenn Randers-Pehrson                             %
 %                               November 1997                                 %
 %                                                                             %

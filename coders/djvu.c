@@ -13,7 +13,7 @@
 %                             Read DjVu Images.                               %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

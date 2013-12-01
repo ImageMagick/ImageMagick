@@ -13,7 +13,7 @@
 %              Methods to Interactively Display and Edit an Image             %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
+%                                  Cristy                                     %
 %                                July 1992                                    %
 %                                                                             %
 %                                                                             %

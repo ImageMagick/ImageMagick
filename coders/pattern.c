@@ -13,7 +13,7 @@
 %                      Read/Write Pattern Image Format                        %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 May 2003                                    %
 %                                                                             %
 %                                                                             %

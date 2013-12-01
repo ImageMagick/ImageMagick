@@ -13,7 +13,7 @@
 %                Read/Write Khoros Visualization Image Format                 %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

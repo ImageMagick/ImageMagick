@@ -19,7 +19,7 @@
 %                              XML Tree Methods                               %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               December 2004                                 %
 %                                                                             %
 %                                                                             %

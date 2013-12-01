@@ -13,7 +13,7 @@
 %            Read Postscript Using the Display Postscript System.             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

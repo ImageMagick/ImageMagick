@@ -13,7 +13,7 @@
 %                  Read/Write X Windows System Bitmap Format                  %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

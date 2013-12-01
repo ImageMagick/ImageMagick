@@ -13,7 +13,7 @@
 %                   Create Identity Hald CLUT Image Format                    %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %

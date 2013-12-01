@@ -13,7 +13,7 @@
 %              Read/Write Magick Persistant Cache Image Format                %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %

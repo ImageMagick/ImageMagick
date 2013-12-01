@@ -13,7 +13,7 @@
 %                       MagickCore Image Type Methods                         %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 May 2001                                    %
 %                                                                             %
 %                                                                             %

@@ -13,7 +13,7 @@
 %                     Interpret Magick Scripting Language.                    %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                               December 2001                                 %
 %                                                                             %
 %                                                                             %

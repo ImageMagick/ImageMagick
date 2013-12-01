@@ -19,7 +19,7 @@
 %            Set or Get MagickWand Properties, Options, or Profiles           %
 %                                                                             %
 %                               Software Design                               %
-%                                 John Cristy                                 %
+%                                    Cristy                                   %
 %                                 August 2003                                 %
 %                                                                             %
 %                                                                             %

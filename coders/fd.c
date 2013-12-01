@@ -13,7 +13,7 @@
 %                  Retrieve An Image Via a File Descriptor.                   %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                              Bill Radcliffe                                 %
 %                                March 2000                                   %
 %                                                                             %

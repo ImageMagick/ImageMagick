@@ -13,7 +13,7 @@
 %                         MagickCore Option Methods                           %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %

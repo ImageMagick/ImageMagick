@@ -13,7 +13,7 @@
 %             MagickCore Image Compression/Decompression Methods              %
 %                                                                             %
 %                           Software Design                                   %
-%                             John Cristy                                     %
+%                                Cristy                                       %
 %                              May  1993                                      %
 %                                                                             %
 %                                                                             %

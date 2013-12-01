@@ -13,7 +13,7 @@
 %                      MagickCore Pixel Resampling Methods                    %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                              Anthony Thyssen                                %
 %                                August 2007                                  %
 %                                                                             %
