@@ -4589,11 +4589,9 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
         if ((double) image->colormap[i].red > threshold)
           image->colormap[i].red=QuantumRange-image->colormap[i].red;
         if ((double) image->colormap[i].green > threshold)
-          image->colormap[i].green=QuantumRange-
-            image->colormap[i].green;
+          image->colormap[i].green=QuantumRange-image->colormap[i].green;
         if ((double) image->colormap[i].blue > threshold)
-          image->colormap[i].blue=QuantumRange-
-            image->colormap[i].blue;
+          image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
       }
     }
   /*
