@@ -51,7 +51,7 @@ namespace Magick
   // a handle object which contains a pointer to a shared reference
   // object (ImageRef). As such, this object is extremely space efficient.
   //
-  class Image
+  class MagickPPExport Image
   {
   public:
     // Construct from image file or image specification
@@ -431,8 +431,6 @@ namespace Magick
     void            extent ( const Geometry &geometry_,
                              const Color &backgroundColor,
                              const GravityType gravity_ );
-
-    void            extract ( const Geometry &geometry_ );
 
     // Flip image (reflect each scanline in the vertical direction)
     void            flip ( void );
