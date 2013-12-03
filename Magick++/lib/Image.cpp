@@ -1879,7 +1879,7 @@ void Magick::Image::map ( const Image &mapImage_, const bool dither_ )
 }
 
 // Floodfill designated area with replacement alpha value
-void Magick::Image::matteFloodfill ( const Color &target_,
+void Magick::Image::alphaFloodfill ( const Color &target_,
                                      const unsigned int alpha_,
                                      const ssize_t x_, const ssize_t y_,
                                      const Magick::PaintMethod method_ )
@@ -3391,7 +3391,7 @@ void Magick::Image::colorMapSize ( const size_t entries_ )
 
   imageptr->colors = entries_;
 }
-size_t Magick::Image::colorMapSize ( void )
+size_t Magick::Image::colorMapSize ( void ) const
 {
   const MagickCore::Image* imageptr = constImage();
 
@@ -4073,50 +4073,6 @@ Magick::OrientationType Magick::Image::orientation ( void ) const
   return constImage()->orientation;
 }
 
-void Magick::Image::penColor ( const Color &penColor_ )
-{
-  modifyImage();
-  options()->fillColor(penColor_);
-  options()->strokeColor(penColor_);
-}
-Magick::Color Magick::Image::penColor ( void  ) const
-{
-  return constOptions()->fillColor();
-}
-
-void Magick::Image::penTexture ( const Image &penTexture_ )
-{
-  modifyImage();
-  if(penTexture_.isValid())
-    options()->fillPattern( penTexture_.constImage() );
-  else
-    options()->fillPattern( static_cast<MagickCore::Image*>(NULL) );
-}
-
-Magick::Image  Magick::Image::penTexture ( void  ) const
-{
-  // FIXME: This is inordinately innefficient
-  Image texture;
-  
-  const MagickCore::Image* tmpTexture = constOptions()->fillPattern( );
-
-  if ( tmpTexture )
-    {
-      ExceptionInfo exceptionInfo;
-      GetExceptionInfo( &exceptionInfo );
-      MagickCore::Image* image =
-	CloneImage( tmpTexture,
-                    0, // columns
-                    0, // rows
-                    MagickTrue, // orphan
-                    &exceptionInfo);
-      texture.replaceImage( image );
-      throwException( exceptionInfo );
-  (void) DestroyExceptionInfo( &exceptionInfo );
-    }
-  return texture;
-}
-
 // Set the color of a pixel.
 void Magick::Image::pixelColor ( const ssize_t x_, const ssize_t y_,
 				 const Color &color_ )
@@ -4569,11 +4525,11 @@ std::string Magick::Image::textEncoding ( void ) const
   return constOptions()->textEncoding( );
 }
 
-size_t Magick::Image::totalColors ( void )
+size_t Magick::Image::totalColors ( void ) const
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  size_t colors = GetNumberColors( image(), 0, &exceptionInfo);
+  size_t colors = GetNumberColors( constImage(), 0, &exceptionInfo);
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
   return colors;
@@ -5087,4 +5043,24 @@ Magick::MagickCleanUp::MagickCleanUp ( void )
 Magick::MagickCleanUp::~MagickCleanUp ( void )
 {
   MagickPlusPlusDestroyMagick();
+}
+
+void Magick::Image::reduceNoise(void)
+{
+  reduceNoise(3.0);
+}
+
+Magick::ClassType Magick::Image::classType(void) const
+{
+  return static_cast<Magick::ClassType>(constImage()->storage_class);
+}
+
+size_t Magick::Image::columns(void) const
+{
+  return constImage()->columns;
+}
+
+size_t Magick::Image::rows(void) const
+{
+  return constImage()->rows;
 }
