@@ -1,3 +1,8 @@
+2013-12-03  6.8.7-9 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed bug in coders/png.c that caused -define png:color-type=0 to
+    fail (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=24568).
+
 2013-11-30  6.8.7-9 Dirk Lemstra <dirk@snakeware...>
   * Fixed bug in automatic selection of OpenCL device (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24542).
@@ -469,7 +474,7 @@
   * New version 6.8.4-10, SVN revision 11851.
 
 2013-04-11  6.8.4-10 Cristy  <quetzlzacatenango@image...>
-  * Ensure -define jpeg:extent is resticted to at most 7 iterations (reference
+  * Ensure -define jpeg:extent is restricted to at most 7 iterations (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23179).
   * Move X11 font support from annotate.c source module to xwindow.c.
 
