@@ -986,7 +986,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     *p;
 
   size_t
-    precision,
     units;
 
   ssize_t
@@ -1098,7 +1097,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Scale factor: %.20g",(double) scale_factor);
     }
-  precision=(size_t) jpeg_info.data_precision;
 #if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
 #if defined(D_LOSSLESS_SUPPORTED)
   image->interlace=jpeg_info.process == JPROC_PROGRESSIVE ?
@@ -2752,14 +2750,14 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetPixelRed(p))/scale));
-            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetPixelGreen(p))/scale));
-            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetPixelBlue(p))/scale));
-            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetPixelIndex(indexes+x))/scale));
+            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-
+              GetPixelRed(p))/scale);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-
+              GetPixelGreen(p))/scale);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-
+              GetPixelBlue(p))/scale);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-
+              GetPixelIndex(indexes+x))/scale);
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
