@@ -13,11 +13,11 @@
 %                       Read/Write JPEG Image Format                          %
 %                                                                             %
 %                              Software Design                                %
-%                                   Cristy                                    %
+%                                John Cristy                                  %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1341,16 +1341,20 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       break;
     if (jpeg_info.data_precision > 8)
       {
+#define JPEGRange(bits) \
+  ((unsigned long) (0x01UL << (bits-1))+((0x01UL << (bits-1))-1))
+
+        unsigned short
+          scale;
+
+        scale=65535U/JPEGRange(jpeg_info.data_precision);
         if (jpeg_info.output_components == 1)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             size_t
               pixel;
 
-            if (precision != 16)
-              pixel=(size_t) GETJSAMPLE(*p);
-            else
-              pixel=(size_t) ((GETJSAMPLE(*p) ^ 0x80) << 4);
+            pixel=(size_t) (scale*GETJSAMPLE(*p));
             index=ConstrainColormapIndex(image,pixel,exception);
             SetPixelIndex(image,index,q);
             SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
@@ -1361,26 +1365,23 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           if (image->colorspace != CMYKColorspace)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetPixelRed(image,ScaleShortToQuantum((unsigned char)
-                (GETJSAMPLE(*p++) << 4)),q);
-              SetPixelGreen(image,ScaleShortToQuantum((unsigned char)
-                (GETJSAMPLE(*p++) << 4)),q);
-              SetPixelBlue(image,ScaleShortToQuantum((unsigned char)
-                (GETJSAMPLE(*p++) << 4)),q);
+              SetPixelRed(image,ScaleShortToQuantum(scale*GETJSAMPLE(*p++)),q);
+              SetPixelGreen(image,ScaleShortToQuantum(scale*GETJSAMPLE(*p++)),q);
+              SetPixelBlue(image,ScaleShortToQuantum(scale*GETJSAMPLE(*p++)),q);
               SetPixelAlpha(image,OpaqueAlpha,q);
               q+=GetPixelChannels(image);
             }
           else
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetPixelCyan(image,QuantumRange-ScaleShortToQuantum(
-                (unsigned char) (GETJSAMPLE(*p++) << 4)),q);
-              SetPixelMagenta(image,QuantumRange-ScaleShortToQuantum(
-                (unsigned char) (GETJSAMPLE(*p++) << 4)),q);
-              SetPixelYellow(image,QuantumRange-ScaleShortToQuantum(
-                (unsigned char) (GETJSAMPLE(*p++) << 4)),q);
-              SetPixelBlack(image,QuantumRange-ScaleShortToQuantum(
-                (unsigned char) (GETJSAMPLE(*p++) << 4)),q);
+              SetPixelCyan(image,QuantumRange-
+                ScaleShortToQuantum(scale*GETJSAMPLE(*p++)),q);
+              SetPixelMagenta(image,QuantumRange-
+                ScaleShortToQuantum(scale*GETJSAMPLE(*p++)),q);
+              SetPixelYellow(image,QuantumRange-
+                ScaleShortToQuantum(scale*GETJSAMPLE(*p++)),q);
+              SetPixelBlack(image,QuantumRange-
+                ScaleShortToQuantum(scale*GETJSAMPLE(*p++)),q);
               SetPixelAlpha(image,OpaqueAlpha,q);
               q+=GetPixelChannels(image);
             }
@@ -2074,6 +2075,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   struct jpeg_error_mgr
     jpeg_error;
 
+  unsigned short
+    scale;
+
   /*
     Open image file.
   */
@@ -2619,6 +2623,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       return(MagickFalse);
     }
   scanline[0]=(JSAMPROW) jpeg_pixels;
+  scale=65535U/JPEGRange(jpeg_info.data_precision);
   if (jpeg_info.data_precision <= 8)
     {
       if ((jpeg_info.in_color_space == JCS_RGB) ||
@@ -2726,7 +2731,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           *q++=(JSAMPLE) (ScaleQuantumToShort(ClampToQuantum(GetPixelLuma(
-            image,p))) >> 4);
+            image,p)))/scale);
           p+=GetPixelChannels(image);
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -2752,9 +2757,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           q=jpeg_pixels;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelRed(image,p)) >> 4);
-            *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelGreen(image,p)) >> 4);
-            *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelBlue(image,p)) >> 4);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelRed(image,p))/scale);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelGreen(image,p))/scale);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelBlue(image,p))/scale);
             p+=GetPixelChannels(image);
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -2782,13 +2787,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetPixelRed(image,p)) >> 4));
+              GetPixelRed(image,p))/scale));
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetPixelGreen(image,p)) >> 4));
+              GetPixelGreen(image,p))/scale));
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetPixelBlue(image,p)) >> 4));
+              GetPixelBlue(image,p))/scale));
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetPixelBlack(image,p)) >> 4));
+              GetPixelBlack(image,p))/scale));
             p+=GetPixelChannels(image);
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
