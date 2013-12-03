@@ -8284,7 +8284,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
     }
 
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse &&
+      image->colorspace != Rec601LumaColorspace &&
+      image->colorspace != Rec709LumaColorspace)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
 
   /*
@@ -8800,9 +8802,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          ping_have_color=MagickFalse;
          ping_have_non_bw=MagickFalse;
 
-         if ((IssRGBCompatibleColorspace(image->colorspace) == MagickFalse) ||
-             (IssRGBColorspace(image->colorspace) != MagickFalse))
+         if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse &&
+            image->colorspace != Rec601LumaColorspace &&
+            image->colorspace != Rec709LumaColorspace)
          {
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "incompatible colorspace");
            ping_have_color=MagickTrue;
            ping_have_non_bw=MagickTrue;
          }
@@ -9673,7 +9678,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (mng_info->IsPalette && mng_info->write_png8)
     {
-
       /* To do: make this a function cause it's used twice, except
          for reducing the sample depth from 8. */
 
