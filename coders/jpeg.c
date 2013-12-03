@@ -1339,13 +1339,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       break;
     if (jpeg_info.data_precision > 8)
       {
-#define JPEGRange(bits) \
-  ((unsigned long) (0x01UL << (bits-1))+((0x01UL << (bits-1))-1))
-
         unsigned short
           scale;
 
-        scale=65535U/JPEGRange(jpeg_info.data_precision);
+        scale=65535U/GetQuantumRange(jpeg_info.data_precision);
         if (jpeg_info.output_components == 1)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
@@ -2621,7 +2618,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       return(MagickFalse);
     }
   scanline[0]=(JSAMPROW) jpeg_pixels;
-  scale=65535U/JPEGRange(jpeg_info.data_precision);
+  scale=65535U/GetQuantumRange(jpeg_info.data_precision);
   if (jpeg_info.data_precision <= 8)
     {
       if ((jpeg_info.in_color_space == JCS_RGB) ||
