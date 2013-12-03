@@ -694,11 +694,11 @@ namespace Magick
   };
 
   // Floodfill designated area with a matte value
-  class MagickPPExport matteFloodfillImage : public std::unary_function<Image&,void>
+  class MagickPPExport alphaFloodfillImage : public std::unary_function<Image&,void>
   {
   public:
-    matteFloodfillImage( const Color &target_ ,
-       const unsigned int matte_,
+    alphaFloodfillImage( const Color &target_ ,
+       const unsigned int alpha_,
        const ::ssize_t x_, const ::ssize_t y_,
        const PaintMethod method_ );
 
@@ -706,7 +706,7 @@ namespace Magick
 
   private:
     Color         _target;
-    unsigned int  _matte;
+    unsigned int  _alpha;
     ::ssize_t     _x;
     ::ssize_t     _y;
     PaintMethod   _method;
@@ -1514,18 +1514,6 @@ namespace Magick
 
   private:
     InterlaceType _interlace;
-  };
-
-  // Linewidth for drawing vector objects (default one)
-  class MagickPPExport lineWidthImage : public std::unary_function<Image&,void>
-  {
-  public:
-    lineWidthImage( const double lineWidth_ );
-
-    void operator()( Image &image_ ) const;
-
-  private:
-    double _lineWidth;
   };
 
   // File type magick identifier (.e.g "GIF")

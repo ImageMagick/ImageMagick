@@ -661,20 +661,20 @@ void Magick::mapImage::operator()( Magick::Image &image_ ) const
 }
 
 // Floodfill designated area with a matte value
-Magick::matteFloodfillImage::matteFloodfillImage( const Color &target_ ,
-                                                  const unsigned int matte_,
+Magick::alphaFloodfillImage::alphaFloodfillImage( const Color &target_ ,
+                                                  const unsigned int alpha_,
                                                   const ssize_t x_, const ssize_t y_,
                                                   const PaintMethod method_ )
   : _target( target_ ),
-    _matte( matte_ ),
+    _alpha( alpha_ ),
     _x( x_ ),
     _y( y_ ),
     _method( method_ )
 {
 }
-void Magick::matteFloodfillImage::operator()( Magick::Image &image_ ) const
+void Magick::alphaFloodfillImage::operator()( Magick::Image &image_ ) const
 {
-  image_.matteFloodfill( _target, _matte, _x, _y, _method );
+  image_.alphaFloodfill( _target, _alpha, _x, _y, _method );
 }
 
 // Filter image by replacing each pixel component with the median
@@ -1351,16 +1351,6 @@ void Magick::interlaceTypeImage::operator()( Magick::Image &image_ ) const
   image_.interlaceType( _interlace );
 }
 
-// Linewidth for drawing vector objects (default one)
-Magick::lineWidthImage::lineWidthImage( const double lineWidth_ )
-  : _lineWidth( lineWidth_ )
-{
-}
-void Magick::lineWidthImage::operator()( Magick::Image &image_ ) const
-{
-  image_.lineWidth( _lineWidth );
-}
-
 // File type magick identifier (.e.g "GIF")
 Magick::magickImage::magickImage( const std::string &magick_ )
   : _magick( magick_ )
@@ -1399,26 +1389,6 @@ Magick::monochromeImage::monochromeImage( const bool monochromeFlag_ )
 void Magick::monochromeImage::operator()( Magick::Image &image_ ) const
 {
   image_.monochrome( _monochromeFlag );
-}
-
-// Pen color
-Magick::penColorImage::penColorImage( const Color &penColor_ )
-  : _penColor( penColor_ )
-{
-}
-void Magick::penColorImage::operator()( Magick::Image &image_ ) const
-{
-  image_.penColor( _penColor );
-}
-
-// Pen texture image.
-Magick::penTextureImage::penTextureImage( const Image &penTexture_ )
-  : _penTexture( penTexture_ )
-{
-}
-void Magick::penTextureImage::operator()( Magick::Image &image_ ) const
-{
-  image_.penTexture( _penTexture );
 }
 
 // Set pixel color at location x & y.
