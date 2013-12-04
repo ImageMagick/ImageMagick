@@ -2619,6 +2619,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     }
   scanline[0]=(JSAMPROW) jpeg_pixels;
   scale=65535U/GetQuantumRange(jpeg_info.data_precision);
+  if (scale == 0)
+    scale=1; 
   if (jpeg_info.data_precision <= 8)
     {
       if ((jpeg_info.in_color_space == JCS_RGB) ||
