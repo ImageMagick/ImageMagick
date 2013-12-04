@@ -2209,16 +2209,14 @@ cleanup:
 %    o exception: exception
 %
 */
-MagickBooleanType InitImageMagickOpenCL(ImageMagickOpenCLMode mode, 
-                                        void* userSelectedDevice, 
-                                        void* selectedDevice,
-                                        ExceptionInfo* exception) {
- 
+MagickExport MagickBooleanType InitImageMagickOpenCL(
+  ImageMagickOpenCLMode mode,void *userSelectedDevice,void *selectedDevice,
+  ExceptionInfo *exception)
+{
   MagickBooleanType status = MagickTrue;
   MagickCLEnv clEnv = NULL;
   MagickBooleanType flag;
 
-  exception = AcquireExceptionInfo();
   clEnv = GetDefaultOpenCLEnv();
   if (clEnv!=NULL) {
     switch(mode) {
@@ -2394,10 +2392,10 @@ MagickExport unsigned long GetOpenCLDeviceLocalMemorySize(
   return 0;
 }
 
-MagickBooleanType InitImageMagickOpenCL(ImageMagickOpenCLMode mode, 
-                                        void* userSelectedDevice, 
-                                        void* selectedDevice,
-                                        ExceptionInfo* exception) 
+MagickExport MagickBooleanType InitImageMagickOpenCL(
+  ImageMagickOpenCLMode magick_unused(mode),
+  void *magick_unused(userSelectedDevice),void *magick_unused(selectedDevice),
+  ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(mode);
   magick_unreferenced(userSelectedDevice);
