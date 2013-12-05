@@ -86,6 +86,9 @@ extern MagickExport cl_command_queue
   AcquireOpenCLCommandQueue(MagickCLEnv);
 
 extern MagickExport MagickBooleanType 
+  OpenCLThrowMagickException(ExceptionInfo *,
+  const char *,const char *,const size_t,
+  const ExceptionType,const char *,const char *,...),
   RelinquishOpenCLCommandQueue(MagickCLEnv, cl_command_queue),
   RelinquishOpenCLKernel(MagickCLEnv, cl_kernel);
 
@@ -107,8 +110,8 @@ static inline void OpenCLLogException(const char* function,
   if (exception->severity!=0) {
     char message[MaxTextExtent];
     /*  dump the source into a file */
-    (void) FormatLocaleString(message,MaxTextExtent,"%s:%d Exception(%d)"
-      ,function,line,exception->severity);
+    (void) FormatLocaleString(message,MaxTextExtent,"%s:%d Exception(%d):%s "
+        ,function,line,exception->severity,exception->reason);
     OpenCLLog(message);
   }
 #else
@@ -117,6 +120,7 @@ static inline void OpenCLLogException(const char* function,
   magick_unreferenced(exception);
 #endif
 }
+
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
