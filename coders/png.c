@@ -8800,7 +8800,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          ping_have_color=MagickFalse;
          ping_have_non_bw=MagickFalse;
 
-         if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse) &&
+         if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
          {
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "incompatible colorspace");
