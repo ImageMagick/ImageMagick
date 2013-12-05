@@ -8284,9 +8284,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
     }
 
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse &&
-      image->colorspace != Rec601LumaColorspace &&
-      image->colorspace != Rec709LumaColorspace)
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
 
   /*
@@ -8802,9 +8800,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          ping_have_color=MagickFalse;
          ping_have_non_bw=MagickFalse;
 
-         if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse &&
-            image->colorspace != Rec601LumaColorspace &&
-            image->colorspace != Rec709LumaColorspace)
+         if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse) &&
          {
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "incompatible colorspace");
