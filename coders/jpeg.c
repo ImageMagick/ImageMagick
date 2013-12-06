@@ -2749,12 +2749,12 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-
-              GetPixelRed(p))/scale);
-            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-
-              GetPixelGreen(p))/scale);
-            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-
-              GetPixelBlue(p))/scale);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-GetPixelRed(p))/
+              scale);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-GetPixelGreen(p))/
+              scale);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-GetPixelBlue(p))/
+              scale);
             *q++=(JSAMPLE) (ScaleQuantumToShort(QuantumRange-
               GetPixelIndex(indexes+x))/scale);
             p++;
