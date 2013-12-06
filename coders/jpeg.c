@@ -1331,14 +1331,14 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           else
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetPixelCyan(q,QuantumRange-
-                ScaleShortToQuantum(scale*GETJSAMPLE(*p++)));
-              SetPixelMagenta(q,QuantumRange-
-                ScaleShortToQuantum(scale*GETJSAMPLE(*p++)));
-              SetPixelYellow(q,QuantumRange-
-                ScaleShortToQuantum(scale*GETJSAMPLE(*p++)));
-              SetPixelBlack(indexes+x,QuantumRange-
-                ScaleShortToQuantum(scale*GETJSAMPLE(*p++)));
+              SetPixelCyan(q,QuantumRange-ScaleShortToQuantum(scale*
+                GETJSAMPLE(*p++)));
+              SetPixelMagenta(q,QuantumRange-ScaleShortToQuantum(scale*
+                GETJSAMPLE(*p++)));
+              SetPixelYellow(q,QuantumRange-ScaleShortToQuantum(scale*
+                GETJSAMPLE(*p++)));
+              SetPixelBlack(indexes+x,QuantumRange-ScaleShortToQuantum(scale*
+                GETJSAMPLE(*p++)));
               SetPixelOpacity(q,OpaqueOpacity);
               q++;
             }
@@ -1369,12 +1369,12 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         else
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelCyan(q,QuantumRange-ScaleCharToQuantum(
-              (unsigned char) GETJSAMPLE(*p++)));
-            SetPixelMagenta(q,QuantumRange-ScaleCharToQuantum(
-              (unsigned char) GETJSAMPLE(*p++)));
-            SetPixelYellow(q,QuantumRange-ScaleCharToQuantum(
-              (unsigned char) GETJSAMPLE(*p++)));
+            SetPixelCyan(q,QuantumRange-ScaleCharToQuantum((unsigned char)
+              GETJSAMPLE(*p++)));
+            SetPixelMagenta(q,QuantumRange-ScaleCharToQuantum((unsigned char)
+              GETJSAMPLE(*p++)));
+            SetPixelYellow(q,QuantumRange-ScaleCharToQuantum((unsigned char)
+              GETJSAMPLE(*p++)));
             SetPixelBlack(indexes+x,QuantumRange-ScaleCharToQuantum(
               (unsigned char) GETJSAMPLE(*p++)));
             SetPixelOpacity(q,OpaqueOpacity);
