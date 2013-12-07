@@ -384,7 +384,7 @@ MagickExport
   MagickBooleanType GetMagickOpenCLEnvParam(MagickCLEnv clEnv, MagickOpenCLEnvParam param
                                           , size_t dataSize, void* data, ExceptionInfo* exception)
 {
-  MagickBooleanType
+  MagickBooleanType 
    status;
 
   magick_unreferenced(exception);
@@ -1870,6 +1870,8 @@ cleanup:
   return status;
 }
 
+
+#if 0
 static ds_status getNumDeviceWithEmptyScore(ds_profile* profile, unsigned int* num) {
   unsigned int i;
   if (profile == NULL || num==NULL)
@@ -1877,11 +1879,12 @@ static ds_status getNumDeviceWithEmptyScore(ds_profile* profile, unsigned int* n
   *num=0;
   for (i = 0; i < profile->numDevices; i++) {
     if (profile->devices[i].score == NULL) {
-      *num++;
+      (*num)++;
     }
   }
   return DS_SUCCESS;
 }
+#endif
 
 /*
  End of the OpenCL device selection infrastructure
@@ -2108,9 +2111,14 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
   unsigned int bestDeviceIndex;
   AccelerateScoreType bestScore;
   char path[MaxTextExtent];
-
+  MagickBooleanType flag;
 
   LockDefaultOpenCLEnv();
+
+  /* Initially, just set OpenCL to off */
+  flag = MagickTrue;
+  SetMagickOpenCLEnvParamInternal(clEnv, MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED
+    , sizeof(MagickBooleanType), &flag, exception);
 
   status = initDSProfile(&profile, IMAGEMAGICK_PROFILE_VERSION);
   if (status!=DS_SUCCESS) {
@@ -2149,12 +2157,15 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
   /* set up clEnv with the best device */
   if (profile->devices[bestDeviceIndex].type == DS_DEVICE_NATIVE_CPU) {
     /* CPU device */
-    MagickBooleanType flag = MagickTrue;
+    flag = MagickTrue;
     SetMagickOpenCLEnvParamInternal(clEnv, MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED
                                   , sizeof(MagickBooleanType), &flag, exception);
   }
   else if (profile->devices[bestDeviceIndex].type == DS_DEVICE_OPENCL_DEVICE) {
     /* OpenCL device */
+    flag = MagickFalse;
+    SetMagickOpenCLEnvParamInternal(clEnv, MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED
+      , sizeof(MagickBooleanType), &flag, exception);
     SetMagickOpenCLEnvParamInternal(clEnv, MAGICK_OPENCL_ENV_PARAM_DEVICE
       , sizeof(cl_device_id), &profile->devices[bestDeviceIndex].oclDeviceID,exception);
   }
@@ -2269,6 +2280,58 @@ MagickExport MagickBooleanType InitImageMagickOpenCL(
     };
   }
   return status;
+}
+
+
+MagickExport
+MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
+  const char *module,const char *function,const size_t line,
+  const ExceptionType severity,const char *tag,const char *format,...) {
+  MagickBooleanType
+    status;
+
+  MagickCLEnv clEnv;
+
+  status = MagickTrue;
+
+  clEnv = GetDefaultOpenCLEnv();
+
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+
+  if (severity!=0) {
+    cl_device_type dType;
+    clGetDeviceInfo(clEnv->device,CL_DEVICE_TYPE ,sizeof(cl_device_type),&dType,NULL);
+    if (dType == CL_DEVICE_TYPE_CPU) {
+      char buffer[MaxTextExtent];
+      clGetPlatformInfo(clEnv->platform, CL_PLATFORM_NAME, MaxTextExtent, buffer, NULL);
+
+      /* Workaround for Intel OpenCL CPU runtime bug */
+      /* Turn off OpenCL when a problem is detected! */
+      if (strncmp(buffer, "Intel",5) == 0) {
+
+        InitImageMagickOpenCL(MAGICK_OPENCL_OFF, NULL, NULL, exception);
+      }
+    }
+  }
+
+#ifdef OPENCLLOG_ENABLED
+  {
+    va_list
+      operands;
+    va_start(operands,format);
+    status=ThrowMagickExceptionList(exception,module,function,line,severity,tag, format,operands);
+    va_end(operands);
+  }
+#else
+  magick_unreferenced(module);
+  magick_unreferenced(function);
+  magick_unreferenced(line);
+  magick_unreferenced(tag);
+  magick_unreferenced(format);
+#endif
+
+  return(status);
 }
 
 
@@ -2404,6 +2467,21 @@ MagickExport MagickBooleanType InitImageMagickOpenCL(
   return MagickFalse;
 }
 
+
+MagickExport
+MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
+  const char *module,const char *function,const size_t line,
+  const ExceptionType severity,const char *tag,const char *format,...) 
+{
+  magick_unreferenced(exception);
+  magick_unreferenced(module);
+  magick_unreferenced(function);
+  magick_unreferenced(line);
+  magick_unreferenced(severity);
+  magick_unreferenced(tag);
+  magick_unreferenced(format);
+  return(MagickFalse);
+}
 #endif /* MAGICKCORE_OPENCL_SUPPORT */
 
 char* openclCachedFilesDirectory;
@@ -2471,6 +2549,11 @@ void OpenCLLog(const char* message) {
   {
     if (message) {
       char path[MaxTextExtent];
+      unsigned long allocSize;
+
+      MagickCLEnv clEnv;
+
+      clEnv = GetDefaultOpenCLEnv();
 
       /*  dump the source into a file */
       (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s"
@@ -2481,6 +2564,13 @@ void OpenCLLog(const char* message) {
       log = fopen(path, "ab");
       fwrite(message, sizeof(char), strlen(message), log);
       fwrite("\n", sizeof(char), 1, log);
+
+      if (clEnv->OpenCLInitialized && !clEnv->OpenCLDisabled)
+      {
+        allocSize = GetOpenCLDeviceMaxMemAllocSize(clEnv);
+        fprintf(log, "Devic Max Memory Alloc Size: %ld\n", allocSize);
+      }
+
       fclose(log);
     }
   }
@@ -2488,4 +2578,3 @@ void OpenCLLog(const char* message) {
   magick_unreferenced(message);
 #endif
 }
-
