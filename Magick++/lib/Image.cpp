@@ -893,7 +893,7 @@ Magick::Blob Magick::Image::iccColorProfile(void) const
     color_profile)));
 }
 
-void Magick::Image::interlaceType(const Magick::InterlaceType interlace_)
+void Magick::Image::interlaceType(const InterlaceType interlace_)
 {
   modifyImage();
   image()->interlace=interlace_;
@@ -903,6 +903,17 @@ void Magick::Image::interlaceType(const Magick::InterlaceType interlace_)
 Magick::InterlaceType Magick::Image::interlaceType(void) const
 {
   return constImage()->interlace;
+}
+
+void Magick::Image::interpolate(const InterpolatePixelMethod interpolate_)
+{
+  modifyImage();
+  image()->interpolate=interpolate_;
+}
+
+Magick::InterpolatePixelMethod Magick::Image::interpolate(void) const
+{
+  return constImage()->interpolate;
 }
 
 void Magick::Image::iptcProfile(const Magick::Blob &iptcProfile_)
@@ -3575,6 +3586,29 @@ void Magick::Image::reduceNoise(const double order_)
   GetPPException;
   newImage=StatisticImage(constImage(),NonpeakStatistic,(size_t) order_,
     (size_t) order_,&exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
+void Magick::Image::resample(const Geometry &geometry_)
+{
+  MagickCore::Image
+    *newImage;
+
+  size_t
+    width=columns(),
+    height=rows();
+
+  ssize_t
+    x=0,
+    y=0;
+
+  ParseMetaGeometry(static_cast<std::string>(geometry_).c_str(),&x, &y,&width,
+    &height);
+
+  GetPPException;
+  newImage=ResampleImage(constImage(),width,height,image()->filter,1.0,
+    &exceptionInfo);
   replaceImage(newImage);
   ThrowPPException;
 }
