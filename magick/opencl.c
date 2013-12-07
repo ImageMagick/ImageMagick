@@ -1870,6 +1870,8 @@ cleanup:
   return status;
 }
 
+
+#if 0
 static ds_status getNumDeviceWithEmptyScore(ds_profile* profile, unsigned int* num) {
   unsigned int i;
   if (profile == NULL || num==NULL)
@@ -1877,11 +1879,12 @@ static ds_status getNumDeviceWithEmptyScore(ds_profile* profile, unsigned int* n
   *num=0;
   for (i = 0; i < profile->numDevices; i++) {
     if (profile->devices[i].score == NULL) {
-      *num++;
+      (*num)++;
     }
   }
   return DS_SUCCESS;
 }
+#endif
 
 /*
  End of the OpenCL device selection infrastructure
@@ -2320,6 +2323,12 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
     status=ThrowMagickExceptionList(exception,module,function,line,severity,tag, format,operands);
     va_end(operands);
   }
+#else
+  magick_unreferenced(module);
+  magick_unreferenced(function);
+  magick_unreferenced(line);
+  magick_unreferenced(tag);
+  magick_unreferenced(format);
 #endif
 
   return(status);

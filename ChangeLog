@@ -2,6 +2,8 @@
   * silence warning related to GPU memory issues.
   * check if OpenCL is disabled in checkOpenCLEnvironment() method
   * turn off OpenCL path for Intel OpenCL to avoid crash when not enough memory
+  * fixed a bug for OpenCL convolution
+  * reduce compiler warnings
 
 2013-12-03  6.8.7-9 Glenn Randers-Pehrson <glennrp@image...>
   * fixed bug in coders/png.c that caused -define png:color-type=0 to

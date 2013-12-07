@@ -273,7 +273,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
   clStatus = clEnqueueUnmapMemObject(queue, convolutionKernel, kernelBufferPtr, 0, NULL, NULL);
  if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
     goto cleanup;
   }
   clFlush(queue);
@@ -300,10 +300,10 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
   if (localMemoryRequirement <= deviceLocalMemorySize) 
   {
     /* get the OpenCL kernel */
-    clkernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Convolve");
+    clkernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ConvolveOptimized");
     if (clkernel == NULL)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
       goto cleanup;
     }
 
@@ -327,7 +327,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     clStatus|=clSetKernelArg(clkernel,i++, kernel->width*kernel->height*sizeof(float),NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
 
@@ -339,7 +339,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     clStatus = clEnqueueNDRangeKernel(queue, clkernel, 2, NULL, global_work_size, localGroupSize, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
   }
@@ -349,7 +349,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     clkernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Convolve");
     if (clkernel == NULL)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
       goto cleanup;
     }
 
@@ -367,7 +367,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     clStatus|=clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&channel);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
 
@@ -378,7 +378,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
     clStatus = clEnqueueNDRangeKernel(queue, clkernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
   }
@@ -396,7 +396,7 @@ static Image* ComputeConvolveImage(const Image* inputImage, const ChannelType ch
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -569,7 +569,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image, const ChannelType ch
   clStatus = clEnqueueUnmapMemObject(queue, parametersBuffer, parametersBufferPtr, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
     goto cleanup;
   }
   clFlush(queue);
@@ -577,7 +577,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image, const ChannelType ch
   clkernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "FunctionImage");
   if (clkernel == NULL)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -590,7 +590,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image, const ChannelType ch
   clStatus|=clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&parametersBuffer);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -600,7 +600,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image, const ChannelType ch
   clStatus = clEnqueueNDRangeKernel(queue, clkernel, 2, NULL, globalWorkSize, NULL, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
   clFlush(queue);
@@ -618,7 +618,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image, const ChannelType ch
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
   status = MagickTrue;
@@ -824,7 +824,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
     clStatus = clEnqueueUnmapMemObject(queue, imageKernelBuffer, kernelBufferPtr, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
       goto cleanup;
     }
   }
@@ -847,14 +847,14 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
       blurRowKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "BlurRow");
       if (blurRowKernel == NULL)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
         goto cleanup;
       };
 
       blurColumnKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "BlurColumn");
       if (blurColumnKernel == NULL)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
         goto cleanup;
       };
     }
@@ -880,7 +880,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
         clStatus|=clSetKernelArg(blurRowKernel,i++,sizeof(CLPixelPacket)*(chunkSize+kernel->width),(void *)NULL);
         if (clStatus != CL_SUCCESS)
         {
-          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
           goto cleanup;
         }
       }
@@ -898,7 +898,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
         clStatus = clEnqueueNDRangeKernel(queue, blurRowKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
         if (clStatus != CL_SUCCESS)
         {
-          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
         clFlush(queue);
@@ -926,7 +926,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
         clStatus|=clSetKernelArg(blurColumnKernel,i++,sizeof(cl_float4)*(chunkSize+kernel->width),(void *)NULL);
         if (clStatus != CL_SUCCESS)
         {
-          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
           goto cleanup;
         }
       }
@@ -944,7 +944,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
         clStatus = clEnqueueNDRangeKernel(queue, blurColumnKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
         if (clStatus != CL_SUCCESS)
         {
-          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
         clFlush(queue);
@@ -966,7 +966,7 @@ static Image* ComputeBlurImage(const Image* inputImage, const ChannelType channe
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -1135,7 +1135,7 @@ static Image* ComputeBlurImageSection(const Image* inputImage, const ChannelType
     clStatus = clEnqueueUnmapMemObject(queue, imageKernelBuffer, kernelBufferPtr, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
       goto cleanup;
     }
   }
@@ -1160,14 +1160,14 @@ static Image* ComputeBlurImageSection(const Image* inputImage, const ChannelType
       blurRowKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "BlurRowSection");
       if (blurRowKernel == NULL)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
         goto cleanup;
       };
 
       blurColumnKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "BlurColumnSection");
       if (blurColumnKernel == NULL)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
         goto cleanup;
       };
     }
@@ -1203,7 +1203,7 @@ static Image* ComputeBlurImageSection(const Image* inputImage, const ChannelType
           clStatus|=clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&sec);
           if (clStatus != CL_SUCCESS)
           {
-            (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+            (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
             goto cleanup;
           }
         }
@@ -1221,7 +1221,7 @@ static Image* ComputeBlurImageSection(const Image* inputImage, const ChannelType
           clStatus = clEnqueueNDRangeKernel(queue, blurRowKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
           if (clStatus != CL_SUCCESS)
           {
-            (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+            (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
             goto cleanup;
           }
           clFlush(queue);
@@ -1257,7 +1257,7 @@ static Image* ComputeBlurImageSection(const Image* inputImage, const ChannelType
           clStatus|=clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&sec);
           if (clStatus != CL_SUCCESS)
           {
-            (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+            (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
             goto cleanup;
           }
         }
@@ -1275,7 +1275,7 @@ static Image* ComputeBlurImageSection(const Image* inputImage, const ChannelType
           clStatus = clEnqueueNDRangeKernel(queue, blurColumnKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
           if (clStatus != CL_SUCCESS)
           {
-            (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+            (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
             goto cleanup;
           }
           clFlush(queue);
@@ -1298,7 +1298,7 @@ static Image* ComputeBlurImageSection(const Image* inputImage, const ChannelType
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -1548,7 +1548,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   clStatus |= clEnqueueUnmapMemObject(queue, cosThetaBuffer, cosThetaPtr, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -1556,7 +1556,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   radialBlurKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "RadialBlur");
   if (radialBlurKernel == NULL)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -1584,7 +1584,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   clStatus|=clSetKernelArg(radialBlurKernel,i++,sizeof(unsigned int), &cossin_theta_size);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -1595,7 +1595,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   clStatus = clEnqueueNDRangeKernel(queue, radialBlurKernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
   clFlush(queue);
@@ -1612,7 +1612,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
   outputReady = MagickTrue;
@@ -1833,7 +1833,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
     clStatus = clEnqueueUnmapMemObject(queue, imageKernelBuffer, kernelBufferPtr, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
       goto cleanup;
     }
   }
@@ -1855,14 +1855,14 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
       blurRowKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "BlurRow");
       if (blurRowKernel == NULL)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
         goto cleanup;
       };
 
       unsharpMaskBlurColumnKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "UnsharpMaskBlurColumn");
       if (unsharpMaskBlurColumnKernel == NULL)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
         goto cleanup;
       };
     }
@@ -1887,7 +1887,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
       clStatus|=clSetKernelArg(blurRowKernel,i++,sizeof(CLPixelPacket)*(chunkSize+kernel->width),(void *)NULL);
       if (clStatus != CL_SUCCESS)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
         goto cleanup;
       }
     }
@@ -1905,7 +1905,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
       clStatus = clEnqueueNDRangeKernel(queue, blurRowKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
       if (clStatus != CL_SUCCESS)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
         goto cleanup;
       }
       clFlush(queue);
@@ -1936,7 +1936,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
 
       if (clStatus != CL_SUCCESS)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
         goto cleanup;
       }
     }
@@ -1954,7 +1954,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
       clStatus = clEnqueueNDRangeKernel(queue, unsharpMaskBlurColumnKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
       if (clStatus != CL_SUCCESS)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
         goto cleanup;
       }
       clFlush(queue);
@@ -1975,7 +1975,7 @@ static Image* ComputeUnsharpMaskImage(const Image *inputImage, const ChannelType
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -2142,7 +2142,7 @@ static Image* ComputeUnsharpMaskImageSection(const Image *inputImage, const Chan
     clStatus = clEnqueueUnmapMemObject(queue, imageKernelBuffer, kernelBufferPtr, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
       goto cleanup;
     }
   }
@@ -2167,14 +2167,14 @@ static Image* ComputeUnsharpMaskImageSection(const Image *inputImage, const Chan
       blurRowKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "BlurRowSection");
       if (blurRowKernel == NULL)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
         goto cleanup;
       };
 
       unsharpMaskBlurColumnKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "UnsharpMaskBlurColumnSection");
       if (unsharpMaskBlurColumnKernel == NULL)
       {
-        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
         goto cleanup;
       };
     }
@@ -2208,7 +2208,7 @@ static Image* ComputeUnsharpMaskImageSection(const Image *inputImage, const Chan
         clStatus|=clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&sec);
         if (clStatus != CL_SUCCESS)
         {
-          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
           goto cleanup;
         }
       }
@@ -2225,7 +2225,7 @@ static Image* ComputeUnsharpMaskImageSection(const Image *inputImage, const Chan
         clStatus = clEnqueueNDRangeKernel(queue, blurRowKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
         if (clStatus != CL_SUCCESS)
         {
-          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
         clFlush(queue);
@@ -2266,7 +2266,7 @@ static Image* ComputeUnsharpMaskImageSection(const Image *inputImage, const Chan
 
         if (clStatus != CL_SUCCESS)
         {
-          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
           goto cleanup;
         }
       }
@@ -2284,7 +2284,7 @@ static Image* ComputeUnsharpMaskImageSection(const Image *inputImage, const Chan
         clStatus = clEnqueueNDRangeKernel(queue, unsharpMaskBlurColumnKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
         if (clStatus != CL_SUCCESS)
         {
-          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
         clFlush(queue);
@@ -2305,7 +2305,7 @@ static Image* ComputeUnsharpMaskImageSection(const Image *inputImage, const Chan
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -2517,7 +2517,7 @@ static MagickBooleanType resizeHorizontalFilter(cl_mem inputImage
   }
   if (horizontalKernel == NULL)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -2561,7 +2561,7 @@ static MagickBooleanType resizeHorizontalFilter(cl_mem inputImage
 
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -2573,7 +2573,7 @@ static MagickBooleanType resizeHorizontalFilter(cl_mem inputImage
   clStatus = clEnqueueNDRangeKernel(queue, horizontalKernel, 2, NULL, global_work_size, local_work_size, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
   clFlush(queue);
@@ -2695,7 +2695,7 @@ static MagickBooleanType resizeVerticalFilter(cl_mem inputImage
 
   if (horizontalKernel == NULL)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -2739,7 +2739,7 @@ static MagickBooleanType resizeVerticalFilter(cl_mem inputImage
 
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -2751,7 +2751,7 @@ static MagickBooleanType resizeVerticalFilter(cl_mem inputImage
   clStatus = clEnqueueNDRangeKernel(queue, horizontalKernel, 2, NULL, global_work_size, local_work_size, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
   clFlush(queue);
@@ -2850,7 +2850,7 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
   clStatus = clEnqueueUnmapMemObject(queue, cubicCoefficientsBuffer, mappedCoefficientBuffer, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -2952,7 +2952,7 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
   outputReady = MagickTrue;
@@ -3131,7 +3131,7 @@ static MagickBooleanType ComputeContrastImage(Image *inputImage, const MagickBoo
   filterKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Contrast");
   if (filterKernel == NULL)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -3142,7 +3142,7 @@ static MagickBooleanType ComputeContrastImage(Image *inputImage, const MagickBoo
   clStatus|=clSetKernelArg(filterKernel,i++,sizeof(cl_uint),&uSharpen);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -3153,7 +3153,7 @@ static MagickBooleanType ComputeContrastImage(Image *inputImage, const MagickBoo
   clStatus = clEnqueueNDRangeKernel(queue, filterKernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
   clFlush(queue);
@@ -3170,7 +3170,7 @@ static MagickBooleanType ComputeContrastImage(Image *inputImage, const MagickBoo
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
   outputReady = MagickTrue;
@@ -3317,7 +3317,7 @@ MagickBooleanType ComputeModulateImage(Image* image, double percent_brightness, 
   modulateKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Modulate");
   if (modulateKernel == NULL)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -3334,7 +3334,7 @@ MagickBooleanType ComputeModulateImage(Image* image, double percent_brightness, 
   clStatus|=clSetKernelArg(modulateKernel,i++,sizeof(cl_float),&color);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     printf("no kernel\n");
     goto cleanup;
   }
@@ -3347,7 +3347,7 @@ MagickBooleanType ComputeModulateImage(Image* image, double percent_brightness, 
     clStatus = clEnqueueNDRangeKernel(queue, modulateKernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
     clFlush(queue);
@@ -3365,7 +3365,7 @@ MagickBooleanType ComputeModulateImage(Image* image, double percent_brightness, 
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -3592,7 +3592,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   histogramKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Histogram");
   if (histogramKernel == NULL)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -3604,7 +3604,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   clStatus|=clSetKernelArg(histogramKernel,i++,sizeof(cl_mem),(void *)&histogramBuffer);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -3616,7 +3616,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
 
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
   clFlush(queue);
@@ -3634,7 +3634,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -3644,7 +3644,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
     clStatus = clEnqueueUnmapMemObject(queue, histogramBuffer, histogram, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueUnmapMemObject failed.", "'%s'", ".");
       goto cleanup;
     }
   }
@@ -3827,7 +3827,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   equalizeKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Equalize");
   if (equalizeKernel == NULL)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "AcquireOpenCLKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -3840,7 +3840,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   clStatus|=clSetKernelArg(equalizeKernel,i++,sizeof(FloatPixelPacket),&black);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -3852,7 +3852,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
 
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
   clFlush(queue);
@@ -3870,7 +3870,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *inputImage, const Cha
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -4073,7 +4073,7 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
   clStatus |=clSetKernelArg(hullPass1,6,sizeof(int),(void *)&matte);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -4087,7 +4087,7 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
   clStatus |=clSetKernelArg(hullPass2,6,sizeof(int),(void *)&matte);
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -4111,21 +4111,21 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
     clStatus|=clSetKernelArg(hullPass2,5,sizeof(int),(void *)&polarity);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
     /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass1, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
     /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
 
@@ -4141,21 +4141,21 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
     clStatus|=clSetKernelArg(hullPass2,5,sizeof(int),(void *)&polarity);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
     /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass1, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
     /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
 
@@ -4168,21 +4168,21 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
     clStatus|=clSetKernelArg(hullPass2,5,sizeof(int),(void *)&polarity);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
     /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass1, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
     /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
 
@@ -4199,21 +4199,21 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
 
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clSetKernelArg failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clSetKernelArg failed.", "'%s'", ".");
       goto cleanup;
     }
     /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass1, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
     /* launch the kernel */
     clStatus = clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
     if (clStatus != CL_SUCCESS)
     {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }  
   }
@@ -4230,7 +4230,7 @@ static Image* ComputeDespeckleImage(const Image* inputImage, ExceptionInfo* exce
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -4525,7 +4525,7 @@ static Image* ComputeAddNoiseImage(const Image* inputImage,
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
@@ -4789,7 +4789,7 @@ static Image* ComputeAddNoiseImageOptRandomNum(const Image* inputImage,
   }
   if (clStatus != CL_SUCCESS)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
 
