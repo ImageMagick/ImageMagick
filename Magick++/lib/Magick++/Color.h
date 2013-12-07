@@ -12,21 +12,20 @@
 
 namespace Magick
 {
-
   class MagickPPExport Color;
 
   // Compare two Color objects regardless of LHS/RHS
-  int MagickPPExport operator ==
+  MagickPPExport int operator ==
     (const Magick::Color &left_,const Magick::Color &right_);
-  int MagickPPExport operator !=
+  MagickPPExport int operator !=
     (const Magick::Color &left_,const Magick::Color &right_);
-  int MagickPPExport operator >
+  MagickPPExport int operator >
     (const Magick::Color &left_,const Magick::Color &right_);
-  int MagickPPExport operator <
+  MagickPPExport int operator <
     (const Magick::Color &left_,const Magick::Color &right_);
-  int MagickPPExport operator >=
+  MagickPPExport int operator >=
     (const Magick::Color &left_,const Magick::Color &right_);
-  int MagickPPExport operator <=
+  MagickPPExport int operator <=
     (const Magick::Color &left_,const Magick::Color &right_);
 
   // Base color class stores RGB components scaled to fit Quantum
