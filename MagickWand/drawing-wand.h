@@ -65,6 +65,9 @@ extern WandExport DrawingWand
   *DrawAllocateWand(const DrawInfo *,Image *),
   *NewDrawingWand(void);
 
+extern WandExport ExceptionInfo
+  *DrawCloneExceptionInfo(const DrawingWand *wand);
+
 extern WandExport ExceptionType
   DrawGetExceptionType(const DrawingWand *);
 

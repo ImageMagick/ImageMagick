@@ -1332,7 +1332,7 @@ void Magick::fontPointsizeImage::operator()( Magick::Image &image_ ) const
 }
 
 // GIF disposal method
-Magick::gifDisposeMethodImage::gifDisposeMethodImage( const size_t disposeMethod_ )
+Magick::gifDisposeMethodImage::gifDisposeMethodImage( const DisposeType disposeMethod_ )
   : _disposeMethod( disposeMethod_ )
 {
 }
@@ -1362,23 +1362,23 @@ void Magick::magickImage::operator()( Magick::Image &image_ ) const
 }
 
 // Image supports transparent color
-Magick::matteImage::matteImage( const bool matteFlag_ )
-  : _matteFlag( matteFlag_ )
+Magick::alphaFlagImage::alphaFlagImage( const bool alphaFlag_ )
+  : _alphaFlag( alphaFlag_ )
 {
 }
-void Magick::matteImage::operator()( Magick::Image &image_ ) const
+void Magick::alphaFlagImage::operator()( Magick::Image &image_ ) const
 {
-  image_.matte( _matteFlag );
+  image_.alpha( _alphaFlag );
 }
 
 // Transparent color
-Magick::matteColorImage::matteColorImage( const Color &matteColor_ )
-  : _matteColor( matteColor_ )
+Magick::alphaColorImage::alphaColorImage( const Color &alphaColor_ )
+  : _alphaColor( alphaColor_ )
 {
 }
-void Magick::matteColorImage::operator()( Magick::Image &image_ ) const
+void Magick::alphaColorImage::operator()( Magick::Image &image_ ) const
 {
-  image_.matteColor( _matteColor );
+  image_.alphaColor( _alphaColor );
 }
 
 // Indicate that image is black and white

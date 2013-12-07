@@ -16,7 +16,7 @@ using namespace std;
 #include "Magick++/Color.h"
 #include "Magick++/Exception.h"
 
-int Magick::operator == (const Magick::Color &left_,
+MagickPPExport int Magick::operator == (const Magick::Color &left_,
   const Magick::Color &right_)
 {
   return((left_.isValid() == right_.isValid()) &&
@@ -25,19 +25,19 @@ int Magick::operator == (const Magick::Color &left_,
     (left_.quantumBlue() == right_.quantumBlue()));
 }
 
-int Magick::operator != (const Magick::Color &left_,
+MagickPPExport int Magick::operator != (const Magick::Color &left_,
   const Magick::Color &right_)
 {
   return(!(left_ == right_));
 }
 
-int Magick::operator > (const Magick::Color &left_,
+MagickPPExport int Magick::operator > (const Magick::Color &left_,
   const Magick::Color &right_)
 {
   return(!(left_ < right_ ) && (left_ != right_ ));
 }
 
-int Magick::operator < ( const Magick::Color &left_,
+MagickPPExport int Magick::operator < ( const Magick::Color &left_,
   const Magick::Color &right_)
 {
   if(left_.quantumRed() < right_.quantumRed())
@@ -53,13 +53,13 @@ int Magick::operator < ( const Magick::Color &left_,
   return(false);
 }
 
-int Magick::operator >= (const Magick::Color &left_,
+MagickPPExport int Magick::operator >= (const Magick::Color &left_,
   const Magick::Color &right_)
 {
   return((left_ > right_) || (left_ == right_));
 }
 
-int Magick::operator <= ( const Magick::Color &left_,
+MagickPPExport int Magick::operator <= ( const Magick::Color &left_,
   const Magick::Color &right_)
 {
   return((left_ < right_) || (left_ == right_));

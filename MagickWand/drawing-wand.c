@@ -936,6 +936,37 @@ WandExport MagickBooleanType DrawClearException(DrawingWand *wand)
   ClearMagickException(wand->exception);
   return(MagickTrue);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w C l o n e E x c e p t i o n I n f o                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawCloneExceptionInfo() clones the ExceptionInfo structure within the wand.
+%
+%  The format of the DrawCloneExceptionInfo method is:
+%
+%      ExceptionInfo *DrawCloneExceptionInfo(DrawWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+*/
+WandExport ExceptionInfo *DrawCloneExceptionInfo(const DrawingWand *wand)
+{
+  assert(wand != (DrawingWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->exception == (ExceptionInfo*) NULL)
+    return (ExceptionInfo*) NULL;
+  return CloneExceptionInfo(wand->exception);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

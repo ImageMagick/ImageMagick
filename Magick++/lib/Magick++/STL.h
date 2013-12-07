@@ -1496,12 +1496,12 @@ namespace Magick
   class MagickPPExport gifDisposeMethodImage : public std::unary_function<Image&,void>
   {
   public:
-    gifDisposeMethodImage( const size_t disposeMethod_ );
+    gifDisposeMethodImage( const DisposeType disposeMethod_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    size_t _disposeMethod;
+    DisposeType _disposeMethod;
   };
 
   // Type of interlacing to use
@@ -1529,27 +1529,27 @@ namespace Magick
   };
 
   // Image supports transparent color
-  class MagickPPExport matteImage : public std::unary_function<Image&,void>
+  class MagickPPExport alphaFlagImage : public std::unary_function<Image&,void>
   {
   public:
-    matteImage( const bool matteFlag_ );
+    alphaFlagImage( const bool alphaFlag_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    bool _matteFlag;
+    bool _alphaFlag;
   };
 
   // Transparent color
-  class MagickPPExport matteColorImage : public std::unary_function<Image&,void>
+  class MagickPPExport alphaColorImage : public std::unary_function<Image&,void>
   {
   public:
-    matteColorImage( const Color &matteColor_ );
+    alphaColorImage( const Color &alphaColor_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    Color _matteColor;
+    Color _alphaColor;
   };
 
   // Indicate that image is black and white
