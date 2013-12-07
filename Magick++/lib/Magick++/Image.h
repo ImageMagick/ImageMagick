@@ -30,21 +30,22 @@ namespace Magick
 
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison
-  int MagickPPExport operator ==
+  MagickPPExport int operator ==
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator !=
+  MagickPPExport int operator !=
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator >
+  MagickPPExport int operator >
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator <
+  MagickPPExport int operator <
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator >=
+  MagickPPExport int operator >=
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator <=
+  MagickPPExport int operator <=
     (const Magick::Image &left_,const Magick::Image &right_);
 
   // C library initialization routine
-  void MagickPPExport InitializeMagick(const char *path_);
+  MagickPPExport void InitializeMagick(const char *path_);
+  MagickPPExport void TerminateMagick();
 
   //
   // Image is the representation of an image. In reality, it actually
@@ -128,6 +129,14 @@ namespace Magick
     void adjoin(const bool flag_);
     bool adjoin(void) const;
 
+    // Image supports transparency (alpha channel)
+    void alpha(const bool alphaFlag_);
+    bool alpha(void) const;
+
+    // Transparent color
+    void alphaColor(const Color &alphaColor_);
+    Color alphaColor(void) const;
+
     // Anti-alias Postscript and TrueType fonts (default true)
     void antiAlias(const bool flag_);
     bool antiAlias(void);
@@ -174,7 +183,7 @@ namespace Magick
 
     // Pixel cache threshold in bytes. Once this memory threshold
     // is exceeded, all subsequent pixels cache operations are to/from
-    // disk.  This setting is shared by all Image objects.
+    // disk. This setting is shared by all Image objects.
     static void cacheThreshold(const MagickSizeType threshold_);
 
     // Set or obtain modulus channel depth
@@ -211,8 +220,8 @@ namespace Magick
     void colorSpace(const ColorspaceType colorSpace_);
     ColorspaceType colorSpace(void) const;
 
-    void colorspaceType(const ColorspaceType colorSpace_);
-    ColorspaceType colorspaceType(void) const;
+    void colorSpaceType(const ColorspaceType colorSpace_);
+    ColorspaceType colorSpaceType(void) const;
 
     // Image width
     size_t columns(void) const;
@@ -259,7 +268,7 @@ namespace Magick
     std::string fileName(void) const;
 
     // Number of bytes of the image on disk
-    off_t fileSize(void) const;
+    MagickSizeType fileSize(void) const;
 
     // Color to use when filling drawn objects
     void fillColor(const Color &fillColor_);
@@ -295,8 +304,8 @@ namespace Magick
     Geometry geometry(void) const;
 
     // GIF disposal method
-    void gifDisposeMethod(const size_t disposeMethod_);
-    size_t gifDisposeMethod(void) const;
+    void gifDisposeMethod(const DisposeType disposeMethod_);
+    DisposeType gifDisposeMethod(void) const;
 
     // ICC color profile (BLOB)
     void iccColorProfile(const Blob &colorProfile_);
@@ -315,19 +324,12 @@ namespace Magick
     bool isValid(void) const;
 
     // Image label
+    void label(const std::string &label_);
     std::string label(void) const;
 
     // File type magick identifier (.e.g "GIF")
     void magick(const std::string &magick_);
     std::string magick(void) const;
-
-    // Image supports transparency (matte channel)
-    void matte(const bool matteFlag_);
-    bool matte(void) const;
-
-    // Transparent color
-    void matteColor(const Color &matteColor_);
-    Color matteColor(void) const;
 
     // The mean error per pixel computed when an image is color reduced
     double meanErrorPerPixel(void) const;
@@ -337,12 +339,12 @@ namespace Magick
     void modulusDepth(const size_t modulusDepth_);
     size_t modulusDepth(void) const;
 
-    // Tile size and offset within an image montage
-    Geometry montageGeometry(void) const;
-
     // Transform image to black and white
     void monochrome(const bool monochromeFlag_);
     bool monochrome(void) const;
+
+    // Tile size and offset within an image montage
+    Geometry montageGeometry(void) const;
 
     // The normalized max error per pixel computed when an image is
     // color reduced.
@@ -746,9 +748,9 @@ namespace Magick
     // more sophisticated histogram equalization in that it can only apply a
     // linear scaling function to the image pixel values. As a result the
     // 'enhancement' is less harsh.
-    void contrastStretch(const double black_point_,const double white_point_);
+    void contrastStretch(const double blackPoint_,const double whitePoint_);
     void contrastStretchChannel(const ChannelType channel_,
-      const double black_point_,const double white_point_);
+      const double blackPoint_,const double whitePoint_);
 
     // Convolve image.  Applies a user-specified convolution to the image.
     //  order_ represents the number of columns and rows in the filter kernel.
@@ -764,6 +766,15 @@ namespace Magick
     // Converts cipher pixels to plain pixels.
     void decipher(const std::string &passphrase_);
 
+    // Tagged image format define. Similar to the defineValue() method
+    // except that passing the flag_ value 'true' creates a value-less
+    // define with that format and key. Passing the flag_ value 'false'
+    // removes any existing matching definition. The method returns 'true'
+    // if a matching key exists, and 'false' if no matching key exists.
+    void defineSet(const std::string &magick_,const std::string &key_,
+      bool flag_);
+    bool defineSet(const std::string &magick_,const std::string &key_) const;
+
     // Tagged image format define (set/access coder-specific option) The
     // magick_ option specifies the coder the define applies to.  The key_
     // option provides the key specific to that coder.  The value_ option
@@ -773,15 +784,6 @@ namespace Magick
       const std::string &value_);
     std::string defineValue(const std::string &magick_,
       const std::string &key_) const;
-
-    // Tagged image format define. Similar to the defineValue() method
-    // except that passing the flag_ value 'true' creates a value-less
-    // define with that format and key. Passing the flag_ value 'false'
-    // removes any existing matching definition. The method returns 'true'
-    // if a matching key exists, and 'false' if no matching key exists.
-    void defineSet(const std::string &magick_,const std::string &key_,
-      bool flag_);
-    bool defineSet(const std::string &magick_,const std::string &key_) const;
 
     // Removes skew from the image. Skew is an artifact that occurs in scanned
     // images because of the camera being misaligned, imperfections in the
@@ -841,40 +843,40 @@ namespace Magick
     // Flip image (reflect each scanline in the vertical direction)
     void flip(void);
 
-    // Flood-fill color across pixels that match the color of the
-    // target pixel and are neighbors of the target pixel.
-    // Uses current fuzz setting when determining color match.
-    void floodFillColor(const ::ssize_t x_,const ::ssize_t y_,
-      const Color &fillColor_ );
-    void floodFillColor(const Geometry &point_,const Color &fillColor_);
-
     // Floodfill pixels matching color (within fuzz factor) of target
     // pixel(x,y) with replacement alpha value using method.
     void floodFillAlpha(const ::ssize_t x_,const ::ssize_t y_,
       const unsigned int alpha_,const PaintMethod method_);
 
+    // Flood-fill color across pixels that match the color of the
+    // target pixel and are neighbors of the target pixel.
+    // Uses current fuzz setting when determining color match.
+    void floodFillColor(const Geometry &point_,const Color &fillColor_);
+    void floodFillColor(const ::ssize_t x_,const ::ssize_t y_,
+      const Color &fillColor_ );
+
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void floodFillColor(const ::ssize_t x_,const ::ssize_t y_,
-      const Color &fillColor_,const Color &borderColor_);
     void floodFillColor(const Geometry &point_,const Color &fillColor_,
       const Color &borderColor_);
+    void floodFillColor(const ::ssize_t x_,const ::ssize_t y_,
+      const Color &fillColor_,const Color &borderColor_);
 
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
+    void floodFillTexture(const Geometry &point_,const Image &texture_);
     void floodFillTexture(const ::ssize_t x_,const ::ssize_t y_,
       const Image &texture_);
-    void floodFillTexture(const Geometry &point_,const Image &texture_);
 
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void floodFillTexture(const ::ssize_t x_,const ::ssize_t y_,
-      const Image &texture_,const Color &borderColor_);
     void floodFillTexture(const Geometry &point_,const Image &texture_,
       const Color &borderColor_);
+    void floodFillTexture(const ::ssize_t x_,const ::ssize_t y_,
+      const Image &texture_,const Color &borderColor_);
 
     // Flop image (reflect each scanline in the horizontal direction)
     void flop(void);
@@ -889,8 +891,8 @@ namespace Magick
       const ::ssize_t innerBevel_=6,const ::ssize_t outerBevel_=6);
 
     // Applies a mathematical expression to the image.
-    void fx(const std::string expression);
-    void fx(const std::string expression,const Magick::ChannelType channel);
+    void fx(const std::string expression_);
+    void fx(const std::string expression_,const Magick::ChannelType channel_);
 
     // Gamma correct image
     void gamma(const double gamma_);
@@ -934,9 +936,6 @@ namespace Magick
     void inverseFourierTransform(const Image &phase_);
     void inverseFourierTransform(const Image &phase_,const bool magnitude_);
 
-    // Label image
-    void label(const std::string &label_);
-
     // Level image. Adjust the levels of the image by scaling the
     // colors falling between specified white and black points to the
     // full available quantum range. The parameters provided represent
@@ -950,18 +949,6 @@ namespace Magick
     // has a useful range of 0 to ten.
     void level(const double blackPoint_,const double whitePoint_,
       const double gamma_=1.0);
-
-    // Level image channel. Adjust the levels of the image channel by
-    // scaling the values falling between specified white and black
-    // points to the full available quantum range. The parameters
-    // provided represent the black, mid (gamma), and white points.
-    // The black point specifies the darkest color in the
-    // image. Colors darker than the black point are set to zero. Mid
-    // point (gamma) specifies a gamma correction to apply to the
-    // image. White point specifies the lightest color in the image.
-    // Colors brighter than the white point are set to the maximum
-    // quantum value. The black and white point have the valid range 0
-    // to QuantumRange while mid (gamma) has a useful range of 0 to ten.
     void levelChannel(const ChannelType channel_,const double blackPoint_,
       const double whitePoint_,const double gamma_=1.0);
 
@@ -1045,16 +1032,6 @@ namespace Magick
     void pixelColor(const ::ssize_t x_,const ::ssize_t y_,const Color &color_);
     Color pixelColor(const ::ssize_t x_,const ::ssize_t y_ ) const;
 
-    // Add or remove a named profile to/from the image. Remove the
-    // profile by passing an empty Blob (e.g. Blob()). Valid names are
-    // "*", "8BIM", "ICM", "IPTC", or a user/format-defined profile name.
-    void profile(const std::string name_,const Blob &colorProfile_);
-
-    // Retrieve a named profile from the image. Valid names are:
-    // "8BIM", "8BIMTEXT", "APP1", "APP1JPEG", "ICC", "ICM", & "IPTC"
-    // or an existing user/format-defined profile name.
-    Blob profile(const std::string name_) const;
-
     // Simulates a Polaroid picture.
     void polaroid(const std::string &caption_,const double angle_,
       const PixelInterpolateMethod method_);
@@ -1069,6 +1046,16 @@ namespace Magick
     // requested process module doesn't exist, fails to load, or fails during
     // execution.
     void process(std::string name_,const ::ssize_t argc_,const char **argv_);
+
+    // Add or remove a named profile to/from the image. Remove the
+    // profile by passing an empty Blob (e.g. Blob()). Valid names are
+    // "*", "8BIM", "ICM", "IPTC", or a user/format-defined profile name.
+    void profile(const std::string name_,const Blob &colorProfile_);
+
+    // Retrieve a named profile from the image. Valid names are:
+    // "8BIM", "8BIMTEXT", "APP1", "APP1JPEG", "ICC", "ICM", & "IPTC"
+    // or an existing user/format-defined profile name.
+    Blob profile(const std::string name_) const;
 
     // Quantize image (reduce number of colors)
     void quantize(const bool measureError_=false);
@@ -1096,8 +1083,8 @@ namespace Magick
     // specified then only the specified channel is altered.  This is
     // a very fast alternative to 'quantize' based dithering.
     void randomThreshold(const Geometry &thresholds_);
-    void randomThresholdChannel(const Geometry &thresholds_,
-      const ChannelType channel_);
+    void randomThresholdChannel(const ChannelType channel_,
+      const Geometry &thresholds_);
 
     // Read single image frame from in-memory BLOB
     void read(const Blob &blob_);
@@ -1122,19 +1109,19 @@ namespace Magick
     // Read single image frame of specified size into current object
     void read(const Geometry &size_,const std::string &imageSpec_);
 
+    // Read single image frame from an array of raw pixels, with
+    // specified storage type (ConstituteImage), e.g.
+    // image.read( 640, 480, "RGB", 0, pixels );
+    void read(const size_t width_,const size_t height_,const std::string &map_,
+      const StorageType type_,const void *pixels_);
+    
+    // Read single image frame into current object
+    void read(const std::string &imageSpec_);
+
     // Transfers one or more pixel components from a buffer or file
     // into the image pixel cache of an image.
     // Used to support image decoders.
     void readPixels(const QuantumType quantum_,const unsigned char *source_);
-
-    // Read single image frame from an array of raw pixels, with
-    // specified storage type (ConstituteImage), e.g.
-    // image.read( 640, 480, "RGB", 0, pixels );
-    void read( const size_t width_,const size_t height_,
-      const std::string &map_,const StorageType  type_,const void *pixels_);
-    
-    // Read single image frame into current object
-    void read(const std::string &imageSpec_);
 
     // Reduce noise in image using a noise peak elimination filter
     void reduceNoise(void);
@@ -1159,9 +1146,6 @@ namespace Magick
     // from the pixel cache to the image via syncPixels.
     Quantum *setPixels(const ::ssize_t x_, const ::ssize_t y_,
       const size_t columns_,const size_t rows_);
-
-    // Transfers the image cache pixels to the image.
-    void syncPixels(void);
 
     // Resize image by using simple ratio algorithm
     void scale(const Geometry &geometry_);
@@ -1208,17 +1192,18 @@ namespace Magick
     // photographic film to light during the development process)
     void solarize(const double factor_=50.0);
 
+    // Sparse color image, given a set of coordinates, interpolates the colors
+    // found at those coordinates, across the whole image, using various
+    // methods.
+    void sparseColor(const ChannelType channel_,
+      const SparseColorMethod method_,const size_t numberArguments_,
+      const double *arguments_);
+
     // Splice the background color into the image.
     void splice(const Geometry &geometry_);
 
     // Spread pixels randomly within image by specified ammount
     void spread(const size_t amount_=3);
-
-    // Sparse color image, given a set of coordinates, interpolates the colors
-    // found at those coordinates, across the whole image, using various
-    // methods.
-    void sparseColor(const ChannelType channel,const SparseColorMethod method,
-      const size_t numberArguments,const double *arguments);
 
     void statistics(ImageStatistics *statistics);
 
@@ -1234,6 +1219,9 @@ namespace Magick
 
     // Swirl image (image pixels are rotated by degrees)
     void swirl(const double degrees_);
+
+    // Transfers the image cache pixels to the image.
+    void syncPixels(void);
 
     // Channel a texture on image background
     void texture(const Image &texture_);
@@ -1301,7 +1289,7 @@ namespace Magick
 
     // Write single image frame to an array of pixels with storage
     // type specified by user (DispatchImage), e.g.
-    //   image.write( 0, 0, 640, 1, "RGB", 0, pixels );
+    // image.write( 0, 0, 640, 1, "RGB", 0, pixels );
     void write(const ::ssize_t x_,const ::ssize_t y_,const size_t columns_,
       const size_t rows_,const std::string &map_,const StorageType type_,
       void *pixels_);
@@ -1330,13 +1318,13 @@ namespace Magick
     MagickCore::Image *&image(void);
     const MagickCore::Image *constImage(void) const;
 
-    // Retrieve Options*
-    Options *options(void);
-    const Options *constOptions(void) const;
-
     // Retrieve ImageInfo*
     MagickCore::ImageInfo *imageInfo(void);
     const MagickCore::ImageInfo *constImageInfo(void) const;
+
+    // Retrieve Options*
+    Options *options(void);
+    const Options *constOptions(void) const;
 
     // Retrieve QuantizeInfo*
     MagickCore::QuantizeInfo *quantizeInfo(void);
@@ -1346,13 +1334,10 @@ namespace Magick
     void modifyImage(void);
 
     // Register image with image registry or obtain registration id
-    ::ssize_t registerId( void );
+    ::ssize_t registerId(void);
 
     // Replace current image (reference counted)
     MagickCore::Image *replaceImage(MagickCore::Image *replacement_);
-
-    // Test for ImageMagick error and throw exception if error
-    void throwImageException(void) const;
 
     // Unregister image from image registry
     void unregisterId(void);

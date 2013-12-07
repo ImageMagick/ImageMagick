@@ -26,7 +26,7 @@ Magick::Pixels::Pixels(Magick::Image &image_)
   GetExceptionInfo(&_exception);
 
   if (!_view)
-    _image.throwImageException();
+    throwExceptionExplicit(OptionError,"Empty view detected.");
 }
 
 Magick::Pixels::~Pixels(void)
