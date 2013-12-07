@@ -35,11 +35,20 @@ extern "C" {
 
 typedef struct _FloatPixelPacket
 {
+#ifdef MAGICK_PIXEL_RGBA  
   MagickRealType
     red,
     green,
     blue,
-    alpha;
+    opacity;
+#endif
+#ifdef MAGICK_PIXEL_BGRA 
+  MagickRealType
+    blue,
+    green,
+    red,
+    opacity;
+#endif
 } FloatPixelPacket;
 
 const char* accelerateKernels =
@@ -184,7 +193,7 @@ const char* accelerateKernels =
 
   STRINGIFY(
     __kernel 
-    void Convolve(const __global CLPixelType *input, __global CLPixelType *output,
+    void ConvolveOptimized(const __global CLPixelType *input, __global CLPixelType *output,
     const unsigned int imageWidth, const unsigned int imageHeight,
     __constant float *filter, const unsigned int filterWidth, const unsigned int filterHeight,
     const uint matte, const ChannelType channel, __local CLPixelType *pixelLocalCache, __local float* filterCache) {
@@ -295,6 +304,93 @@ const char* accelerateKernels =
         gamma = PerceptibleReciprocal(gamma);
         sum.xyz = gamma*sum.xyz;
       }
+      CLPixelType outputPixel;
+      outputPixel.x = ClampToQuantum(sum.x);
+      outputPixel.y = ClampToQuantum(sum.y);
+      outputPixel.z = ClampToQuantum(sum.z);
+      outputPixel.w = ((channel & OpacityChannel)!=0)?ClampToQuantum(sum.w):input[imageIndex.y * imageWidth + imageIndex.x].w;
+
+      output[imageIndex.y * imageWidth + imageIndex.x] = outputPixel;
+    }
+  )
+
+  STRINGIFY(
+    __kernel 
+    void Convolve(const __global CLPixelType *input, __global CLPixelType *output,
+                  __constant float *filter, const unsigned int filterWidth, const unsigned int filterHeight,
+                  const uint matte, const ChannelType channel) {
+
+      int2 imageIndex;
+      imageIndex.x = get_global_id(0);
+      imageIndex.y = get_global_id(1);
+
+      unsigned int imageWidth = get_global_size(0);
+      unsigned int imageHeight = get_global_size(1);
+
+      if (imageIndex.x >= imageWidth
+          || imageIndex.y >= imageHeight)
+          return;
+
+      int2 midFilterDimen;
+      midFilterDimen.x = (filterWidth-1)/2;
+      midFilterDimen.y = (filterHeight-1)/2;
+
+      int filterIndex = 0;
+      float4 sum = (float4)0.0f;
+      float gamma = 0.0f;
+      if (((channel & OpacityChannel) == 0) || (matte == 0)) {
+        for (int j = 0; j < filterHeight; j++) {
+          int2 inputPixelIndex;
+          inputPixelIndex.y = imageIndex.y - midFilterDimen.y + j;
+          inputPixelIndex.y = ClampToCanvas(inputPixelIndex.y, imageHeight);
+          for (int i = 0; i < filterWidth; i++) {
+            inputPixelIndex.x = imageIndex.x - midFilterDimen.x + i;
+            inputPixelIndex.x = ClampToCanvas(inputPixelIndex.x, imageWidth);
+        
+            CLPixelType p = input[inputPixelIndex.y * imageWidth + inputPixelIndex.x];
+            float f = filter[filterIndex];
+
+            sum.x += f * p.x;
+            sum.y += f * p.y;
+            sum.z += f * p.z; 
+            sum.w += f * p.w;
+
+            gamma += f;
+
+            filterIndex++;
+          }
+        }
+      }
+      else {
+
+        for (int j = 0; j < filterHeight; j++) {
+          int2 inputPixelIndex;
+          inputPixelIndex.y = imageIndex.y - midFilterDimen.y + j;
+          inputPixelIndex.y = ClampToCanvas(inputPixelIndex.y, imageHeight);
+          for (int i = 0; i < filterWidth; i++) {
+            inputPixelIndex.x = imageIndex.x - midFilterDimen.x + i;
+            inputPixelIndex.x = ClampToCanvas(inputPixelIndex.x, imageWidth);
+        
+            CLPixelType p = input[inputPixelIndex.y * imageWidth + inputPixelIndex.x];
+            float alpha = QuantumScale*(QuantumRange-p.w);
+            float f = filter[filterIndex];
+            float g = alpha * f;
+
+            sum.x += g*p.x;
+            sum.y += g*p.y;
+            sum.z += g*p.z;
+            sum.w += f*p.w;
+
+            gamma += g;
+
+
+            filterIndex++;
+          }
+        }
+        gamma = PerceptibleReciprocal(gamma);
+        sum.xyz = gamma*sum.xyz;
+      }
+
       CLPixelType outputPixel;
       outputPixel.x = ClampToQuantum(sum.x);
       outputPixel.y = ClampToQuantum(sum.y);
