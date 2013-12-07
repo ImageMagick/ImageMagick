@@ -1019,6 +1019,17 @@ Magick::InterlaceType Magick::Image::interlaceType(void) const
   return(constImage()->interlace);
 }
 
+void Magick::Image::interpolate(const PixelInterpolateMethod interpolate_)
+{
+  modifyImage();
+  image()->interpolate=interpolate_;
+}
+
+Magick::PixelInterpolateMethod Magick::Image::interpolate(void) const
+{
+  return constImage()->interpolate;
+}
+
 void Magick::Image::iptcProfile(const Magick::Blob &iptcProfile_)
 {
   modifyImage();
@@ -3688,7 +3699,32 @@ void Magick::Image::reduceNoise(const double order_)
   ThrowPPException;
 }
 
-void Magick::Image::resize( const Geometry &geometry_ )
+void Magick::Image::resample(const Geometry &geometry_)
+{
+  MagickCore::Image
+    *newImage;
+
+  size_t
+    height=rows(),
+    width=columns();
+
+  ssize_t
+    x=0,
+    y=0;
+
+  // Calculate new size.  This code should be supported using binary arguments
+  // in the ImageMagick library.
+  ParseMetaGeometry(static_cast<std::string>(geometry_).c_str(),&x,&y,&width,
+    &height);
+
+  GetPPException;
+  newImage=ResampleImage(constImage(),width,height,image()->filter,
+    &exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
+void Magick::Image::resize(const Geometry &geometry_)
 {
   MagickCore::Image
     *newImage;
