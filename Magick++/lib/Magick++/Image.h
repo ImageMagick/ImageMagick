@@ -30,21 +30,21 @@ namespace Magick
 
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison
-  int MagickPPExport operator ==
+  MagickPPExport int operator ==
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator !=
+  MagickPPExport int operator !=
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator >
+  MagickPPExport int operator >
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator <
+  MagickPPExport int operator <
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator >=
+  MagickPPExport int operator >=
     (const Magick::Image &left_,const Magick::Image &right_);
-  int MagickPPExport operator <=
+  MagickPPExport int operator <=
     (const Magick::Image &left_,const Magick::Image &right_);
 
   // C library initialization routine
-  void MagickPPExport InitializeMagick(const char *path_);
+  MagickPPExport void InitializeMagick(const char *path_);
 
   //
   // Image is the representation of an image. In reality, it actually
@@ -336,12 +336,12 @@ namespace Magick
     void modulusDepth(const size_t modulusDepth_);
     size_t modulusDepth(void) const;
 
-    // Tile size and offset within an image montage
-    Geometry montageGeometry(void) const;
-
     // Transform image to black and white
     void monochrome(const bool monochromeFlag_);
     bool monochrome(void) const;
+
+    // Tile size and offset within an image montage
+    Geometry montageGeometry(void) const;
 
     // The normalized max error per pixel computed when an image is
     // color reduced.
@@ -765,6 +765,15 @@ namespace Magick
     // Converts cipher pixels to plain pixels.
     void decipher(const std::string &passphrase_);
 
+    // Tagged image format define. Similar to the defineValue() method
+    // except that passing the flag_ value 'true' creates a value-less
+    // define with that format and key. Passing the flag_ value 'false'
+    // removes any existing matching definition. The method returns 'true'
+    // if a matching key exists, and 'false' if no matching key exists.
+    void defineSet(const std::string &magick_,const std::string &key_,
+      bool flag_);
+    bool defineSet(const std::string &magick_,const std::string &key_) const;
+
     // Tagged image format define (set/access coder-specific option) The
     // magick_ option specifies the coder the define applies to.  The key_
     // option provides the key specific to that coder.  The value_ option
@@ -774,15 +783,6 @@ namespace Magick
       const std::string &value_);
     std::string defineValue(const std::string &magick_,
       const std::string &key_) const;
-
-    // Tagged image format define. Similar to the defineValue() method
-    // except that passing the flag_ value 'true' creates a value-less
-    // define with that format and key. Passing the flag_ value 'false'
-    // removes any existing matching definition. The method returns 'true'
-    // if a matching key exists, and 'false' if no matching key exists.
-    void defineSet(const std::string &magick_,const std::string &key_,
-      bool flag_);
-    bool defineSet(const std::string &magick_,const std::string &key_) const;
 
     // Removes skew from the image. Skew is an artifact that occurs in scanned
     // images because of the camera being misaligned, imperfections in the
@@ -866,8 +866,8 @@ namespace Magick
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
     void floodFillTexture(const Geometry &point_,const Image &texture_);
-    void floodFillTexture(const ::ssize_t x_, const ::ssize_t y_,
-       const Image &texture_ );
+    void floodFillTexture(const ::ssize_t x_,const ::ssize_t y_,
+       const Image &texture_);
 
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
@@ -1030,18 +1030,18 @@ namespace Magick
     // unchanged.
     void perceptible(const double epsilon_);
     void perceptibleChannel(const ChannelType channel_,const double epsilon_);
-
-    // Ping is similar to read except only enough of the image is read
-    // to determine the image columns, rows, and filesize.  Access the
-    // columns(), rows(), and fileSize() attributes after invoking
-    // ping.  The image data is not valid after calling ping.
-    void ping(const std::string &imageSpec_);
     
     // Ping is similar to read except only enough of the image is read
     // to determine the image columns, rows, and filesize.  Access the
     // columns(), rows(), and fileSize() attributes after invoking
     // ping.  The image data is not valid after calling ping.
     void ping(const Blob &blob_);
+
+    // Ping is similar to read except only enough of the image is read
+    // to determine the image columns, rows, and filesize.  Access the
+    // columns(), rows(), and fileSize() attributes after invoking
+    // ping.  The image data is not valid after calling ping.
+    void ping(const std::string &imageSpec_);
 
     // Get/set pixel color at location x & y.
     void pixelColor(const ::ssize_t x_,const ::ssize_t y_,const Color &color_);
@@ -1206,17 +1206,17 @@ namespace Magick
     // photographic film to light during the development process)
     void solarize(const double factor_=50.0);
 
-    // Splice the background color into the image.
-    void splice(const Geometry &geometry_);
-
-    // Spread pixels randomly within image by specified ammount
-    void spread(const size_t amount_=3);
-
     // Sparse color image, given a set of coordinates, interpolates the colors
     // found at those coordinates, across the whole image, using various
     // methods.
     void sparseColor(const ChannelType channel,const SparseColorMethod method,
       const size_t number_arguments,const double *arguments);
+
+    // Splice the background color into the image.
+    void splice(const Geometry &geometry_);
+
+    // Spread pixels randomly within image by specified ammount
+    void spread(const size_t amount_=3);
 
     void statistics(ImageStatistics *statistics) const;
 
@@ -1331,13 +1331,13 @@ namespace Magick
     MagickCore::Image *&image(void);
     const MagickCore::Image *constImage(void) const;
 
-    // Retrieve Options*
-    Options *options(void);
-    const Options *constOptions(void) const;
-
     // Retrieve ImageInfo*
     MagickCore::ImageInfo *imageInfo(void);
     const MagickCore::ImageInfo *constImageInfo(void) const;
+
+    // Retrieve Options*
+    Options *options(void);
+    const Options *constOptions(void) const;
 
     // Retrieve QuantizeInfo*
     MagickCore::QuantizeInfo *quantizeInfo(void);
