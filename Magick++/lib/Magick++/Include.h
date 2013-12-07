@@ -604,6 +604,23 @@ namespace Magick
   using MagickCore::JPEGInterlace;
   using MagickCore::PNGInterlace;
 
+  // Pixel interpolation methods
+  using MagickCore::InterpolatePixelMethod;
+  using MagickCore::UndefinedInterpolatePixel;
+  using MagickCore::AverageInterpolatePixel;
+  using MagickCore::BicubicInterpolatePixel;
+  using MagickCore::BilinearInterpolatePixel;
+  using MagickCore::FilterInterpolatePixel;
+  using MagickCore::IntegerInterpolatePixel;
+  using MagickCore::MeshInterpolatePixel;
+  using MagickCore::NearestNeighborInterpolatePixel;
+  using MagickCore::SplineInterpolatePixel;
+  using MagickCore::Average9InterpolatePixel;
+  using MagickCore::Average16InterpolatePixel;
+  using MagickCore::BlendInterpolatePixel;
+  using MagickCore::BackgroundInterpolatePixel;
+  using MagickCore::CatromInterpolatePixel;
+
   // Layer method
   using MagickCore::ImageLayerMethod;
   using MagickCore::UndefinedLayer;
@@ -1203,6 +1220,7 @@ namespace Magick
   using MagickCore::RegistryWarning;
   using MagickCore::RelinquishMagickMemory;
   using MagickCore::RemapImage;
+  using MagickCore::ResampleImage;
   using MagickCore::ResizeImage;
   using MagickCore::ResizeMagickMemory;
   using MagickCore::ResourceLimitError;
