@@ -315,6 +315,10 @@ namespace Magick
     void interlaceType(const InterlaceType interlace_);
     InterlaceType interlaceType(void) const;
 
+    // Pixel color interpolation method to use
+    void interpolate(const PixelInterpolateMethod interpolate_);
+    PixelInterpolateMethod interpolate(void) const;
+
     // IPTC profile (BLOB)
     void iptcProfile(const Blob &iptcProfile_);
     Blob iptcProfile(void) const;
@@ -1126,6 +1130,9 @@ namespace Magick
     // Reduce noise in image using a noise peak elimination filter
     void reduceNoise(void);
     void reduceNoise(const double order_);
+
+    // Resize image in terms of its pixel size.
+    void resample(const Geometry &geometry_);
 
     // Resize image to specified size.
     void resize(const Geometry &geometry_);
