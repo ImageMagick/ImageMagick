@@ -3037,6 +3037,7 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
+  (void) image_info;
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
