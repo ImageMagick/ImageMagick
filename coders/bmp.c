@@ -608,6 +608,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     bmp_info.file_size=ReadBlobLSBLong(image);
     (void) ReadBlobLSBLong(image);
+
+    if (image->debug != MagickFalse)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "  File_size in header:  %u bytes",bmp_info.file_size);
+
     bmp_info.offset_bits=ReadBlobLSBLong(image);
     bmp_info.size=ReadBlobLSBLong(image);
     if (image->debug != MagickFalse)
