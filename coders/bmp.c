@@ -2113,6 +2113,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       "  File_size:  %u bytes",bmp_info.file_size);
   (void) CloseBlob(image);
   return(MagickTrue);
 }
