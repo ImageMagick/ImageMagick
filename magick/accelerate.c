@@ -2463,7 +2463,9 @@ static MagickBooleanType resizeHorizontalFilter(cl_mem inputImage
   /* get the local memory size supported by the device */
   deviceLocalMemorySize = GetOpenCLDeviceLocalMemorySize(clEnv);
 
+DisableMSCWarning(4127)
   while(1)
+RestoreMSCWarning
   {
     /* calculate the local memory size needed per workgroup */
     cacheRangeStart = (int) (((0 + 0.5)/xFactor+MagickEpsilon)-support+0.5);
@@ -2645,7 +2647,9 @@ static MagickBooleanType resizeVerticalFilter(cl_mem inputImage
   /* get the local memory size supported by the device */
   deviceLocalMemorySize = GetOpenCLDeviceLocalMemorySize(clEnv);
 
+DisableMSCWarning(4127)
   while(1)
+RestoreMSCWarning
   {
     /* calculate the local memory size needed per workgroup */
     cacheRangeStart = (int) (((0 + 0.5)/yFactor+MagickEpsilon)-support+0.5);
@@ -4834,7 +4838,9 @@ Image* AccelerateAddNoiseImage(const Image *image, const ChannelType channel,
   if (status == MagickFalse)
     return NULL;
 
+DisableMSCWarning(4127)
   if (sizeof(unsigned long) == 4)
+RestoreMSCWarning
     filteredImage = ComputeAddNoiseImageOptRandomNum(image,channel,noise_type,exception);
   else
     filteredImage = ComputeAddNoiseImage(image,channel,noise_type,exception);

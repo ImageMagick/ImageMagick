@@ -1242,8 +1242,6 @@ MagickExport
 */
 
 
-#define DS_DEVICE_NAME_LENGTH 256
-
 typedef enum {
   DS_SUCCESS = 0
  ,DS_INVALID_PROFILE = 1000
@@ -1382,23 +1380,22 @@ static ds_status initDSProfile(ds_profile** p, const char* version) {
         }
         clGetDeviceIDs(platforms[i], deviceType, numDevices, devices, &num);
         for (j = 0; j < num; j++, next++) {
-          char buffer[DS_DEVICE_NAME_LENGTH];
           size_t length;
 
           profile->devices[next].type = DS_DEVICE_OPENCL_DEVICE;
           profile->devices[next].oclDeviceID = devices[j];
 
           clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_NAME
-            , DS_DEVICE_NAME_LENGTH, &buffer, NULL);
-          length = strlen(buffer);
-          profile->devices[next].oclDeviceName = (char*)malloc(length+1);
-          memcpy(profile->devices[next].oclDeviceName, buffer, length+1);
+            , 0, NULL, &length);
+          profile->devices[next].oclDeviceName = (char*)malloc(sizeof(char)*length);
+          clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_NAME
+            , length, profile->devices[next].oclDeviceName, NULL);
 
           clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DRIVER_VERSION
-            , DS_DEVICE_NAME_LENGTH, &buffer, NULL);
-          length = strlen(buffer);
-          profile->devices[next].oclDriverVersion = (char*)malloc(length+1);
-          memcpy(profile->devices[next].oclDriverVersion, buffer, length+1);
+            , 0, NULL, &length);
+          profile->devices[next].oclDriverVersion = (char*)malloc(sizeof(char)*length);
+          clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DRIVER_VERSION
+            , length, profile->devices[next].oclDriverVersion, NULL);
 
           clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_MAX_CLOCK_FREQUENCY
             , sizeof(cl_uint), &profile->devices[next].oclMaxClockFrequency, NULL);
