@@ -450,7 +450,7 @@ cleanup:
 %
 */
 
-MagickExport
+MagickPrivate
 cl_context GetOpenCLContext(MagickCLEnv clEnv) {
   if (clEnv == NULL)
     return NULL;
@@ -1068,7 +1068,7 @@ MagickBooleanType InitOpenCLEnv(MagickCLEnv clEnv, ExceptionInfo* exception) {
 %
 */
 
-MagickExport
+MagickPrivate
 cl_command_queue AcquireOpenCLCommandQueue(MagickCLEnv clEnv)
 {
   if (clEnv != NULL)
@@ -1104,7 +1104,7 @@ cl_command_queue AcquireOpenCLCommandQueue(MagickCLEnv clEnv)
 %
 %
 */
-MagickExport
+MagickPrivate
 MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv clEnv, cl_command_queue queue)
 {
   if (clEnv != NULL)
@@ -1145,7 +1145,7 @@ MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv clEnv, cl_command_que
 %
 */
 
-MagickExport
+MagickPrivate
   cl_kernel AcquireOpenCLKernel(MagickCLEnv clEnv, MagickOpenCLProgram program, const char* kernelName)
 {
   cl_int clStatus;
@@ -1185,7 +1185,7 @@ MagickExport
 %
 */
 
-MagickExport
+MagickPrivate
   MagickBooleanType RelinquishOpenCLKernel(MagickCLEnv clEnv, cl_kernel kernel)
 {
   MagickBooleanType status = MagickFalse;
@@ -1220,7 +1220,7 @@ MagickExport
 %
 */
 
-MagickExport
+MagickPrivate
  unsigned long GetOpenCLDeviceLocalMemorySize(MagickCLEnv clEnv)
 {
   cl_ulong localMemorySize;
@@ -1228,7 +1228,7 @@ MagickExport
   return (unsigned long)localMemorySize;
 }
 
-MagickExport
+MagickPrivate
   unsigned long GetOpenCLDeviceMaxMemAllocSize(MagickCLEnv clEnv)
 {
   cl_ulong maxMemAllocSize;
@@ -2408,7 +2408,7 @@ MagickExport MagickBooleanType InitOpenCLEnv(MagickCLEnv magick_unused(clEnv),
   return MagickFalse;
 }
 
-MagickExport cl_command_queue AcquireOpenCLCommandQueue(
+MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(
   MagickCLEnv magick_unused(clEnv))
 {
   magick_unreferenced(clEnv);
@@ -2425,7 +2425,7 @@ MagickExport MagickBooleanType RelinquishCommandQueue(
   return MagickFalse;
 }
 
-MagickExport cl_kernel AcquireOpenCLKernel(
+MagickPrivate cl_kernel AcquireOpenCLKernel(
   MagickCLEnv magick_unused(clEnv),MagickOpenCLProgram magick_unused(program),
   const char *magick_unused(kernelName))
 {
@@ -2436,7 +2436,7 @@ MagickExport cl_kernel AcquireOpenCLKernel(
   return (cl_kernel)NULL;
 }
 
-MagickExport MagickBooleanType RelinquishOpenCLKernel(
+MagickPrivate MagickBooleanType RelinquishOpenCLKernel(
   MagickCLEnv magick_unused(clEnv),cl_kernel magick_unused(kernel))
 {
   magick_unreferenced(clEnv);
@@ -2445,7 +2445,7 @@ MagickExport MagickBooleanType RelinquishOpenCLKernel(
   return MagickFalse;
 }
 
-MagickExport unsigned long GetOpenCLDeviceLocalMemorySize(
+MagickPrivate unsigned long GetOpenCLDeviceLocalMemorySize(
   MagickCLEnv magick_unused(clEnv))
 {
   magick_unreferenced(clEnv);
@@ -2485,7 +2485,7 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
 char* openclCachedFilesDirectory;
 SemaphoreInfo* openclCachedFilesDirectoryLock;
 
-MagickExport
+MagickPrivate
 const char* GetOpenCLCachedFilesDirectory() {
   if (openclCachedFilesDirectory == NULL) {
     if (openclCachedFilesDirectoryLock == NULL)
@@ -2536,7 +2536,7 @@ const char* GetOpenCLCachedFilesDirectory() {
 }
 
 /* create a function for OpenCL log */
-MagickExport
+MagickPrivate
 void OpenCLLog(const char* message) {
 
 #ifdef OPENCLLOG_ENABLED

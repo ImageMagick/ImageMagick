@@ -73,27 +73,27 @@ extern "C" {
 #define CLCharQuantumScale 72340172838076673.0f
 #endif
 
-extern MagickExport cl_context 
+extern MagickPrivate cl_context 
   GetOpenCLContext(MagickCLEnv);
 
-extern MagickExport cl_kernel 
+extern MagickPrivate cl_kernel 
   AcquireOpenCLKernel(MagickCLEnv, MagickOpenCLProgram, const char*);
 
-extern MagickExport cl_command_queue 
+extern MagickPrivate cl_command_queue 
   AcquireOpenCLCommandQueue(MagickCLEnv);
 
-extern MagickExport MagickBooleanType 
+extern MagickPrivate MagickBooleanType 
   RelinquishOpenCLCommandQueue(MagickCLEnv, cl_command_queue),
   RelinquishOpenCLKernel(MagickCLEnv, cl_kernel);
 
-extern MagickExport unsigned long 
+extern MagickPrivate unsigned long 
   GetOpenCLDeviceLocalMemorySize(MagickCLEnv),
   GetOpenCLDeviceMaxMemAllocSize(MagickCLEnv);
 
-extern MagickExport const char* 
+extern MagickPrivate const char* 
   GetOpenCLCachedFilesDirectory();
 
-extern MagickExport void 
+extern MagickPrivate void 
   OpenCLLog(const char*);
 
 /* #define OPENCLLOG_ENABLED 1 */
