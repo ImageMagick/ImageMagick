@@ -1339,7 +1339,7 @@ static ds_status initDSProfile(ds_profile** p, const char* version) {
     clGetPlatformIDs(numPlatforms, platforms, NULL);
     for (i = 0; i < (unsigned int)numPlatforms; i++) {
       cl_uint num;
-      clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, 0, NULL, &num);
+      clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_CPU | CL_DEVICE_TYPE_GPU, 0, NULL, &num);
       numDevices+=num;
     }
   }
@@ -1378,7 +1378,8 @@ static ds_status initDSProfile(ds_profile** p, const char* version) {
           continue;
           break;
         }
-        clGetDeviceIDs(platforms[i], deviceType, numDevices, devices, &num);
+        if (clGetDeviceIDs(platforms[i], deviceType, numDevices, devices, &num) != CL_SUCCESS)
+          continue;
         for (j = 0; j < num; j++, next++) {
           size_t length;
 
