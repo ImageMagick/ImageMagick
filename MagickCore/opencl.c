@@ -477,9 +477,9 @@ static char* getBinaryCLProgramName(MagickCLEnv clEnv, MagickOpenCLProgram prog,
     }
     ptr++;
   }
-  (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s_%s_%02d_%08x.bin"
-         ,GetOpenCLCachedFilesDirectory()
-         ,DirectorySeparator,prefix,deviceName, (unsigned int)prog, signature);
+  (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s_%s_%02d_%08x_%d.bin"
+         GetOpenCLCachedFilesDirectory(),DirectorySeparator,prefix,deviceName,
+         (unsigned int)prog,signature,sizeof(char*)*8);
   name = (char*)AcquireMagickMemory(strlen(path)+1);
   CopyMagickString(name,path,strlen(path)+1);
   return name;
