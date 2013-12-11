@@ -1453,7 +1453,7 @@ MagickPrivate void *NTMapMemory(char *address,size_t length,int protection,
       CloseHandle(map_handle);
     }
   if (map == (void *) NULL)
-    return((void *) MAP_FAILED);
+    return((void *) ((char *) MAP_FAILED));
   return((void *) ((char *) map));
 }
 
@@ -2232,8 +2232,10 @@ MagickPrivate int NTTruncateFile(int file,off_t length)
   DWORD
     file_pointer;
 
+  HANDLE
+    file_handle;
+
   long
-    file_handle,
     high,
     low;
 
@@ -2242,10 +2244,10 @@ MagickPrivate int NTTruncateFile(int file,off_t length)
     return(-1);
   low=(long) (length & 0xffffffffUL);
   high=(long) ((((MagickOffsetType) length) >> 32) & 0xffffffffUL);
-  file_pointer=SetFilePointer((HANDLE) file_handle,low,&high,FILE_BEGIN);
+  file_pointer=SetFilePointer(file_handle,low,&high,FILE_BEGIN);
   if ((file_pointer == 0xFFFFFFFF) && (GetLastError() != NO_ERROR))
     return(-1);
-  if (SetEndOfFile((HANDLE) file_handle) == 0)
+  if (SetEndOfFile(file_handle) == 0)
     return(-1);
   return(0);
 }
