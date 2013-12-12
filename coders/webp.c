@@ -264,8 +264,8 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   webp_status=WebPGetFeatures(stream,length,features);
   if (webp_status == VP8_STATUS_OK)
     {
-      image->columns=(size_t) webp_image->width;
-      image->rows=(size_t) webp_image->height;
+      image->columns=(size_t) features->width;
+      image->rows=(size_t) features->height;
       image->depth=8;
       image->alpha_trait=features->has_alpha != 0 ? BlendPixelTrait :
         UndefinedPixelTrait;
