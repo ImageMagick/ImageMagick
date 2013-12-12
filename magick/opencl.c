@@ -96,8 +96,10 @@ struct _MagickCLEnv {
   cl_device_id device;
   cl_context context;
 
+  MagickBooleanType disableProgramCache; /* disable the OpenCL program cache */
   cl_program programs[MAGICK_OPENCL_NUM_PROGRAMS]; /* one program object maps one kernel source file */
 
+  MagickBooleanType regenerateProfile;   /* re-run the microbenchmark in auto device selection mode */ 
   SemaphoreInfo* lock;
 };
 
@@ -327,6 +329,22 @@ static MagickBooleanType SetMagickOpenCLEnvParamInternal(MagickCLEnv clEnv, Magi
     (void) ThrowMagickException(exception, GetMagickModule(), ModuleWarning, "SetMagickOpenCLEnvParm cannot modify the OpenCL initialization state.", "'%s'", ".");
     break;
 
+  case MAGICK_OPENCL_ENV_PARAM_PROGRAM_CACHE_DISABLED:
+    if (dataSize != sizeof(clEnv->disableProgramCache))
+      goto cleanup;
+    clEnv->disableProgramCache =  *((MagickBooleanType*)data);
+    clEnv->OpenCLInitialized = MagickFalse;
+    status = MagickTrue;
+    break;
+
+  case MAGICK_OPENCL_ENV_PARAM_REGENERATE_PROFILE:
+    if (dataSize != sizeof(clEnv->regenerateProfile))
+      goto cleanup;
+    clEnv->regenerateProfile =  *((MagickBooleanType*)data);
+    clEnv->OpenCLInitialized = MagickFalse;
+    status = MagickTrue;
+    break;
+
   default:
     goto cleanup;
   };
@@ -415,6 +433,20 @@ MagickExport
     if (dataSize != sizeof(clEnv->OpenCLDisabled))
       goto cleanup;
     *((MagickBooleanType*)data) = clEnv->OpenCLInitialized;
+    status = MagickTrue;
+    break;
+
+  case MAGICK_OPENCL_ENV_PARAM_PROGRAM_CACHE_DISABLED:
+    if (dataSize != sizeof(clEnv->disableProgramCache))
+      goto cleanup;
+    *((MagickBooleanType*)data) = clEnv->disableProgramCache;
+    status = MagickTrue;
+    break;
+
+  case MAGICK_OPENCL_ENV_PARAM_REGENERATE_PROFILE:
+    if (dataSize != sizeof(clEnv->regenerateProfile))
+      goto cleanup;
+    *((MagickBooleanType*)data) = clEnv->regenerateProfile;
     status = MagickTrue;
     break;
 
@@ -704,7 +736,8 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
     unsigned int programSignature = stringSignature(MagickOpenCLProgramStrings[i]) ^ optionsSignature;
 
     /* try to load the binary first */
-    if (!getenv("MAGICK_OCL_REC"))
+    if (clEnv->disableProgramCache != MagickTrue
+        && !getenv("MAGICK_OCL_REC"))
       loadSuccessful = loadBinaryCLProgram(clEnv, (MagickOpenCLProgram)i, programSignature);
 
     if (loadSuccessful == MagickFalse)
@@ -1991,6 +2024,9 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
   else
     ReturnStatus(DS_PERF_EVALUATOR_ERROR);
 
+  /* recompile the OpenCL kernels if it needs to */
+  clEnv->disableProgramCache = defaultCLEnv->disableProgramCache;
+
   InitOpenCLEnvInternal(clEnv,exception);
   oldClEnv=defaultCLEnv;
   defaultCLEnv=clEnv;
@@ -2110,6 +2146,7 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
   AccelerateScoreType bestScore;
   char path[MaxTextExtent];
   MagickBooleanType flag;
+  ds_evaluation_type profileType;
 
   LockDefaultOpenCLEnv();
 
@@ -2128,8 +2165,15 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
          ,GetOpenCLCachedFilesDirectory()
          ,DirectorySeparator,IMAGEMAGICK_PROFILE_FILE);
 
-  readProfileFromFile(profile, AccelerateScoreDeserializer, path);
-  status = profileDevices(profile, DS_EVALUATE_NEW_ONLY, AcceleratePerfEvaluator, NULL, &numDeviceProfiled);
+  if (clEnv->regenerateProfile == MagickTrue) {
+    profileType = DS_EVALUATE_ALL;
+  }
+  else {
+    readProfileFromFile(profile, AccelerateScoreDeserializer, path);
+    profileType = DS_EVALUATE_NEW_ONLY;
+  }
+  status = profileDevices(profile, profileType, AcceleratePerfEvaluator, NULL, &numDeviceProfiled);
+
   if (status!=DS_SUCCESS) {
     (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "Error when initializing the profile", "'%s'", ".");
     goto cleanup;
@@ -2259,6 +2303,15 @@ MagickExport MagickBooleanType InitImageMagickOpenCL(
       }
       break;
 
+    case MAGICK_OPENCL_DEVICE_SELECT_AUTO_CLEAR_CACHE:
+        flag = MagickTrue;
+        SetMagickOpenCLEnvParam(clEnv, MAGICK_OPENCL_ENV_PARAM_PROGRAM_CACHE_DISABLED
+          , sizeof(MagickBooleanType), &flag, exception);
+        flag = MagickTrue;
+        SetMagickOpenCLEnvParam(clEnv, MAGICK_OPENCL_ENV_PARAM_REGENERATE_PROFILE
+          , sizeof(MagickBooleanType), &flag, exception);
+
+    /* fall through here!! */
     case MAGICK_OPENCL_DEVICE_SELECT_AUTO:
     default:
       {
