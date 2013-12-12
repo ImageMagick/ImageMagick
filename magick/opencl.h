@@ -47,9 +47,13 @@ extern MagickExport
 
 /* Parameter type accepted by SetMagickOpenCLEnvParm and GetMagickOpenCLEnvParm */
 typedef enum {
-    MAGICK_OPENCL_ENV_PARAM_DEVICE                  /* cl_device_id (from OpenCL) */
-  , MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED         /* MagickBooleanType */
-  , MAGICK_OPENCL_ENV_PARAM_OPENCL_INITIALIZED      /* MagickBooleanType */
+    MAGICK_OPENCL_ENV_PARAM_DEVICE                 /* cl_device_id (from OpenCL) */
+  , MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED        /* MagickBooleanType */
+  , MAGICK_OPENCL_ENV_PARAM_OPENCL_INITIALIZED     /* MagickBooleanType */
+  , MAGICK_OPENCL_ENV_PARAM_PROGRAM_CACHE_DISABLED /* MagickBooleanType */
+                                                   /* if true, disable the kernel binary cache */
+  , MAGICK_OPENCL_ENV_PARAM_REGENERATE_PROFILE     /* MagickBooleanType */
+                                                   /* if true, rerun microbenchmark in auto device selection */
 } MagickOpenCLEnvParam;
 
 extern MagickExport
@@ -66,6 +70,7 @@ typedef enum {
   MAGICK_OPENCL_OFF = 0
 , MAGICK_OPENCL_DEVICE_SELECT_AUTO = 1
 , MAGICK_OPENCL_DEVICE_SELECT_USER = 2
+, MAGICK_OPENCL_DEVICE_SELECT_AUTO_CLEAR_CACHE = 3
 } ImageMagickOpenCLMode ;
 
 extern MagickExport
