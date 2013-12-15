@@ -29,8 +29,6 @@ extern "C" {
 #endif
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
-#include <CL/cl.h>
-#else
   typedef void* cl_platform_id;
   typedef void* cl_device_id;
   typedef void* cl_context;
