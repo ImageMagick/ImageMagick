@@ -28,7 +28,7 @@ Include declarations.
 extern "C" {
 #endif
 
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
+#if !defined(MAGICKCORE_OPENCL_SUPPORT)
   typedef void* cl_platform_id;
   typedef void* cl_device_id;
   typedef void* cl_context;
