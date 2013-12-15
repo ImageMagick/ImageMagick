@@ -424,7 +424,7 @@ static void MvgAppendPointsCommand(DrawingWand *wand,const char *command,
   (void) MvgPrintf(wand,"%s",command);
   for (i=number_coordinates, coordinate=coordinates; i != 0; i--)
   {
-    (void) MvgAutoWrapPrintf(wand," %g %g",coordinate->x,coordinate->y);
+    (void) MvgAutoWrapPrintf(wand," %.20g %.20g",coordinate->x,coordinate->y);
     coordinate++;
   }
   (void) MvgPrintf(wand, "\n");
@@ -682,7 +682,7 @@ WandExport void DrawAffine(DrawingWand *wand,const AffineMatrix *affine)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(affine != (const AffineMatrix *) NULL);
   AdjustAffine(wand,affine);
-  (void) MvgPrintf(wand,"affine %g %g %g %g %g %g\n",
+  (void) MvgPrintf(wand,"affine %.20g %.20g %.20g %.20g %.20g %.20g\n",
     affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
 }
 
@@ -774,7 +774,7 @@ WandExport void DrawAnnotation(DrawingWand *wand,const double x,const double y,
   escaped_text=EscapeString((const char *) text,'\'');
   if (escaped_text != (char *) NULL)
     {
-      (void) MvgPrintf(wand,"text %g %g '%s'\n",x,y,escaped_text);
+      (void) MvgPrintf(wand,"text %.20g %.20g '%s'\n",x,y,escaped_text);
       escaped_text=DestroyString(escaped_text);
     }
 }
@@ -822,7 +822,7 @@ WandExport void DrawArc(DrawingWand *wand,const double sx,const double sy,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"arc %g %g %g %g %g %g\n",sx,sy,ex,
+  (void) MvgPrintf(wand,"arc %.20g %.20g %.20g %.20g %.20g %.20g\n",sx,sy,ex,
     ey,sd,ed);
 }
 
@@ -902,7 +902,7 @@ WandExport void DrawCircle(DrawingWand *wand,const double ox,const double oy,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"circle %g %g %g %g\n",ox,oy,px,py);
+  (void) MvgPrintf(wand,"circle %.20g %.20g %.20g %.20g\n",ox,oy,px,py);
 }
 
 /*
@@ -1046,7 +1046,7 @@ WandExport MagickBooleanType DrawComposite(DrawingWand *wand,
     }
   mode=CommandOptionToMnemonic(MagickComposeOptions,(ssize_t) compose);
   media_type=MagickToMime(image->magick);
-  (void) MvgPrintf(wand,"image %s %g %g %g %g 'data:%s;base64,\n",
+  (void) MvgPrintf(wand,"image %s %.20g %.20g %.20g %.20g 'data:%s;base64,\n",
     mode,x,y,width,height,media_type);
   p=base64;
   for (i=(ssize_t) encoded_length; i > 0; i-=76)
@@ -1105,7 +1105,7 @@ WandExport void DrawColor(DrawingWand *wand,const double x,const double y,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"color %g %g '%s'\n",x,y,CommandOptionToMnemonic(
+  (void) MvgPrintf(wand,"color %.20g %.20g '%s'\n",x,y,CommandOptionToMnemonic(
     MagickMethodOptions,(ssize_t) paint_method));
 }
 
@@ -1180,7 +1180,7 @@ WandExport void DrawEllipse(DrawingWand *wand,const double ox,const double oy,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"ellipse %g %g %g %g %g %g\n",ox,oy,
+  (void) MvgPrintf(wand,"ellipse %.20g %.20g %.20g %.20g %.20g %.20g\n",ox,oy,
     rx,ry,start,end);
 }
 
@@ -1926,7 +1926,7 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
   size_t *number_elements)
 {
   double
-    *dash_array;
+    *dasharray;
 
   register const double
     *p;
@@ -1951,18 +1951,18 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
     while (*p++ != 0.0)
       n++;
   *number_elements=n;
-  dash_array=(double *) NULL;
+  dasharray=(double *) NULL;
   if (n != 0)
     {
-      dash_array=(double *) AcquireQuantumMemory((size_t) n+1UL,
-        sizeof(*dash_array));
+      dasharray=(double *) AcquireQuantumMemory((size_t) n+1UL,
+        sizeof(*dasharray));
       p=CurrentContext->dash_pattern;
-      q=dash_array;
+      q=dasharray;
       for (i=0; i < (ssize_t) n; i++)
         *q++=(*p++);
       *q=0.0;
     }
-  return(dash_array);
+  return(dasharray);
 }
 
 /*
@@ -2489,7 +2489,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"fill-opacity",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%g",
+      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
         (double) QuantumScale*(QuantumRange-CurrentContext->fill.opacity));
       (void) SetXMLTreeContent(child,value);
     }
@@ -2510,7 +2510,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"font-size",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%g",
+      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
         CurrentContext->pointsize);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2572,7 +2572,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
       {
         if (i != 0)
           (void) ConcatenateString(&dash_pattern,",");
-        (void) FormatLocaleString(value,MaxTextExtent,"%g",
+        (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
           CurrentContext->dash_pattern[i]);
         (void) ConcatenateString(&dash_pattern,value);
       }
@@ -2582,7 +2582,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"stroke-dashoffset",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%g",
+      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
         CurrentContext->dash_offset);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2611,14 +2611,14 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"stroke-opacity",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%g",
+      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
         (double) QuantumScale*(QuantumRange-CurrentContext->stroke.opacity));
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-width",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%g",
+      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
         CurrentContext->stroke_width);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2731,7 +2731,7 @@ WandExport void DrawLine(DrawingWand *wand,const double sx,const double sy,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"line %g %g %g %g\n",sx,sy,ex,ey);
+  (void) MvgPrintf(wand,"line %.20g %.20g %.20g %.20g\n",sx,sy,ex,ey);
 }
 
 /*
@@ -2780,7 +2780,7 @@ WandExport void DrawMatte(DrawingWand *wand,const double x,const double y,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"matte %g %g '%s'\n",x,y,CommandOptionToMnemonic(
+  (void) MvgPrintf(wand,"matte %.20g %.20g '%s'\n",x,y,CommandOptionToMnemonic(
     MagickMethodOptions,(ssize_t) paint_method));
 }
 
@@ -2873,11 +2873,11 @@ static void DrawPathCurveTo(DrawingWand *wand,const PathMode mode,
     {
       wand->path_operation=PathCurveToOperation;
       wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(wand, "%c%g %g %g %g %g %g",
+      (void) MvgAutoWrapPrintf(wand, "%c%.20g %.20g %.20g %.20g %.20g %.20g",
         mode == AbsolutePathMode ? 'C' : 'c',x1,y1,x2,y2,x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(wand," %g %g %g %g %g %g",x1,y1,
+    (void) MvgAutoWrapPrintf(wand," %.20g %.20g %.20g %.20g %.20g %.20g",x1,y1,
       x2,y2,x,y);
 }
 
@@ -2988,11 +2988,11 @@ static void DrawPathCurveToQuadraticBezier(DrawingWand *wand,
     {
       wand->path_operation=PathCurveToQuadraticBezierOperation;
       wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(wand, "%c%g %g %g %g",
+      (void) MvgAutoWrapPrintf(wand, "%c%.20g %.20g %.20g %.20g",
          mode == AbsolutePathMode ? 'Q' : 'q',x1,y1,x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(wand," %g %g %g %g",x1,y1,x,y);
+    (void) MvgAutoWrapPrintf(wand," %.20g %.20g %.20g %.20g",x1,y1,x,y);
 }
 
 WandExport void DrawPathCurveToQuadraticBezierAbsolute(DrawingWand *wand,
@@ -3100,11 +3100,11 @@ static void DrawPathCurveToQuadraticBezierSmooth(DrawingWand *wand,
     {
       wand->path_operation=PathCurveToQuadraticBezierSmoothOperation;
       wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(wand,"%c%g %g",mode == AbsolutePathMode ?
+      (void) MvgAutoWrapPrintf(wand,"%c%.20g %.20g",mode == AbsolutePathMode ?
         'T' : 't',x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(wand," %g %g",x,y);
+    (void) MvgAutoWrapPrintf(wand," %.20g %.20g",x,y);
 }
 
 WandExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawingWand *wand,
@@ -3214,11 +3214,11 @@ static void DrawPathCurveToSmooth(DrawingWand *wand,const PathMode mode,
     {
       wand->path_operation=PathCurveToSmoothOperation;
       wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(wand,"%c%g %g %g %g",
+      (void) MvgAutoWrapPrintf(wand,"%c%.20g %.20g %.20g %.20g",
         mode == AbsolutePathMode ? 'S' : 's',x2,y2,x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(wand," %g %g %g %g",x2,y2,x,y);
+    (void) MvgAutoWrapPrintf(wand," %.20g %.20g %.20g %.20g",x2,y2,x,y);
 }
 
 WandExport void DrawPathCurveToSmoothAbsolute(DrawingWand *wand,const double x2,
@@ -3344,12 +3344,12 @@ static void DrawPathEllipticArc(DrawingWand *wand, const PathMode mode,
     {
       wand->path_operation=PathEllipticArcOperation;
       wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(wand, "%c%g %g %g %u %u %g %g",
+      (void) MvgAutoWrapPrintf(wand, "%c%.20g %.20g %.20g %u %u %.20g %.20g",
         mode == AbsolutePathMode ? 'A' : 'a',rx,ry,x_axis_rotation,
         large_arc_flag,sweep_flag,x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(wand," %g %g %g %u %u %g %g",rx,ry,
+    (void) MvgAutoWrapPrintf(wand," %.20g %.20g %.20g %u %u %.20g %.20g",rx,ry,
       x_axis_rotation,large_arc_flag,sweep_flag,x,y);
 }
 
@@ -3496,11 +3496,11 @@ static void DrawPathLineTo(DrawingWand *wand,const PathMode mode,
     {
       wand->path_operation=PathLineToOperation;
       wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(wand,"%c%g %g",mode == AbsolutePathMode ?
+      (void) MvgAutoWrapPrintf(wand,"%c%.20g %.20g",mode == AbsolutePathMode ?
         'L' : 'l',x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(wand," %g %g",x,y);
+    (void) MvgAutoWrapPrintf(wand," %.20g %.20g",x,y);
 }
 
 WandExport void DrawPathLineToAbsolute(DrawingWand *wand,const double x,
@@ -3592,11 +3592,11 @@ static void DrawPathLineToHorizontal(DrawingWand *wand,const PathMode mode,
     {
       wand->path_operation=PathLineToHorizontalOperation;
       wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(wand,"%c%g",mode == AbsolutePathMode ?
+      (void) MvgAutoWrapPrintf(wand,"%c%.20g",mode == AbsolutePathMode ?
         'H' : 'h',x);
     }
   else
-    (void) MvgAutoWrapPrintf(wand," %g",x);
+    (void) MvgAutoWrapPrintf(wand," %.20g",x);
 }
 
 WandExport void DrawPathLineToHorizontalAbsolute(DrawingWand *wand,
@@ -3682,11 +3682,11 @@ static void DrawPathLineToVertical(DrawingWand *wand,const PathMode mode,
     {
       wand->path_operation=PathLineToVerticalOperation;
       wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(wand,"%c%g",mode == AbsolutePathMode ?
+      (void) MvgAutoWrapPrintf(wand,"%c%.20g",mode == AbsolutePathMode ?
         'V' : 'v',y);
     }
   else
-    (void) MvgAutoWrapPrintf(wand," %g",y);
+    (void) MvgAutoWrapPrintf(wand," %.20g",y);
 }
 
 WandExport void DrawPathLineToVerticalAbsolute(DrawingWand *wand,const double y)
@@ -3775,11 +3775,11 @@ static void DrawPathMoveTo(DrawingWand *wand,const PathMode mode,const double x,
     {
       wand->path_operation=PathMoveToOperation;
       wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(wand,"%c%g %g",mode == AbsolutePathMode ?
+      (void) MvgAutoWrapPrintf(wand,"%c%.20g %.20g",mode == AbsolutePathMode ?
         'M' : 'm',x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(wand," %g %g",x,y);
+    (void) MvgAutoWrapPrintf(wand," %.20g %.20g",x,y);
 }
 
 WandExport void DrawPathMoveToAbsolute(DrawingWand *wand,const double x,
@@ -3900,7 +3900,7 @@ WandExport void DrawPoint(DrawingWand *wand,const double x,const double y)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"point %g %g\n",x,y);
+  (void) MvgPrintf(wand,"point %.20g %.20g\n",x,y);
 }
 
 /*
@@ -4230,7 +4230,7 @@ WandExport MagickBooleanType DrawPushPattern(DrawingWand *wand,
       return(MagickFalse);
     }
   wand->filter_off=MagickTrue;
-  (void) MvgPrintf(wand,"push pattern %s %g %g %g %g\n",pattern_id,
+  (void) MvgPrintf(wand,"push pattern %s %.20g %.20g %.20g %.20g\n",pattern_id,
     x,y,width,height);
   wand->indent_depth++;
   wand->pattern_id=AcquireString(pattern_id);
@@ -4279,7 +4279,7 @@ WandExport void DrawRectangle(DrawingWand *wand,const double x1,const double y1,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"rectangle %g %g %g %g\n",x1,y1,x2,y2);
+  (void) MvgPrintf(wand,"rectangle %.20g %.20g %.20g %.20g\n",x1,y1,x2,y2);
 }
 
 /*
@@ -4390,7 +4390,7 @@ WandExport void DrawRotate(DrawingWand *wand,const double degrees)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"rotate %g\n",degrees);
+  (void) MvgPrintf(wand,"rotate %.20g\n",degrees);
 }
 
 /*
@@ -4437,7 +4437,7 @@ WandExport void DrawRoundRectangle(DrawingWand *wand,double x1,double y1,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"roundrectangle %g %g %g %g %g %g\n",
+  (void) MvgPrintf(wand,"roundrectangle %.20g %.20g %.20g %.20g %.20g %.20g\n",
     x1,y1,x2,y2,rx,ry);
 }
 
@@ -4474,7 +4474,7 @@ WandExport void DrawScale(DrawingWand *wand,const double x,const double y)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"scale %g %g\n",x,y);
+  (void) MvgPrintf(wand,"scale %.20g %.20g\n",x,y);
 }
 
 /*
@@ -4773,7 +4773,7 @@ WandExport void DrawSetFillOpacity(DrawingWand *wand,const double fill_opacity)
       (CurrentContext->fill.opacity != opacity))
     {
       CurrentContext->fill.opacity=opacity;
-      (void) MvgPrintf(wand,"fill-opacity %g\n",fill_opacity);
+      (void) MvgPrintf(wand,"fill-opacity %.20g\n",fill_opacity);
     }
 }
 
@@ -4814,7 +4814,7 @@ WandExport MagickBooleanType DrawSetFontResolution(DrawingWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",x_resolution,
+  (void) FormatLocaleString(density,MaxTextExtent,"%.20gx%.20g",x_resolution,
     y_resolution);
   (void) CloneString(&CurrentContext->density,density);
   return(MagickTrue);
@@ -4859,7 +4859,7 @@ WandExport void DrawSetOpacity(DrawingWand *wand,const double opacity)
       (CurrentContext->opacity != quantum_opacity))
     {
       CurrentContext->opacity=(Quantum) opacity;
-      (void) MvgPrintf(wand,"opacity %g\n",opacity);
+      (void) MvgPrintf(wand,"opacity %.20g\n",opacity);
     }
 }
 
@@ -5086,7 +5086,7 @@ WandExport void DrawSetFontSize(DrawingWand *wand,const double pointsize)
       (fabs(CurrentContext->pointsize-pointsize) >= MagickEpsilon))
     {
       CurrentContext->pointsize=pointsize;
-      (void) MvgPrintf(wand,"font-size %g\n",pointsize);
+      (void) MvgPrintf(wand,"font-size %.20g\n",pointsize);
     }
 }
 
@@ -5427,13 +5427,13 @@ WandExport void DrawSetStrokeAntialias(DrawingWand *wand,
 %  specify the lengths of alternating dashes and gaps in pixels. If an odd
 %  number of values is provided, then the list of values is repeated to yield
 %  an even number of values. To remove an existing dash array, pass a zero
-%  number_elements argument and null dash_array.  A typical stroke dash array
+%  number_elements argument and null dasharray.  A typical stroke dash array
 %  might contain the members 5 3 2.
 %
 %  The format of the DrawSetStrokeDashArray method is:
 %
 %      MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
-%        const size_t number_elements,const double *dash_array)
+%        const size_t number_elements,const double *dasharray)
 %
 %  A description of each parameter follows:
 %
@@ -5441,11 +5441,11 @@ WandExport void DrawSetStrokeAntialias(DrawingWand *wand,
 %
 %    o number_elements: number of elements in dash array
 %
-%    o dash_array: dash array values
+%    o dasharray: dash array values
 %
 */
 WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
-  const size_t number_elements,const double *dash_array)
+  const size_t number_elements,const double *dasharray)
 {
   MagickBooleanType
     update;
@@ -5481,9 +5481,9 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
       update=MagickTrue;
     else
       if ((CurrentContext->dash_pattern != (double *) NULL) &&
-          (dash_array != (double *) NULL))
+          (dasharray != (double *) NULL))
         {
-          p=dash_array;
+          p=dasharray;
           q=CurrentContext->dash_pattern;
           for (i=0; i < (ssize_t) n_new; i++)
           {
@@ -5511,21 +5511,21 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
                 wand->name);
               return(MagickFalse);
             }
-          q=CurrentContext->dash_pattern;
-          p=dash_array;
-          for (i=0; i < (ssize_t) n_new; i++)
-            *q++=(*p++);
-          *q=0.0;
+          for (i=0; i < n_new; i++)
+            CurrentContext->dash_pattern[i]=dasharray[i];
+          CurrentContext->dash_pattern[n_new]=0.0;
         }
       (void) MvgPrintf(wand,"stroke-dasharray ");
       if (n_new == 0)
         (void) MvgPrintf(wand,"none\n");
       else
         {
-          p=dash_array;
-          (void) MvgPrintf(wand,"%g",*p++);
-          for (i=1; i < (ssize_t) n_new; i++)
-            (void) MvgPrintf(wand,",%g",*p++);
+          for (i=0; i < n_new; i++)
+          {
+            if (i != 0)
+              (void) MvgPrintf(wand,",");
+            (void) MvgPrintf(wand,"%.20g",dasharray[i]);
+          }
           (void) MvgPrintf(wand,"\n");
         }
     }
@@ -5569,7 +5569,7 @@ WandExport void DrawSetStrokeDashOffset(DrawingWand *wand,
      (fabs(CurrentContext->dash_offset-dash_offset) >= MagickEpsilon))
     {
       CurrentContext->dash_offset=dash_offset;
-      (void) MvgPrintf(wand,"stroke-dashoffset %g\n",dash_offset);
+      (void) MvgPrintf(wand,"stroke-dashoffset %.20g\n",dash_offset);
     }
 }
 
@@ -5740,7 +5740,7 @@ WandExport void DrawSetStrokeOpacity(DrawingWand *wand,
       (CurrentContext->stroke.opacity != opacity))
     {
       CurrentContext->stroke.opacity=opacity;
-      (void) MvgPrintf(wand,"stroke-opacity %g\n",stroke_opacity);
+      (void) MvgPrintf(wand,"stroke-opacity %.20g\n",stroke_opacity);
     }
 }
 
@@ -5780,7 +5780,7 @@ WandExport void DrawSetStrokeWidth(DrawingWand *wand,const double stroke_width)
       (fabs(CurrentContext->stroke_width-stroke_width) >= MagickEpsilon))
     {
       CurrentContext->stroke_width=stroke_width;
-      (void) MvgPrintf(wand,"stroke-width %g\n",stroke_width);
+      (void) MvgPrintf(wand,"stroke-width %.20g\n",stroke_width);
     }
 }
 
@@ -6461,7 +6461,7 @@ WandExport void DrawSkewX(DrawingWand *wand,const double degrees)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"skewX %g\n",degrees);
+  (void) MvgPrintf(wand,"skewX %.20g\n",degrees);
 }
 
 /*
@@ -6495,7 +6495,7 @@ WandExport void DrawSkewY(DrawingWand *wand,const double degrees)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"skewY %g\n",degrees);
+  (void) MvgPrintf(wand,"skewY %.20g\n",degrees);
 }
 
 /*
@@ -6533,7 +6533,7 @@ WandExport void DrawTranslate(DrawingWand *wand,const double x,const double y)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"translate %g %g\n",x,y);
+  (void) MvgPrintf(wand,"translate %.20g %.20g\n",x,y);
 }
 
 /*
