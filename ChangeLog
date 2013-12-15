@@ -1,3 +1,13 @@
+2013-12-10  6.8.7-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.7-10, SVN revision 13965.
+
+2013-12-10  6.8.7-10  SiuChi Chan  <...>
+  * fix crash when using -resize with GPU acceleration (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24603).
+
+2013-12-08  6.8.7-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.7-9, SVN revision 13950.
+
 2013-12-05  6.8.7-9  SiuChi Chan  <...>
   * silence warning related to GPU memory issues.
   * check if OpenCL is disabled in checkOpenCLEnvironment() method
