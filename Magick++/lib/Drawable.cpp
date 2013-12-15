@@ -1017,6 +1017,7 @@ Magick::DrawableBase* Magick::DrawableSkewY::copy() const
   return new DrawableSkewY(*this);
 }
 
+
 // Stroke dasharray
 Magick::DrawableDashArray::DrawableDashArray( const double* dasharray_ )
   : _size(0),
@@ -1035,10 +1036,15 @@ Magick::DrawableDashArray::DrawableDashArray( const size_t* dasharray_ )
 Magick::DrawableDashArray::DrawableDashArray
 (const Magick::DrawableDashArray& original_)
   : DrawableBase (original_),
-    _size(0),
-    _dasharray(0)
+    _size(original_._size),
+    _dasharray(new double[_size+1])
 {
-  dasharray( original_._dasharray );
+  // Copy elements
+  {
+    for (size_t i=0; i < _size; i++)
+      _dasharray[i]=original_._dasharray[i];
+    _dasharray[_size]=0.0;
+  }
 }
 Magick::DrawableDashArray::~DrawableDashArray( void )
 {
@@ -1051,14 +1057,23 @@ Magick::DrawableDashArray& Magick::DrawableDashArray::operator=
 {
   if( this != &original_ )
     {
-      dasharray( original_._dasharray );
+      delete [] _dasharray;
+      _size=original_._size;
+      _dasharray = new double[_size+1];
+      // Copy elements
+      {
+        for (size_t i=0; i < _size; i++)
+          _dasharray[i]=original_._dasharray[i];
+        _dasharray[_size]=0.0;
+      }
     }
   return *this;
 }
+// Invoke object
 void Magick::DrawableDashArray::operator()
-  ( MagickCore::DrawingWand * context_ ) const
+  ( MagickCore::DrawingWand *context_ ) const
 {
-  (void) DrawSetStrokeDashArray( context_, (size_t) _size, _dasharray );
+  (void) DrawSetStrokeDashArray( context_, (const unsigned long) _size, _dasharray );
 }
 Magick::DrawableBase* Magick::DrawableDashArray::copy() const
 {
@@ -1066,7 +1081,9 @@ Magick::DrawableBase* Magick::DrawableDashArray::copy() const
 }
 void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
 {
-  _dasharray=(double *) RelinquishMagickMemory(_dasharray);
+  delete [] _dasharray;
+  _size = 0;
+  _dasharray = 0;
 
   if(dasharray_)
     {
@@ -1074,20 +1091,18 @@ void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
       size_t n = 0;
       {
         const double *p = dasharray_;
-        while(*p++ != 0)
+        while(*p++ != 0.0)
           n++;
       }
       _size = n;
 
       // Allocate elements
-      _dasharray=static_cast<double*>(AcquireMagickMemory((n+1)*sizeof(double)));
+      _dasharray=new double[_size+1];
       // Copy elements
       {
-        double *q = _dasharray;
-        const double *p = dasharray_;
-        while( *p )
-          *q++=*p++;
-        *q=0;
+        for (size_t i=0; i < _size; i++)
+          _dasharray[i]=dasharray_[i];
+        _dasharray[_size]=0.0;
       }
     }
 }
@@ -1095,7 +1110,10 @@ void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
 // code to the const double* version.
 void Magick::DrawableDashArray::dasharray( const size_t* dasharray_ )
 {
-  _dasharray=(double *) RelinquishMagickMemory(_dasharray);
+  if (_dasharray)
+      delete [] _dasharray;
+  _size = 0;
+  _dasharray = 0;
 
   if(dasharray_)
     {
@@ -1109,14 +1127,12 @@ void Magick::DrawableDashArray::dasharray( const size_t* dasharray_ )
       _size = n;
 
       // Allocate elements
-      _dasharray=static_cast<double*>(AcquireMagickMemory((n+1)*sizeof(double)));
+      _dasharray=new double[_size+1];
       // Copy elements
       {
-        double *q = _dasharray;
-        const size_t *p = dasharray_;
-        while( *p )
-          *q++=static_cast<double>(*p++);
-        *q=0;
+        for (size_t i=0; i < _size; i++)
+          _dasharray[i]=dasharray_[i];
+        _dasharray[_size]=0;
       }
     }
 }
