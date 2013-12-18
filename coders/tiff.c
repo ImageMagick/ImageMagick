@@ -98,7 +98,7 @@
 #  define TIFFTAG_COPYRIGHT  33432
 # endif
 # if !defined(TIFFTAG_OPIIMAGEID)
-#  define TIFF_OPIIMAGEID  32781
+#  define TIFFTAG_OPIIMAGEID  32781
 # endif
 
 /*
