@@ -804,22 +804,16 @@ MagickExport Image *BlurImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-
-  blur_image = AccelerateBlurImage(image, channel, radius, sigma, exception);
-  if (blur_image != NULL)
-  {
+  blur_image=AccelerateBlurImage(image,channel,radius,sigma,exception);
+  if (blur_image != (Image *) NULL)
     return(blur_image);
-  }
-
   (void) FormatLocaleString(geometry,MaxTextExtent,
     "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
   kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-
   blur_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
     UndefinedCompositeOp,0.0,exception);
-
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -907,15 +901,11 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     }
   for (i=0; i < (ssize_t) (order*order); i++)
     kernel_info->values[i]=kernel[i];
-
   convolve_image=AccelerateConvolveImageChannel(image,channel,kernel_info,
     exception);
-  if (convolve_image==NULL) 
-  {
-    convolve_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
-      UndefinedCompositeOp,0.0,exception);
-  }
-
+  if (convolve_image == (Image *) NULL) 
+    convolve_image=MorphologyApply(image,channel,ConvolveMorphology,1,
+      kernel_info,UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(convolve_image);
 }
@@ -1087,11 +1077,9 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-
-  despeckle_image = AccelerateDespeckleImage(image, exception);
-  if (despeckle_image != NULL)
+  despeckle_image=AccelerateDespeckleImage(image, exception);
+  if (despeckle_image != (Image *) NULL)
     return(despeckle_image);
-
   despeckle_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (despeckle_image == (Image *) NULL)
@@ -1311,14 +1299,11 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]=(-1.0);
   kernel_info->values[i/2]=(double) kernel_info->width*kernel_info->height-1.0;
-
   edge_image=AccelerateConvolveImageChannel(image,DefaultChannels,kernel_info,
     exception);
-  if (edge_image==NULL) 
-  {
+  if (edge_image == (Image *) NULL) 
     edge_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
-    kernel_info,UndefinedCompositeOp,0.0,exception);
-  }
+      kernel_info,UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
@@ -1424,14 +1409,10 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   gamma=PerceptibleReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
-
   emboss_image=AccelerateConvolveImageChannel(image,DefaultChannels,kernel_info,    exception);
-  if (emboss_image == NULL)
-  {
+  if (emboss_image == (Image *) NULL)
     emboss_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
       kernel_info,UndefinedCompositeOp,0.0,exception);
-  }
-
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImageChannel(emboss_image,(ChannelType)
@@ -1561,17 +1542,14 @@ MagickExport Image *FilterImageChannel(const Image *image,
       }
       message=DestroyString(message);
     }
-
   filter_image=AccelerateConvolveImageChannel(image,channel,kernel,exception);
-  if (filter_image != NULL) 
-  {
+  if (filter_image != (Image *) NULL) 
+    {
 #ifdef MAGICKCORE_CLPERFMARKER
-    clEndPerfMarkerAMD();
+      clEndPerfMarkerAMD();
 #endif
-    return(filter_image);
-  }
-
-
+      return(filter_image);
+    }
   filter_image=CloneImage(image,0,0,MagickTrue,exception);
   if (filter_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1893,14 +1871,11 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-
   blur_image=AccelerateConvolveImageChannel(image,channel,kernel_info,
     exception);
-  if (blur_image==NULL)
-  {
+  if (blur_image == (Image *) NULL)
     blur_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
       UndefinedCompositeOp,0.0,exception);
-  }
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -2827,11 +2802,9 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-
-  blur_image = AccelerateRadialBlurImage(image, channel, angle, exception);
-  if (blur_image!=NULL)
-    return blur_image;
-
+  blur_image=AccelerateRadialBlurImage(image,channel,angle,exception);
+  if (blur_image != (Image *) NULL)
+    return(blur_image);
   blur_center.x=(double) (image->columns-1)/2.0;
   blur_center.y=(double) (image->rows-1)/2.0;
   blur_radius=hypot(blur_center.x,blur_center.y);
@@ -4074,13 +4047,10 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-
   unsharp_image=AccelerateUnsharpMaskImage(image,channel,radius,sigma,gain,
     threshold,exception);
-  if (unsharp_image != NULL)
-  {
-    return unsharp_image;
-  }
+  if (unsharp_image != (Image *) NULL)
+    return(unsharp_image);
   unsharp_image=BlurImageChannel(image,(ChannelType) (channel &~ SyncChannels),
     radius,sigma,exception);
   if (unsharp_image == (Image *) NULL)
