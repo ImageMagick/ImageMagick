@@ -426,7 +426,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
   quantum=GetMagickQuantumDepth(&depth);
   if (depth != MAGICKCORE_QUANTUM_DEPTH)
     ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
-  if ((width == 0) || (width == 0))
+  if ((width == 0) || (height == 0))
     ThrowWandFatalException(WandError,"ZeroRegionSize",quantum);
   image=GetImageFromMagickWand(wand);
   if (image == (Image *) NULL)
