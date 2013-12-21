@@ -698,50 +698,55 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       case TIFF_ASCII:
       {
         char
-          *field;
+          *ascii;
 
-        field=(char *) NULL;
-        if ((TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0) &&
-            (field != (char *) NULL) && (*field != '\0'))
-          (void) CopyMagickString(value,field,MaxTextExtent);
+        ascii=(char *) NULL;
+        if ((TIFFGetField(tiff,exif_info[i].tag,&ascii,&sans,&sans) != 0) &&
+            (ascii != (char *) NULL) && (*ascii != '\0'))
+          (void) CopyMagickString(value,ascii,MaxTextExtent);
         break;
       }
       case TIFF_SHORT:
       {
-        uint16
-          field;
-
-        field=0;
         if (exif_info[i].variable_length != 0)
           {
-            if (TIFFGetField(tiff,exif_info[i].tag,&sans,&field,&sans,&sans) != 0)
-              (void) FormatLocaleString(value,MaxTextExtent,"%d",field);
-            break;
+            uint16
+              *shorty;
+
+            if (TIFFGetField(tiff,exif_info[i].tag,&sans,&shorty,&sans,&sans) != 0)
+              (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty[0]);
           }
-        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d",field);
+        else
+          {
+            uint16
+              shorty;
+
+            shorty=0;
+            if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans,&sans) != 0)
+              (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty);
+          }
         break;
       }
       case TIFF_LONG:
       {
         uint32
-          field;
+          longy;
 
-        field=0;
-        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d",field);
+        longy=0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",longy);
         break;
       }
 #if defined(TIFF_VERSION_BIG)
       case TIFF_LONG8:
       {
         uint64
-          field;
+          long8y;
 
-        field=0;
-        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
+        long8y=0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&long8y,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-            ((MagickOffsetType) field));
+            ((MagickOffsetType) long8y));
         break;
       }
 #endif
@@ -750,21 +755,21 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       case TIFF_FLOAT:
       {
         float
-          field;
+          floaty;
 
-        field=0.0;
-        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",(double) field);
+        floaty=0.0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&floaty,&sans,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",(double) floaty);
         break;
       }
       case TIFF_DOUBLE:
       {
         double
-          field;
+          doubley;
 
-        field=0.0;
-        if (TIFFGetField(tiff,exif_info[i].tag,&field,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",field);
+        doubley=0.0;
+        if (TIFFGetField(tiff,exif_info[i].tag,&doubley,&sans,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",doubley);
         break;
       }
       default:
