@@ -3815,7 +3815,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         MagickTrue : MagickFalse;
 
 #if 0  /* I'm not sure what's wrong here but it does not work. */
-    if (image->matte == MagickTrue)
+    if (image->matte != MagickFalse)
     {
       if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
         (void) SetImageType(image,GrayscaleMatteType);
@@ -11647,7 +11647,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       mng_info->write_png_depth = 8;
       image->depth = 8;
 
-      if (image->matte == MagickTrue)
+      if (image->matte != MagickFalse)
         (void) SetImageType(image,TrueColorMatteType);
 
       else
@@ -11662,7 +11662,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       mng_info->write_png_depth = 8;
       image->depth = 8;
 
-      if (image->matte == MagickTrue)
+      if (image->matte != MagickFalse)
         (void) SetImageType(image,TrueColorMatteType);
 
       else
@@ -11677,7 +11677,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       mng_info->write_png_depth = 16;
       image->depth = 16;
 
-      if (image->matte == MagickTrue)
+      if (image->matte != MagickFalse)
         (void) SetImageType(image,TrueColorMatteType);
 
       else
@@ -11692,7 +11692,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       mng_info->write_png_depth = 16;
       image->depth = 16;
 
-      if (image->matte == MagickTrue)
+      if (image->matte != MagickFalse)
         (void) SetImageType(image,TrueColorMatteType);
 
       else

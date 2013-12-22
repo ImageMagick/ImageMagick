@@ -1574,7 +1574,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   clStatus|=clSetKernelArg(radialBlurKernel,i++,sizeof(cl_float4), &biasPixel);
   clStatus|=clSetKernelArg(radialBlurKernel,i++,sizeof(ChannelType), &channel);
 
-  matte = (inputImage->matte == MagickTrue)?1:0;
+  matte = (inputImage->matte != MagickFalse)?1:0;
   clStatus|=clSetKernelArg(radialBlurKernel,i++,sizeof(unsigned int), &matte);
 
   clStatus=clSetKernelArg(radialBlurKernel,i++,sizeof(cl_float2), &blurCenter);
@@ -2907,14 +2907,14 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
       goto cleanup;
     }
     
-    status = resizeHorizontalFilter(inputImageBuffer, inputImage->columns, inputImage->rows, (inputImage->matte == MagickTrue)?1:0
+    status = resizeHorizontalFilter(inputImageBuffer, inputImage->columns, inputImage->rows, (inputImage->matte != MagickFalse)?1:0
           , tempImageBuffer, resizedColumns, inputImage->rows
           , resizeFilter, cubicCoefficientsBuffer
           , xFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
     
-    status = resizeVerticalFilter(tempImageBuffer, resizedColumns, inputImage->rows, (inputImage->matte == MagickTrue)?1:0
+    status = resizeVerticalFilter(tempImageBuffer, resizedColumns, inputImage->rows, (inputImage->matte != MagickFalse)?1:0
        , filteredImageBuffer, resizedColumns, resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
@@ -2931,14 +2931,14 @@ static Image* ComputeResizeImage(const Image* inputImage, const size_t resizedCo
       goto cleanup;
     }
 
-    status = resizeVerticalFilter(inputImageBuffer, inputImage->columns, inputImage->rows, (inputImage->matte == MagickTrue)?1:0
+    status = resizeVerticalFilter(inputImageBuffer, inputImage->columns, inputImage->rows, (inputImage->matte != MagickFalse)?1:0
        , tempImageBuffer, inputImage->columns, resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
 
-    status = resizeHorizontalFilter(tempImageBuffer, inputImage->columns, resizedRows, (inputImage->matte == MagickTrue)?1:0
+    status = resizeHorizontalFilter(tempImageBuffer, inputImage->columns, resizedRows, (inputImage->matte != MagickFalse)?1:0
        , filteredImageBuffer, resizedColumns, resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , xFactor, clEnv, queue, exception);

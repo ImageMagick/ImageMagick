@@ -1039,7 +1039,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
         status&=LevelImageChannel(image,BlueChannel,min,max,1.0);
     }
   if (((channel & OpacityChannel) != 0) &&
-       (image->matte == MagickTrue))
+       (image->matte != MagickFalse))
     {
       (void) GetImageChannelRange(image,OpacityChannel,&min,&max,
         &image->exception);
