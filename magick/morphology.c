@@ -2756,7 +2756,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             if ((channel & BlueChannel) != 0)
               SetPixelBlue(q,ClampToQuantum(result.blue));
             if (((channel & OpacityChannel) != 0) &&
-                (image->matte == MagickTrue))
+                (image->matte != MagickFalse))
               SetPixelOpacity(q,ClampToQuantum(result.opacity));
             if (((channel & IndexChannel) != 0) &&
                 (image->colorspace == CMYKColorspace))
@@ -3002,7 +3002,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 if ((channel & BlueChannel) != 0)
                   SetPixelBlue(q,ClampToQuantum((MagickRealType) result.blue));
                 if (((channel & OpacityChannel) != 0) &&
-                    (image->matte == MagickTrue))
+                    (image->matte != MagickFalse))
                   SetPixelOpacity(q,ClampToQuantum((MagickRealType) result.opacity));
                 if (((channel & IndexChannel) != 0) &&
                     (image->colorspace == CMYKColorspace))
@@ -3323,7 +3323,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
           if ((channel & BlueChannel) != 0)
             SetPixelBlue(q,ClampToQuantum(result.blue));
           if ((channel & OpacityChannel) != 0
-              && image->matte == MagickTrue )
+              && image->matte != MagickFalse )
             SetPixelAlpha(q,ClampToQuantum(result.opacity));
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
@@ -3594,7 +3594,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             SetPixelGreen(q,ClampToQuantum(result.green));
           if ((channel & BlueChannel) != 0)
             SetPixelBlue(q,ClampToQuantum(result.blue));
-          if (((channel & OpacityChannel) != 0) && (image->matte == MagickTrue))
+          if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
             SetPixelAlpha(q,ClampToQuantum(result.opacity));
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
@@ -3784,7 +3784,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             SetPixelGreen(q,ClampToQuantum(result.green));
           if ((channel & BlueChannel) != 0)
             SetPixelBlue(q,ClampToQuantum(result.blue));
-          if (((channel & OpacityChannel) != 0) && (image->matte == MagickTrue))
+          if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
             SetPixelAlpha(q,ClampToQuantum(result.opacity));
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))

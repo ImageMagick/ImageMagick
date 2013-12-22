@@ -2386,7 +2386,7 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
       if ((channel & BlueChannel) != 0)
         SetPixelBlue(q,PosterizePixel(GetPixelBlue(q)));
       if (((channel & OpacityChannel) != 0) &&
-          (image->matte == MagickTrue))
+          (image->matte != MagickFalse))
         SetPixelOpacity(q,PosterizePixel(GetPixelOpacity(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))

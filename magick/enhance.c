@@ -165,7 +165,7 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
         gamma);
     }
   if (((channel & OpacityChannel) != 0) &&
-      (image->matte == MagickTrue))
+      (image->matte != MagickFalse))
     {
       (void) GetImageChannelMean(image,OpacityChannel,&mean,&sans,
         &image->exception);
@@ -3007,7 +3007,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
         SetPixelBlue(q,ClampToQuantum(LevelPixel(black_point,white_point,gamma,
           (MagickRealType) GetPixelBlue(q))));
       if (((channel & OpacityChannel) != 0) &&
-          (image->matte == MagickTrue))
+          (image->matte != MagickFalse))
         SetPixelAlpha(q,ClampToQuantum(LevelPixel(black_point,white_point,gamma,
           (MagickRealType) GetPixelAlpha(q))));
       if (((channel & IndexChannel) != 0) &&
@@ -3179,7 +3179,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
       if ((channel & BlueChannel) != 0)
         SetPixelBlue(q,LevelizeValue(GetPixelBlue(q)));
       if (((channel & OpacityChannel) != 0) &&
-          (image->matte == MagickTrue))
+          (image->matte != MagickFalse))
         SetPixelAlpha(q,LevelizeValue(GetPixelAlpha(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
@@ -3293,7 +3293,7 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
         status&=LevelImageChannel(image,BlueChannel,black_color->blue,
           white_color->blue,(double) 1.0);
       if (((channel & OpacityChannel) != 0) &&
-          (image->matte == MagickTrue))
+          (image->matte != MagickFalse))
         status&=LevelImageChannel(image,OpacityChannel,black_color->opacity,
           white_color->opacity,(double) 1.0);
       if (((channel & IndexChannel) != 0) &&
@@ -3313,7 +3313,7 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
         status&=LevelizeImageChannel(image,BlueChannel,black_color->blue,
           white_color->blue,(double) 1.0);
       if (((channel & OpacityChannel) != 0) &&
-          (image->matte == MagickTrue))
+          (image->matte != MagickFalse))
         status&=LevelizeImageChannel(image,OpacityChannel,black_color->opacity,
           white_color->opacity,(double) 1.0);
       if (((channel & IndexChannel) != 0) &&
