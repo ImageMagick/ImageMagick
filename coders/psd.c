@@ -1054,7 +1054,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             layer_info[i].page.width=(ssize_t) (x-layer_info[i].page.x);
             layer_info[i].page.height=(ssize_t) (y-layer_info[i].page.y);
             layer_info[i].channels=ReadBlobMSBShort(image);
-            if (check_background == MagickTrue)
+            if (check_background != MagickFalse)
               {
                 size_t
                   quantum;

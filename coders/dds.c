@@ -980,7 +980,7 @@ static void CalculateColors(unsigned short c0, unsigned short c1,
   c->g[1] = (unsigned char) C565_green(c1);
   c->b[1] = (unsigned char) C565_blue(c1);
 
-  if (ignoreAlpha == MagickTrue || c0 > c1)
+  if (ignoreAlpha != MagickFalse || c0 > c1)
     {
       c->r[2] = (unsigned char) ((2 * c->r[0] + c->r[1]) / 3);
       c->g[2] = (unsigned char) ((2 * c->g[0] + c->g[1]) / 3);
@@ -1588,7 +1588,7 @@ static MagickBooleanType ConstructOrdering(const size_t count,
         }
     }
 
-    if (same == MagickTrue)
+    if (same != MagickFalse)
       return MagickFalse;
   }
 
@@ -2801,7 +2801,7 @@ static void WriteFourCC(Image *image, const size_t compression,
               }
             }
 
-            if (match == MagickTrue)
+            if (match != MagickFalse)
               continue;
 
             points[count].x = point.x;

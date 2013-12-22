@@ -2425,7 +2425,7 @@ DisableMSCWarning(4127)
 RestoreMSCWarning
     clone = CloneKernelInfo(last);
     RotateKernelInfo(clone, angle);
-    if ( SameKernelInfo(kernel, clone) == MagickTrue )
+    if ( SameKernelInfo(kernel, clone) != MagickFalse )
       break;
     LastKernelInfo(last)->next = clone;
     last = clone;
@@ -3702,7 +3702,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
   /* Apply special methods with special requirments
   ** For example, single run only, or post-processing requirements
   */
-  if ( special == MagickTrue )
+  if ( special != MagickFalse )
     {
       rslt_image=CloneImage(image,0,0,MagickTrue,exception);
       if (rslt_image == (Image *) NULL)

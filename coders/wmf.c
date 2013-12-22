@@ -456,7 +456,7 @@ int magick_progress_callback(void *context,float quantum)
   assert(image->signature == MagickSignature);
   status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
     GetBlobSize(image));
-  return(status == MagickTrue ? 0 : 1);
+  return(status != MagickFalse ? 0 : 1);
 }
 
 /* Set fill color */

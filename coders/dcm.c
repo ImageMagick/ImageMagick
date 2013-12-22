@@ -3086,7 +3086,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         continue;
       }
 
-    if (sequence == MagickTrue)
+    if (sequence != MagickFalse)
       continue;
 
     switch (group)
@@ -3718,7 +3718,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
         stream_info->remaining=(size_t) ReadBlobLSBLong(image);
         if ((tag != 0xFFFEE000) || (stream_info->remaining <= 64) ||
-            (EOFBlob(image) == MagickTrue))
+            (EOFBlob(image) != MagickFalse))
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         stream_info->count=0;
         stream_info->segment_count=ReadBlobLSBLong(image);

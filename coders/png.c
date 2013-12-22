@@ -2767,7 +2767,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           (ping_found_gAMA != MagickTrue ||
           (image->gamma > .45 && image->gamma < .46)) &&
           (ping_found_cHRM != MagickTrue ||
-          ping_found_sRGB_cHRM == MagickTrue) &&
+          ping_found_sRGB_cHRM != MagickFalse) &&
           ping_found_iCCP != MagickTrue)
       {
          png_set_sRGB(ping,ping_info,

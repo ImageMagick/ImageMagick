@@ -704,7 +704,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
                 break;
               }
           }
-          if (next_pixel == MagickTrue)
+          if (next_pixel != MagickFalse)
             continue;
         }
       GIFOutputCode((size_t) waiting_code);
@@ -1184,13 +1184,13 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (profile == (StringInfo *) NULL)
                   ThrowReaderException(ResourceLimitError,
                     "MemoryAllocationFailed");
-                if (i8bim == MagickTrue)
+                if (i8bim != MagickFalse)
                   (void) CopyMagickString(name,"8bim",sizeof(name));
-                else if (icc == MagickTrue)
+                else if (icc != MagickFalse)
                   (void) CopyMagickString(name,"icc",sizeof(name));
-                else if (iptc == MagickTrue)
+                else if (iptc != MagickFalse)
                   (void) CopyMagickString(name,"iptc",sizeof(name));
-                else if (magick == MagickTrue)
+                else if (magick != MagickFalse)
                   {
                     (void) CopyMagickString(name,"magick",sizeof(name));
                     image->gamma=StringToDouble((char *) info+6,(char **) NULL);

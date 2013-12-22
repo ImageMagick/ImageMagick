@@ -222,7 +222,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bits_per_pixel=ReadBlobMSBShort(image);
     status=(width != 0UL) && (height == 0UL) && ((bits_per_pixel == 8) ||
       (bits_per_pixel == 24)) ? MagickTrue : MagickFalse;
-    if (status == MagickTrue)
+    if (status != MagickFalse)
       {
         /*
           Allocate next image structure.
@@ -239,7 +239,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == MagickFalse)
           break;
       }
-  } while (status == MagickTrue);
+  } while (status != MagickFalse);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
