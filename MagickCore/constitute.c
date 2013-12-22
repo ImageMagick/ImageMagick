@@ -1230,7 +1230,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   if (GetBlobError(image) != MagickFalse)
     ThrowFileException(exception,FileOpenError,
       "AnErrorHasOccurredWritingToFile",image->filename);
-  if (temporary == MagickTrue)
+  if (temporary != MagickFalse)
     {
       /*
         Copy temporary image file to permanent.

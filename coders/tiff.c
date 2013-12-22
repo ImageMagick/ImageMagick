@@ -1788,7 +1788,7 @@ RestoreMSCWarning
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
     status=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
-    if (status == MagickTrue)
+    if (status != MagickFalse)
       {
         /*
           Allocate next image structure.
@@ -1805,7 +1805,7 @@ RestoreMSCWarning
         if (status == MagickFalse)
           break;
       }
-  } while (status == MagickTrue);
+  } while (status != MagickFalse);
   (void) TIFFSetWarningHandler(warning_handler);
   (void) TIFFSetErrorHandler(error_handler);
   TIFFClose(tiff);
@@ -3536,7 +3536,7 @@ RestoreMSCWarning
       DecodeLabImage(image,exception);
     DestroyTIFFInfo(&tiff_info);
 DisableMSCWarning(4127)
-    if (0 && (image_info->verbose == MagickTrue))
+    if (0 && (image_info->verbose != MagickFalse))
 RestoreMSCWarning
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
     (void) TIFFWriteDirectory(tiff);

@@ -2452,7 +2452,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #endif
   status=GetPathAttributes(filename,&image->blob->properties);
 #if defined(S_ISFIFO)
-  if ((status == MagickTrue) && S_ISFIFO(image->blob->properties.st_mode))
+  if ((status != MagickFalse) && S_ISFIFO(image->blob->properties.st_mode))
     {
       image->blob->file_info.file=(FILE *) fopen_utf8(filename,type);
       if (image->blob->file_info.file == (FILE *) NULL)
