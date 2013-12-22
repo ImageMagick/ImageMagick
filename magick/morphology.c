@@ -2414,7 +2414,7 @@ DisableMSCWarning(4127)
 RestoreMSCWarning
     clone = CloneKernelInfo(last);
     RotateKernelInfo(clone, angle);
-    if ( SameKernelInfo(kernel, clone) == MagickTrue )
+    if ( SameKernelInfo(kernel, clone) != MagickFalse )
       break;
     LastKernelInfo(last)->next = clone;
     last = clone;
@@ -3938,7 +3938,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
   /* Apply special methods with special requirments
   ** For example, single run only, or post-processing requirements
   */
-  if ( special == MagickTrue )
+  if ( special != MagickFalse )
     {
       rslt_image=CloneImage(image,0,0,MagickTrue,exception);
       if (rslt_image == (Image *) NULL)
@@ -3952,7 +3952,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       changed = MorphologyPrimitiveDirect(rslt_image, method,
                       channel, kernel, exception);
 
-      if ( verbose == MagickTrue )
+      if ( verbose != MagickFalse )
         (void) (void) FormatLocaleFile(stderr,
           "%s:%.20g.%.20g #%.20g => Changed %.20g\n",
           CommandOptionToMnemonic(MagickMorphologyOptions, method),
@@ -4098,7 +4098,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         assert( this_kernel != (KernelInfo *) NULL );
 
         /* Extra information for debugging compound operations */
-        if ( verbose == MagickTrue ) {
+        if ( verbose != MagickFalse ) {
           if ( stage_limit > 1 )
             (void) FormatLocaleString(v_info,MaxTextExtent,"%s:%.20g.%.20g -> ",
              CommandOptionToMnemonic(MagickMorphologyOptions,method),(double)
@@ -4137,7 +4137,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           changed = MorphologyPrimitive(curr_image, work_image, primitive,
                        channel, this_kernel, bias, exception);
 
-          if ( verbose == MagickTrue ) {
+          if ( verbose != MagickFalse ) {
             if ( kernel_loop > 1 )
               (void) FormatLocaleFile(stderr, "\n"); /* add end-of-line from previous */
             (void) (void) FormatLocaleFile(stderr,
@@ -4162,9 +4162,9 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
         } /* End Loop 4: Iterate the kernel with primitive */
 
-        if ( verbose == MagickTrue && kernel_changed != (size_t)changed )
+        if ( verbose != MagickFalse && kernel_changed != (size_t)changed )
           (void) FormatLocaleFile(stderr, "   Total %.20g",(double) kernel_changed);
-        if ( verbose == MagickTrue && stage_loop < stage_limit )
+        if ( verbose != MagickFalse && stage_loop < stage_limit )
           (void) FormatLocaleFile(stderr, "\n"); /* add end-of-line before looping */
 
 #if 0
@@ -4189,7 +4189,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         case EdgeInMorphology:
         case TopHatMorphology:
         case BottomHatMorphology:
-          if ( verbose == MagickTrue )
+          if ( verbose != MagickFalse )
             (void) FormatLocaleFile(stderr, "\n%s: Difference with original image",
                  CommandOptionToMnemonic(MagickMorphologyOptions, method) );
           (void) CompositeImageChannel(curr_image,
@@ -4197,7 +4197,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
                   DifferenceCompositeOp, image, 0, 0);
           break;
         case EdgeMorphology:
-          if ( verbose == MagickTrue )
+          if ( verbose != MagickFalse )
             (void) FormatLocaleFile(stderr, "\n%s: Difference of Dilate and Erode",
                  CommandOptionToMnemonic(MagickMorphologyOptions, method) );
           (void) CompositeImageChannel(curr_image,
@@ -4213,7 +4213,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       if ( kernel->next == (KernelInfo *) NULL )
         rslt_image = curr_image;   /* just return the resulting image */
       else if ( rslt_compose == NoCompositeOp )
-        { if ( verbose == MagickTrue ) {
+        { if ( verbose != MagickFalse ) {
             if ( this_kernel->next != (KernelInfo *) NULL )
               (void) FormatLocaleFile(stderr, " (re-iterate)");
             else
@@ -4222,7 +4222,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           rslt_image = curr_image; /* return result, and re-iterate */
         }
       else if ( rslt_image == (Image *) NULL)
-        { if ( verbose == MagickTrue )
+        { if ( verbose != MagickFalse )
             (void) FormatLocaleFile(stderr, " (save for compose)");
           rslt_image = curr_image;
           curr_image = (Image *) image;  /* continue with original image */
@@ -4235,7 +4235,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           ** purely mathematical way, and only to the selected channels.
           ** IE: Turn off SVG composition 'alpha blending'.
           */
-          if ( verbose == MagickTrue )
+          if ( verbose != MagickFalse )
             (void) FormatLocaleFile(stderr, " (compose \"%s\")",
                  CommandOptionToMnemonic(MagickComposeOptions, rslt_compose) );
           (void) CompositeImageChannel(rslt_image,
@@ -4244,7 +4244,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           curr_image = DestroyImage(curr_image);
           curr_image = (Image *) image;  /* continue with original image */
         }
-      if ( verbose == MagickTrue )
+      if ( verbose != MagickFalse )
         (void) FormatLocaleFile(stderr, "\n");
 
       /* loop to the next kernel in a multi-kernel list */

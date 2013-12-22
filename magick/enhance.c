@@ -978,7 +978,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   */
 
   status = AccelerateContrastImage(image, sharpen, &image->exception);
-  if (status == MagickTrue)
+  if (status != MagickFalse)
     return status;
 
   status=MagickTrue;
@@ -1797,7 +1797,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 
   /* Call OpenCL version */
   status = AccelerateEqualizeImage(image, channel, &image->exception);
-  if (status == MagickTrue)
+  if (status != MagickFalse)
     return status;
 
   /*
@@ -3810,7 +3810,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 
   /* call opencl version */
   status = AccelerateModulateImage(image, percent_brightness, percent_hue, percent_saturation, colorspace, &image->exception);
-  if (status == MagickTrue)
+  if (status != MagickFalse)
     return status;
 
   status=MagickTrue;

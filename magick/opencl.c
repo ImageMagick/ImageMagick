@@ -966,7 +966,7 @@ cleanup:
 }
 
 static MagickBooleanType EnableOpenCLInternal(MagickCLEnv clEnv) {
-  if (clEnv->OpenCLInitialized == MagickTrue
+  if (clEnv->OpenCLInitialized != MagickFalse
     && clEnv->platform != NULL
     && clEnv->device != NULL) {
       clEnv->OpenCLDisabled = MagickFalse;
@@ -1011,7 +1011,7 @@ MagickBooleanType InitOpenCLEnvInternal(MagickCLEnv clEnv, ExceptionInfo* except
 
 
   clEnv->OpenCLInitialized = MagickTrue;
-  if (clEnv->OpenCLDisabled == MagickTrue)
+  if (clEnv->OpenCLDisabled != MagickFalse)
     goto cleanup;
 
   clEnv->OpenCLDisabled = MagickTrue;
@@ -2165,7 +2165,7 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
          ,GetOpenCLCachedFilesDirectory()
          ,DirectorySeparator,IMAGEMAGICK_PROFILE_FILE);
 
-  if (clEnv->regenerateProfile == MagickTrue) {
+  if (clEnv->regenerateProfile != MagickFalse) {
     profileType = DS_EVALUATE_ALL;
   }
   else {
