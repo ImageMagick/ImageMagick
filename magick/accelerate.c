@@ -98,7 +98,7 @@ static MagickBooleanType checkOpenCLEnvironment(ExceptionInfo* exception)
 
   GetMagickOpenCLEnvParam(clEnv, MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED
     , sizeof(MagickBooleanType), &flag, exception);
-  if (flag == MagickTrue)
+  if (flag != MagickFalse)
     return MagickFalse;
 
   GetMagickOpenCLEnvParam(clEnv, MAGICK_OPENCL_ENV_PARAM_OPENCL_INITIALIZED
@@ -110,7 +110,7 @@ static MagickBooleanType checkOpenCLEnvironment(ExceptionInfo* exception)
 
     GetMagickOpenCLEnvParam(clEnv, MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED
       , sizeof(MagickBooleanType), &flag, exception);
-    if (flag == MagickTrue)
+    if (flag != MagickFalse)
       return MagickFalse;
   }
 
@@ -648,10 +648,10 @@ MagickExport MagickBooleanType
   assert(exception != (ExceptionInfo *) NULL);
 
   status = checkOpenCLEnvironment(exception);
-  if (status == MagickTrue)
+  if (status != MagickFalse)
   {
     status = checkAccelerateCondition(image, channel);
-    if (status == MagickTrue)
+    if (status != MagickFalse)
     {
       status = ComputeFunctionImage(image, channel, function, number_parameters, parameters, exception);
     }
