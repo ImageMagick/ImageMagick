@@ -858,8 +858,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=(size_t) MagickAbsoluteValue(bmp_info.height);
     image->depth=bmp_info.bits_per_pixel <= 8 ? bmp_info.bits_per_pixel : 8;
     image->alpha_trait=((bmp_info.alpha_mask != 0) &&
-      (bmp_info.compression == BI_BITFIELDS) ||
-      (bmp_info.bits_per_pixel == 32)) ? BlendPixelTrait : UndefinedPixelTrait;
+      (bmp_info.compression == BI_BITFIELDS)) ||
+      (bmp_info.bits_per_pixel == 32) ? BlendPixelTrait : UndefinedPixelTrait;
     if (bmp_info.bits_per_pixel < 16)
       {
         size_t
