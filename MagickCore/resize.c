@@ -131,8 +131,7 @@ static double
 %
 %  The individual filter functions have this format...
 %
-%     static MagickRealtype *FilterName(const double x,
-%        const double support)
+%     static MagickRealtype *FilterName(const double x,const double support)
 %
 %  A description of each parameter follows:
 %
