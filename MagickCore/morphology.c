@@ -2684,6 +2684,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           {
             double
               alpha,
+              gamma,
               pixel;
 
             PixelChannel
@@ -2701,6 +2702,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
             register ssize_t
               u;
+
+            size_t
+              count;
 
             ssize_t
               v;
@@ -2720,6 +2724,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             k=(&kernel->values[kernel->width*kernel->height-1]);
             pixels=p;
             pixel=bias;
+            count=0;
             if ((morphology_traits & BlendPixelTrait) == 0)
               {
                 /*
@@ -2730,15 +2735,19 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   for (u=0; u < (ssize_t) kernel->width; u++)
                   {
                     if (IfNaN(*k) == MagickFalse)
-                      pixel+=(*k)*pixels[i];
+                      {
+                        pixel+=(*k)*pixels[i];
+                        count++;
+                      }
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
                 }
                 if (fabs(pixel-p[center+i]) > MagickEpsilon)
                   changes[id]++;
-                SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),
-                  q);
+                gamma=(double) kernel->height*kernel->width/count;
+                SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
+                  pixel),q);
                 continue;
               }
             /*
@@ -2752,6 +2761,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                     pixel+=(*k)*alpha*pixels[i];
+                    count++;
                   }
                 k--;
                 pixels+=GetPixelChannels(image);
@@ -2759,7 +2769,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             }
             if (fabs(pixel-p[center+i]) > MagickEpsilon)
               changes[id]++;
-            SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
+            gamma=(double) kernel->height*kernel->width/count;
+            SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
+              pixel),q);
           }
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(morphology_image);
@@ -2834,6 +2846,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       {
         double
           alpha,
+          gamma,
           maximum,
           minimum,
           pixel;
@@ -2854,6 +2867,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         register ssize_t
           u;
 
+        size_t
+          count;
+
         ssize_t
           v;
 
@@ -2872,6 +2888,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         pixels=p;
         maximum=0.0;
         minimum=(double) QuantumRange;
+        count=kernel->width*kernel->height;
         switch (method)
         {
           case ConvolveMorphology: pixel=bias; break;
@@ -2913,6 +2930,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                  http://www.cs.umd.edu/~djacobs/CMSC426/Convolution.pdf
             */
             k=(&kernel->values[kernel->width*kernel->height-1]);
+            count=0;
             if ((morphology_traits & BlendPixelTrait) == 0)
               {
                 /*
@@ -2923,7 +2941,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   for (u=0; u < (ssize_t) kernel->width; u++)
                   {
                     if (IfNaN(*k) == MagickFalse)
-                      pixel+=(*k)*pixels[i];
+                      {
+                        pixel+=(*k)*pixels[i];
+                        count++;
+                      }
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
@@ -2942,6 +2963,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                     pixel+=(*k)*alpha*pixels[i];
+                    count++;
                   }
                 k--;
                 pixels+=GetPixelChannels(image);
@@ -2990,6 +3012,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                added to the real value, this is currently not done, due to the
                nature of the boolean kernels being used.
             */
+            count=0;
             k=(&kernel->values[kernel->width*kernel->height-1]);
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -2999,6 +3022,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     if ((double) pixels[i] > pixel)
                       pixel=(double) pixels[i];
+                    count++;
                   }
                 k--;
                 pixels+=GetPixelChannels(image);
@@ -3023,6 +3047,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                cause Thinning/Thicken to not work correctly when used against a
                greyscale image.
             */
+            count=0;
             k=kernel->values;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3041,6 +3066,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                           if ((double) pixels[i] > maximum)
                             maximum=(double) pixels[i];
                         }
+                    count++;
                   }
                 k++;
                 pixels+=GetPixelChannels(image);
@@ -3064,6 +3090,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
               The kernel is not reflected for this operation.
             */
+            count=0;
             k=kernel->values;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3076,6 +3103,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                         pixel=(double) pixels[i];
                         minimum=GetPixelIntensity(image,pixels);
                       }
+                    count++;
                   }
                 k++;
                 pixels+=GetPixelChannels(image);
@@ -3091,6 +3119,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
               The kernel is not reflected for this operation.
             */
+            count=0;
             k=(&kernel->values[kernel->width*kernel->height-1]);
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3103,6 +3132,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                         pixel=(double) pixels[i];
                         maximum=GetPixelIntensity(image,pixels);
                       }
+                    count++;
                   }
                 k--;
                 pixels+=GetPixelChannels(image);
@@ -3136,6 +3166,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                GrayErode, but with negative kernel values, and kernel rotation
                applied.
             */
+            count=0;
             k=(&kernel->values[kernel->width*kernel->height-1]);
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3145,6 +3176,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     if ((pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
+                    count++;
                   }
                 k--;
                 pixels+=GetPixelChannels(image);
@@ -3159,7 +3191,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         }
         if (fabs(pixel-p[center+i]) > MagickEpsilon)
           changes[id]++;
-        SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),q);
+        gamma=(double) kernel->height*kernel->width/count;
+        SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(morphology_image);
