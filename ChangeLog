@@ -1,3 +1,7 @@
+2013-12-23  6.8.7-0 Cristy  <quetzlzacatenango@image...>
+  * Blurring with transparency no longer returns a halo (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24665).
+
 2013-12-10  6.8.7-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-10, SVN revision 13965.
 
