@@ -671,6 +671,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           profile=DestroyStringInfo(profile);
           (void) jas_stream_close(icc_stream);
         }
+      jas_iccprof_destroy(icc_profile);
     }
   (void) jas_stream_close(jp2_stream);
   jas_image_destroy(jp2_image);
