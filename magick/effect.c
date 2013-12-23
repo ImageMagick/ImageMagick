@@ -366,12 +366,13 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
             pixel.index+=(*k)*alpha*GetPixelIndex(indexes+x+(width-i)*v+u);
-          gamma+=(*k)*alpha;
+          gamma+=alpha;
           k++;
           p++;
         }
       }
-      gamma=PerceptibleReciprocal(gamma);
+      gamma=(double) (width-i)*(width-i)/(fabs((double) gamma) < MagickEpsilon ?
+        MagickEpsilon : gamma);
       if ((channel & RedChannel) != 0)
         SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
       if ((channel & GreenChannel) != 0)
@@ -688,12 +689,13 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
             pixel.index+=(*k)*alpha*GetPixelIndex(indexes+x+(width-i)*v+u);
-          gamma+=(*k)*alpha;
+          gamma+=alpha;
           k++;
           p++;
         }
       }
-      gamma=PerceptibleReciprocal(gamma);
+      gamma=(double) (width-i)*(width-i)/(fabs((double) gamma) < MagickEpsilon ?
+        MagickEpsilon : gamma);
       if ((channel & RedChannel) != 0)
         SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
       if ((channel & GreenChannel) != 0)
@@ -1713,12 +1715,13 @@ MagickExport Image *FilterImageChannel(const Image *image,
               pixel.red+=(*k)*alpha*GetPixelRed(kernel_pixels+u);
               pixel.green+=(*k)*alpha*GetPixelGreen(kernel_pixels+u);
               pixel.blue+=(*k)*alpha*GetPixelBlue(kernel_pixels+u);
-              gamma+=(*k)*alpha;
+              gamma+=alpha;
               k++;
             }
             kernel_pixels+=image->columns+kernel->width;
           }
-          gamma=PerceptibleReciprocal(gamma);
+          gamma=(double) kernel->width*kernel->height/(fabs((double) gamma) <
+            MagickEpsilon ? MagickEpsilon : gamma);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           if ((channel & GreenChannel) != 0)
@@ -2147,10 +2150,11 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
                 indexes=GetCacheViewVirtualIndexQueue(image_view);
                 qixel.index+=(*k)*alpha*GetPixelIndex(indexes);
               }
-            gamma+=(*k)*alpha;
+            gamma+=alpha;
             k++;
           }
-          gamma=PerceptibleReciprocal(gamma);
+          gamma=(double) width/(fabs((double) gamma) < MagickEpsilon ?
+            MagickEpsilon : gamma);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*qixel.red));
           if ((channel & GreenChannel) != 0)
@@ -2962,8 +2966,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
               (blur_center.x+center.x*cos_theta[i]-center.y*sin_theta[i]+0.5),
               (ssize_t) (blur_center.y+center.x*sin_theta[i]+center.y*
               cos_theta[i]+0.5),&pixel,exception);
-            alpha=(MagickRealType) (QuantumScale*
-              GetPixelAlpha(&pixel));
+            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(&pixel));
             qixel.red+=alpha*pixel.red;
             qixel.green+=alpha*pixel.green;
             qixel.blue+=alpha*pixel.blue;
@@ -2976,7 +2979,8 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
             gamma+=alpha;
             normalize+=1.0;
           }
-          gamma=PerceptibleReciprocal(gamma);
+          gamma=(double) n/(fabs((double) gamma) < MagickEpsilon ?
+            MagickEpsilon : gamma);
           normalize=PerceptibleReciprocal(normalize);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*qixel.red));
@@ -3306,6 +3310,9 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
             }
           if ((channel & OpacityChannel) != 0)
             {
+              double
+                alpha;
+
               gamma=0.0;
               j=0;
               for (v=0; v < (ssize_t) width; v++)
@@ -3316,13 +3323,15 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                   if (fabs(contrast) < threshold)
                     {
                       pixel.opacity+=(*k)*(p+u+j)->opacity;
-                      gamma+=(*k);
+                      alpha=QuantumScale*(QuantumRange-(p+u+j)->opacity);
+                      gamma+=alpha;
                     }
                   k++;
                 }
                 j+=(ssize_t) (image->columns+width);
               }
-              gamma=PerceptibleReciprocal(gamma);
+              gamma=(double) width*width/(fabs((double) gamma) < MagickEpsilon ?
+                MagickEpsilon : gamma);
               SetPixelOpacity(q,ClampToQuantum(gamma*pixel.opacity));
             }
           if (((channel & IndexChannel) != 0) &&
@@ -3383,6 +3392,9 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
             }
           if ((channel & OpacityChannel) != 0)
             {
+              double
+                alpha;
+
               gamma=0.0;
               j=0;
               for (v=0; v < (ssize_t) width; v++)
@@ -3393,13 +3405,15 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                   if (fabs(contrast) < threshold)
                     {
                       pixel.opacity+=(*k)*GetPixelOpacity(p+u+j);
-                      gamma+=(*k);
+                      alpha=QuantumScale*(QuantumRange-GetPixelOpacity(p+u+j));
+                      gamma+=alpha;
                     }
                   k++;
                 }
                 j+=(ssize_t) (image->columns+width);
               }
-              gamma=PerceptibleReciprocal(gamma);
+              gamma=(double) width*width/(fabs((double) gamma) < MagickEpsilon ?
+                MagickEpsilon : gamma);
               SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
             }
           if (((channel & IndexChannel) != 0) &&
@@ -3417,13 +3431,14 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                       alpha=(MagickRealType) (QuantumScale*
                         GetPixelAlpha(p+u+j));
                       pixel.index+=(*k)*alpha*GetPixelIndex(indexes+x+u+j);
-                      gamma+=(*k);
+                      gamma+=alpha;
                     }
                   k++;
                 }
                 j+=(ssize_t) (image->columns+width);
               }
-              gamma=PerceptibleReciprocal(gamma);
+              gamma=(double) width*width/(fabs((double) gamma) < MagickEpsilon ?
+                MagickEpsilon : gamma);
               SetPixelIndex(blur_indexes+x,ClampToQuantum(gamma*pixel.index));
             }
         }
