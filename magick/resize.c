@@ -2632,16 +2632,14 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           {
             j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
               (contribution[i].pixel-contribution[0].pixel);
-            alpha=QuantumScale*GetPixelAlpha(p+j);
-            gamma+=alpha;
-            alpha*=contribution[i].weight;
+            alpha=contribution[i].weight*QuantumScale*GetPixelAlpha(p+j);
             pixel.red+=alpha*GetPixelRed(p+j);
             pixel.green+=alpha*GetPixelGreen(p+j);
             pixel.blue+=alpha*GetPixelBlue(p+j);
             pixel.opacity+=contribution[i].weight*GetPixelOpacity(p+j);
+            gamma+=alpha;
           }
-          gamma=(double) n/(fabs((double) gamma) < MagickEpsilon ?
-            MagickEpsilon : gamma);
+          gamma=PerceptibleReciprocal(gamma);
           SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           SetPixelGreen(q,ClampToQuantum(gamma*pixel.green));
           SetPixelBlue(q,ClampToQuantum(gamma*pixel.blue));
@@ -2875,16 +2873,14 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           {
             j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
               image->columns+x);
-            alpha=QuantumScale*GetPixelAlpha(p+j);
-            gamma+=alpha;
-            alpha*=contribution[i].weight;
+            alpha=contribution[i].weight*QuantumScale*GetPixelAlpha(p+j);
             pixel.red+=alpha*GetPixelRed(p+j);
             pixel.green+=alpha*GetPixelGreen(p+j);
             pixel.blue+=alpha*GetPixelBlue(p+j);
             pixel.opacity+=contribution[i].weight*GetPixelOpacity(p+j);
+            gamma+=alpha;
           }
-          gamma=(double) n/(fabs((double) gamma) < MagickEpsilon ?
-            MagickEpsilon : gamma);
+          gamma=PerceptibleReciprocal(gamma);
           SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           SetPixelGreen(q,ClampToQuantum(gamma*pixel.green));
           SetPixelBlue(q,ClampToQuantum(gamma*pixel.blue));
