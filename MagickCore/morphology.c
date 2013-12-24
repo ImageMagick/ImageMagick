@@ -2753,6 +2753,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
               Alpha blending.
             */
+            gamma=0.0;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
@@ -2761,6 +2762,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                     pixel+=(*k)*alpha*pixels[i];
+                    gamma+=(*k)*alpha;
                     count++;
                   }
                 k--;
@@ -2769,7 +2771,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             }
             if (fabs(pixel-p[center+i]) > MagickEpsilon)
               changes[id]++;
-            gamma=(double) kernel->height*kernel->width/count;
+            gamma=PerceptibleReciprocal(gamma);
+            gamma*=(double) kernel->height*kernel->width/count;
             SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
               pixel),q);
           }
@@ -2906,6 +2909,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           }
           default: pixel=0; break;
         }
+        gamma=1.0;
         switch (method)
         {
           case ConvolveMorphology:
@@ -2963,6 +2967,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                     pixel+=(*k)*alpha*pixels[i];
+                    gamma+=(*k)*alpha;
                     count++;
                   }
                 k--;
@@ -3191,7 +3196,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         }
         if (fabs(pixel-p[center+i]) > MagickEpsilon)
           changes[id]++;
-        gamma=(double) kernel->height*kernel->width/count;
+        gamma=PerceptibleReciprocal(gamma);
+        gamma*=(double) kernel->height*kernel->width/count;
         SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(image);
