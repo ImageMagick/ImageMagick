@@ -829,15 +829,17 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
         cache_info->pixels=(Quantum *) RelinquishAlignedMemory(
           cache_info->pixels);
       else
-        cache_info->pixels=(Quantum *) UnmapBlob(cache_info->pixels,
-          (size_t) cache_info->length);
+        {
+          (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+          cache_info->pixels=(Quantum *) NULL;
+        }
       RelinquishMagickResource(MemoryResource,cache_info->length);
       break;
     }
     case MapCache:
     {
-      cache_info->pixels=(Quantum *) UnmapBlob(cache_info->pixels,(size_t)
-        cache_info->length);
+      (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+      cache_info->pixels=(Quantum *) NULL;
       if (cache_info->mode != ReadMode)
         (void) RelinquishUniqueFileResource(cache_info->cache_filename);
       *cache_info->cache_filename='\0';
