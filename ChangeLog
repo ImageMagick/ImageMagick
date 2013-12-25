@@ -7,32 +7,35 @@
   * Eliminate ICC profile memory leak for JP2 coder (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=24679).
 
+2012-12-21  6.8.8-0 Dirk Lemstra <dirk@snakeware...>
+  * Made librsvg the default svg library for the windows distribution.
+
 2013-12-10  6.8.7-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-10, SVN revision 13965.
 
 2013-12-10  6.8.7-10  SiuChi Chan  <...>
-  * fix crash when using -resize with GPU acceleration (reference
+  * Fix crash when using -resize with GPU acceleration (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24603).
 
 2013-12-08  6.8.7-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-9, SVN revision 13950.
 
 2013-12-05  6.8.7-9  SiuChi Chan  <...>
-  * silence warning related to GPU memory issues.
-  * check if OpenCL is disabled in checkOpenCLEnvironment() method
-  * turn off OpenCL path for Intel OpenCL to avoid crash when not enough memory
-  * fixed a bug for OpenCL convolution
-  * reduce compiler warnings
+  * Silence warning related to GPU memory issues.
+  * Check if OpenCL is disabled in checkOpenCLEnvironment() method.
+  * Turn off OpenCL path for Intel OpenCL to avoid crash when not enough memory.
+  * Fixed a bug for OpenCL convolution.
+  * Reduce compiler warnings.
 
 2013-12-03  6.8.7-9 Glenn Randers-Pehrson <glennrp@image...>
-  * fixed bug in coders/png.c that caused -define png:color-type=0 to
+  * Fixed bug in coders/png.c that caused -define png:color-type=0 to
     fail (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=24568).
 
 2013-11-30  6.8.7-9 Dirk Lemstra <dirk@snakeware...>
-  * fixed bug in automatic selection of OpenCL device (reference
+  * Fixed bug in automatic selection of OpenCL device (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24542).
-  * fixed transparency for 32 bits BMP.
+  * Fixed transparency for 32 bits BMP.
 
 2013-11-28  6.8.7-9 Cristy  <quetzlzacatenango@image...>
   * The -type bilevel option sometimes returned an all white image (reference
@@ -50,10 +53,10 @@
   * New version 6.8.7-7, SVN revision 13827.
 
 2013-11-23  6.8.7-7  SiuChi Chan  <...>
-  * simplified interface to initialize the OpenCL environment
-  * automatic OpenCL device selection algorithm
-  * support ModulateImage() acceleration
-  * reduce the memory requirement for accelerated blur and unsharp mask
+  * Simplified interface to initialize the OpenCL environment.
+  * Automatic OpenCL device selection algorithm.
+  * Support ModulateImage() acceleration.
+  * Reduce the memory requirement for accelerated blur and unsharp mask.
 
 2013-11-16  6.8.7-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.7-6, SVN revision 13767.
