@@ -39,6 +39,9 @@ typedef struct _DistributeCacheInfo
   int
     port;
 
+  MagickBooleanType
+    debug;
+
   size_t
     signature;
 } DistributeCacheInfo;

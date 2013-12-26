@@ -323,6 +323,7 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   hostname=DestroyString(hostname);
   if (server_info->file == -1)
     server_info=DestroyDistributeCacheInfo(server_info);
+  server_info->debug=IsEventLogging();
   return(server_info);
 }
 
@@ -394,6 +395,7 @@ static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
   /*
     Destroy distributed pixel cache.
   */
+  magick_unreferenced(file);
   return(DeleteNodeFromSplayTree(registry,(const void *) session_key));
 }
 
