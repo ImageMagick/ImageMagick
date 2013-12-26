@@ -123,7 +123,7 @@ typedef struct _NexusInfo
 
   size_t
     signature;
-}NexusInfo;
+} NexusInfo;
 
 typedef struct _CacheInfo
 {

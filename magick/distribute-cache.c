@@ -134,9 +134,6 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   ssize_t
     count;
 
-  magick_unreferenced(file);
-  magick_unreferenced(message);
-
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
@@ -236,7 +233,6 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   magick_unreferenced(port);
   magick_unreferenced(session_key);
   magick_unreferenced(exception);
-
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","distributed pixel cache");
   return(MagickFalse);
@@ -329,6 +325,7 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   hostname=DestroyString(hostname);
   if (server_info->file == -1)
     server_info=DestroyDistributeCacheInfo(server_info);
+  server_info->debug=IsEventLogging();
   return(server_info);
 }
 
@@ -401,7 +398,6 @@ static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
     Destroy distributed pixel cache.
   */
   magick_unreferenced(file);
-
   return(DeleteNodeFromSplayTree(registry,(const void *) session_key));
 }
 
@@ -413,9 +409,6 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
 
   register MagickOffsetType
     i;
-
-  magick_unreferenced(file);
-  magick_unreferenced(message);
 
   /*
     Ensure a complete message is sent.
@@ -931,7 +924,6 @@ MagickExport void DistributePixelCacheServer(const int port,
 #else
   magick_unreferenced(port);
   magick_unreferenced(exception);
-
   ThrowFatalException(MissingDelegateError,"distributed pixel cache");
 #endif
 }
