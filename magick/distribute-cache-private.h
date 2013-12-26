@@ -39,11 +39,11 @@ typedef struct _DistributeCacheInfo
   int
     port;
 
-  MagickBooleanType
-    debug;
-
   size_t
     signature;
+
+  MagickBooleanType
+    debug;
 } DistributeCacheInfo;
 
 extern MagickPrivate const char
