@@ -136,6 +136,11 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   ssize_t
     count;
 
+#if !defined(MAGICKCORE_HAVE_SOCKET) || !defined(MAGICKCORE_THREAD_SUPPORT)
+  magick_unreferenced(file);
+  magick_unreferenced(message);
+#endif
+
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
@@ -407,6 +412,11 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
 
   register MagickOffsetType
     i;
+
+#if !defined(MAGICKCORE_HAVE_SOCKET) || !defined(MAGICKCORE_THREAD_SUPPORT)
+  magick_unreferenced(file);
+  magick_unreferenced(message);
+#endif
 
   /*
     Ensure a complete message is sent.
