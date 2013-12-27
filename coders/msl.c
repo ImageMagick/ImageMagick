@@ -2505,6 +2505,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           (void) ConcatenateString(&draw_info->primitive," ");
                           ConcatenateString(&draw_info->primitive,value);
                         }
+                      break;
                     }
                   if (LocaleCompare(keyword,"pointsize") == 0)
                     {
