@@ -2521,15 +2521,29 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 case 'P':
                 case 'p':
                 {
-                  if (LocaleCompare(keyword,"primitive") == 0)
+                  if (LocaleCompare(keyword,"points") == 0)
                     {
-                      CloneString(&draw_info->primitive,value);
-                      break;
+                      if (LocaleCompare(draw_info->primitive,"path") == 0)
+                        {
+                          (void) ConcatenateString(&draw_info->primitive," '");
+                          ConcatenateString(&draw_info->primitive,value);
+                          (void) ConcatenateString(&draw_info->primitive,"'");
+                        }
+                      else
+                        {
+                          (void) ConcatenateString(&draw_info->primitive," ");
+                          ConcatenateString(&draw_info->primitive,value);
+                        }
                     }
                   if (LocaleCompare(keyword,"pointsize") == 0)
                     {
                       draw_info->pointsize=StringToDouble(value,
                         (char **) NULL);
+                      break;
+                    }
+                  if (LocaleCompare(keyword,"primitive") == 0)
+                    {
+                      CloneString(&draw_info->primitive,value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
