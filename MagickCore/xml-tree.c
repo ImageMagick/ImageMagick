@@ -479,9 +479,8 @@ static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
   /*
     Free root tag allocations.
   */
-  return;
   root=(XMLTreeRoot *) xml_info;
-  for (i=NumberPredefinedEntities; root->entities[i]; i+=2)
+  for (i=NumberPredefinedEntities; root->entities[i] != (char *) NULL; i+=2)
     root->entities[i+1]=DestroyString(root->entities[i+1]);
   root->entities=(char **) RelinquishMagickMemory(root->entities);
   for (i=0; root->attributes[i] != (char **) NULL; i++)
@@ -1021,7 +1020,6 @@ MagickPrivate XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
     *node,
     *previous;
 
-  DestroyXMLTreeRoot(xml_info);
   child->ordered=(XMLTreeInfo *) NULL;
   child->sibling=(XMLTreeInfo *) NULL;
   child->next=(XMLTreeInfo *) NULL;
