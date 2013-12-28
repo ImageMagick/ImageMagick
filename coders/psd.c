@@ -431,6 +431,21 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
   return(i);
 }
 
+static inline LayerInfo *DestroyLayerInfo(LayerInfo *layer_info,
+  const ssize_t number_layers)
+{
+  ssize_t
+    i;
+
+  for (i=0; i<number_layers; i++)
+  {
+    if (layer_info[i].image != (Image *) NULL)
+      layer_info[i].image=DestroyImage(layer_info[i].image);
+  }
+
+  return (LayerInfo *) RelinquishMagickMemory(layer_info);
+}
+
 static inline size_t GetPSDPacketSize(Image *image)
 {
   if (image->storage_class == PseudoClass)
@@ -1253,7 +1268,7 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
         layer_info[i].channels=ReadBlobMSBShort(image);
         if (layer_info[i].channels > MaxPSDChannels)
           {
-            layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+            layer_info=DestroyLayerInfo(layer_info,number_layers);
             ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
             image->filename);
           }
@@ -1280,7 +1295,7 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  layer type was %.4s instead of 8BIM", type);
-            layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+            layer_info=DestroyLayerInfo(layer_info,number_layers);
             ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
               image->filename);
           }
@@ -1333,7 +1348,7 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
                 */
                 if (DiscardBlobBytes(image,length-16) == MagickFalse)
                   {
-                    layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+                    layer_info=DestroyLayerInfo(layer_info,number_layers);
                     ThrowFileException(exception,CorruptImageError,
                       "UnexpectedEndOfFile",image->filename);
                   }
@@ -1382,7 +1397,7 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
                  ((MagickOffsetType) (size-combined_length)));
              if (DiscardBlobBytes(image,size-combined_length) == MagickFalse)
                {
-                 layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+                 layer_info=DestroyLayerInfo(layer_info,number_layers);
                  ThrowBinaryException(CorruptImageError,
                    "UnexpectedEndOfFile",image->filename);
                }
@@ -1423,9 +1438,7 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
           layer_info[i].page.height,MagickFalse,exception);
         if (layer_info[i].image == (Image *) NULL)
           {
-            for (j=0; j < i; j++)
-              layer_info[j].image=DestroyImage(layer_info[j].image);
-            layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+            layer_info=DestroyLayerInfo(layer_info,number_layers);
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  allocation of image for layer %.20g failed",(double) i);
@@ -1443,7 +1456,7 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
             if (DiscardBlobBytes(image,layer_info[i].channel_info[j].size) ==
                   MagickFalse)
               {
-                layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+                layer_info=DestroyLayerInfo(layer_info,number_layers);
                 ThrowBinaryException(CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
               }
