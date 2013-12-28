@@ -1,5 +1,6 @@
 2013-12-27  6.8.8-1 Cristy  <quetzlzacatenango@image...>
   * Support points argument for draw MSL element.
+  * Fix misplaced closing parenthesis for strncmp() call in magick/xml-tree.c.
 
 2013-12-26  6.8.8-1 Dirk Lemstra <dirk@snakeware...>
   * Added support for reading zip compressed PSD files. (reference
