@@ -479,6 +479,7 @@ static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
   /*
     Free root tag allocations.
   */
+  return;
   root=(XMLTreeRoot *) xml_info;
   for (i=NumberPredefinedEntities; root->entities[i] != (char *) NULL; i+=2)
     root->entities[i+1]=DestroyString(root->entities[i+1]);
