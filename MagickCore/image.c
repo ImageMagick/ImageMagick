@@ -3553,6 +3553,16 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     image->orientation=(OrientationType) ParseCommandOption(
       MagickOrientationOptions,MagickFalse,option);
+  option=GetImageOption(image_info,"page");
+  if (option != (const char *) NULL)
+    {
+      char
+        *geometry;
+
+      geometry=GetPageGeometry(option);
+      flags=ParseAbsoluteGeometry(geometry,&image->page);
+      geometry=DestroyString(geometry);
+    }
   option=GetImageOption(image_info,"quality");
   if (option != (const char *) NULL)
     image->quality=StringToUnsignedLong(option);
