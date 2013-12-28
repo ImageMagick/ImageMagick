@@ -103,7 +103,7 @@ static const unsigned char
 %  given string.
 %
 %  An extended string is the string length, plus an extra MaxTextExtent space
-%  to allow for the string to be activally worked on.
+%  to allow for the string to be actively worked on.
 %
 %  The returned string shoud be freed using DestoryString().
 %
