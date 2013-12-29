@@ -965,7 +965,10 @@ static ThresholdMap *GetThresholdMapFile(const char *xml,const char *filename,
       break;
   }
   if (threshold == (XMLTreeInfo *) NULL)
-    return(map);
+    {
+      thresholds=DestroyXMLTree(thresholds);
+      return(map);
+    }
   description=GetXMLTreeChild(threshold,"description");
   if (description == (XMLTreeInfo *) NULL)
     {
