@@ -1018,7 +1018,6 @@ MagickExport XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
     *node,
     *previous;
 
-  DestroyXMLTreeRoot(xml_info);
   child->ordered=(XMLTreeInfo *) NULL;
   child->sibling=(XMLTreeInfo *) NULL;
   child->next=(XMLTreeInfo *) NULL;
