@@ -520,18 +520,6 @@ static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
 
 MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
 {
-  char
-    **attributes;
-
-  register ssize_t
-    i;
-
-  ssize_t
-    j;
-
-  XMLTreeRoot
-    *root;
-
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickSignature));
