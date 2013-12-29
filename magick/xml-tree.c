@@ -472,12 +472,11 @@ static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
   assert((xml_info->signature == MagickSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickSignature));
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (xml_info->parent == (XMLTreeInfo *) NULL)
+  if (xml_info->parent != (XMLTreeInfo *) NULL)
     return;
   /*
     Free root tag allocations.
   */
-  return;
   root=(XMLTreeRoot *) xml_info;
   for (i=NumberPredefinedEntities; root->entities[i] != (char *) NULL; i+=2)
     root->entities[i+1]=DestroyString(root->entities[i+1]);
@@ -1019,6 +1018,7 @@ MagickExport XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
     *node,
     *previous;
 
+  DestroyXMLTreeRoot(xml_info);
   child->ordered=(XMLTreeInfo *) NULL;
   child->sibling=(XMLTreeInfo *) NULL;
   child->next=(XMLTreeInfo *) NULL;
