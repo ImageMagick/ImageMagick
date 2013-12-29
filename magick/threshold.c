@@ -1170,11 +1170,11 @@ MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
     map=GetThresholdMapFile((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),map_id,exception);
     if (map != (ThresholdMap *) NULL)
-      return(map);
+      break;
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
-  return((ThresholdMap *) NULL);
+  return(map);
 }
 
 /*
