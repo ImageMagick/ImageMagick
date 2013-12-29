@@ -967,6 +967,7 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
       break;
   }
   if ( threshold == (XMLTreeInfo *)NULL ) {
+    thresholds = DestroyXMLTree(thresholds);
     return(map);
   }
   description = GetXMLTreeChild(threshold,"description");
