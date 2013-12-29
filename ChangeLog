@@ -3,6 +3,8 @@
   * Fix misplaced closing parenthesis for strncmp() call in magick/xml-tree.c.
   * The -page option now correctly sets the image page offset (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24701).
+  * The -evaluate-sequence sum returns a proper alpha channel now (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24704).
 
 2013-12-26  6.8.8-1 Dirk Lemstra <dirk@snakeware...>
   * Added support for reading zip compressed PSD files. (reference

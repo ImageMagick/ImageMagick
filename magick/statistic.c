@@ -578,10 +578,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           SetPixelRed(q,ClampToQuantum(evaluate_pixel[i/2].red));
           SetPixelGreen(q,ClampToQuantum(evaluate_pixel[i/2].green));
           SetPixelBlue(q,ClampToQuantum(evaluate_pixel[i/2].blue));
-          if (image->matte == MagickFalse)
-            SetPixelOpacity(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
-          else
-            SetPixelAlpha(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
+          SetPixelOpacity(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
           if (image->colorspace == CMYKColorspace)
             SetPixelIndex(evaluate_indexes+i,ClampToQuantum(
               evaluate_pixel[i/2].index));
@@ -716,10 +713,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           SetPixelRed(q,ClampToQuantum(evaluate_pixel[x].red));
           SetPixelGreen(q,ClampToQuantum(evaluate_pixel[x].green));
           SetPixelBlue(q,ClampToQuantum(evaluate_pixel[x].blue));
-          if (image->matte == MagickFalse)
-            SetPixelOpacity(q,ClampToQuantum(evaluate_pixel[x].opacity));
-          else
-            SetPixelAlpha(q,ClampToQuantum(evaluate_pixel[x].opacity));
+          SetPixelOpacity(q,ClampToQuantum(evaluate_pixel[x].opacity));
           if (image->colorspace == CMYKColorspace)
             SetPixelIndex(evaluate_indexes+x,ClampToQuantum(
               evaluate_pixel[x].index));
