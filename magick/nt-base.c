@@ -1274,9 +1274,8 @@ MagickExport int NTGhostscriptFonts(char *path,int length)
     if (IsPathAccessible(filename) != MagickFalse)
       return(TRUE);
   }
-  (void) CopyMagickString(path,"c:\\gs\\fonts",MaxTextExtent);
-  (void) FormatLocaleString(filename,MaxTextExtent,"%s%sfonts.dir",path,
-    DirectorySeparator);
+  (void) FormatLocaleString(filename,MaxTextExtent,"c:%sgs%sfonts%sfonts.dir",
+    DirectorySeparator,DirectorySeparator,DirectorySeparator);
   if (IsPathAccessible(filename) != MagickFalse)
     return(TRUE);
   return(FALSE);
