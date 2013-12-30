@@ -2249,8 +2249,8 @@ MagickExport int NTTruncateFile(int file,off_t length)
     high,
     low;
 
-  file_handle=(HANDLE)_get_osfhandle(file);
-  if (file_handle == (HANDLE)-1L)
+  file_handle=(HANDLE) _get_osfhandle(file);
+  if (file_handle == (HANDLE) -1L)
     return(-1);
   low=(long) (length & 0xffffffffUL);
   high=(long) ((((MagickOffsetType) length) >> 32) & 0xffffffffUL);
