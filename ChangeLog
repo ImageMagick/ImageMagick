@@ -1,3 +1,6 @@
+2013-12-30  6.8.8-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.8-1, SVN revision 14087.
+
 2013-12-27  6.8.8-1 Cristy  <quetzlzacatenango@image...>
   * Support points argument for draw MSL element.
   * Fix misplaced closing parenthesis for strncmp() call in magick/xml-tree.c.
