@@ -566,7 +566,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             evaluate_pixel[i].blue=ApplyEvaluateOperator(random_info[id],
               GetPixelBlue(p),op,evaluate_pixel[i].blue);
             evaluate_pixel[i].opacity=ApplyEvaluateOperator(random_info[id],
-              GetPixelOpacity(p),op,evaluate_pixel[i].opacity);
+              GetPixelAlpha(p),op,evaluate_pixel[i].opacity);
             if (image->colorspace == CMYKColorspace)
               evaluate_pixel[i].index=ApplyEvaluateOperator(random_info[id],
                 *indexes,op,evaluate_pixel[i].index);
@@ -578,7 +578,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           SetPixelRed(q,ClampToQuantum(evaluate_pixel[i/2].red));
           SetPixelGreen(q,ClampToQuantum(evaluate_pixel[i/2].green));
           SetPixelBlue(q,ClampToQuantum(evaluate_pixel[i/2].blue));
-          SetPixelOpacity(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
+          SetPixelAlpha(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
           if (image->colorspace == CMYKColorspace)
             SetPixelIndex(evaluate_indexes+i,ClampToQuantum(
               evaluate_pixel[i/2].index));
@@ -673,7 +673,7 @@ MagickExport Image *EvaluateImages(const Image *images,
               GetPixelBlue(p),i == 0 ? AddEvaluateOperator : op,
               evaluate_pixel[x].blue);
             evaluate_pixel[x].opacity=ApplyEvaluateOperator(random_info[id],
-              GetPixelOpacity(p),i == 0 ? AddEvaluateOperator : op,
+              GetPixelAlpha(p),i == 0 ? AddEvaluateOperator : op,
               evaluate_pixel[x].opacity);
             if (image->colorspace == CMYKColorspace)
               evaluate_pixel[x].index=ApplyEvaluateOperator(random_info[id],
@@ -713,7 +713,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           SetPixelRed(q,ClampToQuantum(evaluate_pixel[x].red));
           SetPixelGreen(q,ClampToQuantum(evaluate_pixel[x].green));
           SetPixelBlue(q,ClampToQuantum(evaluate_pixel[x].blue));
-          SetPixelOpacity(q,ClampToQuantum(evaluate_pixel[x].opacity));
+          SetPixelAlpha(q,ClampToQuantum(evaluate_pixel[x].opacity));
           if (image->colorspace == CMYKColorspace)
             SetPixelIndex(evaluate_indexes+x,ClampToQuantum(
               evaluate_pixel[x].index));
