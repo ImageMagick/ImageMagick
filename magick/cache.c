@@ -4763,7 +4763,8 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
           if (cache_info->active_index_channel != MagickFalse)
             nexus_info->indexes=cache_info->indexes+offset;
           PrefetchPixelCacheNexusPixels(nexus_info,mode);
-          nexus_info->authentic_pixel_cache=IsAuthenticPixelCache(cache_info,nexus_info);
+          nexus_info->authentic_pixel_cache=IsAuthenticPixelCache(cache_info,
+            nexus_info);
           return(nexus_info->pixels);
         }
     }
@@ -4802,7 +4803,8 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   if (cache_info->active_index_channel != MagickFalse)
     nexus_info->indexes=(IndexPacket *) (nexus_info->pixels+number_pixels);
   PrefetchPixelCacheNexusPixels(nexus_info,mode);
-  nexus_info->authentic_pixel_cache=IsAuthenticPixelCache(cache_info,nexus_info);
+  nexus_info->authentic_pixel_cache=IsAuthenticPixelCache(cache_info,
+    nexus_info);
   return(nexus_info->pixels);
 }
 
