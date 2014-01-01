@@ -147,6 +147,10 @@ namespace MagickCore
 #        if defined(MAGICKCORE_PNG_DELEGATE)
 #          pragma comment(lib, "CORE_DB_png_.lib")
 #        endif
+#        if defined(MAGICKCORE_RSVG_DELEGATE)
+#          pragma comment(lib, "CORE_DB_croco_.lib")
+#          pragma comment(lib, "CORE_DB_librsvg_.lib")
+#        endif
 #        if defined(MAGICKCORE_TIFF_DELEGATE)
 #          pragma comment(lib, "CORE_DB_tiff_.lib")
 #        endif
@@ -204,6 +208,10 @@ namespace MagickCore
 #        endif
 #        if defined(MAGICKCORE_PNG_DELEGATE)
 #          pragma comment(lib, "CORE_RL_png_.lib")
+#        endif
+#        if defined(MAGICKCORE_RSVG_DELEGATE)
+#          pragma comment(lib, "CORE_RL_croco_.lib")
+#          pragma comment(lib, "CORE_RL_librsvg_.lib")
 #        endif
 #        if defined(MAGICKCORE_TIFF_DELEGATE)
 #          pragma comment(lib, "CORE_RL_tiff_.lib")
