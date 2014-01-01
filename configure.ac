@@ -2431,6 +2431,43 @@ AC_SUBST(LCMS_LIBS)
 dnl ===========================================================================
 
 #
+# Check for the OpenJP2 delegate library.
+#
+AC_ARG_WITH([openjp2],
+    [AC_HELP_STRING([--without-openjp2],
+                    [disable OpenJP2 support])],
+    [with_openjp2=$withval],
+    [with_openjp2='yes'])
+
+if test "$with_openjp2" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-openjp2=$with_openjp2 "
+fi
+
+have_openjp2='no'
+LIBOPENJP2_CFLAGS=""
+LIBOPENJP2_LIBS=""
+LIBOPENJP2_PKG=""
+if test "x$with_openjp2" = "xyes"; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    PKG_CHECK_MODULES(LIBOPENJP2,[libopenjp2 >= 2.0.0], have_openjp2=yes, have_openjp2=no)
+    AC_MSG_RESULT([])
+fi
+
+if test "$have_openjp2" = 'yes'; then
+    AC_DEFINE(LIBOPENJP2_DELEGATE,1,Define if you have OPENJP2 library)
+    if test "$build_modules" = 'no'; then
+        CFLAGS="$LIBOPENJP2_CFLAGS $CFLAGS"
+    fi
+fi
+
+AM_CONDITIONAL(LIBOPENJP2_DELEGATE, test "$have_openjp2" = 'yes')
+AC_SUBST(LIBOPENJP2_CFLAGS)
+AC_SUBST(LIBOPENJP2_LIBS)
+
+
+dnl ===========================================================================
+
+#
 # Check for the LQR (Liquid Rescale) delegate library.
 #
 AC_ARG_WITH([lqr],
@@ -2570,51 +2607,6 @@ fi
 AM_CONDITIONAL(OPENEXR_DELEGATE, test "$have_openexr" = 'yes')
 AC_SUBST(OPENEXR_CFLAGS)
 AC_SUBST(OPENEXR_LIBS)
-
-dnl ===========================================================================
-
-#
-# Check for OPENJPEG delegate library.
-#
-AC_ARG_WITH(openjpeg,
-    [AC_HELP_STRING([--without-openjpeg],
-                    [disable OPENJPEG support])],
-    [with_openjpeg=$withval],
-    [with_openjpeg='yes'])
-
-if test "$with_openjpeg" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-openjpeg=$with_openjpeg "
-fi
-
-have_openjpeg='no'
-OPENJPEG_LIBS=''
-if test "$with_openjpeg" != 'no'; then
-    AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for OPENJPEG])
-    AC_MSG_RESULT([])
-    failed=0
-    passed=0
-    AC_CHECK_HEADER(openjpeg-1.5/openjpeg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(openjpeg,opj_setup_decoder,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-lopenjpeg $FREETYPE_LIBS)
-    AC_MSG_CHECKING([if OPENJPEG package is complete])
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_openjpeg='no (failed tests)'
-        else
-            OPENJPEG_LIBS='-lopenjpeg'
-            LIBS="$OPENJPEG_LIBS $LIBS"
-            AC_DEFINE(OPENJPEG_DELEGATE,1,Define if you have OPENJPEG library)
-            AC_MSG_RESULT([yes])
-            have_openjpeg='yes'
-        fi
-    else
-        AC_MSG_RESULT([no])
-    fi
-fi
-AM_CONDITIONAL(OPENJPEG_DELEGATE,test "$have_openjpeg" = 'yes')
-AC_SUBST(OPENJPEG_LIBS)
-
 
 dnl ===========================================================================
 
@@ -3929,8 +3921,8 @@ fi
 if test "$have_openexr"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES openexr"
 fi
-if test "$have_openjpeg"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES openjpeg"
+if test "$have_openjp2"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES openjp2"
 fi
 if test "$have_pango"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES pango"
@@ -4137,13 +4129,13 @@ JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
 JPEG-2000         --with-jp2=$with_jp2		$have_jp2
 LCMS v1           --with-lcms=$with_lcms		$have_lcms
 LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
+LIBJPEG2          --with-openjp2=$with_openjp2	$have_openjp2
 LQR               --with-lqr=$with_lqr		$have_lqr
 LTDL              --with-ltdl=$with_ltdl		$have_ltdl
 LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 MUPDF             --with-mupdf=$with_mupdf		$have_mupdf
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
-OpenJPEG          --with-openjpeg=$with_openjpeg		$have_openjpeg
 PANGO             --with-pango=$with_pango		$have_pango
 PERL              --with-perl=$with_perl		$have_perl
 PNG               --with-png=$with_png		$have_png
