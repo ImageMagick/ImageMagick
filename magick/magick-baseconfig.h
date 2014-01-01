@@ -1117,6 +1117,9 @@
 #define MAGICKCORE_LCMS_DELEGATE 1
 #endif
 
+/* Define if you have OPENJP2 library */
+/* #undef LIBOPENJP2_DELEGATE */
+
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
 #define MAGICKCORE_LIBRARY_PATH "/usr/lib64/ImageMagick-6.8.8/"
