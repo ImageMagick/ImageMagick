@@ -788,9 +788,6 @@ PANGO_DELEGATE_FALSE
 PANGO_DELEGATE_TRUE
 PANGO_LIBS
 PANGO_CFLAGS
-OPENJPEG_LIBS
-OPENJPEG_DELEGATE_FALSE
-OPENJPEG_DELEGATE_TRUE
 OPENEXR_DELEGATE_FALSE
 OPENEXR_DELEGATE_TRUE
 OPENEXR_LIBS
@@ -806,6 +803,10 @@ LQR_DELEGATE_FALSE
 LQR_DELEGATE_TRUE
 LQR_LIBS
 LQR_CFLAGS
+LIBOPENJP2_DELEGATE_FALSE
+LIBOPENJP2_DELEGATE_TRUE
+LIBOPENJP2_LIBS
+LIBOPENJP2_CFLAGS
 LCMS_LIBS
 LCMS_DELEGATE_FALSE
 LCMS_DELEGATE_TRUE
@@ -1183,11 +1184,11 @@ with_jpeg
 with_jp2
 with_lcms
 with_lcms2
+with_openjp2
 with_lqr
 with_lzma
 with_mupdf
 with_openexr
-with_openjpeg
 with_pango
 with_png
 with_rsvg
@@ -1220,6 +1221,8 @@ FREETYPE_CFLAGS
 FREETYPE_LIBS
 GVC_CFLAGS
 GVC_LIBS
+LIBOPENJP2_CFLAGS
+LIBOPENJP2_LIBS
 LQR_CFLAGS
 LQR_LIBS
 LZMA_CFLAGS
@@ -1952,11 +1955,11 @@ Optional Packages:
   --without-jp2           disable JPEG-2000 support
   --without-lcms          disable lcms (v1.1X) support
   --without-lcms2         disable lcms (v2.X) support
+  --without-openjp2       disable OpenJP2 support
   --without-lqr           disable Liquid Rescale support
   --without-lzma          disable LZMA support
   --with-mupdf            enable MUPDF support
   --without-openexr       disable OpenEXR support
-  --without-openjpeg      disable OPENJPEG support
   --without-pango         disable PANGO support
   --without-png           disable PNG support
   --with-rsvg             enable RSVG support
@@ -1995,6 +1998,10 @@ Some influential environment variables:
               linker flags for FREETYPE, overriding pkg-config
   GVC_CFLAGS  C compiler flags for GVC, overriding pkg-config
   GVC_LIBS    linker flags for GVC, overriding pkg-config
+  LIBOPENJP2_CFLAGS
+              C compiler flags for LIBOPENJP2, overriding pkg-config
+  LIBOPENJP2_LIBS
+              linker flags for LIBOPENJP2, overriding pkg-config
   LQR_CFLAGS  C compiler flags for LQR, overriding pkg-config
   LQR_LIBS    linker flags for LQR, overriding pkg-config
   LZMA_CFLAGS C compiler flags for LZMA, overriding pkg-config
@@ -3692,7 +3699,7 @@ MAGICK_PATCHLEVEL_VERSION=2
 
 MAGICK_VERSION=6.8.8-2
 
-MAGICK_SVN_REVISION=14094M
+MAGICK_SVN_REVISION=14094:14095M
 
 
 # Substitute library versioning
@@ -30219,6 +30226,122 @@ fi
 
 
 #
+# Check for the OpenJP2 delegate library.
+#
+
+# Check whether --with-openjp2 was given.
+if test "${with_openjp2+set}" = set; then :
+  withval=$with_openjp2; with_openjp2=$withval
+else
+  with_openjp2='yes'
+fi
+
+
+if test "$with_openjp2" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-openjp2=$with_openjp2 "
+fi
+
+have_openjp2='no'
+LIBOPENJP2_CFLAGS=""
+LIBOPENJP2_LIBS=""
+LIBOPENJP2_PKG=""
+if test "x$with_openjp2" = "xyes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBOPENJP2" >&5
+$as_echo_n "checking for LIBOPENJP2... " >&6; }
+
+if test -n "$LIBOPENJP2_CFLAGS"; then
+    pkg_cv_LIBOPENJP2_CFLAGS="$LIBOPENJP2_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libopenjp2 >= 2.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libopenjp2 >= 2.0.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBOPENJP2_CFLAGS=`$PKG_CONFIG --cflags "libopenjp2 >= 2.0.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LIBOPENJP2_LIBS"; then
+    pkg_cv_LIBOPENJP2_LIBS="$LIBOPENJP2_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libopenjp2 >= 2.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libopenjp2 >= 2.0.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBOPENJP2_LIBS=`$PKG_CONFIG --libs "libopenjp2 >= 2.0.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBOPENJP2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libopenjp2 >= 2.0.0" 2>&1`
+        else
+	        LIBOPENJP2_PKG_ERRORS=`$PKG_CONFIG --print-errors "libopenjp2 >= 2.0.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBOPENJP2_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_openjp2=no
+elif test $pkg_failed = untried; then
+	have_openjp2=no
+else
+	LIBOPENJP2_CFLAGS=$pkg_cv_LIBOPENJP2_CFLAGS
+	LIBOPENJP2_LIBS=$pkg_cv_LIBOPENJP2_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_openjp2=yes
+fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+fi
+
+if test "$have_openjp2" = 'yes'; then
+
+$as_echo "#define LIBOPENJP2_DELEGATE 1" >>confdefs.h
+
+    if test "$build_modules" = 'no'; then
+        CFLAGS="$LIBOPENJP2_CFLAGS $CFLAGS"
+    fi
+fi
+
+ if test "$have_openjp2" = 'yes'; then
+  LIBOPENJP2_DELEGATE_TRUE=
+  LIBOPENJP2_DELEGATE_FALSE='#'
+else
+  LIBOPENJP2_DELEGATE_TRUE='#'
+  LIBOPENJP2_DELEGATE_FALSE=
+fi
+
+
+
+
+
+
+#
 # Check for the LQR (Liquid Rescale) delegate library.
 #
 
@@ -30662,116 +30785,6 @@ else
   OPENEXR_DELEGATE_FALSE=
 fi
 
-
-
-
-
-#
-# Check for OPENJPEG delegate library.
-#
-
-# Check whether --with-openjpeg was given.
-if test "${with_openjpeg+set}" = set; then :
-  withval=$with_openjpeg; with_openjpeg=$withval
-else
-  with_openjpeg='yes'
-fi
-
-
-if test "$with_openjpeg" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-openjpeg=$with_openjpeg "
-fi
-
-have_openjpeg='no'
-OPENJPEG_LIBS=''
-if test "$with_openjpeg" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OPENJPEG" >&5
-$as_echo_n "checking for OPENJPEG... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "openjpeg-1.5/openjpeg.h" "ac_cv_header_openjpeg_1_5_openjpeg_h" "$ac_includes_default"
-if test "x$ac_cv_header_openjpeg_1_5_openjpeg_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for opj_setup_decoder in -lopenjpeg" >&5
-$as_echo_n "checking for opj_setup_decoder in -lopenjpeg... " >&6; }
-if ${ac_cv_lib_openjpeg_opj_setup_decoder+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lopenjpeg -lopenjpeg $FREETYPE_LIBS $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char opj_setup_decoder ();
-int
-main ()
-{
-return opj_setup_decoder ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_openjpeg_opj_setup_decoder=yes
-else
-  ac_cv_lib_openjpeg_opj_setup_decoder=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_openjpeg_opj_setup_decoder" >&5
-$as_echo "$ac_cv_lib_openjpeg_opj_setup_decoder" >&6; }
-if test "x$ac_cv_lib_openjpeg_opj_setup_decoder" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if OPENJPEG package is complete" >&5
-$as_echo_n "checking if OPENJPEG package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_openjpeg='no (failed tests)'
-        else
-            OPENJPEG_LIBS='-lopenjpeg'
-            LIBS="$OPENJPEG_LIBS $LIBS"
-
-$as_echo "#define OPENJPEG_DELEGATE 1" >>confdefs.h
-
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_openjpeg='yes'
-        fi
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    fi
-fi
- if test "$have_openjpeg" = 'yes'; then
-  OPENJPEG_DELEGATE_TRUE=
-  OPENJPEG_DELEGATE_FALSE='#'
-else
-  OPENJPEG_DELEGATE_TRUE='#'
-  OPENJPEG_DELEGATE_FALSE=
-fi
 
 
 
@@ -35832,8 +35845,8 @@ fi
 if test "$have_openexr"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES openexr"
 fi
-if test "$have_openjpeg"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES openjpeg"
+if test "$have_openjp2"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES openjp2"
 fi
 if test "$have_pango"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES pango"
@@ -36015,7 +36028,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $OPENJPEG_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 fi
 
 
@@ -36337,6 +36350,10 @@ if test -z "${LCMS_DELEGATE_TRUE}" && test -z "${LCMS_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"LCMS_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${LIBOPENJP2_DELEGATE_TRUE}" && test -z "${LIBOPENJP2_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"LIBOPENJP2_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${LQR_DELEGATE_TRUE}" && test -z "${LQR_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"LQR_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -36351,10 +36368,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${OPENEXR_DELEGATE_TRUE}" && test -z "${OPENEXR_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"OPENEXR_DELEGATE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${OPENJPEG_DELEGATE_TRUE}" && test -z "${OPENJPEG_DELEGATE_FALSE}"; then
-  as_fn_error $? "conditional \"OPENJPEG_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${PANGO_DELEGATE_TRUE}" && test -z "${PANGO_DELEGATE_FALSE}"; then
@@ -39130,7 +39143,7 @@ LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 MUPDF             --with-mupdf=$with_mupdf		$have_mupdf
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
-OpenJPEG          --with-openjpeg=$with_openjpeg		$have_openjpeg
+OpenJP2           --with-openjp2=$with_openjp2		$have_openjp2
 PANGO             --with-pango=$with_pango		$have_pango
 PERL              --with-perl=$with_perl		$have_perl
 PNG               --with-png=$with_png		$have_png
@@ -39210,7 +39223,7 @@ LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 MUPDF             --with-mupdf=$with_mupdf		$have_mupdf
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
-OpenJPEG          --with-openjpeg=$with_openjpeg		$have_openjpeg
+OpenJP2           --with-openjp2=$with_openjp2		$have_openjp2
 PANGO             --with-pango=$with_pango		$have_pango
 PERL              --with-perl=$with_perl		$have_perl
 PNG               --with-png=$with_png		$have_png
