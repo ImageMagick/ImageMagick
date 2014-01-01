@@ -730,6 +730,9 @@
 /* Define if you have LCMS (v1.11 or later) library */
 #undef LCMS_DELEGATE
 
+/* Define if you have OPENJP2 library */
+#undef LIBOPENJP2_DELEGATE
+
 /* Directory where architecture-dependent files live. */
 #undef LIBRARY_PATH
 
