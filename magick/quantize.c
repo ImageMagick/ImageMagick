@@ -660,7 +660,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        intensity=(Quantum) (GetPixelLuma(image,q) < (QuantumRange/2.0) ? 0 : 
+        intensity=(Quantum) (GetPixelLuma(image,q) < (QuantumRange/2.0) ? 0 :
           QuantumRange);
         SetPixelRed(q,intensity);
         SetPixelGreen(q,intensity);
@@ -742,8 +742,6 @@ static inline void SetAssociatedAlpha(const Image *image,CubeInfo *cube_info)
     associate_alpha;
 
   associate_alpha=image->matte;
-  if (cube_info->quantize_info->colorspace == TransparentColorspace)
-    associate_alpha=MagickFalse;
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
     associate_alpha=MagickFalse;
@@ -3055,7 +3053,7 @@ static int MagickRealTypeCompare(const void *error_p,const void *error_q)
   MagickRealType
     *p,
     *q;
-   
+
   p=(MagickRealType *) error_p;
   q=(MagickRealType *) error_q;
   if (*p > *q)
@@ -3063,7 +3061,7 @@ static int MagickRealTypeCompare(const void *error_p,const void *error_q)
   if (fabs((double) (*q-*p)) <= MagickEpsilon)
     return(0);
   return(-1);
-} 
+}
 
 static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
 {

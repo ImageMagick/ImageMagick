@@ -601,6 +601,7 @@ coders_jpeg_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(JPEG_LIBS)
 # JPEG 2000 coder module
 coders_jp2_la_SOURCES      = coders/jp2.c
 coders_jp2_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
+# coders_jp2_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS) $(LIBOPENJP2_CFLAGS)
 coders_jp2_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_jp2_la_LIBADD       = $(MAGICKCORE_LIBS) $(JP2_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
 #coders_jp2_la_LIBADD       = $(MAGICKCORE_LIBS) $(LIBOPENJP@_LIBS) $(MATH_LIBS)
