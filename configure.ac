@@ -2578,6 +2578,51 @@ AC_SUBST(OPENEXR_LIBS)
 dnl ===========================================================================
 
 #
+# Check for OPENJPEG delegate library.
+#
+AC_ARG_WITH(openjpeg,
+    [AC_HELP_STRING([--without-openjpeg],
+                    [disable OPENJPEG support])],
+    [with_openjpeg=$withval],
+    [with_openjpeg='yes'])
+
+if test "$with_openjpeg" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-openjpeg=$with_openjpeg "
+fi
+
+have_openjpeg='no'
+OPENJPEG_LIBS=''
+if test "$with_openjpeg" != 'no'; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    AC_MSG_CHECKING([for OPENJPEG])
+    AC_MSG_RESULT([])
+    failed=0
+    passed=0
+    AC_CHECK_HEADER(openjpeg-1.5/openjpeg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(openjpeg,opj_setup_decoder,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-lopenjpeg $FREETYPE_LIBS)
+    AC_MSG_CHECKING([if OPENJPEG package is complete])
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            AC_MSG_RESULT([no -- some components failed test])
+            have_openjpeg='no (failed tests)'
+        else
+            OPENJPEG_LIBS='-lopenjpeg'
+            LIBS="$OPENJPEG_LIBS $LIBS"
+            AC_DEFINE(OPENJPEG_DELEGATE,1,Define if you have OPENJPEG library)
+            AC_MSG_RESULT([yes])
+            have_openjpeg='yes'
+        fi
+    else
+        AC_MSG_RESULT([no])
+    fi
+fi
+AM_CONDITIONAL(OPENJPEG_DELEGATE,test "$have_openjpeg" = 'yes')
+AC_SUBST(OPENJPEG_LIBS)
+
+
+dnl ===========================================================================
+
+#
 # Check for PANGO delegate library.
 #
 AC_ARG_WITH([pango],
@@ -3887,6 +3932,9 @@ fi
 if test "$have_openexr"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES openexr"
 fi
+if test "$have_openjpeg"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES openjpeg"
+fi
 if test "$have_pango"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES pango"
 fi
@@ -3979,7 +4027,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $OPENJPEG_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -4100,6 +4148,7 @@ LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 MUPDF             --with-mupdf=$with_mupdf		$have_mupdf
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
+OpenJPEG          --with-openjpeg=$with_openjpeg		$have_openjpeg
 PANGO             --with-pango=$with_pango		$have_pango
 PERL              --with-perl=$with_perl		$have_perl
 PNG               --with-png=$with_png		$have_png
