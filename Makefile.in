@@ -673,7 +673,7 @@ am__objects_1 = MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGI
 @WINGDI32_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-emf.lo
 @JBIG_DELEGATE_TRUE@am__objects_8 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jbig.lo
 @JPEG_DELEGATE_TRUE@am__objects_9 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jpeg.lo
-@JP2_DELEGATE_TRUE@am__objects_10 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jp2.lo
+@LIBOPENJP2_DELEGATE_TRUE@am__objects_10 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jp2.lo
 @PNG_DELEGATE_TRUE@am__objects_11 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-png.lo
 @TIFF_DELEGATE_TRUE@am__objects_12 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ept.lo \
 @TIFF_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-tiff.lo
@@ -1185,14 +1185,15 @@ coders_jnx_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_jnx_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_jnx_la_rpath = -rpath $(codersdir)
 coders_jp2_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_coders_jp2_la_OBJECTS = coders/coders_jp2_la-jp2.lo
 coders_jp2_la_OBJECTS = $(am_coders_jp2_la_OBJECTS)
 coders_jp2_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_jp2_la_LDFLAGS) $(LDFLAGS) -o $@
-@JP2_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_jp2_la_rpath = -rpath \
-@JP2_DELEGATE_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
+@LIBOPENJP2_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_jp2_la_rpath =  \
+@LIBOPENJP2_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath \
+@LIBOPENJP2_DELEGATE_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
 coders_jpeg_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_coders_jpeg_la_OBJECTS = coders/coders_jpeg_la-jpeg.lo
@@ -2639,7 +2640,6 @@ INT64_F = @INT64_F@
 INT64_T = @INT64_T@
 INT8_T = @INT8_T@
 JBIG_LIBS = @JBIG_LIBS@
-JP2_LIBS = @JP2_LIBS@
 JPEG_LIBS = @JPEG_LIBS@
 JXRDecodeDelegate = @JXRDecodeDelegate@
 JXREncodeDelegate = @JXREncodeDelegate@
@@ -3103,8 +3103,8 @@ codersdir = $(CODER_PATH)
 @JBIG_DELEGATE_TRUE@MAGICKCORE_JBIG_SRCS = coders/jbig.c
 @JPEG_DELEGATE_TRUE@MAGICKCORE_JPEG_MODULES = coders/jpeg.la
 @JPEG_DELEGATE_TRUE@MAGICKCORE_JPEG_SRCS = coders/jpeg.c
-@JP2_DELEGATE_TRUE@MAGICKCORE_JP2_MODULES = coders/jp2.la
-@JP2_DELEGATE_TRUE@MAGICKCORE_JP2_SRCS = coders/jp2.c
+@LIBOPENJP2_DELEGATE_TRUE@MAGICKCORE_JP2_MODULES = coders/jp2.la
+@LIBOPENJP2_DELEGATE_TRUE@MAGICKCORE_JP2_SRCS = coders/jp2.c
 @PNG_DELEGATE_TRUE@MAGICKCORE_PNG_MODULES = coders/png.la
 @PNG_DELEGATE_TRUE@MAGICKCORE_PNG_SRCS = coders/png.c
 @TIFF_DELEGATE_TRUE@MAGICKCORE_TIFF_MODULES = coders/ept.la coders/tiff.la
@@ -3633,10 +3633,9 @@ coders_jpeg_la_LIBADD = $(MAGICKCORE_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
 
 # JPEG 2000 coder module
 coders_jp2_la_SOURCES = coders/jp2.c
-coders_jp2_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_jp2_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS) $(LIBOPENJP2_CFLAGS)
 coders_jp2_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_jp2_la_LIBADD = $(MAGICKCORE_LIBS) $(JP2_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
-# coders_jp2_la_LIBADD       = $(MAGICKCORE_LIBS) $(LIBOPENJP2_LIBS) $(MATH_LIBS)
+coders_jp2_la_LIBADD = $(MAGICKCORE_LIBS) $(LIBOPENJP2_LIBS) $(MATH_LIBS)
 
 # LABEL coder module
 coders_label_la_SOURCES = coders/label.c
