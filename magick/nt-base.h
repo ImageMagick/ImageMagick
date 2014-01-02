@@ -226,7 +226,7 @@ extern "C" {
 #endif
 #endif
 #if !defined(strcasecmp)
-#  define strcasecmp  _strcmpi
+#  define strcasecmp  _stricmp
 #endif
 #if !defined(strncasecmp)
 #  define strncasecmp  _strnicmp
