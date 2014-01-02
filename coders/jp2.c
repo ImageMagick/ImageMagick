@@ -83,6 +83,40 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s J 2 K                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsJ2K() returns MagickTrue if the image format type, identified by the
+%  magick string, is J2K.
+%
+%  The format of the IsJ2K method is:
+%
+%      MagickBooleanType IsJP2(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o magick: compare image format pattern against these bytes.
+%
+%    o length: Specifies the length of the magick string.
+%
+*/
+static MagickBooleanType IsJ2K(const unsigned char *magick,const size_t length)
+{
+  if (length < 4)
+    return(MagickFalse);
+  if (memcmp(magick,"\xff\x4f\xff\x51",4) == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I s J P 2                                                                 %
 %                                                                             %
 %                                                                             %
@@ -105,9 +139,11 @@ static MagickBooleanType
 */
 static MagickBooleanType IsJP2(const unsigned char *magick,const size_t length)
 {
-  if (length < 9)
+  if (length < 12)
     return(MagickFalse);
-  if (memcmp(magick+4,"\152\120\040\040\015",5) == 0)
+  if (memcmp(magick,"\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a",12) == 0)
+    return(MagickTrue);
+  if (memcmp(magick,"\x0d\x0a\x87\x0a",12) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -139,9 +175,11 @@ static MagickBooleanType IsJP2(const unsigned char *magick,const size_t length)
 */
 static MagickBooleanType IsJPC(const unsigned char *magick,const size_t length)
 {
-  if (length < 2)
+  if (length < 12)
     return(MagickFalse);
-  if (memcmp(magick,"\377\117",2) == 0)
+  if (memcmp(magick,"\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a",12) == 0)
+    return(MagickTrue);
+  if (memcmp(magick,"\x0d\x0a\x87\x0a",12) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -530,7 +568,7 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
-  entry->magick=(IsImageFormatHandler *) IsJPC;
+  entry->magick=(IsImageFormatHandler *) IsJ2K;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
