@@ -39,77 +39,43 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/artifact.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/option.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/profile.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/statistic.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
-#if defined(MAGICKCORE_JP2_DELEGATE)
-#ifndef JAS_IMAGE_CM_GRAY
-#define JAS_IMAGE_CM_GRAY JAS_IMAGE_CS_GRAY
-#endif
-#ifndef JAS_IMAGE_CM_RGB
-#define JAS_IMAGE_CM_RGB JAS_IMAGE_CS_RGB
-#endif
-#if !defined(uchar)
-#define uchar  unsigned char
-#endif
-#if !defined(ushort)
-#define ushort  unsigned short
-#endif
-#if !defined(uint)
-#define uint  unsigned int
-#endif
-#if !defined(ssize_tssize_t)
-#define ssize_tssize_t  long long
-#endif
-#if !defined(ussize_tssize_t)
-#define ussize_tssize_t  unsigned long long
-#endif
-
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#include "jasper/jasper.h"
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-
+#include "magick/studio.h"
+#include "magick/artifact.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/option.h"
+#include "magick/pixel-accessor.h"
+#include "magick/profile.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/statistic.h"
+#include "magick/string_.h"
+#include "magick/module.h"
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
+#include <openjpeg.h>
 #endif
 
 /*
   Forward declarations.
 */
-#if defined(MAGICKCORE_JP2_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
 static MagickBooleanType
-  WriteJP2Image(const ImageInfo *,Image *,ExceptionInfo *);
-
-static volatile MagickBooleanType
-  instantiate_jp2 = MagickFalse;
+  WriteJP2Image(const ImageInfo *,Image *);
 #endif
 
 /*
@@ -210,124 +176,73 @@ static MagickBooleanType IsJPC(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-#if defined(MAGICKCORE_JP2_DELEGATE)
-
-typedef struct _StreamManager
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
+static void JP2ErrorHandler(const char *message,void *client_data)
 {
-  jas_stream_t
-    *stream;
+  ExceptionInfo
+    *exception;
 
+  exception=(ExceptionInfo *) client_data;
+  (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+    message,"`%s'","OpenJP2");
+}
+
+static OPJ_SIZE_T JP2ReadHandler(void *buffer,OPJ_SIZE_T length,void *context)
+{
   Image
     *image;
-} StreamManager;
 
-static int BlobRead(jas_stream_obj_t *object,char *buffer,const int length)
-{
   ssize_t
     count;
 
-  StreamManager
-    *source;
-
-  source=(StreamManager *) object;
-  count=ReadBlob(source->image,(size_t) length,(unsigned char *) buffer);
-  return((int) count);
+  image=(Image *) context;
+  count=ReadBlob(image,(ssize_t) length,(unsigned char *) buffer);
+  if (count == 0)
+    return(-1);
+  return((OPJ_SIZE_T) count);
 }
 
-static int BlobWrite(jas_stream_obj_t *object,char *buffer,const int length)
+static OPJ_BOOL JP2SeekHandler(OPJ_OFF_T offset,void *context)
 {
+  Image
+    *image;
+
+  image=(Image *) context;
+  return(SeekBlob(image,offset,SEEK_SET) == 0 ? 1 : 0);
+}
+
+static OPJ_OFF_T JP2SkipHandler(OPJ_OFF_T length,void *context)
+{
+  Image
+    *image;
+
+  image=(Image *) context;
+  if (DiscardBlobBytes(image,(size_t) length) == MagickFalse)
+    return(0);
+  return(length);
+}
+
+static void JP2WarningHandler(const char *message,void *client_data)
+{
+  ExceptionInfo
+    *exception;
+
+  exception=(ExceptionInfo *) client_data;
+  (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+    message,"`%s'","OpenJP2");
+}
+
+static OPJ_SIZE_T JP2WriteHandler(void *buffer,OPJ_SIZE_T length,void *context)
+{
+  Image
+    *image;
+
   ssize_t
     count;
 
-  StreamManager
-    *source;
-
-  source=(StreamManager *) object;
-  count=WriteBlob(source->image,(size_t) length,(unsigned char *) buffer);
-  return((int) count);
-}
-
-static long BlobSeek(jas_stream_obj_t *object,long offset,int origin)
-{
-  StreamManager
-    *source;
-
-  source=(StreamManager *) object;
-  return((long) SeekBlob(source->image,offset,origin));
-}
-
-static int BlobClose(jas_stream_obj_t *object)
-{
-  StreamManager
-    *source;
-
-  source=(StreamManager *) object;
-  (void) CloseBlob(source->image);
-  free(source);
-  source=(StreamManager *) NULL;
-  return(0);
-}
-
-static inline size_t MagickMax(const size_t x,const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
-static jas_stream_t *JP2StreamManager(Image *image)
-{
-  static jas_stream_ops_t
-    StreamOperators =
-    {
-      BlobRead,
-      BlobWrite,
-      BlobSeek,
-      BlobClose
-    };
-
-  jas_stream_t
-    *stream;
-
-  StreamManager
-    *source;
-
-  stream=(jas_stream_t *) jas_malloc(sizeof(*stream));
-  if (stream == (jas_stream_t *) NULL)
-    return((jas_stream_t *) NULL);
-  (void) ResetMagickMemory(stream,0,sizeof(*stream));
-  stream->rwlimit_=(-1);
-  stream->obj_=(jas_stream_obj_t *) jas_malloc(sizeof(StreamManager));
-  if (stream->obj_ == (jas_stream_obj_t *) NULL)
-    return((jas_stream_t *) NULL);
-  (void) ResetMagickMemory(stream->obj_,0,sizeof(StreamManager));
-  stream->ops_=(&StreamOperators);
-  stream->openmode_=JAS_STREAM_READ | JAS_STREAM_WRITE | JAS_STREAM_BINARY;
-  stream->bufbase_=(unsigned char *) jas_malloc(JAS_STREAM_BUFSIZE+
-    JAS_STREAM_MAXPUTBACK);
-  if (stream->bufbase_ == (void *) NULL)
-    {
-      stream->bufbase_=stream->tinybuf_;
-      stream->bufsize_=1;
-    }
-  else
-    {
-      stream->bufmode_=JAS_STREAM_FREEBUF | JAS_STREAM_BUFMODEMASK;
-      stream->bufsize_=JAS_STREAM_BUFSIZE;
-    }
-  stream->bufstart_=(&stream->bufbase_[JAS_STREAM_MAXPUTBACK]);
-  stream->ptr_=stream->bufstart_;
-  stream->cnt_=0;
-  source=(StreamManager *) stream->obj_;
-  source->image=image;
-  return(stream);
+  image=(Image *) context;
+  count=WriteBlob(image,(ssize_t) length,(unsigned char *) buffer);
+  return((OPJ_SIZE_T) count);
 }
 
 static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -335,43 +250,29 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  jas_cmprof_t
-    *cm_profile;
-
-  jas_iccprof_t
-    *icc_profile;
-
-  jas_image_t
-    *jp2_image;
-
-  jas_matrix_t
-    *pixels[4];
-
-  jas_stream_t
-    *jp2_stream;
+  int
+    factor,
+    jp2_status;
 
   MagickBooleanType
     status;
 
-  QuantumAny
-    pixel,
-    range[4];
+  opj_codec_t
+    *jp2_codec;
 
-  register Quantum
-    *q;
+  opj_dparameters_t
+    parameters;
+
+  opj_image_t
+    *jp2_image;
+
+  opj_stream_t
+    *jp2_stream;
 
   register ssize_t
-    i,
-    x;
-
-  size_t
-    maximum_component_depth,
-    number_components,
-    x_step[4],
-    y_step[4];
+    i;
 
   ssize_t
-    components[4],
     y;
 
   /*
@@ -384,7 +285,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info,exception);
+  image=AcquireImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -392,238 +293,162 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   /*
-    Initialize JPEG 2000 API.
+    Initialize JP2 codec.
   */
-  jp2_stream=JP2StreamManager(image);
-  if (jp2_stream == (jas_stream_t *) NULL)
-    ThrowReaderException(DelegateError,"UnableToManageJP2Stream");
-  jp2_image=jas_image_decode(jp2_stream,-1,0);
-  if (jp2_image == (jas_image_t *) NULL)
+  if (LocaleCompare(image_info->magick,"JPT") == 0)
+    jp2_codec=opj_create_decompress(OPJ_CODEC_JPT);
+  else
+    if (LocaleCompare(image_info->magick,"J2K") == 0)
+      jp2_codec=opj_create_decompress(OPJ_CODEC_J2K);
+    else
+      jp2_codec=opj_create_decompress(OPJ_CODEC_JP2);
+  opj_set_warning_handler(jp2_codec,JP2WarningHandler,exception);
+  opj_set_error_handler(jp2_codec,JP2ErrorHandler,exception);
+  opj_set_default_decoder_parameters(&parameters);
+  if (opj_setup_decoder(jp2_codec,&parameters) == 0)
     {
-      (void) jas_stream_close(jp2_stream);
+      opj_destroy_codec(jp2_codec);
+      ThrowReaderException(DelegateError,"UnableToManageJP2Stream");
+    }
+  jp2_stream=opj_stream_create(1024,1);
+  opj_stream_set_read_function(jp2_stream,JP2ReadHandler);
+  opj_stream_set_write_function(jp2_stream,JP2WriteHandler);
+  opj_stream_set_seek_function(jp2_stream,JP2SeekHandler);
+  opj_stream_set_skip_function(jp2_stream,JP2SkipHandler);
+  opj_stream_set_user_data(jp2_stream,image);
+  opj_stream_set_user_data_length(jp2_stream,GetBlobSize(image));
+  if (opj_read_header(jp2_stream,jp2_codec,&jp2_image) == 0)
+    {
+      opj_stream_set_user_data(jp2_stream,NULL);
+      opj_stream_destroy_v3(jp2_stream);
+      opj_destroy_codec(jp2_codec);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
-  image->columns=jas_image_width(jp2_image);
-  image->rows=jas_image_height(jp2_image);
-  image->compression=JPEG2000Compression;
-  switch (jas_clrspc_fam(jas_image_clrspc(jp2_image)))
+  factor=0;
+  if (opj_set_decoded_resolution_factor(jp2_codec,factor) == 0)
+    {
+      opj_stream_set_user_data(jp2_stream,NULL);
+      opj_stream_destroy_v3(jp2_stream);
+      opj_destroy_codec(jp2_codec);
+      opj_image_destroy(jp2_image);
+      ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
+    }
+  jp2_status=opj_set_decode_area(jp2_codec,jp2_image,parameters.DA_x0,
+    parameters.DA_y0,parameters.DA_x1,parameters.DA_y1);
+  if (jp2_status == 0)
+    {
+      opj_stream_set_user_data(jp2_stream,NULL);
+      opj_stream_destroy_v3(jp2_stream);
+      opj_destroy_codec(jp2_codec);
+      opj_image_destroy(jp2_image);
+      ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
+    }
+  if ((opj_decode(jp2_codec,jp2_stream,jp2_image) == 0) ||
+      (opj_end_decompress(jp2_codec,jp2_stream) == 0))
+    {
+      opj_stream_set_user_data(jp2_stream,NULL);
+      opj_stream_destroy_v3(jp2_stream);
+      opj_destroy_codec(jp2_codec);
+      opj_image_destroy(jp2_image);
+      ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
+    }
+  opj_stream_set_user_data(jp2_stream,NULL);
+  opj_stream_destroy_v3(jp2_stream);
+  for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
   {
-    case JAS_CLRSPC_FAM_RGB:
-    {
-      SetImageColorspace(image,RGBColorspace,exception);
-      components[0]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_RGB_R);
-      components[1]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_RGB_G);
-      components[2]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_RGB_B);
-      if ((components[0] < 0) || (components[1] < 0) || (components[2] < 0))
-        {
-          (void) jas_stream_close(jp2_stream);
-          jas_image_destroy(jp2_image);
-          ThrowReaderException(CorruptImageError,"MissingImageChannel");
-        }
-      number_components=3;
-      components[3]=jas_image_getcmptbytype(jp2_image,3);
-      if (components[3] > 0)
-        {
-          image->alpha_trait=BlendPixelTrait;
-          number_components++;
-        }
-      break;
-    }
-    case JAS_CLRSPC_FAM_GRAY:
-    {
-      SetImageColorspace(image,GRAYColorspace,exception);
-      components[0]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_GRAY_Y);
-      if (components[0] < 0)
-        {
-          (void) jas_stream_close(jp2_stream);
-          jas_image_destroy(jp2_image);
-          ThrowReaderException(CorruptImageError,"MissingImageChannel");
-        }
-      number_components=1;
-      break;
-    }
-    case JAS_CLRSPC_FAM_YCBCR:
-    {
-      SetImageColorspace(image,YCbCrColorspace,exception);
-      components[0]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_YCBCR_Y);
-      components[1]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_YCBCR_CB);
-      components[2]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_YCBCR_CR);
-      if ((components[0] < 0) || (components[1] < 0) || (components[2] < 0))
-        {
-          (void) jas_stream_close(jp2_stream);
-          jas_image_destroy(jp2_image);
-          ThrowReaderException(CorruptImageError,"MissingImageChannel");
-        }
-      number_components=3;
-      components[3]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_UNKNOWN);
-      if (components[3] > 0)
-        {
-          image->alpha_trait=BlendPixelTrait;
-          number_components++;
-        }
-      break;
-    }
-    case JAS_CLRSPC_FAM_XYZ:
-    {
-      SetImageColorspace(image,XYZColorspace,exception);
-      components[0]=jas_image_getcmptbytype(jp2_image,0);
-      components[1]=jas_image_getcmptbytype(jp2_image,1);
-      components[2]=jas_image_getcmptbytype(jp2_image,2);
-      if ((components[0] < 0) || (components[1] < 0) || (components[2] < 0))
-        {
-          (void) jas_stream_close(jp2_stream);
-          jas_image_destroy(jp2_image);
-          ThrowReaderException(CorruptImageError,"MissingImageChannel");
-        }
-      number_components=3;
-      components[3]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_UNKNOWN);
-      if (components[3] > 0)
-        {
-          image->alpha_trait=BlendPixelTrait;
-          number_components++;
-        }
-      break;
-    }
-    case JAS_CLRSPC_FAM_LAB:
-    {
-      SetImageColorspace(image,LabColorspace,exception);
-      components[0]=jas_image_getcmptbytype(jp2_image,0);
-      components[1]=jas_image_getcmptbytype(jp2_image,1);
-      components[2]=jas_image_getcmptbytype(jp2_image,2);
-      if ((components[0] < 0) || (components[1] < 0) || (components[2] < 0))
-        {
-          (void) jas_stream_close(jp2_stream);
-          jas_image_destroy(jp2_image);
-          ThrowReaderException(CorruptImageError,"MissingImageChannel");
-        }
-      number_components=3;
-      components[3]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_UNKNOWN);
-      if (components[3] > 0)
-        {
-          image->alpha_trait=BlendPixelTrait;
-          number_components++;
-        }
-      break;
-    }
-    default:
-    {
-      (void) jas_stream_close(jp2_stream);
-      jas_image_destroy(jp2_image);
-      ThrowReaderException(CoderError,"ColorspaceModelIsNotSupported");
-    }
-  }
-  for (i=0; i < (ssize_t) number_components; i++)
-  {
-    size_t
-      height,
-      width;
-
-    width=(size_t) (jas_image_cmptwidth(jp2_image,components[i])*
-      jas_image_cmpthstep(jp2_image,components[i]));
-    height=(size_t) (jas_image_cmptheight(jp2_image,components[i])*
-      jas_image_cmptvstep(jp2_image,components[i]));
-    x_step[i]=(unsigned int) jas_image_cmpthstep(jp2_image,components[i]);
-    y_step[i]=(unsigned int) jas_image_cmptvstep(jp2_image,components[i]);
-    if ((width != image->columns) || (height != image->rows) ||
-        (jas_image_cmpttlx(jp2_image,components[i]) != 0) ||
-        (jas_image_cmpttly(jp2_image,components[i]) != 0) ||
-        (jas_image_cmptsgnd(jp2_image,components[i]) != MagickFalse))
+    if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0))
       {
-        (void) jas_stream_close(jp2_stream);
-        jas_image_destroy(jp2_image);
-        ThrowReaderException(CoderError,"IrregularChannelGeometryNotSupported");
+        opj_stream_set_user_data(jp2_stream,NULL);
+        opj_destroy_codec(jp2_codec);
+        opj_image_destroy(jp2_image);
+        ThrowReaderException(CoderError,"IrregularChannelGeometryNotSupported")
       }
   }
   /*
-    Convert JPEG 2000 pixels.
+    Convert JP2 image.
   */
-  image->alpha_trait=number_components > 3 ? BlendPixelTrait :
-    UndefinedPixelTrait;
-  maximum_component_depth=0;
-  for (i=0; i < (ssize_t) number_components; i++)
-  {
-    maximum_component_depth=(unsigned int) MagickMax((size_t)
-      jas_image_cmptprec(jp2_image,components[i]),(size_t)
-      maximum_component_depth);
-    pixels[i]=jas_matrix_create(1,(int) (image->columns/x_step[i]));
-    if (pixels[i] == (jas_matrix_t *) NULL)
-      {
-        for (--i; i >= 0; i--)
-          jas_matrix_destroy(pixels[i]);
-        jas_image_destroy(jp2_image);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      }
-  }
-  image->depth=maximum_component_depth;
-  if (image_info->ping != MagickFalse)
+  image->columns=(size_t) jp2_image->comps[0].w;
+  image->rows=(size_t) jp2_image->comps[0].h;
+  image->compression=JPEG2000Compression;
+  if (jp2_image->numcomps <= 2)
     {
-      (void) jas_stream_close(jp2_stream);
-      jas_image_destroy(jp2_image);
-      return(GetFirstImageInList(image));
+      SetImageColorspace(image,GRAYColorspace);
+      if (jp2_image->numcomps > 1)
+        image->matte=MagickTrue;
     }
-  for (i=0; i < (ssize_t) number_components; i++)
-    range[i]=GetQuantumRange((size_t) jas_image_cmptprec(jp2_image,
-      components[i]));
+  if (jp2_image->numcomps > 3)
+    image->matte=MagickTrue;
+  for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
+  {
+    if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0))
+      {
+        opj_stream_set_user_data(jp2_stream,NULL);
+        opj_destroy_codec(jp2_codec);
+        opj_image_destroy(jp2_image);
+        ThrowReaderException(CoderError,"IrregularChannelGeometryNotSupported")
+      }
+    if ((jp2_image->comps[i].dx > 1) || (jp2_image->comps[i].dy > 1))
+      image->colorspace=YUVColorspace;
+  }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
-    for (i=0; i < (ssize_t) number_components; i++)
-      (void) jas_image_readcmpt(jp2_image,(short) components[i],0,
-        (jas_image_coord_t) (y/y_step[i]),(jas_image_coord_t) (image->columns/
-        x_step[i]),1,pixels[i]);
-    switch (number_components)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      case 1:
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
       {
-        /*
-          Grayscale.
-        */
-        for (x=0; x < (ssize_t) image->columns; x++)
+        double
+          pixel,
+          scale;
+
+        scale=QuantumRange/(double) ((1UL << jp2_image->comps[i].prec)-1);
+        pixel=scale*(jp2_image->comps[i].data[y/jp2_image->comps[i].dy*
+          image->columns/jp2_image->comps[i].dx+x/jp2_image->comps[i].dx]+
+          (jp2_image->comps[i].sgnd ? 1UL << (jp2_image->comps[i].prec-1) : 0));
+        switch (i)
         {
-          pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetPixelGray(image,ScaleAnyToQuantum((QuantumAny) pixel,range[0]),q);
-          q+=GetPixelChannels(image);
+           case 0:
+           {
+             SetPixelRed(image,ClampToQuantum(pixel),q);
+             SetPixelGreen(image,ClampToQuantum(pixel),q);
+             SetPixelBlue(image,ClampToQuantum(pixel),q);
+             SetPixelAlpha(image,OpaqueAlpha,q);
+             break;
+           }
+           case 1:
+           {
+             if (jp2_image->numcomps == 2)
+               {
+                 SetPixelAlpha(image,ClampToQuantum(pixel),q);
+                 break;
+               }
+             SetPixelGreen(image,ClampToQuantum(pixel),q);
+             break;
+           }
+           case 2:
+           {
+             SetPixelBlue(image,ClampToQuantum(pixel),q);
+             break;
+           }
+           case 3:
+           {
+             SetPixelAlpha(image,ClampToQuantum(pixel),q);
+             break;
+           }
         }
-        break;
       }
-      case 3:
-      {
-        /*
-          RGB.
-        */
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetPixelRed(image,ScaleAnyToQuantum((QuantumAny) pixel,range[0]),q);
-          pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          SetPixelGreen(image,ScaleAnyToQuantum((QuantumAny) pixel,range[1]),q);
-          pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) pixel,range[2]),q);
-          q+=GetPixelChannels(image);
-        }
-        break;
-      }
-      case 4:
-      {
-        /*
-          RGBA.
-        */
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetPixelRed(image,ScaleAnyToQuantum((QuantumAny) pixel,range[0]),q);
-          pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          SetPixelGreen(image,ScaleAnyToQuantum((QuantumAny) pixel,range[1]),q);
-          pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) pixel,range[2]),q);
-          pixel=(QuantumAny) jas_matrix_getv(pixels[3],x/x_step[3]);
-          SetPixelAlpha(image,ScaleAnyToQuantum((QuantumAny) pixel,range[3]),q);
-          q+=GetPixelChannels(image);
-        }
-        break;
-      }
+      q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -632,51 +457,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if (status == MagickFalse)
       break;
   }
-  cm_profile=jas_image_cmprof(jp2_image);
-  icc_profile=(jas_iccprof_t *) NULL;
-  if (cm_profile != (jas_cmprof_t *) NULL)
-    icc_profile=jas_iccprof_createfromcmprof(cm_profile);
-  if (icc_profile != (jas_iccprof_t *) NULL)
-    {
-      jas_stream_t
-        *icc_stream;
-
-      icc_stream=jas_stream_memopen(NULL,0);
-      if ((icc_stream != (jas_stream_t *) NULL) &&
-          (jas_iccprof_save(icc_profile,icc_stream) == 0) &&
-          (jas_stream_flush(icc_stream) == 0))
-        {
-          jas_stream_memobj_t
-            *blob;
-
-          StringInfo
-            *icc_profile,
-            *profile;
-
-          /*
-            Extract the icc profile, handle errors without much noise.
-          */
-          blob=(jas_stream_memobj_t *) icc_stream->obj_;
-          if (image->debug != MagickFalse)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Profile: ICC, %.20g bytes",(double) blob->len_);
-          profile=BlobToStringInfo(blob->buf_,blob->len_);
-          if (profile == (StringInfo *) NULL)
-            ThrowReaderException(CorruptImageError,"MemoryAllocationFailed");
-          icc_profile=(StringInfo *) GetImageProfile(image,"icc");
-          if (icc_profile == (StringInfo *) NULL)
-            (void) SetImageProfile(image,"icc",profile,exception);
-          else
-            (void) ConcatenateStringInfo(icc_profile,profile);
-          profile=DestroyStringInfo(profile);
-          (void) jas_stream_close(icc_stream);
-        }
-      jas_iccprof_destroy(icc_profile);
-    }
-  (void) jas_stream_close(jp2_stream);
-  jas_image_destroy(jp2_image);
-  for (i=0; i < (ssize_t) number_components; i++)
-    jas_matrix_destroy(pixels[i]);
+  /*
+    Free resources.
+  */
+  opj_destroy_codec(jp2_codec);
+  opj_image_destroy(jp2_image);
   return(GetFirstImageInList(image));
 }
 #endif
@@ -716,33 +501,7 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
-#if defined(MAGICKCORE_JP2_DELEGATE)
-  entry->decoder=(DecodeImageHandler *) ReadJP2Image;
-  entry->encoder=(EncodeImageHandler *) WriteJP2Image;
-#endif
-  (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JPC");
-  entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
-  entry->mime_type=ConstantString("image/jp2");
-  entry->module=ConstantString("JP2");
-  entry->magick=(IsImageFormatHandler *) IsJPC;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
-#if defined(MAGICKCORE_JP2_DELEGATE)
-  entry->decoder=(DecodeImageHandler *) ReadJP2Image;
-  entry->encoder=(EncodeImageHandler *) WriteJP2Image;
-#endif
-  (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("J2C");
-  entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
-  entry->mime_type=ConstantString("image/jp2");
-  entry->module=ConstantString("JP2");
-  entry->magick=(IsImageFormatHandler *) IsJPC;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
-#if defined(MAGICKCORE_JP2_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
 #endif
@@ -755,43 +514,24 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
-#if defined(MAGICKCORE_JP2_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JPX");
+  entry=SetMagickInfo("JPT");
   entry->description=ConstantString("JPEG-2000 File Format Syntax");
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
-  entry->magick=(IsImageFormatHandler *) IsJPC;
+  entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
-#if defined(MAGICKCORE_JP2_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PGX");
-  entry->description=ConstantString("JPEG-2000 VM Format");
-  entry->mime_type=ConstantString("image/jp2");
-  entry->module=ConstantString("JP2");
-  entry->magick=(IsImageFormatHandler *) IsJPC;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
-#if defined(MAGICKCORE_JP2_DELEGATE)
-  entry->decoder=(DecodeImageHandler *) ReadJP2Image;
-#endif
-  (void) RegisterMagickInfo(entry);
-#if defined(MAGICKCORE_JP2_DELEGATE)
-  if (instantiate_jp2 == MagickFalse)
-    {
-      jas_init();
-      instantiate_jp2=MagickTrue;
-    }
-#endif
   return(MagickImageCoderSignature);
 }
 
@@ -816,21 +556,12 @@ ModuleExport size_t RegisterJP2Image(void)
 */
 ModuleExport void UnregisterJP2Image(void)
 {
-  (void) UnregisterMagickInfo("PGX");
-  (void) UnregisterMagickInfo("J2K");
-  (void) UnregisterMagickInfo("J2C");
-  (void) UnregisterMagickInfo("JPC");
+  (void) UnregisterMagickInfo("JPT");
   (void) UnregisterMagickInfo("JP2");
-#if defined(MAGICKCORE_JP2_DELEGATE)
-  if (instantiate_jp2 != MagickFalse)
-    {
-      jas_cleanup();
-      instantiate_jp2=MagickFalse;
-    }
-#endif
+  (void) UnregisterMagickInfo("J2K");
 }
 
-#if defined(MAGICKCORE_JP2_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -848,8 +579,7 @@ ModuleExport void UnregisterJP2Image(void)
 %
 %  The format of the WriteJP2Image method is:
 %
-%      MagickBooleanType WriteJP2Image(const ImageInfo *image_info,
-%        Image *image,ExceptionInfo *exception)
+%      MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -857,51 +587,11 @@ ModuleExport void UnregisterJP2Image(void)
 %
 %    o image:  The image.
 %
-%    o exception: return any errors or warnings in this structure.
-%
 */
-static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
-  ExceptionInfo *exception)
+static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
-  char
-    *key,
-    magick[MaxTextExtent],
-    *options;
-
-  const char
-    *option;
-
-  jas_image_cmptparm_t
-    component_info[4];
-
-  jas_image_t
-    *jp2_image;
-
-  jas_matrix_t
-    *pixels[4];
-
-  jas_stream_t
-    *jp2_stream;
-
   MagickBooleanType
     status;
-
-  QuantumAny
-    range;
-
-  register const Quantum
-    *p;
-
-  register ssize_t
-    i,
-    x;
-
-  size_t
-    number_components;
-
-  ssize_t
-    format,
-    y;
 
   /*
     Open image file.
@@ -912,242 +602,14 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
   /*
     Initialize JPEG 2000 API.
   */
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  jp2_stream=JP2StreamManager(image);
-  if (jp2_stream == (jas_stream_t *) NULL)
-    ThrowWriterException(DelegateError,"UnableToManageJP2Stream");
-  number_components=image->alpha_trait ? 4UL : 3UL;
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    number_components=1;
-  if ((image->columns != (unsigned int) image->columns) ||
-      (image->rows != (unsigned int) image->rows))
-    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
-  (void) ResetMagickMemory(&component_info,0,sizeof(component_info));
-  for (i=0; i < (ssize_t) number_components; i++)
-  {
-    component_info[i].tlx=0;
-    component_info[i].tly=0;
-    component_info[i].hstep=1;
-    component_info[i].vstep=1;
-    component_info[i].width=(unsigned int) image->columns;
-    component_info[i].height=(unsigned int) image->rows;
-    component_info[i].prec=(int) MagickMax(MagickMin(image->depth,16),2);
-    component_info[i].sgnd=MagickFalse;
-  }
-  jp2_image=jas_image_create((int) number_components,component_info,
-    JAS_CLRSPC_UNKNOWN);
-  if (jp2_image == (jas_image_t *) NULL)
-    ThrowWriterException(DelegateError,"UnableToCreateImage");
-  switch (image->colorspace)
-  {
-    case RGBColorspace:
-    case sRGBColorspace:
-    {
-      /*
-        RGB colorspace.
-      */
-      jas_image_setclrspc(jp2_image,JAS_CLRSPC_SRGB);
-      jas_image_setcmpttype(jp2_image,0,
-        (jas_image_cmpttype_t) JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
-      jas_image_setcmpttype(jp2_image,1,
-        (jas_image_cmpttype_t) JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
-      jas_image_setcmpttype(jp2_image,2,
-        (jas_image_cmpttype_t) JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
-      if (number_components == 4)
-        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
-      break;
-    }
-    case GRAYColorspace:
-    {
-      /*
-        Grayscale colorspace.
-      */
-      jas_image_setclrspc(jp2_image,JAS_CLRSPC_SGRAY);
-      jas_image_setcmpttype(jp2_image,0,
-        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
-      break;
-    }
-    case YCbCrColorspace:
-    {
-      /*
-        YCbCr colorspace.
-      */
-      jas_image_setclrspc(jp2_image,JAS_CLRSPC_SYCBCR);
-      jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(0));
-      jas_image_setcmpttype(jp2_image,1,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(1));
-      jas_image_setcmpttype(jp2_image,2,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(2));
-      if (number_components == 4)
-        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
-      break;
-    }
-    case XYZColorspace:
-    {
-      /*
-        XYZ colorspace.
-      */
-      jas_image_setclrspc(jp2_image,JAS_CLRSPC_CIEXYZ);
-      jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(0));
-      jas_image_setcmpttype(jp2_image,1,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(1));
-      jas_image_setcmpttype(jp2_image,2,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(2));
-      if (number_components == 4)
-        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
-      break;
-    }
-    case LabColorspace:
-    {
-      /*
-        Lab colorspace.
-      */
-      jas_image_setclrspc(jp2_image,JAS_CLRSPC_CIELAB);
-      jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(0));
-      jas_image_setcmpttype(jp2_image,1,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(1));
-      jas_image_setcmpttype(jp2_image,2,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(2));
-      if (number_components == 4)
-        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
-      break;
-    }
-    default:
-    {
-      /*
-        Unknow.
-      */
-      jas_image_setclrspc(jp2_image,JAS_CLRSPC_UNKNOWN);
-      jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(0));
-      jas_image_setcmpttype(jp2_image,1,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(1));
-      jas_image_setcmpttype(jp2_image,2,(jas_image_cmpttype_t)
-        JAS_IMAGE_CT_COLOR(2));
-      if (number_components == 4)
-        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
-      break;
-    }
-  }
-  /*
-    Convert to JPEG 2000 pixels.
-  */
-  for (i=0; i < (ssize_t) number_components; i++)
-  {
-    pixels[i]=jas_matrix_create(1,(int) image->columns);
-    if (pixels[i] == (jas_matrix_t *) NULL)
-      {
-        for (x=0; x < i; x++)
-          jas_matrix_destroy(pixels[x]);
-        jas_image_destroy(jp2_image);
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-      }
-  }
-  range=GetQuantumRange((size_t) component_info[0].prec);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if (number_components == 1)
-        jas_matrix_setv(pixels[0],x,(jas_seqent_t) ScaleQuantumToAny(
-          ClampToQuantum(GetPixelLuma(image,p)),range));
-      else
-        {
-          jas_matrix_setv(pixels[0],x,(jas_seqent_t) ScaleQuantumToAny(
-            GetPixelRed(image,p),range));
-          jas_matrix_setv(pixels[1],x,(jas_seqent_t) ScaleQuantumToAny(
-            GetPixelGreen(image,p),range));
-          jas_matrix_setv(pixels[2],x,(jas_seqent_t) ScaleQuantumToAny(
-            GetPixelBlue(image,p),range));
-          if (number_components > 3)
-            jas_matrix_setv(pixels[3],x,(jas_seqent_t) ScaleQuantumToAny(
-              GetPixelAlpha(image,p),range));
-        }
-      p+=GetPixelChannels(image);
-    }
-    for (i=0; i < (ssize_t) number_components; i++)
-      (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,
-        (unsigned int) image->columns,1,pixels[i]);
-    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-      image->rows);
-    if (status == MagickFalse)
-      break;
-  }
-  (void) CopyMagickString(magick,image_info->magick,MaxTextExtent);
-  if (LocaleCompare(magick,"J2C") == 0)
-    (void) CopyMagickString(magick,"JPC",MaxTextExtent);
-  LocaleLower(magick);
-  format=jas_image_strtofmt(magick);
-  options=(char *) NULL;
-  ResetImageOptionIterator(image_info);
-  key=GetNextImageOption(image_info);
-  for ( ; key != (char *) NULL; key=GetNextImageOption(image_info))
-  {
-    option=GetImageOption(image_info,key);
-    if (option == (const char *) NULL)
-      continue;
-    if (LocaleNCompare(key,"jp2:",4) == 0)
-      {
-        (void) ConcatenateString(&options,key+4);
-        if (*option != '\0')
-          {
-            (void) ConcatenateString(&options,"=");
-            (void) ConcatenateString(&options,option);
-          }
-        (void) ConcatenateString(&options," ");
-      }
-  }
-  option=GetImageOption(image_info,"jp2:rate");
-  if ((option == (const char *) NULL) &&
-      (image_info->compression != LosslessJPEGCompression) &&
-      (image->quality != UndefinedCompressionQuality) &&
-      ((double) image->quality <= 99.5) &&
-      ((image->rows*image->columns) > 2500))
-    {
-      char
-        option[MaxTextExtent];
-
-      double
-        alpha,
-        header_size,
-        number_pixels,
-        rate,
-        target_size;
-
-      alpha=115.0-image->quality;
-      rate=100.0/(alpha*alpha);
-      header_size=550.0;
-      header_size+=(number_components-1)*142;
-      number_pixels=(double) image->rows*image->columns*number_components*
-        (GetImageQuantumDepth(image,MagickTrue)/8);
-      target_size=(number_pixels*rate)+header_size;
-      rate=target_size/number_pixels;
-      (void) FormatLocaleString(option,MaxTextExtent,"rate=%g",rate);
-      (void) ConcatenateString(&options,option);
-    }
-  status=jas_image_encode(jp2_image,jp2_stream,format,options) != 0 ?
-    MagickTrue : MagickFalse;
-  if (options != (char *) NULL)
-    options=DestroyString(options);
-  (void) jas_stream_close(jp2_stream);
-  for (i=0; i < (ssize_t) number_components; i++)
-    jas_matrix_destroy(pixels[i]);
-  jas_image_destroy(jp2_image);
+    (void) TransformImageColorspace(image,sRGBColorspace);
   if (status != MagickFalse)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
   return(MagickTrue);
