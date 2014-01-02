@@ -60,13 +60,16 @@ typedef enum
 typedef struct _LogInfo
   LogInfo;
 
+typedef MagickExport void
+  (*MagickLogMethod)(const LogEventType,const char *);
+
 extern MagickExport char
   **GetLogList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const char
   *GetLogName(void),
   *SetLogName(const char *);
-                                                                                
+
 extern MagickExport const LogInfo
   **GetLogInfoList(const char *,size_t *,ExceptionInfo *);
 
@@ -86,7 +89,8 @@ extern MagickExport MagickBooleanType
 extern MagickExport void
   CloseMagickLog(void),
   LogComponentTerminus(void),
-  SetLogFormat(const char *);
+  SetLogFormat(const char *),
+  SetLogMethod(MagickLogMethod);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

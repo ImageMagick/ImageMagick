@@ -78,7 +78,8 @@ typedef enum
   StderrHandler = 0x0004,
   FileHandler = 0x0008,
   DebugHandler = 0x0010,
-  EventHandler = 0x0020
+  EventHandler = 0x0020,
+  MethodHandler = 0x0040,
 } LogHandlerType;
 
 typedef struct _EventInfo
@@ -132,6 +133,9 @@ struct _LogInfo
 
   size_t
     signature;
+
+  MagickLogMethod
+    method;
 };
 
 typedef struct _LogMapInfo
@@ -1228,6 +1232,11 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
       (void) FormatLocaleFile(log_info->file,"  <event>%s</event>\n",text);
       (void) fflush(log_info->file);
     }
+  if ((log_info->handler_mask & MethodHandler) != 0)
+    {
+      if (log_info->method != (MagickLogMethod) NULL)
+        log_info->method(type,text);
+    }
   if ((log_info->handler_mask & StdoutHandler) != 0)
     {
       (void) FormatLocaleFile(stdout,"%s\n",text);
@@ -1747,6 +1756,48 @@ MagickExport void SetLogFormat(const char *format)
   if (log_info->format != (char *) NULL)
     log_info->format=DestroyString(log_info->format);
   log_info->format=ConstantString(format);
+  UnlockSemaphoreInfo(log_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t L o g M e t h o d                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetLogMethod() sets the method that will be called when an event is logged.
+%
+%  The format of the SetLogMethod method is:
+%
+%      void SetLogMethod(MagickLogMethod method)
+%
+%  A description of each parameter follows:
+%
+%    o method: pointer to a method that will be called when LogMagickEvent is
+$              being called.
+%
+*/
+MagickExport void SetLogMethod(MagickLogMethod method)
+{
+  ExceptionInfo
+    *exception;
+
+  LogInfo
+    *log_info;
+
+  exception=AcquireExceptionInfo();
+  log_info=(LogInfo *) GetLogInfo("*",exception);
+  exception=DestroyExceptionInfo(exception);
+  LockSemaphoreInfo(log_semaphore);
+  log_info=(LogInfo *) GetValueFromLinkedList(log_list,0);
+  log_info->handler_mask=(LogHandlerType) (log_info->handler_mask|
+    MethodHandler);
+  log_info->method=method;
   UnlockSemaphoreInfo(log_semaphore);
 }
 
