@@ -193,6 +193,7 @@ extern MagickExport MagickBooleanType
     magick_attribute((deprecated)),
   FuzzyOpacityCompare(const Image *,const PixelPacket *,const PixelPacket *)
     magick_attribute((deprecated)),
+  IsMagickInstantiated(void) magick_attribute((deprecated)),
   LevelImageColors(Image *,const ChannelType,const MagickPixelPacket *,
     const MagickPixelPacket *, const MagickBooleanType)
     magick_attribute((deprecated)),
