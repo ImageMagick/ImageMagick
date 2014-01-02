@@ -1102,11 +1102,6 @@
 /* Define if you have JBIG library */
 /* #undef JBIG_DELEGATE */
 
-/* Define if you have JPEG version 2 "Jasper" library */
-#ifndef MAGICKCORE_JP2_DELEGATE
-#define MAGICKCORE_JP2_DELEGATE 1
-#endif
-
 /* Define if you have JPEG library */
 #ifndef MAGICKCORE_JPEG_DELEGATE
 #define MAGICKCORE_JPEG_DELEGATE 1

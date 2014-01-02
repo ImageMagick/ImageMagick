@@ -114,7 +114,7 @@ extern MagickExport MagickBooleanType
   GetMagickEndianSupport(const MagickInfo *),
   GetMagickRawSupport(const MagickInfo *),
   GetMagickSeekableStream(const MagickInfo *),
-  IsMagickInstantiated(void),
+  IsMagickCoreInstantiated(void),
   UnregisterMagickInfo(const char *);
 
 extern const MagickExport MagickInfo

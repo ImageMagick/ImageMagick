@@ -100,6 +100,7 @@ extern WandExport ExceptionType
 
 extern WandExport MagickBooleanType
   IsMagickWand(const MagickWand *),
+  IsMagickWandInstantiated(void),
   MagickClearException(MagickWand *),
   MagickSetIteratorIndex(MagickWand *,const ssize_t);
 
