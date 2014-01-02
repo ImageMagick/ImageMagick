@@ -2917,7 +2917,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (svg_handle == (RsvgHandle *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         rsvg_handle_set_base_uri(svg_handle,image_info->filename);
-        if ((image->x_resolution != 72.0) && (image->y_resolution != 72.0))
+        if ((image->x_resolution != 90.0) && (image->y_resolution != 90.0))
           rsvg_handle_set_dpi_x_y(svg_handle,image->x_resolution,
             image->y_resolution);
         while ((n=ReadBlob(image,MaxTextExtent,message)) != 0)
@@ -2933,8 +2933,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           g_error_free(error);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
         rsvg_handle_get_dimensions(svg_handle,&dimension_info);
-        image->columns=image->x_resolution*dimension_info.width/72.0;
-        image->rows=image->y_resolution*dimension_info.height/72.0;
+        image->columns=image->x_resolution*dimension_info.width/90.0;
+        image->rows=image->y_resolution*dimension_info.height/90.0;
         pixel_info=(MemoryInfo *) NULL;
 #else
         pixel_buffer=rsvg_handle_get_pixbuf(svg_handle);
