@@ -4018,6 +4018,31 @@ MagickExport MagickRealType InversesRGBCompandor(const MagickRealType pixel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  I s M a g i c k I n s t a n t i a t e d                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsMagickInstantiated() returns MagickTrue if the ImageMagick environment
+%  is currently instantiated:  MagickCoreGenesis() has been called but
+%  MagickDestroy() has not.
+%
+%  The format of the IsMagickInstantiated method is:
+%
+%      MagickBooleanType IsMagickInstantiated(void)
+%
+*/
+MagickExport MagickBooleanType IsMagickInstantiated(void)
+{
+  return(instantiate_magick);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +     I s S u b i m a g e                                                     %
 %                                                                             %
 %                                                                             %

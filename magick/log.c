@@ -1779,7 +1779,7 @@ MagickExport void SetLogFormat(const char *format)
 %  A description of each parameter follows:
 %
 %    o method: pointer to a method that will be called when LogMagickEvent is
-$              being called.
+$      being called.
 %
 */
 MagickExport void SetLogMethod(MagickLogMethod method)
@@ -1795,7 +1795,7 @@ MagickExport void SetLogMethod(MagickLogMethod method)
   exception=DestroyExceptionInfo(exception);
   LockSemaphoreInfo(log_semaphore);
   log_info=(LogInfo *) GetValueFromLinkedList(log_list,0);
-  log_info->handler_mask=(LogHandlerType) (log_info->handler_mask|
+  log_info->handler_mask=(LogHandlerType) (log_info->handler_mask |
     MethodHandler);
   log_info->method=method;
   UnlockSemaphoreInfo(log_semaphore);
