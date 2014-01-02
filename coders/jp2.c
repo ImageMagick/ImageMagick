@@ -390,6 +390,16 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((jp2_image->comps[i].dx > 1) || (jp2_image->comps[i].dy > 1))
       image->colorspace=YUVColorspace;
   }
+  if (jp2_image->icc_profile_buf != (unsigned char *) NULL)
+    {
+      StringInfo
+        *profile;
+
+      profile=BlobToStringInfo(jp2_image->icc_profile_buf,
+        jp2_image->icc_profile_len);
+      if (profile != (StringInfo *) NULL)
+        SetImageProfile(image,"icc",profile);
+    }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register PixelPacket
