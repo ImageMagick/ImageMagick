@@ -65,6 +65,7 @@
 #include "magick/static.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/module.h"
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
 #include <openjpeg.h>
@@ -285,6 +286,9 @@ static OPJ_SIZE_T JP2WriteHandler(void *buffer,OPJ_SIZE_T length,void *context)
 
 static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  const char
+    *option;
+
   Image
     *image;
 
