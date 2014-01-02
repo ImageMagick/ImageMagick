@@ -721,9 +721,6 @@
 /* Define if you have JBIG library */
 #undef JBIG_DELEGATE
 
-/* Define if you have JPEG version 2 "Jasper" library */
-#undef JP2_DELEGATE
-
 /* Define if you have JPEG library */
 #undef JPEG_DELEGATE
 

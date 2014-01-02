@@ -810,9 +810,6 @@ LIBOPENJP2_CFLAGS
 LCMS_LIBS
 LCMS_DELEGATE_FALSE
 LCMS_DELEGATE_TRUE
-JP2_LIBS
-JP2_DELEGATE_FALSE
-JP2_DELEGATE_TRUE
 JPEG_LIBS
 JPEG_DELEGATE_FALSE
 JPEG_DELEGATE_TRUE
@@ -1181,7 +1178,6 @@ with_gs_font_dir
 with_gvc
 with_jbig
 with_jpeg
-with_jp2
 with_lcms
 with_lcms2
 with_openjp2
@@ -1952,7 +1948,6 @@ Optional Packages:
   --with-gvc              enable GVC support
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
-  --without-jp2           disable JPEG-2000 support
   --without-lcms          disable lcms (v1.1X) support
   --without-lcms2         disable lcms (v2.X) support
   --without-openjp2       disable OpenJP2 support
@@ -3699,7 +3694,7 @@ MAGICK_PATCHLEVEL_VERSION=2
 
 MAGICK_VERSION=6.8.8-2
 
-MAGICK_SVN_REVISION=14094:14095M
+MAGICK_SVN_REVISION=14104:14107M
 
 
 # Substitute library versioning
@@ -26210,7 +26205,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick mupdf png tiff/libtiff ttf/include wand webp wmf/include xml/include zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jbig/libjbig jpeg lcms/include lzma magick mupdf png tiff/libtiff ttf/include wand webp wmf/include xml/include zlib; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -26221,7 +26216,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick mupdf png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jbig/libjbig jpeg lcms/src lzma magick mupdf png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
@@ -29836,116 +29831,6 @@ fi
 else
   JPEG_DELEGATE_TRUE='#'
   JPEG_DELEGATE_FALSE=
-fi
-
-
-
-
-#
-# Check for JPEG Version 2 delegate library.
-#
-
-# Check whether --with-jp2 was given.
-if test "${with_jp2+set}" = set; then :
-  withval=$with_jp2; with_jp2=$withval
-else
-  with_jp2='yes'
-fi
-
-
-if test "$with_jp2" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jp2=$with_jp2 "
-fi
-
-have_jp2='no'
-JP2_LIBS=''
-if test "$with_jp2" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JPEG Version 2" >&5
-$as_echo_n "checking for JPEG Version 2... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "jasper/jasper.h" "ac_cv_header_jasper_jasper_h" "$ac_includes_default"
-if test "x$ac_cv_header_jasper_jasper_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for jas_stream_fopen in -ljasper" >&5
-$as_echo_n "checking for jas_stream_fopen in -ljasper... " >&6; }
-if ${ac_cv_lib_jasper_jas_stream_fopen+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ljasper  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char jas_stream_fopen ();
-int
-main ()
-{
-return jas_stream_fopen ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_jasper_jas_stream_fopen=yes
-else
-  ac_cv_lib_jasper_jas_stream_fopen=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jasper_jas_stream_fopen" >&5
-$as_echo "$ac_cv_lib_jasper_jas_stream_fopen" >&6; }
-if test "x$ac_cv_lib_jasper_jas_stream_fopen" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if JPEG version 2 support package is complete" >&5
-$as_echo_n "checking if JPEG version 2 support package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_jp2='no (failed tests)'
-        else
-            JP2_LIBS='-ljasper'
-            LIBS="$JP2_LIBS $LIBS"
-
-$as_echo "#define JP2_DELEGATE 1" >>confdefs.h
-
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_jp2='yes'
-        fi
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    fi
-fi
- if test "$have_jp2" = 'yes'; then
-  JP2_DELEGATE_TRUE=
-  JP2_DELEGATE_FALSE='#'
-else
-  JP2_DELEGATE_TRUE='#'
-  JP2_DELEGATE_FALSE=
 fi
 
 
@@ -36028,7 +35913,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 fi
 
 
@@ -36340,10 +36225,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${JPEG_DELEGATE_TRUE}" && test -z "${JPEG_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"JPEG_DELEGATE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${JP2_DELEGATE_TRUE}" && test -z "${JP2_DELEGATE_FALSE}"; then
-  as_fn_error $? "conditional \"JP2_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${LCMS_DELEGATE_TRUE}" && test -z "${LCMS_DELEGATE_FALSE}"; then
