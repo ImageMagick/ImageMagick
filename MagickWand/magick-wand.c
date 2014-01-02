@@ -1009,7 +1009,7 @@ WandExport void MagickSetLastIterator(MagickWand *wand)
 */
 WandExport void MagickWandGenesis(void)
 {
-  if (IsMagickInstantiated() == MagickFalse)
+  if (IsMagickCoreInstantiated() == MagickFalse)
     MagickCoreGenesis((char *) NULL,MagickFalse);
 }
 
@@ -1121,4 +1121,29 @@ WandExport MagickWand *NewMagickWandFromImage(const Image *image)
   wand=NewMagickWand();
   wand->images=CloneImage(image,0,0,MagickTrue,wand->exception);
   return(wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  I s M a g i c k W a n d I n s t a n t i a t e d                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsMagickWandInstantiated() returns MagickTrue if the ImageMagick environment
+%  is currently instantiated--  that is, MagickWandGenesis() has been called but
+%  MagickWandTerminus() has not.
+%
+%  The format of the IsMagickWandInstantiated method is:
+%
+%      MagickBooleanType IsMagickWandInstantiated(void)
+%
+*/
+MagickExport MagickBooleanType IsMagickWandInstantiated(void)
+{
+  return(IsMagickCoreInstantiated());
 }
