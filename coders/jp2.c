@@ -289,7 +289,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
-    factor,
     jp2_status;
 
   MagickBooleanType
@@ -371,24 +370,26 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       opj_destroy_codec(jp2_codec);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
-  factor=0;
-  if (opj_set_decoded_resolution_factor(jp2_codec,factor) == 0)
+  if (image_info->extract != (char *) NULL)
     {
-      opj_stream_set_user_data(jp2_stream,NULL);
-      opj_stream_destroy_v3(jp2_stream);
-      opj_destroy_codec(jp2_codec);
-      opj_image_destroy(jp2_image);
-      ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
-    }
-  jp2_status=opj_set_decode_area(jp2_codec,jp2_image,parameters.DA_x0,
-    parameters.DA_y0,parameters.DA_x1,parameters.DA_y1);
-  if (jp2_status == 0)
-    {
-      opj_stream_set_user_data(jp2_stream,NULL);
-      opj_stream_destroy_v3(jp2_stream);
-      opj_destroy_codec(jp2_codec);
-      opj_image_destroy(jp2_image);
-      ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
+      RectangleInfo
+        geometry;
+
+      /*
+        Extract an area from the image.
+      */
+      SetGeometry(image,&geometry);
+      (void) ParseAbsoluteGeometry(image_info->extract,&geometry);
+      jp2_status=opj_set_decode_area(jp2_codec,jp2_image,geometry.x,
+        geometry.y,geometry.width,geometry.height);
+      if (jp2_status == 0)
+        {
+          opj_stream_set_user_data(jp2_stream,NULL);
+          opj_stream_destroy_v3(jp2_stream);
+          opj_destroy_codec(jp2_codec);
+          opj_image_destroy(jp2_image);
+          ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
+        }
     }
   if ((opj_decode(jp2_codec,jp2_stream,jp2_image) == 0) ||
       (opj_end_decompress(jp2_codec,jp2_stream) == 0))
