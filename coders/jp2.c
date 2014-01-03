@@ -660,21 +660,6 @@ ModuleExport void UnregisterJP2Image(void)
 %    o image:  The image.
 %
 */
-
-static OPJ_OFF_T JP2EncodeSkipHandler(OPJ_OFF_T length,void *context)
-{
-  Image
-    *image;
-
-  register ssize_t
-    i;
-
-  image=(Image *) context;
-  for (i=0; i < (ssize_t) length; i++)
-    WriteBlobByte(image,'\0');
-  return(length);
-}
-
 static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
   int
@@ -685,6 +670,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
 
   opj_codec_t
     *jp2_codec;
+
+  OPJ_COLOR_SPACE
+    jp2_colorspace;
 
   opj_cparameters_t
     parameters;
@@ -703,6 +691,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
 
   ssize_t
     y;
+
+  size_t
+    channels;
 
   /*
     Open image file.
@@ -723,8 +714,25 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   parameters.tcp_rates[0]=0;
   parameters.tcp_numlayers++;
   parameters.cp_disto_alloc=1;
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+  channels=3;
+  jp2_colorspace=OPJ_CLRSPC_SRGB;
+  if (image->colorspace == YUVColorspace)
+    {
+      jp2_colorspace=OPJ_CLRSPC_SYCC;
+      parameters.subsampling_dx=2;
+    }
+  else
+    {
+      if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+        (void) TransformImageColorspace(image,sRGBColorspace);
+      if (IsGrayColorspace(image->colorspace) != MagickFalse)
+        {
+          channels=1;
+          jp2_colorspace=OPJ_CLRSPC_GRAY;
+        }
+      if (image->matte != MagickFalse)
+        channels++;
+    }
   ResetMagickMemory(jp2_info,0,sizeof(jp2_info));
   for (i=0; i < 5; i++)
   {
@@ -736,7 +744,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     jp2_info[i].w=image->columns;
     jp2_info[i].h=image->rows;
   }
-  jp2_image=opj_image_create(3,jp2_info,OPJ_CLRSPC_SRGB);
+  jp2_image=opj_image_create(channels,jp2_info,jp2_colorspace);
   if (jp2_image == (opj_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
   jp2_image->x0=parameters.image_offset_x0;
@@ -746,7 +754,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   jp2_image->y1=2*parameters.image_offset_y0+(image->rows-1)*
     parameters.subsampling_dx+1;
   /*
-    Convert MIFF to AVS raster pixels.
+    Convert to JP2 pixels.
   */
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -761,7 +769,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      for (i=0; i < 3; i++)
+      for (i=0; i < (ssize_t) channels; i++)
       {
         double
           scale;
@@ -781,6 +789,11 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
           }
           case 1:
           {
+            if (jp2_colorspace == OPJ_CLRSPC_GRAY)
+              {
+                *q=(int) (scale*(QuantumRange-p->opacity));
+                                                break;
+              }
             *q=(int) (scale*p->green);
             break;
           }
