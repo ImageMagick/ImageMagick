@@ -256,9 +256,7 @@ static OPJ_OFF_T JP2SkipHandler(OPJ_OFF_T length,void *context)
     *image;
 
   image=(Image *) context;
-  if (DiscardBlobBytes(image,(size_t) length) == MagickFalse)
-    return(0);
-  return(length);
+  return(SeekBlob(image,offset,SEEK_CUR) < 0 ? 0 : offset);
 }
 
 static void JP2WarningHandler(const char *message,void *client_data)
