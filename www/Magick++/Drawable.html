@@ -13,7 +13,7 @@
 <p>The following is an example using the Drawable subclasses with a one-by-one approach to draw the following figure:</p>
 <p class="image"><font color="#000000"><font color="#000000"><img
  src="Drawable_example_1.png" name="Graphic1" align="bottom" border="3"
- height="200" width="300"></font></font>
+ height="200" width="300" /></font></font>
 </p>
 <div class="viewport">
 #include &lt;string> 
@@ -45,7 +45,7 @@ int main(int /*argc*/,char **argv)
     // Display the result 
     image.display( ); 
   } 
-  catch( exception &error_ ) 
+  catch( exception &amp; error_ ) 
     { 
       cout &lt;&lt; "Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl; 
       return 1; 
@@ -93,7 +93,7 @@ int main(int /*argc*/,char **/*argv*/)
     // Display the result 
     image.display( ); 
   } 
-  catch( exception &error_ ) 
+  catch( exception &amp; error_ ) 
     { 
       cout &lt;&lt; "Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl; 
       return 1; 
@@ -141,9 +141,9 @@ int main(int /*argc*/,char **/*argv*/)
 <p>The Drawable classes are shown in the following table. Only constructor signatures are documented here. Each Drawable class also provides methods by which each individual parameter may be adjusted.</p>
 <p align="center" style="margin-bottom: 0in"><b>Drawable Classes</b></p>
 <ul><table width="100%" border="1" cellpadding="2" cellspacing="3">
-<col width="68*">
-<col width="55*">
-<col width="133*">
+<col width="68*"/>
+<col width="55*"/>
+<col width="133*"/>
 <tr>
 <th width="27%">
 <p class="western">Sub-Class</p></th>
@@ -282,9 +282,9 @@ int main(int /*argc*/,char **/*argv*/)
 <p class="western">Specify font name to use when drawing text.</p></td></tr>
 <tr>
 <td width="21%">
-<p class="western"><font size="2">const std::string &amp;family_,</font><br>
-<font size="2"><a href="Enumerations.html#StyleType">StyleType</a> style_,</font><br>
-<font size="2">unsigned int weight_,</font><br>
+<p class="western"><font size="2">const std::string &amp;family_,</font><br />
+<font size="2"><a href="Enumerations.html#StyleType">StyleType</a> style_,</font><br />
+<font size="2">unsigned int weight_,</font><br />
 <font size="2"><a href="Enumerations.html#StretchType">StretchType</a> stretch_</font></p></td>
 <td width="52%">
 <p class="western">Specify font family, style, weight (one of the set { 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 } with 400 being the normal size), and stretch to be used to select the font used when drawing text. Wildcard matches may be applied to style via the AnyStyle enumeration, applied to weight if weight is zero, and applied to stretch via the AnyStretch enumeration.</p></td></tr>
@@ -532,9 +532,9 @@ int main(int /*argc*/,char **/*argv*/)
 <p style="margin-bottom: 0in">The "moveto" commands establish a new current point. The effect is as if the "pen" were lifted and moved to a new location. A path data segment must begin with either one of the "moveto" commands or one of the "arc" commands. Subsequent "moveto" commands (i.e., when the "moveto" is not the first command) represent the start of a new subpath:</p>
 <p align="center" style="margin-bottom: 0in"><b>Moveto Classes</b></p>
 <ul><table width="100%" border="1" cellpadding="2" cellspacing="3">
-<col width="37*">
-<col width="43*">
-<col width="177*">
+<col width="37*" />
+<col width="43*" />
+<col width="177*" />
 <tr>
 <th width="14%">
 <p class="western">Sub-Class</p></th>
@@ -564,9 +564,9 @@ int main(int /*argc*/,char **/*argv*/)
 <p style="margin-bottom: 0in">The "closepath" command causes an automatic straight line to be drawn from the current point to the initial point of the current subpath:</p>
 <p align="center" style="margin-bottom: 0in"><b>Closepath Classes</b></p>
 <ul><table width="100%" border="1" cellpadding="2" cellspacing="3">
-<col width="37*">
-<col width="41*">
-<col width="178*">
+<col width="37*" />
+<col width="41*" />
+<col width="178*" />
 <tr>
 <th width="14%">
 <p class="western">Sub-Class</p></th>
@@ -585,9 +585,9 @@ int main(int /*argc*/,char **/*argv*/)
 <p style="margin-bottom: 0in">The various "lineto" commands draw straight lines from the current point to a new point:</p>
 <p align="center" style="margin-bottom: 0in"><b>Lineto Classes</b></p>
 <ul><table width="100%" border="1" cellpadding="2" cellspacing="3">
-<col width="56*">
-<col width="39*">
-<col width="161*">
+<col width="56*" />
+<col width="39*" />
+<col width="161*" />
 <tr>
 <th width="22%">
 <p class="western">Sub-Class</p></th>
@@ -641,24 +641,24 @@ int main(int /*argc*/,char **/*argv*/)
 <p>These three groups of commands draw curves:</p>
 <ul>
 <li>
-<p style="margin-bottom: 0in"><a href="Drawable.html#cubic%20Bezier">Cubic B&eacute;zier commands.</a> A cubic B&eacute;zier segment is defined by a start point, an end point, and two control points.</p></li>
+<p style="margin-bottom: 0in"><a href="Drawable.html#cubic%20Bezier">Cubic Bézier commands.</a> A cubic Bézier segment is defined by a start point, an end point, and two control points.</p></li>
 <li>
-<p style="margin-bottom: 0in"><a href="Drawable.html#quadratic%20Bezier">Quadratic B&eacute;zier commands.</a> A quadratic B&eacute;zier segment is defined by a start point, an end point, and one control point.</p></li>
+<p style="margin-bottom: 0in"><a href="Drawable.html#quadratic%20Bezier">Quadratic Bézier commands.</a> A quadratic Bézier segment is defined by a start point, an end point, and one control point.</p></li>
 <li>
 <p><a href="Drawable.html#elliptical%20arc">Elliptical arc commands.</a> An elliptical arc segment draws a segment of an ellipse.</p></li></ul>
-<h3><a name="cubic Bezier"></a>The cubic B&eacute;zier curve commands</h3>
-<p>The cubic B&eacute;zier commands depend on the <i>PathCurvetoArgs</i> argument class, which has the constructor signature</p>
+<h3><a name="cubic Bezier"></a>The cubic Bézier curve commands</h3>
+<p>The cubic Bézier commands depend on the <i>PathCurvetoArgs</i> argument class, which has the constructor signature</p>
 <pre class="code">
   PathCurvetoArgs( double x1_, double y1_, 
                    double x2_, double y2_, 
                    double x_, double y_ );
 </pre>
 <p style="margin-bottom: 0in">The commands are as follows:</p>
-<p align="center" style="margin-bottom: 0in"><b>Cubic B&eacute;zier Curve Classes</b></p>
+<p align="center" style="margin-bottom: 0in"><b>Cubic Bézier Curve Classes</b></p>
 <ul><table width="100%" border="1" cellpadding="2" cellspacing="3">
-<col width="54*">
-<col width="58*">
-<col width="144*">
+<col width="54*" />
+<col width="58*" />
+<col width="144*" />
 <tr>
 <th width="21%">
 <p class="western">Sub-Class</p></th>
@@ -672,7 +672,7 @@ int main(int /*argc*/,char **/*argv*/)
 <td width="23%">
 <p class="western">const Magick::PathCurvetoArgs &amp;args_</p></td>
 <td rowspan="4" width="56%">
-<p class="western">Draws a cubic B&eacute;zier curve from the current point to (x,y) using (x1,y1) as the control point at the beginning of the curve and (x2,y2) as the control point at the end of the curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow; <i>PathCurvetoRel</i> indicates that relative coordinates will follow. Multiple sets of coordinates may be specified to draw a polybezier. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
+<p class="western">Draws a cubic Bézier curve from the current point to (x,y) using (x1,y1) as the control point at the beginning of the curve and (x2,y2) as the control point at the end of the curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow; <i>PathCurvetoRel</i> indicates that relative coordinates will follow. Multiple sets of coordinates may be specified to draw a polybezier. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
 <tr>
 <td width="23%">
 <p class="western">const std::list&lt;Magick::PathCurvetoArgs&gt; &amp;args_</p></td></tr>
@@ -690,7 +690,7 @@ int main(int /*argc*/,char **/*argv*/)
 <td width="23%">
 <p class="western">const Magick::Coordinate &amp;coordinates_</p></td>
 <td rowspan="4" width="56%">
-<p class="western">Draws a cubic B&eacute;zier curve from the current point to (x,y). The first control point is assumed to be the reflection of the second control point on the previous command relative to the current point. (If there is no previous command or if the previous command was not an <i>PathCurvetoAbs</i>, <i>PathCurvetoRel</i>, <i>PathSmoothCurvetoAbs</i> or <i>PathSmoothCurvetoRel</i>, assume the first control point is coincident with the current point.) (x2,y2) is the second control point (i.e., the control point at the end of the curve). <i>PathSmoothCurvetoAbs</i> indicates that absolute coordinates will follow; <i>PathSmoothCurvetoRel</i> indicates that relative coordinates will follow. Multiple sets of coordinates may be specified to draw a polybezier. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
+<p class="western">Draws a cubic Bézier curve from the current point to (x,y). The first control point is assumed to be the reflection of the second control point on the previous command relative to the current point. (If there is no previous command or if the previous command was not an <i>PathCurvetoAbs</i>, <i>PathCurvetoRel</i>, <i>PathSmoothCurvetoAbs</i> or <i>PathSmoothCurvetoRel</i>, assume the first control point is coincident with the current point.) (x2,y2) is the second control point (i.e., the control point at the end of the curve). <i>PathSmoothCurvetoAbs</i> indicates that absolute coordinates will follow; <i>PathSmoothCurvetoRel</i> indicates that relative coordinates will follow. Multiple sets of coordinates may be specified to draw a polybezier. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
 <tr>
 <td width="23%">
 <p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr>
@@ -702,14 +702,14 @@ int main(int /*argc*/,char **/*argv*/)
 <tr>
 <td width="23%">
 <p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr></table></ul>
-<h3><a name="quadratic Bezier"></a>The quadratic B&eacute;zier curve commands</h3>
-<p>The quadratic B&eacute;zier commands depend on the <i>PathQuadraticCurvetoArgs</i> argument class, which has the constructor signature:</p>
+<h3><a name="quadratic Bezier"></a>The quadratic Bézier curve commands</h3>
+<p>The quadratic Bézier commands depend on the <i>PathQuadraticCurvetoArgs</i> argument class, which has the constructor signature:</p>
 <pre class="code">
   PathQuadraticCurvetoArgs( double x1_, double y1_, 
                             double x_, double y_ );
 </pre>
-<p style="margin-bottom: 0in">The quadratic B&eacute;zier commands are as follows:</p>
-<p align="center" style="margin-bottom: 0in"><b>Quadratic B&eacute;zier Curve Classes</b></p>
+<p style="margin-bottom: 0in">The quadratic Bézier commands are as follows:</p>
+<p align="center" style="margin-bottom: 0in"><b>Quadratic Bézier Curve Classes</b></p>
 <ul><table width="100%" border="1" cellpadding="2" cellspacing="2">
 <tr>
 <th>
@@ -724,7 +724,7 @@ int main(int /*argc*/,char **/*argv*/)
 <td>
 <p class="western">const Magick::PathQuadraticCurvetoArgs &amp;args_</p></td>
 <td rowspan="4">
-<p class="western">Draws a quadratic B&eacute;zier curve from the current point to (x,y) using (x1,y1) as the control point. <i>PathQuadraticCurvetoAbs</i> indicates that absolute coordinates will follow; <i>PathQuadraticCurvetoRel</i> indicates that relative coordinates will follow. Multiple sets of coordinates may be specified to draw a polybezier. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
+<p class="western">Draws a quadratic Bézier curve from the current point to (x,y) using (x1,y1) as the control point. <i>PathQuadraticCurvetoAbs</i> indicates that absolute coordinates will follow; <i>PathQuadraticCurvetoRel</i> indicates that relative coordinates will follow. Multiple sets of coordinates may be specified to draw a polybezier. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
 <tr>
 <td>
 <p class="western">const std::list&lt;Magick::PathQuadraticCurvetoArgs&gt; &amp;args_</p></td></tr>
@@ -742,7 +742,7 @@ int main(int /*argc*/,char **/*argv*/)
 <td>
 <p class="western">const Magick::Coordinate &amp;coordinate_</p></td>
 <td rowspan="4">
-<p class="western">Draws a quadratic B&eacute;zier curve from the current point to (x,y). The control point is assumed to be the reflection of the control point on the previous<br>
+<p class="western">Draws a quadratic Bézier curve from the current point to (x,y). The control point is assumed to be the reflection of the control point on the previous<br />
 command relative to the current point. (If there is no previous command or if the previous command was not a <i>PathQuadraticCurvetoAbs</i>, <i>PathQuadraticCurvetoRel</i>, <i>PathSmoothQuadraticCurvetoAbs</i> or <i>PathSmoothQuadraticCurvetoRel</i>, assume the control point is coincident with the current point.) <i>PathSmoothQuadraticCurvetoAbs</i> indicates that absolute coordinates will follow; <i>PathSmoothQuadraticCurvetoRel</i> indicates that relative coordinates will follow. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
 <tr>
 <td>
@@ -765,9 +765,9 @@ command relative to the current point. (If there is no previous command or if th
 <p style="margin-bottom: 0in">The elliptical arc commands are as follows:</p>
 <p align="center" style="margin-bottom: 0in"><b>Elliptical Arc Curve Classes</b></p>
 <ul><table width="100%" border="1" cellpadding="2" cellspacing="3">
-<col width="35*">
-<col width="46*">
-<col width="175*">
+<col width="35*" />
+<col width="46*" />
+<col width="175*" />
 <tr>
 <th width="14%">
 <p class="western">Sub-Class</p></th>

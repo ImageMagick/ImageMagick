@@ -61,6 +61,7 @@
 #include "magick/option.h"
 #include "magick/pixel-accessor.h"
 #include "magick/profile.h"
+#include "magick/property.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/statistic.h"
@@ -250,15 +251,13 @@ static OPJ_BOOL JP2SeekHandler(OPJ_OFF_T offset,void *context)
   return(SeekBlob(image,offset,SEEK_SET) < 0 ? 0 : 1);
 }
 
-static OPJ_OFF_T JP2SkipHandler(OPJ_OFF_T length,void *context)
+static OPJ_OFF_T JP2SkipHandler(OPJ_OFF_T offset,void *context)
 {
   Image
     *image;
 
   image=(Image *) context;
-  if (DiscardBlobBytes(image,(size_t) length) == MagickFalse)
-    return(0);
-  return(length);
+  return(SeekBlob(image,offset,SEEK_CUR) < 0 ? 0 : offset);
 }
 
 static void JP2WarningHandler(const char *message,void *client_data)
@@ -360,7 +359,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       opj_destroy_codec(jp2_codec);
       ThrowReaderException(DelegateError,"UnableToManageJP2Stream");
     }
-  jp2_stream=opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE,1);
+  jp2_stream=opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE,OPJ_TRUE);
   opj_stream_set_read_function(jp2_stream,JP2ReadHandler);
   opj_stream_set_write_function(jp2_stream,JP2WriteHandler);
   opj_stream_set_seek_function(jp2_stream,JP2SeekHandler);
@@ -661,10 +660,49 @@ ModuleExport void UnregisterJP2Image(void)
 %    o image:  The image.
 %
 */
+
+static OPJ_OFF_T JP2EncodeSkipHandler(OPJ_OFF_T length,void *context)
+{
+  Image
+    *image;
+
+  register ssize_t
+    i;
+
+  image=(Image *) context;
+  for (i=0; i < (ssize_t) length; i++)
+    WriteBlobByte(image,'\0');
+  return(length);
+}
+
 static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
+  int
+    jp2_status;
+
   MagickBooleanType
     status;
+
+  opj_codec_t
+    *jp2_codec;
+
+  opj_cparameters_t
+    parameters;
+
+  opj_image_cmptparm_t
+    jp2_info[5];
+
+  opj_image_t
+    *jp2_image;
+
+  opj_stream_t
+    *jp2_stream;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    y;
 
   /*
     Open image file.
@@ -681,10 +719,129 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   /*
     Initialize JPEG 2000 API.
   */
+  opj_set_default_encoder_parameters(&parameters);
+  parameters.tcp_rates[0]=0;
+  parameters.tcp_numlayers++;
+  parameters.cp_disto_alloc=1;
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace);
-  if (status != MagickFalse)
+  ResetMagickMemory(jp2_info,0,sizeof(jp2_info));
+  for (i=0; i < 5; i++)
+  {
+    jp2_info[i].prec=image->depth;
+    jp2_info[i].bpp=image->depth;
+    jp2_info[i].sgnd=0;
+    jp2_info[i].dx=parameters.subsampling_dx;
+    jp2_info[i].dy=parameters.subsampling_dy;
+    jp2_info[i].w=image->columns;
+    jp2_info[i].h=image->rows;
+  }
+  jp2_image=opj_image_create(3,jp2_info,OPJ_CLRSPC_SRGB);
+  if (jp2_image == (opj_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
+  jp2_image->x0=parameters.image_offset_x0;
+  jp2_image->y0=parameters.image_offset_y0;
+  jp2_image->x1=2*parameters.image_offset_x0+(image->columns-1)*
+    parameters.subsampling_dx+1;
+  jp2_image->y1=2*parameters.image_offset_y0+(image->rows-1)*
+    parameters.subsampling_dx+1;
+  /*
+    Convert MIFF to AVS raster pixels.
+  */
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const PixelPacket
+      *p;
+
+    ssize_t
+      x;
+
+    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      for (i=0; i < 3; i++)
+      {
+        double
+          scale;
+
+        register int
+          *q;
+
+        scale=(double) ((1UL << jp2_image->comps[i].prec)-1)/QuantumRange;
+        q=jp2_image->comps[i].data+(y/jp2_image->comps[i].dy*
+          image->columns/jp2_image->comps[i].dx+x/jp2_image->comps[i].dx);
+        switch (i)
+        {
+          case 0:
+          {
+            *q=(int) (scale*p->red);
+            break;
+          }
+          case 1:
+          {
+            *q=(int) (scale*p->green);
+            break;
+          }
+          case 2:
+          {
+            *q=(int) (scale*p->blue);
+            break;
+          }
+          case 3:
+          {
+            *q=(int) (scale*(QuantumRange-p->opacity));
+            break;
+          }
+        }
+      }
+      p++;
+    }
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (status == MagickFalse)
+      break;
+  }
+  if (LocaleCompare(image_info->magick,"JPT") == 0)
+    jp2_codec=opj_create_compress(OPJ_CODEC_JPT);
+  else
+    if (LocaleCompare(image_info->magick,"J2K") == 0)
+      jp2_codec=opj_create_compress(OPJ_CODEC_J2K);
+    else
+      jp2_codec=opj_create_compress(OPJ_CODEC_JP2);
+  opj_set_warning_handler(jp2_codec,JP2WarningHandler,&image->exception);
+  opj_set_error_handler(jp2_codec,JP2ErrorHandler,&image->exception);
+  opj_setup_encoder(jp2_codec,&parameters,jp2_image);
+  jp2_stream=opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE,OPJ_FALSE);
+  opj_stream_set_read_function(jp2_stream,JP2ReadHandler);
+  opj_stream_set_write_function(jp2_stream,JP2WriteHandler);
+  opj_stream_set_seek_function(jp2_stream,JP2SeekHandler);
+  opj_stream_set_skip_function(jp2_stream,JP2SkipHandler);
+  opj_stream_set_user_data(jp2_stream,image);
+  opj_stream_set_user_data_length(jp2_stream,GetBlobSize(image));
+  if (jp2_stream == (opj_stream_t *) NULL)
+    ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
+  jp2_status=opj_start_compress(jp2_codec,jp2_image,jp2_stream);
+  if (jp2_status == 0)
+    ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
+  if ((opj_encode(jp2_codec,jp2_stream) == 0) ||
+      (opj_end_compress(jp2_codec,jp2_stream) == 0))
+    {
+      opj_stream_set_user_data(jp2_stream,NULL);
+      opj_stream_destroy_v3(jp2_stream);
+      opj_destroy_codec(jp2_codec);
+      opj_image_destroy(jp2_image);
+      ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
+    }
+  /*
+    Free resources.
+  */
+  opj_stream_set_user_data(jp2_stream,NULL);
+  opj_stream_destroy_v3(jp2_stream);
+  opj_destroy_codec(jp2_codec);
+  opj_image_destroy(jp2_image);
+  (void) CloseBlob(image);
   return(MagickTrue);
 }
 #endif
