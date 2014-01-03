@@ -79,7 +79,7 @@ typedef enum
   FileHandler = 0x0008,
   DebugHandler = 0x0010,
   EventHandler = 0x0020,
-  MethodHandler = 0x0040,
+  MethodHandler = 0x0040
 } LogHandlerType;
 
 typedef struct _EventInfo
@@ -1779,7 +1779,7 @@ MagickExport void SetLogFormat(const char *format)
 %  A description of each parameter follows:
 %
 %    o method: pointer to a method that will be called when LogMagickEvent is
-$      being called.
+%      being called.
 %
 */
 MagickExport void SetLogMethod(MagickLogMethod method)
