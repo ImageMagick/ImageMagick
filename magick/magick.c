@@ -1047,7 +1047,7 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 */
 MagickExport MagickBooleanType IsMagickCoreInstantiated(void)
 {
-  return(instantiate_magick);
+  return(instantiate_magickcore);
 }
 
 /*
