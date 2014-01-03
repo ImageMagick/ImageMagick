@@ -13,8 +13,8 @@
 <p>The Blob class supports value assignment while preserving any outstanding earlier versions of the object. Since assignment is via a pointer internally, Blob is efficient enough to be stored directly in an STL container or any other data structure which requires assignment. In particular, by storing a Blob in an <a href="http://www.sgi.com/tech/stl/AssociativeContainer.html">associative container</a> (such as STL's '<a href="http://www.sgi.com/tech/stl/Map.html"><i>map</i></a>') it is possible to create simple indexed in-memory "database" of Blobs.</p>
 <p>Magick++ currently uses Blob to contain encoded images (e.g. JPEG) as well as ICC and IPTC profiles. Since Blob is a general-purpose class, it may be used for other purposes as well.</p>
 <p style="margin-bottom: 0cm">The methods Blob provides are shown in the following table:</p>
-<br>
-<ul><p align="center" style="margin-bottom: 0cm"><b>Blob Methods</b></p>
+<br />
+<p align="center" style="margin-bottom: 0cm"><b>Blob Methods</b></p>
 <table width="100%" border="1" cellpadding="2" cellspacing="2">
 <tr>
 <td>
@@ -87,7 +87,7 @@
 <td>
 <p><font size="2">void* data_, size_t length_, Blob::Allocator allocator_ = Blob::NewAllocator</font></p></td>
 <td>
-<p><font size="2">Update object contents, using supplied pointer directly (no copy) Any existing data in the object is deallocated. The user must ensure that the pointer supplied is not deleted or otherwise modified after it has been supplied to this method. The optional allocator_ parameter allows the user to specify if the C (MallocAllocator) or C++ (NewAllocator) memory allocation system was used to allocate the memory. The default is to use the C++ memory allocator.</font></p></td></tr></table></ul>
+<p><font size="2">Update object contents, using supplied pointer directly (no copy) Any existing data in the object is deallocated. The user must ensure that the pointer supplied is not deleted or otherwise modified after it has been supplied to this method. The optional allocator_ parameter allows the user to specify if the C (MallocAllocator) or C++ (NewAllocator) memory allocation system was used to allocate the memory. The default is to use the C++ memory allocator.</font></p></td></tr></table>
 </div>
 </body>
 </html>
