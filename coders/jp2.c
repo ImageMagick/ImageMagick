@@ -374,18 +374,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       opj_destroy_codec(jp2_codec);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
-  if (image_info->extract != (char *) NULL)
+  if ((image->columns != 0) && (image->rows != 0))
     {
-      RectangleInfo
-        geometry;
-
       /*
         Extract an area from the image.
       */
-      SetGeometry(image,&geometry);
-      (void) ParseAbsoluteGeometry(image_info->extract,&geometry);
-      jp2_status=opj_set_decode_area(jp2_codec,jp2_image,geometry.x,
-        geometry.y,geometry.width,geometry.height);
+      jp2_status=opj_set_decode_area(jp2_codec,jp2_image,image->extract_info.x,
+        image->extract_info.x,image->columns,image->rows);
       if (jp2_status == 0)
         {
           opj_stream_set_user_data(jp2_stream,NULL);
