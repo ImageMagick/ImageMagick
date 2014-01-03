@@ -80,6 +80,20 @@ static GhostInfo
 
 static void
   *ghost_handle = (void *) NULL;
+
+struct
+{
+  const HKEY
+    hkey;
+
+  const char
+    *name;
+}
+const registry_roots[2] =
+{
+  { HKEY_CURRENT_USER,  "HKEY_CURRENT_USER"  },
+  { HKEY_LOCAL_MACHINE, "HKEY_LOCAL_MACHINE" }
+};
 
 /*
   External declarations.
@@ -932,8 +946,8 @@ static int NTGetRegistryValue(HKEY root,const char *key,DWORD flags,const char *
   return(1);  /* not found */
 }
 
-static int NTLocateGhostscript(DWORD flags,const char **product_family,int *major_version,
-  int *minor_version)
+static int NTLocateGhostscript(DWORD flags,int *root_index,
+  const char **product_family,int *major_version,int *minor_version)
 {
   int
     i;
@@ -954,6 +968,7 @@ static int NTLocateGhostscript(DWORD flags,const char **product_family,int *majo
     Find the most recent version of Ghostscript.
   */
   status=MagickFalse;
+  *root_index=0;
   *product_family=NULL;
   *major_version=5;
   *minor_version=49; /* min version of Ghostscript is 5.50 */
@@ -963,48 +978,54 @@ static int NTLocateGhostscript(DWORD flags,const char **product_family,int *majo
       key[MaxTextExtent];
 
     HKEY
-      hkey,
-      root;
+      hkey;
+
+    int
+      j;
 
     REGSAM
       mode;
 
     (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s",products[i]);
-    root=HKEY_LOCAL_MACHINE;
-    mode=KEY_READ | flags;
-    if (RegOpenKeyExA(root,key,0,mode,&hkey) == ERROR_SUCCESS)
-      {
-        DWORD
-          extent;
-
-        int
-          j;
-
-        /*
-          Now enumerate the keys.
-        */
-        extent=sizeof(key)/sizeof(char);
-        for (j=0; RegEnumKeyA(hkey,j,key,extent) == ERROR_SUCCESS; j++)
+    for (j=0; j < 2; j++)
+    {
+      mode=KEY_READ | flags;
+      if (RegOpenKeyExA(registry_roots[j].hkey,key,0,mode,&hkey) == 
+            ERROR_SUCCESS)
         {
-          int
-            major,
-            minor;
+          DWORD
+            extent;
 
-          major=0;
-          minor=0;
-          if (sscanf(key,"%d.%d",&major,&minor) != 2)
-            continue;
-          if ((major > *major_version) || ((major == *major_version) &&
-              (minor > *minor_version)))
-            {
-              *product_family=products[i];
-              *major_version=major;
-              *minor_version=minor;
-              status=MagickTrue;
-            }
+          int
+            k;
+
+          /*
+            Now enumerate the keys.
+          */
+          extent=sizeof(key)/sizeof(char);
+          for (k=0; RegEnumKeyA(hkey,k,key,extent) == ERROR_SUCCESS; k++)
+          {
+            int
+              major,
+              minor;
+
+            major=0;
+            minor=0;
+            if (sscanf(key,"%d.%d",&major,&minor) != 2)
+              continue;
+            if ((major > *major_version) || ((major == *major_version) &&
+                (minor > *minor_version)))
+              {
+                *root_index=j;
+                *product_family=products[i];
+                *major_version=major;
+                *minor_version=minor;
+                status=MagickTrue;
+              }
+         }
+         (void) RegCloseKey(hkey);
        }
-       (void) RegCloseKey(hkey);
-     }
+    }
   }
   if (status == MagickFalse)
     {
@@ -1016,108 +1037,72 @@ static int NTLocateGhostscript(DWORD flags,const char **product_family,int *majo
   return(status);
 }
 
-static BOOL NTIs64BitPlatform()
-{
-#if defined(_WIN64) || !defined(KEY_WOW64_32KEY)
-  return(TRUE);
-#else
-#if defined(__MINGW32__) || defined(__MINGW64__)
-#if defined(__MINGW32__)
-  return(FALSE);
-#else
-  return(TRUE);
-#endif
-#else
-  BOOL is64=FALSE;
-  return(IsWow64Process(GetCurrentProcess(), &is64) && is64);
-#endif
-#endif
-}
-
-static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
-  const size_t length)
+static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
+  char *value,const size_t length)
 {
   char
     key[MaxTextExtent];
 
   int
-    i,
     extent;
 
   static const char
-    *product_family = (const char *) NULL;
+    *product_family=(const char *) NULL;
 
   static BOOL
-    is_64_bit_version = FALSE;
+    is_64_bit_version=FALSE;
 
   static int
     flags=0,
     major_version=0,
-    minor_version=0;
-
-  struct
-  {
-    const HKEY
-      hkey;
-
-    const char
-      *name;
-  }
-  hkeys[2] =
-  {
-    { HKEY_CURRENT_USER,  "HKEY_CURRENT_USER"  },
-    { HKEY_LOCAL_MACHINE, "HKEY_LOCAL_MACHINE" }
-  };
+    minor_version=0,
+    root_index=0;
 
   /*
     Get a string from the installed Ghostscript.
   */
-  if (is_64_bit!=NULL)
-    *is_64_bit=FALSE;
   *value='\0';
   if (product_family == NULL)
   {
     flags=0;
 #if defined(KEY_WOW64_32KEY)
-    flags=NTIs64BitPlatform() ? KEY_WOW64_64KEY : 0;
+#if defined(_WIN64)
+    flags=KEY_WOW64_64KEY;
+#else
+    flags=KEY_WOW64_32KEY;
 #endif
-    (void) NTLocateGhostscript(flags,&product_family,&major_version,
-      &minor_version);
+    (void) NTLocateGhostscript(flags,&root_index,&product_family,
+      &major_version,&minor_version);
     if (product_family == NULL)
-    {
-      if (flags!=0)
-      {
-        /*
-          We are running on a 64 bit platform - check for a 32 bit Ghostscript.
-        */
-#if defined(KEY_WOW64_32KEY)
-        flags=KEY_WOW64_32KEY;
-#endif
-        (void) NTLocateGhostscript(flags,&product_family,&major_version,
-          &minor_version);
-  	  }
-    }
+#if defined(_WIN64)
+      flags=KEY_WOW64_32KEY;
     else
-      is_64_bit_version=NTIs64BitPlatform();
+      is_64_bit_version=TRUE;
+#else
+      flags=KEY_WOW64_64KEY;
+#endif
+#endif
   }
-  if (is_64_bit != NULL)
-    *is_64_bit=is_64_bit_version;
+  if (product_family == NULL)
+  {
+    (void) NTLocateGhostscript(flags,&root_index,&product_family,
+      &major_version,&minor_version);
+  }
   if (product_family == NULL)
     return(FALSE);
+  if (is_64_bit != NULL)
+    *is_64_bit=is_64_bit_version;
   (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
     product_family,major_version,minor_version);
-  for (i=0; i < (ssize_t) (sizeof(hkeys)/sizeof(hkeys[0])); i++)
-  {
-    extent=(int) length;
-    if (NTGetRegistryValue(hkeys[i].hkey,key,flags,name,value,&extent) == 0)
-      {
-        (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-          "registry: \"%s\\%s\\%s\"=\"%s\"",hkeys[i].name,key,name,value);
-        return(TRUE);
-      }
-    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-      "registry: \"%s\\%s\\%s\" (failed)",hkeys[i].name,key,name);
-  }
+  extent=(int) length;
+  if (NTGetRegistryValue(registry_roots[root_index].hkey,key,flags,name,value,
+     &extent) == 0)
+    {
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+        "registry: \"%s\\%s\\%s\"=\"%s\"",registry_roots[root_index].name,key,
+        name,value);
+      return(TRUE);
+    }
   return(FALSE);
 }
 
