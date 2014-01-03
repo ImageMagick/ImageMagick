@@ -2,6 +2,8 @@
   * The -evaluate-sequence sum returns a proper alpha channel now (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24704).
   * Support OpenJPEG for JPEG-2000 support.
+  * Support IsMagickWandInstantiated() method (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=6&t=24724).
 
 2013-12-30  6.8.8-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-1, SVN revision 14087.
