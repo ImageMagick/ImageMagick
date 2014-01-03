@@ -360,7 +360,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       opj_destroy_codec(jp2_codec);
       ThrowReaderException(DelegateError,"UnableToManageJP2Stream");
     }
-  jp2_stream=opj_stream_create(1024,1);
+  jp2_stream=opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE,1);
   opj_stream_set_read_function(jp2_stream,JP2ReadHandler);
   opj_stream_set_write_function(jp2_stream,JP2WriteHandler);
   opj_stream_set_seek_function(jp2_stream,JP2SeekHandler);
