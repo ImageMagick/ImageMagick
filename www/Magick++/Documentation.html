@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="magick.css" type="text/css" />
 </head>
 <body>
-<p class="image"><img src="Magick++.png" name="Graphic1" align="bottom" width="464" height="134" border="0"></p>
+<p class="image"><img src="Magick++.png" name="Graphic1" align="bottom" width="464" height="134" border="0" /></p>
 <div class="doc-section">
 <p><a href="../Magick++">Magick++</a> provides a simple C++ API to the ImageMagick image processing library which supports reading and writing a huge number of image formats as well as supporting a broad spectrum of traditional image processing operations. The ImageMagick C API is complex and the data structures are currently not documented. Magick++ provides access to most of the features available from the C API but in a simple object-oriented and well-documented framework.</p>
 <p>Magick++ is intended to support commercial-grade application development. In order to avoid possible conflicts with the user's application, all symbols contained in Magick++ (included by the header <tt><font color="#663366">&lt;Magick++.h&gt;</font></tt>) are scoped to the <span lang="en-US">namespace</span> <i>Magick</i>. Symbols from the ImageMagick C library are imported under the <i>MagickCore</i> namespace to avoid possible conflicts and ImageMagick macros are only included within the Magick++ implementation so they won't impact the user's application.</p>
@@ -16,8 +16,8 @@
 <p>The image class uses a number of supportive classes in order to specify arguments. Colors are specified via the <a href="Color.html">Color</a> class. Colors specified in X11-style string form are implicitly converted to the Color class. Geometry arguments (those specifying width, height, and/or x and y offset) are specified via the <a href="Geometry.html">Geometry</a> class. Similar to the Color class, geometries specified as an X11-style string are implicitly converted to the Geometry class. Two dimensional drawable objects are specified via the <a href="Drawable.html">Drawable</a> class. Drawable objects may be provided as a single object or as a list of objects to be rendered using the current image options. Montage options (a montage is a rendered grid of thumbnails in one image) are specified via the <a href="Montage.html">Montage</a> class.</p>
 <p>Errors are reported using C++ exceptions derived from the <a href="Exception.html">Exception</a> class, which is itself derived from the standard C++ exception class. Exceptions are reported synchronous with the operation and are caught by the first matching <i>try</i> block as the stack is unraveled. This allows a clean coding style in which multiple related Magick++ commands may be executed with errors handled as a unit rather than line-by-line. Since the Image object provides reference-counted memory management, unreferenced images on the stack are automagically cleaned up, avoiding the potential for memory leaks.</p>
 <p style="margin-bottom: 0cm">For ease of access, the documentation for the available user-level classes is available via the following table.</p>
-<br>
-<ul><table border="1" class="docutils">
+<br />
+<table border="1" class="docutils">
 <caption><em>Magick++</em> User-Level Classes</caption>
 <colgroup>
 <col width="18%" />
@@ -62,7 +62,6 @@ containers of image frames.</td>
 </tr>
 </tbody>
 </table>
-</ul>
 </div>
 </body>
 </html>

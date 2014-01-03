@@ -20,9 +20,9 @@ PixelPacket is the internal representation of a pixel in ImageMagick. ImageMagic
 <p align="center" style="margin-bottom: 0cm"><b>Effect Of QuantumDepth Values</b></p>
 <center>
 <table width="361" border="1" cellpadding="2" cellspacing="3">
-<col width="102">
-<col width="121">
-<col width="111">
+<col width="102" />
+<col width="121" />
+<col width="111" />
 <tr>
 <td width="102">
 <p align="center"><b>QuantumDepth</b></p></td>
@@ -44,6 +44,7 @@ PixelPacket is the internal representation of a pixel in ImageMagick. ImageMagic
 <p align="center">unsigned short</p></td>
 <td width="111">
 <p align="center">64 bits</p></td></tr>
+<tr>
 <td width="102">
 <p align="center">32</p></td>
 <td width="121">
@@ -65,11 +66,11 @@ class Color
      Quantum green_, 
      Quantum blue_, 
      Quantum alpha_ ); 
-    Color ( const std::string &svgColor_ ); 
+    Color ( const std::string &amp;svgColor_ ); 
     Color ( const char * svgColor_ ); 
     Color ( void ); 
     virtual        ~Color ( void ); 
-    Color ( const Color & color_ );
+    Color ( const Color &amp; color_ );
 
     // Red color (range 0 to MaxRGB) 
     void           redQuantum ( Quantum red_ ); 
@@ -97,11 +98,11 @@ class Color
     bool           isValid ( void ) const; 
   
     // Set color via SVG color specification string 
-    const Color& operator= ( const std::string &svgColor_ ); 
-    const Color& operator= ( const char * svgColor_ );
+    const Color&amp; operator= ( const std::string &amp; svgColor_ ); 
+    const Color&amp; operator= ( const char * svgColor_ );
 
     // Assignment operator 
-    Color& operator= ( const Color& color_ ); 
+    Color&amp; operator= ( const Color&amp; color_ ); 
   
     // Return SVG color specification string 
     /* virtual */ operator std::string() const;
@@ -110,17 +111,16 @@ class Color
     operator PixelPacket() const;
 
     // Construct color via ImageMagick PixelPacket 
-    Color ( const PixelPacket &color_ );
+    Color ( const PixelPacket &amp;color_ );
 
     // Set color via ImageMagick PixelPacket 
-    const Color& operator= ( PixelPacket &color_ ); 
+    const Color&amp; operator= ( PixelPacket &amp;color_ ); 
 };
 </div>
 <p align="center" style="margin-bottom: 0cm"><b>Color Derived Classes</b></p>
-<ul>
 <table width="90%" border="1" cellpadding="2" cellspacing="3">
-<col width="29*">
-<col width="227*">
+<col width="29*" />
+<col width="227*" />
 <tr>
 <td width="12%">
 <p><a href="Color.html#ColorRGB">ColorRGB</a></p></td>
@@ -140,7 +140,7 @@ class Color
 <td width="12%">
 <p><a href="Color.html#ColorYUV">ColorYUV</a></p></td>
 <td width="88%">
-<p>Representation of a color in the YUV <span lang="en-US">colorspace</span></p></td></tr></table></ul>
+<p>Representation of a color in the YUV <span lang="en-US">colorspace</span></p></td></tr></table>
 <h3><a name="ColorRGB"></a>ColorRGB</h3>
 <p>Representation of an sRGB color. All color arguments have a valid range of 0.0 - 1.0.</p>
 <pre class="code">
@@ -149,7 +149,7 @@ class ColorRGB : public Color
   public: 
     ColorRGB ( double red_, double green_, double blue_ ); 
     ColorRGB ( void ); 
-    ColorRGB ( const Color & color_ ); 
+    ColorRGB ( const Color &amp; color_ ); 
     /* virtual */  ~ColorRGB ( void ); 
   
     void           red ( double red_ ); 
@@ -162,7 +162,7 @@ class ColorRGB : public Color
     double         blue ( void ) const;
 
     // Assignment operator from base class 
-    ColorRGB& operator= ( const Color& color_ ); 
+    ColorRGB&amp; operator= ( const Color&amp; color_ ); 
 }; 
 </pre>
 <h3><a name="ColorGray"></a>ColorGray</h3>
@@ -173,14 +173,14 @@ class ColorGray : public Color
   public: 
     ColorGray ( double shade_ ); 
     ColorGray ( void ); 
-    ColorGray ( const Color & color_ ); 
+    ColorGray ( const Color &amp; color_ ); 
     /* virtual */ ~ColorGray ();
 
     void           shade ( double shade_ ); 
     double         shade ( void ) const;
 
     // Assignment operator from base class 
-    ColorGray& operator= ( const Color& color_ ); 
+    ColorGray&amp; operator= ( const Color&amp; color_ ); 
 }; 
 </pre>
 <h3><a name="ColorMono"></a>ColorMono</h3>
@@ -191,14 +191,14 @@ class ColorMono : public Color
   public: 
     ColorMono ( bool mono_ ); 
     ColorMono ( void ); 
-    ColorMono ( const Color & color_ ); 
+    ColorMono ( const Color &amp; color_ ); 
     /* virtual */ ~ColorMono (); 
   
     void           mono ( bool mono_ ); 
     bool           mono ( void ) const;
 
     // Assignment operator from base class 
-    ColorMono& operator= ( const Color& color_ ); 
+    ColorMono&amp; operator= ( const Color&amp; color_ ); 
 }; 
 </pre>
 <h3><a name="ColorHSL"></a>ColorHSL</h3>
@@ -209,7 +209,7 @@ class ColorHSL : public Color
   public: 
     ColorHSL ( double hue_, double saturation_, double luminosity_ ); 
     ColorHSL ( void ); 
-    ColorHSL ( const Color & color_ ); 
+    ColorHSL ( const Color &amp; color_ ); 
     /* virtual */  ~ColorHSL ( ); 
   
     void           hue ( double hue_ ); 
@@ -222,7 +222,7 @@ class ColorHSL : public Color
     double         luminosity ( void ) const;
 
     // Assignment operator from base class 
-    ColorHSL& operator= ( const Color& color_ ); 
+    ColorHSL&amp; operator= ( const Color&amp; color_ ); 
 }; 
 </pre>
 <h3><a name="ColorYUV"></a>ColorYUV</h3>
@@ -239,7 +239,7 @@ class ColorYUV : public Color
   public: 
     ColorYUV ( double y_, double u_, double v_ ); 
     ColorYUV ( void ); 
-    ColorYUV ( const Color & color_ ); 
+    ColorYUV ( const Color &amp; color_ ); 
     /* virtual */ ~ColorYUV ( void ); 
   
     void           u ( double u_ ); 
@@ -252,7 +252,7 @@ class ColorYUV : public Color
     double         y ( void ) const;
 
     // Assignment operator from base class 
-    ColorYUV& operator= ( const Color& color_ ); 
+    ColorYUV&amp; operator= ( const Color&amp; color_ ); 
 }; 
 </pre>
 </div>
