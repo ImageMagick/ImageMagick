@@ -4035,7 +4035,7 @@ MagickExport MagickRealType InversesRGBCompandor(const MagickRealType pixel)
 */
 MagickExport MagickBooleanType IsMagickInstantiated(void)
 {
-  return(instantiate_magick);
+  return(IsMagickCoreInstantiated());
 }
 
 /*
