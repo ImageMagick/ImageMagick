@@ -247,7 +247,7 @@ static OPJ_BOOL JP2SeekHandler(OPJ_OFF_T offset,void *context)
     *image;
 
   image=(Image *) context;
-  return(SeekBlob(image,offset,SEEK_SET) == 0 ? 1 : 0);
+  return(SeekBlob(image,offset,SEEK_SET) < 0 ? 0 : 1);
 }
 
 static OPJ_OFF_T JP2SkipHandler(OPJ_OFF_T length,void *context)
