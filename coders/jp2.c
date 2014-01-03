@@ -380,7 +380,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         Extract an area from the image.
       */
       jp2_status=opj_set_decode_area(jp2_codec,jp2_image,image->extract_info.x,
-        image->extract_info.x,image->columns,image->rows);
+        image->extract_info.y,image->extract_info.x+image->columns,
+        image->extract_info.y+image->rows);
       if (jp2_status == 0)
         {
           opj_stream_set_user_data(jp2_stream,NULL);
