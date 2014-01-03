@@ -76,7 +76,7 @@
 */
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
 static MagickBooleanType
-  WriteJP2Image(const ImageInfo *,Image *);
+  WriteJP2Image(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 /*
@@ -250,7 +250,7 @@ static OPJ_BOOL JP2SeekHandler(OPJ_OFF_T offset,void *context)
   return(SeekBlob(image,offset,SEEK_SET) < 0 ? 0 : 1);
 }
 
-static OPJ_OFF_T JP2SkipHandler(OPJ_OFF_T length,void *context)
+static OPJ_OFF_T JP2SkipHandler(OPJ_OFF_T offset,void *context)
 {
   Image
     *image;
@@ -327,7 +327,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -418,12 +418,12 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   image->compression=JPEG2000Compression;
   if (jp2_image->numcomps <= 2)
     {
-      SetImageColorspace(image,GRAYColorspace);
+      SetImageColorspace(image,GRAYColorspace,exception);
       if (jp2_image->numcomps > 1)
-        image->matte=MagickTrue;
+        image->alpha_trait=BlendPixelTrait;
     }
   if (jp2_image->numcomps > 3)
-    image->matte=MagickTrue;
+    image->alpha_trait=BlendPixelTrait;
   for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
   {
     if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0))
@@ -444,18 +444,18 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       profile=BlobToStringInfo(jp2_image->icc_profile_buf,
         jp2_image->icc_profile_len);
       if (profile != (StringInfo *) NULL)
-        SetImageProfile(image,"icc",profile);
+        SetImageProfile(image,"icc",profile,exception);
     }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register PixelPacket
+    register Quantum
       *restrict q;
 
     register ssize_t
       x;
 
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -650,7 +650,8 @@ ModuleExport void UnregisterJP2Image(void)
 %
 %  The format of the WriteJP2Image method is:
 %
-%      MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -659,7 +660,8 @@ ModuleExport void UnregisterJP2Image(void)
 %    o image:  The image.
 %
 */
-static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -673,14 +675,14 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
     Initialize JPEG 2000 API.
   */
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if (status != MagickFalse)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
   return(MagickTrue);
