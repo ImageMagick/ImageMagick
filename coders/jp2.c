@@ -677,6 +677,9 @@ ModuleExport void UnregisterJP2Image(void)
 */
 static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
+  const char
+    *value;
+
   int
     jp2_status;
 
@@ -729,6 +732,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   parameters.tcp_rates[0]=0;
   parameters.tcp_numlayers++;
   parameters.cp_disto_alloc=1;
+  value=GetImageProperty(image,"comment");
+  if (value != (const char *) NULL)
+    parameters.cp_comment=ConstantString(value);
   channels=3;
   jp2_colorspace=OPJ_CLRSPC_SRGB;
   if (image->colorspace == YUVColorspace)
