@@ -896,6 +896,20 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline Quantum ClampPixel(const MagickRealType value)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) value);
+#else
+  if (value < 0.0f)
+    return(0.0f);
+  if (value >= (MagickRealType) QuantumRange)
+    return((Quantum) QuantumRange);
+  return(value);
+#endif
+}
+
 MagickExport MagickBooleanType SetImageDepth(Image *image,
   const size_t depth,ExceptionInfo *exception)
 {
@@ -933,17 +947,21 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
-            ClampToQuantum(image->colormap[i].red),range),range);
+          image->colormap[i].red=(double) ClampToQuantum(ScaleAnyToQuantum(
+            ScaleQuantumToAny(ClampToQuantum(image->colormap[i].red),range),
+            range));
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
-            ClampToQuantum(image->colormap[i].green),range),range);
+          image->colormap[i].green=(double) ClampToQuantum(ScaleAnyToQuantum(
+            ScaleQuantumToAny(ClampToQuantum(image->colormap[i].green),range),
+            range));
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
-            ClampToQuantum(image->colormap[i].blue),range),range);
+          image->colormap[i].blue=(double) ClampToQuantum(ScaleAnyToQuantum(
+            ScaleQuantumToAny(ClampToQuantum(image->colormap[i].blue),range),
+            range));
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].alpha=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
-            ClampToQuantum(image->colormap[i].alpha),range),range);
+          image->colormap[i].alpha=(double) ClampToQuantum(ScaleAnyToQuantum(
+            ScaleQuantumToAny(ClampToQuantum(image->colormap[i].alpha),range),
+            range));
       }
     }
   status=MagickTrue;
@@ -1008,7 +1026,8 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
             channel=GetPixelChannelChannel(image,i);
             traits=GetPixelChannelTraits(image,channel);
             if ((traits == UndefinedPixelTrait) ||
-                (channel == IndexPixelChannel) || (channel == ReadMaskPixelChannel))
+                (channel == IndexPixelChannel) ||
+                (channel == ReadMaskPixelChannel))
               continue;
             q[i]=depth_map[ScaleQuantumToMap(q[i])];
           }
@@ -1073,7 +1092,8 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
         if ((traits == UndefinedPixelTrait) || (channel == IndexPixelChannel) ||
             (channel == ReadMaskPixelChannel))
           continue;
-        q[i]=ScaleAnyToQuantum(ScaleQuantumToAny(q[i],range),range);
+        q[i]=ClampToQuantum(ScaleAnyToQuantum(ScaleQuantumToAny(q[i],range),
+          range));
       }
       q+=GetPixelChannels(image);
     }
