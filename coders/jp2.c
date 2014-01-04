@@ -809,6 +809,32 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       parameters.tcp_numlayers=i;
       parameters.cp_disto_alloc=OPJ_TRUE;
     }
+#if defined(BUGINOPENJPEG)
+  if ((image->depth == 12) &&
+      ((image->columns == 2048) || (image->rows == 1080) ||
+       (image->columns == 4096) || (image->rows == 2160)))
+    {
+      /*
+        Digital Cinema profile compliance.
+      */
+      if ((image->columns == 2048) || (image->rows == 1080))
+        {
+          /*
+            Digital Cinema 2K.
+          */
+          parameters.cp_cinema=OPJ_CINEMA2K_48;
+          parameters.cp_rsiz=OPJ_CINEMA2K;
+        }
+      if ((image->columns == 4096) || (image->rows == 2160))
+        {
+          /*
+            Digital Cinema 4K.
+          */
+          parameters.cp_cinema=OPJ_CINEMA4K_24;
+          parameters.cp_rsiz=OPJ_CINEMA4K;
+        }
+    }
+#endif
   value=GetImageProperty(image,"comment",exception);
   if (value != (const char *) NULL)
     parameters.cp_comment=ConstantString(value);
