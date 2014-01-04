@@ -61,7 +61,7 @@ typedef enum
 typedef struct _LogInfo
   LogInfo;
 
-typedef MagickExport void
+typedef void
   (*MagickLogMethod)(const LogEventType,const char *);
 
 extern MagickExport char
