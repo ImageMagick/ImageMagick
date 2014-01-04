@@ -351,7 +351,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   option=GetImageOption(image_info,"jp2:reduce-factor");
   if (option != (const char *) NULL)
     parameters.cp_reduce=StringToInteger(option);
-  option=GetImageOption(image_info,"jp2:quality-layers");
+  option=GetImageOption(image_info,"jp2:layer-number");
   if (option != (const char *) NULL)
     parameters.cp_layer=StringToInteger(option);
   if (opj_setup_decoder(jp2_codec,&parameters) == 0)
@@ -734,9 +734,49 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     if (((1UL << (i+2)) > image->columns) && ((1UL << (i+2)) > image->rows))
       break;
   parameters.numresolution=i;
-  parameters.tcp_rates[0]=0;
-  parameters.tcp_numlayers++;
-  parameters.cp_disto_alloc=1;
+  parameters.tcp_numlayers=1;
+  parameters.tcp_distoratio[0]=(double) image->quality;
+  parameters.cp_fixed_quality=1;
+  value=GetImageArtifact(image,"jp2:quality");
+  if (value != (const char *) NULL)
+    {
+      register const char
+        *p;
+
+      p=value;
+      for (i=1; sscanf(p,"%f",&parameters.tcp_distoratio[i]) == 1; i++)
+      {
+        if (i > 100)
+          break;
+        while ((*p != '\0') && (*p != ','))
+          p++;
+        if (*p == '\0')
+          break;
+        p++;
+      }
+      parameters.tcp_numlayers=i;
+      parameters.cp_fixed_quality=1;
+    }
+  value=GetImageArtifact(image,"jp2:rate");
+  if (value != (const char *) NULL)
+    {
+      register const char
+        *p;
+
+      p=value;
+      for (i=1; sscanf(p,"%f",&parameters.tcp_rates[i]) == 1; i++)
+      {
+        if (i > 100)
+          break;
+        while ((*p != '\0') && (*p != ','))
+          p++;
+        if (*p == '\0')
+          break;
+        p++;
+      }
+      parameters.tcp_numlayers=i;
+      parameters.cp_disto_alloc=1;
+    }
   value=GetImageProperty(image,"comment");
   if (value != (const char *) NULL)
     parameters.cp_comment=ConstantString(value);
