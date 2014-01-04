@@ -271,7 +271,7 @@ static const struct ReferenceFormats
     { "JNG", UndefinedCompression, 0.003 },
     { "JNG", JPEGCompression, 0.003 },
     { "JP2", UndefinedCompression, 0.003 },
-    { "JPC", UndefinedCompression, 0.003 },
+    { "J2K", UndefinedCompression, 0.003 },
     { "JPEG", UndefinedCompression, 0.003 },
     { "JPG", UndefinedCompression, 0.003 },
     { "K25", UndefinedCompression, 0.0 },
