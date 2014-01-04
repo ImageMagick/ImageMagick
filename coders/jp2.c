@@ -415,6 +415,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->columns=(size_t) jp2_image->comps[0].w;
   image->rows=(size_t) jp2_image->comps[0].h;
+  image->depth=jp2_image->comps[0].prec;
   image->compression=JPEG2000Compression;
   if (jp2_image->numcomps <= 2)
     {
