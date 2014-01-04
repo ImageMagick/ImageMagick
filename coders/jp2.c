@@ -61,6 +61,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/profile.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/statistic.h"
@@ -350,7 +351,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   option=GetImageOption(image_info,"jp2:reduce-factor");
   if (option != (const char *) NULL)
     parameters.cp_reduce=StringToInteger(option);
-  option=GetImageOption(image_info,"jp2:layer-number");
+  option=GetImageOption(image_info,"jp2:quality-layers");
   if (option != (const char *) NULL)
     parameters.cp_layer=StringToInteger(option);
   if (opj_setup_decoder(jp2_codec,&parameters) == 0)
@@ -389,16 +390,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
         }
     }
-  if (image_info->number_scenes != 0)
-    jp2_status=opj_get_decoded_tile(jp2_codec,jp2_stream,jp2_image,
-      image_info->scene);
-  else
-    {
-      jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
-      if (jp2_status != 0)
-        jp2_status=opj_end_decompress(jp2_codec,jp2_stream);
-    }
-  if (jp2_status == 0)
+  if ((opj_decode(jp2_codec,jp2_stream,jp2_image) == 0) ||
+      (opj_end_decompress(jp2_codec,jp2_stream) == 0))
     {
       opj_stream_set_user_data(jp2_stream,NULL);
       opj_stream_destroy_v3(jp2_stream);
@@ -687,8 +680,41 @@ ModuleExport void UnregisterJP2Image(void)
 static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
+  const char
+    *value;
+
+  int
+    jp2_status;
+
   MagickBooleanType
     status;
+
+  opj_codec_t
+    *jp2_codec;
+
+  OPJ_COLOR_SPACE
+    jp2_colorspace;
+
+  opj_cparameters_t
+    parameters;
+
+  opj_image_cmptparm_t
+    jp2_info[5];
+
+  opj_image_t
+    *jp2_image;
+
+  opj_stream_t
+    *jp2_stream;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    y;
+
+  size_t
+    channels;
 
   /*
     Open image file.
@@ -699,16 +725,245 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
     Initialize JPEG 2000 API.
   */
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  if (status != MagickFalse)
+  opj_set_default_encoder_parameters(&parameters);
+  for (i=1; i < 6; i++)
+    if (((1UL << (i+2)) > image->columns) && ((1UL << (i+2)) > image->rows))
+      break;
+  parameters.numresolution=i;
+  parameters.tcp_numlayers=1;
+  parameters.tcp_distoratio[0]=(double) image->quality;
+  parameters.cp_fixed_quality=OPJ_TRUE;
+  if (image_info->extract != (char *) NULL)
+    {
+      RectangleInfo
+        geometry;
+
+      int
+        flags;
+
+      /*
+        Set tile size.
+      */
+      flags=ParseAbsoluteGeometry(image_info->extract,&geometry);
+      parameters.cp_tdx=geometry.width;
+      parameters.cp_tdy=geometry.width;
+      if ((flags & HeightValue) != 0)
+        parameters.cp_tdy=geometry.height;
+      if ((flags & XValue) != 0)
+        parameters.cp_tx0=geometry.x;
+      if ((flags & YValue) != 0)
+        parameters.cp_ty0=geometry.y;
+      parameters.tile_size_on=OPJ_TRUE;
+    }
+  value=GetImageArtifact(image,"jp2:quality");
+  if (value != (const char *) NULL)
+    {
+      register const char
+        *p;
+
+      /*
+        Set quality PSNR.
+      */
+      p=value;
+      for (i=1; sscanf(p,"%f",&parameters.tcp_distoratio[i]) == 1; i++)
+      {
+        if (i > 100)
+          break;
+        while ((*p != '\0') && (*p != ','))
+          p++;
+        if (*p == '\0')
+          break;
+        p++;
+      }
+      parameters.tcp_numlayers=i;
+      parameters.cp_fixed_quality=OPJ_TRUE;
+    }
+  value=GetImageArtifact(image,"jp2:rate");
+  if (value != (const char *) NULL)
+    {
+      register const char
+        *p;
+
+      /*
+        Set compression rate.
+      */
+      p=value;
+      for (i=1; sscanf(p,"%f",&parameters.tcp_rates[i]) == 1; i++)
+      {
+        if (i > 100)
+          break;
+        while ((*p != '\0') && (*p != ','))
+          p++;
+        if (*p == '\0')
+          break;
+        p++;
+      }
+      parameters.tcp_numlayers=i;
+      parameters.cp_disto_alloc=OPJ_TRUE;
+    }
+  value=GetImageProperty(image,"comment",exception);
+  if (value != (const char *) NULL)
+    parameters.cp_comment=ConstantString(value);
+  channels=3;
+  jp2_colorspace=OPJ_CLRSPC_SRGB;
+  if (image->colorspace == YUVColorspace)
+    {
+      jp2_colorspace=OPJ_CLRSPC_SYCC;
+      parameters.subsampling_dx=2;
+    }
+  else
+    {
+      if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+        (void) TransformImageColorspace(image,sRGBColorspace,exception);
+      if (IsGrayColorspace(image->colorspace) != MagickFalse)
+        {
+          channels=1;
+          jp2_colorspace=OPJ_CLRSPC_GRAY;
+        }
+      if (image->alpha_trait == BlendPixelTrait)
+        channels++;
+    }
+  ResetMagickMemory(jp2_info,0,sizeof(jp2_info));
+  for (i=0; i < (ssize_t) channels; i++)
+  {
+    jp2_info[i].prec=image->depth;
+    jp2_info[i].bpp=image->depth;
+    if ((image->depth == 1) &&
+        ((LocaleCompare(image_info->magick,"JPT") == 0) ||
+         (LocaleCompare(image_info->magick,"JP2") == 0)))
+      {
+        jp2_info[i].prec++;  /* OpenJPEG returns exception for depth @ 1 */
+        jp2_info[i].bpp++;
+      }
+    jp2_info[i].sgnd=0;
+    jp2_info[i].dx=parameters.subsampling_dx;
+    jp2_info[i].dy=parameters.subsampling_dy;
+    jp2_info[i].w=image->columns;
+    jp2_info[i].h=image->rows;
+  }
+  jp2_image=opj_image_create(channels,jp2_info,jp2_colorspace);
+  if (jp2_image == (opj_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
+  jp2_image->x0=parameters.image_offset_x0;
+  jp2_image->y0=parameters.image_offset_y0;
+  jp2_image->x1=2*parameters.image_offset_x0+(image->columns-1)*
+    parameters.subsampling_dx+1;
+  jp2_image->y1=2*parameters.image_offset_y0+(image->rows-1)*
+    parameters.subsampling_dx+1;
+  /*
+    Convert to JP2 pixels.
+  */
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *p;
+
+    ssize_t
+      x;
+
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      for (i=0; i < (ssize_t) channels; i++)
+      {
+        double
+          scale;
+
+        register int
+          *q;
+
+        scale=(double) ((1UL << jp2_image->comps[i].prec)-1)/QuantumRange;
+        q=jp2_image->comps[i].data+(y/jp2_image->comps[i].dy*
+          image->columns/jp2_image->comps[i].dx+x/jp2_image->comps[i].dx);
+        switch (i)
+        {
+          case 0:
+          {
+            if (jp2_colorspace == OPJ_CLRSPC_GRAY)
+              {
+                *q=(int) (scale*GetPixelLuma(image,p));
+                break;
+              }
+            *q=(int) (scale*GetPixelRed(image,p));
+            break;
+          }
+          case 1:
+          {
+            if (jp2_colorspace == OPJ_CLRSPC_GRAY)
+              {
+                *q=(int) (scale*GetPixelAlpha(image,p));
+                break;
+              }
+            *q=(int) (scale*GetPixelGreen(image,p));
+            break;
+          }
+          case 2:
+          {
+            *q=(int) (scale*GetPixelBlue(image,p));
+            break;
+          }
+          case 3:
+          {
+            *q=(int) (scale*GetPixelAlpha(image,p));
+            break;
+          }
+        }
+      }
+      p++;
+    }
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (status == MagickFalse)
+      break;
+  }
+  if (LocaleCompare(image_info->magick,"JPT") == 0)
+    jp2_codec=opj_create_compress(OPJ_CODEC_JPT);
+  else
+    if (LocaleCompare(image_info->magick,"J2K") == 0)
+      jp2_codec=opj_create_compress(OPJ_CODEC_J2K);
+    else
+      jp2_codec=opj_create_compress(OPJ_CODEC_JP2);
+  opj_set_warning_handler(jp2_codec,JP2WarningHandler,exception);
+  opj_set_error_handler(jp2_codec,JP2ErrorHandler,exception);
+  opj_setup_encoder(jp2_codec,&parameters,jp2_image);
+  jp2_stream=opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE,OPJ_FALSE);
+  opj_stream_set_read_function(jp2_stream,JP2ReadHandler);
+  opj_stream_set_write_function(jp2_stream,JP2WriteHandler);
+  opj_stream_set_seek_function(jp2_stream,JP2SeekHandler);
+  opj_stream_set_skip_function(jp2_stream,JP2SkipHandler);
+  opj_stream_set_user_data(jp2_stream,image);
+  if (jp2_stream == (opj_stream_t *) NULL)
+    ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
+  jp2_status=opj_start_compress(jp2_codec,jp2_image,jp2_stream);
+  if (jp2_status == 0)
+    ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
+  if ((opj_encode(jp2_codec,jp2_stream) == 0) ||
+      (opj_end_compress(jp2_codec,jp2_stream) == 0))
+    {
+      opj_stream_set_user_data(jp2_stream,NULL);
+      opj_stream_destroy_v3(jp2_stream);
+      opj_destroy_codec(jp2_codec);
+      opj_image_destroy(jp2_image);
+      ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
+    }
+  /*
+    Free resources.
+  */
+  opj_stream_set_user_data(jp2_stream,NULL);
+  opj_stream_destroy_v3(jp2_stream);
+  opj_destroy_codec(jp2_codec);
+  opj_image_destroy(jp2_image);
+  (void) CloseBlob(image);
   return(MagickTrue);
 }
 #endif
