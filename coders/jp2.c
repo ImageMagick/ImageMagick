@@ -764,6 +764,13 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   {
     jp2_info[i].prec=image->depth;
     jp2_info[i].bpp=image->depth;
+    if ((image->depth == 1) &&
+        ((LocaleCompare(image_info->magick,"JPT") == 0) ||
+         (LocaleCompare(image_info->magick,"JP2") == 0)))
+      {
+        jp2_info[i].prec++;  /* OpenJPEG returns exception for depth @ 1 */
+        jp2_info[i].bpp++;
+      }
     jp2_info[i].sgnd=0;
     jp2_info[i].dx=parameters.subsampling_dx;
     jp2_info[i].dy=parameters.subsampling_dy;
@@ -810,6 +817,11 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
         {
           case 0:
           {
+            if (jp2_colorspace == OPJ_CLRSPC_GRAY)
+              {
+                *q=(int) (scale*GetPixelLuma(image,p));
+                break;
+              }
             *q=(int) (scale*p->red);
             break;
           }
@@ -818,7 +830,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
             if (jp2_colorspace == OPJ_CLRSPC_GRAY)
               {
                 *q=(int) (scale*(QuantumRange-p->opacity));
-                                                break;
+                break;
               }
             *q=(int) (scale*p->green);
             break;
@@ -858,7 +870,6 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   opj_stream_set_seek_function(jp2_stream,JP2SeekHandler);
   opj_stream_set_skip_function(jp2_stream,JP2SkipHandler);
   opj_stream_set_user_data(jp2_stream,image);
-  opj_stream_set_user_data_length(jp2_stream,GetBlobSize(image));
   if (jp2_stream == (opj_stream_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
   jp2_status=opj_start_compress(jp2_codec,jp2_image,jp2_stream);
