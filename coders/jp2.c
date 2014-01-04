@@ -389,8 +389,16 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
         }
     }
-  if ((opj_decode(jp2_codec,jp2_stream,jp2_image) == 0) ||
-      (opj_end_decompress(jp2_codec,jp2_stream) == 0))
+  if (image_info->number_scenes != 0)
+    jp2_status=opj_get_decoded_tile(jp2_codec,jp2_stream,jp2_image,
+      image_info->scene);
+  else
+    {
+      jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
+      if (jp2_status != 0)
+        jp2_status=opj_end_decompress(jp2_codec,jp2_stream);
+    }
+  if (jp2_status == 0)
     {
       opj_stream_set_user_data(jp2_stream,NULL);
       opj_stream_destroy_v3(jp2_stream);
