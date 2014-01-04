@@ -390,8 +390,16 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
         }
     }
-  if ((opj_decode(jp2_codec,jp2_stream,jp2_image) == 0) ||
-      (opj_end_decompress(jp2_codec,jp2_stream) == 0))
+  if (image_info->number_scenes != 0)
+    jp2_status=opj_get_decoded_tile(jp2_codec,jp2_stream,jp2_image,
+      image_info->scene);
+  else
+    {
+      jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
+      if (jp2_status != 0)
+        jp2_status=opj_end_decompress(jp2_codec,jp2_stream);
+    }
+  if (jp2_status == 0)
     {
       opj_stream_set_user_data(jp2_stream,NULL);
       opj_stream_destroy_v3(jp2_stream);
@@ -736,13 +744,38 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   parameters.numresolution=i;
   parameters.tcp_numlayers=1;
   parameters.tcp_distoratio[0]=(double) image->quality;
-  parameters.cp_fixed_quality=1;
+  parameters.cp_fixed_quality=OPJ_TRUE;
+  if (image_info->extract != (char *) NULL)
+    {
+      RectangleInfo
+        geometry;
+
+      int
+        flags;
+
+      /*
+        Set tile size.
+      */
+      flags=ParseAbsoluteGeometry(image_info->extract,&geometry);
+      parameters.cp_tdx=geometry.width;
+      parameters.cp_tdy=geometry.width;
+      if ((flags & HeightValue) != 0)
+        parameters.cp_tdy=geometry.height;
+      if ((flags & XValue) != 0)
+        parameters.cp_tx0=geometry.x;
+      if ((flags & YValue) != 0)
+        parameters.cp_ty0=geometry.y;
+      parameters.tile_size_on=OPJ_TRUE;
+    }
   value=GetImageArtifact(image,"jp2:quality");
   if (value != (const char *) NULL)
     {
       register const char
         *p;
 
+      /*
+        Set quality PSNR.
+      */
       p=value;
       for (i=1; sscanf(p,"%f",&parameters.tcp_distoratio[i]) == 1; i++)
       {
@@ -755,7 +788,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
         p++;
       }
       parameters.tcp_numlayers=i;
-      parameters.cp_fixed_quality=1;
+      parameters.cp_fixed_quality=OPJ_TRUE;
     }
   value=GetImageArtifact(image,"jp2:rate");
   if (value != (const char *) NULL)
@@ -763,6 +796,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       register const char
         *p;
 
+      /*
+        Set compression rate.
+      */
       p=value;
       for (i=1; sscanf(p,"%f",&parameters.tcp_rates[i]) == 1; i++)
       {
@@ -775,7 +811,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
         p++;
       }
       parameters.tcp_numlayers=i;
-      parameters.cp_disto_alloc=1;
+      parameters.cp_disto_alloc=OPJ_TRUE;
     }
   value=GetImageProperty(image,"comment");
   if (value != (const char *) NULL)
@@ -838,7 +874,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (PixelPacket *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
