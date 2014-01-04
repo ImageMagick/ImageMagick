@@ -1113,7 +1113,9 @@
 #endif
 
 /* Define if you have OPENJP2 library */
-/* #undef LIBOPENJP2_DELEGATE */
+#ifndef MAGICKCORE_LIBOPENJP2_DELEGATE
+#define MAGICKCORE_LIBOPENJP2_DELEGATE 1
+#endif
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
