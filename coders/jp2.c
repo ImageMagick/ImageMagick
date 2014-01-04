@@ -730,6 +730,10 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     Initialize JPEG 2000 API.
   */
   opj_set_default_encoder_parameters(&parameters);
+  for (i=1; i < 6; i++)
+    if (((1UL << (i+2)) > image->columns) && ((1UL << (i+2)) > image->rows))
+      break;
+  parameters.numresolution=i;
   parameters.tcp_rates[0]=0;
   parameters.tcp_numlayers++;
   parameters.cp_disto_alloc=1;
