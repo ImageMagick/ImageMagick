@@ -2379,50 +2379,46 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   *subimage='\0';
-  if (frames == 0)
+  GetPathComponent(image_info->filename,SubimagePath,subimage);
+  if (*subimage != '\0')
     {
-      GetPathComponent(image_info->filename,SubimagePath,subimage);
-      if (*subimage != '\0')
+      /*
+        Look for scene specification (e.g. img0001.pcd[4]).
+      */
+      if (IsSceneGeometry(subimage,MagickFalse) == MagickFalse)
         {
-          /*
-            Look for scene specification (e.g. img0001.pcd[4]).
-          */
-          if (IsSceneGeometry(subimage,MagickFalse) == MagickFalse)
-            {
-              if (IsGeometry(subimage) != MagickFalse)
-                (void) CloneString(&image_info->extract,subimage);
-            }
-          else
-            {
-              size_t
-                first,
-                last;
+          if (IsGeometry(subimage) != MagickFalse)
+            (void) CloneString(&image_info->extract,subimage);
+        }
+      else
+        {
+          size_t
+            first,
+            last;
 
-              (void) CloneString(&image_info->scenes,subimage);
-              image_info->scene=StringToUnsignedLong(image_info->scenes);
-              image_info->number_scenes=image_info->scene;
-              p=image_info->scenes;
-              for (q=(char *) image_info->scenes; *q != '\0'; p++)
-              {
-                while ((isspace((int) ((unsigned char) *p)) != 0) ||
-                       (*p == ','))
-                  p++;
-                first=(size_t) strtol(p,&q,10);
-                last=first;
-                while (isspace((int) ((unsigned char) *q)) != 0)
-                  q++;
-                if (*q == '-')
-                  last=(size_t) strtol(q+1,&q,10);
-                if (first > last)
-                  Swap(first,last);
-                if (first < image_info->scene)
-                  image_info->scene=first;
-                if (last > image_info->number_scenes)
-                  image_info->number_scenes=last;
-                p=q;
-              }
-              image_info->number_scenes-=image_info->scene-1;
-            }
+          (void) CloneString(&image_info->scenes,subimage);
+          image_info->scene=StringToUnsignedLong(image_info->scenes);
+          image_info->number_scenes=image_info->scene;
+          p=image_info->scenes;
+          for (q=(char *) image_info->scenes; *q != '\0'; p++)
+          {
+            while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
+              p++;
+            first=(size_t) strtol(p,&q,10);
+            last=first;
+            while (isspace((int) ((unsigned char) *q)) != 0)
+              q++;
+            if (*q == '-')
+              last=(size_t) strtol(q+1,&q,10);
+            if (first > last)
+              Swap(first,last);
+            if (first < image_info->scene)
+              image_info->scene=first;
+            if (last > image_info->number_scenes)
+              image_info->number_scenes=last;
+            p=q;
+          }
+          image_info->number_scenes-=image_info->scene-1;
         }
     }
   *extension='\0';
