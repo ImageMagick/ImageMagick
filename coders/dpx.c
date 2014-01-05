@@ -717,7 +717,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   offset+=4;
   dpx.file.ditto_key=ReadBlobLong(image);
   offset+=4;
-  if (dpx.file.ditto_key != ~0UL)
+  if (dpx.file.ditto_key != ~0U)
     (void) FormatImageProperty(image,"dpx:file.ditto.key","%u",
       dpx.file.ditto_key);
   dpx.file.generic_size=ReadBlobLong(image);
@@ -770,7 +770,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   dpx.file.encrypt_key=ReadBlobLong(image);
   offset+=4;
-  if (dpx.file.encrypt_key != ~0UL)
+  if (dpx.file.encrypt_key != ~0U)
     (void) FormatImageProperty(image,"dpx:file.encrypt_key","%u",
       dpx.file.encrypt_key);
   offset+=ReadBlob(image,sizeof(dpx.file.reserve),(unsigned char *)
@@ -855,12 +855,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       dpx.orientation.x_offset=ReadBlobLong(image);
       offset+=4;
-      if (dpx.orientation.x_offset != ~0UL)
+      if (dpx.orientation.x_offset != ~0U)
         (void) FormatImageProperty(image,"dpx:orientation.x_offset","%u",
           dpx.orientation.x_offset);
       dpx.orientation.y_offset=ReadBlobLong(image);
       offset+=4;
-      if (dpx.orientation.y_offset != ~0UL)
+      if (dpx.orientation.y_offset != ~0U)
         (void) FormatImageProperty(image,"dpx:orientation.y_offset","%u",
           dpx.orientation.y_offset);
       dpx.orientation.x_center=ReadBlobFloat(image);
@@ -875,12 +875,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           dpx.orientation.y_center);
       dpx.orientation.x_size=ReadBlobLong(image);
       offset+=4;
-      if (dpx.orientation.x_size != ~0UL)
+      if (dpx.orientation.x_size != ~0U)
         (void) FormatImageProperty(image,"dpx:orientation.x_size","%u",
           dpx.orientation.x_size);
       dpx.orientation.y_size=ReadBlobLong(image);
       offset+=4;
-      if (dpx.orientation.y_size != ~0UL)
+      if (dpx.orientation.y_size != ~0U)
         (void) FormatImageProperty(image,"dpx:orientation.y_size","%u",
           dpx.orientation.y_size);
       offset+=ReadBlob(image,sizeof(dpx.orientation.filename),(unsigned char *)
@@ -917,8 +917,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         dpx.orientation.aspect_ratio[i]=ReadBlobLong(image);
         offset+=4;
       }
-      if ((dpx.orientation.aspect_ratio[0] != ~0UL) &&
-          (dpx.orientation.aspect_ratio[1] != ~0UL))
+      if ((dpx.orientation.aspect_ratio[0] != ~0U) &&
+          (dpx.orientation.aspect_ratio[1] != ~0U))
         (void) FormatImageProperty(image,"dpx:orientation.aspect_ratio",
           "%ux%u",dpx.orientation.aspect_ratio[0],
           dpx.orientation.aspect_ratio[1]);
@@ -959,17 +959,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           dpx.film.format);
       dpx.film.frame_position=ReadBlobLong(image);
       offset+=4;
-      if (dpx.film.frame_position != ~0UL)
+      if (dpx.film.frame_position != ~0U)
         (void) FormatImageProperty(image,"dpx:film.frame_position","%u",
           dpx.film.frame_position);
       dpx.film.sequence_extent=ReadBlobLong(image);
       offset+=4;
-      if (dpx.film.sequence_extent != ~0UL)
+      if (dpx.film.sequence_extent != ~0U)
         (void) FormatImageProperty(image,"dpx:film.sequence_extent","%u",
           dpx.film.sequence_extent);
       dpx.film.held_count=ReadBlobLong(image);
       offset+=4;
-      if (dpx.film.held_count != ~0UL)
+      if (dpx.film.held_count != ~0U)
         (void) FormatImageProperty(image,"dpx:film.held_count","%u",
           dpx.film.held_count);
       dpx.film.frame_rate=ReadBlobFloat(image);
@@ -1090,7 +1090,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset+=ReadBlob(image,sizeof(dpx.user.id),(unsigned char *) dpx.user.id);
       if (*dpx.user.id != '\0')
         (void) FormatImageProperty(image,"dpx:user.id","%.32s",dpx.user.id);
-      if ((dpx.file.user_size != ~0UL) &&
+      if ((dpx.file.user_size != ~0U) &&
           ((size_t) dpx.file.user_size > sizeof(dpx.user.id)))
         {
           StringInfo
@@ -1121,7 +1121,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert DPX raster image to pixel packets.
     */
-    if ((dpx.image.image_element[n].data_offset != (unsigned int) (~0UL)) &&
+    if ((dpx.image.image_element[n].data_offset != ~0U) &&
         (dpx.image.image_element[n].data_offset != 0U))
       {
          MagickOffsetType
