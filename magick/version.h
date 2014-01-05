@@ -52,7 +52,7 @@ extern "C" {
 #define MagickChangeDate   "20131230"
 #define MagickFeatures "DPC OpenMP"
 #define MagickDelegates "bzlib djvu mpeg fftw fpx fontconfig freetype jng jpeg lcms lzma openexr openjp2 pango png ps tiff webp x xml zlib"
-#define MagickHomeURL  "file:///usr/share/doc/ImageMagick-6/index.html"
+#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6/index.html"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
