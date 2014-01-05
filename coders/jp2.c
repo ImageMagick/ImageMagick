@@ -870,6 +870,20 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       parameters.tcp_numlayers=i;
       parameters.cp_fixed_quality=OPJ_TRUE;
     }
+  option=GetImageOption(image_info,"jp2:progression-order");
+  if (option != (const char *) NULL)
+    {
+      if (LocaleCompare(option,"LRCP") == 0)
+        parameters.prog_order=OPJ_LRCP;
+      if (LocaleCompare(option,"RLCP") == 0)
+        parameters.prog_order=OPJ_RLCP;
+      if (LocaleCompare(option,"RPCL") == 0)
+        parameters.prog_order=OPJ_RPCL;
+      if (LocaleCompare(option,"PCRL") == 0)
+        parameters.prog_order=OPJ_PCRL;
+      if (LocaleCompare(option,"CPRL") == 0)
+        parameters.prog_order=OPJ_CPRL;
+    }
   option=GetImageOption(image_info,"jp2:rate");
   if (option != (const char *) NULL)
     {
