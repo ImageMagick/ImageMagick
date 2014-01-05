@@ -351,7 +351,6 @@ ModuleExport size_t RegisterEMFImage(void)
   entry->blob_support=MagickFalse;
   entry->module=ConstantString("WMF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("WMZ");
   return(MagickImageCoderSignature);
 }
 
