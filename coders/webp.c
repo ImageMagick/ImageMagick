@@ -168,7 +168,7 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
 #define TAG_SIZE  4
 #define CHUNK_SIZE_BYTES  4
 #define CHUNK_HEADER_SIZE  8
-#define MAX_CHUNK_PAYLOAD  (~0UL-CHUNK_HEADER_SIZE-1)
+#define MAX_CHUNK_PAYLOAD  (~0U-CHUNK_HEADER_SIZE-1)
 
   ssize_t
     offset;
