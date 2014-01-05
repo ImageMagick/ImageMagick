@@ -1115,17 +1115,17 @@ RestoreMSCWarning
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetPixelRed(q,ScaleAnyToQuantum(ScaleQuantumToAny(
-          ClampPixel(GetPixelRed(q)),range),range));
+        SetPixelRed(q,ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel(
+          GetPixelRed(q)),range),range));
       if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,ScaleAnyToQuantum(ScaleQuantumToAny(
-          ClampPixel(GetPixelGreen(q)),range),range));
+        SetPixelGreen(q,ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel(
+          GetPixelGreen(q)),range),range));
       if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,ScaleAnyToQuantum(ScaleQuantumToAny(
-          ClampPixel(GetPixelBlue(q)),range),range));
+        SetPixelBlue(q,ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel(
+          GetPixelBlue(q)),range),range));
       if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
-        SetPixelOpacity(q,ScaleAnyToQuantum(ScaleQuantumToAny(
-          ClampPixel(GetPixelOpacity(q)),range),range));
+        SetPixelOpacity(q,ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel(
+          GetPixelOpacity(q)),range),range));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
