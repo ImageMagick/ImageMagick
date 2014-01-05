@@ -53,7 +53,7 @@ extern "C" {
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickFeatures "DPC HDRI OpenMP"
 #define MagickDelegates "bzlib djvu mpeg fftw fpx fontconfig freetype jng jpeg lcms lzma openexr openjp2 pango png ps tiff webp x xml zlib"
-#define MagickHomeURL  "file:///usr/share/doc/ImageMagick-7/index.html"
+#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-7/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
 #define MagickQuantumRange  "255"

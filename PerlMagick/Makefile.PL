@@ -224,7 +224,7 @@ WriteMakefile
    'LDDLFLAGS' => $LDDLFLAGS_magick,
 
    # Install PerlMagick binary into ImageMagick bin directory
-   'INSTALLBIN'	=> '/usr/bin',
+   'INSTALLBIN'	=> '/usr/local/bin',
 
    # Library specification
    'LIBS' => [ $LIBS_magick ],
@@ -241,7 +241,7 @@ WriteMakefile
    'LD' => 'g++',
 
    # Set Perl installation prefix to ImageMagick installation prefix
-#   'PREFIX'	=> '/usr',
+#   'PREFIX'	=> '/usr/local',
 
    # Include delegate directories in tests
    test	=> { TESTS	=>	$delegate_tests},
@@ -266,6 +266,6 @@ sub MY::makeaperl {
      # tries to insert our library path first. Also, use the same compiler used
      # to build perlmain.c to link so that a C++ compiler may be used if
      # necessary.
-     $inherited =~ s:MAP_LINKCMD\s.*\s*\$\(CC\):MAP_LINKCMD   = \$(PERLMAINCC) -L/usr/lib64: ;
+     $inherited =~ s:MAP_LINKCMD\s.*\s*\$\(CC\):MAP_LINKCMD   = \$(PERLMAINCC) -L/usr/local/lib: ;
      $inherited;
  }

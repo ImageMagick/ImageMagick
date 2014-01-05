@@ -681,7 +681,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   const char
-    *value;
+    *option,
+    *property;
 
   int
     jp2_status;
@@ -738,6 +739,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     if (((1UL << (i+2)) > image->columns) && ((1UL << (i+2)) > image->rows))
       break;
   parameters.numresolution=i;
+  option=GetImageOption(image_info,"jp2:number-resolutions");
+  if (option != (const char *) NULL)
+    parameters.numresolution=StringToInteger(option);
   parameters.tcp_numlayers=1;
   parameters.tcp_distoratio[0]=(double) image->quality;
   parameters.cp_fixed_quality=OPJ_TRUE;
@@ -763,8 +767,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
         parameters.cp_ty0=geometry.y;
       parameters.tile_size_on=OPJ_TRUE;
     }
-  value=GetImageArtifact(image,"jp2:quality");
-  if (value != (const char *) NULL)
+  option=GetImageOption(image_info,"jp2:quality");
+  if (option != (const char *) NULL)
     {
       register const char
         *p;
@@ -772,7 +776,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       /*
         Set quality PSNR.
       */
-      p=value;
+      p=option;
       for (i=1; sscanf(p,"%f",&parameters.tcp_distoratio[i]) == 1; i++)
       {
         if (i > 100)
@@ -786,8 +790,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       parameters.tcp_numlayers=i;
       parameters.cp_fixed_quality=OPJ_TRUE;
     }
-  value=GetImageArtifact(image,"jp2:rate");
-  if (value != (const char *) NULL)
+  option=GetImageOption(image_info,"jp2:rate");
+  if (option != (const char *) NULL)
     {
       register const char
         *p;
@@ -795,7 +799,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       /*
         Set compression rate.
       */
-      p=value;
+      p=option;
       for (i=1; sscanf(p,"%f",&parameters.tcp_rates[i]) == 1; i++)
       {
         if (i > 100)
@@ -809,6 +813,10 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       parameters.tcp_numlayers=i;
       parameters.cp_disto_alloc=OPJ_TRUE;
     }
+  option=GetImageOption(image_info,"jp2:sampling-factor");
+  if (option != (const char *) NULL)
+    (void) sscanf(option,"%d,%d",&parameters.subsampling_dx, 
+      &parameters.subsampling_dy);  
 #if defined(BUGINOPENJPEG)
   if ((image->depth == 12) &&
       ((image->columns == 2048) || (image->rows == 1080) ||
@@ -835,9 +843,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
         }
     }
 #endif
-  value=GetImageProperty(image,"comment",exception);
-  if (value != (const char *) NULL)
-    parameters.cp_comment=ConstantString(value);
+  property=GetImageProperty(image,"comment",exception);
+  if (property != (const char *) NULL)
+    parameters.cp_comment=ConstantString(property);
   channels=3;
   jp2_colorspace=OPJ_CLRSPC_SRGB;
   if (image->colorspace == YUVColorspace)
