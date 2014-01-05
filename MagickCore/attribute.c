@@ -947,21 +947,17 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=(double) ClampToQuantum(ScaleAnyToQuantum(
-            ScaleQuantumToAny(ClampToQuantum(image->colormap[i].red),range),
-            range));
+          image->colormap[i].red=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
+            ClampPixel(image->colormap[i].red),range),range);
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=(double) ClampToQuantum(ScaleAnyToQuantum(
-            ScaleQuantumToAny(ClampToQuantum(image->colormap[i].green),range),
-            range));
+          image->colormap[i].green=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
+            ClampPixel(image->colormap[i].green),range),range);
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=(double) ClampToQuantum(ScaleAnyToQuantum(
-            ScaleQuantumToAny(ClampToQuantum(image->colormap[i].blue),range),
-            range));
+          image->colormap[i].blue=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
+            ClampPixel(image->colormap[i].blue),range),range);
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].alpha=(double) ClampToQuantum(ScaleAnyToQuantum(
-            ScaleQuantumToAny(ClampToQuantum(image->colormap[i].alpha),range),
-            range));
+          image->colormap[i].alpha=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
+            ClampPixel(image->colormap[i].alpha),range),range);
       }
     }
   status=MagickTrue;
@@ -1092,8 +1088,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
         if ((traits == UndefinedPixelTrait) || (channel == IndexPixelChannel) ||
             (channel == ReadMaskPixelChannel))
           continue;
-        q[i]=ClampToQuantum(ScaleAnyToQuantum(ScaleQuantumToAny(q[i],range),
-          range));
+        q[i]=ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel(q[i]),range),range);
       }
       q+=GetPixelChannels(image);
     }
