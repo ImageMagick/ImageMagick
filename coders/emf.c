@@ -15,6 +15,8 @@
 %                              Software Design                                %
 %                              Bill Radcliffe                                 %
 %                                   2001                                      %
+%                               Dirk Lemstra                                  %
+%                               January 2014                                  %
 %                                                                             %
 %  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
@@ -38,16 +40,9 @@
  */
 
 #include "magick/studio.h"
-#if defined(MAGICKCORE_WINGDI32_DELEGATE) && defined(__CYGWIN__)
-#  define MAGICKCORE_EMF_DELEGATE
-#endif
-
-#if defined(MAGICKCORE_EMF_DELEGATE)
-#  if defined(__CYGWIN__)
-#    include <windows.h>
-#  else
-#    include <wingdi.h>
-#  endif
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
+#  include <gdiplus.h>
+#  pragma comment(lib, "gdiplus.lib")
 #endif
 #include "magick/blob.h"
 #include "magick/blob-private.h"
@@ -166,475 +161,148 @@ static MagickBooleanType IsWMF(const unsigned char *magick,const size_t length)
 %
 */
 
-#if defined(MAGICKCORE_HAVE__WFOPEN)
-static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
-{
-  register const unsigned char
-    *p;
-
-  if (utf16 != (wchar_t *) NULL)
-    {
-      register wchar_t
-        *q;
-
-      wchar_t
-        c;
-
-      /*
-        Convert UTF-8 to UTF-16.
-      */
-      q=utf16;
-      for (p=utf8; *p != '\0'; p++)
-      {
-        if ((*p & 0x80) == 0)
-          *q=(*p);
-        else
-          if ((*p & 0xE0) == 0xC0)
-            {
-              c=(*p);
-              *q=(c & 0x1F) << 6;
-              p++;
-              if ((*p & 0xC0) != 0x80)
-                return(0);
-              *q|=(*p & 0x3F);
-            }
-          else
-            if ((*p & 0xF0) == 0xE0)
-              {
-                c=(*p);
-                *q=c << 12;
-                p++;
-                if ((*p & 0xC0) != 0x80)
-                  return(0);
-                c=(*p);
-                *q|=(c & 0x3F) << 6;
-                p++;
-                if ((*p & 0xC0) != 0x80)
-                  return(0);
-                *q|=(*p & 0x3F);
-              }
-            else
-              return(0);
-        q++;
-      }
-      *q++='\0';
-      return(q-utf16);
-    }
-  /*
-    Compute UTF-16 string length.
-  */
-  for (p=utf8; *p != '\0'; p++)
-  {
-    if ((*p & 0x80) == 0)
-      ;
-    else
-      if ((*p & 0xE0) == 0xC0)
-        {
-          p++;
-          if ((*p & 0xC0) != 0x80)
-            return(0);
-        }
-      else
-        if ((*p & 0xF0) == 0xE0)
-          {
-            p++;
-            if ((*p & 0xC0) != 0x80)
-              return(0);
-            p++;
-            if ((*p & 0xC0) != 0x80)
-              return(0);
-         }
-       else
-         return(0);
-  }
-  return(p-utf8);
-}
-
-static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
-{
-  size_t
-    length;
-
-  wchar_t
-    *utf16;
-
-  length=UTF8ToUTF16(source,(wchar_t *) NULL);
-  if (length == 0)
-    {
-      register ssize_t
-        i;
-
-      /*
-        Not UTF-8, just copy.
-      */
-      length=strlen((char *) source);
-      utf16=(wchar_t *) AcquireQuantumMemory(length+1,sizeof(*utf16));
-      if (utf16 == (wchar_t *) NULL)
-        return((wchar_t *) NULL);
-      for (i=0; i <= (ssize_t) length; i++)
-        utf16[i]=source[i];
-      return(utf16);
-    }
-  utf16=(wchar_t *) AcquireQuantumMemory(length+1,sizeof(*utf16));
-  if (utf16 == (wchar_t *) NULL)
-    return((wchar_t *) NULL);
-  length=UTF8ToUTF16(source,utf16);
-  return(utf16);
-}
-#endif
-
-/*
-  This method reads either an enhanced metafile, a regular 16bit Windows
-  metafile, or an Aldus Placeable metafile and converts it into an enhanced
-  metafile.  Width and height are returned in .01mm units.
-*/
-#if defined(MAGICKCORE_EMF_DELEGATE)
-static HENHMETAFILE ReadEnhMetaFile(const char *path,ssize_t *width,
-  ssize_t *height)
-{
-#pragma pack( push, 2 )
-  typedef struct
-  {
-    DWORD dwKey;
-    WORD hmf;
-    SMALL_RECT bbox;
-    WORD wInch;
-    DWORD dwReserved;
-    WORD wCheckSum;
-  } APMHEADER, *PAPMHEADER;
-#pragma pack( pop )
-
-  DWORD
-    dwSize;
-
-  ENHMETAHEADER
-    emfh;
-
-  HANDLE
-    hFile;
-
-  HDC
-    hDC;
-
-  HENHMETAFILE
-    hTemp;
-
-  LPBYTE
-    pBits;
-
-  METAFILEPICT
-    mp;
-
-  HMETAFILE
-    hOld;
-
-  *width=512;
-  *height=512;
-  hTemp=GetEnhMetaFile(path);
-#if defined(MAGICKCORE_HAVE__WFOPEN)
-  if (hTemp == (HENHMETAFILE) NULL)
-    {
-      wchar_t
-        *unicode_path;
-
-      unicode_path=ConvertUTF8ToUTF16((const unsigned char *) path);
-      if (unicode_path != (wchar_t *) NULL)
-        {
-          hTemp=GetEnhMetaFileW(unicode_path);
-          unicode_path=(wchar_t *) RelinquishMagickMemory(unicode_path);
-        }
-    }
-#endif
-  if (hTemp != (HENHMETAFILE) NULL)
-    {
-      /*
-        Enhanced metafile.
-      */
-      GetEnhMetaFileHeader(hTemp,sizeof(ENHMETAHEADER),&emfh);
-      *width=emfh.rclFrame.right-emfh.rclFrame.left;
-      *height=emfh.rclFrame.bottom-emfh.rclFrame.top;
-      return(hTemp);
-    }
-  hOld=GetMetaFile(path);
-  if (hOld != (HMETAFILE) NULL)
-    {
-      /*
-        16bit windows metafile.
-      */
-      dwSize=GetMetaFileBitsEx(hOld,0,NULL);
-      if (dwSize == 0)
-        {
-          DeleteMetaFile(hOld);
-          return((HENHMETAFILE) NULL);
-        }
-      pBits=(LPBYTE) AcquireQuantumMemory(dwSize,sizeof(*pBits));
-      if (pBits == (LPBYTE) NULL)
-        {
-          DeleteMetaFile(hOld);
-          return((HENHMETAFILE) NULL);
-        }
-      if (GetMetaFileBitsEx(hOld,dwSize,pBits) == 0)
-        {
-          pBits=(BYTE *) DestroyString((char *) pBits);
-          DeleteMetaFile(hOld);
-          return((HENHMETAFILE) NULL);
-        }
-      /*
-        Make an enhanced metafile from the windows metafile.
-      */
-      mp.mm=MM_ANISOTROPIC;
-      mp.xExt=1000;
-      mp.yExt=1000;
-      mp.hMF=NULL;
-      hDC=GetDC(NULL);
-      hTemp=SetWinMetaFileBits(dwSize,pBits,hDC,&mp);
-      ReleaseDC(NULL,hDC);
-      DeleteMetaFile(hOld);
-      pBits=(BYTE *) DestroyString((char *) pBits);
-      GetEnhMetaFileHeader(hTemp,sizeof(ENHMETAHEADER),&emfh);
-      *width=emfh.rclFrame.right-emfh.rclFrame.left;
-      *height=emfh.rclFrame.bottom-emfh.rclFrame.top;
-      return(hTemp);
-    }
-  /*
-    Aldus Placeable metafile.
-  */
-  hFile=CreateFile(path,GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,
-    NULL);
-  if (hFile == INVALID_HANDLE_VALUE)
-    return(NULL);
-  dwSize=GetFileSize(hFile,NULL);
-  pBits=(LPBYTE) AcquireQuantumMemory(dwSize,sizeof(*pBits));
-  ReadFile(hFile,pBits,dwSize,&dwSize,NULL);
-  CloseHandle(hFile);
-  if (((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l)
-    {
-      pBits=(BYTE *) DestroyString((char *) pBits);
-      return((HENHMETAFILE) NULL);
-    }
-  /*
-    Make an enhanced metafile from the placable metafile.
-  */
-  mp.mm=MM_ANISOTROPIC;
-  mp.xExt=((PAPMHEADER) pBits)->bbox.Right-((PAPMHEADER) pBits)->bbox.Left;
-  *width=mp.xExt;
-  mp.xExt=(mp.xExt*2540l)/(DWORD) (((PAPMHEADER) pBits)->wInch);
-  mp.yExt=((PAPMHEADER)pBits)->bbox.Bottom-((PAPMHEADER) pBits)->bbox.Top;
-  *height=mp.yExt;
-  mp.yExt=(mp.yExt*2540l)/(DWORD) (((PAPMHEADER) pBits)->wInch);
-  mp.hMF=NULL;
-  hDC=GetDC(NULL);
-  hTemp=SetWinMetaFileBits(dwSize,&(pBits[sizeof(APMHEADER)]),hDC,&mp);
-  ReleaseDC(NULL,hDC);
-  pBits=(BYTE *) DestroyString((char *) pBits);
-  return(hTemp);
-}
-
-#define CENTIMETERS_INCH 2.54
-
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
 static Image *ReadEMFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  BITMAPINFO
-    DIBinfo;
+  Gdiplus::Bitmap
+    *bitmap;
 
-  HBITMAP
-    hBitmap,
-    hOldBitmap;
+  Gdiplus::BitmapData
+     bitmap_data;
 
-  HDC
-    hDC;
+  Gdiplus::GdiplusStartupInput
+    startup_input;
 
-  HENHMETAFILE
-    hemf;
+  Gdiplus::Graphics
+    *graphics;
+
+  Gdiplus::Image
+    *source;
+
+  Gdiplus::Rect
+    rect;
+
+  GeometryInfo
+    geometry_info;
 
   Image
     *image;
 
-  RECT
-    rect;
-
-  register ssize_t
-    x;
+  MagickStatusType
+    flags;
 
   register PixelPacket
     *q;
 
-  RGBQUAD
-    *pBits,
-    *ppBits;
+  register ssize_t
+    x;
 
   ssize_t
-    height,
-    width,
     y;
 
+  ULONG_PTR
+    token;
+
+  unsigned char
+    *p;
+
+  wchar_t
+    fileName[MaxTextExtent];
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  if (image_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+
   image=AcquireImage(image_info);
-  hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
-  if (hemf == (HENHMETAFILE) NULL)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if ((image->columns == 0) || (image->rows == 0))
+  if (Gdiplus::GdiplusStartup(&token,&startup_input,NULL) != 
+    Gdiplus::Status::Ok)
+    ThrowReaderException(CoderError, "GdiplusStartupFailed");
+  MultiByteToWideChar(CP_UTF8,0,image->filename,-1,fileName,MaxTextExtent);
+  source=Gdiplus::Image::FromFile(fileName);
+  if (source == nullptr)
     {
-      double
-        y_resolution,
-        x_resolution;
+      Gdiplus::GdiplusShutdown(token);
+      ThrowReaderException(FileOpenError,"UnableToOpenFile");
+    }
 
-      y_resolution=DefaultResolution;
-      x_resolution=DefaultResolution;
-      if (image->y_resolution > 0)
+  image->x_resolution=source->GetHorizontalResolution();
+  image->y_resolution=source->GetVerticalResolution();
+  image->columns=(size_t) source->GetWidth();
+  image->rows=(size_t) source->GetHeight();
+  if (image_info->density != (char *) NULL)
+    {
+      flags=ParseGeometry(image_info->density,&geometry_info);
+      image->x_resolution=geometry_info.rho;
+      image->y_resolution=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->y_resolution=image->x_resolution;
+      if ((image->x_resolution > 0.0) && (image->y_resolution > 0.0))
         {
-          y_resolution=image->y_resolution;
-          if (image->units == PixelsPerCentimeterResolution)
-            y_resolution*=CENTIMETERS_INCH;
+          image->columns=(size_t) floor((Gdiplus::REAL) source->GetWidth() /
+            source->GetHorizontalResolution() * image->x_resolution + 0.5);
+          image->rows=(size_t)floor((Gdiplus::REAL) source->GetHeight() /
+            source->GetVerticalResolution() * image->y_resolution + 0.5);
         }
-      if (image->x_resolution > 0)
-        {
-          x_resolution=image->x_resolution;
-          if (image->units == PixelsPerCentimeterResolution)
-            x_resolution*=CENTIMETERS_INCH;
-        }
-      image->rows=(size_t) ((height/1000.0/CENTIMETERS_INCH)*y_resolution+0.5);
-      image->columns=(size_t) ((width/1000.0/CENTIMETERS_INCH)*
-        x_resolution+0.5);
     }
-  if (image_info->size != (char *) NULL)
-    {
-      ssize_t
-        x;
 
-      image->columns=width;
-      image->rows=height;
-      x=0;
-      y=0;
-      (void) GetGeometry(image_info->size,&x,&y,&image->columns,&image->rows);
-    }
-  if (image_info->page != (char *) NULL)
-    {
-      char
-        *geometry;
+  bitmap=new Gdiplus::Bitmap((INT) image->columns,(INT) image->rows,
+    PixelFormat32bppARGB);
+  graphics=Gdiplus::Graphics::FromImage(bitmap);
+  graphics->SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
+  graphics->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
+  graphics->SetTextRenderingHint(Gdiplus::TextRenderingHintClearTypeGridFit);
+  graphics->Clear(Gdiplus::Color((BYTE) ScaleQuantumToChar(QuantumRange-
+    image->background_color.opacity),(BYTE) ScaleQuantumToChar(
+    image->background_color.red),(BYTE) ScaleQuantumToChar(
+    image->background_color.green),(BYTE) ScaleQuantumToChar(
+    image->background_color.blue)));
+  graphics->DrawImage(source,0,0,(INT) image->columns,(INT) image->rows);
+  delete graphics;
+  delete source;
 
-      register char
-        *p;
-
-      MagickStatusType
-        flags;
-
-      ssize_t
-        sans;
-
-      geometry=GetPageGeometry(image_info->page);
-      p=strchr(geometry,'>');
-      if (p == (char *) NULL)
-        {
-          flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
-            &image->rows);
-          if (image->x_resolution != 0.0)
-            image->columns=(size_t) floor((image->columns*image->x_resolution)+
-              0.5);
-          if (image->y_resolution != 0.0)
-            image->rows=(size_t) floor((image->rows*image->y_resolution)+0.5);
-        }
-      else
-        {
-          *p='\0';
-          flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
-            &image->rows);
-          if (image->x_resolution != 0.0)
-            image->columns=(size_t) floor(((image->columns*image->x_resolution)/
-              DefaultResolution)+0.5);
-          if (image->y_resolution != 0.0)
-            image->rows=(size_t) floor(((image->rows*image->y_resolution)/
-              DefaultResolution)+0.5);
-        }
-      (void) flags;
-      geometry=DestroyString(geometry);
-    }
-  hDC=GetDC(NULL);
-  if (hDC == (HDC) NULL)
-    {
-      DeleteEnhMetaFile(hemf);
-      ThrowReaderException(ResourceLimitError,"UnableToCreateADC");
-    }
-  /*
-    Initialize the bitmap header info.
-  */
-  (void) ResetMagickMemory(&DIBinfo,0,sizeof(BITMAPINFO));
-  DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-  DIBinfo.bmiHeader.biWidth=(LONG) image->columns;
-  DIBinfo.bmiHeader.biHeight=(-1)*(LONG) image->rows;
-  DIBinfo.bmiHeader.biPlanes=1;
-  DIBinfo.bmiHeader.biBitCount=32;
-  DIBinfo.bmiHeader.biCompression=BI_RGB;
-  hBitmap=CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,
-    0);
-  ReleaseDC(NULL,hDC);
-  if (hBitmap == (HBITMAP) NULL)
-    {
-      DeleteEnhMetaFile(hemf);
-      ThrowReaderException(ResourceLimitError,"UnableToCreateBitmap");
-    }
-  hDC=CreateCompatibleDC(NULL);
-  if (hDC == (HDC) NULL)
-    {
-      DeleteEnhMetaFile(hemf);
-      DeleteObject(hBitmap);
-      ThrowReaderException(ResourceLimitError,"UnableToCreateADC");
-    }
-  hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
-  if (hOldBitmap == (HBITMAP) NULL)
-    {
-      DeleteEnhMetaFile(hemf);
-      DeleteDC(hDC);
-      DeleteObject(hBitmap);
-      ThrowReaderException(ResourceLimitError,"UnableToCreateBitmap");
-    }
-  /*
-    Initialize the bitmap to the image background color.
-  */
-  pBits=ppBits;
-  for (y=0; y < (ssize_t) image->rows; y++)
+  rect=Gdiplus::Rect(0,0,(INT) image->columns,(INT) image->rows);
+  if (bitmap->LockBits(&rect,Gdiplus::ImageLockModeRead,PixelFormat32bppARGB,
+    &bitmap_data) != Gdiplus::Ok)
   {
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      pBits->rgbRed=ScaleQuantumToChar(image->background_color.red);
-      pBits->rgbGreen=ScaleQuantumToChar(image->background_color.green);
-      pBits->rgbBlue=ScaleQuantumToChar(image->background_color.blue);
-      pBits++;
-    }
+    delete bitmap;
+    Gdiplus::GdiplusShutdown(token);
+    ThrowReaderException(FileOpenError,"UnableToReadImageData");
   }
-  rect.top=0;
-  rect.left=0;
-  rect.right=(LONG) image->columns;
-  rect.bottom=(LONG) image->rows;
-  /*
-    Convert metafile pixels.
-  */
-  PlayEnhMetaFile(hDC,hemf,&rect);
-  pBits=ppBits;
+
+  image->matte=MagickTrue;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+    p=(unsigned char *) bitmap_data.Scan0+(y*abs(bitmap_data.Stride));
+    if (bitmap_data.Stride < 0)
+      q=GetAuthenticPixels(image,0,image->rows-y-1,image->columns,1,exception);
+    else
+      q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
+
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(q,ScaleCharToQuantum(pBits->rgbRed));
-      SetPixelGreen(q,ScaleCharToQuantum(pBits->rgbGreen));
-      SetPixelBlue(q,ScaleCharToQuantum(pBits->rgbBlue));
-      SetPixelOpacity(q,OpaqueOpacity);
-      pBits++;
+      SetPixelBlue(q,ScaleCharToQuantum(*p++));
+      SetPixelGreen(q,ScaleCharToQuantum(*p++));
+      SetPixelRed(q,ScaleCharToQuantum(*p++));
+      SetPixelAlpha(q,ScaleCharToQuantum(*p++));
       q++;
     }
+
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
   }
-  DeleteEnhMetaFile(hemf);
-  SelectObject(hDC,hOldBitmap);
-  DeleteDC(hDC);
-  DeleteObject(hBitmap);
-  return(GetFirstImageInList(image));
+
+  bitmap->UnlockBits(&bitmap_data);
+  delete bitmap;
+  Gdiplus::GdiplusShutdown(token);
+  return(image);
 }
-#endif /* MAGICKCORE_EMF_DELEGATE */
+#endif /* MAGICKCORE_WINGDI32_DELEGATE */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -665,24 +333,25 @@ ModuleExport size_t RegisterEMFImage(void)
     *entry;
 
   entry=SetMagickInfo("EMF");
-#if defined(MAGICKCORE_EMF_DELEGATE)
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
   entry->decoder=ReadEMFImage;
 #endif
   entry->description=ConstantString(
-    "Windows WIN32 API rendered Enhanced Meta File");
+    "Windows Enhanced Meta File");
   entry->magick=(IsImageFormatHandler *) IsEMF;
   entry->blob_support=MagickFalse;
   entry->module=ConstantString("WMF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("WMFWIN32");
-#if defined(MAGICKCORE_EMF_DELEGATE)
+  entry=SetMagickInfo("WMF");
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
   entry->decoder=ReadEMFImage;
 #endif
-  entry->description=ConstantString("Windows WIN32 API rendered Meta File");
+  entry->description=ConstantString("Windows Meta File");
   entry->magick=(IsImageFormatHandler *) IsWMF;
   entry->blob_support=MagickFalse;
-  entry->module=ConstantString("WMFWIN32");
+  entry->module=ConstantString("WMF");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("WMZ");
   return(MagickImageCoderSignature);
 }
 
@@ -708,5 +377,5 @@ ModuleExport size_t RegisterEMFImage(void)
 ModuleExport void UnregisterEMFImage(void)
 {
   (void) UnregisterMagickInfo("EMF");
-  (void) UnregisterMagickInfo("WMFWIN32");
+  (void) UnregisterMagickInfo("WMF");
 }
