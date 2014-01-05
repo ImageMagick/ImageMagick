@@ -684,6 +684,77 @@ ModuleExport void UnregisterJP2Image(void)
 %    o image:  The image.
 %
 */
+
+static void CinemaProfileCompliance(const opj_image_t *jp2_image,
+  opj_cparameters_t *parameters)
+{
+  /*
+    Digital Cinema profile compliance.
+  */
+  parameters->tile_size_on=OPJ_FALSE;
+  parameters->cp_tdx=1;
+  parameters->cp_tdy=1;
+  parameters->tp_flag='C';
+  parameters->tp_on=1;
+  parameters->cp_tx0=0;
+  parameters->cp_ty0=0;
+  parameters->image_offset_x0=0;
+  parameters->image_offset_y0=0;
+  parameters->cblockw_init=32;
+  parameters->cblockh_init=32;
+  parameters->csty|=0x01;
+  parameters->prog_order=OPJ_CPRL;
+  parameters->roi_compno=(-1);
+  parameters->subsampling_dx=1;
+  parameters->subsampling_dy=1;
+  parameters->irreversible=1;
+  if ((jp2_image->comps[0].w == 2048) || (jp2_image->comps[0].h == 1080))
+    {
+      /*
+        Digital Cinema 2K.
+      */
+      parameters->cp_cinema=OPJ_CINEMA2K_24;
+      parameters->cp_rsiz=OPJ_CINEMA2K;
+      parameters->max_comp_size=1041666;
+      if (parameters->numresolution > 6)
+        parameters->numresolution=6;
+
+    }
+  if ((jp2_image->comps[0].w == 4096) || (jp2_image->comps[0].h == 2160))
+    {
+      /*
+        Digital Cinema 4K.
+      */
+      parameters->cp_cinema=OPJ_CINEMA4K_24;
+      parameters->cp_rsiz=OPJ_CINEMA4K;
+      parameters->max_comp_size=1041666;
+      if (parameters->numresolution < 1)
+        parameters->numresolution=1;
+      if (parameters->numresolution > 7)
+        parameters->numresolution=7;
+      parameters->numpocs=2;
+      parameters->POC[0].tile=1;
+      parameters->POC[0].resno0=0;
+      parameters->POC[0].compno0=0;
+      parameters->POC[0].layno1=1;
+      parameters->POC[0].resno1=parameters->numresolution-1;
+      parameters->POC[0].compno1=3;
+      parameters->POC[0].prg1=OPJ_CPRL;
+      parameters->POC[1].tile=1;
+      parameters->POC[1].resno0=parameters->numresolution-1;
+      parameters->POC[1].compno0=0;
+      parameters->POC[1].layno1=1;
+      parameters->POC[1].resno1=parameters->numresolution;
+      parameters->POC[1].compno1=3;
+      parameters->POC[1].prg1=OPJ_CPRL;
+    }
+  parameters->tcp_numlayers=1;
+  parameters->tcp_rates[0]=((float) (jp2_image->numcomps*jp2_image->comps[0].w*
+    jp2_image->comps[0].h*jp2_image->comps[0].prec))/(parameters->max_comp_size*
+    8*jp2_image->comps[0].dx*jp2_image->comps[0].dy);
+  parameters->cp_disto_alloc=1;
+}
+
 static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
   const char
@@ -736,7 +807,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (status == MagickFalse)
     return(status);
   /*
-    Initialize JPEG 2000 API.
+    Initialize JPEG 2000 encoder parameters.
   */
   opj_set_default_encoder_parameters(&parameters);
   for (i=1; i < 6; i++)
@@ -747,8 +818,13 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (option != (const char *) NULL)
     parameters.numresolution=StringToInteger(option);
   parameters.tcp_numlayers=1;
-  parameters.tcp_distoratio[0]=(double) image->quality;
-  parameters.cp_fixed_quality=OPJ_TRUE;
+  parameters.tcp_rates[0]=0;  /* lossless */
+  parameters.cp_disto_alloc=1;
+  if (image->quality != 0)
+    {
+      parameters.tcp_distoratio[0]=(double) image->quality;
+      parameters.cp_fixed_quality=OPJ_TRUE;
+    }
   if (image_info->extract != (char *) NULL)
     {
       RectangleInfo
@@ -821,32 +897,6 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (option != (const char *) NULL)
     (void) sscanf(option,"%d,%d",&parameters.subsampling_dx,
       &parameters.subsampling_dy);
-#if defined(BUGINOPENJPEG)
-  if ((image->depth == 12) &&
-      ((image->columns == 2048) || (image->rows == 1080) ||
-       (image->columns == 4096) || (image->rows == 2160)))
-    {
-      /*
-        Digital Cinema profile compliance.
-      */
-      if ((image->columns == 2048) || (image->rows == 1080))
-        {
-          /*
-            Digital Cinema 2K.
-          */
-          parameters.cp_cinema=OPJ_CINEMA2K_48;
-          parameters.cp_rsiz=OPJ_CINEMA2K;
-        }
-      if ((image->columns == 4096) || (image->rows == 2160))
-        {
-          /*
-            Digital Cinema 4K.
-          */
-          parameters.cp_cinema=OPJ_CINEMA4K_24;
-          parameters.cp_rsiz=OPJ_CINEMA4K;
-        }
-    }
-#endif
   property=GetImageProperty(image,"comment");
   if (property != (const char *) NULL)
     parameters.cp_comment=ConstantString(property);
@@ -869,6 +919,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       if (image->matte != MagickFalse)
         channels++;
     }
+  parameters.tcp_mct=channels == 3 ? 1 : 0;
   ResetMagickMemory(jp2_info,0,sizeof(jp2_info));
   for (i=0; i < (ssize_t) channels; i++)
   {
@@ -896,6 +947,10 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     parameters.subsampling_dx+1;
   jp2_image->y1=2*parameters.image_offset_y0+(image->rows-1)*
     parameters.subsampling_dx+1;
+  if ((image->depth == 12) &&
+      ((image->columns == 2048) || (image->rows == 1080) ||
+       (image->columns == 4096) || (image->rows == 2160)))
+    CinemaProfileCompliance(jp2_image,&parameters);
   /*
     Convert to JP2 pixels.
   */
