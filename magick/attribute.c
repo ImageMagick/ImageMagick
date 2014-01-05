@@ -1006,17 +1006,17 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((channel & RedChannel) != 0)
-          image->colormap[i].red=ClampPixel(ScaleAnyToQuantum(
-            ScaleQuantumToAny(image->colormap[i].red,range),range));
+          image->colormap[i].red=ScaleAnyToQuantum(ScaleQuantumToAny(
+            ClampPixel(image->colormap[i].red),range),range);
         if ((channel & GreenChannel) != 0)
-          image->colormap[i].green=ClampPixel(ScaleAnyToQuantum(
-            ScaleQuantumToAny(image->colormap[i].green,range),range));
+          image->colormap[i].green=ScaleAnyToQuantum(ScaleQuantumToAny(
+            ClampPixel(image->colormap[i].green),range),range);
         if ((channel & BlueChannel) != 0)
-          image->colormap[i].blue=ClampPixel(ScaleAnyToQuantum(
-            ScaleQuantumToAny(image->colormap[i].blue,range),range));
+          image->colormap[i].blue=ScaleAnyToQuantum(ScaleQuantumToAny(
+            ClampPixel(image->colormap[i].blue),range),range);
         if ((channel & OpacityChannel) != 0)
-          image->colormap[i].opacity=ClampPixel(ScaleAnyToQuantum(
-            ScaleQuantumToAny(image->colormap[i].opacity,range),range));
+          image->colormap[i].opacity=ScaleAnyToQuantum(ScaleQuantumToAny(
+            ClampPixel(image->colormap[i].opacity),range),range);
       }
     }
   status=MagickTrue;
@@ -1115,17 +1115,17 @@ RestoreMSCWarning
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetPixelRed(q,ClampPixel(ScaleAnyToQuantum(ScaleQuantumToAny(
-          GetPixelRed(q),range),range)));
+        SetPixelRed(q,ScaleAnyToQuantum(ScaleQuantumToAny(
+          ClampPixel(GetPixelRed(q)),range),range));
       if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,ClampPixel(ScaleAnyToQuantum(ScaleQuantumToAny(
-          GetPixelGreen(q),range),range)));
+        SetPixelGreen(q,ScaleAnyToQuantum(ScaleQuantumToAny(
+          ClampPixel(GetPixelGreen(q)),range),range));
       if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,ClampPixel(ScaleAnyToQuantum(ScaleQuantumToAny(
-          GetPixelBlue(q),range),range)));
+        SetPixelBlue(q,ScaleAnyToQuantum(ScaleQuantumToAny(
+          ClampPixel(GetPixelBlue(q)),range),range));
       if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
-        SetPixelOpacity(q,ClampPixel(ScaleAnyToQuantum(ScaleQuantumToAny(
-          GetPixelOpacity(q),range),range)));
+        SetPixelOpacity(q,ScaleAnyToQuantum(ScaleQuantumToAny(
+          ClampPixel(GetPixelOpacity(q)),range),range));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
