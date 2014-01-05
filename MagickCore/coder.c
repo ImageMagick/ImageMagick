@@ -213,8 +213,10 @@ static const CoderMapInfo
     { "VDA", "TGA" },
     { "VST", "TGA" },
     { "WIZARD", "MAGICK" },
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
+    { "WMF", "EMF" },
+#endif
     { "WMV", "MPEG" },
-    { "WMFWIN32", "EMF" },
     { "WMZ", "WMF" },
     { "X3f", "DNG" },
     { "XMP", "META" },
