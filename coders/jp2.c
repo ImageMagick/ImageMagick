@@ -893,10 +893,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       parameters.tcp_numlayers=i;
       parameters.cp_disto_alloc=OPJ_TRUE;
     }
-  option=GetImageOption(image_info,"jp2:sampling-factor");
-  if (option != (const char *) NULL)
-    (void) sscanf(option,"%d,%d",&parameters.subsampling_dx,
-      &parameters.subsampling_dy);
+  if (image_info->sampling_factor != (const char *) NULL)
+    (void) sscanf(image_info->sampling_factor,"%d,%d",
+      &parameters.subsampling_dx,&parameters.subsampling_dy);
   property=GetImageProperty(image,"comment");
   if (property != (const char *) NULL)
     parameters.cp_comment=ConstantString(property);
