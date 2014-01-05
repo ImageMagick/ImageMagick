@@ -689,7 +689,7 @@ static void CinemaProfileCompliance(const opj_image_t *jp2_image,
   opj_cparameters_t *parameters)
 {
   /*
-    Digital Cinema profile compliance.
+    Digital Cinema 4K profile compliant codestream.
   */
   parameters->tile_size_on=OPJ_FALSE;
   parameters->cp_tdx=1;
