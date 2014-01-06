@@ -315,7 +315,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  ordered dither red 4x4..." << endl;
       example = model;
       example.label( "Ordered Dither\n(Red 4x4)" );
-      example.randomThresholdChannel( Geometry(4,4), RedChannel);
+      example.randomThresholdChannel( RedChannel, Geometry(4,4) );
       images.push_back( example );
 
       cout << "  plasma ..." << endl;
@@ -447,7 +447,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  wave ..." << endl;
       example = model;
       example.label( "Wave" );
-      example.matte( true );
+      example.alpha( true );
       example.backgroundColor( "#000000FF" );
       example.wave( 25, 150 );
       images.push_back( example );
@@ -490,7 +490,7 @@ int main( int /*argc*/, char ** argv)
     }
 
     for_each( montage.begin(), montage.end(), depthImage(8) );
-    for_each( montage.begin(), montage.end(), matteImage( false ) );
+    for_each( montage.begin(), montage.end(), alphaImage( false ) );
     for_each( montage.begin(), montage.end(), compressTypeImage( RLECompression) );
 
     cout << "Writing image \"demo_out.miff\" ..." << endl;
