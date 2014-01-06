@@ -3280,7 +3280,7 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
       ((IsGrayColorspace(black_color->colorspace) == MagickFalse) ||
        (IsGrayColorspace(white_color->colorspace) == MagickFalse)))
     (void) SetImageColorspace(image,sRGBColorspace);
-  status=MagickFalse;
+  status=MagickTrue;
   if (invert == MagickFalse)
     {
       if ((channel & RedChannel) != 0)
