@@ -1249,6 +1249,9 @@ namespace Magick
     // Threshold image
     void threshold(const double threshold_);
 
+    // Resize image to thumbnail size
+    void thumbnail(const Geometry &geometry_);
+
     // Transform image based on image and crop geometries
     // Crop geometry is optional
     void transform(const Geometry &imageGeometry_);
