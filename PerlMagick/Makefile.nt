@@ -148,7 +148,7 @@ sub MY::test
     " t/jbig/write.t" .
     " t/jng/read.t" .
     " t/jng/write.t" .
-    " t/jp2/read.t" .
+    " t/openjp2/read.t" .
     " t/jpeg/read.t" .
     " t/jpeg/write.t" .
     " t/png/read.t" .
