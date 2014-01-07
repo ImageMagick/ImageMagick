@@ -223,7 +223,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     ThrowReaderException(CoderError, "GdiplusStartupFailed");
   MultiByteToWideChar(CP_UTF8,0,image->filename,-1,fileName,MaxTextExtent);
   source=Gdiplus::Image::FromFile(fileName);
-  if (source == nullptr)
+  if (source == (Gdiplus::Image *) NULL)
     {
       Gdiplus::GdiplusShutdown(token);
       ThrowReaderException(FileOpenError,"UnableToOpenFile");
