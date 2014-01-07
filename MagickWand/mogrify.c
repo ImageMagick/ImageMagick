@@ -2091,6 +2091,16 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) ModulateImage(*image,argv[i+1],exception);
             break;
           }
+        if (LocaleCompare("moments",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                (void) DeleteImageArtifact(*image,"identify:moments");
+                break;
+              }
+            (void) SetImageArtifact(*image,"identify:moments",argv[i+1]);
+            break;
+          }
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')

@@ -1127,83 +1127,6 @@ MagickExport MagickBooleanType GetImageExtrema(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e M e a n                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageMean() returns the mean and standard deviation of one or more image
-%  channels.
-%
-%  The format of the GetImageMean method is:
-%
-%      MagickBooleanType GetImageMean(const Image *image,double *mean,
-%        double *standard_deviation,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o mean: the average value in the channel.
-%
-%    o standard_deviation: the standard deviation of the channel.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
-  double *standard_deviation,ExceptionInfo *exception)
-{
-  double
-    area;
-
-  ChannelStatistics
-    *channel_statistics;
-
-  register ssize_t
-    i;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  channel_statistics=GetImageStatistics(image,exception);
-  if (channel_statistics == (ChannelStatistics *) NULL)
-    return(MagickFalse);
-  area=0.0;
-  channel_statistics[CompositePixelChannel].mean=0.0;
-  channel_statistics[CompositePixelChannel].standard_deviation=0.0;
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
-    PixelTrait traits=GetPixelChannelTraits(image,channel);
-    if (traits == UndefinedPixelTrait)
-      continue;
-    if ((traits & UpdatePixelTrait) == 0)
-      continue;
-    channel_statistics[CompositePixelChannel].mean+=channel_statistics[i].mean;
-    channel_statistics[CompositePixelChannel].standard_deviation+=
-      channel_statistics[i].variance-channel_statistics[i].mean*
-      channel_statistics[i].mean;
-    area++;
-  }
-  channel_statistics[CompositePixelChannel].mean/=area;
-  channel_statistics[CompositePixelChannel].standard_deviation=
-    sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
-  *mean=channel_statistics[CompositePixelChannel].mean;
-  *standard_deviation=
-    channel_statistics[CompositePixelChannel].standard_deviation;
-  channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-    channel_statistics);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t I m a g e K u r t o s i s                                           %
 %                                                                             %
 %                                                                             %
@@ -1335,6 +1258,212 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
       *skewness/=standard_deviation*standard_deviation*standard_deviation;
     }
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e M e a n                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageMean() returns the mean and standard deviation of one or more image
+%  channels.
+%
+%  The format of the GetImageMean method is:
+%
+%      MagickBooleanType GetImageMean(const Image *image,double *mean,
+%        double *standard_deviation,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o mean: the average value in the channel.
+%
+%    o standard_deviation: the standard deviation of the channel.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
+  double *standard_deviation,ExceptionInfo *exception)
+{
+  double
+    area;
+
+  ChannelStatistics
+    *channel_statistics;
+
+  register ssize_t
+    i;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  channel_statistics=GetImageStatistics(image,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    return(MagickFalse);
+  area=0.0;
+  channel_statistics[CompositePixelChannel].mean=0.0;
+  channel_statistics[CompositePixelChannel].standard_deviation=0.0;
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel channel=GetPixelChannelChannel(image,i);
+    PixelTrait traits=GetPixelChannelTraits(image,channel);
+    if (traits == UndefinedPixelTrait)
+      continue;
+    if ((traits & UpdatePixelTrait) == 0)
+      continue;
+    channel_statistics[CompositePixelChannel].mean+=channel_statistics[i].mean;
+    channel_statistics[CompositePixelChannel].standard_deviation+=
+      channel_statistics[i].variance-channel_statistics[i].mean*
+      channel_statistics[i].mean;
+    area++;
+  }
+  channel_statistics[CompositePixelChannel].mean/=area;
+  channel_statistics[CompositePixelChannel].standard_deviation=
+    sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
+  *mean=channel_statistics[CompositePixelChannel].mean;
+  *standard_deviation=
+    channel_statistics[CompositePixelChannel].standard_deviation;
+  channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    channel_statistics);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e M o m e n t s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageMoments() returns the moments of one or more image channels.
+%
+%  The format of the GetImageMoments method is:
+%
+%      ChannelMoments *GetImageMoments(const Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport ChannelMoments *GetImageMoments(const Image *image,
+  ExceptionInfo *exception)
+{
+#define MaxNumberImageMoments  8
+
+  CacheView
+    *image_view;
+
+  ChannelMoments
+    *channel_moments;
+
+  MagickBooleanType
+    initialize,
+    status;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  channel_moments=(ChannelMoments *) AcquireQuantumMemory(MaxPixelChannels+1,
+    sizeof(*channel_moments));
+  if (channel_moments == (ChannelMoments *) NULL)
+    return(channel_moments);
+  (void) ResetMagickMemory(channel_moments,0,length*sizeof(*channel_moments));
+  for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
+  {
+    channel_moments[i].I1=0.0;
+    channel_moments[i].I2=0.0;
+    channel_moments[i].I3=0.0;
+    channel_moments[i].I4=0.0;
+    channel_moments[i].I5=0.0;
+    channel_moments[i].I6=0.0;
+    channel_moments[i].I7=0.0;
+    channel_moments[i].I8=0.0;
+  }
+  status=MagickTrue;
+  initialize=MagickTrue;
+  image_view=AcquireVirtualCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status,initialize) \
+    magick_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      register ssize_t
+        i;
+
+      if (GetPixelReadMask(image,p) == 0)
+        {
+          p+=GetPixelChannels(image);
+          continue;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_GetImageMoments)
+#endif
+        {
+          if (initialize != MagickFalse)
+            {
+              initialize=MagickFalse;
+            }
+          else
+            {
+           }
+        }
+      }
+      p+=GetPixelChannels(image);
+    }
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    channel_moments=(ChannelMoments *) RelinquishMagickMemory(channel_moments);
+  return(channel_moments);
 }
 
 /*

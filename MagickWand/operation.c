@@ -1112,6 +1112,14 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           break;
         }
+      if (LocaleCompare("moments",option+1) == 0)
+        {
+          (void) SetImageOption(_image_info,"identify:moments",
+            ArgBooleanString);
+          if (IfSetOption)
+            (void) SetImageArtifact(_image,"verbose","true");
+          break;
+        }
       if (LocaleCompare("monitor",option+1) == 0)
         {
           (void) SetImageInfoProgressMonitor(_image_info, IfSetOption?

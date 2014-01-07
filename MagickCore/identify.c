@@ -368,6 +368,32 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
   return(n);
 }
 
+static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
+  const char *name,const ChannelMoments *channel_moments)
+{
+  ssize_t
+    n;
+
+  n=FormatLocaleFile(file,"%s:\n",name);
+  n+=FormatLocaleFile(file,"      i1: %.*g",GetMagickPrecision(),
+    channel_moments[channel].I1);
+  n+=FormatLocaleFile(file,"      i2: %.*g",GetMagickPrecision(),
+    channel_moments[channel].I2);
+  n+=FormatLocaleFile(file,"      i3: %.*g",GetMagickPrecision(),
+    channel_moments[channel].I3);
+  n+=FormatLocaleFile(file,"      i4: %.*g",GetMagickPrecision(),
+    channel_moments[channel].I4);
+  n+=FormatLocaleFile(file,"      i5: %.*g",GetMagickPrecision(),
+    channel_moments[channel].I5);
+  n+=FormatLocaleFile(file,"      i6: %.*g",GetMagickPrecision(),
+    channel_moments[channel].I6);
+  n+=FormatLocaleFile(file,"      i7: %.*g",GetMagickPrecision(),
+    channel_moments[channel].I7);
+  n+=FormatLocaleFile(file,"      i8: %.*g",GetMagickPrecision(),
+    channel_moments[channel].I8);
+  return(n);
+}
+
 static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   const char *name,const double scale,
   const ChannelStatistics *channel_statistics)
@@ -402,6 +428,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
   ChannelFeatures
     *channel_features;
+
+  ChannelMoments
+    *channel_moments;
 
   ChannelStatistics
     *channel_statistics;
@@ -650,6 +679,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   (void) FormatLocaleFile(file,"  Colorspace: %s\n",CommandOptionToMnemonic(
     MagickColorspaceOptions,(ssize_t) image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
+  channel_moments=(ChannelMoments *) NULL;
   channel_features=(ChannelFeatures *) NULL;
   colorspace=image->colorspace;
   scale=1;
@@ -661,6 +691,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       channel_statistics=GetImageStatistics(image,exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
+      artifact=GetImageArtifact(image,"identify:moments");
+      if (artifact != (const char *) NULL)
+         channel_moments=GetImageMoments(image,exception);
       artifact=GetImageArtifact(image,"identify:features");
       if (artifact != (const char *) NULL)
         {
@@ -765,6 +798,47 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
+    }
+  if (channel_moments != (ChannelMoments *) NULL)
+    {
+      (void) FormatLocaleFile(file,"  Channel moments\n");
+      switch (colorspace)
+      {
+        case RGBColorspace:
+        default:
+        {
+          (void) PrintChannelMoments(file,RedPixelChannel,"Red",
+            channel_moments);
+          (void) PrintChannelMoments(file,GreenPixelChannel,"Green",
+            channel_moments);
+          (void) PrintChannelMoments(file,BluePixelChannel,"Blue",
+            channel_moments);
+          break;
+        }
+        case CMYKColorspace:
+        {
+          (void) PrintChannelMoments(file,CyanPixelChannel,"Cyan",
+            channel_moments);
+          (void) PrintChannelMoments(file,MagentaPixelChannel,"Magenta",
+            channel_moments);
+          (void) PrintChannelMoments(file,YellowPixelChannel,"Yellow",
+            channel_moments);
+          (void) PrintChannelMoments(file,BlackPixelChannel,"Black",
+            channel_moments);
+          break;
+        }
+        case GRAYColorspace:
+        {
+          (void) PrintChannelMoments(file,GrayPixelChannel,"Gray",
+            channel_moments);
+          break;
+        }
+      }
+      if (image->alpha_trait == BlendPixelTrait)
+        (void) PrintChannelMoments(file,AlphaPixelChannel,"Alpha",
+          channel_moments);
+      channel_moments=(ChannelMoments *) RelinquishMagickMemory(
+        channel_moments);
     }
   if (channel_features != (ChannelFeatures *) NULL)
     {
