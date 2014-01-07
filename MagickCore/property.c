@@ -96,8 +96,7 @@
 #include "lcms.h"
 #endif
 #endif
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -190,8 +189,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
     }
   return(MagickTrue);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -243,8 +241,7 @@ MagickExport MagickBooleanType DefineImageProperty(Image *image,
   *p='\0';
   return(SetImageProperty(image,key,value,exception));
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -281,8 +278,7 @@ MagickExport MagickBooleanType DeleteImageProperty(Image *image,
     return(MagickFalse);
   return(DeleteNodeFromSplayTree((SplayTreeInfo *) image->properties,property));
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -317,8 +313,7 @@ MagickExport void DestroyImageProperties(Image *image)
     image->properties=(void *) DestroySplayTree((SplayTreeInfo *)
       image->properties);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -375,8 +370,7 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
   exception=DestroyExceptionInfo(exception);
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1937,9 +1931,9 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
           point[i].x=(double) x*columns/4096/4096;
           point[i].y=(double) y*rows/4096/4096;
         }
-        if( IfMagickFalse(in_subpath) )
+        if (in_subpath == MagickFalse)
           {
-            (void) FormatLocaleString(message,MaxTextExtent,"  %g %g m\n",
+            (void) FormatLocaleString(message,MaxTextExtent,"M %g %g\n",
               point[1].x,point[1].y);
             for (i=0; i < 3; i++)
             {
@@ -1956,20 +1950,20 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
             if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
                 (point[0].x == point[1].x) && (point[0].y == point[1].y))
               (void) FormatLocaleString(message,MaxTextExtent,
-                "  %g %g l\n",point[1].x,point[1].y);
+                "L %g %g\n",point[1].x,point[1].y);
             else
               if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
                 (void) FormatLocaleString(message,MaxTextExtent,
-                  "  %g %g %g %g v\n",point[0].x,point[0].y,
+                  "V %g %g %g %g\n",point[0].x,point[0].y,
                   point[1].x,point[1].y);
               else
                 if ((point[0].x == point[1].x) && (point[0].y == point[1].y))
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "  %g %g %g %g y\n",last[2].x,last[2].y,
+                    "Y %g %g %g %g\n",last[2].x,last[2].y,
                     point[1].x,point[1].y);
                 else
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "  %g %g %g %g %g %g c\n",last[2].x,
+                    "C %g %g %g %g %g %g\n",last[2].x,
                     last[2].y,point[0].x,point[0].y,point[1].x,point[1].y);
             for (i=0; i < 3; i++)
               last[i]=point[i];
@@ -1989,20 +1983,20 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
             if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
                 (first[0].x == first[1].x) && (first[0].y == first[1].y))
               (void) FormatLocaleString(message,MaxTextExtent,
-                "  %g %g l z\n",first[1].x,first[1].y);
+                "L %g %g Z\n",first[1].x,first[1].y);
             else
               if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
                 (void) FormatLocaleString(message,MaxTextExtent,
-                  "  %g %g %g %g v z\n",first[0].x,first[0].y,
+                  "V %g %g %g %g Z\n",first[0].x,first[0].y,
                   first[1].x,first[1].y);
               else
                 if ((first[0].x == first[1].x) && (first[0].y == first[1].y))
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "  %g %g %g %g y z\n",last[2].x,last[2].y,
+                    "Y %g %g %g %g Z\n",last[2].x,last[2].y,
                     first[1].x,first[1].y);
                 else
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "  %g %g %g %g %g %g c z\n",last[2].x,
+                    "C %g %g %g %g %g %g Z\n",last[2].x,
                     last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
             (void) ConcatenateString(&path,message);
             in_subpath=MagickFalse;
@@ -2129,8 +2123,7 @@ MagickExport const char *GetImageProperty(const Image *image,
   }
   return(p);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3012,8 +3005,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
   return((char *)NULL);
 }
 #undef WarnNoImageReturn
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3650,8 +3642,7 @@ MagickExport char *RemoveImageProperty(Image *image,
     property);
   return(value);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3687,8 +3678,7 @@ MagickExport void ResetImagePropertyIterator(const Image *image)
     return;
   ResetSplayTreeIterator((SplayTreeInfo *) image->properties);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
