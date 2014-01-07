@@ -509,6 +509,8 @@ static const OptionInfo
     { "-metric", 1L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "+minimum", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-minimum", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
+    { "+moments", 0L, SimpleOperatorFlag | FireOptionFlag, MagickFalse },
+    { "-moments", 0L, SimpleOperatorFlag | FireOptionFlag, MagickFalse },
     { "+mode", 1L, NonMagickOptionFlag, MagickFalse },
     { "-mode", 1L, ReplacedOptionFlag | SimpleOperatorFlag, MagickTrue },
     { "+modulate", 1L, DeprecateOptionFlag, MagickTrue },
