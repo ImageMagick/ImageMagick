@@ -1380,6 +1380,9 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
   register ssize_t
     i;
 
+  size_t
+    length;
+
   ssize_t
     y;
 
@@ -1387,7 +1390,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  channel_moments=(ChannelMoments *) AcquireQuantumMemory(MaxPixelChannels+1,
+  length=MaxPixelChannels+1;
+  channel_moments=(ChannelMoments *) AcquireQuantumMemory(length,
     sizeof(*channel_moments));
   if (channel_moments == (ChannelMoments *) NULL)
     return(channel_moments);
