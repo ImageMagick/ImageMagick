@@ -1486,6 +1486,7 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     *channel_moments;
 
   double
+    alpha,
     cx,
     cy,
     M00,
@@ -1608,27 +1609,35 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
   M30/=pow(M00,(1.0+(3.0+0.0)/2.0));
   M03/=pow(M00,(1.0+(0.0+3.0)/2.0));
   /*
-    Compute Hu invariant moments.
+    Compute Hu invariant moments+
+      X Center of Mass
+      Y Center of Mass
+      Ellipse Angle (degrees)
+      Ellipse Semi-Major Axis
+      Ellipse Semi-Minor Axis
+      Ellipse Eccentricity
+      Ellipse Intensity
   */
-  channel_moments[RedChannel].I1=M20+M02;
-    /* 
-      m=M20+M02;
-      channel_moments[RedChannel].I1=(m < 0.0 ? -1.0 : 1.0)*log10(fabs(m));
-    */
-  channel_moments[RedChannel].I2=(M20-M02)*(M20-M02)+4.0*M11*M11;
-  channel_moments[RedChannel].I3=(M30-3.0*M12)*(M30-3.0*M12)+(3.0*M21-M03)*
-    (3.0*M21-M03);
-  channel_moments[RedChannel].I4=(M30+M12)*(M30+M12)+(M21+M03)*(M21+M03);
-  channel_moments[RedChannel].I5=(M30-3.0*M12)*(M30+M12)*((M30+M12)*
-    (M30+M12)-3.0*(M21+M03)*(M21+M03))+(3.0*M21-M03)*(M21+M03)*(3.0*(M30+M12)*
-    (M30+M12)-(M21+M03)*(M21+M03));
-  channel_moments[RedChannel].I6=(M20-M02)*((M30+M12)*(M30+M12)-(M21+M03)*
-    (M21+M03))+4.0*M11*(M30+M12)*(M21+M03);
-  channel_moments[RedChannel].I7=(3.0*M21-M03)*(M30+M12)*((M30+M12)*
-    (M30+M12)-3.0*(M21+M03)*(M21+M03))-(M30-3*M12)*(M21+M03)*(3.0*(M30+M12)*
-    (M30+M12)-(M21+M03)*(M21+M03));
-  channel_moments[RedChannel].I8=M11*((M30+M12)*(M30+M12)-(M03+M21)*(M03+M21))-
-    (M20-M02)*(M30+M12)*(M03+M21);
+  alpha=M20+M02;
+  channel_moments[RedChannel].I1=(alpha > 0.0 ? -1.0 : 1.0)*log10(fabs(alpha));
+  alpha=(M20-M02)*(M20-M02)+4.0*M11*M11;
+  channel_moments[RedChannel].I2=(alpha > 0.0 ? -1.0 : 1.0)*log10(fabs(alpha));
+  alpha=(M30-3.0*M12)*(M30-3.0*M12)+(3.0*M21-M03)*(3.0*M21-M03);
+  channel_moments[RedChannel].I3=(alpha > 0.0 ? -1.0 : 1.0)*log10(fabs(alpha));
+  alpha=(M30+M12)*(M30+M12)+(M21+M03)*(M21+M03);
+  channel_moments[RedChannel].I4=(alpha > 0.0 ? -1.0 : 1.0)*log10(fabs(alpha));
+  alpha=(M30-3.0*M12)*(M30+M12)*((M30+M12)*(M30+M12)-3.0*(M21+M03)*(M21+M03))+
+    (3.0*M21-M03)*(M21+M03)*(3.0*(M30+M12)*(M30+M12)-(M21+M03)*(M21+M03));
+  channel_moments[RedChannel].I5=(alpha > 0.0 ? -1.0 : 1.0)*log10(fabs(alpha));
+  alpha=(M20-M02)*((M30+M12)*(M30+M12)-(M21+M03)*(M21+M03))+4.0*M11*(M30+M12)*
+    (M21+M03);
+  channel_moments[RedChannel].I6=(alpha > 0.0 ? -1.0 : 1.0)*log10(fabs(alpha));
+  alpha=(3.0*M21-M03)*(M30+M12)*((M30+M12)*(M30+M12)-3.0*(M21+M03)*(M21+M03))-
+    (M30-3*M12)*(M21+M03)*(3.0*(M30+M12)*(M30+M12)-(M21+M03)*(M21+M03));
+  channel_moments[RedChannel].I7=(alpha > 0.0 ? -1.0 : 1.0)*log10(fabs(alpha));
+  alpha=M11*((M30+M12)*(M30+M12)-(M03+M21)*(M03+M21))-(M20-M02)*(M30+M12)*
+    (M03+M21);
+  channel_moments[RedChannel].I8=(alpha > 0.0 ? -1.0 : 1.0)*log10(fabs(alpha));
   if (y < image->rows)
     channel_moments=(ChannelMoments *) RelinquishMagickMemory(channel_moments);
   return(channel_moments);
