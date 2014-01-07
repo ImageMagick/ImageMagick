@@ -1485,11 +1485,20 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
   ChannelMoments
     *channel_moments;
 
-  MagickPixelPacket
-    pixel;
-
-  register ssize_t
-    i;
+  double
+    cx,
+    cy,
+    M00,
+    M01,
+    M02,
+    M03,
+    M10,
+    M11,
+    M12,
+    M20,
+    M21,
+    M22,
+    M30;
 
   ssize_t
     y;
@@ -1507,18 +1516,20 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
   if (channel_moments == (ChannelMoments *) NULL)
     return(channel_moments);
   (void) ResetMagickMemory(channel_moments,0,length*sizeof(*channel_moments));
-  for (i=0; i <= (ssize_t) CompositeChannels; i++)
-  {
-    channel_moments[i].I1=0.0;
-    channel_moments[i].I2=0.0;
-    channel_moments[i].I3=0.0;
-    channel_moments[i].I4=0.0;
-    channel_moments[i].I5=0.0;
-    channel_moments[i].I6=0.0;
-    channel_moments[i].I7=0.0;
-    channel_moments[i].I8=0.0;
-  }
-  GetMagickPixelPacket(image,&pixel);
+  M00=0.0;
+  M01=0.0;
+  M02=0.0;
+  M03=0.0;
+  M10=0.0;
+  M11=0.0;
+  M12=0.0;
+  M20=0.0;
+  M21=0.0;
+  M22=0.0;
+  M30=0.0;
+  /*
+    Compute center of mass (centroid).
+  */
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -1536,10 +1547,88 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      MagickPixelPacket
+        pixel;
+
+      GetMagickPixelPacket(image,&pixel);
       SetMagickPixelPacket(image,p,indexes+x,&pixel);
+      M00+=QuantumScale*pixel.red;
+      M10+=x*QuantumScale*pixel.red;
+      M01+=y*QuantumScale*pixel.red;
       p++;
     }
   }
+  cx=M10/M00;
+  cy=M01/M00;
+  /*
+    Compute the image moments.
+  */
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const IndexPacket
+      *restrict indexes;
+
+    register const PixelPacket
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetVirtualIndexQueue(image);
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      MagickPixelPacket
+        pixel;
+
+      GetMagickPixelPacket(image,&pixel);
+      SetMagickPixelPacket(image,p,indexes+x,&pixel);
+      M11+=(x-cx)*(y-cy)*QuantumScale*pixel.red;
+      M20+=(x-cx)*(x-cx)*QuantumScale*pixel.red;
+      M02+=(y-cy)*(y-cy)*QuantumScale*pixel.red;
+      M21+=(x-cx)*(x-cx)*(y-cy)*QuantumScale*pixel.red;
+      M12+=(x-cx)*(y-cy)*(y-cy)*QuantumScale*pixel.red;
+      M22+=(x-cx)*(x-cx)*(y-cy)*(y-cy)*QuantumScale*pixel.red;
+      M30+=(x-cx)*(x-cx)*(x-cx)*QuantumScale*pixel.red;
+      M03+=(y-cy)*(y-cy)*(y-cy)*QuantumScale*pixel.red;
+      p++;
+    }
+  }
+  /*
+    Normalize image moments.
+  */
+  M11/=pow(M00,(1.0+(1.0+1.0)/2.0));
+  M20/=pow(M00,(1.0+(2.0+0.0)/2.0));
+  M02/=pow(M00,(1.0+(0.0+2.0)/2.0));
+  M21/=pow(M00,(1.0+(2.0+1.0)/2.0));
+  M12/=pow(M00,(1.0+(1.0+2.0)/2.0));
+  M22/=pow(M00,(1.0+(2.0+2.0)/2.0));
+  M30/=pow(M00,(1.0+(3.0+0.0)/2.0));
+  M03/=pow(M00,(1.0+(0.0+3.0)/2.0));
+  /*
+    Compute Hu invariant moments.
+  */
+  channel_moments[RedChannel].I1=M20+M02;
+    /* 
+      m=M20+M02;
+      channel_moments[RedChannel].I1=(m < 0.0 ? -1.0 : 1.0)*log10(fabs(m));
+    */
+  channel_moments[RedChannel].I2=(M20-M02)*(M20-M02)+4.0*M11*M11;
+  channel_moments[RedChannel].I3=(M30-3.0*M12)*(M30-3.0*M12)+(3.0*M21-M03)*
+    (3.0*M21-M03);
+  channel_moments[RedChannel].I4=(M30+M12)*(M30+M12)+(M21+M03)*(M21+M03);
+  channel_moments[RedChannel].I5=(M30-3.0*M12)*(M30+M12)*((M30+M12)*
+    (M30+M12)-3.0*(M21+M03)*(M21+M03))+(3.0*M21-M03)*(M21+M03)*(3.0*(M30+M12)*
+    (M30+M12)-(M21+M03)*(M21+M03));
+  channel_moments[RedChannel].I6=(M20-M02)*((M30+M12)*(M30+M12)-(M21+M03)*
+    (M21+M03))+4.0*M11*(M30+M12)*(M21+M03);
+  channel_moments[RedChannel].I7=(3.0*M21-M03)*(M30+M12)*((M30+M12)*
+    (M30+M12)-3.0*(M21+M03)*(M21+M03))-(M30-3*M12)*(M21+M03)*(3.0*(M30+M12)*
+    (M30+M12)-(M21+M03)*(M21+M03));
+  channel_moments[RedChannel].I8=M11*((M30+M12)*(M30+M12)-(M03+M21)*(M03+M21))-
+    (M20-M02)*(M30+M12)*(M03+M21);
   if (y < image->rows)
     channel_moments=(ChannelMoments *) RelinquishMagickMemory(channel_moments);
   return(channel_moments);
