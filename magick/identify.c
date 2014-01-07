@@ -862,7 +862,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   if (channel_moments != (ChannelMoments *) NULL)
     {
-      (void) FormatLocaleFile(file,"  Channel moments\n");
+      (void) FormatLocaleFile(file,"  Channel moments:\n");
       switch (colorspace)
       {
         case RGBColorspace:
