@@ -1886,7 +1886,8 @@ void Magick::Image::autoGamma(void)
 {
   modifyImage();
   GetPPException;
-  AutoGammaImage(image(),&exceptionInfo);
+  (void) SyncImageSettings(imageInfo(),image(),&exceptionInfo);
+  (void) AutoGammaImage(image(),&exceptionInfo);
   ThrowPPException;
 }
 
@@ -1895,7 +1896,8 @@ void Magick::Image::autoGammaChannel(const ChannelType channel_)
   modifyImage();
   GetPPException;
   SetPPChannelMask(channel_);
-  AutoGammaImage(image(),&exceptionInfo);
+  (void) SyncImageSettings(imageInfo(),image(),&exceptionInfo);
+  (void) AutoGammaImage(image(),&exceptionInfo);
   RestorePPChannelMask;
   ThrowPPException;
 }
@@ -1904,7 +1906,8 @@ void Magick::Image::autoLevel(void)
 {
   modifyImage();
   GetPPException;
-  AutoLevelImage(image(),&exceptionInfo);
+  (void) SyncImageSettings(imageInfo(),image(),&exceptionInfo);
+  (void) AutoLevelImage(image(),&exceptionInfo);
   ThrowPPException;
 }
 
@@ -1913,7 +1916,8 @@ void Magick::Image::autoLevelChannel(const ChannelType channel_)
   modifyImage();
   GetPPException;
   SetPPChannelMask(channel_);
-  AutoLevelImage(image(),&exceptionInfo);
+  (void) SyncImageSettings(imageInfo(),image(),&exceptionInfo);
+  (void) AutoLevelImage(image(),&exceptionInfo);
   RestorePPChannelMask;
   ThrowPPException;
 }
@@ -1928,6 +1932,7 @@ void Magick::Image::autoOrient(void)
     return;
 
   GetPPException;
+  (void) SyncImageSettings(imageInfo(),image(),&exceptionInfo);
   newImage=AutoOrientImage(constImage(),image()->orientation,&exceptionInfo);
   replaceImage(newImage);
   ThrowPPException;
