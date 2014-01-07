@@ -755,13 +755,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("matte",option+1) == 0)
           break;
         if (LocaleCompare("moments",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowIdentifyInvalidArgumentException(option,argv[i]);
-            break;
-          }
+          break;
         if (LocaleCompare("monitor",option+1) == 0)
           break;
         ThrowIdentifyException(OptionError,"UnrecognizedOption",option)
