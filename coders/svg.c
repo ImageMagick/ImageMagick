@@ -2990,8 +2990,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
             cairo_paint(cairo_image);
             cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
-            cairo_scale(cairo_image,image->resolution.x/72.0,
-              image->resolution.y/72.0);
+            cairo_scale(cairo_image,image->resolution.x/90.0,
+              image->resolution.y/90.0);
             rsvg_handle_render_cairo(svg_handle,cairo_image);
             cairo_destroy(cairo_image);
             cairo_surface_destroy(cairo_surface);
