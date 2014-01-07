@@ -141,6 +141,8 @@ static MagickBooleanType IdentifyUsage(void)
       "                    Resource, or Type",
       "-mask filename       associate a mask with the image",
       "-matte               store matte channel if the image has one",
+      "-moments             report image moments",
+      "-format \"string\"     output formatted image characteristics",
       "-monitor             monitor progress",
       "-ping                efficiently determine image attributes",
       "-precision value     maximum number of significant digits to print",

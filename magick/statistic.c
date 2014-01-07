@@ -93,8 +93,7 @@
 #include "magick/timer.h"
 #include "magick/utility.h"
 #include "magick/version.h"
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -857,8 +856,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   random_info=DestroyRandomInfoThreadSet(random_info);
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1097,8 +1095,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1158,136 +1155,7 @@ MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
   *maxima=(size_t) floor(max+0.5);
   return(status);
 }
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e C h a n n e l M e a n                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageChannelMean() returns the mean and standard deviation of one or more
-%  image channels.
-%
-%  The format of the GetImageChannelMean method is:
-%
-%      MagickBooleanType GetImageChannelMean(const Image *image,
-%        const ChannelType channel,double *mean,double *standard_deviation,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o channel: the channel.
-%
-%    o mean: the average value in the channel.
-%
-%    o standard_deviation: the standard deviation of the channel.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-
-MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
-  double *standard_deviation,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  status=GetImageChannelMean(image,CompositeChannels,mean,standard_deviation,
-    exception);
-  return(status);
-}
-
-MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
-  const ChannelType channel,double *mean,double *standard_deviation,
-  ExceptionInfo *exception)
-{
-  ChannelStatistics
-    *channel_statistics;
-
-  size_t
-    channels;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  channel_statistics=GetImageChannelStatistics(image,exception);
-  if (channel_statistics == (ChannelStatistics *) NULL)
-    return(MagickFalse);
-  channels=0;
-  channel_statistics[CompositeChannels].mean=0.0;
-  channel_statistics[CompositeChannels].standard_deviation=0.0;
-  if ((channel & RedChannel) != 0)
-    {
-      channel_statistics[CompositeChannels].mean+=
-        channel_statistics[RedChannel].mean;
-      channel_statistics[CompositeChannels].standard_deviation+=
-        channel_statistics[RedChannel].variance-
-        channel_statistics[RedChannel].mean*
-        channel_statistics[RedChannel].mean;
-      channels++;
-    }
-  if ((channel & GreenChannel) != 0)
-    {
-      channel_statistics[CompositeChannels].mean+=
-        channel_statistics[GreenChannel].mean;
-      channel_statistics[CompositeChannels].standard_deviation+=
-        channel_statistics[GreenChannel].variance-
-        channel_statistics[GreenChannel].mean*
-        channel_statistics[GreenChannel].mean;
-      channels++;
-    }
-  if ((channel & BlueChannel) != 0)
-    {
-      channel_statistics[CompositeChannels].mean+=
-        channel_statistics[BlueChannel].mean;
-      channel_statistics[CompositeChannels].standard_deviation+=
-        channel_statistics[BlueChannel].variance-
-        channel_statistics[BlueChannel].mean*
-        channel_statistics[BlueChannel].mean;
-      channels++;
-    }
-  if (((channel & OpacityChannel) != 0) &&
-      (image->matte != MagickFalse))
-    {
-      channel_statistics[CompositeChannels].mean+=
-        channel_statistics[OpacityChannel].mean;
-      channel_statistics[CompositeChannels].standard_deviation+=
-        channel_statistics[OpacityChannel].variance-
-        channel_statistics[OpacityChannel].mean*
-        channel_statistics[OpacityChannel].mean;
-      channels++;
-    }
-  if (((channel & IndexChannel) != 0) &&
-      (image->colorspace == CMYKColorspace))
-    {
-      channel_statistics[CompositeChannels].mean+=
-        channel_statistics[BlackChannel].mean;
-      channel_statistics[CompositeChannels].standard_deviation+=
-        channel_statistics[BlackChannel].variance-
-        channel_statistics[BlackChannel].mean*
-        channel_statistics[BlackChannel].mean;
-      channels++;
-    }
-  channel_statistics[CompositeChannels].mean/=channels;
-  channel_statistics[CompositeChannels].standard_deviation=
-    sqrt(channel_statistics[CompositeChannels].standard_deviation/channels);
-  *mean=channel_statistics[CompositeChannels].mean;
-  *standard_deviation=channel_statistics[CompositeChannels].standard_deviation;
-  channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-    channel_statistics);
-  return(MagickTrue);
-}
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1453,8 +1321,230 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
     }
   return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e C h a n n e l M e a n                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageChannelMean() returns the mean and standard deviation of one or more
+%  image channels.
+%
+%  The format of the GetImageChannelMean method is:
+%
+%      MagickBooleanType GetImageChannelMean(const Image *image,
+%        const ChannelType channel,double *mean,double *standard_deviation,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel.
+%
+%    o mean: the average value in the channel.
+%
+%    o standard_deviation: the standard deviation of the channel.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
 
+MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
+  double *standard_deviation,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
 
+  status=GetImageChannelMean(image,CompositeChannels,mean,standard_deviation,
+    exception);
+  return(status);
+}
+
+MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
+  const ChannelType channel,double *mean,double *standard_deviation,
+  ExceptionInfo *exception)
+{
+  ChannelStatistics
+    *channel_statistics;
+
+  size_t
+    channels;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  channel_statistics=GetImageChannelStatistics(image,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    return(MagickFalse);
+  channels=0;
+  channel_statistics[CompositeChannels].mean=0.0;
+  channel_statistics[CompositeChannels].standard_deviation=0.0;
+  if ((channel & RedChannel) != 0)
+    {
+      channel_statistics[CompositeChannels].mean+=
+        channel_statistics[RedChannel].mean;
+      channel_statistics[CompositeChannels].standard_deviation+=
+        channel_statistics[RedChannel].variance-
+        channel_statistics[RedChannel].mean*
+        channel_statistics[RedChannel].mean;
+      channels++;
+    }
+  if ((channel & GreenChannel) != 0)
+    {
+      channel_statistics[CompositeChannels].mean+=
+        channel_statistics[GreenChannel].mean;
+      channel_statistics[CompositeChannels].standard_deviation+=
+        channel_statistics[GreenChannel].variance-
+        channel_statistics[GreenChannel].mean*
+        channel_statistics[GreenChannel].mean;
+      channels++;
+    }
+  if ((channel & BlueChannel) != 0)
+    {
+      channel_statistics[CompositeChannels].mean+=
+        channel_statistics[BlueChannel].mean;
+      channel_statistics[CompositeChannels].standard_deviation+=
+        channel_statistics[BlueChannel].variance-
+        channel_statistics[BlueChannel].mean*
+        channel_statistics[BlueChannel].mean;
+      channels++;
+    }
+  if (((channel & OpacityChannel) != 0) &&
+      (image->matte != MagickFalse))
+    {
+      channel_statistics[CompositeChannels].mean+=
+        channel_statistics[OpacityChannel].mean;
+      channel_statistics[CompositeChannels].standard_deviation+=
+        channel_statistics[OpacityChannel].variance-
+        channel_statistics[OpacityChannel].mean*
+        channel_statistics[OpacityChannel].mean;
+      channels++;
+    }
+  if (((channel & IndexChannel) != 0) &&
+      (image->colorspace == CMYKColorspace))
+    {
+      channel_statistics[CompositeChannels].mean+=
+        channel_statistics[BlackChannel].mean;
+      channel_statistics[CompositeChannels].standard_deviation+=
+        channel_statistics[BlackChannel].variance-
+        channel_statistics[BlackChannel].mean*
+        channel_statistics[BlackChannel].mean;
+      channels++;
+    }
+  channel_statistics[CompositeChannels].mean/=channels;
+  channel_statistics[CompositeChannels].standard_deviation=
+    sqrt(channel_statistics[CompositeChannels].standard_deviation/channels);
+  *mean=channel_statistics[CompositeChannels].mean;
+  *standard_deviation=channel_statistics[CompositeChannels].standard_deviation;
+  channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    channel_statistics);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e C h a n n e l M o m e n t s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageChannelMoments() returns the moments of one or more image channels.
+%
+%  The format of the GetImageChannelMoments method is:
+%
+%      ChannelMoments *GetImageChannelMoments(const Image *image,
+%        const ChannelType channel,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
+  ExceptionInfo *exception)
+{
+#define MaxNumberImageMoments  8
+
+  ChannelMoments
+    *channel_moments;
+
+  MagickPixelPacket
+    pixel;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    y;
+
+  size_t
+    length;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  length=CompositeChannels+1UL;
+  channel_moments=(ChannelMoments *) AcquireQuantumMemory(length,
+    sizeof(*channel_moments));
+  if (channel_moments == (ChannelMoments *) NULL)
+    return(channel_moments);
+  (void) ResetMagickMemory(channel_moments,0,length*sizeof(*channel_moments));
+  for (i=0; i <= (ssize_t) CompositeChannels; i++)
+  {
+    channel_moments[i].I1=0.0;
+    channel_moments[i].I2=0.0;
+    channel_moments[i].I3=0.0;
+    channel_moments[i].I4=0.0;
+    channel_moments[i].I5=0.0;
+    channel_moments[i].I6=0.0;
+    channel_moments[i].I7=0.0;
+    channel_moments[i].I8=0.0;
+  }
+  GetMagickPixelPacket(image,&pixel);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const IndexPacket
+      *restrict indexes;
+
+    register const PixelPacket
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetVirtualIndexQueue(image);
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      SetMagickPixelPacket(image,p,indexes+x,&pixel);
+      p++;
+    }
+  }
+  if (y < image->rows)
+    channel_moments=(ChannelMoments *) RelinquishMagickMemory(channel_moments);
+  return(channel_moments);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1571,8 +1661,7 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
   }
   return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1873,8 +1962,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics);
   return(channel_statistics);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

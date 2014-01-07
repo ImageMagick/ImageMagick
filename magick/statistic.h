@@ -41,6 +41,19 @@ typedef struct _ChannelStatistics
     skewness;
 } ChannelStatistics;
 
+typedef struct _ChannelMoments
+{
+  double
+    I1,
+    I2,
+    I3,
+    I4,
+    I5,
+    I6,
+    I7,
+    I8;
+} ChannelMoments;
+
 typedef enum
 {
   UndefinedEvaluateOperator,
@@ -101,6 +114,9 @@ typedef enum
 
 extern MagickExport ChannelStatistics
   *GetImageChannelStatistics(const Image *,ExceptionInfo *);
+
+extern MagickExport ChannelMoments
+  *GetImageChannelMoments(const Image *,ExceptionInfo *);
 
 extern MagickExport Image
   *EvaluateImages(const Image *,const MagickEvaluateOperator,ExceptionInfo *),
