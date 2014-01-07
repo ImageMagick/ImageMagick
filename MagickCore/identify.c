@@ -374,22 +374,22 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
   ssize_t
     n;
 
-  n=FormatLocaleFile(file,"%s:\n",name);
-  n+=FormatLocaleFile(file,"      i1: %.*g",GetMagickPrecision(),
+  n=FormatLocaleFile(file,"%    s:\n",name);
+  n+=FormatLocaleFile(file,"      i1: %.*g\n",GetMagickPrecision(),
     channel_moments[channel].I1);
-  n+=FormatLocaleFile(file,"      i2: %.*g",GetMagickPrecision(),
+  n+=FormatLocaleFile(file,"      i2: %.*g\n",GetMagickPrecision(),
     channel_moments[channel].I2);
-  n+=FormatLocaleFile(file,"      i3: %.*g",GetMagickPrecision(),
+  n+=FormatLocaleFile(file,"      i3: %.*g\n",GetMagickPrecision(),
     channel_moments[channel].I3);
-  n+=FormatLocaleFile(file,"      i4: %.*g",GetMagickPrecision(),
+  n+=FormatLocaleFile(file,"      i4: %.*g\n",GetMagickPrecision(),
     channel_moments[channel].I4);
-  n+=FormatLocaleFile(file,"      i5: %.*g",GetMagickPrecision(),
+  n+=FormatLocaleFile(file,"      i5: %.*g\n",GetMagickPrecision(),
     channel_moments[channel].I5);
-  n+=FormatLocaleFile(file,"      i6: %.*g",GetMagickPrecision(),
+  n+=FormatLocaleFile(file,"      i6: %.*g\n",GetMagickPrecision(),
     channel_moments[channel].I6);
-  n+=FormatLocaleFile(file,"      i7: %.*g",GetMagickPrecision(),
+  n+=FormatLocaleFile(file,"      i7: %.*g\n",GetMagickPrecision(),
     channel_moments[channel].I7);
-  n+=FormatLocaleFile(file,"      i8: %.*g",GetMagickPrecision(),
+  n+=FormatLocaleFile(file,"      i8: %.*g\n",GetMagickPrecision(),
     channel_moments[channel].I8);
   return(n);
 }
@@ -801,7 +801,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   if (channel_moments != (ChannelMoments *) NULL)
     {
-      (void) FormatLocaleFile(file,"  Channel moments\n");
+      (void) FormatLocaleFile(file,"  Channel moments:\n");
       switch (colorspace)
       {
         case RGBColorspace:
