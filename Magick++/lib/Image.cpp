@@ -1825,28 +1825,32 @@ std::string Magick::Image::attribute(const std::string name_)
 void Magick::Image::autoGamma(void)
 {
   modifyImage();
-  AutoGammaImage(image());
+  (void) SyncImageSettings(imageInfo(),image());
+  (void) AutoGammaImage(image());
   throwImageException();
 }
 
 void Magick::Image::autoGammaChannel(const ChannelType channel_)
 {
   modifyImage();
-  AutoGammaImageChannel(image(),channel_);
+  (void) SyncImageSettings(imageInfo(),image());
+  (void) AutoGammaImageChannel(image(),channel_);
   throwImageException();
 }
 
 void Magick::Image::autoLevel(void)
 {
   modifyImage();
-  AutoLevelImage(image());
+  (void) SyncImageSettings(imageInfo(),image());
+  (void) AutoLevelImage(image());
   throwImageException();
 }
 
 void Magick::Image::autoLevelChannel(const ChannelType channel_)
 {
   modifyImage();
-  AutoLevelImageChannel(image(),channel_);
+  (void) SyncImageSettings(imageInfo(),image());
+  (void) AutoLevelImageChannel(image(),channel_);
   throwImageException();
 }
 
@@ -1860,6 +1864,7 @@ void Magick::Image::autoOrient(void)
     return;
 
   GetPPException;
+  (void) SyncImageSettings(imageInfo(),image());
   newImage=AutoOrientImage(constImage(),image()->orientation,&exceptionInfo);
   replaceImage(newImage);
   ThrowPPException;
