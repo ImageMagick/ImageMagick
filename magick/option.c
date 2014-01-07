@@ -497,6 +497,8 @@ static const OptionInfo
     { "-mode", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+modulate", 1L, DeprecateOptionFlag, MagickFalse },
     { "-modulate", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+moments", 0L, SimpleOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "-moments", 0L, SimpleOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+monitor", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
     { "-monitor", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
     { "+monochrome", 0L, ImageInfoOptionFlag, MagickFalse },
