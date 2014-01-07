@@ -6,6 +6,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=6&t=24724).
   * LevelColorsImageChannel() returns proper status (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24751).
+  * Generate a proper SVG clipping path (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24752).
 
 2013-12-30  6.8.8-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-1, SVN revision 14087.
