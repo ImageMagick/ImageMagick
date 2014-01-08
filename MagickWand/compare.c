@@ -1039,7 +1039,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             }
             case AbsoluteErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
-            case PeakSignalToNoiseRatioMetric:
+            case PeakSignalToNoiseRatioErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%g",distortion);
               if ((reconstruct_image->columns != image->columns) ||
@@ -1144,7 +1144,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             }
             case AbsoluteErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
-            case PeakSignalToNoiseRatioMetric:
+            case PeakSignalToNoiseRatioErrorMetric:
             {
               switch (image->colorspace)
               {
