@@ -30,7 +30,7 @@ typedef enum
   AbsoluteErrorMetric,
   FuzzErrorMetric,
   MeanAbsoluteErrorMetric,
-  MeanErrorPerPixelMetric,
+  MeanErrorPerPixelErrorMetric,
   MeanSquaredErrorMetric,
   NormalizedCrossCorrelationErrorMetric,
   PeakAbsoluteErrorMetric,

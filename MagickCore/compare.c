@@ -1179,7 +1179,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
         channel_distortion,exception);
       break;
     }
-    case MeanErrorPerPixelMetric:
+    case MeanErrorPerPixelErrorMetric:
     {
       status=GetMeanErrorPerPixel(image,reconstruct_image,channel_distortion,
         exception);
@@ -1321,7 +1321,7 @@ MagickExport double *GetImageDistortions(Image *image,
         channel_distortion,exception);
       break;
     }
-    case MeanErrorPerPixelMetric:
+    case MeanErrorPerPixelErrorMetric:
     {
       status=GetMeanErrorPerPixel(image,reconstruct_image,channel_distortion,
         exception);

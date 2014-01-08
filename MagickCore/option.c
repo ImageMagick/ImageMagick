@@ -1348,7 +1348,7 @@ static const OptionInfo
     { "AE", AbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "Fuzz", FuzzErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "MAE", MeanAbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
-    { "MEPP", MeanErrorPerPixelMetric, UndefinedOptionFlag, MagickFalse },
+    { "MEPP", MeanErrorPerPixelErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "MSE", MeanSquaredErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "NCC", NormalizedCrossCorrelationErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "PAE", PeakAbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },

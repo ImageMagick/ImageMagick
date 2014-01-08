@@ -1048,7 +1048,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                   difference_image->page.x,(double) difference_image->page.y);
               break;
             }
-            case MeanErrorPerPixelMetric:
+            case MeanErrorPerPixelErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%g (%g, %g)",distortion,
                 image->error.normalized_mean_error,
@@ -1191,7 +1191,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 channel_distortion[MaxPixelChannels]);
               break;
             }
-            case MeanErrorPerPixelMetric:
+            case MeanErrorPerPixelErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"    %g (%g, %g)\n",
                 channel_distortion[MaxPixelChannels],
