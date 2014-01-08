@@ -1352,6 +1352,7 @@ static const OptionInfo
     { "MSE", MeanSquaredErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "NCC", NormalizedCrossCorrelationErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "PAE", PeakAbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
+    { "PHASh", PerceptualHashErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "PSNR", PeakSignalToNoiseRatioMetric, UndefinedOptionFlag, MagickFalse },
     { "RMSE", RootMeanSquaredErrorMetric, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedErrorMetric, UndefinedOptionFlag, MagickFalse }
