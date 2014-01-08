@@ -371,26 +371,28 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
 static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
   const char *name,const ChannelMoments *channel_moments)
 {
+  register ssize_t
+    i;
+
   ssize_t
     n;
 
-  n=FormatLocaleFile(file,"%    s:\n",name);
-  n+=FormatLocaleFile(file,"      i1: %.*g\n",GetMagickPrecision(),
-    channel_moments[channel].I1);
-  n+=FormatLocaleFile(file,"      i2: %.*g\n",GetMagickPrecision(),
-    channel_moments[channel].I2);
-  n+=FormatLocaleFile(file,"      i3: %.*g\n",GetMagickPrecision(),
-    channel_moments[channel].I3);
-  n+=FormatLocaleFile(file,"      i4: %.*g\n",GetMagickPrecision(),
-    channel_moments[channel].I4);
-  n+=FormatLocaleFile(file,"      i5: %.*g\n",GetMagickPrecision(),
-    channel_moments[channel].I5);
-  n+=FormatLocaleFile(file,"      i6: %.*g\n",GetMagickPrecision(),
-    channel_moments[channel].I6);
-  n+=FormatLocaleFile(file,"      i7: %.*g\n",GetMagickPrecision(),
-    channel_moments[channel].I7);
-  n+=FormatLocaleFile(file,"      i8: %.*g\n",GetMagickPrecision(),
-    channel_moments[channel].I8);
+  n=FormatLocaleFile(file,"    %s:\n",name);
+  n+=FormatLocaleFile(file,"      Centroid: %.*g,%.*g\n",
+    GetMagickPrecision(),channel_moments[channel].centroid.x,
+    GetMagickPrecision(),channel_moments[channel].centroid.y);
+  n+=FormatLocaleFile(file,"      Ellipse Semi-Major/Minor axis: %.*g,%.*g\n",
+    GetMagickPrecision(),channel_moments[channel].ellipse_axis.x,
+    GetMagickPrecision(),channel_moments[channel].ellipse_axis.y);
+  n+=FormatLocaleFile(file,"      Ellipse angle: %.*g\n",
+    GetMagickPrecision(),channel_moments[channel].ellipse_angle);
+  n+=FormatLocaleFile(file,"      Ellipse eccentricity: %.*g\n",
+    GetMagickPrecision(),channel_moments[channel].ellipse_eccentricity);
+  n+=FormatLocaleFile(file,"      Ellipse intensity: %.*g\n",
+    GetMagickPrecision(),channel_moments[channel].ellipse_intensity);
+  for (i=0; i < 8; i++)
+    n+=FormatLocaleFile(file,"      I%.20g: %.*g\n",i+1.0,GetMagickPrecision(),
+      channel_moments[channel].I[i]);
   return(n);
 }
 
