@@ -100,7 +100,7 @@ extern MagickExport struct dirent
   *readdir(DIR *);
 
 extern MagickExport void
-  seekdir(DIR *,long
+  seekdir(DIR *,long),
   closedir(DIR *);
 #endif
 
