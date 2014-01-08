@@ -111,7 +111,6 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     height,
-    length,
     width;
 
   ssize_t
@@ -149,6 +148,9 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   do
   {
+    ssize_t
+      length;
+
     /*
       Convert AVS raster image to pixel packets.
     */
