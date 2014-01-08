@@ -4,6 +4,9 @@
 //
 // Simple demo program for Magick++
 //
+// Concept and algorithms lifted from PerlMagick demo script written
+// by John Christy.
+//
 // Max run-time size 60MB (as compared with 95MB for PerlMagick) under SPARC Solaris
 //
 
@@ -249,6 +252,12 @@ int main( int /*argc*/, char ** argv)
       example.level( 0.20*QuantumRange, 0.90*QuantumRange, 1.20 );
       images.push_back( example );
 
+      cout << "  level red channel ..." << endl;
+      example = model;
+      example.label( "Level Channel\n(Red Channel)" );
+      example.levelChannel( RedChannel, 0.20*QuantumRange, 0.90*QuantumRange, 1.20 );
+      images.push_back( example );
+
       cout << "  median filter ..." << endl;
       example = model;
       example.label( "Median Filter" );
@@ -315,7 +324,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  ordered dither red 4x4..." << endl;
       example = model;
       example.label( "Ordered Dither\n(Red 4x4)" );
-      example.randomThresholdChannel( RedChannel, Geometry(4,4) );
+      example.randomThresholdChannel( Geometry(4,4), RedChannel);
       images.push_back( example );
 
       cout << "  plasma ..." << endl;
@@ -447,7 +456,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  wave ..." << endl;
       example = model;
       example.label( "Wave" );
-      example.alpha( true );
+      example.matte( true );
       example.backgroundColor( "#000000FF" );
       example.wave( 25, 150 );
       images.push_back( example );
@@ -490,7 +499,7 @@ int main( int /*argc*/, char ** argv)
     }
 
     for_each( montage.begin(), montage.end(), depthImage(8) );
-    for_each( montage.begin(), montage.end(), alphaImage( false ) );
+    for_each( montage.begin(), montage.end(), matteImage( false ) );
     for_each( montage.begin(), montage.end(), compressTypeImage( RLECompression) );
 
     cout << "Writing image \"demo_out.miff\" ..." << endl;
