@@ -1101,6 +1101,13 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
   return(status);
 }
 
+static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
+{
+  *distortion=0.0;
+  return(MagickTrue);
+}
+
 static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
@@ -1197,9 +1204,15 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
         channel_distortion,exception);
       break;
     }
-    case PeakSignalToNoiseRatioMetric:
+    case PeakSignalToNoiseRatioErrorMetric:
     {
       status=GetPeakSignalToNoiseRatio(image,reconstruct_image,
+        channel_distortion,exception);
+      break;
+    }
+    case PerceptualHashErrorMetric:
+    {
+      status=GetPerceptualHashDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
@@ -1333,9 +1346,15 @@ MagickExport double *GetImageDistortions(Image *image,
         channel_distortion,exception);
       break;
     }
-    case PeakSignalToNoiseRatioMetric:
+    case PeakSignalToNoiseRatioErrorMetric:
     {
       status=GetPeakSignalToNoiseRatio(image,reconstruct_image,
+        channel_distortion,exception);
+      break;
+    }
+    case PerceptualHashErrorMetric:
+    {
+      status=GetRootMeanSquaredDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
