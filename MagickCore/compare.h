@@ -35,6 +35,7 @@ typedef enum
   NormalizedCrossCorrelationErrorMetric,
   PeakAbsoluteErrorMetric,
   PeakSignalToNoiseRatioMetric,
+  PerceptualHashErrorMetric,
   RootMeanSquaredErrorMetric
 } MetricType;
 
