@@ -43,10 +43,10 @@ int main( int /*argc*/, char ** argv)
     poly_coord.push_back( Coordinate(30,290) );
 
     Image texture( srcdir + "tile.miff" );
-    image.penTexture( texture );
+    image.fillPattern( texture );
     image.draw( DrawablePolygon( poly_coord ) );
     texture.isValid( false );
-    image.penTexture( texture );  // Unset texture
+    image.fillPattern( texture );  // Unset texture
 
     //
     // Draw filled ellipse with black border, and red fill color
