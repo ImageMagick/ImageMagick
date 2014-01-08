@@ -45,14 +45,16 @@ typedef struct _ChannelStatistics
 typedef struct _ChannelMoments
 {
   double
-    I1,
-    I2,
-    I3,
-    I4,
-    I5,
-    I6,
-    I7,
-    I8;
+    I[8];
+
+  PointInfo
+    centroid,
+    ellipse_axis;
+
+  double
+    ellipse_angle,
+    ellipse_eccentricity,
+    ellipse_intensity;
 } ChannelMoments;
 
 typedef enum
