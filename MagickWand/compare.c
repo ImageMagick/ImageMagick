@@ -1026,8 +1026,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case FuzzErrorMetric:
             case MeanAbsoluteErrorMetric:
             case MeanSquaredErrorMetric:
-            case RootMeanSquaredErrorMetric:
             case PeakAbsoluteErrorMetric:
+            case PerceptualHashErrorMetric:
+            case RootMeanSquaredErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%g (%g)",QuantumRange*distortion,
                 (double) distortion);
@@ -1082,8 +1083,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case FuzzErrorMetric:
             case MeanAbsoluteErrorMetric:
             case MeanSquaredErrorMetric:
-            case RootMeanSquaredErrorMetric:
             case PeakAbsoluteErrorMetric:
+            case PerceptualHashErrorMetric:
+            case RootMeanSquaredErrorMetric:
             {
               switch (image->colorspace)
               {

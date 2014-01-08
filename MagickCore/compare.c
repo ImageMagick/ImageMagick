@@ -1104,7 +1104,43 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
 static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
+  ChannelMoments
+    *image_moments,
+    *reconstruct_moments;
+
+  double
+    difference,
+    sum;
+
+  register ssize_t
+    i;
+
   *distortion=0.0;
+  image_moments=GetImageMoments(image,exception);
+  if (image_moments == (ChannelMoments *) NULL)
+    return(MagickFalse);
+  reconstruct_moments=GetImageMoments(reconstruct_image,exception);
+  if (reconstruct_moments == (ChannelMoments *) NULL)
+    {
+      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      return(MagickFalse);
+    }
+  sum=0.0;
+  for (i=0; i < 8; i++)
+  {
+    ssize_t
+      channel;
+
+    for (channel=0; channel < MaxPixelChannels; channel++)
+    {
+      difference=reconstruct_moments[channel].I[i]-image_moments[channel].I[i];
+      sum+=difference*difference;
+    }
+  }
+  *distortion=sum;
+  reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
+    reconstruct_moments);
+  image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
   return(MagickTrue);
 }
 
