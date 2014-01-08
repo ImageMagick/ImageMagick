@@ -1288,7 +1288,58 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   const Image *reconstruct_image,const ChannelType channel,
   double *distortion,ExceptionInfo *exception)
 {
+  ChannelMoments
+    *image_moments,
+    *reconstruct_moments;
+
+  double
+    difference,
+    sum;
+
+  register ssize_t
+    i;
+
   *distortion=0.0;
+  image_moments=GetImageChannelMoments(image,exception);
+  if (image_moments == (ChannelMoments *) NULL)
+    return(MagickFalse);
+  reconstruct_moments=GetImageChannelMoments(reconstruct_image,exception);
+  if (reconstruct_moments == (ChannelMoments *) NULL)
+    {
+      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      return(MagickFalse);
+    }
+  sum=0.0;
+  for (i=0; i < 8; i++)
+  {
+    difference=reconstruct_moments[RedChannel].I[i]-
+      image_moments[RedChannel].I[i];
+    sum+=difference*difference;
+    difference=reconstruct_moments[GreenChannel].I[i]-
+      image_moments[GreenChannel].I[i];
+    sum+=difference*difference;
+    difference=reconstruct_moments[BlueChannel].I[i]-
+      image_moments[BlueChannel].I[i];
+    sum+=difference*difference;
+    if ((image->matte != MagickFalse) &&
+        (reconstruct_image->matte != MagickFalse))
+      {
+        difference=reconstruct_moments[OpacityChannel].I[i]-
+          image_moments[OpacityChannel].I[i];
+        sum+=difference*difference;
+      }
+    if ((image->colorspace == CMYKColorspace) &&
+        (reconstruct_image->colorspace == CMYKColorspace))
+      {
+        difference=reconstruct_moments[IndexChannel].I[i]-
+          image_moments[IndexChannel].I[i];
+        sum+=difference*difference;
+      }
+  }
+  image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+  reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
+    reconstruct_moments);
+  *distortion=sum;
   return(MagickTrue);
 }
 
