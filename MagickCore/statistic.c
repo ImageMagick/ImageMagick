@@ -1373,47 +1373,49 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
   ChannelMoments
     *channel_moments;
 
-  MagickBooleanType
-    initialize,
-    status;
+  double
+    M00[MaxPixelChannels+1],
+    M01[MaxPixelChannels+1],
+    M02[MaxPixelChannels+1],
+    M03[MaxPixelChannels+1],
+    M10[MaxPixelChannels+1],
+    M11[MaxPixelChannels+1],
+    M12[MaxPixelChannels+1],
+    M20[MaxPixelChannels+1],
+    M21[MaxPixelChannels+1],
+    M22[MaxPixelChannels+1],
+    M30[MaxPixelChannels+1];
 
-  register ssize_t
-    i;
-
-  size_t
-    length;
+  PointInfo
+    centroid[MaxPixelChannels+1];
 
   ssize_t
+    channel,
     y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  length=MaxPixelChannels+1;
-  channel_moments=(ChannelMoments *) AcquireQuantumMemory(length,
+  channel_moments=(ChannelMoments *) AcquireQuantumMemory(MaxPixelChannels+1,
     sizeof(*channel_moments));
   if (channel_moments == (ChannelMoments *) NULL)
     return(channel_moments);
-  (void) ResetMagickMemory(channel_moments,0,length*sizeof(*channel_moments));
-  for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
-  {
-    channel_moments[i].I1=0.0;
-    channel_moments[i].I2=0.0;
-    channel_moments[i].I3=0.0;
-    channel_moments[i].I4=0.0;
-    channel_moments[i].I5=0.0;
-    channel_moments[i].I6=0.0;
-    channel_moments[i].I7=0.0;
-    channel_moments[i].I8=0.0;
-  }
-  status=MagickTrue;
-  initialize=MagickTrue;
+  (void) ResetMagickMemory(channel_moments,0,(MaxPixelChannels+1)*
+    sizeof(*channel_moments));
+  (void) ResetMagickMemory(centroid,0,sizeof(centroid));
+  (void) ResetMagickMemory(M00,0,sizeof(M00));
+  (void) ResetMagickMemory(M01,0,sizeof(M01));
+  (void) ResetMagickMemory(M02,0,sizeof(M02));
+  (void) ResetMagickMemory(M03,0,sizeof(M03));
+  (void) ResetMagickMemory(M10,0,sizeof(M10));
+  (void) ResetMagickMemory(M11,0,sizeof(M11));
+  (void) ResetMagickMemory(M12,0,sizeof(M12));
+  (void) ResetMagickMemory(M20,0,sizeof(M20));
+  (void) ResetMagickMemory(M21,0,sizeof(M21));
+  (void) ResetMagickMemory(M22,0,sizeof(M22));
+  (void) ResetMagickMemory(M30,0,sizeof(M30));
   image_view=AcquireVirtualCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status,initialize) \
-    magick_threads(image,image,image->rows,1)
-#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1422,14 +1424,12 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     register ssize_t
       x;
 
-    if (status == MagickFalse)
-      continue;
+    /*
+      Compute center of mass (centroid).
+    */
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
+      break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
@@ -1448,24 +1448,147 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_GetImageMoments)
-#endif
-        {
-          if (initialize != MagickFalse)
-            {
-              initialize=MagickFalse;
-            }
-          else
-            {
-           }
-        }
+        M00[channel]+=QuantumScale*p[i];
+        M10[channel]+=x*QuantumScale*p[i];
+        M01[channel]+=y*QuantumScale*p[i];
       }
       p+=GetPixelChannels(image);
     }
   }
+  for (channel=0; channel <= MaxPixelChannels; channel++)
+  {
+    /*
+       Compute center of mass (centroid).
+    */
+    if (fabs(M00[channel]) < MagickEpsilon)
+      continue;
+    centroid[channel].x=M10[channel]/M00[channel];
+    centroid[channel].y=M01[channel]/M00[channel];
+  }
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    /*
+      Compute the image moments.
+    */
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      register ssize_t
+        i;
+
+      if (GetPixelReadMask(image,p) == 0)
+        {
+          p+=GetPixelChannels(image);
+          continue;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        M11[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
+          QuantumScale*p[i];
+        M20[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
+          QuantumScale*p[i];
+        M02[channel]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
+          QuantumScale*p[i];
+        M21[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
+          (y-centroid[channel].y)*QuantumScale*p[i];
+        M12[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
+          (y-centroid[channel].y)*QuantumScale*p[i];
+        M22[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
+          (y-centroid[channel].y)*(y-centroid[channel].y)*QuantumScale*p[i];
+        M30[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
+          (x-centroid[channel].x)*QuantumScale*p[i];
+        M03[channel]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
+          (y-centroid[channel].y)*QuantumScale*p[i];
+      }
+      p+=GetPixelChannels(image);
+    }
+  }
+  for (channel=0; channel <= MaxPixelChannels; channel++)
+  {
+    /*
+      Normalize image moments.
+    */
+    if (fabs(M00[channel]) < MagickEpsilon)
+      continue;
+    M11[channel]/=pow(M00[channel],(1.0+(1.0+1.0)/2.0));
+    M20[channel]/=pow(M00[channel],(1.0+(2.0+0.0)/2.0));
+    M02[channel]/=pow(M00[channel],(1.0+(0.0+2.0)/2.0));
+    M21[channel]/=pow(M00[channel],(1.0+(2.0+1.0)/2.0));
+    M12[channel]/=pow(M00[channel],(1.0+(1.0+2.0)/2.0));
+    M22[channel]/=pow(M00[channel],(1.0+(2.0+2.0)/2.0));
+    M30[channel]/=pow(M00[channel],(1.0+(3.0+0.0)/2.0));
+    M03[channel]/=pow(M00[channel],(1.0+(0.0+3.0)/2.0));
+  }
   image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
+  for (channel=0; channel <= MaxPixelChannels; channel++)
+  {
+    /*
+      Compute Hu invariant moments.
+    */
+    if (fabs(M00[channel]) < MagickEpsilon)
+      continue;
+   channel_moments[channel].I[0]=M20[channel]+M02[channel];
+    channel_moments[channel].I[1]=(M20[channel]-M02[channel])*
+      (M20[channel]-M02[channel])+4.0*M11[channel]*M11[channel];
+    channel_moments[channel].I[2]=(M30[channel]-3.0*M12[channel])*
+      (M30[channel]-3.0*M12[channel])+(3.0*M21[channel]-M03[channel])*
+      (3.0*M21[channel]-M03[channel]);
+    channel_moments[channel].I[3]=(M30[channel]+M12[channel])*
+      (M30[channel]+M12[channel])+(M21[channel]+M03[channel])*
+      (M21[channel]+M03[channel]);
+    channel_moments[channel].I[4]=(M30[channel]-3.0*M12[channel])*
+      (M30[channel]+M12[channel])*((M30[channel]+M12[channel])*
+      (M30[channel]+M12[channel])-3.0*(M21[channel]+M03[channel])*
+      (M21[channel]+M03[channel]))+(3.0*M21[channel]-M03[channel])*
+      (M21[channel]+M03[channel])*(3.0*(M30[channel]+M12[channel])*
+      (M30[channel]+M12[channel])-(M21[channel]+M03[channel])*
+      (M21[channel]+M03[channel]));
+    channel_moments[channel].I[5]=(M20[channel]-M02[channel])*
+      ((M30[channel]+M12[channel])*(M30[channel]+M12[channel])-
+      (M21[channel]+M03[channel])*(M21[channel]+M03[channel]))+
+      4.0*M11[channel]*(M30[channel]+M12[channel])*(M21[channel]+M03[channel]);
+    channel_moments[channel].I[6]=(3.0*M21[channel]-M03[channel])*
+      (M30[channel]+M12[channel])*((M30[channel]+M12[channel])*
+      (M30[channel]+M12[channel])-3.0*(M21[channel]+M03[channel])*
+      (M21[channel]+M03[channel]))-(M30[channel]-3*M12[channel])*
+      (M21[channel]+M03[channel])*(3.0*(M30[channel]+M12[channel])*
+      (M30[channel]+M12[channel])-(M21[channel]+M03[channel])*
+      (M21[channel]+M03[channel]));
+    channel_moments[channel].I[7]=M11[channel]*((M30[channel]+M12[channel])*
+      (M30[channel]+M12[channel])-(M03[channel]+M21[channel])*
+      (M03[channel]+M21[channel]))-(M20[channel]-M02[channel])*
+      (M30[channel]+M12[channel])*(M03[channel]+M21[channel]);
+    channel_moments[channel].centroid=centroid[channel];
+    channel_moments[channel].ellipse_axis.x=sqrt((2.0/M00[channel])*
+      ((M20[channel]+M02[channel])+sqrt(4.0*M11[channel]*M11[channel]+
+      (M20[channel]-M02[channel])*(M20[channel]-M02[channel]))));
+    channel_moments[channel].ellipse_axis.y=sqrt((2.0/M00[channel])*
+      ((M20[channel]+M02[channel])-sqrt(4.0*M11[channel]*M11[channel]+
+      (M20[channel]-M02[channel])*(M20[channel]-M02[channel]))));
+    channel_moments[channel].ellipse_angle=RadiansToDegrees(0.5*atan(2.0*
+      M11[channel]/(M20[channel]-M02[channel])));
+    channel_moments[channel].ellipse_eccentricity=sqrt(1.0-(
+      channel_moments[channel].ellipse_axis.y/
+      channel_moments[channel].ellipse_axis.x));
+    channel_moments[channel].ellipse_intensity=M00[channel]/(MagickPI*
+      channel_moments[channel].ellipse_axis.x*
+      channel_moments[channel].ellipse_axis.y);
+  }
+  if (y < (ssize_t) image->rows)
     channel_moments=(ChannelMoments *) RelinquishMagickMemory(channel_moments);
   return(channel_moments);
 }
