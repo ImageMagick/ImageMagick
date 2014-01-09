@@ -1292,14 +1292,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     *image_moments,
     *reconstruct_moments;
 
-  double
-    difference,
-    sum;
-
   register ssize_t
     i;
 
-  *distortion=0.0;
   image_moments=GetImageChannelMoments(image,exception);
   if (image_moments == (ChannelMoments *) NULL)
     return(MagickFalse);
@@ -1309,37 +1304,55 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
-  sum=0.0;
   for (i=0; i < 8; i++)
   {
-    difference=reconstruct_moments[RedChannel].I[i]-
-      image_moments[RedChannel].I[i];
-    sum+=difference*difference;
-    difference=reconstruct_moments[GreenChannel].I[i]-
-      image_moments[GreenChannel].I[i];
-    sum+=difference*difference;
-    difference=reconstruct_moments[BlueChannel].I[i]-
-      image_moments[BlueChannel].I[i];
-    sum+=difference*difference;
-    if ((image->matte != MagickFalse) &&
-        (reconstruct_image->matte != MagickFalse))
+    double
+      difference;
+
+    /*
+      Compute sum of moment differences squared.
+    */
+    if ((channel & RedChannel) != 0)
+      {
+        difference=reconstruct_moments[RedChannel].I[i]-
+          image_moments[RedChannel].I[i];
+        distortion[RedChannel]+=difference*difference;
+        distortion[CompositeChannels]+=distortion[RedChannel];
+      }
+    if ((channel & GreenChannel) != 0)
+      {
+        difference=reconstruct_moments[GreenChannel].I[i]-
+          image_moments[GreenChannel].I[i];
+        distortion[GreenChannel]+=difference*difference;
+        distortion[CompositeChannels]+=distortion[RedChannel];
+      }
+    if ((channel & GreenChannel) != 0)
+      {
+        difference=reconstruct_moments[BlueChannel].I[i]-
+          image_moments[BlueChannel].I[i];
+        distortion[BlueChannel]+=difference*difference;
+        distortion[CompositeChannels]+=distortion[RedChannel];
+      }
+    if (((channel & OpacityChannel) != 0) &&
+        (image->matte != MagickFalse))
       {
         difference=reconstruct_moments[OpacityChannel].I[i]-
           image_moments[OpacityChannel].I[i];
-        sum+=difference*difference;
+        distortion[OpacityChannel]+=difference*difference;
+        distortion[CompositeChannels]+=distortion[RedChannel];
       }
-    if ((image->colorspace == CMYKColorspace) &&
-        (reconstruct_image->colorspace == CMYKColorspace))
+    if (((channel & IndexChannel) != 0) &&
+        (image->colorspace == CMYKColorspace))
       {
         difference=reconstruct_moments[IndexChannel].I[i]-
           image_moments[IndexChannel].I[i];
-        sum+=difference*difference;
+        distortion[IndexChannel]+=difference*difference;
+        distortion[CompositeChannels]+=distortion[RedChannel];
       }
   }
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
   reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
     reconstruct_moments);
-  *distortion=sum;
   return(MagickTrue);
 }
 
