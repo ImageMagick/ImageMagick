@@ -2,7 +2,7 @@
 # Attempt to guess a canonical system name.
 #   Copyright 1992-2013 Free Software Foundation, Inc.
 
-timestamp='2013-06-10'
+timestamp='2013-11-29'
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -1260,16 +1260,26 @@ EOF
 	if test "$UNAME_PROCESSOR" = unknown ; then
 	    UNAME_PROCESSOR=powerpc
 	fi
-	if [ "$CC_FOR_BUILD" != 'no_compiler_found' ]; then
-	    if (echo '#ifdef __LP64__'; echo IS_64BIT_ARCH; echo '#endif') | \
-		(CCOPTS= $CC_FOR_BUILD -E - 2>/dev/null) | \
-		grep IS_64BIT_ARCH >/dev/null
-	    then
-		case $UNAME_PROCESSOR in
-		    i386) UNAME_PROCESSOR=x86_64 ;;
-		    powerpc) UNAME_PROCESSOR=powerpc64 ;;
-		esac
+	if test `echo "$UNAME_RELEASE" | sed -e 's/\..*//'` -le 10 ; then
+	    if [ "$CC_FOR_BUILD" != 'no_compiler_found' ]; then
+		if (echo '#ifdef __LP64__'; echo IS_64BIT_ARCH; echo '#endif') | \
+		    (CCOPTS= $CC_FOR_BUILD -E - 2>/dev/null) | \
+		    grep IS_64BIT_ARCH >/dev/null
+		then
+		    case $UNAME_PROCESSOR in
+			i386) UNAME_PROCESSOR=x86_64 ;;
+			powerpc) UNAME_PROCESSOR=powerpc64 ;;
+		    esac
+		fi
 	    fi
+	elif test "$UNAME_PROCESSOR" = i386 ; then
+	    # Avoid executing cc on OS X 10.9, as it ships with a stub
+	    # that puts up a graphical alert prompting to install
+	    # developer tools.  Any system running Mac OS X 10.7 or
+	    # later (Darwin 11 and later) is required to have a 64-bit
+	    # processor. This is not true of the ARM version of Darwin
+	    # that Apple uses in portable devices.
+	    UNAME_PROCESSOR=x86_64
 	fi
 	echo ${UNAME_PROCESSOR}-apple-darwin${UNAME_RELEASE}
 	exit ;;
