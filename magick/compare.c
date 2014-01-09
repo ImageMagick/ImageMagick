@@ -1326,7 +1326,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         distortion[GreenChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
-    if ((channel & GreenChannel) != 0)
+    if ((channel & BlueChannel) != 0)
       {
         difference=reconstruct_moments[BlueChannel].I[i]-
           image_moments[BlueChannel].I[i];
