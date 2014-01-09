@@ -1713,6 +1713,8 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     /*
       Compute elliptical angle, major and minor axes, eccentricity, & intensity.
     */
+    if (fabs(M00[channel]) < MagickEpsilon)
+      continue;
     channel_moments[channel].centroid=centroid[channel];
     channel_moments[channel].ellipse_axis.x=sqrt((2.0/M00[channel])*
       ((M20[channel]+M02[channel])+sqrt(4.0*M11[channel]*M11[channel]+
