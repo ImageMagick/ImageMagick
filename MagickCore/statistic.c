@@ -1448,9 +1448,9 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        M00[channel]+=256.0*QuantumScale*p[i];
-        M10[channel]+=x*256.0*QuantumScale*p[i];
-        M01[channel]+=y*256.0*QuantumScale*p[i];
+        M00[channel]+=255.0*QuantumScale*p[i];
+        M10[channel]+=x*255.0*QuantumScale*p[i];
+        M01[channel]+=y*255.0*QuantumScale*p[i];
       }
       p+=GetPixelChannels(image);
     }
@@ -1498,22 +1498,22 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         M11[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
-          256.0*QuantumScale*p[i];
+          255.0*QuantumScale*p[i];
         M20[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          256.0*QuantumScale*p[i];
+          255.0*QuantumScale*p[i];
         M02[channel]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
-          256.0*QuantumScale*p[i];
+          255.0*QuantumScale*p[i];
         M21[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (y-centroid[channel].y)*256.0*QuantumScale*p[i];
+          (y-centroid[channel].y)*255.0*QuantumScale*p[i];
         M12[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
-          (y-centroid[channel].y)*256.0*QuantumScale*p[i];
+          (y-centroid[channel].y)*255.0*QuantumScale*p[i];
         M22[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (y-centroid[channel].y)*(y-centroid[channel].y)*256.0*QuantumScale*
+          (y-centroid[channel].y)*(y-centroid[channel].y)*255.0*QuantumScale*
           p[i];
         M30[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (x-centroid[channel].x)*256.0*QuantumScale*p[i];
+          (x-centroid[channel].x)*255.0*QuantumScale*p[i];
         M03[channel]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
-          (y-centroid[channel].y)*256.0*QuantumScale*p[i];
+          (y-centroid[channel].y)*255.0*QuantumScale*p[i];
       }
       p+=GetPixelChannels(image);
     }
