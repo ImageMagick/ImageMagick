@@ -1027,7 +1027,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case MeanAbsoluteErrorMetric:
             case MeanSquaredErrorMetric:
             case PeakAbsoluteErrorMetric:
-            case PerceptualHashErrorMetric:
             case RootMeanSquaredErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%g (%g)",QuantumRange*distortion,
@@ -1041,6 +1040,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case AbsoluteErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioErrorMetric:
+            case PerceptualHashErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%g",distortion);
               if ((reconstruct_image->columns != image->columns) ||
@@ -1084,7 +1084,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case MeanAbsoluteErrorMetric:
             case MeanSquaredErrorMetric:
             case PeakAbsoluteErrorMetric:
-            case PerceptualHashErrorMetric:
             case RootMeanSquaredErrorMetric:
             {
               switch (image->colorspace)
@@ -1147,6 +1146,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case AbsoluteErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioErrorMetric:
+            case PerceptualHashErrorMetric:
             {
               switch (image->colorspace)
               {
