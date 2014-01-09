@@ -1316,38 +1316,38 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       continue;  /* I3 is not independent of other moments */
     if ((channel & RedChannel) != 0)
       {
-        difference=log10(fabs(reconstruct_moments[RedChannel].I[i]-
-          image_moments[RedChannel].I[i]));
+        difference=log10(fabs(reconstruct_moments[RedChannel].I[i]))-
+          log10(fabs(image_moments[RedChannel].I[i]));
         distortion[RedChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if ((channel & GreenChannel) != 0)
       {
-        difference=log10(fabs(reconstruct_moments[GreenChannel].I[i]-
-          image_moments[GreenChannel].I[i]));
+        difference=log10(fabs(reconstruct_moments[GreenChannel].I[i]))-
+          log10(fabs(image_moments[GreenChannel].I[i]));
         distortion[GreenChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if ((channel & BlueChannel) != 0)
       {
-        difference=log10(fabs(reconstruct_moments[BlueChannel].I[i]-
-          image_moments[BlueChannel].I[i]));
+        difference=log10(fabs(reconstruct_moments[BlueChannel].I[i]))-
+          log10(fabs(image_moments[BlueChannel].I[i]));
         distortion[BlueChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if (((channel & OpacityChannel) != 0) &&
         (image->matte != MagickFalse))
       {
-        difference=log10(fabs(reconstruct_moments[OpacityChannel].I[i]-
-          image_moments[OpacityChannel].I[i]));
+        difference=log10(fabs(reconstruct_moments[OpacityChannel].I[i]))-
+          log10(fabs(image_moments[OpacityChannel].I[i]));
         distortion[OpacityChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if (((channel & IndexChannel) != 0) &&
         (image->colorspace == CMYKColorspace))
       {
-        difference=log10(fabs(reconstruct_moments[IndexChannel].I[i]-
-          image_moments[IndexChannel].I[i]));
+        difference=log10(fabs(reconstruct_moments[IndexChannel].I[i]))-
+          log10(fabs(image_moments[IndexChannel].I[i]));
         distortion[IndexChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
