@@ -831,7 +831,7 @@ double Magick::Image::fontPointsize(void) const
   return(constOptions()->fontPointsize());
 }
 
-std::string Magick::Image::format(void ) const
+std::string Magick::Image::format(void) const
 {
   const MagickInfo
     *magick_info;
@@ -845,6 +845,24 @@ std::string Magick::Image::format(void ) const
 
   throwExceptionExplicit(CorruptImageWarning,"Unrecognized image magick type");
   return(std::string());
+}
+
+std::string Magick::Image::formatExpression(const std::string expression)
+{
+  char
+    *text;
+
+  std::string
+    result;
+
+  text=InterpretImageProperties(imageInfo(),image(),expression.c_str());
+  if (text != (char *) NULL)
+    {
+      result=std::string(text);
+      text=DestroyString(text);
+    }
+  throwImageException();
+  return result;
 }
 
 double Magick::Image::gamma(void) const
