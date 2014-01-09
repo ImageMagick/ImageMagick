@@ -1555,26 +1555,26 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetMagickPixelPacket(image,p,indexes+x,&pixel);
-      M00[RedChannel]+=256.0*QuantumScale*pixel.red;
-      M10[RedChannel]+=x*256.0*QuantumScale*pixel.red;
-      M01[RedChannel]+=y*256.0*QuantumScale*pixel.red;
-      M00[GreenChannel]+=256.0*QuantumScale*pixel.green;
-      M10[GreenChannel]+=x*256.0*QuantumScale*pixel.green;
-      M01[GreenChannel]+=y*256.0*QuantumScale*pixel.green;
-      M00[BlueChannel]+=256.0*QuantumScale*pixel.blue;
-      M10[BlueChannel]+=x*256.0*QuantumScale*pixel.blue;
-      M01[BlueChannel]+=y*256.0*QuantumScale*pixel.blue;
+      M00[RedChannel]+=255.0*QuantumScale*pixel.red;
+      M10[RedChannel]+=x*255.0*QuantumScale*pixel.red;
+      M01[RedChannel]+=y*255.0*QuantumScale*pixel.red;
+      M00[GreenChannel]+=255.0*QuantumScale*pixel.green;
+      M10[GreenChannel]+=x*255.0*QuantumScale*pixel.green;
+      M01[GreenChannel]+=y*255.0*QuantumScale*pixel.green;
+      M00[BlueChannel]+=255.0*QuantumScale*pixel.blue;
+      M10[BlueChannel]+=x*255.0*QuantumScale*pixel.blue;
+      M01[BlueChannel]+=y*255.0*QuantumScale*pixel.blue;
       if (image->matte != MagickFalse)
         {
-          M00[OpacityChannel]+=256.0*QuantumScale*pixel.opacity;
-          M10[OpacityChannel]+=x*256.0*QuantumScale*pixel.opacity;
-          M01[OpacityChannel]+=y*256.0*QuantumScale*pixel.opacity;
+          M00[OpacityChannel]+=255.0*QuantumScale*pixel.opacity;
+          M10[OpacityChannel]+=x*255.0*QuantumScale*pixel.opacity;
+          M01[OpacityChannel]+=y*255.0*QuantumScale*pixel.opacity;
         }
       if (image->colorspace == CMYKColorspace)
         {
-          M00[IndexChannel]+=256.0*QuantumScale*pixel.index;
-          M10[IndexChannel]+=x*256.0*QuantumScale*pixel.index;
-          M01[IndexChannel]+=y*256.0*QuantumScale*pixel.index;
+          M00[IndexChannel]+=255.0*QuantumScale*pixel.index;
+          M10[IndexChannel]+=x*255.0*QuantumScale*pixel.index;
+          M01[IndexChannel]+=y*255.0*QuantumScale*pixel.index;
         }
       p++;
     }
@@ -1611,114 +1611,114 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     {
       SetMagickPixelPacket(image,p,indexes+x,&pixel);
       M11[RedChannel]+=(x-centroid[RedChannel].x)*(y-
-        centroid[RedChannel].y)*256.0*QuantumScale*pixel.red;
+        centroid[RedChannel].y)*255.0*QuantumScale*pixel.red;
       M20[RedChannel]+=(x-centroid[RedChannel].x)*(x-
-        centroid[RedChannel].x)*256.0*QuantumScale*pixel.red;
+        centroid[RedChannel].x)*255.0*QuantumScale*pixel.red;
       M02[RedChannel]+=(y-centroid[RedChannel].y)*(y-
-        centroid[RedChannel].y)*256.0*QuantumScale*pixel.red;
+        centroid[RedChannel].y)*255.0*QuantumScale*pixel.red;
       M21[RedChannel]+=(x-centroid[RedChannel].x)*(x-
-        centroid[RedChannel].x)*(y-centroid[RedChannel].y)*256.0*QuantumScale*
+        centroid[RedChannel].x)*(y-centroid[RedChannel].y)*255.0*QuantumScale*
         pixel.red;
       M12[RedChannel]+=(x-centroid[RedChannel].x)*(y-
-        centroid[RedChannel].y)*(y-centroid[RedChannel].y)*256.0*QuantumScale*
+        centroid[RedChannel].y)*(y-centroid[RedChannel].y)*255.0*QuantumScale*
         pixel.red;
       M22[RedChannel]+=(x-centroid[RedChannel].x)*(x-
         centroid[RedChannel].x)*(y-centroid[RedChannel].y)*(y-
-        centroid[RedChannel].y)*256.0*QuantumScale*pixel.red;
+        centroid[RedChannel].y)*255.0*QuantumScale*pixel.red;
       M30[RedChannel]+=(x-centroid[RedChannel].x)*(x-
-        centroid[RedChannel].x)*(x-centroid[RedChannel].x)*256.0*QuantumScale*
+        centroid[RedChannel].x)*(x-centroid[RedChannel].x)*255.0*QuantumScale*
         pixel.red;
       M03[RedChannel]+=(y-centroid[RedChannel].y)*(y-
-        centroid[RedChannel].y)*(y-centroid[RedChannel].y)*256.0*QuantumScale*
+        centroid[RedChannel].y)*(y-centroid[RedChannel].y)*255.0*QuantumScale*
         pixel.red;
       M11[GreenChannel]+=(x-centroid[GreenChannel].x)*(y-
-        centroid[GreenChannel].y)*256.0*QuantumScale*pixel.green;
+        centroid[GreenChannel].y)*255.0*QuantumScale*pixel.green;
       M20[GreenChannel]+=(x-centroid[GreenChannel].x)*(x-
-        centroid[GreenChannel].x)*256.0*QuantumScale*pixel.green;
+        centroid[GreenChannel].x)*255.0*QuantumScale*pixel.green;
       M02[GreenChannel]+=(y-centroid[GreenChannel].y)*(y-
-        centroid[GreenChannel].y)*256.0*QuantumScale*pixel.green;
+        centroid[GreenChannel].y)*255.0*QuantumScale*pixel.green;
       M21[GreenChannel]+=(x-centroid[GreenChannel].x)*(x-
-        centroid[GreenChannel].x)*(y-centroid[GreenChannel].y)*256.0*
+        centroid[GreenChannel].x)*(y-centroid[GreenChannel].y)*255.0*
         QuantumScale*pixel.green;
       M12[GreenChannel]+=(x-centroid[GreenChannel].x)*(y-
-        centroid[GreenChannel].y)*(y-centroid[GreenChannel].y)*256.0*
+        centroid[GreenChannel].y)*(y-centroid[GreenChannel].y)*255.0*
         QuantumScale*pixel.green;
       M22[GreenChannel]+=(x-centroid[GreenChannel].x)*(x-
         centroid[GreenChannel].x)*(y-centroid[GreenChannel].y)*(y-
-        centroid[GreenChannel].y)*256.0*QuantumScale*pixel.green;
+        centroid[GreenChannel].y)*255.0*QuantumScale*pixel.green;
       M30[GreenChannel]+=(x-centroid[GreenChannel].x)*(x-
-        centroid[GreenChannel].x)*(x-centroid[GreenChannel].x)*256.0*
+        centroid[GreenChannel].x)*(x-centroid[GreenChannel].x)*255.0*
         QuantumScale*pixel.green;
       M03[GreenChannel]+=(y-centroid[GreenChannel].y)*(y-
-        centroid[GreenChannel].y)*(y-centroid[GreenChannel].y)*256.0*
+        centroid[GreenChannel].y)*(y-centroid[GreenChannel].y)*255.0*
         QuantumScale*pixel.green;
       M11[BlueChannel]+=(x-centroid[BlueChannel].x)*(y-
-        centroid[BlueChannel].y)*256.0*QuantumScale*pixel.blue;
+        centroid[BlueChannel].y)*255.0*QuantumScale*pixel.blue;
       M20[BlueChannel]+=(x-centroid[BlueChannel].x)*(x-
-        centroid[BlueChannel].x)*256.0*QuantumScale*pixel.blue;
+        centroid[BlueChannel].x)*255.0*QuantumScale*pixel.blue;
       M02[BlueChannel]+=(y-centroid[BlueChannel].y)*(y-
-        centroid[BlueChannel].y)*256.0*QuantumScale*pixel.blue;
+        centroid[BlueChannel].y)*255.0*QuantumScale*pixel.blue;
       M21[BlueChannel]+=(x-centroid[BlueChannel].x)*(x-
-        centroid[BlueChannel].x)*(y-centroid[BlueChannel].y)*256.0*
+        centroid[BlueChannel].x)*(y-centroid[BlueChannel].y)*255.0*
         QuantumScale*pixel.blue;
       M12[BlueChannel]+=(x-centroid[BlueChannel].x)*(y-
-        centroid[BlueChannel].y)*(y-centroid[BlueChannel].y)*256.0*
+        centroid[BlueChannel].y)*(y-centroid[BlueChannel].y)*255.0*
         QuantumScale*pixel.blue;
       M22[BlueChannel]+=(x-centroid[BlueChannel].x)*(x-
         centroid[BlueChannel].x)*(y-centroid[BlueChannel].y)*(y-
-        centroid[BlueChannel].y)*256.0*QuantumScale*pixel.blue;
+        centroid[BlueChannel].y)*255.0*QuantumScale*pixel.blue;
       M30[BlueChannel]+=(x-centroid[BlueChannel].x)*(x-
-        centroid[BlueChannel].x)*(x-centroid[BlueChannel].x)*256.0*QuantumScale*
+        centroid[BlueChannel].x)*(x-centroid[BlueChannel].x)*255.0*QuantumScale*
         pixel.blue;
       M03[BlueChannel]+=(y-centroid[BlueChannel].y)*(y-
-        centroid[BlueChannel].y)*(y-centroid[BlueChannel].y)*256.0*QuantumScale*
+        centroid[BlueChannel].y)*(y-centroid[BlueChannel].y)*255.0*QuantumScale*
         pixel.blue;
       if (image->matte != MagickFalse)
         {
           M11[OpacityChannel]+=(x-centroid[OpacityChannel].x)*(y-
-            centroid[OpacityChannel].y)*256.0*QuantumScale*pixel.opacity;
+            centroid[OpacityChannel].y)*255.0*QuantumScale*pixel.opacity;
           M20[OpacityChannel]+=(x-centroid[OpacityChannel].x)*(x-
-            centroid[OpacityChannel].x)*256.0*QuantumScale*pixel.opacity;
+            centroid[OpacityChannel].x)*255.0*QuantumScale*pixel.opacity;
           M02[OpacityChannel]+=(y-centroid[OpacityChannel].y)*(y-
-            centroid[OpacityChannel].y)*256.0*QuantumScale*pixel.opacity;
+            centroid[OpacityChannel].y)*255.0*QuantumScale*pixel.opacity;
           M21[OpacityChannel]+=(x-centroid[OpacityChannel].x)*(x-
             centroid[OpacityChannel].x)*(y-centroid[OpacityChannel].y)*
-            256.0*QuantumScale*pixel.opacity;
+            255.0*QuantumScale*pixel.opacity;
           M12[OpacityChannel]+=(x-centroid[OpacityChannel].x)*(y-
             centroid[OpacityChannel].y)*(y-centroid[OpacityChannel].y)*
-            256.0*QuantumScale*pixel.opacity;
+            255.0*QuantumScale*pixel.opacity;
           M22[OpacityChannel]+=(x-centroid[OpacityChannel].x)*(x-
             centroid[OpacityChannel].x)*(y-centroid[OpacityChannel].y)*(y-
-            centroid[OpacityChannel].y)*256.0*QuantumScale*pixel.opacity;
+            centroid[OpacityChannel].y)*255.0*QuantumScale*pixel.opacity;
           M30[OpacityChannel]+=(x-centroid[OpacityChannel].x)*(x-
             centroid[OpacityChannel].x)*(x-centroid[OpacityChannel].x)*
-            256.0*QuantumScale*pixel.opacity;
+            255.0*QuantumScale*pixel.opacity;
           M03[OpacityChannel]+=(y-centroid[OpacityChannel].y)*(y-
             centroid[OpacityChannel].y)*(y-centroid[OpacityChannel].y)*
-            256.0*QuantumScale*pixel.opacity;
+            255.0*QuantumScale*pixel.opacity;
         }
       if (image->colorspace == CMYKColorspace)
         {
           M11[IndexChannel]+=(x-centroid[IndexChannel].x)*(y-
-            centroid[IndexChannel].y)*256.0*QuantumScale*pixel.index;
+            centroid[IndexChannel].y)*255.0*QuantumScale*pixel.index;
           M20[IndexChannel]+=(x-centroid[IndexChannel].x)*(x-
-            centroid[IndexChannel].x)*256.0*QuantumScale*pixel.index;
+            centroid[IndexChannel].x)*255.0*QuantumScale*pixel.index;
           M02[IndexChannel]+=(y-centroid[IndexChannel].y)*(y-
-            centroid[IndexChannel].y)*256.0*QuantumScale*pixel.index;
+            centroid[IndexChannel].y)*255.0*QuantumScale*pixel.index;
           M21[IndexChannel]+=(x-centroid[IndexChannel].x)*(x-
-            centroid[IndexChannel].x)*(y-centroid[IndexChannel].y)*256.0*
+            centroid[IndexChannel].x)*(y-centroid[IndexChannel].y)*255.0*
             QuantumScale*pixel.index;
           M12[IndexChannel]+=(x-centroid[IndexChannel].x)*(y-
-            centroid[IndexChannel].y)*(y-centroid[IndexChannel].y)*256.0*
+            centroid[IndexChannel].y)*(y-centroid[IndexChannel].y)*255.0*
             QuantumScale*pixel.index;
           M22[IndexChannel]+=(x-centroid[IndexChannel].x)*(x-
             centroid[IndexChannel].x)*(y-centroid[IndexChannel].y)*(y-
-            centroid[IndexChannel].y)*256.0*QuantumScale*pixel.index;
+            centroid[IndexChannel].y)*255.0*QuantumScale*pixel.index;
           M30[IndexChannel]+=(x-centroid[IndexChannel].x)*(x-
-            centroid[IndexChannel].x)*(x-centroid[IndexChannel].x)*256.0*
+            centroid[IndexChannel].x)*(x-centroid[IndexChannel].x)*255.0*
             QuantumScale*pixel.index;
           M03[IndexChannel]+=(y-centroid[IndexChannel].y)*(y-
-            centroid[IndexChannel].y)*(y-centroid[IndexChannel].y)*256.0*
+            centroid[IndexChannel].y)*(y-centroid[IndexChannel].y)*255.0*
             QuantumScale*pixel.index;
         }
       p++;
