@@ -700,11 +700,12 @@ namespace Magick
   using MagickCore::AbsoluteErrorMetric;
   using MagickCore::FuzzErrorMetric;
   using MagickCore::MeanAbsoluteErrorMetric;
-  using MagickCore::MeanErrorPerPixelMetric;
+  using MagickCore::MeanErrorPerPixelErrorMetric;
   using MagickCore::MeanSquaredErrorMetric;
   using MagickCore::NormalizedCrossCorrelationErrorMetric;
   using MagickCore::PeakAbsoluteErrorMetric;
-  using MagickCore::PeakSignalToNoiseRatioMetric;
+  using MagickCore::PeakSignalToNoiseRatioErrorMetric;
+  using MagickCore::PerceptualMetricErrorMetric;
   using MagickCore::RootMeanSquaredErrorMetric;
 
   // Noise types
