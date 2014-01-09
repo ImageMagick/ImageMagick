@@ -1317,21 +1317,21 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         difference=reconstruct_moments[RedChannel].I[i]-
           image_moments[RedChannel].I[i];
         distortion[RedChannel]+=difference*difference;
-        distortion[CompositeChannels]+=distortion[RedChannel];
+        distortion[CompositeChannels]+=difference*difference;
       }
     if ((channel & GreenChannel) != 0)
       {
         difference=reconstruct_moments[GreenChannel].I[i]-
           image_moments[GreenChannel].I[i];
         distortion[GreenChannel]+=difference*difference;
-        distortion[CompositeChannels]+=distortion[RedChannel];
+        distortion[CompositeChannels]+=difference*difference;
       }
     if ((channel & GreenChannel) != 0)
       {
         difference=reconstruct_moments[BlueChannel].I[i]-
           image_moments[BlueChannel].I[i];
         distortion[BlueChannel]+=difference*difference;
-        distortion[CompositeChannels]+=distortion[RedChannel];
+        distortion[CompositeChannels]+=difference*difference;
       }
     if (((channel & OpacityChannel) != 0) &&
         (image->matte != MagickFalse))
@@ -1339,7 +1339,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         difference=reconstruct_moments[OpacityChannel].I[i]-
           image_moments[OpacityChannel].I[i];
         distortion[OpacityChannel]+=difference*difference;
-        distortion[CompositeChannels]+=distortion[RedChannel];
+        distortion[CompositeChannels]+=difference*difference;
       }
     if (((channel & IndexChannel) != 0) &&
         (image->colorspace == CMYKColorspace))
@@ -1347,7 +1347,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         difference=reconstruct_moments[IndexChannel].I[i]-
           image_moments[IndexChannel].I[i];
         distortion[IndexChannel]+=difference*difference;
-        distortion[CompositeChannels]+=distortion[RedChannel];
+        distortion[CompositeChannels]+=difference*difference;
       }
   }
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
