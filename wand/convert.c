@@ -393,6 +393,7 @@ static MagickBooleanType ConvertUsage(void)
       "-mask filename       associate a mask with the image",
       "-matte               store matte channel if the image has one",
       "-mattecolor color    frame color",
+      "-moments             report image moments",
       "-monitor             monitor progress",
       "-orient type         image orientation",
       "-page geometry       size and location of an image canvas (setting)",
@@ -2083,6 +2084,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("moments",option+1) == 0)
+          break;
         if (LocaleCompare("monitor",option+1) == 0)
           break;
         if (LocaleCompare("monochrome",option+1) == 0)
