@@ -1711,10 +1711,33 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
   for (channel=0; channel <= CompositeChannels; channel++)
   {
     /*
+      Compute elliptical angle, major and minor axes, eccentricity, & intensity.
+    */
+    channel_moments[channel].centroid=centroid[channel];
+    channel_moments[channel].ellipse_axis.x=sqrt((2.0/M00[channel])*
+      ((M20[channel]+M02[channel])+sqrt(4.0*M11[channel]*M11[channel]+
+      (M20[channel]-M02[channel])*(M20[channel]-M02[channel]))));
+    channel_moments[channel].ellipse_axis.y=sqrt((2.0/M00[channel])*
+      ((M20[channel]+M02[channel])-sqrt(4.0*M11[channel]*M11[channel]+
+      (M20[channel]-M02[channel])*(M20[channel]-M02[channel]))));
+    channel_moments[channel].ellipse_angle=RadiansToDegrees(0.5*atan(2.0*
+      M11[channel]/(M20[channel]-M02[channel])));
+    channel_moments[channel].ellipse_eccentricity=sqrt(1.0-(
+      channel_moments[channel].ellipse_axis.y/
+      channel_moments[channel].ellipse_axis.x));
+    channel_moments[channel].ellipse_intensity=M00[channel]/(MagickPI*
+      channel_moments[channel].ellipse_axis.x*
+      channel_moments[channel].ellipse_axis.y);
+  }
+  for (channel=0; channel <= CompositeChannels; channel++)
+  {
+    /*
       Normalize image moments.
     */
     if (fabs(M00[channel]) < MagickEpsilon)
       continue;
+    M10[channel]=0.0;
+    M01[channel]=0.0;
     M11[channel]/=pow(M00[channel],(1.0+(1.0+1.0)/2.0));
     M20[channel]/=pow(M00[channel],(1.0+(2.0+0.0)/2.0));
     M02[channel]/=pow(M00[channel],(1.0+(0.0+2.0)/2.0));
@@ -1762,21 +1785,6 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
       (M30[channel]+M12[channel])-(M03[channel]+M21[channel])*
       (M03[channel]+M21[channel]))-(M20[channel]-M02[channel])*
       (M30[channel]+M12[channel])*(M03[channel]+M21[channel]);
-    channel_moments[channel].centroid=centroid[channel];
-    channel_moments[channel].ellipse_axis.x=sqrt((2.0/M00[channel])*
-      ((M20[channel]+M02[channel])+sqrt(4.0*M11[channel]*M11[channel]+
-      (M20[channel]-M02[channel])*(M20[channel]-M02[channel]))));
-    channel_moments[channel].ellipse_axis.y=sqrt((2.0/M00[channel])*
-      ((M20[channel]+M02[channel])-sqrt(4.0*M11[channel]*M11[channel]+
-      (M20[channel]-M02[channel])*(M20[channel]-M02[channel]))));
-    channel_moments[channel].ellipse_angle=RadiansToDegrees(0.5*atan(2.0*
-      M11[channel]/(M20[channel]-M02[channel])));
-    channel_moments[channel].ellipse_eccentricity=sqrt(1.0-(
-      channel_moments[channel].ellipse_axis.y/
-      channel_moments[channel].ellipse_axis.x));
-    channel_moments[channel].ellipse_intensity=M00[channel]/(MagickPI*
-      channel_moments[channel].ellipse_axis.x*
-      channel_moments[channel].ellipse_axis.y);
   }
   if (y < (ssize_t) image->rows)
     channel_moments=(ChannelMoments *) RelinquishMagickMemory(channel_moments);
