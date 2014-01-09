@@ -46,7 +46,7 @@ typedef struct _ChannelStatistics
 typedef struct _ChannelMoments
 {
   double
-    I[8];
+    I[32];
 
   PointInfo
     centroid,
