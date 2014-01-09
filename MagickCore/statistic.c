@@ -1536,8 +1536,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     channel_moments[channel].ellipse_eccentricity=sqrt(1.0-(
       channel_moments[channel].ellipse_axis.y/
       channel_moments[channel].ellipse_axis.x));
-    channel_moments[channel].ellipse_intensity=M00[channel]/(MagickPI*
-      channel_moments[channel].ellipse_axis.x*
+    channel_moments[channel].ellipse_intensity=QuantumRange*M00[channel]/
+      (MagickPI*channel_moments[channel].ellipse_axis.x*
       channel_moments[channel].ellipse_axis.y);
   }
   for (channel=0; channel <= MaxPixelChannels; channel++)
