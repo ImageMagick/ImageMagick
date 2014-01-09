@@ -963,6 +963,26 @@ std::string Magick::Image::format(void) const
   return(std::string());
 }
 
+std::string Magick::Image::formatExpression(const std::string expression)
+{
+  char
+    *text;
+
+  std::string
+    result;
+
+  GetPPException;
+  text=InterpretImageProperties(imageInfo(),image(),expression.c_str(),
+    &exceptionInfo);
+  if (text != (char *) NULL)
+    {
+      result=std::string(text);
+      text=DestroyString(text);
+    }
+  ThrowPPException;
+  return result;
+}
+
 double Magick::Image::gamma(void) const
 {
   return(constImage()->gamma);

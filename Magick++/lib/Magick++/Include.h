@@ -1016,6 +1016,7 @@ namespace Magick
   using MagickCore::DestroyPixelWand;
   using MagickCore::DestroyQuantizeInfo;
   using MagickCore::DestroyQuantumInfo;
+  using MagickCore::DestroyString;
   using MagickCore::DestroyStringInfo;
   using MagickCore::DisplayImages;
   using MagickCore::DistortImage;
@@ -1184,6 +1185,7 @@ namespace Magick
   using MagickCore::ImageWarning;
   using MagickCore::ImplodeImage;
   using MagickCore::ImportQuantumPixels;
+  using MagickCore::InterpretImageProperties;
   using MagickCore::InverseFourierTransformImage;
   using MagickCore::InvokeDynamicImageFilter;
   using MagickCore::IsEventLogging;

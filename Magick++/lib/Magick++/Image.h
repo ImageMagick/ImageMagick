@@ -297,6 +297,10 @@ namespace Magick
     // Long image format description
     std::string format(void) const;
 
+    // Formats the specified expression
+    // More info here: http://www.imagemagick.org/script/escape.php
+    std::string formatExpression(const std::string expression);
+
     // Gamma level of the image
     double gamma(void) const;
 
