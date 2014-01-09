@@ -1120,7 +1120,6 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
-  sum=0.0;
   for (i=0; i < 8; i++)
   {
     ssize_t
@@ -1131,12 +1130,12 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       double
         difference;
 
-      difference=reconstruct_moments[channel].I[i]-image_moments[channel].I[i];
+      difference=log10(fabs(reconstruct_moments[channel].I[i]))-
+         log10(fabs(image_moments[channel].I[i]));
       distortion[channel]+=difference*difference;
       distortion[CompositePixelChannel]+=difference*difference;
     }
   }
-  *distortion=sum;
   reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
     reconstruct_moments);
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
