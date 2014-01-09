@@ -1125,6 +1125,11 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     ssize_t
       channel;
 
+    /*
+      Compute sum of moment differences squared.
+    */
+    if (i == 2)
+      continue;  /* I3 is not independent of other moments */
     for (channel=0; channel < MaxPixelChannels; channel++)
     {
       double
