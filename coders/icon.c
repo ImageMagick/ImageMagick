@@ -58,6 +58,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/nt-feature.h"
+#include "magick/option.h"
 #include "magick/pixel-accessor.h"
 #include "magick/quantize.h"
 #include "magick/quantum-private.h"
@@ -773,6 +774,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     icon_info;
 
   Image
+    *images,
     *next;
 
   MagickBooleanType
@@ -818,15 +820,46 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  scene=0;
-  next=image;
-  do
-  {
-    if ((image->columns > 256L) || (image->rows > 256L))
-      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
-    scene++;
-    next=SyncNextImageInList(next);
-  } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
+  images=(Image *) NULL;
+  if (GetImageOption(image_info,"icon:auto-resize") != (const char *) NULL)
+    {
+      size_t
+        sizes[]={192,128,96,64,48,40,32,24,16};
+
+      if ((image->columns != 256L) && (image->rows != 256L))
+        ThrowWriterException(ImageError,"SizeMustBe256x256");
+      if (image->next != (Image *) NULL)
+        ThrowWriterException(ImageError,"OnlyOneImageAllowed");
+      images=CloneImage(image,0,0,MagickFalse,&image->exception);
+      if (images == (Image *) NULL)
+        return(MagickFalse);
+      scene=sizeof(sizes)/sizeof(sizes[0]);
+      for (i=0; i < scene; i++)
+      {
+        next=ResizeImage(image,sizes[i],sizes[i],image->filter,image->blur,
+          &image->exception);
+        if (next == (Image *) NULL)
+          {
+            images=DestroyImageList(images);
+            return(MagickFalse);
+          }
+        AppendImageToList(&images,next);
+      }
+      scene++;
+    }
+  else
+    {
+      scene=0;
+      next=image;
+      do
+      {
+        if ((image->columns > 256L) || (image->rows > 256L))
+          ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+        scene++;
+        next=SyncNextImageInList(next);
+      } while ((next != (Image *) NULL) && (image_info->adjoin != 
+          MagickFalse));
+    }
   /*
     Dump out a ICON header template to be properly initialized later.
   */
@@ -836,7 +869,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(&icon_file,0,sizeof(icon_file));
   (void) ResetMagickMemory(&icon_info,0,sizeof(icon_info));
   scene=0;
-  next=image;
+  next=(images != (Image *) NULL) ? images : image;
   do
   {
     (void) WriteBlobByte(image,icon_file.directory[scene].width);
@@ -853,7 +886,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     next=SyncNextImageInList(next);
   } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
   scene=0;
-  next=image;
+  next=(images != (Image *) NULL) ? images : image;
   do
   {
     if ((next->columns > 255L) && (next->rows > 255L) &&
@@ -874,7 +907,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
 
         write_image=CloneImage(next,0,0,MagickTrue,&image->exception);
         if (write_image == (Image *) NULL)
-          return(MagickFalse);
+          {
+            images=DestroyImageList(images);
+            return(MagickFalse);
+          }
         write_info=CloneImageInfo(image_info);
         (void) CopyMagickString(write_info->filename,"PNG:",MaxTextExtent);
 
@@ -889,7 +925,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         write_image=DestroyImage(write_image);
         write_info=DestroyImageInfo(write_info);
         if (png == (unsigned char *) NULL)
-          return(MagickFalse);
+          {
+            images=DestroyImageList(images);
+            return(MagickFalse);
+          }
         icon_file.directory[scene].width=0;
         icon_file.directory[scene].height=0;
         icon_file.directory[scene].colors=0;
@@ -995,7 +1034,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         pixels=(unsigned char *) AcquireQuantumMemory((size_t)
           icon_info.image_size,sizeof(*pixels));
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            images=DestroyImageList(images);
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         (void) ResetMagickMemory(pixels,0,(size_t) icon_info.image_size);
         switch (icon_info.bits_per_pixel)
         {
@@ -1174,7 +1216,11 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
               (1UL << icon_info.bits_per_pixel),4UL*sizeof(*icon_colormap));
             if (icon_colormap == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+              {
+                images=DestroyImageList(images);
+                ThrowWriterException(ResourceLimitError,
+                  "MemoryAllocationFailed");
+              }
             q=icon_colormap;
             for (i=0; i < (ssize_t) next->colors; i++)
             {
@@ -1243,7 +1289,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   (void) WriteBlobLSBShort(image,1);
   (void) WriteBlobLSBShort(image,(unsigned short) (scene+1));
   scene=0;
-  next=image;
+  next=(images != (Image *) NULL) ? images : image;
   do
   {
     (void) WriteBlobByte(image,icon_file.directory[scene].width);
@@ -1260,5 +1306,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     next=SyncNextImageInList(next);
   } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
   (void) CloseBlob(image);
+  images=DestroyImageList(images);
   return(MagickTrue);
 }
