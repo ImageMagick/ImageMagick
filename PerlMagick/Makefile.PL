@@ -141,7 +141,7 @@ sub AutodetectDelegates {
 
 # Compute test specification
 my $delegate_tests='t/*.t';
-my @tested_delegates = qw/bzlib djvu fftw fontconfig freetype jpeg jng jp2 lcms mpeg png rsvg tiff x11 xml wmf zlib/;
+my @tested_delegates = qw/bzlib djvu fftw fontconfig freetype jpeg jng openjp2 lcms mpeg png rsvg tiff x11 xml wmf zlib/;
 my @supported_delegates = AutodetectDelegates();
 # find the intersection of tested and supported delegates
 my %seen_delegates = ();
@@ -163,7 +163,7 @@ foreach my $delegate (@tested_delegates) {
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
 my $INC_magick = '-I../ -I.. -pthread -I/usr/include/pango-1.0 -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng16 -I/usr/include/freetype2 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
 my $LIBS_magick = '-L../magick/.libs -lMagickCore-6.Q16 -lperl -lm';
-my $CCFLAGS_magick = "$Config{'ccflags'} -pthread -I/usr/include/OpenEXR -I/usr/include/libdrm -I/usr/local/include/openjpeg-2.0 -I/usr/include/freetype2 -fopenmp -g -O2 -Wall -fexceptions -pthread -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16";
+my $CCFLAGS_magick = "$Config{'ccflags'} -pthread -I/usr/include/OpenEXR -I/usr/include/libdrm -I/usr/include/freetype2 -fopenmp -g -O2 -Wall -fexceptions -pthread -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16";
 my $LDFLAGS_magick   = "-L../magick/.libs -lMagickCore-6.Q16 $Config{'ldflags'} ";
 my $LDDLFLAGS_magick = "-L../magick/.libs -lMagickCore-6.Q16 $Config{'lddlflags'} ";
 
