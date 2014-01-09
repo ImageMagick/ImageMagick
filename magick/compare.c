@@ -1312,6 +1312,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     /*
       Compute sum of moment differences squared.
     */
+    if (i == 2)
+      continue;  /* I3 is not independent of other moments */
     if ((channel & RedChannel) != 0)
       {
         difference=log10(fabs(reconstruct_moments[RedChannel].I[i]))-
