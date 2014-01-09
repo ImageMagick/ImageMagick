@@ -72,6 +72,7 @@ Image Settings:
   \-matte               store matte channel if the image has one
   \-mattecolor color    frame color
   \-metric type         measure differences between images with this metric
+  \-moments             report image moments
   \-monitor             monitor progress
   \-orient type         image orientation
   \-page geometry       size and location of an image canvas (setting)
