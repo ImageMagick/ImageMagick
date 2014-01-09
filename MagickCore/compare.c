@@ -1135,8 +1135,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       double
         difference;
 
-      difference=log10(fabs(reconstruct_moments[channel].I[i]))-
-         log10(fabs(image_moments[channel].I[i]));
+      difference=log10(fabs(reconstruct_moments[channel].I[i]-
+         image_moments[channel].I[i]));
       distortion[channel]+=difference*difference;
       distortion[CompositePixelChannel]+=difference*difference;
     }
