@@ -1554,7 +1554,7 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetMagickPixelPacket(image,p,indexes+x,&256.0*QuantumScale*pixel);
+      SetMagickPixelPacket(image,p,indexes+x,&pixel);
       M00[RedChannel]+=256.0*QuantumScale*pixel.red;
       M10[RedChannel]+=x*256.0*QuantumScale*pixel.red;
       M01[RedChannel]+=y*256.0*QuantumScale*pixel.red;
@@ -1609,7 +1609,7 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetMagickPixelPacket(image,p,indexes+x,&256.0*QuantumScale*pixel);
+      SetMagickPixelPacket(image,p,indexes+x,&pixel);
       M11[RedChannel]+=(x-centroid[RedChannel].x)*(y-
         centroid[RedChannel].y)*256.0*QuantumScale*pixel.red;
       M20[RedChannel]+=(x-centroid[RedChannel].x)*(x-
