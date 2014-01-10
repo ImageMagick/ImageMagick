@@ -116,6 +116,11 @@ std::string Magick::CoderInfo::name(void) const
   return(_name);
 }
 
+bool Magick::CoderInfo::unregister(void) const
+{
+  return(UnregisterMagickInfo(_name.c_str()) != MagickFalse);
+}
+
 Magick::CoderInfo::CoderInfo(const MagickCore::MagickInfo *magickInfo_)
   : _name(string(magickInfo_->name ? magickInfo_->name : "")),
     _description(string(magickInfo_->description ? magickInfo_->description : "")),
