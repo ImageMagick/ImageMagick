@@ -1108,9 +1108,16 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     *image_moments,
     *reconstruct_moments;
 
+  Image
+    *hclp_image,
+    *hclp_reconstruct;
+
   register ssize_t
     i;
 
+  /*
+    Compute perceptual hash in the native image colorspace.
+  */
   image_moments=GetImageMoments(image,exception);
   if (image_moments == (ChannelMoments *) NULL)
     return(MagickFalse);
@@ -1144,6 +1151,64 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
     reconstruct_moments);
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+  /*
+    Compute perceptual hash in the HCLP colorspace.
+  */
+  hclp_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (hclp_image == (Image *) NULL)
+    return(MagickFalse);
+  if (SetImageColorspace(hclp_image,HCLpColorspace,exception) == MagickFalse)
+    {
+      hclp_image=DestroyImage(hclp_image);
+      return(MagickFalse);
+    }
+  image_moments=GetImageMoments(hclp_image,exception);
+  hclp_image=DestroyImage(hclp_image);
+  if (image_moments == (ChannelMoments *) NULL)
+    return(MagickFalse);
+  hclp_reconstruct=CloneImage(reconstruct_image,0,0,MagickTrue,exception);
+  if (hclp_reconstruct == (Image *) NULL)
+    {
+      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      return(MagickFalse);
+    }
+  if (SetImageColorspace(hclp_reconstruct,HCLpColorspace,exception) == MagickFalse)
+    {
+      hclp_reconstruct=DestroyImage(hclp_reconstruct);
+      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      return(MagickFalse);
+    }
+  reconstruct_moments=GetImageMoments(hclp_reconstruct,exception);
+  hclp_reconstruct=DestroyImage(hclp_reconstruct);
+  if (reconstruct_moments == (ChannelMoments *) NULL)
+    {
+      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      return(MagickFalse);
+    }
+  for (i=0; i < 8; i++)
+  {
+    ssize_t
+      channel;
+
+    /*
+      Compute sum of moment differences squared.
+    */
+    if (i == 2)
+      continue;  /* I3 is not independent of other moments */
+    for (channel=0; channel < MaxPixelChannels; channel++)
+    {
+      double
+        difference;
+
+      difference=log10(fabs(reconstruct_moments[channel].I[i]))-
+         log10(fabs(image_moments[channel].I[i]));
+      distortion[channel]+=difference*difference;
+      distortion[CompositePixelChannel]+=difference*difference;
+    }
+  }
+  image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+  reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
+    reconstruct_moments);
   return(MagickTrue);
 }
 
