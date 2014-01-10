@@ -115,3 +115,8 @@ std::string Magick::CoderInfo::name(void) const
 {
   return(_name);
 }
+
+bool Magick::CoderInfo::unregister(void) const
+{
+  return(UnregisterMagickInfo(_name.c_str()) != MagickFalse);
+}
