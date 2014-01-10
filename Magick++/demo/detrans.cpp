@@ -45,7 +45,7 @@ int main(int argc,char **argv)
           Image overlay( fname );
           Image base( overlay.size(), color );
           base.composite( overlay, 0, 0, OverCompositeOp );
-          base.matte( false );
+          base.alpha( false );
           base.write( fname );
         }
         catch( Exception &error_ ) 
