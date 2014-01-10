@@ -1118,7 +1118,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   /*
     Compute perceptual hash in the native image colorspace.
   */
-  blur_image=BlurImage(image,0,1,exception);
+  blur_image=BlurImage(image,0.0,1.0,exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   image_moments=GetImageMoments(blur_image,exception);
@@ -1127,7 +1127,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       blur_image=DestroyImage(blur_image);
       return(MagickFalse);
     }
-  blur_reconstruct=BlurImage(reconstruct_image,0,1,exception);
+  blur_reconstruct=BlurImage(reconstruct_image,0.0,1.0,exception);
   if (blur_reconstruct == (Image *) NULL)
     {
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
