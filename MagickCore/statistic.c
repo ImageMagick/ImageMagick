@@ -1565,7 +1565,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     */
     if (fabs(M00[channel]) < MagickEpsilon)
       continue;
-   channel_moments[channel].I[0]=M20[channel]+M02[channel];
+    channel_moments[channel].I[0]=M20[channel]+M02[channel];
     channel_moments[channel].I[1]=(M20[channel]-M02[channel])*
       (M20[channel]-M02[channel])+4.0*M11[channel]*M11[channel];
     channel_moments[channel].I[2]=(M30[channel]-3.0*M12[channel])*
