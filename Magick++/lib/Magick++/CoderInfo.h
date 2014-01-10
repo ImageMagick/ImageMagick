@@ -58,6 +58,9 @@ namespace Magick
     // Format name
     std::string name(void) const;
 
+    // Unregisters this coder
+    bool unregister(void) const;
+
     //
     // Implemementation methods
     //
