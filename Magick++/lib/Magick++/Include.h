@@ -705,7 +705,7 @@ namespace Magick
   using MagickCore::NormalizedCrossCorrelationErrorMetric;
   using MagickCore::PeakAbsoluteErrorMetric;
   using MagickCore::PeakSignalToNoiseRatioErrorMetric;
-  using MagickCore::PerceptualMetricErrorMetric;
+  using MagickCore::PerceptualHashErrorMetric;
   using MagickCore::RootMeanSquaredErrorMetric;
 
   // Noise types
