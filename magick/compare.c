@@ -1293,8 +1293,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     *reconstruct_moments;
 
   Image
-    *hclp_image,
-    *hclp_reconstruct;
+    *blur_image,
+    *blur_reconstruct;
 
   register ssize_t
     i;
@@ -1302,13 +1302,28 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   /*
     Compute perceptual hash in the native image colorspace.
   */
-  image_moments=GetImageChannelMoments(image,exception);
-  if (image_moments == (ChannelMoments *) NULL)
+  blur_image=BlurImage(image,0,1,exception);
+  if (blur_image == (Image *) NULL)
     return(MagickFalse);
-  reconstruct_moments=GetImageChannelMoments(reconstruct_image,exception);
+  image_moments=GetImageChannelMoments(blur_image,exception);
+  if (image_moments == (ChannelMoments *) NULL)
+    {
+      blur_image=DestroyImage(blur_image);
+      return(MagickFalse);
+    }
+  blur_reconstruct=BlurImage(reconstruct_image,0,1,exception);
+  if (blur_reconstruct == (Image *) NULL)
+    {
+      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      blur_image=DestroyImage(blur_image);
+      return(MagickFalse);
+    }
+  reconstruct_moments=GetImageChannelMoments(blur_reconstruct,exception);
   if (reconstruct_moments == (ChannelMoments *) NULL)
     {
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      blur_image=DestroyImage(blur_image);
+      blur_reconstruct=DestroyImage(blur_reconstruct);
       return(MagickFalse);
     }
   for (i=0; i < 8; i++)
@@ -1365,32 +1380,22 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   /*
     Compute perceptual hash in the HCLP colorspace.
   */
-  hclp_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (hclp_image == (Image *) NULL)
-    return(MagickFalse);
-  if (SetImageColorspace(hclp_image,HCLpColorspace) == MagickFalse)
+  if ((SetImageColorspace(blur_image,HCLpColorspace) == MagickFalse) ||
+      (SetImageColorspace(blur_reconstruct,HCLpColorspace) == MagickFalse))
     {
-      hclp_image=DestroyImage(hclp_image);
+      blur_reconstruct=DestroyImage(blur_reconstruct);
+      blur_image=DestroyImage(blur_image);
       return(MagickFalse);
     }
-  image_moments=GetImageChannelMoments(hclp_image,exception);
-  hclp_image=DestroyImage(hclp_image);
+  image_moments=GetImageChannelMoments(blur_image,exception);
+  blur_image=DestroyImage(blur_image);
   if (image_moments == (ChannelMoments *) NULL)
-    return(MagickFalse);
-  hclp_reconstruct=CloneImage(reconstruct_image,0,0,MagickTrue,exception);
-  if (hclp_reconstruct == (Image *) NULL)
     {
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      blur_reconstruct=DestroyImage(blur_reconstruct);
       return(MagickFalse);
     }
-  if (SetImageColorspace(hclp_reconstruct,HCLpColorspace) == MagickFalse)
-    {
-      hclp_reconstruct=DestroyImage(hclp_reconstruct);
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-      return(MagickFalse);
-    }
-  reconstruct_moments=GetImageChannelMoments(hclp_reconstruct,exception);
-  hclp_reconstruct=DestroyImage(hclp_reconstruct);
+  reconstruct_moments=GetImageChannelMoments(blur_reconstruct,exception);
+  blur_reconstruct=DestroyImage(blur_reconstruct);
   if (reconstruct_moments == (ChannelMoments *) NULL)
     {
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
