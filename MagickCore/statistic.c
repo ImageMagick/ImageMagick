@@ -1384,7 +1384,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     M20[MaxPixelChannels+1],
     M21[MaxPixelChannels+1],
     M22[MaxPixelChannels+1],
-    M30[MaxPixelChannels+1];
+    M30[MaxPixelChannels+1],
+    scale;
 
   PointInfo
     centroid[MaxPixelChannels+1];
@@ -1415,6 +1416,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
   (void) ResetMagickMemory(M21,0,sizeof(M21));
   (void) ResetMagickMemory(M22,0,sizeof(M22));
   (void) ResetMagickMemory(M30,0,sizeof(M30));
+  scale=(double) ((1UL << image->depth)-1)/QuantumRange;
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1448,9 +1450,9 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        M00[channel]+=255.0*QuantumScale*p[i];
-        M10[channel]+=x*255.0*QuantumScale*p[i];
-        M01[channel]+=y*255.0*QuantumScale*p[i];
+        M00[channel]+=scale*p[i];
+        M10[channel]+=x*scale*p[i];
+        M01[channel]+=y*scale*p[i];
       }
       p+=GetPixelChannels(image);
     }
@@ -1498,22 +1500,21 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         M11[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
-          255.0*QuantumScale*p[i];
+          scale*p[i];
         M20[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          255.0*QuantumScale*p[i];
+          scale*p[i];
         M02[channel]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
-          255.0*QuantumScale*p[i];
+          scale*p[i];
         M21[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (y-centroid[channel].y)*255.0*QuantumScale*p[i];
+          (y-centroid[channel].y)*scale*p[i];
         M12[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
-          (y-centroid[channel].y)*255.0*QuantumScale*p[i];
+          (y-centroid[channel].y)*scale*p[i];
         M22[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (y-centroid[channel].y)*(y-centroid[channel].y)*255.0*QuantumScale*
-          p[i];
+          (y-centroid[channel].y)*(y-centroid[channel].y)*scale*p[i];
         M30[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (x-centroid[channel].x)*255.0*QuantumScale*p[i];
+          (x-centroid[channel].x)*scale*p[i];
         M03[channel]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
-          (y-centroid[channel].y)*255.0*QuantumScale*p[i];
+          (y-centroid[channel].y)*scale*p[i];
       }
       p+=GetPixelChannels(image);
     }
