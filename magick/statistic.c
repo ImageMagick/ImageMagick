@@ -1764,6 +1764,7 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     M22[channel]/=pow(M00[channel],(1.0+(2.0+2.0)/2.0));
     M30[channel]/=pow(M00[channel],(1.0+(3.0+0.0)/2.0));
     M03[channel]/=pow(M00[channel],(1.0+(0.0+3.0)/2.0));
+    M00[channel]=1.0;
   }
   for (channel=0; channel <= CompositeChannels; channel++)
   {
