@@ -13,7 +13,8 @@
   * Generate a proper SVG clipping path (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24752).
   * Return image moments with the identify -moments -verbose options.
-  * Perceptual hash metric for compare utility: -metric PHASH.
+  * Perceptual hash metric for compare utility: -metric PHASH (algorithm
+    by Fred Wienhaus)	.
 
 2013-12-30  6.8.8-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-1, SVN revision 14087.
