@@ -1491,6 +1491,39 @@ std::string Magick::Image::textEncoding(void) const
   return(constOptions()->textEncoding());
 }
 
+void Magick::Image::textInterlineSpacing(double spacing_)
+{
+  modifyImage();
+  options()->textInterlineSpacing(spacing_);
+}
+
+double Magick::Image::textInterlineSpacing(void) const
+{
+  return(constOptions()->textInterlineSpacing());
+}
+
+void Magick::Image::textInterwordSpacing(double spacing_)
+{
+  modifyImage();
+  options()->textInterwordSpacing(spacing_);
+}
+
+double Magick::Image::textInterwordSpacing(void) const
+{
+  return(constOptions()->textInterwordSpacing());
+}
+
+void Magick::Image::textKerning(double kerning_)
+{
+  modifyImage();
+  options()->textKerning(kerning_);
+}
+
+double Magick::Image::textKerning(void) const
+{
+  return(constOptions()->textKerning());
+}
+
 size_t Magick::Image::totalColors(void) const
 {
   size_t

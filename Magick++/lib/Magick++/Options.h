@@ -235,6 +235,18 @@ namespace Magick
     void textEncoding(const std::string &encoding_);
     std::string textEncoding(void) const;
 
+    // Text inter-line spacing
+    void textInterlineSpacing(double spacing_);
+    double textInterlineSpacing(void) const;
+
+    // Text inter-word spacing
+    void textInterwordSpacing(double spacing_);
+    double textInterwordSpacing(void) const;
+
+    // Text inter-character kerning
+    void textKerning(double kerning_);
+    double textKerning(void) const;
+
     void tileName(const std::string &tileName_);
     std::string tileName(void) const;
     // Origin of coordinate system to use when annotating with text or drawing
