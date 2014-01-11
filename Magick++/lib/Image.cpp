@@ -1454,7 +1454,40 @@ void Magick::Image::textEncoding(const std::string &encoding_)
 
 std::string Magick::Image::textEncoding(void) const
 {
-  return constOptions()->textEncoding();
+  return(constOptions()->textEncoding());
+}
+
+void Magick::Image::textInterlineSpacing(double spacing_)
+{
+  modifyImage();
+  options()->textInterlineSpacing(spacing_);
+}
+
+double Magick::Image::textInterlineSpacing(void) const
+{
+  return(constOptions()->textInterlineSpacing());
+}
+
+void Magick::Image::textInterwordSpacing(double spacing_)
+{
+  modifyImage();
+  options()->textInterwordSpacing(spacing_);
+}
+
+double Magick::Image::textInterwordSpacing(void) const
+{
+  return(constOptions()->textInterwordSpacing());
+}
+
+void Magick::Image::textKerning(double kerning_)
+{
+  modifyImage();
+  options()->textKerning(kerning_);
+}
+
+double Magick::Image::textKerning(void) const
+{
+  return(constOptions()->textKerning());
 }
 
 void Magick::Image::tileName(const std::string &tileName_)
