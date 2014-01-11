@@ -1296,6 +1296,15 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           quantum_type=IndexAlphaQuantum;
       }
     status=MagickTrue;
+#if defined(MAGICKCORE_BZLIB_DELEGATE)
+   (void) ResetMagickMemory(&bzip_info,0,sizeof(bzip_info));
+#endif
+#if defined(MAGICKCORE_LZMA_DELEGATE)
+    (void) ResetMagickMemory(&allocator,0,sizeof(allocator));
+#endif
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+    (void) ResetMagickMemory(&zip_info,0,sizeof(zip_info));
+#endif
     switch (image->compression)
     {
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
@@ -1304,7 +1313,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         int
           code;
 
-        (void) ResetMagickMemory(&bzip_info,0,sizeof(bzip_info));
         bzip_info.bzalloc=AcquireBZIPMemory;
         bzip_info.bzfree=RelinquishBZIPMemory;
         bzip_info.opaque=(void *) NULL;
@@ -1321,7 +1329,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         int
           code;
 
-        (void) ResetMagickMemory(&allocator,0,sizeof(allocator));
         allocator.alloc=AcquireLZMAMemory;
         allocator.free=RelinquishLZMAMemory;
         lzma_info=initialize_lzma;
@@ -1339,7 +1346,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         int
           code;
 
-        (void) ResetMagickMemory(&zip_info,0,sizeof(zip_info));
         zip_info.zalloc=AcquireZIPMemory;
         zip_info.zfree=RelinquishZIPMemory;
         zip_info.opaque=(voidpf) NULL;
