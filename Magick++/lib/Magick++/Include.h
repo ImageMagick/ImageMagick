@@ -701,6 +701,7 @@ namespace Magick
   using MagickCore::NormalizedCrossCorrelationErrorMetric;
   using MagickCore::FuzzErrorMetric;
   using MagickCore::UndefinedErrorMetric;
+  using MagickCore::PerceptualHashErrorMetric;
 
   // Noise types
   using MagickCore::NoiseType;
