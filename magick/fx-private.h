@@ -30,9 +30,9 @@ extern MagickExport FxInfo
   *DestroyFxInfo(FxInfo *);
 
 extern MagickExport MagickBooleanType
-  FxEvaluateExpression(FxInfo *,MagickRealType *,ExceptionInfo *),
+  FxEvaluateExpression(FxInfo *,double *,ExceptionInfo *),
   FxEvaluateChannelExpression(FxInfo *,const ChannelType,const ssize_t,
-   const ssize_t,MagickRealType *,ExceptionInfo *);
+   const ssize_t,double *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

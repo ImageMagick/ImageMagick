@@ -2003,14 +2003,14 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
 MagickExport const char *GetImageProperty(const Image *image,
   const char *property)
 {
+  double
+    alpha;
+
   ExceptionInfo
     *exception;
 
   FxInfo
     *fx_info;
-
-  MagickRealType
-    alpha;
 
   MagickStatusType
     status;
