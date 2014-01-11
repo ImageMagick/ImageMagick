@@ -1261,9 +1261,9 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
   return(QuantumScale*StringToDouble(statistic,(char **) NULL));
 }
 
-static MagickRealType
+static double
   FxEvaluateSubexpression(FxInfo *,const ChannelType,const ssize_t,
-    const ssize_t,const char *,MagickRealType *,ExceptionInfo *);
+    const ssize_t,const char *,double *,ExceptionInfo *);
 
 static MagickOffsetType FxGCD(MagickOffsetType alpha,MagickOffsetType beta)
 {
@@ -1312,15 +1312,15 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     *p,
     *value;
 
+  double
+    alpha,
+    beta;
+
   Image
     *image;
 
   MagickPixelPacket
     pixel;
-
-  MagickRealType
-    alpha,
-    beta;
 
   PointInfo
     point;
@@ -2123,15 +2123,15 @@ static const char *FxOperatorPrecedence(const char *expression,
   return(subexpression);
 }
 
-static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
-  const ChannelType channel,const ssize_t x,const ssize_t y,
-  const char *expression,MagickRealType *beta,ExceptionInfo *exception)
+static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
+  const ssize_t x,const ssize_t y,const char *expression,double *beta,
+  ExceptionInfo *exception)
 {
   char
     *q,
     subexpression[MaxTextExtent];
 
-  MagickRealType
+  double
     alpha,
     gamma;
 
@@ -2916,7 +2916,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
 }
 
 MagickExport MagickBooleanType FxEvaluateExpression(FxInfo *fx_info,
-  MagickRealType *alpha,ExceptionInfo *exception)
+  double *alpha,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -2926,7 +2926,7 @@ MagickExport MagickBooleanType FxEvaluateExpression(FxInfo *fx_info,
 }
 
 MagickExport MagickBooleanType FxPreprocessExpression(FxInfo *fx_info,
-  MagickRealType *alpha,ExceptionInfo *exception)
+  double *alpha,ExceptionInfo *exception)
 {
   FILE
     *file;
@@ -2942,10 +2942,10 @@ MagickExport MagickBooleanType FxPreprocessExpression(FxInfo *fx_info,
 }
 
 MagickExport MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
-  const ChannelType channel,const ssize_t x,const ssize_t y,
-  MagickRealType *alpha,ExceptionInfo *exception)
+  const ChannelType channel,const ssize_t x,const ssize_t y,double *alpha,
+  ExceptionInfo *exception)
 {
-  MagickRealType
+  double
     beta;
 
   beta=0.0;
@@ -3005,11 +3005,11 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
   char
     *fx_expression;
 
+  double
+    alpha;
+
   FxInfo
     **fx_info;
-
-  MagickRealType
-    alpha;
 
   register ssize_t
     i;
@@ -3116,7 +3116,7 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
     const int
       id = GetOpenMPThreadId();
 
-    MagickRealType
+    double
       alpha;
 
     register IndexPacket
