@@ -2052,7 +2052,7 @@ MagickExport int NTSystemCommand(const char *command)
     status;
 
   MagickBooleanType
-    background_process;
+    asynchronous;
 
   PROCESS_INFORMATION
     process_info;
@@ -2066,21 +2066,24 @@ MagickExport int NTSystemCommand(const char *command)
   startup_info.dwFlags=STARTF_USESHOWWINDOW;
   startup_info.wShowWindow=SW_SHOWMINNOACTIVE;
   (void) CopyMagickString(local_command,command,MaxTextExtent);
-  background_process=command[strlen(command)-1] == '&' ? MagickTrue :
-    MagickFalse;
-  if (background_process)
-    local_command[strlen(command)-1]='\0';
-  if (command[strlen(command)-1] == '|')
-    local_command[strlen(command)-1]='\0';
+  asynchronous=command[strlen(command)-1] == '&' ? MagickTrue : MagickFalse;
+  if (asynchronous)
+    {
+      local_command[strlen(command)-1]='\0';
+      startup_info.wShowWindow=SW_SHOWDEFAULT;
+    }
   else
-    startup_info.wShowWindow=SW_HIDE;
+    if (command[strlen(command)-1] == '|')
+      local_command[strlen(command)-1]='\0';
+    else
+      startup_info.wShowWindow=SW_HIDE;
   status=CreateProcess((LPCTSTR) NULL,local_command,
     (LPSECURITY_ATTRIBUTES) NULL,(LPSECURITY_ATTRIBUTES) NULL,(BOOL) FALSE,
     (DWORD) NORMAL_PRIORITY_CLASS,(LPVOID) NULL,(LPCSTR) NULL,&startup_info,
     &process_info);
   if (status == 0)
     return(-1);
-  if (background_process)
+  if (asynchronous)
     return(status == 0);
   status=WaitForSingleObject(process_info.hProcess,INFINITE);
   if (status != WAIT_OBJECT_0)
