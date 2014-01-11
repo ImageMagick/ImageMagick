@@ -2857,12 +2857,23 @@ void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
 void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
   const Magick::Image &texture_)
 {
+  MagickCore::Image
+    *fillPattern;
+
   Quantum
     *p;
 
   modifyImage();
 
-  // Set drawing pattern
+  // Set drawing fill pattern
+  fillPattern=(MagickCore::Image *)NULL;
+  if (options()->fillPattern() != (MagickCore::Image *)NULL)
+    {
+      GetPPException;
+      fillPattern=CloneImage(options()->fillPattern(),0,0,MagickTrue,
+        &exceptionInfo);
+      ThrowPPException;
+    }
   options()->fillPattern(texture_.constImage());
 
   // Get pixel view
@@ -2883,8 +2894,11 @@ void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
       FloodfillPaintImage(image(),options()->drawInfo(),&target,
         static_cast<ssize_t>(x_),static_cast<ssize_t>(y_),MagickFalse,
         &exceptionInfo);
+      options()->fillPattern(fillPattern);
       ThrowPPException;
     }
+  else
+    options()->fillPattern(fillPattern);
 }
 
 void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
@@ -2896,12 +2910,23 @@ void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
 void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
   const Magick::Image &texture_,const Magick::Color &borderColor_)
 {
+  MagickCore::Image
+    *fillPattern;
+
   PixelInfo
     target;
 
   modifyImage();
 
   // Set drawing fill pattern
+  fillPattern=(MagickCore::Image *)NULL;
+  if (options()->fillPattern() != (MagickCore::Image *)NULL)
+    {
+      GetPPException;
+      fillPattern=CloneImage(options()->fillPattern(),0,0,MagickTrue,
+        &exceptionInfo);
+      ThrowPPException;
+    }
   options()->fillPattern(texture_.constImage());
 
   GetPixelInfo(constImage(),&target);
@@ -2912,6 +2937,7 @@ void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
   FloodfillPaintImage(image(),options()->drawInfo(),&target,
     static_cast<ssize_t>(x_),static_cast<ssize_t>(y_),MagickTrue,
     &exceptionInfo);
+  options()->fillPattern(fillPattern);
   ThrowPPException;
 }
 
