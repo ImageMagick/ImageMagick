@@ -1,6 +1,8 @@
 2014-01-09  6.8.8-2 Dirk Lemstra <dirk@snakeware...>
   * Added option 'icon:auto-resize' to automatically store multiple sizes
     in an ico image (requires 256x256 input image).
+  * Added text kerning/spacing to Magick++. (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=23&t=24716).
 
 2013-12-30  6.8.8-2 Cristy  <quetzlzacatenango@image...>
   * The -evaluate-sequence sum returns a proper alpha channel now (reference
@@ -14,7 +16,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24752).
   * Return image moments with the identify -moments -verbose options.
   * Perceptual hash metric for compare utility: -metric PHASH (algorithm
-    by Fred Wienhaus)	.
+    by Fred Wienhaus).
 
 2013-12-30  6.8.8-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-1, SVN revision 14087.
