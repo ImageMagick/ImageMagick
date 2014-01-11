@@ -638,6 +638,36 @@ std::string Magick::Options::textEncoding(void) const
   return(std::string());
 }
 
+void Magick::Options::textInterlineSpacing(double spacing_)
+{
+  _drawInfo->interline_spacing=spacing_;
+}
+
+double Magick::Options::textInterlineSpacing(void) const
+{
+  return(_drawInfo->interline_spacing);
+}
+
+void Magick::Options::textInterwordSpacing(double spacing_)
+{
+  _drawInfo->interword_spacing=spacing_;
+}
+
+double Magick::Options::textInterwordSpacing(void) const
+{
+  return(_drawInfo->interword_spacing);
+}
+
+void Magick::Options::textKerning(double kerning_)
+{
+  _drawInfo->kerning=kerning_;
+}
+
+double Magick::Options::textKerning(void) const
+{
+  return(_drawInfo->kerning);
+}
+
 void Magick::Options::transformOrigin(double tx_,double ty_)
 {
   AffineMatrix

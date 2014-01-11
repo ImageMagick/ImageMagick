@@ -1099,6 +1099,9 @@ namespace Magick
   using MagickCore::DrawSetTextAntialias;
   using MagickCore::DrawSetTextDecoration;
   using MagickCore::DrawSetTextEncoding;
+  using MagickCore::DrawSetTextInterlineSpacing;
+  using MagickCore::DrawSetTextInterwordSpacing;
+  using MagickCore::DrawSetTextKerning;
   using MagickCore::DrawSetTextUnderColor;
   using MagickCore::DrawSetViewbox;
   using MagickCore::DrawSkewX;

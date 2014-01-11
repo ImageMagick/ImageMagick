@@ -1986,6 +1986,66 @@ private:
   DecorationType _decoration;
 };
 
+  // Specify text inter-line spacing
+  class MagickPPExport DrawableTextInterlineSpacing : public DrawableBase
+  {
+  public:
+
+    DrawableTextInterlineSpacing(double spacing_);
+
+    ~DrawableTextInterlineSpacing(void);
+
+    void operator()(MagickCore::DrawingWand *context_) const;
+
+    void spacing(double spacing_);
+    double spacing(void) const;
+
+    DrawableBase* copy() const;
+
+  private:
+    double _spacing;
+  };
+
+  // Specify text inter-word spacing
+  class MagickPPExport DrawableTextInterwordSpacing : public DrawableBase
+  {
+  public:
+
+    DrawableTextInterwordSpacing(double spacing_);
+
+    ~DrawableTextInterwordSpacing(void);
+
+    void operator()(MagickCore::DrawingWand *context_) const;
+
+    void spacing(double spacing_);
+    double spacing(void) const;
+
+    DrawableBase *copy() const;
+
+  private:
+    double _spacing;
+  };
+
+  // Specify text kerning
+  class MagickPPExport DrawableTextKerning : public DrawableBase
+  {
+  public:
+
+    DrawableTextKerning(double kerning_);
+
+    ~DrawableTextKerning(void);
+
+    void operator()(MagickCore::DrawingWand *context_) const;
+
+    void kerning(double kerning_);
+    double kerning(void) const;
+
+    DrawableBase *copy() const;
+
+  private:
+    double _kerning;
+  };
+
 // Text undercolor box
 class MagickPPExport DrawableTextUnderColor : public DrawableBase
 {
