@@ -1302,6 +1302,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           quantum_type=IndexAlphaQuantum;
       }
     status=MagickTrue;
+    (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
     (void) ResetMagickMemory(&bzip_info,0,sizeof(bzip_info));
 #endif
@@ -1368,7 +1369,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #endif
       case RLECompression:
       {
-        (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
         pixel.opacity=(Quantum) TransparentOpacity;
         index=(IndexPacket) 0;
         break;
