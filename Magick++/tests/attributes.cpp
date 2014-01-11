@@ -813,14 +813,14 @@ int main( int /*argc*/, char ** argv)
       }
 
     // Test set/get
-    image.gifDisposeMethod(4);
-    if ( image.gifDisposeMethod() != 4 )
+    image.gifDisposeMethod(BackgroundDispose);
+    if ( image.gifDisposeMethod() != BackgroundDispose )
       {
 	++failures;
 	cout << "Line: " << __LINE__
              << ", gifDisposeMethod set/get failed" << endl;
       }
-    image.gifDisposeMethod(0);
+    image.gifDisposeMethod(UndefinedDispose);
 
     //
     // interlaceType
@@ -869,24 +869,24 @@ int main( int /*argc*/, char ** argv)
       }
 
     //
-    // lineWidth
+    // strokeWidth
     //
     // Test default
-    if ( image.lineWidth() != 1 )
+    if ( image.strokeWidth() != 1 )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", lineWidth default is not 1 as expected" << endl;
+             << ", strokeWidth default is not 1 as expected" << endl;
       }
 
     // Test set/get
-    image.lineWidth(2);
-    if ( image.lineWidth() != 2 )
+    image.strokeWidth(2);
+    if ( image.strokeWidth() != 2 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", lineWidth set/get failed" << endl;
+	cout << "Line: " << __LINE__ << ", strokeWidth set/get failed" << endl;
       }
-    image.lineWidth(1);
+    image.strokeWidth(1);
 
     //
     // magick
@@ -910,48 +910,48 @@ int main( int /*argc*/, char ** argv)
     image.magick("XC");
 
     //
-    // matte
+    // alpha
     //
     // Test default
-    if ( image.matte() != false )
+    if ( image.alpha() != false )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", matte default is not false as expected" << endl;
+             << ", alpha default is not false as expected" << endl;
       }
 
     // Test set/get
-    image.matte(true);
-    if ( image.matte() != true )
+    image.alpha(true);
+    if ( image.alpha() != true )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", matte set/get failed" << endl;
+	cout << "Line: " << __LINE__ << ", alpha set/get failed" << endl;
       }
-    image.matte(false);
+    image.alpha(false);
 
     //
-    // matteColor
+    // alphaColor
     //
     // Test default
-    if ( image.matteColor() != Color("#BDBDBD") )
+    if ( image.alphaColor() != Color("#BDBDBD") )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", matteColor default is not #BDBDBD as expected" << endl;
+             << ", alphaColor default is not #BDBDBD as expected" << endl;
       }
 
     // Test set/get
-    image.matteColor(ColorRGB(0.5,0.5,1));
-    if ( image.matteColor() != ColorRGB(0.5,0.5,1) )
+    image.alphaColor(ColorRGB(0.5,0.5,1));
+    if ( image.alphaColor() != ColorRGB(0.5,0.5,1) )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", matteColor set/get failed" << endl;
+	cout << "Line: " << __LINE__ << ", alphaColor set/get failed" << endl;
       }
 
     // Test unset
-    image.matteColor( Color() );
+    image.alphaColor( Color() );
 
-    image.matteColor("#BDBDBD");
+    image.alphaColor("#BDBDBD");
 
     //
     // meanErrorPerPixel
@@ -1022,19 +1022,6 @@ int main( int /*argc*/, char ** argv)
 	++failures;
 	cout << "Line: " << __LINE__
              << ", normalizedMeanError is not zero as expected" << endl;
-      }
-
-    //
-    // penColor
-    //
-
-    image.penColor(ColorRGB(0.5,0.5,1));
-    if ( image.penColor() != ColorRGB(0.5,0.5,1) )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ", penColor ("
-	     << string(image.penColor())
-	     << ") set/get failed" << endl;
       }
 
     //
@@ -1362,32 +1349,6 @@ int main( int /*argc*/, char ** argv)
              << ", subRange set/get failed" << endl;
       }
     image.subRange(0);
-
-    //
-    // tileName
-    //
-    if ( image.tileName().length() != 0 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", tileName default is not empty string as expected" << endl;
-      }
-    
-    image.tileName("How now brown cow?");
-    if ( image.tileName() != "How now brown cow?" )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", tileName set/get failed" << endl;
-      }
-
-    image.tileName( string() );
-    if ( image.tileName().length() != 0 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", tileName failed to unset" << endl;
-      }
 
     //
     // totalColors
