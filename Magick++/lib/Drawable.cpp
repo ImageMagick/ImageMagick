@@ -1353,6 +1353,102 @@ Magick::DrawableBase* Magick::DrawableTextDecoration::copy() const
   return new DrawableTextDecoration(*this);
 }
 
+// DrawableTextInterlineSpacing
+Magick::DrawableTextInterlineSpacing::DrawableTextInterlineSpacing(
+  double spacing_)
+{
+  _spacing=spacing_;
+}
+
+Magick::DrawableTextInterlineSpacing::~DrawableTextInterlineSpacing(void)
+{
+}
+
+void Magick::DrawableTextInterlineSpacing::operator()(
+  MagickCore::DrawingWand *context_) const
+{
+  DrawSetTextInterlineSpacing(context_,_spacing);
+}
+
+void Magick::DrawableTextInterlineSpacing::spacing(double spacing_)
+{
+  _spacing=spacing_;
+}
+
+double Magick::DrawableTextInterlineSpacing::spacing(void) const
+{
+  return(_spacing);
+}
+
+Magick::DrawableBase *Magick::DrawableTextInterlineSpacing::copy() const
+{
+  return new DrawableTextInterlineSpacing(*this);
+}
+
+// DrawableTextInterwordSpacing
+Magick::DrawableTextInterwordSpacing::DrawableTextInterwordSpacing(
+  double spacing_)
+{
+  _spacing=spacing_;
+}
+
+Magick::DrawableTextInterwordSpacing::~DrawableTextInterwordSpacing(void)
+{
+}
+
+void Magick::DrawableTextInterwordSpacing::operator()(
+  MagickCore::DrawingWand *context_) const
+{
+  DrawSetTextInterwordSpacing(context_,_spacing);
+}
+
+void Magick::DrawableTextInterwordSpacing::spacing(double spacing_)
+{
+  _spacing=spacing_;
+}
+
+double Magick::DrawableTextInterwordSpacing::spacing(void) const
+{
+  return(_spacing);
+}
+
+Magick::DrawableBase *Magick::DrawableTextInterwordSpacing::copy() const
+{
+  return new DrawableTextInterwordSpacing(*this);
+}
+
+// DrawableTextKerning
+Magick::DrawableTextKerning::DrawableTextKerning(
+  double kerning_)
+{
+  _kerning=kerning_;
+}
+
+Magick::DrawableTextKerning::~DrawableTextKerning(void)
+{
+}
+
+void Magick::DrawableTextKerning::operator()(
+  MagickCore::DrawingWand *context_) const
+{
+  DrawSetTextKerning(context_,_kerning);
+}
+
+void Magick::DrawableTextKerning::kerning(double kerning_)
+{
+  _kerning=kerning_;
+}
+
+double Magick::DrawableTextKerning::kerning(void) const
+{
+  return(_kerning);
+}
+
+Magick::DrawableBase *Magick::DrawableTextKerning::copy() const
+{
+  return new DrawableTextKerning(*this);
+}
+
 // Set text undercolor
 Magick::DrawableTextUnderColor::DrawableTextUnderColor
 ( const Magick::Color &color_ )
