@@ -862,7 +862,7 @@ std::string Magick::Image::formatExpression(const std::string expression)
       text=DestroyString(text);
     }
   throwImageException();
-  return result;
+  return(result);
 }
 
 double Magick::Image::gamma(void) const
