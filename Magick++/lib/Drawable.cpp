@@ -1356,8 +1356,8 @@ Magick::DrawableBase* Magick::DrawableTextDecoration::copy() const
 // DrawableTextInterlineSpacing
 Magick::DrawableTextInterlineSpacing::DrawableTextInterlineSpacing(
   double spacing_)
+  : _spacing(spacing_)
 {
-  _spacing=spacing_;
 }
 
 Magick::DrawableTextInterlineSpacing::~DrawableTextInterlineSpacing(void)
@@ -1388,8 +1388,8 @@ Magick::DrawableBase *Magick::DrawableTextInterlineSpacing::copy() const
 // DrawableTextInterwordSpacing
 Magick::DrawableTextInterwordSpacing::DrawableTextInterwordSpacing(
   double spacing_)
+  : _spacing(spacing_)
 {
-  _spacing=spacing_;
 }
 
 Magick::DrawableTextInterwordSpacing::~DrawableTextInterwordSpacing(void)
@@ -1420,8 +1420,8 @@ Magick::DrawableBase *Magick::DrawableTextInterwordSpacing::copy() const
 // DrawableTextKerning
 Magick::DrawableTextKerning::DrawableTextKerning(
   double kerning_)
+  : _kerning(kerning_)
 {
-  _kerning=kerning_;
 }
 
 Magick::DrawableTextKerning::~DrawableTextKerning(void)
