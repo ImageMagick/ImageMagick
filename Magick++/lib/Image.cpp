@@ -2736,12 +2736,23 @@ void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
 void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
   const Magick::Image &texture_)
 {
+  MagickCore::Image
+    *fillPattern;
+
   PixelPacket
     *p;
 
   modifyImage();
 
-  // Set drawing pattern
+  // Set drawing fill pattern
+  fillPattern=(MagickCore::Image *)NULL;
+  if (options()->fillPattern() != (MagickCore::Image *)NULL)
+    {
+      GetPPException;
+      fillPattern=CloneImage(options()->fillPattern(),0,0,MagickTrue,
+        &exceptionInfo);
+      ThrowPPException;
+    }
   options()->fillPattern(texture_.constImage());
 
   // Fill image
@@ -2760,6 +2771,7 @@ void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
       FloodfillPaintImage(image(),DefaultChannels,options()->drawInfo(),
         &target,static_cast<ssize_t>(x_),static_cast<ssize_t>(y_),MagickFalse);
     }
+  options()->fillPattern(fillPattern);
   throwImageException();
 }
 
@@ -2772,12 +2784,23 @@ void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
 void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
   const Magick::Image &texture_,const Magick::Color &borderColor_)
 {
+  MagickCore::Image
+    *fillPattern;
+
   MagickPixelPacket
     target;
 
   modifyImage();
 
   // Set drawing fill pattern
+  fillPattern=(MagickCore::Image *)NULL;
+  if (options()->fillPattern() != (MagickCore::Image *)NULL)
+    {
+      GetPPException;
+      fillPattern=CloneImage(options()->fillPattern(),0,0,MagickTrue,
+        &exceptionInfo);
+      ThrowPPException;
+    }
   options()->fillPattern(texture_.constImage());
 
   GetMagickPixelPacket(constImage(),&target);
@@ -2786,7 +2809,7 @@ void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
   target.blue=static_cast<PixelPacket>(borderColor_).blue;
   FloodfillPaintImage(image(),DefaultChannels,options()->drawInfo(),&target,
     static_cast<ssize_t>(x_),static_cast<ssize_t>(y_),MagickTrue);
-
+  options()->fillPattern(fillPattern);
   throwImageException();
 }
 
