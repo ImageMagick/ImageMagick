@@ -2067,7 +2067,7 @@ MagickExport int NTSystemCommand(const char *command)
   startup_info.wShowWindow=SW_SHOWMINNOACTIVE;
   (void) CopyMagickString(local_command,command,MaxTextExtent);
   asynchronous=command[strlen(command)-1] == '&' ? MagickTrue : MagickFalse;
-  if (asynchronous)
+  if (asynchronous != MagickFalse)
     {
       local_command[strlen(command)-1]='\0';
       startup_info.wShowWindow=SW_SHOWDEFAULT;
