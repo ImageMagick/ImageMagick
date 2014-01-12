@@ -1021,7 +1021,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           }
         }
       }
-      p++;
+      p+=GetPixelChannels(image);
     }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
