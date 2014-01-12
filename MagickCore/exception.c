@@ -258,7 +258,7 @@ MagickExport ExceptionInfo *CloneExceptionInfo(ExceptionInfo *exception)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   GetExceptionInfo(clone_exception);
   InheritException(clone_exception,exception);
-  exception->relinquish=MagickTrue;
+  clone_exception->relinquish=MagickTrue;
   return(exception);
 }
 
