@@ -37,7 +37,7 @@ extern "C" {
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
 
 #if !defined(magick_attribute)
-#  if !defined(__GNUC__)
+#  if !defined(__clang__) && !defined(__GNUC__)
 #    define magick_attribute(x) /*nothing*/
 #  else
 #    define magick_attribute __attribute__

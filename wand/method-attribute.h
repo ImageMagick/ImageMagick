@@ -40,7 +40,7 @@ extern "C" {
 #   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
 #  endif
 #  if !defined(_MAGICKLIB_)
-#   if defined(__GNUC__)
+#   if defined(__clang__) || defined(__GNUC__)
 #    define WandExport __attribute__ ((dllimport))
 #   else
 #    define WandExport __declspec(dllimport)
@@ -49,7 +49,7 @@ extern "C" {
 #    pragma message( "MagickWand lib DLL import interface" )
 #   endif
 #  else
-#   if defined(__GNUC__)
+#   if defined(__clang__) || defined(__GNUC__)
 #    define WandExport __attribute__ ((dllexport))
 #   else
 #    define WandExport __declspec(dllexport)
@@ -86,7 +86,7 @@ extern "C" {
 #  pragma warning(disable : 4996)
 # endif
 #else
-# if __GNUC__ >= 4
+# if defined(__clang__) || (__GNUC__ >= 4)
 #  define WandExport __attribute__ ((visibility ("default")))
 #  define WandPrivate  __attribute__ ((visibility ("hidden")))
 # else
@@ -118,7 +118,7 @@ extern "C" {
 #  define wand_unreferenced(x)  /* nothing */
 #endif
 
-#if (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
+#if defined(__clang__) || (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
 #  define wand_alloc_size(x)  __attribute__((__alloc_size__(x)))
 #  define wand_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
 #  define wand_cold_spot  __attribute__((__cold__))
