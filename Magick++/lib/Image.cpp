@@ -33,7 +33,8 @@ using namespace std;
 #define ClonePPDrawException(wand) \
   ExceptionInfo \
     *exceptionInfo; \
-  exceptionInfo=DrawCloneExceptionInfo(wand)
+  exceptionInfo=DrawCloneExceptionInfo(wand); \
+  exceptionInfo->relinquish=MagickFalse
 #define RestorePPChannelMask \
   SetPixelChannelMask(image(),channel_mask)
 #define SetPPChannelMask(channel) \
