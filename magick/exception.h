@@ -144,6 +144,7 @@ extern MagickExport ErrorHandler
 
 extern MagickExport ExceptionInfo
   *AcquireExceptionInfo(void),
+  *CloneExceptionInfo(ExceptionInfo *),
   *DestroyExceptionInfo(ExceptionInfo *);
 
 extern MagickExport FatalErrorHandler
