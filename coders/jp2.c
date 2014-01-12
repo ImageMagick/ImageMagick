@@ -857,7 +857,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
         Set quality PSNR.
       */
       p=option;
-      for (i=1; sscanf(p,"%f",&parameters.tcp_distoratio[i]) == 1; i++)
+      for (i=0; sscanf(p,"%f",&parameters.tcp_distoratio[i]) == 1; i++)
       {
         if (i > 100)
           break;
@@ -867,7 +867,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
           break;
         p++;
       }
-      parameters.tcp_numlayers=i;
+      parameters.tcp_numlayers=i+1;
       parameters.cp_fixed_quality=OPJ_TRUE;
     }
   option=GetImageOption(image_info,"jp2:progression-order");
@@ -894,7 +894,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
         Set compression rate.
       */
       p=option;
-      for (i=1; sscanf(p,"%f",&parameters.tcp_rates[i]) == 1; i++)
+      for (i=0; sscanf(p,"%f",&parameters.tcp_rates[i]) == 1; i++)
       {
         if (i > 100)
           break;
@@ -904,7 +904,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
           break;
         p++;
       }
-      parameters.tcp_numlayers=i;
+      parameters.tcp_numlayers=i+1;
       parameters.cp_disto_alloc=OPJ_TRUE;
     }
   if (image_info->sampling_factor != (const char *) NULL)
