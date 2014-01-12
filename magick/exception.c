@@ -258,7 +258,7 @@ MagickExport ExceptionInfo *CloneExceptionInfo(ExceptionInfo *exception)
   GetExceptionInfo(clone_exception);
   InheritException(clone_exception,exception);
   clone_exception->relinquish=MagickTrue;
-  return(exception);
+  return(clone_exception);
 }
 
 /*
