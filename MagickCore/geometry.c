@@ -1389,13 +1389,13 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
               if (scale.x > scale.y)
                 {
                   scale.x=(double) former_width/((double) former_height/
-                    scale.y);
+                    --scale.y);
                   scale.x=MagickMax((size_t) floor(scale.x+0.5),1.0);
                 }
               else
                 {
                   scale.y=(double) former_height/((double) former_width/
-                    scale.x);
+                    --scale.x);
                   scale.y=MagickMax((size_t) floor(scale.y+0.5),1.0);
                 }
             }
