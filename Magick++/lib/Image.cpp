@@ -2296,7 +2296,10 @@ void Magick::Image::colorMap(const size_t index_,const Color &color_)
 Magick::Color Magick::Image::colorMap(const size_t index_) const
 {
   if (!constImage()->colormap)
-    throwExceptionExplicit(OptionError,"Image does not contain a colormap");
+    {
+      throwExceptionExplicit(OptionError,"Image does not contain a colormap");
+      return(Color());
+    }
 
   if (index_ > constImage()->colors-1)
     throwExceptionExplicit(OptionError,"Index out of range");
