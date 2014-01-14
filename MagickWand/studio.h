@@ -352,21 +352,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 /*
-  Exception defines.
-*/
-#define ThrowWandFatalException(severity,tag,context) \
-{ \
-  ExceptionInfo \
-    *fatal_exception; \
- \
-  fatal_exception=AcquireExceptionInfo(); \
-  (void) ThrowMagickException(fatal_exception,GetMagickModule(),severity,tag, \
-    "`%s'",(context)); \
-  CatchException(fatal_exception); \
-  fatal_exception=DestroyExceptionInfo(fatal_exception); \
-}
-
-/*
   Magick defines.
 */
 #if defined(_MSC_VER)
