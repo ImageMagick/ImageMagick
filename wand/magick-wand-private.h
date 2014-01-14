@@ -29,6 +29,19 @@ extern "C" {
    (((i) & 0xfff) == 0) || \
    ((MagickOffsetType) (i) == ((MagickOffsetType) (span)-1))))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
+#define ThrowWandFatalException(severity,tag,context) \
+{ \
+  ExceptionInfo \
+    exception; \
+ \
+  GetExceptionInfo(&exception); \
+  (void) ThrowMagickException(&exception,GetMagickModule(),severity,tag, \
+    "`%s'",context); \
+  CatchException(&exception); \
+  (void) DestroyExceptionInfo(&exception); \
+  MagickWandTerminus(); \
+  _exit((int) (severity-FatalErrorException)+1); \
+}
 
 struct _MagickWand
 {
