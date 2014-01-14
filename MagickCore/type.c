@@ -1094,6 +1094,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",type_info->name);
         type_info=(TypeInfo *) NULL;
+        continue;
       }
     GetMagickToken(q,(const char **) NULL,token);
     if (*token != '=')
