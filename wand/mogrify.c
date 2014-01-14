@@ -46,6 +46,7 @@
 */
 #include "wand/studio.h"
 #include "wand/MagickWand.h"
+#include "wand/magick-wand-private.h"
 #include "wand/mogrify-private.h"
 #include "magick/color-private.h"
 #include "magick/monitor-private.h"
