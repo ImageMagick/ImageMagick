@@ -5280,6 +5280,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
   start.y=0.0;
   number_coordinates=0;
   z_count=0;
+  (void) ResetMagickMemory(points,0,sizeof(*points));
   primitive_type=primitive_info->primitive;
   q=primitive_info;
   for (p=path; *p != '\0'; )
