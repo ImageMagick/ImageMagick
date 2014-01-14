@@ -1528,7 +1528,7 @@ WandExport double *MagickGetSamplingFactors(MagickWand *wand,
       p++;
     i++;
   }
-  sampling_factors=(double *) AcquireQuantumMemory((size_t) i,
+  sampling_factors=(double *) AcquireQuantumMemory((size_t) i+1,
     sizeof(*sampling_factors));
   if (sampling_factors == (double *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",

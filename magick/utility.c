@@ -773,6 +773,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
     *path='\0';
     *filename='\0';
     *subimage='\0';
+    number_files=0;
     vector[count++]=ConstantString(option);
     destroy=MagickTrue;
     parameters=ParseCommandOption(MagickCommandOptions,MagickFalse,option);
