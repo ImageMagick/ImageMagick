@@ -43,10 +43,6 @@ namespace Magick
   MagickPPExport int operator <=
     (const Magick::Image &left_,const Magick::Image &right_);
 
-  // C library initialization routine
-  MagickPPExport void InitializeMagick(const char *path_);
-  MagickPPExport void TerminateMagick();
-
   //
   // Image is the representation of an image. In reality, it actually
   // a handle object which contains a pointer to a shared reference
@@ -180,11 +176,6 @@ namespace Magick
     // Text bounding-box base color (default none)
     void boxColor(const Color &boxColor_);
     Color boxColor(void) const;
-
-    // Pixel cache threshold in bytes. Once this memory threshold
-    // is exceeded, all subsequent pixels cache operations are to/from
-    // disk. This setting is shared by all Image objects.
-    static void cacheThreshold(const MagickSizeType threshold_);
 
     // Set or obtain modulus channel depth
     void channelDepth(const size_t depth_);

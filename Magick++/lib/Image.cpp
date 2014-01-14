@@ -51,8 +51,6 @@ MagickPPExport const char *Magick::borderGeometryDefault="6x6+0+0";
 MagickPPExport const char *Magick::frameGeometryDefault="25x25+6+6";
 MagickPPExport const char *Magick::raiseGeometryDefault="6x6+0+0";
 
-static bool magick_initialized=false;
-
 MagickPPExport int Magick::operator == (const Magick::Image &left_,
   const Magick::Image &right_)
 {
@@ -92,22 +90,6 @@ MagickPPExport int Magick::operator <= (const Magick::Image &left_,
   const Magick::Image &right_)
 {
   return((left_ < right_) || ( left_ == right_));
-}
-
-MagickPPExport void Magick::InitializeMagick(const char *path_)
-{
-  MagickCore::MagickCoreGenesis(path_,MagickFalse);
-  if (!magick_initialized)
-    magick_initialized=true;
-}
-
-MagickPPExport void Magick::TerminateMagick(void)
-{
-  if (magick_initialized)
-    {
-      magick_initialized=false;
-      MagickCore::MagickCoreTerminus();
-    }
 }
 
 Magick::Image::Image(void)
@@ -516,11 +498,6 @@ void Magick::Image::boxColor(const Color &boxColor_)
 Magick::Color Magick::Image::boxColor(void) const
 {
   return(constOptions()->boxColor());
-}
-
-void Magick::Image::cacheThreshold(const MagickSizeType threshold_)
-{
-  SetMagickResourceLimit(MemoryResource, threshold_);
 }
 
 void Magick::Image::channelDepth(const size_t depth_)

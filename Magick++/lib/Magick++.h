@@ -7,6 +7,7 @@
 //
 #ifndef MagickPlusPlus_Header
 #include <Magick++/Include.h>
+#include <Magick++/Functions.h>
 #include <Magick++/Image.h>
 #include <Magick++/Pixels.h>
 #include <Magick++/STL.h>
