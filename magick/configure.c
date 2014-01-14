@@ -1160,6 +1160,7 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             configure_info->name);
         configure_info=(ConfigureInfo *) NULL;
+        continue;
       }
     /*
       Parse configure element.
@@ -1290,8 +1291,7 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
     if (configure_info == (ConfigureInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",
-          configure_info->name);
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
         continue;
       }
     (void) ResetMagickMemory(configure_info,0,sizeof(*configure_info));

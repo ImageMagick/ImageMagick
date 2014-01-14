@@ -1335,6 +1335,7 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             delegate_info->commands);
         delegate_info=(DelegateInfo *) NULL;
+        continue;
       }
     GetMagickToken(q,(const char **) NULL,token);
     if (*token != '=')
