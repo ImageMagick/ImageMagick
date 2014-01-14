@@ -549,7 +549,8 @@ static PolygonInfo *ConvertPathToPolygon(
     next_direction=((path_info[i].point.y > point.y) ||
       ((path_info[i].point.y == point.y) &&
        (path_info[i].point.x > point.x))) ? 1 : -1;
-    if ((direction != 0) && (direction != next_direction))
+    if ((points != (PointInfo *) NULL) && (direction != 0) &&
+        (direction != next_direction))
       {
         /*
           New edge.
