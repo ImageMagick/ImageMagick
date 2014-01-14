@@ -39,8 +39,6 @@ MagickPPExport const char *Magick::borderGeometryDefault="6x6+0+0";
 MagickPPExport const char *Magick::frameGeometryDefault="25x25+6+6";
 MagickPPExport const char *Magick::raiseGeometryDefault="6x6+0+0";
 
-static bool magick_initialized=false;
-
 MagickPPExport int Magick::operator == (const Magick::Image &left_,
   const Magick::Image &right_)
 {
@@ -80,13 +78,6 @@ MagickPPExport int Magick::operator <= (const Magick::Image &left_,
   const Magick::Image &right_)
 {
   return((left_ < right_) || (left_ == right_));
-}
-
-MagickPPExport void Magick::InitializeMagick(const char *path_)
-{
-  MagickCore::MagickCoreGenesis(path_,MagickFalse);
-  if (!magick_initialized)
-    magick_initialized=true;
 }
 
 Magick::Image::Image(void)
@@ -450,7 +441,7 @@ Magick::Color Magick::Image::boxColor(void) const
 
 void Magick::Image::cacheThreshold(const size_t threshold_)
 {
-  SetMagickResourceLimit(MemoryResource,threshold_);
+  CacheThreshold((MagickSizeType) threshold_);
 }
 
 void Magick::Image::classType(const ClassType class_)
@@ -4475,53 +4466,4 @@ void Magick::Image::unregisterId(void)
 {
   modifyImage();
   _imgRef->id(-1);
-}
-
-//
-// Create a local wrapper around MagickCoreTerminus
-//
-namespace Magick
-{
-  extern "C" {
-    void MagickPlusPlusDestroyMagick(void);
-  }
-}
-
-void Magick::MagickPlusPlusDestroyMagick(void)
-{
-  if (magick_initialized)
-    {
-      magick_initialized=false;
-      MagickCore::MagickCoreTerminus();
-    }
-}
-
-//
-// Cleanup class to ensure that ImageMagick singletons are destroyed
-// so as to avoid any resemblence to a memory leak (which seems to
-// confuse users)
-//
-namespace Magick
-{
-
-  class MagickCleanUp
-  {
-  public:
-    MagickCleanUp( void );
-    ~MagickCleanUp( void );
-  };
-
-  // The destructor for this object is invoked when the destructors for
-  // static objects in this translation unit are invoked.
-  static MagickCleanUp magickCleanUpGuard;
-}
-
-Magick::MagickCleanUp::MagickCleanUp(void)
-{
-  // Don't even think about invoking InitializeMagick here!
-}
-
-Magick::MagickCleanUp::~MagickCleanUp(void)
-{
-  MagickPlusPlusDestroyMagick();
 }

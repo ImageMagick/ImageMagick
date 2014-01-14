@@ -123,6 +123,7 @@ extern "C" {
 #include "magick/monitor.h"
 #include "magick/montage.h"
 #include "magick/morphology.h"
+#include "magick/opencl.h"
 #include "magick/option.h"
 #include "magick/paint.h"
 #include "magick/pixel.h"

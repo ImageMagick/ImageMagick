@@ -14,7 +14,22 @@
 
 namespace Magick
 {
-  void MagickPPExport CloneString( char **destination_, const std::string &source_ );
+  // Pixel cache threshold in bytes. Once this memory threshold is exceeded,
+  // all subsequent pixels cache operations are to/from disk.
+  MagickPPExport void CacheThreshold(const MagickSizeType threshold_);
+  MagickPPExport MagickSizeType CacheThreshold(void);
 
+  // Clone C++ string as allocated C string, de-allocating any existing string
+  MagickPPExport void CloneString(char **destination_,
+    const std::string &source_);
+
+  // Disable OpenCL acceleration (only works when build with OpenCL support)
+  MagickPPExport void DisableOpenCL(void);
+
+  // Enable OpenCL acceleration (only works when build with OpenCL support)
+  MagickPPExport void EnableOpenCL(const bool useCache_=true);
+
+  // C library initialization routine
+  MagickPPExport void InitializeMagick(const char *path_);
 }
 #endif // Magick_Functions_header
