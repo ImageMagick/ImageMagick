@@ -48,8 +48,6 @@
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
 #include "MagickWand/mogrify-private.h"
-#undef DegreesToRadians
-#undef RadiansToDegrees
 #include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/string-private.h"
