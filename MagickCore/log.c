@@ -1594,7 +1594,7 @@ static MagickBooleanType LoadLogLists(const char *filename,
     if (log_info == (LogInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",log_info->name);
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->filename);
         continue;
       }
     (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
