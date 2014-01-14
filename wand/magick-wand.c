@@ -52,16 +52,6 @@
 #include "wand/wand.h"
 
 /*
-  Define declarations.
-*/
-#define ThrowWandException(severity,tag,context) \
-{ \
-  (void) ThrowMagickException(wand->exception,GetMagickModule(),severity, \
-    tag,"`%s'",context); \
-  return(MagickFalse); \
-}
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
