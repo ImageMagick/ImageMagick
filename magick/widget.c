@@ -1782,6 +1782,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   /*
     Respond to X events.
   */
+  XGetWidgetInfo((char *) NULL,&mode_info);
   XGetWidgetInfo((char *) NULL,&slider_info);
   XGetWidgetInfo((char *) NULL,&north_info);
   XGetWidgetInfo((char *) NULL,&south_info);
