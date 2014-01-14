@@ -5505,7 +5505,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
         {
           CurrentContext->dash_pattern=(double *) AcquireQuantumMemory((size_t)
             n_new+1UL,sizeof(*CurrentContext->dash_pattern));
-          if (!CurrentContext->dash_pattern)
+          if (CurrentContext->dash_pattern == (double *) NULL)
             {
               ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
                 wand->name);
