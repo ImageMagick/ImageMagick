@@ -431,23 +431,24 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               color=(pixel >> red_shift) & red_mask;
-              color=(color*65535UL)/red_mask;
-              SetPixelRed(image,ScaleShortToQuantum((unsigned short)
-                color),q);
+              if (red_mask != 0)
+                color=(color*65535UL)/red_mask;
+              SetPixelRed(image,ScaleShortToQuantum((unsigned short) color),q);
               color=(pixel >> green_shift) & green_mask;
-              color=(color*65535UL)/green_mask;
-              SetPixelGreen(image,ScaleShortToQuantum((unsigned short)
-                color),q);
-              color=(pixel >> blue_shift) & blue_mask;
+              if (green_mask != 0)
+                color=(color*65535UL)/green_mask;
+              SetPixelGreen(image,ScaleShortToQuantum((unsigned short) color),
+                q);
+              if (blue_mask != 0)
+                color=(pixel >> blue_shift) & blue_mask;
               color=(color*65535UL)/blue_mask;
-              SetPixelBlue(image,ScaleShortToQuantum((unsigned short)
-                color),q);
+              SetPixelBlue(image,ScaleShortToQuantum((unsigned short) color),q);
               q+=GetPixelChannels(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
             status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+              image->rows);
             if (status == MagickFalse)
               break;
           }
