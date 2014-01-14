@@ -49,6 +49,7 @@
 #include "wand/magick-wand-private.h"
 #include "wand/mogrify-private.h"
 #include "magick/color-private.h"
+#include "magick/image-private.h"
 #include "magick/monitor-private.h"
 #include "magick/pixel-private.h"
 #include "magick/thread-private.h"
