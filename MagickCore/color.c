@@ -1958,6 +1958,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             color_info->name);
         color_info=(ColorInfo *) NULL;
+        continue;
       }
     GetMagickToken(q,(const char **) NULL,token);
     if (*token != '=')
@@ -2100,7 +2101,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
     if (color_info == (ColorInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
         continue;
       }
     (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
