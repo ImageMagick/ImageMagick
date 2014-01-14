@@ -767,6 +767,7 @@ static MagickBooleanType LoadPolicyList(const char *xml,const char *filename,
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             policy_info->name);
         policy_info=(PolicyInfo *) NULL;
+        continue;
       }
     GetMagickToken(q,(const char **) NULL,token);
     if (*token != '=')
@@ -925,7 +926,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
     if (policy_info == (PolicyInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",policy_info->name);
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
         continue;
       }
     (void) ResetMagickMemory(policy_info,0,sizeof(*policy_info));
