@@ -4434,17 +4434,20 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 {
                   pixel=XGetPixel(ximage,x,y);
                   color=(pixel >> red_shift) & red_mask;
-                  color=(65535UL*color)/red_mask;
-                  SetPixelRed(composite_image,
-                    ScaleShortToQuantum((unsigned short) color),q);
+                  if (red_mask != 0)
+                    color=(65535UL*color)/red_mask;
+                  SetPixelRed(composite_image,ScaleShortToQuantum(
+                    (unsigned short) color),q);
                   color=(pixel >> green_shift) & green_mask;
-                  color=(65535UL*color)/green_mask;
-                  SetPixelGreen(composite_image,
-                    ScaleShortToQuantum((unsigned short) color),q);
+                  if (green_mask != 0)
+                    color=(65535UL*color)/green_mask;
+                  SetPixelGreen(composite_image,ScaleShortToQuantum(
+                    (unsigned short) color),q);
                   color=(pixel >> blue_shift) & blue_mask;
-                  color=(65535UL*color)/blue_mask;
-                  SetPixelBlue(composite_image,
-                    ScaleShortToQuantum((unsigned short) color),q);
+                  if (blue_mask != 0)
+                    color=(65535UL*color)/blue_mask;
+                  SetPixelBlue(composite_image,ScaleShortToQuantum(
+                    (unsigned short) color),q);
                   q+=GetPixelChannels(composite_image);
                 }
                 status=SyncCacheViewAuthenticPixels(composite_view,exception);
