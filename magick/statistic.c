@@ -1696,16 +1696,20 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
           M02[IndexChannel]+=(y-centroid[IndexChannel].y)*(y-
             centroid[IndexChannel].y)*scale*pixel.index;
           M21[IndexChannel]+=(x-centroid[IndexChannel].x)*(x-
-            centroid[IndexChannel].x)*(y-centroid[IndexChannel].y)*pixel.index;
+            centroid[IndexChannel].x)*(y-centroid[IndexChannel].y)*
+            scale*pixel.index;
           M12[IndexChannel]+=(x-centroid[IndexChannel].x)*(y-
-            centroid[IndexChannel].y)*(y-centroid[IndexChannel].y)*pixel.index;
+            centroid[IndexChannel].y)*(y-centroid[IndexChannel].y)*
+            scale*pixel.index;
           M22[IndexChannel]+=(x-centroid[IndexChannel].x)*(x-
             centroid[IndexChannel].x)*(y-centroid[IndexChannel].y)*(y-
             centroid[IndexChannel].y)*scale*pixel.index;
           M30[IndexChannel]+=(x-centroid[IndexChannel].x)*(x-
-            centroid[IndexChannel].x)*(x-centroid[IndexChannel].x)*pixel.index;
+            centroid[IndexChannel].x)*(x-centroid[IndexChannel].x)*
+            scale*pixel.index;
           M03[IndexChannel]+=(y-centroid[IndexChannel].y)*(y-
-            centroid[IndexChannel].y)*(y-centroid[IndexChannel].y)*pixel.index;
+            centroid[IndexChannel].y)*(y-centroid[IndexChannel].y)*
+            scale*pixel.index;
         }
       p++;
     }
