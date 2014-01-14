@@ -26,6 +26,12 @@ extern "C" {
 #define QuantumTick(i,span) ((MagickBooleanType) ((((i) & ((i)-1)) == 0) || \
    (((i) & 0xfff) == 0) || \
    ((MagickOffsetType) (i) == ((MagickOffsetType) (span)-1))))
+#define ThrowWandException(severity,tag,context) \
+{ \
+  (void) ThrowMagickException(wand->exception,GetMagickModule(),severity, \
+    tag,"`%s'",context); \
+  return(MagickFalse); \
+}
 #define ThrowWandFatalException(severity,tag,context) \
 { \
   ExceptionInfo \
