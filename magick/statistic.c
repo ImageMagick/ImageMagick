@@ -1636,16 +1636,20 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
       M02[GreenChannel]+=(y-centroid[GreenChannel].y)*(y-
         centroid[GreenChannel].y)*scale*pixel.green;
       M21[GreenChannel]+=(x-centroid[GreenChannel].x)*(x-
-        centroid[GreenChannel].x)*(y-centroid[GreenChannel].y)*pixel.green;
+        centroid[GreenChannel].x)*(y-centroid[GreenChannel].y)*scale*
+        pixel.green;
       M12[GreenChannel]+=(x-centroid[GreenChannel].x)*(y-
-        centroid[GreenChannel].y)*(y-centroid[GreenChannel].y)*pixel.green;
+        centroid[GreenChannel].y)*(y-centroid[GreenChannel].y)*scale*
+        pixel.green;
       M22[GreenChannel]+=(x-centroid[GreenChannel].x)*(x-
         centroid[GreenChannel].x)*(y-centroid[GreenChannel].y)*(y-
         centroid[GreenChannel].y)*scale*pixel.green;
       M30[GreenChannel]+=(x-centroid[GreenChannel].x)*(x-
-        centroid[GreenChannel].x)*(x-centroid[GreenChannel].x)*pixel.green;
+        centroid[GreenChannel].x)*(x-centroid[GreenChannel].x)*scale*
+        pixel.green;
       M03[GreenChannel]+=(y-centroid[GreenChannel].y)*(y-
-        centroid[GreenChannel].y)*(y-centroid[GreenChannel].y)*pixel.green;
+        centroid[GreenChannel].y)*(y-centroid[GreenChannel].y)*scale*
+        pixel.green;
       M11[BlueChannel]+=(x-centroid[BlueChannel].x)*(y-
         centroid[BlueChannel].y)*scale*pixel.blue;
       M20[BlueChannel]+=(x-centroid[BlueChannel].x)*(x-
@@ -1653,9 +1657,9 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
       M02[BlueChannel]+=(y-centroid[BlueChannel].y)*(y-
         centroid[BlueChannel].y)*scale*pixel.blue;
       M21[BlueChannel]+=(x-centroid[BlueChannel].x)*(x-
-        centroid[BlueChannel].x)*(y-centroid[BlueChannel].y)*pixel.blue;
+        centroid[BlueChannel].x)*(y-centroid[BlueChannel].y)*scale*pixel.blue;
       M12[BlueChannel]+=(x-centroid[BlueChannel].x)*(y-
-        centroid[BlueChannel].y)*(y-centroid[BlueChannel].y)*pixel.blue;
+        centroid[BlueChannel].y)*(y-centroid[BlueChannel].y)*scale*pixel.blue;
       M22[BlueChannel]+=(x-centroid[BlueChannel].x)*(x-
         centroid[BlueChannel].x)*(y-centroid[BlueChannel].y)*(y-
         centroid[BlueChannel].y)*scale*pixel.blue;
