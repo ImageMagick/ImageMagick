@@ -2247,8 +2247,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             /*
               User pressed mode button.
             */
-            (void) CopyMagickString(reply_info.text,mode_info.text,
-              MaxTextExtent);
+            if (mode_info.text != (char *) NULL)
+              (void) CopyMagickString(reply_info.text,mode_info.text,
+                MaxTextExtent);
             (void) CopyMagickString(primary_selection,reply_info.text,
               MaxTextExtent);
             (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
