@@ -22,13 +22,11 @@
 extern "C" {
 #endif
 
-#define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define MagickWandId  "MagickWand"
 #define QuantumTick(i,span) ((MagickBooleanType) ((((i) & ((i)-1)) == 0) || \
    (((i) & 0xfff) == 0) || \
    ((MagickOffsetType) (i) == ((MagickOffsetType) (span)-1))))
-#define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define ThrowWandFatalException(severity,tag,context) \
 { \
   ExceptionInfo \
