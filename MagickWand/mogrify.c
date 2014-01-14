@@ -46,6 +46,7 @@
 */
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
+#include "MagickWand/magick-wand-private.h"
 #include "MagickWand/mogrify-private.h"
 #undef DegreesToRadians
 #undef RadiansToDegrees
