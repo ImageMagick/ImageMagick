@@ -4370,15 +4370,18 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 {
                   pixel=XGetPixel(ximage,x,y);
                   color=(pixel >> red_shift) & red_mask;
-                  color=(65535UL*color)/red_mask;
+                  if (red_mask != 0)
+                    color=(65535UL*color)/red_mask;
                   SetPixelRed(q,ScaleShortToQuantum((unsigned short)
                     color));
                   color=(pixel >> green_shift) & green_mask;
-                  color=(65535UL*color)/green_mask;
+                  if (green_mask != 0)
+                     color=(65535UL*color)/green_mask;
                   SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
                     color));
                   color=(pixel >> blue_shift) & blue_mask;
-                  color=(65535UL*color)/blue_mask;
+                  if (blue_mask != 0)
+                    color=(65535UL*color)/blue_mask;
                   SetPixelBlue(q,ScaleShortToQuantum((unsigned short)
                     color));
                   q++;
