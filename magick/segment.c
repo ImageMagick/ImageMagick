@@ -1186,15 +1186,18 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
         cluster=cluster->next;
       }
     }
-  threshold=(background->red.center+object->red.center)/2.0;
-  pixel->red=(MagickRealType) ScaleCharToQuantum((unsigned char)
-    (threshold+0.5));
-  threshold=(background->green.center+object->green.center)/2.0;
-  pixel->green=(MagickRealType) ScaleCharToQuantum((unsigned char)
-    (threshold+0.5));
-  threshold=(background->blue.center+object->blue.center)/2.0;
-  pixel->blue=(MagickRealType) ScaleCharToQuantum((unsigned char)
-    (threshold+0.5));
+  if (background != (Cluster *) NULL)
+    {
+      threshold=(background->red.center+object->red.center)/2.0;
+      pixel->red=(MagickRealType) ScaleCharToQuantum((unsigned char)
+        (threshold+0.5));
+      threshold=(background->green.center+object->green.center)/2.0;
+      pixel->green=(MagickRealType) ScaleCharToQuantum((unsigned char)
+        (threshold+0.5));
+      threshold=(background->blue.center+object->blue.center)/2.0;
+      pixel->blue=(MagickRealType) ScaleCharToQuantum((unsigned char)
+        (threshold+0.5));
+    }
   /*
     Relinquish resources.
   */
