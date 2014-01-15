@@ -468,6 +468,8 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
 
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",key);
+  if (value == (const void *) NULL)
+    return(MagickFalse);
   clone_value=(void *) NULL;
   switch (type)
   {
