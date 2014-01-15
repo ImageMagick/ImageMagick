@@ -142,7 +142,8 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   if (image != (Image *) NULL)
     return(image);
   read_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(read_info->filename,path,MaxTextExtent);
+  if (path != (const char *) NULL)
+    (void) CopyMagickString(read_info->filename,path,MaxTextExtent);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)

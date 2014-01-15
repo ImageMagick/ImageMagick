@@ -502,6 +502,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ResetMagickMemory(command,0,sizeof(command));
   cmyk=image_info->colorspace == CMYKColorspace ? MagickTrue : MagickFalse;
   (void) ResetMagickMemory(&hires_bounds,0,sizeof(hires_bounds));
+  columns=0;
+  rows=0;
   priority=0;
   rows=0;
   extent=0;
