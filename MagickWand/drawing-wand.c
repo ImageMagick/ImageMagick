@@ -5522,15 +5522,16 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
       if (n_new == 0)
         (void) MvgPrintf(wand,"none\n");
       else
-        {
-          for (i=0; i < n_new; i++)
+        if (dasharray != (double *) NULL)
           {
-            if (i != 0)
-              (void) MvgPrintf(wand,",");
-            (void) MvgPrintf(wand,"%.20g",dasharray[i]);
+            for (i=0; i < n_new; i++)
+            {
+              if (i != 0)
+                (void) MvgPrintf(wand,",");
+              (void) MvgPrintf(wand,"%.20g",dasharray[i]);
+            }
+            (void) MvgPrintf(wand,"\n");
           }
-          (void) MvgPrintf(wand,"\n");
-        }
     }
   return(MagickTrue);
 }
