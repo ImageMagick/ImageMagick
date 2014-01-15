@@ -70,14 +70,6 @@
 /* FUTURE: why is this default so specific? */
 #define DEFAULT_DISSIMILARITY_THRESHOLD "0.31830988618379067154"
 
-/*
-  Constant declaration. (temporary exports)
-*/
-static const char
-  BackgroundColor[] = "#fff",  /* white */
-  BorderColor[] = "#dfdfdf",  /* sRGB gray */
-  MatteColor[] = "#bdbdbd";  /* slightly darker gray */
-
 /* For Debugging Geometry Input */
 #define ReportGeometry(flags,info) \
   (void) FormatLocaleFile(stderr, "Geometry = 0x%04X : %lg x %lg %+lg %+lg\n", \
