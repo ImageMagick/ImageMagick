@@ -328,7 +328,7 @@ static MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image)
     &image->exception);
   montage_info=DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
-    ThrowWriterException(CorruptImageError,strerror(error));
+    return(MagickFalse);
   (void) CopyMagickString(montage_image->filename,image_info->filename,
     MaxTextExtent);
   write_info=CloneImageInfo(image_info);
