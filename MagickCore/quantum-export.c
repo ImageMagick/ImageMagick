@@ -117,7 +117,7 @@ static inline unsigned char *PopDoublePixel(QuantumInfo *quantum_info,
     *p;
 
   unsigned char
-    quantum[8];
+    quantum[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
   p=(double *) quantum;
   *p=(double) (pixel*quantum_info->state.inverse_scale+quantum_info->minimum);
@@ -151,7 +151,7 @@ static inline unsigned char *PopFloatPixel(QuantumInfo *quantum_info,
     *p;
 
   unsigned char
-    quantum[4];
+    quantum[4] = { 0, 0, 0, 0 };
 
   p=(float *) quantum;
   *p=(float) ((double) pixel*quantum_info->state.inverse_scale+
