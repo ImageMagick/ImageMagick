@@ -1910,10 +1910,10 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          if ((double) GetPixelIndex(indexes+x) < *minima)
-            *minima=(double) GetPixelIndex(indexes+x);
-          if ((double) GetPixelIndex(indexes+x) > *maxima)
-            *maxima=(double) GetPixelIndex(indexes+x);
+          if ((double) pixel.index < *minima)
+            *minima=(double) pixel.index;
+          if ((double) pixel.index > *maxima)
+            *maxima=(double) pixel.index;
         }
       p++;
     }
