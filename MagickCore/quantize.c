@@ -867,9 +867,12 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
             */
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                image->filename);
+              {
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                  image->filename);
+                continue;
+              }
             if (level == MaxTreeDepth)
               cube_info->colors++;
           }
@@ -963,9 +966,12 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
             */
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                ResourceLimitError,"MemoryAllocationFailed","%s",
-                image->filename);
+              {
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  ResourceLimitError,"MemoryAllocationFailed","%s",
+                  image->filename);
+                continue;
+              }
             if (level == cube_info->depth)
               cube_info->colors++;
           }
@@ -1005,7 +1011,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
     (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
-  return(MagickTrue);
+  return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);
 }
 
 /*
