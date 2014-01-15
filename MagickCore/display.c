@@ -11591,6 +11591,8 @@ static MagickBooleanType XROIImage(Display *display,
     */
     state=DefaultState;
     command_type=NullCommand;
+    crop_info.x=0;
+    crop_info.y=0;
     (void) XMapWindow(display,windows->info.id);
     do
     {

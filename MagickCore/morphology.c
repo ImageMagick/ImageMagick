@@ -2594,6 +2594,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   image_view=AcquireVirtualCacheView(image,exception);
   morphology_view=AcquireAuthenticCacheView(morphology_image,exception);
   width=image->columns+kernel->width-1;
+  offset.x=0.0;
+  offset.y=0.0;
   switch (method)
   {
     case ConvolveMorphology:

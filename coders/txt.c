@@ -454,6 +454,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         green,
         red;
 
+      red=0.0;
+      green=0.0;
+      blue=0.0;
+      black=0.0;
+      alpha=0.0;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (ReadBlobString(image,text) == (char *) NULL)

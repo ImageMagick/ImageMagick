@@ -2173,7 +2173,7 @@ MagickExport const char *GetImageProperty(const Image *image,
     return((const char *)NULL); \
   }
 #define WarnNoImageInfoReturn(format,arg) \
-  if (image == (Image *) NULL ) { \
+  if (image_info == (ImageInfo *) NULL ) { \
     (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning, \
         "NoImageInfoForProperty",format,arg); \
     return((const char *)NULL); \

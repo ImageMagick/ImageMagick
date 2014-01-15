@@ -439,9 +439,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 color=(color*65535UL)/green_mask;
               SetPixelGreen(image,ScaleShortToQuantum((unsigned short) color),
                 q);
+              color=(pixel >> blue_shift) & blue_mask;
               if (blue_mask != 0)
-                color=(pixel >> blue_shift) & blue_mask;
-              color=(color*65535UL)/blue_mask;
+                color=(color*65535UL)/blue_mask;
               SetPixelBlue(image,ScaleShortToQuantum((unsigned short) color),q);
               q+=GetPixelChannels(image);
             }

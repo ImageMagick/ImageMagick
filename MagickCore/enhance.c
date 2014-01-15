@@ -1490,11 +1490,11 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     progress;
 
   double
-    black[CompositePixelChannel],
+    black[CompositePixelChannel+1],
     *equalize_map,
     *histogram,
     *map,
-    white[CompositePixelChannel];
+    white[CompositePixelChannel+1];
 
   register ssize_t
     i;
@@ -1585,6 +1585,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   }
   (void) ResetMagickMemory(equalize_map,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*equalize_map));
+  (void) ResetMagickMemory(black,0,sizeof(*black));
+  (void) ResetMagickMemory(white,0,sizeof(*white));
   number_channels=GetPixelChannels(image);
   for (i=0; i < (ssize_t) number_channels; i++)
   {

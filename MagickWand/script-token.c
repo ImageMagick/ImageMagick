@@ -364,12 +364,13 @@ WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
     offset;
 
   /* EOF - no more tokens! */
+  if (token_info == (ScriptTokenInfo *) NULL)
+    return(MagickFalse);
   if (token_info->status != TokenStatusOK)
     {
       token_info->token[0]='\0';
       return(MagickFalse);
     }
-
   state=IN_WHITE;
   quote='\0';
   offset=0;
