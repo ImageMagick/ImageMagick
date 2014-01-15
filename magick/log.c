@@ -1423,6 +1423,7 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
         log_info=(LogInfo *) NULL;
+        continue;
       }
     GetMagickToken(q,(const char **) NULL,token);
     if (*token != '=')
