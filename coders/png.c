@@ -2768,6 +2768,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
     }
 
+  x_resolution=0;
+  y_resolution=0;
+  unit_type=0;
   if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
     {
       /*
