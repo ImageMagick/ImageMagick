@@ -28,7 +28,6 @@ extern "C" {
   AppendImageToList(&image_stack[k].image,images); \
   image=image_stack[k].image; \
 }
-#define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define DestroyImageStack() \
 { \
   while (k > 0) \
@@ -96,7 +95,6 @@ RestoreMSCWarning \
 #define QuantumTick(i,span) ((MagickBooleanType) ((((i) & ((i)-1)) == 0) || \
    (((i) & 0xfff) == 0) || \
    ((MagickOffsetType) (i) == ((MagickOffsetType) (span)-1))))
-#define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define RemoveImageStack(images) \
 { \
   images=RemoveFirstImageFromList(&image_stack[k].image); \
