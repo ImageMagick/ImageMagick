@@ -193,7 +193,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   for (i=0; i < 3; i++)
   {
     pcd_table[i]=(PCDTable *) NULL;
-    pcd_length=0;
+    pcd_length[i]=0;
   }
   for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
   {
