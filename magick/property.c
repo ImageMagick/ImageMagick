@@ -2226,7 +2226,9 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
   const char
     *string;
 
-  if ((image != (Image *) NULL) && (image->debug != MagickFalse))
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *value='\0';
   string=(char *)NULL;
