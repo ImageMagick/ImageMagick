@@ -566,7 +566,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
     bbuf,
     *BImgBuff,
     RunCount,
-    SampleBuffer[8];
+    SampleBuffer[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
   unsigned int
     i;
