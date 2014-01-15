@@ -890,8 +890,8 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 
         Contrast(sign,&red,&green,&blue);
         image->colormap[i].red=(MagickRealType) red;
-        image->colormap[i].red=(MagickRealType) red;
-        image->colormap[i].red=(MagickRealType) red;
+        image->colormap[i].green=(MagickRealType) green;
+        image->colormap[i].blue=(MagickRealType) blue;
       }
     }
   /*
