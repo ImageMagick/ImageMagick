@@ -1381,8 +1381,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   /*
     Compute perceptual hash in the HCLP colorspace.
   */
-  if ((SetImageColorspace(blur_image,HCLpColorspace) == MagickFalse) ||
-      (SetImageColorspace(blur_reconstruct,HCLpColorspace) == MagickFalse))
+  if ((TransformImageColorspace(blur_image,HCLpColorspace) == MagickFalse) ||
+      (TransformImageColorspace(blur_reconstruct,HCLpColorspace) == MagickFalse))
     {
       blur_reconstruct=DestroyImage(blur_reconstruct);
       blur_image=DestroyImage(blur_image);
