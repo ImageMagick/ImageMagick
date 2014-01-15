@@ -41,7 +41,8 @@ extern "C" {
 #define GetPixelCyan(pixel) ((pixel)->red)
 #define GetPixelGray(pixel) ((pixel)->red)
 #define GetPixelGreen(pixel) ((pixel)->green)
-#define GetPixelIndex(indexes) (*(indexes))
+#define GetPixelIndex(indexes) \
+  ((indexes == (const IndexPacket *) NULL) ? 0 : (*(indexes)))
 #define GetPixelL(pixel) ((pixel)->red)
 #define GetPixelMagenta(pixel) ((pixel)->green)
 #define GetPixelNext(pixel)  ((pixel)+1)
