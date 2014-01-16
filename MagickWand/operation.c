@@ -4155,6 +4155,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
               /*
                 Support old style syntax, filter="-option arg1".
               */
+              assert(arg1 != (unsigned char *) NULL);
               length=strlen(arg1);
               token=(char *) NULL;
               if (~length >= (MaxTextExtent-1))
