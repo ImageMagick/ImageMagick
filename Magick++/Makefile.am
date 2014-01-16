@@ -120,6 +120,7 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Color.h \
 	Magick++/lib/Magick++/Drawable.h \
 	Magick++/lib/Magick++/Exception.h \
+	Magick++/lib/Magick++/Functions.h \
 	Magick++/lib/Magick++/Geometry.h \
 	Magick++/lib/Magick++/Image.h \
 	Magick++/lib/Magick++/Include.h \
