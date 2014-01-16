@@ -168,7 +168,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       count=ReadBlob(image,length,pixels);
-      if ((size_t) count != length)
+      if (count != length)
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       p=pixels;
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
