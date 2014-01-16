@@ -11,43 +11,46 @@
 #include "Magick++/TypeMetric.h"
 #include <string.h>
 
-// Default constructor
-Magick::TypeMetric::TypeMetric ( void )
+Magick::TypeMetric::TypeMetric(void)
 {
-  memset( &_typeMetric, 0, sizeof(_typeMetric));
+  ResetMagickMemory(&_typeMetric,0,sizeof(_typeMetric));
 }
 
-Magick::TypeMetric::~TypeMetric ( void )
+Magick::TypeMetric::~TypeMetric(void)
 {
-  // Nothing to do
 }
 
-// Ascent, expressed in pixels
-double Magick::TypeMetric::ascent ( void ) const
+double Magick::TypeMetric::ascent(void) const
 {
-  return _typeMetric.ascent;
+  return(_typeMetric.ascent);
 }
 
-// Descent, expressed in pixels
-double Magick::TypeMetric::descent ( void ) const
+double Magick::TypeMetric::descent(void) const
 {
-  return _typeMetric.descent;
+  return(_typeMetric.descent);
 }
 
-// Text width, expressed in pixels
-double Magick::TypeMetric::textWidth ( void ) const
+double Magick::TypeMetric::maxHorizontalAdvance(void) const
 {
-  return _typeMetric.width;
+  return(_typeMetric.max_advance);
 }
 
-// Text height, expressed in pixels
-double Magick::TypeMetric::textHeight ( void ) const
+double Magick::TypeMetric::textHeight(void) const
 {
-  return _typeMetric.height;
+  return(_typeMetric.height);
 }
 
-// Maximum horizontal advance, expressed in pixels
-double Magick::TypeMetric::maxHorizontalAdvance ( void ) const
+double Magick::TypeMetric::textWidth(void) const
 {
-  return _typeMetric.max_advance;
+  return(_typeMetric.width);
+}
+
+double Magick::TypeMetric::underlinePosition(void) const
+{
+  return(_typeMetric.underline_position);
+}
+
+double Magick::TypeMetric::underlineThickness(void) const
+{
+  return(_typeMetric.underline_thickness);
 }

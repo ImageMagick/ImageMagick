@@ -1161,6 +1161,7 @@ namespace Magick
   using MagickCore::GetImageQuantizeError;
   using MagickCore::GetImageType;
   using MagickCore::GetMagickInfo;
+  using MagickCore::GetMultilineTypeMetrics;
   using MagickCore::GetPixelBlue;
   using MagickCore::GetPixelGreen;
   using MagickCore::GetPixelInfo;
