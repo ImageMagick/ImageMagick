@@ -1129,6 +1129,7 @@ namespace Magick
   using MagickCore::GetImageType;
   using MagickCore::GetMagickInfo;
   using MagickCore::GetMagickPixelPacket;
+  using MagickCore::GetMultilineTypeMetrics;
   using MagickCore::GetNumberColors;
   using MagickCore::GetPageGeometry;
   using MagickCore::GetQuantizeInfo;
