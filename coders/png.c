@@ -4672,6 +4672,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "    Reading jng_image from color_blob.");
 
+  assert(color_image_info != (ImageInfo *) NULL);
   (void) FormatLocaleString(color_image_info->filename,MaxTextExtent,"%s",
     color_image->filename);
 
