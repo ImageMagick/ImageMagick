@@ -925,6 +925,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   summary_info.thumbnail_valid=MagickFalse;
   summary_info.appname_valid=MagickFalse;
   summary_info.security_valid=MagickFalse;
+  summary_info.title.ptr=(unsigned char *) NULL;
   label=GetImageProperty(image,"label");
   if (label != (const char *) NULL)
     {
