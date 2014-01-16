@@ -2154,6 +2154,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     }
     case GRAYColorspace:
     {
+      if (image_info->type == TrueColorType)
+        break;
       jpeg_info.input_components=1;
       jpeg_info.in_color_space=JCS_GRAYSCALE;
       break;
@@ -2162,6 +2164,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     {
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
+      if (image_info->type == TrueColorType)
+        break;
+      if (IsGrayImage(image,&image->exception) != MagickFalse)
+        {
+          jpeg_info.input_components=1;
+          jpeg_info.in_color_space=JCS_GRAYSCALE;
+        }
       break;
     }
   }
