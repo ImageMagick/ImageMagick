@@ -440,6 +440,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
     register ssize_t
       i;
 
+    assert(images != (Image *) NULL);
     cmyk_image=CloneImage(images,images->columns,images->rows,MagickTrue,
       exception);
     if (cmyk_image == (Image *) NULL)
