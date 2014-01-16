@@ -899,6 +899,11 @@ namespace Magick
     // pointsize, and density settings.
     void fontTypeMetrics(const std::string &text_,TypeMetric *metrics);
 
+    // Obtain multi line font metrics for text string given current font,
+    // pointsize, and density settings.
+    void fontTypeMetricsMultiline(const std::string &text_,
+      TypeMetric *metrics);
+
     // Frame image
     void frame(const Geometry &geometry_=frameGeometryDefault);
     void frame(const size_t width_,const size_t height_,
