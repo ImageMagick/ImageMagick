@@ -916,7 +916,7 @@ static MagickStatusType ReadPSDChannelZip(Image *image,
 
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-       "      layer data is RLE compressed");
+       "      layer data is ZIP compressed");
 
   compact_pixels=(unsigned char *) AcquireQuantumMemory(compact_size,
     sizeof(*compact_pixels));
@@ -1019,6 +1019,13 @@ static MagickStatusType ReadPSDChannel(Image *image,PSDInfo *psd_info,
 
   MagickStatusType
     status;
+
+  if (layer_info->channel_info[channel].type < -1)
+  {
+    /* ignore user supplied layer mask */
+    SeekBlob(image,layer_info->channel_info[channel].size-2,SEEK_CUR);
+    return(MagickTrue);
+  }
 
   offset=TellBlob(image);
   status=MagickTrue;
