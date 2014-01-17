@@ -332,11 +332,11 @@
     of x64 project file
 
 2013-07-10  6.8.6-5 Cristy  <quetzlzacatenango@image...>
-  * compare exits with a non-zero exit code when no error (reference
+  * Compare exits with a non-zero exit code when no error (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23722).
-  * correct calculation of quantization error (reference
+  * Correct calculation of quantization error (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?t=23734).
-  * correct quantize tree walking mistake for RiemersmaDither (reference
+  * Correct quantize tree walking mistake for RiemersmaDither (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=23735).
 
 2013-07-10  6.8.6-4 Cristy  <quetzlzacatenango@image...>
@@ -532,7 +532,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23193).
   * The -adaptive-sharpen option is now sharpening properly (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23211).
-  * Sometimes an image says its grayscale when its not (reference
+  * Sometimes an image says it's grayscale when it's not (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23217).
   * Use malloc() to allocate X image data (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23221).
@@ -582,7 +582,7 @@
 
 2013-04-05  6.8.4-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix -sample sampling point to midpoints of sampling areas
-  * add a "sample:offset=" define to allow users to adjust this
+  * Add a "sample:offset=" define to allow users to adjust this
     sampling point position in terms of percentage (default = 50x50)
 
 2013-04-02  6.8.4-7 Glenn Randers-Pehrson <glennrp@image...>
@@ -717,10 +717,10 @@
   * New version 6.8.3-6, SVN revision 11210.
 
 2013-02-25  6.8.3-6 Cristy  <quetzlzacatenango@image...>
-   * Support built-in 1x1 and 2x1 threshold maps (reference
-     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22861).
-   * Check for webp version (reference
-     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22867).
+  * Support built-in 1x1 and 2x1 threshold maps (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22861).
+  * Check for webp version (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22867).
 
 2013-02-25  6.8.3-6 Glenn Randers-Pehrson <glennrp@image...>
   * Relocated png_set_bKGD(), etc., after png_set_IHDR() because they
@@ -760,14 +760,14 @@
   * New version 6.8.3-1, SVN revision 11060.
 
 2013-02-16  6.8.3-1 Cristy  <quetzlzacatenango@image...>
-   * Disable FORTIFY_SOURCE to fix a bug in LVVM / OpenMP support.
+  * Disable FORTIFY_SOURCE to fix a bug in LVVM / OpenMP support.
 
 2013-02-15  6.8.3-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-0, SVN revision 11045.
 
 2013-02-14  6.8.3-0 Cristy  <quetzlzacatenango@image...>
-   * Webp requires alpha, not opacity (reference
-     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22793).
+  * Webp requires alpha, not opacity (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22793).
 
 2013-02-12  6.8.3-0 Bastien Roucaries  <roucaries.basti...>
   * Allow PerlMagick to be multi-quantum (e.g. Image::Magick::Q16).
@@ -776,7 +776,7 @@
   * New version 6.8.2-10, SVN revision 11004.
 
 2013-02-11  6.8.2-10 Cristy  <quetzlzacatenango@image...>
-   * The XPM regression tests passes now.
+  * The XPM regression tests passes now.
 
 2013-02-09  6.8.2-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.2-9, SVN revision 10995.
@@ -906,7 +906,7 @@
 
 2013-01-01  6.8.1-7 Cristy  <quetzlzacatenango@image...>
   * magick-baseconfig.h is architecture dependant;
-    make headers quantum depth neutral ( reference
+    make headers quantum depth neutral (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22509).
 
 2013-01-01  6.8.1-6 Cristy  <quetzlzacatenango@image...>
