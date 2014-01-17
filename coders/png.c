@@ -2461,6 +2461,25 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   ping_file_depth = ping_bit_depth;
 
+  /* Swap bytes if requested */
+  if (ping_file_depth == 16)
+  {
+     const char
+       *property;
+
+     ResetImagePropertyIterator(image);
+
+     while (property != (const char *) NULL)
+       {
+         GetImageProperty(image,property,exception);
+
+         if (LocaleNCompare(property,"png:swap-bytes",14) != 0)
+           png_set_swap(ping);
+
+         property=GetNextImageProperty(image);
+       }
+  }
+
   /* Save bit-depth and color-type in case we later want to write a PNG00 */
   {
       char
