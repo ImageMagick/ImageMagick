@@ -1551,14 +1551,14 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       continue;
     M10[channel]=0.0;
     M01[channel]=0.0;
-    M11[channel]/=pow(M00[channel],(1.0+(1.0+1.0)/2.0));
-    M20[channel]/=pow(M00[channel],(1.0+(2.0+0.0)/2.0));
-    M02[channel]/=pow(M00[channel],(1.0+(0.0+2.0)/2.0));
-    M21[channel]/=pow(M00[channel],(1.0+(2.0+1.0)/2.0));
-    M12[channel]/=pow(M00[channel],(1.0+(1.0+2.0)/2.0));
-    M22[channel]/=pow(M00[channel],(1.0+(2.0+2.0)/2.0));
-    M30[channel]/=pow(M00[channel],(1.0+(3.0+0.0)/2.0));
-    M03[channel]/=pow(M00[channel],(1.0+(0.0+3.0)/2.0));
+    M11[channel]/=pow(M00[channel],1.0+(1.0+1.0)/2.0);
+    M20[channel]/=pow(M00[channel],1.0+(2.0+0.0)/2.0);
+    M02[channel]/=pow(M00[channel],1.0+(0.0+2.0)/2.0);
+    M21[channel]/=pow(M00[channel],1.0+(2.0+1.0)/2.0);
+    M12[channel]/=pow(M00[channel],1.0+(1.0+2.0)/2.0);
+    M22[channel]/=pow(M00[channel],1.0+(2.0+2.0)/2.0);
+    M30[channel]/=pow(M00[channel],1.0+(3.0+0.0)/2.0);
+    M03[channel]/=pow(M00[channel],1.0+(0.0+3.0)/2.0);
     M00[channel]=1.0;
   }
   image_view=DestroyCacheView(image_view);
