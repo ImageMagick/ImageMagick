@@ -215,7 +215,7 @@ RestoreMSCWarning
         "Script %u,%u Option: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
             cli_wand->line,cli_wand->line,option,count,option_type,arg1,arg2);
 #endif
-      /* Hard Depreciated Options, no code to execute - error */
+      /* Hard Deprecated Options, no code to execute - error */
       if ( (option_type & DeprecateOptionFlag) != 0 ) {
         CLIWandException(OptionError,"DeprecatedOptionNoCode",option);
         break; /* next option */
@@ -702,11 +702,11 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   len=strlen(argv[0]);  /* precaution */
 
-  /* "convert" command - give a "depreciation" warning" */
+  /* "convert" command - give a "deprecated" warning" */
   if (len>=7 && LocaleCompare("convert",argv[0]+len-7) == 0) {
     cli_wand->process_flags = ConvertCommandOptionFlags;
     (void) FormatLocaleFile(stderr,"WARNING: %s\n",
-             "The convert is depreciated in IMv7, use \"magick\"\n");
+         "The convert command is deprecated in IMv7, use \"magick\"\n");
   }
 
   /* Special Case:  If command name ends with "script" implied "-script" */
