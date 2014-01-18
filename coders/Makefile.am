@@ -114,11 +114,12 @@ MAGICKCORE_CODER_SRCS = \
 	coders/histogram.c \
 	coders/hrz.c \
 	coders/html.c \
-	coders/jnx.c \
 	coders/icon.c \
 	coders/info.c \
 	coders/inline.c \
 	coders/ipl.c \
+	coders/jnx.c \
+	coders/json.c \
 	coders/label.c \
 	coders/mac.c \
 	coders/magick.c \
@@ -236,11 +237,12 @@ coders_LTLIBRARIES = \
 	coders/histogram.la \
 	coders/hrz.la \
 	coders/html.la \
-	coders/jnx.la \
 	coders/icon.la \
 	coders/info.la \
 	coders/inline.la \
 	coders/ipl.la \
+	coders/jnx.la \
+	coders/json.la \
 	coders/label.la \
 	coders/mac.la \
 	coders/magick.la \
@@ -556,12 +558,6 @@ coders_html_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_html_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_html_la_LIBADD      = $(MAGICKCORE_LIBS)
 
-# JNX coder module
-coders_jnx_la_SOURCES     = coders/jnx.c
-coders_jnx_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
-coders_jnx_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_jnx_la_LIBADD      = $(MAGICKCORE_LIBS)
-
 # ICON coder module
 coders_icon_la_SOURCES     = coders/icon.c
 coders_icon_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
@@ -603,6 +599,18 @@ coders_jp2_la_SOURCES      = coders/jp2.c
 coders_jp2_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS) $(LIBOPENJP2_CFLAGS)
 coders_jp2_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_jp2_la_LIBADD       = $(MAGICKCORE_LIBS) $(LIBOPENJP2_LIBS) $(MATH_LIBS)
+
+# JNX coder module
+coders_jnx_la_SOURCES     = coders/jnx.c
+coders_jnx_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
+coders_jnx_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_jnx_la_LIBADD      = $(MAGICKCORE_LIBS)
+
+# JSON coder module
+coders_json_la_SOURCES     = coders/json.c
+coders_json_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
+coders_json_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_json_la_LIBADD      = $(MAGICKCORE_LIBS)
 
 # LABEL coder module
 coders_label_la_SOURCES    = coders/label.c
