@@ -1378,6 +1378,13 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
   reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
     reconstruct_moments);
+  if ((IsGrayImage(blur_image,exception) != MagickFalse) ||
+      (IsGrayImage(blur_reconstruct,exception) != MagickFalse))
+    {
+      blur_reconstruct=DestroyImage(blur_reconstruct);
+      blur_image=DestroyImage(blur_image);
+      return(MagickTrue);
+    }
   /*
     Compute perceptual hash in the HCLP colorspace.
   */
