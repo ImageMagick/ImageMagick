@@ -954,7 +954,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
       exception);
   else
-    if (similarity_image == (Image *) NULL)
+    if ((similarity_image == (Image *) NULL) &&
+        (metric != PerceptualHashErrorMetric))
       ThrowCompareException(OptionError,"ImageWidthsOrHeightsDiffer",
         image->filename)
     else
