@@ -50,7 +50,7 @@ extern "C" {
 #define MagickppLibMinInterface  3
 #define MagickReleaseDate  "2014-01-18"
 #define MagickChangeDate   "20140118"
-#define MagickFeatures "DPC OpenMP"
+#define MagickFeatures "DPC"
 #define MagickDelegates "bzlib djvu mpeg fftw fpx fontconfig freetype jng jpeg lcms lzma openexr pango png ps tiff webp x xml zlib"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6/index.html"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
