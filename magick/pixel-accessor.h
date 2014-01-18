@@ -78,7 +78,7 @@ extern "C" {
 #define SetPixelIndex(indexes,value) \
 { \
   if (indexes != (IndexPacket *) NULL) \
-    (*(indexes)=(IndexPacket) (value)) \
+    (*(indexes)=(IndexPacket) (value)); \
 }
 #define SetPixelL(pixel,value) ((pixel)->red=(Quantum) (value))
 #define SetPixelMagenta(pixel,value) ((pixel)->green=(Quantum) (value))
