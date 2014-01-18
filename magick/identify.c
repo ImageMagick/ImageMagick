@@ -106,8 +106,7 @@
 #include "lcms.h"
 #endif
 #endif
-
-
+
 /*
   Define declarations.
 */
@@ -116,8 +115,7 @@
 #define cmsUInt32Number  DWORD
 #endif
 #endif
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
