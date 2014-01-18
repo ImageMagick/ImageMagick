@@ -843,7 +843,12 @@ namespace Magick
   using MagickCore::RelativeIntent;
   
   // Resource types
+  using MagickCore::ResourceType;
+  using MagickCore::AreaResource;
+  using MagickCore::DiskResource;
+  using MagickCore::MapResource;
   using MagickCore::MemoryResource;
+  using MagickCore::ThreadResource;
 
   // Resolution units
   using MagickCore::ResolutionType;
