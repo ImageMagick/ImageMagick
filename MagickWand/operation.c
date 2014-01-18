@@ -76,6 +76,14 @@
        flags, info.rho, info.sigma, info.xi, info.psi )
 
 /*
+  Constant declaration.
+*/
+const char
+  BackgroundColor[] = "#ffffff",  /* white */
+  BorderColor[] = "#dfdfdf",  /* gray */
+  MatteColor[] = "#bdbdbd";  /* gray */
+
+/*
 ** Function to report on the progress of image operations
 */
 static MagickBooleanType MonitorProgress(const char *text,
@@ -4155,7 +4163,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
               /*
                 Support old style syntax, filter="-option arg1".
               */
-              assert(arg1 != (unsigned char *) NULL);
+              assert(arg1 != (const char *) NULL);
               length=strlen(arg1);
               token=(char *) NULL;
               if (~length >= (MaxTextExtent-1))
