@@ -51,7 +51,7 @@ extern "C" {
 #define MagickReleaseDate  "2014-01-18"
 #define MagickChangeDate   "20120427"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
-#define MagickFeatures "DPC HDRI OpenMP"
+#define MagickFeatures "DPC HDRI"
 #define MagickDelegates "bzlib djvu mpeg fftw fpx fontconfig freetype jng jpeg lcms lzma openexr pango png ps tiff webp x xml zlib"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-7/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)

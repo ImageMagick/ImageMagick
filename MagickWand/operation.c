@@ -76,14 +76,6 @@
        flags, info.rho, info.sigma, info.xi, info.psi )
 
 /*
-  Constant declaration.
-*/
-const char
-  BackgroundColor[] = "#ffffff",  /* white */
-  BorderColor[] = "#dfdfdf",  /* gray */
-  MatteColor[] = "#bdbdbd";  /* gray */
-
-/*
 ** Function to report on the progress of image operations
 */
 static MagickBooleanType MonitorProgress(const char *text,
