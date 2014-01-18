@@ -129,6 +129,7 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Include.h \
 	Magick++/lib/Magick++/Montage.h \
 	Magick++/lib/Magick++/Pixels.h \
+	Magick++/lib/Magick++/ResourceLimits.h \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 

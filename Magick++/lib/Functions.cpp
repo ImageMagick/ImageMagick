@@ -31,16 +31,6 @@ void Magick::CloneString(char **destination_,const std::string &source_)
   MagickCore::CloneString(destination_,source_.c_str());
 }
 
-MagickPPExport void Magick::CacheThreshold(const MagickSizeType threshold_)
-{
-  (void) SetMagickResourceLimit(MemoryResource,threshold_);
-}
-
-MagickPPExport MagickCore::MagickSizeType Magick::CacheThreshold(void)
-{
-  return GetMagickResourceLimit(MemoryResource);
-}
-
 MagickPPExport void Magick::DisableOpenCL(void)
 {
   GetPPException;
