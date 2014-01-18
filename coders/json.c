@@ -585,6 +585,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     x;
 
   size_t
+    depth,
     distance,
     scale;
 
@@ -671,7 +672,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   GetTimerInfo(&image->timer);
   pixels=GetVirtualPixels(image,0,0,1,1,exception);
   exception=DestroyExceptionInfo(exception);
-  ping=pixels == (const PixelPacket *) NULL ? MagickTrue : MagickFalse;
   type=GetImageType(image,&image->exception);
   (void) SignatureImage(image);
   (void) FormatLocaleFile(file,"{\n  \"image\": {\n    \"name\": \"%s\",\n",
@@ -699,109 +699,107 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     CommandOptionToMnemonic(MagickClassOptions,(ssize_t) image->storage_class));
   (void) FormatLocaleFile(file,"    \"geometry\": {\n"
     "      \"width\": \"%.20g\",\n      \"height\": \"%.20g\",\n"
-    "      \"x\": \"%.20g\",\n      \"y\": \"%.20g\"\n    }\n",
+    "      \"x\": \"%.20g\",\n      \"y\": \"%.20g\"\n    },\n",
     (double) image->columns,(double) image->rows,(double) image->tile_offset.x,
     (double) image->tile_offset.y);
-/* pending */
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
-      (void) FormatLocaleFile(file,"    Base geometry: %.20gx%.20g\n",(double)
-        image->magick_columns,(double) image->magick_rows);
+      (void) FormatLocaleFile(file,"    \"baseGeometry\": {\n"
+        "      \"width\": \"%.20g\",\n      \"height\": \"%.20g\"\n    },\n",
+        (double) image->magick_columns,(double) image->magick_rows);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     {
-      (void) FormatLocaleFile(file,"    Resolution: %gx%g\n",image->x_resolution,
-        image->y_resolution);
-      (void) FormatLocaleFile(file,"    Print size: %gx%g\n",(double)
+      (void) FormatLocaleFile(file,"    \"resolution\": {\n"
+        "      \"x\": \"%.20g\",\n      \"y\": \"%.20g\"\n    },\n",
+        image->x_resolution,image->y_resolution);
+      (void) FormatLocaleFile(file,"    \"printSize\": {\n"
+        "      \"x\": \"%.20g\",\n      \"y\": \"%.20g\"\n    },\n",
         image->columns/image->x_resolution,(double) image->rows/
         image->y_resolution);
     }
-  (void) FormatLocaleFile(file,"    Units: %s\n",CommandOptionToMnemonic(
-    MagickResolutionOptions,(ssize_t) image->units));
-  (void) FormatLocaleFile(file,"    Type: %s\n",CommandOptionToMnemonic(
-    MagickTypeOptions,(ssize_t) type));
+  (void) FormatLocaleFile(file,"    \"units\": \"%s\",\n",
+    CommandOptionToMnemonic(MagickResolutionOptions,(ssize_t) image->units));
+  (void) FormatLocaleFile(file,"    \"type\": \"%s\",\n",
+    CommandOptionToMnemonic(MagickTypeOptions,(ssize_t) type));
   if (image->type != UndefinedType)
-    (void) FormatLocaleFile(file,"    Base type: %s\n",CommandOptionToMnemonic(
-      MagickTypeOptions,(ssize_t) image->type));
-  (void) FormatLocaleFile(file,"    Endianess: %s\n",CommandOptionToMnemonic(
-    MagickEndianOptions,(ssize_t) image->endian));
+    (void) FormatLocaleFile(file,"    \"baseType\": \"%s\",\n",
+      CommandOptionToMnemonic(MagickTypeOptions,(ssize_t) image->type));
+  (void) FormatLocaleFile(file,"    \"endianess\": \"%s\",\n",
+    CommandOptionToMnemonic(MagickEndianOptions,(ssize_t) image->endian));
   /*
     Detail channel depth and extrema.
   */
-  (void) FormatLocaleFile(file,"    Colorspace: %s\n",CommandOptionToMnemonic(
-    MagickColorspaceOptions,(ssize_t) image->colorspace));
+  (void) FormatLocaleFile(file,"    \"colorspace\": \"%s\",\n",
+    CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+    image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
   channel_features=(ChannelFeatures *) NULL;
   colorspace=image->colorspace;
   scale=1;
-  if (ping == MagickFalse)
+  channel_statistics=GetImageChannelStatistics(image,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    return(MagickFalse);
+  artifact=GetImageArtifact(image,"identify:moments");
+  if (artifact != (const char *) NULL)
+    channel_moments=GetImageChannelMoments(image,exception);
+  artifact=GetImageArtifact(image,"identify:features");
+  if (artifact != (const char *) NULL)
     {
-      size_t
-        depth;
-
-      channel_statistics=GetImageChannelStatistics(image,exception);
-      if (channel_statistics == (ChannelStatistics *) NULL)
-        return(MagickFalse);
-      artifact=GetImageArtifact(image,"identify:moments");
-      if (artifact != (const char *) NULL)
-        channel_moments=GetImageChannelMoments(image,exception);
-      artifact=GetImageArtifact(image,"identify:features");
-      if (artifact != (const char *) NULL)
-        {
-          distance=StringToUnsignedLong(artifact);
-          channel_features=GetImageChannelFeatures(image,distance,exception);
-        }
-      depth=GetImageDepth(image,&image->exception);
-      if (image->depth == depth)
-        (void) FormatLocaleFile(file,"    Depth: %.20g-bit\n",(double)
-          image->depth);
-      else
-        (void) FormatLocaleFile(file,"    Depth: %.20g/%.20g-bit\n",(double)
-          image->depth,(double) depth);
-      (void) FormatLocaleFile(file,"    Channel depth:\n");
-      if (IsGrayImage(image,&image->exception) != MagickFalse)
-        colorspace=GRAYColorspace;
-      switch (colorspace)
-      {
-        case RGBColorspace:
-        default:
-        {
-          (void) FormatLocaleFile(file,"      red: %.20g-bit\n",(double)
-            channel_statistics[RedChannel].depth);
-          (void) FormatLocaleFile(file,"      green: %.20g-bit\n",(double)
-            channel_statistics[GreenChannel].depth);
-          (void) FormatLocaleFile(file,"      blue: %.20g-bit\n",(double)
-            channel_statistics[BlueChannel].depth);
-          break;
-        }
-        case CMYKColorspace:
-        {
-          (void) FormatLocaleFile(file,"      cyan: %.20g-bit\n",(double)
-            channel_statistics[CyanChannel].depth);
-          (void) FormatLocaleFile(file,"      magenta: %.20g-bit\n",(double)
-            channel_statistics[MagentaChannel].depth);
-          (void) FormatLocaleFile(file,"      yellow: %.20g-bit\n",(double)
-            channel_statistics[YellowChannel].depth);
-          (void) FormatLocaleFile(file,"      black: %.20g-bit\n",(double)
-            channel_statistics[BlackChannel].depth);
-          break;
-        }
-        case GRAYColorspace:
-        {
-          (void) FormatLocaleFile(file,"      gray: %.20g-bit\n",(double)
-            channel_statistics[GrayChannel].depth);
-          break;
-        }
-      }
-      if (image->matte != MagickFalse)
-        (void) FormatLocaleFile(file,"      alpha: %.20g-bit\n",(double)
-          channel_statistics[OpacityChannel].depth);
-      scale=1;
-      if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
-        scale=QuantumRange/((size_t) QuantumRange >> ((size_t)
-          MAGICKCORE_QUANTUM_DEPTH-image->depth));
+      distance=StringToUnsignedLong(artifact);
+      channel_features=GetImageChannelFeatures(image,distance,exception);
     }
+  depth=GetImageDepth(image,&image->exception);
+/* pending */
+  if (image->depth == depth)
+    (void) FormatLocaleFile(file,"    Depth: %.20g-bit\n",(double)
+      image->depth);
+  else
+    (void) FormatLocaleFile(file,"    Depth: %.20g/%.20g-bit\n",(double)
+      image->depth,(double) depth);
+  (void) FormatLocaleFile(file,"    Channel depth:\n");
+  if (IsGrayImage(image,&image->exception) != MagickFalse)
+    colorspace=GRAYColorspace;
+  switch (colorspace)
+  {
+    case RGBColorspace:
+    default:
+    {
+      (void) FormatLocaleFile(file,"      red: %.20g-bit\n",(double)
+        channel_statistics[RedChannel].depth);
+      (void) FormatLocaleFile(file,"      green: %.20g-bit\n",(double)
+        channel_statistics[GreenChannel].depth);
+      (void) FormatLocaleFile(file,"      blue: %.20g-bit\n",(double)
+        channel_statistics[BlueChannel].depth);
+      break;
+    }
+    case CMYKColorspace:
+    {
+      (void) FormatLocaleFile(file,"      cyan: %.20g-bit\n",(double)
+        channel_statistics[CyanChannel].depth);
+      (void) FormatLocaleFile(file,"      magenta: %.20g-bit\n",(double)
+        channel_statistics[MagentaChannel].depth);
+      (void) FormatLocaleFile(file,"      yellow: %.20g-bit\n",(double)
+        channel_statistics[YellowChannel].depth);
+      (void) FormatLocaleFile(file,"      black: %.20g-bit\n",(double)
+        channel_statistics[BlackChannel].depth);
+      break;
+    }
+    case GRAYColorspace:
+    {
+      (void) FormatLocaleFile(file,"      gray: %.20g-bit\n",(double)
+        channel_statistics[GrayChannel].depth);
+      break;
+    }
+  }
+  if (image->matte != MagickFalse)
+    (void) FormatLocaleFile(file,"      alpha: %.20g-bit\n",(double)
+      channel_statistics[OpacityChannel].depth);
+  scale=1;
+  if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
+    scale=QuantumRange/((size_t) QuantumRange >> ((size_t)
+      MAGICKCORE_QUANTUM_DEPTH-image->depth));
   if (channel_statistics != (ChannelStatistics *) NULL)
     {
       (void) FormatLocaleFile(file,"    Channel statistics:\n");
