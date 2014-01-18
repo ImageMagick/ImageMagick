@@ -10,6 +10,7 @@
 #include <Magick++/Functions.h>
 #include <Magick++/Image.h>
 #include <Magick++/Pixels.h>
+#include <Magick++/ResourceLimits.h>
 #include <Magick++/STL.h>
 #define MagickPlusPlus_Header
 #endif // MagickPlusPlus_Header

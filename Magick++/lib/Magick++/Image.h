@@ -169,7 +169,7 @@ namespace Magick
     void boxColor(const Color &boxColor_);
     Color boxColor(void) const;
 
-    // This method is now deprecated. Please use CacheThreshold instead.
+    // This method is now deprecated. Please use ResourceLimits instead.
     static void cacheThreshold(const size_t threshold_);
 
     // Image class (DirectClass or PseudoClass)

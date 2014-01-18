@@ -22,6 +22,7 @@ using namespace std;
 #include "Magick++/Pixels.h"
 #include "Magick++/Options.h"
 #include "Magick++/ImageRef.h"
+#include "Magick++/ResourceLimits.h"
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
@@ -441,7 +442,7 @@ Magick::Color Magick::Image::boxColor(void) const
 
 void Magick::Image::cacheThreshold(const size_t threshold_)
 {
-  CacheThreshold((MagickSizeType) threshold_);
+  ResourceLimits::memory((MagickSizeType) threshold_);
 }
 
 void Magick::Image::classType(const ClassType class_)

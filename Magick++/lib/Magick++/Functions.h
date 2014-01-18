@@ -14,11 +14,6 @@
 
 namespace Magick
 {
-  // Pixel cache threshold in bytes. Once this memory threshold is exceeded,
-  // all subsequent pixels cache operations are to/from disk.
-  MagickPPExport void CacheThreshold(const MagickSizeType threshold_);
-  MagickPPExport MagickSizeType CacheThreshold(void);
-
   // Clone C++ string as allocated C string, de-allocating any existing string
   MagickPPExport void CloneString(char **destination_,
     const std::string &source_);
