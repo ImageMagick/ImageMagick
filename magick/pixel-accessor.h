@@ -76,8 +76,10 @@ extern "C" {
   ((pixel)->red=(pixel)->green=(pixel)->blue=(Quantum) (value))
 #define SetPixelGreen(pixel,value) ((pixel)->green=(Quantum) (value))
 #define SetPixelIndex(indexes,value) \
+{ \
   if (indexes != (IndexPacket *) NULL) \
-    (*(indexes)=(IndexPacket) (value))
+    (*(indexes)=(IndexPacket) (value)) \
+}
 #define SetPixelL(pixel,value) ((pixel)->red=(Quantum) (value))
 #define SetPixelMagenta(pixel,value) ((pixel)->green=(Quantum) (value))
 #define SetPixelOpacity(pixel,value) \
