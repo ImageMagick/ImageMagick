@@ -50,6 +50,7 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
+#include "MagickWand/mogrify.h"
 #include "MagickWand/wand.h"
 #include "MagickWand/wandcli.h"
 #include "MagickWand/wandcli-private.h"
@@ -59,6 +60,14 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/pixel-private.h"
+
+/*
+  Constant declaration.
+*/
+static const char
+  MogrifyBackgroundColor[] = "#fff",  /* white */
+  MogrifyBorderColor[] = "#dfdfdf",  /* sRGB gray */
+  MogrifyMatteColor[] = "#bdbdbd";  /* slightly darker gray */
 
 /*
   Define declarations.
@@ -507,7 +516,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
              Better error handling of QueryColorCompliance() needed.
           */
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
-          (void) QueryColorCompliance(ArgOption(BackgroundColor),AllCompliance,
+          (void) QueryColorCompliance(ArgOption(MogrifyBackgroundColor),AllCompliance,
              &_image_info->background_color,_exception);
           break;
         }
@@ -560,9 +569,9 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
               break;
             }
           (void) DeleteImageOption(_image_info,option+1);
-          (void) QueryColorCompliance(BorderColor,AllCompliance,
+          (void) QueryColorCompliance(MogrifyBorderColor,AllCompliance,
             &_image_info->border_color,_exception);
-          (void) QueryColorCompliance(BorderColor,AllCompliance,
+          (void) QueryColorCompliance(MogrifyBorderColor,AllCompliance,
             &_draw_info->border_color,_exception);
           break;
         }
@@ -1091,7 +1100,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           /* SyncImageSettings() used to set per-image attribute. */
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
-          (void) QueryColorCompliance(ArgOption(MatteColor),AllCompliance,
+          (void) QueryColorCompliance(ArgOption(MogrifyMatteColor),AllCompliance,
              &_image_info->matte_color,_exception);
           break;
         }
