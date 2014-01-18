@@ -2287,6 +2287,7 @@ am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/Geometry.h Magick++/lib/Magick++/Image.h \
 	Magick++/lib/Magick++/Include.h \
 	Magick++/lib/Magick++/Montage.h Magick++/lib/Magick++/Pixels.h \
+	Magick++/lib/Magick++/ResourceLimits.h \
 	Magick++/lib/Magick++/STL.h Magick++/lib/Magick++/TypeMetric.h
 am__magickpptopinc_HEADERS_DIST = Magick++/lib/Magick++.h
 HEADERS = $(MagickCoreinc_HEADERS) $(MagickCoreincarch_HEADERS) \
@@ -4822,6 +4823,7 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Include.h \
 	Magick++/lib/Magick++/Montage.h \
 	Magick++/lib/Magick++/Pixels.h \
+	Magick++/lib/Magick++/ResourceLimits.h \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
