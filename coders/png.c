@@ -2467,11 +2467,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      const char
        *property;
 
+     property=(const char *) NULL;
      ResetImagePropertyIterator(image);
-
      while (property != (const char *) NULL)
        {
-         GetImageProperty(image,property,exception);
+         (void) GetImageProperty(image,property,exception);
 
          if (LocaleNCompare(property,"png:swap-bytes",14) != 0)
            png_set_swap(ping);
