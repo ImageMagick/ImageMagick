@@ -42,6 +42,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/artifact.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/channel.h"
 #include "MagickCore/client.h"
@@ -1169,6 +1170,13 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
   reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
     reconstruct_moments);
+  if ((IsImageGray(blur_image,exception) != MagickFalse) ||
+      (IsImageGray(blur_reconstruct,exception) != MagickFalse))
+    {
+      blur_reconstruct=DestroyImage(blur_reconstruct);
+      blur_image=DestroyImage(blur_image);
+      return(MagickTrue);
+    }
   /*
     Compute perceptual hash in the HCLP colorspace.
   */
