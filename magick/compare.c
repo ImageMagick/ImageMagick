@@ -1458,8 +1458,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
 }
 
 static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
-  double *distortion,ExceptionInfo *exception)
+  const Image *reconstruct_image,const ChannelType channel,double *distortion,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
