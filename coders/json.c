@@ -540,6 +540,62 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (file == (FILE *) NULL)
     file=stdout;
+  *format='\0';
+  elapsed_time=GetElapsedTime(&image->timer);
+  user_time=GetUserTime(&image->timer);
+  GetTimerInfo(&image->timer);
+  p=GetVirtualPixels(image,0,0,1,1,exception);
+  ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
+  type=GetImageType(image,exception);
+  (void) SignatureImage(image,exception);
+  (void) FormatLocaleFile(file,"Image: %s\n",image->filename);
+  if (*image->magick_filename != '\0')
+    if (LocaleCompare(image->magick_filename,image->filename) != 0)
+      {
+        char
+          filename[MaxTextExtent];
+
+        GetPathComponent(image->magick_filename,TailPath,filename);
+        (void) FormatLocaleFile(file,"  Base filename: %s\n",filename);
+      }
+  magick_info=GetMagickInfo(image->magick,exception);
+  if ((magick_info == (const MagickInfo *) NULL) ||
+      (GetMagickDescription(magick_info) == (const char *) NULL))
+    (void) FormatLocaleFile(file,"  Format: %s\n",image->magick);
+  else
+    (void) FormatLocaleFile(file,"  Format: %s (%s)\n",image->magick,
+      GetMagickDescription(magick_info));
+  if ((magick_info == (const MagickInfo *) NULL) ||
+      (GetMagickMimeType(magick_info) != (const char *) NULL))
+    (void) FormatLocaleFile(file,"  Mime type: %s\n",GetMagickMimeType(
+      magick_info));
+  (void) FormatLocaleFile(file,"  Class: %s\n",CommandOptionToMnemonic(
+    MagickClassOptions,(ssize_t) image->storage_class));
+  (void) FormatLocaleFile(file,"  Geometry: %.20gx%.20g%+.20g%+.20g\n",(double)
+    image->columns,(double) image->rows,(double) image->tile_offset.x,(double)
+    image->tile_offset.y);
+  if ((image->magick_columns != 0) || (image->magick_rows != 0))
+    if ((image->magick_columns != image->columns) ||
+        (image->magick_rows != image->rows))
+      (void) FormatLocaleFile(file,"  Base geometry: %.20gx%.20g\n",(double)
+        image->magick_columns,(double) image->magick_rows);
+  if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
+    {
+      (void) FormatLocaleFile(file,"  Resolution: %gx%g\n",image->resolution.x,
+        image->resolution.y);
+      (void) FormatLocaleFile(file,"  Print size: %gx%g\n",(double)
+        image->columns/image->resolution.x,(double) image->rows/
+        image->resolution.y);
+    }
+  (void) FormatLocaleFile(file,"  Units: %s\n",CommandOptionToMnemonic(
+    MagickResolutionOptions,(ssize_t) image->units));
+  (void) FormatLocaleFile(file,"  Type: %s\n",CommandOptionToMnemonic(
+    MagickTypeOptions,(ssize_t) type));
+  if (image->type != UndefinedType)
+    (void) FormatLocaleFile(file,"  Base type: %s\n",CommandOptionToMnemonic(
+      MagickTypeOptions,(ssize_t) image->type));
+  (void) FormatLocaleFile(file,"  Endianess: %s\n",CommandOptionToMnemonic(
+    MagickEndianOptions,(ssize_t) image->endian));
   locate=GetImageArtifact(image,"identify:locate");
   if (locate == (const char *) NULL)
     locate=GetImageArtifact(image,"json:locate");
@@ -609,64 +665,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
           type,max_locations,channel_statistics);
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
-      return(ferror(file) != 0 ? MagickFalse : MagickTrue);
     }
-  *format='\0';
-  elapsed_time=GetElapsedTime(&image->timer);
-  user_time=GetUserTime(&image->timer);
-  GetTimerInfo(&image->timer);
-  p=GetVirtualPixels(image,0,0,1,1,exception);
-  ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
-  type=GetImageType(image,exception);
-  (void) SignatureImage(image,exception);
-  (void) FormatLocaleFile(file,"Image: %s\n",image->filename);
-  if (*image->magick_filename != '\0')
-    if (LocaleCompare(image->magick_filename,image->filename) != 0)
-      {
-        char
-          filename[MaxTextExtent];
-
-        GetPathComponent(image->magick_filename,TailPath,filename);
-        (void) FormatLocaleFile(file,"  Base filename: %s\n",filename);
-      }
-  magick_info=GetMagickInfo(image->magick,exception);
-  if ((magick_info == (const MagickInfo *) NULL) ||
-      (GetMagickDescription(magick_info) == (const char *) NULL))
-    (void) FormatLocaleFile(file,"  Format: %s\n",image->magick);
-  else
-    (void) FormatLocaleFile(file,"  Format: %s (%s)\n",image->magick,
-      GetMagickDescription(magick_info));
-  if ((magick_info == (const MagickInfo *) NULL) ||
-      (GetMagickMimeType(magick_info) != (const char *) NULL))
-    (void) FormatLocaleFile(file,"  Mime type: %s\n",GetMagickMimeType(
-      magick_info));
-  (void) FormatLocaleFile(file,"  Class: %s\n",CommandOptionToMnemonic(
-    MagickClassOptions,(ssize_t) image->storage_class));
-  (void) FormatLocaleFile(file,"  Geometry: %.20gx%.20g%+.20g%+.20g\n",(double)
-    image->columns,(double) image->rows,(double) image->tile_offset.x,(double)
-    image->tile_offset.y);
-  if ((image->magick_columns != 0) || (image->magick_rows != 0))
-    if ((image->magick_columns != image->columns) ||
-        (image->magick_rows != image->rows))
-      (void) FormatLocaleFile(file,"  Base geometry: %.20gx%.20g\n",(double)
-        image->magick_columns,(double) image->magick_rows);
-  if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
-    {
-      (void) FormatLocaleFile(file,"  Resolution: %gx%g\n",image->resolution.x,
-        image->resolution.y);
-      (void) FormatLocaleFile(file,"  Print size: %gx%g\n",(double)
-        image->columns/image->resolution.x,(double) image->rows/
-        image->resolution.y);
-    }
-  (void) FormatLocaleFile(file,"  Units: %s\n",CommandOptionToMnemonic(
-    MagickResolutionOptions,(ssize_t) image->units));
-  (void) FormatLocaleFile(file,"  Type: %s\n",CommandOptionToMnemonic(
-    MagickTypeOptions,(ssize_t) type));
-  if (image->type != UndefinedType)
-    (void) FormatLocaleFile(file,"  Base type: %s\n",CommandOptionToMnemonic(
-      MagickTypeOptions,(ssize_t) image->type));
-  (void) FormatLocaleFile(file,"  Endianess: %s\n",CommandOptionToMnemonic(
-    MagickEndianOptions,(ssize_t) image->endian));
   /*
     Detail channel depth and extrema.
   */
