@@ -1548,6 +1548,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 break;
               }
             (void) SetImageArtifact(*image,"identify:features",argv[i+1]);
+            (void) SetImageArtifact(*image,"verbose","true");
             break;
           }
         if (LocaleCompare("fill",option+1) == 0)
@@ -2116,6 +2117,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 break;
               }
             (void) SetImageArtifact(*image,"identify:moments",argv[i+1]);
+            (void) SetImageArtifact(*image,"verbose","true");
             break;
           }
         if (LocaleCompare("monitor",option+1) == 0)
