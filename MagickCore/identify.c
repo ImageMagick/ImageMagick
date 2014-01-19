@@ -254,7 +254,7 @@ static ssize_t PrintChannelFeatures(FILE *file,const PixelChannel channel,
   "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Correlation:\n" \
   "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
-  "      Sum of Squares: Variance:\n" \
+  "      Sum of Squares Variance:\n" \
   "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
   "      Inverse Difference Moment:\n" \
   "        %.*g, %.*g, %.*g, %.*g, %.*g\n" \
