@@ -442,7 +442,7 @@ Magick::Color Magick::Image::boxColor(void) const
 
 void Magick::Image::cacheThreshold(const size_t threshold_)
 {
-  ResourceLimits::memory((MagickSizeType) threshold_);
+  ResourceLimits::memory(threshold_);
 }
 
 void Magick::Image::classType(const ClassType class_)
