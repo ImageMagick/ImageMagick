@@ -597,6 +597,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     file=stdout;
   exception=AcquireExceptionInfo();
   locate=GetImageArtifact(image,"identify:locate");
+  if (locate == (const char *) NULL)
+    locate=GetImageArtifact(image,"json:locate");
   if (locate != (const char *) NULL)
     {
       const char
@@ -613,8 +615,10 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       */
       type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
         MagickFalse,locate);
-      limit=GetImageArtifact(image,"identify:limit");
       max_locations=0;
+      limit=GetImageArtifact(image,"identify:limit");
+      if (limit == (const char *) NULL)
+        limit=GetImageArtifact(image,"json:limit");
       if (limit != (const char *) NULL)
         max_locations=StringToUnsignedLong(limit);
       channel_statistics=GetLocationStatistics(image,type,exception);
@@ -739,9 +743,13 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   if (channel_statistics == (ChannelStatistics *) NULL)
     return(MagickFalse);
   artifact=GetImageArtifact(image,"identify:moments");
+  if (artifact == (const char *) NULL)
+    artifact=GetImageArtifact(image,"json:moments");
   if (artifact != (const char *) NULL)
     channel_moments=GetImageChannelMoments(image,exception);
   artifact=GetImageArtifact(image,"identify:features");
+  if (artifact == (const char *) NULL)
+    artifact=GetImageArtifact(image,"json:features");
   if (artifact != (const char *) NULL)
     {
       distance=StringToUnsignedLong(artifact);
@@ -849,10 +857,10 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         {
           (void) FormatLocaleFile(file,"    \"imageMoments\": {\n");
           (void) PrintChannelMoments(file,CompositeChannels,"all",MagickFalse,
-            channel_statistics);
+            channel_moments);
           (void) FormatLocaleFile(file,"    },\n");
         }
-      (void) FormatLocaleFile(file,"    channelMoments:\n");
+      (void) FormatLocaleFile(file,"    channelMoments: {\n");
       if (image->matte != MagickFalse)
         (void) PrintChannelMoments(file,AlphaChannel,"alpha",MagickTrue,
           channel_moments);
@@ -976,6 +984,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         }
     }
   artifact=GetImageArtifact(image,"identify:unique-colors");
+  if (artifact == (const char *) NULL)
+    artifact=GetImageArtifact(image,"json:unique-colors");
   if (IsHistogramImage(image,&image->exception) != MagickFalse)
     {
       (void) FormatLocaleFile(file,"    Colors: %.20g\n",(double)
