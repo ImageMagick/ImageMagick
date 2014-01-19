@@ -891,6 +891,12 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       }
       if (image->matte != MagickFalse)
         (void) PrintChannelMoments(file,AlphaChannel,"Alpha",channel_moments);
+      if (colorspace != GRAYColorspace)
+        {
+          (void) FormatLocaleFile(file,"  Image moments:\n");
+          (void) PrintChannelMoments(file,CompositeChannels,"Overall",
+            channel_moments);
+        }
       channel_moments=(ChannelMoments *) RelinquishMagickMemory(
         channel_moments);
     }
