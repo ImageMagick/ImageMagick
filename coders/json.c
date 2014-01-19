@@ -541,6 +541,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   if (file == (FILE *) NULL)
     file=stdout;
   locate=GetImageArtifact(image,"identify:locate");
+  if (locate == (const char *) NULL)
+    locate=GetImageArtifact(image,"json:locate");
   if (locate != (const char *) NULL)
     {
       const char
@@ -558,6 +560,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
         MagickFalse,locate);
       limit=GetImageArtifact(image,"identify:limit");
+      if (limit == (const char *) NULL)
+        limit=GetImageArtifact(image,"json:limit");
       max_locations=0;
       if (limit != (const char *) NULL)
         max_locations=StringToUnsignedLong(limit);
@@ -682,9 +686,13 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
       artifact=GetImageArtifact(image,"identify:moments");
+      if (artifact == (const char *) NULL)
+        artifact=GetImageArtifact(image,"json:moments");
       if (artifact != (const char *) NULL)
-         channel_moments=GetImageMoments(image,exception);
+        channel_moments=GetImageMoments(image,exception);
       artifact=GetImageArtifact(image,"identify:features");
+      if (artifact == (const char *) NULL)
+        artifact=GetImageArtifact(image,"json:features");
       if (artifact != (const char *) NULL)
         {
           distance=StringToUnsignedLong(artifact);
@@ -925,6 +933,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       else
         {
           artifact=GetImageArtifact(image,"identify:unique-colors");
+          if (artifact == (const char *) NULL)
+            artifact=GetImageArtifact(image,"json:unique-colors");
           if (IfMagickTrue(IsStringTrue(artifact)))
             (void) FormatLocaleFile(file,"  Colors: %.20g\n",(double)
               GetNumberColors(image,(FILE *) NULL,exception));
