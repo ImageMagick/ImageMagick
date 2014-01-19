@@ -940,8 +940,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (ping == MagickFalse)
     {
       if (image->colorspace == CMYKColorspace)
-        (void) FormatLocaleFile(file,"  Total ink density: %.0f%%\n",100.0*
-          GetImageTotalInkDensity(image)/(double) QuantumRange);
+        (void) FormatLocaleFile(file,"  Total ink density: %.*g%%\n",
+          GetMagickPrecision(),100.0*GetImageTotalInkDensity(image)/(double)
+          QuantumRange);
       x=0;
       if (image->matte != MagickFalse)
         {
