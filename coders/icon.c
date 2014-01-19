@@ -142,8 +142,73 @@ typedef struct _IconInfo
 /*
   Forward declaractions.
 */
+static Image
+  *AutoResizeImage(const Image *,const char *,MagickOffsetType *,
+    ExceptionInfo *);
+
 static MagickBooleanType
   WriteICONImage(const ImageInfo *,Image *,ExceptionInfo *);
+
+Image *AutoResizeImage(const Image *image,const char *option,
+  MagickOffsetType *count,ExceptionInfo *exception)
+{
+  #define MAX_SIZES 16
+
+  char
+    *q;
+
+  const char
+    *p;
+
+  Image
+    *resized,
+    *images;
+
+  register ssize_t
+    i;
+
+  size_t
+    sizes[MAX_SIZES]={256,192,128,96,64,48,40,32,24,16};
+
+  images=NULL;
+  *count=0;
+  i=0;
+  p=option;
+  while (*p != '\0' && i < MAX_SIZES)
+  {
+    size_t
+      size;
+
+    while ((isspace((int) ((unsigned char) *p)) != 0))
+      p++;
+
+    size=(size_t)strtol(p,&q,10);
+    if (p == q || size < 16 || size > 255)
+        return((Image *) NULL);
+
+    p=q;
+    sizes[i++]=size;
+
+    while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
+      p++;
+  }
+
+  if (i==0)
+    i=10;
+  *count=i;
+  for (i=0; i < *count; i++)
+  {
+    resized=ResizeImage(image,sizes[i],sizes[i],image->filter,exception);
+    if (resized == (Image *) NULL)
+      return(DestroyImageList(images));
+
+    if (images == (Image *) NULL)
+      images=resized;
+    else
+      AppendImageToList(&images,resized);
+  }
+  return(images);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -779,6 +844,9 @@ ModuleExport void UnregisterICONImage(void)
 static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
+  const char
+    *option;
+
   IconFile
     icon_file;
 
@@ -832,30 +900,12 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   images=(Image *) NULL;
-  if (GetImageOption(image_info,"icon:auto-resize") != (const char *) NULL)
+  option=GetImageOption(image_info,"icon:auto-resize");
+  if (option != (const char *) NULL)
     {
-      size_t
-        sizes[]={192,128,96,64,48,40,32,24,16};
-
-      if ((image->columns != 256L) && (image->rows != 256L))
-        ThrowWriterException(ImageError,"SizeMustBe256x256");
-      if (image->next != (Image *) NULL)
-        ThrowWriterException(ImageError,"OnlyOneImageAllowed");
-      images=CloneImage(image,0,0,MagickTrue,exception);
+      images=AutoResizeImage(image,option,&scene,exception);
       if (images == (Image *) NULL)
-        return(MagickFalse);
-      scene=sizeof(sizes)/sizeof(sizes[0]);
-      for (i=0; i < scene; i++)
-      {
-        next=ResizeImage(image,sizes[i],sizes[i],image->filter,exception);
-        if (next == (Image *) NULL)
-          {
-            images=DestroyImageList(images);
-            return(MagickFalse);
-          }
-        AppendImageToList(&images,next);
-      }
-      scene++;
+        ThrowWriterException(ImageError,"InvalidDimensions");
     }
   else
     {
