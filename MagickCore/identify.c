@@ -893,7 +893,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (ping == MagickFalse)
     {
       if (image->colorspace == CMYKColorspace)
-        (void) FormatLocaleFile(file,"  Total ink density: %.0f%%\n",100.0*
+        (void) FormatLocaleFile(file,"  Total ink density: %.20g%%\n",100.0*
           GetImageTotalInkDensity(image,exception)/(double) QuantumRange);
       x=0;
       if (image->alpha_trait == BlendPixelTrait)
