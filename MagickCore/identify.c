@@ -839,6 +839,12 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait == BlendPixelTrait)
         (void) PrintChannelMoments(file,AlphaPixelChannel,"Alpha",
           channel_moments);
+      if (colorspace != GRAYColorspace)
+        {
+          (void) FormatLocaleFile(file,"  Image moments:\n");
+          (void) PrintChannelMoments(file,(PixelChannel) MaxPixelChannels,
+            "Overall",channel_moments);
+        }
       channel_moments=(ChannelMoments *) RelinquishMagickMemory(
         channel_moments);
     }
