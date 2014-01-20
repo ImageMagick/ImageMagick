@@ -786,7 +786,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         colorspace=GRAYColorspace;
       (void) CopyMagickString(target,locate,MaxTextExtent);
       *target=(char) toupper((int) ((unsigned char) *target));
-      (void) FormatLocaleFile(file,"    \"channel%sLocations\": {\n",target);
+      (void) FormatLocaleFile(file,"    \"channel%s\": {\n",target);
       if (image->matte != MagickFalse)
         (void) PrintChannelLocations(file,image,AlphaChannel,"alpha",
           type,max_locations,MagickTrue,channel_statistics);
@@ -1352,8 +1352,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         profile=GetImageProfile(image,name);
         if (profile == (StringInfo *) NULL)
           continue;
-        (void) FormatLocaleFile(file,"      Profile-%s: %.20g bytes\n",name,
-          (double) GetStringInfoLength(profile));
+        (void) FormatLocaleFile(file,"      \"%s\": {\n",name);
+        (void) FormatLocaleFile(file,"        \"length\": \"%.20g\"",(double)
+          GetStringInfoLength(profile));
 #if defined(MAGICKCORE_LCMS_DELEGATE)
         if ((LocaleCompare(name,"icc") == 0) ||
             (LocaleCompare(name,"icm") == 0))
@@ -1378,16 +1379,20 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
 
                 (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,
                   "en","US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"        Description: %s\n",info);
+                (void) FormatLocaleFile(file,",\n        \"description\": "
+                  "\"%s\",\n",info);
                 (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,
                   "en","US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"        Manufacturer: %s\n",info);
+                (void) FormatLocaleFile(file,"        \"manufacturer\": "
+                  "\"%s\",\n",info);
                 (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en",
                   "US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"        Model: %s\n",info);
+                (void) FormatLocaleFile(file,"        \"model\": "
+                  "\"%s\",\n",info);
                 (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,
                   "en","US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"        Copyright: %s\n",info);
+                (void) FormatLocaleFile(file,"        \"copyright\": "
+                  "\"%s\"",info);
 #endif
                 (void) cmsCloseProfile(icc_profile);
               }
@@ -1479,14 +1484,14 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
                 case 219: tag="Custom Field 20"; break;
                 default: tag="unknown"; break;
               }
-              (void) FormatLocaleFile(file,"        %s[%.20g,%.20g]: ",tag,
-                (double) dataset,(double) record);
+              (void) FormatLocaleFile(file,"\n        \"%s[%.20g,%.20g]\": ",
+                tag,(double) dataset,(double) record);
               length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
               length|=GetStringInfoDatum(profile)[i++];
               attribute=(char *) NULL;
               if (~length >= (MaxTextExtent-1))
-                attribute=(char *) AcquireQuantumMemory(length+
-                  MaxTextExtent,sizeof(*attribute));
+                attribute=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+                  sizeof(*attribute));
               if (attribute != (char *) NULL)
                 {
                   (void) CopyMagickString(attribute,(char *)
@@ -1496,8 +1501,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
                     {
                       for (j=0; attribute_list[j] != (char *) NULL; j++)
                       {
+                        (void) fputs("\"",file);
                         (void) fputs(attribute_list[j],file);
-                        (void) fputs("\n",file);
+                        (void) fputs("\",",file);
                         attribute_list[j]=(char *) RelinquishMagickMemory(
                           attribute_list[j]);
                       }
@@ -1508,8 +1514,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
                 }
             }
           }
-        if (image->debug != MagickFalse)
-          PrintStringInfo(file,name,profile);
+        (void) FormatLocaleFile(file,"\n      },\n");
         name=GetNextImageProfile(image);
       }
       (void) FormatLocaleFile(file,"    },\n");
