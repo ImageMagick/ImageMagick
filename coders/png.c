@@ -2434,6 +2434,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      property=(const char *) NULL;
      ResetImagePropertyIterator(image);
+     property=GetNextImageProperty(image);
      while (property != (const char *) NULL)
        {
          (void) GetImageProperty(image,property);
@@ -8069,6 +8070,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_preserve_colormap = mng_info->ping_preserve_colormap;
   ping_preserve_iCCP = mng_info->ping_preserve_iCCP;
   ping_need_colortype_warning = MagickFalse;
+
+  property=(const char *) NULL;
 
   /* Recognize the ICC sRGB profile and convert it to the sRGB chunk,
    * i.e., eliminate the ICC profile and set image->rendering_intent.
