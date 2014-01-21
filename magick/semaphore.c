@@ -202,7 +202,9 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   /*
     Initialize the semaphore.
   */
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_init_lock((omp_lock_t *) &semaphore_info->mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -291,7 +293,9 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   assert((*semaphore_info) != (SemaphoreInfo *) NULL);
   assert((*semaphore_info)->signature == MagickSignature);
   LockMagickMutex();
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_destroy_lock((omp_lock_t *) &(*semaphore_info)->mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -338,7 +342,9 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_set_lock((omp_lock_t *) &semaphore_info->mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -479,7 +485,9 @@ MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
     }
   semaphore_info->reference_count--;
 #endif
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_unset_lock((omp_lock_t *) &semaphore_info->mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
