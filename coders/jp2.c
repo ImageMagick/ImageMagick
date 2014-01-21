@@ -248,7 +248,7 @@ static OPJ_BOOL JP2SeekHandler(OPJ_OFF_T offset,void *context)
     *image;
 
   image=(Image *) context;
-  return(SeekBlob(image,offset,SEEK_SET) < 0 ? 0 : 1);
+  return(SeekBlob(image,offset,SEEK_SET) < 0 ? OPJ_FALSE : OPJ_TRUE);
 }
 
 static OPJ_OFF_T JP2SkipHandler(OPJ_OFF_T offset,void *context)
@@ -257,7 +257,7 @@ static OPJ_OFF_T JP2SkipHandler(OPJ_OFF_T offset,void *context)
     *image;
 
   image=(Image *) context;
-  return(SeekBlob(image,offset,SEEK_CUR) < 0 ? 0 : offset);
+  return(SeekBlob(image,offset,SEEK_CUR) < 0 ? -1 : offset);
 }
 
 static void JP2WarningHandler(const char *message,void *client_data)
