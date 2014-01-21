@@ -28,7 +28,10 @@ extern MagickPrivate MagickBooleanType
 extern MagickPrivate void
   SemaphoreComponentTerminus(void);
 
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+static omp_lock_t
+  semaphore_mutex;
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
 static pthread_mutex_t
   semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
@@ -41,7 +44,9 @@ static ssize_t
 
 static inline void LockMagickMutex(void)
 {
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_set_lock(&semaphore_mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -61,7 +66,9 @@ static inline void LockMagickMutex(void)
 
 static inline void UnlockMagickMutex(void)
 {
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_unset_lock(&semaphore_mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
