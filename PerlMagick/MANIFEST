@@ -118,10 +118,6 @@ t/jng/input_prog.jng
 t/jng/input_rose.jng
 t/jng/read.t
 t/jng/write.t
-t/openjpeg/input.jp2
-t/openjpeg/input.jpc
-t/openjpeg/input.pgx
-t/openjpeg/read.t
 t/jpeg/input.jpg
 t/jpeg/input_plane.jpg
 t/jpeg/read.t
@@ -131,6 +127,10 @@ t/montage.t
 t/mpeg/input.m2v
 t/mpeg/input.mpg
 t/mpeg/read.t
+t/openjp2/input.jp2
+t/openjp2/input.jpc
+t/openjp2/input.pgx
+t/openjp2/read.t
 t/ping.t
 t/png/input_16.png
 t/png/input_256.png
@@ -156,10 +156,10 @@ t/reference/composite/Add.miff
 t/reference/composite/Atop.miff
 t/reference/composite/Bumpmap.miff
 t/reference/composite/Clear.miff
+t/reference/composite/CopyAlpha.miff
 t/reference/composite/CopyBlue.miff
 t/reference/composite/CopyGreen.miff
 t/reference/composite/Copy.miff
-t/reference/composite/CopyAlpha.miff
 t/reference/composite/CopyRed.miff
 t/reference/composite/Difference.miff
 t/reference/composite/In.miff
@@ -341,10 +341,10 @@ t/reference/write/composite/Add.miff
 t/reference/write/composite/Atop.miff
 t/reference/write/composite/Bumpmap.miff
 t/reference/write/composite/Clear.miff
+t/reference/write/composite/CopyAlpha.miff
 t/reference/write/composite/CopyBlue.miff
 t/reference/write/composite/CopyGreen.miff
 t/reference/write/composite/Copy.miff
-t/reference/write/composite/CopyAlpha.miff
 t/reference/write/composite/CopyRed.miff
 t/reference/write/composite/Difference.miff
 t/reference/write/composite/In.miff
