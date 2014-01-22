@@ -2469,6 +2469,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      property=(const char *) NULL;
      ResetImagePropertyIterator(image);
+     property=GetNextImageProperty(image);
      while (property != (const char *) NULL)
        {
          (void) GetImageProperty(image,property,exception);
