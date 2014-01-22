@@ -117,10 +117,6 @@ t/jng/input_prog.jng
 t/jng/input_rose.jng
 t/jng/read.t
 t/jng/write.t
-t/openjpeg/input.jp2
-t/openjpeg/input.jpc
-t/openjpeg/input.pgx
-t/openjpeg/read.t
 t/jpeg/input.jpg
 t/jpeg/input_plane.jpg
 t/jpeg/read.t
@@ -130,6 +126,10 @@ t/montage.t
 t/mpeg/input.m2v
 t/mpeg/input.mpg
 t/mpeg/read.t
+t/openjp2/input.jp2
+t/openjp2/input.jpc
+t/openjp2/input.pgx
+t/openjp2/read.t
 t/ping.t
 t/png/input_16.png
 t/png/input_256.png
