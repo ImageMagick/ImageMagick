@@ -93,17 +93,6 @@
 #include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/version.h"
-#if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)
-#include <lcms/lcms2.h>
-#elif defined(MAGICKCORE_HAVE_LCMS2_H)
-#include "lcms2.h"
-#elif defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
-#include <lcms/lcms.h>
-#else
-#include "lcms.h"
-#endif
-#endif
 
 /*
   Forward declarations.
@@ -623,12 +612,6 @@ static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
 
 static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
 {
-#if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
-#define cmsUInt32Number  DWORD
-#endif
-#endif
-
   char
     color[MaxTextExtent],
     format[MaxTextExtent],
@@ -1355,49 +1338,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         (void) FormatLocaleFile(file,"      \"%s\": {\n",name);
         (void) FormatLocaleFile(file,"        \"length\": \"%.20g\"",(double)
           GetStringInfoLength(profile));
-#if defined(MAGICKCORE_LCMS_DELEGATE)
-        if ((LocaleCompare(name,"icc") == 0) ||
-            (LocaleCompare(name,"icm") == 0))
-          {
-            cmsHPROFILE
-              icc_profile;
-
-            icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
-              (cmsUInt32Number) GetStringInfoLength(profile));
-            if (icc_profile != (cmsHPROFILE *) NULL)
-              {
-#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
-                const char
-                  *name;
-
-                name=cmsTakeProductName(icc_profile);
-                if (name != (const char *) NULL)
-                  (void) FormatLocaleFile(file,"        %s\n",name);
-#else
-                char
-                  info[MaxTextExtent];
-
-                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,
-                  "en","US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,",\n        \"description\": "
-                  "\"%s\",\n",info);
-                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,
-                  "en","US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"        \"manufacturer\": "
-                  "\"%s\",\n",info);
-                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en",
-                  "US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"        \"model\": "
-                  "\"%s\",\n",info);
-                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,
-                  "en","US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"        \"copyright\": "
-                  "\"%s\"",info);
-#endif
-                (void) cmsCloseProfile(icc_profile);
-              }
-          }
-#endif
         if (LocaleCompare(name,"iptc") == 0)
           {
             char
