@@ -118,10 +118,10 @@ t/jng/input_prog.jng
 t/jng/input_rose.jng
 t/jng/read.t
 t/jng/write.t
-t/jp2/input.jp2
-t/jp2/input.jpc
-t/jp2/input.pgx
-t/jp2/read.t
+t/openjpeg/input.jp2
+t/openjpeg/input.jpc
+t/openjpeg/input.pgx
+t/openjpeg/read.t
 t/jpeg/input.jpg
 t/jpeg/input_plane.jpg
 t/jpeg/read.t
