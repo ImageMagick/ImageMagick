@@ -41,8 +41,16 @@
 
 #include "MagickCore/studio.h"
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
-#  include <gdiplus.h>
-#  pragma comment(lib, "gdiplus.lib")
+#  if !defined(_MSC_VER)
+#    if defined(__CYGWIN__)
+#      include <windows.h>
+#    else
+#      include <wingdi.h>
+#    endif
+#  else
+#    include <gdiplus.h>
+#    pragma comment(lib, "gdiplus.lib")
+#  endif
 #endif
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
@@ -162,6 +170,470 @@ static MagickBooleanType IsWMF(const unsigned char *magick,const size_t length)
 */
 
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
+#  if !defined(_MSC_VER)
+#    if defined(MAGICKCORE_HAVE__WFOPEN)
+static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
+{
+  register const unsigned char
+    *p;
+
+  if (utf16 != (wchar_t *) NULL)
+    {
+      register wchar_t
+        *q;
+
+      wchar_t
+        c;
+
+      /*
+        Convert UTF-8 to UTF-16.
+      */
+      q=utf16;
+      for (p=utf8; *p != '\0'; p++)
+      {
+        if ((*p & 0x80) == 0)
+          *q=(*p);
+        else
+          if ((*p & 0xE0) == 0xC0)
+            {
+              c=(*p);
+              *q=(c & 0x1F) << 6;
+              p++;
+              if ((*p & 0xC0) != 0x80)
+                return(0);
+              *q|=(*p & 0x3F);
+            }
+          else
+            if ((*p & 0xF0) == 0xE0)
+              {
+                c=(*p);
+                *q=c << 12;
+                p++;
+                if ((*p & 0xC0) != 0x80)
+                  return(0);
+                c=(*p);
+                *q|=(c & 0x3F) << 6;
+                p++;
+                if ((*p & 0xC0) != 0x80)
+                  return(0);
+                *q|=(*p & 0x3F);
+              }
+            else
+              return(0);
+        q++;
+      }
+      *q++='\0';
+      return(q-utf16);
+    }
+  /*
+    Compute UTF-16 string length.
+  */
+  for (p=utf8; *p != '\0'; p++)
+  {
+    if ((*p & 0x80) == 0)
+      ;
+    else
+      if ((*p & 0xE0) == 0xC0)
+        {
+          p++;
+          if ((*p & 0xC0) != 0x80)
+            return(0);
+        }
+      else
+        if ((*p & 0xF0) == 0xE0)
+          {
+            p++;
+            if ((*p & 0xC0) != 0x80)
+              return(0);
+            p++;
+            if ((*p & 0xC0) != 0x80)
+              return(0);
+         }
+       else
+         return(0);
+  }
+  return(p-utf8);
+}
+
+static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
+{
+  size_t
+    length;
+
+  wchar_t
+    *utf16;
+
+  length=UTF8ToUTF16(source,(wchar_t *) NULL);
+  if (length == 0)
+    {
+      register ssize_t
+        i;
+
+      /*
+        Not UTF-8, just copy.
+      */
+      length=strlen((char *) source);
+      utf16=(wchar_t *) AcquireQuantumMemory(length+1,sizeof(*utf16));
+      if (utf16 == (wchar_t *) NULL)
+        return((wchar_t *) NULL);
+      for (i=0; i <= (ssize_t) length; i++)
+        utf16[i]=source[i];
+      return(utf16);
+    }
+  utf16=(wchar_t *) AcquireQuantumMemory(length+1,sizeof(*utf16));
+  if (utf16 == (wchar_t *) NULL)
+    return((wchar_t *) NULL);
+  length=UTF8ToUTF16(source,utf16);
+  return(utf16);
+}
+#    endif /* MAGICKCORE_HAVE__WFOPEN */
+
+static HENHMETAFILE ReadEnhMetaFile(const char *path,ssize_t *width,
+  ssize_t *height)
+{
+#pragma pack( push, 2 )
+  typedef struct
+  {
+    DWORD dwKey;
+    WORD hmf;
+    SMALL_RECT bbox;
+    WORD wInch;
+    DWORD dwReserved;
+    WORD wCheckSum;
+  } APMHEADER, *PAPMHEADER;
+#pragma pack( pop )
+
+  DWORD
+    dwSize;
+
+  ENHMETAHEADER
+    emfh;
+
+  HANDLE
+    hFile;
+
+  HDC
+    hDC;
+
+  HENHMETAFILE
+    hTemp;
+
+  LPBYTE
+    pBits;
+
+  METAFILEPICT
+    mp;
+
+  HMETAFILE
+    hOld;
+
+  *width=512;
+  *height=512;
+  hTemp=GetEnhMetaFile(path);
+#if defined(MAGICKCORE_HAVE__WFOPEN)
+  if (hTemp == (HENHMETAFILE) NULL)
+    {
+      wchar_t
+        *unicode_path;
+
+      unicode_path=ConvertUTF8ToUTF16((const unsigned char *) path);
+      if (unicode_path != (wchar_t *) NULL)
+        {
+          hTemp=GetEnhMetaFileW(unicode_path);
+          unicode_path=(wchar_t *) RelinquishMagickMemory(unicode_path);
+        }
+    }
+#endif
+  if (hTemp != (HENHMETAFILE) NULL)
+    {
+      /*
+        Enhanced metafile.
+      */
+      GetEnhMetaFileHeader(hTemp,sizeof(ENHMETAHEADER),&emfh);
+      *width=emfh.rclFrame.right-emfh.rclFrame.left;
+      *height=emfh.rclFrame.bottom-emfh.rclFrame.top;
+      return(hTemp);
+    }
+  hOld=GetMetaFile(path);
+  if (hOld != (HMETAFILE) NULL)
+    {
+      /*
+        16bit windows metafile.
+      */
+      dwSize=GetMetaFileBitsEx(hOld,0,NULL);
+      if (dwSize == 0)
+        {
+          DeleteMetaFile(hOld);
+          return((HENHMETAFILE) NULL);
+        }
+      pBits=(LPBYTE) AcquireQuantumMemory(dwSize,sizeof(*pBits));
+      if (pBits == (LPBYTE) NULL)
+        {
+          DeleteMetaFile(hOld);
+          return((HENHMETAFILE) NULL);
+        }
+      if (GetMetaFileBitsEx(hOld,dwSize,pBits) == 0)
+        {
+          pBits=(BYTE *) DestroyString((char *) pBits);
+          DeleteMetaFile(hOld);
+          return((HENHMETAFILE) NULL);
+        }
+      /*
+        Make an enhanced metafile from the windows metafile.
+      */
+      mp.mm=MM_ANISOTROPIC;
+      mp.xExt=1000;
+      mp.yExt=1000;
+      mp.hMF=NULL;
+      hDC=GetDC(NULL);
+      hTemp=SetWinMetaFileBits(dwSize,pBits,hDC,&mp);
+      ReleaseDC(NULL,hDC);
+      DeleteMetaFile(hOld);
+      pBits=(BYTE *) DestroyString((char *) pBits);
+      GetEnhMetaFileHeader(hTemp,sizeof(ENHMETAHEADER),&emfh);
+      *width=emfh.rclFrame.right-emfh.rclFrame.left;
+      *height=emfh.rclFrame.bottom-emfh.rclFrame.top;
+      return(hTemp);
+    }
+  /*
+    Aldus Placeable metafile.
+  */
+  hFile=CreateFile(path,GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,
+    NULL);
+  if (hFile == INVALID_HANDLE_VALUE)
+    return(NULL);
+  dwSize=GetFileSize(hFile,NULL);
+  pBits=(LPBYTE) AcquireQuantumMemory(dwSize,sizeof(*pBits));
+  ReadFile(hFile,pBits,dwSize,&dwSize,NULL);
+  CloseHandle(hFile);
+  if (((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l)
+    {
+      pBits=(BYTE *) DestroyString((char *) pBits);
+      return((HENHMETAFILE) NULL);
+    }
+  /*
+    Make an enhanced metafile from the placable metafile.
+  */
+  mp.mm=MM_ANISOTROPIC;
+  mp.xExt=((PAPMHEADER) pBits)->bbox.Right-((PAPMHEADER) pBits)->bbox.Left;
+  *width=mp.xExt;
+  mp.xExt=(mp.xExt*2540l)/(DWORD) (((PAPMHEADER) pBits)->wInch);
+  mp.yExt=((PAPMHEADER)pBits)->bbox.Bottom-((PAPMHEADER) pBits)->bbox.Top;
+  *height=mp.yExt;
+  mp.yExt=(mp.yExt*2540l)/(DWORD) (((PAPMHEADER) pBits)->wInch);
+  mp.hMF=NULL;
+  hDC=GetDC(NULL);
+  hTemp=SetWinMetaFileBits(dwSize,&(pBits[sizeof(APMHEADER)]),hDC,&mp);
+  ReleaseDC(NULL,hDC);
+  pBits=(BYTE *) DestroyString((char *) pBits);
+  return(hTemp);
+}
+
+#define CENTIMETERS_INCH 2.54
+
+static Image *ReadEMFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  BITMAPINFO
+    DIBinfo;
+
+  HBITMAP
+    hBitmap,
+    hOldBitmap;
+
+  HDC
+    hDC;
+
+  HENHMETAFILE
+    hemf;
+
+  Image
+    *image;
+
+  RECT
+    rect;
+
+  register ssize_t
+    x;
+
+  register Quantum
+    *q;
+
+  RGBQUAD
+    *pBits,
+    *ppBits;
+
+  ssize_t
+    height,
+    width,
+    y;
+
+  image=AcquireImage(image_info,exception);
+  hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
+  if (hemf == (HENHMETAFILE) NULL)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if ((image->columns == 0) || (image->rows == 0))
+    {
+      double
+        y_resolution,
+        x_resolution;
+
+      y_resolution=DefaultResolution;
+      x_resolution=DefaultResolution;
+      if (image->resolution.y > 0)
+        {
+          y_resolution=image->resolution.y;
+          if (image->units == PixelsPerCentimeterResolution)
+            y_resolution*=CENTIMETERS_INCH;
+        }
+      if (image->resolution.x > 0)
+        {
+          x_resolution=image->resolution.x;
+          if (image->units == PixelsPerCentimeterResolution)
+            x_resolution*=CENTIMETERS_INCH;
+        }
+      image->rows=(size_t) ((height/1000.0/CENTIMETERS_INCH)*y_resolution+0.5);
+      image->columns=(size_t) ((width/1000.0/CENTIMETERS_INCH)*
+        x_resolution+0.5);
+    }
+  if (image_info->size != (char *) NULL)
+    {
+      ssize_t
+        x;
+
+      image->columns=width;
+      image->rows=height;
+      x=0;
+      y=0;
+      (void) GetGeometry(image_info->size,&x,&y,&image->columns,&image->rows);
+    }
+  if (image_info->page != (char *) NULL)
+    {
+      char
+        *geometry;
+
+      register char
+        *p;
+
+      MagickStatusType
+        flags;
+
+      ssize_t
+        sans;
+
+      geometry=GetPageGeometry(image_info->page);
+      p=strchr(geometry,'>');
+      if (p == (char *) NULL)
+        {
+          flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
+            &image->rows);
+          if (image->resolution.x != 0.0)
+            image->columns=(size_t) floor((image->columns*image->resolution.x)+
+              0.5);
+          if (image->resolution.y != 0.0)
+            image->rows=(size_t) floor((image->rows*image->resolution.y)+0.5);
+        }
+      else
+        {
+          *p='\0';
+          flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
+            &image->rows);
+          if (image->resolution.x != 0.0)
+            image->columns=(size_t) floor(((image->columns*image->resolution.x)/
+              DefaultResolution)+0.5);
+          if (image->resolution.y != 0.0)
+            image->rows=(size_t) floor(((image->rows*image->resolution.y)/
+              DefaultResolution)+0.5);
+        }
+      (void) flags;
+      geometry=DestroyString(geometry);
+    }
+  hDC=GetDC(NULL);
+  if (hDC == (HDC) NULL)
+    {
+      DeleteEnhMetaFile(hemf);
+      ThrowReaderException(ResourceLimitError,"UnableToCreateADC");
+    }
+  /*
+    Initialize the bitmap header info.
+  */
+  (void) ResetMagickMemory(&DIBinfo,0,sizeof(BITMAPINFO));
+  DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
+  DIBinfo.bmiHeader.biWidth=(LONG) image->columns;
+  DIBinfo.bmiHeader.biHeight=(-1)*(LONG) image->rows;
+  DIBinfo.bmiHeader.biPlanes=1;
+  DIBinfo.bmiHeader.biBitCount=32;
+  DIBinfo.bmiHeader.biCompression=BI_RGB;
+  hBitmap=CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,
+    0);
+  ReleaseDC(NULL,hDC);
+  if (hBitmap == (HBITMAP) NULL)
+    {
+      DeleteEnhMetaFile(hemf);
+      ThrowReaderException(ResourceLimitError,"UnableToCreateBitmap");
+    }
+  hDC=CreateCompatibleDC(NULL);
+  if (hDC == (HDC) NULL)
+    {
+      DeleteEnhMetaFile(hemf);
+      DeleteObject(hBitmap);
+      ThrowReaderException(ResourceLimitError,"UnableToCreateADC");
+    }
+  hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
+  if (hOldBitmap == (HBITMAP) NULL)
+    {
+      DeleteEnhMetaFile(hemf);
+      DeleteDC(hDC);
+      DeleteObject(hBitmap);
+      ThrowReaderException(ResourceLimitError,"UnableToCreateBitmap");
+    }
+  /*
+    Initialize the bitmap to the image background color.
+  */
+  pBits=ppBits;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      pBits->rgbRed=ScaleQuantumToChar(image->background_color.red);
+      pBits->rgbGreen=ScaleQuantumToChar(image->background_color.green);
+      pBits->rgbBlue=ScaleQuantumToChar(image->background_color.blue);
+      pBits++;
+    }
+  }
+  rect.top=0;
+  rect.left=0;
+  rect.right=(LONG) image->columns;
+  rect.bottom=(LONG) image->rows;
+  /*
+    Convert metafile pixels.
+  */
+  PlayEnhMetaFile(hDC,hemf,&rect);
+  pBits=ppBits;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      SetPixelRed(image,ScaleCharToQuantum(pBits->rgbRed),q);
+      SetPixelGreen(image,ScaleCharToQuantum(pBits->rgbGreen),q);
+      SetPixelBlue(image,ScaleCharToQuantum(pBits->rgbBlue),q);
+      SetPixelAlpha(image,OpaqueAlpha,q);
+      pBits++;
+      q+=GetPixelChannels(image);
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+  }
+  DeleteEnhMetaFile(hemf);
+  SelectObject(hDC,hOldBitmap);
+  DeleteDC(hDC);
+  DeleteObject(hBitmap);
+  return(GetFirstImageInList(image));
+}
+#  else
 static Image *ReadEMFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -302,6 +774,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   Gdiplus::GdiplusShutdown(token);
   return(image);
 }
+#  endif /* _MSC_VER */
 #endif /* MAGICKCORE_EMF_DELEGATE */
 
 /*
