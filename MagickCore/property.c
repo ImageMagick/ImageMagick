@@ -98,6 +98,15 @@
 #endif
 
 /*
+  Define declarations.
+*/
+#if defined(MAGICKCORE_LCMS_DELEGATE)
+#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
+#define  msUInt32Number  DWORD
+#endif
+#endif
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
