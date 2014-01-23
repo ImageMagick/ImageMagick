@@ -95,26 +95,6 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
-#if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)
-#include <lcms/lcms2.h>
-#elif defined(MAGICKCORE_HAVE_LCMS2_H)
-#include "lcms2.h"
-#elif defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
-#include <lcms/lcms.h>
-#else
-#include "lcms.h"
-#endif
-#endif
-
-/*
-  Define declarations.
-*/
-#if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
-#define cmsUInt32Number  DWORD
-#endif
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1142,6 +1122,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       image_info=DestroyImageInfo(image_info);
     }
   (void) GetImageProperty(image,"exif:*",exception);
+  (void) GetImageProperty(image,"icc:*",exception);
+  (void) GetImageProperty(image,"iptc:*",exception);
+  (void) GetImageProperty(image,"xmp:*",exception);
   ResetImagePropertyIterator(image);
   property=GetNextImageProperty(image);
   if (property != (const char *) NULL)
@@ -1189,45 +1172,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           continue;
         (void) FormatLocaleFile(file,"    Profile-%s: %.20g bytes\n",name,
           (double) GetStringInfoLength(profile));
-#if defined(MAGICKCORE_LCMS_DELEGATE)
-        if ((LocaleCompare(name,"icc") == 0) ||
-            (LocaleCompare(name,"icm") == 0))
-          {
-            cmsHPROFILE
-              icc_profile;
-
-            icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
-              (cmsUInt32Number) GetStringInfoLength(profile));
-            if (icc_profile != (cmsHPROFILE *) NULL)
-              {
-#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
-                const char
-                  *name;
-
-                name=cmsTakeProductName(icc_profile);
-                if (name != (const char *) NULL)
-                  (void) FormatLocaleFile(file,"      %s\n",name);
-#else
-                char
-                  info[MaxTextExtent];
-
-                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,
-                  "en","US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"      Description: %s\n",info);
-                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,
-                  "en","US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"      Manufacturer: %s\n",info);
-                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en",
-                  "US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"      Model: %s\n",info);
-                (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,
-                  "en","US",info,MaxTextExtent);
-                (void) FormatLocaleFile(file,"      Copyright: %s\n",info);
-#endif
-                (void) cmsCloseProfile(icc_profile);
-              }
-          }
-#endif
         if (LocaleCompare(name,"iptc") == 0)
           {
             char
