@@ -1544,6 +1544,59 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   return(status);
 }
 
+static MagickBooleanType GetICCProperty(const Image *image,const char *key,
+  ExceptionInfo *exception)
+{
+  const StringInfo
+    *profile;
+
+  profile=GetImageProfile(image,"icc");
+  if (profile == (StringInfo *) NULL)
+    profile=GetImageProfile(image,"icm");
+  if (profile == (StringInfo *) NULL)
+    return(MagickFalse);
+#if defined(MAGICKCORE_LCMS_DELEGATE)
+  {
+    cmsHPROFILE
+      icc_profile;
+
+    icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
+      (cmsUInt32Number) GetStringInfoLength(profile));
+    if (icc_profile != (cmsHPROFILE *) NULL)
+      {
+#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
+        const char
+          *name;
+
+        name=cmsTakeProductName(icc_profile);
+        if (name != (const char *) NULL)
+          (void) SetImageProperty((Image *) image,"icc:name",name,exception);
+#else
+        char
+          info[MaxTextExtent];
+
+        (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,
+          "en","US",info,MaxTextExtent);
+        (void) SetImageProperty((Image *) image,"icc:description",info,
+          exception);
+        (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,
+          "en","US",info,MaxTextExtent);
+        (void) SetImageProperty((Image *) image,"icc:manufacturer",info,
+          exception);
+        (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en",
+          "US",info,MaxTextExtent);
+        (void) SetImageProperty((Image *) image,"icc:model",info,exception);
+        (void) cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,
+          "en","US",info,MaxTextExtent);
+        (void) SetImageProperty((Image *) image,"icc:copyright",info,exception);
+#endif
+        (void) cmsCloseProfile(icc_profile);
+      }
+  }
+#endif
+  return(MagickTrue);
+}
+
 static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
 {
   char
@@ -2091,6 +2144,17 @@ MagickExport const char *GetImageProperty(const Image *image,
     case 'I':
     case 'i':
     {
+      if ((LocaleNCompare("icc:",property,4) == 0) ||
+          (LocaleNCompare("icm:",property,4) == 0))
+        {
+          if( IfMagickTrue(GetICCProperty(image,property,exception)) &&
+              (image->properties != (void *) NULL))
+            {
+              p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
+                image->properties,property);
+              return(p);
+            }
+        }
       if (LocaleNCompare("iptc:",property,5) == 0)
         {
           if( IfMagickTrue(GetIPTCProperty(image,property,exception)) &&
