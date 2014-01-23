@@ -1282,6 +1282,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       image_info=DestroyImageInfo(image_info);
     }
   (void) GetImageProperty(image,"exif:*");
+  (void) GetImageProperty(image,"icc:*");
+  (void) GetImageProperty(image,"iptc:*");
+  (void) GetImageProperty(image,"xmp:*");
   ResetImagePropertyIterator(image);
   property=GetNextImageProperty(image);
   if (property != (const char *) NULL)
