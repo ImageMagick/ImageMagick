@@ -42,6 +42,34 @@ static ssize_t
   semaphore_mutex = 0;
 #endif
 
+static MagickBooleanType
+  active_mutex = MagickFalse;
+
+static inline void DestroyMagickMutex(void)
+{
+  if (active_mutex != MagickFalse)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    omp_destroy_lock(&semaphore_mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
+    ;
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+    DeleteCriticalSection(&semaphore_mutex);
+#endif
+  active_mutex=MagickFalse;
+}
+
+static inline void InitializeMagickMutex(void)
+{
+  if (active_mutex == MagickFalse)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    omp_init_lock(&semaphore_mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
+    ;
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+    InitializeCriticalSection(&semaphore_mutex);
+#endif
+}
+
 static inline void LockMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
