@@ -964,7 +964,8 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
     }
   offset=(MagickOffsetType) lseek(file,0,SEEK_END);
   count=0;
-  if ((offset < 0) || (offset != (MagickOffsetType) ((ssize_t) offset)))
+  if ((file == fileno(stdin)) || (offset < 0) ||
+      (offset != (MagickOffsetType) ((ssize_t) offset)))
     {
       size_t
         quantum;
