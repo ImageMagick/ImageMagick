@@ -905,22 +905,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
               (void) FormatLocaleFile(file,"  %s\n",tuple);
             }
         }
-      if (IsHistogramImage(image,exception) != MagickFalse)
-        {
-          (void) FormatLocaleFile(file,"  Colors: %.20g\n",(double)
-            GetNumberColors(image,(FILE *) NULL,exception));
-          (void) FormatLocaleFile(file,"  Histogram:\n");
-          (void) GetNumberColors(image,file,exception);
-        }
-      else
-        {
-          artifact=GetImageArtifact(image,"identify:unique-colors");
-          if (artifact == (const char *) NULL)
-            artifact=GetImageArtifact(image,"json:unique-colors");
-          if (IfMagickTrue(IsStringTrue(artifact)))
-            (void) FormatLocaleFile(file,"  Colors: %.20g\n",(double)
-              GetNumberColors(image,(FILE *) NULL,exception));
-        }
     }
   if (image->storage_class == PseudoClass)
     {
