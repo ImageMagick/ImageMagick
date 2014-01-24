@@ -1553,13 +1553,13 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   return(status);
 }
 
-static MagickBooleanType GetICCProperty(const Image *image,const char *key,
+static MagickBooleanType GetICCProperty(const Image *image,const char *property,
   ExceptionInfo *exception)
 {
   const StringInfo
     *profile;
 
-  magick_unreferenced(key);
+  magick_unreferenced(property);
 
   profile=GetImageProfile(image,"icc");
   if (profile == (StringInfo *) NULL)
