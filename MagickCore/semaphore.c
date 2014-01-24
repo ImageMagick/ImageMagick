@@ -423,8 +423,7 @@ MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
 */
 MagickPrivate MagickBooleanType SemaphoreComponentGenesis(void)
 {
-  LockMagickMutex();
-  UnlockMagickMutex();
+  InitializeMagickMutex();
   return(MagickTrue);
 }
 
