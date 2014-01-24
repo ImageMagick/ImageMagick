@@ -101,6 +101,9 @@ static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  int
+    bit;
+
   MagickBooleanType
     status;
 
@@ -114,16 +117,12 @@ static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
-  size_t
-    bit,
-    byte;
-
   ssize_t
     y;
 
   unsigned char
+    byte,
     *data;
-
 
   /*
     Open image file.
