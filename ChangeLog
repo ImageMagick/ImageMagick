@@ -7,7 +7,8 @@
   * Added "-define png:swap-bytes" option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=24818).
   * Added image->duration to image.h, calculate duration in gif.c, and
-    report duration in identify.c
+    report duration in identify.c (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=23276).
 
 2014-01-15  6.8.8-3 Cristy  <quetzlzacatenango@image...>
   * The -type truecolor option for a grayscale image returns RGB JPEG (reference
