@@ -1143,7 +1143,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       blur_reconstruct=DestroyImage(blur_reconstruct);
       return(MagickFalse);
     }
-  for (i=0; i < 8; i++)
+  for (i=0; i < 7; i++)
   {
     ssize_t
       channel;
@@ -1151,8 +1151,6 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     /*
       Compute sum of moment differences squared.
     */
-    if (i == 2)
-      continue;  /* I3 is not independent of other moments */
     for (channel=0; channel < MaxPixelChannels; channel++)
     {
       double
@@ -1201,7 +1199,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
-  for (i=0; i < 8; i++)
+  for (i=0; i < 7; i++)
   {
     ssize_t
       channel;
@@ -1209,8 +1207,6 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     /*
       Compute sum of moment differences squared.
     */
-    if (i == 2)
-      continue;  /* I3 is not independent of other moments */
     for (channel=0; channel < MaxPixelChannels; channel++)
     {
       double
