@@ -97,6 +97,7 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   assert(semaphore_info != (SemaphoreInfo **) NULL);
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     {
+      InitializeMagickMutex();
       LockMagickMutex();
       if (*semaphore_info == (SemaphoreInfo *) NULL)
         *semaphore_info=AllocateSemaphoreInfo();
@@ -446,6 +447,7 @@ MagickExport MagickBooleanType SemaphoreComponentGenesis(void)
 */
 MagickExport void SemaphoreComponentTerminus(void)
 {
+  DestroyMagickMutex();
 }
 
 /*
