@@ -1246,6 +1246,7 @@ MagickExport void MagickCoreGenesis(const char *path,
   /*
     Initialize the Magick environment.
   */
+  InitializeMagickMutex();
   LockMagickMutex();
   if (instantiate_magickcore != MagickFalse)
     {
@@ -1376,6 +1377,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 */
 MagickExport void MagickCoreTerminus(void)
 {
+  InitializeMagickMutex();
   LockMagickMutex();
   if (instantiate_magickcore == MagickFalse)
     {
@@ -1414,6 +1416,7 @@ MagickExport void MagickCoreTerminus(void)
   SemaphoreComponentTerminus();
   instantiate_magickcore=MagickFalse;
   UnlockMagickMutex();
+  DestroyMagickMutex();
 }
 
 /*
