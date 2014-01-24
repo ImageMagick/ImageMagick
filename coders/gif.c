@@ -993,6 +993,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     delay,
     dispose,
+    duration,
     global_colors,
     image_count,
     iterations,
@@ -1049,6 +1050,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count=ReadBlob(image,(size_t) (3*global_colors),global_colormap);
   delay=0;
   dispose=0;
+  duration=0;
   iterations=1;
   opacity=(-1);
   image_count=0;
@@ -1219,8 +1221,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         }
       }
+
     if (c != (unsigned char) ',')
       continue;
+
     if (image_count != 0)
       {
         /*
@@ -1263,13 +1267,12 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->page.y=page.y;
     image->page.x=page.x;
     image->delay=delay;
+    image->iterations=iterations;
     image->ticks_per_second=100;
     image->dispose=(DisposeType) dispose;
-    image->iterations=iterations;
     image->matte=opacity >= 0 ? MagickTrue : MagickFalse;
     delay=0;
     dispose=0;
-    iterations=1;
     if ((image->columns == 0) || (image->rows == 0))
       {
         global_colormap=(unsigned char *) RelinquishMagickMemory(
@@ -1365,6 +1368,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           global_colormap);
         ThrowReaderException(CorruptImageError,"CorruptImage");
       }
+    duration += image->delay * image->iterations;
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
@@ -1374,6 +1378,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (status == MagickFalse)
       break;
   }
+  image->duration=duration;
   meta_image=DestroyImage(meta_image);
   global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
   if ((image->columns == 0) || (image->rows == 0))
