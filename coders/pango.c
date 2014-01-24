@@ -382,7 +382,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     Render markup.
   */
   stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
-    image->columns);
+    (int) image->columns);
   pixel_info=AcquireVirtualMemory(image->rows,stride*sizeof(*pixels));
   if (pixel_info == (MemoryInfo *) NULL)
     {
@@ -392,7 +392,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     }
   pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
   surface=cairo_image_surface_create_for_data(pixels,CAIRO_FORMAT_ARGB32,
-    image->columns,image->rows,stride);
+    (int) image->columns,(int) image->rows,(int) stride);
   cairo_image=cairo_create(surface);
   cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
   cairo_paint(cairo_image);
