@@ -1061,21 +1061,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
           (void) FormatLocaleFile(file,"    \"alpha\": \"%s\",\n",tuple);
         }
     }
-  artifact=GetImageArtifact(image,"identify:unique-colors");
-  if (artifact == (const char *) NULL)
-    artifact=GetImageArtifact(image,"json:unique-colors");
-  if (IsHistogramImage(image,&image->exception) != MagickFalse)
-    {
-      (void) FormatLocaleFile(file,"    \"colors\": \"%.20g\",\n",(double)
-        GetNumberColors(image,(FILE *) NULL,&image->exception));
-      (void) FormatLocaleFile(file,"    Histogram:\n");
-      (void) GetNumberColors(image,file,&image->exception);
-    }
-  else
-    if ((artifact != (const char *) NULL) &&
-        (IsMagickTrue(artifact) != MagickFalse))
-      (void) FormatLocaleFile(file,"    \"colors\": \"%.20g\",\n",(double)
-        GetNumberColors(image,(FILE *) NULL,&image->exception));
   if (image->storage_class == PseudoClass)
     {
       (void) FormatLocaleFile(file,"    \"colormapEntries\": \"%.20g\",\n",
