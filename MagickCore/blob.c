@@ -976,6 +976,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       /*
         Stream is not seekable.
       */
+      offset=(MagickOffsetType) lseek(file,0,SEEK_SET);
       quantum=(size_t) MagickMaxBufferExtent;
       if ((fstat(file,&file_stats) == 0) && (file_stats.st_size != 0))
         quantum=(size_t) MagickMin((MagickSizeType) file_stats.st_size,
