@@ -1797,10 +1797,8 @@ RestoreMSCWarning
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                pixel=ScaleQuantumToChar(ClampToQuantum(
-                  GetPixelLuma(image,p)));
+                pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
                 q=PopHexPixel(hex_digits,(size_t) pixel,q);
-                i++;
                 if ((q-pixels+8) >= 80)
                   {
                     *q++='\n';
