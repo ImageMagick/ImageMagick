@@ -2968,9 +2968,9 @@ static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
     start,
     end;
 
-  color[0] = ClampToLimit(255.0f*points->x,255);
-  color[1] = ClampToLimit(255.0f*points->y,255);
-  color[2] = ClampToLimit(255.0f*points->z,255);
+  color[0] = (unsigned char) ClampToLimit(255.0f*points->x,255);
+  color[1] = (unsigned char) ClampToLimit(255.0f*points->y,255);
+  color[2] = (unsigned char) ClampToLimit(255.0f*points->z,255);
 
   ComputeEndPoints(DDS_LOOKUP,color,&start,&end,&index);
 
