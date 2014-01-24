@@ -318,18 +318,20 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     status;
 
+  int
+    bit;
+
   register const PixelPacket
     *p;
 
   register ssize_t
     x;
 
-  size_t
-    bit,
-    byte;
-
   ssize_t
     y;
+
+  unsigned char
+    byte;
 
   /*
     Open output image file.
