@@ -1197,7 +1197,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     CommandOptionToMnemonic(MagickCompressOptions,(ssize_t)
     image->compression));
   if (image->quality != UndefinedCompressionQuality)
-    (void) FormatLocaleFile(file,"    \"quality: \"%.20g\"\n",(double)
+    (void) FormatLocaleFile(file,"    \"quality\": \"%.20g\",\n",(double)
       image->quality);
   (void) FormatLocaleFile(file,"    \"orientation\": \"%s\",\n",
     CommandOptionToMnemonic(MagickOrientationOptions,(ssize_t)
@@ -1266,7 +1266,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   property=GetNextImageProperty(image);
   if (property != (const char *) NULL)
     {
-      ssize_t
+      size_t
         n;
 
       /*
@@ -1306,18 +1306,22 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       const StringInfo
         *profile;
 
+      size_t
+        n;
+
       /*
         Identify image profiles.
       */
+      n=0;
       (void) FormatLocaleFile(file,"    \"profiles\": {\n");
       while (name != (char *) NULL)
       {
         profile=GetImageProfile(image,name);
         if (profile == (StringInfo *) NULL)
           continue;
+        if (n++ != 0)
+          (void) FormatLocaleFile(file,",\n");
         (void) FormatLocaleFile(file,"      \"%s\": {\n",name);
-        (void) FormatLocaleFile(file,"        \"length\": \"%.20g\"",(double)
-          GetStringInfoLength(profile));
         if (LocaleCompare(name,"iptc") == 0)
           {
             char
@@ -1404,7 +1408,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
                 case 219: tag="Custom Field 20"; break;
                 default: tag="unknown"; break;
               }
-              (void) FormatLocaleFile(file,"\n        \"%s[%.20g,%.20g]\": ",
+              (void) FormatLocaleFile(file,"        \"%s[%.20g,%.20g]\": ",
                 tag,(double) dataset,(double) record);
               length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
               length|=GetStringInfoDatum(profile)[i++];
@@ -1423,7 +1427,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
                       {
                         (void) fputs("\"",file);
                         (void) fputs(attribute_list[j],file);
-                        (void) fputs("\",",file);
+                        (void) fputs("\",\n",file);
                         attribute_list[j]=(char *) RelinquishMagickMemory(
                           attribute_list[j]);
                       }
@@ -1434,10 +1438,12 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
                 }
             }
           }
-        (void) FormatLocaleFile(file,"\n      },\n");
+        (void) FormatLocaleFile(file,"        \"length\": \"%.20g\"",(double)
+          GetStringInfoLength(profile));
+        (void) FormatLocaleFile(file,"\n      }");
         name=GetNextImageProfile(image);
       }
-      (void) FormatLocaleFile(file,"    },\n");
+      (void) FormatLocaleFile(file,"\n    },\n");
     }
   ResetImageArtifactIterator(image);
   artifact=GetNextImageArtifact(image);
