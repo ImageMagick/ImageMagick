@@ -1063,55 +1063,45 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     }
   if (image->storage_class == PseudoClass)
     {
+      char
+        tuple[MaxTextExtent];
+
+      MagickPixelPacket
+        pixel;
+
+      register PixelPacket
+        *restrict p;
+
       (void) FormatLocaleFile(file,"    \"colormapEntries\": \"%.20g\",\n",
         (double) image->colors);
-      (void) FormatLocaleFile(file,"    \"colormap: {\n");
-      if (image->colors <= 1024)
-        {
-          char
-            color[MaxTextExtent],
-            hex[MaxTextExtent],
-            tuple[MaxTextExtent];
-
-          MagickPixelPacket
-            pixel;
-
-          register PixelPacket
-            *restrict p;
-
-          GetMagickPixelPacket(image,&pixel);
-          p=image->colormap;
-          for (i=0; i < (ssize_t) image->colors; i++)
+      (void) FormatLocaleFile(file,"    \"colormap: [ ");
+      GetMagickPixelPacket(image,&pixel);
+      p=image->colormap;
+      for (i=0; i < (ssize_t) image->colors; i++)
+      {
+        SetMagickPixelPacket(image,p,(IndexPacket *) NULL,&pixel);
+        *tuple='\0';
+        ConcatenateColorComponent(&pixel,RedChannel,X11Compliance,tuple);
+        (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+        ConcatenateColorComponent(&pixel,GreenChannel,X11Compliance,tuple);
+        (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+        ConcatenateColorComponent(&pixel,BlueChannel,X11Compliance,tuple);
+        if (pixel.colorspace == CMYKColorspace)
           {
-            SetMagickPixelPacket(image,p,(IndexPacket *) NULL,&pixel);
-            (void) CopyMagickString(tuple,"(",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,RedChannel,X11Compliance,tuple);
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,GreenChannel,X11Compliance,tuple);
-            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,BlueChannel,X11Compliance,tuple);
-            if (pixel.colorspace == CMYKColorspace)
-              {
-                (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-                ConcatenateColorComponent(&pixel,IndexChannel,X11Compliance,
-                  tuple);
-              }
-            if (pixel.matte != MagickFalse)
-              {
-                (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-                ConcatenateColorComponent(&pixel,AlphaChannel,X11Compliance,
-                  tuple);
-              }
-            (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
-            (void) QueryMagickColorname(image,&pixel,SVGCompliance,color,
-              &image->exception);
-            GetColorTuple(&pixel,MagickTrue,hex);
-            (void) FormatLocaleFile(file,"    %8ld: %s %s %s\n",(long) i,tuple,
-              hex,color);
-            p++;
+            ConcatenateColorComponent(&pixel,IndexChannel,X11Compliance,tuple);
           }
-          (void) FormatLocaleFile(file,"    },\n");
-        }
+        if (pixel.matte != MagickFalse)
+          {
+            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            ConcatenateColorComponent(&pixel,AlphaChannel,X11Compliance,tuple);
+          }
+        (void) FormatLocaleFile(file,"%s",tuple);
+        if (i < (ssize_t) (image->colors-1))
+          (void) FormatLocaleFile(file,",");
+        p++;
+      }
+      (void) FormatLocaleFile(file," ],\n");
     }
   if (image->error.mean_error_per_pixel != 0.0)
     (void) FormatLocaleFile(file,"    \"meanErrorPerPixel\": \"%g\",\n",
