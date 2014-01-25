@@ -1074,7 +1074,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
 
       (void) FormatLocaleFile(file,"    \"colormapEntries\": \"%.20g\",\n",
         (double) image->colors);
-      (void) FormatLocaleFile(file,"    \"colormap: [ ");
+      (void) FormatLocaleFile(file,"    \"colormap\": [\n        ");
       GetMagickPixelPacket(image,&pixel);
       p=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
@@ -1099,9 +1099,11 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         (void) FormatLocaleFile(file,"%s",tuple);
         if (i < (ssize_t) (image->colors-1))
           (void) FormatLocaleFile(file,",");
+        if (((i+1) % 5) == 0)
+          (void) FormatLocaleFile(file,"\n        ");
         p++;
       }
-      (void) FormatLocaleFile(file," ],\n");
+      (void) FormatLocaleFile(file,"\n    ],\n");
     }
   if (image->error.mean_error_per_pixel != 0.0)
     (void) FormatLocaleFile(file,"    \"meanErrorPerPixel\": \"%g\",\n",
@@ -1137,7 +1139,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         "        \"x\": \"%g\",\n        \"y\": \"%g\"\n      },\n",
         image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y);
       (void) FormatLocaleFile(file,"      \"whitePrimary\": {\n"
-        "        \"x\": \"%g\",\n        \"y\": \"%g\"\n      },\n",
+        "        \"x\": \"%g\",\n        \"y\": \"%g\"\n      }\n",
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
       (void) FormatLocaleFile(file,"    },\n");
     }
@@ -1152,14 +1154,14 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   (void) FormatLocaleFile(file,"    \"backgroundColor\": \"%s\",\n",color);
   (void) QueryColorname(image,&image->border_color,SVGCompliance,color,
     &image->exception);
-  (void) FormatLocaleFile(file,"    \"borderColor\": \"%s\"\n",color);
+  (void) FormatLocaleFile(file,"    \"borderColor\": \"%s\",\n",color);
   (void) QueryColorname(image,&image->matte_color,SVGCompliance,color,
     &image->exception);
   (void) FormatLocaleFile(file,"    \"matteColor\": \"%s\",\n",color);
   (void) QueryColorname(image,&image->transparent_color,SVGCompliance,color,
     &image->exception);
   (void) FormatLocaleFile(file,"    \"transparentColor\": \"%s\",\n",color);
-  (void) FormatLocaleFile(file,"    \"interlace\": \"%s\"\n",
+  (void) FormatLocaleFile(file,"    \"interlace\": \"%s\",\n",
     CommandOptionToMnemonic(MagickInterlaceOptions,(ssize_t) image->interlace));
   (void) FormatLocaleFile(file,"    \"intensity\": \"%s\",\n",
     CommandOptionToMnemonic(MagickPixelIntensityOptions,(ssize_t)
@@ -1480,10 +1482,10 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       }
       (void) FormatLocaleFile(file,"    },\n");
     }
-  (void) FormatLocaleFile(file,"    \"tainted\": \"%s\"\n",
+  (void) FormatLocaleFile(file,"    \"tainted\": \"%s\",\n",
     CommandOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->taint));
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
-  (void) FormatLocaleFile(file,"    \"filesize\": \"%s\"\n",format);
+  (void) FormatLocaleFile(file,"    \"filesize\": \"%s\",\n",format);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
      MagickFalse,format);
   if (strlen(format) > 1)
