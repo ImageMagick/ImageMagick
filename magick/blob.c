@@ -1814,8 +1814,8 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
           else
             {
               *length=images->blob->length;
-                blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
-                  sizeof(*blob));
+              blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
+                sizeof(*blob));
             }
         }
     }
