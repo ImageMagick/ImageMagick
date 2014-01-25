@@ -1549,13 +1549,15 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
           *image->filename='\0';
           status=WriteImage(blob_info,image);
           InheritException(exception,&image->exception);
-          *length=image->blob->length;
           blob=DetachBlob(image->blob);
           if (status == MagickFalse)
             blob=(unsigned char *) RelinquishMagickMemory(blob);
           else
-            blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
-              sizeof(*blob));
+            {
+              *length=image->blob->length;
+               blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
+                 sizeof(*blob));
+            }
         }
     }
   else
@@ -1806,13 +1808,12 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
           images->blob->exempt=MagickTrue;
           *images->filename='\0';
           status=WriteImages(blob_info,images,images->filename,exception);
-          if ((status != MagickFalse) && (images->blob->length != 0))
+          blob=DetachBlob(image->blob);
+          if (status == MagickFalse)
+            blob=(unsigned char *) RelinquishMagickMemory(blob);
+          else
             {
-              *length=images->blob->length;
-              blob=DetachBlob(images->blob);
-              if (status == MagickFalse)
-                blob=(unsigned char *) RelinquishMagickMemory(blob);
-              else
+              *length=image->blob->length;
                 blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
                   sizeof(*blob));
             }
