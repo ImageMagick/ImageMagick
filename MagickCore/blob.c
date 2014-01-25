@@ -1547,13 +1547,15 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
           image->blob->exempt=MagickTrue;
           *image->filename='\0';
           status=WriteImage(blob_info,image,exception);
-          *length=image->blob->length;
           blob=DetachBlob(image->blob);
           if (status == MagickFalse)
             blob=(unsigned char *) RelinquishMagickMemory(blob);
           else
-            blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
-              sizeof(*blob));
+            {
+              *length=image->blob->length;
+              blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
+                sizeof(*blob));
+            }
         }
     }
   else
@@ -1798,14 +1800,17 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
           ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
       else
         {
+          (void) CloseBlob(images);
           images->blob->exempt=MagickTrue;
           *images->filename='\0';
           status=WriteImages(blob_info,images,images->filename,exception);
-          if ((status != MagickFalse) && (images->blob->length != 0))
+          blob=DetachBlob(images->blob);
+          if (status == MagickFalse)
+            blob=(unsigned char *) RelinquishMagickMemory(blob);
+          else
             {
               *length=images->blob->length;
-              blob=DetachBlob(images->blob);
-              blob=(unsigned char *) ResizeQuantumMemory(blob,*length,
+              blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
                 sizeof(*blob));
             }
         }
@@ -2188,7 +2193,7 @@ MagickExport unsigned char *MapBlob(int file,const MapMode mode,
   map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
     (off_t) offset);
 #else
-  map=(unsigned char *) mmap((char *) NULL,length,protection,flags | 
+  map=(unsigned char *) mmap((char *) NULL,length,protection,flags |
     MAP_HUGETLB,file,(off_t) offset);
   if (map == (unsigned char *) MAP_FAILED)
     map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
