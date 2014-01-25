@@ -1808,12 +1808,12 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
           images->blob->exempt=MagickTrue;
           *images->filename='\0';
           status=WriteImages(blob_info,images,images->filename,exception);
-          blob=DetachBlob(image->blob);
+          blob=DetachBlob(images->blob);
           if (status == MagickFalse)
             blob=(unsigned char *) RelinquishMagickMemory(blob);
           else
             {
-              *length=image->blob->length;
+              *length=images->blob->length;
                 blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
                   sizeof(*blob));
             }
