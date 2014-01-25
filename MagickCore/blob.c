@@ -1536,8 +1536,8 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
         Native blob support for this image format.
       */
       blob_info->length=0;
-      blob_info->blob=(void *) AcquireQuantumMemory(MagickMaxBlobExtent,
-        sizeof(unsigned char));
+      blob_info->blob=(void *) AcquireQuantumMemory(image->columns,
+        image->rows*sizeof(unsigned char));
       if (blob_info->blob == (void *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -1791,8 +1791,8 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
         Native blob support for this images format.
       */
       blob_info->length=0;
-      blob_info->blob=(void *) AcquireQuantumMemory(MagickMaxBlobExtent,
-        sizeof(unsigned char));
+      blob_info->blob=(void *) AcquireQuantumMemory(images->columns,
+        images->rows*sizeof(unsigned char));
       if (blob_info->blob == (void *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
