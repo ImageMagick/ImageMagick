@@ -1053,6 +1053,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (image->iterations != 1)
     (void) FormatLocaleFile(file,"  Iterations: %.20g\n",(double)
       image->iterations);
+  if (image->duration != 0)
+    (void) FormatLocaleFile(file,"  Duration: %.20g\n",(double)
+      image->duration);
   if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
     (void) FormatLocaleFile(file,"  Scene: %.20g of %.20g\n",(double)
       image->scene,(double) GetImageListLength(image));
