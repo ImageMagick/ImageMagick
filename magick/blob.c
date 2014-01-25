@@ -1806,9 +1806,7 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
           images->blob->exempt=MagickTrue;
           *images->filename='\0';
           status=WriteImages(blob_info,images,images->filename,exception);
-          if ((status == MagickFalse) || (images->blob->length == 0))
-            InheritException(exception,&images->exception);
-          else
+          if ((status != MagickFalse) && (images->blob->length != 0))
             {
               *length=images->blob->length;
               blob=DetachBlob(images->blob);
