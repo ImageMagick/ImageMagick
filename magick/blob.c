@@ -1802,6 +1802,7 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
           ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
       else
         {
+          (void) CloseBlob(images);
           images->blob->exempt=MagickTrue;
           *images->filename='\0';
           status=WriteImages(blob_info,images,images->filename,exception);
@@ -1811,8 +1812,11 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
             {
               *length=images->blob->length;
               blob=DetachBlob(images->blob);
-              blob=(unsigned char *) ResizeQuantumMemory(blob,*length,
-                sizeof(*blob));
+              if (status == MagickFalse)
+                blob=(unsigned char *) RelinquishMagickMemory(blob);
+              else
+                blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
+                  sizeof(*blob));
             }
         }
     }
