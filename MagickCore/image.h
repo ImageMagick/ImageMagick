@@ -236,7 +236,8 @@ struct _Image
 
   size_t
     scene,          /* index of image in multi-image file */
-    delay;          /* Animation delay time */
+    delay,          /* Animation delay time */
+    duration;       /* Total animation duration sum(delay*iterations) */
 
   ssize_t
     ticks_per_second;  /* units for delay time, default 100 for GIF */
