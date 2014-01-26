@@ -459,6 +459,12 @@ namespace Magick
   using MagickCore::OverlineDecoration;
   using MagickCore::LineThroughDecoration;
 
+  // Direction types
+  using MagickCore::DirectionType;
+  using MagickCore::UndefinedDirection;
+  using MagickCore::RightToLeftDirection;
+  using MagickCore::LeftToRightDirection;
+
   // Dispose methods
   using MagickCore::DisposeType;
   using MagickCore::UndefinedDispose;
