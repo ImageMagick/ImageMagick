@@ -1843,7 +1843,7 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
               if (status == MagickFalse)
                 InheritException(exception,&images->exception);
               else
-                blob=FileToBlob(images->filename,~0UL,length,exception);
+                blob=FileToBlob(unique,~0UL,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
         }
