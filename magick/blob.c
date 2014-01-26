@@ -1548,7 +1548,7 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
           *image->filename='\0';
           status=WriteImage(blob_info,image);
           InheritException(exception,&image->exception);
-          *length=image->blob->offset;
+          *length=image->blob->length;
           blob=DetachBlob(image->blob);
           if (status == MagickFalse)
             blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -1804,7 +1804,7 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
           images->blob->exempt=MagickTrue;
           *images->filename='\0';
           status=WriteImages(blob_info,images,images->filename,exception);
-          *length=images->blob->offset;
+          *length=images->blob->length;
           blob=DetachBlob(images->blob);
           if (status == MagickFalse)
             blob=(unsigned char *) RelinquishMagickMemory(blob);
