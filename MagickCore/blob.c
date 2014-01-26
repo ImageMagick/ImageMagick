@@ -1769,11 +1769,6 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
     exception);
   if (*blob_info->magick != '\0')
     (void) CopyMagickString(images->magick,blob_info->magick,MaxTextExtent);
-  if (blob_info->adjoin == MagickFalse)
-    {
-      blob_info=DestroyImageInfo(blob_info);
-      return(ImageToBlob(image_info,images,length,exception));
-    }
   magick_info=GetMagickInfo(images->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
     {
@@ -1781,6 +1776,11 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
         MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
         images->filename);
       return(blob);
+    }
+  if (GetMagickAdjoin(magick_info) == MagickFalse)
+    {
+      blob_info=DestroyImageInfo(blob_info);
+      return(ImageToBlob(image_info,images,length,exception));
     }
   (void) CopyMagickString(blob_info->magick,images->magick,MaxTextExtent);
   if (GetMagickBlobSupport(magick_info) != MagickFalse)
