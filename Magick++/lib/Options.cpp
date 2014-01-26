@@ -630,6 +630,16 @@ size_t Magick::Options::subRange(void) const
   return(_imageInfo->number_scenes);
 }
 
+void Magick::Options::textDirection(DirectionType direction_)
+{
+  _drawInfo->direction=direction_;
+}
+
+Magick::DirectionType Magick::Options::textDirection() const
+{
+  return(_drawInfo->direction);
+}
+
 void Magick::Options::textEncoding(const std::string &encoding_)
 {
   CloneString(&_drawInfo->encoding,encoding_.c_str());
@@ -641,6 +651,16 @@ std::string Magick::Options::textEncoding(void) const
     return(std::string(_drawInfo->encoding));
   
   return(std::string());
+}
+
+void Magick::Options::textGravity(GravityType gravity_)
+{
+  _drawInfo->gravity=gravity_;
+}
+
+Magick::GravityType Magick::Options::textGravity() const
+{
+  return(_drawInfo->gravity);
 }
 
 void Magick::Options::textInterlineSpacing(double spacing_)
