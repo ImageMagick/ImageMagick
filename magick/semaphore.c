@@ -257,7 +257,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         errno=status;
         perror("unable to initialize critical section");
         _exit(1);
-       }
+      }
   }
 #endif
   semaphore_info->id=GetMagickThreadId();
