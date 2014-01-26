@@ -1486,8 +1486,7 @@ MagickExport StreamHandler GetBlobStreamHandler(const Image *image)
 %
 %    o image: the image.
 %
-%    o length: This pointer to a size_t integer sets the initial length of the
-%      blob.  On return, it reflects the actual length of the blob.
+%    o length: return the actual length of the blob.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1739,8 +1738,7 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
 %
 %    o images: the image list.
 %
-%    o length: This pointer to a size_t integer sets the initial length of the
-%      blob.  On return, it reflects the actual length of the blob.
+%    o length: return the actual length of the blob.
 %
 %    o exception: return any errors or warnings in this structure.
 %
