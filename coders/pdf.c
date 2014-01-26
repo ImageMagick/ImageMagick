@@ -1102,7 +1102,14 @@ RestoreMSCWarning
     version);
   (void) WriteBlobString(image,buffer);
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
-    (void) WriteBlobString(image,"%‚„œ”\n");
+    {
+      (void) WriteBlobByte(image,'%');
+      (void) WriteBlobByte(image,0xe2);
+      (void) WriteBlobByte(image,0xe3);
+      (void) WriteBlobByte(image,0xcf);
+      (void) WriteBlobByte(image,0xd3);
+      (void) WriteBlobByte(image,'\n');
+    }
   /*
     Write Catalog object.
   */
