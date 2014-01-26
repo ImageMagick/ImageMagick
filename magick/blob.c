@@ -1586,7 +1586,7 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
               if (status == MagickFalse)
                 InheritException(exception,&image->exception);
               else
-                blob=FileToBlob(image->filename,~0UL,length,exception);
+                blob=FileToBlob(unique,~0UL,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
         }
