@@ -231,9 +231,17 @@ namespace Magick
     void subRange(size_t subRange_);
     size_t subRange(void) const;
 
+    // Render text right-to-left or left-to-right.
+    void textDirection(DirectionType direction_);
+    DirectionType textDirection() const;
+
     // Annotation text encoding (e.g. "UTF-16")
     void textEncoding(const std::string &encoding_);
     std::string textEncoding(void) const;
+
+    // Text gravity.
+    void textGravity(GravityType gravity_);
+    GravityType textGravity() const;
 
     // Text inter-line spacing
     void textInterlineSpacing(double spacing_);

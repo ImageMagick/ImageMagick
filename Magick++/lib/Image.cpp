@@ -1457,6 +1457,17 @@ size_t Magick::Image::subRange(void) const
   return(constOptions()->subRange());
 }
 
+void Magick::Image::textDirection(DirectionType direction_)
+{
+  modifyImage();
+  options()->textDirection(direction_);
+}
+
+Magick::DirectionType Magick::Image::textDirection(void) const
+{
+  return(constOptions()->textDirection());
+}
+
 void Magick::Image::textEncoding(const std::string &encoding_)
 {
   modifyImage();
@@ -1466,6 +1477,17 @@ void Magick::Image::textEncoding(const std::string &encoding_)
 std::string Magick::Image::textEncoding(void) const
 {
   return(constOptions()->textEncoding());
+}
+
+void Magick::Image::textGravity(GravityType gravity_)
+{
+  modifyImage();
+  options()->textGravity(gravity_);
+}
+
+Magick::GravityType Magick::Image::textGravity(void) const
+{
+  return(constOptions()->textGravity());
 }
 
 void Magick::Image::textInterlineSpacing(double spacing_)
