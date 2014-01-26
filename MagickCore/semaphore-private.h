@@ -28,15 +28,15 @@ extern MagickPrivate MagickBooleanType
 extern MagickPrivate void
   SemaphoreComponentTerminus(void);
 
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+static omp_lock_t
+  semaphore_mutex;
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
 static pthread_mutex_t
   semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
 static LONG
   semaphore_mutex = 0;
-#elif defined(MAGICKCORE_OPENMP_SUPPORT)
-static omp_lock_t
-  semaphore_mutex;
 #else
 static ssize_t
   semaphore_mutex = 0;
@@ -49,12 +49,12 @@ static inline void DestroyMagickMutex(void)
 {
   if (active_mutex != MagickFalse)
     {
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      omp_destroy_lock(&semaphore_mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
       ;
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
       DeleteCriticalSection(&semaphore_mutex);
-#elif defined(MAGICKCORE_OPENMP_SUPPORT)
-      omp_destroy_lock(&semaphore_mutex);
 #endif
     }
   active_mutex=MagickFalse;
@@ -64,12 +64,12 @@ static inline void InitializeMagickMutex(void)
 {
   if (active_mutex == MagickFalse)
     {
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      omp_init_lock(&semaphore_mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
       ;
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
       InitializeCriticalSection(&semaphore_mutex);
-#elif defined(MAGICKCORE_OPENMP_SUPPORT)
-      omp_init_lock(&semaphore_mutex);
 #endif
     }
   active_mutex=MagickTrue;
@@ -77,7 +77,9 @@ static inline void InitializeMagickMutex(void)
 
 static inline void LockMagickMutex(void)
 {
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_set_lock(&semaphore_mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -92,14 +94,14 @@ static inline void LockMagickMutex(void)
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
   while (InterlockedCompareExchange(&semaphore_mutex,1L,0L) != 0)
     Sleep(10);
-#elif defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_set_lock(&semaphore_mutex);
 #endif
 }
 
 static inline void UnlockMagickMutex(void)
 {
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_unset_lock(&semaphore_mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -113,8 +115,6 @@ static inline void UnlockMagickMutex(void)
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
   InterlockedExchange(&semaphore_mutex,0L);
-#elif defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_unset_lock(&semaphore_mutex);
 #endif
 }
 
