@@ -1536,7 +1536,6 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
       /*
         Native blob support for this image format.
       */
-      blob_info->length=0;
       blob_info->blob=(void *) AcquireQuantumMemory(image->columns,
         image->rows*sizeof(unsigned char));
       if (blob_info->blob == (void *) NULL)
@@ -1547,9 +1546,10 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
           (void) CloseBlob(image);
           image->blob->exempt=MagickTrue;
           *image->filename='\0';
+          blob_info->length=image->columns*image->rows;
           status=WriteImage(blob_info,image);
           InheritException(exception,&image->exception);
-          *length=image->blob->length;
+          *length=image->blob->offset;
           blob=DetachBlob(image->blob);
           if (status == MagickFalse)
             blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -1794,7 +1794,6 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
       /*
         Native blob support for this images format.
       */
-      blob_info->length=0;
       blob_info->blob=(void *) AcquireQuantumMemory(images->columns,
         images->rows*sizeof(unsigned char));
       if (blob_info->blob == (void *) NULL)
@@ -1805,8 +1804,9 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
           (void) CloseBlob(images);
           images->blob->exempt=MagickTrue;
           *images->filename='\0';
+          blob_info->length=images->columns*images->rows;
           status=WriteImages(blob_info,images,images->filename,exception);
-          *length=images->blob->length;
+          *length=images->blob->offset;
           blob=DetachBlob(images->blob);
           if (status == MagickFalse)
             blob=(unsigned char *) RelinquishMagickMemory(blob);
