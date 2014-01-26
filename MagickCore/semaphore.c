@@ -203,9 +203,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   /*
     Initialize the semaphore.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_init_lock((omp_lock_t *) &semaphore_info->mutex);
-#elif defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -259,6 +257,8 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         _exit(1);
       }
   }
+#elif defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_init_lock((omp_lock_t *) &semaphore_info->mutex);
 #endif
   semaphore_info->id=GetMagickThreadId();
   semaphore_info->reference_count=0;
@@ -295,9 +295,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   assert((*semaphore_info)->signature == MagickSignature);
   InitializeMagickMutex();
   LockMagickMutex();
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_destroy_lock((omp_lock_t *) &(*semaphore_info)->mutex);
-#elif defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -312,6 +310,8 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
+#elif defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_destroy_lock((omp_lock_t *) &(*semaphore_info)->mutex);
 #endif
   (*semaphore_info)->signature=(~MagickSignature);
   *semaphore_info=(SemaphoreInfo *) RelinquishSemaphoreMemory(*semaphore_info);
@@ -344,9 +344,7 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_set_lock((omp_lock_t *) &semaphore_info->mutex);
-#elif defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -361,6 +359,8 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
   EnterCriticalSection(&semaphore_info->mutex);
+#elif defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_set_lock((omp_lock_t *) &semaphore_info->mutex);
 #endif
 #if defined(MAGICKCORE_DEBUG)
   if ((semaphore_info->reference_count > 0) &&
@@ -487,9 +487,7 @@ MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
     }
   semaphore_info->reference_count--;
 #endif
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_unset_lock((omp_lock_t *) &semaphore_info->mutex);
-#elif defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
@@ -504,5 +502,7 @@ MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
   LeaveCriticalSection(&semaphore_info->mutex);
+#elif defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_unset_lock((omp_lock_t *) &semaphore_info->mutex);
 #endif
 }
