@@ -1535,8 +1535,8 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
       /*
         Native blob support for this image format.
       */
-      blob_info->length=0;
-      blob_info->blob=(void *) AcquireQuantumMemory(MagickMaxBlobExtent,
+      blob_info->length=MagickMaxBlobExtent;
+      blob_info->blob=(void *) AcquireQuantumMemory(blob_info->length,
         sizeof(unsigned char));
       if (blob_info->blob == (void *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1792,8 +1792,8 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
       /*
         Native blob support for this images format.
       */
-      blob_info->length=0;
-      blob_info->blob=(void *) AcquireQuantumMemory(MagickMaxBlobExtent,
+      blob_info->length=MagickMaxBlobExtent;
+      blob_info->blob=(void *) AcquireQuantumMemory(blob_info->length,
         sizeof(unsigned char));
       if (blob_info->blob == (void *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
