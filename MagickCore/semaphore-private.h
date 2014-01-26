@@ -92,7 +92,7 @@ static inline void LockMagickMutex(void)
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
   while (InterlockedCompareExchange(&semaphore_mutex,1L,0L) != 0)
     Sleep(10);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#elif defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_set_lock(&semaphore_mutex);
 #endif
 }
