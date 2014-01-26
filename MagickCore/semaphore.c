@@ -235,7 +235,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     if (status != 0)
       {
         errno=status;
-        perror("unable to initialzie mutex");
+        perror("unable to initialize mutex");
         _exit(1);
       }
     status=pthread_mutexattr_destroy(&mutex_info);
@@ -476,9 +476,7 @@ MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_unset_lock((omp_lock_t *) &semaphore_info->mutex);
-#elif defined(MAGICKCORE_DEBUG)
+#if defined(MAGICKCORE_DEBUG)
   assert(IsMagickThreadEqual(semaphore_info->id) != MagickFalse);
   if (semaphore_info->reference_count == 0)
     {
@@ -489,7 +487,9 @@ MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
     }
   semaphore_info->reference_count--;
 #endif
-#if defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_unset_lock((omp_lock_t *) &semaphore_info->mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
