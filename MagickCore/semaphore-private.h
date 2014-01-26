@@ -48,26 +48,27 @@ static MagickBooleanType
 static inline void DestroyMagickMutex(void)
 {
   if (active_mutex != MagickFalse)
+    {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    omp_destroy_lock(&semaphore_mutex);
-#elif defined(MAGICKCORE_THREAD_SUPPORT)
-    ;
+      omp_destroy_lock(&semaphore_mutex);
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
-    DeleteCriticalSection(&semaphore_mutex);
+      DeleteCriticalSection(&semaphore_mutex);
 #endif
+    }
   active_mutex=MagickFalse;
 }
 
 static inline void InitializeMagickMutex(void)
 {
   if (active_mutex == MagickFalse)
+    {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    omp_init_lock(&semaphore_mutex);
-#elif defined(MAGICKCORE_THREAD_SUPPORT)
-    ;
+      omp_init_lock(&semaphore_mutex);
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
-    InitializeCriticalSection(&semaphore_mutex);
+      InitializeCriticalSection(&semaphore_mutex);
 #endif
+    }
+  active_mutex=MagickTrue;
 }
 
 static inline void LockMagickMutex(void)
