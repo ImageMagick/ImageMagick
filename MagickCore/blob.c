@@ -1582,7 +1582,7 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
               status=WriteImage(blob_info,image,exception);
               (void) fclose(blob_info->file);
               if (status != MagickFalse)
-                blob=FileToBlob(image->filename,~0UL,length,exception);
+                blob=FileToBlob(unique,~0UL,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
         }
@@ -1837,7 +1837,7 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
               status=WriteImages(blob_info,images,filename,exception);
               (void) fclose(blob_info->file);
               if (status != MagickFalse)
-                blob=FileToBlob(images->filename,~0UL,length,exception);
+                blob=FileToBlob(unique,~0UL,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
         }
