@@ -1986,6 +1986,26 @@ private:
   DecorationType _decoration;
 };
 
+  // Render text right-to-left or left-to-right.
+  class MagickPPExport DrawableTextDirection : public DrawableBase
+  {
+  public:
+
+    DrawableTextDirection(DirectionType direction_);
+
+    ~DrawableTextDirection(void);
+
+    void operator()(MagickCore::DrawingWand *context_) const;
+
+    void direction(DirectionType direction_);
+    DirectionType direction(void) const;
+
+    DrawableBase* copy() const;
+
+  private:
+    DirectionType _direction;
+  };
+
   // Specify text inter-line spacing
   class MagickPPExport DrawableTextInterlineSpacing : public DrawableBase
   {

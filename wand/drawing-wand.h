@@ -44,6 +44,9 @@ extern WandExport ClipPathUnits
 extern WandExport DecorationType
   DrawGetTextDecoration(const DrawingWand *);
 
+extern WandExport DirectionType
+  DrawGetTextDirection(const DrawingWand *);
+
 extern WandExport double
   DrawGetFillOpacity(const DrawingWand *),
   DrawGetFontSize(const DrawingWand *),
@@ -204,6 +207,7 @@ extern WandExport void
   DrawSetTextAlignment(DrawingWand *,const AlignType),
   DrawSetTextAntialias(DrawingWand *,const MagickBooleanType),
   DrawSetTextDecoration(DrawingWand *,const DecorationType),
+  DrawSetTextDirection(DrawingWand *,const DirectionType),
   DrawSetTextEncoding(DrawingWand *,const char *),
   DrawSetTextUnderColor(DrawingWand *,const PixelWand *),
   DrawSetViewbox(DrawingWand *,ssize_t,ssize_t,ssize_t,ssize_t),
