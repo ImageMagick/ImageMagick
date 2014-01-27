@@ -1112,8 +1112,8 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
   extent=(MagickSizeType) (image->blob->offset+(MagickOffsetType) length);
   if (extent >= image->blob->extent)
     {
-      image->blob->quantum<<=1;
       extent=image->blob->extent+image->blob->quantum+length;
+      image->blob->quantum<<=1;
       if (SetBlobExtent(image,extent) == MagickFalse)
         return(0);
     }
@@ -3644,6 +3644,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
           {
             image->blob->extent=(size_t) (image->blob->offset+
               image->blob->quantum);
+            image->blob->quantum<<=1;
             image->blob->data=(unsigned char *) ResizeQuantumMemory(
               image->blob->data,image->blob->extent+1,
               sizeof(*image->blob->data));
@@ -4156,8 +4157,8 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
         {
           if (image->blob->mapped != MagickFalse)
             return(0);
-          image->blob->quantum<<=1;
           image->blob->extent+=length+image->blob->quantum;
+          image->blob->quantum<<=1;
           image->blob->data=(unsigned char *) ResizeQuantumMemory(
             image->blob->data,image->blob->extent+1,sizeof(*image->blob->data));
           (void) SyncBlob(image);
