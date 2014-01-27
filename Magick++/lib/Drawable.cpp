@@ -1354,6 +1354,38 @@ Magick::DrawableBase* Magick::DrawableTextDecoration::copy() const
   return new DrawableTextDecoration(*this);
 }
 
+// DrawableTextDirection
+Magick::DrawableTextDirection::DrawableTextDirection(
+  DirectionType direction_)
+  : _direction(direction_)
+{
+}
+
+Magick::DrawableTextDirection::~DrawableTextDirection(void)
+{
+}
+
+void Magick::DrawableTextDirection::operator()(
+  MagickCore::DrawingWand *context_) const
+{
+  DrawSetTextDirection(context_,_direction);
+}
+
+void Magick::DrawableTextDirection::direction(DirectionType direction_)
+{
+  _direction=direction_;
+}
+
+Magick::DirectionType Magick::DrawableTextDirection::direction(void) const
+{
+  return(_direction);
+}
+
+Magick::DrawableBase *Magick::DrawableTextDirection::copy() const
+{
+  return new DrawableTextDirection(*this);
+}
+
 // DrawableTextInterlineSpacing
 Magick::DrawableTextInterlineSpacing::DrawableTextInterlineSpacing(
   double spacing_)
