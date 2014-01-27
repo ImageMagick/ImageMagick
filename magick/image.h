@@ -240,8 +240,7 @@ struct _Image
 
   size_t
     scene,          /* index of image in multi-image file */
-    delay,          /* Animation delay time */
-    duration;       /* Total animation duration sum(delay*iterations) */
+    delay;          /* Animation delay time */
 
   ssize_t
     ticks_per_second;  /* units for delay time, default 100 for GIF */
@@ -349,6 +348,9 @@ struct _Image
 
   PixelIntensityMethod
     intensity;      /* method to generate an intensity value from a pixel */
+
+  size_t
+    duration;       /* Total animation duration sum(delay*iterations) */
 };
 
 struct _ImageInfo
