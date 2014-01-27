@@ -3580,7 +3580,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           "jpeg:%s",filename);
         if (image->compression == JPEG2000Compression)
           (void) FormatLocaleString(read_info->filename,MaxTextExtent,
-            "jp2:%s",filename);
+            "j2k:%s",filename);
         jpeg_image=ReadImage(read_info,exception);
         if (jpeg_image != (Image *) NULL)
           {
