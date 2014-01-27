@@ -1994,6 +1994,20 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             graphic_context[n]->decorate=(DecorationType) decorate;
             break;
           }
+        if (LocaleCompare("direction",keyword) == 0)
+          {
+            ssize_t
+              direction;
+
+            GetMagickToken(q,&q,token);
+            direction=ParseCommandOption(MagickDirectionOptions,MagickFalse,
+              token);
+            if (direction == -1)
+              status=MagickFalse;
+            else
+              graphic_context[n]->direction=(DirectionType) direction;
+            break;
+          }
         status=MagickFalse;
         break;
       }
