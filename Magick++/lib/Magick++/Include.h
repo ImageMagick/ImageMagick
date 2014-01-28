@@ -1341,6 +1341,8 @@ namespace Magick
   using MagickCore::TransformImageColorspace;
   using MagickCore::TransparentPaintImage;
   using MagickCore::TransparentPaintImageChroma;
+  using MagickCore::TransposeImage;
+  using MagickCore::TransverseImage;
   using MagickCore::TrimImage;
   using MagickCore::TypeError;
   using MagickCore::TypeFatalError;
