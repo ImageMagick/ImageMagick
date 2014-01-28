@@ -76,6 +76,9 @@
         <message name="UnableToAcquireCacheView">
           unable to acquire cache view
         </message>
+        <message name="UnableToExtendPixelCache">
+          unable to extent pixel cache
+        </message>
       </fatalerror>
     </cache>
     <coder>
