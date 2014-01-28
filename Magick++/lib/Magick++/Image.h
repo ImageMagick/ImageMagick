@@ -1299,6 +1299,14 @@ namespace Magick
     // the given two color
     void transparentChroma(const Color &colorLow_,const Color &colorHigh_);
 
+    // Creates a horizontal mirror image by reflecting the pixels around the
+    // central y-axis while rotating them by 90 degrees.
+    void transpose(void);
+
+    // Creates a vertical mirror image by reflecting the pixels around the
+    // central x-axis while rotating them by 270 degrees.
+    void transverse(void);
+
     // Trim edges that are the background color from the image
     void trim(void);
 
