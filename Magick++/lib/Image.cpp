@@ -4208,6 +4208,28 @@ void Magick::Image::transparentChroma(const Color &colorLow_,
   throwImageException();
 }
 
+void Magick::Image::transpose(void)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=TransposeImage(constImage(),&exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
+void Magick::Image::transverse(void)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=TransverseImage(constImage(),&exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
 void Magick::Image::trim(void)
 {
   MagickCore::Image
