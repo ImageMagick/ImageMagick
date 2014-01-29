@@ -770,7 +770,8 @@ coders_ipl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_ipl_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_ipl_la_rpath = -rpath $(codersdir)
-coders_jbig_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_jbig_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_jbig_la_OBJECTS = coders/coders_jbig_la-jbig.lo
 coders_jbig_la_OBJECTS = $(am_coders_jbig_la_OBJECTS)
 coders_jbig_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -3608,13 +3609,13 @@ coders_ipl_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_jbig_la_SOURCES = coders/jbig.c
 coders_jbig_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_jbig_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_jbig_la_LIBADD = $(MAGICKCORE_LIBS) $(JBIG_LIBS)
+coders_jbig_la_LIBADD = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(MATH_LIBS)
 
 # JPEG coder module
 coders_jpeg_la_SOURCES = coders/jpeg.c
 coders_jpeg_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_jpeg_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_jpeg_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(JPEG_LIBS)
+coders_jpeg_la_LIBADD = $(MAGICKCORE_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
 
 # JPEG 2000 coder module
 coders_jp2_la_SOURCES = coders/jp2.c

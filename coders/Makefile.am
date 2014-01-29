@@ -586,13 +586,13 @@ coders_ipl_la_LIBADD      = $(MAGICKCORE_LIBS)
 coders_jbig_la_SOURCES     = coders/jbig.c
 coders_jbig_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_jbig_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_jbig_la_LIBADD      = $(MAGICKCORE_LIBS) $(JBIG_LIBS)
+coders_jbig_la_LIBADD      = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(MATH_LIBS)
 
 # JPEG coder module
 coders_jpeg_la_SOURCES     = coders/jpeg.c
 coders_jpeg_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_jpeg_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_jpeg_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(JPEG_LIBS)
+coders_jpeg_la_LIBADD      = $(MAGICKCORE_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
 
 # JPEG 2000 coder module
 coders_jp2_la_SOURCES      = coders/jp2.c
