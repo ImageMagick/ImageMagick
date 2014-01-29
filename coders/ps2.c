@@ -612,6 +612,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                 "%%%%Pages: %.20g\n",(double) GetImageListLength(image));
             (void) WriteBlobString(image,buffer);
           }
+        if (image->colorspace == CMYKColorspace)
+          (void) WriteBlobString(image,
+            "%%DocumentProcessColors: Cyan Magenta Yellow Black\n");
         (void) WriteBlobString(image,"%%EndComments\n");
         (void) WriteBlobString(image,"\n%%BeginDefaults\n");
         (void) WriteBlobString(image,"%%EndDefaults\n\n");
