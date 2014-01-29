@@ -41,7 +41,6 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/property.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
@@ -79,6 +78,7 @@
 #include "magick/pixel.h"
 #include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
+#include "magick/property.h"
 #include "magick/quantize.h"
 #include "magick/random_.h"
 #include "magick/resource_.h"
