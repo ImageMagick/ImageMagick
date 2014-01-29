@@ -53,8 +53,9 @@ Features and Capabilities
       * Image calculator: apply a mathematical expression to an image or image
         channels.
       * Discrete Fourier transform: implements the forward and inverse DFT.
-      * Percetual hash: detect similar or duplicate images by analyzing and
-        comparing their features.
+      * Perceptual hash: maps visually identical images to the same or similar
+        image hash-- useful in image retrieval, authentication, indexing, or
+        copy detection as well as digital watermarking.
       * Color management: accurate color management with color profiles or in
         lieu of-- built-in gamma compression or expansion as demanded by the
         colorspace.
