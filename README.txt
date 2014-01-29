@@ -54,8 +54,8 @@ Features and Capabilities
         channels.
       * Discrete Fourier transform: implements the forward and inverse DFT.
       * Perceptual hash: maps visually identical images to the same or similar
-        image hash-- useful in image retrieval, authentication, indexing, or
-        copy detection as well as digital watermarking.
+        hash-- useful in image retrieval, authentication, indexing, or copy
+        detection as well as digital watermarking.
       * Color management: accurate color management with color profiles or in
         lieu of-- built-in gamma compression or expansion as demanded by the
         colorspace.
