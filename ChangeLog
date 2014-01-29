@@ -1,3 +1,6 @@
+2014-01-29  6.8.8-4 Cristy  <quetzlzacatenango@image...>
+  * remove comma at end of enumerator list, magick/compare.h.
+
 2014-01-28  6.8.8-4 Dirk Lemstra <dirk@snakeware...>
   * Added transpose and transverse to Magick++. (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=24884).
