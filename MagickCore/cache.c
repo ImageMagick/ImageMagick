@@ -1489,11 +1489,11 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   if ((time_limit != MagickResourceInfinity) &&
       ((MagickSizeType) (time((time_t *) NULL)-cache_timestamp) >= time_limit))
      {
-#if !defined(ETIME)
-#define ETIME  0
+#if !defined(ECANCELED)
+#define ECANCELED  0
 #endif
 
-       errno=ETIME;
+       errno=ECANCELED;
        ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
      }
   assert(image->cache != (Cache) NULL);
