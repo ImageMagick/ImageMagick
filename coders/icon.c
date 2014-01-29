@@ -327,8 +327,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     icon_info.height=(unsigned char) ((int) ReadBlobLSBLong(image)/2);
     icon_info.planes=ReadBlobLSBShort(image);
     icon_info.bits_per_pixel=ReadBlobLSBShort(image);
-    if ((icon_info.planes == 18505) && (icon_info.bits_per_pixel == 21060) || 
-         icon_info.size == 0x474e5089)
+    if (((icon_info.planes == 18505) && (icon_info.bits_per_pixel == 21060)) || 
+        (icon_info.size == 0x474e5089))
       {
         Image
           *icon_image;

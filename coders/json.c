@@ -40,59 +40,40 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/annotate.h"
 #include "magick/artifact.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
-#include "magick/client.h"
-#include "magick/coder.h"
-#include "magick/color.h"
-#include "magick/configure.h"
+#include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/constitute.h"
-#include "magick/decorate.h"
-#include "magick/delegate.h"
-#include "magick/draw.h"
-#include "magick/effect.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/feature.h"
-#include "magick/gem.h"
-#include "magick/geometry.h"
-#include "magick/histogram.h"
-#include "magick/identify.h"
 #include "magick/image.h"
 #include "magick/image-private.h"
 #include "magick/list.h"
-#include "magick/locale_.h"
-#include "magick/log.h"
-#include "magick/magic.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
-#include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
-#include "magick/montage.h"
 #include "magick/option.h"
+#include "magick/pixel.h"
+#include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
 #include "magick/prepress.h"
-#include "magick/profile.h"
 #include "magick/property.h"
-#include "magick/quantize.h"
-#include "magick/quantum.h"
-#include "magick/random_.h"
+#include "magick/quantum-private.h"
 #include "magick/registry.h"
-#include "magick/resize.h"
-#include "magick/resource_.h"
 #include "magick/signature.h"
+#include "magick/static.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
-#include "magick/timer.h"
-#include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/version.h"
+#include "magick/module.h"
 
 /*
   Forward declarations.
@@ -640,9 +621,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   const MagickInfo
     *magick_info;
 
-  const PixelPacket
-    *pixels;
-
   double
     elapsed_time,
     user_time;
@@ -676,7 +654,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   elapsed_time=GetElapsedTime(&image->timer);
   user_time=GetUserTime(&image->timer);
   GetTimerInfo(&image->timer);
-  pixels=GetVirtualPixels(image,0,0,1,1,exception);
+  (void) GetVirtualPixels(image,0,0,1,1,exception);
   exception=DestroyExceptionInfo(exception);
   type=GetImageType(image,&image->exception);
   (void) SignatureImage(image);
