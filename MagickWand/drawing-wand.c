@@ -5542,7 +5542,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
                 wand->name);
               return(MagickFalse);
             }
-          for (i=0; i < n_new; i++)
+          for (i=0; i < (ssize_t) n_new; i++)
           {
             CurrentContext->dash_pattern[i]=0.0;
             if (dasharray != (double *) NULL)
@@ -5556,7 +5556,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
       else
         if (dasharray != (double *) NULL)
           {
-            for (i=0; i < n_new; i++)
+            for (i=0; i < (ssize_t) n_new; i++)
             {
               if (i != 0)
                 (void) MvgPrintf(wand,",");
