@@ -3074,7 +3074,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               data[length*quantum]='\0';
             }
           else
-            if (datum == 0xFFFFFFFFL)
+            if ((unsigned int) datum == 0xFFFFFFFFU)
               {
                 sequence=MagickTrue;
                 continue;
