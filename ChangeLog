@@ -1,4 +1,7 @@
 2014-01-29  6.8.8-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.8-3, SVN revision 14673.
+
+2014-01-29  6.8.8-4 Cristy  <quetzlzacatenango@image...>
   * remove comma at end of enumerator list, magick/compare.h.
 
 2014-01-28  6.8.8-4 Dirk Lemstra <dirk@snakeware...>
