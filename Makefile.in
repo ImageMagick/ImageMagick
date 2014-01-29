@@ -418,8 +418,9 @@ am_Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECT
 	Magick++/lib/Functions.lo Magick++/lib/Geometry.lo \
 	Magick++/lib/Image.lo Magick++/lib/ImageRef.lo \
 	Magick++/lib/Montage.lo Magick++/lib/Options.lo \
-	Magick++/lib/Pixels.lo Magick++/lib/STL.lo \
-	Magick++/lib/Thread.lo Magick++/lib/TypeMetric.lo
+	Magick++/lib/Pixels.lo Magick++/lib/ResourceLimits.lo \
+	Magick++/lib/STL.lo Magick++/lib/Thread.lo \
+	Magick++/lib/TypeMetric.lo
 Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS = $(am_Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -4782,6 +4783,7 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 	Magick++/lib/Montage.cpp \
 	Magick++/lib/Options.cpp \
 	Magick++/lib/Pixels.cpp \
+	Magick++/lib/ResourceLimits.cpp \
 	Magick++/lib/STL.cpp \
 	Magick++/lib/Thread.cpp \
 	Magick++/lib/TypeMetric.cpp \
@@ -4800,6 +4802,7 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 	Magick++/lib/Magick++/Montage.h \
 	Magick++/lib/Magick++/Options.h \
 	Magick++/lib/Magick++/Pixels.h \
+	Magick++/lib/Magick++/ResourceLimits.h \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/Thread.h \
 	Magick++/lib/Magick++/TypeMetric.h
@@ -5415,6 +5418,8 @@ Magick++/lib/Montage.lo: Magick++/lib/$(am__dirstamp) \
 Magick++/lib/Options.lo: Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
 Magick++/lib/Pixels.lo: Magick++/lib/$(am__dirstamp) \
+	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
+Magick++/lib/ResourceLimits.lo: Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
 Magick++/lib/STL.lo: Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
@@ -7050,6 +7055,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Options.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Pixels.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/ResourceLimits.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/STL.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Thread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/TypeMetric.Plo@am__quote@
