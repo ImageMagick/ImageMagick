@@ -1300,8 +1300,8 @@ static Image *PerceptualImageHash(const Image *image,
   phash_image=BlurImage(image,0.0,1.0,exception);
   if (phash_image == (Image *) NULL)
     return((Image *) NULL);
-  status=TransformImageColorspace(phash_image,colorspace);
   phash_image->depth=8;
+  status=TransformImageColorspace(phash_image,colorspace);
   if (status == MagickFalse)
     phash_image=DestroyImage(phash_image);
   return(phash_image);
