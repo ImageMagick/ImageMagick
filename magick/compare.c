@@ -1309,6 +1309,8 @@ static Image *PerceptualHashImage(const Image *image,
     }
   phash_image=BlurImage(clone_image,0.0,1.0,exception);
   clone_image=DestroyImage(clone_image);
+  if (phash_image != (Image *) NULL)
+    phash_image->depth=8;
   return(phash_image);
 }
 
@@ -1343,7 +1345,6 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
-  phash_image->depth=image->depth;
   reconstruct_moments=GetImageChannelMoments(phash_image,exception);
   phash_image=DestroyImage(phash_image);
   if (reconstruct_moments == (ChannelMoments *) NULL)
