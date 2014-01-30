@@ -1325,6 +1325,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   Image
     *phash_image;
 
+  MagickBooleanType
+    grayscale;
+
   register ssize_t
     i;
 
@@ -1352,6 +1355,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
+  grayscale=(IsGrayImage(image,exception) != MagickFalse) &&
+    (IsGrayImage(reconstruct_image,exception) != MagickFalse) ? MagickTrue :
+    MagickFalse;
   for (i=0; i < 7; i++)
   {
     double
@@ -1367,19 +1373,22 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         distortion[RedChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
-    if ((channel & GreenChannel) != 0)
+    if (grayscale == MagickFalse)
       {
-        difference=log10(fabs(reconstruct_moments[GreenChannel].I[i]))-
-          log10(fabs(image_moments[GreenChannel].I[i]));
-        distortion[GreenChannel]+=difference*difference;
-        distortion[CompositeChannels]+=difference*difference;
-      }
-    if ((channel & BlueChannel) != 0)
-      {
-        difference=log10(fabs(reconstruct_moments[BlueChannel].I[i]))-
-          log10(fabs(image_moments[BlueChannel].I[i]));
-        distortion[BlueChannel]+=difference*difference;
-        distortion[CompositeChannels]+=difference*difference;
+        if ((channel & GreenChannel) != 0)
+          {
+            difference=log10(fabs(reconstruct_moments[GreenChannel].I[i]))-
+              log10(fabs(image_moments[GreenChannel].I[i]));
+            distortion[GreenChannel]+=difference*difference;
+            distortion[CompositeChannels]+=difference*difference;
+          }
+        if ((channel & BlueChannel) != 0)
+          {
+            difference=log10(fabs(reconstruct_moments[BlueChannel].I[i]))-
+              log10(fabs(image_moments[BlueChannel].I[i]));
+            distortion[BlueChannel]+=difference*difference;
+            distortion[CompositeChannels]+=difference*difference;
+          }
       }
     if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse) &&
         (reconstruct_image->matte != MagickFalse))
@@ -1402,8 +1411,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
   reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
     reconstruct_moments);
-  if ((IsGrayImage(image,exception) != MagickFalse) ||
-      (IsGrayImage(reconstruct_image,exception) != MagickFalse))
+  if (grayscale != MagickFalse)
     return(MagickTrue);
   /*
     Compute perceptual hash in the HCLP colorspace.
