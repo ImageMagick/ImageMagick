@@ -2465,20 +2465,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (ping_file_depth == 16)
   {
      const char
-       *property;
-
-     property=(const char *) NULL;
-     ResetImagePropertyIterator(image);
-     property=GetNextImageProperty(image);
-     while (property != (const char *) NULL)
-       {
-         (void) GetImageProperty(image,property,exception);
-
-         if (LocaleNCompare(property,"png:swap-bytes",14) != 0)
-           png_set_swap(ping);
-
-         property=GetNextImageProperty(image);
-       }
+       *value;
+ 
+     value=GetImageOption(image_info,"png:swap-bytes");
+ 
+     if (value == NULL)
+        value=GetImageArtifact(image,"png:swap-bytes");
+ 
+     if (value != NULL)
+        png_set_swap(ping);
   }
 
   /* Save bit-depth and color-type in case we later want to write a PNG00 */
@@ -11276,7 +11271,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        * "identify" or for passing through to another JPEG
        */
       if ((LocaleNCompare(property,"png:",4) != 0 &&
-           LocaleNCompare(property,"jpeg:",5)) &&
+           LocaleNCompare(property,"jpeg:",5) != 0) &&
 
 
           /* Suppress density and units if we wrote a pHYs chunk */
