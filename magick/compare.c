@@ -156,9 +156,10 @@ MagickExport Image *CompareImageChannels(Image *image,
   *distortion=0.0;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((reconstruct_image->columns != image->columns) ||
-      (reconstruct_image->rows != image->rows))
-    ThrowImageException(ImageError,"ImageSizeDiffers");
+  if (metric != PerceptualHashErrorMetric)
+    if ((reconstruct_image->columns != image->columns) ||
+        (reconstruct_image->rows != image->rows))
+      ThrowImageException(ImageError,"ImageSizeDiffers");
   status=GetImageChannelDistortion(image,reconstruct_image,channel,metric,
     distortion,exception);
   if (status == MagickFalse)
@@ -1508,9 +1509,10 @@ MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
   *distortion=0.0;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((reconstruct_image->columns != image->columns) ||
-      (reconstruct_image->rows != image->rows))
-    ThrowBinaryException(ImageError,"ImageSizeDiffers",image->filename);
+  if (metric != PerceptualHashErrorMetric)
+    if ((reconstruct_image->columns != image->columns) ||
+        (reconstruct_image->rows != image->rows))
+      ThrowBinaryException(ImageError,"ImageSizeDiffers",image->filename);
   /*
     Get image distortion.
   */
@@ -1645,13 +1647,14 @@ MagickExport double *GetImageChannelDistortions(Image *image,
   assert(reconstruct_image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((reconstruct_image->columns != image->columns) ||
-      (reconstruct_image->rows != image->rows))
-    {
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        ImageError,"ImageSizeDiffers","`%s'",image->filename);
-      return((double *) NULL);
-    }
+  if (metric != PerceptualHashErrorMetric)
+    if ((reconstruct_image->columns != image->columns) ||
+        (reconstruct_image->rows != image->rows))
+      {
+        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          ImageError,"ImageSizeDiffers","`%s'",image->filename);
+        return((double *) NULL);
+      }
   /*
     Get image distortion.
   */
