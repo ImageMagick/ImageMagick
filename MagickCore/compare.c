@@ -1132,6 +1132,11 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     *image_moments,
     *reconstruct_moments;
 
+  double
+    alpha,
+    beta,
+    difference;
+
   Image
     *phash_image;
 
@@ -1164,7 +1169,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     }
   for (i=0; i < 7; i++)
   {
-   ssize_t
+    ssize_t
       channel;
       
     /*
@@ -1172,14 +1177,11 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     */
     for (channel=0; channel < MaxPixelChannels; channel++)
     {
-      double
-        difference;
-
-      if ((fabs(image_moments[channel].ellipse_intensity) < MagickEpsilon) ||
-          (fabs(reconstruct_moments[channel].ellipse_intensity) < MagickEpsilon))
-        continue;
-      difference=log10(fabs(reconstruct_moments[channel].I[i]))-
-         log10(fabs(image_moments[channel].I[i]));
+      alpha=fabs(image_moments[channel].I[i]);
+      beta=fabs(reconstruct_moments[channel].I[i]);
+      difference=0.0;
+      if ((alpha > MagickEpsilon) && (beta > MagickEpsilon))
+        difference=log10(beta)-log10(alpha);
       distortion[channel]+=difference*difference;
       distortion[CompositePixelChannel]+=difference*difference;
     }
@@ -1214,7 +1216,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     }
   for (i=0; i < 7; i++)
   {
-   ssize_t
+    ssize_t
       channel;
       
     /*
@@ -1222,14 +1224,11 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     */
     for (channel=0; channel < MaxPixelChannels; channel++)
     {
-      double
-        difference;
-
-      if ((fabs(image_moments[channel].ellipse_intensity) < MagickEpsilon) ||
-          (fabs(reconstruct_moments[channel].ellipse_intensity) < MagickEpsilon))
-        continue;
-      difference=log10(fabs(reconstruct_moments[channel].I[i]))-
-         log10(fabs(image_moments[channel].I[i]));
+      alpha=fabs(image_moments[channel].I[i]);
+      beta=fabs(reconstruct_moments[channel].I[i]);
+      difference=0.0;
+      if ((alpha > MagickEpsilon) && (beta > MagickEpsilon))
+        difference=log10(beta)-log10(alpha);
       distortion[channel]+=difference*difference;
       distortion[CompositePixelChannel]+=difference*difference;
     }
