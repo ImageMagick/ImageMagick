@@ -1257,7 +1257,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
 static double Decibels(double linear)
 {
  if (linear < MagickEpsilon)
-   linear=MagickEpsilon;
+   linear=(-MagickEpsilon);
  return(20.0*log10(linear));
 }
 
@@ -1372,8 +1372,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         alpha=fabs(image_moments[RedChannel].I[i]);
         beta=fabs(reconstruct_moments[RedChannel].I[i]);
-        difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-          (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+        difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+          (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
         distortion[RedChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1383,8 +1383,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
           {
             alpha=fabs(image_moments[GreenChannel].I[i]);
             beta=fabs(reconstruct_moments[GreenChannel].I[i]);
-            difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-              (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+            difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+              (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
             distortion[GreenChannel]+=difference*difference;
             distortion[CompositeChannels]+=difference*difference;
           }
@@ -1392,8 +1392,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
           {
             alpha=fabs(image_moments[BlueChannel].I[i]);
             beta=fabs(reconstruct_moments[BlueChannel].I[i]);
-            difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-              (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+            difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+              (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
             distortion[BlueChannel]+=difference*difference;
             distortion[CompositeChannels]+=difference*difference;
           }
@@ -1403,8 +1403,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         alpha=fabs(image_moments[OpacityChannel].I[i]);
         beta=fabs(reconstruct_moments[OpacityChannel].I[i]);
-        difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-          (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+        difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+          (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
         distortion[OpacityChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1414,8 +1414,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         alpha=fabs(image_moments[IndexChannel].I[i]);
         beta=fabs(reconstruct_moments[IndexChannel].I[i]);
-        difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-          (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+        difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+          (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
         distortion[IndexChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1457,8 +1457,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         alpha=fabs(image_moments[RedChannel].I[i]);
         beta=fabs(reconstruct_moments[RedChannel].I[i]);
-        difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-          (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+        difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+          (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
         distortion[RedChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1466,8 +1466,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         alpha=fabs(image_moments[GreenChannel].I[i]);
         beta=fabs(reconstruct_moments[GreenChannel].I[i]);
-        difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-          (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+        difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+          (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
         distortion[GreenChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1475,8 +1475,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         alpha=fabs(image_moments[BlueChannel].I[i]);
         beta=fabs(reconstruct_moments[BlueChannel].I[i]);
-        difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-          (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+        difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+          (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
         distortion[BlueChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1485,8 +1485,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         alpha=fabs(image_moments[OpacityChannel].I[i]);
         beta=fabs(reconstruct_moments[OpacityChannel].I[i]);
-        difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-          (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+        difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+          (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
         distortion[OpacityChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1496,8 +1496,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         alpha=fabs(image_moments[IndexChannel].I[i]);
         beta=fabs(reconstruct_moments[IndexChannel].I[i]);
-        difference=(beta < MagickEpsilon ? MagickEpsilon : log10(beta))-
-          (alpha < MagickEpsilon ? MagickEpsilon : log10(alpha));
+        difference=(beta < MagickEpsilon ? -MagickEpsilon : log10(beta))-
+          (alpha < MagickEpsilon ? -MagickEpsilon : log10(alpha));
         distortion[IndexChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
