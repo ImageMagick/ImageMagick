@@ -3888,7 +3888,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
   if ( iterations < 0 )  /* negative interations = infinite (well alomst) */
      kernel_limit = image->columns>image->rows ? image->columns : image->rows;
 
-  verbose = IsMagickTrue(GetImageArtifact(image,"verbose"));
+  verbose = IsMagickTrue(GetImageArtifact(image,"debug"));
 
   /* initialise for cleanup */
   curr_image = (Image *) image;
