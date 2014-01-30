@@ -1343,6 +1343,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
+  phash_image->depth=image->depth;
   reconstruct_moments=GetImageChannelMoments(phash_image,exception);
   phash_image=DestroyImage(phash_image);
   if (reconstruct_moments == (ChannelMoments *) NULL)
