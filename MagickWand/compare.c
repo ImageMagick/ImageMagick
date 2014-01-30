@@ -949,28 +949,15 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       if (similarity_metric > dissimilarity_threshold)
         ThrowCompareException(ImageError,"ImagesTooDissimilar",image->filename);
     }
-  if ((reconstruct_image->columns == image->columns) &&
-      (reconstruct_image->rows == image->rows))
+  if (((reconstruct_image->columns == image->columns) &&
+       (reconstruct_image->rows == image->rows)) ||
+       (metric == PerceptualHashErrorMetric))
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
       exception);
   else
     if (similarity_image == (Image *) NULL)
-      {
-        unsigned long
-          height,
-          width;
-
-        width=image->columns;
-        if (reconstruct_image->columns > width)
-          width=reconstruct_image->columns;
-        height=image->rows;
-        if (reconstruct_image->rows > height)
-          height=reconstruct_image->rows;
-        if ((SetImageExtent(image,width,height,exception) != MagickFalse) &&
-            (SetImageExtent(reconstruct_image,width,height,exception) != MagickFalse))
-          difference_image=CompareImages(image,reconstruct_image,metric,
-            &distortion,exception);
-      }
+      ThrowCompareException(OptionError,"ImageWidthsOrHeightsDiffer",
+        image->filename)
     else
       {
         Image
