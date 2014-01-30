@@ -1285,11 +1285,10 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
   return(status);
 }
 
-static Image *PerceptualHashImage(const Image *image,
+static Image *PerceptualImageHash(const Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
   Image
-    *clone_image,
     *phash_image;
 
   MagickBooleanType
@@ -1298,19 +1297,13 @@ static Image *PerceptualHashImage(const Image *image,
   /*
     Transform colorspace then blur perceptual hash image.
   */
-  clone_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (clone_image == (Image *) NULL)
+  phash_image=BlurImage(image,0.0,1.0,exception);
+  if (phash_image == (Image *) NULL)
     return((Image *) NULL);
-  status=TransformImageColorspace(clone_image,colorspace);
+  status=TransformImageColorspace(phash_image,colorspace);
+  phash_image->depth=8;
   if (status == MagickFalse)
-    {
-      clone_image=DestroyImage(clone_image);
-      return((Image *) NULL);
-    }
-  phash_image=BlurImage(clone_image,0.0,1.0,exception);
-  clone_image=DestroyImage(clone_image);
-  if (phash_image != (Image *) NULL)
-    phash_image->depth=8;
+    phash_image=DestroyImage(phash_image);
   return(phash_image);
 }
 
@@ -1334,14 +1327,14 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   /*
     Compute perceptual hash in the native image colorspace.
   */
-  phash_image=PerceptualHashImage(image,image->colorspace,exception);
+  phash_image=PerceptualImageHash(image,image->colorspace,exception);
   if (phash_image == (Image *) NULL)
     return(MagickFalse);
   image_moments=GetImageChannelMoments(phash_image,exception);
   phash_image=DestroyImage(phash_image);
   if (image_moments == (ChannelMoments *) NULL)
     return(MagickFalse);
-  phash_image=PerceptualHashImage(reconstruct_image,
+  phash_image=PerceptualImageHash(reconstruct_image,
     reconstruct_image->colorspace,exception);
   if (phash_image == (Image *) NULL)
     {
@@ -1416,14 +1409,14 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   /*
     Compute perceptual hash in the HCLP colorspace.
   */
-  phash_image=PerceptualHashImage(image,HCLpColorspace,exception);
+  phash_image=PerceptualImageHash(image,HCLpColorspace,exception);
   if (phash_image == (Image *) NULL)
     return(MagickFalse);
   image_moments=GetImageChannelMoments(phash_image,exception);
   phash_image=DestroyImage(phash_image);
   if (image_moments == (ChannelMoments *) NULL)
     return(MagickFalse);
-  phash_image=PerceptualHashImage(reconstruct_image,HCLpColorspace,exception);
+  phash_image=PerceptualImageHash(reconstruct_image,HCLpColorspace,exception);
   if (phash_image == (Image *) NULL)
     {
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
