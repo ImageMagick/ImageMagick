@@ -3693,7 +3693,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
   if ( iterations < 0 )  /* negative interations = infinite (well alomst) */
      kernel_limit = image->columns>image->rows ? image->columns : image->rows;
 
-  verbose = IsStringTrue(GetImageArtifact(image,"verbose"));
+  verbose = IsStringTrue(GetImageArtifact(image,"debug"));
 
   /* initialise for cleanup */
   curr_image = (Image *) image;
