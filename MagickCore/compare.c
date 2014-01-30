@@ -1138,8 +1138,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     *reconstruct_moments;
 
   Image
-    *phash_image,
-    *phash_reconstruct;
+    *phash_image;
 
   register ssize_t
     i;
@@ -1154,15 +1153,15 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   phash_image=DestroyImage(phash_image);
   if (image_moments == (ChannelMoments *) NULL)
     return(MagickFalse);
-  phash_reconstruct=PerceptualHashImage(reconstruct_image,
+  phash_image=PerceptualHashImage(reconstruct_image,
     reconstruct_image->colorspace,exception);
-  if (phash_reconstruct == (Image *) NULL)
+  if (phash_image == (Image *) NULL)
     {
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
-  reconstruct_moments=GetImageMoments(phash_reconstruct,exception);
-  phash_reconstruct=DestroyImage(phash_reconstruct);
+  reconstruct_moments=GetImageMoments(phash_image,exception);
+  phash_image=DestroyImage(phash_image);
   if (reconstruct_moments == (ChannelMoments *) NULL)
     {
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
@@ -1206,15 +1205,14 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   phash_image=DestroyImage(phash_image);
   if (image_moments == (ChannelMoments *) NULL)
     return(MagickFalse);
-  phash_reconstruct=PerceptualHashImage(reconstruct_image,HCLpColorspace,
-    exception);
-  if (phash_reconstruct == (Image *) NULL)
+  phash_image=PerceptualHashImage(reconstruct_image,HCLpColorspace,exception);
+  if (phash_image == (Image *) NULL)
     {
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
-  reconstruct_moments=GetImageMoments(phash_reconstruct,exception);
-  phash_reconstruct=DestroyImage(phash_reconstruct);
+  reconstruct_moments=GetImageMoments(phash_image,exception);
+  phash_image=DestroyImage(phash_image);
   if (reconstruct_moments == (ChannelMoments *) NULL)
     {
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
