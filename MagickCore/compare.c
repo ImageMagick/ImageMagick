@@ -1140,6 +1140,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   Image
     *phash_image;
 
+  MagickBooleanType
+    grayscale;
+
   register ssize_t
     i;
 
@@ -1188,6 +1191,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
   reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
     reconstruct_moments);
+  grayscale=(IsImageGray(image,exception) != MagickFalse) &&
+    (IsImageGray(reconstruct_image,exception) != MagickFalse) ? MagickTrue :
+    MagickFalse;
   if (grayscale != MagickFalse)
     return(MagickTrue);
   /*
