@@ -1091,7 +1091,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
 static double Decibels(double linear)
 {
  if (linear < MagickEpsilon)
-   linear=(-MagickEpsilon);
+   linear=MagickEpsilon;
  return(20.0*log10(linear));
 }
 
