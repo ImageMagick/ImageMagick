@@ -1117,11 +1117,11 @@ MagickExport FxInfo *DestroyFxInfo(FxInfo *fx_info)
 %
 %  The format of the FxEvaluateExpression method is:
 %
-%      MagickRealType FxEvaluateChannelExpression(FxInfo *fx_info,
+%      MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
 %        const ChannelType channel,const ssize_t x,const ssize_t y,
-%        MagickRealType *alpha,Exceptioninfo *exception)
-%      MagickRealType FxEvaluateExpression(FxInfo *fx_info,
-%        MagickRealType *alpha,Exceptioninfo *exception)
+%        double *alpha,Exceptioninfo *exception)
+%      MagickBooleanType FxEvaluateExpression(FxInfo *fx_info,double *alpha,
+%        Exceptioninfo *exception)
 %
 %  A description of each parameter follows:
 %
