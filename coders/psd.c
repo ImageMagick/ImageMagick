@@ -1212,9 +1212,10 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  negative layer count corrected for");
           image->matte=MagickTrue;
-          if (skip_layers)
-            return(MagickTrue);
         }
+
+      if (skip_layers != MagickFalse)
+        return(MagickTrue);
 
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
