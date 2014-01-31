@@ -128,9 +128,6 @@ typedef struct _LayerInfo
   char
     blendkey[4];
 
-  MagickBooleanType
-    has_merged_alpha;
-
   Quantum
     opacity;
 
@@ -1080,9 +1077,6 @@ static MagickStatusType ReadPSDLayer(Image *image,PSDInfo *psd_info,
   char
     message[MaxTextExtent];
 
-  MagickBooleanType
-    correct_opacity;
-
   MagickStatusType
     status;
 
@@ -1120,7 +1114,6 @@ static MagickStatusType ReadPSDLayer(Image *image,PSDInfo *psd_info,
   (void) SetImageProperty(layer_info->image,"label",(char *) layer_info->name);
 
   status=MagickTrue;
-  correct_opacity=MagickFalse;
   for (j=0; j < (ssize_t) layer_info->channels; j++)
   {
     if (image->debug != MagickFalse)
@@ -1129,30 +1122,18 @@ static MagickStatusType ReadPSDLayer(Image *image,PSDInfo *psd_info,
 
     compression=(PSDCompressionType) ReadBlobMSBShort(layer_info->image);
     layer_info->image->compression=ConvertPSDCompression(compression);
-    if (layer_info->has_merged_alpha != MagickFalse &&
-        layer_info->channel_info[j].type == -1)
-      {
-        layer_info->has_merged_alpha=MagickFalse;
-        image->matte=MagickTrue;
-        status=ReadPSDChannel(image,psd_info,layer_info,j,compression,
-          exception);
-      }
-    else
-    {
-      correct_opacity=MagickTrue;
-      if (layer_info->channel_info[j].type == -1)
-        layer_info->image->matte=MagickTrue;
+    if (layer_info->channel_info[j].type == -1)
+      layer_info->image->matte=MagickTrue;
 
-      status=ReadPSDChannel(layer_info->image,psd_info,layer_info,j,
-        compression,exception);
-      InheritException(exception,&layer_info->image->exception);
-    }
+    status=ReadPSDChannel(layer_info->image,psd_info,layer_info,j,
+      compression,exception);
+    InheritException(exception,&layer_info->image->exception);
 
     if (status == MagickFalse)
       break;
   }
 
-  if (status != MagickFalse && correct_opacity != MagickFalse)
+  if (status != MagickFalse)
     status=CorrectPSDOpacity(layer_info,exception);
 
   if (status != MagickFalse && layer_info->image->colorspace == CMYKColorspace)
@@ -1162,16 +1143,13 @@ static MagickStatusType ReadPSDLayer(Image *image,PSDInfo *psd_info,
 }
 
 static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
-  ExceptionInfo *exception)
+  MagickBooleanType skip_layers,ExceptionInfo *exception)
 {
   char
     type[4];
 
   LayerInfo
     *layer_info;
-
-  MagickBooleanType
-   has_merged_alpha;
 
   MagickSizeType
     size;
@@ -1223,18 +1201,19 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
       layer_info=(LayerInfo *) NULL;
       number_layers=(short) ReadBlobMSBShort(image);
 
-      has_merged_alpha=MagickFalse;
       if (number_layers < 0)
         {
           /*
-            The first alpha channel contains the transparency data for the
-            merged result.
+            The first alpha channel in the merged result contains the
+            transparency data for the merged result.
           */
           number_layers=MagickAbsoluteValue(number_layers);
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  negative layer count corrected for");
-          has_merged_alpha=MagickTrue;
+          image->matte=MagickTrue;
+          if (skip_layers)
+            return(MagickTrue);
         }
 
       if (image->debug != MagickFalse)
@@ -1413,8 +1392,6 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
 
       for (i=0; i < number_layers; i++)
       {
-        layer_info[i].has_merged_alpha=MagickFalse;
-
         if ((layer_info[i].page.width == 0) ||
               (layer_info[i].page.height == 0))
           {
@@ -1422,20 +1399,6 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "      layer data is empty");
             continue;
-          }
-
-        if (has_merged_alpha)
-          {
-            for (j=0; j < layer_info[i].channels; i++)
-            {
-              if (layer_info[i].channel_info[j].size > 2 &&
-                  layer_info[i].channel_info[j].type == -1)
-                {
-                  layer_info[i].has_merged_alpha=MagickTrue;
-                  break;
-                }
-            }
-            has_merged_alpha=MagickFalse;
           }
 
         /*
@@ -1779,13 +1742,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
     }
   else
     {
-      if (skip_layers == MagickFalse)
-        if (ReadPSDLayers(image,&psd_info,exception) != MagickTrue)
-          {
-            (void) CloseBlob(image);
-            return((Image *) NULL);
-          }
-
+      if (ReadPSDLayers(image,&psd_info,skip_layers,exception) != MagickTrue)
+        {
+          (void) CloseBlob(image);
+          return((Image *) NULL);
+        }
       /*
          Skip the rest of the layer and mask information.
       */
