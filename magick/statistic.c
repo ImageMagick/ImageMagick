@@ -1586,10 +1586,7 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     /*
       Compute center of mass (centroid).
     */
-    centroid[channel].x=image->columns/2.0;
-    centroid[channel].y=image->rows/2.0;
-    if (fabs(M00[channel]) < MagickEpsilon)
-      continue;
+    M00[channel]+=MagickEpsilon;
     centroid[channel].x=M10[channel]/M00[channel];
     centroid[channel].y=M01[channel]/M00[channel];
   }
@@ -1725,8 +1722,6 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     /*
       Compute elliptical angle, major and minor axes, eccentricity, & intensity.
     */
-    if (fabs(M00[channel]) < MagickEpsilon)
-      continue;
     channel_moments[channel].centroid=centroid[channel];
     channel_moments[channel].ellipse_axis.x=sqrt((2.0/M00[channel])*
       ((M20[channel]+M02[channel])+sqrt(4.0*M11[channel]*M11[channel]+
@@ -1748,8 +1743,6 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     /*
       Normalize image moments.
     */
-    if (fabs(M00[channel]) < MagickEpsilon)
-      continue;
     M10[channel]=0.0;
     M01[channel]=0.0;
     M11[channel]/=pow(M00[channel],1.0+(1.0+1.0)/2.0);
@@ -1767,8 +1760,6 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
     /*
       Compute Hu invariant moments.
     */
-    if (fabs(M00[channel]) < MagickEpsilon)
-      continue;
     channel_moments[channel].I[0]=M20[channel]+M02[channel];
     channel_moments[channel].I[1]=(M20[channel]-M02[channel])*
       (M20[channel]-M02[channel])+4.0*M11[channel]*M11[channel];
