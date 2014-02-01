@@ -295,8 +295,8 @@ static MagickStatusType CorrectPSDOpacity(LayerInfo* layer_info,
   layer_info->image->alpha_trait=BlendPixelTrait;
   for (y=0; y < (ssize_t) layer_info->image->rows; y++)
   {
-    q=GetAuthenticPixels(layer_info->image,0,y,
-      layer_info->image->columns,1,exception);
+    q=GetAuthenticPixels(layer_info->image,0,y,layer_info->image->columns,1,
+      exception);
     if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) layer_info->image->columns; x++)
@@ -1092,8 +1092,7 @@ static MagickStatusType ReadPSDLayer(Image *image,PSDInfo *psd_info,
     layer_info->image->compose=NoCompositeOp;
   if (psd_info->mode == CMYKMode)
     SetImageColorspace(layer_info->image,CMYKColorspace,exception);
-  if ((psd_info->mode == BitmapMode) ||
-      (psd_info->mode == GrayscaleMode) ||
+  if ((psd_info->mode == BitmapMode) || (psd_info->mode == GrayscaleMode) ||
       (psd_info->mode == DuotoneMode))
     SetImageColorspace(layer_info->image,GRAYColorspace,exception);
   /*
@@ -1284,7 +1283,7 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
           }
         count=ReadBlob(image,4,(unsigned char *) layer_info[i].blendkey);
         layer_info[i].opacity=(Quantum) ScaleCharToQuantum((unsigned char)
-              ReadBlobByte(image));
+          ReadBlobByte(image));
         layer_info[i].clipping=(unsigned char) ReadBlobByte(image);
         layer_info[i].flags=(unsigned char) ReadBlobByte(image);
         layer_info[i].visible=!(layer_info[i].flags & 0x02);
@@ -1664,8 +1663,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
           /*
             Read PSD raster colormap.
           */
-          if (AcquireImageColormap(image,(size_t) (length/3),
-                exception) == MagickFalse)
+          if (AcquireImageColormap(image,(size_t) (length/3),exception) == MagickFalse)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) image->colors; i++)
             image->colormap[i].red=ScaleCharToQuantum((unsigned char)
@@ -1850,8 +1848,7 @@ ModuleExport void UnregisterPSDImage(void)
 %
 %  The format of the WritePSDImage method is:
 %
-%      MagickBooleanType WritePSDImage(const ImageInfo *image_info,
-%        Image *image,ExceptionInfo *exception)
+%      MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
