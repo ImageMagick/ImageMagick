@@ -1,6 +1,3 @@
-2014-02-01  6.8.8-5 Cristy  <quetzlzacatenango@image...>
-  * New version 6.8.8-5, SVN revision 14759.
-
 2014-01-31  6.8.8-5 Cristy  <quetzlzacatenango@image...>
   * Fix case where an image moment might have a mass of 0 or a Hu moment might
     be 0.
