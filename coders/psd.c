@@ -1848,7 +1848,8 @@ ModuleExport void UnregisterPSDImage(void)
 %
 %  The format of the WritePSDImage method is:
 %
-%      MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,%        ExceptionInfo *exception)
+%      MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
