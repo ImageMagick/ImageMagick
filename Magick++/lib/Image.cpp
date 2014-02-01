@@ -4075,6 +4075,35 @@ void Magick::Image::strip(void)
   throwImageException();
 }
 
+Magick::Image Magick::Image::subImageSearch(const Image &reference_,
+  const MetricType metric_,Geometry *offset_,double *similarityMetric_,
+  const double similarityThreshold)
+{
+  char
+    artifact[MaxTextExtent];
+
+  MagickCore::Image
+    *newImage;
+
+  RectangleInfo
+    offset;
+
+  modifyImage();
+  (void) FormatLocaleString(artifact,MaxTextExtent,"%g",similarityThreshold);
+  (void) SetImageArtifact(image(),"compare:similarity-threshold",artifact);
+
+  GetPPException;
+  newImage=SimilarityMetricImage(image(),reference_.constImage(),metric_,
+    &offset,similarityMetric_,&exceptionInfo);
+  ThrowPPException;
+  if (offset_ != (Geometry *) NULL)
+    *offset_=offset;
+  if (newImage == (MagickCore::Image *) NULL)
+    return(Magick::Image());
+  else
+    return(Magick::Image(newImage));
+}
+
 void Magick::Image::swirl(const double degrees_)
 {
   MagickCore::Image

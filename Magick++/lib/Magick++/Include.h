@@ -1287,6 +1287,7 @@ namespace Magick
   using MagickCore::SharpenImageChannel;
   using MagickCore::ShaveImage;
   using MagickCore::ShearImage;
+  using MagickCore::SimilarityMetricImage;
   using MagickCore::SigmoidalContrastImageChannel;
   using MagickCore::SignatureImage;
   using MagickCore::SolarizeImage;
