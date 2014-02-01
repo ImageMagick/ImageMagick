@@ -1319,6 +1319,7 @@ namespace Magick
   using MagickCore::ShearImage;
   using MagickCore::SigmoidalContrastImage;
   using MagickCore::SignatureImage;
+  using MagickCore::SimilarityImage;
   using MagickCore::SolarizeImage;
   using MagickCore::SparseColorImage;
   using MagickCore::SpliceImage;

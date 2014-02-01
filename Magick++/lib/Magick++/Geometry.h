@@ -125,6 +125,9 @@ namespace Magick
     // Construct from RectangleInfo
     Geometry(const MagickCore::RectangleInfo &rectangle_);
 
+    // Set via RectangleInfo
+    const Geometry& operator=(const MagickCore::RectangleInfo &rectangle_);
+
     // Return an ImageMagick RectangleInfo struct
     operator MagickCore::RectangleInfo() const;
 
