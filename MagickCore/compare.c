@@ -203,8 +203,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
-      1,exception);
+    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,image->columns,1,
+      exception);
     r=QueueCacheViewAuthenticPixels(highlight_view,0,y,highlight_image->columns,
       1,exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
