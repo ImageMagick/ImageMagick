@@ -1254,11 +1254,13 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
   return(status);
 }
 
-static double Decibels(double linear)
+static inline double MagickLog10(const double x)
 {
- if (linear < MagickEpsilon)
-   linear=MagickEpsilon;
- return(20.0*log10(linear));
+#define Log10Epsilon  (1.0e-15)
+
+ if (fabs(x) < Log10Epsilon)
+   return(log10(fabs(Log10Epsilon)));
+ return(log10(fabs(x)));
 }
 
 static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
@@ -1271,23 +1273,23 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
   status=GetMeanSquaredDistortion(image,reconstruct_image,channel,distortion,
     exception);
   if ((channel & RedChannel) != 0)
-    distortion[RedChannel]=Decibels((double) 1.0/sqrt(
+    distortion[RedChannel]=20.0*MagickLog10((double) 1.0/sqrt(
       distortion[RedChannel]));
   if ((channel & GreenChannel) != 0)
-    distortion[GreenChannel]=Decibels((double) 1.0/sqrt(
+    distortion[GreenChannel]=20.0*MagickLog10((double) 1.0/sqrt(
       distortion[GreenChannel]));
   if ((channel & BlueChannel) != 0)
-    distortion[BlueChannel]=Decibels((double) 1.0/sqrt(
+    distortion[BlueChannel]=20.0*MagickLog10((double) 1.0/sqrt(
       distortion[BlueChannel]));
   if (((channel & OpacityChannel) != 0) &&
       (image->matte != MagickFalse))
-    distortion[OpacityChannel]=Decibels((double) 1.0/sqrt(
+    distortion[OpacityChannel]=20.0*MagickLog10((double) 1.0/sqrt(
       distortion[OpacityChannel]));
   if (((channel & IndexChannel) != 0) &&
       (image->colorspace == CMYKColorspace))
-    distortion[BlackChannel]=Decibels((double) 1.0/sqrt(
+    distortion[BlackChannel]=20.0*MagickLog10((double) 1.0/sqrt(
       distortion[BlackChannel]));
-  distortion[CompositeChannels]=Decibels((double) 1.0/sqrt(
+  distortion[CompositeChannels]=20.0*MagickLog10((double) 1.0/sqrt(
     distortion[CompositeChannels]));
   return(status);
 }
@@ -1370,9 +1372,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     */
     if ((channel & RedChannel) != 0)
       {
-        alpha=fabs(image_moments[RedChannel].I[i]);
-        beta=fabs(reconstruct_moments[RedChannel].I[i]);
-        difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+        alpha=MagickLog10(image_moments[RedChannel].I[i]);
+        beta=MagickLog10(reconstruct_moments[RedChannel].I[i]);
+        difference=beta-alpha;
         distortion[RedChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1380,17 +1382,17 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         if ((channel & GreenChannel) != 0)
           {
-            alpha=fabs(image_moments[GreenChannel].I[i]);
-            beta=fabs(reconstruct_moments[GreenChannel].I[i]);
-            difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+            alpha=MagickLog10(image_moments[GreenChannel].I[i]);
+            beta=MagickLog10(reconstruct_moments[GreenChannel].I[i]);
+            difference=beta-alpha;
             distortion[GreenChannel]+=difference*difference;
             distortion[CompositeChannels]+=difference*difference;
           }
         if ((channel & BlueChannel) != 0)
           {
-            alpha=fabs(image_moments[BlueChannel].I[i]);
-            beta=fabs(reconstruct_moments[BlueChannel].I[i]);
-            difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+            alpha=MagickLog10(image_moments[BlueChannel].I[i]);
+            beta=MagickLog10(reconstruct_moments[BlueChannel].I[i]);
+            difference=beta-alpha;
             distortion[BlueChannel]+=difference*difference;
             distortion[CompositeChannels]+=difference*difference;
           }
@@ -1398,9 +1400,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse) &&
         (reconstruct_image->matte != MagickFalse))
       {
-        alpha=fabs(image_moments[OpacityChannel].I[i]);
-        beta=fabs(reconstruct_moments[OpacityChannel].I[i]);
-        difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+        alpha=MagickLog10(image_moments[OpacityChannel].I[i]);
+        beta=MagickLog10(reconstruct_moments[OpacityChannel].I[i]);
+        difference=beta-alpha;
         distortion[OpacityChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1408,9 +1410,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         (image->colorspace == CMYKColorspace) &&
         (reconstruct_image->colorspace == CMYKColorspace))
       {
-        alpha=fabs(image_moments[IndexChannel].I[i]);
-        beta=fabs(reconstruct_moments[IndexChannel].I[i]);
-        difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+        alpha=MagickLog10(image_moments[IndexChannel].I[i]);
+        beta=MagickLog10(reconstruct_moments[IndexChannel].I[i]);
+        difference=beta-alpha;
         distortion[IndexChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1450,34 +1452,34 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     */
     if ((channel & RedChannel) != 0)
       {
-        alpha=fabs(image_moments[RedChannel].I[i]);
-        beta=fabs(reconstruct_moments[RedChannel].I[i]);
-        difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+        alpha=MagickLog10(image_moments[RedChannel].I[i]);
+        beta=MagickLog10(reconstruct_moments[RedChannel].I[i]);
+        difference=beta-alpha;
         distortion[RedChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if ((channel & GreenChannel) != 0)
       {
-        alpha=fabs(image_moments[GreenChannel].I[i]);
-        beta=fabs(reconstruct_moments[GreenChannel].I[i]);
-        difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+        alpha=MagickLog10(image_moments[GreenChannel].I[i]);
+        beta=MagickLog10(reconstruct_moments[GreenChannel].I[i]);
+        difference=beta-alpha;
         distortion[GreenChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if ((channel & BlueChannel) != 0)
       {
-        alpha=fabs(image_moments[BlueChannel].I[i]);
-        beta=fabs(reconstruct_moments[BlueChannel].I[i]);
-        difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+        alpha=MagickLog10(image_moments[BlueChannel].I[i]);
+        beta=MagickLog10(reconstruct_moments[BlueChannel].I[i]);
+        difference=beta-alpha;
         distortion[BlueChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse) &&
         (reconstruct_image->matte != MagickFalse))
       {
-        alpha=fabs(image_moments[OpacityChannel].I[i]);
-        beta=fabs(reconstruct_moments[OpacityChannel].I[i]);
-        difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+        alpha=MagickLog10(image_moments[OpacityChannel].I[i]);
+        beta=MagickLog10(reconstruct_moments[OpacityChannel].I[i]);
+        difference=beta-alpha;
         distortion[OpacityChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1485,9 +1487,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         (image->colorspace == CMYKColorspace) &&
         (reconstruct_image->colorspace == CMYKColorspace))
       {
-        alpha=fabs(image_moments[IndexChannel].I[i]);
-        beta=fabs(reconstruct_moments[IndexChannel].I[i]);
-        difference=log10(beta+MagickEpsilon)-log10(alpha+MagickEpsilon);
+        alpha=MagickLog10(image_moments[IndexChannel].I[i]);
+        beta=MagickLog10(reconstruct_moments[IndexChannel].I[i]);
+        difference=beta-alpha;
         distortion[IndexChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
