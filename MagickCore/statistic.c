@@ -1462,6 +1462,13 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     /*
        Compute center of mass (centroid).
     */
+    if (M00[channel] < MagickEpsilon)
+      {
+        M00[channel]+=MagickEpsilon;
+        centroid[channel].x=image->columns/2.0;
+        centroid[channel].y=image->rows/2.0;
+        continue;
+      }
     M00[channel]+=MagickEpsilon;
     centroid[channel].x=M10[channel]/M00[channel];
     centroid[channel].y=M01[channel]/M00[channel];
