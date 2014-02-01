@@ -203,8 +203,8 @@ const Magick::Geometry& Magick::Geometry::operator=(
     y = 0;
 
   size_t
-    height=0,
-    width=0;
+    height_val=0,
+    width_val=0;
 
   // If argument does not start with digit, presume that it is a
   // page-size specification that needs to be converted to an
@@ -221,7 +221,7 @@ const Magick::Geometry& Magick::Geometry::operator=(
         }
     }
 
-  flags=GetGeometry(geom,&x,&y,&width,&height);
+  flags=GetGeometry(geom,&x,&y,&width_val,&height_val);
 
   if (flags == NoValue)
     {
@@ -233,13 +233,13 @@ const Magick::Geometry& Magick::Geometry::operator=(
 
   if ((flags & WidthValue) != 0)
     {
-      _width=width;
+      _width=width_val;
       isValid(true);
     }
 
   if ((flags & HeightValue) != 0)
     {
-      _height=height;
+      _height=height_val;
       isValid(true);
     }
 
@@ -361,6 +361,19 @@ Magick::Geometry::Geometry(const MagickCore::RectangleInfo &rectangle_)
     _fillArea(false),
     _limitPixels(false)
 {
+}
+
+const Magick::Geometry& Magick::Geometry::operator=(
+  const MagickCore::RectangleInfo &rectangle_)
+{
+  _width=static_cast<size_t>(rectangle_.width),
+  _height=static_cast<size_t>(rectangle_.height),
+  _xOff=static_cast<ssize_t>(rectangle_.x),
+  _yOff=static_cast<ssize_t>(rectangle_.y),
+  _xNegative=rectangle_.x < 0 ? true : false,
+  _yNegative=rectangle_.y < 0 ? true : false,
+  _isValid=true;
+  return(*this);
 }
 
 Magick::Geometry::operator MagickCore::RectangleInfo() const

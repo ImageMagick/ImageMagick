@@ -1261,6 +1261,14 @@ namespace Magick
     // Strip strips an image of all profiles and comments.
     void strip(void);
 
+    // Search for the specified image at EVERY possible location in this image.
+    // This is slow! very very slow.. It returns a similarity image such that
+    // an exact match location is completely white and if none of the pixels
+    // match, black, otherwise some gray level in-between.
+    Image subImageSearch(const Image &reference_,const MetricType metric_,
+      Geometry *offset_,double *similarityMetric_,
+      const double similarityThreshold=(-1.0));
+
     // Swirl image (image pixels are rotated by degrees)
     void swirl(const double degrees_);
 
