@@ -140,7 +140,9 @@ static inline double MagickLog10(const double x)
 {
 #define Log10Epsilon  (1.0e-20)
 
- return(log10(fabs(x)+Log10Epsilon));
+ if (fabs(x) < Log10Epsilon)
+   return(log10(fabs(Log10Epsilon)));
+ return(log10(fabs(x)));
 }
 
 MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
