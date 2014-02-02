@@ -949,9 +949,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       if (similarity_metric > dissimilarity_threshold)
         ThrowCompareException(ImageError,"ImagesTooDissimilar",image->filename);
     }
-  if (((reconstruct_image->columns == image->columns) &&
-       (reconstruct_image->rows == image->rows)) ||
-       (metric == PerceptualHashErrorMetric))
+  if ((reconstruct_image->columns == image->columns) &&
+       (reconstruct_image->rows == image->rows))
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
       exception);
   else
@@ -1041,17 +1040,13 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case AbsoluteErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioErrorMetric:
+            case PerceptualHashErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%g",distortion);
               if ((reconstruct_image->columns != image->columns) ||
                   (reconstruct_image->rows != image->rows))
                 (void) FormatLocaleFile(stderr," @ %.20g,%.20g",(double)
                   difference_image->page.x,(double) difference_image->page.y);
-              break;
-            }
-            case PerceptualHashErrorMetric:
-            {
-              (void) FormatLocaleFile(stderr,"%g",distortion);
               break;
             }
             case MeanErrorPerPixelErrorMetric:
