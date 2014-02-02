@@ -98,7 +98,8 @@ typedef double_t Quantum;
 #error "MAGICKCORE_QUANTUM_DEPTH must be one of 8, 16, 32, or 64"
 #endif
 #define MagickEpsilon  (1.0e-15)
-#define MagickHuge  3.4e+38F
+#define MagickMaximumValue  1.79769313486231570E+308
+#define MagickMinimumValue   2.22507385850720140E-308
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define QuantumScale  ((double) 1.0/(double) QuantumRange)
 

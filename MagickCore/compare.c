@@ -1090,8 +1090,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
 
 static inline double MagickLog10(const double x)
 {
- if (fabs(x) < (1.0/MagickHuge))
-   return(log10(1.0/MagickHuge));
+ if (fabs(x) < MagickMinimumValue)
+   return(log10(MagickMinimumValue));
  return(log10(fabs(x)));
 }
 
@@ -1757,7 +1757,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   assert(exception->signature == MagickSignature);
   assert(offset != (RectangleInfo *) NULL);
   SetGeometry(reference,offset);
-  *similarity_metric=MagickHuge;
+  *similarity_metric=MagickMaximumValue;
   if ((reference->columns > image->columns) || (reference->rows > image->rows))
     ThrowImageException(ImageError,"ImageSizeDiffers");
   similarity_image=CloneImage(image,image->columns-reference->columns+1,
