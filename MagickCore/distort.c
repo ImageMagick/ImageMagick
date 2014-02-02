@@ -3183,13 +3183,17 @@ MagickExport Image *SparseColorImage(const Image *image,
           }
           case VoronoiColorInterpolate:
           default:
-          { /* Just use the closest control point you can find! */
+          {
             size_t
               k;
+
             double
               minimum = MagickMaximumValue;
 
-            for(k=0; k<number_arguments; k+=2+number_colors) {
+            /*
+              Just use the closest control point you can find!
+            */
+            for (k=0; k<number_arguments; k+=2+number_colors) {
               double distance =
                   ((double)i-arguments[ k ])*((double)i-arguments[ k ])
                 + ((double)j-arguments[k+1])*((double)j-arguments[k+1]);

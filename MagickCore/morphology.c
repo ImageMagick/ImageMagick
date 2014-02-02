@@ -323,8 +323,8 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     kernel->width,kernel->height*sizeof(*kernel->values)));
   if (kernel->values == (MagickRealType *) NULL)
     return(DestroyKernelInfo(kernel));
-  kernel->minimum = +MagickMaximumValue;
-  kernel->maximum = -MagickMaximumValue;
+  kernel->minimum=MagickMaximumValue;
+  kernel->maximum=(-MagickMaximumValue);
   kernel->negative_range = kernel->positive_range = 0.0;
   for (i=0; (i < (ssize_t) (kernel->width*kernel->height)) && (p < end); i++)
   {
@@ -365,7 +365,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
 #endif
 
   /* check that we recieved at least one real (non-nan) value! */
-  if ( kernel->minimum == MagickMaximumValue )
+  if (kernel->minimum == MagickMaximumValue)
     return(DestroyKernelInfo(kernel));
 
   if ( (flags & AreaValue) != 0 )         /* '@' symbol in kernel size */

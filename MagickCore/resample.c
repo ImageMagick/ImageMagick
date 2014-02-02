@@ -1136,9 +1136,9 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     gamma = sqrt(beta*beta + B*B );
 
     if ( alpha - gamma <= MagickEpsilon )
-      Major = MagickMaximumValue;
+      Major=MagickMaximumValue;
     else
-      Major = sqrt(2*F/(alpha - gamma));
+      Major=sqrt(2*F/(alpha - gamma));
     Minor = sqrt(2*F/(alpha + gamma));
 
     (void) FormatLocaleFile(stderr, "# Major=%lf; Minor=%lf\n", Major, Minor );
