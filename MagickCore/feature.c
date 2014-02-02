@@ -138,7 +138,7 @@ static inline ssize_t MagickAbsoluteValue(const ssize_t x)
 
 static inline double MagickLog10(const double x)
 {
-#define Log10Epsilon  (1.0e-20)
+#define Log10Epsilon  (1.0e-26)
 
  return(log10(fabs(x)+Log10Epsilon));
 }
