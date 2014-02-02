@@ -1146,7 +1146,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     gamma = sqrt(beta*beta + B*B );
 
     if ( alpha - gamma <= MagickEpsilon )
-      Major = MagickHuge;
+      Major = MagickMaximumValue;
     else
       Major = sqrt(2*F/(alpha - gamma));
     Minor = sqrt(2*F/(alpha + gamma));
@@ -1170,7 +1170,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
      the average of the whole image is needed to get a reasonable
      result. Calculate only as needed.
   */
-  if ( (4*A*C - B*B) > MagickHuge ) {
+  if ( (4*A*C - B*B) > MagickMaximumValue ) {
     resample_filter->limit_reached = MagickTrue;
     return;
   }
