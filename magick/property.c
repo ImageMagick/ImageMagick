@@ -1535,6 +1535,8 @@ static MagickBooleanType GetICCProperty(const Image *image,const char *property)
     profile=GetImageProfile(image,"icm");
   if (profile == (StringInfo *) NULL)
     return(MagickFalse);
+  if (GetStringInfoLength(profile) < 128)
+    return(MagickFalse);  /* minimum ICC profile length */
 #if defined(MAGICKCORE_LCMS_DELEGATE)
   {
     cmsHPROFILE
