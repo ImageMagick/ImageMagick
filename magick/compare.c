@@ -2046,7 +2046,7 @@ MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
   assert(exception->signature == MagickSignature);
   assert(offset != (RectangleInfo *) NULL);
   SetGeometry(reference,offset);
-  *similarity_metric=1.0;
+  *similarity_metric=MagickHuge;
   if ((reference->columns > image->columns) || (reference->rows > image->rows))
     ThrowImageException(ImageError,"ImageSizeDiffers");
   similarity_image=CloneImage(image,image->columns-reference->columns+1,
