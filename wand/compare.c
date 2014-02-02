@@ -981,8 +981,14 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       metric,&distortion,exception);
   else
     if (similarity_image == (Image *) NULL)
-      ThrowCompareException(OptionError,"ImageWidthsOrHeightsDiffer",
-        image->filename)
+      {
+        if (metric == PerceptualHashErrorMetric)
+          difference_image=CompareImageChannels(image,reconstruct_image,
+            channels,metric,&distortion,exception);
+        else
+          ThrowCompareException(OptionError,"ImageWidthsOrHeightsDiffer",
+            image->filename);
+      }
     else
       {
         Image
@@ -1057,10 +1063,6 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             {
               (void) FormatLocaleFile(stderr,"%g (%g)",QuantumRange*distortion,
                 (double) distortion);
-              if ((reconstruct_image->columns != image->columns) ||
-                  (reconstruct_image->rows != image->rows))
-                (void) FormatLocaleFile(stderr," @ %.20g,%.20g",(double)
-                  difference_image->page.x,(double) difference_image->page.y);
               break;
             }
             case AbsoluteErrorMetric:
@@ -1069,10 +1071,6 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             case PerceptualHashErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%g",distortion);
-              if ((reconstruct_image->columns != image->columns) ||
-                  (reconstruct_image->rows != image->rows))
-                (void) FormatLocaleFile(stderr," @ %.20g,%.20g",(double)
-                  difference_image->page.x,(double) difference_image->page.y);
               break;
             }
             case MeanErrorPerPixelMetric:
@@ -1080,15 +1078,14 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               (void) FormatLocaleFile(stderr,"%g (%g, %g)",distortion,
                 image->error.normalized_mean_error,
                 image->error.normalized_maximum_error);
-              if ((reconstruct_image->columns != image->columns) ||
-                  (reconstruct_image->rows != image->rows))
-                (void) FormatLocaleFile(stderr," @ %.20g,%.20g",(double)
-                  difference_image->page.x,(double) difference_image->page.y);
               break;
             }
             case UndefinedErrorMetric:
               break;
           }
+          if (similarity_image != (Image *) NULL)
+            (void) FormatLocaleFile(stderr," @ %.20g,%.20g",(double)
+              difference_image->page.x,(double) difference_image->page.y);
         }
       else
         {
@@ -1232,6 +1229,9 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
           }
           channel_distortion=(double *) RelinquishMagickMemory(
             channel_distortion);
+          if (similarity_image != (Image *) NULL)
+            (void) FormatLocaleFile(stderr,"    Offset: %.20g,%.20g\n",(double)
+              difference_image->page.x,(double) difference_image->page.y);
         }
       status&=WriteImages(image_info,difference_image,argv[argc-1],exception);
       if ((metadata != (char **) NULL) && (format != (char *) NULL))
