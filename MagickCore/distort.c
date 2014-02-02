@@ -3187,7 +3187,7 @@ MagickExport Image *SparseColorImage(const Image *image,
             size_t
               k;
             double
-              minimum = MagickHuge;
+              minimum = MagickMaximumValue;
 
             for(k=0; k<number_arguments; k+=2+number_colors) {
               double distance =

@@ -199,12 +199,12 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
       case MaximumStatistic:
       default:
       {
-        channel_statistics[i].maxima=(-MagickHuge);
+        channel_statistics[i].maxima=(-MagickMaximumValue);
         break;
       }
       case MinimumStatistic:
       {
-        channel_statistics[i].minima=MagickHuge;
+        channel_statistics[i].minima=MagickMaximumValue;
         break;
       }
     }

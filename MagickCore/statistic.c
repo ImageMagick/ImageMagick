@@ -1809,8 +1809,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
     channel_statistics[i].depth=1;
-    channel_statistics[i].maxima=(-MagickHuge);
-    channel_statistics[i].minima=MagickHuge;
+    channel_statistics[i].maxima=(-MagickMaximumValue);
+    channel_statistics[i].minima=MagickMaximumValue;
   }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
