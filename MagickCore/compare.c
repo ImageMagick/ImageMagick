@@ -73,11 +73,6 @@
 #include "MagickCore/version.h"
 
 /*
-  Define declarations.
-*/
-#define LogEpsilon  (1.0e-15)
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -1097,9 +1092,7 @@ static inline double MagickLog10(const double x)
 {
 #define Log10Epsilon  (1.0e-20)
 
- if (fabs(x) < Log10Epsilon)
-   return(log10(fabs(Log10Epsilon)));
- return(log10(fabs(x)));
+ return(log10(fabs(x)+Log10Epsilon));
 }
 
 static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
