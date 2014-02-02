@@ -100,7 +100,6 @@ typedef double_t Quantum;
 #define MagickEpsilon  (1.0e-15)
 #define MagickMaximumValue  1.79769313486231570E+308
 #define MagickMinimumValue   2.22507385850720140E-308
-#define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define QuantumScale  ((double) 1.0/(double) QuantumRange)
 
 /*
