@@ -2011,8 +2011,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   return(similarity_image);
 }
 
-static inline MagickRealType MagickMax(const MagickRealType x,
-  const MagickRealType y)
+static inline double MagickMax(const double x,const double y)
 {
   if (x > y)
     return(x);
