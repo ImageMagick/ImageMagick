@@ -1835,6 +1835,8 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
           offset->y=y;
           *similarity_metric=similarity;
         }
+      if (metric == PerceptualHashErrorMetric)
+        similarity=MagickMin(0.01*similarity,1.0);
       if (GetPixelReadMask(similarity_image,q) == 0)
         {
           SetPixelBackgoundColor(similarity_image,q);
@@ -1852,7 +1854,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
             ((similarity_traits & UpdatePixelTrait) == 0))
           continue;
         SetPixelChannel(similarity_image,channel,ClampToQuantum(QuantumRange-
-          QuantumRange*MagickMin(similarity,1.0)),q);
+          QuantumRange*similarity),q);
       }
       q+=GetPixelChannels(similarity_image);
     }
