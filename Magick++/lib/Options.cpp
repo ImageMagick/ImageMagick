@@ -20,6 +20,7 @@
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
 
+#define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define GetPPException \
   ExceptionInfo \
