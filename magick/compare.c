@@ -2011,6 +2011,14 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   return(similarity_image);
 }
 
+static inline MagickRealType MagickMax(const MagickRealType x,
+  const MagickRealType y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
 MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
   const MetricType metric,RectangleInfo *offset,double *similarity_metric,
   ExceptionInfo *exception)
@@ -2117,7 +2125,8 @@ MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
           offset->x=x;
           offset->y=y;
         }
-      SetPixelRed(q,ClampToQuantum(QuantumRange-QuantumRange*similarity));
+      SetPixelRed(q,ClampToQuantum(QuantumRange-QuantumRange*
+        MagickMax(similarity,1.0)));
       SetPixelGreen(q,GetPixelRed(q));
       SetPixelBlue(q,GetPixelRed(q));
       q++;
