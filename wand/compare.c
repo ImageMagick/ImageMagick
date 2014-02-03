@@ -1083,7 +1083,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             case UndefinedErrorMetric:
               break;
           }
-          if (similarity_image != (Image *) NULL)
+          if (subimage_search != MagickFalse)
             (void) FormatLocaleFile(stderr," @ %.20g,%.20g",(double)
               difference_image->page.x,(double) difference_image->page.y);
         }
@@ -1229,7 +1229,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
           }
           channel_distortion=(double *) RelinquishMagickMemory(
             channel_distortion);
-          if (similarity_image != (Image *) NULL)
+          if (subimage_search != MagickFalse)
             (void) FormatLocaleFile(stderr,"    Offset: %.20g,%.20g\n",(double)
               difference_image->page.x,(double) difference_image->page.y);
         }
