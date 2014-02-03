@@ -1728,6 +1728,13 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   return(distortion);
 }
 
+static inline double MagickMin(const double x,const double y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
 MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   const MetricType metric,const double similarity_threshold,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
@@ -1845,7 +1852,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
             ((similarity_traits & UpdatePixelTrait) == 0))
           continue;
         SetPixelChannel(similarity_image,channel,ClampToQuantum(QuantumRange-
-          QuantumRange*MagickMax(similarity,1.0)),q);
+          QuantumRange*MagickMin(similarity,1.0)),q);
       }
       q+=GetPixelChannels(similarity_image);
     }
