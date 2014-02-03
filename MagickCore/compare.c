@@ -1845,7 +1845,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
             ((similarity_traits & UpdatePixelTrait) == 0))
           continue;
         SetPixelChannel(similarity_image,channel,ClampToQuantum(QuantumRange-
-          QuantumRange*similarity),q);
+          QuantumRange*MagickMax(similarity,1.0)),q);
       }
       q+=GetPixelChannels(similarity_image);
     }
