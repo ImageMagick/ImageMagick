@@ -332,13 +332,15 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
   packets=(ssize_t) number_compact_pixels;
   for (i=0; (packets > 1) && (i < (ssize_t) number_pixels); )
   {
-    length=(*compact_pixels++);
+    length=(size_t) (*compact_pixels++);
     packets--;
     if (length == 128)
       continue;
     if (length > 128)
       {
         length=256-length+1;
+        if ((ssize_t) length + i > (ssize_t) number_pixels)
+          length=number_pixels-(size_t) i;
         pixel=(*compact_pixels++);
         packets--;
         for (j=0; j < (ssize_t) length; j++)
@@ -385,6 +387,8 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
         continue;
       }
     length++;
+    if ((ssize_t) length + i > (ssize_t) number_pixels)
+      length=number_pixels-(size_t) i;
     for (j=0; j < (ssize_t) length; j++)
     {
       switch (depth)
