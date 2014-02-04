@@ -11,7 +11,7 @@ $loaded=1;
 
 require 't/subroutines.pl';
 
-chdir 't/jp2' || die 'Cd failed';
+chdir 't/openjp2' || die 'Cd failed';
 
 #
 # 1) JPEG-2000 JP2 File Format Syntax (ISO/IEC 15444-1)
