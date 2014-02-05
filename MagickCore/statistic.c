@@ -1348,7 +1348,8 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageMoments() returns the moments of one or more image channels.
+%  GetImageMoments() returns the normalized moments of one or more image
+%  channels.
 %
 %  The format of the GetImageMoments method is:
 %
