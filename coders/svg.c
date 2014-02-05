@@ -3236,6 +3236,7 @@ ModuleExport size_t RegisterSVGImage(void)
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickFalse;
   entry->description=ConstantString("Scalable Vector Graphics");
+  entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->magick=(IsImageFormatHandler *) IsSVG;
@@ -3249,6 +3250,7 @@ ModuleExport size_t RegisterSVGImage(void)
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickFalse;
   entry->description=ConstantString("Compressed Scalable Vector Graphics");
+  entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->magick=(IsImageFormatHandler *) IsSVG;

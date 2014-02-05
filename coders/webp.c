@@ -383,6 +383,7 @@ ModuleExport size_t RegisterWEBPImage(void)
     (WebPGetDecoderVersion() >> 0) & 0xff);
 #endif
   entry->description=ConstantString("WebP Image Format");
+  entry->mime_type=ConstantString("image/x-webp");
   entry->adjoin=MagickFalse;
   entry->module=ConstantString("WEBP");
   entry->magick=(IsImageFormatHandler *) IsWEBP;
