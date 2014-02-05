@@ -847,6 +847,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   if (channel_moments != (ChannelMoments *) NULL)
     {
+      scale=(double) ((1UL << image->depth)-1);
       (void) FormatLocaleFile(file,"  Channel moments:\n");
       switch (colorspace)
       {
