@@ -1507,6 +1507,7 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
 
   ssize_t
     channel,
+    channels,
     y;
 
   size_t
@@ -1731,6 +1732,59 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
       p++;
     }
   }
+  channels=3;
+  M00[CompositeChannels]+=(M00[RedChannel]+M00[GreenChannel]+M00[BlueChannel]);
+  M01[CompositeChannels]+=(M01[RedChannel]+M01[GreenChannel]+M01[BlueChannel]);
+  M02[CompositeChannels]+=(M02[RedChannel]+M02[GreenChannel]+M02[BlueChannel]);
+  M03[CompositeChannels]+=(M03[RedChannel]+M03[GreenChannel]+M03[BlueChannel]);
+  M10[CompositeChannels]+=(M10[RedChannel]+M10[GreenChannel]+M10[BlueChannel]);
+  M11[CompositeChannels]+=(M11[RedChannel]+M11[GreenChannel]+M11[BlueChannel]);
+  M12[CompositeChannels]+=(M12[RedChannel]+M12[GreenChannel]+M12[BlueChannel]);
+  M20[CompositeChannels]+=(M20[RedChannel]+M20[GreenChannel]+M20[BlueChannel]);
+  M21[CompositeChannels]+=(M21[RedChannel]+M21[GreenChannel]+M21[BlueChannel]);
+  M22[CompositeChannels]+=(M22[RedChannel]+M22[GreenChannel]+M22[BlueChannel]);
+  M30[CompositeChannels]+=(M30[RedChannel]+M30[GreenChannel]+M30[BlueChannel]);
+  if (image->matte != MagickFalse)
+    {
+      channels+=1;
+      M00[CompositeChannels]+=M00[OpacityChannel];
+      M01[CompositeChannels]+=M01[OpacityChannel];
+      M02[CompositeChannels]+=M02[OpacityChannel];
+      M03[CompositeChannels]+=M03[OpacityChannel];
+      M10[CompositeChannels]+=M10[OpacityChannel];
+      M11[CompositeChannels]+=M11[OpacityChannel];
+      M12[CompositeChannels]+=M12[OpacityChannel];
+      M20[CompositeChannels]+=M20[OpacityChannel];
+      M21[CompositeChannels]+=M21[OpacityChannel];
+      M22[CompositeChannels]+=M22[OpacityChannel];
+      M30[CompositeChannels]+=M30[OpacityChannel];
+    }
+  if (image->colorspace == CMYKColorspace)
+    {
+      channels+=1;
+      M00[CompositeChannels]+=M00[IndexChannel];
+      M01[CompositeChannels]+=M01[IndexChannel];
+      M02[CompositeChannels]+=M02[IndexChannel];
+      M03[CompositeChannels]+=M03[IndexChannel];
+      M10[CompositeChannels]+=M10[IndexChannel];
+      M11[CompositeChannels]+=M11[IndexChannel];
+      M12[CompositeChannels]+=M12[IndexChannel];
+      M20[CompositeChannels]+=M20[IndexChannel];
+      M21[CompositeChannels]+=M21[IndexChannel];
+      M22[CompositeChannels]+=M22[IndexChannel];
+      M30[CompositeChannels]+=M30[IndexChannel];
+    }
+  M00[CompositeChannels]/=(double) channels;
+  M01[CompositeChannels]/=(double) channels;
+  M02[CompositeChannels]/=(double) channels;
+  M03[CompositeChannels]/=(double) channels;
+  M10[CompositeChannels]/=(double) channels;
+  M11[CompositeChannels]/=(double) channels;
+  M12[CompositeChannels]/=(double) channels;
+  M20[CompositeChannels]/=(double) channels;
+  M21[CompositeChannels]/=(double) channels;
+  M22[CompositeChannels]/=(double) channels;
+  M30[CompositeChannels]/=(double) channels;
   for (channel=0; channel <= CompositeChannels; channel++)
   {
     /*
