@@ -459,7 +459,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (ReadBlobString(image,text) == (char *) NULL)
           break;
         count=(ssize_t) sscanf(text,
-          "%ld,%ld: (%lg%*[%,]%lg%*[%,]%lg%*[%,]%lg%*[%,]%lg%*[%,]",
+          "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
           &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.index,
           &pixel.opacity);
         if (count < 3)
