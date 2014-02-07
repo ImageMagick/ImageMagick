@@ -688,7 +688,10 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
     return;
   directory=TIFFCurrentDirectory(tiff);
   if (TIFFReadEXIFDirectory(tiff,offset) == 0)
-    return;
+    {
+      directory=TIFFCurrentDirectory(tiff);
+      return;
+    }
   sans=NULL;
   for (i=0; exif_info[i].tag != 0; i++)
   {
