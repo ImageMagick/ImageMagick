@@ -365,9 +365,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     colorspace[MaxTextExtent],
     text[MaxTextExtent];
 
-  DoublePixelPacket
-    pixel;
-
   Image
     *image;
 
@@ -382,6 +379,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickBooleanType
     status;
+
+  MagickPixelPacket
+    pixel;
 
   QuantumAny
     range;
@@ -454,24 +454,87 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     range=GetQuantumRange(image->depth);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      double
+        blue,
+        green,
+        index,
+        opacity,
+        red;
+
+      red=0.0;
+      green=0.0;
+      blue=0.0;
+      index=0.0;
+      opacity=0.0;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (ReadBlobString(image,text) == (char *) NULL)
           break;
-        count=(ssize_t) sscanf(text,
-          "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
-          &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.index,
-          &pixel.opacity);
-        if (count < 3)
-          continue;
+        switch (image->colorspace)
+        {
+          case GRAYColorspace:
+          {
+            if (image->matte != MagickFalse)
+              {
+                count=(ssize_t) sscanf(text,"%ld,%ld: (%lf%*[%,]%lf%*[%,]",
+                  &x_offset,&y_offset,&red,&opacity);
+                green=red;
+                blue=red;
+                break;
+              }
+            count=(ssize_t) sscanf(text,"%ld,%ld: (%lf%*[%,]",&x_offset,
+              &y_offset,&red);
+            green=red;
+            blue=red;
+            break;       
+          }
+          case CMYKColorspace:
+          {
+            if (image->matte != MagickFalse)
+              {
+                count=(ssize_t) sscanf(text,
+                  "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
+                  &x_offset,&y_offset,&red,&green,&blue,&index,&opacity);
+                break;
+              }
+            count=(ssize_t) sscanf(text,
+              "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,
+              &y_offset,&red,&green,&blue,&index);
+            break;
+          }
+          default:
+          {
+            if (image->matte != MagickFalse)
+              {
+                count=(ssize_t) sscanf(text,
+                  "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
+                  &x_offset,&y_offset,&red,&green,&blue,&opacity);
+                break;
+              }
+            count=(ssize_t) sscanf(text,
+              "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,
+              &y_offset,&red,&green,&blue);
+            break;       
+          }
+        }
         if (strchr(text,'%') != (char *) NULL)
           {
-            pixel.red*=0.01*range;
-            pixel.green*=0.01*range;
-            pixel.blue*=0.01*range;
-            pixel.opacity*=0.01*range;
-            pixel.index*=0.01*range;
+            red*=0.01*range;
+            green*=0.01*range;
+            blue*=0.01*range;
+            index*=0.01*range;
+            opacity*=0.01*range;
           }
+        if (image->colorspace == LabColorspace)
+          {
+            green+=(range+1)/2.0;
+            blue+=(range+1)/2.0;
+          }
+        pixel.red=ScaleAnyToQuantum((QuantumAny) (red+0.5),range);
+        pixel.green=ScaleAnyToQuantum((QuantumAny) (green+0.5),range);
+        pixel.blue=ScaleAnyToQuantum((QuantumAny) (blue+0.5),range);
+        pixel.index=ScaleAnyToQuantum((QuantumAny) (index+0.5),range);
+        pixel.opacity=ScaleAnyToQuantum((QuantumAny) (opacity+0.5),range);
         if (image->colorspace == LabColorspace)
           {
             pixel.green+=(range+1)/2.0;
@@ -480,16 +543,16 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
         if (q == (PixelPacket *) NULL)
           continue;
-        SetPixelRed(q,ScaleAnyToQuantum(pixel.red,range));
-        SetPixelGreen(q,ScaleAnyToQuantum(pixel.green,range));
-        SetPixelBlue(q,ScaleAnyToQuantum(pixel.blue,range));
+        SetPixelRed(q,pixel.red);
+        SetPixelGreen(q,pixel.green);
+        SetPixelBlue(q,pixel.blue);
         if (image->colorspace == CMYKColorspace)
           {
             indexes=GetAuthenticIndexQueue(image);
-            SetPixelIndex(indexes,ScaleAnyToQuantum(pixel.index,range));
+            SetPixelIndex(indexes,pixel.index);
           }
         if (image->matte != MagickFalse)
-          SetPixelAlpha(q,ScaleAnyToQuantum(pixel.opacity,range));
+          SetPixelAlpha(q,pixel.opacity);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
