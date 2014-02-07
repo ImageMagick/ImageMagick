@@ -365,6 +365,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     colorspace[MaxTextExtent],
     text[MaxTextExtent];
 
+  DoublePixelPacket
+    pixel;
+
   Image
     *image;
 
@@ -376,9 +379,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     x_offset,
     y,
     y_offset;
-
-  LongPixelPacket
-    pixel;
 
   MagickBooleanType
     status;
@@ -458,30 +458,25 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if (ReadBlobString(image,text) == (char *) NULL)
           break;
-        if (image->colorspace == CMYKColorspace)
+        count=(ssize_t) sscanf(text,
+          "%ld,%ld: (%lg%*[%,]%lg%*[%,]%lg%*[%,]%lg%*[%,]%lg%*[%,]",
+          &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.index,
+          &pixel.opacity);
+        if (count < 3)
+          continue;
+        if (strchr(text,'%') != (char *) NULL)
           {
-            if (image->matte != MagickFalse)
-              count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u,%u",&x_offset,
-                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.index,
-                &pixel.opacity);
-            else
-              count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u",&x_offset,
-                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.index);
+            pixel.red*=0.01*range;
+            pixel.green*=0.01*range;
+            pixel.blue*=0.01*range;
+            pixel.opacity*=0.01*range;
+            pixel.index*=0.01*range;
           }
-        else
-          if (image->matte != MagickFalse)
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u",&x_offset,
-              &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
-          else
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u",&x_offset,
-              &y_offset,&pixel.red,&pixel.green,&pixel.blue);
         if (image->colorspace == LabColorspace)
           {
             pixel.green+=(range+1)/2.0;
             pixel.blue+=(range+1)/2.0;
           }
-        if (count < 5)
-          continue;
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
         if (q == (PixelPacket *) NULL)
           continue;
