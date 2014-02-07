@@ -798,6 +798,13 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     if (home != (char *) NULL)
       {
         /*
+          Search $HOME/.config/ImageMagick.
+        */
+        (void) FormatLocaleString(path,MaxTextExtent,
+          "%s%s.config%sImageMagick%s",home,DirectorySeparator,
+          DirectorySeparator,DirectorySeparator);
+        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        /*
           Search $HOME/.magick.
         */
         (void) FormatLocaleString(path,MaxTextExtent,"%s%s.magick%s",home,
