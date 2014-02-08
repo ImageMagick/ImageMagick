@@ -414,6 +414,7 @@ extern MagickExport unsigned char
   *NTResourceToBlob(const char *);
 
 extern MagickExport void
+  NTWindowsGenesis(void),
   NTErrorHandler(const ExceptionType,const char *,const char *),
   *NTGetLibrarySymbol(void *,const char *),
   *NTMapMemory(char *,size_t,int,int,int,MagickOffsetType),

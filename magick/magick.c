@@ -1264,18 +1264,7 @@ MagickExport void MagickCoreGenesis(const char *path,
       events=DestroyString(events);
     }
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-#if defined(_DEBUG) && !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
-  if (IsEventLogging() != MagickFalse)
-    {
-      int
-        debug;
-
-      debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-      debug|=_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_DELAY_FREE_MEM_DF | _CRTDBG_LEAK_CHECK_DF;
-      (void) _CrtSetDbgFlag(debug);
-      _ASSERTE(_CrtCheckMemory());
-    }
-#endif
+  NTWindowsGenesis();
 #endif
   /*
     Set client name and execution path.
