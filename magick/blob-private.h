@@ -20,6 +20,7 @@
 
 #include "magick/image.h"
 #include "magick/stream.h"
+#include "magick/nt-base-private.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
