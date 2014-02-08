@@ -67,6 +67,7 @@
 #include "magick/list.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/nt-base-private.h"
 #include "magick/pixel-private.h"
 #include "magick/quantum.h"
 #include "magick/resource_.h"

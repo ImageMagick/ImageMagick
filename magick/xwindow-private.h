@@ -21,6 +21,7 @@
 #include "magick/draw.h"
 #include "magick/exception.h"
 #include "magick/geometry.h"
+#include "magick/nt-base-private.h"
 #include "magick/quantize.h"
 
 #if defined(MAGICKCORE_X11_DELEGATE)
@@ -36,7 +37,6 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
 
 #if defined(MAGICKCORE_X11_DELEGATE)
 

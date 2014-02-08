@@ -62,9 +62,8 @@
 #include "magick/memory_.h"
 #include "magick/mime.h"
 #include "magick/module.h"
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-# include "magick/nt-feature.h"
-#endif
+#include "magick/nt-base-private.h"
+#include "magick/nt-feature.h"
 #include "magick/random_.h"
 #include "magick/registry.h"
 #include "magick/resource_.h"

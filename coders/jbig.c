@@ -59,6 +59,7 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/nt-base-private.h"
 #include "magick/nt-feature.h"
 #include "magick/pixel-accessor.h"
 #include "magick/quantum-private.h"

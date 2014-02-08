@@ -49,6 +49,7 @@
 #include "magick/list.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
+#include "magick/nt-base-private.h"
 #include "magick/option.h"
 #include "magick/policy.h"
 #include "magick/random_.h"

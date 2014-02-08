@@ -45,6 +45,7 @@
 #    include <windows.h>
 #  else
      /* All MinGW needs ... */
+#    include "magick/nt-base-private.h"
 #    include <wingdi.h>
 #  endif
 #endif

@@ -45,6 +45,7 @@
 #include "magick/exception-private.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
+#include "magick/nt-base-private.h"
 #include "magick/timer.h"
 
 /*

@@ -20,6 +20,7 @@
 
 #include "magick/memory_.h"
 #include "magick/nt-base.h"
+#include "magick/nt-base-private.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

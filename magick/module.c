@@ -53,6 +53,7 @@
 #include "magick/magick.h"
 #include "magick/memory_.h"
 #include "magick/module.h"
+#include "magick/nt-base-private.h"
 #include "magick/policy.h"
 #include "magick/semaphore.h"
 #include "magick/splay-tree.h"
