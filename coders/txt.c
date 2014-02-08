@@ -472,14 +472,14 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (image->alpha_trait == BlendPixelTrait)
               {
-                count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf",&x_offset,
-                  &y_offset,&red,&alpha);
+                count=(ssize_t) sscanf(text,"%ld,%ld: (%lf%*[%,]%lf%*[%,]",
+                  &x_offset,&y_offset,&red,&alpha);
                 green=red;
                 blue=red;
                 break;
               }
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%lf",&x_offset,&y_offset,
-              &red);
+            count=(ssize_t) sscanf(text,"%ld,%ld: (%lf%*[%,]",&x_offset,
+              &y_offset,&red);
             green=red;
             blue=red;
             break;       
@@ -488,11 +488,13 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (image->alpha_trait == BlendPixelTrait)
               {
-                count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf,%lf",
+                count=(ssize_t) sscanf(text,
+                  "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
                   &x_offset,&y_offset,&red,&green,&blue,&black,&alpha);
                 break;
               }
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",&x_offset,
+            count=(ssize_t) sscanf(text,
+              "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,
               &y_offset,&red,&green,&blue,&black);
             break;
           }
@@ -500,15 +502,25 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (image->alpha_trait == BlendPixelTrait)
               {
-                count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",
+                count=(ssize_t) sscanf(text,
+                  "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
                   &x_offset,&y_offset,&red,&green,&blue,&alpha);
                 break;
               }
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf",&x_offset,
+            count=(ssize_t) sscanf(text,
+              "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,
               &y_offset,&red,&green,&blue);
             break;       
           }
         }
+        if (strchr(text,'%') != (char *) NULL)
+          {
+            red*=0.01*range;
+            green*=0.01*range;
+            blue*=0.01*range;
+            black*=0.01*range;
+            alpha*=0.01*range;
+          }
         if (image->colorspace == LabColorspace)
           {
             green+=(range+1)/2.0;

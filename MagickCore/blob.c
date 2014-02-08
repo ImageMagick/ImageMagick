@@ -41,7 +41,6 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
-#include "MagickCore/nt-base-private.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
@@ -56,6 +55,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"

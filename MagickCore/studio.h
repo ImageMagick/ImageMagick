@@ -231,7 +231,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include "MagickCore/nt-base.h"
-# include "MagickCore/nt-base-private.h"
 #endif
 #if defined(macintosh)
 # include "MagickCore/mac.h"
