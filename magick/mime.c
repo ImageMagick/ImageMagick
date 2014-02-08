@@ -47,6 +47,7 @@
 #include "magick/memory_.h"
 #include "magick/mime.h"
 #include "magick/mime-private.h"
+#include "magick/nt-base-private.h"
 #include "magick/option.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"

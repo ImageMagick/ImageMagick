@@ -49,9 +49,9 @@
 #include "magick/nt-base.h"
 #include "magick/nt-base-private.h"
 #include "magick/resource_.h"
-#include "magick/resource-private.h"
 #include "magick/timer.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 #if defined(MAGICKCORE_LTDL_DELEGATE)
@@ -151,6 +151,8 @@ extern "C" BOOL WINAPI
 #if defined(_DLL) && defined( ProvideDllMain )
 BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
 {
+  magick_unreferenced(lpvReserved);
+
   switch (reason)
   {
     case DLL_PROCESS_ATTACH:
@@ -1382,12 +1384,12 @@ MagickPrivate int NTInitializeLibrary(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Mmap() emulates the Unix method of the same name.
+%  NTMapMemory() emulates the Unix method of the same name.
 %
 %  The format of the NTMapMemory method is:
 %
-%    MagickPrivate void *NTMapMemory(char *address,size_t length,int protection,
-%      int access,int file,MagickOffsetType offset)
+%    void *NTMapMemory(char *address,size_t length,int protection,int access,
+%      int file,MagickOffsetType offset)
 %
 */
 MagickPrivate void *NTMapMemory(char *address,size_t length,int protection,
@@ -1942,9 +1944,10 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
 */
 MagickPrivate void NTSeekDirectory(DIR *entry,ssize_t position)
 {
-  (void) position;
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(entry != (DIR *) NULL);
+  (void) entry;
+  (void) position;
 }
 
 /*
@@ -2198,6 +2201,7 @@ MagickPrivate ssize_t NTSystemConfiguration(int name)
 MagickPrivate ssize_t NTTellDirectory(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
+  (void) entry;
   return(0);
 }
 
@@ -2388,7 +2392,6 @@ MagickPrivate void NTWarningHandler(const ExceptionType severity,
   (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
