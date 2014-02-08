@@ -18,10 +18,10 @@
 #ifndef _MAGICKCORE_NT_BASE_PRIVATE_H
 #define _MAGICKCORE_NT_BASE_PRIVATE_H
 
-#include "MagickCore/delegate.h"
-#include "MagickCore/delegate-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/splay-tree.h"
+#include "magick/delegate.h"
+#include "magick/delegate-private.h"
+#include "magick/exception.h"
+#include "magick/splay-tree.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

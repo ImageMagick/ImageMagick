@@ -18,9 +18,9 @@
 #ifndef _MAGICKCORE_NT_FEATURE_H
 #define _MAGICKCORE_NT_FEATURE_H
 
-#include "MagickCore/exception.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/splay-tree.h"
+#include "magick/exception.h"
+#include "magick/geometry.h"
+#include "magick/splay-tree.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
