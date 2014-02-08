@@ -63,6 +63,7 @@
 #include "magick/magick.h"
 #include "magick/memory_.h"
 #include "magick/monitor.h"
+#include "magick/nt-base-private.h"
 #include "magick/option.h"
 #include "magick/PreRvIcccm.h"
 #include "magick/quantize.h"

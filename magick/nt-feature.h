@@ -18,7 +18,9 @@
 #ifndef _MAGICKCORE_NT_FEATURE_H
 #define _MAGICKCORE_NT_FEATURE_H
 
-#include "magick/splay-tree.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/geometry.h"
+#include "MagickCore/splay-tree.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -26,12 +28,14 @@ extern "C" {
 
 extern MagickExport void
   *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),
-  *ImageToHBITMAP(Image *);
+  *ImageToHBITMAP(Image *,ExceptionInfo *);
 
 #if !defined(XS_VERSION)
+
 extern MagickExport MagickBooleanType
   NTIsMagickConflict(const char *),
   NTLoadTypeLists(SplayTreeInfo *,ExceptionInfo *);
+
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

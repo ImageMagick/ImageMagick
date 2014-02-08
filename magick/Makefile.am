@@ -200,6 +200,7 @@ MAGICK_BASE_SRCS = \
 	magick/morphology.h \
 	magick/morphology-private.h \
 	magick/nt-base.h \
+	magick/nt-base-private.h \
 	magick/nt-feature.h \
 	magick/opencl.c \
 	magick/opencl.h \
@@ -297,6 +298,7 @@ if WIN32_NATIVE_BUILD
 MAGICK_PLATFORM_SRCS = \
 	magick/nt-base.c \
 	magick/nt-base.h \
+	magick/nt-base-private.h \
 	magick/nt-feature.c \
 	magick/nt-feature.h
 else
@@ -430,6 +432,7 @@ MAGICK_NOINST_HDRS = \
 	magick/monitor-private.h \
 	magick/morphology-private.h \
 	magick/nt-base.h \
+	magick/nt-base-private.h \
 	magick/nt-feature.h \
 	magick/opencl.h \
 	magick/pixel-private.h \
