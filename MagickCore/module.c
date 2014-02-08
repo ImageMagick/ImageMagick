@@ -797,9 +797,10 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
     if (home != (char *) NULL)
       {
         /*
-          Search $HOME/.magick.
+          Search $HOME/.config/ImageMagick.
         */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.magick%s%s",home,
+        (void) FormatLocaleString(path,MaxTextExtent,
+          "%s%s.config%sImageMagick%s%s",home,DirectorySeparator,
           DirectorySeparator,DirectorySeparator,filename);
         home=DestroyString(home);
         if (IsPathAccessible(path) != MagickFalse)

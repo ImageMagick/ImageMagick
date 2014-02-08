@@ -21,6 +21,7 @@
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantize.h"
 

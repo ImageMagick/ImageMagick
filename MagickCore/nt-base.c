@@ -2389,3 +2389,47 @@ MagickPrivate void NTWarningHandler(const ExceptionType severity,
     MB_SETFOREGROUND | MB_ICONINFORMATION);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T W i n d o w s G e n e s i s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NTWindowsGenesis() initializes the MagickCore Windows environment.
+%
+%  The format of the NTWindowsGenesis method is:
+%
+%      void NTWindowsGenesis(void)
+%
+*/
+MagickPrivate void NTWindowsGenesis(void)
+{
+  char
+    *mode;
+
+  mode=GetEnvironmentValue("MAGICK_ERRORMODE");
+  if (mode != (char *) NULL)
+    {
+      (void) SetErrorMode(StringToInteger(mode));
+      mode=DestroyString(mode);
+    }
+#if defined(_DEBUG) && !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+  if (IsEventLogging() != MagickFalse)
+    {
+      int
+        debug;
+
+      debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+      debug|=_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_DELAY_FREE_MEM_DF | _CRTDBG_LEAK_CHECK_DF;
+      (void) _CrtSetDbgFlag(debug);
+      _ASSERTE(_CrtCheckMemory());
+    }
+#endif
+}
+#endif
