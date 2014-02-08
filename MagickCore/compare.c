@@ -1141,19 +1141,14 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     *image_moments,
     *reconstruct_moments;
 
-  double
-    alpha,
-    beta,
-    difference;
-
   Image
     *phash_image;
 
   MagickBooleanType
     grayscale;
 
-  register ssize_t
-    i;
+  ssize_t
+    channel;
 
   /*
     Compute perceptual hash in the native image colorspace.
@@ -1179,22 +1174,36 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
-  for (i=0; i < 7; i++)
+  /*
+    Compute sum of moment differences squared.
+  */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4)
+#endif
+  for (channel=0; channel < MaxPixelChannels; channel++)
   {
-    ssize_t
-      channel;
+    double
+      difference;
 
-    /*
-      Compute sum of moment differences squared.
-    */
-    for (channel=0; channel < MaxPixelChannels; channel++)
+    register ssize_t
+      i;
+
+    difference=0.0;
+    for (i=0; i < 7; i++)
     {
+      double
+        alpha,
+        beta;
+
       alpha=MagickLog10(image_moments[channel].I[i]);
       beta=MagickLog10(reconstruct_moments[channel].I[i]);
-      difference=beta-alpha;
-      distortion[channel]+=difference*difference;
-      distortion[CompositePixelChannel]+=difference*difference;
+      difference+=(beta-alpha)*(beta-alpha);
     }
+    distortion[channel]+=difference;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp critical (MagickCore_GetPerceptualHashDistortion)
+#endif
+    distortion[CompositePixelChannel]+=difference;
   }
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
   reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
@@ -1227,22 +1236,36 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
       return(MagickFalse);
     }
-  for (i=0; i < 7; i++)
+  /*
+    Compute sum of moment differences squared.
+  */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4)
+#endif
+  for (channel=0; channel < MaxPixelChannels; channel++)
   {
-    ssize_t
-      channel;
+    double
+      difference;
 
-    /*
-      Compute sum of moment differences squared.
-    */
-    for (channel=0; channel < MaxPixelChannels; channel++)
+    register ssize_t
+      i;
+
+    difference=0.0;
+    for (i=0; i < 7; i++)
     {
+      double
+        alpha,
+        beta;
+
       alpha=MagickLog10(image_moments[channel].I[i]);
       beta=MagickLog10(reconstruct_moments[channel].I[i]);
-      difference=beta-alpha;
-      distortion[channel]+=difference*difference;
-      distortion[CompositePixelChannel]+=difference*difference;
+      difference+=(beta-alpha)*(beta-alpha);
     }
+    distortion[channel]+=difference;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp critical (MagickCore_GetPerceptualHashDistortion)
+#endif
+    distortion[CompositePixelChannel]+=difference;
   }
   image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
   reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
