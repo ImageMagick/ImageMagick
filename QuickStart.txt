@@ -69,7 +69,7 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
           $MAGICK_CONFIGURE_PATH
           $MAGICK_HOME/etc/ImageMagick
           $MAGICK_HOME/share/ImageMagick-6.8.8/config
-          $HOME/.magick/
+          $HOME/.config/ImageMagick
           <client path>/etc/ImageMagick/
           <current directory>/
 
@@ -82,7 +82,7 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
           $MAGICK_CONFIGURE_PATH
           $MAGICK_HOME/etc/ImageMagick
           $MAGICK_HOME/share/ImageMagick-6.8.8/config
-          $HOME/.magick/
+          $HOME/.config/ImageMagick
           <client path>/etc/ImageMagick/
           <current directory>/
           $MAGICK_FONT_PATH
@@ -95,11 +95,11 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
 
           <current directory>/
           $MAGICK_HOME/etc/ImageMagick/modules-Q16/coders/
-          $HOME/.magick/
+          $HOME/.config/ImageMagick
           <client path>/../etc/ImageMagick/modules-Q16/coders/
           $MAGICK_HOME/etc/ImageMagick/modules-Q16/coders
           $MAGICK_HOME/share/ImageMagick-6.8.8/modules-Q16/coders
-          $HOME/.magick/
+          $HOME/.config/ImageMagick
           <client path>/etc/ImageMagick/modules-Q16/coders
           <current directory>/
 
