@@ -52,6 +52,7 @@
 #include "MagickCore/resource-private.h"
 #include "MagickCore/timer.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
 #if defined(MAGICKCORE_LTDL_DELEGATE)
@@ -2388,7 +2389,6 @@ MagickPrivate void NTWarningHandler(const ExceptionType severity,
   (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
