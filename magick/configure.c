@@ -48,6 +48,7 @@
 #include "magick/hashmap.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
+#include "magick/nt-base-private.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"
 #include "magick/token.h"
