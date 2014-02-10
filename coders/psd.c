@@ -2594,6 +2594,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
       else
         rounded_layer_info_size=layer_info_size;
       (void) SetPSDSize(&psd_info,image,rounded_layer_info_size);
+      if (next_image->alpha_trait == BlendPixelTrait)
+        layer_count=-layer_count;
       (void) WriteBlobMSBShort(image,(unsigned short) layer_count);
       layer_count=1;
       compression=base_image->compression;
