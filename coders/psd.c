@@ -850,9 +850,7 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,PSDInfo *psd_info,
       ThrowBinaryException(CoderError,"InvalidLength",
         image->filename);
     }
-
-  compact_pixels=(unsigned char *) AcquireQuantumMemory(length,
-    sizeof(*pixels));
+  compact_pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
   if (compact_pixels == (unsigned char *) NULL)
     {
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
