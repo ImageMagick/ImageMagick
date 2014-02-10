@@ -19,7 +19,7 @@
 #define _MAGICKCORE_BLOB_PRIVATE_H
 
 #include "MagickCore/nt-feature.h"
-#include "MagickCore/nt-private.h"
+#include "MagickCore/nt-base-private.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
