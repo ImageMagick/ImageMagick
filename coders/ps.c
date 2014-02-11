@@ -762,7 +762,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   *options='\0';
   (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",resolution.x,
-     resolution.y);
+    resolution.y);
   (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   read_info=CloneImageInfo(image_info);
