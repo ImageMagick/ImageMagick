@@ -70,11 +70,11 @@ testReadCompare('input_gray_lsb_08bit.mat', 'reference/read/input_gray_lsb_08bit
 
 print("MAT (MatLab gray 8-bit MSB integer) ...\n");
 ++$test;
-testReadCompare('input_gray_msb_08bit.mat', 'reference/read/input_gray_msb_08bit_mat.miff', q//, 0.20, 1.0);
+testReadCompare('input_gray_msb_08bit.mat', 'reference/read/input_gray_msb_08bit_mat.miff', q//, 0.22, 1.022);
 
 print("MAT (MatLab gray 64-bit LSB double) ...\n");
 ++$test;
-testReadCompare('input_gray_lsb_double.mat', 'reference/read/input_gray_lsb_double_mat.miff', q//, 0.09, 0.6);
+testReadCompare('input_gray_lsb_double.mat', 'reference/read/input_gray_lsb_double_mat.miff', q//, 0.22, 1.022);
 
 print("MAT (MatLab RGB 8-bit LSB integer) ...\n");
 ++$test;
