@@ -261,8 +261,7 @@ static char *GetHostname(int *port,ExceptionInfo *exception)
   /*
     Parse host list (e.g. 192.168.100.1:6668,192.168.100.2:6668).
   */
-  hosts=(char *) GetImageRegistry(StringRegistryType,"cache:hosts",
-    exception);
+  hosts=(char *) GetImageRegistry(StringRegistryType,"cache:hosts",exception);
   if (hosts == (char *) NULL)
     {
       *port=DPCPort;
@@ -436,8 +435,8 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   return(i);
 }
 
-static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
-  int file,const size_t session_key,ExceptionInfo *exception)
+static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,int file,
+  const size_t session_key,ExceptionInfo *exception)
 {
   Image
     *image;
