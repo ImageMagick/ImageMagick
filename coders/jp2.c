@@ -435,17 +435,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (jp2_image->numcomps > 3)
     image->matte=MagickTrue;
   for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
-  {
-    if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0))
-      {
-        opj_stream_set_user_data(jp2_stream,NULL);
-        opj_destroy_codec(jp2_codec);
-        opj_image_destroy(jp2_image);
-        ThrowReaderException(CoderError,"IrregularChannelGeometryNotSupported")
-      }
     if ((jp2_image->comps[i].dx > 1) || (jp2_image->comps[i].dy > 1))
-      image->colorspace=YUVColorspace;
-  }
+      SetImageColorspace(image,YUVColorspace);
   if (jp2_image->icc_profile_buf != (unsigned char *) NULL)
     {
       StringInfo
