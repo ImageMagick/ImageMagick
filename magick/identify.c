@@ -326,7 +326,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       break;
     }
   }
-  (void) FormatLocaleFile(file,"    %s: %.*g (%.*g)",name,GetMagickPrecision(),
+  (void) FormatLocaleFile(file,"  %s: %.*g (%.*g)",name,GetMagickPrecision(),
     target,GetMagickPrecision(),QuantumScale*target);
   exception=AcquireExceptionInfo();
   n=0;
@@ -377,7 +377,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
         {
           if ((max_locations != 0) && (n >= (ssize_t) max_locations))
             break;
-          (void) FormatLocaleFile(file,"   %.20g,%.20g",(double) x,(double) y);
+          (void) FormatLocaleFile(file," %.20g,%.20g",(double) x,(double) y);
           n++;
         }
       p++;
