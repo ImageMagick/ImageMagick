@@ -1,3 +1,10 @@
+2014-02-13  6.8.8-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.8-6, SVN revision 14868.
+
+2014-02-13  6.8.8-6 Cristy  <quetzlzacatenango@image...>
+  * identify -define identify:locate=maximum locates the position of the
+    maximum value (stopped working in 6.8.8-5).
+
 2014-02-03  6.8.8-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-5, SVN revision 14838.
 
