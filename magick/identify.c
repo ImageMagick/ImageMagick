@@ -527,6 +527,73 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (file == (FILE *) NULL)
     file=stdout;
   exception=AcquireExceptionInfo();
+  locate=GetImageArtifact(image,"identify:locate");
+  if (locate != (const char *) NULL)
+    {
+      const char
+        *limit;
+
+      size_t
+        max_locations;
+
+      StatisticType
+        type;
+
+      /*
+        Display minimum, maximum, or mean pixel locations.
+      */
+      type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
+        MagickFalse,locate);
+      limit=GetImageArtifact(image,"identify:limit");
+      max_locations=0;
+      if (limit != (const char *) NULL)
+        max_locations=StringToUnsignedLong(limit);
+      channel_statistics=GetLocationStatistics(image,type,exception);
+      if (channel_statistics == (ChannelStatistics *) NULL)
+        return(MagickFalse);
+      colorspace=image->colorspace;
+      if (IsGrayImage(image,exception) != MagickFalse)
+        colorspace=GRAYColorspace;
+      (void) FormatLocaleFile(file,"  Channel %s locations:\n",locate);
+      switch (colorspace)
+      {
+        case RGBColorspace:
+        default:
+        {
+          (void) PrintChannelLocations(file,image,RedChannel,"Red",type,
+            max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,GreenChannel,"Green",type,
+            max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,BlueChannel,"Blue",type,
+            max_locations,channel_statistics);
+          break;
+        }
+        case CMYKColorspace:
+        {
+          (void) PrintChannelLocations(file,image,CyanChannel,"Cyan",type,
+            max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,MagentaChannel,"Magenta",type,
+            max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,YellowChannel,"Yellow",type,
+            max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,BlackChannel,"Black",type,
+            max_locations,channel_statistics);
+          break;
+        }
+        case GRAYColorspace:
+        {
+          (void) PrintChannelLocations(file,image,GrayChannel,"Gray",type,
+            max_locations,channel_statistics);
+          break;
+        }
+      }
+      if (image->matte != MagickFalse)
+        (void) PrintChannelLocations(file,image,AlphaChannel,"Alpha",type,
+          max_locations,channel_statistics);
+      channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+        channel_statistics);
+      return(ferror(file) != 0 ? MagickFalse : MagickTrue);
+    }
   *format='\0';
   elapsed_time=GetElapsedTime(&image->timer);
   user_time=GetUserTime(&image->timer);
@@ -539,9 +606,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (*image->magick_filename != '\0')
         if (LocaleCompare(image->magick_filename,image->filename) != 0)
           (void) FormatLocaleFile(file,"%s=>",image->magick_filename);
-       if ((GetPreviousImageInList(image) == (Image *) NULL) &&
-           (GetNextImageInList(image) == (Image *) NULL) &&
-           (image->scene == 0))
+      if ((GetPreviousImageInList(image) == (Image *) NULL) &&
+          (GetNextImageInList(image) == (Image *) NULL) && (image->scene == 0))
         (void) FormatLocaleFile(file,"%s ",image->filename);
       else
         (void) FormatLocaleFile(file,"%s[%.20g] ",image->filename,(double)
@@ -576,8 +642,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       else
         if (image->total_colors <= image->colors)
-          (void) FormatLocaleFile(file,"%.20gc ",(double)
-            image->colors);
+          (void) FormatLocaleFile(file,"%.20gc ",(double) image->colors);
         else
           (void) FormatLocaleFile(file,"%.20g=>%.20gc ",(double)
             image->total_colors,(double) image->colors);
@@ -655,72 +720,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       MagickTypeOptions,(ssize_t) image->type));
   (void) FormatLocaleFile(file,"  Endianess: %s\n",CommandOptionToMnemonic(
     MagickEndianOptions,(ssize_t) image->endian));
-  locate=GetImageArtifact(image,"identify:locate");
-  if (locate != (const char *) NULL)
-    {
-      const char
-        *limit;
-
-      size_t
-        max_locations;
-
-      StatisticType
-        type;
-
-      /*
-        Display minimum, maximum, or mean pixel locations.
-      */
-      type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
-        MagickFalse,locate);
-      limit=GetImageArtifact(image,"identify:limit");
-      max_locations=0;
-      if (limit != (const char *) NULL)
-        max_locations=StringToUnsignedLong(limit);
-      channel_statistics=GetLocationStatistics(image,type,exception);
-      if (channel_statistics == (ChannelStatistics *) NULL)
-        return(MagickFalse);
-      colorspace=image->colorspace;
-      if (IsGrayImage(image,exception) != MagickFalse)
-        colorspace=GRAYColorspace;
-      (void) FormatLocaleFile(file,"  Channel %s locations:\n",locate);
-      switch (colorspace)
-      {
-        case RGBColorspace:
-        default:
-        {
-          (void) PrintChannelLocations(file,image,RedChannel,"Red",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,GreenChannel,"Green",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,BlueChannel,"Blue",type,
-            max_locations,channel_statistics);
-          break;
-        }
-        case CMYKColorspace:
-        {
-          (void) PrintChannelLocations(file,image,CyanChannel,"Cyan",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,MagentaChannel,"Magenta",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,YellowChannel,"Yellow",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,BlackChannel,"Black",type,
-            max_locations,channel_statistics);
-          break;
-        }
-        case GRAYColorspace:
-        {
-          (void) PrintChannelLocations(file,image,GrayChannel,"Gray",type,
-            max_locations,channel_statistics);
-          break;
-        }
-      }
-      if (image->matte != MagickFalse)
-        (void) PrintChannelLocations(file,image,AlphaChannel,"Alpha",type,
-          max_locations,channel_statistics);
-      channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-        channel_statistics);
-    }
   /*
     Detail channel depth and extrema.
   */
