@@ -2101,11 +2101,9 @@ MagickExport const char *GetImageProperty(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if( IfMagickTrue(image->debug) )
+  if (IfMagickTrue(image->debug))
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-
   p=(const char *) NULL;
-  /* if property is in splay tree - return it and we are done */
   if (image->properties != (void *) NULL)
     {
       if (property == (const char *) NULL)
@@ -2129,13 +2127,8 @@ MagickExport const char *GetImageProperty(const Image *image,
     {
       if (LocaleNCompare("8bim:",property,5) == 0)
         {
-          if( IfMagickTrue(Get8BIMProperty(image,property,exception)) &&
-              (image->properties != (void *) NULL))
-            {
-              p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-                image->properties,property);
-              return(p);
-            }
+          (void) Get8BIMProperty(image,property,exception);
+          break;
         }
       break;
     }
@@ -2144,13 +2137,8 @@ MagickExport const char *GetImageProperty(const Image *image,
     {
       if (LocaleNCompare("exif:",property,5) == 0)
         {
-          if( IfMagickTrue(GetEXIFProperty(image,property,exception)) &&
-              (image->properties != (void *) NULL))
-            {
-              p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-                image->properties,property);
-              return(p);
-            }
+          (void) GetEXIFProperty(image,property,exception);
+          break;
         }
       break;
     }
@@ -2160,23 +2148,13 @@ MagickExport const char *GetImageProperty(const Image *image,
       if ((LocaleNCompare("icc:",property,4) == 0) ||
           (LocaleNCompare("icm:",property,4) == 0))
         {
-          if( IfMagickTrue(GetICCProperty(image,property,exception)) &&
-              (image->properties != (void *) NULL))
-            {
-              p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-                image->properties,property);
-              return(p);
-            }
+          (void) GetICCProperty(image,property,exception);
+          break;
         }
       if (LocaleNCompare("iptc:",property,5) == 0)
         {
-          if( IfMagickTrue(GetIPTCProperty(image,property,exception)) &&
-              (image->properties != (void *) NULL))
-            {
-              p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-                image->properties,property);
-              return(p);
-            }
+          (void) GetIPTCProperty(image,property,exception);
+          break;
         }
       break;
     }
@@ -2185,20 +2163,21 @@ MagickExport const char *GetImageProperty(const Image *image,
     {
       if (LocaleNCompare("xmp:",property,4) == 0)
         {
-          if( IfMagickTrue(GetXMPProperty(image,property)) &&
-              (image->properties != (void *) NULL))
-            {
-              p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-                image->properties,property);
-              return(p);
-            }
+          (void) GetXMPProperty(image,property);
+          break;
         }
       break;
     }
     default:
       break;
   }
-  return(p);
+  if (image->properties != (void *) NULL)
+    {
+      p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
+        image->properties,property);
+      return(p);
+    }
+  return((const char *) NULL);
 }
 
 /*
@@ -3802,28 +3781,23 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
   assert(image->signature == MagickSignature);
   if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-
-  /* Create splay-tree */
   if (image->properties == (void *) NULL)
     image->properties=NewSplayTree(CompareSplayTreeString,
-      RelinquishMagickMemory,RelinquishMagickMemory);
-
-  /* Delete property if NULL --  empty string values are valid! */
+      RelinquishMagickMemory,RelinquishMagickMemory);  /* create splay-tree */
   if (value == (const char *) NULL)
-    return(DeleteImageProperty(image,property));
+    return(DeleteImageProperty(image,property));  /* delete if NULL */
   status=MagickTrue;
-
-  /* Do not 'set' single letter properties - read only shorthand */
   if (strlen(property) <= 1)
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-          OptionError,"SetReadOnlyProperty","`%s'",property);
+      /*
+        Do not 'set' single letter properties - read only shorthand.
+       */
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "SetReadOnlyProperty","`%s'",property);
       return(MagickFalse);
     }
 
   /* FUTURE: binary chars or quotes in key should produce a error */
-
-
   /* Set attributes with known names or special prefixes
      return result is found, or break to set a free form properity
   */
@@ -3859,8 +3833,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     {
       if (LocaleCompare("channels",property) == 0)
         {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-               OptionError,"SetReadOnlyProperty","`%s'",property);
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "SetReadOnlyProperty","`%s'",property);
           return(MagickFalse);
         }
       if (LocaleCompare("colorspace",property) == 0)
