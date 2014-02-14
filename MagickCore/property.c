@@ -2572,8 +2572,11 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
         page.y);
       break;
     }
-    case '#': /* Image signature */
+    case '#':
     {
+      /*
+        Image signature.
+      */
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) SignatureImage(image,exception);
       string=GetImageProperty(image,"signature",exception);
@@ -2583,19 +2586,21 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
   if (string != (char *) NULL)
     return(string);
   if (*value != '\0')
-  {
-    /* create a cloned copy of result, that will get cleaned up, eventually */
-    if (image != (Image *)NULL)
-      {
-        (void) SetImageArtifact(image,"get-property",value);
-        return(GetImageArtifact(image,"get-property"));
-      }
-    else
-      {
-        (void) SetImageOption(image_info,"get-property",value);
-        return(GetImageOption(image_info,"get-property"));
-      }
-  }
+    {
+      /*
+        Create a cloned copy of result.
+      */
+      if (image != (Image *)NULL)
+        {
+          (void) SetImageArtifact(image,"get-property",value);
+          return(GetImageArtifact(image,"get-property"));
+        }
+      else
+        {
+          (void) SetImageOption(image_info,"get-property",value);
+          return(GetImageOption(image_info,"get-property"));
+        }
+    }
   return((char *)NULL);
 }
 
