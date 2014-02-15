@@ -127,7 +127,7 @@ static void
 static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 {
   while (kernel->next != (KernelInfo *) NULL)
-    kernel = kernel->next;
+    kernel=kernel->next;
   return(kernel);
 }
 
@@ -492,7 +492,6 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
 
 MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 {
-
   KernelInfo
     *kernel,
     *new_kernel;
@@ -508,43 +507,41 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 
   if (kernel_string == (const char *) NULL)
     return(ParseKernelArray(kernel_string));
-  p = kernel_string;
-  kernel = NULL;
-  kernel_number = 0;
+  p=kernel_string;
+  kernel=NULL;
+  kernel_number=0;
 
-  while ( GetMagickToken(p,NULL,token),  *token != '\0' ) {
-
+  while (GetMagickToken(p,NULL,token), *token != '\0')
+  {
     /* ignore extra or multiple ';' kernel separators */
-    if ( *token != ';' ) {
+    if (*token != ';')
+      {
+        /* tokens starting with alpha is a Named kernel */
+        if (isalpha((int) ((unsigned char) *token)) != 0)
+          new_kernel=ParseKernelName(p);
+        else /* otherwise a user defined kernel array */
+          new_kernel=ParseKernelArray(p);
 
-      /* tokens starting with alpha is a Named kernel */
-      if (isalpha((int) ((unsigned char) *token)) != 0)
-        new_kernel = ParseKernelName(p);
-      else /* otherwise a user defined kernel array */
-        new_kernel = ParseKernelArray(p);
+        /* Error handling -- this is not proper error handling! */
+        if (new_kernel == (KernelInfo *) NULL)
+          {
+            if (kernel != (KernelInfo *) NULL)
+              kernel=DestroyKernelInfo(kernel);
+            return((KernelInfo *) NULL);
+          }
 
-      /* Error handling -- this is not proper error handling! */
-      if ( new_kernel == (KernelInfo *) NULL ) {
-        (void) FormatLocaleFile(stderr,"Failed to parse kernel number #%.20g\n",
-          (double) kernel_number);
-        if ( kernel != (KernelInfo *) NULL )
-          kernel=DestroyKernelInfo(kernel);
-        return((KernelInfo *) NULL);
+        /* initialise or append the kernel list */
+        if (kernel == (KernelInfo *) NULL)
+          kernel=new_kernel;
+        else
+          LastKernelInfo(kernel)->next=new_kernel;
       }
 
-      /* initialise or append the kernel list */
-      if ( kernel == (KernelInfo *) NULL )
-        kernel = new_kernel;
-      else
-        LastKernelInfo(kernel)->next = new_kernel;
-    }
-
     /* look for the next kernel in list */
-    p = strchr(p, ';');
-    if ( p == (char *) NULL )
+    p=strchr(p,';');
+    if (p == (char *) NULL)
       break;
     p++;
-
   }
   return(kernel);
 }
@@ -2270,7 +2267,7 @@ MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
 MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 {
   assert(kernel != (KernelInfo *) NULL);
-  if ( kernel->next != (KernelInfo *) NULL )
+  if (kernel->next != (KernelInfo *) NULL)
     kernel->next=DestroyKernelInfo(kernel->next);
   kernel->values=(MagickRealType *) RelinquishAlignedMemory(kernel->values);
   kernel=(KernelInfo *) RelinquishMagickMemory(kernel);
