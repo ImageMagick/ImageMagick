@@ -1193,7 +1193,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_wansung;
       ft_status=FT_Select_Charmap(face,encoding_type);
       if (ft_status != 0)
-        ThrowBinaryException(TypeError,"UnrecognizedFontEncoding",encoding);
+        {
+          (void) FT_Done_Face(face);
+          (void) FT_Done_FreeType(library);
+          ThrowBinaryException(TypeError,"UnrecognizedFontEncoding",encoding);
+        }
     }
   /*
     Set text size.
