@@ -96,7 +96,7 @@ static MagickBooleanType
 %
 %  The format of the IsJ2K method is:
 %
-%      MagickBooleanType IsJP2(const unsigned char *magick,const size_t length)
+%      MagickBooleanType IsJ2K(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -140,44 +140,6 @@ static MagickBooleanType IsJ2K(const unsigned char *magick,const size_t length)
 %
 */
 static MagickBooleanType IsJP2(const unsigned char *magick,const size_t length)
-{
-  if (length < 4)
-    return(MagickFalse);
-  if (memcmp(magick,"\x0d\x0a\x87\x0a",4) == 0)
-    return(MagickTrue);
-  if (length < 12)
-    return(MagickFalse);
-  if (memcmp(magick,"\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a",12) == 0)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I s J P C                                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsJPC()() returns MagickTrue if the image format type, identified by the
-%  magick string, is JPC.
-%
-%  The format of the IsJPC method is:
-%
-%      MagickBooleanType IsJPC(const unsigned char *magick,const size_t length)
-%
-%  A description of each parameter follows:
-%
-%    o magick: compare image format pattern against these bytes.
-%
-%    o length: Specifies the length of the magick string.
-%
-*/
-static MagickBooleanType IsJPC(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
     return(MagickFalse);
@@ -629,7 +591,7 @@ ModuleExport size_t RegisterJP2Image(void)
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
-  entry->magick=(IsImageFormatHandler *) IsJPC;
+  entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
