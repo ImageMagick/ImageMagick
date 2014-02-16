@@ -288,7 +288,7 @@ MagickExport MagickBooleanType CoderComponentGenesis(void)
 MagickExport void CoderComponentTerminus(void)
 {
   if (coder_semaphore == (SemaphoreInfo *) NULL)
-    coder_semaphore=AllocateSemaphoreInfo();
+    ActivateSemaphoreInfo(&coder_semaphore);
   LockSemaphoreInfo(coder_semaphore);
   if (coder_list != (SplayTreeInfo *) NULL)
     coder_list=DestroySplayTree(coder_list);
@@ -540,7 +540,7 @@ static MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
       (instantiate_coder == MagickFalse))
     {
       if (coder_semaphore == (SemaphoreInfo *) NULL)
-        coder_semaphore=AllocateSemaphoreInfo();
+        ActivateSemaphoreInfo(&coder_semaphore);
       LockSemaphoreInfo(coder_semaphore);
       if ((coder_list == (SplayTreeInfo *) NULL) &&
           (instantiate_coder == MagickFalse))

@@ -877,7 +877,7 @@ MagickExport MagickBooleanType InitializeModuleList(
       (instantiate_module == MagickFalse))
     {
       if (module_semaphore == (SemaphoreInfo *) NULL)
-        module_semaphore=AllocateSemaphoreInfo();
+        ActivateSemaphoreInfo(&module_semaphore);
       LockSemaphoreInfo(module_semaphore);
       if ((module_list == (SplayTreeInfo *) NULL) &&
           (instantiate_module == MagickFalse))
@@ -1200,7 +1200,7 @@ MagickExport MagickBooleanType ModuleComponentGenesis(void)
 MagickExport void ModuleComponentTerminus(void)
 {
   if (module_semaphore == (SemaphoreInfo *) NULL)
-    module_semaphore=AllocateSemaphoreInfo();
+    ActivateSemaphoreInfo(&module_semaphore);
   DestroyModuleList();
   DestroySemaphoreInfo(&module_semaphore);
 }

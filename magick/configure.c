@@ -185,7 +185,7 @@ static void *DestroyConfigureElement(void *configure_info)
 MagickExport void ConfigureComponentTerminus(void)
 {
   if (configure_semaphore == (SemaphoreInfo *) NULL)
-    configure_semaphore=AllocateSemaphoreInfo();
+    ActivateSemaphoreInfo(&configure_semaphore);
   LockSemaphoreInfo(configure_semaphore);
   if (configure_list != (LinkedListInfo *) NULL)
     configure_list=DestroyLinkedList(configure_list,DestroyConfigureElement);
@@ -912,7 +912,7 @@ static MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
       (instantiate_configure == MagickFalse))
     {
       if (configure_semaphore == (SemaphoreInfo *) NULL)
-        configure_semaphore=AllocateSemaphoreInfo();
+        ActivateSemaphoreInfo(&configure_semaphore);
       LockSemaphoreInfo(configure_semaphore);
       if ((configure_list == (LinkedListInfo *) NULL) &&
           (instantiate_configure == MagickFalse))

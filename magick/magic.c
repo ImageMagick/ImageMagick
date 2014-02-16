@@ -530,7 +530,7 @@ static MagickBooleanType InitializeMagicList(ExceptionInfo *exception)
       (instantiate_magic == MagickFalse))
     {
       if (magic_semaphore == (SemaphoreInfo *) NULL)
-        magic_semaphore=AllocateSemaphoreInfo();
+        ActivateSemaphoreInfo(&magic_semaphore);
       LockSemaphoreInfo(magic_semaphore);
       if ((magic_list == (LinkedListInfo *) NULL) &&
           (instantiate_magic == MagickFalse))
@@ -1068,7 +1068,7 @@ static void *DestroyMagicElement(void *magic_info)
 MagickExport void MagicComponentTerminus(void)
 {
   if (magic_semaphore == (SemaphoreInfo *) NULL)
-    magic_semaphore=AllocateSemaphoreInfo();
+    ActivateSemaphoreInfo(&magic_semaphore);
   LockSemaphoreInfo(magic_semaphore);
   if (magic_list != (LinkedListInfo *) NULL)
     magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);
