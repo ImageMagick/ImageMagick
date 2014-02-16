@@ -815,7 +815,6 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       }
   }
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-
   {
     char
       module_path[MaxTextExtent];
