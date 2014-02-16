@@ -1020,6 +1020,19 @@ namespace Magick
     void modulate(const double brightness_,const double saturation_,
       const double hue_);
 
+    // Applies a kernel to the image according to the given mophology method.
+    void morphology(const MorphologyMethod method_,const std::string kernel_,
+      const ssize_t iterations_=1);
+    void morphology(const MorphologyMethod method_,
+      const KernelInfoType kernel_,const std::string arguments_,
+      const ssize_t iterations_=1);
+    void morphologyChannel(const ChannelType channel_,
+      const MorphologyMethod method_,const std::string kernel_,
+      const ssize_t iterations_=1);
+    void morphologyChannel(const ChannelType channel_,
+      const MorphologyMethod method_,const KernelInfoType kernel_,
+      const std::string arguments_,const ssize_t iterations_=1);
+
     // Motion blur image with specified blur factor
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
