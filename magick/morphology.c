@@ -4291,7 +4291,8 @@ exit_cleanup:
 %  the above internal function MorphologyApply().
 %
 %  User defined settings include...
-%    * Output Bias for Convolution and correlation   ("-bias")
+%    * Output Bias for Convolution and correlation   ("-bias"
+       or "-define convolve:bias=??")
 %    * Kernel Scale/normalize settings     ("-set 'option:convolve:scale'")
 %      This can also includes the addition of a scaled unity kernel.
 %    * Show Kernel being applied           ("-set option:showkernel 1")
@@ -4335,19 +4336,27 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   CompositeOperator
     compose;
 
+  double
+    bias;
+
   Image
     *morphology_image;
-
 
   /* Apply Convolve/Correlate Normalization and Scaling Factors.
    * This is done BEFORE the ShowKernelInfo() function is called so that
    * users can see the results of the 'option:convolve:scale' option.
    */
   curr_kernel = (KernelInfo *) kernel;
+  bias=image->bias;
   if ( method == ConvolveMorphology ||  method == CorrelateMorphology )
     {
       const char
         *artifact;
+
+      artifact = GetImageArtifact(image,"convolve:bias");
+      if (artifact != (const char *) NULL)
+        bias=StringToDoubleInterval(artifact,(double) QuantumRange+1.0);
+
       artifact = GetImageArtifact(image,"convolve:scale");
       if ( artifact != (const char *)NULL ) {
         if ( curr_kernel == kernel )
@@ -4382,7 +4391,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
   }
   /* Apply the Morphology */
   morphology_image = MorphologyApply(image, channel, method, iterations,
-                         curr_kernel, compose, image->bias, exception);
+                         curr_kernel, compose, bias, exception);
 
   /* Cleanup and Exit */
   if ( curr_kernel != kernel )
