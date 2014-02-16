@@ -313,6 +313,7 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   *AcquireMemory(const size_t) magick_attribute((deprecated)),
+  AcquireSemaphoreInfo(SemaphoreInfo **) magick_attribute((deprecated)),
   AllocateNextImage(const ImageInfo *,Image *) magick_attribute((deprecated)),
   *CloneMemory(void *,const void *,const size_t) magick_attribute((deprecated)),
   DestroyConstitute(void),
@@ -338,6 +339,7 @@ extern MagickExport void
   InitializeMagick(const char *) magick_attribute((deprecated)),
   MagickIncarnate(const char *) magick_attribute((deprecated)),
   ReacquireMemory(void **,const size_t) magick_attribute((deprecated)),
+  RelinquishSemaphoreInfo(SemaphoreInfo *) magick_attribute((deprecated)),
   ResetImageAttributeIterator(const Image *) magick_attribute((deprecated)),
   SetCacheThreshold(const size_t) magick_attribute((deprecated)),
   SetImage(Image *,const Quantum) magick_attribute((deprecated)),

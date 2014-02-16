@@ -83,6 +83,7 @@
 #include "magick/random_.h"
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
+#include "magick/semaphore-private.h"
 #include "magick/segment.h"
 #include "magick/splay-tree.h"
 #include "magick/statistic.h"
@@ -324,7 +325,8 @@ MagickExport void *AcquireMemory(const size_t size)
 %  The format of the AcquireOneCacheViewPixel method is:
 %
 %      MagickBooleanType AcquireOneCacheViewPixel(const CacheView *cache_view,
-%        const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const ssize_t x,const ssize_t y,PixelPacket *pixel,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -338,8 +340,8 @@ MagickExport void *AcquireMemory(const size_t size)
 %
 */
 MagickExport MagickBooleanType AcquireOneCacheViewPixel(
-  const CacheView *cache_view,const ssize_t x,const ssize_t y,PixelPacket *pixel,
-  ExceptionInfo *exception)
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,
+  PixelPacket *pixel,ExceptionInfo *exception)
 {
   return(GetOneCacheViewVirtualPixel(cache_view,x,y,pixel,exception));
 }
@@ -564,6 +566,41 @@ MagickExport PixelPacket AcquireOneVirtualPixel(const Image *image,
 MagickExport const PixelPacket *AcquirePixels(const Image *image)
 {
   return(GetVirtualPixelQueue(image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e S e m a p h o r e I n f o                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireSemaphoreInfo() acquires a semaphore.
+%
+%  The format of the AcquireSemaphoreInfo method is:
+%
+%      void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
+%
+%  A description of each parameter follows:
+%
+%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
+%
+*/
+MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
+{
+  assert(semaphore_info != (SemaphoreInfo **) NULL);
+  if (*semaphore_info == (SemaphoreInfo *) NULL)
+    {
+      InitializeMagickMutex();
+      LockMagickMutex();
+      if (*semaphore_info == (SemaphoreInfo *) NULL)
+        *semaphore_info=AllocateSemaphoreInfo();
+      UnlockMagickMutex();
+    }
 }
 
 /*
@@ -6025,6 +6062,34 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   reduce_image=StatisticImage(image,NonpeakStatistic,(size_t) radius,(size_t)
     radius,exception);
   return(reduce_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e l i n g u i s h S e m a p h o r e I n f o                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RelinquishSemaphoreInfo() relinquishes a semaphore.
+%
+%  The format of the RelinquishSemaphoreInfo method is:
+%
+%      RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
+%
+%  A description of each parameter follows:
+%
+%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
+%
+*/
+MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
+{
+  assert(semaphore_info != (SemaphoreInfo *) NULL);
+  UnlockSemaphoreInfo(semaphore_info);
 }
 
 /*

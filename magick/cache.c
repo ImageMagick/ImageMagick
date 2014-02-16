@@ -329,7 +329,7 @@ MagickExport const void *AcquirePixelCachePixels(const Image *image,
 */
 MagickExport MagickBooleanType CacheComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&cache_semaphore);
+  cache_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -354,7 +354,7 @@ MagickExport MagickBooleanType CacheComponentGenesis(void)
 MagickExport void CacheComponentTerminus(void)
 {
   if (cache_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&cache_semaphore);
+    cache_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(cache_semaphore);
   instantiate_cache=MagickFalse;
   UnlockSemaphoreInfo(cache_semaphore);

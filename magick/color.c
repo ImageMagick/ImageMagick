@@ -817,7 +817,7 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType ColorComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&color_semaphore);
+  color_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -860,7 +860,7 @@ static void *DestroyColorElement(void *color_info)
 MagickExport void ColorComponentTerminus(void)
 {
   if (color_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&color_semaphore);
+    color_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(color_semaphore);
   if (color_list != (LinkedListInfo *) NULL)
     color_list=DestroyLinkedList(color_list,DestroyColorElement);
@@ -1510,7 +1510,7 @@ static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
       (instantiate_color == MagickFalse))
     {
       if (color_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&color_semaphore);
+        color_semaphore=AllocateSemaphoreInfo();
       LockSemaphoreInfo(color_semaphore);
       if ((color_list == (LinkedListInfo *) NULL) &&
           (instantiate_color == MagickFalse))
