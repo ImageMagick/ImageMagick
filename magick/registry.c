@@ -299,7 +299,7 @@ MagickExport char *GetNextImageRegistry(void)
 */
 MagickExport MagickBooleanType RegistryComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&registry_semaphore);
+  registry_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -324,7 +324,7 @@ MagickExport MagickBooleanType RegistryComponentGenesis(void)
 MagickExport void RegistryComponentTerminus(void)
 {
   if (registry_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&registry_semaphore);
+    registry_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(registry_semaphore);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -527,7 +527,7 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
       (instantiate_registry == MagickFalse))
     {
       if (registry_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&registry_semaphore);
+        registry_semaphore=AllocateSemaphoreInfo();
       LockSemaphoreInfo(registry_semaphore);
       if ((registry == (SplayTreeInfo *) NULL) &&
           (instantiate_registry == MagickFalse))

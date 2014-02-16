@@ -814,7 +814,7 @@ static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
       (instantiate_locale == MagickFalse))
     {
       if (locale_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&locale_semaphore);
+        locale_semaphore=AllocateSemaphoreInfo();
       LockSemaphoreInfo(locale_semaphore);
       if ((locale_list == (SplayTreeInfo *) NULL) &&
           (instantiate_locale == MagickFalse))
@@ -1391,7 +1391,7 @@ static MagickBooleanType LoadLocaleLists(const char *filename,
 */
 MagickExport MagickBooleanType LocaleComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&locale_semaphore);
+  locale_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1416,7 +1416,7 @@ MagickExport MagickBooleanType LocaleComponentGenesis(void)
 MagickExport void LocaleComponentTerminus(void)
 {
   if (locale_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&locale_semaphore);
+    locale_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(locale_semaphore);
   if (locale_list != (SplayTreeInfo *) NULL)
     locale_list=DestroySplayTree(locale_list);

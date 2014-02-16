@@ -75,41 +75,6 @@ struct SemaphoreInfo
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e S e m a p h o r e I n f o                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireSemaphoreInfo() acquires a semaphore.
-%
-%  The format of the AcquireSemaphoreInfo method is:
-%
-%      void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
-%
-%  A description of each parameter follows:
-%
-%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
-%
-*/
-MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
-{
-  assert(semaphore_info != (SemaphoreInfo **) NULL);
-  if (*semaphore_info == (SemaphoreInfo *) NULL)
-    {
-      InitializeMagickMutex();
-      LockMagickMutex();
-      if (*semaphore_info == (SemaphoreInfo *) NULL)
-        *semaphore_info=AllocateSemaphoreInfo();
-      UnlockMagickMutex();
-    }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   A l l o c a t e S e m a p h o r e I n f o                                 %
 %                                                                             %
 %                                                                             %
@@ -372,35 +337,6 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 #endif
   semaphore_info->id=GetMagickThreadId();
   semaphore_info->reference_count++;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e l i n g u i s h S e m a p h o r e I n f o                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RelinquishSemaphoreInfo() relinquishes a semaphore.
-%
-%  The format of the RelinquishSemaphoreInfo method is:
-%
-%      RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
-%
-%  A description of each parameter follows:
-%
-%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
-%
-*/
-MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
-{
-  assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
-  UnlockSemaphoreInfo(semaphore_info);
 }
 
 /*

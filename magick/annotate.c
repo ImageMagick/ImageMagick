@@ -138,7 +138,7 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType AnnotateComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&annotate_semaphore);
+  annotate_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -163,7 +163,7 @@ MagickExport MagickBooleanType AnnotateComponentGenesis(void)
 MagickExport void AnnotateComponentTerminus(void)
 {
   if (annotate_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&annotate_semaphore);
+    annotate_semaphore=AllocateSemaphoreInfo();
   DestroySemaphoreInfo(&annotate_semaphore);
 }
 
@@ -1880,7 +1880,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
     status;
 
   if (annotate_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&annotate_semaphore);
+    annotate_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(annotate_semaphore);
   status=XRenderImage(image,draw_info,offset,metrics);
   UnlockSemaphoreInfo(annotate_semaphore);

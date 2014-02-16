@@ -530,7 +530,7 @@ static MagickBooleanType InitializeMagicList(ExceptionInfo *exception)
       (instantiate_magic == MagickFalse))
     {
       if (magic_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&magic_semaphore);
+        magic_semaphore=AllocateSemaphoreInfo();
       LockSemaphoreInfo(magic_semaphore);
       if ((magic_list == (LinkedListInfo *) NULL) &&
           (instantiate_magic == MagickFalse))
@@ -1021,7 +1021,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
 */
 MagickExport MagickBooleanType MagicComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&magic_semaphore);
+  magic_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1068,7 +1068,7 @@ static void *DestroyMagicElement(void *magic_info)
 MagickExport void MagicComponentTerminus(void)
 {
   if (magic_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&magic_semaphore);
+    magic_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(magic_semaphore);
   if (magic_list != (LinkedListInfo *) NULL)
     magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);

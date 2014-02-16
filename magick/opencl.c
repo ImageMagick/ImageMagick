@@ -126,7 +126,7 @@ MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
   if (clEnv != NULL)
   {
     memset(clEnv, 0, sizeof(struct _MagickCLEnv));
-    AcquireSemaphoreInfo(&clEnv->lock);
+    clEnv->lock=AllocateSemaphoreInfo();
   }
   return clEnv;
 }
@@ -159,7 +159,7 @@ MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
 {
   if (clEnv != (MagickCLEnv)NULL)
   {
-    RelinquishSemaphoreInfo(clEnv->lock);
+    DestroySemaphoreInfo(&clEnv->lock);
     RelinquishMagickMemory(clEnv);
     return MagickTrue;
   }
@@ -203,7 +203,7 @@ MagickExport MagickCLEnv GetDefaultOpenCLEnv()
   {
     if (defaultCLEnvLock == NULL)
     {
-      AcquireSemaphoreInfo(&defaultCLEnvLock);
+      defaultCLEnvLock=AllocateSemaphoreInfo();
     }
     LockSemaphoreInfo(defaultCLEnvLock);
     defaultCLEnv = AcquireMagickOpenCLEnv();
@@ -215,7 +215,7 @@ MagickExport MagickCLEnv GetDefaultOpenCLEnv()
 static void LockDefaultOpenCLEnv() {
   if (defaultCLEnvLock == NULL)
   {
-    AcquireSemaphoreInfo(&defaultCLEnvLock);
+    defaultCLEnvLock=AllocateSemaphoreInfo();
   }
   LockSemaphoreInfo(defaultCLEnvLock);
 }
@@ -223,7 +223,7 @@ static void LockDefaultOpenCLEnv() {
 static void UnlockDefaultOpenCLEnv() {
   if (defaultCLEnvLock == NULL)
   {
-    AcquireSemaphoreInfo(&defaultCLEnvLock);
+    defaultCLEnvLock=AllocateSemaphoreInfo();
   }
   else
     UnlockSemaphoreInfo(defaultCLEnvLock);
@@ -2543,7 +2543,7 @@ const char* GetOpenCLCachedFilesDirectory() {
   if (openclCachedFilesDirectory == NULL) {
     if (openclCachedFilesDirectoryLock == NULL)
     {
-      AcquireSemaphoreInfo(&openclCachedFilesDirectoryLock);
+      openclCachedFilesDirectoryLock=AllocateSemaphoreInfo();
     }
     LockSemaphoreInfo(openclCachedFilesDirectoryLock);
     if (openclCachedFilesDirectory == NULL) {

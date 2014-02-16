@@ -426,7 +426,7 @@ static MagickBooleanType InitializePolicyList(ExceptionInfo *exception)
       (instantiate_policy == MagickFalse))
     {
       if (policy_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&policy_semaphore);
+        policy_semaphore=AllocateSemaphoreInfo();
       LockSemaphoreInfo(policy_semaphore);
       if ((policy_list == (LinkedListInfo *) NULL) &&
           (instantiate_policy == MagickFalse))
@@ -966,7 +966,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
 */
 MagickExport MagickBooleanType PolicyComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&policy_semaphore);
+  policy_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1013,7 +1013,7 @@ static void *DestroyPolicyElement(void *policy_info)
 MagickExport void PolicyComponentTerminus(void)
 {
   if (policy_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&policy_semaphore);
+    policy_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(policy_semaphore);
   if (policy_list != (LinkedListInfo *) NULL)
     policy_list=DestroyLinkedList(policy_list,DestroyPolicyElement);

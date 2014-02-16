@@ -162,7 +162,7 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType DelegateComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&delegate_semaphore);
+  delegate_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -207,7 +207,7 @@ static void *DestroyDelegate(void *delegate_info)
 MagickExport void DelegateComponentTerminus(void)
 {
   if (delegate_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&delegate_semaphore);
+    delegate_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(delegate_semaphore);
   if (delegate_list != (LinkedListInfo *) NULL)
     delegate_list=DestroyLinkedList(delegate_list,DestroyDelegate);
@@ -706,7 +706,7 @@ static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
       (instantiate_delegate == MagickFalse))
     {
       if (delegate_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&delegate_semaphore);
+        delegate_semaphore=AllocateSemaphoreInfo();
       LockSemaphoreInfo(delegate_semaphore);
       if ((delegate_list == (LinkedListInfo *) NULL) &&
           (instantiate_delegate == MagickFalse))
