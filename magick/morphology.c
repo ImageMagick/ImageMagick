@@ -501,14 +501,10 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   const char
     *p;
 
-  size_t
-    kernel_number;
-
   if (kernel_string == (const char *) NULL)
     return(ParseKernelArray(kernel_string));
   p=kernel_string;
   kernel=NULL;
-  kernel_number=0;
 
   while (GetMagickToken(p,NULL,token), *token != '\0')
   {
