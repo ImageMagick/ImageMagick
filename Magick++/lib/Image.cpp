@@ -3266,6 +3266,91 @@ void Magick::Image::modulate(const double brightness_,const double saturation_,
   throwImageException();
 }
 
+void Magick::Image::morphology(const MorphologyMethod method_,
+  const std::string kernel_,const ssize_t iterations_)
+{
+  KernelInfo
+    *kernel;
+
+  MagickCore::Image
+    *newImage;
+
+  kernel=AcquireKernelInfo(kernel_.c_str());
+  if (kernel == (KernelInfo *)NULL)
+    throwExceptionExplicit(OptionError,"Unable to parse kernel.");
+
+  GetPPException;
+  newImage=MorphologyImage(constImage(),method_,iterations_,kernel,
+    &exceptionInfo);
+  replaceImage(newImage);
+  kernel=DestroyKernelInfo(kernel);
+  ThrowPPException;
+}
+
+void Magick::Image::morphology(const MorphologyMethod method_,
+  const KernelInfoType kernel_,const std::string arguments_,
+  const ssize_t iterations_)
+{
+  const char
+    *option;
+
+  std::string
+    kernel;
+
+  option=CommandOptionToMnemonic(MagickKernelOptions,kernel_);
+  if (option == (const char *)NULL)
+    throwExceptionExplicit(OptionError,"Unable to determine kernel type.");
+
+  kernel=std::string(option);
+  if (!arguments_.empty())
+    kernel+=":"+arguments_;
+
+  morphology(method_,kernel,iterations_);
+}
+
+void Magick::Image::morphologyChannel(const ChannelType channel_,
+  const MorphologyMethod method_,const std::string kernel_,
+  const ssize_t iterations_)
+{
+  KernelInfo
+    *kernel;
+
+  MagickCore::Image
+    *newImage;
+
+  kernel=AcquireKernelInfo(kernel_.c_str());
+  if (kernel == (KernelInfo *)NULL)
+    throwExceptionExplicit(OptionError,"Unable to parse kernel.");
+
+  GetPPException;
+  newImage=MorphologyImageChannel(constImage(),channel_,method_,iterations_,
+    kernel,&exceptionInfo);
+  replaceImage(newImage);
+  kernel=DestroyKernelInfo(kernel);
+  ThrowPPException;
+}
+
+void Magick::Image::morphologyChannel(const ChannelType channel_,
+  const MorphologyMethod method_,const KernelInfoType kernel_,
+  const std::string arguments_,const ssize_t iterations_)
+{
+  const char
+    *option;
+
+  std::string
+    kernel;
+
+  option=CommandOptionToMnemonic(MagickKernelOptions,kernel_);
+  if (option == (const char *)NULL)
+    throwExceptionExplicit(OptionError,"Unable to determine kernel type.");
+
+  kernel=std::string(option);
+  if (!arguments_.empty())
+    kernel+=":"+arguments_;
+
+  morphologyChannel(channel_,method_,kernel,iterations_);
+}
+
 void Magick::Image::motionBlur(const double radius_,const double sigma_,
   const double angle_)
 {
