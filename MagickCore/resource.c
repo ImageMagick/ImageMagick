@@ -167,7 +167,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
   status=MagickFalse;
   (void) FormatMagickSize(size,MagickFalse,resource_request);
   if (resource_semaphore == (SemaphoreInfo *) NULL)
-    resource_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
   switch (type)
   {
@@ -501,7 +501,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
   if (file == -1)
     return(file);
   if (resource_semaphore == (SemaphoreInfo *) NULL)
-    resource_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
   if (temporary_resources == (SplayTreeInfo *) NULL)
     temporary_resources=NewSplayTree(CompareSplayTreeString,
@@ -619,7 +619,7 @@ MagickExport MagickSizeType GetMagickResourceLimit(const ResourceType type)
 
   resource=0;
   if (resource_semaphore == (SemaphoreInfo *) NULL)
-    resource_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
   switch (type)
   {
@@ -708,7 +708,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   if (file == (const FILE *) NULL)
     file=stdout;
   if (resource_semaphore == (SemaphoreInfo *) NULL)
-    resource_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
   (void) FormatMagickSize(resource_info.area_limit,MagickFalse,area_limit);
   (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,memory_limit);
@@ -770,7 +770,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
 
   (void) FormatMagickSize(size,MagickFalse,resource_request);
   if (resource_semaphore == (SemaphoreInfo *) NULL)
-    resource_semaphore=AcquireSemaphoreInfo();
+		ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
   switch (type)
   {

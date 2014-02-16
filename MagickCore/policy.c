@@ -429,7 +429,7 @@ static MagickBooleanType InitializePolicyList(ExceptionInfo *exception)
       (instantiate_policy == MagickFalse))
     {
       if (policy_semaphore == (SemaphoreInfo *) NULL)
-        policy_semaphore=AcquireSemaphoreInfo();
+        ActivateSemaphoreInfo(&policy_semaphore);
       LockSemaphoreInfo(policy_semaphore);
       if ((policy_list == (LinkedListInfo *) NULL) &&
           (instantiate_policy == MagickFalse))
@@ -1016,7 +1016,7 @@ static void *DestroyPolicyElement(void *policy_info)
 MagickPrivate void PolicyComponentTerminus(void)
 {
   if (policy_semaphore == (SemaphoreInfo *) NULL)
-    policy_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&policy_semaphore);
   LockSemaphoreInfo(policy_semaphore);
   if (policy_list != (LinkedListInfo *) NULL)
     policy_list=DestroyLinkedList(policy_list,DestroyPolicyElement);

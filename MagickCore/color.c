@@ -863,7 +863,7 @@ static void *DestroyColorElement(void *color_info)
 MagickPrivate void ColorComponentTerminus(void)
 {
   if (color_semaphore == (SemaphoreInfo *) NULL)
-    color_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&color_semaphore);
   LockSemaphoreInfo(color_semaphore);
   if (color_list != (LinkedListInfo *) NULL)
     color_list=DestroyLinkedList(color_list,DestroyColorElement);
@@ -1519,7 +1519,7 @@ static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
       IfMagickFalse(instantiate_color))
     {
       if (color_semaphore == (SemaphoreInfo *) NULL)
-        color_semaphore=AcquireSemaphoreInfo();
+        ActivateSemaphoreInfo(&color_semaphore);
       LockSemaphoreInfo(color_semaphore);
       if ((color_list == (LinkedListInfo *) NULL) &&
           IfMagickFalse(instantiate_color))

@@ -608,7 +608,7 @@ static MagickBooleanType InitializeMimeList(ExceptionInfo *exception)
       (instantiate_mime == MagickFalse))
     {
       if (mime_semaphore == (SemaphoreInfo *) NULL)
-        mime_semaphore=AcquireSemaphoreInfo();
+        ActivateSemaphoreInfo(&mime_semaphore);
       LockSemaphoreInfo(mime_semaphore);
       if ((mime_list == (LinkedListInfo *) NULL) &&
           (instantiate_mime == MagickFalse))
@@ -1102,7 +1102,7 @@ static void *DestroyMimeElement(void *mime_info)
 MagickPrivate void MimeComponentTerminus(void)
 {
   if (mime_semaphore == (SemaphoreInfo *) NULL)
-    mime_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&mime_semaphore);
   LockSemaphoreInfo(mime_semaphore);
   if (mime_list != (LinkedListInfo *) NULL)
     mime_list=DestroyLinkedList(mime_list,DestroyMimeElement);

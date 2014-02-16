@@ -236,6 +236,41 @@ MagickExport SemaphoreInfo *AcquireSemaphoreInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A c t i v a t e S e m a p h o r e I n f o                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ActivateSemaphoreInfo() acquires a semaphore.
+%
+%  The format of the ActivateSemaphoreInfo method is:
+%
+%      void ActivateSemaphoreInfo(SemaphoreInfo **semaphore_info)
+%
+%  A description of each parameter follows:
+%
+%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
+%
+*/
+MagickExport void ActivateSemaphoreInfo(SemaphoreInfo **semaphore_info)
+{
+  assert(semaphore_info != (SemaphoreInfo **) NULL);
+  if (*semaphore_info == (SemaphoreInfo *) NULL)
+    {
+      InitializeMagickMutex();
+      LockMagickMutex();
+      if (*semaphore_info == (SemaphoreInfo *) NULL)
+        *semaphore_info=AllocateSemaphoreInfo();
+      UnlockMagickMutex();
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   L o c k S e m a p h o r e I n f o                                         %
 %                                                                             %
 %                                                                             %

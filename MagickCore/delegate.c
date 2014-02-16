@@ -207,7 +207,7 @@ static void *DestroyDelegate(void *delegate_info)
 MagickPrivate void DelegateComponentTerminus(void)
 {
   if (delegate_semaphore == (SemaphoreInfo *) NULL)
-    delegate_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&delegate_semaphore);
   LockSemaphoreInfo(delegate_semaphore);
   if (delegate_list != (LinkedListInfo *) NULL)
     delegate_list=DestroyLinkedList(delegate_list,DestroyDelegate);
@@ -713,7 +713,7 @@ static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
       IfMagickFalse(instantiate_delegate))
     {
       if (delegate_semaphore == (SemaphoreInfo *) NULL)
-        delegate_semaphore=AcquireSemaphoreInfo();
+        ActivateSemaphoreInfo(&delegate_semaphore);
       LockSemaphoreInfo(delegate_semaphore);
       if ((delegate_list == (LinkedListInfo *) NULL) &&
           IfMagickFalse(instantiate_delegate))
