@@ -354,8 +354,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (LocaleCompare(image_info->magick,"JPT") == 0)
     jp2_codec=opj_create_decompress(OPJ_CODEC_JPT);
   else
-    if (IsJ2K(sans,4) != MagickFalse || LocaleCompare(image_info->magick,
-        "J2K") == 0)
+    if (IsJ2K(sans,4) != MagickFalse)
       jp2_codec=opj_create_decompress(OPJ_CODEC_J2K);
     else
       jp2_codec=opj_create_decompress(OPJ_CODEC_JP2);
