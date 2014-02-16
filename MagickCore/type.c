@@ -786,7 +786,7 @@ static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
       (instantiate_type == MagickFalse))
     {
       if (type_semaphore == (SemaphoreInfo *) NULL)
-        type_semaphore=AcquireSemaphoreInfo();
+		    ActivateSemaphoreInfo(&type_semaphore);
       LockSemaphoreInfo(type_semaphore);
       if ((type_list == (SplayTreeInfo *) NULL) &&
           (instantiate_type == MagickFalse))
@@ -1390,7 +1390,7 @@ MagickPrivate MagickBooleanType TypeComponentGenesis(void)
 MagickPrivate void TypeComponentTerminus(void)
 {
   if (type_semaphore == (SemaphoreInfo *) NULL)
-    type_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&type_semaphore);
   LockSemaphoreInfo(type_semaphore);
   if (type_list != (SplayTreeInfo *) NULL)
     type_list=DestroySplayTree(type_list);

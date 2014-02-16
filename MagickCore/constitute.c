@@ -128,7 +128,7 @@ MagickPrivate MagickBooleanType ConstituteComponentGenesis(void)
 MagickPrivate void ConstituteComponentTerminus(void)
 {
   if (constitute_semaphore == (SemaphoreInfo *) NULL)
-    constitute_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&constitute_semaphore);
   RelinquishSemaphoreInfo(&constitute_semaphore);
 }
 
@@ -528,7 +528,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   image=NewImageList();
   if (constitute_semaphore == (SemaphoreInfo *) NULL)
-    constitute_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&constitute_semaphore);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (GetImageDecoder(magick_info) == (DecodeImageHandler *) NULL))
     {
@@ -1142,7 +1142,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
         }
     }
   if (constitute_semaphore == (SemaphoreInfo *) NULL)
-    constitute_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&constitute_semaphore);
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetImageEncoder(magick_info) != (EncodeImageHandler *) NULL))
     {

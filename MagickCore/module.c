@@ -869,7 +869,7 @@ static MagickBooleanType InitializeModuleList(
       (instantiate_module == MagickFalse))
     {
       if (module_semaphore == (SemaphoreInfo *) NULL)
-        module_semaphore=AcquireSemaphoreInfo();
+        ActivateSemaphoreInfo(&module_semaphore);
       LockSemaphoreInfo(module_semaphore);
       if ((module_list == (SplayTreeInfo *) NULL) &&
           (instantiate_module == MagickFalse))
@@ -1192,7 +1192,7 @@ MagickPrivate MagickBooleanType ModuleComponentGenesis(void)
 MagickPrivate void ModuleComponentTerminus(void)
 {
   if (module_semaphore == (SemaphoreInfo *) NULL)
-    module_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&module_semaphore);
   DestroyModuleList();
   RelinquishSemaphoreInfo(&module_semaphore);
 }

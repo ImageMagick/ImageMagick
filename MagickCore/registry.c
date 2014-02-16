@@ -325,7 +325,7 @@ MagickPrivate MagickBooleanType RegistryComponentGenesis(void)
 MagickPrivate void RegistryComponentTerminus(void)
 {
   if (registry_semaphore == (SemaphoreInfo *) NULL)
-    registry_semaphore=AcquireSemaphoreInfo();
+    ActivateSemaphoreInfo(&registry_semaphore);
   LockSemaphoreInfo(registry_semaphore);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -528,7 +528,7 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
       (instantiate_registry == MagickFalse))
     {
       if (registry_semaphore == (SemaphoreInfo *) NULL)
-        registry_semaphore=AcquireSemaphoreInfo();
+        ActivateSemaphoreInfo(&registry_semaphore);
       LockSemaphoreInfo(registry_semaphore);
       if ((registry == (SplayTreeInfo *) NULL) &&
           (instantiate_registry == MagickFalse))
