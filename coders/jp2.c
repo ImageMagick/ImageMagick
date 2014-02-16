@@ -141,11 +141,13 @@ static MagickBooleanType IsJ2K(const unsigned char *magick,const size_t length)
 */
 static MagickBooleanType IsJP2(const unsigned char *magick,const size_t length)
 {
+  if (length < 4)
+    return(MagickFalse);
+  if (memcmp(magick,"\x0d\x0a\x87\x0a",4) == 0)
+    return(MagickTrue);
   if (length < 12)
     return(MagickFalse);
   if (memcmp(magick,"\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a",12) == 0)
-    return(MagickTrue);
-  if (memcmp(magick,"\x0d\x0a\x87\x0a",12) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -177,11 +179,13 @@ static MagickBooleanType IsJP2(const unsigned char *magick,const size_t length)
 */
 static MagickBooleanType IsJPC(const unsigned char *magick,const size_t length)
 {
+  if (length < 4)
+    return(MagickFalse);
+  if (memcmp(magick,"\x0d\x0a\x87\x0a",4) == 0)
+    return(MagickTrue);
   if (length < 12)
     return(MagickFalse);
   if (memcmp(magick,"\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a",12) == 0)
-    return(MagickTrue);
-  if (memcmp(magick,"\x0d\x0a\x87\x0a",12) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -318,6 +322,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     y;
 
+  unsigned char
+    sans[4];
+
   /*
     Open image file.
   */
@@ -338,10 +345,17 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize JP2 codec.
   */
+  if (ReadBlob(image,4,sans) != 4)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  (void) SeekBlob(image,SEEK_SET,0);
   if (LocaleCompare(image_info->magick,"JPT") == 0)
     jp2_codec=opj_create_decompress(OPJ_CODEC_JPT);
   else
-    if (LocaleCompare(image_info->magick,"J2K") == 0)
+    if (IsJ2K(sans,4) != MagickFalse || LocaleCompare(image_info->magick,
+        "J2K") == 0)
       jp2_codec=opj_create_decompress(OPJ_CODEC_J2K);
     else
       jp2_codec=opj_create_decompress(OPJ_CODEC_JP2);
@@ -557,6 +571,21 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJP2;
+  entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->thread_support=NoThreadSupport;
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadJP2Image;
+  entry->encoder=(EncodeImageHandler *) WriteJP2Image;
+#endif
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("J2C");
+  entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
+  if (*version != '\0')
+    entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/jp2");
+  entry->module=ConstantString("JP2");
+  entry->magick=(IsImageFormatHandler *) IsJ2K;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
