@@ -218,7 +218,7 @@ MagickExport QuantumInfo *DestroyQuantumInfo(QuantumInfo *quantum_info)
   if (quantum_info->pixels != (unsigned char **) NULL)
     DestroyQuantumPixels(quantum_info);
   if (quantum_info->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&quantum_info->semaphore);
+    RelinquishSemaphoreInfo(&quantum_info->semaphore);
   quantum_info->signature=(~MagickSignature);
   quantum_info=(QuantumInfo *) RelinquishMagickMemory(quantum_info);
   return(quantum_info);
@@ -421,7 +421,7 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
   quantum_info->maximum=1.0;
   quantum_info->scale=QuantumRange;
   quantum_info->pack=MagickTrue;
-  quantum_info->semaphore=AllocateSemaphoreInfo();
+  quantum_info->semaphore=AcquireSemaphoreInfo();
   quantum_info->signature=MagickSignature;
   if (image_info == (const ImageInfo *) NULL)
     return;

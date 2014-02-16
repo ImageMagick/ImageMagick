@@ -201,9 +201,9 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
       cache_info->synchronize=IsStringTrue(synchronize);
       synchronize=DestroyString(synchronize);
     }
-  cache_info->semaphore=AllocateSemaphoreInfo();
+  cache_info->semaphore=AcquireSemaphoreInfo();
   cache_info->reference_count=1;
-  cache_info->file_semaphore=AllocateSemaphoreInfo();
+  cache_info->file_semaphore=AcquireSemaphoreInfo();
   cache_info->debug=IsEventLogging();
   cache_info->signature=MagickSignature;
   return((Cache ) cache_info);
@@ -324,7 +324,7 @@ MagickPrivate const void *AcquirePixelCachePixels(const Image *image,
 */
 MagickPrivate MagickBooleanType CacheComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&cache_semaphore);
+  cache_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -349,11 +349,11 @@ MagickPrivate MagickBooleanType CacheComponentGenesis(void)
 MagickPrivate void CacheComponentTerminus(void)
 {
   if (cache_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&cache_semaphore);
+    cache_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(cache_semaphore);
   instantiate_cache=MagickFalse;
   UnlockSemaphoreInfo(cache_semaphore);
-  DestroySemaphoreInfo(&cache_semaphore);
+  RelinquishSemaphoreInfo(&cache_semaphore);
 }
 
 /*
@@ -911,9 +911,9 @@ MagickPrivate Cache DestroyPixelCache(Cache cache)
   if (cache_info->random_info != (RandomInfo *) NULL)
     cache_info->random_info=DestroyRandomInfo(cache_info->random_info);
   if (cache_info->file_semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->file_semaphore);
+    RelinquishSemaphoreInfo(&cache_info->file_semaphore);
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->semaphore);
+    RelinquishSemaphoreInfo(&cache_info->semaphore);
   cache_info->signature=(~MagickSignature);
   cache_info=(CacheInfo *) RelinquishMagickMemory(cache_info);
   cache=(Cache) NULL;
@@ -1512,7 +1512,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
             Clone pixel cache.
           */
           clone_image=(*image);
-          clone_image.semaphore=AllocateSemaphoreInfo();
+          clone_image.semaphore=AcquireSemaphoreInfo();
           clone_image.reference_count=1;
           clone_image.cache=ClonePixelCache(cache_info);
           clone_info=(CacheInfo *) clone_image.cache;
@@ -1530,7 +1530,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
                   image->cache=clone_image.cache;
                 }
             }
-          DestroySemaphoreInfo(&clone_image.semaphore);
+          RelinquishSemaphoreInfo(&clone_image.semaphore);
         }
       UnlockSemaphoreInfo(cache_info->semaphore);
     }

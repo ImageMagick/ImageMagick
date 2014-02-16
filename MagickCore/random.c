@@ -192,7 +192,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   random_info->secret_key=secret_key;
   random_info->protocol_major=RandomProtocolMajorVersion;
   random_info->protocol_minor=RandomProtocolMinorVersion;
-  random_info->semaphore=AllocateSemaphoreInfo();
+  random_info->semaphore=AcquireSemaphoreInfo();
   random_info->timestamp=(ssize_t) time(0);
   random_info->signature=MagickSignature;
   /*
@@ -292,7 +292,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
   (void) ResetMagickMemory(random_info->seed,0,sizeof(*random_info->seed));
   random_info->signature=(~MagickSignature);
   UnlockSemaphoreInfo(random_info->semaphore);
-  DestroySemaphoreInfo(&random_info->semaphore);
+  RelinquishSemaphoreInfo(&random_info->semaphore);
   random_info=(RandomInfo *) RelinquishMagickMemory(random_info);
   return(random_info);
 }
@@ -737,7 +737,7 @@ MagickExport double GetRandomValue(RandomInfo *random_info)
 */
 MagickPrivate MagickBooleanType RandomComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&random_semaphore);
+  random_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -762,8 +762,8 @@ MagickPrivate MagickBooleanType RandomComponentGenesis(void)
 MagickPrivate void RandomComponentTerminus(void)
 {
   if (random_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&random_semaphore);
-  DestroySemaphoreInfo(&random_semaphore);
+    random_semaphore=AcquireSemaphoreInfo();
+  RelinquishSemaphoreInfo(&random_semaphore);
 }
 
 /*

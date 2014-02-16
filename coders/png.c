@@ -7659,7 +7659,7 @@ ModuleExport size_t RegisterPNGImage(void)
   (void) RegisterMagickInfo(entry);
 
 #ifdef PNG_SETJMP_NOT_THREAD_SAFE
-  ping_semaphore=AllocateSemaphoreInfo();
+  ping_semaphore=AcquireSemaphoreInfo();
 #endif
 
   return(MagickImageCoderSignature);
@@ -7698,7 +7698,7 @@ ModuleExport void UnregisterPNGImage(void)
 
 #ifdef PNG_SETJMP_NOT_THREAD_SAFE
   if (ping_semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&ping_semaphore);
+    RelinquishSemaphoreInfo(&ping_semaphore);
 #endif
 }
 

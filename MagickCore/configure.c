@@ -142,7 +142,7 @@ static MagickBooleanType
 */
 MagickPrivate MagickBooleanType ConfigureComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&configure_semaphore);
+  configure_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -187,14 +187,14 @@ static void *DestroyConfigureElement(void *configure_info)
 MagickPrivate void ConfigureComponentTerminus(void)
 {
   if (configure_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&configure_semaphore);
+    configure_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(configure_semaphore);
   if (configure_list != (LinkedListInfo *) NULL)
     configure_list=DestroyLinkedList(configure_list,DestroyConfigureElement);
   configure_list=(LinkedListInfo *) NULL;
   instantiate_configure=MagickFalse;
   UnlockSemaphoreInfo(configure_semaphore);
-  DestroySemaphoreInfo(&configure_semaphore);
+  RelinquishSemaphoreInfo(&configure_semaphore);
 }
 
 /*
@@ -906,7 +906,7 @@ static MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
       (instantiate_configure == MagickFalse))
     {
       if (configure_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&configure_semaphore);
+        configure_semaphore=AcquireSemaphoreInfo();
       LockSemaphoreInfo(configure_semaphore);
       if ((configure_list == (LinkedListInfo *) NULL) &&
           (instantiate_configure == MagickFalse))

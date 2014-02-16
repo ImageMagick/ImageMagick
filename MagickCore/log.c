@@ -537,7 +537,7 @@ static MagickBooleanType InitializeLogList(ExceptionInfo *exception)
   if ((log_list == (LinkedListInfo *) NULL) && (instantiate_log == MagickFalse))
     {
       if (log_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&log_semaphore);
+        log_semaphore=AcquireSemaphoreInfo();
       LockSemaphoreInfo(log_semaphore);
       if ((log_list == (LinkedListInfo *) NULL) &&
           (instantiate_log == MagickFalse))
@@ -708,7 +708,7 @@ MagickPrivate MagickBooleanType LogComponentGenesis(void)
   ExceptionInfo
     *exception;
 
-  AcquireSemaphoreInfo(&log_semaphore);
+  log_semaphore=AcquireSemaphoreInfo();
   exception=AcquireExceptionInfo();
   (void) GetLogInfo("*",exception);
   exception=DestroyExceptionInfo(exception);
@@ -759,13 +759,13 @@ static void *DestroyLogElement(void *log_info)
 MagickPrivate void LogComponentTerminus(void)
 {
   if (log_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&log_semaphore);
+    log_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(log_semaphore);
   if (log_list != (LinkedListInfo *) NULL)
     log_list=DestroyLinkedList(log_list,DestroyLogElement);
   instantiate_log=MagickFalse;
   UnlockSemaphoreInfo(log_semaphore);
-  DestroySemaphoreInfo(&log_semaphore);
+  RelinquishSemaphoreInfo(&log_semaphore);
 }
 
 /*

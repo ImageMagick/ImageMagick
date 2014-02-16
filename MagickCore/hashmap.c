@@ -358,7 +358,7 @@ MagickExport HashmapInfo *DestroyHashmap(HashmapInfo *hashmap_info)
     hashmap_info->map);
   hashmap_info->signature=(~MagickSignature);
   UnlockSemaphoreInfo(hashmap_info->semaphore);
-  DestroySemaphoreInfo(&hashmap_info->semaphore);
+  RelinquishSemaphoreInfo(&hashmap_info->semaphore);
   hashmap_info=(HashmapInfo *) RelinquishMagickMemory(hashmap_info);
   return(hashmap_info);
 }
@@ -411,7 +411,7 @@ MagickExport LinkedListInfo *DestroyLinkedList(LinkedListInfo *list_info,
   }
   list_info->signature=(~MagickSignature);
   UnlockSemaphoreInfo(list_info->semaphore);
-  DestroySemaphoreInfo(&list_info->semaphore);
+  RelinquishSemaphoreInfo(&list_info->semaphore);
   list_info=(LinkedListInfo *) RelinquishMagickMemory(list_info);
   return(list_info);
 }
@@ -1326,7 +1326,7 @@ MagickExport HashmapInfo *NewHashmap(const size_t capacity,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(hashmap_info->map,0,(size_t) capacity*
     sizeof(*hashmap_info->map));
-  hashmap_info->semaphore=AllocateSemaphoreInfo();
+  hashmap_info->semaphore=AcquireSemaphoreInfo();
   hashmap_info->signature=MagickSignature;
   return(hashmap_info);
 }
@@ -1368,7 +1368,7 @@ MagickExport LinkedListInfo *NewLinkedList(const size_t capacity)
   list_info->head=(ElementInfo *) NULL;
   list_info->tail=(ElementInfo *) NULL;
   list_info->next=(ElementInfo *) NULL;
-  list_info->semaphore=AllocateSemaphoreInfo();
+  list_info->semaphore=AcquireSemaphoreInfo();
   list_info->signature=MagickSignature;
   return(list_info);
 }
@@ -1474,7 +1474,7 @@ static MagickBooleanType IncreaseHashmapCapacity(HashmapInfo *hashmap_info)
     }
     list_info->signature=(~MagickSignature);
     UnlockSemaphoreInfo(list_info->semaphore);
-    DestroySemaphoreInfo(&list_info->semaphore);
+    RelinquishSemaphoreInfo(&list_info->semaphore);
     list_info=(LinkedListInfo *) RelinquishMagickMemory(list_info);
   }
   hashmap_info->map=(LinkedListInfo **) RelinquishMagickMemory(

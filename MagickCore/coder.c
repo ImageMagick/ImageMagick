@@ -265,7 +265,7 @@ static MagickBooleanType
 */
 MagickPrivate MagickBooleanType CoderComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&coder_semaphore);
+  coder_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -290,13 +290,13 @@ MagickPrivate MagickBooleanType CoderComponentGenesis(void)
 MagickPrivate void CoderComponentTerminus(void)
 {
   if (coder_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&coder_semaphore);
+    coder_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(coder_semaphore);
   if (coder_list != (SplayTreeInfo *) NULL)
     coder_list=DestroySplayTree(coder_list);
   instantiate_coder=MagickFalse;
   UnlockSemaphoreInfo(coder_semaphore);
-  DestroySemaphoreInfo(&coder_semaphore);
+  RelinquishSemaphoreInfo(&coder_semaphore);
 }
 
 /*
@@ -542,7 +542,7 @@ static MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
       (instantiate_coder == MagickFalse))
     {
       if (coder_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&coder_semaphore);
+        coder_semaphore=AcquireSemaphoreInfo();
       LockSemaphoreInfo(coder_semaphore);
       if ((coder_list == (SplayTreeInfo *) NULL) &&
           (instantiate_coder == MagickFalse))

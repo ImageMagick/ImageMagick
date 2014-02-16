@@ -869,7 +869,7 @@ static MagickBooleanType InitializeModuleList(
       (instantiate_module == MagickFalse))
     {
       if (module_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&module_semaphore);
+        module_semaphore=AcquireSemaphoreInfo();
       LockSemaphoreInfo(module_semaphore);
       if ((module_list == (SplayTreeInfo *) NULL) &&
           (instantiate_module == MagickFalse))
@@ -1164,7 +1164,7 @@ MagickPrivate MagickBooleanType ModuleComponentGenesis(void)
   MagickBooleanType
     status;
 
-  AcquireSemaphoreInfo(&module_semaphore);
+  module_semaphore=AcquireSemaphoreInfo();
   exception=AcquireExceptionInfo();
   status=InitializeModuleList(exception);
   exception=DestroyExceptionInfo(exception);
@@ -1192,9 +1192,9 @@ MagickPrivate MagickBooleanType ModuleComponentGenesis(void)
 MagickPrivate void ModuleComponentTerminus(void)
 {
   if (module_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&module_semaphore);
+    module_semaphore=AcquireSemaphoreInfo();
   DestroyModuleList();
-  DestroySemaphoreInfo(&module_semaphore);
+  RelinquishSemaphoreInfo(&module_semaphore);
 }
 
 /*

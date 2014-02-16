@@ -81,46 +81,11 @@ struct SemaphoreInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireSemaphoreInfo() acquires a semaphore.
+%  AcquireSemaphoreInfo() initializes the SemaphoreInfo structure.
 %
 %  The format of the AcquireSemaphoreInfo method is:
 %
-%      void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
-%
-%  A description of each parameter follows:
-%
-%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
-%
-*/
-MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
-{
-  assert(semaphore_info != (SemaphoreInfo **) NULL);
-  if (*semaphore_info == (SemaphoreInfo *) NULL)
-    {
-      InitializeMagickMutex();
-      LockMagickMutex();
-      if (*semaphore_info == (SemaphoreInfo *) NULL)
-        *semaphore_info=AllocateSemaphoreInfo();
-      UnlockMagickMutex();
-    }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A l l o c a t e S e m a p h o r e I n f o                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AllocateSemaphoreInfo() initializes the SemaphoreInfo structure.
-%
-%  The format of the AllocateSemaphoreInfo method is:
-%
-%      SemaphoreInfo *AllocateSemaphoreInfo(void)
+%      SemaphoreInfo *AcquireSemaphoreInfo(void)
 %
 */
 
@@ -187,7 +152,7 @@ static void *RelinquishSemaphoreMemory(void *memory)
   return(NULL);
 }
 
-MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
+MagickExport SemaphoreInfo *AcquireSemaphoreInfo(void)
 {
   SemaphoreInfo
     *semaphore_info;
@@ -271,58 +236,6 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y S e m a p h o r e I n f o                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroySemaphoreInfo() destroys a semaphore.
-%
-%  The format of the DestroySemaphoreInfo method is:
-%
-%      void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
-%
-%  A description of each parameter follows:
-%
-%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
-%
-*/
-MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
-{
-  assert(semaphore_info != (SemaphoreInfo **) NULL);
-  assert((*semaphore_info) != (SemaphoreInfo *) NULL);
-  assert((*semaphore_info)->signature == MagickSignature);
-  InitializeMagickMutex();
-  LockMagickMutex();
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_destroy_lock((omp_lock_t *) &(*semaphore_info)->mutex);
-#elif defined(MAGICKCORE_THREAD_SUPPORT)
-  {
-    int
-      status;
-
-    status=pthread_mutex_destroy(&(*semaphore_info)->mutex);
-    if (status != 0)
-      {
-        errno=status;
-        perror("unable to destroy mutex");
-        _exit(1);
-      }
-  }
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
-  DeleteCriticalSection(&(*semaphore_info)->mutex);
-#endif
-  (*semaphore_info)->signature=(~MagickSignature);
-  *semaphore_info=(SemaphoreInfo *) RelinquishSemaphoreMemory(*semaphore_info);
-  UnlockMagickMutex();
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   L o c k S e m a p h o r e I n f o                                         %
 %                                                                             %
 %                                                                             %
@@ -379,28 +292,51 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e l i n g u i s h S e m a p h o r e I n f o                             %
+%   R e l i n q u i s h S  e m a p h o r e I n f o                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RelinquishSemaphoreInfo() relinquishes a semaphore.
+%  RelinquishSemaphoreInfo() destroys a semaphore.
 %
 %  The format of the RelinquishSemaphoreInfo method is:
 %
-%      RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
+%      void RelinquishSemaphoreInfo(SemaphoreInfo **semaphore_info)
 %
 %  A description of each parameter follows:
 %
 %    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
 %
 */
-MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
+MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
-  assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
-  UnlockSemaphoreInfo(semaphore_info);
+  assert(semaphore_info != (SemaphoreInfo **) NULL);
+  assert((*semaphore_info) != (SemaphoreInfo *) NULL);
+  assert((*semaphore_info)->signature == MagickSignature);
+  InitializeMagickMutex();
+  LockMagickMutex();
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  omp_destroy_lock((omp_lock_t *) &(*semaphore_info)->mutex);
+#elif defined(MAGICKCORE_THREAD_SUPPORT)
+  {
+    int
+      status;
+
+    status=pthread_mutex_destroy(&(*semaphore_info)->mutex);
+    if (status != 0)
+      {
+        errno=status;
+        perror("unable to destroy mutex");
+        _exit(1);
+      }
+  }
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+  DeleteCriticalSection(&(*semaphore_info)->mutex);
+#endif
+  (*semaphore_info)->signature=(~MagickSignature);
+  *semaphore_info=(SemaphoreInfo *) RelinquishSemaphoreMemory(*semaphore_info);
+  UnlockMagickMutex();
 }
 
 /*

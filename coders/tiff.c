@@ -1873,7 +1873,7 @@ ModuleExport size_t RegisterTIFFImage(void)
     *entry;
 
   if (tiff_semaphore == (SemaphoreInfo *) NULL)
-    tiff_semaphore=AllocateSemaphoreInfo();
+    tiff_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(tiff_semaphore);
   if (instantiate_key == MagickFalse)
     {
@@ -2006,7 +2006,7 @@ ModuleExport void UnregisterTIFFImage(void)
   (void) UnregisterMagickInfo("TIF");
   (void) UnregisterMagickInfo("PTIF");
   if (tiff_semaphore == (SemaphoreInfo *) NULL)
-    tiff_semaphore=AllocateSemaphoreInfo();
+    tiff_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(tiff_semaphore);
   if (instantiate_key != MagickFalse)
     {
@@ -2019,7 +2019,7 @@ ModuleExport void UnregisterTIFFImage(void)
       instantiate_key=MagickFalse;
     }
   UnlockSemaphoreInfo(tiff_semaphore);
-  DestroySemaphoreInfo(&tiff_semaphore);
+  RelinquishSemaphoreInfo(&tiff_semaphore);
 }
 
 #if defined(MAGICKCORE_TIFF_DELEGATE)
