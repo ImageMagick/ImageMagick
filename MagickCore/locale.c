@@ -1252,8 +1252,7 @@ static MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
         q--;
         while ((isspace((int) ((unsigned char) *q)) != 0) && (q > p))
           q--;
-        (void) CopyMagickString(message,p,MagickMin(q-p+2,sizeof(message)-
-          strlen(message)));
+        (void) CopyMagickString(message,p,MagickMin(q-p+2,MaxTextExtent));
         locale_info=(LocaleInfo *) AcquireMagickMemory(sizeof(*locale_info));
         if (locale_info == (LocaleInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
