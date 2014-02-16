@@ -464,7 +464,7 @@ MagickExport void *AcquireMagickMemory(const size_t size)
   memory=memory_methods.acquire_memory_handler(size == 0 ? 1UL : size);
 #else
   if (memory_semaphore == (SemaphoreInfo *) NULL)
-    memory_semaphore=AllocateSemaphoreInfo();
+    ActivateSemaphoreInfo(&memory_semaphore);
   if (free_segments == (DataSegmentInfo *) NULL)
     {
       LockSemaphoreInfo(memory_semaphore);
@@ -725,7 +725,7 @@ MagickExport void DestroyMagickMemory(void)
     i;
 
   if (memory_semaphore == (SemaphoreInfo *) NULL)
-    memory_semaphore=AllocateSemaphoreInfo();
+    ActivateSemaphoreInfo(&memory_semaphore);
   LockSemaphoreInfo(memory_semaphore);
   UnlockSemaphoreInfo(memory_semaphore);
   for (i=0; i < (ssize_t) memory_pool.number_segments; i++)

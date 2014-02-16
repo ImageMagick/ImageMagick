@@ -776,7 +776,7 @@ MagickExport MagickBooleanType RandomComponentGenesis(void)
 MagickExport void RandomComponentTerminus(void)
 {
   if (random_semaphore == (SemaphoreInfo *) NULL)
-    random_semaphore=AllocateSemaphoreInfo();
+    ActivateSemaphoreInfo(&random_semaphore);
   DestroySemaphoreInfo(&random_semaphore);
 }
 

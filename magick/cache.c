@@ -354,7 +354,7 @@ MagickExport MagickBooleanType CacheComponentGenesis(void)
 MagickExport void CacheComponentTerminus(void)
 {
   if (cache_semaphore == (SemaphoreInfo *) NULL)
-    cache_semaphore=AllocateSemaphoreInfo();
+    ActivateSemaphoreInfo(&cache_semaphore);
   LockSemaphoreInfo(cache_semaphore);
   instantiate_cache=MagickFalse;
   UnlockSemaphoreInfo(cache_semaphore);
