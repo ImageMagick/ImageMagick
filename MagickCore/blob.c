@@ -652,7 +652,7 @@ MagickExport void DestroyBlob(Image *image)
       RelinquishMagickResource(MapResource,image->blob->length);
     }
   if (image->blob->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&image->blob->semaphore);
+    RelinquishSemaphoreInfo(&image->blob->semaphore);
   image->blob->signature=(~MagickSignature);
   image->blob=(BlobInfo *) RelinquishMagickMemory(image->blob);
 }
@@ -1283,7 +1283,7 @@ MagickPrivate void GetBlobInfo(BlobInfo *blob_info)
   blob_info->properties.st_ctime=time((time_t *) NULL);
   blob_info->debug=IsEventLogging();
   blob_info->reference_count=1;
-  blob_info->semaphore=AllocateSemaphoreInfo();
+  blob_info->semaphore=AcquireSemaphoreInfo();
   blob_info->signature=MagickSignature;
 }
 

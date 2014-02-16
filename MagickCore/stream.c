@@ -236,9 +236,9 @@ static void DestroyPixelStream(Image *image)
     cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
       cache_info->number_threads);
   if (cache_info->file_semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->file_semaphore);
+    RelinquishSemaphoreInfo(&cache_info->file_semaphore);
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->semaphore);
+    RelinquishSemaphoreInfo(&cache_info->semaphore);
   cache_info=(CacheInfo *) RelinquishMagickMemory(cache_info);
 }
 

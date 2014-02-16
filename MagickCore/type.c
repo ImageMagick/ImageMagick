@@ -786,7 +786,7 @@ static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
       (instantiate_type == MagickFalse))
     {
       if (type_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&type_semaphore);
+        type_semaphore=AcquireSemaphoreInfo();
       LockSemaphoreInfo(type_semaphore);
       if ((type_list == (SplayTreeInfo *) NULL) &&
           (instantiate_type == MagickFalse))
@@ -1365,7 +1365,7 @@ static MagickBooleanType LoadTypeLists(const char *filename,
 */
 MagickPrivate MagickBooleanType TypeComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&type_semaphore);
+  type_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1390,11 +1390,11 @@ MagickPrivate MagickBooleanType TypeComponentGenesis(void)
 MagickPrivate void TypeComponentTerminus(void)
 {
   if (type_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&type_semaphore);
+    type_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(type_semaphore);
   if (type_list != (SplayTreeInfo *) NULL)
     type_list=DestroySplayTree(type_list);
   instantiate_type=MagickFalse;
   UnlockSemaphoreInfo(type_semaphore);
-  DestroySemaphoreInfo(&type_semaphore);
+  RelinquishSemaphoreInfo(&type_semaphore);
 }

@@ -300,7 +300,7 @@ MagickExport char *GetNextImageRegistry(void)
 */
 MagickPrivate MagickBooleanType RegistryComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&registry_semaphore);
+  registry_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -325,7 +325,7 @@ MagickPrivate MagickBooleanType RegistryComponentGenesis(void)
 MagickPrivate void RegistryComponentTerminus(void)
 {
   if (registry_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&registry_semaphore);
+    registry_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(registry_semaphore);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -333,7 +333,7 @@ MagickPrivate void RegistryComponentTerminus(void)
     registry=DestroySplayTree(registry);
   instantiate_registry=MagickFalse;
   UnlockSemaphoreInfo(registry_semaphore);
-  DestroySemaphoreInfo(&registry_semaphore);
+  RelinquishSemaphoreInfo(&registry_semaphore);
 }
 
 /*
@@ -528,7 +528,7 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
       (instantiate_registry == MagickFalse))
     {
       if (registry_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&registry_semaphore);
+        registry_semaphore=AcquireSemaphoreInfo();
       LockSemaphoreInfo(registry_semaphore);
       if ((registry == (SplayTreeInfo *) NULL) &&
           (instantiate_registry == MagickFalse))

@@ -414,7 +414,7 @@ MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (exception->semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&exception->semaphore);
+    exception->semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(exception->semaphore);
   exception->severity=UndefinedException;
   if (exception->exceptions != (void *) NULL)
@@ -424,7 +424,7 @@ MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
   if (exception->relinquish != MagickFalse)
     exception->signature=(~MagickSignature);
   UnlockSemaphoreInfo(exception->semaphore);
-  DestroySemaphoreInfo(&exception->semaphore);
+  RelinquishSemaphoreInfo(&exception->semaphore);
   if (relinquish != MagickFalse)
     exception=(ExceptionInfo *) RelinquishMagickMemory(exception);
   return(exception);
@@ -458,7 +458,7 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
   (void) ResetMagickMemory(exception,0,sizeof(*exception));
   exception->severity=UndefinedException;
   exception->exceptions=(void *) NewLinkedList(0);
-  exception->semaphore=AllocateSemaphoreInfo();
+  exception->semaphore=AcquireSemaphoreInfo();
   exception->signature=MagickSignature;
 }
 

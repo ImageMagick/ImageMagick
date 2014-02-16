@@ -820,7 +820,7 @@ static MagickBooleanType
 */
 MagickPrivate MagickBooleanType ColorComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&color_semaphore);
+  color_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -863,13 +863,13 @@ static void *DestroyColorElement(void *color_info)
 MagickPrivate void ColorComponentTerminus(void)
 {
   if (color_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&color_semaphore);
+    color_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(color_semaphore);
   if (color_list != (LinkedListInfo *) NULL)
     color_list=DestroyLinkedList(color_list,DestroyColorElement);
   instantiate_color=MagickFalse;
   UnlockSemaphoreInfo(color_semaphore);
-  DestroySemaphoreInfo(&color_semaphore);
+  RelinquishSemaphoreInfo(&color_semaphore);
 }
 
 /*
@@ -1519,7 +1519,7 @@ static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
       IfMagickFalse(instantiate_color))
     {
       if (color_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&color_semaphore);
+        color_semaphore=AcquireSemaphoreInfo();
       LockSemaphoreInfo(color_semaphore);
       if ((color_list == (LinkedListInfo *) NULL) &&
           IfMagickFalse(instantiate_color))

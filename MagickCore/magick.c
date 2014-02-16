@@ -844,7 +844,7 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
       (instantiate_magick == MagickFalse))
     {
       if (magick_semaphore == (SemaphoreInfo *) NULL)
-        AcquireSemaphoreInfo(&magick_semaphore);
+        magick_semaphore=AcquireSemaphoreInfo();
       LockSemaphoreInfo(magick_semaphore);
       if ((magick_list == (SplayTreeInfo *) NULL) &&
           (instantiate_magick == MagickFalse))
@@ -1075,7 +1075,7 @@ MagickExport MagickBooleanType IsMagickCoreInstantiated(void)
 */
 MagickPrivate MagickBooleanType MagickComponentGenesis(void)
 {
-  AcquireSemaphoreInfo(&magick_semaphore);
+  magick_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1100,13 +1100,13 @@ MagickPrivate MagickBooleanType MagickComponentGenesis(void)
 MagickPrivate void MagickComponentTerminus(void)
 {
   if (magick_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&magick_semaphore);
+    magick_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(magick_semaphore);
   if (magick_list != (SplayTreeInfo *) NULL)
     magick_list=DestroySplayTree(magick_list);
   instantiate_magick=MagickFalse;
   UnlockSemaphoreInfo(magick_semaphore);
-  DestroySemaphoreInfo(&magick_semaphore);
+  RelinquishSemaphoreInfo(&magick_semaphore);
 }
 
 /*

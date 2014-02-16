@@ -208,7 +208,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->timestamp=time((time_t *) NULL);
   image->debug=IsEventLogging();
   image->reference_count=1;
-  image->semaphore=AllocateSemaphoreInfo();
+  image->semaphore=AcquireSemaphoreInfo();
   image->signature=MagickSignature;
   if (image_info == (ImageInfo *) NULL)
     return(image);
@@ -873,7 +873,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
     }
   clone_image->ping=image->ping;
   clone_image->debug=IsEventLogging();
-  clone_image->semaphore=AllocateSemaphoreInfo();
+  clone_image->semaphore=AcquireSemaphoreInfo();
   if ((columns == 0) && (rows == 0))
     {
       if (image->montage != (char *) NULL)
@@ -1052,7 +1052,7 @@ MagickExport Image *DestroyImage(Image *image)
     image->ascii85=(Ascii85Info *) RelinquishMagickMemory(image->ascii85);
   DestroyBlob(image);
   if (image->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&image->semaphore);
+    RelinquishSemaphoreInfo(&image->semaphore);
   image->signature=(~MagickSignature);
   image=(Image *) RelinquishMagickMemory(image);
   return(image);
