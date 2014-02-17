@@ -366,63 +366,50 @@ MagickExport MagickBooleanType NTLoadTypeLists(SplayTreeInfo *type_list,
 
         value_name_length = sizeof(value_name) - 1;
         value_data_size = sizeof(value_data) - 1;
-        res = RegEnumValueA ( reg_key, registry_index, value_name,
-          &value_name_length, 0, &type, (BYTE*)value_data, &value_data_size);
+        res=RegEnumValueA(reg_key,registry_index,value_name,&value_name_length,
+          0,&type,(BYTE *) value_data,&value_data_size);
         registry_index++;
         if (res != ERROR_SUCCESS)
           continue;
-        if ( (pos = strstr(value_name, " (TrueType)")) == (char*) NULL )
+        if ((pos=strstr(value_name," (TrueType)")) == (char*) NULL)
           continue;
-        *pos='\0'; /* Remove (TrueType) from string */
-
+        *pos='\0';  /* Remove (TrueType) from string */
         type_info=(TypeInfo *) AcquireMagickMemory(sizeof(*type_info));
         if (type_info == (TypeInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(type_info,0,sizeof(TypeInfo));
-
         type_info->path=ConstantString("Windows Fonts");
         type_info->signature=MagickSignature;
-
-        /* Name */
-        (void) CopyMagickString(buffer,value_name,MaxTextExtent);
-        for(pos = buffer; *pos != 0 ; pos++)
+        (void) CopyMagickString(buffer,value_name,MaxTextExtent);  /* name */
+        for (pos=buffer; *pos != 0; pos++)
           if (*pos == ' ')
-            *pos = '-';
+            *pos='-';
         type_info->name=ConstantString(buffer);
-
-        /* Fullname */
-        type_info->description=ConstantString(value_name);
-
-        /* Format */
-        type_info->format=ConstantString("truetype");
-
-        /* Glyphs */
-        if (strchr(value_data,'\\') != (char *) NULL)
+        type_info->description=ConstantString(value_name);  /* fullname */
+        type_info->format=ConstantString("truetype");  /* format */
+        if (strchr(value_data,'\\') != (char *) NULL)  /* glyphs */
           (void) CopyMagickString(buffer,value_data,MaxTextExtent);
         else
           {
             (void) CopyMagickString(buffer,font_root,MaxTextExtent);
             (void) ConcatenateMagickString(buffer,value_data,MaxTextExtent);
           }
-
         LocaleLower(buffer);
         type_info->glyphs=ConstantString(buffer);
-
         type_info->stretch=NormalStretch;
         type_info->style=NormalStyle;
         type_info->weight=400;
-
-        /* Some fonts are known to require special encodings */
+        /*
+          Some fonts are known to require special encodings.
+        */
         if ( (LocaleCompare(type_info->name, "Symbol") == 0 ) ||
              (LocaleCompare(type_info->name, "Wingdings") == 0 ) ||
              (LocaleCompare(type_info->name, "Wingdings-2") == 0 ) ||
              (LocaleCompare(type_info->name, "Wingdings-3") == 0 ) )
           type_info->encoding=ConstantString("AppleRoman");
-
         family_extent=value_name;
-
         for (q=value_name; *q != '\0'; )
-          {
+        {
             GetMagickToken(q,(const char **) &q,token);
             if (*token == '\0')
               break;
@@ -545,7 +532,7 @@ MagickExport MagickBooleanType NTLoadTypeLists(SplayTreeInfo *type_list,
             ResourceLimitError,"MemoryAllocationFailed","`%s'",type_info->name);
       }
   }
-  RegCloseKey ( reg_key );
+  RegCloseKey(reg_key);
   return(MagickTrue);
 }
 
