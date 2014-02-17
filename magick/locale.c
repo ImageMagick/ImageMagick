@@ -1065,8 +1065,7 @@ static void LocaleFatalErrorHandler(
   exit(1);
 }
 
-static inline size_t MagickMin(const unsigned int x,
-  const unsigned int y)
+static inline size_t MagickMin(const size_t x,const size_t y)
 {
   if (x < y)
     return(x);
@@ -1251,7 +1250,8 @@ static MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
         q--;
         while ((isspace((int) ((unsigned char) *q)) != 0) && (q > p))
           q--;
-        (void) CopyMagickString(message,p,MagickMin(q-p+2,MaxTextExtent));
+        (void) CopyMagickString(message,p,MagickMin((size_t) (q-p+2),
+          MaxTextExtent));
         locale_info=(LocaleInfo *) AcquireMagickMemory(sizeof(*locale_info));
         if (locale_info == (LocaleInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
