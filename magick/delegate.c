@@ -945,8 +945,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         }
       LocaleUpper(magick);
       clone_info=CloneImageInfo(image_info);
-      (void) CopyMagickString((char *) clone_info->magick,magick,
-        MaxTextExtent);
+      (void) CopyMagickString((char *) clone_info->magick,magick,MaxTextExtent);
       if (LocaleCompare(magick,"NULL") != 0)
         (void) CopyMagickString(image->magick,magick,MaxTextExtent);
       magick=DestroyString(magick);
