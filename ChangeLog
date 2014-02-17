@@ -1,4 +1,7 @@
-2014-02-16  6.8.8-6 Cristy  <quetzlzacatenango@image...>
+2014-02-18  6.8.8-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.8-7, SVN revision 14908.
+
+2014-02-16  6.8.8-7 Cristy  <quetzlzacatenango@image...>
   * Prevent possible buffer overflow in messaging system.
 
 2014-02-16  6.8.8-7 Dirk Lemstra <dirk@snakeware...>
