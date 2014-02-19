@@ -638,9 +638,12 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             green,
             red;
 
-          red=(double) GetPixelRed(image,q);
-          green=(double) GetPixelGreen(image,q);
-          blue=(double) GetPixelBlue(image,q);
+          red=(double) DecodePixelGamma((MagickRealType)
+            GetPixelRed(image,q));
+          green=(double) DecodePixelGamma((MagickRealType)
+            GetPixelGreen(image,q));
+          blue=(double) DecodePixelGamma((MagickRealType)
+            GetPixelBlue(image,q));
           SetPixelRed(image,logmap[ScaleQuantumToMap(ClampToQuantum(red))],q);
           SetPixelGreen(image,logmap[ScaleQuantumToMap(ClampToQuantum(green))],
             q);
@@ -1981,9 +1984,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           red=(double) logmap[ScaleQuantumToMap(GetPixelRed(image,q))];
           green=(double) logmap[ScaleQuantumToMap(GetPixelGreen(image,q))];
           blue=(double) logmap[ScaleQuantumToMap(GetPixelBlue(image,q))];
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
+          SetPixelRed(image,ClampToQuantum(EncodePixelGamma((MagickRealType)
+            red)),q);
+          SetPixelGreen(image,ClampToQuantum(EncodePixelGamma((MagickRealType)
+            green)),q);
+          SetPixelBlue(image,ClampToQuantum(EncodePixelGamma((MagickRealType)
+            blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
