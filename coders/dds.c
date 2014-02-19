@@ -2601,7 +2601,7 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
       option=GetImageOption(image_info,"dds:cluster-fit");
       if (option != (char *) NULL && LocaleCompare(option,"true") == 0)
         {
-          clusterFit=MagickFalse;
+          clusterFit=MagickTrue;
           if (compression != FOURCC_DXT1)
             {
               option=GetImageOption(image_info,"dds:weight-by-alpha");
