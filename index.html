@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: Convert, Edit, Or Compose Bitmap Images</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="convert, edit, or, compose, bitmap, images, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="images/wand.png"></link>
-  <link rel="shortcut icon" href="images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="convert, edit, or, compose, bitmap, images, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="images/wand.png"/>
+  <link rel="shortcut icon" href="images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="discourse-server">
-  <img src="images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="index.html">
-  <img src="images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="www/links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,14 +186,43 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
@@ -179,7 +232,7 @@
 
 <a id="intro"></a>
 <div class="doc-section">
-<p><a class="fancybox" rel="group" href="images/wizard.png" title="And Now a Touch of Magick"><img id="logo" alt="And Now a Touch of Magick" class="icon" width="265" height="352" src="images/wizard.jpg"></img></a> ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969">®</a></sup> is a software suite to create, edit, compose, or convert bitmap images.  It can read and write images in a variety of <a href="www/formats.html">formats</a> (over 100) including <a href="www/motion-picture.html">DPX</a>, <a href="www/high-dynamic-range.html">EXR</a>, GIF, JPEG, JPEG-2000, PDF, PhotoCD, PNG, Postscript, SVG, and TIFF.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.</p>
+<p><a class="fancybox" rel="group" href="images/wizard.png" title="And Now a Touch of Magick"><img id="logo" alt="And Now a Touch of Magick" class="icon" width="265" height="352" src="images/wizard.jpg"/></a> ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969">&#174;</a></sup> is a software suite to create, edit, compose, or convert bitmap images.  It can read and write images in a variety of <a href="www/formats.html">formats</a> (over 100) including <a href="www/motion-picture.html">DPX</a>, <a href="www/high-dynamic-range.html">EXR</a>, GIF, JPEG, JPEG-2000, PDF, PNG, Postscript, SVG, and TIFF.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.</p>
 
 <p>The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite language. Choose from these interfaces: <a href="www/api.html#ada">G2F</a> (Ada), <a href="www/api.html#c">MagickCore</a> (C), <a href="www/api.html#c">MagickWand</a> (C), <a href="www/api.html#ch">ChMagick</a> (Ch), <a href="www/api.html#com_">ImageMagickObject</a> (COM+), <a href="www/api.html#c__">Magick++</a> (C++), <a href="www/api.html#java">JMagick</a> (Java), <a href="www/api.html#lisp">L-Magick</a> (Lisp), <a href="www/api.html#lua">Lua</a>, <a href="www/api.html#neko">NMagick</a> (Neko/haXe), <a href="www/api.html#dot-net">Magick.NET</a> (.NET), <a href="www/api.html#pascal">PascalMagick</a> (Pascal),  <a href="www/api.html#perl">PerlMagick</a> (Perl), <a href="www/api.html#php">MagickWand for PHP</a> (PHP),  <a href="www/api.html#php">IMagick</a> (PHP), <a href="www/api.html#python">PythonMagick</a> (Python), <a href="www/api.html#ruby">RMagick</a> (Ruby), or <a href="www/api.html#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <em>automagically</em>.</p>
 
@@ -187,7 +240,7 @@
 
 <p>The ImageMagick development process ensures a <a href="http://upstream-tracker.org/versions/imagemagick.html">stable API</a> and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://code.google.com/p/address-sanitizer/">memory error</a> and <a href="https://code.google.com/p/data-race-test/wiki/ThreadSanitizer">thread data race</a> detection to prevent security vulnerabilities.</p>
 
-<p>The current release is ImageMagick 6.8.7-0 available from <a href="download">http://www.imagemagick.org/download</a>.  It runs on <a href="http://www.imagemagick.org/download/linux">Linux</a>, <a href="http://www.imagemagick.org/download/binaries">Windows</a>, <a href="http://www.imagemagick.org/download/binaries">Mac Os X</a>, <a href="http://www.imagemagick.org/download/iOS">iOS</a>, Android OS, and others.</p>
+<p>The current release is ImageMagick 6.8.8-7 available from <a href="download">http://www.imagemagick.org/download</a>.  It runs on <a href="http://www.imagemagick.org/download/linux/">Linux</a>, <a href="http://www.imagemagick.org/download/binaries/">Windows</a>, <a href="http://www.imagemagick.org/download/binaries/">Mac Os X</a>, <a href="http://www.imagemagick.org/download/iOS/">iOS</a>, Android OS, and others.</p>
 
 <p>The official ImageMagick web site is <a href="index.html">http://www.imagemagick.org</a>.</p>
 </div>
@@ -217,6 +270,7 @@
   <li><a href="www/motion-picture.html">Motion picture support</a>: read and write the common image formats used in digital film work.</li>
   <li><a href="www/fx.html">Image calculator</a>: apply a mathematical expression to an image or image channels.</li>
   <li><a href="http://www.imagemagick.org/Usage/fourier/">Discrete Fourier transform</a>: implements the forward and inverse <a href="http://en.wikipedia.org/wiki/Discrete_Fourier_transform">DFT</a>.</li>
+  <li><a href="http://www.fmwconcepts.com/misc_tests/perceptual_hash_test_results_510/index.html">Perceptual hash</a>: map visually identical images to the same or similar hash-- useful in image retrieval, authentication, indexing, or copy detection as well as digital watermarking.</li>
   <li><a href="www/color-management.html">Color management</a>: accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.</li>
   <li><a href="www/high-dynamic-range.html">High dynamic-range images</a>: accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.</li>
   <li><a href="www/cipher.html">Encipher or decipher an image</a>: convert ordinary images into unintelligible gibberish and back again.</li>
@@ -225,7 +279,7 @@
   <li><a href="www/architecture.html#threads">Threads of execution support</a>: ImageMagick is thread safe and most internal algorithms execute in <a href="www/openmp.html">parallel</a> to take advantage of speed-ups offered by multicore processor chips.</li>
   <li><a href="www/distribute-pixel-cache.html">Distributed pixel cache</a>: offload intermediate pixel storage to one or more remote servers.</li>
   <li><a href="www/architecture.html#distributed">Heterogeneous distributed processing</a>: certain algorithms are <a href="http://www.khronos.org/opencl/">OpenCL</a>-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</li>
-  <li><a href="www/binary-releases.html#iOS">ImageMagick on the iPhone</a>: convert, edit, or compose images on your <a href="http://www.apple.com/ios/">iOS</a> comuting device such as the iPhone or iPad.</li>
+  <li><a href="www/binary-releases.html#iOS">ImageMagick on the iPhone</a>: convert, edit, or compose images on your <a href="http://www.apple.com/ios/">iOS</a> device such as the iPhone or iPad.</li>
 </ul>
 
 <p><a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a> shows how to use ImageMagick from the command-line to accomplish any of these tasks and much more. Also, see <a href="http://www.fmwconcepts.com/imagemagick/">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations.</p>
@@ -239,9 +293,9 @@
 
 <h2><a id="books"></a>Books About ImageMagick</h2>
 <div class="doc-section">
-<p><a href="http://www.amazon.com/exec/obidos/redirect?link_code=ur2&amp;camp=1789&amp;tag=imagemagick-20&amp;creative=9325&amp;path=tg/detail/-/1590595904/qid=1123551819/sr=8-1/ref=pd_bbs_sbs_1?v=glance%26s=books%26n=507846"><img alt="Definitive Guide to ImageMagick" class="icon" width="100" height="136" src="images/definitive-guide.png"></img></a> An open source project backed by years of continual development, ImageMagick supports about 100 image formats and can perform impressive operations such as creating images from scratch; changing colors; stretching, rotating, and overlaying images; and overlaying text on images. Whether you use ImageMagick to manage the family photos or to embark on a job involving millions of images, this book provides you with the knowledge to manage your images with ease.<br></br><br></br>The <em>Definitive Guide to ImageMagick</em> explains all of these capabilities and more in a practical, learn-by-example fashion. You'll get comfortable using ImageMagick for any image-processing task. Through the book's coverage of the ImageMagick interfaces for C, Perl, PHP, and Ruby, you'll learn how to incorporate ImageMagick features into a variety of applications.</p><br></br>
+<p><a href="http://www.amazon.com/exec/obidos/redirect?link_code=ur2&amp;camp=1789&amp;tag=imagemagick-20&amp;creative=9325&amp;path=tg/detail/-/1590595904/qid=1123551819/sr=8-1/ref=pd_bbs_sbs_1?v=glance%26s=books%26n=507846"><img alt="Definitive Guide to ImageMagick" class="icon" width="100" height="136" src="images/definitive-guide.png"/></a> An open source project backed by years of continual development, ImageMagick supports about 100 image formats and can perform impressive operations such as creating images from scratch; changing colors; stretching, rotating, and overlaying images; and overlaying text on images. Whether you use ImageMagick to manage the family photos or to embark on a job involving millions of images, this book provides you with the knowledge to manage your images with ease.<br /><br />The <em>Definitive Guide to ImageMagick</em> explains all of these capabilities and more in a practical, learn-by-example fashion. You'll get comfortable using ImageMagick for any image-processing task. Through the book's coverage of the ImageMagick interfaces for C, Perl, PHP, and Ruby, you'll learn how to incorporate ImageMagick features into a variety of applications.</p><br />
 
-<p><a href="http://www.amazon.com/exec/obidos/redirect?link_code=ur2&amp;camp=1789&amp;tag=imagemagick-20&amp;creative=9325&amp;path=tg/detail/-/1904811868/qid=1123551819/sr=8-1/ref=pd_bbs_sbs_1?v=glance%26s=books%26n=507846"><img alt="ImageMagick Tricks" class="icon" width="100" height="123" src="images/tricks.png"></img></a> <em>ImageMagick Tricks</em> by Sohail Salehi: This fast-paced and practical tutorial is packed with examples of photo manipulations, logo creation, animations, and complete web projects. With this book up your sleeve, you'll be creating spellbinding images from code in no time. The publisher, <a href="http://www.packtpub.com/">Packt</a>, is donating a percentage of every book sold to the ImageMagick project.</p><br></br>
+<p><a href="http://www.amazon.com/exec/obidos/redirect?link_code=ur2&amp;camp=1789&amp;tag=imagemagick-20&amp;creative=9325&amp;path=tg/detail/-/1904811868/qid=1123551819/sr=8-1/ref=pd_bbs_sbs_1?v=glance%26s=books%26n=507846"><img alt="ImageMagick Tricks" class="icon" width="100" height="123" src="images/tricks.png"/></a> <em>ImageMagick Tricks</em> by Sohail Salehi: This fast-paced and practical tutorial is packed with examples of photo manipulations, logo creation, animations, and complete web projects. With this book up your sleeve, you'll be creating spellbinding images from code in no time. The publisher, <a href="http://www.packtpub.com/">Packt</a>, is donating a percentage of every book sold to the ImageMagick project.</p><br />
 </div>
 
 <h2><a id="community"></a>User Community</h2>
@@ -269,3 +323,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 07:05 -->

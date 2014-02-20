@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickCore, C API for ImageMagick: Add a Special Effect</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, add, a, special, effect, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, add, a, special, effect, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,21 +186,596 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="fx.html#"></a>]</p>
+<h1>Module fx Methods</h1>
+<p class="navigation-index">[<a href="fx.html#AddNoiseImage">AddNoiseImage</a> &#8226; <a href="fx.html#BlueShiftImage">BlueShiftImage</a> &#8226; <a href="fx.html#CharcoalImage">CharcoalImage</a> &#8226; <a href="fx.html#ColorizeImage">ColorizeImage</a> &#8226; <a href="fx.html#ColorMatrixImage">ColorMatrixImage</a> &#8226; <a href="fx.html#FxImage">FxImage</a> &#8226; <a href="fx.html#ImplodeImage">ImplodeImage</a> &#8226; <a href="fx.html#The MorphImages">The MorphImages</a> &#8226; <a href="fx.html#PlasmaImage">PlasmaImage</a> &#8226; <a href="fx.html#PolaroidImage">PolaroidImage</a> &#8226; <a href="fx.html#MagickSepiaToneImage">MagickSepiaToneImage</a> &#8226; <a href="fx.html#ShadowImage">ShadowImage</a> &#8226; <a href="fx.html#SketchImage">SketchImage</a> &#8226; <a href="fx.html#SolarizeImage">SolarizeImage</a> &#8226; <a href="fx.html#SteganoImage">SteganoImage</a> &#8226; <a href="fx.html#StereoAnaglyphImage">StereoAnaglyphImage</a> &#8226; <a href="fx.html#SwirlImage">SwirlImage</a> &#8226; <a href="fx.html#TintImage">TintImage</a> &#8226; <a href="fx.html#VignetteImage">VignetteImage</a> &#8226; <a href="fx.html#WaveImage">WaveImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="AddNoiseImage">AddNoiseImage</a></h2>
+<div class="doc-section">
+
+<p>AddNoiseImage() adds random noise to the image.</p>
+
+<p>The format of the AddNoiseImage method is:</p>
+
+<pre class="code">
+  Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
+    ExceptionInfo *exception)
+  Image *AddNoiseImageChannel(const Image *image,const ChannelType channel,
+    const NoiseType noise_type,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>noise_type</h5>
+<p>The type of noise: Uniform, Gaussian, Multiplicative, Impulse, Laplacian, or Poisson.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="BlueShiftImage">BlueShiftImage</a></h2>
+<div class="doc-section">
+
+<p>BlueShiftImage() mutes the colors of the image to simulate a scene at nighttime in the moonlight.</p>
+
+<p>The format of the BlueShiftImage method is:</p>
+
+<pre class="code">
+  Image *BlueShiftImage(const Image *image,const double factor,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>factor</h5>
+<p>the shift factor.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="CharcoalImage">CharcoalImage</a></h2>
+<div class="doc-section">
+
+<p>CharcoalImage() creates a new image that is a copy of an existing one with the edge highlighted.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
+
+<p>The format of the CharcoalImage method is:</p>
+
+<pre class="code">
+  Image *CharcoalImage(const Image *image,const double radius,
+    const double sigma,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="ColorizeImage">ColorizeImage</a></h2>
+<div class="doc-section">
+
+<p>ColorizeImage() blends the fill color with each pixel in the image. A percentage blend is specified with opacity.  Control the application of different color components by specifying a different percentage for each component (e.g. 90/100/10 is 90 red, 100 green, and 10 blue).</p>
+
+<p>The format of the ColorizeImage method is:</p>
+
+<pre class="code">
+  Image *ColorizeImage(const Image *image,const char *opacity,
+    const PixelPacket colorize,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>opacity</h5>
+<p>A character string indicating the level of opacity as a percentage.</p>
+
+<h5>colorize</h5>
+<p>A color value.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="ColorMatrixImage">ColorMatrixImage</a></h2>
+<div class="doc-section">
+
+<p>ColorMatrixImage() applies color transformation to an image. This method permits saturation changes, hue rotation, luminance to alpha, and various other effects.  Although variable-sized transformation matrices can be used, typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash except offsets are in column 6 rather than 5 (in support of CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
+
+<p>The format of the ColorMatrixImage method is:</p>
+
+<pre class="code">
+  Image *ColorMatrixImage(const Image *image,
+    const KernelInfo *color_matrix,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>color_matrix</h5>
+<p>the color matrix.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="FxImage">FxImage</a></h2>
+<div class="doc-section">
+
+<p>FxImage() applies a mathematical expression to the specified image.</p>
+
+<p>The format of the FxImage method is:</p>
+
+<pre class="code">
+  Image *FxImage(const Image *image,const char *expression,
+    ExceptionInfo *exception)
+  Image *FxImageChannel(const Image *image,const ChannelType channel,
+    const char *expression,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>expression</h5>
+<p>A mathematical expression.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="ImplodeImage">ImplodeImage</a></h2>
+<div class="doc-section">
+
+<p>ImplodeImage() creates a new image that is a copy of an existing one with the image pixels "implode" by the specified percentage.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
+
+<p>The format of the ImplodeImage method is:</p>
+
+<pre class="code">
+  Image *ImplodeImage(const Image *image,const double amount,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>implode_image</h5>
+<p>Method ImplodeImage returns a pointer to the image after it is implode.  A null image is returned if there is a memory shortage.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>amount</h5>
+<p>Define the extent of the implosion.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="The_MorphImages">The MorphImages</a></h2>
+<div class="doc-section">
+
+<p>The MorphImages() method requires a minimum of two images.  The first image is transformed into the second by a number of intervening images as specified by frames.</p>
+
+<p>The format of the MorphImage method is:</p>
+
+<pre class="code">
+  Image *MorphImages(const Image *image,const size_t number_frames,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>number_frames</h5>
+<p>Define the number of in-between image to generate. The more in-between frames, the smoother the morph.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="PlasmaImage">PlasmaImage</a></h2>
+<div class="doc-section">
+
+<p>PlasmaImage() initializes an image with plasma fractal values.  The image must be initialized with a base color and the random number generator seeded before this method is called.</p>
+
+<p>The format of the PlasmaImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType PlasmaImage(Image *image,const SegmentInfo *segment,
+    size_t attenuate,size_t depth)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>segment</h5>
+<p> Define the region to apply plasma fractals values.</p>
+
+<h5>attenuate</h5>
+<p>Define the plasma attenuation factor.</p>
+
+<h5>depth</h5>
+<p>Limit the plasma recursion depth.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="PolaroidImage">PolaroidImage</a></h2>
+<div class="doc-section">
+
+<p>PolaroidImage() simulates a Polaroid picture.</p>
+
+<p>The format of the AnnotateImage method is:</p>
+
+<pre class="code">
+  Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
+    const double angle,ExceptionInfo exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>draw_info</h5>
+<p>the draw info.</p>
+
+<h5>angle</h5>
+<p>Apply the effect along this angle.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="MagickSepiaToneImage">MagickSepiaToneImage</a></h2>
+<div class="doc-section">
+
+<p>MagickSepiaToneImage() applies a special effect to the image, similar to the effect achieved in a photo darkroom by sepia toning.  Threshold ranges from 0 to QuantumRange and is a measure of the extent of the sepia toning.  A threshold of 80 is a good starting point for a reasonable tone.</p>
+
+<p>The format of the SepiaToneImage method is:</p>
+
+<pre class="code">
+  Image *SepiaToneImage(const Image *image,const double threshold,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>threshold</h5>
+<p>the tone threshold.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="ShadowImage">ShadowImage</a></h2>
+<div class="doc-section">
+
+<p>ShadowImage() simulates a shadow from the specified image and returns it.</p>
+
+<p>The format of the ShadowImage method is:</p>
+
+<pre class="code">
+  Image *ShadowImage(const Image *image,const double opacity,
+    const double sigma,const ssize_t x_offset,const ssize_t y_offset,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>opacity</h5>
+<p>percentage transparency.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>x_offset</h5>
+<p>the shadow x-offset.</p>
+
+<h5>y_offset</h5>
+<p>the shadow y-offset.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="SketchImage">SketchImage</a></h2>
+<div class="doc-section">
+
+<p>SketchImage() simulates a pencil sketch.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and SketchImage() selects a suitable radius for you.  Angle gives the angle of the sketch.</p>
+
+<p>The format of the SketchImage method is:</p>
+
+<pre class="code">
+      Image *SketchImage(const Image *image,const double radius,
+  const double sigma,const double angle,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>angle</h5>
+<p>Apply the effect along this angle.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="SolarizeImage">SolarizeImage</a></h2>
+<div class="doc-section">
+
+<p>SolarizeImage() applies a special effect to the image, similar to the effect achieved in a photo darkroom by selectively exposing areas of photo sensitive paper to light.  Threshold ranges from 0 to QuantumRange and is a measure of the extent of the solarization.</p>
+
+<p>The format of the SolarizeImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType SolarizeImage(Image *image,const double threshold)
+  MagickBooleanType SolarizeImageChannel(Image *image,
+    const ChannelType channel,const double threshold,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>threshold</h5>
+<p>Define the extent of the solarization.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="SteganoImage">SteganoImage</a></h2>
+<div class="doc-section">
+
+<p>SteganoImage() hides a digital watermark within the image.  Recover the hidden watermark later to prove that the authenticity of an image. Offset defines the start position within the image to hide the watermark.</p>
+
+<p>The format of the SteganoImage method is:</p>
+
+<pre class="code">
+  Image *SteganoImage(const Image *image,Image *watermark,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>watermark</h5>
+<p>the watermark image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="StereoAnaglyphImage">StereoAnaglyphImage</a></h2>
+<div class="doc-section">
+
+<p>StereoAnaglyphImage() combines two images and produces a single image that is the composite of a left and right image of a stereo pair.  Special red-green stereo glasses are required to view this effect.</p>
+
+<p>The format of the StereoAnaglyphImage method is:</p>
+
+<pre class="code">
+  Image *StereoImage(const Image *left_image,const Image *right_image,
+    ExceptionInfo *exception)
+  Image *StereoAnaglyphImage(const Image *left_image,
+    const Image *right_image,const ssize_t x_offset,const ssize_t y_offset,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>left_image</h5>
+<p>the left image.</p>
+
+<h5>right_image</h5>
+<p>the right image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+<h5>x_offset</h5>
+<p>amount, in pixels, by which the left image is offset to the right of the right image.</p>
+
+<h5>y_offset</h5>
+<p>amount, in pixels, by which the left image is offset to the bottom of the right image.</p>
+
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="SwirlImage">SwirlImage</a></h2>
+<div class="doc-section">
+
+<p>SwirlImage() swirls the pixels about the center of the image, where degrees indicates the sweep of the arc through which each pixel is moved. You get a more dramatic effect as the degrees move from 1 to 360.</p>
+
+<p>The format of the SwirlImage method is:</p>
+
+<pre class="code">
+  Image *SwirlImage(const Image *image,double degrees,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>degrees</h5>
+<p>Define the tightness of the swirling effect.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="TintImage">TintImage</a></h2>
+<div class="doc-section">
+
+<p>TintImage() applies a color vector to each pixel in the image.  The length of the vector is 0 for black and white and at its maximum for the midtones. The vector weighting function is f(x)=(1-(4.0*((x-0.5)*(x-0.5))))</p>
+
+<p>The format of the TintImage method is:</p>
+
+<pre class="code">
+  Image *TintImage(const Image *image,const char *opacity,
+    const PixelPacket tint,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>opacity</h5>
+<p>A color value used for tinting.</p>
+
+<h5>tint</h5>
+<p>A color value used for tinting.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="VignetteImage">VignetteImage</a></h2>
+<div class="doc-section">
+
+<p>VignetteImage() softens the edges of the image in vignette style.</p>
+
+<p>The format of the VignetteImage method is:</p>
+
+<pre class="code">
+  Image *VignetteImage(const Image *image,const double radius,
+    const double sigma,const ssize_t x,const ssize_t y,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>x, y</h5>
+<p>Define the x and y ellipse offset.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="WaveImage">WaveImage</a></h2>
+<div class="doc-section">
+
+<p>WaveImage() creates a "ripple" effect in the image by shifting the pixels vertically along a sine wave whose amplitude and wavelength is specified by the given parameters.</p>
+
+<p>The format of the WaveImage method is:</p>
+
+<pre class="code">
+  Image *WaveImage(const Image *image,const double amplitude,
+    const double wave_length,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>amplitude, wave_length</h5>
+<p>Define the amplitude and wave length of the sine wave.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 
@@ -198,3 +797,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 09:12 -->

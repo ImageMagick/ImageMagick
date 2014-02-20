@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickCore, C API for ImageMagick: Reduce the Number of Unique Colors in an Image</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, reduce, the, number, of, unique, colors, in, an, image, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, reduce, the, number, of, unique, colors, in, an, image, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,21 +186,361 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="quantize.html#"></a>]</p>
+<h1>Module quantize Methods</h1>
+<p class="navigation-index">[<a href="quantize.html#QuantizeImage">QuantizeImage</a> &#8226; <a href="quantize.html#AcquireQuantizeInfo">AcquireQuantizeInfo</a> &#8226; <a href="quantize.html#CloneQuantizeInfo">CloneQuantizeInfo</a> &#8226; <a href="quantize.html#CompressImageColormap">CompressImageColormap</a> &#8226; <a href="quantize.html#DestroyQuantizeInfo">DestroyQuantizeInfo</a> &#8226; <a href="quantize.html#GetImageQuantizeError">GetImageQuantizeError</a> &#8226; <a href="quantize.html#GetQuantizeInfo">GetQuantizeInfo</a> &#8226; <a href="quantize.html#PosterizeImage">PosterizeImage</a> &#8226; <a href="quantize.html#QuantizeImage">QuantizeImage</a> &#8226; <a href="quantize.html#QuantizeImages">QuantizeImages</a> &#8226; <a href="quantize.html#RemapImage">RemapImage</a> &#8226; <a href="quantize.html#RemapImages">RemapImages</a> &#8226; <a href="quantize.html#SetGrayscaleImage">SetGrayscaleImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImage">QuantizeImage</a></h2>
+<div class="doc-section">
+
+<p>QuantizeImage() takes a standard RGB or monochrome images and quantizes them down to some fixed number of colors.</p>
+
+<p>For purposes of color allocation, an image is a set of n pixels, where each pixel is a point in RGB space.  RGB space is a 3-dimensional vector space, and each pixel, Pi,  is defined by an ordered triple of red, green, and blue coordinates, (Ri, Gi, Bi).</p>
+
+<p>Each primary color component (red, green, or blue) represents an intensity which varies linearly from 0 to a maximum value, Cmax, which corresponds to full saturation of that color.  Color allocation is defined over a domain consisting of the cube in RGB space with opposite vertices at (0,0,0) and (Cmax, Cmax, Cmax).  QUANTIZE requires Cmax = 255.</p>
+
+<p>The algorithm maps this domain onto a tree in which each node represents a cube within that domain.  In the following discussion these cubes are defined by the coordinate of two opposite vertices:</p>
+
+<pre class="text">
+    the origin.
+</pre>
+
+<p>The tree's root node represents the entire domain, (0,0,0) through (Cmax,Cmax,Cmax).  Each lower level in the tree is generated by subdividing one node's cube into eight smaller cubes of equal size. This corresponds to bisecting the parent cube with planes passing through the midpoints of each edge.</p>
+
+<p>The basic algorithm operates in three phases: Classification, Reduction, and Assignment.  Classification builds a color description tree for the image.  Reduction collapses the tree until the number it represents, at most, the number of colors desired in the output image. Assignment defines the output image's color map and sets each pixel's color by restorage_class in the reduced tree.  Our goal is to minimize the numerical discrepancies between the original colors and quantized colors (quantization error).</p>
+
+<p>Classification begins by initializing a color description tree of sufficient depth to represent each possible input color in a leaf. However, it is impractical to generate a fully-formed color description tree in the storage_class phase for realistic values of Cmax.  If colors components in the input image are quantized to k-bit precision, so that Cmax= 2k-1, the tree would need k levels below the root node to allow representing each possible input color in a leaf.  This becomes prohibitive because the tree's total number of nodes is 1 + sum(i=1, k, 8k).</p>
+
+<p>A complete tree would require 19,173,961 nodes for k = 8, Cmax = 255.</p>
+<h5>avoid building a fully populated tree, QUANTIZE</h5>
+<p>(1) Initializes data structures for nodes only as they are needed;  (2) Chooses a maximum depth for the tree as a function of the desired number of colors in the output image (currently log2(colormap size)).</p>
+
+<p>For each pixel in the input image, storage_class scans downward from the root of the color description tree.  At each level of the tree it identifies the single node which represents a cube in RGB space containing the pixel's color.  It updates the following data for each such node:</p>
+
+<pre class="text">
+      n1: Number of pixels whose color is contained in the RGB cube which
+      this node represents;
+</pre>
+
+<p>n2: Number of pixels whose color is not represented in a node at lower depth in the tree;  initially,  n2 = 0 for all nodes except leaves of the tree.</p>
+
+<p>Sr, Sg, Sb: Sums of the red, green, and blue component values for all pixels not classified at a lower depth. The combination of these sums and n2  will ultimately characterize the mean color of a set of pixels represented by this node.</p>
+
+<p>E: the distance squared in RGB space between each pixel contained within a node and the nodes' center.  This represents the quantization error for a node.</p>
+
+<p>Reduction repeatedly prunes the tree until the number of nodes with n2 &gt; 0 is less than or equal to the maximum number of colors allowed in the output image.  On any given iteration over the tree, it selects those nodes whose E count is minimal for pruning and merges their color statistics upward. It uses a pruning threshold, Ep, to govern node selection as follows:</p>
+
+<p>Ep = 0 while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors prune all nodes such that E &lt;= Ep Set Ep to minimum E in remaining nodes</p>
+
+<p>This has the effect of minimizing any quantization error when merging two nodes together.</p>
+
+<p>When a node to be pruned has offspring, the pruning procedure invokes itself recursively in order to prune the tree from the leaves upward. n2,  Sr, Sg,  and  Sb in a node being pruned are always added to the corresponding data in that node's parent.  This retains the pruned node's color characteristics for later averaging.</p>
+
+<p>For each node, n2 pixels exist for which that node represents the smallest volume in RGB space containing those pixel's colors.  When n2 &gt; 0 the node will uniquely define a color in the output image. At the beginning of reduction,  n2 = 0  for all nodes except a the leaves of the tree which represent colors present in the input image.</p>
+
+<p>The other pixel count, n1, indicates the total number of colors within the cubic volume which the node represents.  This includes n1 - n2 pixels whose colors should be defined by nodes at a lower level in the tree.</p>
+
+<p>Assignment generates the output image from the pruned tree.  The output</p>
+<h5>parts</h5>
+<p>(1)  A color map, which is an array of color descriptions (RGB triples) for each color present in the output image;  (2)  A pixel array, which represents each pixel as an index into the color map array.</p>
+
+<p>First, the assignment phase makes one pass over the pruned color description tree to establish the image's color map.  For each node with n2  &gt; 0, it divides Sr, Sg, and Sb by n2 .  This produces the mean color of all pixels that classify no lower than this node.  Each of these colors becomes an entry in the color map.</p>
+
+<p>Finally,  the assignment phase reclassifies each pixel in the pruned tree to identify the deepest node containing the pixel's color.  The pixel's value in the pixel array becomes the index of this node's mean color in the color map.</p>
+
+<p>This method is based on a similar algorithm written by Paul Raveling.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="AcquireQuantizeInfo">AcquireQuantizeInfo</a></h2>
+<div class="doc-section">
+
+<p>AcquireQuantizeInfo() allocates the QuantizeInfo structure.</p>
+
+<p>The format of the AcquireQuantizeInfo method is:</p>
+
+<pre class="code">
+  QuantizeInfo *AcquireQuantizeInfo(const ImageInfo *image_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="CloneQuantizeInfo">CloneQuantizeInfo</a></h2>
+<div class="doc-section">
+
+<p>CloneQuantizeInfo() makes a duplicate of the given quantize info structure, or if quantize info is NULL, a new one.</p>
+
+<p>The format of the CloneQuantizeInfo method is:</p>
+
+<pre class="code">
+  QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>clone_info</h5>
+<p>Method CloneQuantizeInfo returns a duplicate of the given quantize info, or if image info is NULL a new one.</p>
+
+<h5>quantize_info</h5>
+<p>a structure of type info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="CompressImageColormap">CompressImageColormap</a></h2>
+<div class="doc-section">
+
+<p>CompressImageColormap() compresses an image colormap by removing any duplicate or unused color entries.</p>
+
+<p>The format of the CompressImageColormap method is:</p>
+
+<pre class="code">
+  MagickBooleanType CompressImageColormap(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="DestroyQuantizeInfo">DestroyQuantizeInfo</a></h2>
+<div class="doc-section">
+
+<p>DestroyQuantizeInfo() deallocates memory associated with an QuantizeInfo structure.</p>
+
+<p>The format of the DestroyQuantizeInfo method is:</p>
+
+<pre class="code">
+  QuantizeInfo *DestroyQuantizeInfo(QuantizeInfo *quantize_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>quantize_info</h5>
+<p>Specifies a pointer to an QuantizeInfo structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="GetImageQuantizeError">GetImageQuantizeError</a></h2>
+<div class="doc-section">
+
+<p>GetImageQuantizeError() measures the difference between the original and quantized images.  This difference is the total quantization error. The error is computed by summing over all pixels in an image the distance squared in RGB space between each reference pixel value and its quantized value.  These values are computed:</p>
+
+<pre class="text">
+      o mean_error_per_pixel:  This value is the mean error for any single
+  pixel in the image.
+</pre>
+
+<h5>normalized_mean_square_error</h5>
+<p>This value is the normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.</p>
+
+<h5>normalized_maximum_square_error</h5>
+<p>Thsi value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.</p>
+
+<p>The format of the GetImageQuantizeError method is:</p>
+
+<pre class="code">
+  MagickBooleanType GetImageQuantizeError(Image *image)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="GetQuantizeInfo">GetQuantizeInfo</a></h2>
+<div class="doc-section">
+
+<p>GetQuantizeInfo() initializes the QuantizeInfo structure.</p>
+
+<p>The format of the GetQuantizeInfo method is:</p>
+
+<pre class="code">
+  GetQuantizeInfo(QuantizeInfo *quantize_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>quantize_info</h5>
+<p>Specifies a pointer to a QuantizeInfo structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="PosterizeImage">PosterizeImage</a></h2>
+<div class="doc-section">
+
+<p>PosterizeImage() reduces the image to a limited number of colors for a "poster" effect.</p>
+
+<p>The format of the PosterizeImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType PosterizeImage(Image *image,const size_t levels,
+    const MagickBooleanType dither)
+  MagickBooleanType PosterizeImageChannel(Image *image,
+    const ChannelType channel,const size_t levels,
+    const MagickBooleanType dither)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>Specifies a pointer to an Image structure.</p>
+
+<h5>levels</h5>
+<p>Number of color levels allowed in each channel.  Very low values (2, 3, or 4) have the most visible effect.</p>
+
+<h5>dither</h5>
+<p>Set this integer value to something other than zero to dither the mapped image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImage">QuantizeImage</a></h2>
+<div class="doc-section">
+
+<p>QuantizeImage() analyzes the colors within a reference image and chooses a fixed number of colors to represent the image.  The goal of the algorithm is to minimize the color difference between the input and output image while minimizing the processing time.</p>
+
+<p>The format of the QuantizeImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
+    Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>quantize_info</h5>
+<p>Specifies a pointer to an QuantizeInfo structure.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImages">QuantizeImages</a></h2>
+<div class="doc-section">
+
+<p>QuantizeImages() analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set.  The goal of the algorithm is to minimize the color difference between the input and output images while minimizing the processing time.</p>
+
+<p>The format of the QuantizeImages method is:</p>
+
+<pre class="code">
+  MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
+    Image *images)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>quantize_info</h5>
+<p>Specifies a pointer to an QuantizeInfo structure.</p>
+
+<h5>images</h5>
+<p>Specifies a pointer to a list of Image structures.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="RemapImage">RemapImage</a></h2>
+<div class="doc-section">
+
+<p>RemapImage() replaces the colors of an image with the closest color from a reference image.</p>
+
+<p>The format of the RemapImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
+    Image *image,const Image *remap_image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>quantize_info</h5>
+<p>Specifies a pointer to an QuantizeInfo structure.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>remap_image</h5>
+<p>the reference image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="RemapImages">RemapImages</a></h2>
+<div class="doc-section">
+
+<p>RemapImages() replaces the colors of a sequence of images with the closest color from a reference image.</p>
+
+<p>The format of the RemapImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
+    Image *images,Image *remap_image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>quantize_info</h5>
+<p>Specifies a pointer to an QuantizeInfo structure.</p>
+
+<h5>images</h5>
+<p>the image sequence.</p>
+
+<h5>remap_image</h5>
+<p>the reference image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="SetGrayscaleImage">SetGrayscaleImage</a></h2>
+<div class="doc-section">
+
+<p>SetGrayscaleImage() converts an image to a PseudoClass grayscale image.</p>
+
+<p>The format of the SetGrayscaleImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetGrayscaleImage(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>The image.</p>
+
+ </div>
 
 </div>
 
@@ -198,3 +562,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 09:12 -->

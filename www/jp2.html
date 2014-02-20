@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: JP2 Encoding Options</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="jp2, encoding, options, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../images/wand.png"></link>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="jp2, encoding, options, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://localhost/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../discourse-server">
-  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
-  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,14 +186,43 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
@@ -186,112 +239,45 @@
 <li>compression is lossy at 64:1</li>
 </ul>
 
-<p>Use this command:</p>
+<p>Use this command to convert a JPEG-2000 image to the PNG image format:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert wizard.png -define jp2:cblkwidth=64 -define jp2:cblkheight=32  \ <br></br>
-  -define jp2:nomct -define jp2:numrlvls=4 -define jp2:rate=0.015625 wizard.jpc</span></p>
-<p>Here we convert a giga-byte TIFF image to JPEG-2000 with a reduced memory footprint:</p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wizard.jp2 wizard.png</span></p>
+<p>Here we extract an area from the image:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert frame-00038.tif -define jp2:tilewidth=256 -define jp2:tileheight=256 frame-00038.jp2</span></p>
-<p>Here is a lossy example using the full gamut of JP2 options:</p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert 'wizard.jp2[640x480+0+0]' wizard.png</span></p>
+<p>Extract a particular tile from the image:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert input.tif -define numrlvls=7 -define jp2:tilewidth=1024
--define jp2:tileheight=1024 \<br></br>-define jp2:rate=0.02348 -define
-jp2:prg=rpcl -define jp2:mode=int -define jp2:prcwidth=16383 \<br></br>-define
-jp2:prcheight=16383 -define jp2:cblkwidth=64 -define jp2:cblkheight=64
--define jp2:sop output.jp2</span></p>
-<p>Here is the same example with lossless encoding:</p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert input.tif -define jp2:numrlvls=6 -define jp2:tilewidth=1024
--define jp2:tileheight=1024 \<br></br>-define jp2:rate=1.0 -define jp2:lazy
--define jp2:prg=rlcp -define jp2:ilyrrates=\<br></br>'0.015625,0.01858,0.0221,0.025,0.03125,0.03716,0.04419,0.05,0.0625,
-0.075,0.088,0.1,0.125,0.15,0.18,0.21,0.25,0.3,0.35,0.4,0.5,0.6,0.7,0.84'
-\<br></br>-define jp2:mode=int output.jp2</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert 'wizard.jp2[2]' wizard.png</span></p>
+<p>Specify a subsampling factor:</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wizard.png -colorspace YUV -sampling-factor 2,2 wizard.jp2</span></p>
+<p>Save a tiled JPEG-2000 image:</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wizard.png 'wizard.png[512x512]'</span></p>
+<p>Write a digital Cinema 4K profile compliant codestream:</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wizard.png -resize 4096x2160! -depth 12 wizard.jp2</span></p>
+<p>Here is a complete list of JPEG-2000 decoding options:</p>
+
+<dl class="doc">
+<dt class="doc">jp2:layer-number=<em>x</em></dt>
+<dd>set the maximum number of quality layers to decode.</dd>
+<dt class="doc">jp2:reduce-factor=<em>x</em></dt>
+<dd>set the number of highest resolution levels to be discarded.</dd>
+</dl>
+
 <p>Here is a complete list of JPEG-2000 encoding options:</p>
 
 <dl class="doc">
-<dt class="doc">imgareatlx=x</dt>
-<dd>Set the x-coordinate of the top-left corner of the image area to x.</dd>
-<dt class="doc">imgareatly=y</dt>
-<dd>Set the y-coordinate of the top-left corner of the image area to y.</dd>
-<dt class="doc">tilegrdtlx=x</dt>
-<dd>Set the x-coordinate of the top-left corner of the tiling grid to x.</dd>
-<dt class="doc">tilegrdtly=y</dt>
-<dd>Set the y-coordinate of the top-left corner of the tiling grid to y.</dd>
-<dt class="doc">tilewidth=w</dt>
-<dd>Set the nominal tile width to w.</dd>
-<dt class="doc">tileheight=h</dt>
-<dd>Set the nominal tile height to h.</dd>
-<dt class="doc">prcwidth=w</dt>
-<dd>Set the precinct width to w. The argument w must be an integer power of two. The default value is 32768.</dd>
-<dt class="doc">prcheight=h</dt>
-<dd>Set the precinct height to h. The argument h must be an integer power of two. The default value is 32768.</dd>
-<dt class="doc">cblkwidth=w</dt>
-<dd>Set the nominal code block width to w. The argument w must be an integer power of two.  The default value is 64.</dd>
-<dt class="doc">cblkheight=h</dt>
-<dd>Set the nominal code block height to h. The argument h must be an integer power of two. The default value is 64.</dd>
-<dt class="doc">mode=m</dt>
-<dd>Set the coding mode to m. The argument m must have one of the following values:
-
-<table class="doc">
-  <tbody>
-  <tr>
-    <th align="left">Value</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr> <td>int</td>    <td>integer mode</td> </tr>
-  <tr> <td>real</td>    <td>real mode</td> </tr>
-  </tbody>
-</table>
-</dd>
-
-<dd>If lossless coding is desired, the integer mode must be used. By default, the integer mode is employed. The choice of mode also determines which multicomponent and wavelet transforms (if any) are employed.</dd>
-<dt class="doc">rate=r</dt>
-<dd>Specify the target rate. The argument r is a positive real number. Since a rate of one corresponds to no compression, one should never need to explicitly specify a rate greater than one.  By default, the target rate is considered to be infinite.</dd>
-<dt class="doc">ilyrrates=r0[,r1,. . . ,rN]</dt>
-<dd>Specify the rates for any intermediate layers. The argument to this option is a comma separated list of N rates. Each rate is a positive real number. The rates must increase monotonically.  The last rate in the list should be less than or equal to the overall rate (as specified with the rate option).</dd>
-<dt class="doc">prg=p</dt>
-<dd>Set the progression order to p. The argument p must have one of the following values:
-
-<table class="doc">
-  <tbody>
-  <tr>
-    <th align="left">Value</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr> <td>lrcp</td>    <td>layer-resolution-component-position (LRCP) progressive (i.e., rate scalable)</td> </tr>
-  <tr> <td>rlcp</td>    <td>resolution-layer-component-position (RLCP) progressive (i.e., resolution scalable)</td> </tr>
-  <tr> <td>rpcl</td>    <td>resolution-position-component-layer (RPCL) progressive</td> </tr>
-  <tr> <td>pcrl</td>    <td>position-component-resolution-layer (PCRL) progressive</td> </tr>
-  <tr> <td>cprl</td>    <td>component-position-resolution-layer (CPRL) progressive</td> </tr>
-  </tbody>
-</table>
-</dd>
-
-<dd>By default, LRCP progressive ordering is employed. Note that the RPCL and PCRL progressions are not valid for all possible image geometries.</dd>
-<dt class="doc">nomct</dt>
-<dd>Disallow the use of any multicomponent transform.</dd>
-<dt class="doc">numrlvls=n</dt>
-<dd>Set the number of resolution levels to n. The argument n must be an integer that is greater than or equal to one. The default value is 6.</dd>
-<dt class="doc">sop</dt>
-<dd>Generate SOP marker segments.</dd>
-<dt class="doc">eph</dt>
-<dd>Generate EPH marker segments.</dd>
-<dt class="doc">lazy</dt>
-<dd>Enable lazy coding mode (a.k.a. arithmetic coding bypass).</dd>
-<dt class="doc">termall</dt>
-<dd>Terminate all coding passes.</dd>
-<dt class="doc">segsym</dt>
-<dd>Use segmentation symbols.</dd>
-<dt class="doc">vcausal</dt>
-<dd>Use vertically stripe causal contexts.</dd>
-<dt class="doc">pterm</dt>
-<dd>Use predictable termination.</dd>
-<dt class="doc">resetprob</dt>
-<dd>Reset the probability models after each coding pass.</dd>
-<dt class="doc">numgbits=n</dt>
-<dd>Set the number of guard bits to n.</dd>
+<dt class="doc">jp2:number-resolutions=<em>x</em></dt>
+<dd>number of resolutions to encode.</dd>
+<dt class="doc">jp2:quality=<em>x</em>,<em>x</em>,...</dt>
+<dd>set the quality layer PSNR, given in dB. The order is from left to right in ascending order. The default is a single lossless quality layer.</dd>
+<dt class="doc">jp2:rate=<em>x</em>,<em>x</em>,...</dt>
+<dd>the compression ratio values. Each value is a factor of compression, thus 20 means 20 times compressed. The order is from left to right in descending order. A final lossless quality layer is signified by the value 1. The default is a single lossless quality layer.</dd>
+<dt class="doc">jp2:progression-order=<em>x</em></dt>
+<dd>choose from LRCP, RLCP, RPCL, PCRL or CPRL.</dd>
+</dl>
 </dl>
 
 </div>
@@ -314,3 +300,4 @@ jp2:prcheight=16383 -define jp2:cblkwidth=64 -define jp2:cblkheight=64
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 07:57 -->

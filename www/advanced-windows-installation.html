@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: Advanced Windows Source Installation</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="advanced, windows, source, installation, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../images/wand.png"></link>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="advanced, windows, source, installation, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://localhost/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../discourse-server">
-  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
-  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,18 +186,46 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
-
 
 <h1>ImageMagick Advanced Windows Installation</h1>
 <p class="navigation-index">[<a href="advanced-windows-installation.html#download">Download &amp; Unpack</a> • <a href="advanced-windows-installation.html#configure">Configure</a>  • <a href="advanced-windows-installation.html#build">Build</a> • <a href="advanced-windows-installation.html#install">Install</a> • <a href="advanced-windows-installation.html#binary">Create a Self-installing Binary Distribution</a> • <a href="advanced-windows-installation.html#problems">Dealing with Unexpected Problems</a> • <a href="advanced-windows-installation.html#project">Building Your Custom Project</a>]</p>
@@ -191,7 +243,7 @@
 
 <p>You can unpack the distribution with <a href="http://www.winzip.com">WinZip</a> or type the following from any Command Prompt window:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">unzip ImageMagick-windows.zip</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>unzip ImageMagick-windows.zip</span></p>
 <p>Now that you have the ImageMagick Windows source distribution unpacked, let's configure it.</p>
 
 </div>
@@ -248,8 +300,8 @@
 
 <ol>
   <li>Right click on the All project and select <em>Set As Active Project</em></li>
-  <li>Select "Build=&gt;Clean Solution"</li>
-	<li>Select "Build=&gt;Build Solution"</li>
+  <li>Select "Build=>Clean Solution"</li>
+	<li>Select "Build=>Build Solution"</li>
 </ol>
 
 <p>The <em>clean</em> step is necessary in order to make sure that all of the target support libraries are updated with any patches needed to get them to compile properly under Visual Studio.</p>
@@ -279,7 +331,7 @@
 <p>With this feature enabled, you should be able to nab a copy of</p>
 
 <p class="text">
-  VisualMagick\utilities\UTIL_convert_xxx_exe.dsp  (for C) or  <br></br>
+  VisualMagick\utilities\UTIL_convert_xxx_exe.dsp  (for C) or  <br/>
   VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
 </p>
 
@@ -292,24 +344,24 @@
 <p>For straight C API command line applications use something from:</p>
 
 <p class="text">
-  ImageMagick\tests or  <br></br>
-  ImageMagick\utilities (source code) or <br></br>
-  ImageMagick\VisualMagick\tests or  <br></br>
+  ImageMagick\tests or  <br/>
+  ImageMagick\utilities (source code) or <br/>
+  ImageMagick\VisualMagick\tests or  <br/>
   ImageMagick\Visualmagick\utilities (project - DSP)
 </p>
 
 <p>For C++ and Magick++ command line applications use something from:</p>
 
 <p class="text">
-  ImageMagick\Magick++\tests or ImageMagick\Magick++\demo (source code) or <br></br>
-  ImageMagick\VisualMagick\Magick++\tests or  <br></br>
+  ImageMagick\Magick++\tests or ImageMagick\Magick++\demo (source code) or <br/>
+  ImageMagick\VisualMagick\Magick++\tests or  <br/>
   ImageMagick\VisualMagick\Magick++\demo (project - DSP)
 </p>
 
 <p>For C++ and Magick++ and MFC windows applications use:</p>
 
 <p class="text">
-  ImageMagick\contrib\win32\MFC\NtMagick (source code) or <br></br>
+  ImageMagick\contrib\win32\MFC\NtMagick (source code) or <br/>
   ImageMagick\VisualMagick\contrib\win32\MFC\NtMagick (project - DSP)
 </p>
 
@@ -374,7 +426,7 @@
 
 <p>To view any image in a Microsoft window, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert image.ext win:</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.ext win:</span></p>
 <p>Make sure <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a> is installed, otherwise, you will be unable to convert or view a Postscript document, and Postscript standard fonts will not be available.</p>
 
 <p>You may use any standard web browser (e.g. Internet Explorer) to browse the ImageMagick documentation.</p>
@@ -429,7 +481,7 @@
 	<ol>
 	<li>Launch the Command Prompt application and move to the <code>contrib\win32\ATL7\ImageMagickObject</code> folder.</li>
 	<li>Build ImageMagickObject with these commands:
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">BuildImageMagickObject clean</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">BuildImageMagickObject release</span></p></li>
+	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>BuildImageMagickObject clean</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>BuildImageMagickObject release</span></p></li>
 	</ol>
 
 <h3>Build PerlMagick</h3>
@@ -437,21 +489,21 @@
 	<ol>
 	<li>Launch the Command Prompt application and move to the <code>PerlMagick</code> folder.</li>
 	<li>Build PerlMagick with these commands:
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">perl Makefile.nt</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">nmake release</span></p></li>
+	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>perl Makefile.nt</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>nmake release</span></p></li>
 	</ol>
 
 <h3>Create the Self-installing ImageMagick Binary Distribution</h3>
 
 	<ol>
 	<li>Double-click on <code>VisualMagick/installer/im-dll-16.iss</code> to launch the Inno Setup 5 wizard.</li>
-	<li>Select <code>File-&gt;Compile</code>.</li>
+	<li>Select <code>File->Compile</code>.</li>
 	</ol>
 
 <h3>Install the Binary Distribution</h3>
 
 	<ol>
 	<li>Double-click on
-	<code>VisualMagick/bin/ImageMagick-6.8.7-0-Q16-windows-dll.exe</code>
+	<code>VisualMagick/bin/ImageMagick-6.8.8-7-Q16-windows-dll.exe</code>
 	to launch the ImageMagick binary distribution.</li>
 	<li>Complete the installer screens to install ImageMagick on your system.</li>
 	</ol>
@@ -460,14 +512,14 @@
 
 	<ol>
 	<li>Launch the Command Prompt application and move to the <code>PerlMagick</code> folder and type
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">nmake test</span></p></li>
+	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>nmake test</span></p></li>
 
 	<li>Move to the <code>VisualMagick/tests</code> folder and type
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">validate</span></p></li>
+	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>validate</span></p></li>
 	<li>Move to the <code>VisualMagick/Magick++/tests</code> folder and type
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">run_tests.bat</span></p></li>
+	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>run_tests.bat</span></p></li>
 	<li>Move to the <code>VisualMagick/Magick++/demo</code> folder and type
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">run_demos.bat</span></p></li>
+	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>run_demos.bat</span></p></li>
 	</ol>
 
 <p>If all the tests pass without complaint, the ImageMagick self-install binary distribution is ready for use.</p>
@@ -486,7 +538,7 @@
 <h2><a id="project"></a>Building Your Custom Project</h2>
 <div class="doc-section">
 
-<p>The Windows <a href="binary-releases.html#windows">binary</a> distribution includes a number of demo projects that you can use as a template for your own custom project.  For example, start with the Button project, generally located in the <code>c:/Program Files/ImageMagick-6.5.5-0/Magick++_demos</code> folder.  If not, be sure to select <code>Configuration Properties-&gt;C/C++-&gt;Preprocessor</code> and set these definitions:</p>
+<p>The Windows <a href="binary-releases.html#windows">binary</a> distribution includes a number of demo projects that you can use as a template for your own custom project.  For example, start with the Button project, generally located in the <code>c:/Program Files/ImageMagick-6.5.5-0/Magick++_demos</code> folder.  If not, be sure to select <code>Configuration Properties->C/C++->Preprocessor</code> and set these definitions:</p>
 
 <pre class="text">
   NDEBUG
@@ -520,3 +572,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 07:19 -->

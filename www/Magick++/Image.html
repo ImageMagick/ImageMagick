@@ -167,10 +167,10 @@ has been placed within a Blob, it may be read into a Magick++ Image via
 a <a href="Image.html#constructor_blob">constructor</a> or <a href="Image.html#read">read()</a>
 . Likewise, a Magick++ image may be written to a Blob via <a
  href="Image.html#write"> write()</a> .
-<p>An example of using Image to write to a Blob follows: <br />
-&#160; </p>
+<p>An example of using Image to write to a Blob follows: <br>
+&nbsp; </p>
 <pre class="code">
-#include &lt;Magick++.h> 
+#include <Magick++.h> 
 using namespace std; 
 using namespace Magick; 
 int main(int argc,char **argv) 
@@ -1107,10 +1107,10 @@ to specified penColor_.</font></td>
       <td><font size="-1">const std::string &amp;imageSpec_</font></td>
       <td rowspan="2" nosave=""><font size="-1">Ping is similar to read
 except only enough of the image is read to determine the image columns,
-rows, and filesize.&#160; The <a href="Image.html#columns">columns</a> </font>,
+rows, and filesize.&nbsp; The <a href="Image.html#columns">columns</a> </font>,
       <font size="-1"><a href="Image.html#rows">rows</a> , and <a
  href="Image.html#fileSize">fileSize</a>
-attributes are valid after invoking ping.&#160; The image data is not
+attributes are valid after invoking ping.&nbsp; The image data is not
 valid after calling ping.</font></td>
     </tr>
     <tr>
@@ -1255,31 +1255,31 @@ values and type_ parameters.</font></td>
     </tr>
     <tr>
       <td style="vertical-align: middle; text-align: center;"><small><a
- name="randomThreshold"></a>randomThreshold<br />
+ name="randomThreshold"></a>randomThreshold<br>
       </small></td>
       <td style="vertical-align: middle;"><small>const Geometry
-&amp;thresholds_<br />
+&amp;thresholds_<br>
       </small></td>
       <td style="vertical-align: middle;"><small>Random threshold the
 image. Changes the value of individual pixels based on the intensity of
-each pixel compared to a random threshold.&#160; The result is a
-low-contrast, two color image.&#160; The thresholds_ argument is a
-geometry containing LOWxHIGH thresholds.&#160; If the string contains
+each pixel compared to a random threshold.&nbsp; The result is a
+low-contrast, two color image.&nbsp; The thresholds_ argument is a
+geometry containing LOWxHIGH thresholds.&nbsp; If the string contains
 2x2, 3x3, or 4x4, then an ordered dither of order 2, 3, or 4 will be
 performed instead. This is a very fast alternative to 'quantize' based
-dithering.<br />
+dithering.<br>
       </small></td>
     </tr>
     <tr>
       <td style="vertical-align: middle; text-align: center;"><small><a
- name="randomThresholdChannel"></a>randomThresholdChannel<br />
+ name="randomThresholdChannel"></a>randomThresholdChannel<br>
       </small></td>
       <td style="vertical-align: middle;"><small>const Geometry
-&amp;thresholds_, const ChannelType channel_<br />
+&amp;thresholds_, const ChannelType channel_<br>
       </small></td>
       <td style="vertical-align: middle;"><small>Random threshold an
 image channel. Similar to <a href="Image.html#randomThreshold">randomThreshold</a>()
-but restricted to the specified channel.<br />
+but restricted to the specified channel.<br>
       </small></td>
     </tr>
     <tr>
@@ -1576,7 +1576,7 @@ original if this is a problem.</font></td>
  href="Blob.html"> BLOB</a> stored in <i>blob_</i>. The <i>magick</i>_
 parameter specifies the image format to write (defaults to <a
  href="Image.html#magick">magick</a> ). The depth_ parameter species the image
-depth (defaults to <a href="Image.html#depth"> depth</a> ).</font> <br />
+depth (defaults to <a href="Image.html#depth"> depth</a> ).</font> <br>
       <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
 an image format is selected which is capable of supporting fewer
 colors than the original image or quantization has been requested, the
@@ -1852,7 +1852,7 @@ on.</font></td>
       <td><font size="-1">size_t</font></td>
       <td bgcolor="#666666"><font size="-1">&#160;</font></td>
       <td><font size="-1">const size_t</font></td>
-      <td><font size="-1">Pixel cache threshold in megabytes. Once this
+      <td><font size="-1">Pixel cache threshold in bytes. Once this
 threshold is exceeded, all subsequent pixels cache operations are
 to/from disk. This is a static method and the attribute it sets is
 shared by all Image objects.</font></td>
@@ -3069,7 +3069,7 @@ alpha channel.</font></td>
       <td><font size="-1">Returns a pointer to the Image pixel indexes
 corresponding to the pixel region requested by the last <a
  href="Image.html#getConstPixels">getConstPixels</a> , <a href="Image.html#getPixels">getPixels</a>
-, or <a href="Image.html#setPixels">setPixels</a> call.&#160;</font><font
+, or <a href="Image.html#setPixels">setPixels</a> call.&nbsp;</font><font
  size="-1">The
 returned pointer remains valid until the next getPixel, getConstPixels,
 or setPixels call and should never be deallocated by the user.</font><font
@@ -3078,7 +3078,7 @@ or
 CMYKA images. The pixel indexes represent an array of type
 IndexPacket, with each entry corresponding to a pixel x,y position. For
 PseudoClass images, the entry's value is the offset into the colormap
-(see <a href="Image.html#colorMap">colorMap</a> )&#160; for that pixel. For
+(see <a href="Image.html#colorMap">colorMap</a> )&nbsp; for that pixel. For
 CMYKA
 images, the indexes are used to contain the alpha channel.</font></td>
     </tr>

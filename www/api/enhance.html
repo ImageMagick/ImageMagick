@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickCore, C API for ImageMagick: Enhance an Image</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, enhance, an, image, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, enhance, an, image, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,21 +186,619 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="enhance.html#"></a>]</p>
+<h1>Module enhance Methods</h1>
+<p class="navigation-index">[<a href="enhance.html#AutoGammaImage">AutoGammaImage</a> &#8226; <a href="enhance.html#AutoLevelImage">AutoLevelImage</a> &#8226; <a href="enhance.html#BrightnessContrastImage">BrightnessContrastImage</a> &#8226; <a href="enhance.html#ColorDecisionListImage">ColorDecisionListImage</a> &#8226; <a href="enhance.html#ClutImage">ClutImage</a> &#8226; <a href="enhance.html#ContrastImage">ContrastImage</a> &#8226; <a href="enhance.html#ContrastStretchImage">ContrastStretchImage</a> &#8226; <a href="enhance.html#EnhanceImage">EnhanceImage</a> &#8226; <a href="enhance.html#EqualizeImage">EqualizeImage</a> &#8226; <a href="enhance.html#GammaImage">GammaImage</a> &#8226; <a href="enhance.html#GrayscaleImage">GrayscaleImage</a> &#8226; <a href="enhance.html#HaldClutImage">HaldClutImage</a> &#8226; <a href="enhance.html#LevelImage">LevelImage</a> &#8226; <a href="enhance.html#LevelImage">LevelImage</a> &#8226; <a href="enhance.html#LevelizeImageChannel">LevelizeImageChannel</a> &#8226; <a href="enhance.html#LevelImageColor">LevelImageColor</a> &#8226; <a href="enhance.html#LinearStretchImage">LinearStretchImage</a> &#8226; <a href="enhance.html#ModulateImage">ModulateImage</a> &#8226; <a href="enhance.html#NegateImage">NegateImage</a> &#8226; <a href="enhance.html#The NormalizeImage">The NormalizeImage</a> &#8226; <a href="enhance.html#SigmoidalContrastImage">SigmoidalContrastImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="AutoGammaImage">AutoGammaImage</a></h2>
+<div class="doc-section">
+
+<p>AutoGammaImage() extract the 'mean' from the image and adjust the image to try make set its gamma appropriatally.</p>
+
+<p>The format of the AutoGammaImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType AutoGammaImage(Image *image)
+  MagickBooleanType AutoGammaImageChannel(Image *image,
+    const ChannelType channel)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>The image to auto-level</p>
+
+<h5>channel</h5>
+<p>The channels to auto-level.  If the special 'SyncChannels' flag is set all given channels is adjusted in the same way using the mean average of those channels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="AutoLevelImage">AutoLevelImage</a></h2>
+<div class="doc-section">
+
+<p>AutoLevelImage() adjusts the levels of a particular image channel by scaling the minimum and maximum values to the full quantum range.</p>
+
+<p>The format of the LevelImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType AutoLevelImage(Image *image)
+  MagickBooleanType AutoLevelImageChannel(Image *image,
+    const ChannelType channel)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>The image to auto-level</p>
+
+<h5>channel</h5>
+<p>The channels to auto-level.  If the special 'SyncChannels' flag is set the min/max/mean value of all given channels is used for all given channels, to all channels in the same way.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="BrightnessContrastImage">BrightnessContrastImage</a></h2>
+<div class="doc-section">
+
+<p>BrightnessContrastImage() changes the brightness and/or contrast of an image.  It converts the brightness and contrast parameters into slope and intercept and calls a polynomical function to apply to the image.</p>
+
+<p>The format of the BrightnessContrastImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType BrightnessContrastImage(Image *image,
+    const double brightness,const double contrast)
+  MagickBooleanType BrightnessContrastImageChannel(Image *image,
+    const ChannelType channel,const double brightness,
+    const double contrast)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>brightness</h5>
+<p>the brightness percent (-100 .. 100).</p>
+
+<h5>contrast</h5>
+<p>the contrast percent (-100 .. 100).</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="ColorDecisionListImage">ColorDecisionListImage</a></h2>
+<div class="doc-section">
+
+<p>ColorDecisionListImage() accepts a lightweight Color Correction Collection (CCC) file which solely contains one or more color corrections and applies the correction to the image.  Here is a sample CCC file:</p>
+
+<pre class="text">
+      &lt;ColorCorrectionCollection xmlns="urn:ASC:CDL:v1.2"&gt;
+      &lt;ColorCorrection id="cc03345"&gt;
+            &lt;SOPNode&gt;
+                 &lt;Slope&gt; 0.9 1.2 0.5 &lt;/Slope&gt;
+                 &lt;Offset&gt; 0.4 -0.5 0.6 &lt;/Offset&gt;
+                 &lt;Power&gt; 1.0 0.8 1.5 &lt;/Power&gt;
+            &lt;/SOPNode&gt;
+            &lt;SATNode&gt;
+                 &lt;Saturation&gt; 0.85 &lt;/Saturation&gt;
+            &lt;/SATNode&gt;
+      &lt;/ColorCorrection&gt;
+      &lt;/ColorCorrectionCollection&gt;
+</pre>
+
+<p>which includes the slop, offset, and power for each of the RGB channels as well as the saturation.</p>
+
+<p>The format of the ColorDecisionListImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType ColorDecisionListImage(Image *image,
+    const char *color_correction_collection)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>color_correction_collection</h5>
+<p>the color correction collection in XML.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="ClutImage">ClutImage</a></h2>
+<div class="doc-section">
+
+<p>ClutImage() replaces each color value in the given image, by using it as an index to lookup a replacement color value in a Color Look UP Table in the form of an image.  The values are extracted along a diagonal of the CLUT image so either a horizontal or vertial gradient image can be used.</p>
+
+<p>Typically this is used to either re-color a gray-scale image according to a color gradient in the CLUT image, or to perform a freeform histogram (level) adjustment according to the (typically gray-scale) gradient in the CLUT image.</p>
+
+<p>When the 'channel' mask includes the matte/alpha transparency channel but one image has no such channel it is assumed that that image is a simple gray-scale image that will effect the alpha channel values, either for gray-scale coloring (with transparent or semi-transparent colors), or a histogram adjustment of existing alpha channel values.   If both images have matte channels, direct and normal indexing is applied, which is rarely used.</p>
+
+<p>The format of the ClutImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType ClutImage(Image *image,Image *clut_image)
+  MagickBooleanType ClutImageChannel(Image *image,
+    const ChannelType channel,Image *clut_image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image, which is replaced by indexed CLUT values</p>
+
+<h5>clut_image</h5>
+<p>the color lookup table image for replacement color values.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="ContrastImage">ContrastImage</a></h2>
+<div class="doc-section">
+
+<p>ContrastImage() enhances the intensity differences between the lighter and darker elements of the image.  Set sharpen to a MagickTrue to increase the image contrast otherwise the contrast is reduced.</p>
+
+<p>The format of the ContrastImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType ContrastImage(Image *image,
+    const MagickBooleanType sharpen)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>sharpen</h5>
+<p>Increase or decrease image contrast.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="ContrastStretchImage">ContrastStretchImage</a></h2>
+<div class="doc-section">
+
+<p>ContrastStretchImage() is a simple image enhancement technique that attempts to improve the contrast in an image by `stretching' the range of intensity values it contains to span a desired range of values. It differs from the more sophisticated histogram equalization in that it can only apply a linear scaling function to the image pixel values.  As a result the `enhancement' is less harsh.</p>
+
+<p>The format of the ContrastStretchImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType ContrastStretchImage(Image *image,
+    const char *levels)
+  MagickBooleanType ContrastStretchImageChannel(Image *image,
+    const size_t channel,const double black_point,
+    const double white_point)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>black_point</h5>
+<p>the black point.</p>
+
+<h5>white_point</h5>
+<p>the white point.</p>
+
+<h5>levels</h5>
+<p>Specify the levels where the black and white points have the range of 0 to number-of-pixels (e.g. 1, 10x90, etc.).</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="EnhanceImage">EnhanceImage</a></h2>
+<div class="doc-section">
+
+<p>EnhanceImage() applies a digital filter that improves the quality of a noisy image.</p>
+
+<p>The format of the EnhanceImage method is:</p>
+
+<pre class="code">
+  Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="EqualizeImage">EqualizeImage</a></h2>
+<div class="doc-section">
+
+<p>EqualizeImage() applies a histogram equalization to the image.</p>
+
+<p>The format of the EqualizeImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType EqualizeImage(Image *image)
+  MagickBooleanType EqualizeImageChannel(Image *image,
+    const ChannelType channel)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="GammaImage">GammaImage</a></h2>
+<div class="doc-section">
+
+<p>GammaImage() gamma-corrects a particular image channel.  The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented on the screen.  Specify individual gamma levels for the red, green, and blue channels, or adjust all three with the gamma parameter.  Values typically range from 0.8 to 2.3.</p>
+
+<p>You can also reduce the influence of a particular channel with a gamma value of 0.</p>
+
+<p>The format of the GammaImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType GammaImage(Image *image,const char *level)
+  MagickBooleanType GammaImageChannel(Image *image,
+    const ChannelType channel,const double gamma)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>level</h5>
+<p>the image gamma as a string (e.g. 1.6,1.2,1.0).</p>
+
+<h5>gamma</h5>
+<p>the image gamma.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="GrayscaleImage">GrayscaleImage</a></h2>
+<div class="doc-section">
+
+<p>GrayscaleImage() converts the colors in the reference image to gray.</p>
+
+<p>The format of the GrayscaleImageChannel method is:</p>
+
+<pre class="code">
+  MagickBooleanType GrayscaleImage(Image *image,
+    const PixelIntensityMethod method)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="HaldClutImage">HaldClutImage</a></h2>
+<div class="doc-section">
+
+<p>HaldClutImage() applies a Hald color lookup table to the image.  A Hald color lookup table is a 3-dimensional color cube mapped to 2 dimensions. Create it with the HALD coder.  You can apply any color transformation to the Hald image and then use this method to apply the transform to the image.</p>
+
+<p>The format of the HaldClutImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType HaldClutImage(Image *image,Image *hald_image)
+  MagickBooleanType HaldClutImageChannel(Image *image,
+    const ChannelType channel,Image *hald_image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image, which is replaced by indexed CLUT values</p>
+
+<h5>hald_image</h5>
+<p>the color lookup table image for replacement color values.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="LevelImage">LevelImage</a></h2>
+<div class="doc-section">
+
+<p>LevelImage() adjusts the levels of a particular image channel by scaling the colors falling between specified white and black points to the full available quantum range.</p>
+
+<p>The parameters provided represent the black, and white points.  The black point specifies the darkest color in the image. Colors darker than the black point are set to zero.  White point specifies the lightest color in the image.  Colors brighter than the white point are set to the maximum quantum value.</p>
+
+<p>If a '!' flag is given, map black and white colors to the given levels rather than mapping those levels to black and white.  See LevelizeImageChannel() and LevelizeImageChannel(), below.</p>
+
+<p>Gamma specifies a gamma correction to apply to the image.</p>
+
+<p>The format of the LevelImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType LevelImage(Image *image,const char *levels)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>levels</h5>
+<p>Specify the levels where the black and white points have the range of 0-QuantumRange, and gamma has the range 0-10 (e.g. 10x90+2). A '!' flag inverts the re-mapping.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="LevelImage">LevelImage</a></h2>
+<div class="doc-section">
+
+<p>LevelImage() applies the normal level operation to the image, spreading out the values between the black and white points over the entire range of values.  Gamma correction is also applied after the values has been mapped.</p>
+
+<p>It is typically used to improve image contrast, or to provide a controlled linear threshold for the image. If the black and white points are set to the minimum and maximum values found in the image, the image can be normalized.  or by swapping black and white values, negate the image.</p>
+
+<p>The format of the LevelImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType LevelImage(Image *image,const double black_point,
+    const double white_point,const double gamma)
+  MagickBooleanType LevelImageChannel(Image *image,
+    const ChannelType channel,const double black_point,
+    const double white_point,const double gamma)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>black_point</h5>
+<p>The level which is to be mapped to zero (black)</p>
+
+<h5>white_point</h5>
+<p>The level which is to be mapped to QuantiumRange (white)</p>
+
+<h5>gamma</h5>
+<p>adjust gamma by this factor before mapping values. use 1.0 for purely linear stretching of image color values</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="LevelizeImageChannel">LevelizeImageChannel</a></h2>
+<div class="doc-section">
+
+<p>LevelizeImageChannel() applies the reversed LevelImage() operation to just the specific channels specified.  It compresses the full range of color values, so that they lie between the given black and white points. Gamma is applied before the values are mapped.</p>
+
+<p>LevelizeImageChannel() can be called with by using a +level command line API option, or using a '!' on a -level or LevelImage() geometry string.</p>
+
+<p>It can be used for example de-contrast a greyscale image to the exact levels specified.  Or by using specific levels for each channel of an image you can convert a gray-scale image to any linear color gradient, according to those levels.</p>
+
+<p>The format of the LevelizeImageChannel method is:</p>
+
+<pre class="code">
+  MagickBooleanType LevelizeImageChannel(Image *image,
+    const ChannelType channel,const char *levels)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>black_point</h5>
+<p>The level to map zero (black) to.</p>
+
+<h5>white_point</h5>
+<p>The level to map QuantiumRange (white) to.</p>
+
+<h5>gamma</h5>
+<p>adjust gamma by this factor before mapping values.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="LevelImageColor">LevelImageColor</a></h2>
+<div class="doc-section">
+
+<p>LevelImageColor() maps the given color to "black" and "white" values, linearly spreading out the colors, and level values on a channel by channel bases, as per LevelImage().  The given colors allows you to specify different level ranges for each of the color channels separately.</p>
+
+<p>If the boolean 'invert' is set true the image values will modifyed in the reverse direction. That is any existing "black" and "white" colors in the image will become the color values given, with all other values compressed appropriatally.  This effectivally maps a greyscale gradient into the given color gradient.</p>
+
+<p>The format of the LevelColorsImageChannel method is:</p>
+
+<pre class="code">
+      MagickBooleanType LevelColorsImage(Image *image,
+  const MagickPixelPacket *black_color,
+  const MagickPixelPacket *white_color,const MagickBooleanType invert)
+      MagickBooleanType LevelColorsImageChannel(Image *image,
+  const ChannelType channel,const MagickPixelPacket *black_color,
+  const MagickPixelPacket *white_color,const MagickBooleanType invert)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>black_color</h5>
+<p>The color to map black to/from</p>
+
+<h5>white_point</h5>
+<p>The color to map white to/from</p>
+
+<h5>invert</h5>
+<p>if true map the colors (levelize), rather than from (level)</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="LinearStretchImage">LinearStretchImage</a></h2>
+<div class="doc-section">
+
+<p>LinearStretchImage() discards any pixels below the black point and above the white point and levels the remaining pixels.</p>
+
+<p>The format of the LinearStretchImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType LinearStretchImage(Image *image,
+    const double black_point,const double white_point)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>black_point</h5>
+<p>the black point.</p>
+
+<h5>white_point</h5>
+<p>the white point.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="ModulateImage">ModulateImage</a></h2>
+<div class="doc-section">
+
+<p>ModulateImage() lets you control the brightness, saturation, and hue of an image.  Modulate represents the brightness, saturation, and hue as one parameter (e.g. 90,150,100).  If the image colorspace is HSL, the modulation is lightness, saturation, and hue.  For HWB, use blackness, whiteness, and hue. And for HCL, use chrome, luma, and hue.</p>
+
+<p>The format of the ModulateImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType ModulateImage(Image *image,const char *modulate)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>modulate</h5>
+<p>Define the percent change in brightness, saturation, and hue.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="NegateImage">NegateImage</a></h2>
+<div class="doc-section">
+
+<p>NegateImage() negates the colors in the reference image.  The grayscale option means that only grayscale values within the image are negated.</p>
+
+<p>The format of the NegateImageChannel method is:</p>
+
+<pre class="code">
+  MagickBooleanType NegateImage(Image *image,
+    const MagickBooleanType grayscale)
+  MagickBooleanType NegateImageChannel(Image *image,
+    const ChannelType channel,const MagickBooleanType grayscale)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>grayscale</h5>
+<p>If MagickTrue, only negate grayscale pixels within the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="The_NormalizeImage">The NormalizeImage</a></h2>
+<div class="doc-section">
+
+<p>The NormalizeImage() method enhances the contrast of a color image by mapping the darkest 2 percent of all pixel to black and the brightest 1 percent to white.</p>
+
+<p>The format of the NormalizeImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType NormalizeImage(Image *image)
+  MagickBooleanType NormalizeImageChannel(Image *image,
+    const ChannelType channel)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/enhance_8c.html" id="SigmoidalContrastImage">SigmoidalContrastImage</a></h2>
+<div class="doc-section">
+
+<p>SigmoidalContrastImage() adjusts the contrast of an image with a non-linear sigmoidal contrast algorithm.  Increase the contrast of the image using a sigmoidal transfer function without saturating highlights or shadows. Contrast indicates how much to increase the contrast (0 is none; 3 is typical; 20 is pushing it); mid-point indicates where midtones fall in the resultant image (0 is white; 50 is middle-gray; 100 is black).  Set sharpen to MagickTrue to increase the image contrast otherwise the contrast is reduced.</p>
+
+<p>The format of the SigmoidalContrastImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType SigmoidalContrastImage(Image *image,
+    const MagickBooleanType sharpen,const char *levels)
+  MagickBooleanType SigmoidalContrastImageChannel(Image *image,
+    const ChannelType channel,const MagickBooleanType sharpen,
+    const double contrast,const double midpoint)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>sharpen</h5>
+<p>Increase or decrease image contrast.</p>
+
+<h5>contrast</h5>
+<p>strength of the contrast, the larger the number the more 'threshold-like' it becomes.</p>
+
+<h5>midpoint</h5>
+<p>midpoint of the function as a color value 0 to QuantumRange.</p>
+
+ </div>
 
 </div>
 
@@ -198,3 +820,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 09:12 -->

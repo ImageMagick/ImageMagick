@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickCore, C API for ImageMagick: Deprecated Methods</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, deprecated, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, deprecated, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,21 +186,3153 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="deprecate.html#"></a>]</p>
+<h1>Module deprecate Methods</h1>
+<p class="navigation-index">[<a href="deprecate.html#AcquireCacheViewIndexes">AcquireCacheViewIndexes</a> &#8226; <a href="deprecate.html#AcquireCacheViewPixels">AcquireCacheViewPixels</a> &#8226; <a href="deprecate.html#AcquireImagePixels">AcquireImagePixels</a> &#8226; <a href="deprecate.html#AcquireIndexes">AcquireIndexes</a> &#8226; <a href="deprecate.html#AcquireMemory">AcquireMemory</a> &#8226; <a href="deprecate.html#AcquireOneCacheViewPixel">AcquireOneCacheViewPixel</a> &#8226; <a href="deprecate.html#AcquireOneCacheViewVirtualPixel">AcquireOneCacheViewVirtualPixel</a> &#8226; <a href="deprecate.html#AcquireOneMagickPixel">AcquireOneMagickPixel</a> &#8226; <a href="deprecate.html#AcquireOnePixel">AcquireOnePixel</a> &#8226; <a href="deprecate.html#AcquireOneVirtualPixel">AcquireOneVirtualPixel</a> &#8226; <a href="deprecate.html#AcquirePixels">AcquirePixels</a> &#8226; <a href="deprecate.html#AcquireSemaphoreInfo">AcquireSemaphoreInfo</a> &#8226; <a href="deprecate.html#AffinityImage">AffinityImage</a> &#8226; <a href="deprecate.html#AffinityImages">AffinityImages</a> &#8226; <a href="deprecate.html#AllocateImage">AllocateImage</a> &#8226; <a href="deprecate.html#AllocateImageColormap">AllocateImageColormap</a> &#8226; <a href="deprecate.html#AllocateNextImage">AllocateNextImage</a> &#8226; <a href="deprecate.html#AllocateString">AllocateString</a> &#8226; <a href="deprecate.html#AverageImages">AverageImages</a> &#8226; <a href="deprecate.html#ChannelThresholdImage">ChannelThresholdImage</a> &#8226; <a href="deprecate.html#ClipPathImage">ClipPathImage</a> &#8226; <a href="deprecate.html#CloneImageAttributes">CloneImageAttributes</a> &#8226; <a href="deprecate.html#CloneMemory">CloneMemory</a> &#8226; <a href="deprecate.html#CloseCacheView">CloseCacheView</a> &#8226; <a href="deprecate.html#ColorFloodfill">ColorFloodfill</a> &#8226; <a href="deprecate.html#DeleteImageAttribute">DeleteImageAttribute</a> &#8226; <a href="deprecate.html#DeleteImageList">DeleteImageList</a> &#8226; <a href="deprecate.html#DeleteMagickRegistry">DeleteMagickRegistry</a> &#8226; <a href="deprecate.html#DescribeImage">DescribeImage</a> &#8226; <a href="deprecate.html#DestroyImageAttributes">DestroyImageAttributes</a> &#8226; <a href="deprecate.html#DestroyImages">DestroyImages</a> &#8226; <a href="deprecate.html#DestroyMagick">DestroyMagick</a> &#8226; <a href="deprecate.html#DispatchImage">DispatchImage</a> &#8226; <a href="deprecate.html#ExtractSubimageFromImageImage">ExtractSubimageFromImageImage</a> &#8226; <a href="deprecate.html#FlattenImages">FlattenImages</a> &#8226; <a href="deprecate.html#FormatImageAttribute">FormatImageAttribute</a> &#8226; <a href="deprecate.html#FormatMagickString">FormatMagickString</a> &#8226; <a href="deprecate.html#FormatString">FormatString</a> &#8226; <a href="deprecate.html#GetConfigureBlob">GetConfigureBlob</a> &#8226; <a href="deprecate.html#GetCacheView">GetCacheView</a> &#8226; <a href="deprecate.html#GetCacheViewIndexes">GetCacheViewIndexes</a> &#8226; <a href="deprecate.html#GetCacheViewPixels">GetCacheViewPixels</a> &#8226; <a href="deprecate.html#GetImageAttribute">GetImageAttribute</a> &#8226; <a href="deprecate.html#GetImageClippingPathAttribute">GetImageClippingPathAttribute</a> &#8226; <a href="deprecate.html#GetImageFromMagickRegistry">GetImageFromMagickRegistry</a> &#8226; <a href="deprecate.html#GetMagickRegistry">GetMagickRegistry</a> &#8226; <a href="deprecate.html#GetImageGeometry">GetImageGeometry</a> &#8226; <a href="deprecate.html#GetImageList">GetImageList</a> &#8226; <a href="deprecate.html#GetImageListIndex">GetImageListIndex</a> &#8226; <a href="deprecate.html#GetImageListSize">GetImageListSize</a> &#8226; <a href="deprecate.html#GetImagePixels">GetImagePixels</a> &#8226; <a href="deprecate.html#GetIndexes">GetIndexes</a> &#8226; <a href="deprecate.html#GetNextImage">GetNextImage</a> &#8226; <a href="deprecate.html#GetNextImageAttribute">GetNextImageAttribute</a> &#8226; <a href="deprecate.html#GetNumberScenes">GetNumberScenes</a> &#8226; <a href="deprecate.html#GetOnePixel">GetOnePixel</a> &#8226; <a href="deprecate.html#GetPixels">GetPixels</a> &#8226; <a href="deprecate.html#GetPreviousImage">GetPreviousImage</a> &#8226; <a href="deprecate.html#HSLTransform">HSLTransform</a> &#8226; <a href="deprecate.html#IdentityAffine">IdentityAffine</a> &#8226; <a href="deprecate.html#InitializeMagick">InitializeMagick</a> &#8226; <a href="deprecate.html#InterpolatePixelColor">InterpolatePixelColor</a> &#8226; <a href="deprecate.html#InterpretImageAttributes">InterpretImageAttributes</a> &#8226; <a href="deprecate.html#InversesRGBCompandor">InversesRGBCompandor</a> &#8226; <a href="deprecate.html#IsMagickInstantiated">IsMagickInstantiated</a> &#8226; <a href="deprecate.html#LevelImageColor">LevelImageColor</a> &#8226; <a href="deprecate.html#LiberateMemory">LiberateMemory</a> &#8226; <a href="deprecate.html#LiberateSemaphoreInfo">LiberateSemaphoreInfo</a> &#8226; <a href="deprecate.html#MagickIncarnate">MagickIncarnate</a> &#8226; <a href="deprecate.html#MagickMonitor">MagickMonitor</a> &#8226; <a href="deprecate.html#MapImage">MapImage</a> &#8226; <a href="deprecate.html#MapImages">MapImages</a> &#8226; <a href="deprecate.html#MatteFloodfill">MatteFloodfill</a> &#8226; <a href="deprecate.html#MaximumImages">MaximumImages</a> &#8226; <a href="deprecate.html#MinimumImages">MinimumImages</a> &#8226; <a href="deprecate.html#MedianFilterImage">MedianFilterImage</a> &#8226; <a href="deprecate.html#ModeImage">ModeImage</a> &#8226; <a href="deprecate.html#MosaicImages">MosaicImages</a> &#8226; <a href="deprecate.html#OpaqueImage">OpaqueImage</a> &#8226; <a href="deprecate.html#OpenCacheView">OpenCacheView</a> &#8226; <a href="deprecate.html#OpenMagickStream">OpenMagickStream</a> &#8226; <a href="deprecate.html#PaintFloodfill">PaintFloodfill</a> &#8226; <a href="deprecate.html#PaintOpaqueImage">PaintOpaqueImage</a> &#8226; <a href="deprecate.html#PaintTransparentImage">PaintTransparentImage</a> &#8226; <a href="deprecate.html#ParseSizeGeometry">ParseSizeGeometry</a> &#8226; <a href="deprecate.html#PopImageList">PopImageList</a> &#8226; <a href="deprecate.html#PopImagePixels">PopImagePixels</a> &#8226; <a href="deprecate.html#PostscriptGeometry">PostscriptGeometry</a> &#8226; <a href="deprecate.html#PushImageList">PushImageList</a> &#8226; <a href="deprecate.html#PushImagePixels">PushImagePixels</a> &#8226; <a href="deprecate.html#QuantizationError">QuantizationError</a> &#8226; <a href="deprecate.html#RandomChannelThresholdImage">RandomChannelThresholdImage</a> &#8226; <a href="deprecate.html#ReacquireMemory">ReacquireMemory</a> &#8226; <a href="deprecate.html#RecolorImage">RecolorImage</a> &#8226; <a href="deprecate.html#ReduceNoiseImage">ReduceNoiseImage</a> &#8226; <a href="deprecate.html#RelinquishSemaphoreInfo">RelinquishSemaphoreInfo</a> &#8226; <a href="deprecate.html#ResetImageAttributeIterator">ResetImageAttributeIterator</a> &#8226; <a href="deprecate.html#SetCacheViewPixels">SetCacheViewPixels</a> &#8226; <a href="deprecate.html#SetExceptionInfo">SetExceptionInfo</a> &#8226; <a href="deprecate.html#SetImage">SetImage</a> &#8226; <a href="deprecate.html#SetImageAttribute">SetImageAttribute</a> &#8226; <a href="deprecate.html#SetImageList">SetImageList</a> &#8226; <a href="deprecate.html#SetImagePixels">SetImagePixels</a> &#8226; <a href="deprecate.html#SetMagickRegistry">SetMagickRegistry</a> &#8226; <a href="deprecate.html#SetMonitorHandler">SetMonitorHandler</a> &#8226; <a href="deprecate.html#ShiftImageList">ShiftImageList</a> &#8226; <a href="deprecate.html#SpliceImageList">SpliceImageList</a> &#8226; <a href="deprecate.html#sRGBCompandor">sRGBCompandor</a> &#8226; <a href="deprecate.html#Strip">Strip</a> &#8226; <a href="deprecate.html#SyncCacheView">SyncCacheView</a> &#8226; <a href="deprecate.html#SyncCacheViewPixels">SyncCacheViewPixels</a> &#8226; <a href="deprecate.html#SyncImagePixels">SyncImagePixels</a> &#8226; <a href="deprecate.html#TemporaryFilename">TemporaryFilename</a> &#8226; <a href="deprecate.html#ThresholdImage">ThresholdImage</a> &#8226; <a href="deprecate.html#ThresholdImageChannel">ThresholdImageChannel</a> &#8226; <a href="deprecate.html#TransformHSL">TransformHSL</a> &#8226; <a href="deprecate.html#TranslateText">TranslateText</a> &#8226; <a href="deprecate.html#TransparentImage">TransparentImage</a> &#8226; <a href="deprecate.html#UnshiftImageList">UnshiftImageList</a> &#8226; <a href="deprecate.html#ZoomImage">ZoomImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireCacheViewIndexes">AcquireCacheViewIndexes</a></h2>
+<div class="doc-section">
+
+<p>AcquireCacheViewIndexes() returns the indexes associated with the specified view.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewVirtualIndexQueue(cache_view);
+</pre>
+
+<p>The format of the AcquireCacheViewIndexes method is:</p>
+
+<pre class="code">
+  const IndexPacket *AcquireCacheViewIndexes(const CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireCacheViewPixels">AcquireCacheViewPixels</a></h2>
+<div class="doc-section">
+
+<p>AcquireCacheViewPixels() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewVirtualPixels(cache_view,x,y,columns,rows,exception);
+</pre>
+
+<p>The format of the AcquireCacheViewPixels method is:</p>
+
+<pre class="code">
+  const PixelPacket *AcquireCacheViewPixels(const CacheView *cache_view,
+    const ssize_t x,const ssize_t y,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a region of pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireImagePixels">AcquireImagePixels</a></h2>
+<div class="doc-section">
+
+<p>AcquireImagePixels() returns an immutable pixel region. If the region is successfully accessed, a pointer to it is returned, otherwise NULL is returned. The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since there is opportunity to access the pixels in-place (without a copy) if the image is in RAM, or in a memory-mapped file.  The returned pointer should *never* be deallocated by the user.</p>
+
+<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket.  If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to access the black color component or to obtain the colormap indexes (of type IndexPacket) corresponding to the region.</p>
+
+<p>If you plan to modify the pixels, use GetAuthenticPixels() instead.</p>
+
+<p>Note, the AcquireImagePixels() and GetAuthenticPixels() methods are not thread-safe.  In a threaded environment, use GetCacheViewVirtualPixels() or GetCacheViewAuthenticPixels() instead.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetVirtualPixels(image,x,y,columns,rows,exception);
+</pre>
+
+<p>The format of the AcquireImagePixels() method is:</p>
+
+<pre class="code">
+  const PixelPacket *AcquireImagePixels(const Image *image,const ssize_t x,
+    const ssize_t y,const size_t columns,const size_t rows,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a region of pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireIndexes">AcquireIndexes</a></h2>
+<div class="doc-section">
+
+<p>AcquireIndexes() returns the black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetVirtualIndexQueue(image);
+</pre>
+
+<p>The format of the AcquireIndexes() method is:</p>
+
+<pre class="code">
+  const IndexPacket *AcquireIndexes(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>indexes</h5>
+<p>AcquireIndexes() returns the indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireMemory">AcquireMemory</a></h2>
+<div class="doc-section">
+
+<p>AcquireMemory() returns a pointer to a block of memory at least size bytes suitably aligned for any use.</p>
+
+<p>The format of the AcquireMemory method is:</p>
+
+<pre class="code">
+  void *AcquireMemory(const size_t size)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>size</h5>
+<p>the size of the memory in bytes to allocate.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireOneCacheViewPixel">AcquireOneCacheViewPixel</a></h2>
+<div class="doc-section">
+
+<p>AcquireOneCacheViewPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneCacheViewAuthenticPixel() instead.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetOneCacheViewVirtualPixel(cache_view,x,y,pixel,exception);
+</pre>
+
+<p>The format of the AcquireOneCacheViewPixel method is:</p>
+
+<pre class="code">
+  MagickBooleanType AcquireOneCacheViewPixel(const CacheView *cache_view,
+    const ssize_t x,const ssize_t y,PixelPacket *pixel,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+<h5>x,y</h5>
+<p>These values define the offset of the pixel.</p>
+
+<h5>pixel</h5>
+<p>return a pixel at the specified (x,y) location.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireOneCacheViewVirtualPixel">AcquireOneCacheViewVirtualPixel</a></h2>
+<div class="doc-section">
+
+<p>AcquireOneCacheViewVirtualPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOneCacheViewAuthenticPixel() instead.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetOneCacheViewVirtualMethodPixel(cache_view,virtual_pixel_method,
+  x,y,pixel,exception);
+</pre>
+
+<p>The format of the AcquireOneCacheViewPixel method is:</p>
+
+<pre class="code">
+  MagickBooleanType AcquireOneCacheViewVirtualPixel(
+    const CacheView *cache_view,
+    const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+    const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+<h5>virtual_pixel_method</h5>
+<p>the virtual pixel method.</p>
+
+<h5>x,y</h5>
+<p>These values define the offset of the pixel.</p>
+
+<h5>pixel</h5>
+<p>return a pixel at the specified (x,y) location.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireOneMagickPixel">AcquireOneMagickPixel</a></h2>
+<div class="doc-section">
+
+<p>AcquireOneMagickPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOnePixel() instead.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MagickPixelPacket pixel;
+      GetOneVirtualMagickPixel(image,x,y,&amp;pixel,exception);
+</pre>
+
+<p>The format of the AcquireOneMagickPixel() method is:</p>
+
+<pre class="code">
+  MagickPixelPacket AcquireOneMagickPixel(const Image image,const ssize_t x,
+    const ssize_t y,ExceptionInfo exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>x,y</h5>
+<p>These values define the location of the pixel to return.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireOnePixel">AcquireOnePixel</a></h2>
+<div class="doc-section">
+
+<p>AcquireOnePixel() returns a single pixel at the specified (x,y) location. The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOnePixel() instead.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      PixelPacket pixel;
+      GetOneVirtualPixel(image,x,y,&amp;pixel,exception);
+</pre>
+
+<p>The format of the AcquireOnePixel() method is:</p>
+
+<pre class="code">
+  PixelPacket AcquireOnePixel(const Image image,const ssize_t x,
+    const ssize_t y,ExceptionInfo exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>x,y</h5>
+<p>These values define the location of the pixel to return.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireOneVirtualPixel">AcquireOneVirtualPixel</a></h2>
+<div class="doc-section">
+
+<p>AcquireOneVirtualPixel() returns a single pixel at the specified (x,y) location as defined by specified pixel method.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOnePixel() instead.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      PixelPacket pixel;
+      GetOneVirtualMethodPixel(image,virtual_pixel_method,x,y,&amp;pixel,exception);
+</pre>
+
+<p>The format of the AcquireOneVirtualPixel() method is:</p>
+
+<pre class="code">
+  PixelPacket AcquireOneVirtualPixel(const Image image,
+    const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+    const ssize_t y,ExceptionInfo exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>virtual_pixel_method</h5>
+<p>the virtual pixel method.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>x,y</h5>
+<p>These values define the location of the pixel to return.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquirePixels">AcquirePixels</a></h2>
+<div class="doc-section">
+
+<p>AcquirePixels() returns the pixels associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetVirtualPixelQueue(image);
+</pre>
+
+<p>The format of the AcquirePixels() method is:</p>
+
+<pre class="code">
+  const PixelPacket *AcquirePixels(const Image image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireSemaphoreInfo">AcquireSemaphoreInfo</a></h2>
+<div class="doc-section">
+
+<p>AcquireSemaphoreInfo() acquires a semaphore.</p>
+
+<p>The format of the AcquireSemaphoreInfo method is:</p>
+
+<pre class="code">
+  void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>semaphore_info</h5>
+<p>Specifies a pointer to an SemaphoreInfo structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AffinityImage">AffinityImage</a></h2>
+<div class="doc-section">
+
+<p>AffinityImage() replaces the colors of an image with the closest color from a reference image.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      RemapImage(quantize_info,image,affinity_image);
+</pre>
+
+<p>The format of the AffinityImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType AffinityImage(const QuantizeInfo *quantize_info,
+    Image *image,const Image *affinity_image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>quantize_info</h5>
+<p>Specifies a pointer to an QuantizeInfo structure.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>affinity_image</h5>
+<p>the reference image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AffinityImages">AffinityImages</a></h2>
+<div class="doc-section">
+
+<p>AffinityImages() replaces the colors of a sequence of images with the closest color from a reference image.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      RemapImages(quantize_info,images,affinity_image);
+</pre>
+
+<p>The format of the AffinityImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType AffinityImages(const QuantizeInfo *quantize_info,
+    Image *images,Image *affinity_image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>quantize_info</h5>
+<p>Specifies a pointer to an QuantizeInfo structure.</p>
+
+<h5>images</h5>
+<p>the image sequence.</p>
+
+<h5>affinity_image</h5>
+<p>the reference image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AllocateImage">AllocateImage</a></h2>
+<div class="doc-section">
+
+<p>AllocateImage() returns a pointer to an image structure initialized to default values.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AcquireImage(image_info);
+</pre>
+
+<p>The format of the AllocateImage method is:</p>
+
+<pre class="code">
+  Image *AllocateImage(const ImageInfo *image_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AllocateImageColormap">AllocateImageColormap</a></h2>
+<div class="doc-section">
+
+<p>AllocateImageColormap() allocates an image colormap and initializes it to a linear gray colorspace.  If the image already has a colormap, it is replaced.  AllocateImageColormap() returns MagickTrue if successful, otherwise MagickFalse if there is not enough memory.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AcquireImageColormap(image,colors);
+</pre>
+
+<p>The format of the AllocateImageColormap method is:</p>
+
+<pre class="code">
+  MagickBooleanType AllocateImageColormap(Image *image,
+    const size_t colors)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>colors</h5>
+<p>the number of colors in the image colormap.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AllocateNextImage">AllocateNextImage</a></h2>
+<div class="doc-section">
+
+<p>AllocateNextImage() initializes the next image in a sequence to default values.  The next member of image points to the newly allocated image.  If there is a memory shortage, next is assigned NULL.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AcquireNextImage(image_info,image);
+</pre>
+
+<p>The format of the AllocateNextImage method is:</p>
+
+<pre class="code">
+  void AllocateNextImage(const ImageInfo *image_info,Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AllocateString">AllocateString</a></h2>
+<div class="doc-section">
+
+<p>AllocateString() allocates memory for a string and copies the source string to that memory location (and returns it).</p>
+
+<p>The format of the AllocateString method is:</p>
+
+<pre class="code">
+  char *AllocateString(const char *source)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>source</h5>
+<p>A character string.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AverageImages">AverageImages</a></h2>
+<div class="doc-section">
+
+<p>AverageImages() takes a set of images and averages them together.  Each image in the set must have the same width and height.  AverageImages() returns a single image with each corresponding pixel component of each image averaged.   On failure, a NULL image is returned and exception describes the reason for the failure.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      EvaluateImages(images,MeanEvaluateOperator,exception);
+</pre>
+
+<p>The format of the AverageImages method is:</p>
+
+<pre class="code">
+  Image *AverageImages(Image *images,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image sequence.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ChannelThresholdImage">ChannelThresholdImage</a></h2>
+<div class="doc-section">
+
+<p>ChannelThresholdImage() changes the value of individual pixels based on the intensity of each pixel channel.  The result is a high-contrast image.</p>
+
+<p>The format of the ChannelThresholdImage method is:</p>
+
+<pre class="code">
+  unsigned int ChannelThresholdImage(Image *image,const char *level)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>level</h5>
+<p>define the threshold values.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ClipPathImage">ClipPathImage</a></h2>
+<div class="doc-section">
+
+<p>ClipPathImage() sets the image clip mask based any clipping path information if it exists.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      ClipImagePath(image,pathname,inside);
+</pre>
+
+<p>The format of the ClipImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType ClipPathImage(Image *image,const char *pathname,
+    const MagickBooleanType inside)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>pathname</h5>
+<p>name of clipping path resource. If name is preceded by #, use clipping path numbered by name.</p>
+
+<h5>inside</h5>
+<p>if non-zero, later operations take effect inside clipping path. Otherwise later operations take effect outside clipping path.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="CloneImageAttributes">CloneImageAttributes</a></h2>
+<div class="doc-section">
+
+<p>CloneImageAttributes() clones one or more image attributes.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      CloneImageProperties(image,clone_image);
+</pre>
+
+<p>The format of the CloneImageAttributes method is:</p>
+
+<pre class="code">
+  MagickBooleanType CloneImageAttributes(Image *image,
+    const Image *clone_image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>clone_image</h5>
+<p>the clone image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="CloneMemory">CloneMemory</a></h2>
+<div class="doc-section">
+
+<p>CloneMemory() copies size bytes from memory area source to the destination. Copying between objects that overlap will take place correctly.  It returns destination.</p>
+
+<p>The format of the CloneMemory method is:</p>
+
+<pre class="code">
+  void *CloneMemory(void *destination,const void *source,
+    const size_t size)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>destination</h5>
+<p>the destination.</p>
+
+<h5>source</h5>
+<p>the source.</p>
+
+<h5>size</h5>
+<p>the size of the memory in bytes to allocate.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="CloseCacheView">CloseCacheView</a></h2>
+<div class="doc-section">
+
+<p>CloseCacheView() closes the specified view returned by a previous call to OpenCacheView().</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      DestroyCacheView(view_info);
+</pre>
+
+<p>The format of the CloseCacheView method is:</p>
+
+<pre class="code">
+  CacheView *CloseCacheView(CacheView *view_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>view_info</h5>
+<p>the address of a structure of type CacheView.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ColorFloodfill">ColorFloodfill</a></h2>
+<div class="doc-section">
+
+<p>ColorFloodfill() changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</p>
+
+<p>By default target must match a particular pixel color exactly. However, in many cases two colors may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p>
+
+<p>The format of the ColorFloodfillImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType ColorFloodfillImage(Image *image,
+    const DrawInfo *draw_info,const PixelPacket target,
+    const ssize_t x_offset,const ssize_t y_offset,const PaintMethod method)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>draw_info</h5>
+<p>the draw info.</p>
+
+<h5>target</h5>
+<p>the RGB value of the target color.</p>
+
+<h5>x,y</h5>
+<p>the starting location of the operation.</p>
+
+<h5>method</h5>
+<p>Choose either FloodfillMethod or FillToBorderMethod.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="DeleteImageAttribute">DeleteImageAttribute</a></h2>
+<div class="doc-section">
+
+<p>DeleteImageAttribute() deletes an attribute from the image.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      DeleteImageProperty(image,key);
+</pre>
+
+<p>The format of the DeleteImageAttribute method is:</p>
+
+<pre class="code">
+  MagickBooleanType DeleteImageAttribute(Image *image,const char *key)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image info.</p>
+
+<h5>key</h5>
+<p>the image key.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="DeleteImageList">DeleteImageList</a></h2>
+<div class="doc-section">
+
+<p>DeleteImageList() deletes an image at the specified position in the list.</p>
+
+<p>The format of the DeleteImageList method is:</p>
+
+<pre class="code">
+  unsigned int DeleteImageList(Image *images,const ssize_t offset)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+<h5>offset</h5>
+<p>the position within the list.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="DeleteMagickRegistry">DeleteMagickRegistry</a></h2>
+<div class="doc-section">
+
+<p>DeleteMagickRegistry() deletes an entry in the registry as defined by the id. It returns MagickTrue if the entry is deleted otherwise MagickFalse if no entry is found in the registry that matches the id.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      char key[MaxTextExtent];
+      FormatLocaleString(key,MaxTextExtent,"ld\n",id);
+      DeleteImageRegistry(key);
+</pre>
+
+<p>The format of the DeleteMagickRegistry method is:</p>
+
+<pre class="code">
+  MagickBooleanType DeleteMagickRegistry(const ssize_t id)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>id</h5>
+<p>the registry id.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="DescribeImage">DescribeImage</a></h2>
+<div class="doc-section">
+
+<p>DescribeImage() describes an image by printing its attributes to the file. Attributes include the image width, height, size, and others.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      IdentifyImage(image,file,verbose);
+</pre>
+
+<p>The format of the DescribeImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType DescribeImage(Image *image,FILE *file,
+    const MagickBooleanType verbose)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>file</h5>
+<p>the file, typically stdout.</p>
+
+<h5>verbose</h5>
+<p>A value other than zero prints more detailed information about the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="DestroyImageAttributes">DestroyImageAttributes</a></h2>
+<div class="doc-section">
+
+<p>DestroyImageAttributes() deallocates memory associated with the image attribute list.</p>
+
+<p>The format of the DestroyImageAttributes method is:</p>
+
+<pre class="code">
+  DestroyImageAttributes(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="DestroyImages">DestroyImages</a></h2>
+<div class="doc-section">
+
+<p>DestroyImages() destroys an image list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      DestroyImageList(image);
+</pre>
+
+<p>The format of the DestroyImages method is:</p>
+
+<pre class="code">
+  void DestroyImages(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image sequence.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="DestroyMagick">DestroyMagick</a></h2>
+<div class="doc-section">
+
+<p>DestroyMagick() destroys the ImageMagick environment.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MagickCoreTerminus();
+</pre>
+
+<p>The format of the DestroyMagick function is:</p>
+
+<pre class="text">
+  DestroyMagick(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="DispatchImage">DispatchImage</a></h2>
+<div class="doc-section">
+
+<p>DispatchImage() extracts pixel data from an image and returns it to you. The method returns MagickFalse on success otherwise MagickTrue if an error is encountered.  The data is returned as char, short int, int, ssize_t, float, or double in the order specified by map.</p>
+
+<p>Suppose you want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</p>
+
+<pre class="text">
+  DispatchImage(image,0,0,640,1,"RGB",CharPixel,pixels,exception);
+</pre>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      ExportImagePixels(image,x_offset,y_offset,columns,rows,map,type,pixels,
+  exception);
+</pre>
+
+<p>The format of the DispatchImage method is:</p>
+
+<pre class="code">
+  unsigned int DispatchImage(const Image *image,const ssize_t x_offset,
+    const ssize_t y_offset,const size_t columns,
+    const size_t rows,const char *map,const StorageType type,
+    void *pixels,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>x_offset, y_offset, columns, rows</h5>
+<p>These values define the perimeter of a region of pixels you want to extract.</p>
+
+<h5>map</h5>
+<p>This string reflects the expected ordering of the pixel array. It can be any combination or order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or I = intensity (for grayscale).</p>
+
+<h5>type</h5>
+<p>Define the data type of the pixels.  Float and double types are normalized to [0..1] otherwise [0..QuantumRange].  Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.</p>
+
+<h5>pixels</h5>
+<p>This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ExtractSubimageFromImageImage">ExtractSubimageFromImageImage</a></h2>
+<div class="doc-section">
+
+<p>ExtractSubimageFromImageImage() extracts a region of the image that most closely resembles the reference.</p>
+
+<p>The format of the ExtractSubimageFromImageImage method is:</p>
+
+<pre class="code">
+  Image *ExtractSubimageFromImage(const Image *image,
+    const Image *reference,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>reference</h5>
+<p>find an area of the image that closely resembles this image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="FlattenImages">FlattenImages</a></h2>
+<div class="doc-section">
+
+<p>FlattenImages() Obsolete Function: Use MergeImageLayers() instead.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MergeImageLayers(image,FlattenLayer,exception);
+</pre>
+
+<p>The format of the FlattenImage method is:</p>
+
+<pre class="code">
+  Image *FlattenImage(Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image sequence.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="FormatImageAttribute">FormatImageAttribute</a></h2>
+<div class="doc-section">
+
+<p>FormatImageAttribute() permits formatted key/value pairs to be saved as an image attribute.</p>
+
+<p>The format of the FormatImageAttribute method is:</p>
+
+<pre class="code">
+  MagickBooleanType FormatImageAttribute(Image *image,const char *key,
+    const char *format,...)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5> image</h5>
+<p>The image.</p>
+
+<h5> key</h5>
+<p>The attribute key.</p>
+
+<h5> format</h5>
+<p>A string describing the format to use to write the remaining arguments.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="FormatMagickString">FormatMagickString</a></h2>
+<div class="doc-section">
+
+<p>FormatMagickString() prints formatted output of a variable argument list.</p>
+
+<p>The format of the FormatMagickString method is:</p>
+
+<pre class="code">
+  ssize_t FormatMagickString(char *string,const size_t length,
+    const char *format,...)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5>string</h5>
+<p>FormatMagickString() returns the formatted string in this character buffer.</p>
+
+<h5>length</h5>
+<p>the maximum length of the string.</p>
+
+<h5>format</h5>
+<p>A string describing the format to use to write the remaining arguments.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="FormatString">FormatString</a></h2>
+<div class="doc-section">
+
+<p>FormatString() prints formatted output of a variable argument list.</p>
+
+<p>The format of the FormatString method is:</p>
+
+<pre class="code">
+  void FormatString(char *string,const char *format,...)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5> string</h5>
+<p>Method FormatString returns the formatted string in this character buffer.</p>
+
+<h5> format</h5>
+<p>A string describing the format to use to write the remaining arguments.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetConfigureBlob">GetConfigureBlob</a></h2>
+<div class="doc-section">
+
+<p>GetConfigureBlob() returns the specified configure file as a blob.</p>
+
+<p>The format of the GetConfigureBlob method is:</p>
+
+<pre class="code">
+  void *GetConfigureBlob(const char *filename,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>filename</h5>
+<p>the configure file name.</p>
+
+<h5>path</h5>
+<p>return the full path information of the configure file.</p>
+
+<h5>length</h5>
+<p>This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetCacheView">GetCacheView</a></h2>
+<div class="doc-section">
+
+<p>GetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
+  GetCacheViewException(cache_view));
+</pre>
+
+<p>The format of the GetCacheView method is:</p>
+
+<pre class="code">
+  PixelPacket *GetCacheView(CacheView *cache_view,const ssize_t x,
+    const ssize_t y,const size_t columns,const size_t rows)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the address of a structure of type CacheView.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a region of pixels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetCacheViewIndexes">GetCacheViewIndexes</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewIndexes() returns the indexes associated with the specified view.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewAuthenticIndexQueue(cache_view);
+</pre>
+
+<p>The format of the GetCacheViewIndexes method is:</p>
+
+<pre class="code">
+  IndexPacket *GetCacheViewIndexes(CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetCacheViewPixels">GetCacheViewPixels</a></h2>
+<div class="doc-section">
+
+<p>GetCacheViewPixels() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
+  GetCacheViewException(cache_view));
+</pre>
+
+<p>The format of the GetCacheViewPixels method is:</p>
+
+<pre class="code">
+  PixelPacket *GetCacheViewPixels(CacheView *cache_view,const ssize_t x,
+    const ssize_t y,const size_t columns,const size_t rows)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a region of pixels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetImageAttribute">GetImageAttribute</a></h2>
+<div class="doc-section">
+
+<p>GetImageAttribute() searches the list of image attributes and returns a pointer to the attribute if it exists otherwise NULL.</p>
+
+<p>The format of the GetImageAttribute method is:</p>
+
+<pre class="code">
+  const ImageAttribute *GetImageAttribute(const Image *image,
+    const char *key)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>key</h5>
+<p>These character strings are the name of an image attribute to return.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetImageClippingPathAttribute">GetImageClippingPathAttribute</a></h2>
+<div class="doc-section">
+
+<p>GetImageClippingPathAttribute() searches the list of image attributes and returns a pointer to a clipping path if it exists otherwise NULL.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageAttribute(image,"8BIM:1999,2998");
+</pre>
+
+<p>The format of the GetImageClippingPathAttribute method is:</p>
+
+<pre class="code">
+  const ImageAttribute *GetImageClippingPathAttribute(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>attribute</h5>
+<p>Method GetImageClippingPathAttribute returns the clipping path if it exists otherwise NULL.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetImageFromMagickRegistry">GetImageFromMagickRegistry</a></h2>
+<div class="doc-section">
+
+<p>GetImageFromMagickRegistry() gets an image from the registry as defined by its name.  If the image is not found, a NULL image is returned.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageRegistry(ImageRegistryType,name,exception);
+</pre>
+
+<p>The format of the GetImageFromMagickRegistry method is:</p>
+
+<pre class="code">
+  Image *GetImageFromMagickRegistry(const char *name,ssize_t *id,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>name</h5>
+<p>the name of the image to retrieve from the registry.</p>
+
+<h5>id</h5>
+<p>the registry id.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetMagickRegistry">GetMagickRegistry</a></h2>
+<div class="doc-section">
+
+<p>GetMagickRegistry() gets a blob from the registry as defined by the id.  If the blob that matches the id is not found, NULL is returned.</p>
+
+<p>The format of the GetMagickRegistry method is:</p>
+
+<pre class="code">
+  const void *GetMagickRegistry(const ssize_t id,RegistryType *type,
+    size_t *length,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>id</h5>
+<p>the registry id.</p>
+
+<h5>type</h5>
+<p>the registry type.</p>
+
+<h5>length</h5>
+<p>the blob length in number of bytes.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetImageGeometry">GetImageGeometry</a></h2>
+<div class="doc-section">
+
+<p>GetImageGeometry() returns a region as defined by the geometry string with respect to the image and its gravity.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      if (size_to_fit != MagickFalse)
+  ParseRegionGeometry(image,geometry,region_info,&amp;image-&gt;exception); else
+  ParsePageGeometry(image,geometry,region_info,&amp;image-&gt;exception);
+</pre>
+
+<p>The format of the GetImageGeometry method is:</p>
+
+<pre class="code">
+  int GetImageGeometry(Image *image,const char *geometry,
+    const unsigned int size_to_fit,RectangeInfo *region_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>flags</h5>
+<p>Method GetImageGeometry returns a bitmask that indicates which of the four values were located in the geometry string.</p>
+
+<h5>geometry</h5>
+<p>The geometry (e.g. 100x100+10+10).</p>
+
+<h5>size_to_fit</h5>
+<p>A value other than 0 means to scale the region so it fits within the specified width and height.</p>
+
+<h5>region_info</h5>
+<p>the region as defined by the geometry string with respect to the image and its gravity.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetImageList">GetImageList</a></h2>
+<div class="doc-section">
+
+<p>GetImageList() returns an image at the specified position in the list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      CloneImage(GetImageFromList(images,(ssize_t) offset),0,0,MagickTrue,
+  exception);
+</pre>
+
+<p>The format of the GetImageList method is:</p>
+
+<pre class="code">
+  Image *GetImageList(const Image *images,const ssize_t offset,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+<h5>offset</h5>
+<p>the position within the list.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetImageListIndex">GetImageListIndex</a></h2>
+<div class="doc-section">
+
+<p>GetImageListIndex() returns the position in the list of the specified image.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageIndexInList(images);
+</pre>
+
+<p>The format of the GetImageListIndex method is:</p>
+
+<pre class="code">
+  ssize_t GetImageListIndex(const Image *images)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetImageListSize">GetImageListSize</a></h2>
+<div class="doc-section">
+
+<p>GetImageListSize() returns the number of images in the list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageListLength(images);
+</pre>
+
+<p>The format of the GetImageListSize method is:</p>
+
+<pre class="code">
+  size_t GetImageListSize(const Image *images)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetImagePixels">GetImagePixels</a></h2>
+<div class="doc-section">
+
+<p>GetImagePixels() obtains a pixel region for read/write access. If the region is successfully accessed, a pointer to a PixelPacket array representing the region is returned, otherwise NULL is returned.</p>
+
+<p>The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in RAM, or in a memory-mapped file. The returned pointer should *never* be deallocated by the user.</p>
+
+<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or if the storage class is PseduoClass, call GetAuthenticIndexQueue() after invoking GetImagePixels() to obtain the black color component or colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetAuthenticPixels(image,x,y,columns,rows,&amp;image-&gt;exception);
+</pre>
+
+<p>The format of the GetImagePixels() method is:</p>
+
+<pre class="code">
+  PixelPacket *GetImagePixels(Image *image,const ssize_t x,const ssize_t y,
+    const size_t columns,const size_t rows)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a region of pixels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetIndexes">GetIndexes</a></h2>
+<div class="doc-section">
+
+<p>GetIndexes() returns the black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetAuthenticIndexQueue(image);
+</pre>
+
+<p>The format of the GetIndexes() method is:</p>
+
+<pre class="code">
+  IndexPacket *GetIndexes(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>indexes</h5>
+<p>GetIndexes() returns the indexes associated with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetNextImage">GetNextImage</a></h2>
+<div class="doc-section">
+
+<p>GetNextImage() returns the next image in a list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetNextImageInList(images);
+</pre>
+
+<p>The format of the GetNextImage method is:</p>
+
+<pre class="code">
+  Image *GetNextImage(const Image *images)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetNextImageAttribute">GetNextImageAttribute</a></h2>
+<div class="doc-section">
+
+<p>GetNextImageAttribute() gets the next image attribute.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      const char *property;
+      property=GetNextImageProperty(image);
+      if (property != (const char *) NULL)
+  GetImageAttribute(image,property);
+</pre>
+
+<p>The format of the GetNextImageAttribute method is:</p>
+
+<pre class="code">
+  const ImageAttribute *GetNextImageAttribute(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetNumberScenes">GetNumberScenes</a></h2>
+<div class="doc-section">
+
+<p>GetNumberScenes() returns the number of images in the list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageListLength(image);
+</pre>
+
+<p>The format of the GetNumberScenes method is:</p>
+
+<pre class="code">
+  unsigned int GetNumberScenes(const Image *images)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetOnePixel">GetOnePixel</a></h2>
+<div class="doc-section">
+
+<p>GetOnePixel() returns a single pixel at the specified (x,y) location. The image background color is returned if an error occurs.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetOneAuthenticPixel(image,x,y,&amp;pixel,&amp;image-&gt;exception);
+</pre>
+
+<p>The format of the GetOnePixel() method is:</p>
+
+<pre class="code">
+  PixelPacket GetOnePixel(const Image image,const ssize_t x,const ssize_t y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>x,y</h5>
+<p>These values define the location of the pixel to return.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetPixels">GetPixels</a></h2>
+<div class="doc-section">
+
+<p>GetPixels() returns the pixels associated with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetAuthenticPixelQueue(image);
+</pre>
+
+<p>The format of the GetPixels() method is:</p>
+
+<pre class="code">
+  PixelPacket *GetPixels(const Image image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>pixels</h5>
+<p>GetPixels() returns the pixels associated with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="GetPreviousImage">GetPreviousImage</a></h2>
+<div class="doc-section">
+
+<p>GetPreviousImage() returns the previous image in a list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetPreviousImageInList(images));
+</pre>
+
+<p>The format of the GetPreviousImage method is:</p>
+
+<pre class="code">
+  Image *GetPreviousImage(const Image *images)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="HSLTransform">HSLTransform</a></h2>
+<div class="doc-section">
+
+<p>HSLTransform() converts a (hue, saturation, lightness) to a (red, green, blue) triple.</p>
+
+<p>The format of the HSLTransformImage method is:</p>
+
+<pre class="code">
+  void HSLTransform(const double hue,const double saturation,
+    const double lightness,Quantum *red,Quantum *green,Quantum *blue)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>hue, saturation, lightness</h5>
+<p>A double value representing a component of the HSL color space.</p>
+
+<h5>red, green, blue</h5>
+<p>A pointer to a pixel component of type Quantum.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="IdentityAffine">IdentityAffine</a></h2>
+<div class="doc-section">
+
+<p>IdentityAffine() initializes the affine transform to the identity matrix.</p>
+
+<p>The format of the IdentityAffine method is:</p>
+
+<pre class="code">
+  IdentityAffine(AffineMatrix *affine)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>affine</h5>
+<p>A pointer the affine transform of type AffineMatrix.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="InitializeMagick">InitializeMagick</a></h2>
+<div class="doc-section">
+
+<p>InitializeMagick() initializes the ImageMagick environment.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MagickCoreGenesis(path,MagickFalse);
+</pre>
+
+<p>The format of the InitializeMagick function is:</p>
+
+<pre class="text">
+  InitializeMagick(const char *path)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>path</h5>
+<p>the execution path of the current ImageMagick client.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="InterpolatePixelColor">InterpolatePixelColor</a></h2>
+<div class="doc-section">
+
+<p>InterpolatePixelColor() applies bi-linear or tri-linear interpolation between a pixel and it's neighbors.</p>
+
+<p>The format of the InterpolatePixelColor method is:</p>
+
+<pre class="code">
+  MagickPixelPacket InterpolatePixelColor(const Image *image,
+    CacheView *view_info,InterpolatePixelMethod method,const double x,
+    const double y,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>image_view</h5>
+<p>the image cache view.</p>
+
+<h5>type</h5>
+<p>the type of pixel color interpolation.</p>
+
+<h5>x,y</h5>
+<p>A double representing the current (x,y) position of the pixel.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="InterpretImageAttributes">InterpretImageAttributes</a></h2>
+<div class="doc-section">
+
+<p>InterpretImageAttributes() replaces any embedded formatting characters with the appropriate image attribute and returns the translated text.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      InterpretImageProperties(image_info,image,embed_text);
+</pre>
+
+<p>The format of the InterpretImageAttributes method is:</p>
+
+<pre class="code">
+  char *InterpretImageAttributes(const ImageInfo *image_info,Image *image,
+    const char *embed_text)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>embed_text</h5>
+<p>the address of a character string containing the embedded formatting characters.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="InversesRGBCompandor">InversesRGBCompandor</a></h2>
+<div class="doc-section">
+
+<p>InversesRGBCompandor() removes the gamma function from a sRGB pixel.</p>
+
+<p>The format of the InversesRGBCompandor method is:</p>
+
+<pre class="code">
+  MagickRealType InversesRGBCompandor(const MagickRealType pixel)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>pixel</h5>
+<p>the pixel.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="IsMagickInstantiated">IsMagickInstantiated</a></h2>
+<div class="doc-section">
+
+<p>IsMagickInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated:  MagickCoreGenesis() has been called but MagickDestroy() has not.</p>
+
+<p>The format of the IsMagickInstantiated method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsMagickInstantiated(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="LevelImageColor">LevelImageColor</a></h2>
+<div class="doc-section">
+
+<p>LevelImageColor() will map the given color to "black" and "white" values, limearly spreading out the colors, and level values on a channel by channel bases, as per LevelImage().  The given colors allows you to specify different level ranges for each of the color channels separately.</p>
+
+<p>If the boolean 'invert' is set true the image values will modifyed in the reverse direction. That is any existing "black" and "white" colors in the image will become the color values given, with all other values compressed appropriatally.  This effectivally maps a greyscale gradient into the given color gradient.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      LevelColorsImageChannel(image,channel,black_color,white_color,invert);
+</pre>
+
+<p>The format of the LevelImageColors method is:</p>
+
+<pre class="code">
+    MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
+      const MagickPixelPacket *black_color,const MagickPixelPacket *white_color,
+      const MagickBooleanType invert)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>black_color</h5>
+<p>The color to map black to/from</p>
+
+<h5>white_point</h5>
+<p>The color to map white to/from</p>
+
+<h5>invert</h5>
+<p>if true map the colors (levelize), rather than from (level)</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="LiberateMemory">LiberateMemory</a></h2>
+<div class="doc-section">
+
+<p>LiberateMemory() frees memory that has already been allocated, and NULL's the pointer to it.</p>
+
+<p>The format of the LiberateMemory method is:</p>
+
+<pre class="code">
+  void LiberateMemory(void **memory)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>memory</h5>
+<p>A pointer to a block of memory to free for reuse.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="LiberateSemaphoreInfo">LiberateSemaphoreInfo</a></h2>
+<div class="doc-section">
+
+<p>LiberateSemaphoreInfo() relinquishes a semaphore.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      UnlockSemaphoreInfo(*semaphore_info);
+</pre>
+
+<p>The format of the LiberateSemaphoreInfo method is:</p>
+
+<pre class="code">
+  LiberateSemaphoreInfo(void **semaphore_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>semaphore_info</h5>
+<p>Specifies a pointer to an SemaphoreInfo structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="MagickIncarnate">MagickIncarnate</a></h2>
+<div class="doc-section">
+
+<p>MagickIncarnate() initializes the ImageMagick environment.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MagickCoreGenesis(path,MagickFalse);
+</pre>
+
+<p>The format of the MagickIncarnate function is:</p>
+
+<pre class="text">
+  MagickIncarnate(const char *path)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>path</h5>
+<p>the execution path of the current ImageMagick client.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="MagickMonitor">MagickMonitor</a></h2>
+<div class="doc-section">
+
+<p>MagickMonitor() calls the monitor handler method with a text string that describes the task and a measure of completion.  The method returns MagickTrue on success otherwise MagickFalse if an error is encountered, e.g. if there was a user interrupt.</p>
+
+<p>The format of the MagickMonitor method is:</p>
+
+<pre class="code">
+  MagickBooleanType MagickMonitor(const char *text,
+    const MagickOffsetType offset,const MagickSizeType span,
+    void *client_data)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>offset</h5>
+<p>the position relative to the span parameter which represents how much progress has been made toward completing a task.</p>
+
+<h5>span</h5>
+<p>the span relative to completing a task.</p>
+
+<h5>client_data</h5>
+<p>the client data.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="MapImage">MapImage</a></h2>
+<div class="doc-section">
+
+<p>MapImage() replaces the colors of an image with the closest color from a reference image.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+       QuantizeInfo quantize_info;
+       GetQuantizeInfo(&amp;quantize_info);
+       quantize_info.dither=dither;
+       RemapImage(&amp;quantize_info,image,map_image);
+</pre>
+
+<p>The format of the MapImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MapImage(Image *image,const Image *map_image,
+    const MagickBooleanType dither)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>Specifies a pointer to an Image structure.</p>
+
+<h5>map_image</h5>
+<p>the image.  Reduce image to a set of colors represented by this image.</p>
+
+<h5>dither</h5>
+<p>Set this integer value to something other than zero to dither the mapped image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="MapImages">MapImages</a></h2>
+<div class="doc-section">
+
+<p>MapImages() replaces the colors of a sequence of images with the closest color from a reference image.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+       QuantizeInfo quantize_info;
+       GetQuantizeInfo(&amp;quantize_info);
+       quantize_info.dither=dither;
+       RemapImages(&amp;quantize_info,images,map_image);
+</pre>
+
+<p>The format of the MapImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MapImages(Image *images,Image *map_image,
+    const MagickBooleanType dither)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>Specifies a pointer to a set of Image structures.</p>
+
+<h5>map_image</h5>
+<p>the image.  Reduce image to a set of colors represented by this image.</p>
+
+<h5>dither</h5>
+<p>Set this integer value to something other than zero to dither the quantized image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="MatteFloodfill">MatteFloodfill</a></h2>
+<div class="doc-section">
+
+<p>MatteFloodfill() changes the transparency value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the transparency value is changed for any neighbor pixel that does not match the bordercolor member of image.</p>
+
+<p>By default target must match a particular pixel transparency exactly. However, in many cases two transparency values may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two transparency values as the same.  For example, set fuzz to 10 and the opacity values of 100 and 102 respectively are now interpreted as the same value for the purposes of the floodfill.</p>
+
+<p>The format of the MatteFloodfillImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType MatteFloodfillImage(Image *image,
+    const PixelPacket target,const Quantum opacity,const ssize_t x_offset,
+    const ssize_t y_offset,const PaintMethod method)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>target</h5>
+<p>the RGB value of the target color.</p>
+
+<h5>opacity</h5>
+<p>the level of transparency: 0 is fully opaque and QuantumRange is fully transparent.</p>
+
+<h5>x,y</h5>
+<p>the starting location of the operation.</p>
+
+<h5>method</h5>
+<p>Choose either FloodfillMethod or FillToBorderMethod.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="MaximumImages">MaximumImages</a></h2>
+<div class="doc-section">
+
+<p>MaximumImages() returns the maximum intensity of an image sequence.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      EvaluateImages(images,MinEvaluateOperator,exception);
+</pre>
+
+<p>The format of the MaxImages method is:</p>
+
+<pre class="code">
+  Image *MaximumImages(Image *images,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image sequence.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="MinimumImages">MinimumImages</a></h2>
+<div class="doc-section">
+
+<p>MinimumImages() returns the minimum intensity of an image sequence.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      EvaluateImages(images,MinEvaluateOperator,exception);
+</pre>
+
+<p>The format of the MinimumImages method is:</p>
+
+<pre class="code">
+  Image *MinimumImages(Image *images,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image sequence.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="MedianFilterImage">MedianFilterImage</a></h2>
+<div class="doc-section">
+
+<p>MedianFilterImage() applies a digital filter that improves the quality of a noisy image.  Each pixel is replaced by the median in a set of neighboring pixels as defined by radius.</p>
+
+<p>The algorithm was contributed by Mike Edmonds and implements an insertion sort for selecting median color-channel values.  For more on this algorithm see "Skip Lists: A probabilistic Alternative to Balanced Trees" by William Pugh in the June 1990 of Communications of the ACM.</p>
+
+<p>The format of the MedianFilterImage method is:</p>
+
+<pre class="code">
+  Image *MedianFilterImage(const Image *image,const double radius,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ModeImage">ModeImage</a></h2>
+<div class="doc-section">
+
+<p>ModeImage() makes each pixel the 'predominant color' of the neighborhood of the specified radius.</p>
+
+<p>The format of the ModeImage method is:</p>
+
+<pre class="code">
+  Image *ModeImage(const Image *image,const double radius,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="MosaicImages">MosaicImages</a></h2>
+<div class="doc-section">
+
+<p>MosaicImages() Obsolete Function: Use MergeImageLayers() instead.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      MergeImageLayers(image,MosaicLayer,exception);
+</pre>
+
+<p>The format of the MosaicImage method is:</p>
+
+<pre class="code">
+  Image *MosaicImages(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image list to be composited together</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="OpaqueImage">OpaqueImage</a></h2>
+<div class="doc-section">
+
+<p>OpaqueImage() changes any pixel that matches color with the color defined by fill.</p>
+
+<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p>
+
+<p>The format of the OpaqueImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType OpaqueImage(Image *image,
+    const PixelPacket *target,const PixelPacket fill)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>target</h5>
+<p>the RGB value of the target color.</p>
+
+<h5>fill</h5>
+<p>the replacement color.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="OpenCacheView">OpenCacheView</a></h2>
+<div class="doc-section">
+
+<p>OpenCacheView() opens a view into the pixel cache, using the VirtualPixelMethod that is defined within the given image itself.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AcquireVirtualCacheView(image,&amp;image-&gt;exception);
+</pre>
+
+<p>The format of the OpenCacheView method is:</p>
+
+<pre class="code">
+  CacheView *OpenCacheView(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="OpenMagickStream">OpenMagickStream</a></h2>
+<div class="doc-section">
+
+<p>OpenMagickStream() opens the file at the specified path and return the associated stream.</p>
+
+<p>The path of the OpenMagickStream method is:</p>
+
+<pre class="code">
+  FILE *OpenMagickStream(const char *path,const char *mode)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5> path</h5>
+<p>the file path.</p>
+
+<h5> mode</h5>
+<p>the file mode.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="PaintFloodfill">PaintFloodfill</a></h2>
+<div class="doc-section">
+
+<p>PaintFloodfill() changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</p>
+
+<p>By default target must match a particular pixel color exactly. However, in many cases two colors may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      FloodfillPaintImage(image,channel,draw_info,target,x,y,
+  method == FloodfillMethod ? MagickFalse : MagickTrue);
+</pre>
+
+<p>The format of the PaintFloodfillImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType PaintFloodfillImage(Image *image,
+    const ChannelType channel,const MagickPixelPacket target,
+    const ssize_t x,const ssize_t y,const DrawInfo *draw_info,
+    const PaintMethod method)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel(s).</p>
+
+<h5>target</h5>
+<p>the RGB value of the target color.</p>
+
+<h5>x,y</h5>
+<p>the starting location of the operation.</p>
+
+<h5>draw_info</h5>
+<p>the draw info.</p>
+
+<h5>method</h5>
+<p>Choose either FloodfillMethod or FillToBorderMethod.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="PaintOpaqueImage">PaintOpaqueImage</a></h2>
+<div class="doc-section">
+
+<p>PaintOpaqueImage() changes any pixel that matches color with the color defined by fill.</p>
+
+<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      OpaquePaintImageChannel(image,DefaultChannels,target,fill,MagickFalse);
+      OpaquePaintImageChannel(image,channel,target,fill,MagickFalse);
+</pre>
+
+<p>The format of the PaintOpaqueImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType PaintOpaqueImage(Image *image,
+    const PixelPacket *target,const PixelPacket *fill)
+  MagickBooleanType PaintOpaqueImageChannel(Image *image,
+    const ChannelType channel,const PixelPacket *target,
+    const PixelPacket *fill)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel(s).</p>
+
+<h5>target</h5>
+<p>the RGB value of the target color.</p>
+
+<h5>fill</h5>
+<p>the replacement color.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="PaintTransparentImage">PaintTransparentImage</a></h2>
+<div class="doc-section">
+
+<p>PaintTransparentImage() changes the opacity value associated with any pixel that matches color to the value defined by opacity.</p>
+
+<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      TransparentPaintImage(image,target,opacity,MagickFalse);
+</pre>
+
+<p>The format of the PaintTransparentImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType PaintTransparentImage(Image *image,
+    const MagickPixelPacket *target,const Quantum opacity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>target</h5>
+<p>the RGB value of the target color.</p>
+
+<h5>opacity</h5>
+<p>the replacement opacity value.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ParseSizeGeometry">ParseSizeGeometry</a></h2>
+<div class="doc-section">
+
+<p>ParseSizeGeometry() returns a region as defined by the geometry string with respect to the image dimensions and aspect ratio.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      ParseMetaGeometry(geometry,&amp;region_info-&gt;x,&amp;region_info-&gt;y,
+  &amp;region_info-&gt;width,&amp;region_info-&gt;height);
+</pre>
+
+<p>The format of the ParseSizeGeometry method is:</p>
+
+<pre class="code">
+  MagickStatusType ParseSizeGeometry(const Image *image,
+    const char *geometry,RectangeInfo *region_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>geometry</h5>
+<p>The geometry (e.g. 100x100+10+10).</p>
+
+<h5>region_info</h5>
+<p>the region as defined by the geometry string.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="PopImageList">PopImageList</a></h2>
+<div class="doc-section">
+
+<p>PopImageList() removes the last image in the list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      RemoveLastImageFromList(images);
+</pre>
+
+<p>The format of the PopImageList method is:</p>
+
+<pre class="code">
+  Image *PopImageList(Image **images)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="PopImagePixels">PopImagePixels</a></h2>
+<div class="doc-section">
+
+<p>PopImagePixels() transfers one or more pixel components from the image pixel cache to a user supplied buffer.  The pixels are returned in network byte order.  MagickTrue is returned if the pixels are successfully transferred, otherwise MagickFalse.</p>
+
+<p>The format of the PopImagePixels method is:</p>
+
+<pre class="code">
+  size_t PopImagePixels(Image *,const QuantumType quantum,
+    unsigned char *destination)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>quantum</h5>
+<p>Declare which pixel components to transfer (RGB, RGBA, etc).</p>
+
+<h5>destination</h5>
+<p>The components are transferred to this buffer.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="PostscriptGeometry">PostscriptGeometry</a></h2>
+<div class="doc-section">
+
+<p>PostscriptGeometry() replaces any page mneumonic with the equivalent size in picas.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetPageGeometry(page);
+</pre>
+
+<p>The format of the PostscriptGeometry method is:</p>
+
+<pre class="code">
+  char *PostscriptGeometry(const char *page)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5> page</h5>
+<p>Specifies a pointer to an array of characters. The string is either a Postscript page name (e.g. A4) or a postscript page geometry (e.g. 612x792+36+36).</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="PushImageList">PushImageList</a></h2>
+<div class="doc-section">
+
+<p>PushImageList() adds an image to the end of the list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      AppendImageToList(images,CloneImageList(image,exception));
+</pre>
+
+<p>The format of the PushImageList method is:</p>
+
+<pre class="code">
+  unsigned int PushImageList(Image *images,const Image *image,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="PushImagePixels">PushImagePixels</a></h2>
+<div class="doc-section">
+
+<p>PushImagePixels() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image.  The pixels are expected in network byte order.  It returns MagickTrue if the pixels are successfully transferred, otherwise MagickFalse.</p>
+
+<p>The format of the PushImagePixels method is:</p>
+
+<pre class="code">
+  size_t PushImagePixels(Image *image,const QuantumType quantum,
+    const unsigned char *source)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>quantum</h5>
+<p>Declare which pixel components to transfer (red, green, blue, opacity, RGB, or RGBA).</p>
+
+<h5>source</h5>
+<p>The pixel components are transferred from this buffer.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="QuantizationError">QuantizationError</a></h2>
+<div class="doc-section">
+
+<p>QuantizationError() measures the difference between the original and quantized images.  This difference is the total quantization error.  The error is computed by summing over all pixels in an image the distance squared in RGB space between each reference pixel value and its quantized value.  These values are computed:</p>
+
+<pre class="text">
+      o mean_error_per_pixel:  This value is the mean error for any single
+  pixel in the image.
+</pre>
+
+<h5>normalized_mean_square_error</h5>
+<p>This value is the normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.</p>
+
+<h5>normalized_maximum_square_error</h5>
+<p>Thsi value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      GetImageQuantizeError(image);
+</pre>
+
+<p>The format of the QuantizationError method is:</p>
+
+<pre class="code">
+  unsigned int QuantizationError(Image *image)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5>image</h5>
+<p>Specifies a pointer to an Image structure;  returned from ReadImage.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="RandomChannelThresholdImage">RandomChannelThresholdImage</a></h2>
+<div class="doc-section">
+
+<p>RandomChannelThresholdImage() changes the value of individual pixels based on the intensity of each pixel compared to a random threshold.  The result is a low-contrast, two color image.</p>
+
+<p>The format of the RandomChannelThresholdImage method is:</p>
+
+<pre class="code">
+  unsigned int RandomChannelThresholdImage(Image *image,
+     const char *channel, const char *thresholds,
+     ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel or channels to be thresholded.</p>
+
+<h5>thresholds</h5>
+<p>a geometry string containing LOWxHIGH thresholds. If the string contains 2x2, 3x3, or 4x4, then an ordered dither of order 2, 3, or 4 will be performed instead.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ReacquireMemory">ReacquireMemory</a></h2>
+<div class="doc-section">
+
+<p>ReacquireMemory() changes the size of the memory and returns a pointer to the (possibly moved) block.  The contents will be unchanged up to the lesser of the new and old sizes.</p>
+
+<p>The format of the ReacquireMemory method is:</p>
+
+<pre class="code">
+  void ReacquireMemory(void **memory,const size_t size)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>memory</h5>
+<p>A pointer to a memory allocation.  On return the pointer may change but the contents of the original allocation will not.</p>
+
+<h5>size</h5>
+<p>the new size of the allocated memory.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="RecolorImage">RecolorImage</a></h2>
+<div class="doc-section">
+
+<p>RecolorImage() apply color transformation to an image. The method permits saturation changes, hue rotation, luminance to alpha, and various other effects.  Although variable-sized transformation matrices can be used, typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash except offsets are in column 6 rather than 5 (in support of CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
+
+<p>The format of the RecolorImage method is:</p>
+
+<pre class="code">
+  Image *RecolorImage(const Image *image,const size_t order,
+    const double *color_matrix,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>order</h5>
+<p>the number of columns and rows in the recolor matrix.</p>
+
+<h5>color_matrix</h5>
+<p>An array of double representing the recolor matrix.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ReduceNoiseImage">ReduceNoiseImage</a></h2>
+<div class="doc-section">
+
+<p>ReduceNoiseImage() smooths the contours of an image while still preserving edge information.  The algorithm works by replacing each pixel with its neighbor closest in value.  A neighbor is defined by radius.  Use a radius of 0 and ReduceNoise() selects a suitable radius for you.</p>
+
+<p>The format of the ReduceNoiseImage method is:</p>
+
+<pre class="code">
+  Image *ReduceNoiseImage(const Image *image,const double radius,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="RelinquishSemaphoreInfo">RelinquishSemaphoreInfo</a></h2>
+<div class="doc-section">
+
+<p>RelinquishSemaphoreInfo() relinquishes a semaphore.</p>
+
+<p>The format of the RelinquishSemaphoreInfo method is:</p>
+
+<pre class="code">
+  RelinquishSemaphoreInfo(SemaphoreInfo *semaphore_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>semaphore_info</h5>
+<p>Specifies a pointer to an SemaphoreInfo structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ResetImageAttributeIterator">ResetImageAttributeIterator</a></h2>
+<div class="doc-section">
+
+<p>ResetImageAttributeIterator() resets the image attributes iterator.  Use it in conjunction with GetNextImageAttribute() to iterate over all the values associated with an image.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      ResetImagePropertyIterator(image);
+</pre>
+
+<p>The format of the ResetImageAttributeIterator method is:</p>
+
+<pre class="code">
+  ResetImageAttributeIterator(const ImageInfo *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SetCacheViewPixels">SetCacheViewPixels</a></h2>
+<div class="doc-section">
+
+<p>SetCacheViewPixels() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.   A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      QueueCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
+  GetCacheViewException(cache_view));
+</pre>
+
+<p>The format of the SetCacheViewPixels method is:</p>
+
+<pre class="code">
+  PixelPacket *SetCacheViewPixels(CacheView *cache_view,const ssize_t x,
+    const ssize_t y,const size_t columns,const size_t rows)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a region of pixels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SetExceptionInfo">SetExceptionInfo</a></h2>
+<div class="doc-section">
+
+<p>SetExceptionInfo() sets the exception severity.</p>
+
+<p>The format of the SetExceptionInfo method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetExceptionInfo(ExceptionInfo *exception,
+    ExceptionType severity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>exception</h5>
+<p>the exception info.</p>
+
+<h5>severity</h5>
+<p>the exception severity.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SetImage">SetImage</a></h2>
+<div class="doc-section">
+
+<p>SetImage() sets the red, green, and blue components of each pixel to the image background color and the opacity component to the specified level of transparency.  The background color is defined by the background_color member of the image.</p>
+
+<p>The format of the SetImage method is:</p>
+
+<pre class="code">
+  void SetImage(Image *image,const Quantum opacity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>opacity</h5>
+<p>Set each pixel to this level of transparency.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SetImageAttribute">SetImageAttribute</a></h2>
+<div class="doc-section">
+
+<p>SetImageAttribute() searches the list of image attributes and replaces the attribute value.  If it is not found in the list, the attribute name and value is added to the list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      SetImageProperty(image,key,value);
+</pre>
+
+<p>The format of the SetImageAttribute method is:</p>
+
+<pre class="code">
+   MagickBooleanType SetImageAttribute(Image *image,const char *key,
+     const char *value)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>key</h5>
+<p>the key.</p>
+
+<h5>value</h5>
+<p>the value.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SetImageList">SetImageList</a></h2>
+<div class="doc-section">
+
+<p>SetImageList() inserts an image into the list at the specified position.</p>
+
+<p>The format of the SetImageList method is:</p>
+
+<pre class="code">
+  unsigned int SetImageList(Image *images,const Image *image,
+    const ssize_t offset,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>offset</h5>
+<p>the position within the list.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SetImagePixels">SetImagePixels</a></h2>
+<div class="doc-section">
+
+<p>SetImagePixels() queues a mutable pixel region. If the region is successfully initialized a pointer to a PixelPacket array representing the region is returned, otherwise NULL is returned. The returned pointer may point to a temporary working buffer for the pixels or it may point to the final location of the pixels in memory.</p>
+
+<p>Write-only access means that any existing pixel values corresponding to the region are ignored.  This useful while the initial image is being created from scratch, or if the existing pixel values are to be completely replaced without need to refer to their pre-existing values. The application is free to read and write the pixel buffer returned by SetImagePixels() any way it pleases. SetImagePixels() does not initialize the pixel array values. Initializing pixel array values is the application's responsibility.</p>
+
+<p>Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in RAM, or in a memory-mapped file. The returned pointer should *never* be deallocated by the user.</p>
+
+<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or the colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      QueueAuthenticPixels(image,x,y,columns,rows,&amp;image-&gt;exception);
+</pre>
+
+<p>The format of the SetImagePixels() method is:</p>
+
+<pre class="code">
+  PixelPacket *SetImagePixels(Image *image,const ssize_t x,const ssize_t y,
+    const size_t columns,const size_t rows)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>pixels</h5>
+<p>SetImagePixels returns a pointer to the pixels if they are transferred, otherwise a NULL is returned.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a region of pixels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SetMagickRegistry">SetMagickRegistry</a></h2>
+<div class="doc-section">
+
+<p>SetMagickRegistry() sets a blob into the registry and returns a unique ID. If an error occurs, -1 is returned.</p>
+
+<p>The format of the SetMagickRegistry method is:</p>
+
+<pre class="code">
+  ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
+    const size_t length,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>type</h5>
+<p>the registry type.</p>
+
+<h5>blob</h5>
+<p>the address of a Binary Large OBject.</p>
+
+<h5>length</h5>
+<p>For a registry type of ImageRegistryType use sizeof(Image) otherise the blob length in number of bytes.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SetMonitorHandler">SetMonitorHandler</a></h2>
+<div class="doc-section">
+
+<p>SetMonitorHandler() sets the monitor handler to the specified method and returns the previous monitor handler.</p>
+
+<p>The format of the SetMonitorHandler method is:</p>
+
+<pre class="code">
+  MonitorHandler SetMonitorHandler(MonitorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>handler</h5>
+<p>Specifies a pointer to a method to handle monitors.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ShiftImageList">ShiftImageList</a></h2>
+<div class="doc-section">
+
+<p>ShiftImageList() removes an image from the beginning of the list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      RemoveFirstImageFromList(images);
+</pre>
+
+<p>The format of the ShiftImageList method is:</p>
+
+<pre class="code">
+  Image *ShiftImageList(Image **images)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SpliceImageList">SpliceImageList</a></h2>
+<div class="doc-section">
+
+<p>SpliceImageList() removes the images designated by offset and length from the list and replaces them with the specified list.</p>
+
+<p>The format of the SpliceImageList method is:</p>
+
+<pre class="code">
+  Image *SpliceImageList(Image *images,const ssize_t offset,
+    const size_t length,const Image *splices,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+<h5>offset</h5>
+<p>the position within the list.</p>
+
+<h5>length</h5>
+<p>the length of the image list to remove.</p>
+
+<h5>splice</h5>
+<p>Replace the removed image list with this list.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="sRGBCompandor">sRGBCompandor</a></h2>
+<div class="doc-section">
+
+<p>sRGBCompandor() adds the gamma function to a sRGB pixel.</p>
+
+<p>The format of the sRGBCompandor method is:</p>
+
+<pre class="code">
+  MagickRealType sRGBCompandor(const MagickRealType pixel)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>pixel</h5>
+<p>the pixel.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="Strip">Strip</a></h2>
+<div class="doc-section">
+
+<p>Strip() strips any whitespace or quotes from the beginning and end of a string of characters.</p>
+
+<p>The format of the Strip method is:</p>
+
+<pre class="code">
+  void Strip(char *message)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>message</h5>
+<p>Specifies an array of characters.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SyncCacheView">SyncCacheView</a></h2>
+<div class="doc-section">
+
+<p>SyncCacheView() saves the cache view pixels to the in-memory or disk cache.  It returns MagickTrue if the pixel region is synced, otherwise MagickFalse.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      SyncCacheViewAuthenticPixels(cache_view,GetCacheViewException(cache_view));
+</pre>
+
+<p>The format of the SyncCacheView method is:</p>
+
+<pre class="code">
+  MagickBooleanType SyncCacheView(CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SyncCacheViewPixels">SyncCacheViewPixels</a></h2>
+<div class="doc-section">
+
+<p>SyncCacheViewPixels() saves the cache view pixels to the in-memory or disk cache.  It returns MagickTrue if the pixel region is flushed, otherwise MagickFalse.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      SyncCacheViewAuthenticPixels(cache_view,GetCacheViewException(cache_view));
+</pre>
+
+<p>The format of the SyncCacheViewPixels method is:</p>
+
+<pre class="code">
+  MagickBooleanType SyncCacheViewPixels(CacheView *cache_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="SyncImagePixels">SyncImagePixels</a></h2>
+<div class="doc-section">
+
+<p>SyncImagePixels() saves the image pixels to the in-memory or disk cache. The method returns MagickTrue if the pixel region is synced, otherwise MagickFalse.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      SyncAuthenticPixels(image,&amp;image-&gt;exception);
+</pre>
+
+<p>The format of the SyncImagePixels() method is:</p>
+
+<pre class="code">
+  MagickBooleanType SyncImagePixels(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="TemporaryFilename">TemporaryFilename</a></h2>
+<div class="doc-section">
+
+<p>TemporaryFilename() replaces the contents of path by a unique path name.</p>
+
+<p>The format of the TemporaryFilename method is:</p>
+
+<pre class="code">
+  void TemporaryFilename(char *path)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5> path</h5>
+<p>Specifies a pointer to an array of characters.  The unique path name is returned in this array.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ThresholdImage">ThresholdImage</a></h2>
+<div class="doc-section">
+
+<p>ThresholdImage() changes the value of individual pixels based on the intensity of each pixel compared to threshold.  The result is a high-contrast, two color image.</p>
+
+<p>The format of the ThresholdImage method is:</p>
+
+<pre class="code">
+  unsigned int ThresholdImage(Image *image,const double threshold)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>threshold</h5>
+<p>Define the threshold value</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ThresholdImageChannel">ThresholdImageChannel</a></h2>
+<div class="doc-section">
+
+<p>ThresholdImageChannel() changes the value of individual pixels based on the intensity of each pixel channel.  The result is a high-contrast image.</p>
+
+<p>The format of the ThresholdImageChannel method is:</p>
+
+<pre class="code">
+  unsigned int ThresholdImageChannel(Image *image,const char *threshold)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>threshold</h5>
+<p>define the threshold values.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="TransformHSL">TransformHSL</a></h2>
+<div class="doc-section">
+
+<p>TransformHSL() converts a (red, green, blue) to a (hue, saturation, lightness) triple.</p>
+
+<p>The format of the TransformHSL method is:</p>
+
+<pre class="code">
+  void TransformHSL(const Quantum red,const Quantum green,
+    const Quantum blue,double *hue,double *saturation,double *lightness)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>red, green, blue</h5>
+<p>A Quantum value representing the red, green, and blue component of a pixel..</p>
+
+<h5>hue, saturation, lightness</h5>
+<p>A pointer to a double value representing a component of the HSL color space.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="TranslateText">TranslateText</a></h2>
+<div class="doc-section">
+
+<p>TranslateText() replaces any embedded formatting characters with the appropriate image attribute and returns the translated text.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      InterpretImageProperties(image_info,image,embed_text);
+</pre>
+
+<p>The format of the TranslateText method is:</p>
+
+<pre class="code">
+  char *TranslateText(const ImageInfo *image_info,Image *image,
+    const char *embed_text)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>embed_text</h5>
+<p>the address of a character string containing the embedded formatting characters.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="TransparentImage">TransparentImage</a></h2>
+<div class="doc-section">
+
+<p>TransparentImage() changes the opacity value associated with any pixel that matches color to the value defined by opacity.</p>
+
+<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p>
+
+<p>The format of the TransparentImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType TransparentImage(Image *image,
+    const PixelPacket target,const Quantum opacity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>target</h5>
+<p>the RGB value of the target color.</p>
+
+<h5>opacity</h5>
+<p>the replacement opacity value.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="UnshiftImageList">UnshiftImageList</a></h2>
+<div class="doc-section">
+
+<p>UnshiftImageList() adds the image to the beginning of the list.</p>
+
+<p>Deprecated, replace with:</p>
+
+<pre class="text">
+      PrependImageToList(images,CloneImageList(image,exception));
+</pre>
+
+<p>The format of the UnshiftImageList method is:</p>
+
+<pre class="code">
+  unsigned int UnshiftImageList(Image *images,const Image *image,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="ZoomImage">ZoomImage</a></h2>
+<div class="doc-section">
+
+<p>ZoomImage() creates a new image that is a scaled size of an existing one. It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  The Point filter gives fast pixel replication, Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower, very high-quality results.  See Graphic Gems III for details on this algorithm.</p>
+
+<p>The filter member of the Image structure specifies which image filter to use. Blur specifies the blur factor where &gt; 1 is blurry, &lt; 1 is sharp.</p>
+
+<p>The format of the ZoomImage method is:</p>
+
+<pre class="code">
+  Image *ZoomImage(const Image *image,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>columns</h5>
+<p>An integer that specifies the number of columns in the zoom image.</p>
+
+<h5>rows</h5>
+<p>An integer that specifies the number of rows in the scaled image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 
@@ -198,3 +3354,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 09:12 -->

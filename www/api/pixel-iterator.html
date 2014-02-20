@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickWand, C API for ImageMagick: Pixel Iterator Methods</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickwc, api, for, imagemagick:, pixel, iterator, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickwc, api, for, imagemagick:, pixel, iterator, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,21 +186,378 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="pixel-iterator.html#"></a>]</p>
+<h1>Module pixel-iterator Methods</h1>
+<p class="navigation-index">[<a href="pixel-iterator.html#ClearPixelIterator">ClearPixelIterator</a> &#8226; <a href="pixel-iterator.html#ClonePixelIterator">ClonePixelIterator</a> &#8226; <a href="pixel-iterator.html#DestroyPixelIterator">DestroyPixelIterator</a> &#8226; <a href="pixel-iterator.html#IsPixelIterator">IsPixelIterator</a> &#8226; <a href="pixel-iterator.html#NewPixelIterator">NewPixelIterator</a> &#8226; <a href="pixel-iterator.html#PixelClearIteratorException">PixelClearIteratorException</a> &#8226; <a href="pixel-iterator.html#NewPixelRegionIterator">NewPixelRegionIterator</a> &#8226; <a href="pixel-iterator.html#PixelGetCurrentIteratorRow">PixelGetCurrentIteratorRow</a> &#8226; <a href="pixel-iterator.html#PixelGetIteratorException">PixelGetIteratorException</a> &#8226; <a href="pixel-iterator.html#PixelGetIteratorExceptionType">PixelGetIteratorExceptionType</a> &#8226; <a href="pixel-iterator.html#PixelGetIteratorRow">PixelGetIteratorRow</a> &#8226; <a href="pixel-iterator.html#PixelGetNextIteratorRow">PixelGetNextIteratorRow</a> &#8226; <a href="pixel-iterator.html#PixelGetPreviousIteratorRow">PixelGetPreviousIteratorRow</a> &#8226; <a href="pixel-iterator.html#PixelResetIterator">PixelResetIterator</a> &#8226; <a href="pixel-iterator.html#PixelSetFirstIteratorRow">PixelSetFirstIteratorRow</a> &#8226; <a href="pixel-iterator.html#PixelSetIteratorRow">PixelSetIteratorRow</a> &#8226; <a href="pixel-iterator.html#PixelSetLastIteratorRow">PixelSetLastIteratorRow</a> &#8226; <a href="pixel-iterator.html#PixelSyncIterator">PixelSyncIterator</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="ClearPixelIterator">ClearPixelIterator</a></h2>
+<div class="doc-section">
+
+<p>ClearPixelIterator() clear resources associated with a PixelIterator.</p>
+
+<p>The format of the ClearPixelIterator method is:</p>
+
+<pre class="code">
+  void ClearPixelIterator(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="ClonePixelIterator">ClonePixelIterator</a></h2>
+<div class="doc-section">
+
+<p>ClonePixelIterator() makes an exact copy of the specified iterator.</p>
+
+<p>The format of the ClonePixelIterator method is:</p>
+
+<pre class="code">
+  PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the magick iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="DestroyPixelIterator">DestroyPixelIterator</a></h2>
+<div class="doc-section">
+
+<p>DestroyPixelIterator() deallocates resources associated with a PixelIterator.</p>
+
+<p>The format of the DestroyPixelIterator method is:</p>
+
+<pre class="code">
+  PixelIterator *DestroyPixelIterator(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="IsPixelIterator">IsPixelIterator</a></h2>
+<div class="doc-section">
+
+<p>IsPixelIterator() returns MagickTrue if the iterator is verified as a pixel iterator.</p>
+
+<p>The format of the IsPixelIterator method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsPixelIterator(const PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the magick iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="NewPixelIterator">NewPixelIterator</a></h2>
+<div class="doc-section">
+
+<p>NewPixelIterator() returns a new pixel iterator.</p>
+
+<p>The format of the NewPixelIterator method is:</p>
+
+<pre class="code">
+  PixelIterator *NewPixelIterator(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelClearIteratorException">PixelClearIteratorException</a></h2>
+<div class="doc-section">
+
+<p>PixelClearIteratorException() clear any exceptions associated with the iterator.</p>
+
+<p>The format of the PixelClearIteratorException method is:</p>
+
+<pre class="code">
+  MagickBooleanType PixelClearIteratorException(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="NewPixelRegionIterator">NewPixelRegionIterator</a></h2>
+<div class="doc-section">
+
+<p>NewPixelRegionIterator() returns a new pixel iterator.</p>
+
+<p>The format of the NewPixelRegionIterator method is:</p>
+
+<pre class="code">
+  PixelIterator *NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
+    const ssize_t y,const size_t width,const size_t height)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a region of pixels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelGetCurrentIteratorRow">PixelGetCurrentIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelGetCurrentIteratorRow() returns the current row as an array of pixel wands from the pixel iterator.</p>
+
+<p>The format of the PixelGetCurrentIteratorRow method is:</p>
+
+<pre class="code">
+  PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
+    size_t *number_wands)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+<h5>number_wands</h5>
+<p>the number of pixel wands.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelGetIteratorException">PixelGetIteratorException</a></h2>
+<div class="doc-section">
+
+<p>PixelGetIteratorException() returns the severity, reason, and description of any error that occurs when using other methods in this API.</p>
+
+<p>The format of the PixelGetIteratorException method is:</p>
+
+<pre class="code">
+  char *PixelGetIteratorException(const PixelIterator *iterator,
+    ExceptionType *severity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+<h5>severity</h5>
+<p>the severity of the error is returned here.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelGetIteratorExceptionType">PixelGetIteratorExceptionType</a></h2>
+<div class="doc-section">
+
+<p>PixelGetIteratorExceptionType() the exception type associated with the iterator.  If no exception has occurred, UndefinedExceptionType is returned.</p>
+
+<p>The format of the PixelGetIteratorExceptionType method is:</p>
+
+<pre class="code">
+  ExceptionType PixelGetIteratorExceptionType(
+    const PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the magick iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelGetIteratorRow">PixelGetIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelGetIteratorRow() returns the current pixel iterator row.</p>
+
+<p>The format of the PixelGetIteratorRow method is:</p>
+
+<pre class="code">
+  MagickBooleanType PixelGetIteratorRow(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelGetNextIteratorRow">PixelGetNextIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelGetNextIteratorRow() returns the next row as an array of pixel wands from the pixel iterator.</p>
+
+<p>The format of the PixelGetNextIteratorRow method is:</p>
+
+<pre class="code">
+  PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
+    size_t *number_wands)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+<h5>number_wands</h5>
+<p>the number of pixel wands.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelGetPreviousIteratorRow">PixelGetPreviousIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelGetPreviousIteratorRow() returns the previous row as an array of pixel wands from the pixel iterator.</p>
+
+<p>The format of the PixelGetPreviousIteratorRow method is:</p>
+
+<pre class="code">
+  PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
+    size_t *number_wands)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+<h5>number_wands</h5>
+<p>the number of pixel wands.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelResetIterator">PixelResetIterator</a></h2>
+<div class="doc-section">
+
+<p>PixelResetIterator() resets the pixel iterator.  Use it in conjunction with PixelGetNextIteratorRow() to iterate over all the pixels in a pixel container.</p>
+
+<p>The format of the PixelResetIterator method is:</p>
+
+<pre class="code">
+  void PixelResetIterator(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelSetFirstIteratorRow">PixelSetFirstIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelSetFirstIteratorRow() sets the pixel iterator to the first pixel row.</p>
+
+<p>The format of the PixelSetFirstIteratorRow method is:</p>
+
+<pre class="code">
+  void PixelSetFirstIteratorRow(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the magick iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelSetIteratorRow">PixelSetIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelSetIteratorRow() set the pixel iterator row.</p>
+
+<p>The format of the PixelSetIteratorRow method is:</p>
+
+<pre class="code">
+  MagickBooleanType PixelSetIteratorRow(PixelIterator *iterator,
+    const ssize_t row)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelSetLastIteratorRow">PixelSetLastIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelSetLastIteratorRow() sets the pixel iterator to the last pixel row.</p>
+
+<p>The format of the PixelSetLastIteratorRow method is:</p>
+
+<pre class="code">
+  void PixelSetLastIteratorRow(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the magick iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator_8c.html" id="PixelSyncIterator">PixelSyncIterator</a></h2>
+<div class="doc-section">
+
+<p>PixelSyncIterator() syncs the pixel iterator.</p>
+
+<p>The format of the PixelSyncIterator method is:</p>
+
+<pre class="code">
+  MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
 
 </div>
 
@@ -198,3 +579,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 09:12 -->
