@@ -1,29 +1,34 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickWand, C API for ImageMagick: Drawing Wand Methods</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickwc, api, for, imagemagick:, drawing, wmethods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickwc, api, for, imagemagick:, drawing, wmethods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -32,15 +37,15 @@
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
   
   <script type="text/javascript">
@@ -57,7 +62,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,18 +82,24 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
@@ -126,7 +145,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,30 +171,56 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="../../www/support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
-  
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
 </div>
 
 <div class="main">
 
 <h1>Module drawing-wand Methods</h1>
-<p class="navigation-index">[<a href="drawing-wand.html#ClearDrawingWand">ClearDrawingWand</a> • <a href="drawing-wand.html#CloneDrawingWand">CloneDrawingWand</a> • <a href="drawing-wand.html#DestroyDrawingWand">DestroyDrawingWand</a> • <a href="drawing-wand.html#DrawAffine">DrawAffine</a> • <a href="drawing-wand.html#DrawAnnotation">DrawAnnotation</a> • <a href="drawing-wand.html#DrawArc">DrawArc</a> • <a href="drawing-wand.html#DrawBezier">DrawBezier</a> • <a href="drawing-wand.html#DrawCircle">DrawCircle</a> • <a href="drawing-wand.html#DrawClearException">DrawClearException</a> • <a href="drawing-wand.html#DrawComposite">DrawComposite</a> • <a href="drawing-wand.html#DrawColor">DrawColor</a> • <a href="drawing-wand.html#DrawComment">DrawComment</a> • <a href="drawing-wand.html#DrawEllipse">DrawEllipse</a> • <a href="drawing-wand.html#DrawGetBorderColor">DrawGetBorderColor</a> • <a href="drawing-wand.html#DrawGetClipPath">DrawGetClipPath</a> • <a href="drawing-wand.html#DrawGetClipRule">DrawGetClipRule</a> • <a href="drawing-wand.html#DrawGetClipUnits">DrawGetClipUnits</a> • <a href="drawing-wand.html#DrawGetException">DrawGetException</a> • <a href="drawing-wand.html#DrawGetExceptionType">DrawGetExceptionType</a> • <a href="drawing-wand.html#DrawGetFillColor">DrawGetFillColor</a> • <a href="drawing-wand.html#DrawGetFillOpacity">DrawGetFillOpacity</a> • <a href="drawing-wand.html#DrawGetFillRule">DrawGetFillRule</a> • <a href="drawing-wand.html#DrawGetFont">DrawGetFont</a> • <a href="drawing-wand.html#DrawGetFontFamily">DrawGetFontFamily</a> • <a href="drawing-wand.html#DrawGetFontResolution">DrawGetFontResolution</a> • <a href="drawing-wand.html#DrawGetFontSize">DrawGetFontSize</a> • <a href="drawing-wand.html#DrawGetFontStretch">DrawGetFontStretch</a> • <a href="drawing-wand.html#DrawGetFontStyle">DrawGetFontStyle</a> • <a href="drawing-wand.html#DrawGetFontWeight">DrawGetFontWeight</a> • <a href="drawing-wand.html#DrawGetGravity">DrawGetGravity</a> • <a href="drawing-wand.html#DrawGetOpacity">DrawGetOpacity</a> • <a href="drawing-wand.html#DrawGetStrokeAntialias">DrawGetStrokeAntialias</a> • <a href="drawing-wand.html#DrawGetStrokeColor">DrawGetStrokeColor</a> • <a href="drawing-wand.html#DrawGetStrokeDashArray">DrawGetStrokeDashArray</a> • <a href="drawing-wand.html#DrawGetStrokeDashOffset">DrawGetStrokeDashOffset</a> • <a href="drawing-wand.html#DrawGetStrokeLineCap">DrawGetStrokeLineCap</a> • <a href="drawing-wand.html#DrawGetStrokeLineJoin">DrawGetStrokeLineJoin</a> • <a href="drawing-wand.html#DrawGetStrokeMiterLimit">DrawGetStrokeMiterLimit</a> • <a href="drawing-wand.html#DrawGetStrokeOpacity">DrawGetStrokeOpacity</a> • <a href="drawing-wand.html#DrawGetStrokeWidth">DrawGetStrokeWidth</a> • <a href="drawing-wand.html#DrawGetTextAlignment">DrawGetTextAlignment</a> • <a href="drawing-wand.html#DrawGetTextAntialias">DrawGetTextAntialias</a> • <a href="drawing-wand.html#DrawGetTextDecoration">DrawGetTextDecoration</a> • <a href="drawing-wand.html#DrawGetTextEncoding">DrawGetTextEncoding</a> • <a href="drawing-wand.html#DrawGetTextKerning">DrawGetTextKerning</a> • <a href="drawing-wand.html#DrawGetTextInterlineSpacing">DrawGetTextInterlineSpacing</a> • <a href="drawing-wand.html#DrawGetTextInterwordSpacing">DrawGetTextInterwordSpacing</a> • <a href="drawing-wand.html#DrawGetVectorGraphics">DrawGetVectorGraphics</a> • <a href="drawing-wand.html#DrawGetTextUnderColor">DrawGetTextUnderColor</a> • <a href="drawing-wand.html#DrawLine">DrawLine</a> • <a href="drawing-wand.html#DrawMatte">DrawMatte</a> • <a href="drawing-wand.html#DrawPathClose">DrawPathClose</a> • <a href="drawing-wand.html#DrawPathCurveToAbsolute">DrawPathCurveToAbsolute</a> • <a href="drawing-wand.html#DrawPathCurveToRelative">DrawPathCurveToRelative</a> • <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierAbsolute">DrawPathCurveToQuadraticBezierAbsolute</a> • <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierRelative">DrawPathCurveToQuadraticBezierRelative</a> • <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierSmoothAbsolute">DrawPathCurveToQuadraticBezierSmoothAbsolute</a> • <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierSmoothRelative">DrawPathCurveToQuadraticBezierSmoothRelative</a> • <a href="drawing-wand.html#DrawPathCurveToSmoothAbsolute">DrawPathCurveToSmoothAbsolute</a> • <a href="drawing-wand.html#DrawPathCurveToSmoothRelative">DrawPathCurveToSmoothRelative</a> • <a href="drawing-wand.html#DrawPathEllipticArcAbsolute">DrawPathEllipticArcAbsolute</a> • <a href="drawing-wand.html#DrawPathEllipticArcRelative">DrawPathEllipticArcRelative</a> • <a href="drawing-wand.html#DrawPathFinish">DrawPathFinish</a> • <a href="drawing-wand.html#DrawPathLineToAbsolute">DrawPathLineToAbsolute</a> • <a href="drawing-wand.html#DrawPathLineToRelative">DrawPathLineToRelative</a> • <a href="drawing-wand.html#DrawPathLineToHorizontalAbsolute">DrawPathLineToHorizontalAbsolute</a> • <a href="drawing-wand.html#DrawPathLineToHorizontalRelative">DrawPathLineToHorizontalRelative</a> • <a href="drawing-wand.html#DrawPathLineToVerticalAbsolute">DrawPathLineToVerticalAbsolute</a> • <a href="drawing-wand.html#DrawPathLineToVerticalRelative">DrawPathLineToVerticalRelative</a> • <a href="drawing-wand.html#DrawPathMoveToAbsolute">DrawPathMoveToAbsolute</a> • <a href="drawing-wand.html#DrawPathMoveToRelative">DrawPathMoveToRelative</a> • <a href="drawing-wand.html#DrawPathStart">DrawPathStart</a> • <a href="drawing-wand.html#DrawPoint">DrawPoint</a> • <a href="drawing-wand.html#DrawPolygon">DrawPolygon</a> • <a href="drawing-wand.html#DrawPolyline">DrawPolyline</a> • <a href="drawing-wand.html#DrawPopClipPath">DrawPopClipPath</a> • <a href="drawing-wand.html#DrawPopDefs">DrawPopDefs</a> • <a href="drawing-wand.html#DrawPopPattern">DrawPopPattern</a> • <a href="drawing-wand.html#DrawPushClipPath">DrawPushClipPath</a> • <a href="drawing-wand.html#DrawPushDefs">DrawPushDefs</a> • <a href="drawing-wand.html#DrawPushPattern">DrawPushPattern</a> • <a href="drawing-wand.html#DrawRectangle">DrawRectangle</a> • <a href="drawing-wand.html#DrawResetVectorGraphics">DrawResetVectorGraphics</a> • <a href="drawing-wand.html#DrawRotate">DrawRotate</a> • <a href="drawing-wand.html#DrawRoundRectangle">DrawRoundRectangle</a> • <a href="drawing-wand.html#DrawScale">DrawScale</a> • <a href="drawing-wand.html#DrawSetBorderColor">DrawSetBorderColor</a> • <a href="drawing-wand.html#DrawSetClipPath">DrawSetClipPath</a> • <a href="drawing-wand.html#DrawSetClipRule">DrawSetClipRule</a> • <a href="drawing-wand.html#DrawSetClipUnits">DrawSetClipUnits</a> • <a href="drawing-wand.html#DrawSetFillColor">DrawSetFillColor</a> • <a href="drawing-wand.html#DrawSetFillOpacity">DrawSetFillOpacity</a> • <a href="drawing-wand.html#DrawSetFontResolution">DrawSetFontResolution</a> • <a href="drawing-wand.html#DrawSetOpacity">DrawSetOpacity</a> • <a href="drawing-wand.html#DrawSetFillPatternURL">DrawSetFillPatternURL</a> • <a href="drawing-wand.html#DrawSetFillRule">DrawSetFillRule</a> • <a href="drawing-wand.html#DrawSetFont">DrawSetFont</a> • <a href="drawing-wand.html#DrawSetFontFamily">DrawSetFontFamily</a> • <a href="drawing-wand.html#DrawSetFontSize">DrawSetFontSize</a> • <a href="drawing-wand.html#DrawSetFontStretch">DrawSetFontStretch</a> • <a href="drawing-wand.html#DrawSetFontStyle">DrawSetFontStyle</a> • <a href="drawing-wand.html#DrawSetFontWeight">DrawSetFontWeight</a> • <a href="drawing-wand.html#DrawSetGravity">DrawSetGravity</a> • <a href="drawing-wand.html#DrawSetStrokeColor">DrawSetStrokeColor</a> • <a href="drawing-wand.html#DrawSetStrokePatternURL">DrawSetStrokePatternURL</a> • <a href="drawing-wand.html#DrawSetStrokeAntialias">DrawSetStrokeAntialias</a> • <a href="drawing-wand.html#DrawSetStrokeDashArray">DrawSetStrokeDashArray</a> • <a href="drawing-wand.html#DrawSetStrokeDashOffset">DrawSetStrokeDashOffset</a> • <a href="drawing-wand.html#DrawSetStrokeLineCap">DrawSetStrokeLineCap</a> • <a href="drawing-wand.html#DrawSetStrokeLineJoin">DrawSetStrokeLineJoin</a> • <a href="drawing-wand.html#DrawSetStrokeMiterLimit">DrawSetStrokeMiterLimit</a> • <a href="drawing-wand.html#DrawSetStrokeOpacity">DrawSetStrokeOpacity</a> • <a href="drawing-wand.html#DrawSetStrokeWidth">DrawSetStrokeWidth</a> • <a href="drawing-wand.html#DrawSetTextAlignment">DrawSetTextAlignment</a> • <a href="drawing-wand.html#DrawSetTextAntialias">DrawSetTextAntialias</a> • <a href="drawing-wand.html#DrawSetTextDecoration">DrawSetTextDecoration</a> • <a href="drawing-wand.html#DrawSetTextEncoding">DrawSetTextEncoding</a> • <a href="drawing-wand.html#DrawSetTextKerning">DrawSetTextKerning</a> • <a href="drawing-wand.html#DrawSetTextInterlineSpacing">DrawSetTextInterlineSpacing</a> • <a href="drawing-wand.html#DrawSetTextInterwordSpacing">DrawSetTextInterwordSpacing</a> • <a href="drawing-wand.html#DrawSetTextUnderColor">DrawSetTextUnderColor</a> • <a href="drawing-wand.html#DrawSetVectorGraphics">DrawSetVectorGraphics</a> • <a href="drawing-wand.html#DrawSkewX">DrawSkewX</a> • <a href="drawing-wand.html#DrawSkewY">DrawSkewY</a> • <a href="drawing-wand.html#DrawTranslate">DrawTranslate</a> • <a href="drawing-wand.html#DrawSetViewbox">DrawSetViewbox</a> • <a href="drawing-wand.html#IsDrawingWand">IsDrawingWand</a> • <a href="drawing-wand.html#NewDrawingWand">NewDrawingWand</a> • <a href="drawing-wand.html#PeekDrawingWand">PeekDrawingWand</a> • <a href="drawing-wand.html#PopDrawingWand">PopDrawingWand</a> • <a href="drawing-wand.html#PushDrawingWand">PushDrawingWand</a>]</p>
+<p class="navigation-index">[<a href="drawing-wand.html#ClearDrawingWand">ClearDrawingWand</a> &#8226; <a href="drawing-wand.html#CloneDrawingWand">CloneDrawingWand</a> &#8226; <a href="drawing-wand.html#DestroyDrawingWand">DestroyDrawingWand</a> &#8226; <a href="drawing-wand.html#DrawAffine">DrawAffine</a> &#8226; <a href="drawing-wand.html#DrawAnnotation">DrawAnnotation</a> &#8226; <a href="drawing-wand.html#DrawArc">DrawArc</a> &#8226; <a href="drawing-wand.html#DrawBezier">DrawBezier</a> &#8226; <a href="drawing-wand.html#DrawCircle">DrawCircle</a> &#8226; <a href="drawing-wand.html#DrawClearException">DrawClearException</a> &#8226; <a href="drawing-wand.html#DrawComposite">DrawComposite</a> &#8226; <a href="drawing-wand.html#DrawColor">DrawColor</a> &#8226; <a href="drawing-wand.html#DrawComment">DrawComment</a> &#8226; <a href="drawing-wand.html#DrawEllipse">DrawEllipse</a> &#8226; <a href="drawing-wand.html#DrawGetBorderColor">DrawGetBorderColor</a> &#8226; <a href="drawing-wand.html#DrawGetClipPath">DrawGetClipPath</a> &#8226; <a href="drawing-wand.html#DrawGetClipRule">DrawGetClipRule</a> &#8226; <a href="drawing-wand.html#DrawGetClipUnits">DrawGetClipUnits</a> &#8226; <a href="drawing-wand.html#DrawGetException">DrawGetException</a> &#8226; <a href="drawing-wand.html#DrawGetExceptionType">DrawGetExceptionType</a> &#8226; <a href="drawing-wand.html#DrawGetFillColor">DrawGetFillColor</a> &#8226; <a href="drawing-wand.html#DrawGetFillOpacity">DrawGetFillOpacity</a> &#8226; <a href="drawing-wand.html#DrawGetFillRule">DrawGetFillRule</a> &#8226; <a href="drawing-wand.html#DrawGetFont">DrawGetFont</a> &#8226; <a href="drawing-wand.html#DrawGetFontFamily">DrawGetFontFamily</a> &#8226; <a href="drawing-wand.html#DrawGetFontResolution">DrawGetFontResolution</a> &#8226; <a href="drawing-wand.html#DrawGetFontSize">DrawGetFontSize</a> &#8226; <a href="drawing-wand.html#DrawGetFontStretch">DrawGetFontStretch</a> &#8226; <a href="drawing-wand.html#DrawGetFontStyle">DrawGetFontStyle</a> &#8226; <a href="drawing-wand.html#DrawGetFontWeight">DrawGetFontWeight</a> &#8226; <a href="drawing-wand.html#DrawGetGravity">DrawGetGravity</a> &#8226; <a href="drawing-wand.html#DrawGetOpacity">DrawGetOpacity</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeAntialias">DrawGetStrokeAntialias</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeColor">DrawGetStrokeColor</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeDashArray">DrawGetStrokeDashArray</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeDashOffset">DrawGetStrokeDashOffset</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeLineCap">DrawGetStrokeLineCap</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeLineJoin">DrawGetStrokeLineJoin</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeMiterLimit">DrawGetStrokeMiterLimit</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeOpacity">DrawGetStrokeOpacity</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeWidth">DrawGetStrokeWidth</a> &#8226; <a href="drawing-wand.html#DrawGetTextAlignment">DrawGetTextAlignment</a> &#8226; <a href="drawing-wand.html#DrawGetTextAntialias">DrawGetTextAntialias</a> &#8226; <a href="drawing-wand.html#DrawGetTextDecoration">DrawGetTextDecoration</a> &#8226; <a href="drawing-wand.html#DrawGetTextEncoding">DrawGetTextEncoding</a> &#8226; <a href="drawing-wand.html#DrawGetTextKerning">DrawGetTextKerning</a> &#8226; <a href="drawing-wand.html#DrawGetTextInterlineSpacing">DrawGetTextInterlineSpacing</a> &#8226; <a href="drawing-wand.html#DrawGetTextInterwordSpacing">DrawGetTextInterwordSpacing</a> &#8226; <a href="drawing-wand.html#DrawGetVectorGraphics">DrawGetVectorGraphics</a> &#8226; <a href="drawing-wand.html#DrawGetTextUnderColor">DrawGetTextUnderColor</a> &#8226; <a href="drawing-wand.html#DrawLine">DrawLine</a> &#8226; <a href="drawing-wand.html#DrawMatte">DrawMatte</a> &#8226; <a href="drawing-wand.html#DrawPathClose">DrawPathClose</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToAbsolute">DrawPathCurveToAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToRelative">DrawPathCurveToRelative</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierAbsolute">DrawPathCurveToQuadraticBezierAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierRelative">DrawPathCurveToQuadraticBezierRelative</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierSmoothAbsolute">DrawPathCurveToQuadraticBezierSmoothAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierSmoothRelative">DrawPathCurveToQuadraticBezierSmoothRelative</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToSmoothAbsolute">DrawPathCurveToSmoothAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToSmoothRelative">DrawPathCurveToSmoothRelative</a> &#8226; <a href="drawing-wand.html#DrawPathEllipticArcAbsolute">DrawPathEllipticArcAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathEllipticArcRelative">DrawPathEllipticArcRelative</a> &#8226; <a href="drawing-wand.html#DrawPathFinish">DrawPathFinish</a> &#8226; <a href="drawing-wand.html#DrawPathLineToAbsolute">DrawPathLineToAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathLineToRelative">DrawPathLineToRelative</a> &#8226; <a href="drawing-wand.html#DrawPathLineToHorizontalAbsolute">DrawPathLineToHorizontalAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathLineToHorizontalRelative">DrawPathLineToHorizontalRelative</a> &#8226; <a href="drawing-wand.html#DrawPathLineToVerticalAbsolute">DrawPathLineToVerticalAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathLineToVerticalRelative">DrawPathLineToVerticalRelative</a> &#8226; <a href="drawing-wand.html#DrawPathMoveToAbsolute">DrawPathMoveToAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathMoveToRelative">DrawPathMoveToRelative</a> &#8226; <a href="drawing-wand.html#DrawPathStart">DrawPathStart</a> &#8226; <a href="drawing-wand.html#DrawPoint">DrawPoint</a> &#8226; <a href="drawing-wand.html#DrawPolygon">DrawPolygon</a> &#8226; <a href="drawing-wand.html#DrawPolyline">DrawPolyline</a> &#8226; <a href="drawing-wand.html#DrawPopClipPath">DrawPopClipPath</a> &#8226; <a href="drawing-wand.html#DrawPopDefs">DrawPopDefs</a> &#8226; <a href="drawing-wand.html#DrawPopPattern">DrawPopPattern</a> &#8226; <a href="drawing-wand.html#DrawPushClipPath">DrawPushClipPath</a> &#8226; <a href="drawing-wand.html#DrawPushDefs">DrawPushDefs</a> &#8226; <a href="drawing-wand.html#DrawPushPattern">DrawPushPattern</a> &#8226; <a href="drawing-wand.html#DrawRectangle">DrawRectangle</a> &#8226; <a href="drawing-wand.html#DrawResetVectorGraphics">DrawResetVectorGraphics</a> &#8226; <a href="drawing-wand.html#DrawRotate">DrawRotate</a> &#8226; <a href="drawing-wand.html#DrawRoundRectangle">DrawRoundRectangle</a> &#8226; <a href="drawing-wand.html#DrawScale">DrawScale</a> &#8226; <a href="drawing-wand.html#DrawSetBorderColor">DrawSetBorderColor</a> &#8226; <a href="drawing-wand.html#DrawSetClipPath">DrawSetClipPath</a> &#8226; <a href="drawing-wand.html#DrawSetClipRule">DrawSetClipRule</a> &#8226; <a href="drawing-wand.html#DrawSetClipUnits">DrawSetClipUnits</a> &#8226; <a href="drawing-wand.html#DrawSetFillColor">DrawSetFillColor</a> &#8226; <a href="drawing-wand.html#DrawSetFillOpacity">DrawSetFillOpacity</a> &#8226; <a href="drawing-wand.html#DrawSetFontResolution">DrawSetFontResolution</a> &#8226; <a href="drawing-wand.html#DrawSetOpacity">DrawSetOpacity</a> &#8226; <a href="drawing-wand.html#DrawSetFillPatternURL">DrawSetFillPatternURL</a> &#8226; <a href="drawing-wand.html#DrawSetFillRule">DrawSetFillRule</a> &#8226; <a href="drawing-wand.html#DrawSetFont">DrawSetFont</a> &#8226; <a href="drawing-wand.html#DrawSetFontFamily">DrawSetFontFamily</a> &#8226; <a href="drawing-wand.html#DrawSetFontSize">DrawSetFontSize</a> &#8226; <a href="drawing-wand.html#DrawSetFontStretch">DrawSetFontStretch</a> &#8226; <a href="drawing-wand.html#DrawSetFontStyle">DrawSetFontStyle</a> &#8226; <a href="drawing-wand.html#DrawSetFontWeight">DrawSetFontWeight</a> &#8226; <a href="drawing-wand.html#DrawSetGravity">DrawSetGravity</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeColor">DrawSetStrokeColor</a> &#8226; <a href="drawing-wand.html#DrawSetStrokePatternURL">DrawSetStrokePatternURL</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeAntialias">DrawSetStrokeAntialias</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeDashArray">DrawSetStrokeDashArray</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeDashOffset">DrawSetStrokeDashOffset</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeLineCap">DrawSetStrokeLineCap</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeLineJoin">DrawSetStrokeLineJoin</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeMiterLimit">DrawSetStrokeMiterLimit</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeOpacity">DrawSetStrokeOpacity</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeWidth">DrawSetStrokeWidth</a> &#8226; <a href="drawing-wand.html#DrawSetTextAlignment">DrawSetTextAlignment</a> &#8226; <a href="drawing-wand.html#DrawSetTextAntialias">DrawSetTextAntialias</a> &#8226; <a href="drawing-wand.html#DrawSetTextDecoration">DrawSetTextDecoration</a> &#8226; <a href="drawing-wand.html#DrawSetTextEncoding">DrawSetTextEncoding</a> &#8226; <a href="drawing-wand.html#DrawSetTextKerning">DrawSetTextKerning</a> &#8226; <a href="drawing-wand.html#DrawSetTextInterlineSpacing">DrawSetTextInterlineSpacing</a> &#8226; <a href="drawing-wand.html#DrawSetTextInterwordSpacing">DrawSetTextInterwordSpacing</a> &#8226; <a href="drawing-wand.html#DrawSetTextUnderColor">DrawSetTextUnderColor</a> &#8226; <a href="drawing-wand.html#DrawSetVectorGraphics">DrawSetVectorGraphics</a> &#8226; <a href="drawing-wand.html#DrawSkewX">DrawSkewX</a> &#8226; <a href="drawing-wand.html#DrawSkewY">DrawSkewY</a> &#8226; <a href="drawing-wand.html#DrawTranslate">DrawTranslate</a> &#8226; <a href="drawing-wand.html#DrawSetViewbox">DrawSetViewbox</a> &#8226; <a href="drawing-wand.html#IsDrawingWand">IsDrawingWand</a> &#8226; <a href="drawing-wand.html#NewDrawingWand">NewDrawingWand</a> &#8226; <a href="drawing-wand.html#PeekDrawingWand">PeekDrawingWand</a> &#8226; <a href="drawing-wand.html#PopDrawingWand">PopDrawingWand</a> &#8226; <a href="drawing-wand.html#PushDrawingWand">PushDrawingWand</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="ClearDrawingWand">ClearDrawingWand</a></h2>
 <div class="doc-section">
@@ -2023,7 +2068,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawRoundRectangle">DrawRoundRectangle</a></h2>
 <div class="doc-section">
 
-<p>DrawRoundRectangle() draws a rounted rectangle given two coordinates, x &amp; y corner radiuses and using the current stroke, stroke width, and fill settings.</p>
+<p>DrawRoundRectangle() draws a rounted rectangle given two coordinates, x & y corner radiuses and using the current stroke, stroke width, and fill settings.</p>
 
 <p>The format of the DrawRoundRectangle method is:</p>
 
@@ -3017,7 +3062,7 @@
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="../../www/contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

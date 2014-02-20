@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -177,7 +174,7 @@
 <h1>MagickWand C API</h1>
 
 <div class="doc-section">
-<p>The <a href="http://www.imagemagick.org/api/MagickWand/index.html">MagickWand API</a> is the recommended interface between the C programming language and the ImageMagick image processing libraries.  Unlike the <a href="magick-core.html">MagickCore</a> C API, MagickWand uses only a few opaque types.  Accessors are available to set or get important wand properties.  A description of the MagickWand public methods are found here:</p>
+<p>The <a href="../api/MagickWand/index.html">MagickWand API</a> is the recommended interface between the C programming language and the ImageMagick image processing libraries.  Unlike the <a href="magick-core.html">MagickCore</a> C API, MagickWand uses only a few opaque types.  Accessors are available to set or get important wand properties.  A description of the MagickWand public methods are found here:</p>
 
 <ul>
   <li><a href="../api/magick-wand.html">Magick Wand Methods</a></li>
@@ -194,9 +191,9 @@
 
 <p>After you write your MagickWand program, compile it like this:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cc -o wand `pkg-config --cflags --libs MagickWand` wand.c</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cc -o wand `pkg-config --cflags --libs MagickWand` wand.c</span></p>
 <p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
 <p>Here is a example program that utilizes the MagickWand API to get you started, <a href="../source/wand.c">wand.c</a>. It reads an image, creates a thumbnail, and writes the result to disk.</p>
 
 <div class="viewport">
@@ -494,7 +491,7 @@ int main(int argc,char **argv)
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

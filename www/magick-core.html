@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -178,17 +175,16 @@
 
 <div class="doc-section">
 
-<p>The <a href="http://www.imagemagick.org/api/MagickCore/index.html">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only.  Unlike the <a href="magick-wand.html">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exlusively access the structure members directly.  A description of the MagickCore public methods are found here:</p>
+<p>The <a href="../api/MagickCore/index.html">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only.  Unlike the <a href="magick-wand.html">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exlusively access the structure members directly.  A description of the MagickCore public methods are found here:</p>
 
 <ul>
   <li><a href="../api/magick.html">Initialize or Destroy the ImageMagick Environment</a></li>
   <li><a href="../api/constitute.html">Constitute an Image</a></li>
   <li><a href="../api/composite.html">Composite an Image</a></li>
   <li><a href="../api/image.html">Image Methods</a></li>
-  <li><a href="../api/channel.html">Image Channel Methods</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/channel.html">Image Channel Methods</a></li>
   <li><a href="../api/color.html">Count the Colors in an Image</a></li>
   <li><a href="../api/colormap.html">Colormap Methods</a></li>
-  <li><a href="../api/colorspace.html">Colorspace Methods</a></li>
   <li><a href="../api/distort.html">Image Distortions</a></li>
   <li><a href="../api/layer.html">Dealing with Image Layers</a></li>
   <li><a href="../api/profile.html">Dealing with Image Profiles</a></li>
@@ -236,9 +232,9 @@
 
 <p>After you write your MagickCore program, compile it like this:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cc -o core `pkg-config --cflags --libs MagickCore` core.c</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cc -o core `pkg-config --cflags --libs MagickCore` core.c</span></p>
 <p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
 <p>Here is a example program that utilizes the MagickCore API to get you started, <a href="../source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
 
 <div class="viewport">
@@ -443,7 +439,7 @@ int main(int argc,char **argv)
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -202,19 +199,19 @@ yum install ImageMagick-perl
 
 <p>Unpack the distribution with this command:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">tar xvfz ImageMagick.tar.gz</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">tar xvfz ImageMagick.tar.gz</span></p>
 <p>Next configure and compile ImageMagick:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cd ImageMagick-6.8.6</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">./configure -with-perl</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">make</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd ImageMagick-7.0.0</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">./configure -with-perl</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">make</span></p>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">sudo make install</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo make install</span></p>
 <p>You may need to configure the dynamic linker run-time bindings:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">sudo ldconfig /usr/local/lib</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo ldconfig /usr/local/lib</span></p>
 <p>Finally, verify the PerlMagick install worked properly, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">perl -e "use Image::Magick; print Image::Magick-&gt;QuantumDepth"</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">perl -e "use Image::Magick; print Image::Magick-&gt;QuantumDepth"</span></p>
 <p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images.</p>
 
 <p><b>Windows XP / Windows 2000</b></p>
@@ -223,17 +220,17 @@ yum install ImageMagick-perl
 
 <p>Next, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cd PerlMagick</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">perl Makefile.nt</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">nmake</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">nmake install</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd PerlMagick</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">perl Makefile.nt</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">nmake</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">nmake install</span></p>
 <p>See the <a href="http://www.dylanbeattie.net/magick/">PerlMagick Windows HowTo</a> page for further installation instructions.</p>
 
 <p><b>Running the Regression Tests</b></p>
 
 <p>To verify a correct installation, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">make test</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">make test</span></p>
 <p>Use <code>nmake test</code> under Windows. There are a few demonstration scripts available to exercise many of the functions PerlMagick can perform. Type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cd demo</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">make</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd demo</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">make</span></p>
 <p>You are now ready to utilize the PerlMagick methods from within your Perl scripts.</p>
 
 </div>
@@ -287,7 +284,7 @@ yum install ImageMagick-perl
 
 <p>Some of the PerlMagick methods require external programs such as <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>. This may require an explicit path in your PATH environment variable to work properly. For example (in Unix),</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">$ENV{PATH}='/../bin:/usr/bin:/usr/local/bin';</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">$ENV{PATH}='/../bin:/usr/bin:/usr/local/bin';</span></p>
 <div style="margin: auto;">
 <h2><a id="example"></a>Example Script</h2>
 </div>
@@ -2349,6 +2346,12 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
 
 <p>copies all the images from object <code>$p</code> to <code>$q</code>. You can use this method for single or multi-image sequences.</p>
 
+<p>The ComplexImages() method performs complex mathematics on an image sequence. For example,</p>
+
+<pre class="code">
+  $p = $image-&gt;ComplexImages('conjugate');
+</pre>
+
 <p>The EvaluateImages() method applies an arithemtic, logical or relational expression to a set of images. For example,</p>
 
 <pre class="code">
@@ -2652,7 +2655,7 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

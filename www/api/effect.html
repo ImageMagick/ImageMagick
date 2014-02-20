@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../../images/wand.png"></link>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../../discourse-server">
   <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="../../www/support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -247,6 +244,8 @@
 <div class="doc-section">
 
 <p>BlurImage() blurs an image.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, the radius should be larger than sigma.  Use a radius of 0 and BlurImage() selects a suitable radius for you.</p>
+
+<p>BlurImage() differs from GaussianBlurImage() in that it uses a separable kernel which is faster but mathematically equivalent to the non-separable kernel.</p>
 
 <p>The format of the BlurImage method is:</p>
 
@@ -466,6 +465,8 @@
 <p>the channel type.</p>
 
 <h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center</p>
+<h5>radius</h5>
 <p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
 
 <h5>sigma</h5>
@@ -667,7 +668,7 @@
   ExceptionInfo *exception)
       Image *UnsharpMaskImageChannel(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
-  const double gain,const double threshold,ExceptionInfo *exception)
+  const double amount,const double threshold,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -684,11 +685,11 @@
 <h5>sigma</h5>
 <p>the standard deviation of the Gaussian, in pixels.</p>
 
-<h5>gain</h5>
+<h5>amount</h5>
 <p>the percentage of the difference between the original and the blur image that is added back into the original.</p>
 
 <h5>threshold</h5>
-<p>the threshold in pixels needed to apply the diffence gain.</p>
+<p>the threshold in pixels needed to apply the diffence amount.</p>
 
 <h5>exception</h5>
 <p>return any errors or warnings in this structure.</p>
@@ -709,7 +710,7 @@
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="../../www/contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

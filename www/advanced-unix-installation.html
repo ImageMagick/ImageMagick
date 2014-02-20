@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -189,7 +186,7 @@
 
 <p>Unpack the distribution it with this command:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">tar xvfz ImageMagick.tar.gz</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">tar xvfz ImageMagick.tar.gz</span></p>
 <p>Now that you have the ImageMagick Unix/Linux source distribution unpacked, let's configure it.</p>
 
 </div>
@@ -199,7 +196,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cd ImageMagick-6.8.6-8</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">./configure</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd ImageMagick-7.0.0-0</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">./configure</span></p>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -298,7 +295,7 @@ Options used to compile and link:
 
 <p>Here is an example of setting configure variables from the command line:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">./configure CC=c99 CFLAGS=-O2 LDFLAGS='-L/usr/local/lib -R/usr/local/lib' LIBS=-lposix</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">./configure CC=c99 CFLAGS=-O2 LDFLAGS='-L/usr/local/lib -R/usr/local/lib' LIBS=-lposix</span></p>
 <p>Any variable (e.g. CPPFLAGS or LDFLAGS) which requires a directory path must specify an absolute path rather than a relative path.</p>
 
 <p>Configure can usually find the X include and library files automagically, but if it doesn't, you can use the <em>--x-includes=path</em> and <em>--x-libraries=path</em> options to specify their locations.</p>
@@ -485,7 +482,7 @@ Options used to compile and link:
 
 <p>In most cases you will simply wand to compile ImageMagick with this command:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">make</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">make</span></p>
 <p>Once built, you can optionally install ImageMagick on your system as discussed below.</p>
 </div>
 
@@ -494,25 +491,25 @@ Options used to compile and link:
 
 <p>Now that ImageMagick is configured and built, type:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">make install</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">make install</span></p>
 <p>to install it.</p>
 
 <p>By default, ImageMagick is installs binaries in <code>/../usr/local/bin</code>, libraries in <code>/../usr/local/lib</code>, header files in <code>/../usr/local/include</code> and documentation in <code>/../usr/local/share</code>.  You can specify an alternative installation prefix other than <code>/../usr/local</code> by giving <code>configure</code> the option <em>--prefix=PATH</em>.  This valuable in case you don't have privileges to install under the default paths or if you want to install in the system directories instead.</p>
 
 <p>To confirm your installation of the ImageMagick distribution was successful, ensure that the installation directory is in your executable search path and type:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">display</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">display</span></p>
 <p>The ImageMagick logo is displayed on your X11 display.</p>
 
 <p>To verify the ImageMagick build configuration, type:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -list configure</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -list configure</span></p>
 <p>To list which image formats are supported , type:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -list format</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -list format</span></p>
 <p>For a more comprehensive test, you run the ImageMagick test suite by typing:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">make check</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">make check</span></p>
 <p>Ghostscript is a prerequisite, otherwise the EPS, PS, and PDF tests will fail.  Note that due to differences between the developer's environment and your own it is possible that a few tests may fail even though the results are ok. Differences between the developer's environment environment and your own may include the compiler, the CPU type, and the library versions used. The ImageMagick developers use the current release of all dependent libraries.</p>
 
 </div>
@@ -524,10 +521,10 @@ Options used to compile and link:
 
 <p>Build ImageMagick with this command:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">rpmbuild --rebuild ImageMagick.src.rpm</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">rpmbuild --rebuild ImageMagick.src.rpm</span></p>
 <p>After the build you, locate the RPMS folder and install the ImageMagick binary RPM distribution:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">rpm -ivh ImageMagick-6.8.6-?.*.rpm</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">rpm -ivh ImageMagick-7.0.0-?.*.rpm</span></p>
 </div>
 
 <h2><a id="macosx"></a>Mac OS X-specific Build instructions</h2>
@@ -538,31 +535,31 @@ Options used to compile and link:
 <div class="doc-section">
   <p>Install <a href="http://www.macports.org">MacPorts</a>.  Download and install MacPorts and type the following commands:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">sudo port -v install freetype +bytecode</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">sudo port -v install librsvg</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo port -v install freetype +bytecode</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo port -v install librsvg</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms</span></p>
 <p>This installs many of the delegate libraries ImageMagick will utilize such as JPEG and FreeType.</p>
 
 
 	  <p>Install the latest <a href="http://developer.apple.com/tools/download/">Xcode</a> from Apple.</p>
 	  <p>Use the <tt>port</tt> command to install any delegate libraries you require, for example:</p>
-	  <p class="crt"><span class="crtprompt"> $ </span><span class="crtin">sudo port install jpeg</span></p>	</div>
+	  <p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo port install jpeg</span></p>	</div>
 
 <p>Now lets build ImageMagick:</p>
 
 	<div class="doc-section">
 	  <p><a href="download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">tar xvfz ImageMagick-6.8.6-8.tar.gz</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">cd ImageMagick-6.8.6-8</span></p>	  <p>Configure ImageMagick:</p>
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">./configure --prefix=/opt --with-quantum-depth=16 \ <br></br>
+		<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">tar xvfz ImageMagick-7.0.0-0.tar.gz</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd ImageMagick-7.0.0-0</span></p>	  <p>Configure ImageMagick:</p>
+	<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">./configure --prefix=/opt --with-quantum-depth=16 \ <br></br>
 		--disable-dependency-tracking --with-x=yes \ <br></br>
 		--x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \ <br></br>
 		--without-perl</span></p>	  <p>Build ImageMagick:</p>
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">make</span></p>	  <p>Install ImageMagick:</p>
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">sudo make install</span></p>  <p>To verify your install, type</p>
+	<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">make</span></p>	  <p>Install ImageMagick:</p>
+	<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo make install</span></p>  <p>To verify your install, type</p>
 
-  <p class="crt"><span class="crtprompt"> $ </span><span class="crtin">/opt/local/bin/identify -list font</span></p>
+  <p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">/opt/local/bin/identify -list font</span></p>
   <p>to list all the fonts ImageMagick knows about.</p>
 	  <p>To test the ImageMagick GUI, in a new shell, type:</p>
-	<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">display -display :0</span></p></div>
+	<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">display -display :0</span></p></div>
 
 </div>
 
@@ -571,7 +568,7 @@ Options used to compile and link:
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">tar jxvf ImageMagick-6.8.6-?.tar.bz2</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">cd ImageMagick-6.8.6-8</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">./configure --without-perl</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">make</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">sudo make install</span></p></div>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">tar jxvf ImageMagick-7.0.0-?.tar.bz2</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd ImageMagick-7.0.0-0</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">./configure --without-perl</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">make</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo make install</span></p></div>
 
 <h2><a id="problems"></a>Dealing with Unexpected Problems</h2>
 <div class="doc-section">
@@ -583,14 +580,14 @@ Options used to compile and link:
 
 <p>Some systems may fail to link at build time due to unresolved symbols. Try adding the LDFLAGS to the <code>configure</code> command line:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib'</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib'</span></p>
 <h4>Dynamic Linker Run-time Bindings</h4>
 <p>On some systems, ImageMagick may not find its shared library, <em>libMagick.so</em>.  Try running the <code>ldconfig</code> with the library path:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">/sbin/ldconfig /usr/local/lib</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">/sbin/ldconfig /usr/local/lib</span></p>
 <p>Solaris and Linux systems have the <code>ldd</code> command which is useful to track which libraries ImageMagick depends on:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">ldd `which convert`</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">ldd `which convert`</span></p>
 <h4>Delegate Libraries</h4>
 <p>On occasion you may receive these warnings:</p>
 <pre class="text">
@@ -599,10 +596,10 @@ Options used to compile and link:
 </pre>
 <p>This exception indicates that an external delegate library or its headers were not available when ImageMagick was built.  To add support for the image format, download and install the requisite delegate library and its header files and reconfigure, rebuild, and reinstall ImageMagick.  As an example, lets add support for the JPEG image format.  First we install the JPEG RPMS:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">yum install libjpeg libjpeg-devel</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">yum install libjpeg libjpeg-devel</span></p>
 <p>Now reconfigure, rebuild, and reinstall ImageMagick.  To verify JPEG is now properly supported within ImageMagick, use this command:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -list format</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -list format</span></p>
 <p>You should see a mode of rw- associated with the JPEG tag.  This mode means the image can be read or written and can only support one image per image file.</p>
 
 <h4>PerlMagick</h4>
@@ -624,7 +621,7 @@ Options used to compile and link:
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

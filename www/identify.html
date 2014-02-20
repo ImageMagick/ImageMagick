@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -188,10 +185,10 @@
 
 <p>We list a few examples of the <code>identify</code> command here to illustrate its usefulness and ease of use. To get started, lets identify an image in the JPEG format:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify rose.jpg</span><span class="crtout"> rose.jpg JPEG 640x480 sRGB 87kb 0.050u 0:01</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify rose.jpg</span><span class="crtout"> rose.jpg JPEG 640x480 sRGB 87kb 0.050u 0:01</span></p>
 <p>Next, we look at the same image in greater detail:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -verbose rose.jpg</span><span class="crtout">Image: rose.jpg  <br></br>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -verbose rose.jpg</span><span class="crtout">Image: rose.jpg  <br></br>
     Format: JPEG (Joint Photographic Experts Group JFIF format)  <br></br>
     Class: DirectClass  <br></br>
     Geometry: 70x46+0+0  <br></br>
@@ -245,16 +242,19 @@
     Tainted: False  <br></br>
     Filesize: 3.97266kb  <br></br>
     Number pixels: 3.14453kb  <br></br>
-    Version: ImageMagick 6.8.6-8 2013-07-15 Q16 http://www.imagemagick.org</span></p>
+    Version: ImageMagick 7.0.0-0 2013-07-15 Q16 http://www.imagemagick.org</span></p>
 <p>To get the print size in inches of an image at 72 DPI, use:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png</span><span class="crtout">8.5 x 11 inches</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png</span><span class="crtout">8.5 x 11 inches</span></p>
 <p>The depth and dimensions of a raw image must be specified on the command line:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -depth 8 -size 640x480 image.raw</span><span class="crtout">image.raw RGB 640x480 sRGB 9kb 0.000u 0:01</span></p>
-<p>Here we display the image texture features and the number of unique colors in the image:</p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -depth 8 -size 640x480 image.raw</span><span class="crtout">image.raw RGB 640x480 sRGB 9kb 0.000u 0:01</span></p>
+<p>Here we display the image texture features, image moments, and the number of unique colors in the image:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -verbose -features 1 -unique image.png</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -verbose -features 1 -moments -unique image.png</span></p>
+<p>Here is a special define that outputs the location of the minimum or maximum pixel of the image:</p>
+
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -precision 5 -define identify:locate=maximum -define identify:limit=3 image.png</span></p>
 <p>You can find additional examples of using <code>identify</code> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 </div>
@@ -363,6 +363,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td valign="top"><a href="command-line-options.html#intensity">-grayscale <em class="option">method</em></a></td>
+    <td valign="top">convert image to grayscale</td>
+  </tr>
+
+  <tr>
     <td valign="top"><a href="command-line-options.html#help">-help</a></td>
     <td valign="top">print program options</td>
   </tr>
@@ -398,6 +403,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td valign="top"><a href="command-line-options.html#moments">-moments</a></td>
+    <td valign="top">display image moments.</td>
+  </tr>
+
+  <tr>
     <td valign="top"><a href="command-line-options.html#monitor">-monitor</a></td>
     <td valign="top">monitor progress</td>
   </tr>
@@ -405,6 +415,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td valign="top"><a href="command-line-options.html#negate">-negate</a></td>
     <td valign="top">replace each pixel with its complementary color </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#precision">-precision <em class="option">value</em></a></td>
+    <td valign="top">set the maximum number of significant digits to be printed</td>
   </tr>
 
   <tr>
@@ -486,7 +501,7 @@ transparent, extract, background, or shape the alpha channel</td>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

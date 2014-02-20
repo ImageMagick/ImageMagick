@@ -1,35 +1,29 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html version="-//W3C//DTD XHTML 1.1//EN"
-      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/1999/xhtml
-                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="google-site-verification" content="MxsMq6bdLOx0KSuz1MY6yG9ZTIJ7_7DVRfl5NCAT5Yg"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+  <meta name="google-site-verification" content="MxsMq6bdLOx0KSuz1MY6yG9ZTIJ7_7DVRfl5NCAT5Yg"></meta>
   <title>ImageMagick: Command-line Tools: Convert</title>
-  <meta http-equiv="Content-Language" content="en-US"/>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="Use ImageMagick to magick, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
-  <meta name="Application-url" content="http://www.imagemagick.org"/>
-  <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="command-line, tools:, magick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
-  <meta name="Rating" content="GENERAL"/>
-  <meta name="Robots" content="INDEX, FOLLOW"/>
-  <meta name="Generator" content="ImageMagick Studio LLC"/>
-  <meta name="Author" content="ImageMagick Studio LLC"/>
-  <meta name="Revisit-after" content="2 DAYS"/>
-  <meta name="Resource-type" content="document"/>
-  <meta name="Copyright" content="Copyright (c) 1999-2014 ImageMagick Studio LLC"/>
-  <meta name="Distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
-  <link rel="canonical" href="http://www.imagemagick.org" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <meta http-equiv="Content-Language" content="en-US"></meta>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"></meta>
+  <meta name="Application-name" content="ImageMagick"></meta>
+  <meta name="Description" content="Use ImageMagick to magick, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."></meta>
+  <meta name="Application-url" content="http://www.imagemagick.org"></meta>
+  <meta name="Generator" content="PHP"></meta>
+  <meta name="Keywords" content="command-line, tools:, magick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
+  <meta name="Rating" content="GENERAL"></meta>
+  <meta name="Robots" content="INDEX, FOLLOW"></meta>
+  <meta name="Generator" content="ImageMagick Studio LLC"></meta>
+  <meta name="Author" content="ImageMagick Studio LLC"></meta>
+  <meta name="Revisit-after" content="2 DAYS"></meta>
+  <meta name="Resource-type" content="document"></meta>
+  <meta name="Copyright" content="Copyright (c) 1999-2014 ImageMagick Studio LLC"></meta>
+  <meta name="Distribution" content="Global"></meta>
+  <link rel="icon" href="../images/wand.png"></link>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
   <!-- Add jQuery library -->
   <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
   
@@ -38,14 +32,14 @@
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen"></link>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
   
   <!-- Optionaly include button and/or thumbnail helpers -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen"></link>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen"></link>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -53,7 +47,7 @@
   	});
   </script>
   <!-- ImageMagick style -->
-  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css"></link>
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
@@ -70,18 +64,12 @@
     google_ad_height = 90;
   //-->
   </script>
-  <script type="text/javascript"
-    src="http://localhost/pagead/show_ads.js">
-  </script>
+  
 </div>
 <a href="http://www.imagemagick.org/discourse-server/">
-  <img src="../images/logo.jpg"
-  alt="ImageMagick Logo"
-  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
 <a href="../index.html">
-  <img src="../images/sprite.jpg"
-  alt="ImageMagick Sprite"
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
@@ -133,7 +121,7 @@
     <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
    <a title="Install from Source" href="../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -153,21 +141,21 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Search" href="http://www.imagemagick.org/script/search.php">Search</a>
+  <a title="Search" href="http://www.imagemagick.org/http://www.imagemagick.org/script/search.php">Search</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
   <a title="Site Map" href="../www/sitemap.html">Site Map</a>
 </div>
-<div  class="sub">
+<div class="sub">
   <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
   <a rel="follow" title="Sponsors" href="../www/support.html">Sponsors:</a>
 
-  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
-  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
+  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;"></img></a>
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;"></img></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
 <div class="sponsor">
   <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
@@ -225,24 +213,14 @@
 </div>
 
 <div class="eastbar">
-  <div class="g-plusone" data-size="standard" data-count="false"></div>
-  <script type="text/javascript">
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script'); po.type = 'text/javascript'; po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var s = document.getElementsByTagName('offline-script')[0]; s.parentNode.insertBefore(po, s);
-    })();
-  </script>
+  
+  
 </div>
 
 <div class="main">
 
 <h1>ImageMagick Convert Command-line Tool</h1>
-<p class="navigation-index">[<a href="#usage">Example Usage</a> &#8226; <a href="#options">Option Summary</a>]</p>
+<p class="navigation-index">[<a href="#usage">Example Usage</a> • <a href="#options">Option Summary</a>]</p>
 
 <div class="doc-section">
 <p>Use the <kbd>magick</kbd> program to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   See <a href="../www/command-line-processing.html">Command Line Processing</a> for advice on how to structure your <kbd>magick</kbd> command or see below for example usages of the command.</p>
@@ -253,27 +231,27 @@
 
 <p>We list a few examples of the <kbd>magick</kbd> command here to illustrate its usefulness and ease of use.  To get started, lets convert an image in the JPEG format to PNG:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>magick rose.jpg rose.png</span></p>
+<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">magick rose.jpg rose.png</span></p>
 <p>Next, we reduce the image size before it is written to the PNG format:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>magick rose.jpg -resize 50% rose.png</span></p>
+<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">magick rose.jpg -resize 50% rose.png</span></p>
 <p class="image">
   <a href="../images/rose.jpg">
-  <img src="../images/rose.jpg" width="70" height="46" alt="rose" />
+  <img src="../images/rose.jpg" width="70" height="46" alt="rose"></img>
   </a>
-  <img style="margin-top:13px; margin-bottom:13px;" src="../images/right.gif" width="20" height="20" alt="==>" />
+  <img style="margin-top:13px; margin-bottom:13px;" src="../images/right.gif" width="20" height="20" alt="==&gt;"></img>
   <a href="../images/rose.png">
-  <img style="margin-top:11px; margin-bottom:12px;" src="../images/rose.png" width="35" height="23" alt="rose" />
+  <img style="margin-top:11px; margin-bottom:12px;" src="../images/rose.png" width="35" height="23" alt="rose"></img>
   </a>
 </p>
 
 <p>You can combine multiple image-processing operations to produce complex results:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>magick -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \ <br/>
--draw "text 25,60 'Magick'" -channel RGBA -blur 0x6 -fill darkred -stroke magenta \ <br/>
+<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">magick -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \ <br></br>
+-draw "text 25,60 'Magick'" -channel RGBA -blur 0x6 -fill darkred -stroke magenta \ <br></br>
 -draw "text 20,55 'Magick'" fuzzy-magick.png</span></p>
 <p class="image">
-  <a href="../images/fuzzy-magick.png"><img src="../images/fuzzy-magick.png" width="320" height="85" alt="fuzzy-magick" /></a>
+  <a href="../images/fuzzy-magick.png"><img src="../images/fuzzy-magick.png" width="320" height="85" alt="fuzzy-magick"></img></a>
 </p>
 
 <p>You can find additional examples of using <kbd>magick</kbd> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
@@ -1398,14 +1376,14 @@ transparent, extract, background, or shape the alpha channel</td>
 <div id="linkbar">
     <span id="linkbar-west"> </span>
     <span id="linkbar-center">
-      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &#8226;
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> •
       <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east"> </span>
   </div>
   <div class="footer">
     <span id="footer-west">©  1999-2011 ImageMagick Studio LLC</span>
-    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/www/contact.html">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>
   <script type="text/javascript">

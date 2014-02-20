@@ -1,29 +1,35 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: Format and Print Image Properties</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="format, print, image, properties, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../images/wand.png"></link>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="format, print, image, properties, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
   <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -32,15 +38,15 @@
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
   
   <script type="text/javascript">
@@ -57,7 +63,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,18 +83,24 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://localhost/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../discourse-server">
-  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
-  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -126,7 +146,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,548 +172,55 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
-  
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
 </div>
 
 <div class="main">
 
-<h1>ImageMagick Escapes</h1>
-<p class="navigation-index"></p>
-
-<div class="doc-section">
-
-<p>Images in memory a lot of extra data assocated with them, beyond the actual
-image data (cache) itself. This data can be very useful to users, either for
-display, or for various calculations, or in modifying the behaviour of later
-image processing operations.</p>
-
-<p>Percent Escapes (of Image Propertes) are used in a number of options, for
-example in <a href="command-line-options.html#format_identify_">-format</a> or in montage <a href="command-line-options.html#label">-label</a>, to print various properties and other settings associated with an
-image. </p>
-
-<table>
-<tr valign="top">
-    <td><b>Profile Data</b></td>
-    <td>Such as EXIF: data, containing focal lengths, exposures, dates, and in
-        come cases GPS locations.
-    </td></tr>
-<tr valign="top">
-    <td><b>Attributes</b></td>
-    <td>These are directly involved with image data, and more commonly
-        modified as part of normal image processing.  These include
-        width, height, depth, image type (colorspace), timing delays, and
-        background color. Most specific percent escapes is to access this
-        information.
-    </td></tr>
-<tr valign="top">
-    <td><b>Properties</b></td>
-    <td>These are stored as a table of free form strings, and are (if posible)
-        saved with the image (especially in MIFF and PNG image file formats).
-        These include: Labels, Captions, Comments.
-    </td></tr>
-<tr valign="top">
-    <td><b>Artifacts</b></td>
-    <td>These are various operational (expert) settings that are saved for
-        use by various operators, or by the user for future use.  It is just
-        a table of free-form strings.  They are not saved with the image when
-        written.  See Artifacts and Options below for details.
-    </td></tr>
-<tr valign="top">
-    <td><b>Options</b></td>
-    <td>Also operational (expert) settings that are saved for
-        use by various operators, but are set globally for use by a whole
-        image list (also not saved).  See Artifacts and Options below.
-    </td></tr>
-</table>
-
-<h3>Percent Escape Handling</h3>
-
-<p>If you request a percent escape such as <code>%[key]</code> the setting
-is looked for in the following order until the first match has been
-found...</p>
-
-<ol>
-<li>Handle special prefixes such as 'artifact:' 'option:' 'exif:', or
-    'fx:'.  This includes and calculations and or globs of those prefixes such
-    as 'exif:*' or 'artifact:*' (see below).</li>
-
-<li>If <code>key</code> contains a glob pattern (but no known prefix)
-    search free-form properties table.</li>
-
-<li>If <code>key</code> is a special image 'attribute' name (see list
-    above) return the associated or calculated image attribute.</li>
-
-<li>Search for setting as a free-form 'property'</li>
-<li>Search for setting as a free-form 'artifact'</li>
-<li>Search for setting as a free-form 'option'</li>
-
-<li>Replace escape with empty string, and perhaps produce a warning.</li>
-</ol>
-
-<p>Remember, all long name forms of percent escapes are handled in a is case
-insensitive manner. </p>
-
-<p><b>As of IM v6.8.0-5</b> you can now access the Artifact and Option
-free-form string tables directly, allowing you to override the above sequence,
-and avoid accessing an attribute or property of the same name.</p>
-
-<pre class="text">
-   %[artifact:<em class="arg">setting</em>]
-   %[option:<em class="arg">setting</em>]
-</pre>
-
-
-<h3>Single Letter Attribute Percent Escapes</h3>
-
-<p>Here are common single letter escapes (short form) is used to report the most
-common attributes and properties of an image, such as: the image filename
-filename, type, width, height. </p>
-
-<pre class="text">
-   \n   newline
-   \r   carriage return
-  &amp;lt;  less-than character.
-  &amp;gt;  greater-than character.
-  &amp;amp; ampersand character.
-   %%   a percent sign
-   %b   file size of image read in
-   %c   comment meta-data property
-   %d   directory component of path
-   %e   filename extension or suffix
-   %f   filename (including suffix)
-   %g   layer canvas page geometry   (equivalent to "%Wx%H%X%Y")
-   %h   current image height in pixels
-   %i   image filename (note: becomes output filename for "info:")
-   %k   CALCULATED: number of unique colors
-   %l   label meta-data property
-   %m   image file format (file magic)
-   %n   number of images in current image sequence
-   %o   output filename  (used for delegates)
-   %p   index of image in current image list
-   %q   quantum depth (compile-time constant)
-   %r   image class and colorspace
-   %s   scene number (from input unless re-assigned)
-   %t   filename without directory or extension (suffix)
-   %u   unique temporary filename (used for delegates)
-   %w   current width in pixels
-   %x   x resolution (density)
-   %y   y resolution (density)
-   %z   image depth (as read in unless modified, image save depth)
-   %A   image transparency channel enabled (true/false)
-   %C   image compression type
-   %D   image GIF dispose method
-   %G   original image size (%wx%h; before any resizes)
-   %H   page (canvas) height
-   %M   Magick filename (original file exactly as given,  including read mods)
-   %O   page (canvas) offset ( = %X%Y )
-   %P   page (canvas) size ( = %Wx%H )
-   %Q   image compression quality ( 0 = default )
-   %S   ?? scenes ??
-   %T   image time delay (in centi-seconds)
-   %W   page (canvas) width
-   %X   page (canvas) x offset (including sign)
-   %Y   page (canvas) y offset (including sign)
-   %Z   unique filename (used for delegates)
-   %@   CALCULATED: trim bounding box (without actually trimming)
-   %#   CALCULATED: 'signature' hash of image values
-</pre>
-
-<p>Here is a sample command and its output for an image with filename
-<code>bird.miff</code> and whose width is 512 and height is 480.</p>
-
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -format "%m:%f %wx%h" bird.miff</span><span class="crtout">MIFF:bird.miff 512x480</span></p>
-<p>Note that all single letter percent escapes can also be used using long
-form (from IM version 6.7.6-9, see next). For example <code>%[f]</code> is
-equivelent to the <code>%f</code> short form. </p>
-
-<p><b>WARNING</b> short form percent escapes are NOT performed when the percent
-is after a number.  For example..   <code>10%x10</code> will not expand the
-<code>%x</code> as a percent escape.  If you specifically want to expanded the
-'x', use the long form which overrides this special case. EG:
-<code>10%[x]10</code>. </p>
-
-<p>Also be warned that calculated attributes can take some time to generate,
-especially for large images.</p>
-
-<h3>Long Form Attribute Percent Escapes</h3>
-
-<p>In addition to the above specific and calculated attributes are recognized
-when enclosed in braces (long form):</p>
-
-<pre class="text">
-   %[base]                 base filename, no suffixes (as %t)
-   %[channels]             ??? channels in use - colorspace ???
-   %[colorspace]           Colorspace of Image Data (excluding transparency)
-   %[copyright]            ImageMagick Copyright String
-   %[depth]                depth of image for write (as input unless changed)
-   %[deskew:angle]         The deskew angle in degrees of rotation
-   %[directory]            directory part of filename (as %d)
-   %[extension]            extention part of filename (as %e)
-   %[gamma]                value of image gamma
-   %[group]                ??? window group ???
-   %[height]               original height of image (when it was read in)
-   %[kurtosis]             CALCULATED: kurtosis statistic of image
-   %[magick]               coder used to read image (not the file suffix)
-   %[max]                  CALCULATED: maximum value statistic of image
-   %[mean]                 CALCULATED: average value statistic of image
-   %[min]                  CALCULATED: minimum value statistic of image
-   %[name]                 The original name of the image
-   %[opaque]               CALCULATED: is image fully-opaque?
-   %[orientation]          image orientation
-   %[page]                 Virtual canvas (page) geometry
-   %[resolution.y]         X density (resolution) without units
-   %[resolution.x]         Y density (resolution) without units
-   %[scene]                original scene number of image in input file
-   %[size]                 original size of image (when it was read in)
-   %[skewness]             CALCULATED: skewness statistic of image
-   %[standard-deviation]   CALCULATED: standard-deviation statistic of image
-   %[type]                 CALCULATED: image type
-   %[unique]               unique temporary filename ???
-   %[version]              Version Information of this running ImageMagick
-   %[width]                original width of image (when it was read in)
-   %[zero]                 zero (unique filename for delegate use)
-</pre>
-
-<h3>Properties</h3>
-
-<p>All other long forms of percent escapes (not single letter long form) are
-handled in a case insensitive manner. Such escapes will will attempt to look
-up that name specific data sources. </p>
-
-<p>The primary search space (if not a specific attribute listed above) is
-a free-form property string.  Such strings are associated and saved with
-images, and are typically set using either the <a href="command-line-options.html#set">-set</a>
-CLI option (or API equivelent), or from special convenience options
-(such as <a href="command-line-options.html#label">-label</a>, <a href="command-line-options.html#comment">-comment</a>, <a href="command-line-options.html#caption">-caption</a>). </p>
-
-<p>These convenience options are globally saved (as 'global options' so thay can
-be set before images are read), and later are transfered to the property of
-individual images, only when they are read in. At that time any internal
-percent escape present is then handled. </p>
-
-<p>To change a property of an image already in memory, you need to use <a href="command-line-options.html#set">-set</a>.
-</p>
-
-<p>Note that properties, like attributes (and profiles), are saved with
-images when write, if the image file format allows. </p>
-
-
-<h3>Artifacts and Options</h3>
-
-<p>The previous percent escapes are associated with the primary Attributes and
-Properties. Which is the original and primary focus of such percent escapes.
-</p>
-
-<p>However there are many operational settings that are used by various
-ImageMagick operators that can be useful to set and later access.  These
-consist of per-image Artifacts, and Global options (associated with a list of
-images, typically the current image list).</p>
-
-<p>Note that the major difference between an artifact and a property is that
-artifacts, being an internal operational setting, is not saved with images (if
-such is possible). </p>
-
-<p>For example when you use <code>-define 'distort:viewport=100x100'</code> you
-are in fact generating a global option, which the <a href="command-line-options.html#distort">-distort</a> operator will use to modify its behaviour (distorted output
-image 'view'). </p>
-
-<p>An Option is essentually a Artifact that has been stored globally as part
-of a list of images (specifically a 'Wand' of images). As such they are
-identical, in that a Option, is simply a global Artifact for all the
-associated images. </p>
-
-<p>As such you can use <code>-set 'option:distort:viewport' '100x100'</code> to
-achieve the same result of setting a Artifact for the disort operation to use.
-</p>
-
-<p><b>Internal Handling of a Global Option...</b></p>
-
-<p>The Core library ('MagickCore') does not generally directly understand
-Global Options. As such, continuing the previous example, the
-<code>DistortImages()</code> function only looks up an artifact to discover if
-a 'viewport' has been provided to it. </p>
-
-<p>How Global Options are used when a library function requests an Artifact is
-one of the key differences between IMv6 and IMv7.</p>
-
-<p>In <b>ImageMagick version 6</b>... before each operator, any global Options
-are copied to per-image Artifacts, for every image in the current image list.
-This allows various operators to find its operational 'defines' or Artifacts.
-</p>
-
-<p>In <b>ImageMagick version 7</b>... sets a link back to the global options
-data, so that if a specific per-image Artifact is not found , then it will
-look for a equivelent global Option for that image list.  directly.  This
-saves coping these free-form options into artifacts repeatally, and means you
-can now separally define a global option for a list, and a individual
-overriding artifact for a specific image in that list. </p>
-
-<p>Note that many API's that do not use Wands (PerlMagick for example using
-arrays of images rather than a Wand). In these API's you will not have Global
-Options, only per-image Artifacts. </p>
-
-<p>In summery a Global Option, if available, is equivelent to a per-image
-Artifact. </p>
-
-
-<h3>Glob-Pattern Listing of Properties, Artifacts and Options</h3>
-
-<p>The <em class="arg">setting</em> can contain a glob pattern. As such you can
-now list all free-form string properties, artifacts, and options, (but not
-specific image attributes) using...</p>
-
-<pre class="text">
-  convert ... \
-          -print "__Properties__\n%[*]" \
-          -print "__Artifacts__\n%[artifact:*]" \
-          -print "__Options__\n%[option:*]" \
-          ...
-</pre>
-
-<!--  This does not format right!
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert ... \ </span><span class='crtout'>        -print "__Properties__\n%[*]" \ </span><span class="crtprompt"> $ </span><span class='crtin'>        -print "__Artifacts__\n%[artifact:*]" \ </span><span class='crtout'>        -print "__Options__\n%[option:*]" \ </span><span class="crtprompt"> $ </span><span class='crtin'>        ...</span></p>-->
-
-<p> The format of glob patterns are very specific and as such is generally
-only used to list specific settings, such as when debugging, rather than being
-used for image processing use. </p>
-
-
-<h3>Calculated Percent Escape Prefixes</h3>
-
-<p>There are some special prefixes (before the first ':') which performs
-calculations based on the user provided string that follows that prefix.  For
-example you can do a numerical calculation use <code>%[fx:...]</code> to
-evaluate the given <a href="fx.html">FX</a> expressions:</p>
-
-<pre class="text">
-   %[fx:<em class="arg">expression</em>]
-</pre>
-
-<p>Use <code>pixel:</code> to evaluate a pixel color as defined by the <a href="fx.html">FX</a>
-expression:</p>
-
-<pre class="text">
-   %[pixel:<em class="arg">expression</em>]
-</pre>
-
-<h3>Specific Profile Percent Escape Prefixes</h3>
-
-<p>You can also use the following special formatting syntax to print EXIF
-mage meta-data that was included in the image read in:</p>
-
-<pre class="text">
-   %[EXIF:<em class="arg">tag</em>]
-</pre>
-
-<p>Choose <em class="arg">tag</em> from the following:</p>
-
-<pre class="text">
-   *  (print all EXIF tags, in keyword=data format)
-   !  (print all EXIF tags, in tag_number data format)
-   #hhhh (print data for EXIF tag #hhhh)
-   ImageWidth
-   ImageLength
-   BitsPerSample
-   Compression
-   PhotometricInterpretation
-   FillOrder
-   DocumentName
-   ImageDescription
-   Make
-   Model
-   StripOffsets
-   Orientation
-   SamplesPerPixel
-   RowsPerStrip
-   StripByteCounts
-   XResolution
-   YResolution
-   PlanarConfiguration
-   ResolutionUnit
-   TransferFunction
-   Software
-   DateTime
-   Artist
-   WhitePoint
-   PrimaryChromaticities
-   TransferRange
-   JPEGProc
-   JPEGInterchangeFormat
-   JPEGInterchangeFormatLength
-   YCbCrCoefficients
-   YCbCrSubSampling
-   YCbCrPositioning
-   ReferenceBlackWhite
-   CFARepeatPatternDim
-   CFAPattern
-   BatteryLevel
-   Copyright
-   ExposureTime
-   FNumber
-   IPTC/NAA
-   EXIFOffset
-   InterColorProfile
-   ExposureProgram
-   SpectralSensitivity
-   GPSInfo
-   ISOSpeedRatings
-   OECF
-   EXIFVersion
-   DateTimeOriginal
-   DateTimeDigitized
-   ComponentsConfiguration
-   CompressedBitsPerPixel
-   ShutterSpeedValue
-   ApertureValue
-   BrightnessValue
-   ExposureBiasValue
-   MaxApertureValue
-   SubjectDistance
-   MeteringMode
-   LightSource
-   Flash
-   FocalLength
-   MakerNote
-   UserComment
-   SubSecTime
-   SubSecTimeOriginal
-   SubSecTimeDigitized
-   FlashPixVersion
-   ColorSpace
-   EXIFImageWidth
-   EXIFImageLength
-   InteroperabilityOffset
-   FlashEnergy
-   SpatialFrequencyResponse
-   FocalPlaneXResolution
-   FocalPlaneYResolution
-   FocalPlaneResolutionUnit
-   SubjectLocation
-   ExposureIndex
-   SensingMethod
-   FileSource
-   SceneType
-</pre>
-
-<p>Surround the format specification with quotation marks to prevent your
-shell from misinterpreting any spaces and square brackets.</p>
-
-<p>The following special formatting syntax can be used to print IPTC
-information contained in the file:</p>
-
-<pre class="text">
-   %[IPTC:<em class="arg">dataset</em>:<em class="arg">record</em>]
-</pre>
-
-<p>Select <em class="arg">dataset</em> and <em class="arg">record</em> from
-the following:</p>
-
-<pre class="text">
-    Envelope Record
-      1:00  Model Version
-      1:05  Destination
-      1:20  File Format
-      1:22  File Format Version
-      1:30  Service Identifier
-      1:40  Envelope Number
-      1:50  Product ID
-      1:60  Envelope Priority
-      1:70  Date Sent
-      1:80  Time Sent
-      1:90  Coded Character Set
-      1:100  UNO (Unique Name of Object)
-      1:120  ARM Identifier
-      1:122  ARM Version
-
-    Application Record
-      2:00  Record Version
-      2:03  Object Type Reference
-      2:05  Object Name (Title)
-      2:07  Edit Status
-      2:08  Editorial Update
-      2:10  Urgency
-      2:12  Subject Reference
-      2:15  Category
-      2:20  Supplemental Category
-      2:22  Fixture Identifier
-      2:25  Keywords
-      2:26  Content Location Code
-      2:27  Content Location Name
-      2:30  Release Date
-      2:35  Release Time
-      2:37  Expiration Date
-      2:38  Expiration Time
-      2:40  Special Instructions
-      2:42  Action Advised
-      2:45  Reference Service
-      2:47  Reference Date
-      2:50  Reference Number
-      2:55  Date Created
-      2:60  Time Created
-      2:62  Digital Creation Date
-      2:63  Digital Creation Time
-      2:65  Originating Program
-      2:70  Program Version
-      2:75  Object Cycle
-      2:80  By-Line (Author)
-      2:85  By-Line Title (Author Position) [Not used in Photoshop 7]
-      2:90  City
-      2:92  Sub-Location
-      2:95  Province/State
-      2:100  Country/Primary Location Code
-      2:101  Country/Primary Location Name
-      2:103  Original Transmission Reference
-      2:105  Headline
-      2:110  Credit
-      2:115  Source
-      2:116  Copyright Notice
-      2:118  Contact
-      2:120  Caption/Abstract
-      2:122  Caption Writer/Editor
-      2:125  Rasterized Caption
-      2:130  Image Type
-      2:131  Image Orientation
-      2:135  Language Identifier
-      2:150  Audio Type
-      2:151  Audio Sampling Rate
-      2:152  Audio Sampling Resolution
-      2:153  Audio Duration
-      2:154  Audio Outcue
-      2:200  ObjectData Preview File Format
-      2:201  ObjectData Preview File Format Version
-      2:202  ObjectData Preview Data
-
-    Pre-ObjectData Descriptor Record
-      7:10   Size Mode
-      7:20   Max Subfile Size
-      7:90   ObjectData Size Announced
-      7:95   Maximum ObjectData Size
-
-    ObjectData Record
-      8:10   Subfile
-
-    Post ObjectData Descriptor Record
-      9:10   Confirmed ObjectData Size
-</pre>
-</div>
-
+<h1>ImageMagick Escapes</h1><p class="navigation-index"></p><div class="doc-section"><p>There is a copious amount of extra data assocated with images (metadata), beyond the actual image pixels. This metadata can be useful, either fordisplay, or for various calculations, or in modifying the behaviour of laterimage processing operations.</p><p>You can utilize percent escapes in a number of options, for example in <a href="command-line-options.html#format_identify_">-format</a> or in montage <a href="command-line-options.html#label">-label</a>, to print various properties and other settings associated with animage. </p><table><tr valign="top">    <td><b>Profile Data</b></td>    <td>Such as EXIF: data, containing focal lengths, exposures, dates, and in        come cases GPS locations.    </td></tr><tr valign="top">    <td><b>Attributes</b></td>    <td>These are directly involved with image data, and more commonly        modified as part of normal image processing.  These include        width, height, depth, image type (colorspace), timing delays, and        background color. Most specific percent escapes is to access this        information.    </td></tr><tr valign="top">    <td><b>Properties</b></td>    <td>These are stored as a table of free form strings, and are (if posible)        saved with the image (especially in MIFF and PNG image file formats).        These include: Labels, Captions, Comments.    </td></tr><tr valign="top">    <td><b>Artifacts</b></td>    <td>These are various operational (expert) settings that are saved for        use by various operators, or by the user for future use.  It is just        a table of free-form strings.  They are not saved with the image when        written.  See Artifacts and Options below for details.    </td></tr><tr valign="top">    <td><b>Options</b></td>    <td>Also operational (expert) settings that are saved for        use by various operators, but are set globally for use by a whole        image list (also not saved).  See Artifacts and Options below.    </td></tr></table><h3>Percent Escape Handling</h3><p>If you request a percent escape such as <code>%[key]</code> the settingis looked for in the following order until the first match has beenfound...</p><ol><li>Handle special prefixes such as 'artifact:' 'option:' 'exif:', or    'fx:'.  This includes and calculations and or globs of those prefixes such    as 'exif:*' or 'artifact:*' (see below).</li><li>If <code>key</code> contains a glob pattern (but no known prefix)    search free-form properties table.</li><li>If <code>key</code> is a special image 'attribute' name (see list    above) return the associated or calculated image attribute.</li><li>Search for setting as a free-form 'property'</li><li>Search for setting as a free-form 'artifact'</li><li>Search for setting as a free-form 'option'</li><li>Replace escape with empty string, and perhaps produce a warning.</li></ol><p>Remember, all long name forms of percent escapes are handled in a is caseinsensitive manner. </p><p><b>As of IM v6.8.0-5</b> you can now access the Artifact and Optionfree-form string tables directly, allowing you to override the above sequence,and avoid accessing an attribute or property of the same name.</p><pre class="text">   %[artifact:<em class="arg">setting</em>]   %[option:<em class="arg">setting</em>]</pre><h3>Single Letter Attribute Percent Escapes</h3><p>Here are common single letter escapes (short form) is used to report the mostcommon attributes and properties of an image, such as: the image filenamefilename, type, width, height. </p><pre class="text">   \n   newline   \r   carriage return   &lt;    less-than character.   &gt;    greater-than character.   &amp;    ampersand character.   %%   a percent sign   %b   file size of image read in   %c   comment meta-data property   %d   directory component of path   %e   filename extension or suffix   %f   filename (including suffix)   %g   layer canvas page geometry   (equivalent to "%Wx%H%X%Y")   %h   current image height in pixels   %i   image filename (note: becomes output filename for "info:")   %k   CALCULATED: number of unique colors   %l   label meta-data property   %m   image file format (file magic)   %n   number of images in current image sequence   %o   output filename  (used for delegates)   %p   index of image in current image list   %q   quantum depth (compile-time constant)   %r   image class and colorspace   %s   scene number (from input unless re-assigned)   %t   filename without directory or extension (suffix)   %u   unique temporary filename (used for delegates)   %w   current width in pixels   %x   x resolution (density)   %y   y resolution (density)   %z   image depth (as read in unless modified, image save depth)   %A   image transparency channel enabled (true/false)   %C   image compression type   %D   image GIF dispose method   %G   original image size (%wx%h; before any resizes)   %H   page (canvas) height   %M   Magick filename (original file exactly as given,  including read mods)   %O   page (canvas) offset ( = %X%Y )   %P   page (canvas) size ( = %Wx%H )   %Q   image compression quality ( 0 = default )   %S   ?? scenes ??   %T   image time delay (in centi-seconds)   %U   image resolution units   %W   page (canvas) width   %X   page (canvas) x offset (including sign)   %Y   page (canvas) y offset (including sign)   %Z   unique filename (used for delegates)   %@   CALCULATED: trim bounding box (without actually trimming)   %#   CALCULATED: 'signature' hash of image values</pre><p>Here is a sample command and its output for an image with filename<code>bird.miff</code> and whose width is 512 and height is 480.</p><p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -format "%m:%f %wx%h" bird.miff</span><span class='crtout'>MIFF:bird.miff 512x480</span></p><p>Note that all single letter percent escapes can also be used using longform (from IM version 6.7.6-9, see next). For example <code>%[f]</code> isequivelent to the <code>%f</code> short form. </p><p><b>WARNING</b> short form percent escapes are NOT performed when the percentis after a number.  For example..   <code>10%x10</code> will not expand the<code>%x</code> as a percent escape.  If you specifically want to expanded the'x', use the long form which overrides this special case. EG:<code>10%[x]10</code>. </p><p>Also be warned that calculated attributes can take some time to generate,especially for large images.</p><h3>Long Form Attribute Percent Escapes</h3><p>In addition to the above specific and calculated attributes are recognizedwhen enclosed in braces (long form):</p><pre class="text">   %[base]                 base filename, no suffixes (as %t)   %[channels]             ??? channels in use - colorspace ???   %[colorspace]           Colorspace of Image Data (excluding transparency)   %[copyright]            ImageMagick Copyright String   %[depth]                depth of image for write (as input unless changed)   %[deskew:angle]         The deskew angle in degrees of rotation   %[directory]            directory part of filename (as %d)   %[distortion]           how well an image resembles a reference image (<a href="command-line-options.html#compare" >-compare</a>)   %[extension]            extention part of filename (as %e)   %[gamma]                value of image gamma   %[group]                ??? window group ???   %[height]               original height of image (when it was read in)   %[kurtosis]             CALCULATED: kurtosis statistic of image   %[label]                label meta-data property   %[magick]               coder used to read image (not the file suffix)   %[max]                  CALCULATED: maximum value statistic of image   %[maxima]               CALCULATED: maximum value statistic of image   %[mean]                 CALCULATED: average value statistic of image   %[min]                  CALCULATED: minimum value statistic of image   %[minima]               CALCULATED: minimum value statistic of image   %[name]                 The original name of the image   %[opaque]               CALCULATED: is image fully-opaque?   %[orientation]          image orientation   %[page]                 Virtual canvas (page) geometry   %[profile:icc]          ICC profile info   %[profile:icm]          ICM profile info   %[profiles]             list of any embedded profiles   %[resolution.x]         X density (resolution) without units   %[resolution.y]         Y density (resolution) without units   %[scene]                original scene number of image in input file   %[size]                 original size of image (when it was read in)   %[skewness]             CALCULATED: skewness statistic of image   %[standard-deviation]   CALCULATED: standard deviation statistic of image   %[standard_deviation]   CALCULATED: standard deviation statistic of image   %[type]                 CALCULATED: image type   %[unique]               unique temporary filename ???   %[units]                image resolution units   %[version]              Version Information of this running ImageMagick   %[width]                original width of image (when it was read in)   %[zero]                 zero (unique filename for delegate use)</pre><h3>Properties</h3><p>All other long forms of percent escapes (not single letter long form) arehandled in a case insensitive manner. Such escapes will will attempt to lookup that name specific data sources. </p><p>The primary search space (if not a specific attribute listed above) isa free-form property string.  Such strings are associated and saved withimages, and are typically set using either the <a href="command-line-options.html#set" >-set</a>CLI option (or API equivelent), or from special convenience options(such as <a href="command-line-options.html#label">-label</a>, <a href="command-line-options.html#comment">-comment</a>, <a href="command-line-options.html#caption">-caption</a>). </p><p>These convenience options are globally saved (as 'global options' so thay canbe set before images are read), and later are transfered to the property ofindividual images, only when they are read in. At that time any internalpercent escape present is then handled. </p><p>To change a property of an image already in memory, you need to use <ahref="command-line-options.html#set" >-set</a>.</p><p>Note that properties, like attributes (and profiles), are saved withimages when write, if the image file format allows. </p><h3>Artifacts and Options</h3><p>The previous percent escapes are associated with the primary Attributes andProperties. Which is the original and primary focus of such percent escapes.</p><p>However there are many operational settings that are used by variousImageMagick operators that can be useful to set and later access.  Theseconsist of per-image Artifacts, and Global options (associated with a list ofimages, typically the current image list).</p><p>Note that the major difference between an artifact and a property is thatartifacts, being an internal operational setting, is not saved with images (ifsuch is possible). </p><p>For example when you use <code>-define 'distort:viewport=100x100'</code> youare in fact generating a global option, which the <a href="command-line-options.html#distort">-distort</a> operator will use to modify its behaviour (distorted outputimage 'view'). </p><p>An Option is essentually a Artifact that has been stored globally as partof a list of images (specifically a 'Wand' of images). As such they areidentical, in that a Option, is simply a global Artifact for all theassociated images. </p><p>As such you can use <code>-set 'option:distort:viewport' '100x100'</code> toachieve the same result of setting a Artifact for the disort operation to use.</p><p><b>Internal Handling of a Global Option...</b></p><p>The Core library ('MagickCore') does not generally directly understandGlobal Options. As such, continuing the previous example, the<code>DistortImages()</code> function only looks up an artifact to discover ifa 'viewport' has been provided to it. </p><p>How Global Options are used when a library function requests an Artifact isone of the key differences between IMv6 and IMv7.</p><p>In <b>ImageMagick version 6</b>... before each operator, any global Optionsare copied to per-image Artifacts, for every image in the current image list.This allows various operators to find its operational 'defines' or Artifacts.</p><p>In <b>ImageMagick version 7</b>... sets a link back to the global optionsdata, so that if a specific per-image Artifact is not found , then it willlook for a equivelent global Option for that image list.  directly.  Thissaves coping these free-form options into artifacts repeatally, and means youcan now separally define a global option for a list, and a individualoverriding artifact for a specific image in that list. </p><p>Note that many API's that do not use Wands (PerlMagick for example usingarrays of images rather than a Wand). In these API's you will not have GlobalOptions, only per-image Artifacts. </p><p>In summery a Global Option, if available, is equivelent to a per-imageArtifact. </p><h3>Glob-Pattern Listing of Properties, Artifacts and Options</h3><p>The <em class="arg">setting</em> can contain a glob pattern. As such you cannow list all free-form string properties, artifacts, and options, (but notspecific image attributes) using...</p><pre class="text">  convert ... \          -print "__Properties__\n%[*]" \          -print "__Artifacts__\n%[artifact:*]" \          -print "__Options__\n%[option:*]" \          ...</pre><!--  This does not format right!<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert ... \ </span><span class='crtout'>        -print "__Properties__\n%[*]" \ </span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>        -print "__Artifacts__\n%[artifact:*]" \ </span><span class='crtout'>        -print "__Options__\n%[option:*]" \ </span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>        ...</span></p>--><p> The format of glob patterns are very specific and as such is generallyonly used to list specific settings, such as when debugging, rather than beingused for image processing use. </p><h3>Calculated Percent Escape Prefixes</h3><p>There are some special prefixes (before the first ':') which performscalculations based on the user provided string that follows that prefix.  Forexample you can do a numerical calculation use <code>%[fx:...]</code> toevaluate the given <a href="fx.html">FX</a> expressions:</p><pre class="text">   %[fx:<em class="arg">expression</em>]</pre><p>Use <code>pixel:</code> to evaluate a pixel color as defined by the <ahref="fx.html">FX</a>expression:</p><pre class="text">   %[pixel:<em class="arg">expression</em>]</pre><h3>Specific Profile Percent Escape Prefixes</h3><p>You can also use the following special formatting syntax to print EXIFmage meta-data that was included in the image read in:</p><pre class="text">   %[EXIF:<em class="arg">tag</em>]</pre><p>Choose <em class="arg">tag</em> from the following:</p><pre class="text">   *  (print all EXIF tags, in keyword=data format)   !  (print all EXIF tags, in tag_number data format)   #hhhh (print data for EXIF tag #hhhh)   ImageWidth   ImageLength   BitsPerSample   Compression   PhotometricInterpretation   FillOrder   DocumentName   ImageDescription   Make   Model   StripOffsets   Orientation   SamplesPerPixel   RowsPerStrip   StripByteCounts   XResolution   YResolution   PlanarConfiguration   ResolutionUnit   TransferFunction   Software   DateTime   Artist   WhitePoint   PrimaryChromaticities   TransferRange   JPEGProc   JPEGInterchangeFormat   JPEGInterchangeFormatLength   YCbCrCoefficients   YCbCrSubSampling   YCbCrPositioning   ReferenceBlackWhite   CFARepeatPatternDim   CFAPattern   BatteryLevel   Copyright   ExposureTime   FNumber   IPTC/NAA   EXIFOffset   InterColorProfile   ExposureProgram   SpectralSensitivity   GPSInfo   ISOSpeedRatings   OECF   EXIFVersion   DateTimeOriginal   DateTimeDigitized   ComponentsConfiguration   CompressedBitsPerPixel   ShutterSpeedValue   ApertureValue   BrightnessValue   ExposureBiasValue   MaxApertureValue   SubjectDistance   MeteringMode   LightSource   Flash   FocalLength   MakerNote   UserComment   SubSecTime   SubSecTimeOriginal   SubSecTimeDigitized   FlashPixVersion   ColorSpace   EXIFImageWidth   EXIFImageLength   InteroperabilityOffset   FlashEnergy   SpatialFrequencyResponse   FocalPlaneXResolution   FocalPlaneYResolution   FocalPlaneResolutionUnit   SubjectLocation   ExposureIndex   SensingMethod   FileSource   SceneType</pre><p>Surround the format specification with quotation marks to prevent yourshell from misinterpreting any spaces and square brackets.</p><p>The following special formatting syntax can be used to print IPTCinformation contained in the file:</p><pre class="text">   %[IPTC:<em class="arg">dataset</em>:<em class="arg">record</em>]</pre><p>Select <em class="arg">dataset</em> and <em class="arg">record</em> fromthe following:</p><pre class="text">    Envelope Record      1:00  Model Version      1:05  Destination      1:20  File Format      1:22  File Format Version      1:30  Service Identifier      1:40  Envelope Number      1:50  Product ID      1:60  Envelope Priority      1:70  Date Sent      1:80  Time Sent      1:90  Coded Character Set      1:100  UNO (Unique Name of Object)      1:120  ARM Identifier      1:122  ARM Version    Application Record      2:00  Record Version      2:03  Object Type Reference      2:05  Object Name (Title)      2:07  Edit Status      2:08  Editorial Update      2:10  Urgency      2:12  Subject Reference      2:15  Category      2:20  Supplemental Category      2:22  Fixture Identifier      2:25  Keywords      2:26  Content Location Code      2:27  Content Location Name      2:30  Release Date      2:35  Release Time      2:37  Expiration Date      2:38  Expiration Time      2:40  Special Instructions      2:42  Action Advised      2:45  Reference Service      2:47  Reference Date      2:50  Reference Number      2:55  Date Created      2:60  Time Created      2:62  Digital Creation Date      2:63  Digital Creation Time      2:65  Originating Program      2:70  Program Version      2:75  Object Cycle      2:80  By-Line (Author)      2:85  By-Line Title (Author Position) [Not used in Photoshop 7]      2:90  City      2:92  Sub-Location      2:95  Province/State      2:100  Country/Primary Location Code      2:101  Country/Primary Location Name      2:103  Original Transmission Reference      2:105  Headline      2:110  Credit      2:115  Source      2:116  Copyright Notice      2:118  Contact      2:120  Caption/Abstract      2:122  Caption Writer/Editor      2:125  Rasterized Caption      2:130  Image Type      2:131  Image Orientation      2:135  Language Identifier      2:150  Audio Type      2:151  Audio Sampling Rate      2:152  Audio Sampling Resolution      2:153  Audio Duration      2:154  Audio Outcue      2:200  ObjectData Preview File Format      2:201  ObjectData Preview File Format Version      2:202  ObjectData Preview Data    Pre-ObjectData Descriptor Record      7:10   Size Mode      7:20   Max Subfile Size      7:90   ObjectData Size Announced      7:95   Maximum ObjectData Size    ObjectData Record      8:10   Subfile    Post ObjectData Descriptor Record      9:10   Confirmed ObjectData Size</pre></div>
 </div>
 
 <div id="linkbar">
@@ -708,7 +235,7 @@ the following:</p>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

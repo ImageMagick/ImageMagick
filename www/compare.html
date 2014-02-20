@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -186,7 +183,7 @@
 
 <p>We list a few examples of the <code>compare</code> command here to illustrate its usefulness and ease of use. To get started, lets compare an image to one thats been sharpened:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert rose.jpg -sharpen 0x1 reconstruct.jpg</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">compare rose.jpg reconstruct.jpg difference.png</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">compare -compose src rose.jpg reconstruct.jpg difference.png</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert rose.jpg -sharpen 0x1 reconstruct.jpg</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">compare rose.jpg reconstruct.jpg difference.png</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">compare -compose src rose.jpg reconstruct.jpg difference.png</span></p>
 <div class="image">
 <p>
   <a href="../images/rose.jpg"><img src="../images/rose.jpg" width="70" height="46" alt="rose"></img></a>
@@ -200,21 +197,23 @@
 
 <p>In addition to the visual interpretation of the difference in an image and its reconstruction, we report a mathematical measure of the difference:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">compare -verbose -metric mae rose.jpg reconstruct.jpg difference.png</span><span class="crtout">Image: rose.jpg     <br></br>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">compare -verbose -metric mae rose.jpg reconstruct.jpg difference.png</span><span class="crtout">Image: rose.jpg     <br></br>
     Channel distortion: MAE     <br></br>
       red: 2282.91 (0.034835)     <br></br>
       green: 1853.99 (0.0282901)     <br></br>
       blue: 2008.67 (0.0306503)     <br></br>
       all: 1536.39 (0.0234439)     <br></br></span></p><p>Or, if you just want the red channel distortion, use this command:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">compare -channel red -metric PSNR rose.jpg reconstruct.jpg difference.png</span><span class="crtout">19.63</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">compare -channel red -metric PSNR rose.jpg reconstruct.jpg difference.png</span><span class="crtout">19.63</span></p>
 <p>Or, if you just want the overall image distortion, use this command:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">compare -metric PSNR rose.jpg reconstruct.jpg difference.png</span><span class="crtout">28.31</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">compare -metric PSNR rose.jpg reconstruct.jpg difference.png</span><span class="crtout">28.31</span></p>
 <p>If the reconstructed image is a subimage of the image, the compare program returns the best match offset.  In addition, it returns a similarity image such that an exact match location is completely white and if none of the pixels match, black, otherwise some gray level in-between:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">compare -metric RMSE -subimage-search logo.png wizard.jpg similarity.gif</span><span class="crtout">85.05 (0.00129778) @ 353,157</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">compare -metric RMSE -subimage-search logo.png wizard.jpg similarity.gif</span><span class="crtout">85.05 (0.00129778) @ 353,157</span></p>
 <p>You can find additional examples of using <code>compare</code> in <a href="http://www-106.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in <a href="http://www-106.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
+
+<p>The compare program returns 2 on error otherwise 0 if the images are similar or 1 if they are dissimilar.</p>
 </div>
 
 <h2><a id="options"></a>Option Summary</h2>
@@ -448,7 +447,7 @@ transparent, extract, background, or shape the alpha channel</td>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

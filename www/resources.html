@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -287,9 +284,9 @@ file or data stream.</p>
 
 <pre class="text">
   $MAGICK_CONFIGURE_PATH
-  $PREFIX/etc/ImageMagick
-  $PREFIX/share/ImageMagick-6.8.6 
-  $HOME/.magick/
+  $PREFIX/etc/ImageMagick-6 
+  $PREFIX/share/ImageMagick-6 
+  $HOME/.config/ImageMagick/
   &lt;<em>client path</em>&gt;/etc/ImageMagick/
 </pre>
 
@@ -300,9 +297,9 @@ file or data stream.</p>
 <pre class="text">
   $MAGICK_CONFIGURE_PATH
   $MAGICK_HOME/etc/ImageMagick
-  $MAGICK_HOME/share/ImageMagick-6.8.6 
-  $PREFIX/share/ImageMagick-6.8.6 
-  $HOME/.magick/
+  $MAGICK_HOME/share/ImageMagick-7.0.0 
+  $PREFIX/share/ImageMagick-7.0.0 
+  $HOME/.config/ImageMagick/
   &lt;<em>client path</em>&gt;/etc/ImageMagick/
   &lt;<em>current directory</em>&gt;
 </pre>
@@ -313,18 +310,18 @@ file or data stream.</p>
   $MAGICK_CONFIGURE_PATH
   &lt;<em>windows registry</em>&gt;
   $PREFIX/config
-  $USERPROFILE/.magick/
+  $USERPROFILE/.config/ImageMagick/
   &lt;<em>client path</em>&gt;
 </pre>
 
-<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-6.8.6</code>.</p>
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.0</code>.</p>
 
 <p>For an uninstalled Windows installation, the configuration load order is:</p>
 
 <pre class="text">
   $MAGICK_CONFIGURE_PATH
   $MAGICK_HOME
-  $USERPROFILE/.magick/
+  $USERPROFILE/.config/ImageMagick/
   <em>client path</em>
   &lt;<em>current directory</em>&gt;
 </pre>
@@ -340,23 +337,23 @@ file or data stream.</p>
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
 
 <pre class="text">
-  $MAGICK_HOME/lib/ImageMagick-6.8.6/modules-Q16/coders/
-  &lt;<em>client path</em>&gt;/../lib/ImageMagick-6.8.6/modules-Q16/coders/
-  $MAGICK_HOME/lib/ImageMagick-6.8.6/modules-Q16/coders
-  $MAGICK_HOME/share/ImageMagick-6.8.6/modules-Q16/coders
-  $HOME/.magick/
-  &lt;<em>client path</em>&gt;/lib/ImageMagick-6.8.6/modules-Q16/coders
+  $MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/coders/
+  &lt;<em>client path</em>&gt;/../lib/ImageMagick-7.0.0/modules-Q16/coders/
+  $MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/coders
+  $MAGICK_HOME/share/ImageMagick-7.0.0/modules-Q16/coders
+  $HOME/.config/ImageMagick/
+  &lt;<em>client path</em>&gt;/lib/ImageMagick-7.0.0/modules-Q16/coders
 </pre>
 
 <h4>Filters</h4>
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
 <pre class="text">
-  $MAGICK_HOME/lib/ImageMagick-6.8.6/modules-Q16/filters/
-  &lt;<em>client path</em>&gt;/../lib/ImageMagick-6.8.6/modules-Q16/filters/
-  $MAGICK_HOME/lib/ImageMagick-6.8.6/modules-Q16/filters
-  $MAGICK_HOME/share/ImageMagick-6.8.6/modules-Q16/filters
-  $HOME/.magick/
-  &lt;<em>client path</em>&gt;/lib/ImageMagick-6.8.6/modules-Q16/filters
+  $MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/filters/
+  &lt;<em>client path</em>&gt;/../lib/ImageMagick-7.0.0/modules-Q16/filters/
+  $MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/filters
+  $MAGICK_HOME/share/ImageMagick-7.0.0/modules-Q16/filters
+  $HOME/.config/ImageMagick/
+  &lt;<em>client path</em>&gt;/lib/ImageMagick-7.0.0/modules-Q16/filters
 </pre>
 
 </div>
@@ -369,8 +366,8 @@ file or data stream.</p>
 <pre class="text">
   $MAGICK_CONFIGURE_PATH
   $MAGICK_HOME/etc/ImageMagick/
-  $MAGICK_HOME/share/ImageMagick-6.8.6/
-  $HOME/.magick/
+  $MAGICK_HOME/share/ImageMagick-7.0.0/
+  $HOME/.config/ImageMagick/
   &lt;<em>client path</em>&gt;/etc/ImageMagick/
   $MAGICK_FONT_PATH
 </pre>
@@ -384,7 +381,7 @@ file or data stream.</p>
 
 <dl>
 <dt class="doc">HOME</dt>
-  <dd>Set path to search for configuration files in <em>$HOME/.magick</em> if the directory exists.</dd>
+  <dd>Set path to search for configuration files in <em>$HOME/.config/ImageMagick</em> if the directory exists.</dd>
 <dt class="doc">LD_LIBRARY_PATH</dt>
   <dd>Set path to the ImageMagick shareable libraries and other dependent libraries.</dd>
 <dt class="doc">MAGICK_AREA_LIMIT</dt>
@@ -405,6 +402,8 @@ file or data stream.</p>
 <dt class="doc"><a id="disk-limit"></a>MAGICK_DISK_LIMIT</dt>
   <dd>Set maximum amount of disk space in bytes permitted for use by the pixel cache.</dd>
   <dd>When this limit is exceeded, the pixel cache is not be created and an error message is returned.</dd>
+<dt class="doc">MAGICK_ERRORMODE</dt>
+  <dd>Set the process error mode (Windows only).  A typical use might be a value of 1 to prevent error mode dialogs from displaying a message box and hanging the application.</dd>
 <dt class="doc">MAGICK_FILE_LIMIT</dt>
   <dd>Set maximum number of open pixel cache files.</dd>
   <dd>When this limit is exceeded, any subsequent pixels cached to disk are closed and reopened on demand.  This behavior permits a large number of images to be accessed simultaneously on disk, but with a speed penalty due to repeated open/close calls.</dd>
@@ -420,6 +419,8 @@ file or data stream.</p>
 <dt class="doc">MAGICK_MEMORY_LIMIT</dt>
   <dd>Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.</dd>
   <dd>When this limit is exceeded, the image pixels are cached to memory-mapped disk (see <a href="resources.html#map-limit">MAGICK_MAP_LIMIT</a>).</dd>
+<dt class="doc">MAGICK_OCL_DEVICE</dt>
+  <dd>Set to <code>off</code> to disable hardware acceleration of certain accelerated algorithms (e.g. blur, convolve, etc.).</dd>
 <dt class="doc">MAGICK_PRECISION</dt>
   <dd>Set the maximum number of significant digits to be printed.</dd>
 <dt class="doc">MAGICK_SHRED_PASSES</dt>
@@ -437,8 +438,9 @@ file or data stream.</p>
   <dd>Set maximum time in seconds.</dd>
   <dd>When this limit is exceeded, an exception is thrown and processing stops.</dd>
 </dl>
-<p>Define arguments for the MAGICK_AREA_LIMIT, MAGICK_DISK_LIMIT, MAGICK_MAP_LIMIT, and MAGICK_MEMORY_LIMIT environment variables with SI prefixes (.e.g 100MB).</p>
+<p>Define arguments for the <code>MAGICK_AREA_LIMIT</code>, <code>MAGICK_DISK_LIMIT</code>, <code>MAGICK_MAP_LIMIT</code>, and <code>MAGICK_MEMORY_LIMIT</code> environment variables with SI prefixes (.e.g <code>100MB</code>).</p>
 </div>
+
 
 </div>
 
@@ -454,7 +456,7 @@ file or data stream.</p>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

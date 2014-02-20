@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -186,10 +183,10 @@
 
 <p>We list a few examples of the <code>convert</code> command here to illustrate its usefulness and ease of use.  To get started, lets convert an image in the JPEG format to PNG:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert rose.jpg rose.png</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert rose.jpg rose.png</span></p>
 <p>Next, we reduce the image size before it is written to the PNG format:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert rose.jpg -resize 50% rose.png</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert rose.jpg -resize 50% rose.png</span></p>
 <p class="image">
   <a href="../images/rose.jpg">
   <img src="../images/rose.jpg" width="70" height="46" alt="rose"></img>
@@ -202,7 +199,7 @@
 
 <p>You can combine multiple image-processing operations to produce complex results:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \ <br></br>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \ <br></br>
 -draw "text 25,60 'Magick'" -channel RGBA -blur 0x6 -fill darkred -stroke magenta \ <br></br>
 -draw "text 20,55 'Magick'" fuzzy-magick.png</span></p>
 <p class="image">
@@ -211,7 +208,7 @@
 
 <p>or here we resize an image with improved quality:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert input.png -colorspace RGB +sigmoidal-contrast 11.6933 \ <br></br>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert input.png -colorspace RGB +sigmoidal-contrast 11.6933 \ <br></br>
   -define filter:filter=Sinc -define filter:window=Jinc -define filter:lobes=3      \ <br></br>
   -resize 400% -sigmoidal-contrast 11.6933 -colorspace sRGB output.png</span></p>
 <p>You can find additional examples of using <code>convert</code> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
@@ -439,6 +436,16 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td valign="top"><a href="command-line-options.html#comment">-comment <em class="option">string</em></a></td>
     <td valign="top">annotate image with comment</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#compare">-compare</a></td>
+    <td valign="top">compare image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#complex">-complex<em class="option">operator</em></a></td>
+    <td valign="top">perform complex mathematics on an image sequence</td>
   </tr>
 
   <tr>
@@ -817,6 +824,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td valign="top"><a href="command-line-options.html#list">-list <em class="option">type</em></a></td>
+    <td valign="top">Color, Configure, Delegate, Format, Magic, Module, Resource, or Type</td>
+  </tr>
+
+  <tr>
     <td valign="top"><a href="command-line-options.html#log">-log <em class="option">format</em></a></td>
     <td valign="top">format of debugging information</td>
   </tr>
@@ -842,6 +854,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td valign="top"><a href="command-line-options.html#metric">-metric <em class="option">type</em></a></td>
+    <td valign="top">measure differences between images with this metric</td>
+  </tr>
+
+  <tr>
     <td valign="top"><a href="command-line-options.html#mode">-mode <em class="option">radius</em></a></td>
     <td valign="top">make each pixel the 'predominant color' of the neighborhood</td>
   </tr>
@@ -849,6 +866,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td valign="top"><a href="command-line-options.html#modulate">-modulate <em class="option">value</em></a></td>
     <td valign="top">vary the brightness, saturation, and hue</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#moments">-moments</a></td>
+    <td valign="top">display image moments.</td>
   </tr>
 
   <tr>
@@ -1375,7 +1397,7 @@ transparent, extract, background, or shape the alpha channel</td>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

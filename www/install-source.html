@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -182,7 +179,7 @@
 <div class="doc-section">
 <p>Chances are, ImageMagick is already installed on your computer if you are using some flavor of Unix, but that it is not installed if you are using some form of Windows.  In either case, you can type the following to find out.</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -version</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -version</span></p>
 <p>If the <a href="identify.html">identify</a> program executes and identifies itself as ImageMagick, you may not need to install ImageMagick from source unless you want to add support for additional image formats or upgrade to a newer version.  You also have the option of installing a pre-compiled <a href="binary-releases.html">binary release</a>.  However, if you still want to install from source, choose a platform, <a href="install-source.html#unix">Unix</a> or <a href="install-source.html#windows">Windows</a>.  Before installing from source, you may want to review recent <a href="changelog.html">changes</a> to the ImageMagick distribution.</p>
 </div>
 
@@ -193,22 +190,22 @@
 
 <p>Unpack the distribution with this command:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">tar xvfz ImageMagick.tar.gz</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">tar xvfz ImageMagick.tar.gz</span></p>
 <p>Next configure and compile ImageMagick:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cd ImageMagick-6.8.6</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">./configure</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">make</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd ImageMagick-7.0.0</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">./configure</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">make</span></p>
 <p>If ImageMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">sudo make install</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo make install</span></p>
 <p>You may need to configure the dynamic linker run-time bindings:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">sudo ldconfig /usr/local/lib</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo ldconfig /usr/local/lib</span></p>
 <p>Finally, verify the ImageMagick install worked properly, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">/usr/local/bin/convert logo: logo.gif</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">/usr/local/bin/convert logo: logo.gif</span></p>
 <p>For a more comprehensive test, run the ImageMagick validation suite. Ghostscript is a prerequisite, otherwise the EPS, PS, and PDF tests will fail.</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">make check</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">make check</span></p>
 <p>Congratulations, you have a working ImageMagick distribution and you are ready to use ImageMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="api.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
 <p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you don't have administrator privileges and what if you don't want to install ImageMagick in the default <code>/../usr/local</code> folder?  You will find the answer to these questions, and more, in <a href="advanced-unix-installation.html">Advanced Unix Source Installation</a>.</p>
@@ -224,23 +221,23 @@
 
 <p>You can unpack the distribution with <a href="http://www.winzip.com">WinZip</a> or type the following from any MS-DOS Command Prompt window:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">unzip ImageMagick-windows.zip</span></p>
-<p>Next, launch your Visual Studio IDE and choose <kbd>Open-&gt;Project</kbd>.  Select the configure workspace from the <kbd>ImageMagick-6.8.6/VisualMagick/configure</kbd> folder and press Open.  Choose <kbd>Build-&gt;Build Solution</kbd>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">unzip ImageMagick-windows.zip</span></p>
+<p>Next, launch your Visual Studio IDE and choose <kbd>Open-&gt;Project</kbd>.  Select the configure workspace from the <kbd>ImageMagick-7.0.0/VisualMagick/configure</kbd> folder and press Open.  Choose <kbd>Build-&gt;Build Solution</kbd>
 to compile the program and on completion run the program.</p>
 
 <p class="image"><img src="../images/configure.jpg" alt="[configure]"></img></p>
 
-<p>Press <kbd>Next</kbd> and click on the multi-threaded static build.  If you are using the Visual Studio 6.0 IDE, make sure no check is next to the <em>Generate Visual Studio 7</em> format option.  Now press, on <kbd>Next</kbd> twice and finally <kbd>Finish</kbd>.  The configuration utility just created a workspace required to build ImageMagick from source.  Choose <kbd>Open-&gt;Project</kbd> and select the VisualStaticMT workspace from the <kbd>ImageMagick-6.8.6/VisualMagick/</kbd>  folder.  Finally, choose <kbd>Build-&gt;Build Solution</kbd> to compile and build the ImageMagick distribution.</p>
+<p>Press <kbd>Next</kbd> and click on the multi-threaded static build.  If you are using the Visual Studio 6.0 IDE, make sure no check is next to the <em>Generate Visual Studio 7</em> format option.  Now press, on <kbd>Next</kbd> twice and finally <kbd>Finish</kbd>.  The configuration utility just created a workspace required to build ImageMagick from source.  Choose <kbd>Open-&gt;Project</kbd> and select the VisualStaticMT workspace from the <kbd>ImageMagick-7.0.0/VisualMagick/</kbd>  folder.  Finally, choose <kbd>Build-&gt;Build Solution</kbd> to compile and build the ImageMagick distribution.</p>
 
 <p>To verify ImageMagick is working properly, launch a MS-DOS Command Prompt window and type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cd ImageMagick-6.8.6</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">convert logo: image.jpg</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd ImageMagick-7.0.0</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert logo: image.jpg</span></p>
 <p>For a more comprehensive test, run the ImageMagick validation suite:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">validate</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">validate</span></p>
 <p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="api.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
-<p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you want to install ImageMagick in a place other than the <kbd>ImageMagick-6.8.6/VisualMagick/bin</kbd> folder?  Or perhaps you want to build and install the <a href="ImageMagickObject.html">ImageMagickObject</a> COM+ component.  You will find the answer to these questions, and more, in <a href="advanced-windows-installation.html">Advanced Windows Source Installation</a>.</p>
+<p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you want to install ImageMagick in a place other than the <kbd>ImageMagick-7.0.0/VisualMagick/bin</kbd> folder?  Or perhaps you want to build and install the <a href="ImageMagickObject.html">ImageMagickObject</a> COM+ component.  You will find the answer to these questions, and more, in <a href="advanced-windows-installation.html">Advanced Windows Source Installation</a>.</p>
 </div>
 
 
@@ -258,7 +255,7 @@ to compile the program and on completion run the program.</p>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>
