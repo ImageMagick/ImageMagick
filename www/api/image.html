@@ -1,29 +1,34 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickCore, C API for ImageMagick: Image Methods</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -32,15 +37,15 @@
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
   
   <script type="text/javascript">
@@ -57,7 +62,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,18 +82,24 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
@@ -126,7 +145,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,30 +171,56 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="../../www/support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
-  
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
 </div>
 
 <div class="main">
 
 <h1>Module image Methods</h1>
-<p class="navigation-index">[<a href="image.html#AcquireImage">AcquireImage</a> • <a href="image.html#AcquireImageInfo">AcquireImageInfo</a> • <a href="image.html#AcquireNextImage">AcquireNextImage</a> • <a href="image.html#AppendImages">AppendImages</a> • <a href="image.html#CatchImageException">CatchImageException</a> • <a href="image.html#ClipImagePath">ClipImagePath</a> • <a href="image.html#CloneImage">CloneImage</a> • <a href="image.html#CloneImageInfo">CloneImageInfo</a> • <a href="image.html#DestroyImage">DestroyImage</a> • <a href="image.html#DestroyImageInfo">DestroyImageInfo</a> • <a href="image.html#GetImageClipMask">GetImageClipMask</a> • <a href="image.html#GetImageException">GetImageException</a> • <a href="image.html#GetImageInfo">GetImageInfo</a> • <a href="image.html#GetImageInfoFile">GetImageInfoFile</a> • <a href="image.html#GetImageMask">GetImageMask</a> • <a href="image.html#GetImageChannels">GetImageChannels</a> • <a href="image.html#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> • <a href="image.html#InterpretImageFilename">InterpretImageFilename</a> • <a href="image.html#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> • <a href="image.html#IsImageObject">IsImageObject</a> • <a href="image.html#IsTaintImage">IsTaintImage</a> • <a href="image.html#ModifyImage">ModifyImage</a> • <a href="image.html#NewMagickImage">NewMagickImage</a> • <a href="image.html#ReferenceImage">ReferenceImage</a> • <a href="image.html#ResetImagePage">ResetImagePage</a> • <a href="image.html#SetImageBackgroundColor">SetImageBackgroundColor</a> • <a href="image.html#SetImageChannels">SetImageChannels</a> • <a href="image.html#SetImageColor">SetImageColor</a> • <a href="image.html#SetImageStorageClass">SetImageStorageClass</a> • <a href="image.html#SetImageClipMask">SetImageClipMask</a> • <a href="image.html#SetImageExtent">SetImageExtent</a> • <a href="image.html#SetImageInfoBlob">SetImageInfoBlob</a> • <a href="image.html#SetImageInfoFile">SetImageInfoFile</a> • <a href="image.html#SetImageMask">SetImageMask</a> • <a href="image.html#SetImageOpacity">SetImageOpacity</a> • <a href="image.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> • <a href="image.html#SmushImages">SmushImages</a> • <a href="image.html#StripImage">StripImage</a> • <a href="image.html#SyncImageSettings">SyncImageSettings</a>]</p>
+<p class="navigation-index">[<a href="image.html#AcquireImage">AcquireImage</a> &#8226; <a href="image.html#AcquireImageInfo">AcquireImageInfo</a> &#8226; <a href="image.html#AcquireNextImage">AcquireNextImage</a> &#8226; <a href="image.html#AppendImages">AppendImages</a> &#8226; <a href="image.html#CatchImageException">CatchImageException</a> &#8226; <a href="image.html#ClipImagePath">ClipImagePath</a> &#8226; <a href="image.html#CloneImage">CloneImage</a> &#8226; <a href="image.html#CloneImageInfo">CloneImageInfo</a> &#8226; <a href="image.html#DestroyImage">DestroyImage</a> &#8226; <a href="image.html#DestroyImageInfo">DestroyImageInfo</a> &#8226; <a href="image.html#GetImageClipMask">GetImageClipMask</a> &#8226; <a href="image.html#GetImageException">GetImageException</a> &#8226; <a href="image.html#GetImageInfo">GetImageInfo</a> &#8226; <a href="image.html#GetImageInfoFile">GetImageInfoFile</a> &#8226; <a href="image.html#GetImageMask">GetImageMask</a> &#8226; <a href="image.html#GetImageChannels">GetImageChannels</a> &#8226; <a href="image.html#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> &#8226; <a href="image.html#InterpretImageFilename">InterpretImageFilename</a> &#8226; <a href="image.html#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> &#8226; <a href="image.html#IsImageObject">IsImageObject</a> &#8226; <a href="image.html#IsTaintImage">IsTaintImage</a> &#8226; <a href="image.html#ModifyImage">ModifyImage</a> &#8226; <a href="image.html#NewMagickImage">NewMagickImage</a> &#8226; <a href="image.html#ReferenceImage">ReferenceImage</a> &#8226; <a href="image.html#ResetImagePage">ResetImagePage</a> &#8226; <a href="image.html#SetImageBackgroundColor">SetImageBackgroundColor</a> &#8226; <a href="image.html#SetImageChannels">SetImageChannels</a> &#8226; <a href="image.html#SetImageColor">SetImageColor</a> &#8226; <a href="image.html#SetImageStorageClass">SetImageStorageClass</a> &#8226; <a href="image.html#SetImageClipMask">SetImageClipMask</a> &#8226; <a href="image.html#SetImageExtent">SetImageExtent</a> &#8226; <a href="image.html#SetImageInfoBlob">SetImageInfoBlob</a> &#8226; <a href="image.html#SetImageInfoFile">SetImageInfoFile</a> &#8226; <a href="image.html#SetImageMask">SetImageMask</a> &#8226; <a href="image.html#SetImageOpacity">SetImageOpacity</a> &#8226; <a href="image.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> &#8226; <a href="image.html#SmushImages">SmushImages</a> &#8226; <a href="image.html#StripImage">StripImage</a> &#8226; <a href="image.html#SyncImageSettings">SyncImageSettings</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="AcquireImage">AcquireImage</a></h2>
 <div class="doc-section">
@@ -771,7 +816,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageExtent">SetImageExtent</a></h2>
 <div class="doc-section">
 
-<p>SetImageExtent() sets the image size (i.e. columns &amp; rows).</p>
+<p>SetImageExtent() sets the image size (i.e. columns & rows).</p>
 
 <p>The format of the SetImageExtent method is:</p>
 
@@ -981,7 +1026,7 @@
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="../../www/contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

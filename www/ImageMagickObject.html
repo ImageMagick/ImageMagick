@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -187,14 +184,14 @@
 <p>ImageMagick provides a statically-built ImageMagick object as part of its <a href="binary-releases.html#windows">Windows installation package</a>.  When this package is installed, ImageMagickObject and its sample programs are installed to this path:</p>
 
 <pre class="text">
-  c:\Program Files\ImageMagick-6.8.6-Q16\ImageMagickObject
+  c:\Program Files\ImageMagick-7.0.0-Q16\ImageMagickObject
 </pre>
 
 <p>The ImageMagickObject is registered if the checkbox, <code>Register ImageMagickObject</code>, is checked at install time.</p>
 
 <p>To execute the sample program from the Windows Command Shell, type:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cscript SimpleTest.vbs</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cscript SimpleTest.vbs</span></p>
 <p>Since the ImageMagick utility command line parsers are incorporated within ImageMagickObject, please refer to the <a href="command-line-tools.html">command-line tools</a> discussion to learn how to use it. The sample VBS scripts show how the object should be called and used and have lots of comments.</p>
 
 <p>C++ programmers should have a look at the <code>MagickCMD.cpp</code> command line utility for an example of how to call the object from C++.  The object requires a variable size list of BSTR's to emulate the command line argc, argv style calling conventions of the COM component which is more complex in C++ then in VBS or VB.</p>
@@ -210,15 +207,15 @@
 
 <p>Once the VisualStaticMT project has been built, build the ImageMagickObject with this procedure:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">cd  ImageMagick/contrib/win32/ATL7/ImageMagickObject</span><span class="crtout"></span><span class="crtprompt"> $ </span><span class="crtin">BuildImageMagickObject release</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd  ImageMagick/contrib/win32/ATL7/ImageMagickObject</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">BuildImageMagickObject release</span></p>
 <p>Here, we assume that the VisualStaticMT project has been built using the release setting for an optimized build. If the debug setting was used for a debug build, specify the argument <code>debug</code>; instead.</p>
 
 <p>To register the DLL as a COM+ server, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">regsvr32 /c /s ImageMagickObject.dll</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">regsvr32 /c /s ImageMagickObject.dll</span></p>
 <p>To unregister the DLL, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">regsvr32 /u /s ImageMagickObject.dll</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">regsvr32 /u /s ImageMagickObject.dll</span></p>
 <p>Use MagickCMD to exercise ImageMagickObject to verify that it is working properly.</p>
 
 </div>
@@ -237,7 +234,7 @@
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

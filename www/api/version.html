@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../../images/wand.png"></link>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../../discourse-server">
   <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="../../www/support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -175,7 +172,7 @@
 <div class="main">
 
 <h1>Module version Methods</h1>
-<p class="navigation-index">[<a href="version.html#GetMagickCopyright">GetMagickCopyright</a> • <a href="version.html#GetMagickDelegates">GetMagickDelegates</a> • <a href="version.html#GetMagickFeatures">GetMagickFeatures</a> • <a href="version.html#GetMagickHomeURL">GetMagickHomeURL</a> • <a href="version.html#GetMagickPackageName">GetMagickPackageName</a> • <a href="version.html#GetMagickQuantumDepth">GetMagickQuantumDepth</a> • <a href="version.html#GetMagickQuantumRange">GetMagickQuantumRange</a> • <a href="version.html#GetMagickReleaseDate">GetMagickReleaseDate</a> • <a href="version.html#GetMagickSignature">GetMagickSignature</a> • <a href="version.html#GetMagickVersion">GetMagickVersion</a> • <a href="version.html#ListMagickVersion">ListMagickVersion</a>]</p>
+<p class="navigation-index">[<a href="version.html#GetMagickCopyright">GetMagickCopyright</a> • <a href="version.html#GetMagickFeatures">GetMagickFeatures</a> • <a href="version.html#GetMagickHomeURL">GetMagickHomeURL</a> • <a href="version.html#GetMagickPackageName">GetMagickPackageName</a> • <a href="version.html#GetMagickQuantumDepth">GetMagickQuantumDepth</a> • <a href="version.html#GetMagickQuantumRange">GetMagickQuantumRange</a> • <a href="version.html#GetMagickReleaseDate">GetMagickReleaseDate</a> • <a href="version.html#GetMagickVersion">GetMagickVersion</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/version_8c.html" id="GetMagickCopyright">GetMagickCopyright</a></h2>
 <div class="doc-section">
@@ -187,20 +184,6 @@
 <pre class="code">
   const char *GetMagickCopyright(void)
 </pre>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/version_8c.html" id="GetMagickDelegates">GetMagickDelegates</a></h2>
-<div class="doc-section">
-
-<p>GetMagickDelegates() returns the ImageMagick delegate libraries.</p>
-
-<p>The format of the GetMagickDelegates method is:</p>
-
-<pre class="code">
-  const char *GetMagickDelegates(void)
-</pre>
-
-<p>No parameters are required.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/version_8c.html" id="GetMagickFeatures">GetMagickFeatures</a></h2>
@@ -291,23 +274,6 @@
 <p>No parameters are required.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/version_8c.html" id="GetMagickSignature">GetMagickSignature</a></h2>
-<div class="doc-section">
-
-<p>GetMagickSignature() returns a signature that uniquely encodes the MagickCore libary version, quantum depth, HDRI status, OS word size, and endianness.</p>
-
-<p>The format of the GetMagickSignature method is:</p>
-
-<pre class="code">
-  unsigned int GetMagickSignature(const StringInfo *nonce)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>nonce</h5>
-<p>arbitrary data.</p>
-
- </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/version_8c.html" id="GetMagickVersion">GetMagickVersion</a></h2>
 <div class="doc-section">
 
@@ -325,23 +291,6 @@
 <p>the ImageMagick version is returned as a number.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/version_8c.html" id="ListMagickVersion">ListMagickVersion</a></h2>
-<div class="doc-section">
-
-<p>ListMagickVersion() identifies the ImageMagick version by printing its attributes to the file.  Attributes include the copyright, features, and delegates.</p>
-
-<p>The format of the ListMagickVersion method is:</p>
-
-<pre class="code">
-  void ListMagickVersion(FILE *file)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>file</h5>
-<p>the file, typically stdout.</p>
-
- </div>
 
 </div>
 
@@ -357,7 +306,7 @@
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="../../www/contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

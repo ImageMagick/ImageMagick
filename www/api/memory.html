@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../../images/wand.png"></link>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../../discourse-server">
   <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="../../www/support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -175,7 +172,7 @@
 <div class="main">
 
 <h1>Module memory Methods</h1>
-<p class="navigation-index">[<a href="memory.html#AcquireAlignedMemory">AcquireAlignedMemory</a> • <a href="memory.html#AcquireMagickMemory">AcquireMagickMemory</a> • <a href="memory.html#AcquireQuantumMemory">AcquireQuantumMemory</a> • <a href="memory.html#AcquireVirtualMemory">AcquireVirtualMemory</a> • <a href="memory.html#CopyMagickMemory">CopyMagickMemory</a> • <a href="memory.html#GetMagickMemoryMethods">GetMagickMemoryMethods</a> • <a href="memory.html#GetVirtualMemoryBlob">GetVirtualMemoryBlob</a> • <a href="memory.html#RelinquishAlignedMemory">RelinquishAlignedMemory</a> • <a href="memory.html#RelinquishMagickMemory">RelinquishMagickMemory</a> • <a href="memory.html#RelinquishVirtualMemory">RelinquishVirtualMemory</a> • <a href="memory.html#ResetMagickMemory">ResetMagickMemory</a> • <a href="memory.html#ResizeMagickMemory">ResizeMagickMemory</a> • <a href="memory.html#ResizeQuantumMemory">ResizeQuantumMemory</a> • <a href="memory.html#SetMagickMemoryMethods">SetMagickMemoryMethods</a>]</p>
+<p class="navigation-index">[<a href="memory.html#AcquireAlignedMemory">AcquireAlignedMemory</a> • <a href="memory.html#AcquireMagickMemory">AcquireMagickMemory</a> • <a href="memory.html#AcquireQuantumMemory">AcquireQuantumMemory</a> • <a href="memory.html#CopyMagickMemory">CopyMagickMemory</a> • <a href="memory.html#GetMagickMemoryMethods">GetMagickMemoryMethods</a> • <a href="memory.html#RelinquishAlignedMemory">RelinquishAlignedMemory</a> • <a href="memory.html#RelinquishMagickMemory">RelinquishMagickMemory</a> • <a href="memory.html#ResetMagickMemory">ResetMagickMemory</a> • <a href="memory.html#ResizeMagickMemory">ResizeMagickMemory</a> • <a href="memory.html#ResizeQuantumMemory">ResizeQuantumMemory</a> • <a href="memory.html#SetMagickMemoryMethods">SetMagickMemoryMethods</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="AcquireAlignedMemory">AcquireAlignedMemory</a></h2>
 <div class="doc-section">
@@ -223,26 +220,6 @@
 
 <pre class="code">
   void *AcquireQuantumMemory(const size_t count,const size_t quantum)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>count</h5>
-<p>the number of quantum elements to allocate.</p>
-
-<h5>quantum</h5>
-<p>the number of bytes in each quantum.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="AcquireVirtualMemory">AcquireVirtualMemory</a></h2>
-<div class="doc-section">
-
-<p>AcquireVirtualMemory() allocates a pointer to a block of memory at least size bytes suitably aligned for any use.</p>
-
-<p>The format of the AcquireVirtualMemory method is:</p>
-
-<pre class="code">
-  MemoryInfo *AcquireVirtualMemory(const size_t count,const size_t quantum)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -303,22 +280,6 @@
 <p>method to destroy memory (e.g. free).</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="GetVirtualMemoryBlob">GetVirtualMemoryBlob</a></h2>
-<div class="doc-section">
-
-<p>GetVirtualMemoryBlob() returns the virtual memory blob associated with the specified MemoryInfo structure.</p>
-
-<p>The format of the GetVirtualMemoryBlob method is:</p>
-
-<pre class="code">
-  void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>memory_info</h5>
-<p>The MemoryInfo structure. </p>
- </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="RelinquishAlignedMemory">RelinquishAlignedMemory</a></h2>
 <div class="doc-section">
 
@@ -353,23 +314,6 @@
 <p>A pointer to a block of memory to free for reuse.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="RelinquishVirtualMemory">RelinquishVirtualMemory</a></h2>
-<div class="doc-section">
-
-<p>RelinquishVirtualMemory() frees memory acquired with AcquireVirtualMemory().</p>
-
-<p>The format of the RelinquishVirtualMemory method is:</p>
-
-<pre class="code">
-  MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>memory_info</h5>
-<p>A pointer to a block of memory to free for reuse.</p>
-
- </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="ResetMagickMemory">ResetMagickMemory</a></h2>
 <div class="doc-section">
 
@@ -384,13 +328,13 @@
 <p>A description of each parameter follows:</p>
 
 <h5>memory</h5>
-<p>a pointer to a memory allocation.</p>
+<p>A pointer to a memory allocation.</p>
 
 <h5>byte</h5>
-<p>set the memory to this value.</p>
+<p>Set the memory to this value.</p>
 
 <h5>size</h5>
-<p>size of the memory to reset.</p>
+<p>Size of the memory to reset.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="ResizeMagickMemory">ResizeMagickMemory</a></h2>
@@ -440,7 +384,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="SetMagickMemoryMethods">SetMagickMemoryMethods</a></h2>
 <div class="doc-section">
 
-<p>SetMagickMemoryMethods() sets the methods to acquire, resize, and destroy memory. Your custom memory methods must be set prior to the MagickCoreGenesis() method.</p>
+<p>SetMagickMemoryMethods() sets the methods to acquire, resize, and destroy memory.</p>
 
 <p>The format of the SetMagickMemoryMethods() method is:</p>
 
@@ -477,7 +421,7 @@
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="../../www/contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

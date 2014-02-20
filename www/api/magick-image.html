@@ -1,29 +1,34 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickWand, C API for ImageMagick: Image Methods</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickwc, api, for, imagemagick:, image, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickwc, api, for, imagemagick:, image, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -32,15 +37,15 @@
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
   
   <script type="text/javascript">
@@ -57,7 +62,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,18 +82,24 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
@@ -126,7 +145,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,30 +171,56 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="../../www/support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
-  
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
 </div>
 
 <div class="main">
 
 <h1>Module magick-image Methods</h1>
-<p class="navigation-index">[<a href="magick-image.html#GetImageFromMagickWand">GetImageFromMagickWand</a> • <a href="magick-image.html#MagickAdaptiveBlurImage">MagickAdaptiveBlurImage</a> • <a href="magick-image.html#MagickAdaptiveResizeImage">MagickAdaptiveResizeImage</a> • <a href="magick-image.html#MagickAdaptiveSharpenImage">MagickAdaptiveSharpenImage</a> • <a href="magick-image.html#MagickAdaptiveThresholdImage">MagickAdaptiveThresholdImage</a> • <a href="magick-image.html#MagickAddImage">MagickAddImage</a> • <a href="magick-image.html#MagickAddNoiseImage">MagickAddNoiseImage</a> • <a href="magick-image.html#MagickAffineTransformImage">MagickAffineTransformImage</a> • <a href="magick-image.html#MagickAnnotateImage">MagickAnnotateImage</a> • <a href="magick-image.html#MagickAnimateImages">MagickAnimateImages</a> • <a href="magick-image.html#MagickAppendImages">MagickAppendImages</a> • <a href="magick-image.html#MagickAutoGammaImage">MagickAutoGammaImage</a> • <a href="magick-image.html#MagickAutoLevelImage">MagickAutoLevelImage</a> • <a href="magick-image.html#MagickBlackThresholdImage">MagickBlackThresholdImage</a> • <a href="magick-image.html#MagickBlueShiftImage">MagickBlueShiftImage</a> • <a href="magick-image.html#MagickBlurImage">MagickBlurImage</a> • <a href="magick-image.html#MagickBorderImage">MagickBorderImage</a> • <a href="magick-image.html#Use MagickBrightnessContrastImage">Use MagickBrightnessContrastImage</a> • <a href="magick-image.html#MagickCharcoalImage">MagickCharcoalImage</a> • <a href="magick-image.html#MagickChopImage">MagickChopImage</a> • <a href="magick-image.html#MagickClampImage">MagickClampImage</a> • <a href="magick-image.html#MagickClipImage">MagickClipImage</a> • <a href="magick-image.html#MagickClipImagePath">MagickClipImagePath</a> • <a href="magick-image.html#MagickClutImage">MagickClutImage</a> • <a href="magick-image.html#MagickCoalesceImages">MagickCoalesceImages</a> • <a href="magick-image.html#MagickColorDecisionListImage">MagickColorDecisionListImage</a> • <a href="magick-image.html#MagickColorizeImage">MagickColorizeImage</a> • <a href="magick-image.html#MagickColorMatrixImage">MagickColorMatrixImage</a> • <a href="magick-image.html#MagickCombineImages">MagickCombineImages</a> • <a href="magick-image.html#MagickCommentImage">MagickCommentImage</a> • <a href="magick-image.html#MagickCompareImageChannels">MagickCompareImageChannels</a> • <a href="magick-image.html#MagickCompareImageLayers">MagickCompareImageLayers</a> • <a href="magick-image.html#MagickCompareImages">MagickCompareImages</a> • <a href="magick-image.html#MagickCompositeImage">MagickCompositeImage</a> • <a href="magick-image.html#MagickCompositeLayers">MagickCompositeLayers</a> • <a href="magick-image.html#MagickContrastImage">MagickContrastImage</a> • <a href="magick-image.html#MagickContrastStretchImage">MagickContrastStretchImage</a> • <a href="magick-image.html#MagickConvolveImage">MagickConvolveImage</a> • <a href="magick-image.html#MagickCropImage">MagickCropImage</a> • <a href="magick-image.html#MagickCycleColormapImage">MagickCycleColormapImage</a> • <a href="magick-image.html#MagickConstituteImage">MagickConstituteImage</a> • <a href="magick-image.html#MagickDecipherImage">MagickDecipherImage</a> • <a href="magick-image.html#MagickDeconstructImages">MagickDeconstructImages</a> • <a href="magick-image.html#MagickDeskewImage">MagickDeskewImage</a> • <a href="magick-image.html#MagickDespeckleImage">MagickDespeckleImage</a> • <a href="magick-image.html#MagickDestroyImage">MagickDestroyImage</a> • <a href="magick-image.html#MagickDisplayImage">MagickDisplayImage</a> • <a href="magick-image.html#MagickDisplayImages">MagickDisplayImages</a> • <a href="magick-image.html#MagickDistortImage">MagickDistortImage</a> • <a href="magick-image.html#MagickDrawImage">MagickDrawImage</a> • <a href="magick-image.html#MagickEdgeImage">MagickEdgeImage</a> • <a href="magick-image.html#MagickEmbossImage">MagickEmbossImage</a> • <a href="magick-image.html#MagickEncipherImage">MagickEncipherImage</a> • <a href="magick-image.html#MagickEnhanceImage">MagickEnhanceImage</a> • <a href="magick-image.html#MagickEqualizeImage">MagickEqualizeImage</a> • <a href="magick-image.html#MagickEvaluateImage">MagickEvaluateImage</a> • <a href="magick-image.html#MagickExportImagePixels">MagickExportImagePixels</a> • <a href="magick-image.html#MagickExtentImage">MagickExtentImage</a> • <a href="magick-image.html#MagickFilterImage">MagickFilterImage</a> • <a href="magick-image.html#MagickFlipImage">MagickFlipImage</a> • <a href="magick-image.html#MagickFloodfillPaintImage">MagickFloodfillPaintImage</a> • <a href="magick-image.html#MagickFlopImage">MagickFlopImage</a> • <a href="magick-image.html#MagickForwardFourierTransformImage">MagickForwardFourierTransformImage</a> • <a href="magick-image.html#MagickFrameImage">MagickFrameImage</a> • <a href="magick-image.html#MagickFunctionImage">MagickFunctionImage</a> • <a href="magick-image.html#MagickFxImage">MagickFxImage</a> • <a href="magick-image.html#MagickGammaImage">MagickGammaImage</a> • <a href="magick-image.html#MagickGaussianBlurImage">MagickGaussianBlurImage</a> • <a href="magick-image.html#MagickGetImage">MagickGetImage</a> • <a href="magick-image.html#MagickGetImageAlphaChannel">MagickGetImageAlphaChannel</a> • <a href="magick-image.html#MagickGetImageClipMask">MagickGetImageClipMask</a> • <a href="magick-image.html#MagickGetImageBackgroundColor">MagickGetImageBackgroundColor</a> • <a href="magick-image.html#MagickGetImageBlob">MagickGetImageBlob</a> • <a href="magick-image.html#MagickGetImageBlob">MagickGetImageBlob</a> • <a href="magick-image.html#MagickGetImageBluePrimary">MagickGetImageBluePrimary</a> • <a href="magick-image.html#MagickGetImageBorderColor">MagickGetImageBorderColor</a> • <a href="magick-image.html#MagickGetImageChannelDepth">MagickGetImageChannelDepth</a> • <a href="magick-image.html#MagickGetImageChannelDistortion">MagickGetImageChannelDistortion</a> • <a href="magick-image.html#MagickGetImageChannelDistortions">MagickGetImageChannelDistortions</a> • <a href="magick-image.html#MagickGetImageChannelFeatures">MagickGetImageChannelFeatures</a> • <a href="magick-image.html#MagickGetImageChannelKurtosis">MagickGetImageChannelKurtosis</a> • <a href="magick-image.html#MagickGetImageChannelMean">MagickGetImageChannelMean</a> • <a href="magick-image.html#MagickGetImageChannelRange">MagickGetImageChannelRange</a> • <a href="magick-image.html#MagickGetImageChannelStatistics">MagickGetImageChannelStatistics</a> • <a href="magick-image.html#MagickGetImageColormapColor">MagickGetImageColormapColor</a> • <a href="magick-image.html#MagickGetImageColors">MagickGetImageColors</a> • <a href="magick-image.html#MagickGetImageColorspace">MagickGetImageColorspace</a> • <a href="magick-image.html#MagickGetImageCompose">MagickGetImageCompose</a> • <a href="magick-image.html#MagickGetImageCompression">MagickGetImageCompression</a> • <a href="magick-image.html#MagickGetImageCompressionQuality">MagickGetImageCompressionQuality</a> • <a href="magick-image.html#MagickGetImageDelay">MagickGetImageDelay</a> • <a href="magick-image.html#MagickGetImageDepth">MagickGetImageDepth</a> • <a href="magick-image.html#MagickGetImageDistortion">MagickGetImageDistortion</a> • <a href="magick-image.html#MagickGetImageDispose">MagickGetImageDispose</a> • <a href="magick-image.html#MagickGetImageEndian">MagickGetImageEndian</a> • <a href="magick-image.html#MagickGetImageFilename">MagickGetImageFilename</a> • <a href="magick-image.html#MagickGetImageFormat">MagickGetImageFormat</a> • <a href="magick-image.html#MagickGetImageFuzz">MagickGetImageFuzz</a> • <a href="magick-image.html#MagickGetImageGamma">MagickGetImageGamma</a> • <a href="magick-image.html#MagickGetImageGravity">MagickGetImageGravity</a> • <a href="magick-image.html#MagickGetImageGreenPrimary">MagickGetImageGreenPrimary</a> • <a href="magick-image.html#MagickGetImageHeight">MagickGetImageHeight</a> • <a href="magick-image.html#MagickGetImageHistogram">MagickGetImageHistogram</a> • <a href="magick-image.html#MagickGetImageInterlaceScheme">MagickGetImageInterlaceScheme</a> • <a href="magick-image.html#MagickGetImageInterpolateMethod">MagickGetImageInterpolateMethod</a> • <a href="magick-image.html#MagickGetImageIterations">MagickGetImageIterations</a> • <a href="magick-image.html#MagickGetImageLength">MagickGetImageLength</a> • <a href="magick-image.html#MagickGetImageMatteColor">MagickGetImageMatteColor</a> • <a href="magick-image.html#MagickGetImageOrientation">MagickGetImageOrientation</a> • <a href="magick-image.html#MagickGetImagePage">MagickGetImagePage</a> • <a href="magick-image.html#MagickGetImagePixelColor">MagickGetImagePixelColor</a> • <a href="magick-image.html#MagickGetImageRedPrimary">MagickGetImageRedPrimary</a> • <a href="magick-image.html#MagickGetImageRegion">MagickGetImageRegion</a> • <a href="magick-image.html#MagickGetImageRenderingIntent">MagickGetImageRenderingIntent</a> • <a href="magick-image.html#MagickGetImageResolution">MagickGetImageResolution</a> • <a href="magick-image.html#MagickGetImageScene">MagickGetImageScene</a> • <a href="magick-image.html#MagickGetImageSignature">MagickGetImageSignature</a> • <a href="magick-image.html#MagickGetImageTicksPerSecond">MagickGetImageTicksPerSecond</a> • <a href="magick-image.html#MagickGetImageType">MagickGetImageType</a> • <a href="magick-image.html#MagickGetImageUnits">MagickGetImageUnits</a> • <a href="magick-image.html#MagickGetImageVirtualPixelMethod">MagickGetImageVirtualPixelMethod</a> • <a href="magick-image.html#MagickGetImageWhitePoint">MagickGetImageWhitePoint</a> • <a href="magick-image.html#MagickGetImageWidth">MagickGetImageWidth</a> • <a href="magick-image.html#MagickGetNumberImages">MagickGetNumberImages</a> • <a href="magick-image.html#MagickGetImageTotalInkDensity">MagickGetImageTotalInkDensity</a> • <a href="magick-image.html#MagickHaldClutImage">MagickHaldClutImage</a> • <a href="magick-image.html#MagickHasNextImage">MagickHasNextImage</a> • <a href="magick-image.html#MagickHasPreviousImage">MagickHasPreviousImage</a> • <a href="magick-image.html#MagickIdentifyImage">MagickIdentifyImage</a> • <a href="magick-image.html#MagickImplodeImage">MagickImplodeImage</a> • <a href="magick-image.html#MagickImportImagePixels">MagickImportImagePixels</a> • <a href="magick-image.html#MagickInverseFourierTransformImage">MagickInverseFourierTransformImage</a> • <a href="magick-image.html#MagickLabelImage">MagickLabelImage</a> • <a href="magick-image.html#MagickLevelImage">MagickLevelImage</a> • <a href="magick-image.html#MagickLinearStretchImage">MagickLinearStretchImage</a> • <a href="magick-image.html#MagickLiquidRescaleImage">MagickLiquidRescaleImage</a> • <a href="magick-image.html#MagickMagnifyImage">MagickMagnifyImage</a> • <a href="magick-image.html#MagickMergeImageLayers">MagickMergeImageLayers</a> • <a href="magick-image.html#MagickMinifyImage">MagickMinifyImage</a> • <a href="magick-image.html#MagickModulateImage">MagickModulateImage</a> • <a href="magick-image.html#MagickMontageImage">MagickMontageImage</a> • <a href="magick-image.html#MagickMorphImages">MagickMorphImages</a> • <a href="magick-image.html#MagickMorphologyImage">MagickMorphologyImage</a> • <a href="magick-image.html#MagickMotionBlurImage">MagickMotionBlurImage</a> • <a href="magick-image.html#MagickNegateImage">MagickNegateImage</a> • <a href="magick-image.html#MagickNewImage">MagickNewImage</a> • <a href="magick-image.html#MagickNextImage">MagickNextImage</a> • <a href="magick-image.html#MagickNormalizeImage">MagickNormalizeImage</a> • <a href="magick-image.html#MagickOilPaintImage">MagickOilPaintImage</a> • <a href="magick-image.html#MagickOpaquePaintImage">MagickOpaquePaintImage</a> • <a href="magick-image.html#MagickOptimizeImageLayers">MagickOptimizeImageLayers</a> • <a href="magick-image.html#MagickOptimizeImageTransparency">MagickOptimizeImageTransparency</a> • <a href="magick-image.html#MagickOrderedPosterizeImage">MagickOrderedPosterizeImage</a> • <a href="magick-image.html#MagickPingImage">MagickPingImage</a> • <a href="magick-image.html#MagickPingImageBlob">MagickPingImageBlob</a> • <a href="magick-image.html#MagickPingImageFile">MagickPingImageFile</a> • <a href="magick-image.html#MagickPolaroidImage">MagickPolaroidImage</a> • <a href="magick-image.html#MagickPosterizeImage">MagickPosterizeImage</a> • <a href="magick-image.html#MagickPreviewImages">MagickPreviewImages</a> • <a href="magick-image.html#MagickPreviousImage">MagickPreviousImage</a> • <a href="magick-image.html#MagickQuantizeImage">MagickQuantizeImage</a> • <a href="magick-image.html#MagickQuantizeImages">MagickQuantizeImages</a> • <a href="magick-image.html#MagickRadialBlurImage">MagickRadialBlurImage</a> • <a href="magick-image.html#MagickRaiseImage">MagickRaiseImage</a> • <a href="magick-image.html#MagickRandomThresholdImage">MagickRandomThresholdImage</a> • <a href="magick-image.html#MagickReadImage">MagickReadImage</a> • <a href="magick-image.html#MagickReadImageBlob">MagickReadImageBlob</a> • <a href="magick-image.html#MagickReadImageFile">MagickReadImageFile</a> • <a href="magick-image.html#MagickRemapImage">MagickRemapImage</a> • <a href="magick-image.html#MagickRemoveImage">MagickRemoveImage</a> • <a href="magick-image.html#MagickResampleImage">MagickResampleImage</a> • <a href="magick-image.html#MagickResetImagePage">MagickResetImagePage</a> • <a href="magick-image.html#MagickResizeImage">MagickResizeImage</a> • <a href="magick-image.html#MagickRollImage">MagickRollImage</a> • <a href="magick-image.html#MagickRotateImage">MagickRotateImage</a> • <a href="magick-image.html#MagickSampleImage">MagickSampleImage</a> • <a href="magick-image.html#MagickScaleImage">MagickScaleImage</a> • <a href="magick-image.html#MagickSegmentImage">MagickSegmentImage</a> • <a href="magick-image.html#MagickSelectiveBlurImage">MagickSelectiveBlurImage</a> • <a href="magick-image.html#MagickSeparateImageChannel">MagickSeparateImageChannel</a> • <a href="magick-image.html#MagickSepiaToneImage">MagickSepiaToneImage</a> • <a href="magick-image.html#MagickSetImage">MagickSetImage</a> • <a href="magick-image.html#MagickSetImageAlphaChannel">MagickSetImageAlphaChannel</a> • <a href="magick-image.html#MagickSetImageBackgroundColor">MagickSetImageBackgroundColor</a> • <a href="magick-image.html#MagickSetImageBias">MagickSetImageBias</a> • <a href="magick-image.html#MagickSetImageBluePrimary">MagickSetImageBluePrimary</a> • <a href="magick-image.html#MagickSetImageBorderColor">MagickSetImageBorderColor</a> • <a href="magick-image.html#MagickSetImageChannelDepth">MagickSetImageChannelDepth</a> • <a href="magick-image.html#MagickSetImageClipMask">MagickSetImageClipMask</a> • <a href="magick-image.html#MagickSetImageColor">MagickSetImageColor</a> • <a href="magick-image.html#MagickSetImageColormapColor">MagickSetImageColormapColor</a> • <a href="magick-image.html#MagickSetImageColorspace">MagickSetImageColorspace</a> • <a href="magick-image.html#MagickSetImageCompose">MagickSetImageCompose</a> • <a href="magick-image.html#MagickSetImageCompression">MagickSetImageCompression</a> • <a href="magick-image.html#MagickSetImageCompressionQuality">MagickSetImageCompressionQuality</a> • <a href="magick-image.html#MagickSetImageDelay">MagickSetImageDelay</a> • <a href="magick-image.html#MagickSetImageDepth">MagickSetImageDepth</a> • <a href="magick-image.html#MagickSetImageDispose">MagickSetImageDispose</a> • <a href="magick-image.html#MagickSetImageEndian">MagickSetImageEndian</a> • <a href="magick-image.html#MagickSetImageExtent">MagickSetImageExtent</a> • <a href="magick-image.html#MagickSetImageFilename">MagickSetImageFilename</a> • <a href="magick-image.html#MagickSetImageFormat">MagickSetImageFormat</a> • <a href="magick-image.html#MagickSetImageFuzz">MagickSetImageFuzz</a> • <a href="magick-image.html#MagickSetImageGamma">MagickSetImageGamma</a> • <a href="magick-image.html#MagickSetImageGravity">MagickSetImageGravity</a> • <a href="magick-image.html#MagickSetImageGreenPrimary">MagickSetImageGreenPrimary</a> • <a href="magick-image.html#MagickSetImageInterlaceScheme">MagickSetImageInterlaceScheme</a> • <a href="magick-image.html#MagickSetImageInterpolateMethod">MagickSetImageInterpolateMethod</a> • <a href="magick-image.html#MagickSetImageIterations">MagickSetImageIterations</a> • <a href="magick-image.html#MagickSetImageMatte">MagickSetImageMatte</a> • <a href="magick-image.html#MagickSetImageMatteColor">MagickSetImageMatteColor</a> • <a href="magick-image.html#MagickSetImageOpacity">MagickSetImageOpacity</a> • <a href="magick-image.html#MagickSetImageOrientation">MagickSetImageOrientation</a> • <a href="magick-image.html#MagickSetImagePage">MagickSetImagePage</a> • <a href="magick-image.html#MagickSetImageProgressMonitor">MagickSetImageProgressMonitor</a> • <a href="magick-image.html#MagickSetImageRedPrimary">MagickSetImageRedPrimary</a> • <a href="magick-image.html#MagickSetImageRenderingIntent">MagickSetImageRenderingIntent</a> • <a href="magick-image.html#MagickSetImageResolution">MagickSetImageResolution</a> • <a href="magick-image.html#MagickSetImageScene">MagickSetImageScene</a> • <a href="magick-image.html#MagickSetImageTicksPerSecond">MagickSetImageTicksPerSecond</a> • <a href="magick-image.html#MagickSetImageType">MagickSetImageType</a> • <a href="magick-image.html#MagickSetImageUnits">MagickSetImageUnits</a> • <a href="magick-image.html#MagickSetImageVirtualPixelMethod">MagickSetImageVirtualPixelMethod</a> • <a href="magick-image.html#MagickSetImageWhitePoint">MagickSetImageWhitePoint</a> • <a href="magick-image.html#MagickShadeImage">MagickShadeImage</a> • <a href="magick-image.html#MagickShadowImage">MagickShadowImage</a> • <a href="magick-image.html#MagickSharpenImage">MagickSharpenImage</a> • <a href="magick-image.html#MagickShaveImage">MagickShaveImage</a> • <a href="magick-image.html#MagickShearImage">MagickShearImage</a> • <a href="magick-image.html#MagickSigmoidalContrastImage">MagickSigmoidalContrastImage</a> • <a href="magick-image.html#MagickSimilarityImage">MagickSimilarityImage</a> • <a href="magick-image.html#MagickSketchImage">MagickSketchImage</a> • <a href="magick-image.html#MagickSmushImages">MagickSmushImages</a> • <a href="magick-image.html#MagickSolarizeImage">MagickSolarizeImage</a> • <a href="magick-image.html#MagickSparseColorImage">MagickSparseColorImage</a> • <a href="magick-image.html#MagickSpliceImage">MagickSpliceImage</a> • <a href="magick-image.html#MagickSpreadImage">MagickSpreadImage</a> • <a href="magick-image.html#MagickStatisticImage">MagickStatisticImage</a> • <a href="magick-image.html#MagickSteganoImage">MagickSteganoImage</a> • <a href="magick-image.html#MagickStereoImage">MagickStereoImage</a> • <a href="magick-image.html#MagickStripImage">MagickStripImage</a> • <a href="magick-image.html#MagickSwirlImage">MagickSwirlImage</a> • <a href="magick-image.html#MagickTextureImage">MagickTextureImage</a> • <a href="magick-image.html#MagickThresholdImage">MagickThresholdImage</a> • <a href="magick-image.html#MagickThumbnailImage">MagickThumbnailImage</a> • <a href="magick-image.html#MagickTintImage">MagickTintImage</a> • <a href="magick-image.html#MagickTransformImage">MagickTransformImage</a> • <a href="magick-image.html#MagickTransformImageColorspace">MagickTransformImageColorspace</a> • <a href="magick-image.html#MagickTransparentPaintImage">MagickTransparentPaintImage</a> • <a href="magick-image.html#MagickTransposeImage">MagickTransposeImage</a> • <a href="magick-image.html#MagickTransverseImage">MagickTransverseImage</a> • <a href="magick-image.html#MagickTrimImage">MagickTrimImage</a> • <a href="magick-image.html#MagickUniqueImageColors">MagickUniqueImageColors</a> • <a href="magick-image.html#MagickUnsharpMaskImage">MagickUnsharpMaskImage</a> • <a href="magick-image.html#MagickVignetteImage">MagickVignetteImage</a> • <a href="magick-image.html#MagickWaveImage">MagickWaveImage</a> • <a href="magick-image.html#MagickWhiteThresholdImage">MagickWhiteThresholdImage</a> • <a href="magick-image.html#MagickWriteImage">MagickWriteImage</a> • <a href="magick-image.html#MagickWriteImageFile">MagickWriteImageFile</a> • <a href="magick-image.html#MagickWriteImages">MagickWriteImages</a> • <a href="magick-image.html#MagickWriteImagesFile">MagickWriteImagesFile</a>]</p>
+<p class="navigation-index">[<a href="magick-image.html#GetImageFromMagickWand">GetImageFromMagickWand</a> &#8226; <a href="magick-image.html#MagickAdaptiveBlurImage">MagickAdaptiveBlurImage</a> &#8226; <a href="magick-image.html#MagickAdaptiveResizeImage">MagickAdaptiveResizeImage</a> &#8226; <a href="magick-image.html#MagickAdaptiveSharpenImage">MagickAdaptiveSharpenImage</a> &#8226; <a href="magick-image.html#MagickAdaptiveThresholdImage">MagickAdaptiveThresholdImage</a> &#8226; <a href="magick-image.html#MagickAddImage">MagickAddImage</a> &#8226; <a href="magick-image.html#MagickAddNoiseImage">MagickAddNoiseImage</a> &#8226; <a href="magick-image.html#MagickAffineTransformImage">MagickAffineTransformImage</a> &#8226; <a href="magick-image.html#MagickAnnotateImage">MagickAnnotateImage</a> &#8226; <a href="magick-image.html#MagickAnimateImages">MagickAnimateImages</a> &#8226; <a href="magick-image.html#MagickAppendImages">MagickAppendImages</a> &#8226; <a href="magick-image.html#MagickAutoGammaImage">MagickAutoGammaImage</a> &#8226; <a href="magick-image.html#MagickAutoLevelImage">MagickAutoLevelImage</a> &#8226; <a href="magick-image.html#MagickBlackThresholdImage">MagickBlackThresholdImage</a> &#8226; <a href="magick-image.html#MagickBlueShiftImage">MagickBlueShiftImage</a> &#8226; <a href="magick-image.html#MagickBlurImage">MagickBlurImage</a> &#8226; <a href="magick-image.html#MagickBorderImage">MagickBorderImage</a> &#8226; <a href="magick-image.html#Use MagickBrightnessContrastImage">Use MagickBrightnessContrastImage</a> &#8226; <a href="magick-image.html#MagickCharcoalImage">MagickCharcoalImage</a> &#8226; <a href="magick-image.html#MagickChopImage">MagickChopImage</a> &#8226; <a href="magick-image.html#MagickClampImage">MagickClampImage</a> &#8226; <a href="magick-image.html#MagickClipImage">MagickClipImage</a> &#8226; <a href="magick-image.html#MagickClipImagePath">MagickClipImagePath</a> &#8226; <a href="magick-image.html#MagickClutImage">MagickClutImage</a> &#8226; <a href="magick-image.html#MagickCoalesceImages">MagickCoalesceImages</a> &#8226; <a href="magick-image.html#MagickColorDecisionListImage">MagickColorDecisionListImage</a> &#8226; <a href="magick-image.html#MagickColorizeImage">MagickColorizeImage</a> &#8226; <a href="magick-image.html#MagickColorMatrixImage">MagickColorMatrixImage</a> &#8226; <a href="magick-image.html#MagickCombineImages">MagickCombineImages</a> &#8226; <a href="magick-image.html#MagickCommentImage">MagickCommentImage</a> &#8226; <a href="magick-image.html#MagickCompareImageChannels">MagickCompareImageChannels</a> &#8226; <a href="magick-image.html#MagickCompareImageLayers">MagickCompareImageLayers</a> &#8226; <a href="magick-image.html#MagickCompareImages">MagickCompareImages</a> &#8226; <a href="magick-image.html#MagickCompositeImage">MagickCompositeImage</a> &#8226; <a href="magick-image.html#MagickCompositeLayers">MagickCompositeLayers</a> &#8226; <a href="magick-image.html#MagickContrastImage">MagickContrastImage</a> &#8226; <a href="magick-image.html#MagickContrastStretchImage">MagickContrastStretchImage</a> &#8226; <a href="magick-image.html#MagickConvolveImage">MagickConvolveImage</a> &#8226; <a href="magick-image.html#MagickCropImage">MagickCropImage</a> &#8226; <a href="magick-image.html#MagickCycleColormapImage">MagickCycleColormapImage</a> &#8226; <a href="magick-image.html#MagickConstituteImage">MagickConstituteImage</a> &#8226; <a href="magick-image.html#MagickDecipherImage">MagickDecipherImage</a> &#8226; <a href="magick-image.html#MagickDeconstructImages">MagickDeconstructImages</a> &#8226; <a href="magick-image.html#MagickDeskewImage">MagickDeskewImage</a> &#8226; <a href="magick-image.html#MagickDespeckleImage">MagickDespeckleImage</a> &#8226; <a href="magick-image.html#MagickDestroyImage">MagickDestroyImage</a> &#8226; <a href="magick-image.html#MagickDisplayImage">MagickDisplayImage</a> &#8226; <a href="magick-image.html#MagickDisplayImages">MagickDisplayImages</a> &#8226; <a href="magick-image.html#MagickDistortImage">MagickDistortImage</a> &#8226; <a href="magick-image.html#MagickDrawImage">MagickDrawImage</a> &#8226; <a href="magick-image.html#MagickEdgeImage">MagickEdgeImage</a> &#8226; <a href="magick-image.html#MagickEmbossImage">MagickEmbossImage</a> &#8226; <a href="magick-image.html#MagickEncipherImage">MagickEncipherImage</a> &#8226; <a href="magick-image.html#MagickEnhanceImage">MagickEnhanceImage</a> &#8226; <a href="magick-image.html#MagickEqualizeImage">MagickEqualizeImage</a> &#8226; <a href="magick-image.html#MagickEvaluateImage">MagickEvaluateImage</a> &#8226; <a href="magick-image.html#MagickExportImagePixels">MagickExportImagePixels</a> &#8226; <a href="magick-image.html#MagickExtentImage">MagickExtentImage</a> &#8226; <a href="magick-image.html#MagickFilterImage">MagickFilterImage</a> &#8226; <a href="magick-image.html#MagickFlipImage">MagickFlipImage</a> &#8226; <a href="magick-image.html#MagickFloodfillPaintImage">MagickFloodfillPaintImage</a> &#8226; <a href="magick-image.html#MagickFlopImage">MagickFlopImage</a> &#8226; <a href="magick-image.html#MagickForwardFourierTransformImage">MagickForwardFourierTransformImage</a> &#8226; <a href="magick-image.html#MagickFrameImage">MagickFrameImage</a> &#8226; <a href="magick-image.html#MagickFunctionImage">MagickFunctionImage</a> &#8226; <a href="magick-image.html#MagickFxImage">MagickFxImage</a> &#8226; <a href="magick-image.html#MagickGammaImage">MagickGammaImage</a> &#8226; <a href="magick-image.html#MagickGaussianBlurImage">MagickGaussianBlurImage</a> &#8226; <a href="magick-image.html#MagickGetImage">MagickGetImage</a> &#8226; <a href="magick-image.html#MagickGetImageAlphaChannel">MagickGetImageAlphaChannel</a> &#8226; <a href="magick-image.html#MagickGetImageClipMask">MagickGetImageClipMask</a> &#8226; <a href="magick-image.html#MagickGetImageBackgroundColor">MagickGetImageBackgroundColor</a> &#8226; <a href="magick-image.html#MagickGetImageBlob">MagickGetImageBlob</a> &#8226; <a href="magick-image.html#MagickGetImageBlob">MagickGetImageBlob</a> &#8226; <a href="magick-image.html#MagickGetImageBluePrimary">MagickGetImageBluePrimary</a> &#8226; <a href="magick-image.html#MagickGetImageBorderColor">MagickGetImageBorderColor</a> &#8226; <a href="magick-image.html#MagickGetImageChannelDepth">MagickGetImageChannelDepth</a> &#8226; <a href="magick-image.html#MagickGetImageChannelDistortion">MagickGetImageChannelDistortion</a> &#8226; <a href="magick-image.html#MagickGetImageChannelDistortions">MagickGetImageChannelDistortions</a> &#8226; <a href="magick-image.html#MagickGetImageChannelFeatures">MagickGetImageChannelFeatures</a> &#8226; <a href="magick-image.html#MagickGetImageChannelKurtosis">MagickGetImageChannelKurtosis</a> &#8226; <a href="magick-image.html#MagickGetImageChannelMean">MagickGetImageChannelMean</a> &#8226; <a href="magick-image.html#MagickGetImageChannelRange">MagickGetImageChannelRange</a> &#8226; <a href="magick-image.html#MagickGetImageChannelStatistics">MagickGetImageChannelStatistics</a> &#8226; <a href="magick-image.html#MagickGetImageColormapColor">MagickGetImageColormapColor</a> &#8226; <a href="magick-image.html#MagickGetImageColors">MagickGetImageColors</a> &#8226; <a href="magick-image.html#MagickGetImageColorspace">MagickGetImageColorspace</a> &#8226; <a href="magick-image.html#MagickGetImageCompose">MagickGetImageCompose</a> &#8226; <a href="magick-image.html#MagickGetImageCompression">MagickGetImageCompression</a> &#8226; <a href="magick-image.html#MagickGetImageCompressionQuality">MagickGetImageCompressionQuality</a> &#8226; <a href="magick-image.html#MagickGetImageDelay">MagickGetImageDelay</a> &#8226; <a href="magick-image.html#MagickGetImageDepth">MagickGetImageDepth</a> &#8226; <a href="magick-image.html#MagickGetImageDistortion">MagickGetImageDistortion</a> &#8226; <a href="magick-image.html#MagickGetImageDispose">MagickGetImageDispose</a> &#8226; <a href="magick-image.html#MagickGetImageEndian">MagickGetImageEndian</a> &#8226; <a href="magick-image.html#MagickGetImageFilename">MagickGetImageFilename</a> &#8226; <a href="magick-image.html#MagickGetImageFormat">MagickGetImageFormat</a> &#8226; <a href="magick-image.html#MagickGetImageFuzz">MagickGetImageFuzz</a> &#8226; <a href="magick-image.html#MagickGetImageGamma">MagickGetImageGamma</a> &#8226; <a href="magick-image.html#MagickGetImageGravity">MagickGetImageGravity</a> &#8226; <a href="magick-image.html#MagickGetImageGreenPrimary">MagickGetImageGreenPrimary</a> &#8226; <a href="magick-image.html#MagickGetImageHeight">MagickGetImageHeight</a> &#8226; <a href="magick-image.html#MagickGetImageHistogram">MagickGetImageHistogram</a> &#8226; <a href="magick-image.html#MagickGetImageInterlaceScheme">MagickGetImageInterlaceScheme</a> &#8226; <a href="magick-image.html#MagickGetImageInterpolateMethod">MagickGetImageInterpolateMethod</a> &#8226; <a href="magick-image.html#MagickGetImageIterations">MagickGetImageIterations</a> &#8226; <a href="magick-image.html#MagickGetImageLength">MagickGetImageLength</a> &#8226; <a href="magick-image.html#MagickGetImageMatteColor">MagickGetImageMatteColor</a> &#8226; <a href="magick-image.html#MagickGetImageOrientation">MagickGetImageOrientation</a> &#8226; <a href="magick-image.html#MagickGetImagePage">MagickGetImagePage</a> &#8226; <a href="magick-image.html#MagickGetImagePixelColor">MagickGetImagePixelColor</a> &#8226; <a href="magick-image.html#MagickGetImageRedPrimary">MagickGetImageRedPrimary</a> &#8226; <a href="magick-image.html#MagickGetImageRegion">MagickGetImageRegion</a> &#8226; <a href="magick-image.html#MagickGetImageRenderingIntent">MagickGetImageRenderingIntent</a> &#8226; <a href="magick-image.html#MagickGetImageResolution">MagickGetImageResolution</a> &#8226; <a href="magick-image.html#MagickGetImageScene">MagickGetImageScene</a> &#8226; <a href="magick-image.html#MagickGetImageSignature">MagickGetImageSignature</a> &#8226; <a href="magick-image.html#MagickGetImageTicksPerSecond">MagickGetImageTicksPerSecond</a> &#8226; <a href="magick-image.html#MagickGetImageType">MagickGetImageType</a> &#8226; <a href="magick-image.html#MagickGetImageUnits">MagickGetImageUnits</a> &#8226; <a href="magick-image.html#MagickGetImageVirtualPixelMethod">MagickGetImageVirtualPixelMethod</a> &#8226; <a href="magick-image.html#MagickGetImageWhitePoint">MagickGetImageWhitePoint</a> &#8226; <a href="magick-image.html#MagickGetImageWidth">MagickGetImageWidth</a> &#8226; <a href="magick-image.html#MagickGetNumberImages">MagickGetNumberImages</a> &#8226; <a href="magick-image.html#MagickGetImageTotalInkDensity">MagickGetImageTotalInkDensity</a> &#8226; <a href="magick-image.html#MagickHaldClutImage">MagickHaldClutImage</a> &#8226; <a href="magick-image.html#MagickHasNextImage">MagickHasNextImage</a> &#8226; <a href="magick-image.html#MagickHasPreviousImage">MagickHasPreviousImage</a> &#8226; <a href="magick-image.html#MagickIdentifyImage">MagickIdentifyImage</a> &#8226; <a href="magick-image.html#MagickImplodeImage">MagickImplodeImage</a> &#8226; <a href="magick-image.html#MagickImportImagePixels">MagickImportImagePixels</a> &#8226; <a href="magick-image.html#MagickInverseFourierTransformImage">MagickInverseFourierTransformImage</a> &#8226; <a href="magick-image.html#MagickLabelImage">MagickLabelImage</a> &#8226; <a href="magick-image.html#MagickLevelImage">MagickLevelImage</a> &#8226; <a href="magick-image.html#MagickLinearStretchImage">MagickLinearStretchImage</a> &#8226; <a href="magick-image.html#MagickLiquidRescaleImage">MagickLiquidRescaleImage</a> &#8226; <a href="magick-image.html#MagickMagnifyImage">MagickMagnifyImage</a> &#8226; <a href="magick-image.html#MagickMergeImageLayers">MagickMergeImageLayers</a> &#8226; <a href="magick-image.html#MagickMinifyImage">MagickMinifyImage</a> &#8226; <a href="magick-image.html#MagickModulateImage">MagickModulateImage</a> &#8226; <a href="magick-image.html#MagickMontageImage">MagickMontageImage</a> &#8226; <a href="magick-image.html#MagickMorphImages">MagickMorphImages</a> &#8226; <a href="magick-image.html#MagickMorphologyImage">MagickMorphologyImage</a> &#8226; <a href="magick-image.html#MagickMotionBlurImage">MagickMotionBlurImage</a> &#8226; <a href="magick-image.html#MagickNegateImage">MagickNegateImage</a> &#8226; <a href="magick-image.html#MagickNewImage">MagickNewImage</a> &#8226; <a href="magick-image.html#MagickNextImage">MagickNextImage</a> &#8226; <a href="magick-image.html#MagickNormalizeImage">MagickNormalizeImage</a> &#8226; <a href="magick-image.html#MagickOilPaintImage">MagickOilPaintImage</a> &#8226; <a href="magick-image.html#MagickOpaquePaintImage">MagickOpaquePaintImage</a> &#8226; <a href="magick-image.html#MagickOptimizeImageLayers">MagickOptimizeImageLayers</a> &#8226; <a href="magick-image.html#MagickOptimizeImageTransparency">MagickOptimizeImageTransparency</a> &#8226; <a href="magick-image.html#MagickOrderedPosterizeImage">MagickOrderedPosterizeImage</a> &#8226; <a href="magick-image.html#MagickPingImage">MagickPingImage</a> &#8226; <a href="magick-image.html#MagickPingImageBlob">MagickPingImageBlob</a> &#8226; <a href="magick-image.html#MagickPingImageFile">MagickPingImageFile</a> &#8226; <a href="magick-image.html#MagickPolaroidImage">MagickPolaroidImage</a> &#8226; <a href="magick-image.html#MagickPosterizeImage">MagickPosterizeImage</a> &#8226; <a href="magick-image.html#MagickPreviewImages">MagickPreviewImages</a> &#8226; <a href="magick-image.html#MagickPreviousImage">MagickPreviousImage</a> &#8226; <a href="magick-image.html#MagickQuantizeImage">MagickQuantizeImage</a> &#8226; <a href="magick-image.html#MagickQuantizeImages">MagickQuantizeImages</a> &#8226; <a href="magick-image.html#MagickRadialBlurImage">MagickRadialBlurImage</a> &#8226; <a href="magick-image.html#MagickRaiseImage">MagickRaiseImage</a> &#8226; <a href="magick-image.html#MagickRandomThresholdImage">MagickRandomThresholdImage</a> &#8226; <a href="magick-image.html#MagickReadImage">MagickReadImage</a> &#8226; <a href="magick-image.html#MagickReadImageBlob">MagickReadImageBlob</a> &#8226; <a href="magick-image.html#MagickReadImageFile">MagickReadImageFile</a> &#8226; <a href="magick-image.html#MagickRemapImage">MagickRemapImage</a> &#8226; <a href="magick-image.html#MagickRemoveImage">MagickRemoveImage</a> &#8226; <a href="magick-image.html#MagickResampleImage">MagickResampleImage</a> &#8226; <a href="magick-image.html#MagickResetImagePage">MagickResetImagePage</a> &#8226; <a href="magick-image.html#MagickResizeImage">MagickResizeImage</a> &#8226; <a href="magick-image.html#MagickRollImage">MagickRollImage</a> &#8226; <a href="magick-image.html#MagickRotateImage">MagickRotateImage</a> &#8226; <a href="magick-image.html#MagickSampleImage">MagickSampleImage</a> &#8226; <a href="magick-image.html#MagickScaleImage">MagickScaleImage</a> &#8226; <a href="magick-image.html#MagickSegmentImage">MagickSegmentImage</a> &#8226; <a href="magick-image.html#MagickSelectiveBlurImage">MagickSelectiveBlurImage</a> &#8226; <a href="magick-image.html#MagickSeparateImageChannel">MagickSeparateImageChannel</a> &#8226; <a href="magick-image.html#MagickSepiaToneImage">MagickSepiaToneImage</a> &#8226; <a href="magick-image.html#MagickSetImage">MagickSetImage</a> &#8226; <a href="magick-image.html#MagickSetImageAlphaChannel">MagickSetImageAlphaChannel</a> &#8226; <a href="magick-image.html#MagickSetImageBackgroundColor">MagickSetImageBackgroundColor</a> &#8226; <a href="magick-image.html#MagickSetImageBias">MagickSetImageBias</a> &#8226; <a href="magick-image.html#MagickSetImageBluePrimary">MagickSetImageBluePrimary</a> &#8226; <a href="magick-image.html#MagickSetImageBorderColor">MagickSetImageBorderColor</a> &#8226; <a href="magick-image.html#MagickSetImageChannelDepth">MagickSetImageChannelDepth</a> &#8226; <a href="magick-image.html#MagickSetImageClipMask">MagickSetImageClipMask</a> &#8226; <a href="magick-image.html#MagickSetImageColor">MagickSetImageColor</a> &#8226; <a href="magick-image.html#MagickSetImageColormapColor">MagickSetImageColormapColor</a> &#8226; <a href="magick-image.html#MagickSetImageColorspace">MagickSetImageColorspace</a> &#8226; <a href="magick-image.html#MagickSetImageCompose">MagickSetImageCompose</a> &#8226; <a href="magick-image.html#MagickSetImageCompression">MagickSetImageCompression</a> &#8226; <a href="magick-image.html#MagickSetImageCompressionQuality">MagickSetImageCompressionQuality</a> &#8226; <a href="magick-image.html#MagickSetImageDelay">MagickSetImageDelay</a> &#8226; <a href="magick-image.html#MagickSetImageDepth">MagickSetImageDepth</a> &#8226; <a href="magick-image.html#MagickSetImageDispose">MagickSetImageDispose</a> &#8226; <a href="magick-image.html#MagickSetImageEndian">MagickSetImageEndian</a> &#8226; <a href="magick-image.html#MagickSetImageExtent">MagickSetImageExtent</a> &#8226; <a href="magick-image.html#MagickSetImageFilename">MagickSetImageFilename</a> &#8226; <a href="magick-image.html#MagickSetImageFormat">MagickSetImageFormat</a> &#8226; <a href="magick-image.html#MagickSetImageFuzz">MagickSetImageFuzz</a> &#8226; <a href="magick-image.html#MagickSetImageGamma">MagickSetImageGamma</a> &#8226; <a href="magick-image.html#MagickSetImageGravity">MagickSetImageGravity</a> &#8226; <a href="magick-image.html#MagickSetImageGreenPrimary">MagickSetImageGreenPrimary</a> &#8226; <a href="magick-image.html#MagickSetImageInterlaceScheme">MagickSetImageInterlaceScheme</a> &#8226; <a href="magick-image.html#MagickSetImageInterpolateMethod">MagickSetImageInterpolateMethod</a> &#8226; <a href="magick-image.html#MagickSetImageIterations">MagickSetImageIterations</a> &#8226; <a href="magick-image.html#MagickSetImageMatte">MagickSetImageMatte</a> &#8226; <a href="magick-image.html#MagickSetImageMatteColor">MagickSetImageMatteColor</a> &#8226; <a href="magick-image.html#MagickSetImageOpacity">MagickSetImageOpacity</a> &#8226; <a href="magick-image.html#MagickSetImageOrientation">MagickSetImageOrientation</a> &#8226; <a href="magick-image.html#MagickSetImagePage">MagickSetImagePage</a> &#8226; <a href="magick-image.html#MagickSetImageProgressMonitor">MagickSetImageProgressMonitor</a> &#8226; <a href="magick-image.html#MagickSetImageRedPrimary">MagickSetImageRedPrimary</a> &#8226; <a href="magick-image.html#MagickSetImageRenderingIntent">MagickSetImageRenderingIntent</a> &#8226; <a href="magick-image.html#MagickSetImageResolution">MagickSetImageResolution</a> &#8226; <a href="magick-image.html#MagickSetImageScene">MagickSetImageScene</a> &#8226; <a href="magick-image.html#MagickSetImageTicksPerSecond">MagickSetImageTicksPerSecond</a> &#8226; <a href="magick-image.html#MagickSetImageType">MagickSetImageType</a> &#8226; <a href="magick-image.html#MagickSetImageUnits">MagickSetImageUnits</a> &#8226; <a href="magick-image.html#MagickSetImageVirtualPixelMethod">MagickSetImageVirtualPixelMethod</a> &#8226; <a href="magick-image.html#MagickSetImageWhitePoint">MagickSetImageWhitePoint</a> &#8226; <a href="magick-image.html#MagickShadeImage">MagickShadeImage</a> &#8226; <a href="magick-image.html#MagickShadowImage">MagickShadowImage</a> &#8226; <a href="magick-image.html#MagickSharpenImage">MagickSharpenImage</a> &#8226; <a href="magick-image.html#MagickShaveImage">MagickShaveImage</a> &#8226; <a href="magick-image.html#MagickShearImage">MagickShearImage</a> &#8226; <a href="magick-image.html#MagickSigmoidalContrastImage">MagickSigmoidalContrastImage</a> &#8226; <a href="magick-image.html#MagickSimilarityImage">MagickSimilarityImage</a> &#8226; <a href="magick-image.html#MagickSketchImage">MagickSketchImage</a> &#8226; <a href="magick-image.html#MagickSmushImages">MagickSmushImages</a> &#8226; <a href="magick-image.html#MagickSolarizeImage">MagickSolarizeImage</a> &#8226; <a href="magick-image.html#MagickSparseColorImage">MagickSparseColorImage</a> &#8226; <a href="magick-image.html#MagickSpliceImage">MagickSpliceImage</a> &#8226; <a href="magick-image.html#MagickSpreadImage">MagickSpreadImage</a> &#8226; <a href="magick-image.html#MagickStatisticImage">MagickStatisticImage</a> &#8226; <a href="magick-image.html#MagickSteganoImage">MagickSteganoImage</a> &#8226; <a href="magick-image.html#MagickStereoImage">MagickStereoImage</a> &#8226; <a href="magick-image.html#MagickStripImage">MagickStripImage</a> &#8226; <a href="magick-image.html#MagickSwirlImage">MagickSwirlImage</a> &#8226; <a href="magick-image.html#MagickTextureImage">MagickTextureImage</a> &#8226; <a href="magick-image.html#MagickThresholdImage">MagickThresholdImage</a> &#8226; <a href="magick-image.html#MagickThumbnailImage">MagickThumbnailImage</a> &#8226; <a href="magick-image.html#MagickTintImage">MagickTintImage</a> &#8226; <a href="magick-image.html#MagickTransformImage">MagickTransformImage</a> &#8226; <a href="magick-image.html#MagickTransformImageColorspace">MagickTransformImageColorspace</a> &#8226; <a href="magick-image.html#MagickTransparentPaintImage">MagickTransparentPaintImage</a> &#8226; <a href="magick-image.html#MagickTransposeImage">MagickTransposeImage</a> &#8226; <a href="magick-image.html#MagickTransverseImage">MagickTransverseImage</a> &#8226; <a href="magick-image.html#MagickTrimImage">MagickTrimImage</a> &#8226; <a href="magick-image.html#MagickUniqueImageColors">MagickUniqueImageColors</a> &#8226; <a href="magick-image.html#MagickUnsharpMaskImage">MagickUnsharpMaskImage</a> &#8226; <a href="magick-image.html#MagickVignetteImage">MagickVignetteImage</a> &#8226; <a href="magick-image.html#MagickWaveImage">MagickWaveImage</a> &#8226; <a href="magick-image.html#MagickWhiteThresholdImage">MagickWhiteThresholdImage</a> &#8226; <a href="magick-image.html#MagickWriteImage">MagickWriteImage</a> &#8226; <a href="magick-image.html#MagickWriteImageFile">MagickWriteImageFile</a> &#8226; <a href="magick-image.html#MagickWriteImages">MagickWriteImages</a> &#8226; <a href="magick-image.html#MagickWriteImagesFile">MagickWriteImagesFile</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="GetImageFromMagickWand">GetImageFromMagickWand</a></h2>
 <div class="doc-section">
@@ -539,7 +584,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickBlurImage">MagickBlurImage</a></h2>
 <div class="doc-section">
 
-<p>MagickBlurImage() blurs an image.  We convolve the image with a gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, the radius should be larger than sigma.  Use a radius of 0 and BlurImage() selects a suitable radius for you.</p>
+<p>MagickBlurImage() blurs an image.  We convolve the image with a gaussian operator of the given radius and standard deviation (sigma). For reasonable results, the radius should be larger than sigma.  Use a radius of 0 and BlurImage() selects a suitable radius for you.</p>
 
 <p>The format of the MagickBlurImage method is:</p>
 
@@ -598,6 +643,7 @@
 
 <p>Use MagickBrightnessContrastImage() to change the brightness and/or contrast of an image.  It converts the brightness and contrast parameters into slope and intercept and calls a polynomical function to apply to the image.</p>
 
+
 <p>The format of the MagickBrightnessContrastImage method is:</p>
 
 <pre class="code">
@@ -655,8 +701,9 @@
 <p>The format of the MagickChopImage method is:</p>
 
 <pre class="code">
-  MagickBooleanType MagickChopImage(MagickWand *wand,const size_t width,
-    const size_t height,const ssize_t x,const ssize_t y)
+  MagickBooleanType MagickChopImage(MagickWand *wand,
+    const size_t width,const size_t height,const ssize_t x,
+    const ssize_t y)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -675,6 +722,7 @@
 
 <h5>y</h5>
 <p>the region y offset.</p>
+
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickClampImage">MagickClampImage</a></h2>
@@ -786,18 +834,18 @@
 <p>MagickColorDecisionListImage() accepts a lightweight Color Correction Collection (CCC) file which solely contains one or more color corrections and applies the color correction to the image.  Here is a sample CCC file:</p>
 
 <pre class="text">
-      &lt;ColorCorrectionCollection xmlns="urn:ASC:CDL:v1.2"&gt;
-      &lt;ColorCorrection id="cc03345"&gt;
-            &lt;SOPNode&gt;
-                 &lt;Slope&gt; 0.9 1.2 0.5 &lt;/Slope&gt;
-                 &lt;Offset&gt; 0.4 -0.5 0.6 &lt;/Offset&gt;
-                 &lt;Power&gt; 1.0 0.8 1.5 &lt;/Power&gt;
-            &lt;/SOPNode&gt;
-            &lt;SATNode&gt;
-                 &lt;Saturation&gt; 0.85 &lt;/Saturation&gt;
-            &lt;/SATNode&gt;
-      &lt;/ColorCorrection&gt;
-      &lt;/ColorCorrectionCollection&gt;
+      <ColorCorrectionCollection xmlns="urn:ASC:CDL:v1.2">
+      <ColorCorrection id="cc03345">
+            <SOPNode>
+                 <Slope> 0.9 1.2 0.5 </Slope>
+                 <Offset> 0.4 -0.5 0.6 </Offset>
+                 <Power> 1.0 0.8 1.5 </Power>
+            </SOPNode>
+            <SATNode>
+                 <Saturation> 0.85 </Saturation>
+            </SATNode>
+      </ColorCorrection>
+      </ColorCorrectionCollection>
 </pre>
 
 <p>which includes the offset, slope, and power for each of the RGB channels as well as the saturation.</p>
@@ -866,7 +914,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickCombineImages">MagickCombineImages</a></h2>
 <div class="doc-section">
 
-<p>MagickCombineImages() combines one or more images into a single image.  The grayscale value of the pixels of each image in the sequence is assigned in order to the specified  hannels of the combined image.   The typical ordering would be image 1 =&gt; Red, 2 =&gt; Green, 3 =&gt; Blue, etc.</p>
+<p>MagickCombineImages() combines one or more images into a single image.  The grayscale value of the pixels of each image in the sequence is assigned in order to the specified  hannels of the combined image.   The typical ordering would be image 1 => Red, 2 => Green, 3 => Blue, etc.</p>
 
 <p>The format of the MagickCombineImages method is:</p>
 
@@ -966,7 +1014,8 @@
 
 <pre class="code">
   MagickWand *MagickCompareImages(MagickWand *wand,
-    const MagickWand *reference,const MetricType metric,double *distortion)
+    const MagickWand *reference,const MetricType metric,
+    double *distortion)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -1222,6 +1271,7 @@
 
 <h5>pixels</h5>
 <p>This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.</p>
+
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickDecipherImage">MagickDecipherImage</a></h2>
@@ -1969,7 +2019,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickGetImageBlob">MagickGetImageBlob</a></h2>
 <div class="doc-section">
 
-<p>MagickGetImageBlob() implements direct to memory image formats.  It returns the image as a blob (a formatted "file" in memory) and its length, starting from the current position in the image sequence.  Use MagickSetImageFormat() to set the format to write to the blob (GIF, JPEG,  PNG, etc.).</p>
+<p>MagickGetImageBlob() implements direct to memory image formats.  It returns the image as a blob (a formatted "file" in memory) and its length, starting from the current position in the image sequence.  Use MagickSetImageFormat()  to set the format to write to the blob (GIF, JPEG,  PNG, etc.).</p>
 
 <p>Utilize MagickResetIterator() to ensure the write is from the beginning of the image sequence.</p>
 
@@ -2498,7 +2548,7 @@
 <p>The format of the MagickGetImageFormat method is:</p>
 
 <pre class="code">
-  char *MagickGetImageFormat(MagickWand *wand)
+  const char *MagickGetImageFormat(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -3307,7 +3357,7 @@
 
 <p>MagickLiquidRescaleImage() rescales image with seam carving.</p>
 
-<p>MagickBooleanType MagickLiquidRescaleImage(MagickWand *wand, const size_t columns,const size_t rows,const double delta_x, const double rigidity)</p>
+<p>MagickBooleanType MagickLiquidRescaleImage(MagickWand *wand, const size_t columns,const size_t rows, const double delta_x,const double rigidity)</p>
 
 <p>A description of each parameter follows:</p>
 
@@ -3445,7 +3495,7 @@
 <p>the number of tiles per row and page (e.g. 6x4+0+0).</p>
 
 <h5>thumbnail_geometry</h5>
-<p>Preferred image size and border size of each thumbnail (e.g. 120x120+4+3&gt;).</p>
+<p>Preferred image size and border size of each thumbnail (e.g. 120x120+4+3>).</p>
 
 <h5>mode</h5>
 <p>Thumbnail framing mode: Frame, Unframe, or Concatenate.</p>
@@ -4211,7 +4261,7 @@
 <p>Image filter to use.</p>
 
 <h5>blur</h5>
-<p>the blur factor where &gt; 1 is blurry, &lt; 1 is sharp.</p>
+<p>the blur factor where > 1 is blurry, < 1 is sharp.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickResetImagePage">MagickResetImagePage</a></h2>
@@ -4273,7 +4323,7 @@
 <p>Image filter to use.</p>
 
 <h5>blur</h5>
-<p>the blur factor where &gt; 1 is blurry, &lt; 1 is sharp.</p>
+<p>the blur factor where > 1 is blurry, < 1 is sharp.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickRollImage">MagickRollImage</a></h2>
@@ -4298,6 +4348,7 @@
 
 <h5>y</h5>
 <p>the y offset.</p>
+
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickRotateImage">MagickRotateImage</a></h2>
@@ -4348,6 +4399,7 @@
 <h5>rows</h5>
 <p>the number of rows in the scaled image.</p>
 
+
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickScaleImage">MagickScaleImage</a></h2>
 <div class="doc-section">
@@ -4371,6 +4423,7 @@
 
 <h5>rows</h5>
 <p>the number of rows in the scaled image.</p>
+
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickSegmentImage">MagickSegmentImage</a></h2>
@@ -4869,7 +4922,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickSetImageExtent">MagickSetImageExtent</a></h2>
 <div class="doc-section">
 
-<p>MagickSetImageExtent() sets the image size (i.e. columns &amp; rows).</p>
+<p>MagickSetImageExtent() sets the image size (i.e. columns & rows).</p>
 
 <p>The format of the MagickSetImageExtent method is:</p>
 
@@ -5685,17 +5738,12 @@
 <pre class="code">
   MagickBooleanType MagickSolarizeImage(MagickWand *wand,
     const double threshold)
-  MagickBooleanType MagickSolarizeImageChannel(MagickWand *wand,
-    const ChannelType channel,const double threshold)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>wand</h5>
 <p>the magick wand.</p>
-
-<h5>channel</h5>
-<p>the image channel(s).</p>
 
 <h5>threshold</h5>
 <p>Define the extent of the solarization.</p>
@@ -6353,7 +6401,7 @@
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="../../www/contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

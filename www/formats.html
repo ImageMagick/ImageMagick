@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -186,7 +183,7 @@
 
 <p>To get a complete listing of which image formats are supported on your system, type</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -list format</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">identify -list format</span></p>
 <p>On some platforms, ImageMagick automagically processes these extensions: .gz for Zip compression, .Z for Unix compression, .bz2 for block compression, and .pgp for PGP encryption. For example, a PNM image called image.pnm.gz is automagically uncompressed.</p>
 </div>
 
@@ -387,6 +384,14 @@ the supported image formats.</p>
     <td valign="top">RW</td>
     <td valign="top">ZSoft IBM PC multi-page Paintbrush image</td>
     <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://en.wikipedia.org/wiki/DirectDraw_Surface">DDS</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Microsoft Direct Draw Surface</td>
+    <td valign="top">Use <a href="command-line-options.html#define">-define</a> to specify the compression (e.g. <code>-define dds:compression={dxt1, dxt5, none}</code>). Other defines include <code>dds:cluster-fit={true,false}</code>, <code>dds:weight-by-alpha={true,false}</code>, and use <code>dds:mipmaps</code> to set the number of mipmaps.</td>
+
   </tr>
 
   <tr>
@@ -607,14 +612,28 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td valign="top"><a href="http://www.ece.uvic.ca/%7Emdadams/jasper/">JP2</a></td>
+    <td valign="top"><a href="http://www.openjpeg.org/">JP2</a></td>
     <td valign="top">RW</td>
     <td valign="top">JPEG-2000 JP2 File Format Syntax</td>
     <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
-    <td valign="top"><a href="http://www.ece.uvic.ca/%7Emdadams/jasper/">JPC</a></td>
+    <td valign="top"><a href="http://www.openjpeg.org/">JPT</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">JPEG-2000 Code Stream Syntax</td>
+    <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.openjpeg.org/">J2C</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">JPEG-2000 Code Stream Syntax</td>
+    <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.openjpeg.org/">J2K</a></td>
     <td valign="top">RW</td>
     <td valign="top">JPEG-2000 Code Stream Syntax</td>
     <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
@@ -632,6 +651,13 @@ the supported image formats.</p>
     <td valign="top">RW</td>
     <td valign="top">JPEG extended range</td>
     <td valign="top">Requires the <a href="https://jxrlib.codeplex.com/">jxrlib</a> delegate library. Put the JxrDecApp and JxrEncApp applications in your execution path. </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.json.org">JSON</a></td>
+    <td valign="top">W</td>
+    <td valign="top">JavaScript Object Notation, a lightweight data-interchange format</td>
+    <td valign="top">Include additional attributes about the image with these defines: <a href="command-line-options.html#define">-define json:locate</a>, <a href="command-line-options.html#define">-define json:limit</a>, <a href="command-line-options.html#define">-define json:moments</a>, <a href="command-line-options.html#define">-define json:features</a>, or <a href="command-line-options.html#define">-define json:unique-colors</a>.</td>
   </tr>
 
   <tr>
@@ -1024,6 +1050,13 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
   </tr>
 
   <tr>
+    <td valign="top">RFG</td>
+    <td valign="top">RW</td>
+    <td valign="top">LEGO Mindstorms EV3 Robot Graphics File</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
     <td valign="top">RLA</td>
     <td valign="top">R</td>
     <td valign="top">Alias/Wavefront image file</td>
@@ -1076,7 +1109,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td valign="top">SPARSE-COLOR</td>
     <td valign="top">W</td>
     <td valign="top">Raw text file</td>
-    <td valign="top">Format compatible with the <a href="command-line-options.html#sparse-color">-sparse-color</a> option.</td>
+    <td valign="top">Format compatible with the <a href="command-line-options.html#sparse-color">-sparse-color</a> option. Lists only non-fully-transparent pixels.</td>
   </tr>
 
   <tr>
@@ -1174,7 +1207,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td valign="top"><a href="http://en.wikipedia.org/wiki/WebP">WEBP</a></td>
     <td valign="top">RW</td>
     <td valign="top">Weppy image format</td>
-    <td valign="top">Requires the <a href="http://code.google.com/p/webp/downloads/list">WEBP</a> delegate library.  Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="webp.html">WebP Encoding Options</a> for more details.</td>
+    <td valign="top">Requires the <a href="http://code.google.com/p/webp/downloads/list">WEBP</a> delegate library.  Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="http://www.imagemagick.org/ImageMagick-7.0.0/www/webp.html">WebP Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
@@ -1380,7 +1413,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td valign="top">PANGO</td>
     <td valign="top">R</td>
     <td valign="top">Image caption</td>
-    <td valign="top">You can configure the caption layout with these defines: <code>-define pango:auto-dir=</code><em>true/false</em>, <code>-define pango:ellipsize=</code><em>start/middle/end</em>, <code>-define pango:gravity-hint=</code><em>natural/strong/line</em>, <code>-define pango:hinting=</code><em>none/auto/full</em>, <code>-define pango:indent=</code><em>points</em>, <code>-define pango:justify=</code>/<em>true/false</em>, <code>-define pango:language=</code><em>en_US/etc</em>, <code>-define pango:markup=</code><em>true/false</em>, <code>-define pango:single-paragraph=</code><em>true/false</em> and <code>-define pango:wrap=</code><em>word/char/word-char</em>.</td>
+    <td valign="top">You can configure the caption layout with these defines: <code>-define pango:auto-dir=</code><em>true/false</em>, <code>-define pango:ellipsize=</code><em>start/middle/end</em>, <code>-define pango:gravity-hint=</code><em>natural/strong/line</em>, <code>-define pango:hinting=</code><em>none/auto/full</em>, <code>-define pango:indent=</code><em>points</em>, <code>-define pango:justify=</code><em>true/false</em>, <code>-define pango:language=</code><em>en_US/etc</em>, <code>-define pango:markup=</code><em>true/false</em>, <code>-define pango:single-paragraph=</code><em>true/false</em> and <code>-define pango:wrap=</code><em>word/char/word-char</em>.</td>
   </tr>
 
   <tr>
@@ -1996,7 +2029,6 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 
 </div>
 
-
 </div>
 
 <div id="linkbar">
@@ -2011,7 +2043,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

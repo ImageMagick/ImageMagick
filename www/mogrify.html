@@ -22,7 +22,7 @@
   <meta name="distribution" content="Global"></meta>
   <link rel="icon" href="../images/wand.png"></link>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
+  <link rel="canonical" href="http://www.imagemagick.org"></link>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
 
   <!-- Add jQuery library -->
@@ -73,14 +73,14 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../index.html">
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
   <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
@@ -156,14 +156,11 @@
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
   
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
@@ -187,7 +184,7 @@
 <p>We list a few examples of the <code>mogrify</code> command here to illustrate its usefulness and ease of use.  To get started, let's reduce the size of our
 rose:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">mogrify -resize 50% rose.jpg</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">mogrify -resize 50% rose.jpg</span></p>
 <p class="image">
   <a href="../images/rose.jpg">
   <img src="../images/rose.jpg" width="70" height="46" alt="rose"></img>
@@ -200,10 +197,10 @@ rose:</p>
 
 <p>You can resize all your JPEG images in a folder to a maximum dimension of 256x256 with this command:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">mogrify -resize 256x256 *.jpg</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">mogrify -resize 256x256 *.jpg</span></p>
 <p>Finally, we convert all our PNG images in a folder to the JPEG format:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">mogrify -format jpg *.png</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">mogrify -format jpg *.png</span></p>
 <p>Here image files 1.png, 2.png, etc., are left untouched and files 1.jpg, 2.jpg, etc., are created.  They are copies of their respective PNG images except are stored  in the JPEG image format.</p>
 
 
@@ -830,6 +827,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td valign="top"><a href="command-line-options.html#metric">-metric <em class="option">type</em></a></td>
+    <td valign="top">measure differences between images with this metric</td>
+  </tr>
+
+  <tr>
     <td valign="top"><a href="command-line-options.html#mode">-mode <em class="option">radius</em></a></td>
     <td valign="top">make each pixel the 'predominant color' of the neighborhood</td>
   </tr>
@@ -1358,7 +1360,7 @@ transparent, extract, background, or shape the alpha channel</td>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

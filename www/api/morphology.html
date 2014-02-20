@@ -1,29 +1,34 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickCore, C API for ImageMagick: Morphological Erosions, Dilations, Openings, and Closings</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, morphological, erosions, dilations, openings, closings, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, morphological, erosions, dilations, openings, closings, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -32,15 +37,15 @@
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
   
   <script type="text/javascript">
@@ -57,7 +62,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,18 +82,24 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
-<a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
 
 <div class="menu">
-  <a title="About ImageMagick" href="../../index.html">About ImageMagick</a>
+  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
 </div>
 <div class="menu">
   <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
@@ -126,7 +145,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,31 +171,62 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="../../www/support.html">Support ImageMagick Development</a>
-</div>
 </div>
 
 <div class="eastbar">
-  
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
+  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+    <div class="g-plusone" id="gplusone"></div>
+    <script type="text/javascript">
+      /* <![CDATA[ */
+      window.___gcfg = {
+        lang: 'en-US'
+      };
+
+      (function() {
+        var po = document.createElement('offline-script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+      })();
+      var gplusone = document.getElementById("gplusone");
+      gplusone.setAttribute("data-size","medium");
+      gplusone.setAttribute("data-count","true");
+      /* ]]> */
+    </script>
 </div>
 
 <div class="main">
 
 <h1>Module morphology Methods</h1>
-<p class="navigation-index">[<a href="morphology.html#AcquireKernelInfo">AcquireKernelInfo</a> • <a href="morphology.html#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> • <a href="morphology.html#CloneKernelInfo">CloneKernelInfo</a> • <a href="morphology.html#DestroyKernelInfo">DestroyKernelInfo</a> • <a href="morphology.html#MorphologyApply">MorphologyApply</a> • <a href="morphology.html#MorphologyImageChannel">MorphologyImageChannel</a> • <a href="morphology.html#ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a> • <a href="morphology.html#ScaleKernelInfo">ScaleKernelInfo</a> • <a href="morphology.html#ShowKernelInfo">ShowKernelInfo</a> • <a href="morphology.html#UnityAddKernelInfo">UnityAddKernelInfo</a> • <a href="morphology.html#ZeroKernelNans">ZeroKernelNans</a>]</p>
+<p class="navigation-index">[<a href="morphology.html#** This macro  IsNaN">** This macro  IsNaN</a> &#8226; <a href="morphology.html#AcquireKernelInfo">AcquireKernelInfo</a> &#8226; <a href="morphology.html#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> &#8226; <a href="morphology.html#CloneKernelInfo">CloneKernelInfo</a> &#8226; <a href="morphology.html#DestroyKernelInfo">DestroyKernelInfo</a> &#8226; <a href="morphology.html#MorphologyApply">MorphologyApply</a> &#8226; <a href="morphology.html#MorphologyImageChannel">MorphologyImageChannel</a> &#8226; <a href="morphology.html#ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a> &#8226; <a href="morphology.html#ScaleKernelInfo">ScaleKernelInfo</a> &#8226; <a href="morphology.html#ShowKernelInfo">ShowKernelInfo</a> &#8226; <a href="morphology.html#UnityAddKernelInfo">UnityAddKernelInfo</a> &#8226; <a href="morphology.html#ZeroKernelNans">ZeroKernelNans</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="**_This macro  IsNaN">** This macro  IsNaN</a></h2>
+<div class="doc-section">
+
+<p>** This macro  IsNaN() is thus is only true if the value given is NaN. </p>
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="AcquireKernelInfo">AcquireKernelInfo</a></h2>
 <div class="doc-section">
 
@@ -192,9 +242,9 @@
 
 <p>Input kernel defintion strings can consist of any of three types.</p>
 
-<p>"name:args[[@&gt;&lt;]" Select from one of the built in kernels, using the name and geometry arguments supplied.  See AcquireKernelBuiltIn()</p>
+<p>"name:args[[@><]" Select from one of the built in kernels, using the name and geometry arguments supplied.  See AcquireKernelBuiltIn()</p>
 
-<p>"WxH[+X+Y][@&gt;&lt;]:num, num, num ..." a kernel of size W by H, with W*H floating point numbers following. the 'center' can be optionally be defined at +X+Y (such that +0+0 is top left corner). If not defined the pixel in the center, for odd sizes, or to the immediate top or left of center for even sizes is automatically selected.</p>
+<p>"WxH[+X+Y][@><]:num, num, num ..." a kernel of size W by H, with W*H floating point numbers following. the 'center' can be optionally be defined at +X+Y (such that +0+0 is top left corner). If not defined the pixel in the center, for odd sizes, or to the immediate top or left of center for even sizes is automatically selected.</p>
 
 <p>"num, num, num, num, ..." list of floating point numbers defining an 'old style' odd sized square kernel.  At least 9 values should be provided for a 3x3 square kernel, 25 for a 5x5 square kernel, 49 for 7x7, etc. Values can be space or comma separated.  This is not recommended.</p>
 
@@ -204,7 +254,7 @@
 
 <p>Any extra ';' characters, at start, end or between kernel defintions are simply ignored.</p>
 
-<p>The special flags will expand a single kernel, into a list of rotated kernels. A '@' flag will expand a 3x3 kernel into a list of 45-degree cyclic rotations, while a '&gt;' will generate a list of 90-degree rotations. The '&lt;' also exands using 90-degree rotates, but giving a 180-degree reflected kernel before the +/- 90-degree rotations, which can be important for Thinning operations.</p>
+<p>The special flags will expand a single kernel, into a list of rotated kernels. A '@' flag will expand a 3x3 kernel into a list of 45-degree cyclic rotations, while a '>' will generate a list of 90-degree rotations. The '<' also exands using 90-degree rotates, but giving a 180-degree reflected kernel before the +/- 90-degree rotations, which can be important for Thinning operations.</p>
 
 <p>Note that 'name' kernels will start with an alphabetic character while the new kernel specification has a ':' character in its specification string. If neither is the case, it is assumed an old style of a simple list of numbers generating a odd-sized square kernel has been given.</p>
 
@@ -256,7 +306,7 @@
 
 <p>An alturnative to this kernel is to use a "DoG" with a sigma ratio of approx 1.6 (according to wikipedia).</p>
 
-<p>DoG:{radius},{sigma1},{sigma2} "Difference of Gaussians" Kernel. As "Gaussian" but with a gaussian produced by 'sigma2' subtracted from the gaussian produced by 'sigma1'. Typically sigma2 &gt; sigma1. The result is a zero-summing kernel.</p>
+<p>DoG:{radius},{sigma1},{sigma2} "Difference of Gaussians" Kernel. As "Gaussian" but with a gaussian produced by 'sigma2' subtracted from the gaussian produced by 'sigma1'. Typically sigma2 > sigma1. The result is a zero-summing kernel.</p>
 
 <p>Blur:{radius},{sigma}[,{angle}] Generates a 1 dimensional or linear gaussian blur, at the angle given (current restricted to orthogonal angles).  If a 'radius' is given the kernel is clipped to a width of 2*radius+1.  Kernel can be rotated by a 90 degree angle.</p>
 
@@ -344,7 +394,7 @@
 
 <p>Disk:[{radius}[,{scale}]] Generate a binary disk, thresholded at the radius given, the radius may be a float-point value. Final Kernel size is floor(radius)*2+1 square. A radius of 5.3 is the default.</p>
 
-<p>NOTE: That a low radii Disk kernels produce the same results as many of the previously defined kernels, but differ greatly at larger radii.  Here is a table of equivalences... "Disk:1"    =&gt; "Diamond", "Octagon:1", or "Cross:1" "Disk:1.5"  =&gt; "Square" "Disk:2"    =&gt; "Diamond:2" "Disk:2.5"  =&gt; "Octagon" "Disk:2.9"  =&gt; "Square:2" "Disk:3.5"  =&gt; "Octagon:3" "Disk:4.5"  =&gt; "Octagon:4" "Disk:5.4"  =&gt; "Octagon:5" "Disk:6.4"  =&gt; "Octagon:6" All other Disk shapes are unique to this kernel, but because a "Disk" is more circular when using a larger radius, using a larger radius is preferred over iterating the morphological operation.</p>
+<p>NOTE: That a low radii Disk kernels produce the same results as many of the previously defined kernels, but differ greatly at larger radii.  Here is a table of equivalences... "Disk:1"    => "Diamond", "Octagon:1", or "Cross:1" "Disk:1.5"  => "Square" "Disk:2"    => "Diamond:2" "Disk:2.5"  => "Octagon" "Disk:2.9"  => "Square:2" "Disk:3.5"  => "Octagon:3" "Disk:4.5"  => "Octagon:4" "Disk:5.4"  => "Octagon:5" "Disk:6.4"  => "Octagon:6" All other Disk shapes are unique to this kernel, but because a "Disk" is more circular when using a larger radius, using a larger radius is preferred over iterating the morphological operation.</p>
 
 <p>Rectangle:{geometry} Simply generate a rectangle of 1's with the size given. You can also specify the location of the 'control point', otherwise the closest pixel to the center of the rectangle is selected.</p>
 
@@ -360,7 +410,7 @@
 
 <p>NOTE: "plus:1" is equivalent to a "Diamond" kernel.</p>
 
-<p>Ring:{radius1},{radius2}[,{scale}] A ring of the values given that falls between the two radii. Defaults to a ring of approximataly 3 radius in a 7x7 kernel. This is the 'edge' pixels of the default "Disk" kernel, More specifically, "Ring" -&gt; "Ring:2.5,3.5,1.0"</p>
+<p>Ring:{radius1},{radius2}[,{scale}] A ring of the values given that falls between the two radii. Defaults to a ring of approximataly 3 radius in a 7x7 kernel. This is the 'edge' pixels of the default "Disk" kernel, More specifically, "Ring" -> "Ring:2.5,3.5,1.0"</p>
 
 <p>Hit and Miss Kernels</p>
 
@@ -659,7 +709,7 @@
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="../../www/contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>
