@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickCore, C API for ImageMagick: Dealing with Image Layers</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, image, layers, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, image, layers, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,21 +186,328 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="layer.html#"></a>]</p>
+<h1>Module layer Methods</h1>
+<p class="navigation-index">[<a href="layer.html#CoalesceImages">CoalesceImages</a> &#8226; <a href="layer.html#DisposeImages">DisposeImages</a> &#8226; <a href="layer.html#CompareImageLayers">CompareImageLayers</a> &#8226; <a href="layer.html#DeconstructImages">DeconstructImages</a> &#8226; <a href="layer.html#OptimizeImageLayers">OptimizeImageLayers</a> &#8226; <a href="layer.html#OptimizeImagePlusLayers">OptimizeImagePlusLayers</a> &#8226; <a href="layer.html#OptimizeImageTransparency">OptimizeImageTransparency</a> &#8226; <a href="layer.html#RemoveDuplicateLayers">RemoveDuplicateLayers</a> &#8226; <a href="layer.html#RemoveZeroDelayLayers">RemoveZeroDelayLayers</a> &#8226; <a href="layer.html#CompositeLayers">CompositeLayers</a> &#8226; <a href="layer.html#MergeImageLayers">MergeImageLayers</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CoalesceImages">CoalesceImages</a></h2>
+<div class="doc-section">
+
+<p>CoalesceImages() composites a set of images while respecting any page offsets and disposal methods.  GIF, MIFF, and MNG animation sequences typically start with an image background and each subsequent image varies in size and offset.  A new image sequence is returned with all images the same size as the first images virtual canvas and composited with the next image in the sequence.</p>
+
+<p>The format of the CoalesceImages method is:</p>
+
+<pre class="code">
+  Image *CoalesceImages(Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image sequence.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="DisposeImages">DisposeImages</a></h2>
+<div class="doc-section">
+
+<p>DisposeImages() returns the coalesced frames of a GIF animation as it would appear after the GIF dispose method of that frame has been applied.  That is it returned the appearance of each frame before the next is overlaid.</p>
+
+<p>The format of the DisposeImages method is:</p>
+
+<pre class="code">
+  Image *DisposeImages(Image *images,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image sequence.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CompareImageLayers">CompareImageLayers</a></h2>
+<div class="doc-section">
+
+<p>CompareImageLayers() compares each image with the next in a sequence and returns the minimum bounding region of all the pixel differences (of the ImageLayerMethod specified) it discovers.</p>
+
+<p>Images do NOT have to be the same size, though it is best that all the images are 'coalesced' (images are all the same size, on a flattened canvas, so as to represent exactly how an specific frame should look).</p>
+
+<p>No GIF dispose methods are applied, so GIF animations must be coalesced before applying this image operator to find differences to them.</p>
+
+<p>The format of the CompareImageLayers method is:</p>
+
+<pre class="code">
+  Image *CompareImageLayers(const Image *images,
+    const ImageLayerMethod method,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>method</h5>
+<p>the layers type to compare images with. Must be one of... CompareAnyLayer, CompareClearLayer, CompareOverlayLayer.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="DeconstructImages">DeconstructImages</a></h2>
+<div class="doc-section">
+
+<p>DeconstructImages() compares each image with the next in a sequence and returns the minimum bounding region of all differences from the first image.</p>
+
+<p>This function is deprecated in favor of the more universal CompareImageLayers() function.</p>
+
+<p>The format of the DeconstructImages method is:</p>
+
+<pre class="code">
+  Image *DeconstructImages(const Image *images, ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="OptimizeImageLayers">OptimizeImageLayers</a></h2>
+<div class="doc-section">
+
+<p>OptimizeImageLayers() compares each image the GIF disposed forms of the previous image in the sequence.  From this it attempts to select the smallest cropped image to replace each frame, while preserving the results of the GIF animation.</p>
+
+<p>The format of the OptimizeImageLayers method is:</p>
+
+<pre class="code">
+  Image *OptimizeImageLayers(const Image *image,
+           ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="OptimizeImagePlusLayers">OptimizeImagePlusLayers</a></h2>
+<div class="doc-section">
+
+<p>OptimizeImagePlusLayers() is exactly as OptimizeImageLayers(), but may also add or even remove extra frames in the animation, if it improves the total number of pixels in the resulting GIF animation.</p>
+
+<p>The format of the OptimizePlusImageLayers method is:</p>
+
+<pre class="code">
+  Image *OptimizePlusImageLayers(const Image *image,
+           ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="OptimizeImageTransparency">OptimizeImageTransparency</a></h2>
+<div class="doc-section">
+
+<p>OptimizeImageTransparency() takes a frame optimized GIF animation, and compares the overlayed pixels against the disposal image resulting from all the previous frames in the animation.  Any pixel that does not change the disposal image (and thus does not effect the outcome of an overlay) is made transparent.</p>
+
+<p>WARNING: This modifies the current images directly, rather than generate a new image sequence.</p>
+
+<p>The format of the OptimizeImageTransperency method is:</p>
+
+<pre class="code">
+  void OptimizeImageTransperency(Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image sequence</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="RemoveDuplicateLayers">RemoveDuplicateLayers</a></h2>
+<div class="doc-section">
+
+<p>RemoveDuplicateLayers() removes any image that is exactly the same as the next image in the given image list.  Image size and virtual canvas offset must also match, though not the virtual canvas size itself.</p>
+
+<p>No check is made with regards to image disposal setting, though it is the dispose setting of later image that is kept.  Also any time delays are also added together. As such coalesced image animations should still produce the same result, though with duplicte frames merged into a single frame.</p>
+
+<p>The format of the RemoveDuplicateLayers method is:</p>
+
+<pre class="code">
+  void RemoveDuplicateLayers(Image **image, ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="RemoveZeroDelayLayers">RemoveZeroDelayLayers</a></h2>
+<div class="doc-section">
+
+<p>RemoveZeroDelayLayers() removes any image that as a zero delay time. Such images generally represent intermediate or partial updates in GIF animations used for file optimization.  They are not ment to be displayed to users of the animation.  Viewable images in an animation should have a time delay of 3 or more centi-seconds (hundredths of a second).</p>
+
+<p>However if all the frames have a zero time delay, then either the animation is as yet incomplete, or it is not a GIF animation.  This a non-sensible situation, so no image will be removed and a 'Zero Time Animation' warning (exception) given.</p>
+
+<p>No warning will be given if no image was removed because all images had an appropriate non-zero time delay set.</p>
+
+<p>Due to the special requirements of GIF disposal handling, GIF animations should be coalesced first, before calling this function, though that is not a requirement.</p>
+
+<p>The format of the RemoveZeroDelayLayers method is:</p>
+
+<pre class="code">
+  void RemoveZeroDelayLayers(Image **image, ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image list</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CompositeLayers">CompositeLayers</a></h2>
+<div class="doc-section">
+
+<p>CompositeLayers() compose the source image sequence over the destination image sequence, starting with the current image in both lists.</p>
+
+<p>Each layer from the two image lists are composted together until the end of one of the image lists is reached.  The offset of each composition is also adjusted to match the virtual canvas offsets of each layer. As such the given offset is relative to the virtual canvas, and not the actual image.</p>
+
+<p>Composition uses given x and y offsets, as the 'origin' location of the source images virtual canvas (not the real image) allowing you to compose a list of 'layer images' into the destiantioni images.  This makes it well sutiable for directly composing 'Clears Frame Animations' or 'Coaleased Animations' onto a static or other 'Coaleased Animation' destination image list.  GIF disposal handling is not looked at.</p>
+
+<p>Special case:- If one of the image sequences is the last image (just a single image remaining), that image is repeatally composed with all the images in the other image list.  Either the source or destination lists may be the single image, for this situation.</p>
+
+<p>In the case of a single destination image (or last image given), that image will ve cloned to match the number of images remaining in the source image list.</p>
+
+<p>This is equivelent to the "-layer Composite" Shell API operator.</p>
+
+
+<p>The format of the CompositeLayers method is:</p>
+
+<pre class="code">
+  void CompositeLayers(Image *destination,
+      const CompositeOperator compose, Image *source,
+      const ssize_t x_offset, const ssize_t y_offset,
+      ExceptionInfo *exception);
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>destination</h5>
+<p>the destination images and results</p>
+
+<h5>source</h5>
+<p>source image(s) for the layer composition</p>
+
+<h5>compose, x_offset, y_offset</h5>
+<p>arguments passed on to CompositeImages()</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="MergeImageLayers">MergeImageLayers</a></h2>
+<div class="doc-section">
+
+<p>MergeImageLayers() composes all the image layers from the current given image onward to produce a single image of the merged layers.</p>
+
+<p>The inital canvas's size depends on the given ImageLayerMethod, and is initialized using the first images background color.  The images are then compositied onto that image in sequence using the given composition that has been assigned to each individual image.</p>
+
+<p>The format of the MergeImageLayers is:</p>
+
+<pre class="text">
+  Image *MergeImageLayers(const Image *image,
+    const ImageLayerMethod method, ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image list to be composited together</p>
+
+<h5>method</h5>
+<p>the method of selecting the size of the initial canvas.</p>
+
+<p>MergeLayer: Merge all layers onto a canvas just large enough to hold all the actual images. The virtual canvas of the first image is preserved but otherwise ignored.</p>
+
+<p>FlattenLayer: Use the virtual canvas size of first image. Images which fall outside this canvas is clipped. This can be used to 'fill out' a given virtual canvas.</p>
+
+<p>MosaicLayer: Start with the virtual canvas of the first image, enlarging left and right edges to contain all images. Images with negative offsets will be clipped.</p>
+
+<p>TrimBoundsLayer: Determine the overall bounds of all the image layers just as in "MergeLayer", then adjust the the canvas and offsets to be relative to those bounds, without overlaying the images.</p>
+
+<p>WARNING: a new image is not returned, the original image sequence page data is modified instead.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 
@@ -198,3 +529,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 09:12 -->

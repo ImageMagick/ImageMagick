@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickWand, C API for ImageMagick: Drawing Wand Methods</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickwc, api, for, imagemagick:, drawing, wmethods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickwc, api, for, imagemagick:, drawing, wmethods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,21 +186,2913 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="drawing-wand.html#"></a>]</p>
+<h1>Module drawing-wand Methods</h1>
+<p class="navigation-index">[<a href="drawing-wand.html#ClearDrawingWand">ClearDrawingWand</a> &#8226; <a href="drawing-wand.html#CloneDrawingWand">CloneDrawingWand</a> &#8226; <a href="drawing-wand.html#DestroyDrawingWand">DestroyDrawingWand</a> &#8226; <a href="drawing-wand.html#DrawAffine">DrawAffine</a> &#8226; <a href="drawing-wand.html#DrawAnnotation">DrawAnnotation</a> &#8226; <a href="drawing-wand.html#DrawArc">DrawArc</a> &#8226; <a href="drawing-wand.html#DrawBezier">DrawBezier</a> &#8226; <a href="drawing-wand.html#DrawCircle">DrawCircle</a> &#8226; <a href="drawing-wand.html#DrawClearException">DrawClearException</a> &#8226; <a href="drawing-wand.html#DrawComposite">DrawComposite</a> &#8226; <a href="drawing-wand.html#DrawColor">DrawColor</a> &#8226; <a href="drawing-wand.html#DrawComment">DrawComment</a> &#8226; <a href="drawing-wand.html#DrawEllipse">DrawEllipse</a> &#8226; <a href="drawing-wand.html#DrawGetBorderColor">DrawGetBorderColor</a> &#8226; <a href="drawing-wand.html#DrawGetClipPath">DrawGetClipPath</a> &#8226; <a href="drawing-wand.html#DrawGetClipRule">DrawGetClipRule</a> &#8226; <a href="drawing-wand.html#DrawGetClipUnits">DrawGetClipUnits</a> &#8226; <a href="drawing-wand.html#DrawGetException">DrawGetException</a> &#8226; <a href="drawing-wand.html#DrawGetExceptionType">DrawGetExceptionType</a> &#8226; <a href="drawing-wand.html#DrawGetFillColor">DrawGetFillColor</a> &#8226; <a href="drawing-wand.html#DrawGetFillOpacity">DrawGetFillOpacity</a> &#8226; <a href="drawing-wand.html#DrawGetFillRule">DrawGetFillRule</a> &#8226; <a href="drawing-wand.html#DrawGetFont">DrawGetFont</a> &#8226; <a href="drawing-wand.html#DrawGetFontFamily">DrawGetFontFamily</a> &#8226; <a href="drawing-wand.html#DrawGetFontResolution">DrawGetFontResolution</a> &#8226; <a href="drawing-wand.html#DrawGetFontSize">DrawGetFontSize</a> &#8226; <a href="drawing-wand.html#DrawGetFontStretch">DrawGetFontStretch</a> &#8226; <a href="drawing-wand.html#DrawGetFontStyle">DrawGetFontStyle</a> &#8226; <a href="drawing-wand.html#DrawGetFontWeight">DrawGetFontWeight</a> &#8226; <a href="drawing-wand.html#DrawGetGravity">DrawGetGravity</a> &#8226; <a href="drawing-wand.html#DrawGetOpacity">DrawGetOpacity</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeAntialias">DrawGetStrokeAntialias</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeColor">DrawGetStrokeColor</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeDashArray">DrawGetStrokeDashArray</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeDashOffset">DrawGetStrokeDashOffset</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeLineCap">DrawGetStrokeLineCap</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeLineJoin">DrawGetStrokeLineJoin</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeMiterLimit">DrawGetStrokeMiterLimit</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeOpacity">DrawGetStrokeOpacity</a> &#8226; <a href="drawing-wand.html#DrawGetStrokeWidth">DrawGetStrokeWidth</a> &#8226; <a href="drawing-wand.html#DrawGetTextAlignment">DrawGetTextAlignment</a> &#8226; <a href="drawing-wand.html#DrawGetTextAntialias">DrawGetTextAntialias</a> &#8226; <a href="drawing-wand.html#DrawGetTextDecoration">DrawGetTextDecoration</a> &#8226; <a href="drawing-wand.html#DrawGetTextDirection">DrawGetTextDirection</a> &#8226; <a href="drawing-wand.html#DrawGetTextEncoding">DrawGetTextEncoding</a> &#8226; <a href="drawing-wand.html#DrawGetTextKerning">DrawGetTextKerning</a> &#8226; <a href="drawing-wand.html#DrawGetTextInterlineSpacing">DrawGetTextInterlineSpacing</a> &#8226; <a href="drawing-wand.html#DrawGetTextInterwordSpacing">DrawGetTextInterwordSpacing</a> &#8226; <a href="drawing-wand.html#DrawGetVectorGraphics">DrawGetVectorGraphics</a> &#8226; <a href="drawing-wand.html#DrawGetTextUnderColor">DrawGetTextUnderColor</a> &#8226; <a href="drawing-wand.html#DrawLine">DrawLine</a> &#8226; <a href="drawing-wand.html#DrawMatte">DrawMatte</a> &#8226; <a href="drawing-wand.html#DrawPathClose">DrawPathClose</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToAbsolute">DrawPathCurveToAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToRelative">DrawPathCurveToRelative</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierAbsolute">DrawPathCurveToQuadraticBezierAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierRelative">DrawPathCurveToQuadraticBezierRelative</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierSmoothAbsolute">DrawPathCurveToQuadraticBezierSmoothAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToQuadraticBezierSmoothRelative">DrawPathCurveToQuadraticBezierSmoothRelative</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToSmoothAbsolute">DrawPathCurveToSmoothAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathCurveToSmoothRelative">DrawPathCurveToSmoothRelative</a> &#8226; <a href="drawing-wand.html#DrawPathEllipticArcAbsolute">DrawPathEllipticArcAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathEllipticArcRelative">DrawPathEllipticArcRelative</a> &#8226; <a href="drawing-wand.html#DrawPathFinish">DrawPathFinish</a> &#8226; <a href="drawing-wand.html#DrawPathLineToAbsolute">DrawPathLineToAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathLineToRelative">DrawPathLineToRelative</a> &#8226; <a href="drawing-wand.html#DrawPathLineToHorizontalAbsolute">DrawPathLineToHorizontalAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathLineToHorizontalRelative">DrawPathLineToHorizontalRelative</a> &#8226; <a href="drawing-wand.html#DrawPathLineToVerticalAbsolute">DrawPathLineToVerticalAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathLineToVerticalRelative">DrawPathLineToVerticalRelative</a> &#8226; <a href="drawing-wand.html#DrawPathMoveToAbsolute">DrawPathMoveToAbsolute</a> &#8226; <a href="drawing-wand.html#DrawPathMoveToRelative">DrawPathMoveToRelative</a> &#8226; <a href="drawing-wand.html#DrawPathStart">DrawPathStart</a> &#8226; <a href="drawing-wand.html#DrawPoint">DrawPoint</a> &#8226; <a href="drawing-wand.html#DrawPolygon">DrawPolygon</a> &#8226; <a href="drawing-wand.html#DrawPolyline">DrawPolyline</a> &#8226; <a href="drawing-wand.html#DrawPopClipPath">DrawPopClipPath</a> &#8226; <a href="drawing-wand.html#DrawPopDefs">DrawPopDefs</a> &#8226; <a href="drawing-wand.html#DrawPopPattern">DrawPopPattern</a> &#8226; <a href="drawing-wand.html#DrawPushClipPath">DrawPushClipPath</a> &#8226; <a href="drawing-wand.html#DrawPushDefs">DrawPushDefs</a> &#8226; <a href="drawing-wand.html#DrawPushPattern">DrawPushPattern</a> &#8226; <a href="drawing-wand.html#DrawRectangle">DrawRectangle</a> &#8226; <a href="drawing-wand.html#DrawResetVectorGraphics">DrawResetVectorGraphics</a> &#8226; <a href="drawing-wand.html#DrawRotate">DrawRotate</a> &#8226; <a href="drawing-wand.html#DrawRoundRectangle">DrawRoundRectangle</a> &#8226; <a href="drawing-wand.html#DrawScale">DrawScale</a> &#8226; <a href="drawing-wand.html#DrawSetBorderColor">DrawSetBorderColor</a> &#8226; <a href="drawing-wand.html#DrawSetClipPath">DrawSetClipPath</a> &#8226; <a href="drawing-wand.html#DrawSetClipRule">DrawSetClipRule</a> &#8226; <a href="drawing-wand.html#DrawSetClipUnits">DrawSetClipUnits</a> &#8226; <a href="drawing-wand.html#DrawSetFillColor">DrawSetFillColor</a> &#8226; <a href="drawing-wand.html#DrawSetFillOpacity">DrawSetFillOpacity</a> &#8226; <a href="drawing-wand.html#DrawSetFontResolution">DrawSetFontResolution</a> &#8226; <a href="drawing-wand.html#DrawSetOpacity">DrawSetOpacity</a> &#8226; <a href="drawing-wand.html#DrawSetFillPatternURL">DrawSetFillPatternURL</a> &#8226; <a href="drawing-wand.html#DrawSetFillRule">DrawSetFillRule</a> &#8226; <a href="drawing-wand.html#DrawSetFont">DrawSetFont</a> &#8226; <a href="drawing-wand.html#DrawSetFontFamily">DrawSetFontFamily</a> &#8226; <a href="drawing-wand.html#DrawSetFontSize">DrawSetFontSize</a> &#8226; <a href="drawing-wand.html#DrawSetFontStretch">DrawSetFontStretch</a> &#8226; <a href="drawing-wand.html#DrawSetFontStyle">DrawSetFontStyle</a> &#8226; <a href="drawing-wand.html#DrawSetFontWeight">DrawSetFontWeight</a> &#8226; <a href="drawing-wand.html#DrawSetGravity">DrawSetGravity</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeColor">DrawSetStrokeColor</a> &#8226; <a href="drawing-wand.html#DrawSetStrokePatternURL">DrawSetStrokePatternURL</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeAntialias">DrawSetStrokeAntialias</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeDashArray">DrawSetStrokeDashArray</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeDashOffset">DrawSetStrokeDashOffset</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeLineCap">DrawSetStrokeLineCap</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeLineJoin">DrawSetStrokeLineJoin</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeMiterLimit">DrawSetStrokeMiterLimit</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeOpacity">DrawSetStrokeOpacity</a> &#8226; <a href="drawing-wand.html#DrawSetStrokeWidth">DrawSetStrokeWidth</a> &#8226; <a href="drawing-wand.html#DrawSetTextAlignment">DrawSetTextAlignment</a> &#8226; <a href="drawing-wand.html#DrawSetTextAntialias">DrawSetTextAntialias</a> &#8226; <a href="drawing-wand.html#DrawSetTextDecoration">DrawSetTextDecoration</a> &#8226; <a href="drawing-wand.html#DrawSetTextDirection">DrawSetTextDirection</a> &#8226; <a href="drawing-wand.html#DrawSetTextEncoding">DrawSetTextEncoding</a> &#8226; <a href="drawing-wand.html#DrawSetTextKerning">DrawSetTextKerning</a> &#8226; <a href="drawing-wand.html#DrawSetTextInterlineSpacing">DrawSetTextInterlineSpacing</a> &#8226; <a href="drawing-wand.html#DrawSetTextInterwordSpacing">DrawSetTextInterwordSpacing</a> &#8226; <a href="drawing-wand.html#DrawSetTextUnderColor">DrawSetTextUnderColor</a> &#8226; <a href="drawing-wand.html#DrawSetVectorGraphics">DrawSetVectorGraphics</a> &#8226; <a href="drawing-wand.html#DrawSkewX">DrawSkewX</a> &#8226; <a href="drawing-wand.html#DrawSkewY">DrawSkewY</a> &#8226; <a href="drawing-wand.html#DrawTranslate">DrawTranslate</a> &#8226; <a href="drawing-wand.html#DrawSetViewbox">DrawSetViewbox</a> &#8226; <a href="drawing-wand.html#IsDrawingWand">IsDrawingWand</a> &#8226; <a href="drawing-wand.html#NewDrawingWand">NewDrawingWand</a> &#8226; <a href="drawing-wand.html#PeekDrawingWand">PeekDrawingWand</a> &#8226; <a href="drawing-wand.html#PopDrawingWand">PopDrawingWand</a> &#8226; <a href="drawing-wand.html#PushDrawingWand">PushDrawingWand</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="ClearDrawingWand">ClearDrawingWand</a></h2>
+<div class="doc-section">
+
+<p>ClearDrawingWand() clears resources associated with the drawing wand.</p>
+
+<p>The format of the ClearDrawingWand method is:</p>
+
+<pre class="code">
+  void ClearDrawingWand(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand to clear.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="CloneDrawingWand">CloneDrawingWand</a></h2>
+<div class="doc-section">
+
+<p>CloneDrawingWand() makes an exact copy of the specified wand.</p>
+
+<p>The format of the CloneDrawingWand method is:</p>
+
+<pre class="code">
+  DrawingWand *CloneDrawingWand(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DestroyDrawingWand">DestroyDrawingWand</a></h2>
+<div class="doc-section">
+
+<p>DestroyDrawingWand() frees all resources associated with the drawing wand. Once the drawing wand has been freed, it should not be used and further unless it re-allocated.</p>
+
+<p>The format of the DestroyDrawingWand method is:</p>
+
+<pre class="code">
+  DrawingWand *DestroyDrawingWand(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand to destroy.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawAffine">DrawAffine</a></h2>
+<div class="doc-section">
+
+<p>DrawAffine() adjusts the current affine transformation matrix with the specified affine transformation matrix. Note that the current affine transform is adjusted rather than replaced.</p>
+
+<p>The format of the DrawAffine method is:</p>
+
+<pre class="code">
+  void DrawAffine(DrawingWand *wand,const AffineMatrix *affine)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>Drawing wand</p>
+
+<h5>affine</h5>
+<p>Affine matrix parameters</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawAnnotation">DrawAnnotation</a></h2>
+<div class="doc-section">
+
+<p>DrawAnnotation() draws text on the image.</p>
+
+<p>The format of the DrawAnnotation method is:</p>
+
+<pre class="code">
+  void DrawAnnotation(DrawingWand *wand,const double x,
+    const double y,const unsigned char *text)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>x ordinate to left of text</p>
+
+<h5>y</h5>
+<p>y ordinate to text baseline</p>
+
+<h5>text</h5>
+<p>text to draw</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawArc">DrawArc</a></h2>
+<div class="doc-section">
+
+<p>DrawArc() draws an arc falling within a specified bounding rectangle on the image.</p>
+
+<p>The format of the DrawArc method is:</p>
+
+<pre class="code">
+  void DrawArc(DrawingWand *wand,const double sx,const double sy,
+    const double ex,const double ey,const double sd,const double ed)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>sx</h5>
+<p>starting x ordinate of bounding rectangle</p>
+
+<h5>sy</h5>
+<p>starting y ordinate of bounding rectangle</p>
+
+<h5>ex</h5>
+<p>ending x ordinate of bounding rectangle</p>
+
+<h5>ey</h5>
+<p>ending y ordinate of bounding rectangle</p>
+
+<h5>sd</h5>
+<p>starting degrees of rotation</p>
+
+<h5>ed</h5>
+<p>ending degrees of rotation</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawBezier">DrawBezier</a></h2>
+<div class="doc-section">
+
+<p>DrawBezier() draws a bezier curve through a set of points on the image.</p>
+
+<p>The format of the DrawBezier method is:</p>
+
+<pre class="code">
+  void DrawBezier(DrawingWand *wand,
+    const size_t number_coordinates,const PointInfo *coordinates)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>number_coordinates</h5>
+<p>number of coordinates</p>
+
+<h5>coordinates</h5>
+<p>coordinates</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawCircle">DrawCircle</a></h2>
+<div class="doc-section">
+
+<p>DrawCircle() draws a circle on the image.</p>
+
+<p>The format of the DrawCircle method is:</p>
+
+<pre class="code">
+  void DrawCircle(DrawingWand *wand,const double ox,
+    const double oy,const double px, const double py)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>ox</h5>
+<p>origin x ordinate</p>
+
+<h5>oy</h5>
+<p>origin y ordinate</p>
+
+<h5>px</h5>
+<p>perimeter x ordinate</p>
+
+<h5>py</h5>
+<p>perimeter y ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawClearException">DrawClearException</a></h2>
+<div class="doc-section">
+
+<p>DrawClearException() clear any exceptions associated with the wand.</p>
+
+<p>The format of the DrawClearException method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawClearException(DrawWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawComposite">DrawComposite</a></h2>
+<div class="doc-section">
+
+<p>DrawComposite() composites an image onto the current image, using the specified composition operator, specified position, and at the specified size.</p>
+
+<p>The format of the DrawComposite method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawComposite(DrawingWand *wand,
+    const CompositeOperator compose,const double x,
+    const double y,const double width,const double height,
+    MagickWand *magick_wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>compose</h5>
+<p>composition operator</p>
+
+<h5>x</h5>
+<p>x ordinate of top left corner</p>
+
+<h5>y</h5>
+<p>y ordinate of top left corner</p>
+
+<h5>width</h5>
+<p>Width to resize image to prior to compositing.  Specify zero to use existing width.</p>
+
+<h5>height</h5>
+<p>Height to resize image to prior to compositing.  Specify zero to use existing height.</p>
+
+<h5>magick_wand</h5>
+<p>Image to composite is obtained from this wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawColor">DrawColor</a></h2>
+<div class="doc-section">
+
+<p>DrawColor() draws color on image using the current fill color, starting at specified position, and using specified paint method. The available paint methods are:</p>
+
+<pre class="text">
+      PointMethod: Recolors the target pixel
+      ReplaceMethod: Recolor any pixel that matches the target pixel.
+      FloodfillMethod: Recolors target pixels and matching neighbors.
+      ResetMethod: Recolor all pixels.
+</pre>
+
+<p>The format of the DrawColor method is:</p>
+
+<pre class="code">
+  void DrawColor(DrawingWand *wand,const double x,const double y,
+    const PaintMethod paint_method)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>x ordinate.</p>
+
+<h5>y</h5>
+<p>y ordinate.</p>
+
+<h5>paint_method</h5>
+<p>paint method.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawComment">DrawComment</a></h2>
+<div class="doc-section">
+
+<p>DrawComment() adds a comment to a vector output stream.</p>
+
+<p>The format of the DrawComment method is:</p>
+
+<pre class="code">
+  void DrawComment(DrawingWand *wand,const char *comment)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>comment</h5>
+<p>comment text</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawEllipse">DrawEllipse</a></h2>
+<div class="doc-section">
+
+<p>DrawEllipse() draws an ellipse on the image.</p>
+
+<p>The format of the DrawEllipse method is:</p>
+
+<pre class="code">
+   void DrawEllipse(DrawingWand *wand,const double ox,const double oy,
+     const double rx,const double ry,const double start,const double end)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>ox</h5>
+<p>origin x ordinate</p>
+
+<h5>oy</h5>
+<p>origin y ordinate</p>
+
+<h5>rx</h5>
+<p>radius in x</p>
+
+<h5>ry</h5>
+<p>radius in y</p>
+
+<h5>start</h5>
+<p>starting rotation in degrees</p>
+
+<h5>end</h5>
+<p>ending rotation in degrees</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetBorderColor">DrawGetBorderColor</a></h2>
+<div class="doc-section">
+
+<p>DrawGetBorderColor() returns the border color used for drawing bordered objects.</p>
+
+<p>The format of the DrawGetBorderColor method is:</p>
+
+<pre class="code">
+  void DrawGetBorderColor(const DrawingWand *wand,
+    PixelWand *border_color)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>border_color</h5>
+<p>Return the border color.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetClipPath">DrawGetClipPath</a></h2>
+<div class="doc-section">
+
+<p>DrawGetClipPath() obtains the current clipping path ID. The value returned must be deallocated by the user when it is no longer needed.</p>
+
+<p>The format of the DrawGetClipPath method is:</p>
+
+<pre class="code">
+  char *DrawGetClipPath(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetClipRule">DrawGetClipRule</a></h2>
+<div class="doc-section">
+
+<p>DrawGetClipRule() returns the current polygon fill rule to be used by the clipping path.</p>
+
+<p>The format of the DrawGetClipRule method is:</p>
+
+<pre class="code">
+       FillRule DrawGetClipRule(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetClipUnits">DrawGetClipUnits</a></h2>
+<div class="doc-section">
+
+<p>DrawGetClipUnits() returns the interpretation of clip path units.</p>
+
+<p>The format of the DrawGetClipUnits method is:</p>
+
+<pre class="code">
+  ClipPathUnits DrawGetClipUnits(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetException">DrawGetException</a></h2>
+<div class="doc-section">
+
+<p>DrawGetException() returns the severity, reason, and description of any error that occurs when using other methods in this API.</p>
+
+<p>The format of the DrawGetException method is:</p>
+
+<pre class="code">
+  char *DrawGetException(const DrawWand *wand,
+    ExceptionType *severity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>severity</h5>
+<p>the severity of the error is returned here.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetExceptionType">DrawGetExceptionType</a></h2>
+<div class="doc-section">
+
+<p>DrawGetExceptionType() the exception type associated with the wand.  If no exception has occurred, UndefinedExceptionType is returned.</p>
+
+<p>The format of the DrawGetExceptionType method is:</p>
+
+<pre class="code">
+  ExceptionType DrawGetExceptionType(const DrawWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFillColor">DrawGetFillColor</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFillColor() returns the fill color used for drawing filled objects.</p>
+
+<p>The format of the DrawGetFillColor method is:</p>
+
+<pre class="code">
+  void DrawGetFillColor(const DrawingWand *wand,
+    PixelWand *fill_color)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>fill_color</h5>
+<p>Return the fill color.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFillOpacity">DrawGetFillOpacity</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFillOpacity() returns the opacity used when drawing using the fill color or fill texture.  Fully opaque is 1.0.</p>
+
+<p>The format of the DrawGetFillOpacity method is:</p>
+
+<pre class="code">
+  double DrawGetFillOpacity(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFillRule">DrawGetFillRule</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFillRule() returns the fill rule used while drawing polygons.</p>
+
+<p>The format of the DrawGetFillRule method is:</p>
+
+<pre class="code">
+  FillRule DrawGetFillRule(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFont">DrawGetFont</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFont() returns a null-terminaged string specifying the font used when annotating with text. The value returned must be freed by the user when no longer needed.</p>
+
+<p>The format of the DrawGetFont method is:</p>
+
+<pre class="code">
+  char *DrawGetFont(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFontFamily">DrawGetFontFamily</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFontFamily() returns the font family to use when annotating with text. The value returned must be freed by the user when it is no longer needed.</p>
+
+<p>The format of the DrawGetFontFamily method is:</p>
+
+<pre class="code">
+  char *DrawGetFontFamily(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFontResolution">DrawGetFontResolution</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFontResolution() gets the image X and Y resolution.</p>
+
+<p>The format of the DrawGetFontResolution method is:</p>
+
+<pre class="code">
+  DrawBooleanType DrawGetFontResolution(const DrawingWand *wand,
+    double *x,double *y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+<h5>x</h5>
+<p>the x-resolution.</p>
+
+<h5>y</h5>
+<p>the y-resolution.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFontSize">DrawGetFontSize</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFontSize() returns the font pointsize used when annotating with text.</p>
+
+<p>The format of the DrawGetFontSize method is:</p>
+
+<pre class="code">
+  double DrawGetFontSize(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFontStretch">DrawGetFontStretch</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFontStretch() returns the font stretch used when annotating with text.</p>
+
+<p>The format of the DrawGetFontStretch method is:</p>
+
+<pre class="code">
+  StretchType DrawGetFontStretch(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFontStyle">DrawGetFontStyle</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFontStyle() returns the font style used when annotating with text.</p>
+
+<p>The format of the DrawGetFontStyle method is:</p>
+
+<pre class="code">
+  StyleType DrawGetFontStyle(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetFontWeight">DrawGetFontWeight</a></h2>
+<div class="doc-section">
+
+<p>DrawGetFontWeight() returns the font weight used when annotating with text.</p>
+
+<p>The format of the DrawGetFontWeight method is:</p>
+
+<pre class="code">
+  size_t DrawGetFontWeight(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetGravity">DrawGetGravity</a></h2>
+<div class="doc-section">
+
+<p>DrawGetGravity() returns the text placement gravity used when annotating with text.</p>
+
+<p>The format of the DrawGetGravity method is:</p>
+
+<pre class="code">
+  GravityType DrawGetGravity(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetOpacity">DrawGetOpacity</a></h2>
+<div class="doc-section">
+
+<p>DrawGetOpacity() returns the opacity used when drawing with the fill or stroke color or texture.  Fully opaque is 1.0.</p>
+
+<p>The format of the DrawGetOpacity method is:</p>
+
+<pre class="code">
+  double DrawGetOpacity(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetStrokeAntialias">DrawGetStrokeAntialias</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeAntialias() returns the current stroke antialias setting. Stroked outlines are antialiased by default.  When antialiasing is disabled stroked pixels are thresholded to determine if the stroke color or underlying canvas color should be used.</p>
+
+<p>The format of the DrawGetStrokeAntialias method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawGetStrokeAntialias(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetStrokeColor">DrawGetStrokeColor</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeColor() returns the color used for stroking object outlines.</p>
+
+<p>The format of the DrawGetStrokeColor method is:</p>
+
+<pre class="code">
+  void DrawGetStrokeColor(const DrawingWand *wand,
+    PixelWand *stroke_color)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>stroke_color</h5>
+<p>Return the stroke color.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetStrokeDashArray">DrawGetStrokeDashArray</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeDashArray() returns an array representing the pattern of dashes and gaps used to stroke paths (see DrawSetStrokeDashArray). The array must be freed once it is no longer required by the user.</p>
+
+<p>The format of the DrawGetStrokeDashArray method is:</p>
+
+<pre class="code">
+  double *DrawGetStrokeDashArray(const DrawingWand *wand,
+    size_t *number_elements)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>number_elements</h5>
+<p>address to place number of elements in dash array</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetStrokeDashOffset">DrawGetStrokeDashOffset</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeDashOffset() returns the offset into the dash pattern to start the dash.</p>
+
+<p>The format of the DrawGetStrokeDashOffset method is:</p>
+
+<pre class="code">
+  double DrawGetStrokeDashOffset(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetStrokeLineCap">DrawGetStrokeLineCap</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeLineCap() returns the shape to be used at the end of open subpaths when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap, and SquareCap.</p>
+
+<p>The format of the DrawGetStrokeLineCap method is:</p>
+
+<pre class="code">
+  LineCap DrawGetStrokeLineCap(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetStrokeLineJoin">DrawGetStrokeLineJoin</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeLineJoin() returns the shape to be used at the corners of paths (or other vector shapes) when they are stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</p>
+
+<p>The format of the DrawGetStrokeLineJoin method is:</p>
+
+<pre class="code">
+  LineJoin DrawGetStrokeLineJoin(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetStrokeMiterLimit">DrawGetStrokeMiterLimit</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeMiterLimit() returns the miter limit. When two line segments meet at a sharp angle and miter joins have been specified for 'lineJoin', it is possible for the miter to extend far beyond the thickness of the line stroking the path. The miterLimit' imposes a limit on the ratio of the miter length to the 'lineWidth'.</p>
+
+<p>The format of the DrawGetStrokeMiterLimit method is:</p>
+
+<pre class="code">
+  size_t DrawGetStrokeMiterLimit(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetStrokeOpacity">DrawGetStrokeOpacity</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeOpacity() returns the opacity of stroked object outlines.</p>
+
+<p>The format of the DrawGetStrokeOpacity method is:</p>
+
+<pre class="code">
+  double DrawGetStrokeOpacity(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetStrokeWidth">DrawGetStrokeWidth</a></h2>
+<div class="doc-section">
+
+<p>DrawGetStrokeWidth() returns the width of the stroke used to draw object outlines.</p>
+
+<p>The format of the DrawGetStrokeWidth method is:</p>
+
+<pre class="code">
+  double DrawGetStrokeWidth(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetTextAlignment">DrawGetTextAlignment</a></h2>
+<div class="doc-section">
+
+<p>DrawGetTextAlignment() returns the alignment applied when annotating with text.</p>
+
+<p>The format of the DrawGetTextAlignment method is:</p>
+
+<pre class="code">
+  AlignType DrawGetTextAlignment(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetTextAntialias">DrawGetTextAntialias</a></h2>
+<div class="doc-section">
+
+<p>DrawGetTextAntialias() returns the current text antialias setting, which determines whether text is antialiased.  Text is antialiased by default.</p>
+
+<p>The format of the DrawGetTextAntialias method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawGetTextAntialias(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetTextDecoration">DrawGetTextDecoration</a></h2>
+<div class="doc-section">
+
+<p>DrawGetTextDecoration() returns the decoration applied when annotating with text.</p>
+
+<p>The format of the DrawGetTextDecoration method is:</p>
+
+<pre class="code">
+  DecorationType DrawGetTextDecoration(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetTextDirection">DrawGetTextDirection</a></h2>
+<div class="doc-section">
+
+<p>DrawGetTextDirection() returns the direction that will be used when annotating with text.</p>
+
+<p>The format of the DrawGetTextDirection method is:</p>
+
+<pre class="code">
+  DirectionType DrawGetTextDirection(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetTextEncoding">DrawGetTextEncoding</a></h2>
+<div class="doc-section">
+
+<p>DrawGetTextEncoding() returns a null-terminated string which specifies the code set used for text annotations. The string must be freed by the user once it is no longer required.</p>
+
+<p>The format of the DrawGetTextEncoding method is:</p>
+
+<pre class="code">
+  char *DrawGetTextEncoding(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetTextKerning">DrawGetTextKerning</a></h2>
+<div class="doc-section">
+
+<p>DrawGetTextKerning() gets the spacing between characters in text.</p>
+
+<p>The format of the DrawSetFontKerning method is:</p>
+
+<pre class="code">
+  double DrawGetTextKerning(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetTextInterlineSpacing">DrawGetTextInterlineSpacing</a></h2>
+<div class="doc-section">
+
+<p>DrawGetTextInterlineSpacing() gets the spacing between lines in text.</p>
+
+<p>The format of the DrawGetTextInterwordSpacing method is:</p>
+
+<pre class="code">
+  double DrawGetTextInterwordSpacing(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetTextInterwordSpacing">DrawGetTextInterwordSpacing</a></h2>
+<div class="doc-section">
+
+<p>DrawGetTextInterwordSpacing() gets the spacing between words in text.</p>
+
+<p>The format of the DrawSetFontKerning method is:</p>
+
+<pre class="code">
+  double DrawGetTextInterwordSpacing(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetVectorGraphics">DrawGetVectorGraphics</a></h2>
+<div class="doc-section">
+
+<p>DrawGetVectorGraphics() returns a null-terminated string which specifies the vector graphics generated by any graphics calls made since the wand was instantiated.  The string must be freed by the user once it is no longer required.</p>
+
+<p>The format of the DrawGetVectorGraphics method is:</p>
+
+<pre class="code">
+  char *DrawGetVectorGraphics(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawGetTextUnderColor">DrawGetTextUnderColor</a></h2>
+<div class="doc-section">
+
+<p>DrawGetTextUnderColor() returns the color of a background rectangle to place under text annotations.</p>
+
+<p>The format of the DrawGetTextUnderColor method is:</p>
+
+<pre class="code">
+  void DrawGetTextUnderColor(const DrawingWand *wand,
+    PixelWand *under_color)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>under_color</h5>
+<p>Return the under color.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawLine">DrawLine</a></h2>
+<div class="doc-section">
+
+<p>DrawLine() draws a line on the image using the current stroke color, stroke opacity, and stroke width.</p>
+
+<p>The format of the DrawLine method is:</p>
+
+<pre class="code">
+  void DrawLine(DrawingWand *wand,const double sx,const double sy,
+    const double ex,const double ey)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>sx</h5>
+<p>starting x ordinate</p>
+
+<h5>sy</h5>
+<p>starting y ordinate</p>
+
+<h5>ex</h5>
+<p>ending x ordinate</p>
+
+<h5>ey</h5>
+<p>ending y ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawMatte">DrawMatte</a></h2>
+<div class="doc-section">
+
+<p>DrawMatte() paints on the image's opacity channel in order to set effected pixels to transparent. to influence the opacity of pixels. The available paint methods are:</p>
+
+<pre class="text">
+      PointMethod: Select the target pixel
+      ReplaceMethod: Select any pixel that matches the target pixel.
+      FloodfillMethod: Select the target pixel and matching neighbors.
+      FillToBorderMethod: Select the target pixel and neighbors not matching
+  border color.
+      ResetMethod: Select all pixels.
+</pre>
+
+<p>The format of the DrawMatte method is:</p>
+
+<pre class="code">
+  void DrawMatte(DrawingWand *wand,const double x,const double y,
+    const PaintMethod paint_method)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>x ordinate</p>
+
+<h5>y</h5>
+<p>y ordinate</p>
+
+<h5>paint_method</h5>
+<p>paint method.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathClose">DrawPathClose</a></h2>
+<div class="doc-section">
+
+<p>DrawPathClose() adds a path element to the current path which closes the current subpath by drawing a straight line from the current point to the current subpath's most recent starting point (usually, the most recent moveto point).</p>
+
+<p>The format of the DrawPathClose method is:</p>
+
+<pre class="code">
+  void DrawPathClose(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathCurveToAbsolute">DrawPathCurveToAbsolute</a></h2>
+<div class="doc-section">
+
+<p>DrawPathCurveToAbsolute() draws a cubic Bezier curve from the current point to (x,y) using (x1,y1) as the control point at the beginning of the curve and (x2,y2) as the control point at the end of the curve using absolute coordinates. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p>
+
+<p>The format of the DrawPathCurveToAbsolute method is:</p>
+
+<pre class="code">
+  void DrawPathCurveToAbsolute(DrawingWand *wand,const double x1,
+    const double y1,const double x2,const double y2,const double x,
+    const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x1</h5>
+<p>x ordinate of control point for curve beginning</p>
+
+<h5>y1</h5>
+<p>y ordinate of control point for curve beginning</p>
+
+<h5>x2</h5>
+<p>x ordinate of control point for curve ending</p>
+
+<h5>y2</h5>
+<p>y ordinate of control point for curve ending</p>
+
+<h5>x</h5>
+<p>x ordinate of the end of the curve</p>
+
+<h5>y</h5>
+<p>y ordinate of the end of the curve</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathCurveToRelative">DrawPathCurveToRelative</a></h2>
+<div class="doc-section">
+
+<p>DrawPathCurveToRelative() draws a cubic Bezier curve from the current point to (x,y) using (x1,y1) as the control point at the beginning of the curve and (x2,y2) as the control point at the end of the curve using relative coordinates. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p>
+
+<p>The format of the DrawPathCurveToRelative method is:</p>
+
+<pre class="code">
+  void DrawPathCurveToRelative(DrawingWand *wand,const double x1,
+    const double y1,const double x2,const double y2,const double x,
+    const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x1</h5>
+<p>x ordinate of control point for curve beginning</p>
+
+<h5>y1</h5>
+<p>y ordinate of control point for curve beginning</p>
+
+<h5>x2</h5>
+<p>x ordinate of control point for curve ending</p>
+
+<h5>y2</h5>
+<p>y ordinate of control point for curve ending</p>
+
+<h5>x</h5>
+<p>x ordinate of the end of the curve</p>
+
+<h5>y</h5>
+<p>y ordinate of the end of the curve</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathCurveToQuadraticBezierAbsolute">DrawPathCurveToQuadraticBezierAbsolute</a></h2>
+<div class="doc-section">
+
+<p>DrawPathCurveToQuadraticBezierAbsolute() draws a quadratic Bezier curve from the current point to (x,y) using (x1,y1) as the control point using absolute coordinates. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p>
+
+<p>The format of the DrawPathCurveToQuadraticBezierAbsolute method is:</p>
+
+<pre class="code">
+  void DrawPathCurveToQuadraticBezierAbsolute(DrawingWand *wand,
+    const double x1,const double y1,const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x1</h5>
+<p>x ordinate of the control point</p>
+
+<h5>y1</h5>
+<p>y ordinate of the control point</p>
+
+<h5>x</h5>
+<p>x ordinate of final point</p>
+
+<h5>y</h5>
+<p>y ordinate of final point</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathCurveToQuadraticBezierRelative">DrawPathCurveToQuadraticBezierRelative</a></h2>
+<div class="doc-section">
+
+<p>DrawPathCurveToQuadraticBezierRelative() draws a quadratic Bezier curve from the current point to (x,y) using (x1,y1) as the control point using relative coordinates. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p>
+
+<p>The format of the DrawPathCurveToQuadraticBezierRelative method is:</p>
+
+<pre class="code">
+  void DrawPathCurveToQuadraticBezierRelative(DrawingWand *wand,
+    const double x1,const double y1,const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x1</h5>
+<p>x ordinate of the control point</p>
+
+<h5>y1</h5>
+<p>y ordinate of the control point</p>
+
+<h5>x</h5>
+<p>x ordinate of final point</p>
+
+<h5>y</h5>
+<p>y ordinate of final point</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathCurveToQuadraticBezierSmoothAbsolute">DrawPathCurveToQuadraticBezierSmoothAbsolute</a></h2>
+<div class="doc-section">
+
+<p>DrawPathCurveToQuadraticBezierSmoothAbsolute() draws a quadratic Bezier curve (using absolute coordinates) from the current point to (x,y). The control point is assumed to be the reflection of the control point on the previous command relative to the current point. (If there is no previous command or if the previous command was not a DrawPathCurveToQuadraticBezierAbsolute, DrawPathCurveToQuadraticBezierRelative, DrawPathCurveToQuadraticBezierSmoothAbsolute or DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point is coincident with the current point.). At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p>
+
+<p>The format of the DrawPathCurveToQuadraticBezierSmoothAbsolute method is:</p>
+
+<pre class="code">
+  void DrawPathCurveToQuadraticBezierSmoothAbsolute(
+    DrawingWand *wand,const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>x ordinate of final point</p>
+
+<h5>y</h5>
+<p>y ordinate of final point</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathCurveToQuadraticBezierSmoothRelative">DrawPathCurveToQuadraticBezierSmoothRelative</a></h2>
+<div class="doc-section">
+
+<p>DrawPathCurveToQuadraticBezierSmoothRelative() draws a quadratic Bezier curve (using relative coordinates) from the current point to (x,y). The control point is assumed to be the reflection of the control point on the previous command relative to the current point. (If there is no previous command or if the previous command was not a DrawPathCurveToQuadraticBezierAbsolute, DrawPathCurveToQuadraticBezierRelative, DrawPathCurveToQuadraticBezierSmoothAbsolute or DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point is coincident with the current point.). At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p>
+
+<p>The format of the DrawPathCurveToQuadraticBezierSmoothRelative method is:</p>
+
+<pre class="code">
+  void DrawPathCurveToQuadraticBezierSmoothRelative(DrawingWand *wand,
+    const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>x ordinate of final point</p>
+
+<h5>y</h5>
+<p>y ordinate of final point</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathCurveToSmoothAbsolute">DrawPathCurveToSmoothAbsolute</a></h2>
+<div class="doc-section">
+
+<p>DrawPathCurveToSmoothAbsolute() draws a cubic Bezier curve from the current point to (x,y) using absolute coordinates. The first control point is assumed to be the reflection of the second control point on the previous command relative to the current point. (If there is no previous command or if the previous command was not an DrawPathCurveToAbsolute, DrawPathCurveToRelative, DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume the first control point is coincident with the current point.) (x2,y2) is the second control point (i.e., the control point at the end of the curve). At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p>
+
+<p>The format of the DrawPathCurveToSmoothAbsolute method is:</p>
+
+<pre class="code">
+  void DrawPathCurveToSmoothAbsolute(DrawingWand *wand,
+    const double x2,const double y2,const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x2</h5>
+<p>x ordinate of second control point</p>
+
+<h5>y2</h5>
+<p>y ordinate of second control point</p>
+
+<h5>x</h5>
+<p>x ordinate of termination point</p>
+
+<h5>y</h5>
+<p>y ordinate of termination point</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathCurveToSmoothRelative">DrawPathCurveToSmoothRelative</a></h2>
+<div class="doc-section">
+
+<p>DrawPathCurveToSmoothRelative() draws a cubic Bezier curve from the current point to (x,y) using relative coordinates. The first control point is assumed to be the reflection of the second control point on the previous command relative to the current point. (If there is no previous command or if the previous command was not an DrawPathCurveToAbsolute, DrawPathCurveToRelative, DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume the first control point is coincident with the current point.) (x2,y2) is the second control point (i.e., the control point at the end of the curve). At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p>
+
+<p>The format of the DrawPathCurveToSmoothRelative method is:</p>
+
+<pre class="code">
+  void DrawPathCurveToSmoothRelative(DrawingWand *wand,
+    const double x2,const double y2,const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x2</h5>
+<p>x ordinate of second control point</p>
+
+<h5>y2</h5>
+<p>y ordinate of second control point</p>
+
+<h5>x</h5>
+<p>x ordinate of termination point</p>
+
+<h5>y</h5>
+<p>y ordinate of termination point</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathEllipticArcAbsolute">DrawPathEllipticArcAbsolute</a></h2>
+<div class="doc-section">
+
+<p>DrawPathEllipticArcAbsolute() draws an elliptical arc from the current point to (x, y) using absolute coordinates. The size and orientation of the ellipse are defined by two radii (rx, ry) and an xAxisRotation, which indicates how the ellipse as a whole is rotated relative to the current coordinate system. The center (cx, cy) of the ellipse is calculated automagically to satisfy the constraints imposed by the other parameters. largeArcFlag and sweepFlag contribute to the automatic calculations and help determine how the arc is drawn. If largeArcFlag is true then draw the larger of the available arcs. If sweepFlag is true, then draw the arc matching a clock-wise rotation.</p>
+
+<p>The format of the DrawPathEllipticArcAbsolute method is:</p>
+
+<pre class="code">
+  void DrawPathEllipticArcAbsolute(DrawingWand *wand,
+    const double rx,const double ry,const double x_axis_rotation,
+    const MagickBooleanType large_arc_flag,
+    const MagickBooleanType sweep_flag,const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>rx</h5>
+<p>x radius</p>
+
+<h5>ry</h5>
+<p>y radius</p>
+
+<h5>x_axis_rotation</h5>
+<p>indicates how the ellipse as a whole is rotated relative to the current coordinate system</p>
+
+<h5>large_arc_flag</h5>
+<p>If non-zero (true) then draw the larger of the available arcs</p>
+
+<h5>sweep_flag</h5>
+<p>If non-zero (true) then draw the arc matching a clock-wise rotation</p>
+
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathEllipticArcRelative">DrawPathEllipticArcRelative</a></h2>
+<div class="doc-section">
+
+<p>DrawPathEllipticArcRelative() draws an elliptical arc from the current point to (x, y) using relative coordinates. The size and orientation of the ellipse are defined by two radii (rx, ry) and an xAxisRotation, which indicates how the ellipse as a whole is rotated relative to the current coordinate system. The center (cx, cy) of the ellipse is calculated automagically to satisfy the constraints imposed by the other parameters. largeArcFlag and sweepFlag contribute to the automatic calculations and help determine how the arc is drawn. If largeArcFlag is true then draw the larger of the available arcs. If sweepFlag is true, then draw the arc matching a clock-wise rotation.</p>
+
+<p>The format of the DrawPathEllipticArcRelative method is:</p>
+
+<pre class="code">
+  void DrawPathEllipticArcRelative(DrawingWand *wand,
+    const double rx,const double ry,const double x_axis_rotation,
+    const MagickBooleanType large_arc_flag,
+    const MagickBooleanType sweep_flag,const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>rx</h5>
+<p>x radius</p>
+
+<h5>ry</h5>
+<p>y radius</p>
+
+<h5>x_axis_rotation</h5>
+<p>indicates how the ellipse as a whole is rotated relative to the current coordinate system</p>
+
+<h5>large_arc_flag</h5>
+<p>If non-zero (true) then draw the larger of the available arcs</p>
+
+<h5>sweep_flag</h5>
+<p>If non-zero (true) then draw the arc matching a clock-wise rotation</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathFinish">DrawPathFinish</a></h2>
+<div class="doc-section">
+
+<p>DrawPathFinish() terminates the current path.</p>
+
+<p>The format of the DrawPathFinish method is:</p>
+
+<pre class="code">
+  void DrawPathFinish(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathLineToAbsolute">DrawPathLineToAbsolute</a></h2>
+<div class="doc-section">
+
+<p>DrawPathLineToAbsolute() draws a line path from the current point to the given coordinate using absolute coordinates. The coordinate then becomes the new current point.</p>
+
+<p>The format of the DrawPathLineToAbsolute method is:</p>
+
+<pre class="code">
+  void DrawPathLineToAbsolute(DrawingWand *wand,const double x,
+    const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>target x ordinate</p>
+
+<h5>y</h5>
+<p>target y ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathLineToRelative">DrawPathLineToRelative</a></h2>
+<div class="doc-section">
+
+<p>DrawPathLineToRelative() draws a line path from the current point to the given coordinate using relative coordinates. The coordinate then becomes the new current point.</p>
+
+<p>The format of the DrawPathLineToRelative method is:</p>
+
+<pre class="code">
+  void DrawPathLineToRelative(DrawingWand *wand,const double x,
+    const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>target x ordinate</p>
+
+<h5>y</h5>
+<p>target y ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathLineToHorizontalAbsolute">DrawPathLineToHorizontalAbsolute</a></h2>
+<div class="doc-section">
+
+<p>DrawPathLineToHorizontalAbsolute() draws a horizontal line path from the current point to the target point using absolute coordinates.  The target point then becomes the new current point.</p>
+
+<p>The format of the DrawPathLineToHorizontalAbsolute method is:</p>
+
+<pre class="code">
+  void DrawPathLineToHorizontalAbsolute(DrawingWand *wand,
+    const double x)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>target x ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathLineToHorizontalRelative">DrawPathLineToHorizontalRelative</a></h2>
+<div class="doc-section">
+
+<p>DrawPathLineToHorizontalRelative() draws a horizontal line path from the current point to the target point using relative coordinates.  The target point then becomes the new current point.</p>
+
+<p>The format of the DrawPathLineToHorizontalRelative method is:</p>
+
+<pre class="code">
+  void DrawPathLineToHorizontalRelative(DrawingWand *wand,
+    const double x)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>target x ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathLineToVerticalAbsolute">DrawPathLineToVerticalAbsolute</a></h2>
+<div class="doc-section">
+
+<p>DrawPathLineToVerticalAbsolute() draws a vertical line path from the current point to the target point using absolute coordinates.  The target point then becomes the new current point.</p>
+
+<p>The format of the DrawPathLineToVerticalAbsolute method is:</p>
+
+<pre class="code">
+  void DrawPathLineToVerticalAbsolute(DrawingWand *wand,
+    const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>y</h5>
+<p>target y ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathLineToVerticalRelative">DrawPathLineToVerticalRelative</a></h2>
+<div class="doc-section">
+
+<p>DrawPathLineToVerticalRelative() draws a vertical line path from the current point to the target point using relative coordinates.  The target point then becomes the new current point.</p>
+
+<p>The format of the DrawPathLineToVerticalRelative method is:</p>
+
+<pre class="code">
+  void DrawPathLineToVerticalRelative(DrawingWand *wand,
+    const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>y</h5>
+<p>target y ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathMoveToAbsolute">DrawPathMoveToAbsolute</a></h2>
+<div class="doc-section">
+
+<p>DrawPathMoveToAbsolute() starts a new sub-path at the given coordinate using absolute coordinates. The current point then becomes the specified coordinate.</p>
+
+<p>The format of the DrawPathMoveToAbsolute method is:</p>
+
+<pre class="code">
+  void DrawPathMoveToAbsolute(DrawingWand *wand,const double x,
+    const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>target x ordinate</p>
+
+<h5>y</h5>
+<p>target y ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathMoveToRelative">DrawPathMoveToRelative</a></h2>
+<div class="doc-section">
+
+<p>DrawPathMoveToRelative() starts a new sub-path at the given coordinate using relative coordinates. The current point then becomes the specified coordinate.</p>
+
+<p>The format of the DrawPathMoveToRelative method is:</p>
+
+<pre class="code">
+  void DrawPathMoveToRelative(DrawingWand *wand,const double x,
+    const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>target x ordinate</p>
+
+<h5>y</h5>
+<p>target y ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPathStart">DrawPathStart</a></h2>
+<div class="doc-section">
+
+<p>DrawPathStart() declares the start of a path drawing list which is terminated by a matching DrawPathFinish() command. All other DrawPath commands must be enclosed between a DrawPathStart() and a DrawPathFinish() command. This is because path drawing commands are subordinate commands and they do not function by themselves.</p>
+
+<p>The format of the DrawPathStart method is:</p>
+
+<pre class="code">
+  void DrawPathStart(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPoint">DrawPoint</a></h2>
+<div class="doc-section">
+
+<p>DrawPoint() draws a point using the current fill color.</p>
+
+<p>The format of the DrawPoint method is:</p>
+
+<pre class="code">
+  void DrawPoint(DrawingWand *wand,const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>target x coordinate</p>
+
+<h5>y</h5>
+<p>target y coordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPolygon">DrawPolygon</a></h2>
+<div class="doc-section">
+
+<p>DrawPolygon() draws a polygon using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates.</p>
+
+<p>The format of the DrawPolygon method is:</p>
+
+<pre class="code">
+  void DrawPolygon(DrawingWand *wand,
+    const size_t number_coordinates,const PointInfo *coordinates)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>number_coordinates</h5>
+<p>number of coordinates</p>
+
+<h5>coordinates</h5>
+<p>coordinate array</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPolyline">DrawPolyline</a></h2>
+<div class="doc-section">
+
+<p>DrawPolyline() draws a polyline using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates.</p>
+
+<p>The format of the DrawPolyline method is:</p>
+
+<pre class="code">
+  void DrawPolyline(DrawingWand *wand,
+    const size_t number_coordinates,const PointInfo *coordinates)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>number_coordinates</h5>
+<p>number of coordinates</p>
+
+<h5>coordinates</h5>
+<p>coordinate array</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPopClipPath">DrawPopClipPath</a></h2>
+<div class="doc-section">
+
+<p>DrawPopClipPath() terminates a clip path definition.</p>
+
+<p>The format of the DrawPopClipPath method is:</p>
+
+<pre class="code">
+  void DrawPopClipPath(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPopDefs">DrawPopDefs</a></h2>
+<div class="doc-section">
+
+<p>DrawPopDefs() terminates a definition list.</p>
+
+<p>The format of the DrawPopDefs method is:</p>
+
+<pre class="code">
+  void DrawPopDefs(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPopPattern">DrawPopPattern</a></h2>
+<div class="doc-section">
+
+<p>DrawPopPattern() terminates a pattern definition.</p>
+
+<p>The format of the DrawPopPattern method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawPopPattern(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPushClipPath">DrawPushClipPath</a></h2>
+<div class="doc-section">
+
+<p>DrawPushClipPath() starts a clip path definition which is comprized of any number of drawing commands and terminated by a DrawPopClipPath() command.</p>
+
+<p>The format of the DrawPushClipPath method is:</p>
+
+<pre class="code">
+  void DrawPushClipPath(DrawingWand *wand,const char *clip_mask_id)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>clip_mask_id</h5>
+<p>string identifier to associate with the clip path for later use.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPushDefs">DrawPushDefs</a></h2>
+<div class="doc-section">
+
+<p>DrawPushDefs() indicates that commands up to a terminating DrawPopDefs() command create named elements (e.g. clip-paths, textures, etc.) which may safely be processed earlier for the sake of efficiency.</p>
+
+<p>The format of the DrawPushDefs method is:</p>
+
+<pre class="code">
+  void DrawPushDefs(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawPushPattern">DrawPushPattern</a></h2>
+<div class="doc-section">
+
+<p>DrawPushPattern() indicates that subsequent commands up to a DrawPopPattern() command comprise the definition of a named pattern. The pattern space is assigned top left corner coordinates, a width and height, and becomes its own drawing space.  Anything which can be drawn may be used in a pattern definition. Named patterns may be used as stroke or brush definitions.</p>
+
+<p>The format of the DrawPushPattern method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawPushPattern(DrawingWand *wand,
+    const char *pattern_id,const double x,const double y,
+    const double width,const double height)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>pattern_id</h5>
+<p>pattern identification for later reference</p>
+
+<h5>x</h5>
+<p>x ordinate of top left corner</p>
+
+<h5>y</h5>
+<p>y ordinate of top left corner</p>
+
+<h5>width</h5>
+<p>width of pattern space</p>
+
+<h5>height</h5>
+<p>height of pattern space</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawRectangle">DrawRectangle</a></h2>
+<div class="doc-section">
+
+<p>DrawRectangle() draws a rectangle given two coordinates and using the current stroke, stroke width, and fill settings.</p>
+
+<p>The format of the DrawRectangle method is:</p>
+
+<pre class="code">
+  void DrawRectangle(DrawingWand *wand,const double x1,
+    const double y1,const double x2,const double y2)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>x1</h5>
+<p>x ordinate of first coordinate</p>
+
+<h5>y1</h5>
+<p>y ordinate of first coordinate</p>
+
+<h5>x2</h5>
+<p>x ordinate of second coordinate</p>
+
+<h5>y2</h5>
+<p>y ordinate of second coordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawResetVectorGraphics">DrawResetVectorGraphics</a></h2>
+<div class="doc-section">
+
+<p>DrawResetVectorGraphics() resets the vector graphics associated with the specified wand.</p>
+
+<p>The format of the DrawResetVectorGraphics method is:</p>
+
+<pre class="code">
+  void DrawResetVectorGraphics(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawRotate">DrawRotate</a></h2>
+<div class="doc-section">
+
+<p>DrawRotate() applies the specified rotation to the current coordinate space.</p>
+
+<p>The format of the DrawRotate method is:</p>
+
+<pre class="code">
+  void DrawRotate(DrawingWand *wand,const double degrees)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>degrees</h5>
+<p>degrees of rotation</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawRoundRectangle">DrawRoundRectangle</a></h2>
+<div class="doc-section">
+
+<p>DrawRoundRectangle() draws a rounted rectangle given two coordinates, x &amp; y corner radiuses and using the current stroke, stroke width, and fill settings.</p>
+
+<p>The format of the DrawRoundRectangle method is:</p>
+
+<pre class="code">
+  void DrawRoundRectangle(DrawingWand *wand,double x1,double y1,
+    double x2,double y2,double rx,double ry)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x1</h5>
+<p>x ordinate of first coordinate</p>
+
+<h5>y1</h5>
+<p>y ordinate of first coordinate</p>
+
+<h5>x2</h5>
+<p>x ordinate of second coordinate</p>
+
+<h5>y2</h5>
+<p>y ordinate of second coordinate</p>
+
+<h5>rx</h5>
+<p>radius of corner in horizontal direction</p>
+
+<h5>ry</h5>
+<p>radius of corner in vertical direction</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawScale">DrawScale</a></h2>
+<div class="doc-section">
+
+<p>DrawScale() adjusts the scaling factor to apply in the horizontal and vertical directions to the current coordinate space.</p>
+
+<p>The format of the DrawScale method is:</p>
+
+<pre class="code">
+  void DrawScale(DrawingWand *wand,const double x,const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>horizontal scale factor</p>
+
+<h5>y</h5>
+<p>vertical scale factor</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetBorderColor">DrawSetBorderColor</a></h2>
+<div class="doc-section">
+
+<p>DrawSetBorderColor() sets the border color to be used for drawing bordered objects.</p>
+
+<p>The format of the DrawSetBorderColor method is:</p>
+
+<pre class="code">
+  void DrawSetBorderColor(DrawingWand *wand,const PixelWand *border_wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>border_wand</h5>
+<p>border wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetClipPath">DrawSetClipPath</a></h2>
+<div class="doc-section">
+
+<p>DrawSetClipPath() associates a named clipping path with the image.  Only the areas drawn on by the clipping path will be modified as ssize_t as it remains in effect.</p>
+
+<p>The format of the DrawSetClipPath method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawSetClipPath(DrawingWand *wand,
+    const char *clip_mask)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>clip_mask</h5>
+<p>name of clipping path to associate with image</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetClipRule">DrawSetClipRule</a></h2>
+<div class="doc-section">
+
+<p>DrawSetClipRule() set the polygon fill rule to be used by the clipping path.</p>
+
+<p>The format of the DrawSetClipRule method is:</p>
+
+<pre class="code">
+  void DrawSetClipRule(DrawingWand *wand,const FillRule fill_rule)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>fill_rule</h5>
+<p>fill rule (EvenOddRule or NonZeroRule)</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetClipUnits">DrawSetClipUnits</a></h2>
+<div class="doc-section">
+
+<p>DrawSetClipUnits() sets the interpretation of clip path units.</p>
+
+<p>The format of the DrawSetClipUnits method is:</p>
+
+<pre class="code">
+  void DrawSetClipUnits(DrawingWand *wand,
+    const ClipPathUnits clip_units)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>clip_units</h5>
+<p>units to use (UserSpace, UserSpaceOnUse, or ObjectBoundingBox)</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFillColor">DrawSetFillColor</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFillColor() sets the fill color to be used for drawing filled objects.</p>
+
+<p>The format of the DrawSetFillColor method is:</p>
+
+<pre class="code">
+  void DrawSetFillColor(DrawingWand *wand,const PixelWand *fill_wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>fill_wand</h5>
+<p>fill wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFillOpacity">DrawSetFillOpacity</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFillOpacity() sets the opacity to use when drawing using the fill color or fill texture.  Fully opaque is 1.0.</p>
+
+<p>The format of the DrawSetFillOpacity method is:</p>
+
+<pre class="code">
+  void DrawSetFillOpacity(DrawingWand *wand,const double fill_opacity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>fill_opacity</h5>
+<p>fill opacity</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFontResolution">DrawSetFontResolution</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFontResolution() sets the image resolution.</p>
+
+<p>The format of the DrawSetFontResolution method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawSetFontResolution(DrawingWand *wand,
+    const double x_resolution,const double y_resolution)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+<h5>x_resolution</h5>
+<p>the image x resolution.</p>
+
+<h5>y_resolution</h5>
+<p>the image y resolution.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetOpacity">DrawSetOpacity</a></h2>
+<div class="doc-section">
+
+<p>DrawSetOpacity() sets the opacity to use when drawing using the fill or stroke color or texture.  Fully opaque is 1.0.</p>
+
+<p>The format of the DrawSetOpacity method is:</p>
+
+<pre class="code">
+  void DrawSetOpacity(DrawingWand *wand,const double opacity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>opacity</h5>
+<p>fill opacity</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFillPatternURL">DrawSetFillPatternURL</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFillPatternURL() sets the URL to use as a fill pattern for filling objects. Only local URLs ("#identifier") are supported at this time. These local URLs are normally created by defining a named fill pattern with DrawPushPattern/DrawPopPattern.</p>
+
+<p>The format of the DrawSetFillPatternURL method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawSetFillPatternURL(DrawingWand *wand,
+    const char *fill_url)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>fill_url</h5>
+<p>URL to use to obtain fill pattern.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFillRule">DrawSetFillRule</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFillRule() sets the fill rule to use while drawing polygons.</p>
+
+<p>The format of the DrawSetFillRule method is:</p>
+
+<pre class="code">
+  void DrawSetFillRule(DrawingWand *wand,const FillRule fill_rule)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>fill_rule</h5>
+<p>fill rule (EvenOddRule or NonZeroRule)</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFont">DrawSetFont</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFont() sets the fully-sepecified font to use when annotating with text.</p>
+
+<p>The format of the DrawSetFont method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawSetFont(DrawingWand *wand,const char *font_name)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>font_name</h5>
+<p>font name</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFontFamily">DrawSetFontFamily</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFontFamily() sets the font family to use when annotating with text.</p>
+
+<p>The format of the DrawSetFontFamily method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawSetFontFamily(DrawingWand *wand,
+    const char *font_family)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>font_family</h5>
+<p>font family</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFontSize">DrawSetFontSize</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFontSize() sets the font pointsize to use when annotating with text.</p>
+
+<p>The format of the DrawSetFontSize method is:</p>
+
+<pre class="code">
+  void DrawSetFontSize(DrawingWand *wand,const double pointsize)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>pointsize</h5>
+<p>text pointsize</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFontStretch">DrawSetFontStretch</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFontStretch() sets the font stretch to use when annotating with text. The AnyStretch enumeration acts as a wild-card "don't care" option.</p>
+
+<p>The format of the DrawSetFontStretch method is:</p>
+
+<pre class="code">
+  void DrawSetFontStretch(DrawingWand *wand,
+    const StretchType font_stretch)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>font_stretch</h5>
+<p>font stretch (NormalStretch, UltraCondensedStretch, CondensedStretch, SemiCondensedStretch, SemiExpandedStretch, ExpandedStretch, ExtraExpandedStretch, UltraExpandedStretch, AnyStretch)</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFontStyle">DrawSetFontStyle</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFontStyle() sets the font style to use when annotating with text. The AnyStyle enumeration acts as a wild-card "don't care" option.</p>
+
+<p>The format of the DrawSetFontStyle method is:</p>
+
+<pre class="code">
+  void DrawSetFontStyle(DrawingWand *wand,const StyleType style)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>style</h5>
+<p>font style (NormalStyle, ItalicStyle, ObliqueStyle, AnyStyle)</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetFontWeight">DrawSetFontWeight</a></h2>
+<div class="doc-section">
+
+<p>DrawSetFontWeight() sets the font weight to use when annotating with text.</p>
+
+<p>The format of the DrawSetFontWeight method is:</p>
+
+<pre class="code">
+  void DrawSetFontWeight(DrawingWand *wand,
+    const size_t font_weight)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>font_weight</h5>
+<p>font weight (valid range 100-900)</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetGravity">DrawSetGravity</a></h2>
+<div class="doc-section">
+
+<p>DrawSetGravity() sets the text placement gravity to use when annotating with text.</p>
+
+<p>The format of the DrawSetGravity method is:</p>
+
+<pre class="code">
+  void DrawSetGravity(DrawingWand *wand,const GravityType gravity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>gravity</h5>
+<p>positioning gravity (NorthWestGravity, NorthGravity, NorthEastGravity, WestGravity, CenterGravity, EastGravity, SouthWestGravity, SouthGravity, SouthEastGravity)</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokeColor">DrawSetStrokeColor</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeColor() sets the color used for stroking object outlines.</p>
+
+<p>The format of the DrawSetStrokeColor method is:</p>
+
+<pre class="code">
+  void DrawSetStrokeColor(DrawingWand *wand,
+    const PixelWand *stroke_wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>stroke_wand</h5>
+<p>stroke wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokePatternURL">DrawSetStrokePatternURL</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokePatternURL() sets the pattern used for stroking object outlines.</p>
+
+<p>The format of the DrawSetStrokePatternURL method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawSetStrokePatternURL(DrawingWand *wand,
+    const char *stroke_url)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>stroke_url</h5>
+<p>URL specifying pattern ID (e.g. "#pattern_id")</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokeAntialias">DrawSetStrokeAntialias</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeAntialias() controls whether stroked outlines are antialiased. Stroked outlines are antialiased by default.  When antialiasing is disabled stroked pixels are thresholded to determine if the stroke color or underlying canvas color should be used.</p>
+
+<p>The format of the DrawSetStrokeAntialias method is:</p>
+
+<pre class="code">
+  void DrawSetStrokeAntialias(DrawingWand *wand,
+    const MagickBooleanType stroke_antialias)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>stroke_antialias</h5>
+<p>set to false (zero) to disable antialiasing</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokeDashArray">DrawSetStrokeDashArray</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeDashArray() specifies the pattern of dashes and gaps used to stroke paths. The stroke dash array represents an array of numbers that specify the lengths of alternating dashes and gaps in pixels. If an odd number of values is provided, then the list of values is repeated to yield an even number of values. To remove an existing dash array, pass a zero number_elements argument and null dasharray.  A typical stroke dash array might contain the members 5 3 2.</p>
+
+<p>The format of the DrawSetStrokeDashArray method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
+    const size_t number_elements,const double *dasharray)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>number_elements</h5>
+<p>number of elements in dash array</p>
+
+<h5>dasharray</h5>
+<p>dash array values</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokeDashOffset">DrawSetStrokeDashOffset</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeDashOffset() specifies the offset into the dash pattern to start the dash.</p>
+
+<p>The format of the DrawSetStrokeDashOffset method is:</p>
+
+<pre class="code">
+  void DrawSetStrokeDashOffset(DrawingWand *wand,
+    const double dash_offset)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>dash_offset</h5>
+<p>dash offset</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokeLineCap">DrawSetStrokeLineCap</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeLineCap() specifies the shape to be used at the end of open subpaths when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap, and SquareCap.</p>
+
+<p>The format of the DrawSetStrokeLineCap method is:</p>
+
+<pre class="code">
+  void DrawSetStrokeLineCap(DrawingWand *wand,
+    const LineCap linecap)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>linecap</h5>
+<p>linecap style</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokeLineJoin">DrawSetStrokeLineJoin</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeLineJoin() specifies the shape to be used at the corners of paths (or other vector shapes) when they are stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</p>
+
+<p>The format of the DrawSetStrokeLineJoin method is:</p>
+
+<pre class="code">
+  void DrawSetStrokeLineJoin(DrawingWand *wand,
+    const LineJoin linejoin)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>linejoin</h5>
+<p>line join style</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokeMiterLimit">DrawSetStrokeMiterLimit</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeMiterLimit() specifies the miter limit. When two line segments meet at a sharp angle and miter joins have been specified for 'lineJoin', it is possible for the miter to extend far beyond the thickness of the line stroking the path. The miterLimit' imposes a limit on the ratio of the miter length to the 'lineWidth'.</p>
+
+<p>The format of the DrawSetStrokeMiterLimit method is:</p>
+
+<pre class="code">
+  void DrawSetStrokeMiterLimit(DrawingWand *wand,
+    const size_t miterlimit)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>miterlimit</h5>
+<p>miter limit</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokeOpacity">DrawSetStrokeOpacity</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeOpacity() specifies the opacity of stroked object outlines.</p>
+
+<p>The format of the DrawSetStrokeOpacity method is:</p>
+
+<pre class="code">
+  void DrawSetStrokeOpacity(DrawingWand *wand,
+    const double stroke_opacity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>stroke_opacity</h5>
+<p>stroke opacity.  The value 1.0 is opaque.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetStrokeWidth">DrawSetStrokeWidth</a></h2>
+<div class="doc-section">
+
+<p>DrawSetStrokeWidth() sets the width of the stroke used to draw object outlines.</p>
+
+<p>The format of the DrawSetStrokeWidth method is:</p>
+
+<pre class="code">
+  void DrawSetStrokeWidth(DrawingWand *wand,
+    const double stroke_width)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>stroke_width</h5>
+<p>stroke width</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetTextAlignment">DrawSetTextAlignment</a></h2>
+<div class="doc-section">
+
+<p>DrawSetTextAlignment() specifies a text alignment to be applied when annotating with text.</p>
+
+<p>The format of the DrawSetTextAlignment method is:</p>
+
+<pre class="code">
+  void DrawSetTextAlignment(DrawingWand *wand,const AlignType alignment)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>alignment</h5>
+<p>text alignment.  One of UndefinedAlign, LeftAlign, CenterAlign, or RightAlign.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetTextAntialias">DrawSetTextAntialias</a></h2>
+<div class="doc-section">
+
+<p>DrawSetTextAntialias() controls whether text is antialiased.  Text is antialiased by default.</p>
+
+<p>The format of the DrawSetTextAntialias method is:</p>
+
+<pre class="code">
+  void DrawSetTextAntialias(DrawingWand *wand,
+    const MagickBooleanType text_antialias)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>text_antialias</h5>
+<p>antialias boolean. Set to false (0) to disable antialiasing.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetTextDecoration">DrawSetTextDecoration</a></h2>
+<div class="doc-section">
+
+<p>DrawSetTextDecoration() specifies a decoration to be applied when annotating with text.</p>
+
+<p>The format of the DrawSetTextDecoration method is:</p>
+
+<pre class="code">
+  void DrawSetTextDecoration(DrawingWand *wand,
+    const DecorationType decoration)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>decoration</h5>
+<p>text decoration.  One of NoDecoration, UnderlineDecoration, OverlineDecoration, or LineThroughDecoration</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetTextDirection">DrawSetTextDirection</a></h2>
+<div class="doc-section">
+
+<p>DrawSetTextDirection() specifies the direction to be used when annotating with text.</p>
+
+<p>The format of the DrawSetTextDirection method is:</p>
+
+<pre class="code">
+  void DrawSetTextDirection(DrawingWand *wand,
+    const DirectionType direction)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>direction</h5>
+<p>text direction. One of RightToLeftDirection, LeftToRightDirection</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetTextEncoding">DrawSetTextEncoding</a></h2>
+<div class="doc-section">
+
+<p>DrawSetTextEncoding() specifies the code set to use for text annotations. The only character encoding which may be specified at this time is "UTF-8" for representing Unicode as a sequence of bytes. Specify an empty string to set text encoding to the system's default. Successful text annotation using Unicode may require fonts designed to support Unicode.</p>
+
+<p>The format of the DrawSetTextEncoding method is:</p>
+
+<pre class="code">
+  void DrawSetTextEncoding(DrawingWand *wand,const char *encoding)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>encoding</h5>
+<p>character string specifying text encoding</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetTextKerning">DrawSetTextKerning</a></h2>
+<div class="doc-section">
+
+<p>DrawSetTextKerning() sets the spacing between characters in text.</p>
+
+<p>The format of the DrawSetTextKerning method is:</p>
+
+<pre class="code">
+  void DrawSetTextKerning(DrawingWand *wand,const double kerning)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>kerning</h5>
+<p>text kerning</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetTextInterlineSpacing">DrawSetTextInterlineSpacing</a></h2>
+<div class="doc-section">
+
+<p>DrawSetTextInterlineSpacing() sets the spacing between line in text.</p>
+
+<p>The format of the DrawSetInterlineSpacing method is:</p>
+
+<pre class="code">
+  void DrawSetTextInterlineSpacing(DrawingWand *wand,
+    const double interline_spacing)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>interline_spacing</h5>
+<p>text line spacing</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetTextInterwordSpacing">DrawSetTextInterwordSpacing</a></h2>
+<div class="doc-section">
+
+<p>DrawSetTextInterwordSpacing() sets the spacing between words in text.</p>
+
+<p>The format of the DrawSetInterwordSpacing method is:</p>
+
+<pre class="code">
+  void DrawSetTextInterwordSpacing(DrawingWand *wand,
+    const double interword_spacing)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>interword_spacing</h5>
+<p>text word spacing</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetTextUnderColor">DrawSetTextUnderColor</a></h2>
+<div class="doc-section">
+
+<p>DrawSetTextUnderColor() specifies the color of a background rectangle to place under text annotations.</p>
+
+<p>The format of the DrawSetTextUnderColor method is:</p>
+
+<pre class="code">
+  void DrawSetTextUnderColor(DrawingWand *wand,
+    const PixelWand *under_wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>under_wand</h5>
+<p>text under wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetVectorGraphics">DrawSetVectorGraphics</a></h2>
+<div class="doc-section">
+
+<p>DrawSetVectorGraphics() sets the vector graphics associated with the specified wand.  Use this method with DrawGetVectorGraphics() as a method to persist the vector graphics state.</p>
+
+<p>The format of the DrawSetVectorGraphics method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
+    const char *xml)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>xml</h5>
+<p>the drawing wand XML.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSkewX">DrawSkewX</a></h2>
+<div class="doc-section">
+
+<p>DrawSkewX() skews the current coordinate system in the horizontal direction.</p>
+
+<p>The format of the DrawSkewX method is:</p>
+
+<pre class="code">
+  void DrawSkewX(DrawingWand *wand,const double degrees)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>degrees</h5>
+<p>number of degrees to skew the coordinates</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSkewY">DrawSkewY</a></h2>
+<div class="doc-section">
+
+<p>DrawSkewY() skews the current coordinate system in the vertical direction.</p>
+
+<p>The format of the DrawSkewY method is:</p>
+
+<pre class="code">
+  void DrawSkewY(DrawingWand *wand,const double degrees)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>degrees</h5>
+<p>number of degrees to skew the coordinates</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawTranslate">DrawTranslate</a></h2>
+<div class="doc-section">
+
+<p>DrawTranslate() applies a translation to the current coordinate system which moves the coordinate system origin to the specified coordinate.</p>
+
+<p>The format of the DrawTranslate method is:</p>
+
+<pre class="code">
+  void DrawTranslate(DrawingWand *wand,const double x,
+    const double y)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x</h5>
+<p>new x ordinate for coordinate system origin</p>
+
+<h5>y</h5>
+<p>new y ordinate for coordinate system origin</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="DrawSetViewbox">DrawSetViewbox</a></h2>
+<div class="doc-section">
+
+<p>DrawSetViewbox() sets the overall canvas size to be recorded with the drawing vector data.  Usually this will be specified using the same size as the canvas image.  When the vector data is saved to SVG or MVG formats, the viewbox is use to specify the size of the canvas image that a viewer will render the vector data on.</p>
+
+<p>The format of the DrawSetViewbox method is:</p>
+
+<pre class="code">
+  void DrawSetViewbox(DrawingWand *wand,ssize_t x1,
+    ssize_t y1,ssize_t x2,ssize_t y2)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+<h5>x1</h5>
+<p>left x ordinate</p>
+
+<h5>y1</h5>
+<p>top y ordinate</p>
+
+<h5>x2</h5>
+<p>right x ordinate</p>
+
+<h5>y2</h5>
+<p>bottom y ordinate</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="IsDrawingWand">IsDrawingWand</a></h2>
+<div class="doc-section">
+
+<p>IsDrawingWand() returns MagickTrue if the wand is verified as a drawing wand.</p>
+
+<p>The format of the IsDrawingWand method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsDrawingWand(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="NewDrawingWand">NewDrawingWand</a></h2>
+<div class="doc-section">
+
+<p>NewDrawingWand() returns a drawing wand required for all other methods in the API.</p>
+
+<p>The format of the NewDrawingWand method is:</p>
+
+<pre class="code">
+  DrawingWand *NewDrawingWand(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="PeekDrawingWand">PeekDrawingWand</a></h2>
+<div class="doc-section">
+
+<p>PeekDrawingWand() returns the current drawing wand.</p>
+
+<p>The format of the PeekDrawingWand method is:</p>
+
+<pre class="code">
+  DrawInfo *PeekDrawingWand(const DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="PopDrawingWand">PopDrawingWand</a></h2>
+<div class="doc-section">
+
+<p>PopDrawingWand() destroys the current drawing wand and returns to the previously pushed drawing wand. Multiple drawing wands may exist. It is an error to attempt to pop more drawing wands than have been pushed, and it is proper form to pop all drawing wands which have been pushed.</p>
+
+<p>The format of the PopDrawingWand method is:</p>
+
+<pre class="code">
+  MagickBooleanType PopDrawingWand(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/drawing-wand_8c.html" id="PushDrawingWand">PushDrawingWand</a></h2>
+<div class="doc-section">
+
+<p>PushDrawingWand() clones the current drawing wand to create a new drawing wand.  The original drawing wand(s) may be returned to by invoking PopDrawingWand().  The drawing wands are stored on a drawing wand stack. For every Pop there must have already been an equivalent Push.</p>
+
+<p>The format of the PushDrawingWand method is:</p>
+
+<pre class="code">
+  MagickBooleanType PushDrawingWand(DrawingWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the drawing wand.</p>
+
+ </div>
 
 </div>
 
@@ -198,3 +3114,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 07:56 -->

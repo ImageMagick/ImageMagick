@@ -1,4 +1,7 @@
 
+
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html version="-//W3C//DTD XHTML 1.1//EN"
@@ -8,6 +11,7 @@
                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: Formats</title>
   <meta http-equiv="content-language" content="en-US"/>
@@ -17,7 +21,7 @@
   <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="formats, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="keywords" content="formats, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -27,27 +31,27 @@
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -89,11 +93,11 @@
 </div>
 <a href="../discourse-server">
   <img src="../images/logo.jpg"
-  alt="ImageMagick Logo"
+  alt="ImageMagick Logo" width="123" height="118"
   style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
   <img src="../images/sprite.jpg"
-  alt="ImageMagick Sprite"
+  alt="ImageMagick Sprite" width="114" height="118"
   style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
@@ -184,6 +188,25 @@
 <div class="eastbar">
   <script type="text/javascript">
     /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -199,31 +222,1870 @@
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    <div class="g-plusone" id="gplusone"></div>
-    <script type="text/javascript">
-      /* <![CDATA[ */
-      window.___gcfg = {
-        lang: 'en-US'
-      };
-
-      (function() {
-        var po = document.createElement('offline-script');
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'https://apis.google.com/js/plusone.js';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-      })();
-      var gplusone = document.getElementById("gplusone");
-      gplusone.setAttribute("data-size","medium");
-      gplusone.setAttribute("data-count","true");
-      /* ]]> */
-    </script>
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-<h1>ImageMagick Image Formats</h1><p class="navigation-index">[<a href="formats.html#intro">Introducing Formats</a> • <a href="formats.html#colorspace">A Word about Colorspaces</a> • <a href="formats.html#supported">Supported Formats</a> • <a href="formats.html#pseudo">Pseudo Formats</a> • <a href="formats.html#builtin-images">Built-in Images</a>  • <a href="formats.html#builtin-patterns">Built-in Patterns</a> • <a href="formats.html#embedded">Embedded Profiles</a>]</p><h2><a id="intro"></a>Introducing Image Formats</h2><div class="doc-section"><p>ImageMagick uses an ASCII string known as <em>magick</em> (e.g. <code>GIF</code>) to identify file formats, algorithms acting as formats, built-in patterns, and embedded profile types.</p><p>Support for some of the formats are delegated to libraries or external programs. The Installation Guide describes where to find these distributions and any special configuration options required.</p><p>To get a complete listing of which image formats are supported on your system, type</p><p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -list format</span></p><p>On some platforms, ImageMagick automagically processes these extensions: .gz for Zip compression, .Z for Unix compression, .bz2 for block compression, and .pgp for PGP encryption. For example, a PNM image called image.pnm.gz is automagically uncompressed.</p></div><h2><a id="colorspace"></a>A Word about Colorspaces</h2> <div class="doc-section"> <p>A majority of the image formats assume an sRGBcolorspace (e.g. JPEG, PNG, etc.).  A few support only linear RGB (e.g. EXR,DPX, CIN, HDR) or only linear GRAY (e.g. PGM).  A few formats support CMYK.Then there is the occasional format that also supports LAB (that is CieLAB)(e.g. TIFF, PSD, JPG, JP2).  To determine the colorspace of your image, usethis command:</p><pre class="text">  identify -verbose image.jpg  Image: image.jpg  Format: JPEG (Joint Photographic Experts Group JFIF format)  ...  Colorspace: sRGB</pre>OR use the appropriate percent escape<pre class="text">  convert image.jpg -print "%[colorspace]\n" null:  sRGB</pre><p>When processing an image, be aware of the colorspace.  Many imageprocessing algorithms assume a linear RGB colorspace.  Although you may getsatisfactory results processing in the sRGB colorspace, you may get improvedresults in linear RGB (essentially sRGB with the gamma function removed).  Forexample,</p><pre class="text">  convert image.jpg -colorspace RGB -resize 50% -colorspace sRGB resize.jpg</pre><p>As of IM 6.7.8-2 one can properly work in LAB colorspace whether or notImagemagick is <a href="high-dynamic-range.html">HDRI</a>-enabled.  Essentually the A andB channels are stored with a 50% gray bias, to allow it to handle thenegatives required by the format.</p><pre class="text">  convert lab.tif -resize 50% resize.jpg</pre><p>Again, it may not make sense for some image processing operators to workdirectly in LAB space, but ImageMagick permits it and generally returnsreasonable results.</p><p>Prior to IM 6.7.8-2, the A and B channels has a discontinuity, making themnon-linear. As such to process such images, you needed to first convert thecolorspace some other linear colorspace, before apply your processingoperator. Afterward you can transform back to the LAB colorspace.  Forexample,</p><pre class="text">  convert lab.tif -colorspace RGB -resize 50% -colorspace Lab resize.jpg</pre></div><h2><a id="supported"></a>Supported Image Formats</h2><div class="doc-section"><p>ImageMagick supports reading over 100 major file formats (notincluding sub-formats). The following table provides a summary ofthe supported image formats.</p><table class="doc" style="width: 93%">  <tbody>  <tr>    <th>Tag</th>    <th>Mode</th>    <th>Description</th>    <th>Notes</th>  </tr>  <tr>    <td valign="top">AAI</td>    <td valign="top">RW</td>    <td valign="top">AAI Dune image</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">ART</td>    <td valign="top">R</td>    <td valign="top">PFS: 1st Publisher</td>    <td valign="top">Format originally used on the Macintosh (MacPaint?) and later used for PFS: 1st Publisher clip art.</td>  </tr>  <tr>    <td valign="top">ARW</td>    <td valign="top">R</td>    <td valign="top">Sony Digital Camera Alpha Raw Image Format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.jmcgowan.com/avi.html">AVI</a></td>    <td valign="top">R</td>    <td valign="top">Microsoft Audio/Visual Interleaved</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">AVS</td>    <td valign="top">RW</td>    <td valign="top">AVS X image</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/bmp/egff.htm">BMP, BMP2, BMP3</a></td>    <td valign="top">RW</td>    <td valign="top">Microsoft Windows bitmap</td>    <td valign="top">By default the BMP format is version 4.  Use BMP3 and BMP2 to write versions 3 and 2 respectively.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/cals/egff.htm">CALS</a></td>    <td valign="top">R</td>    <td valign="top">Continuous Acquisition and Life-cycle Support Type 1 image</td>    <td valign="top">Specified in MIL-R-28002 and MIL-PRF-28002. Standard blueprint archive format as used by the US military to replace microfiche.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/cgm/egff.htm">CGM</a></td>    <td valign="top">R</td>    <td valign="top">Computer Graphics Metafile</td>    <td valign="top">Requires <a href="http://www.agocg.ac.uk/train/cgm/ralcgm.htm">ralcgm</a> to render CGM files.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.cineon.com/ff_draft.html">CIN</a></td>    <td valign="top">RW</td>    <td valign="top">Kodak Cineon Image Format</td>    <td valign="top">Use <a href="command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <code>-set gamma 1.7</code>, <code>-set reference-black 95</code>, <code>-set reference-white 685</code>).  Properties include cin:file.create_date, cin:file.create_time, cin:file.filename, cin:file.version, cin:film.count, cin:film.format, cin:film.frame_id, cin:film.frame_position, cin:film.frame_rate, cin:film.id, cin:film.offset, cin:film.prefix, cin:film.slate_info, cin:film.type, cin:image.label, cin:origination.create_date, cin:origination.create_time, cin:origination.device, cin:origination.filename, cin:origination.model, cin:origination.serial, cin:origination.x_offset, cin:origination.x_pitch, cin:origination.y_offset, cin:origination.y_pitch, cin:user.data.</td>  </tr>  <tr>    <td valign="top">CMYK</td>    <td valign="top">RW</td>    <td valign="top">Raw cyan, magenta, yellow, and black samples</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>  </tr>  <tr>    <td valign="top">CMYKA</td>    <td valign="top">RW</td>    <td valign="top">Raw cyan, magenta, yellow, black, and alpha samples</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>  </tr>  <tr>    <td valign="top">CR2</td>    <td valign="top">R</td>    <td valign="top">Canon Digital Camera Raw Image Format</td>    <td valign="top">Requires an explicit image format otherwise the image is interpreted as a TIFF image (e.g. cr2:image.cr2).</td>  </tr>  <tr>    <td valign="top">CRW</td>    <td valign="top">R</td>    <td valign="top">Canon Digital Camera Raw Image Format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">CUR</td>    <td valign="top">R</td>    <td valign="top">Microsoft Cursor Icon</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">CUT</td>    <td valign="top">R</td>    <td valign="top">DR Halo</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">DCM</td>    <td valign="top">R</td>    <td valign="top">Digital Imaging and Communications in Medicine (DICOM) image</td>    <td valign="top">Used by the medical community for images like X-rays.  ImageMagick sets the initial display range based on the Window Center (0028,1050) and Window Width (0028,1051) tags. Use <a href="command-line-options.html#define">-define dcm:display-range=reset</a> to set the display range to the minimum and maximum pixel values.</td>  </tr>  <tr>    <td valign="top">DCR</td>    <td valign="top">R</td>    <td valign="top">Kodak Digital Camera Raw Image File</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">DCX</td>    <td valign="top">RW</td>    <td valign="top">ZSoft IBM PC multi-page Paintbrush image</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://en.wikipedia.org/wiki/DirectDraw_Surface">DDS</a></td>    <td valign="top">RW</td>    <td valign="top">Microsoft Direct Draw Surface</td>    <td valign="top">Use <a href="command-line-options.html#define">-define</a> to specify the compression (e.g. <code>-define dds:compression={dxt1, dxt5, none}</code>). Other defines include <code>dds:cluster-fit={true,false}</code>, <code>dds:weight-by-alpha={true,false}</code>, and use <code>dds:mipmaps</code> to set the number of mipmaps.</td>  </tr>  <tr>    <td valign="top">DIB</td>    <td valign="top">RW</td>    <td valign="top">Microsoft Windows Device Independent Bitmap</td>    <td valign="top">DIB is a <a href="formats.html#BMP">BMP</a> file without the <a href="formats.html#BMP">BMP</a> header. Used to support embedded images in compound formats like WMF.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.djvu.org/">DJVU</a></td>    <td valign="top">R</td>    <td valign="top"></td>    <td valign="top"></td>  </tr>  <tr>    <td valign="top"><a href="http://www.adobe.com/products/dng/main.html">DNG</a></td>    <td valign="top">R</td>    <td valign="top">Digital Negative</td>    <td valign="top">Requires an explicit image format otherwise the image is interpreted as a TIFF image (e.g. dng:image.dng).</td>  </tr>  <tr>    <td valign="top"><a href="http://www.graphviz.org">DOT</a></td>    <td valign="top">R</td>    <td valign="top">Graph Visualization</td>    <td valign="top">Use <a href="command-line-options.html#define">-define</a> to specify the layout engine (e.g. <code>-define dot:layout-engine=twopi</code>).</td>  </tr>  <tr>    <td valign="top"><a href="motion-picture.html">DPX</a></td>    <td valign="top">RW</td>    <td valign="top">SMPTE Digital Moving Picture Exchange 2.0 (SMPTE 268M-2003)</td>    <td valign="top">Use <a href="command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <code>-set gamma 1.7</code>, <code>-set reference-black 95</code>, <code>-set reference-white 685</code>).</td>  </tr>  <tr>    <td valign="top">EMF</td>    <td valign="top">R</td>    <td valign="top">Microsoft Enhanced Metafile (32-bit)</td>    <td valign="top">Only available under Microsoft Windows.</td>  </tr>  <tr>    <td valign="top">EPDF</td>    <td valign="top">RW</td>    <td valign="top">Encapsulated Portable Document Format</td>    <td valign="top"></td>  </tr>  <tr>    <td valign="top">EPI</td>    <td valign="top">RW</td>    <td valign="top">Adobe Encapsulated PostScript Interchange format</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>  </tr>  <tr>    <td valign="top">EPS</td>    <td valign="top">RW</td>    <td valign="top">Adobe Encapsulated PostScript</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>  </tr>  <tr>    <td valign="top">EPS2</td>    <td valign="top">W</td>    <td valign="top">Adobe Level II Encapsulated PostScript</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>  </tr>  <tr>    <td valign="top">EPS3</td>    <td valign="top">W</td>    <td valign="top">Adobe Level III Encapsulated PostScript</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>  </tr>  <tr>    <td valign="top">EPSF</td>    <td valign="top">RW</td>    <td valign="top">Adobe Encapsulated PostScript</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>  </tr>  <tr>    <td valign="top">EPSI</td>    <td valign="top">RW</td>    <td valign="top">Adobe Encapsulated PostScript Interchange format</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>  </tr>  <tr>    <td valign="top">EPT</td>    <td valign="top">RW</td>    <td valign="top">Adobe Encapsulated PostScript Interchange format with <a href="formats.html#TIFF">TIFF</a> preview</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.openexr.org">EXR</a></td>    <td valign="top">RW</td>    <td valign="top">High dynamic-range (HDR) file format developed by Industrial Light &amp; Magic</td>    <td valign="top">See <a href="high-dynamic-range.html">High Dynamic-Range Images</a> for details on this image format. Requires the <a href="http://www.openexr.org/">OpenEXR</a> delegate library.</td>  </tr>  <tr>    <td valign="top">FAX</td>    <td valign="top">RW</td>    <td valign="top">Group 3 TIFF</td>    <td valign="top">This format is a fixed width of 1728 as required by the standard.  See <a href="formats.html#TIFF">TIFF</a> format. Note that FAX machines use non-square pixels which are 1.5 times wider than they are tall but computer displays use square pixels so FAX images may appear to be narrow unless they are explicitly resized using a resize specification of <code>100x150%</code>.</td>  </tr>  <tr>    <td valign="top"><a href="http://homepage.usask.ca/~ijm451/fig/">FIG</a></td>    <td valign="top">R</td>    <td valign="top">FIG graphics format</td>    <td valign="top">Requires <a href="ftp://ftp.x.org/contrib/applications/drawing_tools/transfig">TransFig</a>.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.cv.nrao.edu/fits/">FITS</a></td>    <td valign="top">RW</td>    <td valign="top">Flexible Image Transport System</td>    <td valign="top">To specify a single-precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 64 for a double-precision floating-point format.</td>  </tr>  <tr>    <td valign="top">FPX</td>    <td valign="top">RW</td>    <td valign="top">FlashPix Format</td>    <td valign="top">FlashPix has the option to store mega- and giga-pixel images at various resolutions in a single file which permits conservative bandwidth and fast reveal times when displayed within a Web browser.  Requires the <a href="http://www.imagemagick.org/download/delegates">FlashPix SDK</a>.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/gif/egff.htm">GIF</a></td>    <td valign="top">RW</td>    <td valign="top">CompuServe Graphics Interchange Format</td>    <td valign="top">8-bit RGB PseudoColor with up to 256 palette entires. Specify the format <code>GIF87</code> to write the older version 87a of the format.  Use <a href="command-line-options.html#transparent-color">-transparent-color</a> to specify the GIF transparent color (e.g. <code>-transparent-color wheat</code>).</td>  </tr>  <tr>    <td valign="top">GPLT</td>    <td valign="top">R</td>    <td valign="top">Gnuplot plot files</td>    <td valign="top">Requires <a href="http://www.gnuplot.info/">gnuplot4.0.tar.Z</a> or later.</td>  </tr>  <tr>    <td valign="top">GRAY</td>    <td valign="top">RW</td>    <td valign="top">Raw gray samples</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>  </tr>  <tr>    <td valign="top"><a href="http://en.wikipedia.org/wiki/RGBE_image_format">HDR</a></td>    <td valign="top">RW</td>    <td valign="top">Radiance RGBE image format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">HPGL</td>    <td valign="top">R</td>    <td valign="top">HP-GL plotter language</td>    <td valign="top">Requires <a href="http://ftp.gnu.org/gnu/hp2xx">hp2xx-3.4.4.tar.gz</a></td>  </tr>  <tr>    <td valign="top">HRZ</td>    <td valign="top">RW</td>    <td valign="top">Slow Scane TeleVision</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">HTML</td>    <td valign="top">RW</td>    <td valign="top">Hypertext Markup Language with a client-side image map</td>    <td valign="top">Also known as <code>HTM</code>. Requires <a href="http://user.it.uu.se/%7Ejan/html2ps.html">html2ps</a> to read.</td>  </tr>  <tr>    <td valign="top">ICO</td>    <td valign="top">R</td>    <td valign="top">Microsoft icon</td>    <td valign="top">Also known as <code>ICON</code>.</td>  </tr>  <tr>    <td valign="top">INFO</td>    <td valign="top">W</td>    <td valign="top">Format and characteristics of the image</td>    <td valign="top"></td>  </tr>  <tr>    <td valign="top">INLINE</td>    <td valign="top">R</td>    <td valign="top">Base64-encoded inline image</td>    <td valign="top">The inline image look similar to <code>inline:data:;base64,/9j/4AAQSk...knrn//2Q==</code>.  If the inline image exceeds 5000 characters, it must be referenced from a file (e.g. <code>inline:inline.txt</code>).</td>  </tr>  <tr>    <td valign="top">JBIG</td>    <td valign="top">RW</td>    <td valign="top">Joint Bi-level Image experts Group file interchange format</td>    <td valign="top">Also known as <code>BIE</code> and <code>JBG</code>. Requires <a href="http://www.cl.cam.ac.uk/~mgk25/jbigkit/">jbigkit-1.6.tar.gz</a>.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.libmng.com/">JNG</a></td>    <td valign="top">RW</td>    <td valign="top">Multiple-image Network Graphics</td>    <td valign="top">JPEG in a PNG-style wrapper with transparency. Requires libjpeg and libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.ece.uvic.ca/%7Emdadams/jasper/">JP2</a></td>    <td valign="top">RW</td>    <td valign="top">JPEG-2000 JP2 File Format Syntax</td>    <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.ece.uvic.ca/%7Emdadams/jasper/">JPC</a></td>    <td valign="top">RW</td>    <td valign="top">JPEG-2000 Code Stream Syntax</td>    <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.jpeg.org/">JPEG</a></td>    <td valign="top">RW</td>    <td valign="top">Joint Photographic Experts Group JFIF format</td>    <td valign="top">Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. -quality 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <code>jpeg:size</code>, for example <a href="command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <code>jpeg:extent</code>, for example <a href="command-line-options.html#define">-define jpeg:extent=400kb</a>.  Finally, to define one or more custom quantization tables, use <a href="command-line-options.html#define">-define jpeg:q-table=<i>filename</i>.</a></td>  </tr>  <tr>    <td valign="top"><a href="https://en.wikipedia.org/wiki/JPEG_XR">JXR</a></td>    <td valign="top">RW</td>    <td valign="top">JPEG extended range</td>    <td valign="top">Requires the <a href="https://jxrlib.codeplex.com/">jxrlib</a> delegate library. Put the JxrDecApp and JxrEncApp applications in your execution path. </td>  </tr>  <tr>    <td valign="top">MAN</td>    <td valign="top">R</td>    <td valign="top">Unix reference manual pages</td>    <td valign="top">Requires that GNU groff and Ghostcript are installed.</td>  </tr>  <tr>    <td valign="top">MAT</td>    <td valign="top">R</td>    <td valign="top">MATLAB image format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="miff.html">MIFF</a></td>    <td valign="top">RW</td>    <td valign="top">Magick image file format</td>    <td valign="top">This format persists all image attributes known to ImageMagick.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>  </tr>  <tr>    <td valign="top">MONO</td>    <td valign="top">RW</td>    <td valign="top">Bi-level bitmap in least-significant-byte first order</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.libpng.org/pub/mng/">MNG</a></td>    <td valign="top">RW</td>    <td valign="top">Multiple-image Network Graphics</td>    <td valign="top">A PNG-like Image Format Supporting Multiple Images, Animation and Transparent JPEG. Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. An interframe delay of 0 generates one frame with each additional layer composited on top.  For motion, be sure to specify a non-zero delay.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.ffmpeg.org/">M2V</a></td>    <td valign="top">RW</td>    <td valign="top">Motion Picture Experts Group file interchange format (version 2)</td>    <td valign="top">Requires <a href="http://www.ffmpeg.org/download.html">ffmpeg</a>.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.ffmpeg.org/">MPEG</a></td>    <td valign="top">RW</td>    <td valign="top">Motion Picture Experts Group file interchange format (version 1)</td>    <td valign="top">Requires <a href="http://www.ffmpeg.org/download.html">ffmpeg</a>.</td>  </tr>  <tr>    <td valign="top">MPC</td>    <td valign="top">RW</td>    <td valign="top">Magick Persistent Cache image file format</td>    <td valign="top">The most efficient data processing pattern is a write-once, read-many-times pattern. The image is generated or copied from source, then various analyses are performed on the image pixels over time.  MPC supports this pattern. MPC is the native <em>in-memory</em> ImageMagick uncompressed file format. This file format is identical to that used by ImageMagick to represent images in memory and is read by mapping the file directly into memory. The MPC format is not portable and is not suitable as an archive format. It is suitable as an intermediate format for high-performance image processing.  The MPC format requires two files to support one image. Image attributes are written to a file with the extension <code>.mpc</code>, whereas, image pixels are written to a file with the extension <code>.cache</code>.</td>  </tr>  <tr>    <td valign="top">MPR</td>    <td valign="top">RW</td>    <td valign="top">Magick Persistent Registry</td>    <td valign="top">This format permits you to write to and read images from memory.  The image persists until the program exits.  For example, let's use the MPR to create a checkerboard:<pre class="text">convert \( -size 15x15 canvas:black canvas:white -append \) \  \( +clone -flip \) +append -write mpr:checkers +delete \  -size 240x240 tile:mpr:checkers board.png</pre></td>  </tr>  <tr>    <td valign="top">MRW</td>    <td valign="top">R</td>    <td valign="top">Sony (Minolta) Raw Image File</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">MSL</td>    <td valign="top">RW</td>    <td valign="top">Magick Scripting Language</td>    <td valign="top">MSL is the XML-based scripting language supported by the <a href="conjure.html">conjure</a> utility. MSL requires the <a href="http://xmlsoft.org/">libxml2</a> delegate library.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/mtv/egff.htm">MTV</a></td>    <td valign="top">RW</td>    <td valign="top">MTV Raytracing image format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="magick-vector-graphics.html">MVG</a></td>    <td valign="top">RW</td>    <td valign="top">Magick Vector Graphics.</td>    <td valign="top">The native ImageMagick vector metafile format. A text file containing vector drawing commands accepted by <a href="convert.html">convert</a>'s <a href="command-line-options.html#draw">-draw</a> option.</td>  </tr>  <tr>    <td valign="top">NEF</td>    <td valign="top">R</td>    <td valign="top">Nikon Digital SLR Camera Raw Image File</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">ORF</td>    <td valign="top">R</td>    <td valign="top">Olympus Digital Camera Raw Image File</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">OTB</td>    <td valign="top">RW</td>    <td valign="top">On-the-air Bitmap</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">P7</td>    <td valign="top">RW</td>    <td valign="top">Xv's Visual Schnauzer thumbnail format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PALM</td>    <td valign="top">RW</td>    <td valign="top">Palm pixmap</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pam.html">PAM</a></td>    <td valign="top">W</td>    <td valign="top">Common 2-dimensional bitmap format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">CLIPBOARD</td>    <td valign="top">RW</td>    <td valign="top">Windows Clipboard</td>    <td valign="top">Only available under Microsoft Windows.</td>  </tr>  <tr>    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pbm.html">PBM</a></td>    <td valign="top">RW</td>    <td valign="top">Portable bitmap format (black and white)</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PCD</td>    <td valign="top">RW</td>    <td valign="top">Photo CD</td>    <td valign="top">The maximum resolution written is 768x512 pixels since larger images require huffman compression (which is not supported).</td>  </tr>  <tr>    <td valign="top">PCDS</td>    <td valign="top">RW</td>    <td valign="top">Photo CD</td>    <td valign="top">Decode with the sRGB color tables.</td>  </tr>  <tr>    <td valign="top">PCL</td>    <td valign="top">W</td>    <td valign="top">HP Page Control Language</td>    <td valign="top">Use <a href="command-line-options.html#define">-define</a> to specify fit to page option (e.g. <code>-define pcl:fit-to-page=true</code>).</td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/pcx/egff.htm">PCX</a></td>    <td valign="top">RW</td>    <td valign="top">ZSoft IBM PC Paintbrush file</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PDB</td>    <td valign="top">RW</td>    <td valign="top">Palm Database ImageViewer Format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PDF</td>    <td valign="top">RW</td>    <td valign="top">Portable Document Format</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="command-line-options.html#define">-define</a> (e.g. <code>-define pdf:use-cropbox=true</code> or <code>-define pdf:use-trimbox=true</code>).  Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from  Postscript to PDF, use <code>-define delegate:bimodel=true</code>.</td>  </tr>  <tr>    <td valign="top">PEF</td>    <td valign="top">R</td>    <td valign="top">Pentax Electronic File</td>    <td valign="top">Requires an explicit image format otherwise the image is interpreted as a TIFF image (e.g. pef:image.pef).</td>  </tr>  <tr>    <td valign="top">PFA</td>    <td valign="top">R</td>    <td valign="top">Postscript Type 1 font (ASCII)</td>    <td valign="top">Opening as file returns a preview image.</td>  </tr>  <tr>    <td valign="top">PFB</td>    <td valign="top">R</td>    <td valign="top">Postscript Type 1 font (binary)</td>    <td valign="top">Opening as file returns a preview image.</td>  </tr>  <tr>    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pfm.html">PFM</a></td>    <td valign="top">RW</td>    <td valign="top">Portable float map format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM</a></td>    <td valign="top">RW</td>    <td valign="top">Portable graymap format (gray scale)</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PICON</td>    <td valign="top">RW</td>    <td valign="top">Personal Icon</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PICT</td>    <td valign="top">RW</td>    <td valign="top">Apple Macintosh QuickDraw/PICT file</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PIX</td>    <td valign="top">R</td>    <td valign="top">Alias/Wavefront RLE image format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG</a></td>    <td valign="top">RW</td>    <td valign="top">Portable Network Graphics</td>    <td valign="top">Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG8</a></td>    <td valign="top">RW</td>    <td valign="top">Portable Network Graphics</td>    <td valign="top">8-bit indexed with optional binary transparency</td>  </tr>  <tr>    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG00</a></td>    <td valign="top">RW</td>    <td valign="top">Portable Network Graphics</td>    <td valign="top">PNG inheriting subformat from original</td>  </tr>  <tr>    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG24</a></td>    <td valign="top">RW</td>    <td valign="top">Portable Network Graphics</td>    <td valign="top">opaque or binary transparent 24-bit RGB</td>  </tr>  <tr>    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG32</a></td>    <td valign="top">RW</td>    <td valign="top">Portable Network Graphics</td>    <td valign="top">opaque or transparent 32-bit RGBA</td>  </tr>  <tr>    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG48</a></td>    <td valign="top">RW</td>    <td valign="top">Portable Network Graphics</td>    <td valign="top">opaque or binary transparent 48-bit RGB</td>  </tr>  <tr>    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG64</a></td>    <td valign="top">RW</td>    <td valign="top">Portable Network Graphics</td>    <td valign="top">opaque or transparent 64-bit RGB</td>  </tr>  <tr>    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pnm.html">PNM</a></td>    <td valign="top">RW</td>    <td valign="top">Portable anymap</td>    <td valign="top">PNM is a family of formats supporting portable bitmaps (PBM) , graymaps (PGM), and pixmaps (PPM). There is no file format associated with pnm itself. If PNM is used as the output format specifier, then ImageMagick automagically selects the most appropriate format to represent the image.  The default is to write the binary version of the formats. Use <a href="command-line-options.html#compress">-compress none</a> to write the ASCII version of the formats.</td>  </tr>  <tr>    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/ppm.html">PPM</a></td>    <td valign="top">RW</td>    <td valign="top">Portable pixmap format (color)</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PS</td>    <td valign="top">RW</td>    <td valign="top">Adobe PostScript file</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read. To force ImageMagick to respect the crop box, use <a href="command-line-options.html#define">-define</a> (e.g. <code>-define eps:use-cropbox=true</code>). Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your Postscript rendering (e.g. -density 300x300). Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from PDF to Postscript, use <code>-define delegate:bimodel=true</code>.</td>  </tr>  <tr>    <td valign="top">PS2</td>    <td valign="top">RW</td>    <td valign="top">Adobe Level II PostScript file</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>  </tr>  <tr>    <td valign="top">PS3</td>    <td valign="top">RW</td>    <td valign="top">Adobe Level III PostScript file</td>    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/">PSB</a></td>    <td valign="top">RW</td>    <td valign="top">Adobe Large Document Format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/">PSD</a></td>    <td valign="top">RW</td>    <td valign="top">Adobe Photoshop bitmap file</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PTIF</td>    <td valign="top">RW</td>    <td valign="top">Pyramid encoded <a href="formats.html#TIFF">TIFF</a></td>    <td valign="top">Multi-resolution <a href="formats.html#TIFF">TIFF</a> containing successively smaller versions of the image down to the size of an icon.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.photoworks.com/">PWP</a></td>    <td valign="top">R</td>    <td valign="top">Seattle File Works multi-image file</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">RAD</td>    <td valign="top">R</td>    <td valign="top">Radiance image file</td>    <td valign="top">Requires that <i>ra_ppm</i> from the Radiance software package be installed.</td>  </tr>  <tr>    <td valign="top">RAF</td>    <td valign="top">R</td>    <td valign="top">Fuji CCD-RAW Graphic File</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">RGB</td>    <td valign="top">RW</td>    <td valign="top">Raw red, green, and blue samples</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>  </tr>  <tr>    <td valign="top">RGBA</td>    <td valign="top">RW</td>    <td valign="top">Raw red, green, blue, and alpha samples</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>  </tr>  <tr>    <td valign="top">RFG</td>    <td valign="top">RW</td>    <td valign="top">LEGO Mindstorms EV3 Robot Graphics File</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">RLA</td>    <td valign="top">R</td>    <td valign="top">Alias/Wavefront image file</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">RLE</td>    <td valign="top">R</td>    <td valign="top">Utah Run length encoded image file</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.oreilly.com/www/centers/gff/formats/scitex/">SCT</a></td>    <td valign="top">R</td>    <td valign="top">Scitex Continuous Tone Picture</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.photoworks.com/">SFW</a></td>    <td valign="top">R</td>    <td valign="top">Seattle File Works image</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">SGI</td>    <td valign="top">RW</td>    <td valign="top">Irix RGB image</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">SHTML</td>    <td valign="top">W</td>    <td valign="top">Hypertext Markup Language client-side image map</td>    <td valign="top">Used to write HTML clickable image maps based on a the output of <a href="montage.html">montage</a> or a format which supports tiled images such as <a href="formats.html#MIFF">MIFF</a>.</td>  </tr>  <tr>    <td valign="top">SID, MrSID</td>    <td valign="top">R</td>    <td valign="top">Multiresolution seamless image</td>    <td valign="top">Requires the <a href="http://www.lizardtech.com/downloads/downloads.html?dl=/download/files/lin/geoexpress_commandlineutils_linux.tgz">mrsidgeodecode</a> command line utility that decompresses MG2 or MG3 SID image files.</td>  </tr>  <tr>    <td valign="top">SPARSE-COLOR</td>    <td valign="top">W</td>    <td valign="top">Raw text file</td>    <td valign="top">Format compatible with the <a href="command-line-options.html#sparse-color">-sparse-color</a> option. Lists only non-fully-transparent pixels.</td>  </tr>  <tr>    <td valign="top">SUN</td>    <td valign="top">RW</td>    <td valign="top">SUN Rasterfile</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.w3.org/Graphics/SVG">SVG</a></td>    <td valign="top">RW</td>    <td valign="top">Scalable Vector Graphics</td>    <td valign="top">ImageMagick utilizes <a href="http://www.inkscape.org/">inkscape</a> if its in your execution path otherwise <a href="http://developer.gnome.org/rsvg/">RSVG</a>. If neither are available, ImageMagick reverts to its internal SVG renderer. The default resolution is 90dpi.</td>  </tr>  <tr>    <td valign="top">TGA</td>    <td valign="top">RW</td>    <td valign="top">Truevision Targa image</td>    <td valign="top">Also known as formats <code>ICB</code>, <code>VDA</code>, and <code>VST</code>.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.libtiff.org/">TIFF</a></td>    <td valign="top">RW</td>    <td valign="top">Tagged Image File Format</td>    <td valign="top">Also known as <code>TIF</code>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <code>-define tiff:rows-per-strip=8</code>).  To define the tile geometry, use for example, <code>-define tiff:tile-geometry=128x128</code>. To specify a <em>signed</em> format, use  <code>-define quantum:format=signed</code>. To specify a single-precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 64 for a double-precision floating-point format.  Use <code>-define quantum:polarity=min-is-black</code> or <code>-define quantum:polarity=min-is-white</code> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <code>-define tiff:alpha=unassociated</code>.  Set the fill order with <code>-define tiff:fill-order=msb|lsb</code>. Set the TIFF endianess with <code>-define tiff:endian=msb|lsb</code>. Use <code>-define tiff:exif-properties=false</code> to skip reading the EXIF properties.  You can set a number of TIFF software attributes including host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="command-line-options.html#set">-set tiff:software "My Company"</a>.</td>  </tr>  <tr>    <td valign="top">TIM</td>    <td valign="top">R</td>    <td valign="top">PSX TIM file</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.freetype.org/">TTF</a></td>    <td valign="top">R</td>    <td valign="top">TrueType font file</td>    <td valign="top">Requires <a href="http://www.freetype.org/">freetype 2</a>. Opening as file returns a preview image. Use <a href="command-line-options.html#set">-set</a> if you do not want to hint glyph outlines after their scaling to device pixels (e.g. <code>-set type:hinting off</code>).</td>  </tr>  <tr>    <td valign="top">TXT</td>    <td valign="top">RW</td>    <td valign="top">Raw text file</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">UIL</td>    <td valign="top">W</td>    <td valign="top">X-Motif UIL table</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">UYVY</td>    <td valign="top">RW</td>    <td valign="top">Interleaved YUV raw image</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> command line options to specify width and height.  Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>  </tr>  <tr>    <td valign="top">VICAR</td>    <td valign="top">RW</td>    <td valign="top">VICAR rasterfile format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/viff/egff.htm">VIFF</a></td>    <td valign="top">RW</td>    <td valign="top">Khoros Visualization Image File Format</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.openmobilealliance.org/Technical/wapindex.aspx">WBMP</a></td>    <td valign="top">RW</td>    <td valign="top">Wireless bitmap</td>    <td valign="top">Support for uncompressed monochrome only.</td>  </tr>  <tr>    <td valign="top"><a href="https://en.wikipedia.org/wiki/JPEG_XR">WDP</a></td>    <td valign="top">RW</td>    <td valign="top">JPEG extended range</td>    <td valign="top">Requires the <a href="https://jxrlib.codeplex.com/">jxrlib</a> delegate library. Put the JxrDecApp and JxrEncApp applications in your execution path. </td>  </tr>  <tr>    <td valign="top"><a href="http://en.wikipedia.org/wiki/WebP">WEBP</a></td>    <td valign="top">RW</td>    <td valign="top">Weppy image format</td>    <td valign="top">Requires the <a href="http://code.google.com/p/webp/downloads/list">WEBP</a> delegate library.  Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="webp.html">WebP Encoding Options</a> for more details.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/wmf/egff.htm">WMF</a></td>    <td valign="top">R</td>    <td valign="top">Windows Metafile</td>    <td valign="top">Requires <a href="http://sourceforge.net/projects/wvware/">libwmf</a>. By default, renders WMF files using the dimensions specified by the metafile header. Use the -density option to adjust the output resolution, and thereby adjust the output size. The default output resolution is 72DPI so <code>-density 144</code> results in an image twice as large as the default. Use <code>-background color</code> to specify the WMF background color (default white) or <code>-texture filename</code> to specify a background texture image.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/wpg/egff.htm">WPG</a></td>    <td valign="top">R</td>    <td valign="top">Word Perfect Graphics File</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">X</td>    <td valign="top">RW</td>    <td valign="top">display or import an image to or from an X11 server</td>    <td valign="top">Use <a href="command-line-options.html#define">-define</a> to obtain the image from the root window (e.g. <code>-define x:screen=true</code>).  Set <code>x:silent=true</code> to turn off the beep when importing an image.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/xbm/egff.htm">XBM</a></td>    <td valign="top">RW</td>    <td valign="top">X Windows system bitmap, black and white only</td>    <td valign="top">Used by the X Windows System to store monochrome icons.</td>  </tr>  <tr>    <td valign="top">XCF</td>    <td valign="top">R</td>    <td valign="top">GIMP image</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/xpm/egff.htm">XPM</a></td>    <td valign="top">RW</td>    <td valign="top">X Windows system pixmap</td>    <td valign="top">Also known as <code>PM</code>. Used by the X Windows System to store color icons.</td>  </tr>  <tr>    <td valign="top"><a href="http://www.fileformat.info/format/xwd/egff.htm">XWD</a></td>    <td valign="top">RW</td>    <td valign="top">X Windows system window dump</td>    <td valign="top">Used by the X Windows System to save/display screen dumps.</td>  </tr>  <tr>    <td valign="top">X3F</td>    <td valign="top">R</td>    <td valign="top">Sigma Camera RAW Picture File</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">YCbCr</td>    <td valign="top">RW</td>    <td valign="top">Raw Y, Cb, and Cr samples</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>  </tr>  <tr>    <td valign="top">YCbCrA</td>    <td valign="top">RW</td>    <td valign="top">Raw Y, Cb, Cr, and alpha samples</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>  </tr>  <tr>    <td valign="top">YUV</td>    <td valign="top">RW</td>    <td valign="top">CCIR 601 4:1:1</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> command line options to specify width, height, and depth.   Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>  </tr>  </tbody></table></div><h2><a id="pseudo"></a>Pseudo-image Formats</h2><div class="doc-section"><p>ImageMagick supports a number of image format specifications which refer to images prepared via an algorithm, or input/output targets. The following table lists these pseudo-image formats:</p><table class="doc" width="93%">  <tr>    <th>Tag</th>    <th>Mode</th>    <th>Description</th>    <th>Notes</th>  </tr>  <tr>    <td valign="top">CANVAS</td>    <td valign="top">R</td>    <td valign="top">Canvas image of specified color</td>    <td valign="top">Useful to create solid color <em>canvas</em> images. Use       <a href="command-line-options.html#size" >-size</a> and <a       href="command-line-options.html#depth" >-depth</a> to specify the       image width, height, and depth.  Example canvas color specifications       include <code>canvas:red</code> and <code>canvas:#FF0000</code>.<br/>       If no color is specified a '<code>white</code>' canvas image is       generated.  If no <a href="command-line-options.html#size" >-size</a> is specified       a single pixel image of the specified color is generated.</td>  </tr>  <tr>    <td valign="top">CAPTION</td>    <td valign="top">R</td>    <td valign="top">Image caption</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">CLIP</td>    <td valign="top">RW</td>    <td valign="top">Clip path of image</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">CLIPBOARD</td>    <td valign="top">RW</td>    <td valign="top">Windows Clipboard</td>    <td valign="top">Only available under Microsoft Windows.</td>  </tr>  <tr>    <td valign="top">FRACTAL</td>    <td valign="top">R</td>    <td valign="top">Plasma fractal image</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">GRADIENT</td>    <td valign="top">R</td>    <td valign="top">Gradual passing from one shade to another</td>    <td valign="top">Returns a rendered linear top-to-bottom gradient image       using the specified image size. Specify the desired shading as part of       the filename (e.g.  <code>gradient:red-blue</code> or       <code>gradient:#F00-#00F</code>).  If the shading colors are omitted, the       default gradient is white-black. Use named black/white/grayXX for       non-linear gray and gray(XX[%]) for linear gray gradients.</td>  </tr>  <tr>    <td valign="top">HALD</td>    <td valign="top">R</td>    <td valign="top">Identity Hald CLUT Image</td>    <td valign="top">Select order with filename, e.g. hald:5 for order 5.</td>  </tr>  <tr>    <td valign="top">HISTOGRAM</td>    <td valign="top">W</td>    <td valign="top">Histogram of the image</td>    <td valign="top">The histogram includes the unique colors of the image as an image comment.  If you have no need for the unique color list, use <code>-define histogram:unique-colors=false</code> to forego this expensive operation.</td>  </tr>  <tr>    <td valign="top">LABEL</td>    <td valign="top">R</td>    <td valign="top">Text image format</td>    <td valign="top">Specify the desired text as the filename (e.g. <code>label:"This a label"</code>).</td>  </tr>  <tr>    <td valign="top">MAP</td>    <td valign="top">RW</td>    <td valign="top">Colormap intensities and indices</td>    <td valign="top">Set -depth to set the sample size of the intensities; indices are 16-bit if colors &gt; 256.</td>  </tr>  <tr>    <td valign="top">MASK</td>    <td valign="top">RW</td>    <td valign="top">Image mask</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">MATTE</td>    <td valign="top">W</td>    <td valign="top">MATTE format</td>    <td valign="top">Write only.</td>  </tr>  <tr>    <td valign="top">NULL</td>    <td valign="top">RW</td>    <td valign="top">NULL image</td>    <td valign="top">Useful for creating blank tiles with <a href="montage.html">montage</a> (use <code>NULL:</code>). Also useful as an output format when evaluating image read performance.</td>  </tr>  <tr>    <td valign="top">PANGO</td>    <td valign="top">R</td>    <td valign="top">Image caption</td>    <td valign="top">You can configure the caption layout with these defines: <code>-define pango:auto-dir=</code><em>true/false</em>, <code>-define pango:ellipsize=</code><em>start/middle/end</em>, <code>-define pango:gravity-hint=</code><em>natural/strong/line</em>, <code>-define pango:hinting=</code><em>none/auto/full</em>, <code>-define pango:indent=</code><em>points</em>, <code>-define pango:justify=</code>/<em>true/false</em>, <code>-define pango:language=</code><em>en_US/etc</em>, <code>-define pango:markup=</code><em>true/false</em>, <code>-define pango:single-paragraph=</code><em>true/false</em> and <code>-define pango:wrap=</code><em>word/char/word-char</em>.</td>  </tr>  <tr>    <td valign="top">PLASMA</td>    <td valign="top">R</td>    <td valign="top">Plasma fractal image</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">PREVIEW</td>    <td valign="top">W</td>    <td valign="top">Show a preview an image enhancement, effect, or f/x</td>    <td valign="top">Creates a preview montage of images prepared over a parameteric range in order to assist with parameter selection. Specify the desired    preview type via the -preview option).</td>  </tr>  <tr>    <td valign="top">PRINT</td>    <td valign="top">W</td>    <td valign="top">Send image to your computer printer</td>    <td valign="top">Unix users may set the PRINTER (for 'lpr') or LPDEST (for 'lp') environment variables to select the desired printer.</td>  </tr>  <tr>    <td valign="top">SCAN</td>    <td valign="top">R</td>    <td valign="top">Import image from a scanner device</td>    <td valign="top">Requires <a href="http://www.sane-project.org/">SANE</a> Specify the device name and path as the filename (e.g.  <code>scan:'hpaio:/usb/Officejet_6200_series?serial=CN4ATCE3G20453'</code>).</td>  </tr>  <tr>    <td valign="top">RADIAL_GRADIENT</td>    <td valign="top">R</td>    <td valign="top">Gradual radial passing from one shade to another</td>    <td valign="top">Returns a rendered radial gradient image using the specified image size. Specify the desired shading as part of the filename (e.g.  <code>radial-gradient:red-blue</code> or <code>radial-gradient:#F00-#00F</code>).</td>  </tr>  <tr>    <td valign="top">SCANX</td>    <td valign="top">R</td>    <td valign="top">Import image from the default scanner device</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">STEGANO</td>    <td valign="top">R</td>    <td valign="top">Steganographic image</td>    <td valign="top">Use <a href="command-line-options.html#size">-size</a> command line option to specify width, height, and offset of the steganographic image</td>  </tr>  <tr>    <td valign="top">TILE</td>    <td valign="top">R</td>    <td valign="top">Tiled image</td>    <td valign="top">Create a tiled version of an image at by tiling a image. Use <a href="command-line-options.html#size">-size</a> to specify the tiled image size. The image is specified similar to    <code>TILE:image.miff</code>.</td>  </tr>  <tr>    <td valign="top">UNIQUE</td>    <td valign="top">W</td>    <td valign="top">Write only unique pixels to the image file.</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">VID</td>    <td valign="top">RW</td>    <td valign="top">Visual Image Directory</td>    <td valign="top">Used to create a thumbnailed directory (tiled thumbnails) of a set of images which may be used to select images to view via the <a href="display.html">display</a> program, or saved to a <a href="formats.html#MIFF">MIFF</a> or <a href="formats.html#SHTML">SHTML</a> file.</td>  </tr>  <tr>    <td valign="top">WIN</td>    <td valign="top">RW</td>    <td valign="top">Select image from or display image to your computer screen</td>    <td valign="top">Only supported under Microsoft Windows.</td>  </tr>  <tr>    <td valign="top">X</td>    <td valign="top">RW</td>    <td valign="top">Select image from or display image to your X server screen</td>    <td valign="top">Also see the <a href="import.html">import</a> and <a href="display.html">display</a>    programs.</td>  </tr>  <tr>    <td valign="top">XC</td>    <td valign="top">R</td>    <td valign="top">Canvas image of specified color</td>    <td valign="top">An backward compatible alias for the '<code>canvas:</code>'    psuedo-file format, used to create a solid color <em>canvas</em> image.    </td>  </tr></table></div><h2><a id="builtin-images"></a>Built-in Images</h2><div class="doc-section"><p>ImageMagick includes a number of built-in (embedded) images which may be referenced as if they were an image file. The <code>magick:</code> format tag may be used via the syntax <code>magick:</code><em>name</em> to request an embedded image (e.g. <code>magick:logo</code>). For backwards compatibility, the image specifications <code>GRANITE:</code>, <code>LOGO:</code>, <code>NETSCAPE:</code>, and <code>ROSE:</code> may also be used to request images with those names.</p><table class="doc" width="93%">  <tr>    <th>Tag</th>    <th>Mode</th>    <th>Description</th>    <th>Notes</th>  </tr>  <tr>    <td valign="top">GRANITE</td>    <td valign="top">R</td>    <td valign="top">128x128 granite texture pattern</td>    <td valign="top"><img src="../images/granite.png" width="64" height="64" alt="GRANITE"/></td>  </tr>  <tr>    <td valign="top"><a href="../images/logo.png">LOGO</a></td>    <td valign="top">R</td>    <td valign="top">ImageMagick Logo, 640x480</td>    <td valign="top"><img src="../images/logo.jpg" width="123" height="118" alt="Logo"/></td>  </tr>  <tr>    <td valign="top"> NETSCAPE</td>    <td valign="top">R</td>    <td valign="top">image using colors in Netscape 216 (6x6x6 ) color cube, 216x144</td>    <td valign="top">Most commonly used with the <a href="convert.html">convert</a> and <a href="mogrify.html">mogrify</a> programs with the <a href="command-line-options.html#map">-map</a> option to create <em>web safe</em> images.</td>  </tr>  <tr>    <td valign="top">ROSE</td>    <td valign="top">R</td>    <td valign="top">Picture of a rose, 70x46</td>    <td valign="top"><img src="../images/rose.png" width="70" height="46" alt="ROSE"/></td>  </tr>  <tr>    <td valign="top"><a href="../images/wizard.png">WIZARD</a></td>    <td valign="top">R</td>    <td valign="top">ImageMagick Wizard, 480x640</td>    <td valign="top"><img src="../images/wizard.jpg" width="125" height="167" alt="Logo"/></td>  </tr></table></div><h2><a id="builtin-patterns"></a>Built-in Patterns</h2><div class="doc-section"><p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <code>pattern:</code> format tag may be used via the syntax <code>pattern:</code><em>name</em> to request an embedded pattern (e.g. <code>pattern:checkerboard</code>). The pattern size is controlled with the <a href="command-line-options.html#size">-size</a> command line option.</p><table class="doc" width="93%">  <tr>    <th>Tag</th>    <th>Mode</th>    <th>Description</th>    <th>Notes</th>  </tr>  <tr>    <td valign="top">BRICKS</td>    <td valign="top">R</td>    <td valign="top">brick pattern, 16x16</td>    <td valign="top"><img src="../images/patterns/bricks.png" width="100" height="26" alt="BRICKS" /></td>  </tr>  <tr>    <td valign="top">CHECKERBOARD</td>    <td valign="top">R</td>    <td valign="top">checkerboard pattern, 30x30</td>    <td valign="top"><img src="../images/patterns/checkerboard.png" width="100" height="26" alt="CHECKERBOARD" /></td>  </tr>  <tr>    <td valign="top">CIRCLES</td>    <td valign="top">R</td>    <td valign="top">circles pattern, 16x16</td>    <td valign="top"><img src="../images/patterns/circles.png" width="100" height="26" alt="CIRCLES"/></td>  </tr>  <tr>    <td valign="top">CROSSHATCH</td>    <td valign="top">R</td>    <td valign="top">crosshatch pattern, 8x4</td>    <td valign="top"><img src="../images/patterns/crosshatch.png" width="100" height="26" alt="CROSSHATCH" /></td>  </tr>  <tr>    <td valign="top">CROSSHATCH30</td>    <td valign="top">R</td>    <td valign="top">crosshatch pattern with lines at 30 degrees, 8x4</td>    <td valign="top"><img src="../images/patterns/crosshatch30.png" width="100" height="26" alt="CROSSHATCH30" /></td>  </tr>  <tr>    <td valign="top">CROSSHATCH45</td>    <td valign="top">R</td>    <td valign="top">crosshatch pattern with lines at 45 degrees, 8x4</td>    <td valign="top"><img src="../images/patterns/crosshatch45.png" width="100" height="26" alt="CROSSHATCH45" /></td>  </tr>  <tr>    <td valign="top">FISHSCALES</td>    <td valign="top">R</td>    <td valign="top">fish scales pattern, 16x8</td>    <td valign="top"><img src="../images/patterns/fishscales.png" width="100" height="26" alt="FISHSCALES" /></td>  </tr>  <tr>    <td valign="top">GRAY0</td>    <td valign="top">R</td>    <td valign="top">0% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray0.png" width="100" height="32" alt="GRAY0" /></td>  </tr>  <tr>    <td valign="top">GRAY5</td>    <td valign="top">R</td>    <td valign="top">5% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray5.png" width="100" height="32" alt="GRAY5" /></td>  </tr>  <tr>    <td valign="top">GRAY10</td>    <td valign="top">R</td>    <td valign="top">10% intensity gray, 32x32</td>    <td valign="top"> <img src="../images/patterns/gray10.png" width="100" height="32" alt="GRAY10" /></td>  </tr>  <tr>    <td valign="top">GRAY15</td>    <td valign="top">R</td>    <td valign="top">15% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray15.png" width="100" height="32" alt="GRAY15" /></td>  </tr>  <tr>    <td valign="top">GRAY20</td>    <td valign="top">R</td>    <td valign="top">20% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray20.png" width="100" height="32" alt="GRAY20" /></td>  </tr>  <tr>    <td valign="top">GRAY25</td>    <td valign="top">R</td>    <td valign="top">25% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray25.png" width="100" height="32" alt="GRAY25" /></td>  </tr>  <tr>    <td valign="top">GRAY30</td>    <td valign="top">R</td>    <td valign="top">30% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray30.png" width="100" height="32" alt="GRAY30" /></td>  </tr>  <tr>    <td valign="top">GRAY35</td>    <td valign="top">R</td>    <td valign="top">35% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray35.png" width="100" height="32" alt="GRAY35" /></td>  </tr>  <tr>    <td valign="top">GRAY40</td>    <td valign="top">R</td>    <td valign="top">40% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray40.png" width="100" height="32" alt="GRAY40" /></td>  </tr>  <tr>    <td valign="top">GRAY45</td>    <td valign="top">R</td>    <td valign="top">45% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray45.png" width="100" height="32" alt="GRAY45" /></td>  </tr>  <tr>    <td valign="top">GRAY50</td>    <td valign="top">R</td>    <td valign="top">50% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray50.png" width="100" height="32" alt="GRAY50" /></td>  </tr>  <tr>    <td valign="top">GRAY55</td>    <td valign="top">R</td>    <td valign="top">55% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray55.png" width="100" height="32" alt="GRAY55" /></td>  </tr>  <tr>    <td valign="top">GRAY60</td>    <td valign="top">R</td>    <td valign="top">60% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray60.png" width="100" height="32" alt="GRAY60" /></td>  </tr>  <tr>    <td valign="top">GRAY65</td>    <td valign="top">R</td>    <td valign="top">65% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray65.png" width="100" height="32" alt="GRAY65" /></td>  </tr>  <tr>    <td valign="top">GRAY70</td>    <td valign="top">R</td>    <td valign="top">70% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray70.png" width="100" height="32" alt="GRAY70" /></td>  </tr>  <tr>    <td valign="top">GRAY75</td>    <td valign="top">R</td>    <td valign="top">75% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray75.png" width="100" height="32" alt="GRAY75" /></td>  </tr>  <tr>    <td valign="top">GRAY80</td>    <td valign="top">R</td>    <td valign="top">80% intensity gray, 32x32</td>    <td valign="top"> <img src="../images/patterns/gray80.png" width="100" height="32" alt="GRAY80" /></td>  </tr>  <tr>    <td valign="top">GRAY85</td>    <td valign="top">R</td>    <td valign="top">85% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray85.png" width="100" height="32" alt="GRAY85" /></td>  </tr>  <tr>    <td valign="top">GRAY90</td>    <td valign="top">R</td>    <td valign="top">100% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray90.png" width="100" height="32" alt="GRAY90" /></td>  </tr>  <tr>    <td valign="top">GRAY95</td>    <td valign="top">R</td>    <td valign="top">100% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray95.png" width="100" height="32" alt="GRAY95" /></td>  </tr>  <tr>    <td valign="top">GRAY100</td>    <td valign="top">R</td>    <td valign="top">100% intensity gray, 32x32</td>    <td valign="top"><img src="../images/patterns/gray100.png" width="100" height="32" alt="GRAY100" /></td>  </tr>  <tr>    <td valign="top">HEXAGONS</td>    <td valign="top">R</td>    <td valign="top">hexagon pattern, 30x18</td>    <td valign="top"><img src="../images/patterns/hexagons.png" width="100" height="26" alt="HEXAGONS" /></td>  </tr>  <tr>    <td valign="top">HORIZONTAL</td>    <td valign="top">R</td>    <td valign="top">horizontal line pattern, 8x4</td>    <td valign="top"><img src="../images/patterns/horizontal.png" width="100" height="26" alt="HORIZONTAL" /></td>  </tr>  <tr>    <td valign="top">HORIZONTAL2</td>    <td valign="top">R</td>    <td valign="top">horizontal line pattern, 8x8</td>    <td valign="top"><img src="../images/patterns/horizontal2.png" width="100" height="26" alt="HORIZONTAL2" /></td>  </tr>  <tr>    <td valign="top">HORIZONTAL3</td>    <td valign="top">R</td>    <td valign="top">horizontal line pattern, 9x9</td>    <td valign="top"><img src="../images/patterns/horizontal3.png" width="100" height="26" alt="HORIZONTAL3" /></td>  </tr>  <tr>    <td valign="top">HORIZONTALSAW</td>    <td valign="top">R</td>    <td valign="top">horizontal saw-tooth pattern, 16x8</td>    <td valign="top"><img src="../images/patterns/horizontalsaw.png" width="100" height="26" alt="HORIZONTALSAW" /></td>  </tr>  <tr>    <td valign="top">HS_BDIAGONAL</td>    <td valign="top">R</td>    <td valign="top">backward diagonal line pattern (45 degrees slope), 8x8</td>    <td valign="top"><img src="../images/patterns/hs_bdiagonal.png" width="100" height="26" alt="HS_BDIAGONAL" /></td>  </tr>  <tr>    <td valign="top">HS_CROSS</td>    <td valign="top">R</td>    <td valign="top">cross line pattern, 8x8</td>    <td valign="top"><img src="../images/patterns/hs_cross.png" width="100" height="26" alt="HS_CROSS" /></td>  </tr>  <tr>    <td valign="top">HS_DIAGCROSS</td>    <td valign="top">R</td>    <td valign="top">diagonal line cross pattern (45 degrees slope), 8x8</td>    <td valign="top"><img src="../images/patterns/hs_diagcross.png" width="100" height="26" alt="HS_DIAGCROSS" /></td>  </tr>  <tr>    <td valign="top">HS_FDIAGONAL</td>    <td valign="top">R</td>    <td valign="top">forward diagonal line pattern (45 degrees slope), 8x8</td>    <td valign="top"><img src="../images/patterns/hs_fdiagonal.png" width="100" height="26" alt="HS_FDIAGONAL" /></td>  </tr>  <tr>    <td valign="top">HS_HORIZONTAL</td>    <td valign="top">R</td>    <td valign="top">horizontal line pattern, 8x8</td>    <td valign="top"><img src="../images/patterns/hs_horizontal.png" width="100" height="26" alt="HS_HORIZONTAL" /></td>  </tr>  <tr>    <td valign="top">HS_VERTICAL</td>    <td valign="top">R</td>    <td valign="top">vertical line pattern, 8x8</td>    <td valign="top"><img src="../images/patterns/hs_vertical.png" width="100" height="26" alt="HS_VERTICAL" /></td>  </tr>  <tr>    <td valign="top">LEFT30</td>    <td valign="top">R</td>    <td valign="top">forward diagonal pattern (30 degrees slope), 8x4</td>    <td valign="top"><img src="../images/patterns/left30.png" width="100" height="26" alt="LEFT0" /></td>  </tr>  <tr>    <td valign="top">LEFT45</td>    <td valign="top">R</td>    <td valign="top">forward diagonal line pattern (45 degrees slope), 8x8</td>    <td valign="top"><img src="../images/patterns/left45.png" width="100" height="26" alt="LEFT45" /></td>  </tr>  <tr>    <td valign="top">LEFTSHINGLE</td>    <td valign="top">R</td>    <td valign="top">left shingle pattern, 24x24</td>    <td valign="top"><img src="../images/patterns/leftshingle.png" width="100" height="26" alt="LEFTSHINGLE" /></td>  </tr>  <tr>    <td valign="top">OCTAGONS</td>    <td valign="top">R</td>    <td valign="top">octagons pattern, 16x16</td>    <td valign="top"><img src="../images/patterns/octagons.png" width="100" height="26" alt="OCTAGONS" /></td>  </tr>  <tr>    <td valign="top">RIGHT30</td>    <td valign="top">R</td>    <td valign="top">backward diagonal line pattern (30 degrees) 8x4</td>    <td valign="top"><img src="../images/patterns/right30.png" width="100" height="26" alt="RIGHT30" /></td>  </tr>  <tr>    <td valign="top">RIGHT45</td>    <td valign="top">R</td>    <td valign="top">backward diagonal line pattern (30 degrees), 8x8</td>    <td valign="top"><img src="../images/patterns/right45.png" width="100" height="26" alt="RIGHT45" /></td>  </tr>  <tr>    <td valign="top">RIGHTSHINGLE</td>    <td valign="top">R</td>    <td valign="top">right shingle pattern, 24x24</td>    <td valign="top"><img src="../images/patterns/rightshingle.png" width="100" height="26" alt="RIGHTSHINGLE" /></td>  </tr>  <tr>    <td valign="top">SMALLFISHSCALES</td>    <td valign="top">R</td>    <td valign="top">small fish scales pattern, 8x8</td>    <td valign="top"><img src="../images/patterns/smallfishscales.png" width="100" height="26" alt="SMALLFISHSCALES" /></td>  </tr>  <tr>    <td valign="top">VERTICAL</td>    <td valign="top">R</td>    <td valign="top">vertical line pattern, 8x8</td>    <td valign="top"><img src="../images/patterns/vertical.png" width="100" height="26" alt="VERTICAL" /></td>  </tr>  <tr>    <td valign="top">VERTICAL2</td>    <td valign="top">R</td>    <td valign="top">vertical line pattern, 8x8</td>    <td valign="top"><img src="../images/patterns/vertical2.png" width="100" height="26" alt="VERTICAL2" /></td>  </tr>  <tr>    <td valign="top">VERTICAL3</td>    <td valign="top">R</td>    <td valign="top">vertical line pattern, 9x9</td>    <td valign="top"><img src="../images/patterns/vertical3.png" width="100" height="26" alt="VERTICAL3" /></td>  </tr>  <tr>    <td valign="top">VERTICALBRICKS</td>    <td valign="top">R</td>    <td valign="top">vertical brick pattern, 16x16</td>    <td valign="top"><img src="../images/patterns/verticalbricks.png" width="100" height="26" alt="VERTICALBRICKS" /></td>  </tr>  <tr>    <td valign="top">VERTICALLEFTSHINGLE</td>    <td valign="top">R</td>    <td valign="top">vertical left shingle pattern, 24x24</td>    <td valign="top"><img src="../images/patterns/verticalleftshingle.png" width="100" height="26" alt="VERTICALLEFTSHINGLE" /></td>  </tr>  <tr>    <td valign="top">VERTICALRIGHTSHINGLE</td>    <td valign="top">R</td>    <td valign="top">vertical right shingle pattern, 24x24</td>    <td valign="top"><img src="../images/patterns/verticalrightshingle.png" width="100" height="26" alt="VERTICALRIGHTSHINGLE" /></td>  </tr>  <tr>    <td valign="top">VERTICALSAW</td>    <td valign="top">R</td>    <td valign="top">vertical saw-tooth pattern, 8x16</td>    <td valign="top"><img src="../images/patterns/verticalsaw.png" width="100" height="26" alt="VERTICALSAW" /></td>  </tr></table></div><h2><a id="embedded"></a>Embedded Image Profiles</h2><div class="doc-section"><p>ImageMagick provides a number of format identifiers which are used to add, remove, and save embedded profiles for images which can support embedded profiles. Image types which may contain embedded profiles are TIFF, JPEG, and PDF.</p><table class="doc" width="93%">  <tbody>  <tr>    <th>Tag</th>    <th>Mode</th>    <th>Description</th>    <th>Notes</th>  </tr>  <tr>    <td valign="top">8BIM</td>    <td valign="top">RW</td>    <td valign="top">Photoshop resource format (binary)</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">8BIMTEXT</td>    <td valign="top">RW</td>    <td valign="top">Photoshop resource format (ASCII)</td>    <td valign="top">An ASCII representation of the 8BIM format.</td>  </tr>  <tr>    <td valign="top">APP1</td>    <td valign="top">RW</td>    <td valign="top">Raw application information</td>    <td valign="top"> </td>  </tr>  <tr>    <td valign="top">APP1JPEG</td>    <td valign="top">RW</td>    <td valign="top">Raw JPEG binary data</td>    <td valign="top">Profile in JPEG wrapper.</td>  </tr>  <tr>    <td valign="top">ICC</td>    <td valign="top">RW</td>    <td valign="top">International Color Consortium color profile</td>    <td valign="top">Also known as <code>ICM</code>. To read, use <a href="command-line-options.html#profile">-profile</a> with      <a href="convert.html">convert</a>.</td>  </tr>  <tr>    <td valign="top">IPTC</td>    <td valign="top">RW</td>    <td valign="top">IPTC Newsphoto (binary)</td>    <td valign="top">To read, use <a href="command-line-options.html#profile">-profile</a> with <a href="convert.html">convert</a></td>  </tr>  <tr>    <td valign="top">IPTCTEXT</td>    <td valign="top">RW</td>    <td valign="top">IPTC Newsphoto (ASCII)</td>    <td valign="top">An ASCII representation of the IPTC format.</td>  </tr>  </tbody></table></div>
+<h1>ImageMagick Image Formats</h1>
+<p class="navigation-index">[<a href="formats.html#intro">Introducing Formats</a> • <a href="formats.html#colorspace">A Word about Colorspaces</a> • <a href="formats.html#supported">Supported Formats</a> • <a href="formats.html#pseudo">Pseudo Formats</a> • <a href="formats.html#builtin-images">Built-in Images</a>  • <a href="formats.html#builtin-patterns">Built-in Patterns</a> • <a href="formats.html#embedded">Embedded Profiles</a>]</p>
+
+<h2><a id="intro"></a>Introducing Image Formats</h2>
+<div class="doc-section">
+
+<p>ImageMagick uses an ASCII string known as <em>magick</em> (e.g. <code>GIF</code>) to identify file formats, algorithms acting as formats, built-in patterns, and embedded profile types.</p>
+
+<p>Support for some of the formats are delegated to libraries or external programs. The Installation Guide describes where to find these distributions and any special configuration options required.</p>
+
+<p>To get a complete listing of which image formats are supported on your system, type</p>
+
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -list format</span></p>
+<p>On some platforms, ImageMagick automagically processes these extensions: .gz for Zip compression, .Z for Unix compression, .bz2 for block compression, and .pgp for PGP encryption. For example, a PNM image called image.pnm.gz is automagically uncompressed.</p>
+</div>
+
+<h2><a id="colorspace"></a>A Word about Colorspaces</h2> <div
+class="doc-section"> <p>A majority of the image formats assume an sRGB
+colorspace (e.g. JPEG, PNG, etc.).  A few support only linear RGB (e.g. EXR,
+DPX, CIN, HDR) or only linear GRAY (e.g. PGM).  A few formats support CMYK.
+Then there is the occasional format that also supports LAB (that is CieLAB)
+(e.g. TIFF, PSD, JPG, JP2).  To determine the colorspace of your image, use
+this command:</p>
+
+<pre class="text">
+  identify -verbose image.jpg
+  Image: image.jpg
+  Format: JPEG (Joint Photographic Experts Group JFIF format)
+  ...
+  Colorspace: sRGB
+</pre>
+
+OR use the appropriate percent escape
+<pre class="text">
+  convert image.jpg -print "%[colorspace]\n" null:
+  sRGB
+</pre>
+
+
+<p>When processing an image, be aware of the colorspace.  Many image
+processing algorithms assume a linear RGB colorspace.  Although you may get
+satisfactory results processing in the sRGB colorspace, you may get improved
+results in linear RGB (essentially sRGB with the gamma function removed).  For
+example,</p>
+
+<pre class="text">
+  convert image.jpg -colorspace RGB -resize 50% -colorspace sRGB resize.jpg
+</pre>
+
+<p>As of IM 6.7.8-2 one can properly work in LAB colorspace whether or not
+Imagemagick is <a href="high-dynamic-range.html">HDRI</a>-enabled.  Essentually the A and
+B channels are stored with a 50% gray bias, to allow it to handle the
+negatives required by the format.</p>
+
+<pre class="text">
+  convert lab.tif -resize 50% resize.jpg
+</pre>
+
+<p>Again, it may not make sense for some image processing operators to work
+directly in LAB space, but ImageMagick permits it and generally returns
+reasonable results.</p>
+
+<p>Prior to IM 6.7.8-2, the A and B channels has a discontinuity, making them
+non-linear. As such to process such images, you needed to first convert the
+colorspace some other linear colorspace, before apply your processing
+operator. Afterward you can transform back to the LAB colorspace.  For
+example,</p>
+
+<pre class="text">
+  convert lab.tif -colorspace RGB -resize 50% -colorspace Lab resize.jpg
+</pre>
+
+</div>
+
+<h2><a id="supported"></a>Supported Image Formats</h2>
+<div class="doc-section">
+
+<p>ImageMagick supports reading over 100 major file formats (not
+including sub-formats). The following table provides a summary of
+the supported image formats.</p>
+
+<table class="doc" style="width: 93%">
+  <tbody>
+  <tr>
+    <th>Tag</th>
+    <th>Mode</th>
+    <th>Description</th>
+    <th>Notes</th>
+  </tr>
+
+  <tr>
+    <td valign="top">AAI</td>
+    <td valign="top">RW</td>
+    <td valign="top">AAI Dune image</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">ART</td>
+    <td valign="top">R</td>
+    <td valign="top">PFS: 1st Publisher</td>
+    <td valign="top">Format originally used on the Macintosh (MacPaint?) and later used for PFS: 1st Publisher clip art.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">ARW</td>
+    <td valign="top">R</td>
+    <td valign="top">Sony Digital Camera Alpha Raw Image Format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.jmcgowan.com/avi.html">AVI</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Microsoft Audio/Visual Interleaved</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">AVS</td>
+    <td valign="top">RW</td>
+    <td valign="top">AVS X image</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/bmp/egff.htm">BMP, BMP2, BMP3</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Microsoft Windows bitmap</td>
+    <td valign="top">By default the BMP format is version 4.  Use BMP3 and BMP2 to write versions 3 and 2 respectively.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/cals/egff.htm">CALS</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Continuous Acquisition and Life-cycle Support Type 1 image</td>
+    <td valign="top">Specified in MIL-R-28002 and MIL-PRF-28002. Standard blueprint archive format as used by the US military to replace microfiche.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/cgm/egff.htm">CGM</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Computer Graphics Metafile</td>
+    <td valign="top">Requires <a href="http://www.agocg.ac.uk/train/cgm/ralcgm.htm">ralcgm</a> to render CGM files.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.cineon.com/ff_draft.html">CIN</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Kodak Cineon Image Format</td>
+    <td valign="top">Use <a href="command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <code>-set gamma 1.7</code>, <code>-set reference-black 95</code>, <code>-set reference-white 685</code>).  Properties include cin:file.create_date, cin:file.create_time, cin:file.filename, cin:file.version, cin:film.count, cin:film.format, cin:film.frame_id, cin:film.frame_position, cin:film.frame_rate, cin:film.id, cin:film.offset, cin:film.prefix, cin:film.slate_info, cin:film.type, cin:image.label, cin:origination.create_date, cin:origination.create_time, cin:origination.device, cin:origination.filename, cin:origination.model, cin:origination.serial, cin:origination.x_offset, cin:origination.x_pitch, cin:origination.y_offset, cin:origination.y_pitch, cin:user.data.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">CMYK</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw cyan, magenta, yellow, and black samples</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">CMYKA</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw cyan, magenta, yellow, black, and alpha samples</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">CR2</td>
+    <td valign="top">R</td>
+    <td valign="top">Canon Digital Camera Raw Image Format</td>
+    <td valign="top">Requires an explicit image format otherwise the image is interpreted as a TIFF image (e.g. cr2:image.cr2).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">CRW</td>
+    <td valign="top">R</td>
+    <td valign="top">Canon Digital Camera Raw Image Format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">CUR</td>
+    <td valign="top">R</td>
+    <td valign="top">Microsoft Cursor Icon</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">CUT</td>
+    <td valign="top">R</td>
+    <td valign="top">DR Halo</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">DCM</td>
+    <td valign="top">R</td>
+    <td valign="top">Digital Imaging and Communications in Medicine (DICOM) image</td>
+    <td valign="top">Used by the medical community for images like X-rays.  ImageMagick sets the initial display range based on the Window Center (0028,1050) and Window Width (0028,1051) tags. Use <a href="command-line-options.html#define">-define dcm:display-range=reset</a> to set the display range to the minimum and maximum pixel values.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">DCR</td>
+    <td valign="top">R</td>
+    <td valign="top">Kodak Digital Camera Raw Image File</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">DCX</td>
+    <td valign="top">RW</td>
+    <td valign="top">ZSoft IBM PC multi-page Paintbrush image</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://en.wikipedia.org/wiki/DirectDraw_Surface">DDS</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Microsoft Direct Draw Surface</td>
+    <td valign="top">Use <a href="command-line-options.html#define">-define</a> to specify the compression (e.g. <code>-define dds:compression={dxt1, dxt5, none}</code>). Other defines include <code>dds:cluster-fit={true,false}</code>, <code>dds:weight-by-alpha={true,false}</code>, and use <code>dds:mipmaps</code> to set the number of mipmaps.</td>
+
+  </tr>
+
+  <tr>
+    <td valign="top">DIB</td>
+    <td valign="top">RW</td>
+    <td valign="top">Microsoft Windows Device Independent Bitmap</td>
+    <td valign="top">DIB is a <a href="formats.html#BMP">BMP</a> file without the <a href="formats.html#BMP">BMP</a> header. Used to support embedded images in compound formats like WMF.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.djvu.org/">DJVU</a></td>
+    <td valign="top">R</td>
+    <td valign="top"></td>
+    <td valign="top"></td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.adobe.com/products/dng/main.html">DNG</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Digital Negative</td>
+    <td valign="top">Requires an explicit image format otherwise the image is interpreted as a TIFF image (e.g. dng:image.dng).</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.graphviz.org">DOT</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Graph Visualization</td>
+    <td valign="top">Use <a href="command-line-options.html#define">-define</a> to specify the layout engine (e.g. <code>-define dot:layout-engine=twopi</code>).</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="motion-picture.html">DPX</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">SMPTE Digital Moving Picture Exchange 2.0 (SMPTE 268M-2003)</td>
+    <td valign="top">Use <a href="command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <code>-set gamma 1.7</code>, <code>-set reference-black 95</code>, <code>-set reference-white 685</code>).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">EMF</td>
+    <td valign="top">R</td>
+    <td valign="top">Microsoft Enhanced Metafile (32-bit)</td>
+    <td valign="top">Only available under Microsoft Windows.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">EPDF</td>
+    <td valign="top">RW</td>
+    <td valign="top">Encapsulated Portable Document Format</td>
+    <td valign="top"></td>
+  </tr>
+
+  <tr>
+    <td valign="top">EPI</td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe Encapsulated PostScript Interchange format</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">EPS</td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe Encapsulated PostScript</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">EPS2</td>
+    <td valign="top">W</td>
+    <td valign="top">Adobe Level II Encapsulated PostScript</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">EPS3</td>
+    <td valign="top">W</td>
+    <td valign="top">Adobe Level III Encapsulated PostScript</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">EPSF</td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe Encapsulated PostScript</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">EPSI</td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe Encapsulated PostScript Interchange format</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">EPT</td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe Encapsulated PostScript Interchange format with <a href="formats.html#TIFF">TIFF</a> preview</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.openexr.org">EXR</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">High dynamic-range (HDR) file format developed by Industrial Light &amp; Magic</td>
+    <td valign="top">See <a href="high-dynamic-range.html">High Dynamic-Range Images</a> for details on this image format. Requires the <a href="http://www.openexr.org/">OpenEXR</a> delegate library.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">FAX</td>
+    <td valign="top">RW</td>
+    <td valign="top">Group 3 TIFF</td>
+    <td valign="top">This format is a fixed width of 1728 as required by the standard.  See <a href="formats.html#TIFF">TIFF</a> format. Note that FAX machines use non-square pixels which are 1.5 times wider than they are tall but computer displays use square pixels so FAX images may appear to be narrow unless they are explicitly resized using a resize specification of <code>100x150%</code>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://homepage.usask.ca/~ijm451/fig/">FIG</a></td>
+    <td valign="top">R</td>
+    <td valign="top">FIG graphics format</td>
+    <td valign="top">Requires <a href="ftp://ftp.x.org/contrib/applications/drawing_tools/transfig">TransFig</a>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.cv.nrao.edu/fits/">FITS</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Flexible Image Transport System</td>
+    <td valign="top">To specify a single-precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 64 for a double-precision floating-point format.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">FPX</td>
+    <td valign="top">RW</td>
+    <td valign="top">FlashPix Format</td>
+    <td valign="top">FlashPix has the option to store mega- and giga-pixel images at various resolutions in a single file which permits conservative bandwidth and fast reveal times when displayed within a Web browser.  Requires the <a href="http://www.imagemagick.org/download/delegates">FlashPix SDK</a>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/gif/egff.htm">GIF</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">CompuServe Graphics Interchange Format</td>
+    <td valign="top">8-bit RGB PseudoColor with up to 256 palette entires. Specify the format <code>GIF87</code> to write the older version 87a of the format.  Use <a href="command-line-options.html#transparent-color">-transparent-color</a> to specify the GIF transparent color (e.g. <code>-transparent-color wheat</code>).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">GPLT</td>
+    <td valign="top">R</td>
+    <td valign="top">Gnuplot plot files</td>
+    <td valign="top">Requires <a href="http://www.gnuplot.info/">gnuplot4.0.tar.Z</a> or later.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw gray samples</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://en.wikipedia.org/wiki/RGBE_image_format">HDR</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Radiance RGBE image format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">HPGL</td>
+    <td valign="top">R</td>
+    <td valign="top">HP-GL plotter language</td>
+    <td valign="top">Requires <a href="http://ftp.gnu.org/gnu/hp2xx">hp2xx-3.4.4.tar.gz</a></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HRZ</td>
+    <td valign="top">RW</td>
+    <td valign="top">Slow Scane TeleVision</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">HTML</td>
+    <td valign="top">RW</td>
+    <td valign="top">Hypertext Markup Language with a client-side image map</td>
+    <td valign="top">Also known as <code>HTM</code>. Requires <a href="http://user.it.uu.se/%7Ejan/html2ps.html">html2ps</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">ICO</td>
+    <td valign="top">R</td>
+    <td valign="top">Microsoft icon</td>
+    <td valign="top">Also known as <code>ICON</code>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">INFO</td>
+    <td valign="top">W</td>
+    <td valign="top">Format and characteristics of the image</td>
+    <td valign="top"></td>
+  </tr>
+
+  <tr>
+    <td valign="top">INLINE</td>
+    <td valign="top">R</td>
+    <td valign="top">Base64-encoded inline image</td>
+    <td valign="top">The inline image look similar to <code>inline:data:;base64,/9j/4AAQSk...knrn//2Q==</code>.  If the inline image exceeds 5000 characters, it must be referenced from a file (e.g. <code>inline:inline.txt</code>).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">JBIG</td>
+    <td valign="top">RW</td>
+    <td valign="top">Joint Bi-level Image experts Group file interchange format</td>
+    <td valign="top">Also known as <code>BIE</code> and <code>JBG</code>. Requires <a href="http://www.cl.cam.ac.uk/~mgk25/jbigkit/">jbigkit-1.6.tar.gz</a>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libmng.com/">JNG</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Multiple-image Network Graphics</td>
+    <td valign="top">JPEG in a PNG-style wrapper with transparency. Requires libjpeg and libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.openjpeg.org/">JP2</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">JPEG-2000 JP2 File Format Syntax</td>
+    <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.openjpeg.org/">JPT</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">JPEG-2000 Code Stream Syntax</td>
+    <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.openjpeg.org/">J2C</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">JPEG-2000 Code Stream Syntax</td>
+    <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.openjpeg.org/">J2K</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">JPEG-2000 Code Stream Syntax</td>
+    <td valign="top">Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.jpeg.org/">JPEG</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Joint Photographic Experts Group JFIF format</td>
+    <td valign="top">Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. -quality 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <code>jpeg:size</code>, for example <a href="command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <code>jpeg:extent</code>, for example <a href="command-line-options.html#define">-define jpeg:extent=400kb</a>.  Finally, to define one or more custom quantization tables, use <a href="command-line-options.html#define">-define jpeg:q-table=<i>filename</i>.</a></td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="https://en.wikipedia.org/wiki/JPEG_XR">JXR</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">JPEG extended range</td>
+    <td valign="top">Requires the <a href="https://jxrlib.codeplex.com/">jxrlib</a> delegate library. Put the JxrDecApp and JxrEncApp applications in your execution path. </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.json.org">JSON</a></td>
+    <td valign="top">W</td>
+    <td valign="top">JavaScript Object Notation, a lightweight data-interchange format</td>
+    <td valign="top">Include additional attributes about the image with these defines: <a href="command-line-options.html#define">-define json:locate</a>, <a href="command-line-options.html#define">-define json:limit</a>, <a href="command-line-options.html#define">-define json:moments</a>, or <a href="command-line-options.html#define">-define json:features</a>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">MAN</td>
+    <td valign="top">R</td>
+    <td valign="top">Unix reference manual pages</td>
+    <td valign="top">Requires that GNU groff and Ghostcript are installed.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">MAT</td>
+    <td valign="top">R</td>
+    <td valign="top">MATLAB image format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="miff.html">MIFF</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Magick image file format</td>
+    <td valign="top">This format persists all image attributes known to ImageMagick.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">MONO</td>
+    <td valign="top">RW</td>
+    <td valign="top">Bi-level bitmap in least-significant-byte first order</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libpng.org/pub/mng/">MNG</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Multiple-image Network Graphics</td>
+    <td valign="top">A PNG-like Image Format Supporting Multiple Images, Animation and Transparent JPEG. Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. An interframe delay of 0 generates one frame with each additional layer composited on top.  For motion, be sure to specify a non-zero delay.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.ffmpeg.org/">M2V</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Motion Picture Experts Group file interchange format (version 2)</td>
+    <td valign="top">Requires <a href="http://www.ffmpeg.org/download.html">ffmpeg</a>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.ffmpeg.org/">MPEG</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Motion Picture Experts Group file interchange format (version 1)</td>
+    <td valign="top">Requires <a href="http://www.ffmpeg.org/download.html">ffmpeg</a>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">MPC</td>
+    <td valign="top">RW</td>
+    <td valign="top">Magick Persistent Cache image file format</td>
+    <td valign="top">The most efficient data processing pattern is a write-once, read-many-times pattern. The image is generated or copied from source, then various analyses are performed on the image pixels over time.  MPC supports this pattern. MPC is the native <em>in-memory</em> ImageMagick uncompressed file format. This file format is identical to that used by ImageMagick to represent images in memory and is read by mapping the file directly into memory. The MPC format is not portable and is not suitable as an archive format. It is suitable as an intermediate format for high-performance image processing.  The MPC format requires two files to support one image. Image attributes are written to a file with the extension <code>.mpc</code>, whereas, image pixels are written to a file with the extension <code>.cache</code>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">MPR</td>
+    <td valign="top">RW</td>
+    <td valign="top">Magick Persistent Registry</td>
+    <td valign="top">This format permits you to write to and read images from memory.  The image persists until the program exits.  For example, let's use the MPR to create a checkerboard:
+<pre class="text">
+convert \( -size 15x15 canvas:black canvas:white -append \) \
+  \( +clone -flip \) +append -write mpr:checkers +delete \
+  -size 240x240 tile:mpr:checkers board.png
+</pre></td>
+  </tr>
+
+  <tr>
+    <td valign="top">MRW</td>
+    <td valign="top">R</td>
+    <td valign="top">Sony (Minolta) Raw Image File</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">MSL</td>
+    <td valign="top">RW</td>
+    <td valign="top">Magick Scripting Language</td>
+    <td valign="top">MSL is the XML-based scripting language supported by the <a href="conjure.html">conjure</a> utility. MSL requires the <a href="http://xmlsoft.org/">libxml2</a> delegate library.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/mtv/egff.htm">MTV</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">MTV Raytracing image format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="magick-vector-graphics.html">MVG</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Magick Vector Graphics.</td>
+    <td valign="top">The native ImageMagick vector metafile format. A text file containing vector drawing commands accepted by <a href="convert.html">convert</a>'s <a href="command-line-options.html#draw">-draw</a> option.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">NEF</td>
+    <td valign="top">R</td>
+    <td valign="top">Nikon Digital SLR Camera Raw Image File</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">ORF</td>
+    <td valign="top">R</td>
+    <td valign="top">Olympus Digital Camera Raw Image File</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">OTB</td>
+    <td valign="top">RW</td>
+    <td valign="top">On-the-air Bitmap</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">P7</td>
+    <td valign="top">RW</td>
+    <td valign="top">Xv's Visual Schnauzer thumbnail format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PALM</td>
+    <td valign="top">RW</td>
+    <td valign="top">Palm pixmap</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pam.html">PAM</a></td>
+    <td valign="top">W</td>
+    <td valign="top">Common 2-dimensional bitmap format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">CLIPBOARD</td>
+    <td valign="top">RW</td>
+    <td valign="top">Windows Clipboard</td>
+    <td valign="top">Only available under Microsoft Windows.</td>
+  </tr>
+  <tr>
+    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pbm.html">PBM</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable bitmap format (black and white)</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PCD</td>
+    <td valign="top">RW</td>
+    <td valign="top">Photo CD</td>
+    <td valign="top">The maximum resolution written is 768x512 pixels since larger images require huffman compression (which is not supported).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PCDS</td>
+    <td valign="top">RW</td>
+    <td valign="top">Photo CD</td>
+    <td valign="top">Decode with the sRGB color tables.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PCL</td>
+    <td valign="top">W</td>
+    <td valign="top">HP Page Control Language</td>
+    <td valign="top">Use <a href="command-line-options.html#define">-define</a> to specify fit to page option (e.g. <code>-define pcl:fit-to-page=true</code>).</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/pcx/egff.htm">PCX</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">ZSoft IBM PC Paintbrush file</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PDB</td>
+    <td valign="top">RW</td>
+    <td valign="top">Palm Database ImageViewer Format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PDF</td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable Document Format</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="command-line-options.html#define">-define</a> (e.g. <code>-define pdf:use-cropbox=true</code> or <code>-define pdf:use-trimbox=true</code>).  Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from  Postscript to PDF, use <code>-define delegate:bimodel=true</code>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PEF</td>
+    <td valign="top">R</td>
+    <td valign="top">Pentax Electronic File</td>
+    <td valign="top">Requires an explicit image format otherwise the image is interpreted as a TIFF image (e.g. pef:image.pef).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PFA</td>
+    <td valign="top">R</td>
+    <td valign="top">Postscript Type 1 font (ASCII)</td>
+    <td valign="top">Opening as file returns a preview image.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PFB</td>
+    <td valign="top">R</td>
+    <td valign="top">Postscript Type 1 font (binary)</td>
+    <td valign="top">Opening as file returns a preview image.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pfm.html">PFM</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable float map format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable graymap format (gray scale)</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PICON</td>
+    <td valign="top">RW</td>
+    <td valign="top">Personal Icon</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PICT</td>
+    <td valign="top">RW</td>
+    <td valign="top">Apple Macintosh QuickDraw/PICT file</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PIX</td>
+    <td valign="top">R</td>
+    <td valign="top">Alias/Wavefront RLE image format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable Network Graphics</td>
+    <td valign="top">Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG8</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable Network Graphics</td>
+    <td valign="top">8-bit indexed with optional binary transparency</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG00</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable Network Graphics</td>
+    <td valign="top">PNG inheriting subformat from original</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG24</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable Network Graphics</td>
+    <td valign="top">opaque or binary transparent 24-bit RGB</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG32</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable Network Graphics</td>
+    <td valign="top">opaque or transparent 32-bit RGBA</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG48</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable Network Graphics</td>
+    <td valign="top">opaque or binary transparent 48-bit RGB</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG64</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable Network Graphics</td>
+    <td valign="top">opaque or transparent 64-bit RGB</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/pnm.html">PNM</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable anymap</td>
+    <td valign="top">PNM is a family of formats supporting portable bitmaps (PBM) , graymaps (PGM), and pixmaps (PPM). There is no file format associated with pnm itself. If PNM is used as the output format specifier, then ImageMagick automagically selects the most appropriate format to represent the image.  The default is to write the binary version of the formats. Use <a href="command-line-options.html#compress">-compress none</a> to write the ASCII version of the formats.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://netpbm.sourceforge.net/doc/ppm.html">PPM</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Portable pixmap format (color)</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PS</td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe PostScript file</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read. To force ImageMagick to respect the crop box, use <a href="command-line-options.html#define">-define</a> (e.g. <code>-define eps:use-cropbox=true</code>). Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your Postscript rendering (e.g. -density 300x300). Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from PDF to Postscript, use <code>-define delegate:bimodel=true</code>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PS2</td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe Level II PostScript file</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PS3</td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe Level III PostScript file</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/">PSB</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe Large Document Format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/">PSD</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Adobe Photoshop bitmap file</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PTIF</td>
+    <td valign="top">RW</td>
+    <td valign="top">Pyramid encoded <a href="formats.html#TIFF">TIFF</a></td>
+    <td valign="top">Multi-resolution <a href="formats.html#TIFF">TIFF</a> containing successively smaller versions of the image down to the size of an icon.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.photoworks.com/">PWP</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Seattle File Works multi-image file</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">RAD</td>
+    <td valign="top">R</td>
+    <td valign="top">Radiance image file</td>
+    <td valign="top">Requires that <i>ra_ppm</i> from the Radiance software package be installed.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">RAF</td>
+    <td valign="top">R</td>
+    <td valign="top">Fuji CCD-RAW Graphic File</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">RGB</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw red, green, and blue samples</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">RGBA</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw red, green, blue, and alpha samples</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">RFG</td>
+    <td valign="top">RW</td>
+    <td valign="top">LEGO Mindstorms EV3 Robot Graphics File</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">RLA</td>
+    <td valign="top">R</td>
+    <td valign="top">Alias/Wavefront image file</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">RLE</td>
+    <td valign="top">R</td>
+    <td valign="top">Utah Run length encoded image file</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.oreilly.com/www/centers/gff/formats/scitex/">SCT</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Scitex Continuous Tone Picture</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.photoworks.com/">SFW</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Seattle File Works image</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">SGI</td>
+    <td valign="top">RW</td>
+    <td valign="top">Irix RGB image</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">SHTML</td>
+    <td valign="top">W</td>
+    <td valign="top">Hypertext Markup Language client-side image map</td>
+    <td valign="top">Used to write HTML clickable image maps based on a the output of <a href="montage.html">montage</a> or a format which supports tiled images such as <a href="formats.html#MIFF">MIFF</a>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">SID, MrSID</td>
+    <td valign="top">R</td>
+    <td valign="top">Multiresolution seamless image</td>
+    <td valign="top">Requires the <a href="http://www.lizardtech.com/downloads/downloads.html?dl=/download/files/lin/geoexpress_commandlineutils_linux.tgz">mrsidgeodecode</a> command line utility that decompresses MG2 or MG3 SID image files.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">SPARSE-COLOR</td>
+    <td valign="top">W</td>
+    <td valign="top">Raw text file</td>
+    <td valign="top">Format compatible with the <a href="command-line-options.html#sparse-color">-sparse-color</a> option. Lists only non-fully-transparent pixels.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">SUN</td>
+    <td valign="top">RW</td>
+    <td valign="top">SUN Rasterfile</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.w3.org/Graphics/SVG">SVG</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Scalable Vector Graphics</td>
+    <td valign="top">ImageMagick utilizes <a href="http://www.inkscape.org/">inkscape</a> if its in your execution path otherwise <a href="http://developer.gnome.org/rsvg/">RSVG</a>. If neither are available, ImageMagick reverts to its internal SVG renderer. The default resolution is 90dpi.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">TGA</td>
+    <td valign="top">RW</td>
+    <td valign="top">Truevision Targa image</td>
+    <td valign="top">Also known as formats <code>ICB</code>, <code>VDA</code>, and <code>VST</code>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.libtiff.org/">TIFF</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Tagged Image File Format</td>
+    <td valign="top">Also known as <code>TIF</code>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <code>-define tiff:rows-per-strip=8</code>).  To define the tile geometry, use for example, <code>-define tiff:tile-geometry=128x128</code>. To specify a <em>signed</em> format, use  <code>-define quantum:format=signed</code>. To specify a single-precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 64 for a double-precision floating-point format.  Use <code>-define quantum:polarity=min-is-black</code> or <code>-define quantum:polarity=min-is-white</code> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <code>-define tiff:alpha=unassociated</code>.  Set the fill order with <code>-define tiff:fill-order=msb|lsb</code>. Set the TIFF endianess with <code>-define tiff:endian=msb|lsb</code>. Use <code>-define tiff:exif-properties=false</code> to skip reading the EXIF properties.  You can set a number of TIFF software attributes including host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="command-line-options.html#set">-set tiff:software "My Company"</a>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">TIM</td>
+    <td valign="top">R</td>
+    <td valign="top">PSX TIM file</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.freetype.org/">TTF</a></td>
+    <td valign="top">R</td>
+    <td valign="top">TrueType font file</td>
+    <td valign="top">Requires <a href="http://www.freetype.org/">freetype 2</a>. Opening as file returns a preview image. Use <a href="command-line-options.html#set">-set</a> if you do not want to hint glyph outlines after their scaling to device pixels (e.g. <code>-set type:hinting off</code>).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">TXT</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw text file</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">UIL</td>
+    <td valign="top">W</td>
+    <td valign="top">X-Motif UIL table</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">UYVY</td>
+    <td valign="top">RW</td>
+    <td valign="top">Interleaved YUV raw image</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> command line options to specify width and height.  Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">VICAR</td>
+    <td valign="top">RW</td>
+    <td valign="top">VICAR rasterfile format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/viff/egff.htm">VIFF</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Khoros Visualization Image File Format</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.openmobilealliance.org/Technical/wapindex.aspx">WBMP</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Wireless bitmap</td>
+    <td valign="top">Support for uncompressed monochrome only.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="https://en.wikipedia.org/wiki/JPEG_XR">WDP</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">JPEG extended range</td>
+    <td valign="top">Requires the <a href="https://jxrlib.codeplex.com/">jxrlib</a> delegate library. Put the JxrDecApp and JxrEncApp applications in your execution path. </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://en.wikipedia.org/wiki/WebP">WEBP</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">Weppy image format</td>
+    <td valign="top">Requires the <a href="http://code.google.com/p/webp/downloads/list">WEBP</a> delegate library.  Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="webp.html">WebP Encoding Options</a> for more details.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/wmf/egff.htm">WMF</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Windows Metafile</td>
+    <td valign="top">Requires <a href="http://sourceforge.net/projects/wvware/">libwmf</a>. By default, renders WMF files using the dimensions specified by the metafile header. Use the -density option to adjust the output resolution, and thereby adjust the output size. The default output resolution is 72DPI so <code>-density 144</code> results in an image twice as large as the default. Use <code>-background color</code> to specify the WMF background color (default white) or <code>-texture filename</code> to specify a background texture image.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/wpg/egff.htm">WPG</a></td>
+    <td valign="top">R</td>
+    <td valign="top">Word Perfect Graphics File</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">X</td>
+    <td valign="top">RW</td>
+    <td valign="top">display or import an image to or from an X11 server</td>
+    <td valign="top">Use <a href="command-line-options.html#define">-define</a> to obtain the image from the root window (e.g. <code>-define x:screen=true</code>).  Set <code>x:silent=true</code> to turn off the beep when importing an image.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/xbm/egff.htm">XBM</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">X Windows system bitmap, black and white only</td>
+    <td valign="top">Used by the X Windows System to store monochrome icons.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">XCF</td>
+    <td valign="top">R</td>
+    <td valign="top">GIMP image</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/xpm/egff.htm">XPM</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">X Windows system pixmap</td>
+    <td valign="top">Also known as <code>PM</code>. Used by the X Windows System to store color icons.</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="http://www.fileformat.info/format/xwd/egff.htm">XWD</a></td>
+    <td valign="top">RW</td>
+    <td valign="top">X Windows system window dump</td>
+    <td valign="top">Used by the X Windows System to save/display screen dumps.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">X3F</td>
+    <td valign="top">R</td>
+    <td valign="top">Sigma Camera RAW Picture File</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">YCbCr</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw Y, Cb, and Cr samples</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">YCbCrA</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw Y, Cb, Cr, and alpha samples</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">YUV</td>
+    <td valign="top">RW</td>
+    <td valign="top">CCIR 601 4:1:1</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> command line options to specify width, height, and depth.   Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
+  </tr>
+  </tbody>
+</table>
+
+</div>
+
+<h2><a id="pseudo"></a>Pseudo-image Formats</h2>
+<div class="doc-section">
+
+<p>ImageMagick supports a number of image format specifications which refer to images prepared via an algorithm, or input/output targets. The following table lists these pseudo-image formats:</p>
+
+<table class="doc" width="93%">
+  <tr>
+    <th>Tag</th>
+    <th>Mode</th>
+    <th>Description</th>
+    <th>Notes</th>
+  </tr>
+
+  <tr>
+    <td valign="top">CANVAS</td>
+    <td valign="top">R</td>
+    <td valign="top">Canvas image of specified color</td>
+    <td valign="top">Useful to create solid color <em>canvas</em> images. Use
+       <a href="command-line-options.html#size" >-size</a> and <a
+       href="command-line-options.html#depth" >-depth</a> to specify the
+       image width, height, and depth.  Example canvas color specifications
+       include <code>canvas:red</code> and <code>canvas:#FF0000</code>.<br/>
+
+       If no color is specified a '<code>white</code>' canvas image is
+       generated.  If no <a href="command-line-options.html#size" >-size</a> is specified
+       a single pixel image of the specified color is generated.</td>
+
+  </tr>
+
+  <tr>
+    <td valign="top">CAPTION</td>
+    <td valign="top">R</td>
+    <td valign="top">Image caption</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">CLIP</td>
+    <td valign="top">RW</td>
+    <td valign="top">Clip path of image</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">CLIPBOARD</td>
+    <td valign="top">RW</td>
+    <td valign="top">Windows Clipboard</td>
+    <td valign="top">Only available under Microsoft Windows.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">FRACTAL</td>
+    <td valign="top">R</td>
+    <td valign="top">Plasma fractal image</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRADIENT</td>
+    <td valign="top">R</td>
+    <td valign="top">Gradual passing from one shade to another</td>
+    <td valign="top">Returns a rendered linear top-to-bottom gradient image
+       using the specified image size. Specify the desired shading as part of
+       the filename (e.g.  <code>gradient:red-blue</code> or
+       <code>gradient:#F00-#00F</code>).  If the shading colors are omitted, the
+       default gradient is white-black. Use named black/white/grayXX for
+       non-linear gray and gray(XX[%]) for linear gray gradients.</td>
+
+  </tr>
+
+  <tr>
+    <td valign="top">HALD</td>
+    <td valign="top">R</td>
+    <td valign="top">Identity Hald CLUT Image</td>
+    <td valign="top">Select order with filename, e.g. hald:5 for order 5.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">HISTOGRAM</td>
+    <td valign="top">W</td>
+    <td valign="top">Histogram of the image</td>
+    <td valign="top">The histogram includes the unique colors of the image as an image comment.  If you have no need for the unique color list, use <code>-define histogram:unique-colors=false</code> to forego this expensive operation.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">LABEL</td>
+    <td valign="top">R</td>
+    <td valign="top">Text image format</td>
+    <td valign="top">Specify the desired text as the filename (e.g. <code>label:"This a label"</code>).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">MAP</td>
+    <td valign="top">RW</td>
+    <td valign="top">Colormap intensities and indices</td>
+    <td valign="top">Set -depth to set the sample size of the intensities; indices are 16-bit if colors &gt; 256.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">MASK</td>
+    <td valign="top">RW</td>
+    <td valign="top">Image mask</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">MATTE</td>
+    <td valign="top">W</td>
+    <td valign="top">MATTE format</td>
+    <td valign="top">Write only.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">NULL</td>
+    <td valign="top">RW</td>
+    <td valign="top">NULL image</td>
+    <td valign="top">Useful for creating blank tiles with <a href="montage.html">montage</a> (use <code>NULL:</code>). Also useful as an output format when evaluating image read performance.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PANGO</td>
+    <td valign="top">R</td>
+    <td valign="top">Image caption</td>
+    <td valign="top">You can configure the caption layout with these defines: <code>-define pango:auto-dir=</code><em>true/false</em>, <code>-define pango:ellipsize=</code><em>start/middle/end</em>, <code>-define pango:gravity-hint=</code><em>natural/strong/line</em>, <code>-define pango:hinting=</code><em>none/auto/full</em>, <code>-define pango:indent=</code><em>points</em>, <code>-define pango:justify=</code><em>true/false</em>, <code>-define pango:language=</code><em>en_US/etc</em>, <code>-define pango:markup=</code><em>true/false</em>, <code>-define pango:single-paragraph=</code><em>true/false</em> and <code>-define pango:wrap=</code><em>word/char/word-char</em>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PLASMA</td>
+    <td valign="top">R</td>
+    <td valign="top">Plasma fractal image</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">PREVIEW</td>
+    <td valign="top">W</td>
+    <td valign="top">Show a preview an image enhancement, effect, or f/x</td>
+    <td valign="top">Creates a preview montage of images prepared over a parameteric range in order to assist with parameter selection. Specify the desired
+    preview type via the -preview option).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">PRINT</td>
+    <td valign="top">W</td>
+    <td valign="top">Send image to your computer printer</td>
+    <td valign="top">Unix users may set the PRINTER (for 'lpr') or LPDEST (for 'lp') environment variables to select the desired printer.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">SCAN</td>
+    <td valign="top">R</td>
+    <td valign="top">Import image from a scanner device</td>
+    <td valign="top">Requires <a href="http://www.sane-project.org/">SANE</a> Specify the device name and path as the filename (e.g.  <code>scan:'hpaio:/usb/Officejet_6200_series?serial=CN4ATCE3G20453'</code>).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">RADIAL_GRADIENT</td>
+    <td valign="top">R</td>
+    <td valign="top">Gradual radial passing from one shade to another</td>
+    <td valign="top">Returns a rendered radial gradient image using the specified image size. Specify the desired shading as part of the filename (e.g.  <code>radial-gradient:red-blue</code> or <code>radial-gradient:#F00-#00F</code>).</td>
+  </tr>
+
+  <tr>
+    <td valign="top">SCANX</td>
+    <td valign="top">R</td>
+    <td valign="top">Import image from the default scanner device</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">STEGANO</td>
+    <td valign="top">R</td>
+    <td valign="top">Steganographic image</td>
+    <td valign="top">Use <a href="command-line-options.html#size">-size</a> command line option to specify width, height, and offset of the steganographic image</td>
+  </tr>
+
+  <tr>
+    <td valign="top">TILE</td>
+    <td valign="top">R</td>
+    <td valign="top">Tiled image</td>
+    <td valign="top">Create a tiled version of an image at by tiling a image. Use <a href="command-line-options.html#size">-size</a> to specify the tiled image size. The image is specified similar to
+    <code>TILE:image.miff</code>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">UNIQUE</td>
+    <td valign="top">W</td>
+    <td valign="top">Write only unique pixels to the image file.</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">VID</td>
+    <td valign="top">RW</td>
+    <td valign="top">Visual Image Directory</td>
+    <td valign="top">Used to create a thumbnailed directory (tiled thumbnails) of a set of images which may be used to select images to view via the <a href="display.html">display</a> program, or saved to a <a href="formats.html#MIFF">MIFF</a> or <a href="formats.html#SHTML">SHTML</a> file.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">WIN</td>
+    <td valign="top">RW</td>
+    <td valign="top">Select image from or display image to your computer screen</td>
+    <td valign="top">Only supported under Microsoft Windows.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">X</td>
+    <td valign="top">RW</td>
+    <td valign="top">Select image from or display image to your X server screen</td>
+    <td valign="top">Also see the <a href="import.html">import</a> and <a href="display.html">display</a>
+    programs.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">XC</td>
+    <td valign="top">R</td>
+    <td valign="top">Canvas image of specified color</td>
+    <td valign="top">An backward compatible alias for the '<code>canvas:</code>'
+    psuedo-file format, used to create a solid color <em>canvas</em> image.
+    </td>
+  </tr>
+</table>
+
+</div>
+
+<h2><a id="builtin-images"></a>Built-in Images</h2>
+<div class="doc-section">
+
+<p>ImageMagick includes a number of built-in (embedded) images which may be referenced as if they were an image file. The <code>magick:</code> format tag may be used via the syntax <code>magick:</code><em>name</em> to request an embedded image (e.g. <code>magick:logo</code>). For backwards compatibility, the image specifications <code>GRANITE:</code>, <code>LOGO:</code>, <code>NETSCAPE:</code>, and <code>ROSE:</code> may also be used to request images with those names.</p>
+
+<table class="doc" width="93%">
+  <tr>
+    <th>Tag</th>
+    <th>Mode</th>
+    <th>Description</th>
+    <th>Notes</th>
+  </tr>
+
+  <tr>
+    <td valign="top">GRANITE</td>
+    <td valign="top">R</td>
+    <td valign="top">128x128 granite texture pattern</td>
+    <td valign="top"><img src="../images/granite.png" width="64" height="64" alt="GRANITE"/></td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../images/logo.png">LOGO</a></td>
+    <td valign="top">R</td>
+    <td valign="top">ImageMagick Logo, 640x480</td>
+    <td valign="top"><img src="../images/logo.jpg" width="123" height="118" alt="Logo"/></td>
+  </tr>
+
+  <tr>
+    <td valign="top"> NETSCAPE</td>
+    <td valign="top">R</td>
+    <td valign="top">image using colors in Netscape 216 (6x6x6 ) color cube, 216x144</td>
+    <td valign="top">Most commonly used with the <a href="convert.html">convert</a> and <a href="mogrify.html">mogrify</a> programs with the <a href="command-line-options.html#map">-map</a> option to create <em>web safe</em> images.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">ROSE</td>
+    <td valign="top">R</td>
+    <td valign="top">Picture of a rose, 70x46</td>
+    <td valign="top"><img src="../images/rose.png" width="70" height="46" alt="ROSE"/></td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="../images/wizard.png">WIZARD</a></td>
+    <td valign="top">R</td>
+    <td valign="top">ImageMagick Wizard, 480x640</td>
+    <td valign="top"><img src="../images/wizard.jpg" width="125" height="167" alt="Logo"/></td>
+  </tr>
+
+</table>
+
+</div>
+
+<h2><a id="builtin-patterns"></a>Built-in Patterns</h2>
+<div class="doc-section">
+
+<p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <code>pattern:</code> format tag may be used via the syntax <code>pattern:</code><em>name</em> to request an embedded pattern (e.g. <code>pattern:checkerboard</code>). The pattern size is controlled with the <a href="command-line-options.html#size">-size</a> command line option.</p>
+
+<table class="doc" width="93%">
+  <tr>
+    <th>Tag</th>
+    <th>Mode</th>
+    <th>Description</th>
+    <th>Notes</th>
+  </tr>
+
+  <tr>
+    <td valign="top">BRICKS</td>
+    <td valign="top">R</td>
+    <td valign="top">brick pattern, 16x16</td>
+    <td valign="top"><img src="../images/patterns/bricks.png" width="100" height="26" alt="BRICKS" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">CHECKERBOARD</td>
+    <td valign="top">R</td>
+    <td valign="top">checkerboard pattern, 30x30</td>
+    <td valign="top"><img src="../images/patterns/checkerboard.png" width="100" height="26" alt="CHECKERBOARD" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">CIRCLES</td>
+    <td valign="top">R</td>
+    <td valign="top">circles pattern, 16x16</td>
+    <td valign="top"><img src="../images/patterns/circles.png" width="100" height="26" alt="CIRCLES"/></td>
+  </tr>
+
+  <tr>
+    <td valign="top">CROSSHATCH</td>
+    <td valign="top">R</td>
+    <td valign="top">crosshatch pattern, 8x4</td>
+    <td valign="top"><img src="../images/patterns/crosshatch.png" width="100" height="26" alt="CROSSHATCH" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">CROSSHATCH30</td>
+    <td valign="top">R</td>
+    <td valign="top">crosshatch pattern with lines at 30 degrees, 8x4</td>
+    <td valign="top"><img src="../images/patterns/crosshatch30.png" width="100" height="26" alt="CROSSHATCH30" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">CROSSHATCH45</td>
+    <td valign="top">R</td>
+    <td valign="top">crosshatch pattern with lines at 45 degrees, 8x4</td>
+    <td valign="top"><img src="../images/patterns/crosshatch45.png" width="100" height="26" alt="CROSSHATCH45" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">FISHSCALES</td>
+    <td valign="top">R</td>
+    <td valign="top">fish scales pattern, 16x8</td>
+    <td valign="top"><img src="../images/patterns/fishscales.png" width="100" height="26" alt="FISHSCALES" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY0</td>
+    <td valign="top">R</td>
+    <td valign="top">0% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray0.png" width="100" height="32" alt="GRAY0" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY5</td>
+    <td valign="top">R</td>
+    <td valign="top">5% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray5.png" width="100" height="32" alt="GRAY5" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY10</td>
+    <td valign="top">R</td>
+    <td valign="top">10% intensity gray, 32x32</td>
+    <td valign="top"> <img src="../images/patterns/gray10.png" width="100" height="32" alt="GRAY10" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY15</td>
+    <td valign="top">R</td>
+    <td valign="top">15% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray15.png" width="100" height="32" alt="GRAY15" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY20</td>
+    <td valign="top">R</td>
+    <td valign="top">20% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray20.png" width="100" height="32" alt="GRAY20" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY25</td>
+    <td valign="top">R</td>
+    <td valign="top">25% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray25.png" width="100" height="32" alt="GRAY25" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY30</td>
+    <td valign="top">R</td>
+    <td valign="top">30% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray30.png" width="100" height="32" alt="GRAY30" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY35</td>
+    <td valign="top">R</td>
+    <td valign="top">35% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray35.png" width="100" height="32" alt="GRAY35" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY40</td>
+    <td valign="top">R</td>
+    <td valign="top">40% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray40.png" width="100" height="32" alt="GRAY40" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY45</td>
+    <td valign="top">R</td>
+    <td valign="top">45% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray45.png" width="100" height="32" alt="GRAY45" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY50</td>
+    <td valign="top">R</td>
+    <td valign="top">50% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray50.png" width="100" height="32" alt="GRAY50" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY55</td>
+    <td valign="top">R</td>
+    <td valign="top">55% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray55.png" width="100" height="32" alt="GRAY55" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY60</td>
+    <td valign="top">R</td>
+    <td valign="top">60% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray60.png" width="100" height="32" alt="GRAY60" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY65</td>
+    <td valign="top">R</td>
+    <td valign="top">65% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray65.png" width="100" height="32" alt="GRAY65" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY70</td>
+    <td valign="top">R</td>
+    <td valign="top">70% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray70.png" width="100" height="32" alt="GRAY70" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY75</td>
+    <td valign="top">R</td>
+    <td valign="top">75% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray75.png" width="100" height="32" alt="GRAY75" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY80</td>
+    <td valign="top">R</td>
+    <td valign="top">80% intensity gray, 32x32</td>
+    <td valign="top"> <img src="../images/patterns/gray80.png" width="100" height="32" alt="GRAY80" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY85</td>
+    <td valign="top">R</td>
+    <td valign="top">85% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray85.png" width="100" height="32" alt="GRAY85" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY90</td>
+    <td valign="top">R</td>
+    <td valign="top">100% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray90.png" width="100" height="32" alt="GRAY90" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY95</td>
+    <td valign="top">R</td>
+    <td valign="top">100% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray95.png" width="100" height="32" alt="GRAY95" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">GRAY100</td>
+    <td valign="top">R</td>
+    <td valign="top">100% intensity gray, 32x32</td>
+    <td valign="top"><img src="../images/patterns/gray100.png" width="100" height="32" alt="GRAY100" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HEXAGONS</td>
+    <td valign="top">R</td>
+    <td valign="top">hexagon pattern, 30x18</td>
+    <td valign="top"><img src="../images/patterns/hexagons.png" width="100" height="26" alt="HEXAGONS" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HORIZONTAL</td>
+    <td valign="top">R</td>
+    <td valign="top">horizontal line pattern, 8x4</td>
+    <td valign="top"><img src="../images/patterns/horizontal.png" width="100" height="26" alt="HORIZONTAL" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HORIZONTAL2</td>
+    <td valign="top">R</td>
+    <td valign="top">horizontal line pattern, 8x8</td>
+    <td valign="top"><img src="../images/patterns/horizontal2.png" width="100" height="26" alt="HORIZONTAL2" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HORIZONTAL3</td>
+    <td valign="top">R</td>
+    <td valign="top">horizontal line pattern, 9x9</td>
+    <td valign="top"><img src="../images/patterns/horizontal3.png" width="100" height="26" alt="HORIZONTAL3" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HORIZONTALSAW</td>
+    <td valign="top">R</td>
+    <td valign="top">horizontal saw-tooth pattern, 16x8</td>
+    <td valign="top"><img src="../images/patterns/horizontalsaw.png" width="100" height="26" alt="HORIZONTALSAW" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HS_BDIAGONAL</td>
+    <td valign="top">R</td>
+    <td valign="top">backward diagonal line pattern (45 degrees slope), 8x8</td>
+    <td valign="top"><img src="../images/patterns/hs_bdiagonal.png" width="100" height="26" alt="HS_BDIAGONAL" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HS_CROSS</td>
+    <td valign="top">R</td>
+    <td valign="top">cross line pattern, 8x8</td>
+    <td valign="top"><img src="../images/patterns/hs_cross.png" width="100" height="26" alt="HS_CROSS" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HS_DIAGCROSS</td>
+    <td valign="top">R</td>
+    <td valign="top">diagonal line cross pattern (45 degrees slope), 8x8</td>
+    <td valign="top"><img src="../images/patterns/hs_diagcross.png" width="100" height="26" alt="HS_DIAGCROSS" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HS_FDIAGONAL</td>
+    <td valign="top">R</td>
+    <td valign="top">forward diagonal line pattern (45 degrees slope), 8x8</td>
+    <td valign="top"><img src="../images/patterns/hs_fdiagonal.png" width="100" height="26" alt="HS_FDIAGONAL" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HS_HORIZONTAL</td>
+    <td valign="top">R</td>
+    <td valign="top">horizontal line pattern, 8x8</td>
+    <td valign="top"><img src="../images/patterns/hs_horizontal.png" width="100" height="26" alt="HS_HORIZONTAL" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">HS_VERTICAL</td>
+    <td valign="top">R</td>
+    <td valign="top">vertical line pattern, 8x8</td>
+    <td valign="top"><img src="../images/patterns/hs_vertical.png" width="100" height="26" alt="HS_VERTICAL" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">LEFT30</td>
+    <td valign="top">R</td>
+    <td valign="top">forward diagonal pattern (30 degrees slope), 8x4</td>
+    <td valign="top"><img src="../images/patterns/left30.png" width="100" height="26" alt="LEFT0" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">LEFT45</td>
+    <td valign="top">R</td>
+    <td valign="top">forward diagonal line pattern (45 degrees slope), 8x8</td>
+    <td valign="top"><img src="../images/patterns/left45.png" width="100" height="26" alt="LEFT45" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">LEFTSHINGLE</td>
+    <td valign="top">R</td>
+    <td valign="top">left shingle pattern, 24x24</td>
+    <td valign="top"><img src="../images/patterns/leftshingle.png" width="100" height="26" alt="LEFTSHINGLE" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">OCTAGONS</td>
+    <td valign="top">R</td>
+    <td valign="top">octagons pattern, 16x16</td>
+    <td valign="top"><img src="../images/patterns/octagons.png" width="100" height="26" alt="OCTAGONS" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">RIGHT30</td>
+    <td valign="top">R</td>
+    <td valign="top">backward diagonal line pattern (30 degrees) 8x4</td>
+    <td valign="top"><img src="../images/patterns/right30.png" width="100" height="26" alt="RIGHT30" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">RIGHT45</td>
+    <td valign="top">R</td>
+    <td valign="top">backward diagonal line pattern (30 degrees), 8x8</td>
+    <td valign="top"><img src="../images/patterns/right45.png" width="100" height="26" alt="RIGHT45" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">RIGHTSHINGLE</td>
+    <td valign="top">R</td>
+    <td valign="top">right shingle pattern, 24x24</td>
+    <td valign="top"><img src="../images/patterns/rightshingle.png" width="100" height="26" alt="RIGHTSHINGLE" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">SMALLFISHSCALES</td>
+    <td valign="top">R</td>
+    <td valign="top">small fish scales pattern, 8x8</td>
+    <td valign="top"><img src="../images/patterns/smallfishscales.png" width="100" height="26" alt="SMALLFISHSCALES" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">VERTICAL</td>
+    <td valign="top">R</td>
+    <td valign="top">vertical line pattern, 8x8</td>
+    <td valign="top"><img src="../images/patterns/vertical.png" width="100" height="26" alt="VERTICAL" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">VERTICAL2</td>
+    <td valign="top">R</td>
+    <td valign="top">vertical line pattern, 8x8</td>
+    <td valign="top"><img src="../images/patterns/vertical2.png" width="100" height="26" alt="VERTICAL2" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">VERTICAL3</td>
+    <td valign="top">R</td>
+    <td valign="top">vertical line pattern, 9x9</td>
+    <td valign="top"><img src="../images/patterns/vertical3.png" width="100" height="26" alt="VERTICAL3" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">VERTICALBRICKS</td>
+    <td valign="top">R</td>
+    <td valign="top">vertical brick pattern, 16x16</td>
+    <td valign="top"><img src="../images/patterns/verticalbricks.png" width="100" height="26" alt="VERTICALBRICKS" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">VERTICALLEFTSHINGLE</td>
+    <td valign="top">R</td>
+    <td valign="top">vertical left shingle pattern, 24x24</td>
+    <td valign="top"><img src="../images/patterns/verticalleftshingle.png" width="100" height="26" alt="VERTICALLEFTSHINGLE" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">VERTICALRIGHTSHINGLE</td>
+    <td valign="top">R</td>
+    <td valign="top">vertical right shingle pattern, 24x24</td>
+    <td valign="top"><img src="../images/patterns/verticalrightshingle.png" width="100" height="26" alt="VERTICALRIGHTSHINGLE" /></td>
+  </tr>
+
+  <tr>
+    <td valign="top">VERTICALSAW</td>
+    <td valign="top">R</td>
+    <td valign="top">vertical saw-tooth pattern, 8x16</td>
+    <td valign="top"><img src="../images/patterns/verticalsaw.png" width="100" height="26" alt="VERTICALSAW" /></td>
+  </tr>
+</table>
+
+</div>
+
+<h2><a id="embedded"></a>Embedded Image Profiles</h2>
+<div class="doc-section">
+
+<p>ImageMagick provides a number of format identifiers which are used to add, remove, and save embedded profiles for images which can support embedded profiles. Image types which may contain embedded profiles are TIFF, JPEG, and PDF.</p>
+
+<table class="doc" width="93%">
+  <tbody>
+  <tr>
+    <th>Tag</th>
+    <th>Mode</th>
+    <th>Description</th>
+    <th>Notes</th>
+  </tr>
+
+  <tr>
+    <td valign="top">8BIM</td>
+    <td valign="top">RW</td>
+    <td valign="top">Photoshop resource format (binary)</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">8BIMTEXT</td>
+    <td valign="top">RW</td>
+    <td valign="top">Photoshop resource format (ASCII)</td>
+    <td valign="top">An ASCII representation of the 8BIM format.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">APP1</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw application information</td>
+    <td valign="top"> </td>
+  </tr>
+
+  <tr>
+    <td valign="top">APP1JPEG</td>
+    <td valign="top">RW</td>
+    <td valign="top">Raw JPEG binary data</td>
+    <td valign="top">Profile in JPEG wrapper.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">ICC</td>
+    <td valign="top">RW</td>
+    <td valign="top">International Color Consortium color profile</td>
+    <td valign="top">Also known as <code>ICM</code>. To read, use <a href="command-line-options.html#profile">-profile</a> with
+      <a href="convert.html">convert</a>.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">IPTC</td>
+    <td valign="top">RW</td>
+    <td valign="top">IPTC Newsphoto (binary)</td>
+    <td valign="top">To read, use <a href="command-line-options.html#profile">-profile</a> with <a href="convert.html">convert</a></td>
+  </tr>
+
+  <tr>
+    <td valign="top">IPTCTEXT</td>
+    <td valign="top">RW</td>
+    <td valign="top">IPTC Newsphoto (ASCII)</td>
+    <td valign="top">An ASCII representation of the IPTC format.</td>
+  </tr>
+  </tbody>
+</table>
+
+</div>
 
 </div>
 
@@ -245,3 +2107,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 07:07 -->

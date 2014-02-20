@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: Command-line Tools: Identify</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="command-line, tools:, identify, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../images/wand.png"></link>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="command-line, tools:, identify, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://localhost/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../discourse-server">
-  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
-  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,19 +186,46 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
-
-
 
 <h1>ImageMagick Identify Command-line Tool</h1>
 <p class="navigation-index">[<a href="identify.html#usage">Example Usage</a> • <a href="identify.html#options">Option Summary</a>]</p>
@@ -188,76 +239,76 @@
 
 <p>We list a few examples of the <code>identify</code> command here to illustrate its usefulness and ease of use. To get started, lets identify an image in the JPEG format:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify rose.jpg</span><span class="crtout"> rose.jpg JPEG 640x480 sRGB 87kb 0.050u 0:01</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify rose.jpg</span><span class='crtout'> rose.jpg JPEG 640x480 sRGB 87kb 0.050u 0:01</span></p>
 <p>Next, we look at the same image in greater detail:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -verbose rose.jpg</span><span class="crtout">Image: rose.jpg  <br></br>
-    Format: JPEG (Joint Photographic Experts Group JFIF format)  <br></br>
-    Class: DirectClass  <br></br>
-    Geometry: 70x46+0+0  <br></br>
-    Resolution: 72x72  <br></br>
-    Print size: 0.972222x0.638889  <br></br>
-    Units: PixelsPerInch  <br></br>
-    Type: TrueColor  <br></br>
-    Endianess: Undefined  <br></br>
-    Colorspace: RGB  <br></br>
-    Depth: 8-bit  <br></br>
-    Channel depth:  <br></br>
-      red: 8-bit  <br></br>
-      green: 8-bit  <br></br>
-      blue: 8-bit  <br></br>
-    Channel statistics:  <br></br>
-      red:  <br></br>
-        min: 37 (0.145098)  <br></br>
-        max: 255 (1)  <br></br>
-        mean: 145.58 (0.5709)  <br></br>
-        standard deviation: 67.3195 (0.263998)  <br></br>
-      green:  <br></br>
-        min: 31 (0.121569)  <br></br>
-        max: 255 (1)  <br></br>
-        mean: 89.2512 (0.350005)  <br></br>
-        standard deviation: 52.0488 (0.204113)  <br></br>
-      blue:  <br></br>
-        min: 17 (0.0666667)  <br></br>
-        max: 255 (1)  <br></br>
-        mean: 80.4075 (0.315323)  <br></br>
-        standard deviation: 54.0052 (0.211785)  <br></br>
-    Rendering intent: Undefined  <br></br>
-    Interlace: None  <br></br>
-    Background color: white  <br></br>
-    Border color: rgb(223,223,223)  <br></br>
-    Matte color: grey74  <br></br>
-    Transparent color: black  <br></br>
-    Page geometry: 70x46+0+0  <br></br>
-    Dispose: Undefined  <br></br>
-    Iterations: 0  <br></br>
-    Compression: JPEG  <br></br>
-    Quality: 100  <br></br>
-    Orientation: Undefined  <br></br>
-    Properties:  <br></br>
-      date:create: 2008-01-08T11:08:52-05:00  <br></br>
-      date:modify: 2005-04-07T12:48:13-04:00  <br></br>
-      jpeg:colorspace: 2  <br></br>
-      jpeg:sampling-factor: 2x2,1x1,1x1  <br></br>
-      signature: dcd00d6303f80f4fa53f991804cb026151c1e851b7a96255e82da87299583ebc  <br></br>
-    Artifacts:  <br></br>
-      verbose: true  <br></br>
-    Tainted: False  <br></br>
-    Filesize: 3.97266kb  <br></br>
-    Number pixels: 3.14453kb  <br></br>
-    Version: ImageMagick 6.8.7-0 2013-09-25 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -verbose rose.jpg</span><span class='crtout'>Image: rose.jpg  <br/>
+    Format: JPEG (Joint Photographic Experts Group JFIF format)  <br/>
+    Class: DirectClass  <br/>
+    Geometry: 70x46+0+0  <br/>
+    Resolution: 72x72  <br/>
+    Print size: 0.972222x0.638889  <br/>
+    Units: PixelsPerInch  <br/>
+    Type: TrueColor  <br/>
+    Endianess: Undefined  <br/>
+    Colorspace: RGB  <br/>
+    Depth: 8-bit  <br/>
+    Channel depth:  <br/>
+      red: 8-bit  <br/>
+      green: 8-bit  <br/>
+      blue: 8-bit  <br/>
+    Channel statistics:  <br/>
+      red:  <br/>
+        min: 37 (0.145098)  <br/>
+        max: 255 (1)  <br/>
+        mean: 145.58 (0.5709)  <br/>
+        standard deviation: 67.3195 (0.263998)  <br/>
+      green:  <br/>
+        min: 31 (0.121569)  <br/>
+        max: 255 (1)  <br/>
+        mean: 89.2512 (0.350005)  <br/>
+        standard deviation: 52.0488 (0.204113)  <br/>
+      blue:  <br/>
+        min: 17 (0.0666667)  <br/>
+        max: 255 (1)  <br/>
+        mean: 80.4075 (0.315323)  <br/>
+        standard deviation: 54.0052 (0.211785)  <br/>
+    Rendering intent: Undefined  <br/>
+    Interlace: None  <br/>
+    Background color: white  <br/>
+    Border color: rgb(223,223,223)  <br/>
+    Matte color: grey74  <br/>
+    Transparent color: black  <br/>
+    Page geometry: 70x46+0+0  <br/>
+    Dispose: Undefined  <br/>
+    Iterations: 0  <br/>
+    Compression: JPEG  <br/>
+    Quality: 100  <br/>
+    Orientation: Undefined  <br/>
+    Properties:  <br/>
+      date:create: 2008-01-08T11:08:52-05:00  <br/>
+      date:modify: 2005-04-07T12:48:13-04:00  <br/>
+      jpeg:colorspace: 2  <br/>
+      jpeg:sampling-factor: 2x2,1x1,1x1  <br/>
+      signature: dcd00d6303f80f4fa53f991804cb026151c1e851b7a96255e82da87299583ebc  <br/>
+    Artifacts:  <br/>
+      verbose: true  <br/>
+    Tainted: False  <br/>
+    Filesize: 3.97266kb  <br/>
+    Number pixels: 3.14453kb  <br/>
+    Version: ImageMagick 6.8.8-7 2014-02-16 Q16 http://www.imagemagick.org</span></p>
 <p>To get the print size in inches of an image at 72 DPI, use:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png</span><span class="crtout">8.5 x 11 inches</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png</span><span class='crtout'>8.5 x 11 inches</span></p>
 <p>The depth and dimensions of a raw image must be specified on the command line:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -depth 8 -size 640x480 image.raw</span><span class="crtout">image.raw RGB 640x480 sRGB 9kb 0.000u 0:01</span></p>
-<p>Here we display the image texture features and the number of unique colors in the image:</p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -depth 8 -size 640x480 image.raw</span><span class='crtout'>image.raw RGB 640x480 sRGB 9kb 0.000u 0:01</span></p>
+<p>Here we display the image texture features, image moments, and the number of unique colors in the image:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -verbose -features 1 -unique image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -verbose -features 1 -moments -unique image.png</span></p>
 <p>Here is a special define that outputs the location of the minimum or maximum pixel of the image:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">identify -pecision 5 -define identify:locate=maximum -define identify:limit=3 image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -precision 5 -define identify:locate=maximum -define identify:limit=3 image.png</span></p>
 <p>You can find additional examples of using <code>identify</code> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 </div>
@@ -406,6 +457,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td valign="top"><a href="command-line-options.html#moments">-moments</a></td>
+    <td valign="top">display image moments.</td>
+  </tr>
+
+  <tr>
     <td valign="top"><a href="command-line-options.html#monitor">-monitor</a></td>
     <td valign="top">monitor progress</td>
   </tr>
@@ -505,3 +561,4 @@ transparent, extract, background, or shape the alpha channel</td>
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 07:05 -->

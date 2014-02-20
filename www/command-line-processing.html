@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: Command-line Processing</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="command-line, processing, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../images/wand.png"></link>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="command-line, processing, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://localhost/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../discourse-server">
-  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
-  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,20 +186,46 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
-
-
-
 
 <h1>Command-line Processing</h1>
 <p class="navigation-index">[<a href="command-line-processing.html#anatomy">The Anatomy of the Command Line</a> • <a href="command-line-processing.html#input">Input Filename</a> • <a href="command-line-processing.html#setting">Image Setting</a> • <a href="command-line-processing.html#operator">Image Operator</a> • <a href="command-line-processing.html#sequence">Image Sequence Operator</a> • <a href="command-line-processing.html#geometry">Image Geometry</a> •  <a href="command-line-processing.html#stack">Image Stack</a> • <a href="command-line-processing.html#output">Output Filename</a>]</p>
@@ -184,20 +234,20 @@
 
 <p>The ImageMagick command line can be as simple as this.</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert image.jpg image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.jpg image.png</span></p>
 <p>Or it can be very complex, as in the following.</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert label.gif +matte \ <br></br>
-    \( +clone  -shade 110x90 -normalize -negate +clone  -compose Plus -composite \) \<br></br>
-    \( -clone 0 -shade 110x50 -normalize -channel BG -fx 0 +channel -matte \) \<br></br>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert label.gif +matte \ <br/>
+    \( +clone  -shade 110x90 -normalize -negate +clone  -compose Plus -composite \) \<br/>
+    \( -clone 0 -shade 110x50 -normalize -channel BG -fx 0 +channel -matte \) \<br/>
     -delete 0 +swap  -compose Multiply -composite  button.gif</span></p>
 <p>Without knowing much about the ImageMagick command line, you can probably figure out that the first command above converts an image in the JPEG format to one in the PNG format.  However, very few may realize the second, more complex command, gives a flat two-dimensional label a three-dimensional look with rich textures and simulated depth:</p>
 
 <div class="image">
-  <a href="../images/label.gif"><img src="../images/label.gif" width="78" height="53" alt="label"></img></a>
-<img style="margin-top:16px; margin-bottom:17px;" src="../images/right.gif" width="20" height="20" alt="==&gt;"></img>
+  <a href="../images/label.gif"><img src="../images/label.gif" width="78" height="53" alt="label" /></a>
+<img style="margin-top:16px; margin-bottom:17px;" src="../images/right.gif" width="20" height="20" alt="==>" />
   <a href="../images/button.gif">
-  <img src="../images/button.gif" width="78" height="53" alt="button"></img></a>
+  <img src="../images/button.gif" width="78" height="53" alt="button" /></a>
 </div>
 
 <p class="warn">[ <em>A quick word about our formatting of commands:</em> The second example above is long enough that the command must be written across several lines, so we formatted it for clarity by inserting backslashes (<code>\</code>). The backslash is the Unix <em>line continuation</em> character. In the Windows shell, use a carat character (<code>^</code>) for line continuation. We use the Unix style on these web pages, as above. Sometimes, however, the lines are wrapped by your browser if the browser window is small enough, but the command lines, shown in white, are still intended to be typed as one line. Line continuation characters need not be entered. The <em>parentheses</em> that are <em>escaped</em> above using the backslash are not escaped in Windows. There are some other differences between Windows and Unix (involving quotation marks, for instance), but we'll discuss some of those issues later, as they arise. ]</p>
@@ -205,7 +255,7 @@
 <p>Here we show percent completion of a task as a shaded cylinder:</p>
 
 <div class="image">
-  <img src="../images/cylinder_shaded.png" width="320" height="200" alt="Shaded Cylinder"></img>
+  <img src="../images/cylinder_shaded.png" width="320" height="200" alt="Shaded Cylinder" />
 </div>
 
 <p>Given the complexity of the rendering, you might be surprised it is accomplished by a single command-line:</p>
@@ -276,7 +326,7 @@ convert -size 320x90 canvas:none -stroke snow4 -size 1x90 -tile gradient:white-s
 <p>In Unix shells, certain characters such as the asterisk (<code>*</code>) and question mark (<code>?</code>) automagically cause lists of filenames to be generated based on pattern matches. This feature is known as globbing.  ImageMagick supports filename globbing for systems, such as Windows, that does not natively support it.  For example, suppose you want to convert <code>1.jpg</code>, <code>2.jpg</code>, <code>3.jpg</code>, <code>4.jpg</code>, and <code>5.jpg</code> in your current directory to a GIF animation.  You can conveniently  refer to all of the JPEG files with this command:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert *.jpg images.gif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert *.jpg images.gif</span></p>
 </div>
 
 <h3>Explicit Image Format</h3>
@@ -297,7 +347,7 @@ values.  ImageMagick has no way to automagically determine the image format
 so we explicitly set one:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert -size 640x480 -depth 8 rgb:image image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 640x480 -depth 8 rgb:image image.png</span></p>
   </div>
 
 <h3>Built-in Images and Patterns</h3>
@@ -305,7 +355,7 @@ so we explicitly set one:
 <p>ImageMagick has a number of built-in <a href="formats.html#builtin-images">images</a> and <a href="formats.html#builtin-patterns">patterns</a>.  To utilize the checkerboard pattern, for example, use:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert -size 640x480 pattern:checkerboard checkerboard.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 640x480 pattern:checkerboard checkerboard.png</span></p>
 </div>
 
 <h3>STDIN, STDOUT, and file descriptors</h3>
@@ -314,19 +364,19 @@ so we explicitly set one:
   <a href="convert.html">convert</a> to the <a href="display.html">display</a> program:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: gif:- | display gif:-</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: gif:- | display gif:-</span></p>
 <p>The second explicit format "<code>gif:</code>" is optional in the preceding example.  The GIF image format has a unique signature within the image so ImageMagick's <a href="display.html">display</a> command can readily recognize the format as GIF.  The <a href="convert.html">convert</a> program also accepts STDIN as input in this way:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert rose: gif:- | convert - -resize "200%" bigrose.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: gif:- | convert - -resize "200%" bigrose.jpg</span></p>
 <p>Other pipes can be accessed via their <em>file descriptors</em> (as of version 6.4.9-3). The file descriptors 0, 1, and 2 are reserved for the standard streams STDIN, STDOUT, and STDERR, respectively, but a pipe associated with a file descriptor number <em>N</em>&gt;2 can be accessed using the pseudonym <code>fd:</code><em>N</em>. (The pseudonyms <code>fd:0</code> and <code>fd:1</code> can be used for STDIN and STDOUT.) The next example shows how to append image data piped from files with  descriptors 3 and 4 and direct the result to the file with descriptor number 5.
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert fd:3 fd:4 -append fd:5</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert fd:3 fd:4 -append fd:5</span></p>
 <p>When needed, explicit image formats can be given as mentioned earlier, as in the following.
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert gif:fd:3 jpg:fd:4 -append tif:fd:5</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert gif:fd:3 jpg:fd:4 -append tif:fd:5</span></p>
 </div>
 
 <h3>Selecting Frames</h3>
@@ -334,7 +384,7 @@ so we explicitly set one:
 <p>Some images formats contain more than one image frame.  Perhaps you only want the first image, or the last, or some number of images in-between.  You can specify which image frames to read by appending the image filename with the frame range enclosed in brackets.  Here our image (an animated GIF) contains more than one frame but we only want the first:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert 'images.gif[0]' image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert 'images.gif[0]' image.png</span></p>
 <p class="warn">[Unix shells generally interpret brackets so we enclosed the filename in quotes above.
 In a Windows command shell the brackets are not interpreted but using quotes doesn't hurt. However, in most cases the roles of single-quotes and double-quotes are reversed with respect to Unix and Windows, so Windows users should usually try double-quotes where we display single-quotes, and vice versa.]
 </p>
@@ -342,11 +392,11 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 <p>You can read more than one image from a sequence with a frame range.  For example, you can extract the first four frames of an image sequence:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert 'images.gif[0-3]' images.mng</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert 'images.gif[0-3]' images.mng</span></p>
 <p>Finally, you can read more than one image from a sequence, out-of-order. The next command gets the third image in the sequence, followed by the second, and then the fourth:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert 'images.gif[3,2,4]' images.mng</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert 'images.gif[3,2,4]' images.mng</span></p>
 <p>Notice that in the last two commands, a single image is written. The output in this case, where the image type is MNG, is a multi-frame file because the MNG format supports multiple frames. Had the output format been JPG, which only supports single frames, the output would have consisted of separate frames. More about that below, in the section about the <a href="command-line-processing.html#output">Output Filename</a>.
 </p>
 </div>
@@ -356,12 +406,12 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 <p>Raw images are a sequence of color intensities without additional meta information such as width, height, or image signature.  With raw image formats, you must specify the image width and height but you can also specify a region of the image to read.  In our example, the image is in the raw 8-bit RGB format and is 6000 pixels wide and 4000 pixels high.  However, we only want a region of 600 by 400 near the center of the image:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert -size 6000x4000 -depth 8 \ <br></br> 'rgb:image[600x400+1900+2900]' image.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 6000x4000 -depth 8 \ <br/> 'rgb:image[600x400+1900+2900]' image.jpg</span></p>
 <p>
-  You can get the same results with the <a href="command-line-options.html#extract">‑extract</a> option:
+  You can get the same results with the <a href="command-line-options.html#extract">&#x2011;extract</a> option:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert -size 6000x4000 -depth 8 \ <br></br> -extract 600x400+1900+2900 rgb:image image.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 6000x4000 -depth 8 \ <br/> -extract 600x400+1900+2900 rgb:image image.jpg</span></p>
 </div>
 
 <h3>Inline Image Resize</h3>
@@ -369,13 +419,13 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 <p>It is sometimes convenient to resize an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert '*.jpg' -resize 120x120 thumbnail%03d.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert '*.jpg' -resize 120x120 thumbnail%03d.png</span></p>
 <p>Here <em>all</em> the images are read and subsequently
 resized.  It is faster and less resource intensive to resize each image it
 is read:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert '*.jpg[120x120]' thumbnail%03d.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert '*.jpg[120x120]' thumbnail%03d.png</span></p>
 </div>
 
 <h3>Inline Image Crop</h3>
@@ -383,11 +433,11 @@ is read:
 <p>It is sometimes convenient to crop an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert '*.jpg' -crop 120x120+10+5 thumbnail%03d.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert '*.jpg' -crop 120x120+10+5 thumbnail%03d.png</span></p>
 <p>Here <em>all</em> the images are read and subsequently cropped.  It is faster and less resource-intensive to crop each image as it is read:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert '*.jpg[120x120+10+5]' thumbnail%03d.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert '*.jpg[120x120+10+5]' thumbnail%03d.png</span></p>
 </div>
 
 <h3>Filename References</h3>
@@ -403,7 +453,7 @@ The first is with '<code>@</code>' which reads image filenames separated by whit
 </pre>
 
 <p>We then expect this command:</p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert @myimages.txt mymovie.gif</span></p><p>to read the images <code>frame001.jpg</code>, <code>frame002.jpg</code>, and <code>frame003.jpg</code> and convert them to a GIF image sequence.  </p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert @myimages.txt mymovie.gif</span></p><p>to read the images <code>frame001.jpg</code>, <code>frame002.jpg</code>, and <code>frame003.jpg</code> and convert them to a GIF image sequence.  </p>
 <p>If the image path includes one or more spaces, enclose the path in quotes:</p>
 <pre class="text">
   'my title.jpg'
@@ -421,7 +471,7 @@ the <code>@</code> (e.g. <code>@mypoly.txt</code>).</p>
 embedding a formatting character in the filename with a scene range.  Consider
 the filename <code>image-%d.jpg[1-5]</code>. The command</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert image-%d.jpg[1-5]</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image-%d.jpg[1-5]</span></p>
 <p>causes ImageMagick to attempt to read images with these filenames:
 </p>
 
@@ -446,12 +496,12 @@ writing an image as appropriate.  An image setting stays in effect until it
 is reset or the command line terminates.  The image settings include:</p>
 
 <p class="options">
-<a href="command-line-options.html#adjoin">‑adjoin</a> <span class="bull"> • </span> <a href="command-line-options.html#affine">‑affine</a> <span class="bull"> • </span> <a href="command-line-options.html#alpha">‑alpha</a> <span class="bull"> • </span> <a href="command-line-options.html#antialias">‑antialias</a> <span class="bull"> • </span> <a href="command-line-options.html#authenticate">‑authenticate</a> <span class="bull"> • </span> <a href="command-line-options.html#background">‑background</a> <span class="bull"> • </span> <a href="command-line-options.html#bias">‑bias</a> <span class="bull"> • </span> <a href="command-line-options.html#black-point-compensation">‑black‑point‑compensation</a> <span class="bull"> • </span> <a href="command-line-options.html#blue-primary">‑blue‑primary</a> <span class="bull"> • </span> <a href="command-line-options.html#bordercolor">‑bordercolor</a> <span class="bull"> • </span> <a href="command-line-options.html#caption">‑caption</a> <span class="bull"> • </span> <a href="command-line-options.html#channel">‑channel</a> <span class="bull"> • </span> <a href="command-line-options.html#comment">‑comment</a> <span class="bull"> • </span> <a href="command-line-options.html#compress">‑compress</a> <span class="bull"> • </span> <a href="command-line-options.html#debug">‑debug</a> <span class="bull"> • </span> <a href="command-line-options.html#define">‑define</a> <span class="bull"> • </span> <a href="command-line-options.html#delay">‑delay</a> <span class="bull"> • </span> <a href="command-line-options.html#density">‑density</a> <span class="bull"> • </span> <a href="command-line-options.html#depth">‑depth</a> <span class="bull"> • </span> <a href="command-line-options.html#direction">‑direction</a> <span class="bull"> • </span> <a href="command-line-options.html#display">‑display</a> <span class="bull"> • </span> <a href="command-line-options.html#dispose">‑dispose</a> <span class="bull"> • </span> <a href="command-line-options.html#dither">‑dither</a> <span class="bull"> • </span> <a href="command-line-options.html#encoding">‑encoding</a> <span class="bull"> • </span> <a href="command-line-options.html#endian">‑endian</a> <span class="bull"> • </span> <a href="command-line-options.html#extract">‑extract</a> <span class="bull"> • </span> <a href="command-line-options.html#family">‑family</a> <span class="bull"> • </span> <a href="command-line-options.html#fill">‑fill</a> <span class="bull"> • </span> <a href="command-line-options.html#filter">‑filter</a> <span class="bull"> • </span> <a href="command-line-options.html#font">‑font</a> <span class="bull"> • </span> <a href="command-line-options.html#format">‑format</a> <span class="bull"> • </span> <a href="command-line-options.html#fuzz">‑fuzz</a> <span class="bull"> • </span> <a href="command-line-options.html#geometry">‑geometry</a> <span class="bull"> • </span> <a href="command-line-options.html#gravity">‑gravity</a> <span class="bull"> • </span> <a href="command-line-options.html#green-primary">‑green‑primary</a> <span class="bull"> • </span> <a href="command-line-options.html#interlace">‑interlace</a> <span class="bull"> • </span> <a href="command-line-options.html#intent">‑intent</a> <span class="bull"> • </span> <a href="command-line-options.html#interpolate">‑interpolate</a> <span class="bull"> • </span> <a href="command-line-options.html#label">‑label</a> <span class="bull"> • </span> <a href="command-line-options.html#limit">‑limit</a> <span class="bull"> • </span> <a href="command-line-options.html#linewidth">‑linewidth</a> <span class="bull"> • </span> <a href="command-line-options.html#log">‑log</a> <span class="bull"> • </span> <a href="command-line-options.html#loop">‑loop</a> <span class="bull"> • </span> <a href="command-line-options.html#mask">‑mask</a> <span class="bull"> • </span> <a href="command-line-options.html#mattecolor">‑mattecolor</a> <span class="bull"> • </span> <a href="command-line-options.html#monitor">‑monitor</a> <span class="bull"> • </span> <a href="command-line-options.html#orient">‑orient</a> <span class="bull"> • </span> <a href="command-line-options.html#page">‑page</a> <span class="bull"> • </span> <a href="command-line-options.html#pointsize">‑pointsize</a> <span class="bull"> • </span> <a href="command-line-options.html#preview">‑preview</a> <span class="bull"> • </span> <a href="command-line-options.html#quality">‑quality</a> <span class="bull"> • </span> <a href="command-line-options.html#quiet">‑quiet</a> <span class="bull"> • </span> <a href="command-line-options.html#red-primary">‑red‑primary</a> <span class="bull"> • </span> <a href="command-line-options.html#region">‑region</a> <span class="bull"> • </span> <a href="command-line-options.html#render">‑render</a> <span class="bull"> • </span> <a href="command-line-options.html#repage">‑repage</a> <span class="bull"> • </span> <a href="command-line-options.html#sampling-factor">‑sampling‑factor</a> <span class="bull"> • </span> <a href="command-line-options.html#scene">‑scene</a> <span class="bull"> • </span> <a href="command-line-options.html#seed">‑seed</a> <span class="bull"> • </span> <a href="command-line-options.html#size">‑size</a> <span class="bull"> • </span> <a href="command-line-options.html#stretch">‑stretch</a> <span class="bull"> • </span> <a href="command-line-options.html#stroke">‑stroke</a> <span class="bull"> • </span> <a href="command-line-options.html#strokewidth">‑strokewidth</a> <span class="bull"> • </span> <a href="command-line-options.html#style">‑style</a> <span class="bull"> • </span> <a href="command-line-options.html#texture">‑texture</a> <span class="bull"> • </span> <a href="command-line-options.html#tile">‑tile</a> <span class="bull"> • </span> <a href="command-line-options.html#transparent-color">‑transparent‑color</a> <span class="bull"> • </span> <a href="command-line-options.html#treedepth">‑treedepth</a> <span class="bull"> • </span> <a href="command-line-options.html#type">‑type</a> <span class="bull"> • </span> <a href="command-line-options.html#undercolor">‑undercolor</a> <span class="bull"> • </span> <a href="command-line-options.html#units">‑units</a> <span class="bull"> • </span> <a href="command-line-options.html#verbose">‑verbose</a> <span class="bull"> • </span> <a href="command-line-options.html#virtual-pixel">‑virtual‑pixel</a> <span class="bull"> • </span> <a href="command-line-options.html#weight">‑weight</a> </p>
+<a href="command-line-options.html#adjoin">&#x2011;adjoin</a> <span class='bull'> • </span> <a href="command-line-options.html#affine">&#x2011;affine</a> <span class='bull'> • </span> <a href="command-line-options.html#alpha">&#x2011;alpha</a> <span class='bull'> • </span> <a href="command-line-options.html#antialias">&#x2011;antialias</a> <span class='bull'> • </span> <a href="command-line-options.html#authenticate">&#x2011;authenticate</a> <span class='bull'> • </span> <a href="command-line-options.html#background">&#x2011;background</a> <span class='bull'> • </span> <a href="command-line-options.html#bias">&#x2011;bias</a> <span class='bull'> • </span> <a href="command-line-options.html#black-point-compensation">&#x2011;black&#x2011;point&#x2011;compensation</a> <span class='bull'> • </span> <a href="command-line-options.html#blue-primary">&#x2011;blue&#x2011;primary</a> <span class='bull'> • </span> <a href="command-line-options.html#bordercolor">&#x2011;bordercolor</a> <span class='bull'> • </span> <a href="command-line-options.html#caption">&#x2011;caption</a> <span class='bull'> • </span> <a href="command-line-options.html#channel">&#x2011;channel</a> <span class='bull'> • </span> <a href="command-line-options.html#comment">&#x2011;comment</a> <span class='bull'> • </span> <a href="command-line-options.html#compress">&#x2011;compress</a> <span class='bull'> • </span> <a href="command-line-options.html#debug">&#x2011;debug</a> <span class='bull'> • </span> <a href="command-line-options.html#define">&#x2011;define</a> <span class='bull'> • </span> <a href="command-line-options.html#delay">&#x2011;delay</a> <span class='bull'> • </span> <a href="command-line-options.html#density">&#x2011;density</a> <span class='bull'> • </span> <a href="command-line-options.html#depth">&#x2011;depth</a> <span class='bull'> • </span> <a href="command-line-options.html#direction">&#x2011;direction</a> <span class='bull'> • </span> <a href="command-line-options.html#display">&#x2011;display</a> <span class='bull'> • </span> <a href="command-line-options.html#dispose">&#x2011;dispose</a> <span class='bull'> • </span> <a href="command-line-options.html#dither">&#x2011;dither</a> <span class='bull'> • </span> <a href="command-line-options.html#encoding">&#x2011;encoding</a> <span class='bull'> • </span> <a href="command-line-options.html#endian">&#x2011;endian</a> <span class='bull'> • </span> <a href="command-line-options.html#extract">&#x2011;extract</a> <span class='bull'> • </span> <a href="command-line-options.html#family">&#x2011;family</a> <span class='bull'> • </span> <a href="command-line-options.html#fill">&#x2011;fill</a> <span class='bull'> • </span> <a href="command-line-options.html#filter">&#x2011;filter</a> <span class='bull'> • </span> <a href="command-line-options.html#font">&#x2011;font</a> <span class='bull'> • </span> <a href="command-line-options.html#format">&#x2011;format</a> <span class='bull'> • </span> <a href="command-line-options.html#fuzz">&#x2011;fuzz</a> <span class='bull'> • </span> <a href="command-line-options.html#geometry">&#x2011;geometry</a> <span class='bull'> • </span> <a href="command-line-options.html#gravity">&#x2011;gravity</a> <span class='bull'> • </span> <a href="command-line-options.html#green-primary">&#x2011;green&#x2011;primary</a> <span class='bull'> • </span> <a href="command-line-options.html#interlace">&#x2011;interlace</a> <span class='bull'> • </span> <a href="command-line-options.html#intent">&#x2011;intent</a> <span class='bull'> • </span> <a href="command-line-options.html#interpolate">&#x2011;interpolate</a> <span class='bull'> • </span> <a href="command-line-options.html#label">&#x2011;label</a> <span class='bull'> • </span> <a href="command-line-options.html#limit">&#x2011;limit</a> <span class='bull'> • </span> <a href="command-line-options.html#linewidth">&#x2011;linewidth</a> <span class='bull'> • </span> <a href="command-line-options.html#log">&#x2011;log</a> <span class='bull'> • </span> <a href="command-line-options.html#loop">&#x2011;loop</a> <span class='bull'> • </span> <a href="command-line-options.html#mask">&#x2011;mask</a> <span class='bull'> • </span> <a href="command-line-options.html#mattecolor">&#x2011;mattecolor</a> <span class='bull'> • </span> <a href="command-line-options.html#monitor">&#x2011;monitor</a> <span class='bull'> • </span> <a href="command-line-options.html#orient">&#x2011;orient</a> <span class='bull'> • </span> <a href="command-line-options.html#page">&#x2011;page</a> <span class='bull'> • </span> <a href="command-line-options.html#pointsize">&#x2011;pointsize</a> <span class='bull'> • </span> <a href="command-line-options.html#preview">&#x2011;preview</a> <span class='bull'> • </span> <a href="command-line-options.html#quality">&#x2011;quality</a> <span class='bull'> • </span> <a href="command-line-options.html#quiet">&#x2011;quiet</a> <span class='bull'> • </span> <a href="command-line-options.html#red-primary">&#x2011;red&#x2011;primary</a> <span class='bull'> • </span> <a href="command-line-options.html#region">&#x2011;region</a> <span class='bull'> • </span> <a href="command-line-options.html#render">&#x2011;render</a> <span class='bull'> • </span> <a href="command-line-options.html#repage">&#x2011;repage</a> <span class='bull'> • </span> <a href="command-line-options.html#sampling-factor">&#x2011;sampling&#x2011;factor</a> <span class='bull'> • </span> <a href="command-line-options.html#scene">&#x2011;scene</a> <span class='bull'> • </span> <a href="command-line-options.html#seed">&#x2011;seed</a> <span class='bull'> • </span> <a href="command-line-options.html#size">&#x2011;size</a> <span class='bull'> • </span> <a href="command-line-options.html#stretch">&#x2011;stretch</a> <span class='bull'> • </span> <a href="command-line-options.html#stroke">&#x2011;stroke</a> <span class='bull'> • </span> <a href="command-line-options.html#strokewidth">&#x2011;strokewidth</a> <span class='bull'> • </span> <a href="command-line-options.html#style">&#x2011;style</a> <span class='bull'> • </span> <a href="command-line-options.html#texture">&#x2011;texture</a> <span class='bull'> • </span> <a href="command-line-options.html#tile">&#x2011;tile</a> <span class='bull'> • </span> <a href="command-line-options.html#transparent-color">&#x2011;transparent&#x2011;color</a> <span class='bull'> • </span> <a href="command-line-options.html#treedepth">&#x2011;treedepth</a> <span class='bull'> • </span> <a href="command-line-options.html#type">&#x2011;type</a> <span class='bull'> • </span> <a href="command-line-options.html#undercolor">&#x2011;undercolor</a> <span class='bull'> • </span> <a href="command-line-options.html#units">&#x2011;units</a> <span class='bull'> • </span> <a href="command-line-options.html#verbose">&#x2011;verbose</a> <span class='bull'> • </span> <a href="command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a> <span class='bull'> • </span> <a href="command-line-options.html#weight">&#x2011;weight</a> </p>
 
 <p>In this example, <em class="arg">-channel</em> applies to each of the images, since, as we mentioned, settings persist:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert -channel RGB wand.png wizard.png images.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -channel RGB wand.png wizard.png images.png</span></p>
 </div>
 
 <h2><a id="operator"></a>Image Operator</h2>
@@ -467,11 +517,11 @@ an operator is applied to an image and forgotten.  The image operators
 include:</p>
 
 <p class="options">
-<a href="command-line-options.html#annotate">‑annotate</a> <span class="bull"> • </span> <a href="command-line-options.html#black-threshold">‑black‑threshold</a> <span class="bull"> • </span> <a href="command-line-options.html#blur">‑blur</a> <span class="bull"> • </span> <a href="command-line-options.html#border">‑border</a> <span class="bull"> • </span> <a href="command-line-options.html#charcoal">‑charcoal</a> <span class="bull"> • </span> <a href="command-line-options.html#chop">‑chop</a> <span class="bull"> • </span> <a href="command-line-options.html#clip">‑clip</a> <span class="bull"> • </span> <a href="command-line-options.html#clip-path">‑clip‑path</a> <span class="bull"> • </span> <a href="command-line-options.html#clip-mask">‑clip‑mask</a> <span class="bull"> • </span> <a href="command-line-options.html#colors">‑colors</a> <span class="bull"> • </span> <a href="command-line-options.html#colorize">‑colorize</a> <span class="bull"> • </span> <a href="command-line-options.html#colorspace">‑colorspace</a> <span class="bull"> • </span> <a href="command-line-options.html#compose">‑compose</a> <span class="bull"> • </span> <a href="command-line-options.html#contrast">‑contrast</a> <span class="bull"> • </span> <a href="command-line-options.html#convolve">‑convolve</a> <span class="bull"> • </span> <a href="command-line-options.html#crop">‑crop</a> <span class="bull"> • </span> <a href="command-line-options.html#cycle">‑cycle</a> <span class="bull"> • </span> <a href="command-line-options.html#despeckle">‑despeckle</a> <span class="bull"> • </span> <a href="command-line-options.html#draw">‑draw</a> <span class="bull"> • </span> <a href="command-line-options.html#edge">‑edge</a> <span class="bull"> • </span> <a href="command-line-options.html#emboss">‑emboss</a> <span class="bull"> • </span> <a href="command-line-options.html#enhance">‑enhance</a> <span class="bull"> • </span> <a href="command-line-options.html#equalize">‑equalize</a> <span class="bull"> • </span> <a href="command-line-options.html#evaluate">‑evaluate</a> <span class="bull"> • </span> <a href="command-line-options.html#extent">‑extent</a> <span class="bull"> • </span> <a href="command-line-options.html#flip">‑flip</a> <span class="bull"> • </span> <a href="command-line-options.html#flop">‑flop</a> <span class="bull"> • </span> <a href="command-line-options.html#floodfill">‑floodfill</a> <span class="bull"> • </span> <a href="command-line-options.html#frame">‑frame</a> <span class="bull"> • </span> <a href="command-line-options.html#gamma">‑gamma</a> <span class="bull"> • </span> <a href="command-line-options.html#gaussian-blur">‑gaussian‑blur</a> <span class="bull"> • </span> <a href="command-line-options.html#implode">‑implode</a> <span class="bull"> • </span> <a href="command-line-options.html#lat">‑lat</a> <span class="bull"> • </span> <a href="command-line-options.html#level">‑level</a> <span class="bull"> • </span> <a href="command-line-options.html#map">‑map</a> <span class="bull"> • </span> <a href="command-line-options.html#median">‑median</a> <span class="bull"> • </span> <a href="command-line-options.html#modulate">‑modulate</a> <span class="bull"> • </span> <a href="command-line-options.html#monochrome">‑monochrome</a> <span class="bull"> • </span> <a href="command-line-options.html#negate">‑negate</a> <span class="bull"> • </span> <a href="command-line-options.html#noise">‑noise</a> <span class="bull"> • </span> <a href="command-line-options.html#normalize">‑normalize</a> <span class="bull"> • </span> <a href="command-line-options.html#opaque">‑opaque</a> <span class="bull"> • </span> <a href="command-line-options.html#ordered-dither">‑ordered‑dither</a> <span class="bull"> • </span> <a href="command-line-options.html#paint">‑paint</a> <span class="bull"> • </span> <a href="command-line-options.html#posterize">‑posterize</a> <span class="bull"> • </span> <a href="command-line-options.html#raise">‑raise</a> <span class="bull"> • </span> <a href="command-line-options.html#profile">‑profile</a> <span class="bull"> • </span> <a href="command-line-options.html#radial-blur">‑radial‑blur</a> <span class="bull"> • </span> <a href="command-line-options.html#raise">‑raise</a> <span class="bull"> • </span> <a href="command-line-options.html#random-threshold">‑random‑threshold</a> <span class="bull"> • </span> <a href="command-line-options.html#resample">‑resample</a> <span class="bull"> • </span> <a href="command-line-options.html#resize">‑resize</a> <span class="bull"> • </span> <a href="command-line-options.html#roll">‑roll</a> <span class="bull"> • </span> <a href="command-line-options.html#rotate">‑rotate</a> <span class="bull"> • </span> <a href="command-line-options.html#sample">‑sample</a> <span class="bull"> • </span> <a href="command-line-options.html#scale">‑scale</a> <span class="bull"> • </span> <a href="command-line-options.html#sepia-tone">‑sepia‑tone</a> <span class="bull"> • </span> <a href="command-line-options.html#segment">‑segment</a> <span class="bull"> • </span> <a href="command-line-options.html#shade">‑shade</a> <span class="bull"> • </span> <a href="command-line-options.html#shadow">‑shadow</a> <span class="bull"> • </span> <a href="command-line-options.html#sharpen">‑sharpen</a> <span class="bull"> • </span> <a href="command-line-options.html#shave">‑shave</a> <span class="bull"> • </span> <a href="command-line-options.html#shear">‑shear</a> <span class="bull"> • </span> <a href="command-line-options.html#sigmoidal-contrast">‑sigmoidal‑contrast</a> <span class="bull"> • </span> <a href="command-line-options.html#solarize">‑solarize</a> <span class="bull"> • </span> <a href="command-line-options.html#splice">‑splice</a> <span class="bull"> • </span> <a href="command-line-options.html#spread">‑spread</a> <span class="bull"> • </span> <a href="command-line-options.html#strip">‑strip</a> <span class="bull"> • </span> <a href="command-line-options.html#swirl">‑swirl</a> <span class="bull"> • </span> <a href="command-line-options.html#threshold">‑threshold</a> <span class="bull"> • </span> <a href="command-line-options.html#transparent">‑transparent</a> <span class="bull"> • </span> <a href="command-line-options.html#thumbnail">‑thumbnail</a> <span class="bull"> • </span> <a href="command-line-options.html#tint">‑tint</a> <span class="bull"> • </span> <a href="command-line-options.html#transform">‑transform</a> <span class="bull"> • </span> <a href="command-line-options.html#trim">‑trim</a> <span class="bull"> • </span> <a href="command-line-options.html#unsharp">‑unsharp</a> <span class="bull"> • </span> <a href="command-line-options.html#version">‑version</a> <span class="bull"> • </span> <a href="command-line-options.html#wave">‑wave</a> <span class="bull"> • </span> <a href="command-line-options.html#white-point">‑white‑point</a> <span class="bull"> • </span> <a href="command-line-options.html#white-threshold">‑white‑threshold</a> </p>
+<a href="command-line-options.html#annotate">&#x2011;annotate</a> <span class='bull'> • </span> <a href="command-line-options.html#black-threshold">&#x2011;black&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#blur">&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#border">&#x2011;border</a> <span class='bull'> • </span> <a href="command-line-options.html#charcoal">&#x2011;charcoal</a> <span class='bull'> • </span> <a href="command-line-options.html#chop">&#x2011;chop</a> <span class='bull'> • </span> <a href="command-line-options.html#clip">&#x2011;clip</a> <span class='bull'> • </span> <a href="command-line-options.html#clip-path">&#x2011;clip&#x2011;path</a> <span class='bull'> • </span> <a href="command-line-options.html#clip-mask">&#x2011;clip&#x2011;mask</a> <span class='bull'> • </span> <a href="command-line-options.html#colors">&#x2011;colors</a> <span class='bull'> • </span> <a href="command-line-options.html#colorize">&#x2011;colorize</a> <span class='bull'> • </span> <a href="command-line-options.html#colorspace">&#x2011;colorspace</a> <span class='bull'> • </span> <a href="command-line-options.html#compose">&#x2011;compose</a> <span class='bull'> • </span> <a href="command-line-options.html#contrast">&#x2011;contrast</a> <span class='bull'> • </span> <a href="command-line-options.html#convolve">&#x2011;convolve</a> <span class='bull'> • </span> <a href="command-line-options.html#crop">&#x2011;crop</a> <span class='bull'> • </span> <a href="command-line-options.html#cycle">&#x2011;cycle</a> <span class='bull'> • </span> <a href="command-line-options.html#despeckle">&#x2011;despeckle</a> <span class='bull'> • </span> <a href="command-line-options.html#draw">&#x2011;draw</a> <span class='bull'> • </span> <a href="command-line-options.html#edge">&#x2011;edge</a> <span class='bull'> • </span> <a href="command-line-options.html#emboss">&#x2011;emboss</a> <span class='bull'> • </span> <a href="command-line-options.html#enhance">&#x2011;enhance</a> <span class='bull'> • </span> <a href="command-line-options.html#equalize">&#x2011;equalize</a> <span class='bull'> • </span> <a href="command-line-options.html#evaluate">&#x2011;evaluate</a> <span class='bull'> • </span> <a href="command-line-options.html#extent">&#x2011;extent</a> <span class='bull'> • </span> <a href="command-line-options.html#flip">&#x2011;flip</a> <span class='bull'> • </span> <a href="command-line-options.html#flop">&#x2011;flop</a> <span class='bull'> • </span> <a href="command-line-options.html#floodfill">&#x2011;floodfill</a> <span class='bull'> • </span> <a href="command-line-options.html#frame">&#x2011;frame</a> <span class='bull'> • </span> <a href="command-line-options.html#gamma">&#x2011;gamma</a> <span class='bull'> • </span> <a href="command-line-options.html#gaussian-blur">&#x2011;gaussian&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#implode">&#x2011;implode</a> <span class='bull'> • </span> <a href="command-line-options.html#lat">&#x2011;lat</a> <span class='bull'> • </span> <a href="command-line-options.html#level">&#x2011;level</a> <span class='bull'> • </span> <a href="command-line-options.html#map">&#x2011;map</a> <span class='bull'> • </span> <a href="command-line-options.html#median">&#x2011;median</a> <span class='bull'> • </span> <a href="command-line-options.html#modulate">&#x2011;modulate</a> <span class='bull'> • </span> <a href="command-line-options.html#monochrome">&#x2011;monochrome</a> <span class='bull'> • </span> <a href="command-line-options.html#negate">&#x2011;negate</a> <span class='bull'> • </span> <a href="command-line-options.html#noise">&#x2011;noise</a> <span class='bull'> • </span> <a href="command-line-options.html#normalize">&#x2011;normalize</a> <span class='bull'> • </span> <a href="command-line-options.html#opaque">&#x2011;opaque</a> <span class='bull'> • </span> <a href="command-line-options.html#ordered-dither">&#x2011;ordered&#x2011;dither</a> <span class='bull'> • </span> <a href="command-line-options.html#paint">&#x2011;paint</a> <span class='bull'> • </span> <a href="command-line-options.html#posterize">&#x2011;posterize</a> <span class='bull'> • </span> <a href="command-line-options.html#raise">&#x2011;raise</a> <span class='bull'> • </span> <a href="command-line-options.html#profile">&#x2011;profile</a> <span class='bull'> • </span> <a href="command-line-options.html#radial-blur">&#x2011;radial&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#raise">&#x2011;raise</a> <span class='bull'> • </span> <a href="command-line-options.html#random-threshold">&#x2011;random&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#resample">&#x2011;resample</a> <span class='bull'> • </span> <a href="command-line-options.html#resize">&#x2011;resize</a> <span class='bull'> • </span> <a href="command-line-options.html#roll">&#x2011;roll</a> <span class='bull'> • </span> <a href="command-line-options.html#rotate">&#x2011;rotate</a> <span class='bull'> • </span> <a href="command-line-options.html#sample">&#x2011;sample</a> <span class='bull'> • </span> <a href="command-line-options.html#scale">&#x2011;scale</a> <span class='bull'> • </span> <a href="command-line-options.html#sepia-tone">&#x2011;sepia&#x2011;tone</a> <span class='bull'> • </span> <a href="command-line-options.html#segment">&#x2011;segment</a> <span class='bull'> • </span> <a href="command-line-options.html#shade">&#x2011;shade</a> <span class='bull'> • </span> <a href="command-line-options.html#shadow">&#x2011;shadow</a> <span class='bull'> • </span> <a href="command-line-options.html#sharpen">&#x2011;sharpen</a> <span class='bull'> • </span> <a href="command-line-options.html#shave">&#x2011;shave</a> <span class='bull'> • </span> <a href="command-line-options.html#shear">&#x2011;shear</a> <span class='bull'> • </span> <a href="command-line-options.html#sigmoidal-contrast">&#x2011;sigmoidal&#x2011;contrast</a> <span class='bull'> • </span> <a href="command-line-options.html#solarize">&#x2011;solarize</a> <span class='bull'> • </span> <a href="command-line-options.html#splice">&#x2011;splice</a> <span class='bull'> • </span> <a href="command-line-options.html#spread">&#x2011;spread</a> <span class='bull'> • </span> <a href="command-line-options.html#strip">&#x2011;strip</a> <span class='bull'> • </span> <a href="command-line-options.html#swirl">&#x2011;swirl</a> <span class='bull'> • </span> <a href="command-line-options.html#threshold">&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#transparent">&#x2011;transparent</a> <span class='bull'> • </span> <a href="command-line-options.html#thumbnail">&#x2011;thumbnail</a> <span class='bull'> • </span> <a href="command-line-options.html#tint">&#x2011;tint</a> <span class='bull'> • </span> <a href="command-line-options.html#transform">&#x2011;transform</a> <span class='bull'> • </span> <a href="command-line-options.html#trim">&#x2011;trim</a> <span class='bull'> • </span> <a href="command-line-options.html#unsharp">&#x2011;unsharp</a> <span class='bull'> • </span> <a href="command-line-options.html#version">&#x2011;version</a> <span class='bull'> • </span> <a href="command-line-options.html#wave">&#x2011;wave</a> <span class='bull'> • </span> <a href="command-line-options.html#white-point">&#x2011;white&#x2011;point</a> <span class='bull'> • </span> <a href="command-line-options.html#white-threshold">&#x2011;white&#x2011;threshold</a> </p>
 
 <p>In this example, <em class="arg">-negate</em> negates the wand image but not the wizard:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert wand.png -negate wizard.png images.png</span></p></div>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wand.png -negate wizard.png images.png</span></p></div>
 
 <h2><a id="sequence"></a>Image Sequence Operator</h2>
 <div class="doc-section">
@@ -481,7 +531,7 @@ image sequence immediately as it appears on the command line.  Choose from
 these image sequence operators:</p>
 
 <p class="options">
-<a href="command-line-options.html#append">‑append</a> <span class="bull"> • </span> <a href="command-line-options.html#affinity">‑affinity</a> <span class="bull"> • </span> <a href="command-line-options.html#average">‑average</a> <span class="bull"> • </span> <a href="command-line-options.html#clut">‑clut</a> <span class="bull"> • </span> <a href="command-line-options.html#coalesce">‑coalesce</a> <span class="bull"> • </span> <a href="command-line-options.html#combine">‑combine</a> <span class="bull"> • </span> <a href="command-line-options.html#compare">‑compare</a> <span class="bull"> • </span> <a href="command-line-options.html#composite">‑composite</a> <span class="bull"> • </span> <a href="command-line-options.html#crop">‑crop</a> <span class="bull"> • </span> <a href="command-line-options.html#debug">‑debug</a> <span class="bull"> • </span> <a href="command-line-options.html#deconstruct">‑deconstruct</a> <span class="bull"> • </span> <a href="command-line-options.html#delete">‑delete</a> <span class="bull"> • </span> <a href="command-line-options.html#evaluate-seqence">‑evaluate‑seqence</a> <span class="bull"> • </span> <a href="command-line-options.html#fft">‑fft</a> <span class="bull"> • </span> <a href="command-line-options.html#flatten">‑flatten</a> <span class="bull"> • </span> <a href="command-line-options.html#fx">‑fx</a> <span class="bull"> • </span> <a href="command-line-options.html#hald-clut">‑hald‑clut</a> <span class="bull"> • </span> <a href="command-line-options.html#ift">‑ift</a> <span class="bull"> • </span> <a href="command-line-options.html#identify">‑identify</a> <span class="bull"> • </span> <a href="command-line-options.html#insert">‑insert</a> <span class="bull"> • </span> <a href="command-line-options.html#layers">‑layers</a> <span class="bull"> • </span> <a href="command-line-options.html#limit">‑limit</a> <span class="bull"> • </span> <a href="command-line-options.html#map">‑map</a> <span class="bull"> • </span> <a href="command-line-options.html#maximum">‑maximum</a> <span class="bull"> • </span> <a href="command-line-options.html#minimum">‑minimum</a> <span class="bull"> • </span> <a href="command-line-options.html#morph">‑morph</a> <span class="bull"> • </span> <a href="command-line-options.html#mosaic">‑mosaic</a> <span class="bull"> • </span> <a href="command-line-options.html#optimize">‑optimize</a> <span class="bull"> • </span> <a href="command-line-options.html#print">‑print</a> <span class="bull"> • </span> <a href="command-line-options.html#process">‑process</a> <span class="bull"> • </span> <a href="command-line-options.html#quiet">‑quiet</a> <span class="bull"> • </span> <a href="command-line-options.html#separate">‑separate</a> <span class="bull"> • </span> <a href="command-line-options.html#swap">‑swap</a> <span class="bull"> • </span> <a href="command-line-options.html#write">‑write</a> </p>
+<a href="command-line-options.html#append">&#x2011;append</a> <span class='bull'> • </span> <a href="command-line-options.html#affinity">&#x2011;affinity</a> <span class='bull'> • </span> <a href="command-line-options.html#average">&#x2011;average</a> <span class='bull'> • </span> <a href="command-line-options.html#clut">&#x2011;clut</a> <span class='bull'> • </span> <a href="command-line-options.html#coalesce">&#x2011;coalesce</a> <span class='bull'> • </span> <a href="command-line-options.html#combine">&#x2011;combine</a> <span class='bull'> • </span> <a href="command-line-options.html#compare">&#x2011;compare</a> <span class='bull'> • </span> <a href="command-line-options.html#complex">&#x2011;complex</a> <span class='bull'> • </span> <a href="command-line-options.html#composite">&#x2011;composite</a> <span class='bull'> • </span> <a href="command-line-options.html#crop">&#x2011;crop</a> <span class='bull'> • </span> <a href="command-line-options.html#debug">&#x2011;debug</a> <span class='bull'> • </span> <a href="command-line-options.html#deconstruct">&#x2011;deconstruct</a> <span class='bull'> • </span> <a href="command-line-options.html#delete">&#x2011;delete</a> <span class='bull'> • </span> <a href="command-line-options.html#evaluate-sequence">&#x2011;evaluate&#x2011;sequence</a> <span class='bull'> • </span> <a href="command-line-options.html#fft">&#x2011;fft</a> <span class='bull'> • </span> <a href="command-line-options.html#flatten">&#x2011;flatten</a> <span class='bull'> • </span> <a href="command-line-options.html#fx">&#x2011;fx</a> <span class='bull'> • </span> <a href="command-line-options.html#hald-clut">&#x2011;hald&#x2011;clut</a> <span class='bull'> • </span> <a href="command-line-options.html#ift">&#x2011;ift</a> <span class='bull'> • </span> <a href="command-line-options.html#identify">&#x2011;identify</a> <span class='bull'> • </span> <a href="command-line-options.html#insert">&#x2011;insert</a> <span class='bull'> • </span> <a href="command-line-options.html#layers">&#x2011;layers</a> <span class='bull'> • </span> <a href="command-line-options.html#limit">&#x2011;limit</a> <span class='bull'> • </span> <a href="command-line-options.html#map">&#x2011;map</a> <span class='bull'> • </span> <a href="command-line-options.html#maximum">&#x2011;maximum</a> <span class='bull'> • </span> <a href="command-line-options.html#minimum">&#x2011;minimum</a> <span class='bull'> • </span> <a href="command-line-options.html#morph">&#x2011;morph</a> <span class='bull'> • </span> <a href="command-line-options.html#mosaic">&#x2011;mosaic</a> <span class='bull'> • </span> <a href="command-line-options.html#optimize">&#x2011;optimize</a> <span class='bull'> • </span> <a href="command-line-options.html#print">&#x2011;print</a> <span class='bull'> • </span> <a href="command-line-options.html#process">&#x2011;process</a> <span class='bull'> • </span> <a href="command-line-options.html#quiet">&#x2011;quiet</a> <span class='bull'> • </span> <a href="command-line-options.html#separate">&#x2011;separate</a> <span class='bull'> • </span> <a href="command-line-options.html#swap">&#x2011;swap</a> <span class='bull'> • </span> <a href="command-line-options.html#write">&#x2011;write</a> </p>
 </div>
 
 <h2><a id="geometry"></a>Image Geometry</h2>
@@ -501,13 +551,13 @@ different ways. See the documentation for the individual option or
 setting for more specifics.</p>
 
 <p class="options" style="text-align:justify">
-<a href="command-line-options.html#adaptive-resize">‑adaptive‑resize</a> <span class="bull"> • </span> <a href="command-line-options.html#border">‑border</a> <span class="bull"> • </span> <a href="command-line-options.html#borderwidth">‑borderwidth</a> <span class="bull"> • </span> <a href="command-line-options.html#chop">‑chop</a> <span class="bull"> • </span> <a href="command-line-options.html#crop">‑crop</a> <span class="bull"> • </span> <a href="command-line-options.html#density">‑density</a> <span class="bull"> • </span> <a href="command-line-options.html#extent">‑extent</a> <span class="bull"> • </span> <a href="command-line-options.html#extract">‑extract</a> <span class="bull"> • </span> <a href="command-line-options.html#frame">‑frame</a> <span class="bull"> • </span> <a href="command-line-options.html#geometry">‑geometry</a> <span class="bull"> • </span> <a href="command-line-options.html#iconGeometry">‑iconGeometry</a> <span class="bull"> • </span> <a href="command-line-options.html#liquid-rescale">‑liquid‑rescale</a> <span class="bull"> • </span> <a href="command-line-options.html#page">‑page</a> <span class="bull"> • </span> <a href="command-line-options.html#region">‑region</a> <span class="bull"> • </span> <a href="command-line-options.html#repage">‑repage</a> <span class="bull"> • </span> <a href="command-line-options.html#resize">‑resize</a> <span class="bull"> • </span> <a href="command-line-options.html#sample">‑sample</a> <span class="bull"> • </span> <a href="command-line-options.html#scale">‑scale</a> <span class="bull"> • </span> <a href="command-line-options.html#shave">‑shave</a> <span class="bull"> • </span> <a href="command-line-options.html#splice">‑splice</a> <span class="bull"> • </span> <a href="command-line-options.html#thumbnail">‑thumbnail</a> <span class="bull"> • </span> <a href="command-line-options.html#window">‑window</a> </p>
+<a href="command-line-options.html#adaptive-resize">&#x2011;adaptive&#x2011;resize</a> <span class='bull'> • </span> <a href="command-line-options.html#border">&#x2011;border</a> <span class='bull'> • </span> <a href="command-line-options.html#borderwidth">&#x2011;borderwidth</a> <span class='bull'> • </span> <a href="command-line-options.html#chop">&#x2011;chop</a> <span class='bull'> • </span> <a href="command-line-options.html#crop">&#x2011;crop</a> <span class='bull'> • </span> <a href="command-line-options.html#density">&#x2011;density</a> <span class='bull'> • </span> <a href="command-line-options.html#extent">&#x2011;extent</a> <span class='bull'> • </span> <a href="command-line-options.html#extract">&#x2011;extract</a> <span class='bull'> • </span> <a href="command-line-options.html#frame">&#x2011;frame</a> <span class='bull'> • </span> <a href="command-line-options.html#geometry">&#x2011;geometry</a> <span class='bull'> • </span> <a href="command-line-options.html#iconGeometry">&#x2011;iconGeometry</a> <span class='bull'> • </span> <a href="command-line-options.html#liquid-rescale">&#x2011;liquid&#x2011;rescale</a> <span class='bull'> • </span> <a href="command-line-options.html#page">&#x2011;page</a> <span class='bull'> • </span> <a href="command-line-options.html#region">&#x2011;region</a> <span class='bull'> • </span> <a href="command-line-options.html#repage">&#x2011;repage</a> <span class='bull'> • </span> <a href="command-line-options.html#resize">&#x2011;resize</a> <span class='bull'> • </span> <a href="command-line-options.html#sample">&#x2011;sample</a> <span class='bull'> • </span> <a href="command-line-options.html#scale">&#x2011;scale</a> <span class='bull'> • </span> <a href="command-line-options.html#shave">&#x2011;shave</a> <span class='bull'> • </span> <a href="command-line-options.html#splice">&#x2011;splice</a> <span class='bull'> • </span> <a href="command-line-options.html#thumbnail">&#x2011;thumbnail</a> <span class='bull'> • </span> <a href="command-line-options.html#window">&#x2011;window</a> </p>
 
 <p>The <em class="arg">geometry</em> argument might take any of the forms listed in the table below. These will described in more detail in the subsections following the table. The usual form is <em class="arg">size</em>[<em class="arg">offset</em>], meaning <em class="arg">size</em> is required and <em class="arg">offset</em> is optional. Occasionally, [<em class="arg">size</em>]<em class="arg">offset</em> is possible. In no cases are spaces permitted within the <em class="arg">geometry</em> argument.</p>
 
 
 <table id="geometryTable" class="doc">
-  <col width="20%"></col> <col width="80%"></col>
+  <col width="20%"/> <col width="80%"/>
   <thead>
   <tr valign="top">
     <th style="text-align:center"><em class="arg">size</em></th>
@@ -558,7 +608,7 @@ setting for more specifics.</p>
   </tbody>
   </table>
   <table class="doc">
-    <col width="20%"></col> <col width="80%"></col>
+    <col width="20%"/> <col width="80%"/>
   <thead>
   <tr valign="top">
     <th style="text-align:center">{<em class="arg">size</em>}{<em class="arg">offset</em>}</th>
@@ -569,7 +619,7 @@ setting for more specifics.</p>
   <tbody>
   <tr valign="top">
     <td>{<em class="arg">size</em>}{<em class="arg">+-</em>}<em class="arg">x</em>{<em class="arg">+-</em>}<em class="arg">y</em></td>
-    <td>Horizontal and vertical offsets <em class="arg">x</em> and <em class="arg">y</em>, specified in pixels. Signs are required for both. Offsets are affected by <a href="command-line-options.html#gravity">‑gravity</a> setting. Offsets are not affected by <code>%</code> or other <em class="arg">size</em> operators.</td>
+    <td>Horizontal and vertical offsets <em class="arg">x</em> and <em class="arg">y</em>, specified in pixels. Signs are required for both. Offsets are affected by <a href="command-line-options.html#gravity">&#x2011;gravity</a> setting. Offsets are not affected by <code>%</code> or other <em class="arg">size</em> operators.</td>
   </tr>
   </tbody>
 </table>
@@ -577,16 +627,16 @@ setting for more specifics.</p>
 
 <h3>Basic adjustments to width and height; the operators <code>%</code>, <code>^</code>, and <code>!</code> </h3>
 <div class="doc-section">
-<p>Here, just below, are a few simple examples of <em class="arg">geometry</em>, showing how it might be used as an argument to the <a href="command-line-options.html#resize">‑resize</a> option. We'll use the internal image <code>logo:</code> for our input image.
+<p>Here, just below, are a few simple examples of <em class="arg">geometry</em>, showing how it might be used as an argument to the <a href="command-line-options.html#resize">&#x2011;resize</a> option. We'll use the internal image <code>logo:</code> for our input image.
 <a href="../images/logo.png">
 This fine image</a> is 640 pixels wide and 480 pixels high. We say its <em>dimensions</em> are 640x480. When we give dimensions of an image, the width (the horizontal dimension) always precedes the height (the vertical dimension). This will be true when we speak of coordinates or <em>offsets</em> into an image, which will always be <em>x</em>–value followed by <em>y</em>. Just think of your high school algebra classes and the <em>xy</em>–plane. (Well, almost: our <em>y</em>–axis will always go downward!)
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize '200%' bigWiz.png</span></p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize '200x50%' longShortWiz.png</span></p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize '100x200' notThinWiz.png</span></p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize '100x200^' biggerNotThinWiz.png</span></p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize '100x200!' dochThinWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '200%' bigWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '200x50%' longShortWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200' notThinWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200^' biggerNotThinWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200!' dochThinWiz.png</span></p>
 
 <p>The first of the four commands is simple—it stretches both the width and height of the input image by <code>200%</code> in each direction; it magnifies the whole thing by a factor of two. The second command specifies different percentages for each direction, stretching the width to <code>200</code>% and squashing the height to <code>50%</code>. The resulting image (in this example) has dimensions 1280x240. Notice that the percent symbol needn't be repeated; the following are equivalent: <code>200x50%</code>, <code>200%x50</code>, <code>200%x50%</code>.
 </p>
@@ -604,10 +654,10 @@ This fine image</a> is 640 pixels wide and 480 pixels high. We say its <em>dimen
 Here are a few more examples:
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize '100' wiz1.png</span></p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize 'x200' wiz2.png</span></p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize '100x200&gt;' wiz3.png</span></p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize '100x200&lt;' wiz4.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100' wiz1.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize 'x200' wiz2.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200&gt;' wiz3.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200&lt;' wiz4.png</span></p>
 <p>If only one dimension is given it is taken to be the width. When only the width is specified, as in the first example above, the width is accepted as given and the height is chosen to maintain the aspect ratio of the input image. Similarly, if only the height is specified, as in the second example above, the height is accepted and the width is chosen to maintain the aspect ratio.</p>
 
 
@@ -615,7 +665,7 @@ Here are a few more examples:
 
 <p>Finally, use <code>@</code> to specify the maximum area in pixels of an image, again while attempting to preserve aspect ratio. (Pixels take only integer values, so some approximation is always at work.) In the following example, an area of 10000 pixels is requested. The resulting file has dimensions 115x86, which has 9890 pixels. </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -resize '@10000' wiz10000.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '@10000' wiz10000.png</span></p>
 <p class="warn">Another word about the quotation marks: In all the examples above and below, we have enclosed the <em class="arg">geometry</em> arguments  within quotation marks. Doing so is optional in many cases, but not always. We <em>must</em> enclose the geometry specifications in quotation marks when using <code>&lt;</code> or <code>&gt;</code> to prevent these characters from being interpreted by the shell as <em>file redirection</em>. On Windows systems, the carat <code>^</code>  needs to be within quotes, else it is ignored. To be safe, one should probably maintain a habit of enclosing all <em class="arg">geometry</em> arguments in quotes, as we have here.
 </p>
 </div>
@@ -624,18 +674,18 @@ Here are a few more examples:
 <div class="doc-section">
 <p>
 Here are some examples to illustrate the use of <em>offsets</em> in <em class="arg">geometry</em> arguments. One typical use of offsets is in conjunction with the
-<a href="command-line-options.html#region">‑region</a> option. This option allows many other options to modify the pixels within a specified rectangular subregion of an image. As such, it needs to be given the width and height of that region, and also an <em>offset</em> into the image, which is a pair of coordinates that indicate the location of the region within the larger image. Below, in the first example, we specify a region of size <code>100x200</code> to be located at the <em>xy</em>–coordinates <em>x</em>=10, <em>y</em>=20. Let's use the usual algebraic notation (<em>x</em>,<em>y</em>)=(10,20), for convenience.
+<a href="command-line-options.html#region">&#x2011;region</a> option. This option allows many other options to modify the pixels within a specified rectangular subregion of an image. As such, it needs to be given the width and height of that region, and also an <em>offset</em> into the image, which is a pair of coordinates that indicate the location of the region within the larger image. Below, in the first example, we specify a region of size <code>100x200</code> to be located at the <em>xy</em>–coordinates <em>x</em>=10, <em>y</em>=20. Let's use the usual algebraic notation (<em>x</em>,<em>y</em>)=(10,20), for convenience.
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -region '100x200+10+20' -negate wizNeg1.png</span></p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -region '100x200-10+20' -negate wizNeg2.png</span></p>
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: -gravity center -region '100x200-10+20' \ <br></br> -negate wizNeg3.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -region '100x200+10+20' -negate wizNeg1.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -region '100x200-10+20' -negate wizNeg2.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -gravity center -region '100x200-10+20' \ <br/> -negate wizNeg3.png</span></p>
 
 <p>Note that offsets always require +/− signs. The offset is not actually a true location within the image; its coordinates must be added to some other location. Let's refer to that as the <em>current location</em>. In the first two examples above, though, that location is the upper-left hand corner of the image, which has coordinates (0,0). (That is the default situation when there are no other directives given to change it.) The first example above puts the <code>100x200</code> rectangle's own upper-left corner at (10,20). </p>
 
 <p>A negative offset can make sense in many cases. In the second example above, the offset is (-10,20), specified by <code>-10+20</code>. In that case, only the portion of the (virtual) rectangle obtained that lies within the image can be negated; here it is equivalent to specifying the geometry as <code>90x200+0+20</code>.</p>
 
-<p>In the third example above, the <a href="command-line-options.html#gravity">‑gravity</a> setting precedes the others and sets the current location within the image at the very center of the image. In this case that is at pixel (320,240), since the size of the image is 640x480. This means that the offsets apply to that location, which thereby gets moved, in this case, to (320-10,240+20)=(310,260). But the <code>100x200</code> region itself is affected by the <a href="command-line-options.html#gravity">‑gravity</a> setting, so instead of affecting its upper-left corner, the region's own center (at (+50,+100) within it) is determined. Therefore the center of the <code>100x200</code> rectangle is moved to (310,260). The negated rectangle's upper-left corner is now at (310-50,260-100)=(260,160).
+<p>In the third example above, the <a href="command-line-options.html#gravity">&#x2011;gravity</a> setting precedes the others and sets the current location within the image at the very center of the image. In this case that is at pixel (320,240), since the size of the image is 640x480. This means that the offsets apply to that location, which thereby gets moved, in this case, to (320-10,240+20)=(310,260). But the <code>100x200</code> region itself is affected by the <a href="command-line-options.html#gravity">&#x2011;gravity</a> setting, so instead of affecting its upper-left corner, the region's own center (at (+50,+100) within it) is determined. Therefore the center of the <code>100x200</code> rectangle is moved to (310,260). The negated rectangle's upper-left corner is now at (310-50,260-100)=(260,160).
 </p>
 </div>
 </div>
@@ -646,7 +696,7 @@ Here are some examples to illustrate the use of <em>offsets</em> in <em class="a
 
 <p>In school, your teacher probably permitted you to work on problems on a scrap of paper and then copy the results to your test paper.  An image stack is similar.  It permits you to work on an image or image sequence in isolation and subsequently introduce the results back into the command line.  The image stack is delineated with parenthesis.  Image operators only affect images in the current stack.  For example, we can limit the image rotation to just the wizard image like this:</p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert wand.gif \( wizard.gif -rotate 30 \) +append images.gif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wand.gif \( wizard.gif -rotate 30 \) +append images.gif</span></p>
 
 <p class="warn">Notice again that the  parentheses are <em>escaped</em> by preceding them with
 backslashes.  This is required under Unix, where parentheses are special
@@ -659,8 +709,8 @@ above.</p>
 <p>In addition to the image operators already discussed, the following image operators are most useful when processing images in an image stack:</p>
 
 <p class="options">
-<span class="bull"> • </span>
-<a href="command-line-options.html#clone">‑clone</a> <span class="bull"> • </span> <a href="command-line-options.html#delete">‑delete</a> <span class="bull"> • </span> <a href="command-line-options.html#insert">‑insert</a> <span class="bull"> • </span> <a href="command-line-options.html#swap">‑swap</a> <span class="bull"> • </span>
+<span class='bull'> • </span>
+<a href="command-line-options.html#clone">&#x2011;clone</a> <span class='bull'> • </span> <a href="command-line-options.html#delete">&#x2011;delete</a> <span class='bull'> • </span> <a href="command-line-options.html#insert">&#x2011;insert</a> <span class='bull'> • </span> <a href="command-line-options.html#swap">&#x2011;swap</a> <span class='bull'> • </span>
 </p>
 
 <p>The arguments to these operators are indexes into the image sequence by number, starting with zero, for the first image, and so on. However if you give a negative index, the images are indexed from the end (last image added). That is, an index of -1 is the last image in the current image sequence, -2 gives the second-to-last, and so on.</p>
@@ -685,7 +735,7 @@ above.</p>
   <p>Images can be stored in a mryiad of image formats including the better known JPEG, PNG, TIFF and others.  ImageMagick must know the desired format of the image before it is written.  ImageMagick leverages the filename extension to determine the format.  For example, <code>image.jpg</code> tells ImageMagick to write the image in the JPEG format.  In some cases the filename does not identify the image format.  In these cases, the image is written in the format it was originally read unless an explicit image format is specified.  For example, suppose we want to write our image to a filename of <code>image</code> in the raw red, green, and blue intensity format:
   </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert image.jpg rgb:image</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.jpg rgb:image</span></p>
 </div>
 
 <h3>Standard Out</h3>
@@ -693,7 +743,7 @@ above.</p>
   <p>Unix permits the output of one command to be piped to another.  ImageMagick permits piping one command to another with a filename of <code>-</code>.  In this example we pipe the output of <a href="convert.html">convert</a> to the <a href="display.html">display</a> program:
   </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert logo: gif:- | display gif:-</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: gif:- | display gif:-</span></p>
 <p>Here the explicit format is optional.  The GIF image format has a signature that uniquely identifies it so ImageMagick can readily recognize the format as GIF.
 </p>
 </div>
@@ -712,7 +762,7 @@ above.</p>
 <p>Or retrieve image properties to modify the image filename.  For example, the command
 </p>
 
-<p class="crt"><span class="crtprompt"> $ </span><span class="crtin">convert rose: -set filename:area '%wx%h' \ <br></br> 'rose-%[filename:area].png'</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -set filename:area '%wx%h' \ <br/> 'rose-%[filename:area].png'</span></p>
 <p>writes an image with this filename:
 </p>
 
@@ -750,3 +800,4 @@ above.</p>
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 07:06 -->

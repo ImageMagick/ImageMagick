@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: MagickCore, C API for ImageMagick: Image Methods</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../../images/wand.png"></link>
-  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../../images/wand.png"/>
+  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../../discourse-server">
-  <img src="../../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../../index.html">
-  <img src="../../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="../../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="../../www/install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="../../www/sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,21 +186,839 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="image.html#"></a>]</p>
+<h1>Module image Methods</h1>
+<p class="navigation-index">[<a href="image.html#AcquireImage">AcquireImage</a> &#8226; <a href="image.html#AcquireImageInfo">AcquireImageInfo</a> &#8226; <a href="image.html#AcquireNextImage">AcquireNextImage</a> &#8226; <a href="image.html#AppendImages">AppendImages</a> &#8226; <a href="image.html#CatchImageException">CatchImageException</a> &#8226; <a href="image.html#ClipImagePath">ClipImagePath</a> &#8226; <a href="image.html#CloneImage">CloneImage</a> &#8226; <a href="image.html#CloneImageInfo">CloneImageInfo</a> &#8226; <a href="image.html#DestroyImage">DestroyImage</a> &#8226; <a href="image.html#DestroyImageInfo">DestroyImageInfo</a> &#8226; <a href="image.html#GetImageClipMask">GetImageClipMask</a> &#8226; <a href="image.html#GetImageException">GetImageException</a> &#8226; <a href="image.html#GetImageInfo">GetImageInfo</a> &#8226; <a href="image.html#GetImageInfoFile">GetImageInfoFile</a> &#8226; <a href="image.html#GetImageMask">GetImageMask</a> &#8226; <a href="image.html#GetImageChannels">GetImageChannels</a> &#8226; <a href="image.html#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> &#8226; <a href="image.html#InterpretImageFilename">InterpretImageFilename</a> &#8226; <a href="image.html#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> &#8226; <a href="image.html#IsImageObject">IsImageObject</a> &#8226; <a href="image.html#IsTaintImage">IsTaintImage</a> &#8226; <a href="image.html#ModifyImage">ModifyImage</a> &#8226; <a href="image.html#NewMagickImage">NewMagickImage</a> &#8226; <a href="image.html#ReferenceImage">ReferenceImage</a> &#8226; <a href="image.html#ResetImagePage">ResetImagePage</a> &#8226; <a href="image.html#SetImageBackgroundColor">SetImageBackgroundColor</a> &#8226; <a href="image.html#SetImageChannels">SetImageChannels</a> &#8226; <a href="image.html#SetImageColor">SetImageColor</a> &#8226; <a href="image.html#SetImageStorageClass">SetImageStorageClass</a> &#8226; <a href="image.html#SetImageClipMask">SetImageClipMask</a> &#8226; <a href="image.html#SetImageExtent">SetImageExtent</a> &#8226; <a href="image.html#SetImageInfoBlob">SetImageInfoBlob</a> &#8226; <a href="image.html#SetImageInfoFile">SetImageInfoFile</a> &#8226; <a href="image.html#SetImageMask">SetImageMask</a> &#8226; <a href="image.html#SetImageOpacity">SetImageOpacity</a> &#8226; <a href="image.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> &#8226; <a href="image.html#SmushImages">SmushImages</a> &#8226; <a href="image.html#StripImage">StripImage</a> &#8226; <a href="image.html#SyncImageSettings">SyncImageSettings</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="AcquireImage">AcquireImage</a></h2>
+<div class="doc-section">
+
+<p>AcquireImage() returns a pointer to an image structure initialized to default values.</p>
+
+<p>The format of the AcquireImage method is:</p>
+
+<pre class="code">
+  Image *AcquireImage(const ImageInfo *image_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="AcquireImageInfo">AcquireImageInfo</a></h2>
+<div class="doc-section">
+
+<p>AcquireImageInfo() allocates the ImageInfo structure.</p>
+
+<p>The format of the AcquireImageInfo method is:</p>
+
+<pre class="code">
+  ImageInfo *AcquireImageInfo(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="AcquireNextImage">AcquireNextImage</a></h2>
+<div class="doc-section">
+
+<p>AcquireNextImage() initializes the next image in a sequence to default values.  The next member of image points to the newly allocated image.  If there is a memory shortage, next is assigned NULL.</p>
+
+<p>The format of the AcquireNextImage method is:</p>
+
+<pre class="code">
+  void AcquireNextImage(const ImageInfo *image_info,Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="AppendImages">AppendImages</a></h2>
+<div class="doc-section">
+
+<p>AppendImages() takes all images from the current image pointer to the end of the image list and appends them to each other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p>
+
+<p>The current gravity setting now effects how the image is justified in the final image.</p>
+
+<p>The format of the AppendImages method is:</p>
+
+<pre class="code">
+  Image *AppendImages(const Image *images,const MagickBooleanType stack,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image sequence.</p>
+
+<h5>stack</h5>
+<p>A value other than 0 stacks the images top-to-bottom.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="CatchImageException">CatchImageException</a></h2>
+<div class="doc-section">
+
+<p>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity.</p>
+
+<p>The format of the CatchImageException method is:</p>
+
+<pre class="code">
+  ExceptionType CatchImageException(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>An image sequence.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="ClipImagePath">ClipImagePath</a></h2>
+<div class="doc-section">
+
+<p>ClipImagePath() sets the image clip mask based any clipping path information if it exists.</p>
+
+<p>The format of the ClipImagePath method is:</p>
+
+<pre class="code">
+  MagickBooleanType ClipImagePath(Image *image,const char *pathname,
+    const MagickBooleanType inside)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>pathname</h5>
+<p>name of clipping path resource. If name is preceded by #, use clipping path numbered by name.</p>
+
+<h5>inside</h5>
+<p>if non-zero, later operations take effect inside clipping path. Otherwise later operations take effect outside clipping path.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="CloneImage">CloneImage</a></h2>
+<div class="doc-section">
+
+<p>CloneImage() copies an image and returns the copy as a new image object.</p>
+
+<p>If the specified columns and rows is 0, an exact copy of the image is returned, otherwise the pixel data is undefined and must be initialized with the QueueAuthenticPixels() and SyncAuthenticPixels() methods.  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
+
+<p>The format of the CloneImage method is:</p>
+
+<pre class="code">
+  Image *CloneImage(const Image *image,const size_t columns,
+    const size_t rows,const MagickBooleanType orphan,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>columns</h5>
+<p>the number of columns in the cloned image.</p>
+
+<h5>rows</h5>
+<p>the number of rows in the cloned image.</p>
+
+<h5>detach</h5>
+<p>With a value other than 0, the cloned image is detached from its parent I/O stream.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="CloneImageInfo">CloneImageInfo</a></h2>
+<div class="doc-section">
+
+<p>CloneImageInfo() makes a copy of the given image info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p>
+
+<p>The format of the CloneImageInfo method is:</p>
+
+<pre class="code">
+  ImageInfo *CloneImageInfo(const ImageInfo *image_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="DestroyImage">DestroyImage</a></h2>
+<div class="doc-section">
+
+<p>DestroyImage() dereferences an image, deallocating memory associated with the image if the reference count becomes zero.</p>
+
+<p>The format of the DestroyImage method is:</p>
+
+<pre class="code">
+  Image *DestroyImage(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="DestroyImageInfo">DestroyImageInfo</a></h2>
+<div class="doc-section">
+
+<p>DestroyImageInfo() deallocates memory associated with an ImageInfo structure.</p>
+
+<p>The format of the DestroyImageInfo method is:</p>
+
+<pre class="code">
+  ImageInfo *DestroyImageInfo(ImageInfo *image_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageClipMask">GetImageClipMask</a></h2>
+<div class="doc-section">
+
+<p>GetImageClipMask() returns the clip path associated with the image.</p>
+
+<p>The format of the GetImageClipMask method is:</p>
+
+<pre class="code">
+  Image *GetImageClipMask(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageException">GetImageException</a></h2>
+<div class="doc-section">
+
+<p>GetImageException() traverses an image sequence and returns any error more severe than noted by the exception parameter.</p>
+
+<p>The format of the GetImageException method is:</p>
+
+<pre class="code">
+  void GetImageException(Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>Specifies a pointer to a list of one or more images.</p>
+
+<h5>exception</h5>
+<p>return the highest severity exception.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageInfo">GetImageInfo</a></h2>
+<div class="doc-section">
+
+<p>GetImageInfo() initializes image_info to default values.</p>
+
+<p>The format of the GetImageInfo method is:</p>
+
+<pre class="code">
+  void GetImageInfo(ImageInfo *image_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageInfoFile">GetImageInfoFile</a></h2>
+<div class="doc-section">
+
+<p>GetImageInfoFile() returns the image info file member.</p>
+
+<p>The format of the GetImageInfoFile method is:</p>
+
+<pre class="code">
+  FILE *GetImageInfoFile(const ImageInfo *image_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageMask">GetImageMask</a></h2>
+<div class="doc-section">
+
+<p>GetImageMask() returns the mask associated with the image.</p>
+
+<p>The format of the GetImageMask method is:</p>
+
+<pre class="code">
+  Image *GetImageMask(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageChannels">GetImageChannels</a></h2>
+<div class="doc-section">
+
+<p>GetImageChannels() returns the number of pixel channels associated with the specified image.</p>
+
+<p>The format of the GetChannels method is:</p>
+
+<pre class="code">
+  size_t GetImageChannels(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a></h2>
+<div class="doc-section">
+
+<p>GetImageVirtualPixelMethod() gets the "virtual pixels" method for the image.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p>
+
+<p>The format of the GetImageVirtualPixelMethod() method is:</p>
+
+<pre class="code">
+  VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="InterpretImageFilename">InterpretImageFilename</a></h2>
+<div class="doc-section">
+
+<p>InterpretImageFilename() interprets embedded characters in an image filename. The filename length is returned.</p>
+
+<p>The format of the InterpretImageFilename method is:</p>
+
+<pre class="code">
+  size_t InterpretImageFilename(const ImageInfo *image_info,Image *image,
+    const char *format,int value,char *filename)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5>image_info</h5>
+<p>the image info..</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>format</h5>
+<p>A filename describing the format to use to write the numeric argument. Only the first numeric format identifier is replaced.</p>
+
+<h5>value</h5>
+<p>Numeric value to substitute into format filename.</p>
+
+<h5>filename</h5>
+<p>return the formatted filename in this character buffer.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="IsHighDynamicRangeImage">IsHighDynamicRangeImage</a></h2>
+<div class="doc-section">
+
+<p>IsHighDynamicRangeImage() returns MagickTrue if any pixel component is non-integer or exceeds the bounds of the quantum depth (e.g. for Q16 0..65535.</p>
+
+<p>The format of the IsHighDynamicRangeImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsHighDynamicRangeImage(const Image *image,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="IsImageObject">IsImageObject</a></h2>
+<div class="doc-section">
+
+<p>IsImageObject() returns MagickTrue if the image sequence contains a valid set of image objects.</p>
+
+<p>The format of the IsImageObject method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsImageObject(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="IsTaintImage">IsTaintImage</a></h2>
+<div class="doc-section">
+
+<p>IsTaintImage() returns MagickTrue any pixel in the image has been altered since it was first constituted.</p>
+
+<p>The format of the IsTaintImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsTaintImage(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="ModifyImage">ModifyImage</a></h2>
+<div class="doc-section">
+
+<p>ModifyImage() ensures that there is only a single reference to the image to be modified, updating the provided image pointer to point to a clone of the original image if necessary.</p>
+
+<p>The format of the ModifyImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType ModifyImage(Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="NewMagickImage">NewMagickImage</a></h2>
+<div class="doc-section">
+
+<p>NewMagickImage() creates a blank image canvas of the specified size and background color.</p>
+
+<p>The format of the NewMagickImage method is:</p>
+
+<pre class="code">
+  Image *NewMagickImage(const ImageInfo *image_info,
+    const size_t width,const size_t height,
+    const MagickPixelPacket *background)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>width</h5>
+<p>the image width.</p>
+
+<h5>height</h5>
+<p>the image height.</p>
+
+<h5>background</h5>
+<p>the image color.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="ReferenceImage">ReferenceImage</a></h2>
+<div class="doc-section">
+
+<p>ReferenceImage() increments the reference count associated with an image returning a pointer to the image.</p>
+
+<p>The format of the ReferenceImage method is:</p>
+
+<pre class="code">
+  Image *ReferenceImage(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="ResetImagePage">ResetImagePage</a></h2>
+<div class="doc-section">
+
+<p>ResetImagePage() resets the image page canvas and position.</p>
+
+<p>The format of the ResetImagePage method is:</p>
+
+<pre class="code">
+  MagickBooleanType ResetImagePage(Image *image,const char *page)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>page</h5>
+<p>the relative page specification.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageBackgroundColor">SetImageBackgroundColor</a></h2>
+<div class="doc-section">
+
+<p>SetImageBackgroundColor() initializes the image pixels to the image background color.  The background color is defined by the background_color member of the image structure.</p>
+
+<p>The format of the SetImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetImageBackgroundColor(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageChannels">SetImageChannels</a></h2>
+<div class="doc-section">
+
+<p>SetImageChannels() sets the number of pixels channels associated with the image.</p>
+
+<p>The format of the SetImageChannels method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetImageChannels(Image *image,const size_t channels)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channels</h5>
+<p>The number of pixel channels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageColor">SetImageColor</a></h2>
+<div class="doc-section">
+
+<p>SetImageColor() set the entire image canvas to the specified color.</p>
+
+<p>The format of the SetImageColor method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetImageColor(Image *image,
+    const MagickPixelPacket *color)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>background</h5>
+<p>the image color.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageStorageClass">SetImageStorageClass</a></h2>
+<div class="doc-section">
+
+<p>SetImageStorageClass() sets the image class: DirectClass for true color images or PseudoClass for colormapped images.</p>
+
+<p>The format of the SetImageStorageClass method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetImageStorageClass(Image *image,
+    const ClassType storage_class)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>storage_class</h5>
+<p>The image class.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageClipMask">SetImageClipMask</a></h2>
+<div class="doc-section">
+
+<p>SetImageClipMask() associates a clip path with the image.  The clip path must be the same dimensions as the image.  Set any pixel component of the clip path to TransparentOpacity to prevent that corresponding image pixel component from being updated when SyncAuthenticPixels() is applied.</p>
+
+<p>The format of the SetImageClipMask method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetImageClipMask(Image *image,const Image *clip_mask)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>clip_mask</h5>
+<p>the image clip path.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageExtent">SetImageExtent</a></h2>
+<div class="doc-section">
+
+<p>SetImageExtent() sets the image size (i.e. columns &amp; rows).</p>
+
+<p>The format of the SetImageExtent method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetImageExtent(Image *image,
+    const size_t columns,const size_t rows)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>columns</h5>
+<p>The image width in pixels.</p>
+
+<h5>rows</h5>
+<p>The image height in pixels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageInfoBlob">SetImageInfoBlob</a></h2>
+<div class="doc-section">
+
+<p>SetImageInfoBlob() sets the image info blob member.</p>
+
+<p>The format of the SetImageInfoBlob method is:</p>
+
+<pre class="code">
+  void SetImageInfoBlob(ImageInfo *image_info,const void *blob,
+    const size_t length)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>blob</h5>
+<p>the blob.</p>
+
+<h5>length</h5>
+<p>the blob length.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageInfoFile">SetImageInfoFile</a></h2>
+<div class="doc-section">
+
+<p>SetImageInfoFile() sets the image info file member.</p>
+
+<p>The format of the SetImageInfoFile method is:</p>
+
+<pre class="code">
+  void SetImageInfoFile(ImageInfo *image_info,FILE *file)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>file</h5>
+<p>the file.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageMask">SetImageMask</a></h2>
+<div class="doc-section">
+
+<p>SetImageMask() associates a mask with the image.  The mask must be the same dimensions as the image.</p>
+
+<p>The format of the SetImageMask method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetImageMask(Image *image,const Image *mask)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>mask</h5>
+<p>the image mask.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageOpacity">SetImageOpacity</a></h2>
+<div class="doc-section">
+
+<p>SetImageOpacity() sets the opacity levels of the image.</p>
+
+<p>The format of the SetImageOpacity method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetImageOpacity(Image *image,const Quantum opacity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>opacity</h5>
+<p>the level of transparency: 0 is fully opaque and QuantumRange is fully transparent.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a></h2>
+<div class="doc-section">
+
+<p>SetImageVirtualPixelMethod() sets the "virtual pixels" method for the image and returns the previous setting.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p>
+
+<p>The format of the SetImageVirtualPixelMethod() method is:</p>
+
+<pre class="code">
+  VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
+    const VirtualPixelMethod virtual_pixel_method)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>virtual_pixel_method</h5>
+<p>choose the type of virtual pixel.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SmushImages">SmushImages</a></h2>
+<div class="doc-section">
+
+<p>SmushImages() takes all images from the current image pointer to the end of the image list and smushes them to each other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p>
+
+<p>The current gravity setting now effects how the image is justified in the final image.</p>
+
+<p>The format of the SmushImages method is:</p>
+
+<pre class="code">
+  Image *SmushImages(const Image *images,const MagickBooleanType stack,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image sequence.</p>
+
+<h5>stack</h5>
+<p>A value other than 0 stacks the images top-to-bottom.</p>
+
+<h5>offset</h5>
+<p>minimum distance in pixels between images.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="StripImage">StripImage</a></h2>
+<div class="doc-section">
+
+<p>StripImage() strips an image of all profiles and comments.</p>
+
+<p>The format of the StripImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType StripImage(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image_8c.html" id="SyncImageSettings">SyncImageSettings</a></h2>
+<div class="doc-section">
+
+<p>SyncImageSettings() syncs image_info options into per-image attributes.</p>
+
+<p>The format of the SyncImageSettings method is:</p>
+
+<pre class="code">
+  MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
+    Image *image)
+  MagickBooleanType SyncImagesSettings(const ImageInfo *image_info,
+    Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
 
 </div>
 
@@ -198,3 +1040,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 09:12 -->

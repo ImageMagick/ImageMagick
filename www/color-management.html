@@ -1,47 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: Color Management</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="color, management, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../images/wand.png"></link>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="../index.html"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="color, management, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="../index.html" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +67,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +87,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://localhost/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../discourse-server">
-  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
-  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +150,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,7 +176,7 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
@@ -162,21 +186,48 @@
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
-
-
-<h1>Color Management</h1><div class="doc-section"><p>Color management has changed significantly between ImageMagick version 6.7.5-5 and 6.8.0-3 in order to better conform to color and grayscale standards.</p><p>The first major change was to swap -colorspace RGB and -colorspace sRGB. In earlier versions, RGB really meant non-linear sRGB. With the completion of the changes, RGB now means linear color and sRGB means non-linear color in terms of their respective colorspaces.</p><p>ImageMagick supports color profiles, however, for images without a profile or a declaration of colorspace, ImageMagick assumes non-linear sRGB.  Most image processing algorithms assume a linear colorspace, therefore it might be prudent to convert to linear color or remove the gamma function before certain image processing algorithms are applied. For example,</p><pre class="text">convert myimage.jpg -colorspace RGB -resize 200% -colorspace sRGB mybigimage.jpg</pre><p>To declare that an image is linear RGB rather than sRGB, you can use the set option:</p><pre class="text">convert myimage.png -set colorspace RGB myRGBimage.png</pre><p>Afterwards, the verbose information for the output file lists the colorspace as RGB. This only works on image types containing meta data that distinguishes between linear RGB and non-linear sRGB, such as PNG and GIF. Therefore, if the above command is run with a JPG or TIF output format, the verbose information for the colorspace still shows sRGB. In order to properly have the JPG output know that it is linear RGB, include an appropriate color profile.</p><p>The second major change treats any grayscale image as linear rather than non-linear, as it was previously.  This change is appropriate, since many types of processing requires a linear colorspace. This means that the conversion of a color image to grayscale via <code>-colorspace gray</code> looks darker relative to previous versions of ImageMagick (note that desaturating to convert to grayscale does not convert the image to linear grayscale). If you prefer to keep the conversion to non-linear grayscale, set the colorspace of the input to linear RGB so that <code>-colorspace gray</code> does not apply the gamma correction during the conversion process. For example, the following produces a non-linear grayscale result.</p><pre class="text">convert myimage.png -set colorspace RGB -colorspace gray myRGBimage.png</pre><p>The same concept is needed when separating channels. Normally, the conversion to separate each channel of an sRGB color image produces separate linear grayscale images. However the same concept can be applied, if it is desired to keep the separate channels as non-linear grayscale. For example, the following produces non-linear grayscale channels.</p><pre class="text">convert myimage.png -set colorspace RGB -separate myimage_channels_%d.png</pre><p>When separating and recombining channels, with potential intermediate processing, it is important to identify the colorspace used, especially during the recombination. For example,</p><pre class="text">convert myimage.png -separate myimage_channels_%d.pngconvert myimage_channels_*.png -combine myimage2.png</pre><p>In the above example, the result is darker than the original, because the channels were separate as linear gray and subsequently combined as linear color. In order to return the channels back to sRGB, one must change the colorspace from RGB back to sRGB after the <code>-combine</code> step.</p><pre class="text">convert myimage.png -separate myimage_channels_%d.pngconvert myimage_channels_*.png -combine -colorspace sRGB myimage2.png</pre><p>If one desires to separate to non-linear grayscale channels, recombine them later, perhaps after some processing, then use the same concept as above for maintaining non-linear grayscale:</p><pre class="text">convert myimage.png -set colorspace RGB -separate myimage_channels_%d.pngconvert myimage_channels_*.png -combine -colorspace RGB -set colorspace sRGB myimage2.png</pre><p>When converting to another colorspace and back, such as between sRGB and HSL, the following two commands handle the first case of linear channels and the second case of non-linear channels:</p><pre class="text">convert myimage.png -colorspace HSL -separate myimage_channels_%d.pngconvert myimage_channels_*.png -set colorspace HSL -combine -colorspace sRGB myimage2.png</pre><pre class="text">convert myimage.png -set colorspace RGB -colorspace HSL -separate myimage_channels_%d.pngconvert myimage_channels_*.png -set colorspace HSL -combine -colorspace RGB -set colorspace sRGB myimage2.png</pre><p>A majority of the image formats assume an sRGB colorspace (e.g. JPEG, PNG, etc.). A few support only linear RGB (e.g. EXR, DPX, CIN, HDR) or only linear GRAY (e.g. PGM). A few formats support CMYK. For example JPG does, but PNG does not. Then there is the occasional format that also supports LAB (that is CieLAB) (e.g. TIFF, PSD, JPG, JP2). For additional information, see the <a href="formats.html#colorspace">Colorspace</a> and <a href="formats.html#supported">Supported Formats</a> pages.</p><p>When specifying individual colors as <code>rgb(...)</code> or hex, these colors will still be interpreted as non-linear, that is, as sRGB colors. However if one wants to create linear colors, use <code>icc-color(rgb,r,g,b)"</code>, where <code>r</code>, <code>g</code>, and <code>b</code> are in the range 0 to 1. See the <a href="color.html">Color</a> page.</p><p>There are now also distinctions between linear and non-linear shades of gray. Any named shade of gray, such as black, white or numbered grays like <code>gray50</code> are non-linear gray. However, <code>gray(...)</code> is now linear gray. Hex grayscale values are non-linear.</p><p>This means that you need to be careful when you create grayscale gradients. For example, <code>gradient:</code>, <code>gradient:"white-black"</code>, <code>gradient:"gray100-gray0"</code> generates non-linear gradients, however <code>gradient:"gray(255)-gray(0)"</code> or <code>gradient:"gray(100%)-gray(0%)"</code> generates linear gradients.</p></div>
+<h1>Color Management</h1><div class="doc-section"><p>Color management has changed significantly between ImageMagick version 6.7.5-5 and 6.8.0-3 in order to better conform to color and grayscale standards.</p><p>The first major change was to swap -colorspace RGB and -colorspace sRGB. In earlier versions, RGB really meant non-linear sRGB. With the completion of the changes, RGB now means linear color and sRGB means non-linear color in terms of their respective colorspaces.</p><p>ImageMagick supports color profiles, however, for images without a profile or a declaration of colorspace, ImageMagick assumes non-linear sRGB.  Most image processing algorithms assume a linear colorspace, therefore it might be prudent to convert to linear color or remove the gamma function before certain image processing algorithms are applied. For example,</p><pre class="text">convert myimage.jpg -colorspace RGB -resize 200% -colorspace sRGB mybigimage.jpg</pre><p>To declare that an image is linear RGB rather than sRGB, you can use the set option:</p><pre class="text">convert myimage.png -set colorspace RGB myRGBimage.png</pre><p>Afterwards, the verbose information for the output file lists the colorspace as RGB. This only works on image types containing meta data that distinguishes between linear RGB and non-linear sRGB, such as PNG and GIF. Therefore, if the above command is run with a JPG or TIF output format, the verbose information for the colorspace still shows sRGB. In order to properly have the JPG output know that it is linear RGB, include an appropriate color profile.</p><p>The second major change treats any grayscale image as linear rather than non-linear, as it was previously.  This change is appropriate, since many types of processing requires a linear colorspace. This means that the conversion of a color image to grayscale via <code>-colorspace gray</code> looks darker relative to previous versions of ImageMagick (note that desaturating to convert to grayscale does not convert the image to linear grayscale). If you prefer to keep the conversion to non-linear grayscale, set the colorspace of the input to linear RGB so that <code>-colorspace gray</code> does not apply the gamma correction during the conversion process. For example, the following produces a non-linear grayscale result.</p><pre class="text">convert myimage.png -set colorspace RGB -colorspace gray myRGBimage.png</pre><p>The same concept is needed when separating channels. Normally, the conversion to separate each channel of an sRGB color image produces separate linear grayscale images. However the same concept can be applied, if it is desired to keep the separate channels as non-linear grayscale. For example, the following produces non-linear grayscale channels.</p><pre class="text">convert myimage.png -set colorspace RGB -separate myimage_channels_%d.png</pre><p>When separating and recombining channels, with potential intermediate processing, it is important to identify the colorspace used, especially during the recombination. For example,</p><pre class="text">convert myimage.png -separate myimage_channels_%d.pngconvert myimage_channels_*.png -combine myimage2.png</pre><p>In the above example, the result is darker than the original, because the channels were separate as linear gray and subsequently combined as linear color. In order to return the channels back to sRGB, one must change the colorspace from RGB back to sRGB after the <code>-combine</code> step.</p><pre class="text">convert myimage.png -separate myimage_channels_%d.pngconvert myimage_channels_*.png -combine -colorspace sRGB myimage2.png</pre><p>If one desires to separate to non-linear grayscale channels, recombine them later, perhaps after some processing, then use the same concept as above for maintaining non-linear grayscale:</p><pre class="text">convert myimage.png -set colorspace RGB -separate myimage_channels_%d.pngconvert myimage_channels_*.png -combine -colorspace RGB -set colorspace sRGB myimage2.png</pre><p>When converting to another colorspace and back, such as between sRGB and HSL, the following two commands handle the first case of linear channels and the second case of non-linear channels:</p><pre class="text">convert myimage.png -colorspace HSL -separate myimage_channels_%d.pngconvert myimage_channels_*.png -set colorspace HSL -combine -colorspace sRGB myimage2.png</pre><pre class="text">convert myimage.png -set colorspace RGB -colorspace HSL -separate myimage_channels_%d.pngconvert myimage_channels_*.png -set colorspace HSL -combine -colorspace RGB -set colorspace sRGB myimage2.png</pre><p>A majority of the image formats assume an sRGB colorspace (e.g. JPEG, PNG, etc.). A few support only linear RGB (e.g. EXR, DPX, CIN, HDR) or only linear GRAY (e.g. PGM). A few formats support CMYK. For example JPG does, but PNG does not. Then there is the occasional format that also supports LAB (that is CieLAB) (e.g. TIFF, PSD, JPG, JP2). For additional information, see the <a href="formats.html#colorspace" >Colorspace</a> and <a href="formats.html#supported" >Supported Formats</a> pages.</p><p>When specifying individual colors as <code>rgb(...)</code> or hex, these colors will still be interpreted as non-linear, that is, as sRGB colors. However if one wants to create linear colors, use <code>icc-color(rgb,r,g,b)"</code>, where <code>r</code>, <code>g</code>, and <code>b</code> are in the range 0 to 1. See the <a href="color.html" >Color</a> page.</p><p>There are now also distinctions between linear and non-linear shades of gray. Any named shade of gray, such as black, white or numbered grays like <code>gray50</code> are non-linear gray. However, <code>gray(...)</code> is now linear gray. Hex grayscale values are non-linear.</p><p>This means that you need to be careful when you create grayscale gradients. For example, <code>gradient:</code>, <code>gradient:"white-black"</code>, <code>gradient:"gray100-gray0"</code> generates non-linear gradients, however <code>gradient:"gray(255)-gray(0)"</code> or <code>gradient:"gray(100%)-gray(0%)"</code> generates linear gradients.</p></div>
 </div>
 
 <div id="linkbar">
@@ -197,3 +248,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
+<!-- Magick Cache 20th February 2014 07:16 -->
