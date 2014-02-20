@@ -81,7 +81,8 @@ struct SemaphoreInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ActivateSemaphoreInfo() acquires a semaphore.
+%  ActivateSemaphoreInfo() activates a semaphore under protection of a mutex
+%  to ensure only one thread allocates the semaphore.
 %
 %  The format of the ActivateSemaphoreInfo method is:
 %
