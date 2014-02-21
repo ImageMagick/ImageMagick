@@ -469,7 +469,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  compression=UndefinedCompression;
+  compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
   switch (compression)

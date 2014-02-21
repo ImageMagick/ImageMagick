@@ -307,8 +307,7 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image,
   hrz_image=ResizeImage(image,256,240,image->filter,exception);
   if (hrz_image == (Image *) NULL)
     return(MagickFalse);
-  if (IssRGBCompatibleColorspace(hrz_image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(hrz_image,sRGBColorspace,exception);
+  (void) TransformImageColorspace(hrz_image,sRGBColorspace,exception);
   /*
     Allocate memory for pixels.
   */

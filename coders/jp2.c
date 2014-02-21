@@ -899,8 +899,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     }
   else
     {
-      if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-        (void) TransformImageColorspace(image,sRGBColorspace,exception);
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
       if (IsGrayColorspace(image->colorspace) != MagickFalse)
         {
           channels=1;
