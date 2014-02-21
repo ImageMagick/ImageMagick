@@ -62,6 +62,7 @@
 #include "magick/property.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/nt-base-private.h"
 #include "magick/pixel.h"
 #include "magick/pixel-private.h"
 #include "magick/option.h"

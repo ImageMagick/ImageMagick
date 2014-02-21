@@ -63,6 +63,7 @@ Include declarations.
 #include "magick/montage.h"
 #include "magick/morphology.h"
 #include "magick/nt-base.h"
+#include "magick/nt-base-private.h"
 #include "magick/opencl.h"
 #include "magick/opencl-private.h"
 #include "magick/option.h"

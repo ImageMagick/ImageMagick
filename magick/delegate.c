@@ -57,6 +57,7 @@
 #include "magick/hashmap.h"
 #include "magick/list.h"
 #include "magick/memory_.h"
+#include "magick/nt-base-private.h"
 #include "magick/policy.h"
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
