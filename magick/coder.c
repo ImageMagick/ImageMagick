@@ -195,6 +195,7 @@ static const CoderMapInfo
     { "RAS", "SUN" },
     { "RGBA", "RGB" },
     { "RGBO", "RGB" },
+    { "RMF", "DNG" },
     { "R", "RAW" },
     { "ROSE", "MAGICK" },
     { "RW2", "DNG" },
