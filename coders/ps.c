@@ -1362,6 +1362,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     **labels,
     page_geometry[MaxTextExtent];
 
+  CompressionType
+    compression;
+
   const char
     **s,
     *value;
@@ -1446,6 +1449,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
   if (status == MagickFalse)
     return(status);
   (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
+  compression=image->compression;
+  if (image_info->compression != UndefinedCompression)
+    compression=image_info->compression;
   page=1;
   scene=0;
   do
@@ -1901,9 +1907,9 @@ RestoreMSCWarning
           */
           (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n0\n%d\n",
             (double) image->columns,(double) image->rows,
-            image_info->compression == RLECompression ? 1 : 0);
+            compression == RLECompression ? 1 : 0);
           (void) WriteBlobString(image,buffer);
-          switch (image_info->compression)
+          switch (compression)
           {
             case RLECompression:
             {
@@ -2031,7 +2037,7 @@ RestoreMSCWarning
           (void) FormatLocaleString(buffer,MaxTextExtent,
             "%.20g %.20g\n%d\n%d\n0\n",(double) image->columns,(double)
             image->rows,image->storage_class == PseudoClass ? 1 : 0,
-            image_info->compression == RLECompression ? 1 : 0);
+            compression == RLECompression ? 1 : 0);
           (void) WriteBlobString(image,buffer);
           /*
             Dump number of colors and colormap.
@@ -2047,7 +2053,7 @@ RestoreMSCWarning
               ScaleQuantumToChar(image->colormap[i].blue));
             (void) WriteBlobString(image,buffer);
           }
-          switch (image_info->compression)
+          switch (compression)
           {
             case RLECompression:
             {
