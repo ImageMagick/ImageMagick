@@ -1865,8 +1865,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-          (void) TransformImageColorspace(image,sRGBColorspace);
+        (void) TransformImageColorspace(image,sRGBColorspace);
         if (image->depth <= 8)
           (void) WriteBlobString(image,"255\n");
         else
@@ -2084,8 +2083,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-          (void) TransformImageColorspace(image,sRGBColorspace);
+        (void) TransformImageColorspace(image,sRGBColorspace);
         if (image->depth > 32)
           image->depth=32;
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)

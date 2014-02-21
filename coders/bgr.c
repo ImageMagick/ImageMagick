@@ -1102,8 +1102,7 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to BGR raster pixels.
     */
-    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) TransformImageColorspace(image,sRGBColorspace);
     if ((LocaleCompare(image_info->magick,"BGRA") == 0) &&
         (image->matte == MagickFalse))
       (void) SetImageAlphaChannel(image,ResetAlphaChannel);
