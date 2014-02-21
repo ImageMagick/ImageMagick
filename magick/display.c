@@ -71,6 +71,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/montage.h"
+#include "magick/nt-base-private.h"
 #include "magick/option.h"
 #include "magick/paint.h"
 #include "magick/pixel.h"
