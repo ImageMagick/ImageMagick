@@ -29,21 +29,6 @@ extern "C" {
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 
-#define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN
-#define _CRT_SECURE_NO_DEPRECATE  1
-#include <windows.h>
-#include <wchar.h>
-#include <winuser.h>
-#include <wingdi.h>
-#include <io.h>
-#include <process.h>
-#include <errno.h>
-#if defined(_DEBUG) && !defined(__MINGW32__) && !defined(__MINGW64__)
-#include <crtdbg.h>
-#endif
-
-#if !defined(XS_VERSION)
 struct dirent
 {
   char
