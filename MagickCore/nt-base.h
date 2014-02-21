@@ -27,6 +27,20 @@ extern "C" {
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#define _CRT_SECURE_NO_DEPRECATE  1
+#include <windows.h>
+#include <wchar.h>
+#include <winuser.h>
+#include <wingdi.h>
+#include <io.h>
+#include <process.h>
+#include <errno.h>
+#if defined(_DEBUG) && !defined(__MINGW32__) && !defined(__MINGW64__)
+#include <crtdbg.h>
+#endif
+
 #define PROT_READ  0x01
 #define PROT_WRITE  0x02
 #define MAP_SHARED  0x01
