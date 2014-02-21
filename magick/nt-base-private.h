@@ -29,6 +29,7 @@ extern "C" {
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 
+#if !defined(XS_VERSION)
 struct dirent
 {
   char
