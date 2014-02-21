@@ -1221,7 +1221,7 @@ RestoreMSCWarning
   scene=0;
   do
   {
-    compression=UndefinedCompression;
+    compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
     switch (compression)
@@ -1280,10 +1280,7 @@ RestoreMSCWarning
         break;
     }
     if (compression == JPEG2000Compression)
-      {
-        if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-          (void) TransformImageColorspace(image,sRGBColorspace,exception);
-      }
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
     /*
       Scale relative to dots-per-inch.
     */

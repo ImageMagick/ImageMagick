@@ -311,8 +311,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image,
     return(status);
   if ((image->columns > 65535UL) || (image->rows > 65535UL))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  (void) TransformImageColorspace(image,sRGBColorspace,exception);
   (void) SetImageType(image,BilevelType,exception);
   image->endian=MSBEndian;
   image->depth=1;
