@@ -1222,7 +1222,7 @@ RestoreMSCWarning
   scene=0;
   do
   {
-    compression=UndefinedCompression;
+    compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
     switch (compression)

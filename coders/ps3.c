@@ -885,7 +885,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(MagickFalse);
-  compression=UndefinedCompression;
+  compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
   switch (compression)
