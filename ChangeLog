@@ -1,3 +1,8 @@
+2014-02-21  6.8.8-8 Cristy  <quetzlzacatenango@image...>
+  * Convert linear RGB to sRGB before writing the Targa image format.
+  * Make sure we use the secure C library functions when compiling ImageMagick
+    on Windows.
+
 2014-02-18  6.8.8-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-7, SVN revision 14908.
 
