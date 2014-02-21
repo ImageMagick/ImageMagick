@@ -578,7 +578,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       /*
         Transform RGB to Log colorspace.
       */
-puts("a");
       density=DisplayGamma;
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
@@ -1975,7 +1974,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       /*
         Transform Log to sRGB colorspace.
       */
-puts("log=>sRGB");
       density=DisplayGamma;
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
