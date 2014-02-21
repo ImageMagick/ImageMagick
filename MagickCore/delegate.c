@@ -58,6 +58,7 @@
 #include "MagickCore/hashmap.h"
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"

@@ -48,6 +48,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/image.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/random_.h"
