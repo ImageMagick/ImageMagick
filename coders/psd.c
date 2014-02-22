@@ -48,6 +48,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
@@ -505,7 +506,8 @@ static const char *ModeToString(PSDImageType type)
 }
 
 static MagickBooleanType ParseImageResourceBlocks(Image *image,
-  const unsigned char *blocks,size_t length,ExceptionInfo *exception)
+  const unsigned char *blocks,size_t length,
+  MagickBooleanType *has_merged_image,ExceptionInfo *exception)
 {
   const unsigned char
     *p;
@@ -564,6 +566,11 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
         p=PushShortPixel(MSBEndian,p,&short_sans);
         image->units=PixelsPerInchResolution;
         break;
+      }
+      case 0x0421:
+      {
+        if (*(p+4) == 0)
+          *has_merged_image=MagickFalse;
       }
       default:
       {
@@ -1546,6 +1553,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
     *image;
 
   MagickBooleanType
+    has_merged_image,
     skip_layers,
     status;
 
@@ -1680,6 +1688,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
           image->alpha_trait=UndefinedPixelTrait;
         }
     }
+  has_merged_image=MagickTrue;
   length=ReadBlobMSBLong(image);
   if (length != 0)
     {
@@ -1704,7 +1713,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
           blocks=(unsigned char *) RelinquishMagickMemory(blocks);
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      (void) ParseImageResourceBlocks(image,blocks,(size_t) length,exception);
+      (void) ParseImageResourceBlocks(image,blocks,(size_t) length,
+        &has_merged_image,exception);
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
    /*
@@ -1726,7 +1736,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
     }
   offset=TellBlob(image);
   skip_layers=MagickFalse;
-  if ((image_info->number_scenes == 1) && (image_info->scene == 0))
+  if ((image_info->number_scenes == 1) && (image_info->scene == 0) &&
+      (has_merged_image != MagickFalse))
     {
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1759,7 +1770,18 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  reading the precombined layer");
-  (void) ReadPSDMergedImage(image,&psd_info,exception);
+  if (has_merged_image != MagickFalse || GetImageListLength(image) == 1)
+    (void) ReadPSDMergedImage(image,&psd_info,exception);
+  else
+    {
+      Image
+        *merged;
+
+      SetImageAlphaChannel(image,TransparentAlphaChannel,exception);
+      image->background_color.alpha=TransparentAlpha;
+      merged=MergeImageLayers(image,FlattenLayer,exception);
+      ReplaceImageInList(&image,merged);
+    }
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
