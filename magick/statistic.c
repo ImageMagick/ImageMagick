@@ -1460,24 +1460,21 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelMoments() returns the normalized moments of one or more
-%  image channels.
+%  GetImageChannelMoments() returns the normalized moments of one or more image
+%  channels.
 %
 %  The format of the GetImageChannelMoments method is:
 %
 %      ChannelMoments *GetImageChannelMoments(const Image *image,
-%        const ChannelType channel,ExceptionInfo *exception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel: the channel.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1863,6 +1860,118 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
   if (y < (ssize_t) image->rows)
     channel_moments=(ChannelMoments *) RelinquishMagickMemory(channel_moments);
   return(channel_moments);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e C h a n n e l P e r c e p t u a l H a s h                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageChannelPerceptualHash() returns the perceptual hash of one or more
+%  image channels.
+%
+%  The format of the GetImageChannelPerceptualHash method is:
+%
+%      ChannelPerceptualHash *GetImageChannelPerceptualHash(const Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static inline double MagickLog10(const double x)
+{
+#define Log10Epsilon  (1.0e-11)
+
+ if (fabs(x) < Log10Epsilon)
+   return(log10(Log10Epsilon));
+ return(log10(fabs(x)));
+}
+
+MagickExport ChannelPerceptualHash *GetImageChannelPerceptualHash(
+  const Image *image,ExceptionInfo *exception)
+{
+  ChannelMoments
+    *moments;
+
+  ChannelPerceptualHash
+    *perceptual_hash;
+
+  Image
+    *hash_image;
+
+  MagickBooleanType
+    status;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    channel;
+
+  /*
+    Blur then transform to sRGB colorspace.
+  */
+  hash_image=BlurImage(image,0.0,1.0,exception);
+  if (hash_image == (Image *) NULL)
+    return((ChannelPerceptualHash *) NULL);
+  hash_image->depth=8;
+  status=TransformImageColorspace(hash_image,sRGBColorspace);
+  if (status == MagickFalse)
+    return((ChannelPerceptualHash *) NULL);
+  moments=GetImageChannelMoments(hash_image,exception);
+  hash_image=DestroyImage(hash_image);
+  if (moments == (ChannelMoments *) NULL)
+    return((ChannelPerceptualHash *) NULL);
+  perceptual_hash=(ChannelPerceptualHash *) AcquireQuantumMemory(
+    CompositeChannels+1UL,sizeof(*perceptual_hash));
+  if (perceptual_hash == (ChannelPerceptualHash *) NULL)
+    return((ChannelPerceptualHash *) NULL);
+  for (channel=0; channel <= CompositeChannels; channel++)
+    for (i=0; i < 7; i++)
+      perceptual_hash[channel].P[i]=MagickLog10(moments[channel].I[i]);
+  moments=(ChannelMoments *) RelinquishMagickMemory(moments);
+  /*
+    Blur then transform to HCLp colorspace.
+  */
+  hash_image=BlurImage(image,0.0,1.0,exception);
+  if (hash_image == (Image *) NULL)
+    {
+      perceptual_hash=(ChannelPerceptualHash *) RelinquishMagickMemory(
+        perceptual_hash);
+      return((ChannelPerceptualHash *) NULL);
+    }
+  hash_image->depth=8;
+  status=TransformImageColorspace(hash_image,HCLpColorspace);
+  if (status == MagickFalse)
+    {
+      perceptual_hash=(ChannelPerceptualHash *) RelinquishMagickMemory(
+        perceptual_hash);
+      return((ChannelPerceptualHash *) NULL);
+    }
+  moments=GetImageChannelMoments(hash_image,exception);
+  hash_image=DestroyImage(hash_image);
+  if (moments == (ChannelMoments *) NULL)
+    {
+      perceptual_hash=(ChannelPerceptualHash *) RelinquishMagickMemory(
+        perceptual_hash);
+      return((ChannelPerceptualHash *) NULL);
+    }
+  for (channel=0; channel <= CompositeChannels; channel++)
+    for (i=0; i < 7; i++)
+      perceptual_hash[channel].Q[i]=MagickLog10(moments[channel].I[i]);
+  moments=(ChannelMoments *) RelinquishMagickMemory(moments);
+  return(perceptual_hash);
 }
 
 /*
