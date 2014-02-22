@@ -2552,40 +2552,40 @@ static void TIFFSetProperties(TIFF *tiff,Image *image)
   const char
     *value;
 
-  value=GetImageProperty(image,"tiff:document");
+  value=GetImageArtifact(image,"tiff:document");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,value);
-  value=GetImageProperty(image,"tiff:hostcomputer");
+  value=GetImageArtifact(image,"tiff:hostcomputer");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_HOSTCOMPUTER,value);
-  value=GetImageProperty(image,"tiff:artist");
+  value=GetImageArtifact(image,"tiff:artist");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_ARTIST,value);
-  value=GetImageProperty(image,"tiff:timestamp");
+  value=GetImageArtifact(image,"tiff:timestamp");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_DATETIME,value);
-  value=GetImageProperty(image,"tiff:make");
+  value=GetImageArtifact(image,"tiff:make");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_MAKE,value);
-  value=GetImageProperty(image,"tiff:model");
+  value=GetImageArtifact(image,"tiff:model");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_MODEL,value);
-  value=GetImageProperty(image,"tiff:software");
+  value=GetImageArtifact(image,"tiff:software");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,value);
-  value=GetImageProperty(image,"tiff:copyright");
+  value=GetImageArtifact(image,"tiff:copyright");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_COPYRIGHT,value);
-  value=GetImageProperty(image,"kodak-33423");
+  value=GetImageArtifact(image,"kodak-33423");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,33423,value);
-  value=GetImageProperty(image,"kodak-36867");
+  value=GetImageArtifact(image,"kodak-36867");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,36867,value);
-  value=GetImageProperty(image,"label");
+  value=GetImageArtifact(image,"label");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_PAGENAME,value);
-  value=GetImageProperty(image,"comment");
+  value=GetImageArtifact(image,"comment");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,value);
 }
