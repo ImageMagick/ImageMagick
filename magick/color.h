@@ -77,13 +77,10 @@ extern MagickExport const ColorInfo
 extern MagickExport MagickBooleanType
   ColorComponentGenesis(void),
   IsColorSimilar(const Image *,const PixelPacket *,const PixelPacket *),
-  IsGrayImage(const Image *,ExceptionInfo *),
   IsImageSimilar(const Image *,const Image *,ssize_t *x,ssize_t *y,
     ExceptionInfo *),
   IsMagickColorSimilar(const MagickPixelPacket *,const MagickPixelPacket *),
-  IsMonochromeImage(const Image *,ExceptionInfo *),
   IsOpacitySimilar(const Image *,const PixelPacket *,const PixelPacket *),
-  IsOpaqueImage(const Image *,ExceptionInfo *),
   ListColorInfo(FILE *,ExceptionInfo *),
   QueryColorCompliance(const char *,const ComplianceType,PixelPacket *,
     ExceptionInfo *),

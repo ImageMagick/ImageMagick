@@ -1294,155 +1294,30 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
   return(status);
 }
 
-static Image *PerceptualImageHash(const Image *image,
-  const ColorspaceType colorspace,ExceptionInfo *exception)
-{
-  Image
-    *phash_image;
-
-  MagickBooleanType
-    status;
-
-  /*
-    Transform colorspace then blur perceptual hash image.
-  */
-  phash_image=BlurImage(image,0.0,1.0,exception);
-  if (phash_image == (Image *) NULL)
-    return((Image *) NULL);
-  phash_image->depth=8;
-  status=TransformImageColorspace(phash_image,colorspace);
-  if (status == MagickFalse)
-    phash_image=DestroyImage(phash_image);
-  return(phash_image);
-}
-
 static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
-  double *distortion,ExceptionInfo *exception)
+  const Image *reconstruct_image,const ChannelType channel,double *distortion,
+  ExceptionInfo *exception)
 {
-  ChannelMoments
-    *image_moments,
-    *reconstruct_moments;
+  ChannelPerceptualHash
+    *image_phash,
+    *reconstruct_phash;
 
   double
-    alpha,
-    beta,
     difference;
-
-  Image
-    *phash_image;
-
-  MagickBooleanType
-    grayscale;
 
   register ssize_t
     i;
 
   /*
-    Compute perceptual hash in the native image colorspace.
+    Compute perceptual hash in the sRGB colorspace.
   */
-  phash_image=PerceptualImageHash(image,image->colorspace,exception);
-  if (phash_image == (Image *) NULL)
+  image_phash=GetImageChannelPerceptualHash(image,exception);
+  if (image_phash == (ChannelPerceptualHash *) NULL)
     return(MagickFalse);
-  image_moments=GetImageChannelMoments(phash_image,exception);
-  phash_image=DestroyImage(phash_image);
-  if (image_moments == (ChannelMoments *) NULL)
-    return(MagickFalse);
-  phash_image=PerceptualImageHash(reconstruct_image,
-    reconstruct_image->colorspace,exception);
-  if (phash_image == (Image *) NULL)
+  reconstruct_phash=GetImageChannelPerceptualHash(reconstruct_image,exception);
+  if (image_phash == (ChannelPerceptualHash *) NULL)
     {
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-      return(MagickFalse);
-    }
-  reconstruct_moments=GetImageChannelMoments(phash_image,exception);
-  phash_image=DestroyImage(phash_image);
-  if (reconstruct_moments == (ChannelMoments *) NULL)
-    {
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-      return(MagickFalse);
-    }
-  grayscale=(IsGrayImage(image,exception) != MagickFalse) &&
-    (IsGrayImage(reconstruct_image,exception) != MagickFalse) ? MagickTrue :
-    MagickFalse;
-  for (i=0; i < 7; i++)
-  {
-    /*
-      Compute sum of moment differences squared.
-    */
-    if ((channel & RedChannel) != 0)
-      {
-        alpha=MagickLog10(image_moments[RedChannel].I[i]);
-        beta=MagickLog10(reconstruct_moments[RedChannel].I[i]);
-        difference=beta-alpha;
-        distortion[RedChannel]+=difference*difference;
-        distortion[CompositeChannels]+=difference*difference;
-      }
-    if (grayscale == MagickFalse)
-      {
-        if ((channel & GreenChannel) != 0)
-          {
-            alpha=MagickLog10(image_moments[GreenChannel].I[i]);
-            beta=MagickLog10(reconstruct_moments[GreenChannel].I[i]);
-            difference=beta-alpha;
-            distortion[GreenChannel]+=difference*difference;
-            distortion[CompositeChannels]+=difference*difference;
-          }
-        if ((channel & BlueChannel) != 0)
-          {
-            alpha=MagickLog10(image_moments[BlueChannel].I[i]);
-            beta=MagickLog10(reconstruct_moments[BlueChannel].I[i]);
-            difference=beta-alpha;
-            distortion[BlueChannel]+=difference*difference;
-            distortion[CompositeChannels]+=difference*difference;
-          }
-      }
-    if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse) &&
-        (reconstruct_image->matte != MagickFalse))
-      {
-        alpha=MagickLog10(image_moments[OpacityChannel].I[i]);
-        beta=MagickLog10(reconstruct_moments[OpacityChannel].I[i]);
-        difference=beta-alpha;
-        distortion[OpacityChannel]+=difference*difference;
-        distortion[CompositeChannels]+=difference*difference;
-      }
-    if (((channel & IndexChannel) != 0) &&
-        (image->colorspace == CMYKColorspace) &&
-        (reconstruct_image->colorspace == CMYKColorspace))
-      {
-        alpha=MagickLog10(image_moments[IndexChannel].I[i]);
-        beta=MagickLog10(reconstruct_moments[IndexChannel].I[i]);
-        difference=beta-alpha;
-        distortion[IndexChannel]+=difference*difference;
-        distortion[CompositeChannels]+=difference*difference;
-      }
-  }
-  image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-  reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
-    reconstruct_moments);
-  if (grayscale != MagickFalse)
-    return(MagickTrue);
-  /*
-    Compute perceptual hash in the HCLP colorspace.
-  */
-  phash_image=PerceptualImageHash(image,HCLpColorspace,exception);
-  if (phash_image == (Image *) NULL)
-    return(MagickFalse);
-  image_moments=GetImageChannelMoments(phash_image,exception);
-  phash_image=DestroyImage(phash_image);
-  if (image_moments == (ChannelMoments *) NULL)
-    return(MagickFalse);
-  phash_image=PerceptualImageHash(reconstruct_image,HCLpColorspace,exception);
-  if (phash_image == (Image *) NULL)
-    {
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-      return(MagickFalse);
-    }
-  reconstruct_moments=GetImageChannelMoments(phash_image,exception);
-  phash_image=DestroyImage(phash_image);
-  if (reconstruct_moments == (ChannelMoments *) NULL)
-    {
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
       return(MagickFalse);
     }
   for (i=0; i < 7; i++)
@@ -1452,34 +1327,30 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     */
     if ((channel & RedChannel) != 0)
       {
-        alpha=MagickLog10(image_moments[RedChannel].I[i]);
-        beta=MagickLog10(reconstruct_moments[RedChannel].I[i]);
-        difference=beta-alpha;
+        difference=reconstruct_phash[RedChannel].P[i]-
+          image_phash[RedChannel].P[i];
         distortion[RedChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if ((channel & GreenChannel) != 0)
       {
-        alpha=MagickLog10(image_moments[GreenChannel].I[i]);
-        beta=MagickLog10(reconstruct_moments[GreenChannel].I[i]);
-        difference=beta-alpha;
+        difference=reconstruct_phash[GreenChannel].P[i]-
+          image_phash[GreenChannel].P[i];
         distortion[GreenChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if ((channel & BlueChannel) != 0)
       {
-        alpha=MagickLog10(image_moments[BlueChannel].I[i]);
-        beta=MagickLog10(reconstruct_moments[BlueChannel].I[i]);
-        difference=beta-alpha;
+        difference=reconstruct_phash[BlueChannel].P[i]-
+          image_phash[BlueChannel].P[i];
         distortion[BlueChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
     if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse) &&
         (reconstruct_image->matte != MagickFalse))
       {
-        alpha=MagickLog10(image_moments[OpacityChannel].I[i]);
-        beta=MagickLog10(reconstruct_moments[OpacityChannel].I[i]);
-        difference=beta-alpha;
+        difference=reconstruct_phash[OpacityChannel].P[i]-
+          image_phash[OpacityChannel].P[i];
         distortion[OpacityChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
@@ -1487,16 +1358,65 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         (image->colorspace == CMYKColorspace) &&
         (reconstruct_image->colorspace == CMYKColorspace))
       {
-        alpha=MagickLog10(image_moments[IndexChannel].I[i]);
-        beta=MagickLog10(reconstruct_moments[IndexChannel].I[i]);
-        difference=beta-alpha;
+        difference=reconstruct_phash[IndexChannel].P[i]-
+          image_phash[IndexChannel].P[i];
         distortion[IndexChannel]+=difference*difference;
         distortion[CompositeChannels]+=difference*difference;
       }
   }
-  image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-  reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
-    reconstruct_moments);
+  /*
+    Compute perceptual hash in the HCLP colorspace.
+  */
+  for (i=0; i < 7; i++)
+  {
+    /*
+      Compute sum of moment differences squared.
+    */
+    if ((channel & RedChannel) != 0)
+      {
+        difference=reconstruct_phash[RedChannel].Q[i]-
+          image_phash[RedChannel].Q[i];
+        distortion[RedChannel]+=difference*difference;
+        distortion[CompositeChannels]+=difference*difference;
+      }
+    if ((channel & GreenChannel) != 0)
+      {
+        difference=reconstruct_phash[GreenChannel].Q[i]-
+          image_phash[GreenChannel].Q[i];
+        distortion[GreenChannel]+=difference*difference;
+        distortion[CompositeChannels]+=difference*difference;
+      }
+    if ((channel & BlueChannel) != 0)
+      {
+        difference=reconstruct_phash[BlueChannel].Q[i]-
+          image_phash[BlueChannel].Q[i];
+        distortion[BlueChannel]+=difference*difference;
+        distortion[CompositeChannels]+=difference*difference;
+      }
+    if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse) &&
+        (reconstruct_image->matte != MagickFalse))
+      {
+        difference=reconstruct_phash[OpacityChannel].Q[i]-
+          image_phash[OpacityChannel].Q[i];
+        distortion[OpacityChannel]+=difference*difference;
+        distortion[CompositeChannels]+=difference*difference;
+      }
+    if (((channel & IndexChannel) != 0) &&
+        (image->colorspace == CMYKColorspace) &&
+        (reconstruct_image->colorspace == CMYKColorspace))
+      {
+        difference=reconstruct_phash[IndexChannel].Q[i]-
+          image_phash[IndexChannel].Q[i];
+        distortion[IndexChannel]+=difference*difference;
+        distortion[CompositeChannels]+=difference*difference;
+      }
+  }
+  /*
+    Free resources.
+  */
+  reconstruct_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(
+    reconstruct_phash);
+  image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
   return(MagickTrue);
 }
 
