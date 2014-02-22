@@ -382,6 +382,23 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
   return(n);
 }
 
+static ssize_t PrintChannelPerceptualHash(FILE *file,const ChannelType channel,
+  const char *name,const ChannelPerceptualHash *channel_phash)
+{
+  register ssize_t
+    i;
+
+  ssize_t
+    n;
+
+  n=FormatLocaleFile(file,"    %s:\n",name);
+  for (i=0; i < 7; i++)
+    n+=FormatLocaleFile(file,"      %.20g: %.*g, %.*g\n",(double) i,
+      GetMagickPrecision(),channel_phash[channel].P[i],
+      GetMagickPrecision(),channel_phash[channel].Q[i]);
+  return(n);
+}
+
 static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   const char *name,const double scale,
   const ChannelStatistics *channel_statistics)
@@ -419,6 +436,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
   ChannelMoments
     *channel_moments;
+
+  ChannelPerceptualHash
+    *channel_phash;
 
   ChannelStatistics
     *channel_statistics;
@@ -668,6 +688,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     MagickColorspaceOptions,(ssize_t) image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
+  channel_phash=(ChannelPerceptualHash *) NULL;
   channel_features=(ChannelFeatures *) NULL;
   colorspace=image->colorspace;
   scale=1.0;
@@ -681,7 +702,10 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         return(MagickFalse);
       artifact=GetImageArtifact(image,"identify:moments");
       if (artifact != (const char *) NULL)
-         channel_moments=GetImageMoments(image,exception);
+        {
+          channel_moments=GetImageMoments(image,exception);
+          channel_phash=GetImagePerceptualHash(image,exception);
+        }
       artifact=GetImageArtifact(image,"identify:features");
       if (artifact != (const char *) NULL)
         {
@@ -834,6 +858,21 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       channel_moments=(ChannelMoments *) RelinquishMagickMemory(
         channel_moments);
+    }
+  if (channel_phash != (ChannelPerceptualHash *) NULL)
+    {
+      (void) FormatLocaleFile(file,"  Channel perceptual hash:\n");
+      (void) PrintChannelPerceptualHash(file,RedChannel,"Red, Hue",
+        channel_phash);
+      (void) PrintChannelPerceptualHash(file,GreenChannel,"Green, Chroma",
+        channel_phash);
+      (void) PrintChannelPerceptualHash(file,BlueChannel,"Blue, Luma",
+        channel_phash);
+      if (image->alpha_trait == BlendPixelTrait)
+        (void) PrintChannelPerceptualHash(file,AlphaChannel,"Alpha, Alpha",
+          channel_phash);
+      channel_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(
+        channel_phash);
     }
   if (channel_features != (ChannelFeatures *) NULL)
     {

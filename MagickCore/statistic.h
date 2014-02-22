@@ -129,7 +129,7 @@ extern MagickExport ChannelMoments
   *GetImageMoments(const Image *,ExceptionInfo *);
 
 extern MagickExport ChannelPerceptualHash
-  *GetImageChannelPerceptualHash(const Image *,ExceptionInfo *);
+  *GetImagePerceptualHash(const Image *,ExceptionInfo *);
 
 extern MagickExport Image
   *EvaluateImages(const Image *,const MagickEvaluateOperator,ExceptionInfo *),
