@@ -1,3 +1,6 @@
+2014-02-22  6.8.8-8 Dirk Lemstra <dirk@snakeware...>
+  * The PSD reader creates a merged image if the image does not contain one.
+
 2014-02-21  6.8.8-8 Cristy  <quetzlzacatenango@image...>
   * Convert linear RGB to sRGB before writing the Targa image format.
   * Make sure we use the secure C library functions when compiling ImageMagick
