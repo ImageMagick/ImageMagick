@@ -989,7 +989,8 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
       mode;
 
     (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s",products[i]);
-    for (j=0; j < 2; j++)
+    for (j=0; j < (ssize_t) (sizeof(registry_roots)/sizeof(registry_roots[0]));
+         j++)
     {
       mode=KEY_READ | flags;
       if (RegOpenKeyExA(registry_roots[j].hkey,key,0,mode,&hkey) ==
@@ -1043,7 +1044,8 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
   char *value,const size_t length)
 {
   char
-    key[MaxTextExtent];
+    buffer[MaxTextExtent],
+    *directory;
 
   int
     extent;
@@ -1064,45 +1066,72 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
     Get a string from the installed Ghostscript.
   */
   *value='\0';
+  directory=(char *) NULL;
+  if (LocaleCompare(name, "GS_DLL") == 0)
+    {
+      directory=GetEnvironmentValue("MAGICK_GHOSTSCRIPT_PATH");
+      if (directory != (char *) NULL)
+        {
+          (void) FormatLocaleString(buffer,MaxTextExtent,"%s%sgsdll32.dll",
+            directory,DirectorySeparator);
+          if (IsPathAccessible(buffer) != MagickFalse)
+            {
+              (void) CopyMagickString(value,buffer,length);
+              if (is_64_bit != NULL)
+                *is_64_bit=FALSE;
+              return(TRUE);
+            }
+          (void) FormatLocaleString(buffer,MaxTextExtent,"%s%sgsdll64.dll",
+            directory,DirectorySeparator);
+          if (IsPathAccessible(buffer) != MagickFalse)
+            {
+              (void) CopyMagickString(value,buffer,length);
+              if (is_64_bit != NULL)
+                *is_64_bit=TRUE;
+              return(TRUE);
+            }
+          return(FALSE);
+        }
+    }
   if (product_family == NULL)
-  {
-    flags=0;
+    {
+      flags=0;
 #if defined(KEY_WOW64_32KEY)
 #if defined(_WIN64)
-    flags=KEY_WOW64_64KEY;
+      flags=KEY_WOW64_64KEY;
 #else
-    flags=KEY_WOW64_32KEY;
-#endif
-    (void) NTLocateGhostscript(flags,&root_index,&product_family,
-      &major_version,&minor_version);
-    if (product_family == NULL)
-#if defined(_WIN64)
       flags=KEY_WOW64_32KEY;
-    else
-      is_64_bit_version=TRUE;
+#endif
+      (void) NTLocateGhostscript(flags,&root_index,&product_family,
+        &major_version,&minor_version);
+      if (product_family == NULL)
+#if defined(_WIN64)
+        flags=KEY_WOW64_32KEY;
+      else
+        is_64_bit_version=TRUE;
 #else
       flags=KEY_WOW64_64KEY;
 #endif
 #endif
-  }
+    }
   if (product_family == NULL)
-  {
-    (void) NTLocateGhostscript(flags,&root_index,&product_family,
-      &major_version,&minor_version);
-  }
+    {
+      (void) NTLocateGhostscript(flags,&root_index,&product_family,
+        &major_version,&minor_version);
+    }
   if (product_family == NULL)
     return(FALSE);
   if (is_64_bit != NULL)
     *is_64_bit=is_64_bit_version;
-  (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
+  (void) FormatLocaleString(buffer,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
     product_family,major_version,minor_version);
   extent=(int) length;
-  if (NTGetRegistryValue(registry_roots[root_index].hkey,key,flags,name,value,
-     &extent) == 0)
+  if (NTGetRegistryValue(registry_roots[root_index].hkey,buffer,flags,name,
+    value,&extent) == 0)
     {
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-        "registry: \"%s\\%s\\%s\"=\"%s\"",registry_roots[root_index].name,key,
-        name,value);
+        "registry: \"%s\\%s\\%s\"=\"%s\"",registry_roots[root_index].name,
+        buffer,name,value);
       return(TRUE);
     }
   return(FALSE);
@@ -1242,6 +1271,7 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
 {
   char
     buffer[MaxTextExtent],
+    *directory,
     filename[MaxTextExtent];
 
   register char
@@ -1249,8 +1279,17 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
     *q;
 
   *path='\0';
-  if (NTGhostscriptGetString("GS_LIB",NULL,buffer,MaxTextExtent) == FALSE)
-    return(FALSE);
+  directory=GetEnvironmentValue("MAGICK_GHOSTSCRIPT_FONT_PATH");
+  if (directory != (char *) NULL)
+    {
+      (void) CopyMagickString(buffer,directory,MaxTextExtent);
+      directory=DestroyString(directory);
+    }
+  else
+    {
+      if (NTGhostscriptGetString("GS_LIB",NULL,buffer,MaxTextExtent) == FALSE)
+        return(FALSE);
+    }
   for (p=buffer-1; p != (char *) NULL; p=strchr(p+1,DirectoryListSeparator))
   {
     (void) CopyMagickString(path,p+1,length+1);
@@ -1262,10 +1301,6 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
     if (IsPathAccessible(filename) != MagickFalse)
       return(TRUE);
   }
-  (void) FormatLocaleString(filename,MaxTextExtent,"c:%sgs%sfonts%sfonts.dir",
-    DirectorySeparator,DirectorySeparator,DirectorySeparator);
-  if (IsPathAccessible(filename) != MagickFalse)
-    return(TRUE);
   return(FALSE);
 }
 
