@@ -1112,71 +1112,28 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
   return(status);
 }
 
-static Image *PerceptualImageHash(const Image *image,
-  const ColorspaceType colorspace,ExceptionInfo *exception)
-{
-  Image
-    *phash_image;
-
-  MagickBooleanType
-    status;
-
-  /*
-    Transform colorspace then blur perceptual hash image.
-  */
-  phash_image=BlurImage(image,0.0,1.0,exception);
-  if (phash_image == (Image *) NULL)
-    return((Image *) NULL);
-  phash_image->depth=8;
-  status=TransformImageColorspace(phash_image,colorspace,exception);
-  if (status == MagickFalse)
-    phash_image=DestroyImage(phash_image);
-  return(phash_image);
-}
-
 static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
-  ChannelMoments
-    *image_moments,
-    *reconstruct_moments;
-
-  Image
-    *phash_image;
-
-  MagickBooleanType
-    grayscale;
+  ChannelPerceptualHash
+    *image_phash,
+    *reconstruct_phash;
 
   ssize_t
     channel;
 
   /*
-    Compute perceptual hash in the native image colorspace.
+    Compute perceptual hash in the sRGB colorspace.
   */
-  phash_image=PerceptualImageHash(image,image->colorspace,exception);
-  if (phash_image == (Image *) NULL)
+  image_phash=GetImageChannelPerceptualHash(image,exception);
+  if (image_phash == (ChannelPerceptualHash *) NULL)
     return(MagickFalse);
-  image_moments=GetImageMoments(phash_image,exception);
-  phash_image=DestroyImage(phash_image);
-  if (image_moments == (ChannelMoments *) NULL)
-    return(MagickFalse);
-  phash_image=PerceptualImageHash(reconstruct_image,
-    reconstruct_image->colorspace,exception);
-  if (phash_image == (Image *) NULL)
+  reconstruct_phash=GetImageChannelPerceptualHash(reconstruct_image,exception);
+  if (image_phash == (ChannelPerceptualHash *) NULL)
     {
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
+      image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
       return(MagickFalse);
     }
-  reconstruct_moments=GetImageMoments(phash_image,exception);
-  phash_image=DestroyImage(phash_image);
-  if (reconstruct_moments == (ChannelMoments *) NULL)
-    {
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-      return(MagickFalse);
-    }
-  /*
-    Compute sum of moment differences squared.
-  */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4)
 #endif
@@ -1195,8 +1152,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         alpha,
         beta;
 
-      alpha=MagickLog10(image_moments[channel].I[i]);
-      beta=MagickLog10(reconstruct_moments[channel].I[i]);
+      alpha=image_phash[channel].P[i];
+      beta=reconstruct_phash[channel].P[i];
       difference+=(beta-alpha)*(beta-alpha);
     }
     distortion[channel]+=difference;
@@ -1205,40 +1162,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
 #endif
     distortion[CompositePixelChannel]+=difference;
   }
-  image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-  reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
-    reconstruct_moments);
-  grayscale=(IsImageGray(image,exception) != MagickFalse) &&
-    (IsImageGray(reconstruct_image,exception) != MagickFalse) ? MagickTrue :
-    MagickFalse;
-  if (grayscale != MagickFalse)
-    return(MagickTrue);
   /*
     Compute perceptual hash in the HCLP colorspace.
   */
-  phash_image=PerceptualImageHash(image,HCLpColorspace,exception);
-  if (phash_image == (Image *) NULL)
-    return(MagickFalse);
-  image_moments=GetImageMoments(phash_image,exception);
-  phash_image=DestroyImage(phash_image);
-  if (image_moments == (ChannelMoments *) NULL)
-    return(MagickFalse);
-  phash_image=PerceptualImageHash(reconstruct_image,HCLpColorspace,exception);
-  if (phash_image == (Image *) NULL)
-    {
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-      return(MagickFalse);
-    }
-  reconstruct_moments=GetImageMoments(phash_image,exception);
-  phash_image=DestroyImage(phash_image);
-  if (reconstruct_moments == (ChannelMoments *) NULL)
-    {
-      image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-      return(MagickFalse);
-    }
-  /*
-    Compute sum of moment differences squared.
-  */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4)
 #endif
@@ -1257,8 +1183,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         alpha,
         beta;
 
-      alpha=MagickLog10(image_moments[channel].I[i]);
-      beta=MagickLog10(reconstruct_moments[channel].I[i]);
+      alpha=image_phash[channel].Q[i];
+      beta=reconstruct_phash[channel].Q[i];
       difference+=(beta-alpha)*(beta-alpha);
     }
     distortion[channel]+=difference;
@@ -1267,11 +1193,15 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
 #endif
     distortion[CompositePixelChannel]+=difference;
   }
-  image_moments=(ChannelMoments *) RelinquishMagickMemory(image_moments);
-  reconstruct_moments=(ChannelMoments *) RelinquishMagickMemory(
-    reconstruct_moments);
+  /*
+    Free resources.
+  */
+  reconstruct_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(
+    reconstruct_phash);
+  image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
   return(MagickTrue);
 }
+
 
 
 static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
