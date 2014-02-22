@@ -57,6 +57,13 @@ typedef struct _ChannelMoments
     ellipse_intensity;
 } ChannelMoments;
 
+typedef struct _ChannelPerceptualHash
+{
+  double
+    P[32],
+    Q[32];
+} ChannelPerceptualHash;
+
 typedef enum
 {
   UndefinedEvaluateOperator,
@@ -120,6 +127,9 @@ extern MagickExport ChannelStatistics
 
 extern MagickExport ChannelMoments
   *GetImageMoments(const Image *,ExceptionInfo *);
+
+extern MagickExport ChannelPerceptualHash
+  *GetImageChannelPerceptualHash(const Image *,ExceptionInfo *);
 
 extern MagickExport Image
   *EvaluateImages(const Image *,const MagickEvaluateOperator,ExceptionInfo *),
