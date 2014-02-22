@@ -2565,7 +2565,9 @@ static void TIFFSetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
   const char
     *value;
 
-  (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
+  value=GetImageProperty(image,"tiff:document",exception);
+  if (value != (const char *) NULL)
+    (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,value);
   value=GetImageProperty(image,"tiff:hostcomputer",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_HOSTCOMPUTER,value);
