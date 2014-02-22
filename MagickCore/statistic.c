@@ -1646,12 +1646,12 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelPerceptualHash() returns the perceptual hash of one or more
+%  GetImagePerceptualHash() returns the perceptual hash of one or more
 %  image channels.
 %
-%  The format of the GetImageChannelPerceptualHash method is:
+%  The format of the GetImagePerceptualHash method is:
 %
-%      ChannelPerceptualHash *GetImageChannelPerceptualHash(const Image *image,
+%      ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1671,7 +1671,7 @@ static inline double MagickLog10(const double x)
  return(log10(fabs(x)));
 }
 
-MagickExport ChannelPerceptualHash *GetImageChannelPerceptualHash(
+MagickExport ChannelPerceptualHash *GetImagePerceptualHash(
   const Image *image,ExceptionInfo *exception)
 {
   ChannelMoments

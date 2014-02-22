@@ -1125,10 +1125,10 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   /*
     Compute perceptual hash in the sRGB colorspace.
   */
-  image_phash=GetImageChannelPerceptualHash(image,exception);
+  image_phash=GetImagePerceptualHash(image,exception);
   if (image_phash == (ChannelPerceptualHash *) NULL)
     return(MagickFalse);
-  reconstruct_phash=GetImageChannelPerceptualHash(reconstruct_image,exception);
+  reconstruct_phash=GetImagePerceptualHash(reconstruct_image,exception);
   if (image_phash == (ChannelPerceptualHash *) NULL)
     {
       image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
