@@ -39,7 +39,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/property.h"
+#include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/color-private.h"
@@ -56,6 +56,7 @@
 #include "magick/option.h"
 #include "magick/pixel.h"
 #include "magick/pixel-private.h"
+#include "magick/property.h"
 #include "magick/quantum.h"
 #include "magick/quantum-private.h"
 #include "magick/resource_.h"

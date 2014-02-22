@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/attribute.h"
 #include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/colorspace-private.h"
