@@ -2552,7 +2552,9 @@ static void TIFFSetProperties(TIFF *tiff,Image *image)
   const char
     *value;
 
-  (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
+  value=GetImageProperty(image,"tiff:document");
+  if (value != (const char *) NULL)
+    (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,value);
   value=GetImageProperty(image,"tiff:hostcomputer");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_HOSTCOMPUTER,value);
