@@ -175,6 +175,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/attribute.h"
 #include "magick/cache-view.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
