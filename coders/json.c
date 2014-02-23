@@ -418,6 +418,33 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
   return(n);
 }
 
+static ssize_t PrintChannelPerceptualHash(FILE *file,const ChannelType channel,
+  const char *name,const MagickBooleanType separator,
+  const ChannelPerceptualHash *channel_phash)
+{
+  register ssize_t
+    i;
+
+  ssize_t
+    n;
+
+  n=FormatLocaleFile(file,"      \"%s\": {\n",name);
+  for (i=0; i < 7; i++)
+    n+=FormatLocaleFile(file,
+      "        \"phash%.20g\": [ \"%.*g\", \"%.*g\" ],\n",(double) i,
+      GetMagickPrecision(),channel_phash[channel].P[i],
+      GetMagickPrecision(),channel_phash[channel].Q[i]);
+  n+=FormatLocaleFile(file,
+    "        \"phash%.20g\": [ \"%.*g\", \"%.*g\" ]\n",(double) i,
+    GetMagickPrecision(),channel_phash[channel].P[i],
+    GetMagickPrecision(),channel_phash[channel].Q[i]);
+  (void) FormatLocaleFile(file,"      }");
+  if (separator != MagickFalse)
+    (void) FormatLocaleFile(file,",");
+  (void) FormatLocaleFile(file,"\n");
+  return(n);
+}
+
 static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   const char *name,const double scale,
   const ChannelStatistics *channel_statistics)
@@ -455,6 +482,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
 
   ChannelMoments
     *channel_moments;
+
+  ChannelPerceptualHash
+    *channel_phash;
 
   ChannelStatistics
     *channel_statistics;
@@ -636,6 +666,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     MagickColorspaceOptions,(ssize_t) image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
+  channel_phash=(ChannelPerceptualHash *) NULL;
   channel_features=(ChannelFeatures *) NULL;
   colorspace=image->colorspace;
   scale=1;
@@ -651,7 +682,10 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       if (artifact == (const char *) NULL)
         artifact=GetImageArtifact(image,"json:moments");
       if (artifact != (const char *) NULL)
-        channel_moments=GetImageMoments(image,exception);
+        {
+          channel_moments=GetImageMoments(image,exception);
+          channel_phash=GetImagePerceptualHash(image,exception);
+        }
       artifact=GetImageArtifact(image,"identify:features");
       if (artifact == (const char *) NULL)
         artifact=GetImageArtifact(image,"json:features");
@@ -799,6 +833,22 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
           channel_moments);
       channel_moments=(ChannelMoments *) RelinquishMagickMemory(
         channel_moments);
+    }
+  if (channel_phash != (ChannelPerceptualHash *) NULL)
+    {
+      (void) FormatLocaleFile(file,"    \"channelPerceptualHash\": {\n");
+      if (image->alpha_trait == BlendPixelTrait)
+        (void) PrintChannelPerceptualHash(file,AlphaChannel,"alphaAlpha",
+          MagickTrue,channel_phash);
+      (void) PrintChannelPerceptualHash(file,RedChannel,"redHue",MagickTrue,
+        channel_phash);
+      (void) PrintChannelPerceptualHash(file,GreenChannel,"greenChroma",
+        MagickTrue,channel_phash);
+      (void) PrintChannelPerceptualHash(file,BlueChannel,"blueLuma",MagickFalse,
+        channel_phash);
+      (void) FormatLocaleFile(file,"    },\n");
+      channel_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(
+        channel_phash);
     }
   if (channel_features != (ChannelFeatures *) NULL)
     {
