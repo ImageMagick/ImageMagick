@@ -345,6 +345,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     cmyk,
     cropbox,
+    fitPage,
     trimbox,
     status;
 
@@ -563,6 +564,32 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       page.height=(size_t) ceil((double) ((hires_bounds.y2-hires_bounds.y1)*
         image->resolution.y/delta.y)-0.5);
     }
+  fitPage=MagickFalse;
+  option=GetImageOption(image_info,"pdf:fit-page");
+  if (option != (char *) NULL)
+  {
+    char
+      *geometry;
+
+    MagickStatusType
+      flags;
+
+    geometry=GetPageGeometry(option);
+    flags=ParseMetaGeometry(geometry,&page.x,&page.y,&page.width,&page.height);
+    if (flags == NoValue)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "InvalidGeometry","`%s'",option);
+        image=DestroyImage(image);
+        return((Image *) NULL);
+      }
+    page.width=(size_t) ceil((double) (page.width*image->resolution.x/delta.x)
+      -0.5);
+    page.height=(size_t) ceil((double) (page.height*image->resolution.y/
+      delta.y) -0.5);
+    geometry=DestroyString(geometry);
+    fitPage=MagickTrue;
+  }
   (void) CloseBlob(image);
   if ((fabs(angle) == 90.0) || (fabs(angle) == 270.0))
     {
@@ -608,9 +635,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   *options='\0';
   (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",image->resolution.x,
     image->resolution.y);
-  if (image_info->page != (char *) NULL)
+  if ((image_info->page != (char *) NULL) || (fitPage != MagickFalse))
     (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
       page.width,(double) page.height);
+  if (fitPage != MagickFalse)
+    (void) ConcatenateMagickString(options,"-dPDFFitPage ",MaxTextExtent);
   if (cmyk != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseCIEColor ",MaxTextExtent);
   if (cropbox != MagickFalse)
@@ -642,7 +671,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) FormatLocaleString(command,MaxTextExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
-    read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
+    read_info->antialias != MagickFalse ? 4 : 1,options,filename,
     postscript_filename,input_filename);
   status=InvokePDFDelegate(read_info->verbose,command,exception);
   (void) RelinquishUniqueFileResource(postscript_filename);
