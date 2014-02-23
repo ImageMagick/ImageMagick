@@ -430,7 +430,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
   page=AcquireString(page_geometry);
   for (i=0; *PageSizes[i] != (char *) NULL; i++)
-    if (LocaleNCompare(PageSizes[i][0],page,strlen(PageSizes[i][0])) == 0)
+    if (LocaleNCompare(PageSizes[i][0],page,strlen(page)) == 0)
       {
         RectangleInfo
           geometry;
