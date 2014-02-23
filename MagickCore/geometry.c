@@ -357,7 +357,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
       { "a2",  "1191x1684" },
       { "a3",  "842x1191" },
       { "a4",  "595x842" },
-      { "a4smaLL", "595x842" },
+      { "a4small", "595x842" },
       { "a5",  "420x595" },
       { "a6",  "297x420" },
       { "a7",  "210x297" },
@@ -413,7 +413,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
       { "ledger",  "1224x792" },
       { "legal",  "612x1008" },
       { "letter", "612x792" },
-      { "lettersmaLL",  "612x792" },
+      { "lettersmall",  "612x792" },
       { "quarto",  "610x780" },
       { "statement",  "396x612" },
       { "tabloid",  "792x1224" },
@@ -430,7 +430,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
   page=AcquireString(page_geometry);
   for (i=0; *PageSizes[i] != (char *) NULL; i++)
-    if (LocaleCompare(PageSizes[i][0],page) == 0)
+    if (LocaleNCompare(PageSizes[i][0],page,strlen(PageSizes[i][0])) == 0)
       {
         RectangleInfo
           geometry;
