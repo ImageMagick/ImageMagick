@@ -429,7 +429,7 @@ static ssize_t PrintChannelPerceptualHash(FILE *file,const ChannelType channel,
     n;
 
   n=FormatLocaleFile(file,"      \"%s\": {\n",name);
-  for (i=0; i < 7; i++)
+  for (i=0; i < 6; i++)
     n+=FormatLocaleFile(file,
       "        \"phash%.20g\": [ \"%.*g\", \"%.*g\" ],\n",i+1.0,
       GetMagickPrecision(),channel_phash[channel].P[i],
