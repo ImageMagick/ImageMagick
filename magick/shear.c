@@ -1556,7 +1556,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
           indexes--;
           q--;
           shear_indexes--;
-          if ((size_t) (x_offset+width+step-i) >= image->columns)
+          if ((size_t) (x_offset+width+step-i) > image->columns)
             continue;
           SetMagickPixelPacket(image,p,indexes,&source);
           MagickPixelCompositeAreaBlend(&pixel,(MagickRealType) pixel.opacity,
@@ -1777,7 +1777,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
           indexes--;
           q--;
           shear_indexes--;
-          if ((size_t) (y_offset+height+step-i) >= image->rows)
+          if ((size_t) (y_offset+height+step-i) > image->rows)
             continue;
           SetMagickPixelPacket(image,p,indexes,&source);
           MagickPixelCompositeAreaBlend(&pixel,(MagickRealType) pixel.opacity,
@@ -1858,10 +1858,6 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     *integral_image,
     *shear_image;
 
-  ssize_t
-    x_offset,
-    y_offset;
-
   MagickBooleanType
     status;
 
@@ -1869,10 +1865,8 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     shear;
 
   RectangleInfo
-    border_info;
-
-  size_t
-    y_width;
+    border_info,
+    bounds;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1905,18 +1899,18 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   /*
     Compute image size.
   */
-  y_width=image->columns+(ssize_t) floor(fabs(shear.x)*image->rows+0.5);
-  x_offset=(ssize_t) ceil((double) image->columns+((fabs(shear.x)*image->rows)-
+  bounds.width=image->columns+(ssize_t) floor(fabs(shear.x)*image->rows+0.5);
+  bounds.x=(ssize_t) ceil((double) image->columns+((fabs(shear.x)*image->rows)-
     image->columns)/2.0-0.5);
-  y_offset=(ssize_t) ceil((double) image->rows+((fabs(shear.y)*y_width)-
+  bounds.y=(ssize_t) ceil((double) image->rows+((fabs(shear.y)*bounds.width)-
     image->rows)/2.0-0.5);
   /*
     Surround image with border.
   */
   integral_image->border_color=integral_image->background_color;
   integral_image->compose=CopyCompositeOp;
-  border_info.width=(size_t) x_offset;
-  border_info.height=(size_t) y_offset;
+  border_info.width=(size_t) bounds.x;
+  border_info.height=(size_t) bounds.y;
   shear_image=BorderImage(integral_image,&border_info,exception);
   integral_image=DestroyImage(integral_image);
   if (shear_image == (Image *) NULL)
@@ -1926,15 +1920,15 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   */
   if (shear_image->matte == MagickFalse)
     (void) SetImageAlphaChannel(shear_image,OpaqueAlphaChannel);
-  status=XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
+  status=XShearImage(shear_image,shear.x,image->columns,image->rows,bounds.x,
     (ssize_t) (shear_image->rows-image->rows)/2,exception);
   if (status == MagickFalse)
     {
       shear_image=DestroyImage(shear_image);
       return((Image *) NULL);
     }
-  status=YShearImage(shear_image,shear.y,y_width,image->rows,(ssize_t)
-    (shear_image->columns-y_width)/2,y_offset,exception);
+  status=YShearImage(shear_image,shear.y,bounds.width,image->rows,(ssize_t)
+    (shear_image->columns-bounds.width)/2,bounds.y,exception);
   if (status == MagickFalse)
     {
       shear_image=DestroyImage(shear_image);
@@ -1996,10 +1990,6 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
     *integral_image,
     *rotate_image;
 
-  ssize_t
-    x_offset,
-    y_offset;
-
   MagickBooleanType
     status;
 
@@ -2010,13 +2000,14 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
     shear;
 
   RectangleInfo
-    border_info;
+    border_info,
+    bounds;
 
   size_t
     height,
     rotations,
-    width,
-    y_width;
+    shear_width,
+    width;
 
   /*
     Adjust rotation angle.
@@ -2052,27 +2043,24 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
   if (integral_image->matte == MagickFalse)
     (void) SetImageAlphaChannel(integral_image,OpaqueAlphaChannel);
   /*
-    Compute image size.
+    Compute maximum bounds for 3 shear operations.
   */
-  width=image->columns;
-  height=image->rows;
-  if ((rotations == 1) || (rotations == 3))
-    {
-      width=image->rows;
-      height=image->columns;
-    }
-  y_width=width+(ssize_t) floor(fabs(shear.x)*height+0.5);
-  x_offset=(ssize_t) ceil((double) width+((fabs(shear.y)*height)-width)/2.0-
-    0.5);
-  y_offset=(ssize_t) ceil((double) height+((fabs(shear.y)*y_width)-height)/2.0-
-    0.5);
+  width=integral_image->columns;
+  height=integral_image->rows;
+  bounds.width=(size_t) floor(fabs((double) height*shear.x)+width+0.5);
+  bounds.height=(size_t) floor(fabs((double) bounds.width*shear.y)+height+0.5);
+  shear_width=(size_t) floor(fabs((double) bounds.height*shear.x)+
+    bounds.width+0.5);
+  bounds.x=(ssize_t) floor((double) ((shear_width > bounds.width) ? width :
+    bounds.width-shear_width+2)/2.0+0.5);
+  bounds.y=(ssize_t) floor(((double) bounds.height-height+2)/2.0+0.5);
   /*
     Surround image with a border.
   */
   integral_image->border_color=integral_image->background_color;
   integral_image->compose=CopyCompositeOp;
-  border_info.width=(size_t) x_offset;
-  border_info.height=(size_t) y_offset;
+  border_info.width=(size_t) bounds.x;
+  border_info.height=(size_t) bounds.y;
   rotate_image=BorderImage(integral_image,&border_info,exception);
   integral_image=DestroyImage(integral_image);
   if (rotate_image == (Image *) NULL)
@@ -2080,22 +2068,23 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
   /*
     Rotate the image.
   */
-  status=XShearImage(rotate_image,shear.x,width,height,x_offset,(ssize_t)
+  status=XShearImage(rotate_image,shear.x,width,height,bounds.x,(ssize_t)
     (rotate_image->rows-height)/2,exception);
   if (status == MagickFalse)
     {
       rotate_image=DestroyImage(rotate_image);
       return((Image *) NULL);
     }
-  status=YShearImage(rotate_image,shear.y,y_width,height,(ssize_t)
-    (rotate_image->columns-y_width)/2,y_offset,exception);
+  status=YShearImage(rotate_image,shear.y,bounds.width,height,(ssize_t)
+    (rotate_image->columns-bounds.width)/2,bounds.y,exception);
   if (status == MagickFalse)
     {
       rotate_image=DestroyImage(rotate_image);
       return((Image *) NULL);
     }
-  status=XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,(ssize_t)
-    (rotate_image->columns-y_width)/2,0,exception);
+  status=XShearImage(rotate_image,shear.x,bounds.width,bounds.height,(ssize_t)
+    (rotate_image->columns-bounds.width)/2,(ssize_t) (rotate_image->rows-
+    bounds.height)/2,exception);
   if (status == MagickFalse)
     {
       rotate_image=DestroyImage(rotate_image);
