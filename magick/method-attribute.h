@@ -81,7 +81,6 @@ extern "C" {
 #  endif
 
 # endif
-# define MagickGlobal __declspec(thread)
 # if defined(_VISUALC_)
 #  pragma warning(disable : 4018)
 #  pragma warning(disable : 4068)
@@ -100,7 +99,6 @@ extern "C" {
 #   define MagickPrivate
 # endif
 # define ModuleExport  MagickExport
-# define MagickGlobal
 #endif
 
 #define MagickSignature  0xabacadabUL
