@@ -266,12 +266,6 @@ extern "C" {
 #endif
 #endif
 
-#if defined(_MT) && defined(MAGICKCORE_WINDOWS_SUPPORT)
-#  define SAFE_GLOBAL  __declspec(thread)
-#else
-#  define SAFE_GLOBAL
-#endif
-
 #if defined(__BORLANDC__)
 #undef _O_RANDOM
 #define _O_RANDOM 0
