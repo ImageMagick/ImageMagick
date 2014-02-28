@@ -1,5 +1,5 @@
-These individuals have made source code contributions to the ImageMagick
-project in the last few years:
+These individuals active developers and have made source code contributions to
+the ImageMagick project in the last few years:
 
 Cristy
      Principal architect of ImageMagick and still maintains the ImageMagick
@@ -39,7 +39,7 @@ Fred Weinhaus
 
 
 These individuals have made source code contributions to the ImageMagick
-project more than 2 years ago:
+project but are no longer active developers:
 
 Kelly Bergougnoux
      Authored the Cineon image coder (based on the existing DPX source).
@@ -114,7 +114,7 @@ Milan Votava
      Protocol.
 
 
-We acknowledge these non-source code contributors to the ImageMagick project:
+We acknowledge these non-developer contributors to the ImageMagick project:
 
 Rod Bogart and John W. Peterson, University of Utah
      Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
