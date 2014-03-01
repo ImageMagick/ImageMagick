@@ -1695,7 +1695,7 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
   return(MagickTrue);
 }
 
-MagickExport MagickBooleanType SyncImageProfiles(Image *image)
+MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
 {
   MagickBooleanType
     status;
