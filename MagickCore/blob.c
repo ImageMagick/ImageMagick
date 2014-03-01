@@ -1833,7 +1833,10 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
             {
               (void) FormatLocaleString(filename,MaxTextExtent,"%s:%s",
                 images->magick,unique);
+              images->blob->exempt=MagickTrue;
+              *images->filename='\0';
               status=WriteImages(blob_info,images,filename,exception);
+              (void) fclose(blob_info->file);
               if (status != MagickFalse)
                 blob=FileToBlob(unique,~0UL,length,exception);
             }
