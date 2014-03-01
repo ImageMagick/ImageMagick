@@ -1044,8 +1044,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (image->alpha_trait == BlendPixelTrait)
                           {
                             p=PushCharPixel(p,&pixel);
-                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
-                              max_value),q);
+                            if (image->depth != 1)
+                              SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
+                                max_value),q);
+                            else
+                              SetPixelAlpha(image,QuantumRange-
+                                ScaleAnyToQuantum(pixel,max_value),q);
                           }
                         q+=GetPixelChannels(image);
                       }
@@ -1059,7 +1063,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       for (x=0; x < (ssize_t) image->columns; x++)
                       {
                         p=PushShortPixel(MSBEndian,p,&pixel);
-                        SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         SetPixelAlpha(image,OpaqueAlpha,q);
                         if (image->alpha_trait == BlendPixelTrait)
                           {
