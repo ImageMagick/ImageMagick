@@ -1558,25 +1558,31 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
   */
   length=GetStringInfoLength(profile);
   exif=GetStringInfoDatum(profile);
-  while (length != 0)
-  {
-    if (ReadProfileByte(&exif,&length) != 0x45)
-      continue;
-    if (ReadProfileByte(&exif,&length) != 0x78)
-      continue;
-    if (ReadProfileByte(&exif,&length) != 0x69)
-      continue;
-    if (ReadProfileByte(&exif,&length) != 0x66)
-      continue;
-    if (ReadProfileByte(&exif,&length) != 0x00)
-      continue;
-    if (ReadProfileByte(&exif,&length) != 0x00)
-      continue;
-    break;
-  }
   if (length < 16)
     return(MagickFalse);
   id=(ssize_t) ReadProfileShort(LSBEndian,exif);
+  if ((id != 0x4949) && (id != 0x4D4D))
+    {
+      while (length != 0)
+      {
+        if (ReadProfileByte(&exif,&length) != 0x45)
+          continue;
+        if (ReadProfileByte(&exif,&length) != 0x78)
+          continue;
+        if (ReadProfileByte(&exif,&length) != 0x69)
+          continue;
+        if (ReadProfileByte(&exif,&length) != 0x66)
+          continue;
+        if (ReadProfileByte(&exif,&length) != 0x00)
+          continue;
+        if (ReadProfileByte(&exif,&length) != 0x00)
+          continue;
+        break;
+      }
+      if (length < 16)
+        return(MagickFalse);
+      id=(ssize_t) ReadProfileShort(LSBEndian,exif);
+    }
   endian=LSBEndian;
   if (id == 0x4949)
     endian=LSBEndian;
