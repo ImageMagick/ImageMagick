@@ -1300,6 +1300,7 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
     if (IsPathAccessible(filename) != MagickFalse)
       return(TRUE);
   }
+  *path='\0';
   return(FALSE);
 }
 
