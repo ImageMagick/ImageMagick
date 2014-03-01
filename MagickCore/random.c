@@ -117,8 +117,10 @@ struct _RandomInfo
 #define environ (*_NSGetEnviron())
 #endif
 
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 extern char
   **environ;
+#endif
 
 /*
   Global declarations.
