@@ -2,6 +2,8 @@
   * The PSD reader creates a merged image if the image does not contain one.
   * Added option pdf:fit-page to scale a pdf to the specified size (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=25044).
+  * The ResolutionInfo in the 8BIM profile will be updated when an image is
+    written.
 
 2014-02-21  6.8.8-8 Cristy  <quetzlzacatenango@image...>
   * Convert linear RGB to sRGB before writing the Targa image format.
