@@ -1583,7 +1583,6 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
               (void) FormatLocaleString(image->filename,MaxTextExtent,"%s:%s",
                 image->magick,unique);
               status=WriteImage(blob_info,image);
-              (void) fclose(blob_info->file);
               if (status == MagickFalse)
                 InheritException(exception,&image->exception);
               else
@@ -1840,7 +1839,6 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
               (void) FormatLocaleString(filename,MaxTextExtent,"%s:%s",
                 images->magick,unique);
               status=WriteImages(blob_info,images,filename,exception);
-              (void) fclose(blob_info->file);
               if (status == MagickFalse)
                 InheritException(exception,&images->exception);
               else
