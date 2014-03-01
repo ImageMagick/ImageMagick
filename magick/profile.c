@@ -1391,6 +1391,36 @@ static inline size_t ReadProfileLong(const EndianType endian,
   return((size_t) (value & 0xffffffff));
 }
 
+static inline size_t ReadProfileMSBLong(unsigned char **p,
+  size_t *length)
+{
+  size_t
+    value;
+
+  if (*length < 4)
+    return(0);
+
+  value=ReadProfileLong(MSBEndian,*p);
+  (*length)-=4;
+  *p+=4;
+  return(value);
+}
+
+static inline unsigned short ReadProfileMSBShort(unsigned char **p,
+  size_t *length)
+{
+  unsigned short
+    value;
+
+  if (*length < 2)
+    return(0);
+
+  value=ReadProfileShort(MSBEndian,*p);
+  (*length)-=2;
+  *p+=2;
+  return(value);
+}
+
 static inline void WriteProfileLong(const EndianType endian,
   const size_t value,unsigned char *p)
 {
@@ -1431,7 +1461,56 @@ static void WriteProfileShort(const EndianType endian,
   (void) CopyMagickMemory(p,buffer,2);
 }
 
-MagickExport MagickBooleanType SyncImageProfiles(Image *image)
+static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
+{
+  size_t
+    count,
+    length;
+
+  unsigned char
+    *p;
+
+  unsigned short
+    id;
+
+  length=GetStringInfoLength(profile);
+  p=GetStringInfoDatum(profile);
+  while(length != 0)
+  {
+    if (ReadProfileByte(&p,&length) != 0x38)
+      continue;
+    if (ReadProfileByte(&p,&length) != 0x42)
+      continue;
+    if (ReadProfileByte(&p,&length) != 0x49)
+      continue;
+    if (ReadProfileByte(&p,&length) != 0x4D)
+      continue;
+    if (length < 7)
+      return(MagickFalse);
+    id=ReadProfileMSBShort(&p,&length);
+    count=ReadProfileByte(&p,&length);
+    if (count > length)
+      return(MagickFalse);
+    p+=count;
+    if ((*p & 0x01) == 0)
+      p++;
+    count=ReadProfileMSBLong(&p,&length);
+    if (count > length)
+      return(MagickFalse);
+    if (id == 0x3ED && count == 16)
+      {
+        WriteProfileShort(MSBEndian, (unsigned short) (image->x_resolution+
+          0.5),p);
+        WriteProfileShort(MSBEndian, (unsigned short) (image->y_resolution+
+          0.5),p+8);
+      }
+    p+=count;
+    length-=count;
+  }
+  return(MagickTrue);
+}
+
+static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
 {
 #define MaxDirectoryStack  16
 #define EXIF_DELIMITER  "\n"
@@ -1470,9 +1549,6 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   static int
     format_bytes[] = {0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
 
-  StringInfo
-    *profile;
-
   unsigned char
     *directory,
     *exif;
@@ -1480,9 +1556,6 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   /*
     Set EXIF resolution tag.
   */
-  profile=(StringInfo *) GetImageProfile(image,"EXIF");
-  if (profile == (StringInfo *) NULL)
-    return(MagickTrue);
   length=GetStringInfoLength(profile);
   exif=GetStringInfoDatum(profile);
   while (length != 0)
@@ -1651,4 +1724,24 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   } while (level > 0);
   exif_resources=DestroySplayTree(exif_resources);
   return(MagickTrue);
+}
+
+MagickExport MagickBooleanType SyncImageProfiles(Image *image)
+{
+  MagickBooleanType
+    status;
+
+  StringInfo
+    *profile;
+
+  status=MagickTrue;
+  profile=(StringInfo *) GetImageProfile(image,"8BIM");
+  if (profile != (StringInfo *) NULL)
+    if (Sync8BimProfile(image,profile) == MagickFalse)
+      status=MagickFalse;
+  profile=(StringInfo *) GetImageProfile(image,"EXIF");
+  if (profile != (StringInfo *) NULL)
+    if (SyncExifProfile(image,profile) == MagickFalse)
+      status=MagickFalse;
+  return(status);
 }
