@@ -1,5 +1,5 @@
-These individuals active developers and have made source code contributions to
-the ImageMagick project in the last few years:
+These active developers and have made source code contributions to the
+ImageMagick project in the last few years:
 
 Cristy
      Principal architect of ImageMagick and still maintains the ImageMagick
@@ -39,7 +39,7 @@ Fred Weinhaus
 
 
 These individuals have made source code contributions to the ImageMagick
-project but are no longer active developers:
+project in the past but are no longer active developers:
 
 Kelly Bergougnoux
      Authored the Cineon image coder (based on the existing DPX source).
