@@ -951,6 +951,43 @@ static void *DestroyTypeNode(void *type_info)
   return(RelinquishMagickMemory(p));
 }
 
+static inline MagickBooleanType SetTypeNodePath(const char *filename,
+char *font_path,const char *token,char **target)
+{
+  char
+   *path;
+
+  path=ConstantString(token);
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+  if (strchr(path,'@') != (char *) NULL)
+    SubstituteString(&path,"@ghostscript_font_path@",font_path);
+#endif
+  if (IsPathAccessible(path) == MagickFalse)
+    {
+      /*
+        Relative path.
+      */
+      path=DestroyString(path);
+      GetPathComponent(filename,HeadPath,font_path);
+      (void) ConcatenateMagickString(font_path,DirectorySeparator,
+        MaxTextExtent);
+      (void) ConcatenateMagickString(font_path,token,MaxTextExtent);
+      path=ConstantString(font_path);
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+      if (strchr(path,'@') != (char *) NULL)
+        SubstituteString(&path,"@ghostscript_font_path@","");
+#endif
+      if (IsPathAccessible(path) == MagickFalse)
+        {
+          path=DestroyString(path);
+          return(MagickFalse);
+        }
+    }
+
+  *target=path;
+  return(MagickTrue);
+}
+
 static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
   const size_t depth,ExceptionInfo *exception)
 {
@@ -1148,32 +1185,9 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"glyphs") == 0)
           {
-            char
-              *path;
-
-            path=ConstantString(token);
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-            if (strchr(path,'@') != (char *) NULL)
-              SubstituteString(&path,"@ghostscript_font_path@",font_path);
-#endif
-            if (IsPathAccessible(path) == MagickFalse)
-              {
-                /*
-                  Relative path.
-                */
-                path=DestroyString(path);
-                GetPathComponent(filename,HeadPath,font_path);
-                (void) ConcatenateMagickString(font_path,DirectorySeparator,
-                  MaxTextExtent);
-                (void) ConcatenateMagickString(font_path,token,MaxTextExtent);
-                path=ConstantString(font_path);
-                if (IsPathAccessible(path) == MagickFalse)
-                  {
-                    path=DestroyString(path);
-                    path=ConstantString(token);
-                  }
-              }
-            type_info->glyphs=path;
+            if (SetTypeNodePath(filename,font_path,token,&type_info->glyphs) ==
+                MagickFalse)
+              type_info=(TypeInfo *) DestroyTypeNode(type_info);
             break;
           }
         break;
@@ -1183,27 +1197,9 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"metrics") == 0)
           {
-            char
-              *path;
-
-            path=ConstantString(token);
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-            if (strchr(path,'@') != (char *) NULL)
-              SubstituteString(&path,"@ghostscript_font_path@",font_path);
-#endif
-            if (IsPathAccessible(path) == MagickFalse)
-              {
-                /*
-                  Relative path.
-                */
-                path=DestroyString(path);
-                GetPathComponent(filename,HeadPath,font_path);
-                (void) ConcatenateMagickString(font_path,DirectorySeparator,
-                  MaxTextExtent);
-                (void) ConcatenateMagickString(font_path,token,MaxTextExtent);
-                path=ConstantString(font_path);
-              }
-            type_info->metrics=path;
+            if (SetTypeNodePath(filename,font_path,token,&type_info->metrics) ==
+                MagickFalse)
+              type_info=(TypeInfo *) DestroyTypeNode(type_info);
             break;
           }
         break;
