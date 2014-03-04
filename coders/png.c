@@ -3665,19 +3665,25 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if ((ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     {
-      if ((!png_get_valid(ping,ping_info,PNG_INFO_gAMA) ||
-          image->gamma == 1.0) && ping_found_sRGB != MagickTrue)
+      double
+        image_gamma = image->gamma;
+
+      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+         "    image->gamma=%f",(float) image_gamma);
+
+      if (image_gamma > 0.75)
         {
-          /* Set image->gamma to 1.0, image->rendering_intent to Undefined,
+          /* Set image->rendering_intent to Undefined,
            * image->colorspace to GRAY, and reset image->chromaticity.
            */
           image->intensity = Rec709LuminancePixelIntensityMethod;
           SetImageColorspace(image,GRAYColorspace);
+          image->gamma = image_gamma;
         }
     }
 
   (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  image->colorspace=%d",(int) image->colorspace);
+      "    image->colorspace=%d",(int) image->colorspace);
 
   for (j = 0; j < 2; j++)
   {
