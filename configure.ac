@@ -1941,6 +1941,7 @@ if test "$with_fpx" != 'no'; then
             have_fpx='no (failed tests)'
         else
             FPX_LIBS='-lfpx'
+            LIBS="$FPX_LIBS $LIBS"
             AC_DEFINE(FPX_DELEGATE,1,Define if you have FlashPIX library)
             AC_MSG_RESULT([yes])
             have_fpx='yes'

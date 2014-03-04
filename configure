@@ -3698,7 +3698,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=14829M
+MAGICK_SVN_REVISION=15015M
 
 
 # Substitute library versioning
@@ -28971,6 +28971,7 @@ $as_echo "no -- some components failed test" >&6; }
             have_fpx='no (failed tests)'
         else
             FPX_LIBS='-lfpx'
+            LIBS="$FPX_LIBS $LIBS"
 
 $as_echo "#define FPX_DELEGATE 1" >>confdefs.h
 
