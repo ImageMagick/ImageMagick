@@ -61,7 +61,7 @@
 %
 %  The algorithm maps this domain onto a tree in which each node
 %  represents a cube within that domain.  In the following discussion
-%  these cubes are defined by the coordinate of two opposite vertices:
+%  these cubes are defined by the coordinate of two opposite vertices.
 %  The vertex nearest the origin in RGB space and the vertex farthest from
 %  the origin.
 %
@@ -717,7 +717,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
 %
 %    Sr, Sg, Sb : Sums of the red, green, and blue component values for
 %    all pixels not classified at a lower depth. The combination of
-%    these sums and n2  will ultimately characterize the mean color of a
+%    these sums and n2 will ultimately characterize the mean color of a
 %    set of pixels represented by this node.
 %
 %    E: the distance squared in RGB space between each pixel contained
