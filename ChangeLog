@@ -1,3 +1,8 @@
+2014-03-04  6.8.8-8 Glenn Randers-Pehrson <glennrp@image...>
+  * Reset colorspace to Grayscale when reading a gray PNG image with
+      gamma > 0.75 instead of when gamma==1.0 (reference
+      http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25136).
+
 2014-02-22  6.8.8-8 Dirk Lemstra <dirk@snakeware...>
   * The PSD reader creates a merged image if the image does not contain one.
   * Added option pdf:fit-page to scale a pdf to the specified size (reference
