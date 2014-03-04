@@ -2690,7 +2690,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobMSBLong(image,16);
             (void) WriteBlobMSBLong(image,0);
             (void) WriteBlobMSBLong(image,0);
-            (void) FormatLocaleString(layer_name,MaxTextExtent,"L%06ld",(long)
+            (void) FormatLocaleString(layer_name,MaxTextExtent,"L%03ld",(long)
               layer_count++);
             WritePascalString(image,layer_name,4);
           }
