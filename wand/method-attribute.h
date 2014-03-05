@@ -116,6 +116,12 @@ extern "C" {
 #  define wand_unreferenced(x)  /* nothing */
 #endif
 
+#if defined(__apple_build_version__)
+#  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
+#  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
+#  define magick_cold_spot
+#  define magick_hot_spot
+#else
 #if defined(__clang__) || (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
 #  define wand_alloc_size(x)  __attribute__((__alloc_size__(x)))
 #  define wand_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
@@ -126,6 +132,7 @@ extern "C" {
 #  define wand_alloc_sizes(x,y)  /* nothing */
 #  define wand_cold_spot
 #  define wand_hot_spot
+#endif
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
