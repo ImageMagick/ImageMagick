@@ -1924,6 +1924,8 @@ fi
 
 have_fpx='no'
 FPX_LIBS=''
+SAVED_LIBS=${LIBS}
+LIBS=${LIBS/-ldjvulibre/}
 if test "$with_fpx" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
     AC_MSG_CHECKING([for FlashPIX])
@@ -1941,7 +1943,6 @@ if test "$with_fpx" != 'no'; then
             have_fpx='no (failed tests)'
         else
             FPX_LIBS='-lfpx'
-            LIBS="$FPX_LIBS $LIBS"
             AC_DEFINE(FPX_DELEGATE,1,Define if you have FlashPIX library)
             AC_MSG_RESULT([yes])
             have_fpx='yes'
@@ -1953,6 +1954,7 @@ if test "$with_fpx" != 'no'; then
 fi
 AM_CONDITIONAL(FPX_DELEGATE, test "$have_fpx" = 'yes')
 AC_SUBST(FPX_LIBS)
+LIBS=${SAVED_LIBS}
 
 dnl ===========================================================================
 
