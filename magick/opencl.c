@@ -36,9 +36,9 @@
 %
 %
 */
- 
+ 
 /*
-Include declarations.
+  Include declarations.
 */
 #include "magick/studio.h"
 #include "magick/artifact.h"
@@ -100,11 +100,10 @@ struct _MagickCLEnv {
   MagickBooleanType disableProgramCache; /* disable the OpenCL program cache */
   cl_program programs[MAGICK_OPENCL_NUM_PROGRAMS]; /* one program object maps one kernel source file */
 
-  MagickBooleanType regenerateProfile;   /* re-run the microbenchmark in auto device selection mode */ 
+  MagickBooleanType regenerateProfile;   /* re-run the microbenchmark in auto device selection mode */
   SemaphoreInfo* lock;
 };
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -116,7 +115,7 @@ struct _MagickCLEnv {
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% AcquireMagickOpenCLEnv() allocates the MagickCLEnv structure 
+% AcquireMagickOpenCLEnv() allocates the MagickCLEnv structure
 %
 */
 
@@ -199,7 +198,7 @@ SemaphoreInfo* defaultCLEnvLock;
 */
 
 MagickExport MagickCLEnv GetDefaultOpenCLEnv()
-{ 
+{
   if (defaultCLEnv == NULL)
   {
     if (defaultCLEnvLock == NULL)
@@ -208,9 +207,9 @@ MagickExport MagickCLEnv GetDefaultOpenCLEnv()
     }
     LockSemaphoreInfo(defaultCLEnvLock);
     defaultCLEnv = AcquireMagickOpenCLEnv();
-    UnlockSemaphoreInfo(defaultCLEnvLock); 
+    UnlockSemaphoreInfo(defaultCLEnvLock);
   }
-  return defaultCLEnv; 
+  return defaultCLEnv;
 }
 
 static void LockDefaultOpenCLEnv() {
@@ -242,9 +241,9 @@ static void UnlockDefaultOpenCLEnv() {
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetDefaultOpenCLEnv() sets the new OpenCL environment as default 
+%  SetDefaultOpenCLEnv() sets the new OpenCL environment as default
 %  and returns the old OpenCL environment
-%  
+%
 %  The format of the SetDefaultOpenCLEnv() method is:
 %
 %      MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv clEnv)
@@ -254,7 +253,7 @@ static void UnlockDefaultOpenCLEnv() {
 %    o clEnv: the new default OpenCL environment.
 %
 */
-MagickExport MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv clEnv)     
+MagickExport MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv clEnv)
 {
   MagickCLEnv oldEnv;
   LockDefaultOpenCLEnv();
@@ -262,10 +261,8 @@ MagickExport MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv clEnv)
   defaultCLEnv = clEnv;
   UnlockDefaultOpenCLEnv();
   return oldEnv;
-} 
-
-
-
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -277,18 +274,18 @@ MagickExport MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv clEnv)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMagickOpenCLEnvParam() sets the parameters in the OpenCL environment  
-%  
+%  SetMagickOpenCLEnvParam() sets the parameters in the OpenCL environment.
+%
 %  The format of the SetMagickOpenCLEnvParam() method is:
 %
-%      MagickBooleanType SetMagickOpenCLEnvParam(MagickCLEnv clEnv, 
-%        MagickOpenCLEnvParam param, size_t dataSize, void* data, 
+%      MagickBooleanType SetMagickOpenCLEnvParam(MagickCLEnv clEnv,
+%        MagickOpenCLEnvParam param, size_t dataSize, void* data,
 %        ExceptionInfo* exception)
 %
 %  A description of each parameter follows:
 %
 %    o clEnv: the OpenCL environment.
-%    
+%
 %    o param: the parameter to be set.
 %
 %    o dataSize: the data size of the parameter value.
@@ -2568,6 +2565,16 @@ const char* GetOpenCLCachedFilesDirectory() {
         /*
           Search $HOME/.config/ImageMagick.
         */
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config",home,
+          DirectorySeparator);
+        status=GetPathAttributes(path,&attributes);
+        if (status == MagickFalse) {
+#ifdef MAGICKCORE_WINDOWS_SUPPORT
+          mkdir(path);
+#else
+          mkdir(path, 0777);
+#endif
+        }
         (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config%sImageMagick",
           home,DirectorySeparator,DirectorySeparator);
         home=DestroyString(home);
@@ -2584,7 +2591,7 @@ const char* GetOpenCLCachedFilesDirectory() {
       }
       openclCachedFilesDirectory = temp;
     }
-    UnlockSemaphoreInfo(openclCachedFilesDirectoryLock); 
+    UnlockSemaphoreInfo(openclCachedFilesDirectoryLock);
   }
   return openclCachedFilesDirectory;
 }
@@ -2620,7 +2627,7 @@ void OpenCLLog(const char* message) {
       if (clEnv->OpenCLInitialized && !clEnv->OpenCLDisabled)
       {
         allocSize = GetOpenCLDeviceMaxMemAllocSize(clEnv);
-        fprintf(log, "Devic Max Memory Alloc Size: %ld\n", allocSize);
+        fprintf(log, "Device Max Memory Alloc Size: %ld\n", allocSize);
       }
 
       fclose(log);
