@@ -3171,6 +3171,14 @@ esac
 AC_DEFINE_UNQUOTED(DOCUMENTATION_PATH,"$DEFINE_DOCUMENTATION_PATH",[Directory where ImageMagick documents live.])
 AC_SUBST(DOCUMENTATION_PATH)
 
+#
+# Enable/Disable documentation
+AC_ARG_ENABLE([docs],
+  [AS_HELP_STRING([--disable-docs],
+    [disable building of documentation])],
+  wantdocs=$enableval, wantdocs=detect)
+AM_CONDITIONAL([INSTALL_DOC], [test "$wantdocs" = "xyes"])
+
 # Subdirectory to place architecture-dependent configuration files
 CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
 AC_DEFINE_UNQUOTED(CONFIGURE_RELATIVE_PATH,"$CONFIGURE_RELATIVE_PATH",[Subdirectory of lib where architecture-dependent configuration files live.])

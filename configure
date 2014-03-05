@@ -739,6 +739,8 @@ SHAREARCH_DIRNAME
 SHAREARCH_BASEDIRNAME
 SHARE_PATH
 CONFIGURE_PATH
+INSTALL_DOC_FALSE
+INSTALL_DOC_TRUE
 DOCUMENTATION_PATH
 FILTER_PATH
 FILTER_DIRNAME
@@ -1196,6 +1198,7 @@ with_webp
 with_windows_font_dir
 with_wmf
 with_xml
+enable_docs
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1900,6 +1903,7 @@ Optional Features:
   --enable-gcov           enable 'gcov' profiling support
   --enable-legacy-support  install legacy command-line utilities (default disabled)
   --disable-assert        turn off assertions
+  --disable-docs          disable building of documentation
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -3698,7 +3702,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=15015:15016M
+MAGICK_SVN_REVISION=15015:15020M
 
 
 # Substitute library versioning
@@ -32670,6 +32674,24 @@ _ACEOF
 
 
 
+#
+# Enable/Disable documentation
+# Check whether --enable-docs was given.
+if test "${enable_docs+set}" = set; then :
+  enableval=$enable_docs; wantdocs=$enableval
+else
+  wantdocs=detect
+fi
+
+ if test "$wantdocs" = "xyes"; then
+  INSTALL_DOC_TRUE=
+  INSTALL_DOC_FALSE='#'
+else
+  INSTALL_DOC_TRUE='#'
+  INSTALL_DOC_FALSE=
+fi
+
+
 # Subdirectory to place architecture-dependent configuration files
 CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
 
@@ -36271,6 +36293,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${XML_DELEGATE_TRUE}" && test -z "${XML_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"XML_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${INSTALL_DOC_TRUE}" && test -z "${INSTALL_DOC_FALSE}"; then
+  as_fn_error $? "conditional \"INSTALL_DOC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${RPM_DELEGATE_TRUE}" && test -z "${RPM_DELEGATE_FALSE}"; then
