@@ -5077,18 +5077,20 @@ pkgconfig_DATA = \
 	$(MAGICKWAND_PKGCONFIG) \
 	$(MAGICKPP_PKGCONFIG)
 
+@INSTALL_DOC_FALSE@man_MANS = 
 
 # Manual pages to install
-man_MANS = \
-	$(MAGICKCORE_MANS) \
-	$(MAGICKWAND_MANS) \
-	$(MAGICKPP_MANS) \
-	$(UTILITIES_MANS)
+@INSTALL_DOC_TRUE@man_MANS = \
+@INSTALL_DOC_TRUE@	$(MAGICKCORE_MANS) \
+@INSTALL_DOC_TRUE@	$(MAGICKWAND_MANS) \
+@INSTALL_DOC_TRUE@	$(MAGICKPP_MANS) \
+@INSTALL_DOC_TRUE@	$(UTILITIES_MANS)
 
-doc_DATA = \
-	LICENSE \
-	ChangeLog \
-	NEWS.txt
+@INSTALL_DOC_FALSE@doc_DATA = 
+@INSTALL_DOC_TRUE@doc_DATA = \
+@INSTALL_DOC_TRUE@	LICENSE \
+@INSTALL_DOC_TRUE@	ChangeLog \
+@INSTALL_DOC_TRUE@	NEWS.txt
 
 @MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = \
 @MAINTAINER_MODE_TRUE@	magick-version \
@@ -5108,7 +5110,8 @@ pkgdocdir = $(DOCUMENTATION_PATH)
 DOCDIRSDOXYGEN = www/api/MagickCore www/api/MagickWand
 DOCDIRSMANUAL = images images/patterns www www/api www/source www/Magick++
 DOCDIRS = $(DOCDIRSMANUAL) $(DOCDIRSDOXYGEN)
-HTML_INSTALL_DATA_TARGETS = install-data-html
+@INSTALL_DOC_FALSE@HTML_INSTALL_DATA_TARGETS = 
+@INSTALL_DOC_TRUE@HTML_INSTALL_DATA_TARGETS = install-data-html
 
 # Uninstall HTML files
 HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
@@ -11199,6 +11202,7 @@ dist-hook:
 	    done \
 	  ) \
 	)
+
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
 	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
