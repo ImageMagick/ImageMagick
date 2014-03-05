@@ -2566,8 +2566,18 @@ const char* GetOpenCLCachedFilesDirectory() {
       if (home != (char *) NULL)
       {
         /*
-        Search $HOME/.config/ImageMagick.
+          Search $HOME/.config/ImageMagick.
         */
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config",home,
+          DirectorySeparator);
+        status=GetPathAttributes(path,&attributes);
+        if (status == MagickFalse) {
+#ifdef MAGICKCORE_WINDOWS_SUPPORT
+          mkdir(path);
+#else
+          mkdir(path, 0777);
+#endif
+        }
         (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config%sImageMagick",
           home,DirectorySeparator,DirectorySeparator);
         home=DestroyString(home);
