@@ -156,19 +156,25 @@ pkgconfig_DATA = \
 %-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
 	cp -f $^ $@
 
+# Architecture independent data files installed in the package's data directory
+docdir = $(DOCUMENTATION_PATH)
+
 # Manual pages to install
+if INSTALL_DOC
 man_MANS = \
 	$(MAGICK_MANS) \
 	$(WAND_MANS) \
 	$(MAGICKPP_MANS) \
 	$(UTILITIES_MANS)
 
-# Architecture independent data files installed in the package's data directory
-docdir = $(DOCUMENTATION_PATH)
 doc_DATA = \
 	LICENSE \
 	ChangeLog \
 	NEWS.txt
+else
+man_MANS =
+doc_DATA =
+endif
 
 if MAINTAINER_MODE
 MAINTAINER_TARGETS = \
@@ -236,7 +242,13 @@ pkgdocdir = $(DOCUMENTATION_PATH)
 DOCDIRSDOXYGEN = www/api/MagickCore www/api/MagickWand
 DOCDIRSMANUAL = images images/patterns www www/api www/source www/Magick++
 DOCDIRS= $(DOCDIRSMANUAL) $(DOCDIRSDOXYGEN)
+
+if INSTALL_DOC
 HTML_INSTALL_DATA_TARGETS = install-data-html
+else !INSTALL_DOC
+HTML_INSTALL_DATA_TARGETS =
+endif !INSTALL_DOC
+
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
 	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
