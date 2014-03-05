@@ -233,7 +233,7 @@ MagickExport void RegisterStaticModules(void)
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   (void) RegisterJPEGImage();
 #endif
-#if defined(MAGICKCORE_JP2_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   (void) RegisterJP2Image();
 #endif
   (void) RegisterJSONImage();
@@ -418,7 +418,7 @@ MagickExport void UnregisterStaticModules(void)
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   UnregisterJPEGImage();
 #endif
-#if defined(MAGICKCORE_JP2_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   UnregisterJP2Image();
 #endif
   UnregisterJSONImage();
