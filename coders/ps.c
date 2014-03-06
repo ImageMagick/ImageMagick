@@ -698,7 +698,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       continue;
     if ((fabs(bounds.x2-bounds.x1) <= fabs(hires_bounds.x2-hires_bounds.x1)) ||
         (fabs(bounds.y2-bounds.y1) <= fabs(hires_bounds.y2-hires_bounds.y1)))
-      continue;
+      if (i == (ssize_t) priority)
+        continue;
     hires_bounds=bounds;
     priority=i;
   }
