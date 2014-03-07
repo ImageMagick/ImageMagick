@@ -43,6 +43,7 @@
 #include "magick/studio.h"
 #include "magick/accelerate.h"
 #include "magick/artifact.h"
+#include "magick/attribute.h"
 #include "magick/cache.h"
 #include "magick/cache-view.h"
 #include "magick/channel.h"
