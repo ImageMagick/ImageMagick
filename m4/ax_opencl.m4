@@ -143,5 +143,8 @@ if test "$enable_opencl" = 'yes'; then
 fi
   
 AC_SUBST([CL_CFLAGS])
+
+#remove static link on Linux
+CL_LIBS=`echo $CL_LIBS | $SED -e 's/-lOpenCL //'`
 AC_SUBST([CL_LIBS])
 ])dnl

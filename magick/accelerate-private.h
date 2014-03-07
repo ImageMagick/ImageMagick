@@ -153,6 +153,69 @@ const char* accelerateKernels =
   OPENCL_DEFINE(GetPixelAlpha(pixel),(QuantumRange-(pixel).w))
 
   STRINGIFY(
+  typedef enum
+  {
+    UndefinedPixelIntensityMethod = 0,
+    AveragePixelIntensityMethod,
+    BrightnessPixelIntensityMethod,
+    LightnessPixelIntensityMethod,
+    Rec601LumaPixelIntensityMethod,
+    Rec601LuminancePixelIntensityMethod,
+    Rec709LumaPixelIntensityMethod,
+    Rec709LuminancePixelIntensityMethod,
+    RMSPixelIntensityMethod,
+    MSPixelIntensityMethod
+  } PixelIntensityMethod;
+  )
+
+  STRINGIFY(
+  typedef enum
+  {
+    UndefinedColorspace,
+    RGBColorspace,            /* Linear RGB colorspace */
+    GRAYColorspace,           /* greyscale (linear) image (faked 1 channel) */
+    TransparentColorspace,
+    OHTAColorspace,
+    LabColorspace,
+    XYZColorspace,
+    YCbCrColorspace,
+    YCCColorspace,
+    YIQColorspace,
+    YPbPrColorspace,
+    YUVColorspace,
+    CMYKColorspace,           /* negared linear RGB with black separated */
+    sRGBColorspace,           /* Default: non-lienar sRGB colorspace */
+    HSBColorspace,
+    HSLColorspace,
+    HWBColorspace,
+    Rec601LumaColorspace,
+    Rec601YCbCrColorspace,
+    Rec709LumaColorspace,
+    Rec709YCbCrColorspace,
+    LogColorspace,
+    CMYColorspace,            /* negated linear RGB colorspace */
+    LuvColorspace,
+    HCLColorspace,
+    LCHColorspace,            /* alias for LCHuv */
+    LMSColorspace,
+    LCHabColorspace,          /* Cylindrical (Polar) Lab */
+    LCHuvColorspace,          /* Cylindrical (Polar) Luv */
+    scRGBColorspace,
+    HSIColorspace,
+    HSVColorspace,            /* alias for HSB */
+    HCLpColorspace,
+    YDbDrColorspace
+  } ColorspaceType;
+  )
+
+  STRINGIFY(
+  inline float RoundToUnity(const float value)
+   {
+     return clamp(value,0.0f,1.0f);
+   }
+  )
+
+  STRINGIFY(
 
   inline CLQuantum getBlue(CLPixelType p)		    { return p.x; }
   inline void setBlue(CLPixelType* p, CLQuantum value)	    { (*p).x = value; }
@@ -174,20 +237,106 @@ const char* accelerateKernels =
   inline float getOpacityF4(float4 p)			    { return p.w; }
   inline void setOpacityF4(float4* p, float value)          { (*p).w = value; }
 
-  inline float GetPixelIntensity(int colorspace, CLPixelType p)
+  inline void setGray(CLPixelType* p, CLQuantum value)	    { (*p).z = value; (*p).y = value; (*p).x = value; }
+
+  inline float GetPixelIntensity(const int method, const int colorspace, CLPixelType p)
   {
-    // this is for default intensity and sRGB (not RGB) color space
     float red = getRed(p);
     float green = getGreen(p);
     float blue = getBlue(p);
 
-    if (colorspace == 0)
-      return 0.212656*red+0.715158*green+0.072186*blue;
-    else
+    float intensity;
+
+    if (colorspace == GRAYColorspace)
+      return red;
+
+    switch (method)
     {
-      // need encode gamma
+      case AveragePixelIntensityMethod:
+        {
+          intensity=(red+green+blue)/3.0;
+          break;
+        }
+      case BrightnessPixelIntensityMethod:
+        {
+          intensity=max(max(red,green),blue);
+          break;
+        }
+      case LightnessPixelIntensityMethod:
+        {
+          intensity=(min(min(red,green),blue)+
+              max(max(red,green),blue))/2.0;
+          break;
+        }
+      case MSPixelIntensityMethod:
+        {
+          intensity=(float) (((float) red*red+green*green+blue*blue)/
+              (3.0*QuantumRange));
+          break;
+        }
+      case Rec601LumaPixelIntensityMethod:
+        {
+          /*
+          if (image->colorspace == RGBColorspace)
+          {
+            red=EncodePixelGamma(red);
+            green=EncodePixelGamma(green);
+            blue=EncodePixelGamma(blue);
+          }
+          */
+          intensity=0.298839*red+0.586811*green+0.114350*blue;
+          break;
+        }
+      case Rec601LuminancePixelIntensityMethod:
+        {
+          /*
+          if (image->colorspace == sRGBColorspace)
+          {
+            red=DecodePixelGamma(red);
+            green=DecodePixelGamma(green);
+            blue=DecodePixelGamma(blue);
+          }
+          */
+          intensity=0.298839*red+0.586811*green+0.114350*blue;
+          break;
+        }
+      case Rec709LumaPixelIntensityMethod:
+      default:
+        {
+          /*
+          if (image->colorspace == RGBColorspace)
+          {
+            red=EncodePixelGamma(red);
+            green=EncodePixelGamma(green);
+            blue=EncodePixelGamma(blue);
+          }
+          */
+          intensity=0.212656*red+0.715158*green+0.072186*blue;
+          break;
+        }
+      case Rec709LuminancePixelIntensityMethod:
+        {
+          /*
+          if (image->colorspace == sRGBColorspace)
+          {
+            red=DecodePixelGamma(red);
+            green=DecodePixelGamma(green);
+            blue=DecodePixelGamma(blue);
+          }
+          */
+          intensity=0.212656*red+0.715158*green+0.072186*blue;
+          break;
+        }
+      case RMSPixelIntensityMethod:
+        {
+          intensity=(float) (sqrt((float) red*red+green*green+blue*blue)/
+              sqrt(3.0));
+          break;
+        }
     }
-    return 0.0;
+
+    return intensity; 
+ 
   }
   )
 
@@ -317,6 +466,7 @@ const char* accelerateKernels =
   STRINGIFY(
     __kernel 
     void Convolve(const __global CLPixelType *input, __global CLPixelType *output,
+                  const uint imageWidth, const uint imageHeight,
                   __constant float *filter, const unsigned int filterWidth, const unsigned int filterHeight,
                   const uint matte, const ChannelType channel) {
 
@@ -324,9 +474,10 @@ const char* accelerateKernels =
       imageIndex.x = get_global_id(0);
       imageIndex.y = get_global_id(1);
 
+      /*
       unsigned int imageWidth = get_global_size(0);
       unsigned int imageHeight = get_global_size(1);
-
+      */
       if (imageIndex.x >= imageWidth
           || imageIndex.y >= imageHeight)
           return;
@@ -427,8 +578,8 @@ const char* accelerateKernels =
         case PolynomialFunction:
           {
             for (unsigned int i=0; i < number_parameters; i++)
-              result = result*QuantumScale*convert_float4(pixel) + parameters[i];
-            result *= QuantumRange;
+              result = result*(float4)QuantumScale*convert_float4(pixel) + parameters[i];
+            result *= (float4)QuantumRange;
             break;
           }
         case SinusoidFunction:
@@ -438,8 +589,14 @@ const char* accelerateKernels =
             phase = ( number_parameters >= 2 ) ? parameters[1] : 0.0f;
             ampl  = ( number_parameters >= 3 ) ? parameters[2] : 0.5f;
             bias  = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
-            result = QuantumRange*(ampl*sin(2.0f*MagickPI*
-              (freq*QuantumScale*convert_float4(pixel) + phase/360.0f)) + bias);
+            result.x = QuantumRange*(ampl*sin(2.0f*MagickPI*
+              (freq*QuantumScale*(float)pixel.x + phase/360.0f)) + bias);
+            result.y = QuantumRange*(ampl*sin(2.0f*MagickPI*
+              (freq*QuantumScale*(float)pixel.y + phase/360.0f)) + bias);
+            result.z = QuantumRange*(ampl*sin(2.0f*MagickPI*
+              (freq*QuantumScale*(float)pixel.z + phase/360.0f)) + bias);
+            result.w = QuantumRange*(ampl*sin(2.0f*MagickPI*
+              (freq*QuantumScale*(float)pixel.w + phase/360.0f)) + bias);
             break;
           }
         case ArcsinFunction:
@@ -449,18 +606,29 @@ const char* accelerateKernels =
             center = ( number_parameters >= 2 ) ? parameters[1] : 0.5f;
             range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0f;
             bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
-            result = 2.0f/width*(QuantumScale*convert_float4(pixel) - center);
-            result = range/MagickPI*asin(result)+bias;
+
+            result.x = 2.0f/width*(QuantumScale*(float)pixel.x - center);
+            result.x = range/MagickPI*asin(result.x)+bias;
             result.x = ( result.x <= -1.0f ) ? bias - range/2.0f : result.x;
             result.x = ( result.x >= 1.0f ) ? bias + range/2.0f : result.x;
+
+            result.y = 2.0f/width*(QuantumScale*(float)pixel.y - center);
+            result.y = range/MagickPI*asin(result.y)+bias;
             result.y = ( result.y <= -1.0f ) ? bias - range/2.0f : result.y;
             result.y = ( result.y >= 1.0f ) ? bias + range/2.0f : result.y;
+
+            result.z = 2.0f/width*(QuantumScale*(float)pixel.z - center);
+            result.z = range/MagickPI*asin(result.z)+bias;
             result.z = ( result.z <= -1.0f ) ? bias - range/2.0f : result.x;
             result.z = ( result.z >= 1.0f ) ? bias + range/2.0f : result.x;
+
+
+            result.w = 2.0f/width*(QuantumScale*(float)pixel.w - center);
+            result.w = range/MagickPI*asin(result.w)+bias;
             result.w = ( result.w <= -1.0f ) ? bias - range/2.0f : result.w;
             result.w = ( result.w >= 1.0f ) ? bias + range/2.0f : result.w;
-      
-            result *= QuantumRange;
+
+            result *= (float4)QuantumRange;
             break;
           }
         case ArctanFunction:
@@ -470,8 +638,8 @@ const char* accelerateKernels =
             center = ( number_parameters >= 2 ) ? parameters[1] : 0.5f;
             range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0f;
             bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
-            result = MagickPI*slope*(QuantumScale*convert_float4(pixel)-center);
-            result = QuantumRange*(range/MagickPI*atan(result) + bias);
+            result = (float4)MagickPI*(float4)slope*((float4)QuantumScale*convert_float4(pixel)-(float4)center);
+            result = (float4)QuantumRange*((float4)range/(float4)MagickPI*atan(result) + (float4)bias);
             break;
           }
         case UndefinedFunction:
@@ -501,6 +669,73 @@ const char* accelerateKernels =
         im[c] = ApplyFunction(im[c], function, number_parameters, parameters); 
       }
     )
+
+    STRINGIFY(
+    /*
+    */
+    __kernel void Stretch(__global CLPixelType * restrict im,
+      const ChannelType channel,  
+      __global CLPixelType * restrict stretch_map,
+      const float4 white, const float4 black)
+      {
+        const int x = get_global_id(0);  
+        const int y = get_global_id(1);  
+        const int columns = get_global_size(0);  
+        const int c = x + y * columns;
+
+        uint ePos;
+        CLPixelType oValue, eValue;
+        CLQuantum red, green, blue, opacity;
+
+        //read from global
+        oValue=im[c];
+
+        if ((channel & RedChannel) != 0)
+        {
+          if (getRedF4(white) != getRedF4(black))
+          {
+            ePos = ScaleQuantumToMap(getRed(oValue)); 
+            eValue = stretch_map[ePos];
+            red = getRed(eValue);
+          }
+        }
+
+        if ((channel & GreenChannel) != 0)
+        {
+          if (getGreenF4(white) != getGreenF4(black))
+          {
+            ePos = ScaleQuantumToMap(getGreen(oValue)); 
+            eValue = stretch_map[ePos];
+            green = getGreen(eValue);
+          }
+        }
+
+        if ((channel & BlueChannel) != 0)
+        {
+          if (getBlueF4(white) != getBlueF4(black))
+          {
+            ePos = ScaleQuantumToMap(getBlue(oValue)); 
+            eValue = stretch_map[ePos];
+            blue = getBlue(eValue);
+          }
+        }
+
+        if ((channel & OpacityChannel) != 0)
+        {
+          if (getOpacityF4(white) != getOpacityF4(black))
+          {
+            ePos = ScaleQuantumToMap(getOpacity(oValue)); 
+            eValue = stretch_map[ePos];
+            opacity = getOpacity(eValue);
+          }
+        }
+
+        //write back
+        im[c]=(CLPixelType)(blue, green, red, opacity);
+
+      }
+    )
+
 
     STRINGIFY(
     /*
@@ -555,7 +790,9 @@ const char* accelerateKernels =
     /*
     */
     __kernel void Histogram(__global CLPixelType * restrict im,
-      const ChannelType channel, const int colorspace,
+      const ChannelType channel, 
+      const int method,
+      const int colorspace,
       __global uint4 * restrict histogram)
       {
         const int x = get_global_id(0);  
@@ -564,7 +801,7 @@ const char* accelerateKernels =
         const int c = x + y * columns;
         if ((channel & SyncChannels) != 0)
         {
-          float intensity = GetPixelIntensity(colorspace,im[c]);
+          float intensity = GetPixelIntensity(method, colorspace,im[c]);
           uint pos = ScaleQuantumToMap(ClampToQuantum(intensity));
           atomic_inc((__global uint *)(&(histogram[pos]))+2); //red position
         }
@@ -1324,47 +1561,6 @@ const char* accelerateKernels =
   )
  
   STRINGIFY(
-  typedef enum
-  {
-    UndefinedColorspace,
-    RGBColorspace,            /* Linear RGB colorspace */
-    GRAYColorspace,           /* greyscale (linear) image (faked 1 channel) */
-    TransparentColorspace,
-    OHTAColorspace,
-    LabColorspace,
-    XYZColorspace,
-    YCbCrColorspace,
-    YCCColorspace,
-    YIQColorspace,
-    YPbPrColorspace,
-    YUVColorspace,
-    CMYKColorspace,           /* negared linear RGB with black separated */
-    sRGBColorspace,           /* Default: non-lienar sRGB colorspace */
-    HSBColorspace,
-    HSLColorspace,
-    HWBColorspace,
-    Rec601LumaColorspace,
-    Rec601YCbCrColorspace,
-    Rec709LumaColorspace,
-    Rec709YCbCrColorspace,
-    LogColorspace,
-    CMYColorspace,            /* negated linear RGB colorspace */
-    LuvColorspace,
-    HCLColorspace,
-    LCHColorspace,            /* alias for LCHuv */
-    LMSColorspace,
-    LCHabColorspace,          /* Cylindrical (Polar) Lab */
-    LCHuvColorspace,          /* Cylindrical (Polar) Luv */
-    scRGBColorspace,
-    HSIColorspace,
-    HSVColorspace,            /* alias for HSB */
-    HCLpColorspace,
-    YDbDrColorspace
-  } ColorspaceType;
-  )
-
-
-  STRINGIFY(
 
   inline float3 ConvertRGBToHSB(CLPixelType pixel) {
     float3 HueSaturationBrightness;
@@ -1385,8 +1581,8 @@ const char* accelerateKernels =
       HueSaturationBrightness.z=QuantumScale*tmax;
 
       if (delta != 0.0f) {
-	HueSaturationBrightness.x = ((r == tmax)?0.0f:((g == tmax)?2.0f:4.0f));
-	HueSaturationBrightness.x += ((r == tmax)?(g-b):((g == tmax)?(b-r):(r-g)))/delta;
+  HueSaturationBrightness.x = ((r == tmax)?0.0f:((g == tmax)?2.0f:4.0f));
+  HueSaturationBrightness.x += ((r == tmax)?(g-b):((g == tmax)?(b-r):(r-g)))/delta;
         HueSaturationBrightness.x/=6.0f;
         HueSaturationBrightness.x += (HueSaturationBrightness.x < 0.0f)?0.0f:1.0f;
       }
@@ -1421,18 +1617,18 @@ const char* accelerateKernels =
       float clamped_q = ClampToQuantum(QuantumRange*q);     
       int ih = (int)h;
       setRed(&rgb, (ih == 1)?clamped_q:
-	      (ih == 2 || ih == 3)?clamped_p:
-	      (ih == 4)?clamped_t:
+        (ih == 2 || ih == 3)?clamped_p:
+        (ih == 4)?clamped_t:
                  clampedBrightness);
  
       setGreen(&rgb, (ih == 1 || ih == 2)?clampedBrightness:
-	      (ih == 3)?clamped_q:
-	      (ih == 4 || ih == 5)?clamped_p:
+        (ih == 3)?clamped_q:
+        (ih == 4 || ih == 5)?clamped_p:
                  clamped_t);
 
       setBlue(&rgb, (ih == 2)?clamped_t:
-	      (ih == 3 || ih == 4)?clampedBrightness:
-	      (ih == 5)?clamped_q:
+        (ih == 3 || ih == 4)?clampedBrightness:
+        (ih == 5)?clamped_q:
                  clamped_p);
     }
     return rgb;
@@ -1648,6 +1844,162 @@ const char* accelerateKernels =
     setRed(&filteredPixel, red);
     setGreen(&filteredPixel, green);
     setBlue(&filteredPixel, blue);
+    filteredPixel.w = pixel.w;
+
+    im[c] = filteredPixel;
+  }
+  )
+
+  STRINGIFY(
+  __kernel void Negate(__global CLPixelType *im, 
+    const ChannelType channel)
+  {
+
+    const int x = get_global_id(0);  
+    const int y = get_global_id(1);
+    const int columns = get_global_size(0);
+    const int c = x + y * columns;
+
+    CLPixelType pixel = im[c];
+
+    CLQuantum
+        blue,
+        green,
+        red;
+
+    red=getRed(pixel);
+    green=getGreen(pixel);
+    blue=getBlue(pixel);
+
+    CLPixelType filteredPixel;
+  
+    if ((channel & RedChannel) !=0)
+      setRed(&filteredPixel, QuantumRange-red);
+    if ((channel & GreenChannel) !=0)
+      setGreen(&filteredPixel, QuantumRange-green);
+    if ((channel & BlueChannel) !=0)
+      setBlue(&filteredPixel, QuantumRange-blue);
+
+    filteredPixel.w = pixel.w;
+
+    im[c] = filteredPixel;
+  }
+  )
+
+  STRINGIFY(
+  __kernel void Grayscale(__global CLPixelType *im, 
+    const int method, const int colorspace)
+  {
+
+    const int x = get_global_id(0);  
+    const int y = get_global_id(1);
+    const int columns = get_global_size(0);
+    const int c = x + y * columns;
+
+    CLPixelType pixel = im[c];
+
+    float
+        blue,
+        green,
+        intensity,
+        red;
+
+    red=(float)getRed(pixel);
+    green=(float)getGreen(pixel);
+    blue=(float)getBlue(pixel);
+
+    intensity=0.0;
+
+    CLPixelType filteredPixel;
+ 
+    switch (method)
+    {
+      case AveragePixelIntensityMethod:
+        {
+          intensity=(red+green+blue)/3.0;
+          break;
+        }
+      case BrightnessPixelIntensityMethod:
+        {
+          intensity=max(max(red,green),blue);
+          break;
+        }
+      case LightnessPixelIntensityMethod:
+        {
+          intensity=(min(min(red,green),blue)+
+              max(max(red,green),blue))/2.0;
+          break;
+        }
+      case MSPixelIntensityMethod:
+        {
+          intensity=(float) (((float) red*red+green*green+
+                blue*blue)/(3.0*QuantumRange));
+          break;
+        }
+      case Rec601LumaPixelIntensityMethod:
+        {
+          /*
+          if (colorspace == RGBColorspace)
+          {
+            red=EncodePixelGamma(red);
+            green=EncodePixelGamma(green);
+            blue=EncodePixelGamma(blue);
+          }
+          */
+          intensity=0.298839*red+0.586811*green+0.114350*blue;
+          break;
+        }
+      case Rec601LuminancePixelIntensityMethod:
+        {
+          /*
+          if (image->colorspace == sRGBColorspace)
+          {
+            red=DecodePixelGamma(red);
+            green=DecodePixelGamma(green);
+            blue=DecodePixelGamma(blue);
+          }
+          */
+          intensity=0.298839*red+0.586811*green+0.114350*blue;
+          break;
+        }
+      case Rec709LumaPixelIntensityMethod:
+      default:
+        {
+          /*
+          if (image->colorspace == RGBColorspace)
+          {
+            red=EncodePixelGamma(red);
+            green=EncodePixelGamma(green);
+            blue=EncodePixelGamma(blue);
+          }
+          */
+          intensity=0.212656*red+0.715158*green+0.072186*blue;
+          break;
+        }
+      case Rec709LuminancePixelIntensityMethod:
+        {
+          /*
+          if (image->colorspace == sRGBColorspace)
+          {
+            red=DecodePixelGamma(red);
+            green=DecodePixelGamma(green);
+            blue=DecodePixelGamma(blue);
+          }
+          */
+          intensity=0.212656*red+0.715158*green+0.072186*blue;
+          break;
+        }
+      case RMSPixelIntensityMethod:
+        {
+          intensity=(float) (sqrt((float) red*red+green*green+
+                blue*blue)/sqrt(3.0));
+          break;
+        }
+
+    }
+
+    setGray(&filteredPixel, ClampToQuantum(intensity));
+
     filteredPixel.w = pixel.w;
 
     im[c] = filteredPixel;
@@ -1881,7 +2233,7 @@ const char* accelerateKernels =
     const unsigned int actualNumPixelToCompute = stopX - startX;
 
     // calculate the range of input image pixels to cache
-    float scale = max(1.0/xFactor+MagickEpsilon ,1.0f);
+    float scale = max(1.0f/xFactor+MagickEpsilon ,1.0f);
     const float support = max(scale*resizeFilterSupport,0.5f);
     scale = PerceptibleReciprocal(scale);
 
@@ -2074,7 +2426,7 @@ const char* accelerateKernels =
     const unsigned int actualNumPixelToCompute = stopY - startY;
 
     // calculate the range of input image pixels to cache
-    float scale = max(1.0/yFactor+MagickEpsilon ,1.0f);
+    float scale = max(1.0f/yFactor+MagickEpsilon ,1.0f);
     const float support = max(scale*resizeFilterSupport,0.5f);
     scale = PerceptibleReciprocal(scale);
 
@@ -2249,6 +2601,18 @@ const char* accelerateKernels =
 
   STRINGIFY(
 
+  inline float GetPseudoRandomValue(uint4* seed, const float normalizeRand) {
+    uint4 s = *seed;
+    do {
+      unsigned int alpha = (unsigned int) (s.y ^ (s.y << 11));
+      s.y=s.z;
+      s.z=s.w;
+      s.w=s.x;
+      s.x = (s.x ^ (s.x >> 19)) ^ (alpha ^ (alpha >> 8));
+    } while (s.x == ~0UL);
+    *seed = s;
+    return (normalizeRand*s.x);
+  }
 
   __kernel void randomNumberGeneratorKernel(__global uint* seeds, const float normalizeRand
                                            , __global float* randomNumbers, const uint init
@@ -2317,7 +2681,7 @@ const char* accelerateKernels =
   } RandomNumbers;
 
 
-  float GetPseudoRandomValue(RandomNumbers* r) {
+  float ReadPseudoRandomValue(RandomNumbers* r) {
     float v = *r->rns;
     r->rns++;
     return v;
@@ -2343,7 +2707,7 @@ const char* accelerateKernels =
       sigma;
 
     noise = 0.0f;
-    alpha=GetPseudoRandomValue(r);
+    alpha=ReadPseudoRandomValue(r);
     switch(noise_type) {
     case UniformNoise:
     default:
@@ -2359,7 +2723,7 @@ const char* accelerateKernels =
 
         if (alpha == 0.0f)
           alpha=1.0f;
-        beta=GetPseudoRandomValue(r);
+        beta=ReadPseudoRandomValue(r);
         gamma=sqrt(-2.0f*log(alpha));
         sigma=gamma*cospi((2.0f*beta));
         tau=gamma*sinpi((2.0f*beta));
@@ -2403,7 +2767,7 @@ const char* accelerateKernels =
       sigma=1.0f;
       if (alpha > MagickEpsilon)
         sigma=sqrt(-2.0f*log(alpha));
-      beta=GetPseudoRandomValue(r);
+      beta=ReadPseudoRandomValue(r);
       noise=(float) (pixel+pixel*SigmaMultiplicativeGaussian*sigma*
         cospi((float) (2.0f*beta))/2.0f);
       break;
@@ -2416,7 +2780,7 @@ const char* accelerateKernels =
       poisson=exp(-SigmaPoisson*QuantumScale*pixel);
       for (i=0; alpha > poisson; i++)
       {
-        beta=GetPseudoRandomValue(r);
+        beta=ReadPseudoRandomValue(r);
         alpha*=beta;
       }
       noise=(float) (QuantumRange*i/SigmaPoisson);
@@ -2468,10 +2832,381 @@ const char* accelerateKernels =
   }
 
   )
+
+  STRINGIFY(
+  __kernel 
+  void RandomImage(__global CLPixelType* inputImage,
+                   const uint imageColumns, const uint imageRows,
+                   __global uint* seeds,
+                   const float randNormNumerator,
+                   const uint randNormDenominator) {
+
+    unsigned int numGenerators = get_global_size(0);
+    unsigned numRandPixelsPerWorkItem = ((imageColumns*imageRows) + (numGenerators-1))
+                                        / numGenerators;
+
+    uint4 s;
+    s.x = seeds[get_global_id(0)*4];
+    s.y = seeds[get_global_id(0)*4+1];
+    s.z = seeds[get_global_id(0)*4+2];
+    s.w = seeds[get_global_id(0)*4+3];
+
+    unsigned int offset = get_group_id(0) * get_local_size(0) * numRandPixelsPerWorkItem;
+    for (unsigned int n = 0; n < numRandPixelsPerWorkItem; n++)
+    {
+      int i = offset + n*get_local_size(0) + get_local_id(0);
+      if (i >= imageColumns*imageRows)
+        break;
+
+      float rand = GetPseudoRandomValue(&s,randNormNumerator/randNormDenominator);
+      CLQuantum v = ClampToQuantum(QuantumRange*rand);
+
+      CLPixelType p;
+      setRed(&p,v);
+      setGreen(&p,v);
+      setBlue(&p,v);
+      setOpacity(&p,0);
+
+      inputImage[i] = p;
+    }
+
+    seeds[get_global_id(0)*4]   = s.x;
+    seeds[get_global_id(0)*4+1] = s.y;
+    seeds[get_global_id(0)*4+2] = s.z;
+    seeds[get_global_id(0)*4+3] = s.w;
+  }
+  )
+
+  STRINGIFY(
+    __kernel 
+    void MotionBlur(const __global CLPixelType *input, __global CLPixelType *output,
+                    const unsigned int imageWidth, const unsigned int imageHeight,
+                    const __global float *filter, const unsigned int width, const __global int2* offset,
+                    const float4 bias,
+                    const ChannelType channel, const unsigned int matte) {
+
+      int2 currentPixel;
+      currentPixel.x = get_global_id(0);
+      currentPixel.y = get_global_id(1);
+
+      if (currentPixel.x >= imageWidth
+          || currentPixel.y >= imageHeight)
+          return;
+
+      float4 pixel;
+      pixel.x = (float)bias.x;
+      pixel.y = (float)bias.y;
+      pixel.z = (float)bias.z;
+      pixel.w = (float)bias.w;
+
+      if (((channel & OpacityChannel) == 0) || (matte == 0)) {
+        
+        for (int i = 0; i < width; i++) {
+          // only support EdgeVirtualPixelMethod through ClampToCanvas
+          // TODO: implement other virtual pixel method
+          int2 samplePixel = currentPixel + offset[i];
+          samplePixel.x = ClampToCanvas(samplePixel.x, imageWidth);
+          samplePixel.y = ClampToCanvas(samplePixel.y, imageHeight);
+          CLPixelType samplePixelValue = input[ samplePixel.y * imageWidth + samplePixel.x];
+
+          pixel.x += (filter[i] * (float)samplePixelValue.x);
+          pixel.y += (filter[i] * (float)samplePixelValue.y);
+          pixel.z += (filter[i] * (float)samplePixelValue.z);
+          pixel.w += (filter[i] * (float)samplePixelValue.w);
+        }
+
+        CLPixelType outputPixel;
+        outputPixel.x = ClampToQuantum(pixel.x);
+        outputPixel.y = ClampToQuantum(pixel.y);
+        outputPixel.z = ClampToQuantum(pixel.z);
+        outputPixel.w = ClampToQuantum(pixel.w);
+        output[currentPixel.y * imageWidth + currentPixel.x] = outputPixel;
+      }
+      else {
+
+        float gamma = 0.0f;
+        for (int i = 0; i < width; i++) {
+          // only support EdgeVirtualPixelMethod through ClampToCanvas
+          // TODO: implement other virtual pixel method
+          int2 samplePixel = currentPixel + offset[i];
+          samplePixel.x = ClampToCanvas(samplePixel.x, imageWidth);
+          samplePixel.y = ClampToCanvas(samplePixel.y, imageHeight);
+
+          CLPixelType samplePixelValue = input[ samplePixel.y * imageWidth + samplePixel.x];
+
+          float alpha = QuantumScale*(QuantumRange-samplePixelValue.w);
+          float k = filter[i];
+          pixel.x = pixel.x + k * alpha * samplePixelValue.x;
+          pixel.y = pixel.y + k * alpha * samplePixelValue.y;
+          pixel.z = pixel.z + k * alpha * samplePixelValue.z;
+
+          pixel.w += k * alpha * samplePixelValue.w;
+
+          gamma+=k*alpha;
+        }
+        gamma = PerceptibleReciprocal(gamma);
+        pixel.xyz = gamma*pixel.xyz;
+
+        CLPixelType outputPixel;
+        outputPixel.x = ClampToQuantum(pixel.x);
+        outputPixel.y = ClampToQuantum(pixel.y);
+        outputPixel.z = ClampToQuantum(pixel.z);
+        outputPixel.w = ClampToQuantum(pixel.w);
+        output[currentPixel.y * imageWidth + currentPixel.x] = outputPixel;
+      }
+    }
+  )
+
+  STRINGIFY(
+    typedef enum
+    {
+      UndefinedCompositeOp,
+      NoCompositeOp,
+      ModulusAddCompositeOp,
+      AtopCompositeOp,
+      BlendCompositeOp,
+      BumpmapCompositeOp,
+      ChangeMaskCompositeOp,
+      ClearCompositeOp,
+      ColorBurnCompositeOp,
+      ColorDodgeCompositeOp,
+      ColorizeCompositeOp,
+      CopyBlackCompositeOp,
+      CopyBlueCompositeOp,
+      CopyCompositeOp,
+      CopyCyanCompositeOp,
+      CopyGreenCompositeOp,
+      CopyMagentaCompositeOp,
+      CopyOpacityCompositeOp,
+      CopyRedCompositeOp,
+      CopyYellowCompositeOp,
+      DarkenCompositeOp,
+      DstAtopCompositeOp,
+      DstCompositeOp,
+      DstInCompositeOp,
+      DstOutCompositeOp,
+      DstOverCompositeOp,
+      DifferenceCompositeOp,
+      DisplaceCompositeOp,
+      DissolveCompositeOp,
+      ExclusionCompositeOp,
+      HardLightCompositeOp,
+      HueCompositeOp,
+      InCompositeOp,
+      LightenCompositeOp,
+      LinearLightCompositeOp,
+      LuminizeCompositeOp,
+      MinusDstCompositeOp,
+      ModulateCompositeOp,
+      MultiplyCompositeOp,
+      OutCompositeOp,
+      OverCompositeOp,
+      OverlayCompositeOp,
+      PlusCompositeOp,
+      ReplaceCompositeOp,
+      SaturateCompositeOp,
+      ScreenCompositeOp,
+      SoftLightCompositeOp,
+      SrcAtopCompositeOp,
+      SrcCompositeOp,
+      SrcInCompositeOp,
+      SrcOutCompositeOp,
+      SrcOverCompositeOp,
+      ModulusSubtractCompositeOp,
+      ThresholdCompositeOp,
+      XorCompositeOp,
+      /* These are new operators, added after the above was last sorted.
+       * The list should be re-sorted only when a new library version is
+       * created.
+       */
+      DivideDstCompositeOp,
+      DistortCompositeOp,
+      BlurCompositeOp,
+      PegtopLightCompositeOp,
+      VividLightCompositeOp,
+      PinLightCompositeOp,
+      LinearDodgeCompositeOp,
+      LinearBurnCompositeOp,
+      MathematicsCompositeOp,
+      DivideSrcCompositeOp,
+      MinusSrcCompositeOp,
+      DarkenIntensityCompositeOp,
+      LightenIntensityCompositeOp
+    } CompositeOperator;
+  )
+
+  STRINGIFY(
+    inline float ColorDodge(const float Sca,
+      const float Sa,const float Dca,const float Da)
+    {
+      /*
+        Oct 2004 SVG specification.
+      */
+      if ((Sca*Da+Dca*Sa) >= Sa*Da)
+        return(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
+      return(Dca*Sa*Sa/(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
+
+
+      /*
+        New specification, March 2009 SVG specification.  This specification was
+        also wrong of non-overlap cases.
+      */
+      /*
+      if ((fabs(Sca-Sa) < MagickEpsilon) && (fabs(Dca) < MagickEpsilon))
+        return(Sca*(1.0-Da));
+      if (fabs(Sca-Sa) < MagickEpsilon)
+        return(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
+      return(Sa*MagickMin(Da,Dca*Sa/(Sa-Sca)));
+      */
+
+      /*
+        Working from first principles using the original formula:
+
+           f(Sc,Dc) = Dc/(1-Sc)
+
+        This works correctly! Looks like the 2004 model was right but just
+        required a extra condition for correct handling.
+      */
+
+      /*
+      if ((fabs(Sca-Sa) < MagickEpsilon) && (fabs(Dca) < MagickEpsilon))
+        return(Sca*(1.0-Da)+Dca*(1.0-Sa));
+      if (fabs(Sca-Sa) < MagickEpsilon)
+        return(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
+      return(Dca*Sa*Sa/(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
+      */
+    }
+
+    inline void CompositeColorDodge(const float4 *p,
+      const float4 *q,float4 *composite) {
+
+      float 
+      Da,
+      gamma,
+      Sa;
+
+      Sa=1.0f-QuantumScale*getOpacityF4(*p);  /* simplify and speed up equations */
+      Da=1.0f-QuantumScale*getOpacityF4(*q);
+      gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
+      setOpacityF4(composite, QuantumRange*(1.0-gamma));
+      gamma=QuantumRange/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+      setRedF4(composite,gamma*ColorDodge(QuantumScale*getRedF4(*p)*Sa,Sa,QuantumScale*
+        getRedF4(*q)*Da,Da));
+      setGreenF4(composite,gamma*ColorDodge(QuantumScale*getGreenF4(*p)*Sa,Sa,QuantumScale*
+        getGreenF4(*q)*Da,Da));
+      setBlueF4(composite,gamma*ColorDodge(QuantumScale*getBlueF4(*p)*Sa,Sa,QuantumScale*
+        getBlueF4(*q)*Da,Da));
+    }
+  )
+
+  STRINGIFY(
+    inline void MagickPixelCompositePlus(const float4 *p,
+      const float alpha,const float4 *q,
+      const float beta,float4 *composite)
+    {
+      float 
+        gamma;
+
+      float
+        Da,
+        Sa;
+      /*
+        Add two pixels with the given opacities.
+      */
+      Sa=1.0-QuantumScale*alpha;
+      Da=1.0-QuantumScale*beta;
+      gamma=RoundToUnity(Sa+Da);  /* 'Plus' blending -- not 'Over' blending */
+      setOpacityF4(composite,(float) QuantumRange*(1.0-gamma));
+      gamma=PerceptibleReciprocal(gamma);
+      setRedF4(composite,gamma*(Sa*getRedF4(*p)+Da*getRedF4(*q)));
+      setGreenF4(composite,gamma*(Sa*getGreenF4(*p)+Da*getGreenF4(*q)));
+      setBlueF4(composite,gamma*(Sa*getBlueF4(*p)+Da*getBlueF4(*q)));
+    }
+  )
+
+  STRINGIFY(
+    inline void MagickPixelCompositeBlend(const float4 *p,
+      const float alpha,const float4 *q,
+      const float beta,float4 *composite)
+    {
+      MagickPixelCompositePlus(p,(float) (QuantumRange-alpha*
+      (QuantumRange-getOpacityF4(*p))),q,(float) (QuantumRange-beta*
+      (QuantumRange-getOpacityF4(*q))),composite);
+    }
+  )
+  
+  STRINGIFY(
+    __kernel 
+    void Composite(__global CLPixelType *image,
+                   const unsigned int imageWidth, 
+                   const unsigned int imageHeight,
+                   const __global CLPixelType *compositeImage,
+                   const unsigned int compositeWidth, 
+                   const unsigned int compositeHeight,
+                   const unsigned int compose,
+                   const ChannelType channel, 
+                   const unsigned int matte,
+                   const float destination_dissolve,
+                   const float source_dissolve) {
+
+      uint2 index;
+      index.x = get_global_id(0);
+      index.y = get_global_id(1);
+
+
+      if (index.x >= imageWidth
+        || index.y >= imageHeight) {
+          return;
+      }
+      const CLPixelType inputPixel = image[index.y*imageWidth+index.x];
+      float4 destination;
+      setRedF4(&destination,getRed(inputPixel));
+      setGreenF4(&destination,getGreen(inputPixel));
+      setBlueF4(&destination,getBlue(inputPixel));
+
+      
+      const CLPixelType compositePixel 
+        = compositeImage[index.y*imageWidth+index.x];
+      float4 source;
+      setRedF4(&source,getRed(compositePixel));
+      setGreenF4(&source,getGreen(compositePixel));
+      setBlueF4(&source,getBlue(compositePixel));
+
+      if (matte != 0) {
+        setOpacityF4(&destination,getOpacity(inputPixel));
+        setOpacityF4(&source,getOpacity(compositePixel));
+      }
+      else {
+        setOpacityF4(&destination,0.0f);
+        setOpacityF4(&source,0.0f);
+      }
+
+      float4 composite=destination;
+
+      CompositeOperator op = (CompositeOperator)compose;
+      switch (op) {
+      case ColorDodgeCompositeOp:
+        CompositeColorDodge(&source,&destination,&composite);
+        break;
+      case BlendCompositeOp:
+        MagickPixelCompositeBlend(&source,source_dissolve,&destination,
+            destination_dissolve,&composite);
+        break;
+      default:
+        // unsupported operators
+        break;
+      };
+
+      CLPixelType outputPixel;
+      setRed(&outputPixel, ClampToQuantum(getRedF4(composite)));
+      setGreen(&outputPixel, ClampToQuantum(getGreenF4(composite)));
+      setBlue(&outputPixel, ClampToQuantum(getBlueF4(composite)));
+      setOpacity(&outputPixel, ClampToQuantum(getOpacityF4(composite)));
+      image[index.y*imageWidth+index.x] = outputPixel;
+    }
+  )   
+    
   ;
-
-
-
 
 #endif // MAGICKCORE_OPENCL_SUPPORT
 

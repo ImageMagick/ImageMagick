@@ -4436,66 +4436,74 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     MagickTrue,exception);
   if (random_image == (Image *) NULL)
     return((Image *) NULL);
-  status=MagickTrue;
-  GetMagickPixelPacket(random_image,&zero);
-  random_info=AcquireRandomInfoThreadSet();
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  key=GetRandomSecretKey(random_info[0]);
-#endif
   random_view=AcquireAuthenticCacheView(random_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(random_image,random_image,random_image->rows,key == ~0UL)
-#endif
-  for (y=0; y < (ssize_t) random_image->rows; y++)
+
+  if (AccelerateRandomImage(random_image,exception)
+      ==MagickFalse)
   {
-    const int
-      id = GetOpenMPThreadId();
+    status=MagickTrue;
+    GetMagickPixelPacket(random_image,&zero);
+    random_info=AcquireRandomInfoThreadSet();
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    key=GetRandomSecretKey(random_info[0]);
+#endif
+    random_view=AcquireAuthenticCacheView(random_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp parallel for schedule(static,4) shared(status) \
+  magick_threads(random_image,random_image,random_image->rows,key == ~0UL)
+#endif
+    for (y=0; y < (ssize_t) random_image->rows; y++)
+    {
+      const int
+        id = GetOpenMPThreadId();
 
-    MagickPixelPacket
-      pixel;
+      MagickPixelPacket
+        pixel;
 
-    register IndexPacket
-      *restrict indexes;
+      register IndexPacket
+        *restrict indexes;
 
-    register ssize_t
-      x;
+      register ssize_t
+        x;
 
-    register PixelPacket
-      *restrict q;
+      register PixelPacket
+        *restrict q;
 
-    if (status == MagickFalse)
-      continue;
-    q=QueueCacheViewAuthenticPixels(random_view,0,y,random_image->columns,1,
-      exception);
-    if (q == (PixelPacket *) NULL)
+      if (status == MagickFalse)
+        continue;
+      q=QueueCacheViewAuthenticPixels(random_view,0,y,random_image->columns,1,
+        exception);
+      if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewAuthenticIndexQueue(random_view);
-    pixel=zero;
-    for (x=0; x < (ssize_t) random_image->columns; x++)
-    {
-      pixel.red=(MagickRealType) (QuantumRange*
-        GetPseudoRandomValue(random_info[id]));
-      pixel.green=pixel.red;
-      pixel.blue=pixel.red;
-      if (image->colorspace == CMYKColorspace)
-        pixel.index=pixel.red;
-      SetPixelPacket(random_image,&pixel,q,indexes+x);
-      q++;
+      indexes=GetCacheViewAuthenticIndexQueue(random_view);
+      pixel=zero;
+      for (x=0; x < (ssize_t) random_image->columns; x++)
+      {
+        pixel.red=(MagickRealType) (QuantumRange*
+          GetPseudoRandomValue(random_info[id]));
+        pixel.green=pixel.red;
+        pixel.blue=pixel.red;
+        if (image->colorspace == CMYKColorspace)
+          pixel.index=pixel.red;
+        SetPixelPacket(random_image,&pixel,q,indexes+x);
+        q++;
+      }
+      if (SyncCacheViewAuthenticPixels(random_view,exception) == MagickFalse)
+        status=MagickFalse;
     }
-    if (SyncCacheViewAuthenticPixels(random_view,exception) == MagickFalse)
-      status=MagickFalse;
-  }
-  random_view=DestroyCacheView(random_view);
-  random_info=DestroyRandomInfoThreadSet(random_info);
-  if (status == MagickFalse)
+    random_info=DestroyRandomInfoThreadSet(random_info);
+    if (status == MagickFalse)
     {
+      random_view=DestroyCacheView(random_view);
       random_image=DestroyImage(random_image);
       return(random_image);
     }
+  }
+  random_view=DestroyCacheView(random_view);
+
   blur_image=MotionBlurImage(random_image,radius,sigma,angle,exception);
   random_image=DestroyImage(random_image);
   if (blur_image == (Image *) NULL)
