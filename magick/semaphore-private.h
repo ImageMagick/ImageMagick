@@ -43,7 +43,7 @@ static inline void DestroyMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   if (active_mutex != MagickFalse)
-      omp_destroy_lock(&semaphore_mutex);
+    omp_destroy_lock(&semaphore_mutex);
 #endif
   active_mutex=MagickFalse;
 }
