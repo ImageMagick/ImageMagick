@@ -71,6 +71,8 @@ Include declarations.
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
+#include "MagickCore/random_.h"
+#include "MagickCore/random-private.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/splay-tree.h"
@@ -87,22 +89,60 @@ Include declarations.
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
-struct _MagickCLEnv {
-  MagickBooleanType OpenCLInitialized;  /* whether OpenCL environment is initialized. */
-  MagickBooleanType OpenCLDisabled;	/* whether if OpenCL has been explicitely disabled. */
+#ifdef MAGICKCORE_HAVE_OPENCL_CL_H
+#define MAGICKCORE_OPENCL_MACOSX  1
+#endif
 
-  /*OpenCL objects */
-  cl_platform_id platform;
-  cl_device_type deviceType;
-  cl_device_id device;
-  cl_context context;
 
-  MagickBooleanType disableProgramCache; /* disable the OpenCL program cache */
-  cl_program programs[MAGICK_OPENCL_NUM_PROGRAMS]; /* one program object maps one kernel source file */
+#define NUM_CL_RAND_GENERATORS 1024  /* number of random number generators running in parallel */ 
 
-  MagickBooleanType regenerateProfile;   /* re-run the microbenchmark in auto device selection mode */ 
-  SemaphoreInfo* lock;
-};
+/*
+ * 
+ * Dynamic library loading functions
+ *
+ */
+#ifdef MAGICKCORE_WINDOWS_SUPPORT
+#else
+#include <dlfcn.h>
+#endif
+
+// dynamically load a library.  returns NULL on failure
+void *OsLibraryLoad(const char *libraryName)
+{
+#ifdef MAGICKCORE_WINDOWS_SUPPORT
+    return (void *)LoadLibraryA(libraryName);
+#else 
+    return (void *)dlopen(libraryName, RTLD_NOW);
+#endif
+}
+
+// get a function pointer from a loaded library.  returns NULL on failure.
+void *OsLibraryGetFunctionAddress(void *library, const char *functionName)
+{
+#ifdef MAGICKCORE_WINDOWS_SUPPORT
+    if (!library || !functionName)
+    {
+        return NULL;
+    }
+    return (void *) GetProcAddress( (HMODULE)library, functionName);
+#else
+    if (!library || !functionName)
+    {
+        return NULL;
+    }
+    return (void *)dlsym(library, functionName);
+#endif
+}
+
+// unload a library.
+void OsLibraryUnload(void *library)
+{
+#ifdef MAGICKCORE_WINDOWS_SUPPORT
+    FreeLibrary( (HMODULE)library);
+#else
+    dlclose(library);
+#endif
+}
 
 
 /*
@@ -160,7 +200,7 @@ MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
 {
   if (clEnv != (MagickCLEnv)NULL)
   {
-    RelinquishSemaphoreInfo(clEnv->lock);
+    DestroySemaphoreInfo(&clEnv->lock);
     RelinquishMagickMemory(clEnv);
     return MagickTrue;
   }
@@ -173,6 +213,103 @@ MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
 */
 MagickCLEnv defaultCLEnv;
 SemaphoreInfo* defaultCLEnvLock;
+
+/*
+* OpenCL library
+*/
+MagickLibrary * OpenCLLib;
+SemaphoreInfo* OpenCLLibLock;
+
+
+static MagickBooleanType bindOpenCLFunctions(void* library)
+{
+#ifdef MAGICKCORE_OPENCL_MACOSX
+#define BIND(X) OpenCLLib->X= &X;
+#else
+#define BIND(X)\
+  if ((OpenCLLib->X=(MAGICKpfn_##X)OsLibraryGetFunctionAddress(library,#X)) == NULL)\
+  return MagickFalse;
+#endif
+
+  BIND(clGetPlatformIDs);
+  BIND(clGetPlatformInfo);
+
+  BIND(clGetDeviceIDs);
+  BIND(clGetDeviceInfo);
+
+  BIND(clCreateContext);
+
+  BIND(clCreateBuffer);
+  BIND(clReleaseMemObject);
+
+  BIND(clCreateProgramWithSource);
+  BIND(clCreateProgramWithBinary);
+  BIND(clBuildProgram);
+  BIND(clGetProgramInfo);
+  BIND(clGetProgramBuildInfo);
+
+  BIND(clCreateKernel);
+  BIND(clReleaseKernel);
+  BIND(clSetKernelArg);
+
+  BIND(clFlush);
+  BIND(clFinish);
+
+  BIND(clEnqueueNDRangeKernel);
+  BIND(clEnqueueReadBuffer);
+  BIND(clEnqueueMapBuffer);
+  BIND(clEnqueueUnmapMemObject);
+
+  BIND(clCreateCommandQueue);
+  BIND(clReleaseCommandQueue);
+
+  return MagickTrue;
+}
+
+MagickLibrary * GetOpenCLLib()
+{ 
+  if (OpenCLLib == NULL)
+  {
+    if (OpenCLLibLock == NULL)
+    {
+      ActivateSemaphoreInfo(&OpenCLLibLock);
+    }
+
+    LockSemaphoreInfo(OpenCLLibLock);
+
+    OpenCLLib = (MagickLibrary *) AcquireMagickMemory (sizeof (MagickLibrary));
+
+    if (OpenCLLib != NULL)
+    {
+      MagickBooleanType status = MagickFalse;
+      void * library = NULL;
+
+#ifdef MAGICKCORE_OPENCL_MACOSX
+      status = bindOpenCLFunctions(library);
+#else
+      
+      memset(OpenCLLib, 0, sizeof(MagickLibrary));
+#ifdef MAGICKCORE_WINDOWS_SUPPORT
+      library = OsLibraryLoad("OpenCL.dll");
+#else
+      library = OsLibraryLoad("libOpenCL.so");
+#endif
+      if (library)
+        status = bindOpenCLFunctions(library);
+
+      if (status==MagickTrue)
+        OpenCLLib->base=library;
+      else
+        OpenCLLib=(MagickLibrary *)RelinquishMagickMemory(OpenCLLib);
+#endif
+    }
+
+    UnlockSemaphoreInfo(OpenCLLibLock); 
+  }
+  
+
+  return OpenCLLib; 
+}
 
 
 /*
@@ -498,7 +635,7 @@ static char* getBinaryCLProgramName(MagickCLEnv clEnv, MagickOpenCLProgram prog,
   char path[MaxTextExtent];
   char deviceName[MaxTextExtent];
   const char* prefix = "magick_opencl";
-  clGetDeviceInfo(clEnv->device, CL_DEVICE_NAME, MaxTextExtent, deviceName, NULL);
+  clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_NAME, MaxTextExtent, deviceName, NULL);
   ptr=deviceName;
   /* strip out illegal characters for file names */
   while (*ptr != '\0')
@@ -536,7 +673,7 @@ static MagickBooleanType saveBinaryCLProgram(MagickCLEnv clEnv, MagickOpenCLProg
   fileHandle = NULL;
   saveSuccessful = MagickFalse;
 
-  clStatus = clGetProgramInfo(clEnv->programs[prog], CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &binaryProgramSize, NULL);
+  clStatus = clEnv->library->clGetProgramInfo(clEnv->programs[prog], CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &binaryProgramSize, NULL);
   if (clStatus != CL_SUCCESS)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clGetProgramInfo failed.", "'%s'", ".");
@@ -544,7 +681,7 @@ static MagickBooleanType saveBinaryCLProgram(MagickCLEnv clEnv, MagickOpenCLProg
   }
 
   binaryProgram = (unsigned char*) AcquireMagickMemory(binaryProgramSize);
-  clStatus = clGetProgramInfo(clEnv->programs[prog], CL_PROGRAM_BINARIES, sizeof(char*), &binaryProgram, NULL);
+  clStatus = clEnv->library->clGetProgramInfo(clEnv->programs[prog], CL_PROGRAM_BINARIES, sizeof(char*), &binaryProgram, NULL);
   if (clStatus != CL_SUCCESS)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clGetProgramInfo failed.", "'%s'", ".");
@@ -619,7 +756,7 @@ static MagickBooleanType loadBinaryCLProgram(MagickCLEnv clEnv, MagickOpenCLProg
     memset(binaryProgram, 0, length);
     b_error |= fread(binaryProgram, 1, length, fileHandle) != length;
 
-    clEnv->programs[prog] = clCreateProgramWithBinary(clEnv->context, 1, &clEnv->device, &length, (const unsigned char**)&binaryProgram, &clBinaryStatus, &clStatus);
+    clEnv->programs[prog] = clEnv->library->clCreateProgramWithBinary(clEnv->context, 1, &clEnv->device, &length, (const unsigned char**)&binaryProgram, &clBinaryStatus, &clStatus);
     if (clStatus != CL_SUCCESS
         || clBinaryStatus != CL_SUCCESS)
       goto cleanup;
@@ -745,7 +882,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
     {
       /* Binary CL program unavailable, compile the program from source */
       size_t programLength = strlen(MagickOpenCLProgramStrings[i]);
-      clEnv->programs[i] = clCreateProgramWithSource(clEnv->context, 1, &(MagickOpenCLProgramStrings[i]), &programLength, &clStatus);
+      clEnv->programs[i] = clEnv->library->clCreateProgramWithSource(clEnv->context, 1, &(MagickOpenCLProgramStrings[i]), &programLength, &clStatus);
       if (clStatus!=CL_SUCCESS)
       {
         (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
@@ -755,7 +892,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
       }
     }
 
-    clStatus = clBuildProgram(clEnv->programs[i], 1, &clEnv->device, options, NULL, NULL);
+    clStatus = clEnv->library->clBuildProgram(clEnv->programs[i], 1, &clEnv->device, options, NULL, NULL);
     if (clStatus!=CL_SUCCESS)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
@@ -781,9 +918,9 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
         {
           char* log;
           size_t logSize;
-          clGetProgramBuildInfo(clEnv->programs[i], clEnv->device, CL_PROGRAM_BUILD_LOG, 0, NULL, &logSize);
+          clEnv->library->clGetProgramBuildInfo(clEnv->programs[i], clEnv->device, CL_PROGRAM_BUILD_LOG, 0, NULL, &logSize);
           log = (char*)AcquireMagickMemory(logSize);
-          clGetProgramBuildInfo(clEnv->programs[i], clEnv->device, CL_PROGRAM_BUILD_LOG, logSize, log, &logSize);
+          clEnv->library->clGetProgramBuildInfo(clEnv->programs[i], clEnv->device, CL_PROGRAM_BUILD_LOG, logSize, log, &logSize);
 
           (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s"
            ,GetOpenCLCachedFilesDirectory()
@@ -860,7 +997,7 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
 
   if (clEnv->device != NULL)
   {
-    status = clGetDeviceInfo(clEnv->device, CL_DEVICE_PLATFORM, sizeof(cl_platform_id), &clEnv->platform, NULL);
+    status = clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_PLATFORM, sizeof(cl_platform_id), &clEnv->platform, NULL);
     if (status != CL_SUCCESS) {
       (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
           "Failed to get OpenCL platform from the selected device.", "(%d)", status);
@@ -884,7 +1021,7 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
     clEnv->device = NULL;
 
     /* Get the number of OpenCL platforms available */
-    status = clGetPlatformIDs(0, NULL, &numPlatforms);
+    status = clEnv->library->clGetPlatformIDs(0, NULL, &numPlatforms);
     if (status != CL_SUCCESS)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning, 
@@ -905,7 +1042,7 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
       goto cleanup;
     }
 
-    status = clGetPlatformIDs(numPlatforms, platforms, NULL);
+    status = clEnv->library->clGetPlatformIDs(numPlatforms, platforms, NULL);
     if (status != CL_SUCCESS)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
@@ -937,11 +1074,11 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
     for (i = 0; i < numPlatforms; i++)
     {
       cl_uint numDevices;
-      status = clGetDeviceIDs(platforms[i], deviceType, 1, &(clEnv->device), &numDevices);
+      status = clEnv->library->clGetDeviceIDs(platforms[i], deviceType, 1, &(clEnv->device), &numDevices);
       if (status != CL_SUCCESS)
       {
         (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
-          "clGetPlatformIDs failed.", "(%d)", status);
+          "clGetDeviceIDs failed.", "(%d)", status);
         goto cleanup;
       }
       if (clEnv->device != NULL)
@@ -1010,8 +1147,31 @@ MagickBooleanType InitOpenCLEnvInternal(MagickCLEnv clEnv, ExceptionInfo* except
   cl_int clStatus;
   cl_context_properties cps[3];
 
-
+#ifdef MAGICKCORE_CLPERFMARKER
+  {
+    int status = clInitializePerfMarkerAMD();
+    if (status == AP_SUCCESS) {
+      //printf("PerfMarker successfully initialized\n");
+    }
+  }
+#endif
   clEnv->OpenCLInitialized = MagickTrue;
+
+  /* check and init the global lib */
+  OpenCLLib=GetOpenCLLib();
+  if (OpenCLLib)
+  {
+    clEnv->library=OpenCLLib;
+  }
+  else
+  {
+    /* turn off opencl */
+    MagickBooleanType flag;
+    flag = MagickTrue;
+    SetMagickOpenCLEnvParamInternal(clEnv, MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED
+        , sizeof(MagickBooleanType), &flag, exception);
+  }
+  
   if (clEnv->OpenCLDisabled != MagickFalse)
     goto cleanup;
 
@@ -1027,7 +1187,7 @@ MagickBooleanType InitOpenCLEnvInternal(MagickCLEnv clEnv, ExceptionInfo* except
   cps[0] = CL_CONTEXT_PLATFORM;
   cps[1] = (cl_context_properties)clEnv->platform;
   cps[2] = 0;
-  clEnv->context = clCreateContext(cps, 1, &(clEnv->device), NULL, NULL, &clStatus);
+  clEnv->context = clEnv->library->clCreateContext(cps, 1, &(clEnv->device), NULL, NULL, &clStatus);
   if (clStatus != CL_SUCCESS)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
@@ -1046,6 +1206,7 @@ MagickBooleanType InitOpenCLEnvInternal(MagickCLEnv clEnv, ExceptionInfo* except
   }
 
   status = EnableOpenCLInternal(clEnv);
+
 cleanup:
   return status;
 }
@@ -1106,7 +1267,7 @@ MagickPrivate
 cl_command_queue AcquireOpenCLCommandQueue(MagickCLEnv clEnv)
 {
   if (clEnv != NULL)
-    return clCreateCommandQueue(clEnv->context, clEnv->device, 0, NULL);
+    return clEnv->library->clCreateCommandQueue(clEnv->context, clEnv->device, 0, NULL);
   else
     return NULL;
 }
@@ -1143,7 +1304,7 @@ MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv clEnv, cl_command_que
 {
   if (clEnv != NULL)
   {
-    return ((clReleaseCommandQueue(queue) == CL_SUCCESS) ? MagickTrue:MagickFalse);
+    return ((clEnv->library->clReleaseCommandQueue(queue) == CL_SUCCESS) ? MagickTrue:MagickFalse);
   }
   else
     return MagickFalse;
@@ -1186,7 +1347,7 @@ MagickPrivate
   cl_kernel kernel = NULL;
   if (clEnv != NULL && kernelName!=NULL)
   {
-    kernel = clCreateKernel(clEnv->programs[program], kernelName, &clStatus);
+    kernel = clEnv->library->clCreateKernel(clEnv->programs[program], kernelName, &clStatus);
   }
   return kernel;
 }
@@ -1225,7 +1386,7 @@ MagickPrivate
   MagickBooleanType status = MagickFalse;
   if (clEnv != NULL && kernel != NULL)
   {
-    status = ((clReleaseKernel(kernel) == CL_SUCCESS)?MagickTrue:MagickFalse);
+    status = ((clEnv->library->clReleaseKernel(kernel) == CL_SUCCESS)?MagickTrue:MagickFalse);
   }
   return status;
 }
@@ -1258,7 +1419,7 @@ MagickPrivate
  unsigned long GetOpenCLDeviceLocalMemorySize(MagickCLEnv clEnv)
 {
   cl_ulong localMemorySize;
-  clGetDeviceInfo(clEnv->device, CL_DEVICE_LOCAL_MEM_SIZE, sizeof(cl_ulong), &localMemorySize, NULL);
+  clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_LOCAL_MEM_SIZE, sizeof(cl_ulong), &localMemorySize, NULL);
   return (unsigned long)localMemorySize;
 }
 
@@ -1266,7 +1427,7 @@ MagickPrivate
   unsigned long GetOpenCLDeviceMaxMemAllocSize(MagickCLEnv clEnv)
 {
   cl_ulong maxMemAllocSize;
-  clGetDeviceInfo(clEnv->device, CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(cl_ulong), &maxMemAllocSize, NULL);
+  clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(cl_ulong), &maxMemAllocSize, NULL);
   return (unsigned long)maxMemAllocSize;
 }
 
@@ -1363,17 +1524,17 @@ static ds_status initDSProfile(ds_profile** p, const char* version) {
   
   memset(profile, 0, sizeof(ds_profile));
 
-  clGetPlatformIDs(0, NULL, &numPlatforms);
+  OpenCLLib->clGetPlatformIDs(0, NULL, &numPlatforms);
   if (numPlatforms > 0) {
     platforms = (cl_platform_id*)malloc(numPlatforms*sizeof(cl_platform_id));
     if (platforms == NULL) {
       status = DS_MEMORY_ERROR;
       goto cleanup;
     }
-    clGetPlatformIDs(numPlatforms, platforms, NULL);
+    OpenCLLib->clGetPlatformIDs(numPlatforms, platforms, NULL);
     for (i = 0; i < (unsigned int)numPlatforms; i++) {
       cl_uint num;
-      if (clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_CPU | CL_DEVICE_TYPE_GPU, 0, NULL, &num) == CL_SUCCESS)
+      if (OpenCLLib->clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_CPU | CL_DEVICE_TYPE_GPU, 0, NULL, &num) == CL_SUCCESS)
         numDevices+=num;
     }
   }
@@ -1412,7 +1573,7 @@ static ds_status initDSProfile(ds_profile** p, const char* version) {
           continue;
           break;
         }
-        if (clGetDeviceIDs(platforms[i], deviceType, numDevices, devices, &num) != CL_SUCCESS)
+        if (OpenCLLib->clGetDeviceIDs(platforms[i], deviceType, numDevices, devices, &num) != CL_SUCCESS)
           continue;
         for (j = 0; j < num; j++, next++) {
           size_t length;
@@ -1420,22 +1581,22 @@ static ds_status initDSProfile(ds_profile** p, const char* version) {
           profile->devices[next].type = DS_DEVICE_OPENCL_DEVICE;
           profile->devices[next].oclDeviceID = devices[j];
 
-          clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_NAME
+          OpenCLLib->clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_NAME
             , 0, NULL, &length);
           profile->devices[next].oclDeviceName = (char*)malloc(sizeof(char)*length);
-          clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_NAME
+          OpenCLLib->clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_NAME
             , length, profile->devices[next].oclDeviceName, NULL);
 
-          clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DRIVER_VERSION
+          OpenCLLib->clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DRIVER_VERSION
             , 0, NULL, &length);
           profile->devices[next].oclDriverVersion = (char*)malloc(sizeof(char)*length);
-          clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DRIVER_VERSION
+          OpenCLLib->clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DRIVER_VERSION
             , length, profile->devices[next].oclDriverVersion, NULL);
 
-          clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_MAX_CLOCK_FREQUENCY
+          OpenCLLib->clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_MAX_CLOCK_FREQUENCY
             , sizeof(cl_uint), &profile->devices[next].oclMaxClockFrequency, NULL);
 
-          clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_MAX_COMPUTE_UNITS
+          OpenCLLib->clGetDeviceInfo(profile->devices[next].oclDeviceID, CL_DEVICE_MAX_COMPUTE_UNITS
             , sizeof(cl_uint), &profile->devices[next].oclMaxComputeUnits, NULL);
         }
       }
@@ -1923,57 +2084,6 @@ static ds_status getNumDeviceWithEmptyScore(ds_profile* profile, unsigned int* n
 */
 
 
-
-typedef struct _AccelerateTimer {
-  long long _freq;	
-  long long _clocks;
-  long long _start;
-} AccelerateTimer;
-
-static void startAccelerateTimer(AccelerateTimer* timer) {
-#ifdef _WIN32
-      QueryPerformanceCounter((LARGE_INTEGER*)&timer->_start);	
-
-
-#else
-      struct timeval s;
-      gettimeofday(&s, 0);
-      timer->_start = (long long)s.tv_sec * (long long)1.0E3 + (long long)s.tv_usec / (long long)1.0E3;
-#endif  
-}
-
-static void stopAccelerateTimer(AccelerateTimer* timer) {
-      long long n=0;
-#ifdef _WIN32
-      QueryPerformanceCounter((LARGE_INTEGER*)&(n));	
-#else
-      struct timeval s;
-      gettimeofday(&s, 0);
-      n = (long long)s.tv_sec * (long long)1.0E3+ (long long)s.tv_usec / (long long)1.0E3;
-#endif
-      n -= timer->_start;
-      timer->_start = 0;
-      timer->_clocks += n;
-}
-
-static void resetAccelerateTimer(AccelerateTimer* timer) {
-   timer->_clocks = 0; 
-   timer->_start = 0;
-}
-
-
-static void initAccelerateTimer(AccelerateTimer* timer) {
-#ifdef _WIN32
-    QueryPerformanceFrequency((LARGE_INTEGER*)&timer->_freq);
-#else
-    timer->_freq = (long long)1.0E3;
-#endif
-   resetAccelerateTimer(timer);
-}
-
-double readAccelerateTimer(AccelerateTimer* timer) { return (double)timer->_clocks/(double)timer->_freq; };
-
-
 typedef double AccelerateScoreType;
 
 static ds_status AcceleratePerfEvaluator(ds_device *device,
@@ -2067,7 +2177,7 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
       bluredImage=BlurImage(inputImage,10.0f,3.5f,exception);
       unsharpedImage=UnsharpMaskImage(bluredImage,2.0f,2.0f,50.0f,10.0f,
         exception);
-      resizedImage=ResizeImage(unsharpedImage,640,480,LanczosFilter,
+      resizedImage=ResizeImage(unsharpedImage,640,480,LanczosFilter,1.0,
         exception);
 
 #ifdef MAGICKCORE_CLPERFMARKER
@@ -2155,6 +2265,14 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
   flag = MagickTrue;
   SetMagickOpenCLEnvParamInternal(clEnv, MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED
     , sizeof(MagickBooleanType), &flag, exception);
+
+  /* check and init the global lib */
+  OpenCLLib=GetOpenCLLib();
+  if (OpenCLLib==NULL)
+  {
+    mStatus=InitOpenCLEnvInternal(clEnv, exception);
+    goto cleanup;
+  }
 
   status = initDSProfile(&profile, IMAGEMAGICK_PROFILE_VERSION);
   if (status!=DS_SUCCESS) {
@@ -2353,10 +2471,10 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
 
   if (severity!=0) {
     cl_device_type dType;
-    clGetDeviceInfo(clEnv->device,CL_DEVICE_TYPE ,sizeof(cl_device_type),&dType,NULL);
+    clEnv->library->clGetDeviceInfo(clEnv->device,CL_DEVICE_TYPE ,sizeof(cl_device_type),&dType,NULL);
     if (dType == CL_DEVICE_TYPE_CPU) {
       char buffer[MaxTextExtent];
-      clGetPlatformInfo(clEnv->platform, CL_PLATFORM_NAME, MaxTextExtent, buffer, NULL);
+      clEnv->library->clGetPlatformInfo(clEnv->platform, CL_PLATFORM_NAME, MaxTextExtent, buffer, NULL);
 
       /* Workaround for Intel OpenCL CPU runtime bug */
       /* Turn off OpenCL when a problem is detected! */
@@ -2386,6 +2504,88 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
   return(status);
 }
 
+MagickPrivate cl_mem GetAndLockRandSeedBuffer(MagickCLEnv clEnv)
+{ 
+  LockSemaphoreInfo(clEnv->lock);
+  if (clEnv->seedsLock == NULL)
+  {
+    ActivateSemaphoreInfo(&clEnv->seedsLock);
+  }
+  LockSemaphoreInfo(clEnv->seedsLock);
+
+  if (clEnv->seeds == NULL)
+  {
+    cl_int clStatus;
+    clEnv->numGenerators = NUM_CL_RAND_GENERATORS;
+    clEnv->seeds = clEnv->library->clCreateBuffer(clEnv->context, CL_MEM_READ_WRITE,
+                                  clEnv->numGenerators*4*sizeof(unsigned int),
+                                  NULL, &clStatus);
+    if (clStatus != CL_SUCCESS)
+    {
+      clEnv->seeds = NULL;
+    }
+    else
+    {
+      unsigned int i;
+      cl_command_queue queue = NULL;
+      unsigned int *seeds;
+
+      queue = AcquireOpenCLCommandQueue(clEnv);
+      seeds = (unsigned int*) clEnv->library->clEnqueueMapBuffer(queue, clEnv->seeds, CL_TRUE, 
+                                                  CL_MAP_WRITE, 0,
+                                                  clEnv->numGenerators*4
+                                                  *sizeof(unsigned int),
+                                                  0, NULL, NULL, &clStatus);
+      if (clStatus!=CL_SUCCESS)
+      {
+        clEnv->library->clReleaseMemObject(clEnv->seeds);
+        goto cleanup;
+      }
+
+      for (i = 0; i < clEnv->numGenerators; i++) {
+        RandomInfo* randomInfo = AcquireRandomInfo();
+        const unsigned long* s = GetRandomInfoSeed(randomInfo);
+        if (i == 0)
+          clEnv->randNormalize = GetRandomInfoNormalize(randomInfo);
+
+        seeds[i*4]   = (unsigned int) s[0];
+        seeds[i*4+1] = (unsigned int) 0x50a7f451;
+        seeds[i*4+2] = (unsigned int) 0x5365417e;
+        seeds[i*4+3] = (unsigned int) 0xc3a4171a;
+
+        randomInfo = DestroyRandomInfo(randomInfo);
+      }
+      clStatus = clEnv->library->clEnqueueUnmapMemObject(queue, clEnv->seeds, seeds, 0, 
+                                          NULL, NULL);
+      clEnv->library->clFinish(queue);
+cleanup:
+      if (queue != NULL) 
+        RelinquishOpenCLCommandQueue(clEnv, queue);
+    }
+  }
+  UnlockSemaphoreInfo(clEnv->lock);
+  return clEnv->seeds; 
+}
+
+MagickPrivate void UnlockRandSeedBuffer(MagickCLEnv clEnv) {
+  if (clEnv->seedsLock == NULL)
+  {
+    ActivateSemaphoreInfo(&clEnv->seedsLock);
+  }
+  else
+    UnlockSemaphoreInfo(clEnv->seedsLock);
+}
+
+MagickPrivate unsigned int GetNumRandGenerators(MagickCLEnv clEnv)
+{
+  return clEnv->numGenerators;
+}
+
+
+MagickPrivate float GetRandNormalize(MagickCLEnv clEnv)
+{
+  return clEnv->randNormalize;
+}
 
 #else
 
@@ -2393,12 +2593,12 @@ struct _MagickCLEnv {
   MagickBooleanType OpenCLInitialized;  /* whether OpenCL environment is initialized. */
 };
 
-extern MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
+MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
 {
   return NULL;
 }
 
-extern MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(
+MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(
   MagickCLEnv magick_unused(clEnv))
 {
   magick_unreferenced(clEnv);
@@ -2470,7 +2670,7 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(
   return (cl_command_queue) NULL;
 }
 
-MagickExport MagickBooleanType RelinquishCommandQueue(
+MagickPrivate MagickBooleanType RelinquishCommandQueue(
   MagickCLEnv magick_unused(clEnv),cl_command_queue magick_unused(queue))
 {
   magick_unreferenced(clEnv);
@@ -2534,6 +2734,32 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
   magick_unreferenced(format);
   return(MagickFalse);
 }
+
+
+MagickPrivate cl_mem GetAndLockRandSeedBuffer(MagickCLEnv clEnv)
+{
+  magick_unreferenced(clEnv);
+  return NULL;
+}
+
+
+MagickPrivate void UnlockRandSeedBuffer(MagickCLEnv clEnv)
+{
+  magick_unreferenced(clEnv);
+}
+
+MagickPrivate unsigned int GetNumRandGenerators(MagickCLEnv clEnv)
+{
+  magick_unreferenced(clEnv);
+  return 0;
+}
+
+MagickPrivate float GetRandNormalize(MagickCLEnv clEnv)
+{
+  magick_unreferenced(clEnv);
+  return 0.0f;
+}
+
 #endif /* MAGICKCORE_OPENCL_SUPPORT */
 
 char* openclCachedFilesDirectory;
@@ -2554,43 +2780,65 @@ const char* GetOpenCLCachedFilesDirectory() {
       struct stat attributes;
       MagickBooleanType status;
 
+
+
+      home=GetEnvironmentValue("IMAGEMAGICK_OPENCL_CACHE_DIR");
+      if (home == (char *) NULL)
+      {
 #ifdef MAGICKCORE_WINDOWS_SUPPORT
-      home=GetEnvironmentValue("LOCALAPPDATA");
-      if (home == (char *) NULL)
-        home=GetEnvironmentValue("APPDATA");
-      if (home == (char *) NULL)
-        home=GetEnvironmentValue("USERPROFILE");
+        home=GetEnvironmentValue("LOCALAPPDATA");
+        if (home == (char *) NULL)
+          home=GetEnvironmentValue("APPDATA");
+        if (home == (char *) NULL)
+          home=GetEnvironmentValue("USERPROFILE");
 #else
-      home=GetEnvironmentValue("HOME");
+        home=GetEnvironmentValue("HOME");
 #endif
+      }
+      
       if (home != (char *) NULL)
       {
+        int mkdirStatus = 0;
         /*
-          Search $HOME/.config/ImageMagick.
         */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config",home,
-          DirectorySeparator);
+
+        /* first check if $HOME/.config exists */
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config",
+          home,DirectorySeparator);
         status=GetPathAttributes(path,&attributes);
-        if (status == MagickFalse) {
+        if (status == MagickFalse) 
+        {
+          
 #ifdef MAGICKCORE_WINDOWS_SUPPORT
-          mkdir(path);
+          mkdirStatus = mkdir(path);
 #else
-          mkdir(path, 0777);
+          mkdirStatus = mkdir(path, 0777);
 #endif
         }
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config%sImageMagick",
-          home,DirectorySeparator,DirectorySeparator);
+        
+        /* first check if $HOME/.config/ImageMagick exists */
+        if (mkdirStatus==0) 
+        {
+            (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config%sImageMagick",
+              home,DirectorySeparator,DirectorySeparator);
+                    
+            status=GetPathAttributes(path,&attributes);
+            if (status == MagickFalse) 
+            {
+#ifdef MAGICKCORE_WINDOWS_SUPPORT
+              mkdirStatus = mkdir(path);
+#else
+              mkdirStatus = mkdir(path, 0777);
+#endif
+            }
+        }
+
+        if (mkdirStatus==0)
+        {
+          temp = (char*)AcquireMagickMemory(strlen(path)+1);
+          CopyMagickString(temp,path,strlen(path)+1);
+        }
         home=DestroyString(home);
-        temp = (char*)AcquireMagickMemory(strlen(path)+1);
-        CopyMagickString(temp,path,strlen(path)+1);
-        status=GetPathAttributes(path,&attributes);
-        if (status == MagickFalse) {
-#ifdef MAGICKCORE_WINDOWS_SUPPORT
-          mkdir(path);
-#else
-          mkdir(path, 0777);
-#endif
-        }
       }
       openclCachedFilesDirectory = temp;
     }
@@ -2598,6 +2846,52 @@ const char* GetOpenCLCachedFilesDirectory() {
   }
   return openclCachedFilesDirectory;
 }
+
+void startAccelerateTimer(AccelerateTimer* timer) {
+#ifdef _WIN32
+      QueryPerformanceCounter((LARGE_INTEGER*)&timer->_start);	
+
+
+#else
+      struct timeval s;
+      gettimeofday(&s, 0);
+      timer->_start = (long long)s.tv_sec * (long long)1.0E3 + (long long)s.tv_usec / (long long)1.0E3;
+#endif  
+}
+
+void stopAccelerateTimer(AccelerateTimer* timer) {
+      long long n=0;
+#ifdef _WIN32
+      QueryPerformanceCounter((LARGE_INTEGER*)&(n));	
+#else
+      struct timeval s;
+      gettimeofday(&s, 0);
+      n = (long long)s.tv_sec * (long long)1.0E3+ (long long)s.tv_usec / (long long)1.0E3;
+#endif
+      n -= timer->_start;
+      timer->_start = 0;
+      timer->_clocks += n;
+}
+
+void resetAccelerateTimer(AccelerateTimer* timer) {
+   timer->_clocks = 0; 
+   timer->_start = 0;
+}
+
+
+void initAccelerateTimer(AccelerateTimer* timer) {
+#ifdef _WIN32
+    QueryPerformanceFrequency((LARGE_INTEGER*)&timer->_freq);
+#else
+    timer->_freq = (long long)1.0E3;
+#endif
+   resetAccelerateTimer(timer);
+}
+
+double readAccelerateTimer(AccelerateTimer* timer) { 
+  return (double)timer->_clocks/(double)timer->_freq; 
+};
+
 
 /* create a function for OpenCL log */
 MagickPrivate
@@ -2640,3 +2934,5 @@ void OpenCLLog(const char* message) {
   magick_unreferenced(message);
 #endif
 }
+
+
