@@ -3178,8 +3178,8 @@ AC_SUBST(DOCUMENTATION_PATH)
 AC_ARG_ENABLE([docs],
   [AS_HELP_STRING([--disable-docs],
     [disable building of documentation])],
-  wantdocs=$enableval, wantdocs=detect)
-AM_CONDITIONAL([INSTALL_DOC], [test "$wantdocs" = "xyes"])
+  wantdocs=$enableval, wantdocs=yes)
+AM_CONDITIONAL([INSTALL_DOC], [test "$wantdocs" = "yes"])
 
 # Subdirectory to place architecture-dependent configuration files
 CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
@@ -4077,6 +4077,8 @@ GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
 Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
 High Dynamic Range Imagery
                   --enable-hdri=$enable_hdri		$enable_hdri
+
+Install documentation:		$wantdocs
 
 Delegate Configuration:
 BZLIB             --with-bzlib=$with_bzlib		$have_bzlib

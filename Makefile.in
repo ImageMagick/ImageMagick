@@ -5016,7 +5016,6 @@ pkgconfig_DATA = \
 	$(WAND_PKGCONFIG) \
 	$(MAGICKPP_PKGCONFIG)
 
-@INSTALL_DOC_FALSE@man_MANS = 
 
 # Manual pages to install
 @INSTALL_DOC_TRUE@man_MANS = \
@@ -5025,7 +5024,6 @@ pkgconfig_DATA = \
 @INSTALL_DOC_TRUE@	$(MAGICKPP_MANS) \
 @INSTALL_DOC_TRUE@	$(UTILITIES_MANS)
 
-@INSTALL_DOC_FALSE@doc_DATA = 
 @INSTALL_DOC_TRUE@doc_DATA = \
 @INSTALL_DOC_TRUE@	LICENSE \
 @INSTALL_DOC_TRUE@	ChangeLog \
@@ -5049,7 +5047,6 @@ pkgdocdir = $(DOCUMENTATION_PATH)
 DOCDIRSDOXYGEN = www/api/MagickCore www/api/MagickWand
 DOCDIRSMANUAL = images images/patterns www www/api www/source www/Magick++
 DOCDIRS = $(DOCDIRSMANUAL) $(DOCDIRSDOXYGEN)
-@INSTALL_DOC_FALSE@HTML_INSTALL_DATA_TARGETS = 
 @INSTALL_DOC_TRUE@HTML_INSTALL_DATA_TARGETS = install-data-html
 
 # Uninstall HTML files
