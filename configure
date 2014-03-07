@@ -3702,7 +3702,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=15035M
+MAGICK_SVN_REVISION=15038M
 
 
 # Substitute library versioning
@@ -10523,6 +10523,9 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 fi
 
 
+
+#remove static link on Linux
+CL_LIBS=`echo $CL_LIBS | $SED -e 's/-lOpenCL //'`
 
 
 CFLAGS="$CL_CFLAGS $CFLAGS"
