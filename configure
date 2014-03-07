@@ -3698,7 +3698,7 @@ MAGICK_PATCHLEVEL_VERSION=8
 
 MAGICK_VERSION=6.8.8-8
 
-MAGICK_SVN_REVISION=15020M
+MAGICK_SVN_REVISION=15036M
 
 
 # Substitute library versioning
@@ -32695,10 +32695,10 @@ _ACEOF
 if test "${enable_docs+set}" = set; then :
   enableval=$enable_docs; wantdocs=$enableval
 else
-  wantdocs=detect
+  wantdocs=yes
 fi
 
- if test "$wantdocs" = "xyes"; then
+ if test "$wantdocs" = "yes"; then
   INSTALL_DOC_TRUE=
   INSTALL_DOC_FALSE='#'
 else
@@ -39023,6 +39023,8 @@ Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
 High Dynamic Range Imagery
                   --enable-hdri=$enable_hdri		$enable_hdri
 
+Install documentation:		$wantdocs
+
 Delegate Configuration:
 BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
 Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
@@ -39102,6 +39104,8 @@ GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
 Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
 High Dynamic Range Imagery
                   --enable-hdri=$enable_hdri		$enable_hdri
+
+Install documentation:		$wantdocs
 
 Delegate Configuration:
 BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
