@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/accelerate.h"
 #include "magick/artifact.h"
 #include "magick/cache-view.h"
 #include "magick/channel.h"
@@ -2260,6 +2261,12 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   /*
     Composite image.
   */
+
+  status=AccelerateCompositeImage(image,channel,compose,composite_image,
+    x_offset,y_offset,destination_dissolve,source_dissolve,exception);
+  if (status==MagickTrue)
+    return status;
+
   status=MagickTrue;
   progress=0;
   midpoint=((MagickRealType) QuantumRange+1.0)/2;

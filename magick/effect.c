@@ -68,6 +68,7 @@
 #include "magick/montage.h"
 #include "magick/morphology.h"
 #include "magick/morphology-private.h"
+#include "magick/opencl-private.h"
 #include "magick/paint.h"
 #include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
@@ -2031,6 +2032,12 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   /*
     Motion blur image.
   */
+  blur_image=AccelerateMotionBlurImage(image,channel,kernel,width,offset
+    ,exception);
+  if (blur_image != (Image*)NULL)
+  {
+    return blur_image;
+  }
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     {
@@ -4009,8 +4016,10 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   Image
     *sharp_image;
 
+
   sharp_image=UnsharpMaskImageChannel(image,DefaultChannels,radius,sigma,gain,
     threshold,exception);
+
   return(sharp_image);
 }
 

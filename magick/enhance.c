@@ -43,7 +43,6 @@
 #include "magick/studio.h"
 #include "magick/accelerate.h"
 #include "magick/artifact.h"
-#include "magick/attribute.h"
 #include "magick/cache.h"
 #include "magick/cache-view.h"
 #include "magick/channel.h"
@@ -64,6 +63,8 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/opencl.h"
+#include "magick/opencl-private.h"
 #include "magick/option.h"
 #include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
@@ -1162,6 +1163,12 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+
+  /* Call OpenCL version */
+  status = AccelerateContrastStretchImageChannel(image, channel, black_point, white_point, &image->exception);
+  if (status == MagickTrue)
+    return status;
+  
   histogram=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*histogram));
   stretch_map=(QuantumPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
@@ -2423,9 +2430,16 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       if (SetImageStorageClass(image,DirectClass) == MagickFalse)
         return(MagickFalse);
     }
+
   /*
     Grayscale image.
   */
+
+  /* call opencl version */
+  status = AccelerateGrayscaleImage(image, method, &image->exception);
+  if (status == MagickTrue)
+    return status;
+
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
@@ -3805,6 +3819,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
       image->colormap[i].green=green;
       image->colormap[i].blue=blue;
     }
+
   /*
     Modulate image.
   */
@@ -4012,9 +4027,16 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
           image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
       }
     }
+
   /*
     Negate image.
   */
+
+  /* call opencl version */
+  status = AccelerateNegateImageChannel(image, channel, grayscale, &image->exception);
+  if (status == MagickTrue)
+    return status;
+
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
