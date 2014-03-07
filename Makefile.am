@@ -171,9 +171,6 @@ doc_DATA = \
 	LICENSE \
 	ChangeLog \
 	NEWS.txt
-else
-man_MANS =
-doc_DATA =
 endif
 
 if MAINTAINER_MODE
@@ -251,9 +248,7 @@ DOCDIRS= $(DOCDIRSMANUAL) $(DOCDIRSDOXYGEN)
 
 if INSTALL_DOC
 HTML_INSTALL_DATA_TARGETS = install-data-html
-else !INSTALL_DOC
-HTML_INSTALL_DATA_TARGETS =
-endif !INSTALL_DOC
+endif
 
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)

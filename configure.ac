@@ -3176,8 +3176,8 @@ AC_SUBST(DOCUMENTATION_PATH)
 AC_ARG_ENABLE([docs],
   [AS_HELP_STRING([--disable-docs],
     [disable building of documentation])],
-  wantdocs=$enableval, wantdocs=detect)
-AM_CONDITIONAL([INSTALL_DOC], [test "$wantdocs" = "xyes"])
+  wantdocs=$enableval, wantdocs=yes)
+AM_CONDITIONAL([INSTALL_DOC], [test "$wantdocs" = "yes"])
 
 # Subdirectory to place architecture-dependent configuration files
 CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"

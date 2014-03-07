@@ -3702,7 +3702,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=15015:15020M
+MAGICK_SVN_REVISION=15035M
 
 
 # Substitute library versioning
@@ -32680,10 +32680,10 @@ _ACEOF
 if test "${enable_docs+set}" = set; then :
   enableval=$enable_docs; wantdocs=$enableval
 else
-  wantdocs=detect
+  wantdocs=yes
 fi
 
- if test "$wantdocs" = "xyes"; then
+ if test "$wantdocs" = "yes"; then
   INSTALL_DOC_TRUE=
   INSTALL_DOC_FALSE='#'
 else
