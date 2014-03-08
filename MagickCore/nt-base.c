@@ -106,6 +106,30 @@ const registry_roots[2] =
 extern "C" BOOL WINAPI
   DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved);
 #endif
+
+static inline char *create_utf8_string(const wchar_t *wideChar)
+{
+  char
+    *utf8;
+
+  int
+    count;
+
+  count=WideCharToMultiByte(CP_UTF8,0,wideChar,-1,NULL,0,NULL,NULL);
+  if (count < 0)
+    return((char *) NULL);
+  utf8=(char *) AcquireQuantumMemory(count+1,sizeof(*utf8));
+  if (utf8 == (char *) NULL)
+    return((char *) NULL);
+  count=WideCharToMultiByte(CP_UTF8,0,wideChar,-1,utf8,count,NULL,NULL);
+  if (count == 0)
+    {
+      utf8=DestroyString(utf8);
+      return((char *) NULL);
+    }
+  utf8[count]=0;
+  return(utf8);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
