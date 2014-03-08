@@ -47,49 +47,49 @@ extern MagickPrivate void
 */
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-static inline wchar_t *create_wchar_string(const char *utf8)
+static inline wchar_t *create_wchar_path(const char *utf8)
 {
   int
     count;
  
   wchar_t
     *wideChar;
- 
+
   count=MultiByteToWideChar(CP_UTF8,0,utf8,-1,NULL,0);
-  wideChar=(WCHAR *) AcquireQuantumMemory(count,sizeof(*wideChar));
-  if (wideChar == (WCHAR *) NULL)
-    return((WCHAR *) NULL);
+  if (count > MAX_PATH)
+    {
+      char
+        buffer[MaxTextExtent];
+
+      wchar_t
+        shortPath[MAX_PATH],
+        *longPath;
+
+      (void) FormatLocaleString(buffer,MaxTextExtent,"\\\\?\\%s",utf8);
+      count+=4;
+      longPath=(wchar_t *) AcquireQuantumMemory(count,sizeof(*longPath));
+      if (longPath == (wchar_t *) NULL)
+        return((wchar_t *) NULL);
+      count=MultiByteToWideChar(CP_UTF8,0,buffer,-1,longPath,count);
+      if (count != 0)
+        count=GetShortPathNameW(longPath,shortPath,MAX_PATH);
+      longPath=(wchar_t *) RelinquishMagickMemory(longPath);
+      if (count < 5)
+        return((wchar_t *) NULL);
+      wideChar=(wchar_t *) AcquireQuantumMemory(count-3,sizeof(*wideChar));
+      wcscpy(wideChar,shortPath+4);
+      return(wideChar);
+    }
+  wideChar=(wchar_t *) AcquireQuantumMemory(count,sizeof(*wideChar));
+  if (wideChar == (wchar_t *) NULL)
+    return((wchar_t *) NULL);
   count=MultiByteToWideChar(CP_UTF8,0,utf8,-1,wideChar,count);
   if (count == 0)
     {
-      wideChar=(WCHAR *) RelinquishMagickMemory(wideChar);
-      return((WCHAR *) NULL);
+      wideChar=(wchar_t *) RelinquishMagickMemory(wideChar);
+      return((wchar_t *) NULL);
     }
   return(wideChar);
-}
-
-static inline char *create_utf8_string(const wchar_t *wideChar)
-{
-  char
-    *utf8;
-
-  int
-    count;
-
-  count=WideCharToMultiByte(CP_UTF8,0,wideChar,-1,NULL,0,NULL,NULL);
-  if (count < 0)
-    return((char *) NULL);
-  utf8=(char *) AcquireQuantumMemory(count+1,sizeof(*utf8));
-  if (utf8 == (char *) NULL)
-    return((char *) NULL);
-  count=WideCharToMultiByte(CP_UTF8,0,wideChar,-1,utf8,count,NULL,NULL);
-  if (count == 0)
-    {
-      utf8=DestroyString(utf8);
-      return((char *) NULL);
-    }
-  utf8[count]=0;
-  return(utf8);
 }
 #endif
 
@@ -104,7 +104,7 @@ static inline int access_utf8(const char *path,int mode)
    wchar_t
      *path_wide;
 
-   path_wide=create_wchar_string(path);
+   path_wide=create_wchar_path(path);
    if (path_wide == (wchar_t *) NULL)
      return(-1);
    status=_waccess(path_wide,mode);
@@ -125,10 +125,10 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
      *mode_wide,
      *path_wide;
 
-   path_wide=create_wchar_string(path);
+   path_wide=create_wchar_path(path);
    if (path_wide == (wchar_t *) NULL)
      return((FILE *) NULL);
-   mode_wide=create_wchar_string(mode);
+   mode_wide=create_wchar_path(mode);
    if (mode_wide == (wchar_t *) NULL)
      {
        path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
@@ -157,7 +157,7 @@ static inline int open_utf8(const char *path,int flags,mode_t mode)
    wchar_t
      *path_wide;
 
-   path_wide=create_wchar_string(path);
+   path_wide=create_wchar_path(path);
    if (path_wide == (wchar_t *) NULL)
      return(-1);
    status=_wopen(path_wide,flags,mode);
@@ -178,10 +178,10 @@ static inline FILE *popen_utf8(const char *command,const char *type)
      *type_wide,
      *command_wide;
 
-   command_wide=create_wchar_string(command);
+   command_wide=create_wchar_path(command);
    if (command_wide == (wchar_t *) NULL)
      return((FILE *) NULL);
-   type_wide=create_wchar_string(type);
+   type_wide=create_wchar_path(type);
    if (type_wide == (wchar_t *) NULL)
      {
        command_wide=(wchar_t *) RelinquishMagickMemory(command_wide);
@@ -205,7 +205,7 @@ static inline int remove_utf8(const char *path)
    wchar_t
      *path_wide;
 
-   path_wide=create_wchar_string(path);
+   path_wide=create_wchar_path(path);
    if (path_wide == (wchar_t *) NULL)
      return(-1);
    status=_wremove(path_wide);
@@ -226,10 +226,10 @@ static inline int rename_utf8(const char *source,const char *destination)
      *destination_wide,
      *source_wide;
 
-   source_wide=create_wchar_string(source);
+   source_wide=create_wchar_path(source);
    if (source_wide == (wchar_t *) NULL)
      return(-1);
-   destination_wide=create_wchar_string(destination);
+   destination_wide=create_wchar_path(destination);
    if (destination_wide == (wchar_t *) NULL)
      {
        source_wide=(wchar_t *) RelinquishMagickMemory(source_wide);
@@ -253,7 +253,7 @@ static inline int stat_utf8(const char *path,struct stat *attributes)
    wchar_t
      *path_wide;
 
-   path_wide=create_wchar_string(path);
+   path_wide=create_wchar_path(path);
    if (path_wide == (WCHAR *) NULL)
      return(-1);
    status=wstat(path_wide,attributes);
