@@ -539,13 +539,13 @@ MagickExport char **GetCoderList(const char *pattern,
 */
 static MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
 {
-  if ((coder_list == (SplayTreeInfo *) NULL) &&
+  if ((coder_list == (SplayTreeInfo *) NULL) ||
       (instantiate_coder == MagickFalse))
     {
       if (coder_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&coder_semaphore);
       LockSemaphoreInfo(coder_semaphore);
-      if ((coder_list == (SplayTreeInfo *) NULL) &&
+      if ((coder_list == (SplayTreeInfo *) NULL) ||
           (instantiate_coder == MagickFalse))
         {
           (void) LoadCoderLists(MagickCoderFilename,exception);

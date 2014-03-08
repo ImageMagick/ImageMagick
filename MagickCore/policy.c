@@ -425,13 +425,13 @@ MagickExport char *GetPolicyValue(const char *name)
 */
 static MagickBooleanType InitializePolicyList(ExceptionInfo *exception)
 {
-  if ((policy_list == (LinkedListInfo *) NULL) &&
+  if ((policy_list == (LinkedListInfo *) NULL) ||
       (instantiate_policy == MagickFalse))
     {
       if (policy_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&policy_semaphore);
       LockSemaphoreInfo(policy_semaphore);
-      if ((policy_list == (LinkedListInfo *) NULL) &&
+      if ((policy_list == (LinkedListInfo *) NULL) ||
           (instantiate_policy == MagickFalse))
         {
           (void) LoadPolicyLists(PolicyFilename,exception);

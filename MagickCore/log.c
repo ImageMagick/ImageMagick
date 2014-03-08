@@ -535,12 +535,13 @@ MagickExport const char *GetLogName(void)
 */
 static MagickBooleanType InitializeLogList(ExceptionInfo *exception)
 {
-  if ((log_list == (LinkedListInfo *) NULL) && (instantiate_log == MagickFalse))
+  if ((log_list == (LinkedListInfo *) NULL) ||
+      (instantiate_log == MagickFalse))
     {
       if (log_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&log_semaphore);
       LockSemaphoreInfo(log_semaphore);
-      if ((log_list == (LinkedListInfo *) NULL) &&
+      if ((log_list == (LinkedListInfo *) NULL) ||
           (instantiate_log == MagickFalse))
         {
           (void) LoadLogLists(LogFilename,exception);

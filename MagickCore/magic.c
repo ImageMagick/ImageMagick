@@ -529,13 +529,13 @@ MagickExport const char *GetMagicName(const MagicInfo *magic_info)
 */
 static MagickBooleanType InitializeMagicList(ExceptionInfo *exception)
 {
-  if ((magic_list == (LinkedListInfo *) NULL) &&
+  if ((magic_list == (LinkedListInfo *) NULL) ||
       (instantiate_magic == MagickFalse))
     {
       if (magic_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&magic_semaphore);
       LockSemaphoreInfo(magic_semaphore);
-      if ((magic_list == (LinkedListInfo *) NULL) &&
+      if ((magic_list == (LinkedListInfo *) NULL) ||
           (instantiate_magic == MagickFalse))
         {
           (void) LoadMagicLists(MagicFilename,exception);

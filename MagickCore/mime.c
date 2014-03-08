@@ -604,13 +604,13 @@ MagickExport const char *GetMimeType(const MimeInfo *mime_info)
 */
 static MagickBooleanType InitializeMimeList(ExceptionInfo *exception)
 {
-  if ((mime_list == (LinkedListInfo *) NULL) &&
+  if ((mime_list == (LinkedListInfo *) NULL) ||
       (instantiate_mime == MagickFalse))
     {
       if (mime_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&mime_semaphore);
       LockSemaphoreInfo(mime_semaphore);
-      if ((mime_list == (LinkedListInfo *) NULL) &&
+      if ((mime_list == (LinkedListInfo *) NULL) ||
           (instantiate_mime == MagickFalse))
         {
           (void) LoadMimeLists(MimeFilename,exception);

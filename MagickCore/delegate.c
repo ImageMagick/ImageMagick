@@ -710,13 +710,13 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 */
 static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
 {
-  if ((delegate_list == (LinkedListInfo *) NULL) &&
+  if ((delegate_list == (LinkedListInfo *) NULL) ||
       IfMagickFalse(instantiate_delegate))
     {
       if (delegate_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&delegate_semaphore);
       LockSemaphoreInfo(delegate_semaphore);
-      if ((delegate_list == (LinkedListInfo *) NULL) &&
+      if ((delegate_list == (LinkedListInfo *) NULL) ||
           IfMagickFalse(instantiate_delegate))
         {
           (void) LoadDelegateLists(DelegateFilename,exception);
