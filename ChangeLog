@@ -24,6 +24,8 @@
   * Replace  MAGICKCORE_JP2_DELEGATE with MAGICKCORE_LIBOPENJP2_DELEGATE in
     magick/static.c (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25153).
+  * Eliminate thread race condition (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25168).
 
 2014-02-18  6.8.8-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-7, SVN revision 14908.
