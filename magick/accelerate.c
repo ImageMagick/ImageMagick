@@ -6754,7 +6754,7 @@ MagickExport MagickBooleanType AccelerateContrastImage(
   return MagickFalse;
 }
 
-MagickExport MagickBooleanType AcceleratsContrastStretchImageChannel(
+MagickExport MagickBooleanType AccelerateContrastStretchImageChannel(
     Image * image, const ChannelType channel, const double black_point, const double white_point, 
     ExceptionInfo* magick_unused(exception))
 {
