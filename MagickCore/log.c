@@ -535,7 +535,7 @@ MagickExport const char *GetLogName(void)
 */
 static MagickBooleanType InitializeLogList(ExceptionInfo *exception)
 {
-  if ((log_list == (LinkedListInfo *) NULL) ||
+  if ((log_list == (LinkedListInfo *) NULL) &&
       (instantiate_log == MagickFalse))
     {
       if (log_semaphore == (SemaphoreInfo *) NULL)
