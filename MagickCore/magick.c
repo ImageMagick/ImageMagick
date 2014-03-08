@@ -840,13 +840,13 @@ static void *DestroyMagickNode(void *magick_info)
 static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
 {
   (void) exception;
-  if ((magick_list == (SplayTreeInfo *) NULL) &&
+  if ((magick_list == (SplayTreeInfo *) NULL) ||
       (instantiate_magick == MagickFalse))
     {
       if (magick_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&magick_semaphore);
       LockSemaphoreInfo(magick_semaphore);
-      if ((magick_list == (SplayTreeInfo *) NULL) &&
+      if ((magick_list == (SplayTreeInfo *) NULL) ||
           (instantiate_magick == MagickFalse))
         {
           MagickBooleanType
