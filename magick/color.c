@@ -1506,13 +1506,13 @@ MagickExport void GetColorTuple(const MagickPixelPacket *pixel,
 */
 static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
 {
-  if ((color_list == (LinkedListInfo *) NULL) &&
+  if ((color_list == (LinkedListInfo *) NULL) ||
       (instantiate_color == MagickFalse))
     {
       if (color_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&color_semaphore);
       LockSemaphoreInfo(color_semaphore);
-      if ((color_list == (LinkedListInfo *) NULL) &&
+      if ((color_list == (LinkedListInfo *) NULL) ||
           (instantiate_color == MagickFalse))
         {
           (void) LoadColorLists(ColorFilename,exception);

@@ -907,13 +907,13 @@ MagickExport const char *GetConfigureValue(const ConfigureInfo *configure_info)
 */
 static MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
 {
-  if ((configure_list == (LinkedListInfo *) NULL) &&
+  if ((configure_list == (LinkedListInfo *) NULL) ||
       (instantiate_configure == MagickFalse))
     {
       if (configure_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&configure_semaphore);
       LockSemaphoreInfo(configure_semaphore);
-      if ((configure_list == (LinkedListInfo *) NULL) &&
+      if ((configure_list == (LinkedListInfo *) NULL) ||
           (instantiate_configure == MagickFalse))
         {
           (void) LoadConfigureLists(ConfigureFilename,exception);

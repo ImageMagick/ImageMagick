@@ -784,13 +784,13 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
 
 static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
 {
-  if ((type_list == (SplayTreeInfo *) NULL) &&
+  if ((type_list == (SplayTreeInfo *) NULL) ||
       (instantiate_type == MagickFalse))
     {
       if (type_semaphore == (SemaphoreInfo *) NULL)
 				ActivateSemaphoreInfo(&type_semaphore);
       LockSemaphoreInfo(type_semaphore);
-      if ((type_list == (SplayTreeInfo *) NULL) &&
+      if ((type_list == (SplayTreeInfo *) NULL) ||
           (instantiate_type == MagickFalse))
         {
           (void) LoadTypeLists(MagickTypeFilename,exception);
