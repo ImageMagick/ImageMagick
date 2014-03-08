@@ -873,13 +873,13 @@ MagickExport MagickBooleanType InitializeModuleList(
 {
   magick_unreferenced(exception);
 
-  if ((module_list == (SplayTreeInfo *) NULL) &&
+  if ((module_list == (SplayTreeInfo *) NULL) ||
       (instantiate_module == MagickFalse))
     {
       if (module_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&module_semaphore);
       LockSemaphoreInfo(module_semaphore);
-      if ((module_list == (SplayTreeInfo *) NULL) &&
+      if ((module_list == (SplayTreeInfo *) NULL) ||
           (instantiate_module == MagickFalse))
         {
           MagickBooleanType
