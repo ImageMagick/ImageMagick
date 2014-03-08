@@ -54,6 +54,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 #if defined(MAGICKCORE_LTDL_DELEGATE)
 #  include "ltdl.h"
@@ -162,16 +163,20 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
       ssize_t
         count;
 
-      module_path=(char *) AcquireQuantumMemory(MaxTextExtent,
-        sizeof(*module_path));
-      if (module_path == (char *) NULL)
+      wchar_t
+        *wide_path;
+
+      wide_path=(wchar_t *) AcquireQuantumMemory(MaxTextExtent,
+        sizeof(*wide_path));
+      if (wide_path == (wchar_t *) NULL)
         return(FALSE);
-      count=(ssize_t) GetModuleFileName(handle,module_path,MaxTextExtent);
+      count=(ssize_t) GetModuleFileNameW(handle,wide_path,MaxTextExtent);
       if (count != 0)
         {
           char
             *path;
 
+          module_path=create_utf8_string(wide_path);
           for ( ; count > 0; count--)
             if (module_path[count] == '\\')
               {
@@ -183,6 +188,7 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
           if (path == (char *) NULL)
             {
               module_path=DestroyString(module_path);
+              wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
               return(FALSE);
             }
           count=(ssize_t) GetEnvironmentVariable("PATH",path,16*MaxTextExtent);
@@ -199,6 +205,7 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
                     {
                       path=DestroyString(path);
                       module_path=DestroyString(module_path);
+                      wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
                       return(FALSE);
                     }
                   (void) FormatLocaleString(variable,16*MaxTextExtent,
@@ -208,8 +215,9 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
                 }
             }
           path=DestroyString(path);
+          module_path=DestroyString(module_path);
         }
-      module_path=DestroyString(module_path);
+      wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
       break;
     }
     case DLL_PROCESS_DETACH:
@@ -392,23 +400,14 @@ MagickPrivate char **NTArgvToUTF8(const int argc,wchar_t **argv)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConvertStringToARGV");
   for (i=0; i < (ssize_t) argc; i++)
   {
-    ssize_t
-      count;
-
-    count=WideCharToMultiByte(CP_UTF8,0,argv[i],-1,NULL,0,NULL,NULL);
-    if (count < 0)
-      count=0;
-    utf8[i]=(char *) AcquireQuantumMemory(count+1,sizeof(**utf8));
+    utf8[i]=create_utf8_string(argv[i]);
     if (utf8[i] == (char *) NULL)
       {
         for (i--; i >= 0; i--)
           utf8[i]=DestroyString(utf8[i]);
-        utf8=(char **) RelinquishMagickMemory(utf8);
         ThrowFatalException(ResourceLimitFatalError,
           "UnableToConvertStringToARGV");
       }
-    count=WideCharToMultiByte(CP_UTF8,0,argv[i],-1,utf8[i],count,NULL,NULL);
-    utf8[i][count]=0;
   }
   return(utf8);
 }
@@ -716,7 +715,12 @@ MagickPrivate MagickBooleanType NTGatherRandomData(const size_t length,
 MagickPrivate MagickBooleanType NTGetExecutionPath(char *path,
   const size_t extent)
 {
-  GetModuleFileName(0,path,(DWORD) extent);
+  wchar_t
+    wide_path[MaxTextExtent];
+
+  (void) GetModuleFileNameW(0,wide_path,(DWORD) extent);
+  (void) WideCharToMultiByte(CP_UTF8,0,wide_path,-1,path,(int) extent,NULL,
+    NULL);
   return(MagickTrue);
 }
 
@@ -1514,14 +1518,14 @@ MagickPrivate void *NTMapMemory(char *address,size_t length,int protection,
 */
 MagickPrivate DIR *NTOpenDirectory(const char *path)
 {
-  wchar_t
-    file_specification[MaxTextExtent];
-
   DIR
     *entry;
 
   size_t
     length;
+
+  wchar_t
+    file_specification[MaxTextExtent];
 
   assert(path != (const char *) NULL);
   length=MultiByteToWideChar(CP_UTF8,0,path,-1,file_specification,
@@ -1616,22 +1620,28 @@ static UINT ChangeErrorMode(void)
   return SetErrorMode(mode);
 }
 
+static inline void *NTLoadLibrary(const char *filename)
+{
+  int
+    length;
+
+  wchar_t
+    path[MaxTextExtent];
+
+  length=MultiByteToWideChar(CP_UTF8,0,filename,-1,path,MaxTextExtent);
+  if (length == 0)
+    return((void *) NULL);
+  return (void *) LoadLibraryExW(path,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
+}
+
 MagickPrivate void *NTOpenLibrary(const char *filename)
 {
-#define MaxPathElements 31
-
   char
-    buffer[MaxTextExtent];
-
-  int
-    index;
+    path[MaxTextExtent];
 
   register const char
     *p,
     *q;
-
-  register int
-    i;
 
   UINT
     mode;
@@ -1640,35 +1650,25 @@ MagickPrivate void *NTOpenLibrary(const char *filename)
     *handle;
 
   mode=ChangeErrorMode();
-  handle=(void *) LoadLibraryEx(filename,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
-  if ((handle != (void *) NULL) || (GetSearchPath() == (char *) NULL))
+  handle=NTLoadLibrary(filename);
+  if (handle == (void *) NULL)
     {
-      SetErrorMode(mode);
-      return(handle);
-    }
-  p=(char *) GetSearchPath();
-  index=0;
-  while (index < MaxPathElements)
-  {
-    q=strchr(p,DirectoryListSeparator);
-    if (q == (char *) NULL)
+      p=GetSearchPath();
+      while (p != (const char*) NULL)
       {
-        (void) CopyMagickString(buffer,p,MaxTextExtent);
-        (void) ConcatenateMagickString(buffer,"\\",MaxTextExtent);
-        (void) ConcatenateMagickString(buffer,filename,MaxTextExtent);
-        handle=(void *) LoadLibraryEx(buffer,NULL,
-          LOAD_WITH_ALTERED_SEARCH_PATH);
-        break;
+        q=strchr(p,DirectoryListSeparator);
+        if (q != (const char*) NULL)
+          (void) CopyMagickString(path,p,q-p+1);
+        else
+          (void) CopyMagickString(path,p,MaxTextExtent);
+        (void) ConcatenateMagickString(path,DirectorySeparator,MaxTextExtent);
+        (void) ConcatenateMagickString(path,filename,MaxTextExtent);
+        handle=NTLoadLibrary(path);
+        if (handle != (void *) NULL || q == (const char*) NULL)
+          break;
+        p=q+1;
       }
-    i=q-p;
-    (void) CopyMagickString(buffer,p,i+1);
-    (void) ConcatenateMagickString(buffer,"\\",MaxTextExtent);
-    (void) ConcatenateMagickString(buffer,filename,MaxTextExtent);
-    handle=(void *) LoadLibraryEx(buffer,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
-    if (handle != (void *) NULL)
-      break;
-    p=q+1;
-  }
+    }
   SetErrorMode(mode);
   return(handle);
 }
