@@ -6739,6 +6739,14 @@ MagickBooleanType AccelerateCompositeImage(Image *image,
   ExceptionInfo *exception)
 {
   magick_unreferenced(image);
+  magick_unreferenced(channel);
+  magick_unreferenced(compose);
+  magick_unreferenced(composite);
+  magick_unreferenced(x_offset);
+  magick_unreferenced(y_offset);
+  magick_unreferenced(destination_dissolve);
+  magick_unreferenced(source_dissolve);
+  magick_unreferenced(exception);
 
   return MagickFalse;
 }
