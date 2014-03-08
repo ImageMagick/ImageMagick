@@ -6731,6 +6731,17 @@ MagickExport Image *AccelerateUnsharpMaskImage(
   return NULL;
 }
 
+MagickExport
+MagickBooleanType AccelerateCompositeImage(Image *image,
+  const ChannelType channel,const CompositeOperator compose,
+  const Image *composite,const ssize_t x_offset,const ssize_t y_offset,
+  const float destination_dissolve,const float source_dissolve,
+  ExceptionInfo *exception)
+{
+  magick_unreferenced(image);
+
+  return MagickFalse;
+}
 
 MagickExport MagickBooleanType AccelerateContrastImage(
   Image* magick_unused(image),const MagickBooleanType magick_unused(sharpen),
@@ -6743,7 +6754,7 @@ MagickExport MagickBooleanType AccelerateContrastImage(
   return MagickFalse;
 }
 
-MagickExport MagickBooleanType AcceleratContrastStretchImageChannel(
+MagickExport MagickBooleanType AcceleratsContrastStretchImageChannel(
     Image * image, const ChannelType channel, const double black_point, const double white_point, 
     ExceptionInfo* magick_unused(exception))
 {
