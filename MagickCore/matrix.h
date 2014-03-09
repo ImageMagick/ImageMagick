@@ -32,7 +32,7 @@ extern MagickExport double
 extern MagickExport MagickBooleanType
   GaussJordanElimination(double **,double **,const size_t,const size_t),
   GetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,void *),
-  ResetMatrixInfo(MatrixInfo *),
+  NullMatrix(MatrixInfo *),
   SetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,const void *);
 
 MagickExport MatrixInfo
