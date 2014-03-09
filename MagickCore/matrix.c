@@ -692,8 +692,8 @@ MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
     return(MagickFalse);
   if (matrix_info->type != DiskCache)
     {
-      (void) memcpy(value,matrix_info->elements+i*matrix_info->stride,
-        matrix_info->stride);
+      (void) memcpy(value,(unsigned char *) matrix_info->elements+i*
+        matrix_info->stride,matrix_info->stride);
       return(MagickTrue);
     }
   count=ReadMatrixElements(matrix_info,i*matrix_info->stride,
@@ -965,8 +965,8 @@ MagickExport MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
     return(MagickFalse);
   if (matrix_info->type != DiskCache)
     {
-      (void) memcpy(matrix_info->elements+i*matrix_info->stride,value,
-        matrix_info->stride);
+      (void) memcpy((unsigned char *) matrix_info->elements+i*
+        matrix_info->stride,value,matrix_info->stride);
       return(MagickTrue);
     }
   count=WriteMatrixElements(matrix_info,i*matrix_info->stride,
