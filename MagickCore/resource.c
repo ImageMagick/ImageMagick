@@ -420,10 +420,6 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
     (void) FormatLocaleString(path,MaxTextExtent,"%s%smagick-%.20gXXXXXXXXXXXX",
       directory,DirectorySeparator,(double) getpid());
   directory=DestroyString(directory);
-  if (*DirectorySeparator != '/')
-    for (p=path; *p != '\0'; p++)
-      if (*p == *DirectorySeparator)
-        *p='/';
   return(MagickTrue);
 }
 
