@@ -1,3 +1,6 @@
+2014-03-09  6.8.8-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.8-8, SVN revision 15071.
+
 2014-03-04  6.8.8-8 Glenn Randers-Pehrson <glennrp@image...>
   * Reset colorspace to Grayscale when reading a gray PNG image with
     gamma > 0.75 instead of when gamma==1.0 (reference
