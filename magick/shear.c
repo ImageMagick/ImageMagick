@@ -217,8 +217,8 @@ static MagickBooleanType CropToFitImage(Image **image,
 %
 */
 
-static void RadonProjection(const Image *image,MatrixInfo *source_cells,
-  MatrixInfo *destination_cells,const ssize_t sign,size_t *projection)
+static void RadonProjection(const Image *image,MatrixInfo *source_matrix,
+  MatrixInfo *destination_matrix,const ssize_t sign,size_t *projection)
 {
   MatrixInfo
     *swap;
@@ -233,8 +233,8 @@ static void RadonProjection(const Image *image,MatrixInfo *source_cells,
   size_t
     step;
 
-  p=source_cells;
-  q=destination_cells;
+  p=source_matrix;
+  q=destination_matrix;
   for (step=1; step < GetMatrixColumns(p); step*=2)
   {
     for (x=0; x < (ssize_t) GetMatrixColumns(p); x+=2*(ssize_t) step)
@@ -246,45 +246,45 @@ static void RadonProjection(const Image *image,MatrixInfo *source_cells,
         y;
 
       unsigned short
-        cell,
+        element,
         neighbor;
 
       for (i=0; i < (ssize_t) step; i++)
       {
         for (y=0; y < (ssize_t) (GetMatrixRows(p)-i-1); y++)
         {
-          if (GetMatrixElement(p,x+i,y,&cell) == MagickFalse)
+          if (GetMatrixElement(p,x+i,y,&element) == MagickFalse)
             continue;
           if (GetMatrixElement(p,x+i+step,y+i,&neighbor) == MagickFalse)
             continue;
-          neighbor+=cell;
+          neighbor+=element;
           if (SetMatrixElement(q,x+2*i,y,&neighbor) == MagickFalse)
             continue;
           if (GetMatrixElement(p,x+i+step,y+i+1,&neighbor) == MagickFalse)
             continue;
-          neighbor+=cell;
+          neighbor+=element;
           if (SetMatrixElement(q,x+2*i+1,y,&neighbor) == MagickFalse)
             continue;
         }
         for ( ; y < (ssize_t) (GetMatrixRows(p)-i); y++)
         {
-          if (GetMatrixElement(p,x+i,y,&cell) == MagickFalse)
+          if (GetMatrixElement(p,x+i,y,&element) == MagickFalse)
             continue;
           if (GetMatrixElement(p,x+i+step,y+i,&neighbor) == MagickFalse)
             continue;
-          neighbor+=cell;
+          neighbor+=element;
           if (SetMatrixElement(q,x+2*i,y,&neighbor) == MagickFalse)
             continue;
-          if (SetMatrixElement(q,x+2*i+1,y,&cell) == MagickFalse)
+          if (SetMatrixElement(q,x+2*i+1,y,&element) == MagickFalse)
             continue;
         }
         for ( ; y < (ssize_t) GetMatrixRows(p); y++)
         {
-          if (GetMatrixElement(p,x+i,y,&cell) == MagickFalse)
+          if (GetMatrixElement(p,x+i,y,&element) == MagickFalse)
             continue;
-          if (SetMatrixElement(q,x+2*i,y,&cell) == MagickFalse)
+          if (SetMatrixElement(q,x+2*i,y,&element) == MagickFalse)
             continue;
-          if (SetMatrixElement(q,x+2*i+1,y,&cell) == MagickFalse)
+          if (SetMatrixElement(q,x+2*i+1,y,&element) == MagickFalse)
             continue;
         }
       }
@@ -312,14 +312,14 @@ static void RadonProjection(const Image *image,MatrixInfo *source_cells,
         delta;
 
       unsigned short
-        cell,
+        element,
         neighbor;
 
-      if (GetMatrixElement(p,x,y,&cell) == MagickFalse)
+      if (GetMatrixElement(p,x,y,&element) == MagickFalse)
         continue;
       if (GetMatrixElement(p,x,y+1,&neighbor) == MagickFalse)
         continue;
-      delta=(ssize_t) cell-(ssize_t) neighbor;
+      delta=(ssize_t) element-(ssize_t) neighbor;
       sum+=delta*delta;
     }
     projection[GetMatrixColumns(p)+sign*x-1]=sum;
@@ -333,8 +333,8 @@ static MagickBooleanType RadonTransform(const Image *image,
     *image_view;
 
   MatrixInfo
-    *destination_cells,
-    *source_cells;
+    *destination_matrix,
+    *source_matrix;
 
   MagickBooleanType
     status;
@@ -356,23 +356,23 @@ static MagickBooleanType RadonTransform(const Image *image,
     bits[256];
 
   for (width=1; width < ((image->columns+7)/8); width<<=1) ;
-  source_cells=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
+  source_matrix=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
     exception);
-  destination_cells=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
+  destination_matrix=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
     exception);
-  if ((source_cells == (MatrixInfo *) NULL) ||
-      (destination_cells == (MatrixInfo *) NULL))
+  if ((source_matrix == (MatrixInfo *) NULL) ||
+      (destination_matrix == (MatrixInfo *) NULL))
     {
-      if (destination_cells != (MatrixInfo *) NULL)
-        destination_cells=DestroyMatrixInfo(destination_cells);
-      if (source_cells != (MatrixInfo *) NULL)
-        source_cells=DestroyMatrixInfo(source_cells);
+      if (destination_matrix != (MatrixInfo *) NULL)
+        destination_matrix=DestroyMatrixInfo(destination_matrix);
+      if (source_matrix != (MatrixInfo *) NULL)
+        source_matrix=DestroyMatrixInfo(source_matrix);
       return(MagickFalse);
     }
-  if (ResetMatrixInfo(source_cells) == MagickFalse)
+  if (ResetMatrixInfo(source_matrix) == MagickFalse)
     {
-      destination_cells=DestroyMatrixInfo(destination_cells);
-      source_cells=DestroyMatrixInfo(source_cells);
+      destination_matrix=DestroyMatrixInfo(destination_matrix);
+      source_matrix=DestroyMatrixInfo(source_matrix);
       return(MagickFalse);
     }
   for (i=0; i < 256; i++)
@@ -426,7 +426,7 @@ static MagickBooleanType RadonTransform(const Image *image,
       if (bit == 8)
         {
           value=bits[byte];
-          (void) SetMatrixElement(source_cells,--i,y,&value);
+          (void) SetMatrixElement(source_matrix,--i,y,&value);
           bit=0;
           byte=0;
         }
@@ -436,11 +436,11 @@ static MagickBooleanType RadonTransform(const Image *image,
       {
         byte<<=(8-bit);
         value=bits[byte];
-        (void) SetMatrixElement(source_cells,--i,y,&value);
+        (void) SetMatrixElement(source_matrix,--i,y,&value);
       }
   }
-  RadonProjection(image,source_cells,destination_cells,-1,projection);
-  (void) ResetMatrixInfo(source_cells);
+  RadonProjection(image,source_matrix,destination_matrix,-1,projection);
+  (void) ResetMatrixInfo(source_matrix);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(image,image,image->rows,1)
@@ -483,7 +483,7 @@ static MagickBooleanType RadonTransform(const Image *image,
       if (bit == 8)
         {
           value=bits[byte];
-          (void) SetMatrixElement(source_cells,i++,y,&value);
+          (void) SetMatrixElement(source_matrix,i++,y,&value);
           bit=0;
           byte=0;
         }
@@ -493,13 +493,13 @@ static MagickBooleanType RadonTransform(const Image *image,
       {
         byte<<=(8-bit);
         value=bits[byte];
-        (void) SetMatrixElement(source_cells,i++,y,&value);
+        (void) SetMatrixElement(source_matrix,i++,y,&value);
       }
   }
-  RadonProjection(image,source_cells,destination_cells,1,projection);
+  RadonProjection(image,source_matrix,destination_matrix,1,projection);
   image_view=DestroyCacheView(image_view);
-  destination_cells=DestroyMatrixInfo(destination_cells);
-  source_cells=DestroyMatrixInfo(source_cells);
+  destination_matrix=DestroyMatrixInfo(destination_matrix);
+  source_matrix=DestroyMatrixInfo(source_matrix);
   return(MagickTrue);
 }
 
