@@ -1,7 +1,7 @@
 2014-03-04  6.8.8-8 Glenn Randers-Pehrson <glennrp@image...>
   * Reset colorspace to Grayscale when reading a gray PNG image with
-      gamma > 0.75 instead of when gamma==1.0 (reference
-      http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25136).
+    gamma > 0.75 instead of when gamma==1.0 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25136).
 
 2014-02-22  6.8.8-8 Dirk Lemstra <dirk@snakeware...>
   * The PSD reader creates a merged image if the image does not contain one.
@@ -9,6 +9,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=25044).
   * The ResolutionInfo in the 8BIM profile will be updated when an image is
     written.
+  * Fixed UTF8 issues and added support for reading files with long path names
+    for the Windows distribution.
 
 2014-02-21  6.8.8-8 Cristy  <quetzlzacatenango@image...>
   * Convert linear RGB to sRGB before writing the Targa image format.
