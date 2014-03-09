@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore graphic resample methods.
+  MagickCore matrix methods.
 */
 #ifndef _MAGICKCORE_MATRIX_H
 #define _MAGICKCORE_MATRIX_H
@@ -22,16 +22,30 @@
 extern "C" {
 #endif
 
+typedef struct _MatrixInfo
+  MatrixInfo;
+
 extern MagickExport double
   **AcquireMagickMatrix(const size_t,const size_t),
   **RelinquishMagickMatrix(double **,const size_t);
 
 extern MagickExport MagickBooleanType
-  GaussJordanElimination(double **,double **,const size_t,const size_t);
+  GaussJordanElimination(double **,double **,const size_t,const size_t),
+  GetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,void *),
+  ResetMatrixInfo(MatrixInfo *),
+  SetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,const void *);
+
+MagickExport MatrixInfo
+  *AcquireMatrixInfo(const size_t,const size_t,const size_t,ExceptionInfo *),
+  *DestroyMatrixInfo(MatrixInfo *);
+
+MagickExport size_t
+  GetMatrixColumns(const MatrixInfo *),
+  GetMatrixRows(const MatrixInfo *);
 
 extern MagickExport void
   LeastSquaresAddTerms(double **,double **,const double *,const double *,
-    const size_t, const size_t);
+    const size_t,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -65,6 +65,7 @@
 #include "magick/image-private.h"
 #include "magick/memory_.h"
 #include "magick/list.h"
+#include "magick/matrix.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/nt-base-private.h"
@@ -216,334 +217,27 @@ static MagickBooleanType CropToFitImage(Image **image,
 %
 */
 
-typedef struct _RadonInfo
+static void RadonProjection(const Image *image,MatrixInfo *source_cells,
+  MatrixInfo *destination_cells,const ssize_t sign,size_t *projection)
 {
-  CacheType
-    type;
-
-  size_t
-    width,
-    height;
-
-  MagickSizeType
-    length;
-
-  MagickBooleanType
-    mapped;
-
-  char
-    path[MaxTextExtent];
-
-  int
-    file;
-
-  unsigned short
-    *cells;
-} RadonInfo;
-
-static RadonInfo *DestroyRadonInfo(RadonInfo *radon_info)
-{
-  assert(radon_info != (RadonInfo *) NULL);
-  switch (radon_info->type)
-  {
-    case MemoryCache:
-    {
-      if (radon_info->mapped == MagickFalse)
-        radon_info->cells=(unsigned short *) RelinquishMagickMemory(
-          radon_info->cells);
-      else
-        {
-          (void) UnmapBlob(radon_info->cells,(size_t) radon_info->length);
-          radon_info->cells=(unsigned short *) NULL;
-        }
-      RelinquishMagickResource(MemoryResource,radon_info->length);
-      break;
-    }
-    case MapCache:
-    {
-      (void) UnmapBlob(radon_info->cells,(size_t) radon_info->length);
-      radon_info->cells=(unsigned short *) NULL;
-      RelinquishMagickResource(MapResource,radon_info->length);
-    }
-    case DiskCache:
-    {
-      if (radon_info->file != -1)
-        (void) close(radon_info->file);
-      (void) RelinquishUniqueFileResource(radon_info->path);
-      RelinquishMagickResource(DiskResource,radon_info->length);
-      break;
-    }
-    default:
-      break;
-  }
-  return((RadonInfo *) RelinquishMagickMemory(radon_info));
-}
-
-static MagickBooleanType ResetRadonCells(RadonInfo *radon_info)
-{
-  register ssize_t
-    x;
-
-  ssize_t
-    count,
-    y;
-
-  unsigned short
-    value;
-
-  if (radon_info->type != DiskCache)
-    {
-      (void) ResetMagickMemory(radon_info->cells,0,(size_t) radon_info->length);
-      return(MagickTrue);
-    }
-  value=0;
-  (void) lseek(radon_info->file,0,SEEK_SET);
-  for (y=0; y < (ssize_t) radon_info->height; y++)
-  {
-    for (x=0; x < (ssize_t) radon_info->width; x++)
-    {
-      count=write(radon_info->file,&value,sizeof(*radon_info->cells));
-      if (count != (ssize_t) sizeof(*radon_info->cells))
-        break;
-    }
-    if (x < (ssize_t) radon_info->width)
-      break;
-  }
-  return(y < (ssize_t) radon_info->height ? MagickFalse : MagickTrue);
-}
-
-static RadonInfo *AcquireRadonInfo(const Image *image,const size_t width,
-  const size_t height,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  RadonInfo
-    *radon_info;
-
-  radon_info=(RadonInfo *) AcquireMagickMemory(sizeof(*radon_info));
-  if (radon_info == (RadonInfo *) NULL)
-    return((RadonInfo *) NULL);
-  (void) ResetMagickMemory(radon_info,0,sizeof(*radon_info));
-  radon_info->width=width;
-  radon_info->height=height;
-  radon_info->length=(MagickSizeType) width*height*sizeof(*radon_info->cells);
-  radon_info->type=MemoryCache;
-  status=AcquireMagickResource(AreaResource,radon_info->length);
-  if ((status != MagickFalse) &&
-      (radon_info->length == (MagickSizeType) ((size_t) radon_info->length)))
-    {
-      status=AcquireMagickResource(MemoryResource,radon_info->length);
-      if (status != MagickFalse)
-        {
-          radon_info->mapped=MagickFalse;
-          radon_info->cells=(unsigned short *) AcquireMagickMemory((size_t)
-            radon_info->length);
-          if (radon_info->cells == (unsigned short *) NULL)
-            {
-              radon_info->mapped=MagickTrue;
-              radon_info->cells=(unsigned short *) MapBlob(-1,IOMode,0,(size_t)
-                radon_info->length);
-            }
-          if (radon_info->cells == (unsigned short *) NULL)
-            RelinquishMagickResource(MemoryResource,radon_info->length);
-        }
-    }
-  radon_info->file=(-1);
-  if (radon_info->cells == (unsigned short *) NULL)
-    {
-      status=AcquireMagickResource(DiskResource,radon_info->length);
-      if (status == MagickFalse)
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-            "CacheResourcesExhausted","`%s'",image->filename);
-          return(DestroyRadonInfo(radon_info));
-        }
-      radon_info->type=DiskCache;
-      (void) AcquireMagickResource(MemoryResource,radon_info->length);
-      radon_info->file=AcquireUniqueFileResource(radon_info->path);
-      if (radon_info->file == -1)
-        return(DestroyRadonInfo(radon_info));
-      status=AcquireMagickResource(MapResource,radon_info->length);
-      if (status != MagickFalse)
-        {
-          status=ResetRadonCells(radon_info);
-          if (status != MagickFalse)
-            {
-              radon_info->cells=(unsigned short *) MapBlob(radon_info->file,
-                IOMode,0,(size_t) radon_info->length);
-              if (radon_info->cells != (unsigned short *) NULL)
-                radon_info->type=MapCache;
-              else
-                RelinquishMagickResource(MapResource,radon_info->length);
-            }
-        }
-    }
-  return(radon_info);
-}
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
-static inline ssize_t ReadRadonCell(const RadonInfo *radon_info,
-  const MagickOffsetType offset,const size_t length,unsigned char *buffer)
-{
-  register ssize_t
-    i;
-
-  ssize_t
-    count;
-
-#if !defined(MAGICKCORE_HAVE_PPREAD)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ReadRadonCell)
-#endif
-  {
-    i=(-1);
-    if (lseek(radon_info->file,offset,SEEK_SET) >= 0)
-      {
-#endif
-        count=0;
-        for (i=0; i < (ssize_t) length; i+=count)
-        {
-#if !defined(MAGICKCORE_HAVE_PPREAD)
-          count=read(radon_info->file,buffer+i,MagickMin(length-i,(size_t)
-            SSIZE_MAX));
-#else
-          count=pread(radon_info->file,buffer+i,MagickMin(length-i,(size_t)
-            SSIZE_MAX),offset+i);
-#endif
-          if (count > 0)
-            continue;
-          count=0;
-          if (errno != EINTR)
-            {
-              i=(-1);
-              break;
-            }
-        }
-#if !defined(MAGICKCORE_HAVE_PPREAD)
-      }
-  }
-#endif
-  return(i);
-}
-
-static inline ssize_t WriteRadonCell(const RadonInfo *radon_info,
-  const MagickOffsetType offset,const size_t length,const unsigned char *buffer)
-{
-  register ssize_t
-    i;
-
-  ssize_t
-    count;
-
-  i=0;
-#if !defined(MAGICKCORE_HAVE_PWRITE)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_WriteRadonCell)
-#endif
-  {
-    if (lseek(radon_info->file,offset,SEEK_SET) >= 0)
-      {
-#endif
-        count=0;
-        for (i=0; i < (ssize_t) length; i+=count)
-        {
-#if !defined(MAGICKCORE_HAVE_PWRITE)
-          count=write(radon_info->file,buffer+i,MagickMin(length-i,(size_t)
-            SSIZE_MAX));
-#else
-          count=pwrite(radon_info->file,buffer+i,MagickMin(length-i,(size_t)
-            SSIZE_MAX),offset+i);
-#endif
-          if (count > 0)
-            continue;
-          count=0;
-          if (errno != EINTR)
-            {
-              i=(-1);
-              break;
-            }
-        }
-#if !defined(MAGICKCORE_HAVE_PWRITE)
-      }
-  }
-#endif
-  return(i);
-}
-
-static inline unsigned short GetRadonCell(const RadonInfo *radon_info,
-  const ssize_t x,const ssize_t y)
-{
-  MagickOffsetType
-    i;
-
-  unsigned short
-    value;
-
-  i=(MagickOffsetType) radon_info->height*x+y;
-  if ((i < 0) ||
-      ((MagickSizeType) (i*sizeof(*radon_info->cells)) >= radon_info->length))
-    return(0);
-  if (radon_info->type != DiskCache)
-    return(radon_info->cells[i]);
-  value=0;
-  (void) ReadRadonCell(radon_info,i*sizeof(*radon_info->cells),
-    sizeof(*radon_info->cells),(unsigned char *) &value);
-  return(value);
-}
-
-static inline MagickBooleanType SetRadonCell(const RadonInfo *radon_info,
-  const ssize_t x,const ssize_t y,const unsigned short value)
-{
-  MagickOffsetType
-    i;
-
-  ssize_t
-    count;
-
-  i=(MagickOffsetType) radon_info->height*x+y;
-  if ((i < 0) ||
-      ((MagickSizeType) (i*sizeof(*radon_info->cells)) >= radon_info->length))
-    return(MagickFalse);
-  if (radon_info->type != DiskCache)
-    {
-      radon_info->cells[i]=value;
-      return(MagickTrue);
-    }
-  count=WriteRadonCell(radon_info,i*sizeof(*radon_info->cells),
-    sizeof(*radon_info->cells),(const unsigned char *) &value);
-  if (count != (ssize_t) sizeof(*radon_info->cells))
-    return(MagickFalse);
-  return(MagickTrue);
-}
-
-static void RadonProjection(const Image *image,RadonInfo *source_cells,
-  RadonInfo *destination_cells,const ssize_t sign,size_t *projection)
-{
-  RadonInfo
+  MatrixInfo
     *swap;
 
-  register ssize_t
-    x;
-
-  register RadonInfo
+  register MatrixInfo
     *p,
     *q;
+
+  register ssize_t
+    x;
 
   size_t
     step;
 
   p=source_cells;
   q=destination_cells;
-  for (step=1; step < p->width; step*=2)
+  for (step=1; step < GetMatrixColumns(p); step*=2)
   {
-    for (x=0; x < (ssize_t) p->width; x+=2*(ssize_t) step)
+    for (x=0; x < (ssize_t) GetMatrixColumns(p); x+=2*(ssize_t) step)
     {
       register ssize_t
         i;
@@ -552,30 +246,46 @@ static void RadonProjection(const Image *image,RadonInfo *source_cells,
         y;
 
       unsigned short
-        cell;
+        cell,
+        neighbor;
 
       for (i=0; i < (ssize_t) step; i++)
       {
-        for (y=0; y < (ssize_t) (p->height-i-1); y++)
+        for (y=0; y < (ssize_t) (GetMatrixRows(p)-i-1); y++)
         {
-          cell=GetRadonCell(p,x+i,y);
-          (void) SetRadonCell(q,x+2*i,y,cell+GetRadonCell(p,x+i+(ssize_t)
-            step,y+i));
-          (void) SetRadonCell(q,x+2*i+1,y,cell+GetRadonCell(p,x+i+(ssize_t)
-            step,y+i+1));
+          if (GetMatrixElement(p,x+i,y,&cell) == MagickFalse)
+            continue;
+          if (GetMatrixElement(p,x+i+step,y+i,&neighbor) == MagickFalse)
+            continue;
+          neighbor+=cell;
+          if (SetMatrixElement(q,x+2*i,y,&neighbor) == MagickFalse)
+            continue;
+          if (GetMatrixElement(p,x+i+step,y+i+1,&neighbor) == MagickFalse)
+            continue;
+          neighbor+=cell;
+          if (SetMatrixElement(q,x+2*i+1,y,&neighbor) == MagickFalse)
+            continue;
         }
-        for ( ; y < (ssize_t) (p->height-i); y++)
+        for ( ; y < (ssize_t) (GetMatrixRows(p)-i); y++)
         {
-          cell=GetRadonCell(p,x+i,y);
-          (void) SetRadonCell(q,x+2*i,y,cell+GetRadonCell(p,x+i+(ssize_t) step,
-            y+i));
-          (void) SetRadonCell(q,x+2*i+1,y,cell);
+          if (GetMatrixElement(p,x+i,y,&cell) == MagickFalse)
+            continue;
+          if (GetMatrixElement(p,x+i+step,y+i,&neighbor) == MagickFalse)
+            continue;
+          neighbor+=cell;
+          if (SetMatrixElement(q,x+2*i,y,&neighbor) == MagickFalse)
+            continue;
+          if (SetMatrixElement(q,x+2*i+1,y,&cell) == MagickFalse)
+            continue;
         }
-        for ( ; y < (ssize_t) p->height; y++)
+        for ( ; y < (ssize_t) GetMatrixRows(p); y++)
         {
-          cell=GetRadonCell(p,x+i,y);
-          (void) SetRadonCell(q,x+2*i,y,cell);
-          (void) SetRadonCell(q,x+2*i+1,y,cell);
+          if (GetMatrixElement(p,x+i,y,&cell) == MagickFalse)
+            continue;
+          if (SetMatrixElement(q,x+2*i,y,&cell) == MagickFalse)
+            continue;
+          if (SetMatrixElement(q,x+2*i+1,y,&cell) == MagickFalse)
+            continue;
         }
       }
     }
@@ -587,7 +297,7 @@ static void RadonProjection(const Image *image,RadonInfo *source_cells,
   #pragma omp parallel for schedule(static,4) \
     magick_threads(image,image,1,1)
 #endif
-  for (x=0; x < (ssize_t) p->width; x++)
+  for (x=0; x < (ssize_t) GetMatrixColumns(p); x++)
   {
     register ssize_t
       y;
@@ -596,15 +306,23 @@ static void RadonProjection(const Image *image,RadonInfo *source_cells,
       sum;
 
     sum=0;
-    for (y=0; y < (ssize_t) (p->height-1); y++)
+    for (y=0; y < (ssize_t) (GetMatrixRows(p)-1); y++)
     {
       ssize_t
         delta;
 
-      delta=GetRadonCell(p,x,y)-(ssize_t) GetRadonCell(p,x,y+1);
+      unsigned short
+        cell,
+        neighbor;
+
+      if (GetMatrixElement(p,x,y,&cell) == MagickFalse)
+        continue;
+      if (GetMatrixElement(p,x,y+1,&neighbor) == MagickFalse)
+        continue;
+      delta=(ssize_t) cell-(ssize_t) neighbor;
       sum+=delta*delta;
     }
-    projection[p->width+sign*x-1]=sum;
+    projection[GetMatrixColumns(p)+sign*x-1]=sum;
   }
 }
 
@@ -614,12 +332,12 @@ static MagickBooleanType RadonTransform(const Image *image,
   CacheView
     *image_view;
 
-  MagickBooleanType
-    status;
-
-  RadonInfo
+  MatrixInfo
     *destination_cells,
     *source_cells;
+
+  MagickBooleanType
+    status;
 
   register ssize_t
     i;
@@ -638,21 +356,23 @@ static MagickBooleanType RadonTransform(const Image *image,
     bits[256];
 
   for (width=1; width < ((image->columns+7)/8); width<<=1) ;
-  source_cells=AcquireRadonInfo(image,width,image->rows,exception);
-  destination_cells=AcquireRadonInfo(image,width,image->rows,exception);
-  if ((source_cells == (RadonInfo *) NULL) ||
-      (destination_cells == (RadonInfo *) NULL))
+  source_cells=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
+    exception);
+  destination_cells=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
+    exception);
+  if ((source_cells == (MatrixInfo *) NULL) ||
+      (destination_cells == (MatrixInfo *) NULL))
     {
-      if (destination_cells != (RadonInfo *) NULL)
-        destination_cells=DestroyRadonInfo(destination_cells);
-      if (source_cells != (RadonInfo *) NULL)
-        source_cells=DestroyRadonInfo(source_cells);
+      if (destination_cells != (MatrixInfo *) NULL)
+        destination_cells=DestroyMatrixInfo(destination_cells);
+      if (source_cells != (MatrixInfo *) NULL)
+        source_cells=DestroyMatrixInfo(source_cells);
       return(MagickFalse);
     }
-  if (ResetRadonCells(source_cells) == MagickFalse)
+  if (ResetMatrixInfo(source_cells) == MagickFalse)
     {
-      destination_cells=DestroyRadonInfo(destination_cells);
-      source_cells=DestroyRadonInfo(source_cells);
+      destination_cells=DestroyMatrixInfo(destination_cells);
+      source_cells=DestroyMatrixInfo(source_cells);
       return(MagickFalse);
     }
   for (i=0; i < 256; i++)
@@ -681,6 +401,9 @@ static MagickBooleanType RadonTransform(const Image *image,
       bit,
       byte;
 
+    unsigned short
+      value;
+
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -702,7 +425,8 @@ static MagickBooleanType RadonTransform(const Image *image,
       bit++;
       if (bit == 8)
         {
-          (void) SetRadonCell(source_cells,--i,y,bits[byte]);
+          value=bits[byte];
+          (void) SetMatrixElement(source_cells,--i,y,&value);
           bit=0;
           byte=0;
         }
@@ -711,11 +435,12 @@ static MagickBooleanType RadonTransform(const Image *image,
     if (bit != 0)
       {
         byte<<=(8-bit);
-        (void) SetRadonCell(source_cells,--i,y,bits[byte]);
+        value=bits[byte];
+        (void) SetMatrixElement(source_cells,--i,y,&value);
       }
   }
   RadonProjection(image,source_cells,destination_cells,-1,projection);
-  (void) ResetRadonCells(source_cells);
+  (void) ResetMatrixInfo(source_cells);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(image,image,image->rows,1)
@@ -732,6 +457,9 @@ static MagickBooleanType RadonTransform(const Image *image,
     size_t
       bit,
       byte;
+
+    unsigned short
+     value;
 
     if (status == MagickFalse)
       continue;
@@ -754,7 +482,8 @@ static MagickBooleanType RadonTransform(const Image *image,
       bit++;
       if (bit == 8)
         {
-          (void) SetRadonCell(source_cells,i++,y,bits[byte]);
+          value=bits[byte];
+          (void) SetMatrixElement(source_cells,i++,y,&value);
           bit=0;
           byte=0;
         }
@@ -763,13 +492,14 @@ static MagickBooleanType RadonTransform(const Image *image,
     if (bit != 0)
       {
         byte<<=(8-bit);
-        (void) SetRadonCell(source_cells,i++,y,bits[byte]);
+        value=bits[byte];
+        (void) SetMatrixElement(source_cells,i++,y,&value);
       }
   }
   RadonProjection(image,source_cells,destination_cells,1,projection);
   image_view=DestroyCacheView(image_view);
-  destination_cells=DestroyRadonInfo(destination_cells);
-  source_cells=DestroyRadonInfo(source_cells);
+  destination_cells=DestroyMatrixInfo(destination_cells);
+  source_cells=DestroyMatrixInfo(source_cells);
   return(MagickTrue);
 }
 
