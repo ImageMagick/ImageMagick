@@ -93,7 +93,7 @@ struct _MatrixInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireMatrixInfo() allocates the ImageInfo structure.
+%  AcquireMatrixInfo() allocates the MatrixInfo structure.
 %
 %  The format of the AcquireMatrixInfo method is:
 %
