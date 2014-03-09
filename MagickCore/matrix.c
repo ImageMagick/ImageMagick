@@ -40,10 +40,155 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
 #include "MagickCore/matrix.h"
-#include "MagickCore/matrix-private.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/pixel-private.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/utility.h"
+
+/*
+  Typedef declaration.
+*/
+struct _MatrixInfo
+{
+  CacheType
+    type;
+
+  size_t
+    columns,
+    rows,
+    stride;
+
+  MagickSizeType
+    length;
+
+  MagickBooleanType
+    mapped;
+
+  char
+    path[MaxTextExtent];
+
+  int
+    file;
+
+  void
+    *elements;
+
+  size_t
+    signature;
+};
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e M a t r i x I n f o                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireMatrixInfo() allocates the ImageInfo structure.
+%
+%  The format of the AcquireMatrixInfo method is:
+%
+%      MatrixInfo *AcquireMatrixInfo(const size_t columns,const size_t rows,
+%        const size_t stride,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o columns: the matrix columns.
+%
+%    o rows: the matrix rows.
+%
+%    o stride: the matrix stride.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
+  const size_t rows,const size_t stride,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  MatrixInfo
+    *matrix_info;
+
+  matrix_info=(MatrixInfo *) AcquireMagickMemory(sizeof(*matrix_info));
+  if (matrix_info == (MatrixInfo *) NULL)
+    return((MatrixInfo *) NULL);
+  (void) ResetMagickMemory(matrix_info,0,sizeof(*matrix_info));
+  matrix_info->signature=MagickSignature;
+  matrix_info->columns=columns;
+  matrix_info->rows=rows;
+  matrix_info->stride=stride;
+  matrix_info->length=(MagickSizeType) columns*rows*stride;
+  if (matrix_info->columns != (size_t) (matrix_info->length/rows/stride))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+        "CacheResourcesExhausted","`%s'","matrix cache");
+      return(DestroyMatrixInfo(matrix_info));
+    }
+  matrix_info->type=MemoryCache;
+  status=AcquireMagickResource(AreaResource,matrix_info->length);
+  if ((status != MagickFalse) &&
+      (matrix_info->length == (MagickSizeType) ((size_t) matrix_info->length)))
+    {
+      status=AcquireMagickResource(MemoryResource,matrix_info->length);
+      if (status != MagickFalse)
+        {
+          matrix_info->mapped=MagickFalse;
+          matrix_info->elements=AcquireMagickMemory((size_t)
+            matrix_info->length);
+          if (matrix_info->elements == NULL)
+            {
+              matrix_info->mapped=MagickTrue;
+              matrix_info->elements=MapBlob(-1,IOMode,0,(size_t)
+                matrix_info->length);
+            }
+          if (matrix_info->elements == (unsigned short *) NULL)
+            RelinquishMagickResource(MemoryResource,matrix_info->length);
+        }
+    }
+  matrix_info->file=(-1);
+  if (matrix_info->elements == (unsigned short *) NULL)
+    {
+      status=AcquireMagickResource(DiskResource,matrix_info->length);
+      if (status == MagickFalse)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+            "CacheResourcesExhausted","`%s'","matrix cache");
+          return(DestroyMatrixInfo(matrix_info));
+        }
+      matrix_info->type=DiskCache;
+      (void) AcquireMagickResource(MemoryResource,matrix_info->length);
+      matrix_info->file=AcquireUniqueFileResource(matrix_info->path);
+      if (matrix_info->file == -1)
+        return(DestroyMatrixInfo(matrix_info));
+      status=AcquireMagickResource(MapResource,matrix_info->length);
+      if (status != MagickFalse)
+        {
+          status=ResetMatrixInfo(matrix_info);
+          if (status != MagickFalse)
+            {
+              matrix_info->elements=(void *) MapBlob(matrix_info->file,IOMode,0,
+                (size_t) matrix_info->length);
+              if (matrix_info->elements != NULL)
+                matrix_info->type=MapCache;
+              else
+                RelinquishMagickResource(MapResource,matrix_info->length);
+            }
+        }
+    }
+  return(matrix_info);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -59,11 +204,9 @@
 %  AcquireMagickMatrix() allocates and returns a matrix in the form of an
 %  array of pointers to an array of doubles, with all values pre-set to zero.
 %
-%  This used to generate the two dimensional matrix, that can be referenced
-%  using the simple C-code of the form "matrix[y][x]".
-%
-%  This matrix is typically used for perform for the GaussJordanElimination()
-%  method below, solving some system of simultanious equations.
+%  This used to generate the two dimensional matrix, and vectors required
+%  for the GaussJordanElimination() method below, solving some system of
+%  simultanious equations.
 %
 %  The format of the AcquireMagickMatrix method is:
 %
@@ -91,7 +234,7 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 
   matrix=(double **) AcquireQuantumMemory(number_rows,sizeof(*matrix));
   if (matrix == (double **) NULL)
-    return((double **) NULL);
+    return((double **)NULL);
   for (i=0; i < (ssize_t) number_rows; i++)
   {
     matrix[i]=(double *) AcquireQuantumMemory(size,sizeof(*matrix[i]));
@@ -113,6 +256,67 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y M a t r i x I n f o                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyMatrixInfo() dereferences a matrix, deallocating memory associated
+%  with the matrix.
+%
+%  The format of the DestroyImage method is:
+%
+%      MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
+%
+%  A description of each parameter follows:
+%
+%    o matrix_info: the matrix.
+%
+*/
+MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
+{
+  assert(matrix_info != (MatrixInfo *) NULL);
+  assert(matrix_info->signature == MagickSignature);
+  switch (matrix_info->type)
+  {
+    case MemoryCache:
+    {
+      if (matrix_info->mapped == MagickFalse)
+        matrix_info->elements=RelinquishMagickMemory(matrix_info->elements);
+      else
+        {
+          (void) UnmapBlob(matrix_info->elements,(size_t) matrix_info->length);
+          matrix_info->elements=(unsigned short *) NULL;
+        }
+      RelinquishMagickResource(MemoryResource,matrix_info->length);
+      break;
+    }
+    case MapCache:
+    {
+      (void) UnmapBlob(matrix_info->elements,(size_t) matrix_info->length);
+      matrix_info->elements=NULL;
+      RelinquishMagickResource(MapResource,matrix_info->length);
+    }
+    case DiskCache:
+    {
+      if (matrix_info->file != -1)
+        (void) close(matrix_info->file);
+      (void) RelinquishUniqueFileResource(matrix_info->path);
+      RelinquishMagickResource(DiskResource,matrix_info->length);
+      break;
+    }
+    default:
+      break;
+  }
+  return((MatrixInfo *) RelinquishMagickMemory(matrix_info));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G a u s s J o r d a n E l i m i n a t i o n                               %
 %                                                                             %
 %                                                                             %
@@ -127,8 +331,8 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %
 %  The format of the GaussJordanElimination method is:
 %
-%      MagickBooleanType GaussJordanElimination(double **matrix,
-%        double **vectors,const size_t rank,const size_t number_vectors)
+%      MagickBooleanType GaussJordanElimination(double **matrix,double **vectors,
+%        const size_t rank,const size_t number_vectors)
 %
 %  A description of each parameter follows:
 %
@@ -137,7 +341,7 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %    o vectors: the additional matrix argumenting the matrix for row reduction.
 %             Producing an 'array of column vectors'.
 %
-%    o rank:  The size of the square matrix (both rows and columns).
+%    o rank:  The size of the matrix (both rows and columns).
 %             Also represents the number terms that need to be solved.
 %
 %    o number_vectors: Number of vectors columns, argumenting the above matrix.
@@ -150,14 +354,9 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %
 %  However 'vectors' is a 'array of column pointers' which can have any number
 %  of columns, with each column array the same 'rank' size as 'matrix'.
-%  It is assigned  vector[column][row]  where 'column' is the specific
-%  'result' and 'row' is the 'values' for that answer.  After processing
-%  the same vector array contains the 'weights' (answers) for each of the
-%  'separatable' results.
 %
 %  This allows for simpler handling of the results, especially is only one
-%  column 'vector' is all that is required to produce the desired solution
-%  for that specific set of equations.
+%  column 'vector' is all that is required to produce the desired solution.
 %
 %  For example, the 'vectors' can consist of a pointer to a simple array of
 %  doubles.  when only one set of simultanious equations is to be solved from
@@ -168,8 +367,8 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %     ...
 %     GaussJordanElimination(matrix, &coefficents, 8UL, 1UL);
 %
-%  However by specifing more 'columns' (as an 'array of vector columns'),
-%  you can use this function to solve multiple sets of 'separable' equations.
+%  However by specifing more 'columns' (as an 'array of vector columns',
+%  you can use this function to solve a set of 'separable' equations.
 %
 %  For example a distortion function where    u = U(x,y)   v = V(x,y)
 %  And the functions U() and V() have separate coefficents, but are being
@@ -177,18 +376,14 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %
 %  Another example is generation of a color gradient from a set of colors
 %  at specific coordients, such as a list    x,y -> r,g,b,a
-%
-%  See LeastSquaresAddTerms() below for such an example.
+%  (Reference to be added - Anthony)
 %
 %  You can also use the 'vectors' to generate an inverse of the given 'matrix'
-%  though as a 'column first array' rather than a 'row first array' (matrix
-%  is transposed).
-%
-%  For details of this process see...
-%     http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
+%  though as a 'column first array' rather than a 'row first array'. For
+%  details see    http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
 %
 */
-MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
+MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
   double **vectors,const size_t rank,const size_t number_vectors)
 {
 #define GaussJordanSwap(x,y) \
@@ -267,7 +462,7 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
     rows[i]=row;
     columns[i]=column;
     if (matrix[column][column] == 0.0)
-      return(MagickFalse);  /* singularity */
+      return(MagickFalse);  /* sigularity */
     scale=PerceptibleReciprocal(matrix[column][column]);
     matrix[column][column]=1.0;
     for (j=0; j < (ssize_t) rank; j++)
@@ -300,6 +495,173 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t M a t r i x C o l u m n s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMatrixColumns() returns the number of columns in the matrix.
+%
+%  The format of the GetMatrixColumns method is:
+%
+%      size_t GetMatrixColumns(const MatrixInfo *matrix_info)
+%
+%  A description of each parameter follows:
+%
+%    o matrix_info: the matrix.
+%
+*/
+MagickExport size_t GetMatrixColumns(const MatrixInfo *matrix_info)
+{
+  assert(matrix_info != (MatrixInfo *) NULL);
+  assert(matrix_info->signature == MagickSignature);
+  return(matrix_info->columns);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t M a t r i x E l e m e n t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMatrixElement() returns the specifed element in the matrix.
+%
+%  The format of the GetMatrixElement method is:
+%
+%      MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
+%        const ssize_t x,const ssize_t y,void *value)
+%
+%  A description of each parameter follows:
+%
+%    o matrix_info: the matrix columns.
+%
+%    o x: the matrix x-offset.
+%
+%    o y: the matrix y-offset.
+%
+%    o value: return the matrix element in this buffer.
+%
+*/
+
+static inline size_t MagickMin(const size_t x,const size_t y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
+static inline ssize_t ReadMatrixInfo(const MatrixInfo *matrix_info,
+  const MagickOffsetType offset,const size_t length,unsigned char *buffer)
+{
+  register ssize_t
+    i;
+
+  ssize_t
+    count;
+
+#if !defined(MAGICKCORE_HAVE_PPREAD)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_ReadMatrixInfo)
+#endif
+  {
+    i=(-1);
+    if (lseek(matrix_info->file,offset,SEEK_SET) >= 0)
+      {
+#endif
+        count=0;
+        for (i=0; i < (ssize_t) length; i+=count)
+        {
+#if !defined(MAGICKCORE_HAVE_PPREAD)
+          count=read(matrix_info->file,buffer+i,MagickMin(length-i,(size_t)
+            SSIZE_MAX));
+#else
+          count=pread(matrix_info->file,buffer+i,MagickMin(length-i,(size_t)
+            SSIZE_MAX),offset+i);
+#endif
+          if (count > 0)
+            continue;
+          count=0;
+          if (errno != EINTR)
+            {
+              i=(-1);
+              break;
+            }
+        }
+#if !defined(MAGICKCORE_HAVE_PPREAD)
+      }
+  }
+#endif
+  return(i);
+}
+
+MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
+  const ssize_t x,const ssize_t y,void *value)
+{
+  MagickOffsetType
+    i;
+
+  ssize_t
+    count;
+
+  assert(matrix_info != (const MatrixInfo *) NULL);
+  assert(matrix_info->signature == MagickSignature);
+  i=(MagickOffsetType) matrix_info->rows*x+y;
+  if ((i < 0) ||
+      ((MagickSizeType) (i*matrix_info->stride) >= matrix_info->length))
+    return(MagickFalse);
+  if (matrix_info->type != DiskCache)
+    {
+      (void) memcpy(value,matrix_info->elements+i*matrix_info->stride,
+        matrix_info->stride);
+      return(MagickTrue);
+    }
+  count=ReadMatrixInfo(matrix_info,i*matrix_info->stride,matrix_info->stride,
+    value);
+  if (count != matrix_info->stride)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t M a t r i x R o w s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMatrixRows() returns the number of rows in the matrix.
+%
+%  The format of the GetMatrixRows method is:
+%
+%      size_t GetMatrixRows(const MatrixInfo *matrix_info)
+%
+%  A description of each parameter follows:
+%
+%    o matrix_info: the matrix.
+%
+*/
+MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
+{
+  assert(matrix_info != (const MatrixInfo *) NULL);
+  assert(matrix_info->signature == MagickSignature);
+  return(matrix_info->rows);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   L e a s t S q u a r e s A d d T e r m s                                   %
 %                                                                             %
 %                                                                             %
@@ -322,13 +684,13 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
 %    o vectors: the result vectors to add terms/results to.
 %
 %    o terms: the pre-calculated terms (without the unknown coefficent
-%      weights) that forms the equation being added.
+%             weights) that forms the equation being added.
 %
 %    o results: the result(s) that should be generated from the given terms
-%      weighted by the yet-to-be-solved coefficents.
+%               weighted by the yet-to-be-solved coefficents.
 %
-%    o rank: the rank or size of the dimentions of the square matrix.
-%      Also the length of vectors, and number of terms being added.
+%    o rank: the rank or size of the dimensions of the square matrix.
+%            Also the length of vectors, and number of terms being added.
 %
 %    o number_vectors: Number of result vectors, and number or results being
 %      added.  Also represents the number of separable systems of equations
@@ -354,10 +716,10 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
 %     ...
 %     if ( GaussJordanElimination(matrix,vectors,3UL,2UL) ) {
 %       c0 = vectors[0][0];
-%       c2 = vectors[0][1];  %* weights to calculate u from any given x,y *%
+%       c2 = vectors[0][1];
 %       c4 = vectors[0][2];
 %       c1 = vectors[1][0];
-%       c3 = vectors[1][1];  %* weights for calculate v from any given x,y *%
+%       c3 = vectors[1][1];
 %       c5 = vectors[1][2];
 %     }
 %     else
@@ -365,10 +727,8 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
 %     RelinquishMagickMatrix(matrix,3UL);
 %     RelinquishMagickMatrix(vectors,2UL);
 %
-% More examples can be found in "distort.c"
-%
 */
-MagickPrivate void LeastSquaresAddTerms(double **matrix,double **vectors,
+MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
   const double *terms,const double *results,const size_t rank,
   const size_t number_vectors)
 {
@@ -383,6 +743,7 @@ MagickPrivate void LeastSquaresAddTerms(double **matrix,double **vectors,
     for (i=0; i < (ssize_t) number_vectors; i++)
       vectors[i][j]+=results[i]*terms[j];
   }
+  return;
 }
 
 /*
@@ -424,4 +785,164 @@ MagickExport double **RelinquishMagickMatrix(double **matrix,
      matrix[i]=(double *) RelinquishMagickMemory(matrix[i]);
   matrix=(double **) RelinquishMagickMemory(matrix);
   return(matrix);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e s e t M a g i c k M e m o r y                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetMagickMemory() sets all elements of the matrix to zero.
+%
+%  The format of the ResetMagickMemory method is:
+%
+%      MagickBoolenType *ResetMatrixInfo(MatrixInfo *matrix_info)
+%
+%  A description of each parameter follows:
+%
+%    o matrix_info: the matrix.
+%
+*/
+MagickExport MagickBooleanType ResetMatrixInfo(MatrixInfo *matrix_info)
+{
+  register ssize_t
+    x;
+
+  ssize_t
+    count,
+    y;
+
+  unsigned char
+    value;
+
+  assert(matrix_info != (const MatrixInfo *) NULL);
+  assert(matrix_info->signature == MagickSignature);
+  if (matrix_info->type != DiskCache)
+    {
+      (void) ResetMagickMemory(matrix_info->elements,0,(size_t)
+        matrix_info->length);
+      return(MagickTrue);
+    }
+  value=0;
+  (void) lseek(matrix_info->file,0,SEEK_SET);
+  for (y=0; y < (ssize_t) matrix_info->rows; y++)
+  {
+    for (x=0; x < (ssize_t) matrix_info->length; x++)
+    {
+      count=write(matrix_info->file,&value,sizeof(value));
+      if (count != (ssize_t) sizeof(value))
+        break;
+    }
+    if (x < (ssize_t) matrix_info->length)
+      break;
+  }
+  return(y < (ssize_t) matrix_info->rows ? MagickFalse : MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t M a t r i x E l e m e n t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetMatrixElement() sets the specifed element in the matrix.
+%
+%  The format of the SetMatrixElement method is:
+%
+%      MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
+%        const ssize_t x,const ssize_t y,void *value)
+%
+%  A description of each parameter follows:
+%
+%    o matrix_info: the matrix columns.
+%
+%    o x: the matrix x-offset.
+%
+%    o y: the matrix y-offset.
+%
+%    o value: set the matrix element to this value.
+%
+*/
+
+static inline ssize_t WriteMatrixInfo(const MatrixInfo *matrix_info,
+  const MagickOffsetType offset,const size_t length,const unsigned char *buffer)
+{
+  register ssize_t
+    i;
+
+  ssize_t
+    count;
+
+  i=0;
+#if !defined(MAGICKCORE_HAVE_PWRITE)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_WriteMatrixInfo)
+#endif
+  {
+    if (lseek(matrix_info->file,offset,SEEK_SET) >= 0)
+      {
+#endif
+        count=0;
+        for (i=0; i < (ssize_t) length; i+=count)
+        {
+#if !defined(MAGICKCORE_HAVE_PWRITE)
+          count=write(matrix_info->file,buffer+i,MagickMin(length-i,(size_t)
+            SSIZE_MAX));
+#else
+          count=pwrite(matrix_info->file,buffer+i,MagickMin(length-i,(size_t)
+            SSIZE_MAX),offset+i);
+#endif
+          if (count > 0)
+            continue;
+          count=0;
+          if (errno != EINTR)
+            {
+              i=(-1);
+              break;
+            }
+        }
+#if !defined(MAGICKCORE_HAVE_PWRITE)
+      }
+  }
+#endif
+  return(i);
+}
+
+MagickExport MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
+  const ssize_t x,const ssize_t y,const void *value)
+{
+  MagickOffsetType
+    i;
+
+  ssize_t
+    count;
+
+  assert(matrix_info != (const MatrixInfo *) NULL);
+  assert(matrix_info->signature == MagickSignature);
+  i=(MagickOffsetType) matrix_info->rows*x+y;
+  if ((i < 0) ||
+      ((MagickSizeType) (i*matrix_info->stride) >= matrix_info->length))
+    return(MagickFalse);
+  if (matrix_info->type != DiskCache)
+    {
+      (void) memcpy(matrix_info->elements+i*matrix_info->stride,value,
+        matrix_info->stride);
+      return(MagickTrue);
+    }
+  count=WriteMatrixInfo(matrix_info,i*matrix_info->stride,matrix_info->stride,
+    value);
+  if (count != (ssize_t) matrix_info->stride)
+    return(MagickFalse);
+  return(MagickTrue);
 }
