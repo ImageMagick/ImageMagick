@@ -143,7 +143,6 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
       status=AcquireMagickResource(MemoryResource,matrix_info->length);
       if (status != MagickFalse)
         {
-          matrix_info->mapped=MagickFalse;
           matrix_info->elements=AcquireMagickMemory((size_t)
             matrix_info->length);
           if (matrix_info->elements == NULL)
