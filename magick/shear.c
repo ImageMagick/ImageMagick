@@ -369,7 +369,7 @@ static MagickBooleanType RadonTransform(const Image *image,
         source_matrix=DestroyMatrixInfo(source_matrix);
       return(MagickFalse);
     }
-  if (ResetMatrixInfo(source_matrix) == MagickFalse)
+  if (NullMatrix(source_matrix) == MagickFalse)
     {
       destination_matrix=DestroyMatrixInfo(destination_matrix);
       source_matrix=DestroyMatrixInfo(source_matrix);
@@ -440,7 +440,7 @@ static MagickBooleanType RadonTransform(const Image *image,
       }
   }
   RadonProjection(image,source_matrix,destination_matrix,-1,projection);
-  (void) ResetMatrixInfo(source_matrix);
+  (void) NullMatrix(source_matrix);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(image,image,image->rows,1)
