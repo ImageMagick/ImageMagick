@@ -1015,6 +1015,7 @@ RestoreMSCWarning
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_IMAGELENGTH,&height);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&interlace);
+    bits_per_sample=8;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format);
     if (sample_format == SAMPLEFORMAT_IEEEFP)
@@ -3193,7 +3194,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if (rows_per_strip < 1)
       rows_per_strip=1;
     if ((image->rows/rows_per_strip) >= (1UL << 15))
-      rows_per_strip=(image->rows >> 15);
+      rows_per_strip=(uint32) (image->rows >> 15);
     (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
     if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
       {
