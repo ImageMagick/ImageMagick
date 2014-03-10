@@ -365,9 +365,6 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
   MagickBooleanType
     status;
 
-  register char
-    *p;
-
   struct stat
     attributes;
 
