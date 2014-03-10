@@ -4500,7 +4500,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   */
   histogram=(cl_uint4 *) AcquireQuantumMemory(MaxMap+1UL, sizeof(*histogram));
 
-  if ((histogram == (cl_uint4 *) NULL))
+  if (histogram == (cl_uint4 *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed", image->filename);
  
   /* reset histogram */
@@ -4723,7 +4723,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   stretch_map=(PixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*stretch_map));
 
-  if ((stretch_map == (PixelPacket *) NULL))
+  if (stretch_map == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
  
