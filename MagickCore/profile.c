@@ -1182,15 +1182,28 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
       case 0x03ed:
       {
         unsigned short
+          units;
+
+        unsigned int
           resolution;
 
         /*
           Resolution.
         */
-        p=ReadResourceShort(p,&resolution)+6;
-        image->resolution.x=(double) resolution;
-        p=ReadResourceShort(p,&resolution)+6;
-        image->resolution.y=(double) resolution;
+        p=ReadResourceLong(p,&resolution);
+        image->resolution.x=((double) resolution)/65536.0;
+        p=ReadResourceShort(p,&units)+2;
+        p=ReadResourceLong(p,&resolution)+4;
+        image->resolution.y=((double) resolution)/65536.0;
+        // Values are always stored as pixels per inch.
+        if ((ResolutionType) units == PixelsPerCentimeterResolution)
+          {
+            image->units=PixelsPerCentimeterResolution;
+            image->resolution.x/=2.54;
+            image->resolution.y/=2.54;
+          }
+        else
+          image->units=PixelsPerInchResolution;
         break;
       }
       case 0x0404:
@@ -1469,10 +1482,20 @@ static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
       return(MagickFalse);
     if (id == 0x3ED && count == 16)
       {
-        WriteProfileShort(MSBEndian, (unsigned short) (image->resolution.x+
-          0.5),p);
-        WriteProfileShort(MSBEndian, (unsigned short) (image->resolution.y+
-          0.5),p+8);
+        if (image->units == PixelsPerCentimeterResolution)
+          WriteProfileLong(MSBEndian, (unsigned int) (image->resolution.x*2.54*
+            65536.0),p);
+        else
+          WriteProfileLong(MSBEndian, (unsigned int) (image->resolution.x*
+            65536.0),p);
+        WriteProfileShort(MSBEndian,(unsigned short) image->units,p+4);
+        if (image->units == PixelsPerCentimeterResolution)
+          WriteProfileLong(MSBEndian, (unsigned int) (image->resolution.y*2.54*
+            65536.0),p+8);
+        else
+          WriteProfileLong(MSBEndian, (unsigned int) (image->resolution.y*
+            65536.0),p+8);
+        WriteProfileShort(MSBEndian,(unsigned short) image->units,p+12);
       }
     p+=count;
     length-=count;
