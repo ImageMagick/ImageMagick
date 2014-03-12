@@ -2228,6 +2228,46 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       "Interlace: nonprogressive");
 #endif
   quality=92;
+  if ((image_info->compression != LosslessJPEGCompression) &&
+      (image->quality <= 100))
+    {
+      if (image->quality != UndefinedCompressionQuality)
+        quality=(int) image->quality;
+      if (image->debug != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %.20g",
+          (double) image->quality);
+    }
+  else
+    {
+#if !defined(C_LOSSLESS_SUPPORTED)
+      quality=100;
+      if (image->debug != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: 100");
+#else
+      if (image->quality < 100)
+        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          CoderWarning,"LosslessToLossyJPEGConversion",image->filename);
+      else
+        {
+          int
+            point_transform,
+            predictor;
+
+          predictor=image->quality/100;  /* range 1-7 */
+          point_transform=image->quality % 20;  /* range 0-15 */
+          jpeg_simple_lossless(&jpeg_info,predictor,point_transform);
+          if (image->debug != MagickFalse)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "Compression: lossless");
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "Predictor: %d",predictor);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "Point Transform: %d",point_transform);
+            }
+        }
+#endif
+    }
   option=GetImageOption(image_info,"jpeg:extent");
   if (option != (const char *) NULL)
     {
@@ -2272,46 +2312,6 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           jpeg_image=DestroyImage(jpeg_image);
         }
       jpeg_info=DestroyImageInfo(jpeg_info);
-    }
-  if ((image_info->compression != LosslessJPEGCompression) &&
-      (image->quality <= 100))
-    {
-      if (image->quality != UndefinedCompressionQuality)
-        quality=(int) image->quality;
-      if (image->debug != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %.20g",
-          (double) image->quality);
-    }
-  else
-    {
-#if !defined(C_LOSSLESS_SUPPORTED)
-      quality=100;
-      if (image->debug != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: 100");
-#else
-      if (image->quality < 100)
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          CoderWarning,"LosslessToLossyJPEGConversion",image->filename);
-      else
-        {
-          int
-            point_transform,
-            predictor;
-
-          predictor=image->quality/100;  /* range 1-7 */
-          point_transform=image->quality % 20;  /* range 0-15 */
-          jpeg_simple_lossless(&jpeg_info,predictor,point_transform);
-          if (image->debug != MagickFalse)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "Compression: lossless");
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "Predictor: %d",predictor);
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "Point Transform: %d",point_transform);
-            }
-        }
-#endif
     }
   jpeg_set_quality(&jpeg_info,quality,MagickTrue);
 #if (JPEG_LIB_VERSION >= 70)
