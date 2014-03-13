@@ -106,6 +106,10 @@ extern WandExport MagickBooleanType
     magick_attribute((deprecated)),
   MagickPaintTransparentImage(MagickWand *,const PixelWand *,const double,
     const double) magick_attribute((deprecated)),
+  MagickRadialBlurImage(MagickWand *,const double)
+     magick_attribute((deprecated)),
+  MagickRadialBlurImageChannel(MagickWand *,const ChannelType,const double)
+    magick_attribute((deprecated)),
   MagickRecolorImage(MagickWand *,const size_t,const double *)
     magick_attribute((deprecated)),
   MagickSetImageAttribute(MagickWand *,const char *,const char *)

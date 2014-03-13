@@ -3883,6 +3883,30 @@ void Magick::Image::rotate(const double degrees_)
   ThrowPPException;
 }
 
+void Magick::Image::rotationalBlur(const double angle_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=RotationalBlurImage(constImage(),angle_,&exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
+void Magick::Image::rotationalBlurChannel(const ChannelType channel_,
+  const double angle_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=RotationalBlurImageChannel(constImage(),channel_,angle_,
+    &exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
 void Magick::Image::sample(const Geometry &geometry_)
 {
   MagickCore::Image

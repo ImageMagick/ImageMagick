@@ -2723,22 +2723,22 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     R a d i a l B l u r I m a g e                                           %
+%     R o t a t i o n a l B l u r I m a g e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RadialBlurImage() applies a radial blur to the image.
+%  RotationalBlurImage() applies a rotational blur to the image.
 %
 %  Andrew Protano contributed this effect.
 %
-%  The format of the RadialBlurImage method is:
+%  The format of the RotationalBlurImage method is:
 %
-%    Image *RadialBlurImage(const Image *image,const double angle,
+%    Image *RotationalBlurImage(const Image *image,const double angle,
 %      ExceptionInfo *exception)
-%    Image *RadialBlurImageChannel(const Image *image,const ChannelType channel,
-%      const double angle,ExceptionInfo *exception)
+%    Image *RotationalBlurImageChannel(const Image *image,
+%      const ChannelType channel,const double angle,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2746,23 +2746,23 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %
 %    o channel: the channel type.
 %
-%    o angle: the angle of the radial blur.
+%    o angle: the angle of the rotational blur.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 
-MagickExport Image *RadialBlurImage(const Image *image,const double angle,
+MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   ExceptionInfo *exception)
 {
   Image
     *blur_image;
 
-  blur_image=RadialBlurImageChannel(image,DefaultChannels,angle,exception);
+  blur_image=RotationalBlurImageChannel(image,DefaultChannels,angle,exception);
   return(blur_image);
 }
 
-MagickExport Image *RadialBlurImageChannel(const Image *image,
+MagickExport Image *RotationalBlurImageChannel(const Image *image,
   const ChannelType channel,const double angle,ExceptionInfo *exception)
 {
   CacheView
@@ -2833,7 +2833,6 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
     sin_theta[i]=sin((double) (theta*i-offset));
   }
 
- 
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL) 
   {
@@ -3007,7 +3006,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_RadialBlurImageChannel)
+        #pragma omp critical (MagickCore_RotationalBlurImageChannel)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,image->rows);
         if (proceed == MagickFalse)

@@ -599,6 +599,7 @@ static const OptionInfo
     { "-roll", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+rotate", 1L, DeprecateOptionFlag, MagickFalse },
     { "-rotate", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-rotational-blur", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+sample", 1L, DeprecateOptionFlag, MagickFalse },
     { "-sample", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+sampling-factor", 0L, ImageInfoOptionFlag, MagickFalse },

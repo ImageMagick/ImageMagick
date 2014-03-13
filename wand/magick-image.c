@@ -8418,66 +8418,7 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
   quantize_info=DestroyQuantizeInfo(quantize_info);
   return(status);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k R a d i a l B l u r I m a g e                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickRadialBlurImage() radial blurs an image.
-%
-%  The format of the MagickRadialBlurImage method is:
-%
-%      MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
-%        const double angle)
-%      MagickBooleanType MagickRadialBlurImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double angle)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
-%
-%    o angle: the angle of the blur in degrees.
-%
-*/
-WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
-  const double angle)
-{
-  MagickBooleanType
-    status;
 
-  status=MagickRadialBlurImageChannel(wand,DefaultChannels,angle);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickRadialBlurImageChannel(MagickWand *wand,
-  const ChannelType channel,const double angle)
-{
-  Image
-    *blur_image;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=RadialBlurImageChannel(wand->images,channel,angle,
-    wand->exception);
-  if (blur_image == (Image *) NULL)
-    return(MagickFalse);
-  ReplaceImageInList(&wand->images,blur_image);
-  return(MagickTrue);
-}
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -9099,7 +9040,66 @@ WandExport MagickBooleanType MagickRotateImage(MagickWand *wand,
   ReplaceImageInList(&wand->images,rotate_image);
   return(MagickTrue);
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k R o t a t i o n a l B l u r I m a g e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickRotationalBlurImage() rotational blurs an image.
+%
+%  The format of the MagickRotationalBlurImage method is:
+%
+%      MagickBooleanType MagickRotationalBlurImage(MagickWand *wand,
+%        const double angle)
+%      MagickBooleanType MagickRotationalBlurImageChannel(MagickWand *wand,
+%        const ChannelType channel,const double angle)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the image channel(s).
+%
+%    o angle: the angle of the blur in degrees.
+%
+*/
+WandExport MagickBooleanType MagickRotationalBlurImage(MagickWand *wand,
+  const double angle)
+{
+  MagickBooleanType
+    status;
+
+  status=MagickRotationalBlurImageChannel(wand,DefaultChannels,angle);
+  return(status);
+}
+
+WandExport MagickBooleanType MagickRotationalBlurImageChannel(MagickWand *wand,
+  const ChannelType channel,const double angle)
+{
+  Image
+    *blur_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  blur_image=RotationalBlurImageChannel(wand->images,channel,angle,
+    wand->exception);
+  if (blur_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,blur_image);
+  return(MagickTrue);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
