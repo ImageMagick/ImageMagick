@@ -1181,11 +1181,11 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
     {
       case 0x03ed:
       {
+        size_t
+          resolution;
+
         unsigned short
           units;
-
-        unsigned int
-          resolution;
 
         /*
           Resolution.
@@ -1195,7 +1195,9 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
         p=ReadResourceShort(p,&units)+2;
         p=ReadResourceLong(p,&resolution)+4;
         image->y_resolution=((double) resolution)/65536.0;
-        // Values are always stored as pixels per inch.
+        /*
+          Values are always stored as pixels per inch.
+        */
         if ((ResolutionType) units == PixelsPerCentimeterResolution)
           {
             image->units=PixelsPerCentimeterResolution;
