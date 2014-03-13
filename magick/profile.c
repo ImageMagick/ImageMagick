@@ -1198,14 +1198,14 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
         /*
           Values are always stored as pixels per inch.
         */
-        if ((ResolutionType) units == PixelsPerCentimeterResolution)
+        if ((ResolutionType) units != PixelsPerCentimeterResolution)
+          image->units=PixelsPerInchResolution;
+        else
           {
             image->units=PixelsPerCentimeterResolution;
             image->x_resolution/=2.54;
             image->y_resolution/=2.54;
           }
-        else
-          image->units=PixelsPerInchResolution;
         break;
       }
       case 0x0404:
