@@ -2516,6 +2516,9 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 #endif
   for (x=0; x < (ssize_t) resize_image->columns; x++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     MagickRealType
       bisect,
       density;
@@ -2549,7 +2552,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
     start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
     stop=(ssize_t) MagickMin(bisect+support+0.5,(double) image->columns);
     density=0.0;
-    contribution=contributions[GetOpenMPThreadId()];
+    contribution=contributions[id];
     for (n=0; n < (stop-start); n++)
     {
       contribution[n].pixel=start+n;
@@ -2756,6 +2759,9 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     MagickRealType
       bisect,
       density;
@@ -2789,7 +2795,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
     stop=(ssize_t) MagickMin(bisect+support+0.5,(double) image->rows);
     density=0.0;
-    contribution=contributions[GetOpenMPThreadId()];
+    contribution=contributions[id];
     for (n=0; n < (stop-start); n++)
     {
       contribution[n].pixel=start+n;
