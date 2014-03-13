@@ -439,6 +439,16 @@ bool Magick::Options::quantizeDither(void) const
   return(static_cast<bool>(_imageInfo->dither));
 }
 
+void Magick::Options::quantizeDitherMethod(DitherMethod ditherMethod_)
+{
+  _quantizeInfo->dither_method=ditherMethod_;
+}
+
+MagickCore::DitherMethod Magick::Options::quantizeDitherMethod(void) const
+{
+  return(_quantizeInfo->dither_method);
+}
+
 void Magick::Options::quantizeTreeDepth(size_t treeDepth_)
 {
   _quantizeInfo->tree_depth=treeDepth_;

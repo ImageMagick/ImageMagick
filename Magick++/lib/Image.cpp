@@ -1250,6 +1250,17 @@ bool Magick::Image::quantizeDither(void) const
   return(constOptions()->quantizeDither());
 }
 
+void Magick::Image::quantizeDitherMethod(const DitherMethod ditherMethod_)
+{
+  modifyImage();
+  options()->quantizeDitherMethod(ditherMethod_);
+}
+
+MagickCore::DitherMethod Magick::Image::quantizeDitherMethod(void) const
+{
+  return(constOptions()->quantizeDitherMethod());
+}
+
 void Magick::Image::quantizeTreeDepth(const size_t treeDepth_)
 {
   modifyImage();
