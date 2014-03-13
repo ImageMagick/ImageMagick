@@ -1200,6 +1200,11 @@ namespace Magick
     // Rotate image counter-clockwise by specified number of degrees.
     void rotate(const double degrees_);
 
+    // Rotational blur image.
+    void rotationalBlur(const double angle_);
+    void rotationalBlurChannel(const ChannelType channel_,
+      const double angle_);
+
     // Resize image by using pixel sampling algorithm
     void sample(const Geometry &geometry_);
 

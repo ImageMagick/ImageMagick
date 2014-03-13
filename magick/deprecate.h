@@ -141,6 +141,10 @@ extern MagickExport Image
   *MinimumImages(const Image *,ExceptionInfo *),
   *MosaicImages(Image *,ExceptionInfo *) magick_attribute((deprecated)),
   *PopImageList(Image **) magick_attribute((deprecated)),
+  *RadialBlurImage(const Image *,const double,ExceptionInfo *)
+    magick_attribute((deprecated)),
+  *RadialBlurImageChannel(const Image *,const ChannelType,const double,
+    ExceptionInfo *) magick_attribute((deprecated)),
   *RecolorImage(const Image *,const size_t,const double *,ExceptionInfo *)
     magick_attribute((deprecated)),
   *ReduceNoiseImage(const Image *,const double,ExceptionInfo *),

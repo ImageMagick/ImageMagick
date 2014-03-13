@@ -1033,6 +1033,8 @@ extern "C" {
 #define RGBTransformImage  PrependMagickMethod(RGBTransformImage)
 #define RollImage  PrependMagickMethod(RollImage)
 #define RotateImage  PrependMagickMethod(RotateImage)
+#define RotationalBlurImageChannel  PrependMagickMethod(RotationalBlurImageChannel)
+#define RotationalBlurImage  PrependMagickMethod(RotationalBlurImage)
 #define SampleImage  PrependMagickMethod(SampleImage)
 #define ScaleImage  PrependMagickMethod(ScaleImage)
 #define ScaleResampleFilter  PrependMagickMethod(ScaleResampleFilter)

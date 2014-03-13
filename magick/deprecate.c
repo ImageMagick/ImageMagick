@@ -180,7 +180,8 @@ MagickExport const PixelPacket *AcquireCacheViewPixels(
 %                                                                             %
 %                                                                             %
 %   A c q u i r e I m a g e P i x e l s                                       %
-%                                                                             % %                                                                             %
+%                                                                             %
+%                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -5725,7 +5726,53 @@ MagickExport unsigned int QuantizationError(Image *image)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.3");
   return(GetImageQuantizeError(image));
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     R a d i a l B l u r I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RadialBlurImage() applies a radial blur to the image.
+%
+%  Andrew Protano contributed this effect.
+%
+%  The format of the RadialBlurImage method is:
+%
+%    Image *RadialBlurImage(const Image *image,const double angle,
+%      ExceptionInfo *exception)
+%    Image *RadialBlurImageChannel(const Image *image,const ChannelType channel,
+%      const double angle,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel type.
+%
+%    o angle: the angle of the radial blur.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+MagickExport Image *RadialBlurImage(const Image *image,const double angle,
+  ExceptionInfo *exception)
+{
+  return(RotationalBlurImage(image,angle,exception));
+}
+
+MagickExport Image *RadialBlurImageChannel(const Image *image,
+  const ChannelType channel,const double angle,ExceptionInfo *exception)
+{
+  return(RotationalBlurImageChannel(image,channel,angle,exception));
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

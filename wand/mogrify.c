@@ -2439,13 +2439,14 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       }
       case 'r':
       {
-        if (LocaleCompare("radial-blur",option+1) == 0)
+        if (LocaleCompare("radial-blur",option+1) == 0 ||
+            LocaleCompare("rotational-blur",option+1) == 0)
           {
             /*
               Radial blur image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            mogrify_image=RadialBlurImageChannel(*image,channel,
+            mogrify_image=RotationalBlurImageChannel(*image,channel,
               StringToDouble(argv[i+1],(char **) NULL),exception);
             break;
           }
@@ -5515,7 +5516,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
       }
       case 'r':
       {
-        if (LocaleCompare("radial-blur",option+1) == 0)
+        if (LocaleCompare("radial-blur",option+1) == 0 ||
+            LocaleCompare("rotational-blur",option+1) == 0)
           {
             i++;
             if (i == (ssize_t) argc)

@@ -2012,6 +2012,47 @@ WandExport MagickBooleanType MagickPaintTransparentImage(MagickWand *wand,
 {
   return(MagickTransparentPaintImage(wand,target,alpha,fuzz,MagickFalse));
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k R a d i a l B l u r I m a g e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickRadialBlurImage() radial blurs an image.
+%
+%  The format of the MagickRadialBlurImage method is:
+%
+%      MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
+%        const double angle)
+%      MagickBooleanType MagickRadialBlurImageChannel(MagickWand *wand,
+%        const ChannelType channel,const double angle)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the image channel(s).
+%
+%    o angle: the angle of the blur in degrees.
+%
+*/
+WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
+  const double angle)
+{
+  return(MagickRotationalBlurImage(wand,angle));
+}
+
+WandExport MagickBooleanType MagickRadialBlurImageChannel(MagickWand *wand,
+  const ChannelType channel,const double angle)
+{
+  return(MagickRotationalBlurImageChannel(wand,channel,angle));
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
