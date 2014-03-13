@@ -1419,7 +1419,7 @@ Image* AccelerateBlurImage(const Image *image, const ChannelType channel, const 
 }
 
 
-static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType channel, const double angle, ExceptionInfo *exception)
+static Image* ComputeRotationalBlurImage(const Image *inputImage, const ChannelType channel, const double angle, ExceptionInfo *exception)
 {
 
   MagickBooleanType outputReady;
@@ -1432,7 +1432,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   cl_context context;
   cl_mem_flags mem_flags;
   cl_mem inputImageBuffer, filteredImageBuffer, sinThetaBuffer, cosThetaBuffer;
-  cl_kernel radialBlurKernel;
+  cl_kernel rotationalBlurKernel;
   cl_command_queue queue;
 
   const void *inputPixels;
@@ -1459,7 +1459,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   sinThetaBuffer = NULL;
   cosThetaBuffer = NULL;
   queue = NULL;
-  radialBlurKernel = NULL;
+  rotationalBlurKernel = NULL;
 
 
   clEnv = GetDefaultOpenCLEnv();
@@ -1582,8 +1582,8 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   }
 
   /* get the OpenCL kernel */
-  radialBlurKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "RadialBlur");
-  if (radialBlurKernel == NULL)
+  rotationalBlurKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "RotationalBlur");
+  if (rotationalBlurKernel == NULL)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
@@ -1592,25 +1592,25 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   
   /* set the kernel arguments */
   i = 0;
-  clStatus=clEnv->library->clSetKernelArg(radialBlurKernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(radialBlurKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
+  clStatus=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&inputImageBuffer);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
 
   GetMagickPixelPacket(inputImage,&bias);
   biasPixel.s[0] = bias.red;
   biasPixel.s[1] = bias.green;
   biasPixel.s[2] = bias.blue;
   biasPixel.s[3] = bias.opacity;
-  clStatus|=clEnv->library->clSetKernelArg(radialBlurKernel,i++,sizeof(cl_float4), &biasPixel);
-  clStatus|=clEnv->library->clSetKernelArg(radialBlurKernel,i++,sizeof(ChannelType), &channel);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_float4), &biasPixel);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(ChannelType), &channel);
 
   matte = (inputImage->matte != MagickFalse)?1:0;
-  clStatus|=clEnv->library->clSetKernelArg(radialBlurKernel,i++,sizeof(unsigned int), &matte);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(unsigned int), &matte);
 
-  clStatus=clEnv->library->clSetKernelArg(radialBlurKernel,i++,sizeof(cl_float2), &blurCenter);
+  clStatus=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_float2), &blurCenter);
 
-  clStatus|=clEnv->library->clSetKernelArg(radialBlurKernel,i++,sizeof(cl_mem),(void *)&cosThetaBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(radialBlurKernel,i++,sizeof(cl_mem),(void *)&sinThetaBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(radialBlurKernel,i++,sizeof(unsigned int), &cossin_theta_size);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&cosThetaBuffer);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&sinThetaBuffer);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(unsigned int), &cossin_theta_size);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
@@ -1621,7 +1621,7 @@ static Image* ComputeRadialBlurImage(const Image *inputImage, const ChannelType 
   global_work_size[0] = inputImage->columns;
   global_work_size[1] = inputImage->rows;
   /* launch the kernel */
-  clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, radialBlurKernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
+  clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, rotationalBlurKernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -1653,7 +1653,7 @@ cleanup:
   if (inputImageBuffer!=NULL)     clEnv->library->clReleaseMemObject(inputImageBuffer);
   if (sinThetaBuffer!=NULL)       clEnv->library->clReleaseMemObject(sinThetaBuffer);
   if (cosThetaBuffer!=NULL)       clEnv->library->clReleaseMemObject(cosThetaBuffer);
-  if (radialBlurKernel!=NULL)     RelinquishOpenCLKernel(clEnv, radialBlurKernel);
+  if (rotationalBlurKernel!=NULL) RelinquishOpenCLKernel(clEnv, rotationalBlurKernel);
   if (queue != NULL)              RelinquishOpenCLCommandQueue(clEnv, queue);
   if (outputReady == MagickFalse)
   {
@@ -1671,21 +1671,21 @@ cleanup:
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     R a d i a l B l u r I m a g e  w i t h  O p e n C L                     %
+%     R o t a t i o n a l B l u r I m a g e  w i t h  O p e n C L             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RadialBlurImage() applies a radial blur to the image.
+%  RotationalBlurImage() applies a rotational blur to the image.
 %
 %  Andrew Protano contributed this effect.
 %
-%  The format of the RadialBlurImage method is:
+%  The format of the RotationalBlurImage method is:
 %
-%    Image *RadialBlurImage(const Image *image,const double angle,
+%    Image *RotationalBlurImage(const Image *image,const double angle,
 %      ExceptionInfo *exception)
-%    Image *RadialBlurImageChannel(const Image *image,const ChannelType channel,
+%    Image *RotationalBlurImageChannel(const Image *image,const ChannelType channel,
 %      const double angle,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1694,14 +1694,14 @@ cleanup:
 %
 %    o channel: the channel type.
 %
-%    o angle: the angle of the radial blur.
+%    o angle: the angle of the rotational blur.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 
 MagickExport
-Image* AccelerateRadialBlurImage(const Image *image, const ChannelType channel, const double angle, ExceptionInfo *exception)
+Image* AccelerateRotationalBlurImage(const Image *image, const ChannelType channel, const double angle, ExceptionInfo *exception)
 {
   MagickBooleanType status;
   Image* filteredImage;
@@ -1718,7 +1718,7 @@ Image* AccelerateRadialBlurImage(const Image *image, const ChannelType channel, 
   if (status == MagickFalse)
     return NULL;
 
-  filteredImage = ComputeRadialBlurImage(image, channel, angle, exception);
+  filteredImage = ComputeRotationalBlurImage(image, channel, angle, exception);
   return filteredImage;
 }
 
@@ -6701,7 +6701,7 @@ MagickExport Image *AccelerateBlurImage(const Image *magick_unused(image),
   return NULL;
 }
 
-MagickExport Image *AccelerateRadialBlurImage(
+MagickExport Image *AccelerateRotationalBlurImage(
   const Image *magick_unused(image),const ChannelType magick_unused(channel),
   const double magick_unused(angle),ExceptionInfo *magick_unused(exception))
 {

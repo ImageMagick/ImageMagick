@@ -1344,6 +1344,7 @@ namespace Magick
   using MagickCore::ResourceLimitWarning;
   using MagickCore::RollImage;
   using MagickCore::RotateImage;
+  using MagickCore::RotationalBlurImage;
   using MagickCore::SampleImage;
   using MagickCore::ScaleImage;
   using MagickCore::SegmentImage;

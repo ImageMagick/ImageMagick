@@ -252,7 +252,6 @@ static MagickBooleanType ConvertUsage(void)
       "-posterize levels    reduce the image to a limited number of color levels",
       "-profile filename    add, delete, or apply an image profile",
       "-quantize colorspace reduce colors in this colorspace",
-      "-radial-blur angle   radial blur the image",
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-random-threshold low,high",
       "                     random threshold the image",
@@ -263,6 +262,8 @@ static MagickBooleanType ConvertUsage(void)
       "-resize geometry     resize the image",
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
+      "-rotational-blur angle",
+      "                     rotational blur the image",
       "-sample geometry     scale image with pixel sampling",
       "-scale geometry      scale the image",
       "-segment values      segment an image",
@@ -2377,7 +2378,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
       }
       case 'r':
       {
-        if (LocaleCompare("radial-blur",option+1) == 0)
+        if (LocaleCompare("rotational-blur",option+1) == 0)
           {
             i++;
             if (i == (ssize_t) (argc-1))

@@ -1486,12 +1486,12 @@ const char* accelerateKernels =
 
  
   STRINGIFY(
-    __kernel void RadialBlur(const __global CLPixelType *im, __global CLPixelType *filtered_im,
-                              const float4 bias,
-                              const unsigned int channel, const unsigned int matte,
-                              const float2 blurCenter,
-                              __constant float *cos_theta, __constant float *sin_theta, 
-                              const unsigned int cossin_theta_size)
+    __kernel void RotationalBlur(const __global CLPixelType *im, __global CLPixelType *filtered_im,
+                                 const float4 bias,
+                                 const unsigned int channel, const unsigned int matte,
+                                 const float2 blurCenter,
+                                 __constant float *cos_theta, __constant float *sin_theta, 
+                                 const unsigned int cossin_theta_size)
       {
         const int x = get_global_id(0);  
         const int y = get_global_id(1);

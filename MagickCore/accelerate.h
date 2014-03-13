@@ -57,10 +57,10 @@ extern MagickExport Image
   *AccelerateDespeckleImage(const Image *,ExceptionInfo *),
   *AccelerateMotionBlurImage(const Image*, const ChannelType,
     const double*,const size_t,const OffsetInfo*,ExceptionInfo*),
-  *AccelerateRadialBlurImage(const Image *,const ChannelType,const double,
-    ExceptionInfo *),
   *AccelerateResizeImage(const Image *,const size_t,const size_t,
     const ResizeFilter *,ExceptionInfo *),
+  *AccelerateRotationalBlurImage(const Image *,const ChannelType,const double,
+    ExceptionInfo *),
   *AccelerateUnsharpMaskImage(const Image *,const ChannelType,const double,
     const double,const double,const double,ExceptionInfo *);
 

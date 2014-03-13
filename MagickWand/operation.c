@@ -2951,12 +2951,12 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'r':
     {
-      if (LocaleCompare("radial-blur",option+1) == 0)
+      if (LocaleCompare("rotational-blur",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          new_image=RadialBlurImage(_image,geometry_info.rho,_exception);
+          new_image=RotationalBlurImage(_image,geometry_info.rho,_exception);
           break;
         }
       if (LocaleCompare("raise",option+1) == 0)

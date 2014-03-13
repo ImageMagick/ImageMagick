@@ -211,7 +211,7 @@ extern WandExport MagickBooleanType
     const size_t,const DitherMethod,const MagickBooleanType),
   MagickQuantizeImages(MagickWand *,const size_t,const ColorspaceType,
     const size_t,const DitherMethod,const MagickBooleanType),
-  MagickRadialBlurImage(MagickWand *,const double),
+  MagickRotationalBlurImage(MagickWand *,const double),
   MagickRaiseImage(MagickWand *,const size_t,const size_t,const ssize_t,
     const ssize_t,const MagickBooleanType),
   MagickRandomThresholdImage(MagickWand *,const double,const double),

@@ -2250,19 +2250,19 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     R a d i a l B l u r I m a g e                                           %
+%     R o t a t i o n a l B l u r I m a g e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RadialBlurImage() applies a radial blur to the image.
+%  RotationalBlurImage() applies a radial blur to the image.
 %
 %  Andrew Protano contributed this effect.
 %
-%  The format of the RadialBlurImage method is:
+%  The format of the RotationalBlurImage method is:
 %
-%    Image *RadialBlurImage(const Image *image,const double angle,
+%    Image *RotationalBlurImage(const Image *image,const double angle,
 %      ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2276,7 +2276,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *RadialBlurImage(const Image *image,const double angle,
+MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   ExceptionInfo *exception)
 {
   CacheView
@@ -2492,7 +2492,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_RadialBlurImage)
+        #pragma omp critical (MagickCore_RotationalBlurImage)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
