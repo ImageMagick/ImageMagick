@@ -645,7 +645,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
       page.width,(double) page.height);
   if (fitPage != MagickFalse)
-    (void) ConcatenateMagickString(options,"-dPDFFitPage ",MaxTextExtent);
+    (void) ConcatenateMagickString(options,"-dPSFitPage ",MaxTextExtent);
   if (cmyk != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseCIEColor ",MaxTextExtent);
   if (cropbox != MagickFalse)
