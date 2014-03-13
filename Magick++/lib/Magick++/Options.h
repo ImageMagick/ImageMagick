@@ -158,6 +158,10 @@ namespace Magick
     void quantizeDither(bool ditherFlag_);
     bool quantizeDither(void) const;
 
+    // Dither method
+    void quantizeDitherMethod(DitherMethod ditherMethod_);
+    DitherMethod quantizeDitherMethod(void) const;
+
     // Quantization tree-depth
     void quantizeTreeDepth(size_t treeDepth_);
     size_t quantizeTreeDepth(void) const;
