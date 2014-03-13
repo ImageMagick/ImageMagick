@@ -7801,17 +7801,17 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k R a d i a l B l u r I m a g e                                 %
+%   M a g i c k R o t a t i o n a l B l u r I m a g e                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickRadialBlurImage() radial blurs an image.
+%  MagickRotationalBlurImage() rotational blurs an image.
 %
-%  The format of the MagickRadialBlurImage method is:
+%  The format of the MagickRotationalBlurImage method is:
 %
-%      MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
+%      MagickBooleanType MagickRotationalBlurImage(MagickWand *wand,
 %        const double angle)
 %
 %  A description of each parameter follows:
@@ -7821,7 +7821,7 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
 %    o angle: the angle of the blur in degrees.
 %
 */
-WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
+WandExport MagickBooleanType MagickRotationalBlurImage(MagickWand *wand,
   const double angle)
 {
   Image
@@ -7833,7 +7833,7 @@ WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=RadialBlurImage(wand->images,angle,wand->exception);
+  blur_image=RotationalBlurImage(wand->images,angle,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
