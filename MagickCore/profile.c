@@ -1148,14 +1148,14 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
   size_t
     length;
 
+  ssize_t
+    count;
+
   StringInfo
     *profile;
 
   unsigned char
     length_byte;
-
-  ssize_t
-    count;
 
    unsigned int
      value;
