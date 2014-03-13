@@ -1119,7 +1119,7 @@ static inline const unsigned char *ReadResourceBytes(const unsigned char *p,
 }
 
 static inline const unsigned char *ReadResourceLong(const unsigned char *p,
-  size_t *quantum)
+  unsigned int *quantum)
 {
   *quantum=(size_t) (*p++ << 24);
   *quantum|=(size_t) (*p++ << 16);
@@ -1154,8 +1154,11 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
   unsigned char
     length_byte;
 
-  size_t
+  ssize_t
     count;
+
+   unsigned int
+     value;
 
   unsigned short
     id;
@@ -1174,18 +1177,19 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
       p++;
     if (p > (datum+length-4))
       break;
-    p=ReadResourceLong(p,&count);
+    p=ReadResourceLong(p,&value);
+    count=(ssize_t) value;
     if ((p > (datum+length-count)) || (count > length))
       break;
     switch (id)
     {
       case 0x03ed:
       {
-        unsigned short
-          units;
-
         unsigned int
           resolution;
+
+        unsigned short
+          units;
 
         /*
           Resolution.
@@ -1195,15 +1199,17 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
         p=ReadResourceShort(p,&units)+2;
         p=ReadResourceLong(p,&resolution)+4;
         image->resolution.y=((double) resolution)/65536.0;
-        // Values are always stored as pixels per inch.
-        if ((ResolutionType) units == PixelsPerCentimeterResolution)
+        /*
+          Values are always stored as pixels per inch.
+        */
+        if ((ResolutionType) units != PixelsPerCentimeterResolution)
+          image->units=PixelsPerInchResolution;
+        else
           {
             image->units=PixelsPerCentimeterResolution;
             image->resolution.x/=2.54;
             image->resolution.y/=2.54;
           }
-        else
-          image->units=PixelsPerInchResolution;
         break;
       }
       case 0x0404:
