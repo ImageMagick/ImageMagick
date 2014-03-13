@@ -1119,7 +1119,7 @@ static inline const unsigned char *ReadResourceBytes(const unsigned char *p,
 }
 
 static inline const unsigned char *ReadResourceLong(const unsigned char *p,
-  size_t *quantum)
+  unsigned int *quantum)
 {
   *quantum=(size_t) (*p++ << 24);
   *quantum|=(size_t) (*p++ << 16);
@@ -1148,14 +1148,17 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
   size_t
     length;
 
+  ssize_t
+    count;
+
   StringInfo
     *profile;
 
   unsigned char
     length_byte;
 
-  size_t
-    count;
+  unsigned int
+    value;
 
   unsigned short
     id;
@@ -1174,14 +1177,15 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
       p++;
     if (p > (datum+length-4))
       break;
-    p=ReadResourceLong(p,&count);
+    p=ReadResourceLong(p,&value);
+    count=(ssize_t) value;
     if ((p > (datum+length-count)) || (count > length))
       break;
     switch (id)
     {
       case 0x03ed:
       {
-        size_t
+        unsigned int
           resolution;
 
         unsigned short
