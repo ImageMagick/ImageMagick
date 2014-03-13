@@ -1,6 +1,6 @@
 2014-03-11  6.8.8-9 Cristy  <quetzlzacatenango@image...>
   * The -define jpeg:extent option override the image quality (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25200).
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25200). 
 
 2014-03-09  6.8.8-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-8, SVN revision 15097.
