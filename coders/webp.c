@@ -619,6 +619,74 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       break;
   }
   webp_status=WebPEncode(&configure,&picture);
+  if (webp_status == 0)
+    {
+      const char
+        *message;
+
+      switch (picture.error_code)
+      {
+        case VP8_ENC_ERROR_OUT_OF_MEMORY:
+        {
+          message="out of memory";
+          break;
+        }
+        case VP8_ENC_ERROR_BITSTREAM_OUT_OF_MEMORY:
+        {
+          message="bitstream out of memory";
+          break;
+        }
+        case VP8_ENC_ERROR_NULL_PARAMETER:
+        {
+          message="NULL parameter";
+          break;
+        }
+        case VP8_ENC_ERROR_INVALID_CONFIGURATION:
+        {
+          message="invalid configuration";
+          break;
+        }
+        case VP8_ENC_ERROR_BAD_DIMENSION:
+        {
+          message="bad dimension";
+          break;
+        }
+        case VP8_ENC_ERROR_PARTITION0_OVERFLOW:
+        {
+          message="partition 0 overflow (> 512K)";
+          break;
+        }
+        case VP8_ENC_ERROR_PARTITION_OVERFLOW:
+        {
+          message="partition overflow (> 16M)";
+          break;
+        }
+        case VP8_ENC_ERROR_BAD_WRITE:
+        {
+          message="bad write";
+          break;
+        }
+        case VP8_ENC_ERROR_FILE_TOO_BIG:
+        {
+          message="file too big (> 4GB)";
+          break;
+        }
+#if WEBP_ENCODER_ABI_VERSION >= 0x0100
+        case VP8_ENC_ERROR_USER_ABORT:
+        {
+          message="user abort";
+          break;
+        }
+#endif
+        default:
+        {
+          message="unknown exception";
+          break;
+        }
+      }
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        (char *) message,"`%s'",image->filename);
+    }
   WebPPictureFree(&picture);
   pixel_info=RelinquishVirtualMemory(pixel_info);
   (void) CloseBlob(image);
