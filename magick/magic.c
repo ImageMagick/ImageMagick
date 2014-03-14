@@ -429,8 +429,8 @@ static int MagicCompare(const void *x,const void *y)
 }
 #endif
 
-MagickExport char **GetMagicList(const char *pattern,
-  size_t *number_aliases,ExceptionInfo *exception)
+MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
+  ExceptionInfo *exception)
 {
   char
     **aliases;
