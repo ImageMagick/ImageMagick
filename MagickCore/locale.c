@@ -813,7 +813,7 @@ MagickExport const char *GetLocaleValue(const LocaleInfo *locale_info)
 */
 static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
 {
-  if ((locale_list == (SplayTreeInfo *) NULL) ||
+  if ((locale_list == (SplayTreeInfo *) NULL) &&
       (instantiate_locale == MagickFalse))
     {
       if (locale_semaphore == (SemaphoreInfo *) NULL)
