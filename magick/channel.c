@@ -343,6 +343,34 @@ MagickExport MagickBooleanType GetImageAlphaChannel(const Image *image)
 %      YellowChannel, or BlackChannel.
 %
 */
+
+MagickExport Image *SeparateImage(const Image *image,const ChannelType channel,
+  ExceptionInfo *exception)
+{
+  Image
+    *separate_image;
+
+  MagickBooleanType
+    status;
+
+  /*
+    Initialize separate image attributes.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  separate_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (separate_image == (Image *) NULL)
+    return((Image *) NULL);
+  status=SeparateImageChannel(separate_image,channel);
+  if (status == MagickFalse)
+    separate_image=DestroyImage(separate_image);
+  return(separate_image);
+}
+
 MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   const ChannelType channel)
 {
