@@ -122,7 +122,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  InitializeMimeList(ExceptionInfo *);
+  IsMimeListInstantiated(ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -182,9 +182,8 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
     value;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (mime_list == (LinkedListInfo *) NULL)
-    if (InitializeMimeList(exception) == MagickFalse)
-      return((const MimeInfo *) NULL);
+  if (IsMimeListInstantiated(exception) == MagickFalse)
+    return((const MimeInfo *) NULL);
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     return((const MimeInfo *) GetValueFromLinkedList(mime_list,0));
   if (length == 0)
@@ -576,24 +575,25 @@ MagickExport const char *GetMimeType(const MimeInfo *mime_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e M i m e L i s t                                       %
++   I s M i m e L i s t I n s t a n t i a t e d                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeMimeList() initializes the mime list.
+%  IsMimeListInstantiated() determines if the mime list is instantiated.
+%  If not, it instantiates the list and returns it.
 %
-%  The format of the InitializeMimeList method is:
+%  The format of the IsMimeInstantiated method is:
 %
-%      MagickBooleanType InitializeMimeList(ExceptionInfo *exception)
+%      MagickBooleanType IsMimeListInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType InitializeMimeList(ExceptionInfo *exception)
+static MagickBooleanType IsMimeListInstantiated(ExceptionInfo *exception)
 {
   if (mime_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&mime_semaphore);

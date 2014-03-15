@@ -124,7 +124,7 @@ static SplayTreeInfo
   Forward declarations.
 */
 static MagickBooleanType
-  InitializeTypeList(ExceptionInfo *),
+  IsTypeTreeInstantiated(ExceptionInfo *),
   LoadTypeLists(const char *,ExceptionInfo *);
 
 /*
@@ -156,9 +156,8 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
   ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  if (type_list == (SplayTreeInfo *) NULL)
-    if (InitializeTypeList(exception) == MagickFalse)
-      return((const TypeInfo *) NULL);
+  if (IsTypeTreeInstantiated(exception) == MagickFalse)
+    return((const TypeInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       ResetSplayTreeIterator(type_list);
@@ -595,17 +594,18 @@ MagickExport char **GetTypeList(const char *pattern,size_t *number_fonts,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e T y p e L i s t                                       %
++   I s T y p e T r e e I n s t a n t i a t e d                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeTypeList() initializes the type list.
+%  IsTypeTreeInstantiated() determines if the type tree is instantiated.  If
+%  not, it instantiates the tree and returns it.
 %
-%  The format of the InitializeTypeList method is:
+%  The format of the IsTypeInstantiated method is:
 %
-%      MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
+%      MagickBooleanType IsTypeTreeInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -775,7 +775,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
 }
 #endif
 
-static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
+static MagickBooleanType IsTypeTreeInstantiated(ExceptionInfo *exception)
 {
   if (type_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&type_semaphore);
