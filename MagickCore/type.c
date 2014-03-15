@@ -117,9 +117,6 @@ static const char
 static SemaphoreInfo
   *type_semaphore = (SemaphoreInfo *) NULL;
 
-static volatile MagickBooleanType
-  instantiate_type = MagickFalse;
-
 static SplayTreeInfo
   *type_list = (SplayTreeInfo *) NULL;
 
@@ -159,13 +156,9 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
   ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  if ((type_list == (SplayTreeInfo *) NULL) ||
-      (instantiate_type == MagickFalse))
+  if (type_list == (SplayTreeInfo *) NULL)
     if (InitializeTypeList(exception) == MagickFalse)
       return((const TypeInfo *) NULL);
-  if ((type_list == (SplayTreeInfo *) NULL) ||
-      (GetNumberOfNodesInSplayTree(type_list) == 0))
-    return((const TypeInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       ResetSplayTreeIterator(type_list);
@@ -782,26 +775,20 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
 
 static MagickBooleanType InitializeTypeList(ExceptionInfo *exception)
 {
-  if ((type_list == (SplayTreeInfo *) NULL) ||
-      (instantiate_type == MagickFalse))
+  if (type_semaphore == (SemaphoreInfo *) NULL)
+  ActivateSemaphoreInfo(&type_semaphore);
+  LockSemaphoreInfo(type_semaphore);
+  if (type_list == (SplayTreeInfo *) NULL)
     {
-      if (type_semaphore == (SemaphoreInfo *) NULL)
-		    ActivateSemaphoreInfo(&type_semaphore);
-      LockSemaphoreInfo(type_semaphore);
-      if ((type_list == (SplayTreeInfo *) NULL) ||
-          (instantiate_type == MagickFalse))
-        {
-          (void) LoadTypeLists(MagickTypeFilename,exception);
+      (void) LoadTypeLists(MagickTypeFilename,exception);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-          (void) NTLoadTypeLists(type_list,exception);
+      (void) NTLoadTypeLists(type_list,exception);
 #endif
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
-          (void) LoadFontConfigFonts(type_list,exception);
+      (void) LoadFontConfigFonts(type_list,exception);
 #endif
-          instantiate_type=MagickTrue;
-        }
-      UnlockSemaphoreInfo(type_semaphore);
     }
+  UnlockSemaphoreInfo(type_semaphore);
   return(type_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
@@ -1390,7 +1377,6 @@ MagickPrivate void TypeComponentTerminus(void)
   LockSemaphoreInfo(type_semaphore);
   if (type_list != (SplayTreeInfo *) NULL)
     type_list=DestroySplayTree(type_list);
-  instantiate_type=MagickFalse;
   UnlockSemaphoreInfo(type_semaphore);
   RelinquishSemaphoreInfo(&type_semaphore);
 }

@@ -235,9 +235,6 @@ static SemaphoreInfo
 
 static SplayTreeInfo
   *coder_list = (SplayTreeInfo *) NULL;
-
-static volatile MagickBooleanType
-  instantiate_coder = MagickFalse;
 
 /*
   Forward declarations.
@@ -295,7 +292,6 @@ MagickPrivate void CoderComponentTerminus(void)
   LockSemaphoreInfo(coder_semaphore);
   if (coder_list != (SplayTreeInfo *) NULL)
     coder_list=DestroySplayTree(coder_list);
-  instantiate_coder=MagickFalse;
   UnlockSemaphoreInfo(coder_semaphore);
   RelinquishSemaphoreInfo(&coder_semaphore);
 }
@@ -329,13 +325,9 @@ MagickExport const CoderInfo *GetCoderInfo(const char *name,
   ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  if ((coder_list == (SplayTreeInfo *) NULL) ||
-      (instantiate_coder == MagickFalse))
+  if (coder_list == (SplayTreeInfo *) NULL)
     if (InitializeCoderList(exception) == MagickFalse)
       return((const CoderInfo *) NULL);
-  if ((coder_list == (SplayTreeInfo *) NULL) ||
-      (GetNumberOfNodesInSplayTree(coder_list) == 0))
-    return((const CoderInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       ResetSplayTreeIterator(coder_list);
@@ -539,20 +531,12 @@ MagickExport char **GetCoderList(const char *pattern,
 */
 static MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
 {
-  if ((coder_list == (SplayTreeInfo *) NULL) ||
-      (instantiate_coder == MagickFalse))
-    {
-      if (coder_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&coder_semaphore);
-      LockSemaphoreInfo(coder_semaphore);
-      if ((coder_list == (SplayTreeInfo *) NULL) ||
-          (instantiate_coder == MagickFalse))
-        {
-          (void) LoadCoderLists(MagickCoderFilename,exception);
-          instantiate_coder=MagickTrue;
-        }
-      UnlockSemaphoreInfo(coder_semaphore);
-    }
+  if (coder_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&coder_semaphore);
+  LockSemaphoreInfo(coder_semaphore);
+  if (coder_list == (SplayTreeInfo *) NULL)
+    (void) LoadCoderLists(MagickCoderFilename,exception);
+  UnlockSemaphoreInfo(coder_semaphore);
   return(coder_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
 

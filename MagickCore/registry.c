@@ -75,9 +75,6 @@ static SplayTreeInfo
 
 static SemaphoreInfo
   *registry_semaphore = (SemaphoreInfo *) NULL;
-
-static volatile MagickBooleanType
-  instantiate_registry = MagickFalse;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -331,7 +328,6 @@ MagickPrivate void RegistryComponentTerminus(void)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (registry != (void *) NULL)
     registry=DestroySplayTree(registry);
-  instantiate_registry=MagickFalse;
   UnlockSemaphoreInfo(registry_semaphore);
   RelinquishSemaphoreInfo(&registry_semaphore);
 }
@@ -524,19 +520,14 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
   registry_info->type=type;
   registry_info->value=clone_value;
   registry_info->signature=MagickSignature;
-  if ((registry == (SplayTreeInfo *) NULL) &&
-      (instantiate_registry == MagickFalse))
+  if (registry == (SplayTreeInfo *) NULL)
     {
       if (registry_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&registry_semaphore);
       LockSemaphoreInfo(registry_semaphore);
-      if ((registry == (SplayTreeInfo *) NULL) &&
-          (instantiate_registry == MagickFalse))
-        {
-          registry=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
-            DestroyRegistryNode);
-          instantiate_registry=MagickTrue;
-        }
+      if (registry == (SplayTreeInfo *) NULL)
+        registry=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
+          DestroyRegistryNode);
       UnlockSemaphoreInfo(registry_semaphore);
     }
   status=AddValueToSplayTree(registry,ConstantString(key),registry_info);

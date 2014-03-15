@@ -75,6 +75,42 @@ struct SemaphoreInfo
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A c t i v a t e S e m a p h o r e I n f o                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ActivateSemaphoreInfo() activates a semaphore under protection of a mutex
+%  to ensure only one thread allocates the semaphore.
+%
+%  The format of the ActivateSemaphoreInfo method is:
+%
+%      void ActivateSemaphoreInfo(SemaphoreInfo **semaphore_info)
+%
+%  A description of each parameter follows:
+%
+%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
+%
+*/
+MagickExport void ActivateSemaphoreInfo(SemaphoreInfo **semaphore_info)
+{
+  assert(semaphore_info != (SemaphoreInfo **) NULL);
+  if (*semaphore_info == (SemaphoreInfo *) NULL)
+    {
+      InitializeMagickMutex();
+      LockMagickMutex();
+      if (*semaphore_info == (SemaphoreInfo *) NULL)
+        *semaphore_info=AcquireSemaphoreInfo();
+      UnlockMagickMutex();
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   A c q u i r e S e m a p h o r e I n f o                                   %
 %                                                                             %
 %                                                                             %
@@ -158,7 +194,7 @@ MagickExport SemaphoreInfo *AcquireSemaphoreInfo(void)
     *semaphore_info;
 
   /*
-    Allocate semaphore.
+    Acquire semaphore.
   */
   semaphore_info=(SemaphoreInfo *) AcquireSemaphoreMemory(1,
     sizeof(*semaphore_info));
@@ -236,42 +272,6 @@ MagickExport SemaphoreInfo *AcquireSemaphoreInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c t i v a t e S e m a p h o r e I n f o                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ActivateSemaphoreInfo() activates a semaphore under protection of a mutex
-%  to ensure only one thread allocates the semaphore.
-%
-%  The format of the ActivateSemaphoreInfo method is:
-%
-%      void ActivateSemaphoreInfo(SemaphoreInfo **semaphore_info)
-%
-%  A description of each parameter follows:
-%
-%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
-%
-*/
-MagickExport void ActivateSemaphoreInfo(SemaphoreInfo **semaphore_info)
-{
-  assert(semaphore_info != (SemaphoreInfo **) NULL);
-  if (*semaphore_info == (SemaphoreInfo *) NULL)
-    {
-      InitializeMagickMutex();
-      LockMagickMutex();
-      if (*semaphore_info == (SemaphoreInfo *) NULL)
-        *semaphore_info=AcquireSemaphoreInfo();
-      UnlockMagickMutex();
-    }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   L o c k S e m a p h o r e I n f o                                         %
 %                                                                             %
 %                                                                             %
@@ -328,7 +328,7 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e l i n q u i s h S  e m a p h o r e I n f o                            %
+%   R e l i n q u i s h S e m a p h o r e I n f o                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
