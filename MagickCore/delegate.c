@@ -133,9 +133,6 @@ static LinkedListInfo
 
 static SemaphoreInfo
   *delegate_semaphore = (SemaphoreInfo *) NULL;
-
-static volatile MagickBooleanType
-  instantiate_delegate = MagickFalse;
 
 /*
   Forward declaractions.
@@ -212,7 +209,6 @@ MagickPrivate void DelegateComponentTerminus(void)
   LockSemaphoreInfo(delegate_semaphore);
   if (delegate_list != (LinkedListInfo *) NULL)
     delegate_list=DestroyLinkedList(delegate_list,DestroyDelegate);
-  instantiate_delegate=MagickFalse;
   UnlockSemaphoreInfo(delegate_semaphore);
   RelinquishSemaphoreInfo(&delegate_semaphore);
 }
@@ -370,13 +366,9 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((delegate_list == (LinkedListInfo *) NULL) ||
-      (IfMagickFalse(instantiate_delegate)))
+  if (delegate_list == (LinkedListInfo *) NULL)
     if( IfMagickFalse(InitializeDelegateList(exception)) )
       return((const DelegateInfo *) NULL);
-  if ((delegate_list == (LinkedListInfo *) NULL) ||
-      (IfMagickTrue(IsLinkedListEmpty(delegate_list))))
-    return((const DelegateInfo *) NULL);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return((const DelegateInfo *) GetValueFromLinkedList(delegate_list,0));
   /*
@@ -710,20 +702,12 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 */
 static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
 {
-  if ((delegate_list == (LinkedListInfo *) NULL) ||
-      IfMagickFalse(instantiate_delegate))
-    {
-      if (delegate_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&delegate_semaphore);
-      LockSemaphoreInfo(delegate_semaphore);
-      if ((delegate_list == (LinkedListInfo *) NULL) ||
-          IfMagickFalse(instantiate_delegate))
-        {
-          (void) LoadDelegateLists(DelegateFilename,exception);
-          instantiate_delegate=MagickTrue;
-        }
-      UnlockSemaphoreInfo(delegate_semaphore);
-    }
+  if (delegate_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
+  if (delegate_list == (LinkedListInfo *) NULL)
+    (void) LoadDelegateLists(DelegateFilename,exception);
+  UnlockSemaphoreInfo(delegate_semaphore);
   return(IsMagickNotNULL(delegate_list));
 }
 

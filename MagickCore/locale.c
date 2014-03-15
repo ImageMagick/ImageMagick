@@ -99,9 +99,6 @@ static SplayTreeInfo
 static volatile locale_t
   c_locale = (locale_t) NULL;
 #endif
-
-static volatile MagickBooleanType
-  instantiate_locale = MagickFalse;
 
 /*
   Forward declarations.
@@ -424,13 +421,9 @@ MagickExport const LocaleInfo *GetLocaleInfo_(const char *tag,
   ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  if ((locale_list == (SplayTreeInfo *) NULL) ||
-      (instantiate_locale == MagickFalse))
+  if (locale_list == (SplayTreeInfo *) NULL)
     if (InitializeLocaleList(exception) == MagickFalse)
       return((const LocaleInfo *) NULL);
-  if ((locale_list == (SplayTreeInfo *) NULL) ||
-      (GetNumberOfNodesInSplayTree(locale_list) == 0))
-    return((const LocaleInfo *) NULL);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     {
       ResetSplayTreeIterator(locale_list);
@@ -813,41 +806,35 @@ MagickExport const char *GetLocaleValue(const LocaleInfo *locale_info)
 */
 static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
 {
-  if ((locale_list == (SplayTreeInfo *) NULL) &&
-      (instantiate_locale == MagickFalse))
+  if (locale_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&locale_semaphore);
+  LockSemaphoreInfo(locale_semaphore);
+  if (locale_list == (SplayTreeInfo *) NULL)
     {
-      if (locale_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&locale_semaphore);
-      LockSemaphoreInfo(locale_semaphore);
-      if ((locale_list == (SplayTreeInfo *) NULL) ||
-          (instantiate_locale == MagickFalse))
-        {
-          char
-            *locale;
+      char
+        *locale;
 
-          register const char
-            *p;
+      register const char
+        *p;
 
-          locale=(char *) NULL;
-          p=setlocale(LC_CTYPE,(const char *) NULL);
-          if (p != (const char *) NULL)
-            locale=ConstantString(p);
-          if (locale == (char *) NULL)
-            locale=GetEnvironmentValue("LC_ALL");
-          if (locale == (char *) NULL)
-            locale=GetEnvironmentValue("LC_MESSAGES");
-          if (locale == (char *) NULL)
-            locale=GetEnvironmentValue("LC_CTYPE");
-          if (locale == (char *) NULL)
-            locale=GetEnvironmentValue("LANG");
-          if (locale == (char *) NULL)
-            locale=ConstantString("C");
-          (void) LoadLocaleLists(LocaleFilename,locale,exception);
-          locale=DestroyString(locale);
-          instantiate_locale=MagickTrue;
-        }
-      UnlockSemaphoreInfo(locale_semaphore);
+      locale=(char *) NULL;
+      p=setlocale(LC_CTYPE,(const char *) NULL);
+      if (p != (const char *) NULL)
+        locale=ConstantString(p);
+      if (locale == (char *) NULL)
+        locale=GetEnvironmentValue("LC_ALL");
+      if (locale == (char *) NULL)
+        locale=GetEnvironmentValue("LC_MESSAGES");
+      if (locale == (char *) NULL)
+        locale=GetEnvironmentValue("LC_CTYPE");
+      if (locale == (char *) NULL)
+        locale=GetEnvironmentValue("LANG");
+      if (locale == (char *) NULL)
+        locale=ConstantString("C");
+      (void) LoadLocaleLists(LocaleFilename,locale,exception);
+      locale=DestroyString(locale);
     }
+  UnlockSemaphoreInfo(locale_semaphore);
   return(locale_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
@@ -1431,7 +1418,6 @@ MagickPrivate void LocaleComponentTerminus(void)
 #if defined(MAGICKCORE_HAVE_STRTOD_L)
   DestroyCLocale();
 #endif
-  instantiate_locale=MagickFalse;
   UnlockSemaphoreInfo(locale_semaphore);
   RelinquishSemaphoreInfo(&locale_semaphore);
 }

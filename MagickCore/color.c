@@ -789,9 +789,6 @@ static LinkedListInfo
 
 static SemaphoreInfo
   *color_semaphore = (SemaphoreInfo *) NULL;
-
-static volatile MagickBooleanType
-  instantiate_color = MagickFalse;
 
 /*
   Forward declarations.
@@ -867,7 +864,6 @@ MagickPrivate void ColorComponentTerminus(void)
   LockSemaphoreInfo(color_semaphore);
   if (color_list != (LinkedListInfo *) NULL)
     color_list=DestroyLinkedList(color_list,DestroyColorElement);
-  instantiate_color=MagickFalse;
   UnlockSemaphoreInfo(color_semaphore);
   RelinquishSemaphoreInfo(&color_semaphore);
 }
@@ -913,13 +909,9 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
     *q;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((color_list == (LinkedListInfo *) NULL) ||
-       IfMagickFalse(instantiate_color))
+  if (color_list == (LinkedListInfo *) NULL)
     if (IfMagickFalse(InitializeColorList(exception)))
       return((const ColorInfo *) NULL);
-  if ((color_list == (LinkedListInfo *) NULL) ||
-      IfMagickTrue(IsLinkedListEmpty(color_list)))
-    return((const ColorInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((const ColorInfo *) GetValueFromLinkedList(color_list,0));
   /*
@@ -1515,20 +1507,12 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
 */
 static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
 {
-  if ((color_list == (LinkedListInfo *) NULL) ||
-      IfMagickFalse(instantiate_color))
-    {
-      if (color_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&color_semaphore);
-      LockSemaphoreInfo(color_semaphore);
-      if ((color_list == (LinkedListInfo *) NULL) ||
-          IfMagickFalse(instantiate_color))
-        {
-          (void) LoadColorLists(ColorFilename,exception);
-          instantiate_color=MagickTrue;
-        }
-      UnlockSemaphoreInfo(color_semaphore);
-    }
+  if (color_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
+  if (color_list == (LinkedListInfo *) NULL)
+    (void) LoadColorLists(ColorFilename,exception);
+  UnlockSemaphoreInfo(color_semaphore);
   return(color_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 

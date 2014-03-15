@@ -208,9 +208,6 @@ static LinkedListInfo
 
 static SemaphoreInfo
   *magic_semaphore = (SemaphoreInfo *) NULL;
-
-static volatile MagickBooleanType
-  instantiate_magic = MagickFalse;
 
 /*
   Forward declarations.
@@ -255,13 +252,9 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((magic_list == (LinkedListInfo *) NULL) ||
-      (instantiate_magic == MagickFalse))
+  if (magic_list == (LinkedListInfo *) NULL)
     if (InitializeMagicList(exception) == MagickFalse)
       return((const MagicInfo *) NULL);
-  if ((magic_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(magic_list) != MagickFalse))
-    return((const MagicInfo *) NULL);
   if (magic == (const unsigned char *) NULL)
     return((const MagicInfo *) GetValueFromLinkedList(magic_list,0));
   if (length == 0)
@@ -529,20 +522,12 @@ MagickExport const char *GetMagicName(const MagicInfo *magic_info)
 */
 static MagickBooleanType InitializeMagicList(ExceptionInfo *exception)
 {
-  if ((magic_list == (LinkedListInfo *) NULL) ||
-      (instantiate_magic == MagickFalse))
-    {
-      if (magic_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&magic_semaphore);
-      LockSemaphoreInfo(magic_semaphore);
-      if ((magic_list == (LinkedListInfo *) NULL) ||
-          (instantiate_magic == MagickFalse))
-        {
-          (void) LoadMagicLists(MagicFilename,exception);
-          instantiate_magic=MagickTrue;
-        }
-      UnlockSemaphoreInfo(magic_semaphore);
-    }
+  if (magic_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&magic_semaphore);
+  LockSemaphoreInfo(magic_semaphore);
+  if (magic_list == (LinkedListInfo *) NULL)
+    (void) LoadMagicLists(MagicFilename,exception);
+  UnlockSemaphoreInfo(magic_semaphore);
   return(magic_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
@@ -1075,7 +1060,6 @@ MagickPrivate void MagicComponentTerminus(void)
   LockSemaphoreInfo(magic_semaphore);
   if (magic_list != (LinkedListInfo *) NULL)
     magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);
-  instantiate_magic=MagickFalse;
   UnlockSemaphoreInfo(magic_semaphore);
   RelinquishSemaphoreInfo(&magic_semaphore);
 }
