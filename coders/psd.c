@@ -1771,8 +1771,20 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  reading the precombined layer");
   if (has_merged_image != MagickFalse || GetImageListLength(image) == 1)
-    (void) ReadPSDMergedImage(image,&psd_info,exception);
-  else
+    has_merged_image=(MagickBooleanType) ReadPSDMergedImage(image,&psd_info,
+      exception);
+  if (has_merged_image == MagickFalse && GetImageListLength(image) == 1 &&
+    length != 0)
+    {
+      SeekBlob(image,offset,SEEK_SET);
+      if (ReadPSDLayers(image,&psd_info,MagickFalse,exception) !=
+        MagickTrue)
+        {
+          (void) CloseBlob(image);
+          return((Image *) NULL);
+        }
+    }
+  if (has_merged_image == MagickFalse && GetImageListLength(image) > 1)
     {
       Image
         *merged;
