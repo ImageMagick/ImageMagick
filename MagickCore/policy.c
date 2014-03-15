@@ -129,7 +129,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  InitializePolicyList(ExceptionInfo *),
+  IsPolicyListInstantiated(ExceptionInfo *),
   LoadPolicyLists(const char *,ExceptionInfo *);
 
 /*
@@ -169,9 +169,8 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
     *q;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (policy_list == (LinkedListInfo *) NULL)
-    if (InitializePolicyList(exception) == MagickFalse)
-      return((PolicyInfo *) NULL);
+  if (IsPolicyListInstantiated(exception) == MagickFalse)
+    return((PolicyInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((PolicyInfo *) GetValueFromLinkedList(policy_list,0));
   /*
@@ -399,24 +398,25 @@ MagickExport char *GetPolicyValue(const char *name)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e P o l i c y L i s t                                   %
++   I s P o l i c y L i s t I n s t a n t i a t e d                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializePolicyList() initializes the policy list.
+%  IsPolicyListInstantiated() determines if the policy list is instantiated.
+%  If not, it instantiates the list and returns it.
 %
-%  The format of the InitializePolicyList method is:
+%  The format of the IsPolicyInstantiated method is:
 %
-%      MagickBooleanType InitializePolicyList(ExceptionInfo *exception)
+%      MagickBooleanType IsPolicyListInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType InitializePolicyList(ExceptionInfo *exception)
+static MagickBooleanType IsPolicyListInstantiated(ExceptionInfo *exception)
 {
   if (policy_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&policy_semaphore);

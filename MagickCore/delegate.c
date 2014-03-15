@@ -138,7 +138,7 @@ static SemaphoreInfo
   Forward declaractions.
 */
 static MagickBooleanType
-  InitializeDelegateList(ExceptionInfo *),
+  IsDelegateListInstantiated(ExceptionInfo *),
   LoadDelegateLists(const char *,ExceptionInfo *);
 
 /*
@@ -367,7 +367,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
 
   assert(exception != (ExceptionInfo *) NULL);
   if (delegate_list == (LinkedListInfo *) NULL)
-    if( IfMagickFalse(InitializeDelegateList(exception)) )
+    if( IfMagickFalse(IsDelegateListInstantiated(exception)) )
       return((const DelegateInfo *) NULL);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return((const DelegateInfo *) GetValueFromLinkedList(delegate_list,0));
@@ -683,24 +683,25 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e D e l e g a t e L i s t                               %
++   I s D e l e g a t e L i s t I n s t a n t i a t e d                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeDelegateList() initializes the delegate list.
+%  IsDelegateListInstantiated() determines if the delegate list is instantiated.
+%  If not, it instantiates the list and returns it.
 %
-%  The format of the InitializeDelegateList method is:
+%  The format of the IsDelegateInstantiated method is:
 %
-%      MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
+%      MagickBooleanType IsDelegateListInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
+static MagickBooleanType IsDelegateListInstantiated(ExceptionInfo *exception)
 {
   if (delegate_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&delegate_semaphore);
