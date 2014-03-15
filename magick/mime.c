@@ -117,9 +117,6 @@ static LinkedListInfo
 
 static SemaphoreInfo
   *mime_semaphore = (SemaphoreInfo *) NULL;
-
-static volatile MagickBooleanType
-  instantiate_mime = MagickFalse;
 
 /*
   Forward declarations.
@@ -185,13 +182,9 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
     value;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((mime_list == (LinkedListInfo *) NULL) ||
-      (instantiate_mime == MagickFalse))
+  if (mime_list == (LinkedListInfo *) NULL)
     if (InitializeMimeList(exception) == MagickFalse)
       return((const MimeInfo *) NULL);
-  if ((mime_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(mime_list) != MagickFalse))
-    return((const MimeInfo *) NULL);
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     return((const MimeInfo *) GetValueFromLinkedList(mime_list,0));
   if (length == 0)
@@ -602,20 +595,12 @@ MagickExport const char *GetMimeType(const MimeInfo *mime_info)
 */
 static MagickBooleanType InitializeMimeList(ExceptionInfo *exception)
 {
-  if ((mime_list == (LinkedListInfo *) NULL) ||
-      (instantiate_mime == MagickFalse))
-    {
-      if (mime_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&mime_semaphore);
-      LockSemaphoreInfo(mime_semaphore);
-      if ((mime_list == (LinkedListInfo *) NULL) ||
-          (instantiate_mime == MagickFalse))
-        {
-          (void) LoadMimeLists(MimeFilename,exception);
-          instantiate_mime=MagickTrue;
-        }
-      UnlockSemaphoreInfo(mime_semaphore);
-    }
+  if (mime_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&mime_semaphore);
+  LockSemaphoreInfo(mime_semaphore);
+  if (mime_list == (LinkedListInfo *) NULL)
+    (void) LoadMimeLists(MimeFilename,exception);
+  UnlockSemaphoreInfo(mime_semaphore);
   return(mime_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
@@ -1105,7 +1090,6 @@ MagickExport void MimeComponentTerminus(void)
   LockSemaphoreInfo(mime_semaphore);
   if (mime_list != (LinkedListInfo *) NULL)
     mime_list=DestroyLinkedList(mime_list,DestroyMimeElement);
-  instantiate_mime=MagickFalse;
   UnlockSemaphoreInfo(mime_semaphore);
   DestroySemaphoreInfo(&mime_semaphore);
 }

@@ -90,9 +90,6 @@ static SemaphoreInfo
 
 static SplayTreeInfo
   *module_list = (SplayTreeInfo *) NULL;
-
-static volatile MagickBooleanType
-  instantiate_module = MagickFalse;
 
 /*
   Forward declarations.
@@ -180,13 +177,6 @@ MagickExport void DestroyModuleList(void)
 #if defined(MAGICKCORE_MODULES_SUPPORT)
   if (module_list != (SplayTreeInfo *) NULL)
     module_list=DestroySplayTree(module_list);
-  if (instantiate_module != MagickFalse)
-    {
-#if !defined(MAGICKCORE_JP2_DELEGATE)
-      (void) lt_dlexit();  /* Jasper has an errant atexit() handler */
-#endif
-      instantiate_module=MagickFalse;
-    }
 #endif
   UnlockSemaphoreInfo(module_semaphore);
 }
@@ -221,13 +211,9 @@ MagickExport void DestroyModuleList(void)
 */
 MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 {
-  if ((module_list == (SplayTreeInfo *) NULL) ||
-      (instantiate_module == MagickFalse))
+  if (module_list == (SplayTreeInfo *) NULL)
     if (InitializeModuleList(exception) == MagickFalse)
       return((ModuleInfo *) NULL);
-  if ((module_list == (SplayTreeInfo *) NULL) ||
-      (GetNumberOfNodesInSplayTree(module_list) == 0))
-    return((ModuleInfo *) NULL);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     {
       ModuleInfo
@@ -873,39 +859,32 @@ MagickExport MagickBooleanType InitializeModuleList(
 {
   magick_unreferenced(exception);
 
-  if ((module_list == (SplayTreeInfo *) NULL) ||
-      (instantiate_module == MagickFalse))
+  if (module_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&module_semaphore);
+  LockSemaphoreInfo(module_semaphore);
+  if (module_list == (SplayTreeInfo *) NULL)
     {
-      if (module_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&module_semaphore);
-      LockSemaphoreInfo(module_semaphore);
-      if ((module_list == (SplayTreeInfo *) NULL) ||
-          (instantiate_module == MagickFalse))
-        {
-          MagickBooleanType
-            status;
+      MagickBooleanType
+        status;
 
-          ModuleInfo
-            *module_info;
+      ModuleInfo
+        *module_info;
 
-          module_list=NewSplayTree(CompareSplayTreeString,
-            (void *(*)(void *)) NULL,DestroyModuleNode);
-          if (module_list == (SplayTreeInfo *) NULL)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
-          module_info=AcquireModuleInfo((const char *) NULL,"[boot-strap]");
-          module_info->stealth=MagickTrue;
-          status=AddValueToSplayTree(module_list,module_info->tag,module_info);
-          if (status == MagickFalse)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
-          if (lt_dlinit() != 0)
-            ThrowFatalException(ModuleFatalError,
-              "UnableToInitializeModuleLoader");
-          instantiate_module=MagickTrue;
-        }
-      UnlockSemaphoreInfo(module_semaphore);
+      module_list=NewSplayTree(CompareSplayTreeString,
+        (void *(*)(void *)) NULL,DestroyModuleNode);
+      if (module_list == (SplayTreeInfo *) NULL)
+        ThrowFatalException(ResourceLimitFatalError,
+          "MemoryAllocationFailed");
+      module_info=AcquireModuleInfo((const char *) NULL,"[boot-strap]");
+      module_info->stealth=MagickTrue;
+      status=AddValueToSplayTree(module_list,module_info->tag,module_info);
+      if (status == MagickFalse)
+        ThrowFatalException(ResourceLimitFatalError,
+          "MemoryAllocationFailed");
+      if (lt_dlinit() != 0)
+        ThrowFatalException(ModuleFatalError,"UnableToInitializeModuleLoader");
     }
+  UnlockSemaphoreInfo(module_semaphore);
   return(module_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
