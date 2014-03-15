@@ -115,7 +115,6 @@ static SplayTreeInfo
   *magick_list = (SplayTreeInfo *) NULL;
 
 static volatile MagickBooleanType
-  instantiate_magick = MagickFalse,
   instantiate_magickcore = MagickFalse;
 
 /*
@@ -407,8 +406,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((magick_list == (SplayTreeInfo *) NULL) ||
-      (instantiate_magick == MagickFalse))
+  if (magick_list == (SplayTreeInfo *) NULL)
     if (InitializeMagickList(exception) == MagickFalse)
       return((const MagickInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
@@ -834,48 +832,39 @@ static void *DestroyMagickNode(void *magick_info)
 static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
 {
   (void) exception;
-  if ((magick_list == (SplayTreeInfo *) NULL) ||
-      (instantiate_magick == MagickFalse))
+  if (magick_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&magick_semaphore);
+  LockSemaphoreInfo(magick_semaphore);
+  if (magick_list == (SplayTreeInfo *) NULL)
     {
-      if (magick_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&magick_semaphore);
-      LockSemaphoreInfo(magick_semaphore);
-      if ((magick_list == (SplayTreeInfo *) NULL) ||
-          (instantiate_magick == MagickFalse))
-        {
-          MagickBooleanType
-            status;
+      MagickBooleanType
+        status;
 
-          MagickInfo
-            *magick_info;
+      MagickInfo
+        *magick_info;
 
-          magick_list=NewSplayTree(CompareSplayTreeString,
-            (void *(*)(void *)) NULL,DestroyMagickNode);
-          if (magick_list == (SplayTreeInfo *) NULL)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
-          magick_info=SetMagickInfo("ephemeral");
-          magick_info->stealth=MagickTrue;
-          status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
-          if (status == MagickFalse)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
-          magick_info=SetMagickInfo("clipmask");
-          magick_info->stealth=MagickTrue;
-          status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
-          if (status == MagickFalse)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
+      magick_list=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
+        DestroyMagickNode);
+      if (magick_list == (SplayTreeInfo *) NULL)
+        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+      magick_info=SetMagickInfo("ephemeral");
+      magick_info->stealth=MagickTrue;
+      status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
+      if (status == MagickFalse)
+        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+      magick_info=SetMagickInfo("clipmask");
+      magick_info->stealth=MagickTrue;
+      status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
+      if (status == MagickFalse)
+        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
 #if defined(MAGICKCORE_MODULES_SUPPORT)
-          (void) GetModuleInfo((char *) NULL,exception);
+      (void) GetModuleInfo((char *) NULL,exception);
 #endif
 #if !defined(MAGICKCORE_BUILD_MODULES)
-          RegisterStaticModules();
+      RegisterStaticModules();
 #endif
-          instantiate_magick=MagickTrue;
-        }
-      UnlockSemaphoreInfo(magick_semaphore);
     }
+  UnlockSemaphoreInfo(magick_semaphore);
   return(magick_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
@@ -1098,7 +1087,6 @@ MagickExport void MagickComponentTerminus(void)
   LockSemaphoreInfo(magick_semaphore);
   if (magick_list != (SplayTreeInfo *) NULL)
     magick_list=DestroySplayTree(magick_list);
-  instantiate_magick=MagickFalse;
   UnlockSemaphoreInfo(magick_semaphore);
   DestroySemaphoreInfo(&magick_semaphore);
 }
@@ -1169,7 +1157,6 @@ static void MagickSignalHandler(int signal_number)
   (void) signal(signal_number,SIG_IGN);
 #endif
   AsynchronousResourceComponentTerminus();
-  instantiate_magick=MagickFalse;
   (void) SetMagickSignalHandler(signal_number,signal_handlers[signal_number]);
 #if defined(SIGQUIT)
   if (signal_number == SIGQUIT)

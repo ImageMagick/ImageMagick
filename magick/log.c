@@ -183,9 +183,6 @@ static LinkedListInfo
 
 static SemaphoreInfo
   *log_semaphore = (SemaphoreInfo *) NULL;
-
-static volatile MagickBooleanType
-  instantiate_log = MagickFalse;
 
 /*
   Forward declarations.
@@ -272,13 +269,9 @@ static LogInfo *GetLogInfo(const char *name,ExceptionInfo *exception)
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((log_list == (LinkedListInfo *) NULL) ||
-      (instantiate_log == MagickFalse))
+  if (log_list == (LinkedListInfo *) NULL)
     if (InitializeLogList(exception) == MagickFalse)
       return((LogInfo *) NULL);
-  if ((log_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(log_list) != MagickFalse))
-    return((LogInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((LogInfo *) GetValueFromLinkedList(log_list,0));
   /*
@@ -534,20 +527,12 @@ MagickExport const char *GetLogName(void)
 */
 static MagickBooleanType InitializeLogList(ExceptionInfo *exception)
 {
-  if ((log_list == (LinkedListInfo *) NULL) &&
-      (instantiate_log == MagickFalse))
-    {
-      if (log_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&log_semaphore);
-      LockSemaphoreInfo(log_semaphore);
-      if ((log_list == (LinkedListInfo *) NULL) ||
-          (instantiate_log == MagickFalse))
-        {
-          (void) LoadLogLists(LogFilename,exception);
-          instantiate_log=MagickTrue;
-        }
-      UnlockSemaphoreInfo(log_semaphore);
-    }
+  if (log_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&log_semaphore);
+  LockSemaphoreInfo(log_semaphore);
+  if (log_list == (LinkedListInfo *) NULL)
+    (void) LoadLogLists(LogFilename,exception);
+  UnlockSemaphoreInfo(log_semaphore);
   return(log_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
@@ -764,7 +749,6 @@ MagickExport void LogComponentTerminus(void)
   LockSemaphoreInfo(log_semaphore);
   if (log_list != (LinkedListInfo *) NULL)
     log_list=DestroyLinkedList(log_list,DestroyLogElement);
-  instantiate_log=MagickFalse;
   UnlockSemaphoreInfo(log_semaphore);
   DestroySemaphoreInfo(&log_semaphore);
 }

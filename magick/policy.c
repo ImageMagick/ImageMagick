@@ -121,9 +121,6 @@ static LinkedListInfo
 
 static SemaphoreInfo
   *policy_semaphore = (SemaphoreInfo *) NULL;
-
-static volatile MagickBooleanType
-  instantiate_policy = MagickFalse;
 
 /*
   Forward declarations.
@@ -169,13 +166,9 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
     *q;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((policy_list == (LinkedListInfo *) NULL) ||
-      (instantiate_policy == MagickFalse))
+  if (policy_list == (LinkedListInfo *) NULL)
     if (InitializePolicyList(exception) == MagickFalse)
       return((PolicyInfo *) NULL);
-  if ((policy_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(policy_list) != MagickFalse))
-    return((PolicyInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((PolicyInfo *) GetValueFromLinkedList(policy_list,0));
   /*
@@ -422,20 +415,12 @@ MagickExport char *GetPolicyValue(const char *name)
 */
 static MagickBooleanType InitializePolicyList(ExceptionInfo *exception)
 {
-  if ((policy_list == (LinkedListInfo *) NULL) ||
-      (instantiate_policy == MagickFalse))
-    {
-      if (policy_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&policy_semaphore);
-      LockSemaphoreInfo(policy_semaphore);
-      if ((policy_list == (LinkedListInfo *) NULL) ||
-          (instantiate_policy == MagickFalse))
-        {
-          (void) LoadPolicyLists(PolicyFilename,exception);
-          instantiate_policy=MagickTrue;
-        }
-      UnlockSemaphoreInfo(policy_semaphore);
-    }
+  if (policy_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&policy_semaphore);
+  LockSemaphoreInfo(policy_semaphore);
+  if (policy_list == (LinkedListInfo *) NULL)
+    (void) LoadPolicyLists(PolicyFilename,exception);
+  UnlockSemaphoreInfo(policy_semaphore);
   return(policy_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
@@ -1017,7 +1002,6 @@ MagickExport void PolicyComponentTerminus(void)
   LockSemaphoreInfo(policy_semaphore);
   if (policy_list != (LinkedListInfo *) NULL)
     policy_list=DestroyLinkedList(policy_list,DestroyPolicyElement);
-  instantiate_policy=MagickFalse;
   UnlockSemaphoreInfo(policy_semaphore);
   DestroySemaphoreInfo(&policy_semaphore);
 }
