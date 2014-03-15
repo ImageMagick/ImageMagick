@@ -194,7 +194,7 @@ static LogInfo
   *GetLogInfo(const char *,ExceptionInfo *);
 
 static MagickBooleanType
-  InitializeLogList(ExceptionInfo *),
+  IsLogListInstantiated(ExceptionInfo *),
   LoadLogLists(const char *,ExceptionInfo *);
 
 /*
@@ -269,9 +269,8 @@ static LogInfo *GetLogInfo(const char *name,ExceptionInfo *exception)
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (log_list == (LinkedListInfo *) NULL)
-    if (InitializeLogList(exception) == MagickFalse)
-      return((LogInfo *) NULL);
+  if (IsLogListInstantiated(exception) == MagickFalse)
+    return((LogInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((LogInfo *) GetValueFromLinkedList(log_list,0));
   /*
@@ -508,24 +507,25 @@ MagickExport const char *GetLogName(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e L o g L i s t                                         %
++   I s L o g L i s t I n s t a n t i a t e d                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeLogList() initialize the log list.
+%  IsLogListInstantiated() determines if the log list is instantiated.
+%  If not, it instantiates the list and returns it.
 %
-%  The format of the InitializeLogList method is:
+%  The format of the IsLogInstantiated method is:
 %
-%      MagickBooleanType InitializeLogList(ExceptionInfo *exception)
+%      MagickBooleanType IsLogListInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType InitializeLogList(ExceptionInfo *exception)
+static MagickBooleanType IsLogListInstantiated(ExceptionInfo *exception)
 {
   if (log_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&log_semaphore);

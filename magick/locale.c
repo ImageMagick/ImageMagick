@@ -101,7 +101,7 @@ static volatile locale_t
   Forward declarations.
 */
 static MagickBooleanType
-  InitializeLocaleList(ExceptionInfo *),
+  IsLocaleTreeInstantiated(ExceptionInfo *),
   LoadLocaleLists(const char *,const char *,ExceptionInfo *);
 
 #if defined(MAGICKCORE_HAVE_STRTOD_L)
@@ -418,9 +418,8 @@ MagickExport const LocaleInfo *GetLocaleInfo_(const char *tag,
   ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  if (locale_list == (SplayTreeInfo *) NULL)
-    if (InitializeLocaleList(exception) == MagickFalse)
-      return((const LocaleInfo *) NULL);
+  if (IsLocaleTreeInstantiated(exception) == MagickFalse)
+    return((const LocaleInfo *) NULL);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     {
       ResetSplayTreeIterator(locale_list);
@@ -784,24 +783,25 @@ MagickExport const char *GetLocaleValue(const LocaleInfo *locale_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e L o c a l e L i s t                                   %
++   I s L o c a l e T r e e I n s t a n t i a t e d                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeLocaleList() initializes the locale list.
+%  IsLocaleTreeInstantiated() determines if the locale tree is instantiated.
+%  If not, it instantiates the tree and returns it.
 %
-%  The format of the InitializeLocaleList method is:
+%  The format of the IsLocaleInstantiated method is:
 %
-%      MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
+%      MagickBooleanType IsLocaleTreeInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
+static MagickBooleanType IsLocaleTreeInstantiated(ExceptionInfo *exception)
 {
   if (locale_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&locale_semaphore);

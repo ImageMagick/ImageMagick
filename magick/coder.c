@@ -238,7 +238,7 @@ static SplayTreeInfo
   Forward declarations.
 */
 static MagickBooleanType
-  InitializeCoderList(ExceptionInfo *),
+  IsCoderTreeInstantiated(ExceptionInfo *),
   LoadCoderLists(const char *,ExceptionInfo *);
 
 /*
@@ -323,9 +323,8 @@ MagickExport const CoderInfo *GetCoderInfo(const char *name,
   ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  if (coder_list == (SplayTreeInfo *) NULL)
-    if (InitializeCoderList(exception) == MagickFalse)
-      return((const CoderInfo *) NULL);
+  if (IsCoderTreeInstantiated(exception) == MagickFalse)
+    return((const CoderInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       ResetSplayTreeIterator(coder_list);
@@ -510,24 +509,25 @@ MagickExport char **GetCoderList(const char *pattern,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e C o d e r L i s t                                     %
++   I s C o d e r T r e e I n s t a n t i a t e d                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeCoderList() initializes the coder list.
+%  IsCoderTreeInstantiated() determines if the coder tree is instantiated.  If
+%  not, it instantiates the tree and returns it.
 %
-%  The format of the InitializeCoderList method is:
+%  The format of the IsCoderInstantiated method is:
 %
-%      MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
+%      MagickBooleanType IsCoderTreeInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType InitializeCoderList(ExceptionInfo *exception)
+static MagickBooleanType IsCoderTreeInstantiated(ExceptionInfo *exception)
 {
   if (coder_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&coder_semaphore);
