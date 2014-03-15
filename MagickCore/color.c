@@ -794,7 +794,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  InitializeColorList(ExceptionInfo *),
+  IsColorListInstantiated(ExceptionInfo *),
   LoadColorLists(const char *,ExceptionInfo *);
 
 /*
@@ -910,7 +910,7 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
 
   assert(exception != (ExceptionInfo *) NULL);
   if (color_list == (LinkedListInfo *) NULL)
-    if (IfMagickFalse(InitializeColorList(exception)))
+    if (IfMagickFalse(IsColorListInstantiated(exception)))
       return((const ColorInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((const ColorInfo *) GetValueFromLinkedList(color_list,0));
@@ -1488,24 +1488,25 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e C o l o r L i s t                                     %
++   I s C o l o r L i s t I n s t a n t i a t e d                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeColorList() initializes the color list.
+%  IsColorListInstantiated() determines if the color list is instantiated.  If
+%  not, it instantiates the list and returns it.
 %
-%  The format of the InitializeColorList method is:
+%  The format of the IsColorInstantiated method is:
 %
-%      MagickBooleanType InitializeColorList(ExceptionInfo *exception)
+%      MagickBooleanType IsColorListInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
+static MagickBooleanType IsColorListInstantiated(ExceptionInfo *exception)
 {
   if (color_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&color_semaphore);

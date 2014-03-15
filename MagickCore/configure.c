@@ -116,7 +116,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  InitializeConfigureList(ExceptionInfo *),
+  IsConfigureListInstantiated(ExceptionInfo *),
   LoadConfigureLists(const char *,ExceptionInfo *);
 
 /*
@@ -225,7 +225,6 @@ static void *DestroyOptions(void *option)
 MagickExport LinkedListInfo *DestroyConfigureOptions(LinkedListInfo *options)
 {
   assert(options != (LinkedListInfo *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(DestroyLinkedList(options,DestroyOptions));
 }
 
@@ -265,9 +264,8 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (configure_list == (LinkedListInfo *) NULL)
-    if (InitializeConfigureList(exception) == MagickFalse)
-      return((const ConfigureInfo *) NULL);
+  if (IsConfigureListInstantiated(exception) == MagickFalse)
+    return((const ConfigureInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((const ConfigureInfo *) GetValueFromLinkedList(configure_list,0));
   /*
@@ -875,24 +873,25 @@ MagickExport const char *GetConfigureValue(const ConfigureInfo *configure_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e C o n f i g u r e L i s t                             %
++   I s C o n f i g u r e L i s t I n s t a n t i a t e d                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeConfigureList() initializes the configure list.
+%  IsConfigureListInstantiated() determines if the configure list is
+%  instantiated.  If not, it instantiates the list and returns it.
 %
-%  The format of the InitializeConfigureList method is:
+%  The format of the IsConfigureInstantiated method is:
 %
-%      MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
+%      MagickBooleanType IsConfigureListInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType InitializeConfigureList(ExceptionInfo *exception)
+static MagickBooleanType IsConfigureListInstantiated(ExceptionInfo *exception)
 {
   if (configure_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&configure_semaphore);

@@ -102,7 +102,7 @@ static const ModuleInfo
 
 static MagickBooleanType
   GetMagickModulePath(const char *,MagickModuleType,char *,ExceptionInfo *),
-  InitializeModuleList(ExceptionInfo *),
+  IsModuleTreeInstantiated(ExceptionInfo *),
   UnregisterModule(const ModuleInfo *,ExceptionInfo *);
 
 static void
@@ -215,9 +215,8 @@ MagickExport void DestroyModuleList(void)
 */
 MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 {
-  if (module_list == (SplayTreeInfo *) NULL)
-    if (InitializeModuleList(exception) == MagickFalse)
-      return((ModuleInfo *) NULL);
+  if (IsModuleTreeInstantiated(exception) == MagickFalse)
+    return((ModuleInfo *) NULL);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     {
       ModuleInfo
@@ -810,17 +809,18 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n i t i a l i z e M o d u l e L i s t                                   %
+%   I s M o d u l e T r e e I n s t a n t i a t e d                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeModuleList() initializes the module loader.
+%  IsModuleTreeInstantiated() determines if the module tree is instantiated.
+%  If not, it instantiates the tree and returns it.
 %
-%  The format of the InitializeModuleList() method is:
+%  The format of the IsModuleTreeInstantiated() method is:
 %
-%      InitializeModuleList(Exceptioninfo *exception)
+%      IsModuleTreeInstantiated(Exceptioninfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -848,7 +848,7 @@ static void *DestroyModuleNode(void *module_info)
   return(RelinquishMagickMemory(p));
 }
 
-static MagickBooleanType InitializeModuleList(
+static MagickBooleanType IsModuleTreeInstantiated(
   ExceptionInfo *magick_unused(exception))
 {
   if (module_semaphore == (SemaphoreInfo *) NULL)
@@ -1143,7 +1143,7 @@ MagickPrivate MagickBooleanType ModuleComponentGenesis(void)
 
   module_semaphore=AcquireSemaphoreInfo();
   exception=AcquireExceptionInfo();
-  status=InitializeModuleList(exception);
+  status=IsModuleTreeInstantiated(exception);
   exception=DestroyExceptionInfo(exception);
   return(status);
 }

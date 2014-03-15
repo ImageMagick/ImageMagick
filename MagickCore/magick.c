@@ -127,7 +127,7 @@ static volatile MagickBooleanType
   Forward declarations.
 */
 static MagickBooleanType
-  InitializeMagickList(ExceptionInfo *);
+  IsMagickTreeInstantiated(ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -412,9 +412,8 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (magick_list == (SplayTreeInfo *) NULL)
-    if (InitializeMagickList(exception) == MagickFalse)
-      return((const MagickInfo *) NULL);
+  if (IsMagickTreeInstantiated(exception) == MagickFalse)
+    return((const MagickInfo *) NULL);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
 #if defined(MAGICKCORE_MODULES_SUPPORT)
@@ -796,17 +795,18 @@ MagickExport MagickStatusType GetMagickThreadSupport(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e M a g i c k L i s t                                   %
++   I s M a g i c k T r e e I n s t a n t i a t e d                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeMagickList() initializes the magick list.
+%  IsMagickTreeInstantiated() determines if the magick tree is instantiated.
+%  If not, it instantiates the tree and returns it.
 %
-%  The format of the InitializeMagickList() method is:
+%  The format of the IsMagickTreeInstantiated() method is:
 %
-%      InitializeMagickList(Exceptioninfo *exception)
+%      IsMagickTreeInstantiated(Exceptioninfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -835,7 +835,7 @@ static void *DestroyMagickNode(void *magick_info)
   return(RelinquishMagickMemory(p));
 }
 
-static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
+static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 {
   (void) exception;
   if (magick_semaphore == (SemaphoreInfo *) NULL)

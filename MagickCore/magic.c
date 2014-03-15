@@ -213,7 +213,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  InitializeMagicList(ExceptionInfo *),
+  IsMagicListInstantiated(ExceptionInfo *),
   LoadMagicLists(const char *,ExceptionInfo *);
 
 /*
@@ -252,9 +252,8 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (magic_list == (LinkedListInfo *) NULL)
-    if (InitializeMagicList(exception) == MagickFalse)
-      return((const MagicInfo *) NULL);
+  if (IsMagicListInstantiated(exception) == MagickFalse)
+    return((const MagicInfo *) NULL);
   if (magic == (const unsigned char *) NULL)
     return((const MagicInfo *) GetValueFromLinkedList(magic_list,0));
   if (length == 0)
@@ -503,24 +502,25 @@ MagickExport const char *GetMagicName(const MagicInfo *magic_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e M a g i c L i s t                                     %
++   I s M a g i c L i s t I n s t a n t i a t e d                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeMagicList() initializes the magic list.
+%  IsMagicListInstantiated() determines if the magic list is instantiated.
+%  If not, it instantiates the list and returns it.
 %
-%  The format of the InitializeMagicList method is:
+%  The format of the IsMagicInstantiated method is:
 %
-%      MagickBooleanType InitializeMagicList(ExceptionInfo *exception)
+%      MagickBooleanType IsMagicListInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType InitializeMagicList(ExceptionInfo *exception)
+static MagickBooleanType IsMagicListInstantiated(ExceptionInfo *exception)
 {
   if (magic_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&magic_semaphore);
