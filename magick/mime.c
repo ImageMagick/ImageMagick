@@ -184,8 +184,6 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMimeListInstantiated(exception) == MagickFalse)
     return((const MimeInfo *) NULL);
-  if ((magic == (const unsigned char *) NULL) || (length == 0))
-    return((const MimeInfo *) GetValueFromLinkedList(mime_list,0));
   if (length == 0)
     return((const MimeInfo *) NULL);
   /*
@@ -196,6 +194,11 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   LockSemaphoreInfo(mime_semaphore);
   ResetLinkedListIterator(mime_list);
   p=(const MimeInfo *) GetNextValueInLinkedList(mime_list);
+  if ((magic == (const unsigned char *) NULL) || (length == 0))
+    {
+      UnlockSemaphoreInfo(mime_semaphore);
+      return(p);
+    }
   while (p != (const MimeInfo *) NULL)
   {
     assert(p->offset >= 0);
@@ -318,7 +321,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
     (void) InsertValueInLinkedList(mime_list,0,
       RemoveElementByValueFromLinkedList(mime_list,p));
   UnlockSemaphoreInfo(mime_semaphore);
-  return(mime_info);
+  return(p);
 }
 
 /*

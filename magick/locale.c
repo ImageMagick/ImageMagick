@@ -417,15 +417,23 @@ MagickExport ssize_t FormatLocaleString(char *restrict string,
 MagickExport const LocaleInfo *GetLocaleInfo_(const char *tag,
   ExceptionInfo *exception)
 {
+  const LocaleInfo
+    *locale_info;
+
   assert(exception != (ExceptionInfo *) NULL);
   if (IsLocaleTreeInstantiated(exception) == MagickFalse)
     return((const LocaleInfo *) NULL);
+  LockSemaphoreInfo(locale_semaphore);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     {
       ResetSplayTreeIterator(locale_list);
-      return((const LocaleInfo *) GetNextValueInSplayTree(locale_list));
+      locale_info=(const LocaleInfo *) GetNextValueInSplayTree(locale_list);
+      UnlockSemaphoreInfo(locale_semaphore);
+      return(locale_info);
     }
-  return((const LocaleInfo *) GetValueFromSplayTree(locale_list,tag));
+  locale_info=(const LocaleInfo *) GetValueFromSplayTree(locale_list,tag);
+  UnlockSemaphoreInfo(locale_semaphore);
+  return(locale_info);
 }
 
 /*

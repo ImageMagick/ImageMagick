@@ -272,14 +272,17 @@ static LogInfo *GetLogInfo(const char *name,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   if (IsLogListInstantiated(exception) == MagickFalse)
     return((LogInfo *) NULL);
-  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    return((LogInfo *) GetValueFromLinkedList(log_list,0));
   /*
     Search for log tag.
   */
   LockSemaphoreInfo(log_semaphore);
   ResetLinkedListIterator(log_list);
   p=(LogInfo *) GetNextValueInLinkedList(log_list);
+  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
+    {
+      UnlockSemaphoreInfo(log_semaphore);
+      return(p);
+    }
   while (p != (LogInfo *) NULL)
   {
     if (LocaleCompare(name,p->name) == 0)

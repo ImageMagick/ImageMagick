@@ -212,24 +212,26 @@ MagickExport void DestroyModuleList(void)
 */
 MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 {
+  ModuleInfo
+    *module_info;
+
   if (IsModuleTreeInstantiated(exception) == MagickFalse)
     return((ModuleInfo *) NULL);
+  LockSemaphoreInfo(module_semaphore);
+  ResetSplayTreeIterator(module_list);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     {
-      ModuleInfo
-        *p;
-
 #if defined(MAGICKCORE_MODULES_SUPPORT)
       if (LocaleCompare(tag,"*") == 0)
         (void) OpenModules(exception);
 #endif
-      LockSemaphoreInfo(module_semaphore);
-      ResetSplayTreeIterator(module_list);
-      p=(ModuleInfo *) GetNextValueInSplayTree(module_list);
+      module_info=(ModuleInfo *) GetNextValueInSplayTree(module_list);
       UnlockSemaphoreInfo(module_semaphore);
-      return(p);
+      return(module_info);
     }
-  return((ModuleInfo *) GetValueFromSplayTree(module_list,tag));
+  module_info=(ModuleInfo *) GetValueFromSplayTree(module_list,tag);
+  UnlockSemaphoreInfo(module_semaphore);
+  return(module_info);
 }
 
 /*
