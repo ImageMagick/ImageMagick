@@ -181,7 +181,7 @@ static char
   log_name[MaxTextExtent] = "Magick";
 
 static LinkedListInfo
-  *log_list = (LinkedListInfo *) NULL;
+  *log_cache = (LinkedListInfo *) NULL;
 
 static SemaphoreInfo
   *event_semaphore = (SemaphoreInfo *) NULL,
@@ -197,8 +197,101 @@ static LogInfo
   *GetLogInfo(const char *,ExceptionInfo *);
 
 static MagickBooleanType
-  IsLogListInstantiated(ExceptionInfo *),
-  LoadLogLists(const char *,ExceptionInfo *);
+  IsLogCacheInstantiated(ExceptionInfo *),
+  LoadLogCache(const char *,const char *,const size_t,ExceptionInfo *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  A c q u i r e L o g C a c h e                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireLogCache() caches one or more log configurations which provides a
+%  mapping between log attributes and log name.
+%
+%  The format of the AcquireLogCache method is:
+%
+%      LinkedListInfo *AcquireLogCache(const char *filename,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: the log configuration filename.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static LinkedListInfo *AcquireLogCache(const char *filename,
+  ExceptionInfo *exception)
+{
+  const StringInfo
+    *option;
+
+  LinkedListInfo
+    *log_cache,
+    *options;
+
+  MagickStatusType
+    status;
+
+  register ssize_t
+    i;
+
+  /*
+    Load external log map.
+  */
+  log_cache=NewLinkedList(0);
+  if (log_cache == (LinkedListInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  status=MagickTrue;
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    status&=LoadLogCache((const char *) GetStringInfoDatum(option),
+      GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  /*
+    Load built-in log map.
+  */
+  for (i=0; i < (ssize_t) (sizeof(LogMap)/sizeof(*LogMap)); i++)
+  {
+    LogInfo
+      *log_info;
+
+    register const LogMapInfo
+      *p;
+
+    p=LogMap+i;
+    log_info=(LogInfo *) AcquireMagickMemory(sizeof(*log_info));
+    if (log_info == (LogInfo *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->filename);
+        continue;
+      }
+    (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
+    log_info->path=ConstantString("[built-in]");
+    GetTimerInfo((TimerInfo *) &log_info->timer);
+    log_info->event_mask=p->event_mask;
+    log_info->handler_mask=p->handler_mask;
+    log_info->filename=ConstantString(p->filename);
+    log_info->format=ConstantString(p->format);
+    log_info->signature=MagickSignature;
+    status&=AppendValueToLinkedList(log_cache,log_info);
+    if (status == MagickFalse)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",log_info->name);
+  }
+  return(log_cache);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -272,14 +365,14 @@ static LogInfo *GetLogInfo(const char *name,ExceptionInfo *exception)
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (IsLogListInstantiated(exception) == MagickFalse)
+  if (IsLogCacheInstantiated(exception) == MagickFalse)
     return((LogInfo *) NULL);
   /*
     Search for log tag.
   */
   LockSemaphoreInfo(log_semaphore);
-  ResetLinkedListIterator(log_list);
-  p=(LogInfo *) GetNextValueInLinkedList(log_list);
+  ResetLinkedListIterator(log_cache);
+  p=(LogInfo *) GetNextValueInLinkedList(log_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       UnlockSemaphoreInfo(log_semaphore);
@@ -289,11 +382,11 @@ static LogInfo *GetLogInfo(const char *name,ExceptionInfo *exception)
   {
     if (LocaleCompare(name,p->name) == 0)
       break;
-    p=(LogInfo *) GetNextValueInLinkedList(log_list);
+    p=(LogInfo *) GetNextValueInLinkedList(log_cache);
   }
   if (p != (LogInfo *) NULL)
-    (void) InsertValueInLinkedList(log_list,0,
-      RemoveElementByValueFromLinkedList(log_list,p));
+    (void) InsertValueInLinkedList(log_cache,0,
+      RemoveElementByValueFromLinkedList(log_cache,p));
   UnlockSemaphoreInfo(log_semaphore);
   return(p);
 }
@@ -369,21 +462,21 @@ MagickExport const LogInfo **GetLogInfoList(const char *pattern,
   if (p == (const LogInfo *) NULL)
     return((const LogInfo **) NULL);
   preferences=(const LogInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(log_list)+1UL,sizeof(*preferences));
+    GetNumberOfElementsInLinkedList(log_cache)+1UL,sizeof(*preferences));
   if (preferences == (const LogInfo **) NULL)
     return((const LogInfo **) NULL);
   /*
     Generate log list.
   */
   LockSemaphoreInfo(log_semaphore);
-  ResetLinkedListIterator(log_list);
-  p=(const LogInfo *) GetNextValueInLinkedList(log_list);
+  ResetLinkedListIterator(log_cache);
+  p=(const LogInfo *) GetNextValueInLinkedList(log_cache);
   for (i=0; p != (const LogInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       preferences[i++]=p;
-    p=(const LogInfo *) GetNextValueInLinkedList(log_list);
+    p=(const LogInfo *) GetNextValueInLinkedList(log_cache);
   }
   UnlockSemaphoreInfo(log_semaphore);
   qsort((void *) preferences,(size_t) i,sizeof(*preferences),LogInfoCompare);
@@ -462,21 +555,21 @@ MagickExport char **GetLogList(const char *pattern,
   if (p == (const LogInfo *) NULL)
     return((char **) NULL);
   preferences=(char **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(log_list)+1UL,sizeof(*preferences));
+    GetNumberOfElementsInLinkedList(log_cache)+1UL,sizeof(*preferences));
   if (preferences == (char **) NULL)
     return((char **) NULL);
   /*
     Generate log list.
   */
   LockSemaphoreInfo(log_semaphore);
-  ResetLinkedListIterator(log_list);
-  p=(const LogInfo *) GetNextValueInLinkedList(log_list);
+  ResetLinkedListIterator(log_cache);
+  p=(const LogInfo *) GetNextValueInLinkedList(log_cache);
   for (i=0; p != (const LogInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       preferences[i++]=ConstantString(p->name);
-    p=(const LogInfo *) GetNextValueInLinkedList(log_list);
+    p=(const LogInfo *) GetNextValueInLinkedList(log_cache);
   }
   UnlockSemaphoreInfo(log_semaphore);
   qsort((void *) preferences,(size_t) i,sizeof(*preferences),LogCompare);
@@ -513,33 +606,36 @@ MagickExport const char *GetLogName(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s L o g L i s t I n s t a n t i a t e d                                 %
++   I s L o g C a c h e I n s t a n t i a t e d                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsLogListInstantiated() determines if the log list is instantiated.  If not,
+%  IsLogCacheInstantiated() determines if the log list is instantiated.  If not,
 %  it instantiates the list and returns it.
 %
 %  The format of the IsLogInstantiated method is:
 %
-%      MagickBooleanType IsLogListInstantiated(ExceptionInfo *exception)
+%      MagickBooleanType IsLogCacheInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType IsLogListInstantiated(ExceptionInfo *exception)
+static MagickBooleanType IsLogCacheInstantiated(ExceptionInfo *exception)
 {
-  if (log_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&log_semaphore);
-  LockSemaphoreInfo(log_semaphore);
-  if (log_list == (LinkedListInfo *) NULL)
-    (void) LoadLogLists(LogFilename,exception);
-  UnlockSemaphoreInfo(log_semaphore);
-  return(log_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+  if (log_cache == (LinkedListInfo *) NULL)
+    {
+      if (log_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&log_semaphore);
+      LockSemaphoreInfo(log_semaphore);
+      if (log_cache == (LinkedListInfo *) NULL)
+        log_cache=AcquireLogCache(LogFilename,exception);
+      UnlockSemaphoreInfo(log_semaphore);
+    }
+  return(log_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -569,8 +665,8 @@ MagickExport MagickBooleanType IsEventLogging(void)
   ExceptionInfo
     *exception;
 
-  if ((log_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(log_list) != MagickFalse))
+  if ((log_cache == (LinkedListInfo *) NULL) ||
+      (IsLinkedListEmpty(log_cache) != MagickFalse))
     return(MagickFalse);
   exception=AcquireExceptionInfo();
   log_info=GetLogInfo("*",exception);
@@ -759,8 +855,8 @@ MagickPrivate void LogComponentTerminus(void)
   if (log_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&log_semaphore);
   LockSemaphoreInfo(log_semaphore);
-  if (log_list != (LinkedListInfo *) NULL)
-    log_list=DestroyLinkedList(log_list,DestroyLogElement);
+  if (log_cache != (LinkedListInfo *) NULL)
+    log_cache=DestroyLinkedList(log_cache,DestroyLogElement);
   UnlockSemaphoreInfo(log_semaphore);
   RelinquishSemaphoreInfo(&log_semaphore);
 }
@@ -1278,12 +1374,12 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LoadLogList() loads the log configuration file which provides a
+%  LoadLogCache() loads the log configurations which provides a
 %  mapping between log attributes and log name.
 %
-%  The format of the LoadLogList method is:
+%  The format of the LoadLogCache method is:
 %
-%      MagickBooleanType LoadLogList(const char *xml,const char *filename,
+%      MagickBooleanType LoadLogCache(const char *xml,const char *filename,
 %        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1297,7 +1393,7 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadLogList(const char *xml,const char *filename,
+static MagickBooleanType LoadLogCache(const char *xml,const char *filename,
   const size_t depth,ExceptionInfo *exception)
 {
   char
@@ -1318,10 +1414,10 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
   */
   if (xml == (const char *) NULL)
     return(MagickFalse);
-  if (log_list == (LinkedListInfo *) NULL)
+  if (log_cache == (LinkedListInfo *) NULL)
     {
-      log_list=NewLinkedList(0);
-      if (log_list == (LinkedListInfo *) NULL)
+      log_cache=NewLinkedList(0);
+      if (log_cache == (LinkedListInfo *) NULL)
         {
           ThrowFileException(exception,ResourceLimitError,
             "MemoryAllocationFailed",filename);
@@ -1391,7 +1487,7 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
                   xml=FileToString(path,~0UL,exception);
                   if (xml != (char *) NULL)
                     {
-                      status&=LoadLogList(xml,path,depth+1,exception);
+                      status&=LoadLogCache(xml,path,depth+1,exception);
                       xml=DestroyString(xml);
                     }
                 }
@@ -1417,7 +1513,7 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
       continue;
     if (LocaleCompare(keyword,"</logmap>") == 0)
       {
-        status=AppendValueToLinkedList(log_list,log_info);
+        status=AppendValueToLinkedList(log_cache,log_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
@@ -1509,107 +1605,8 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
     }
   }
   token=DestroyString(token);
-  if (log_list == (LinkedListInfo *) NULL)
+  if (log_cache == (LinkedListInfo *) NULL)
     return(MagickFalse);
-  return(status != 0 ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  L o a d L o g L i s t s                                                    %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LoadLogLists() loads one or more log configuration file which provides a
-%  mapping between log attributes and log name.
-%
-%  The format of the LoadLogLists method is:
-%
-%      MagickBooleanType LoadLogLists(const char *filename,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: the log configuration filename.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType LoadLogLists(const char *filename,
-  ExceptionInfo *exception)
-{
-  const StringInfo
-    *option;
-
-  LinkedListInfo
-    *options;
-
-  MagickStatusType
-    status;
-
-  register ssize_t
-    i;
-
-  /*
-    Load external log map.
-  */
-  if (log_list == (LinkedListInfo *) NULL)
-    {
-      log_list=NewLinkedList(0);
-      if (log_list == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
-  status=MagickTrue;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    status&=LoadLogList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
-  /*
-    Load built-in log map.
-  */
-  for (i=0; i < (ssize_t) (sizeof(LogMap)/sizeof(*LogMap)); i++)
-  {
-    LogInfo
-      *log_info;
-
-    register const LogMapInfo
-      *p;
-
-    p=LogMap+i;
-    log_info=(LogInfo *) AcquireMagickMemory(sizeof(*log_info));
-    if (log_info == (LogInfo *) NULL)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->filename);
-        continue;
-      }
-    (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
-    log_info->path=ConstantString("[built-in]");
-    GetTimerInfo((TimerInfo *) &log_info->timer);
-    log_info->event_mask=p->event_mask;
-    log_info->handler_mask=p->handler_mask;
-    log_info->filename=ConstantString(p->filename);
-    log_info->format=ConstantString(p->format);
-    log_info->signature=MagickSignature;
-    status&=AppendValueToLinkedList(log_list,log_info);
-    if (status == MagickFalse)
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",log_info->name);
-  }
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
@@ -1711,7 +1708,7 @@ MagickExport LogEventType SetLogEventMask(const char *events)
   exception=DestroyExceptionInfo(exception);
   option=ParseCommandOption(MagickLogEventOptions,MagickTrue,events);
   LockSemaphoreInfo(log_semaphore);
-  log_info=(LogInfo *) GetValueFromLinkedList(log_list,0);
+  log_info=(LogInfo *) GetValueFromLinkedList(log_cache,0);
   log_info->event_mask=(LogEventType) option;
   if (option == -1)
     log_info->event_mask=UndefinedEvents;
@@ -1794,7 +1791,7 @@ MagickExport void SetLogMethod(MagickLogMethod method)
   log_info=(LogInfo *) GetLogInfo("*",exception);
   exception=DestroyExceptionInfo(exception);
   LockSemaphoreInfo(log_semaphore);
-  log_info=(LogInfo *) GetValueFromLinkedList(log_list,0);
+  log_info=(LogInfo *) GetValueFromLinkedList(log_cache,0);
   log_info->handler_mask=(LogHandlerType) (log_info->handler_mask |
     MethodHandler);
   log_info->method=method;

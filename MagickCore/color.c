@@ -785,7 +785,7 @@ static const ColorMapInfo
   Static declarations.
 */
 static LinkedListInfo
-  *color_list = (LinkedListInfo *) NULL;
+  *color_cache = (LinkedListInfo *) NULL;
 
 static SemaphoreInfo
   *color_semaphore = (SemaphoreInfo *) NULL;
@@ -794,8 +794,104 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  IsColorListInstantiated(ExceptionInfo *),
-  LoadColorLists(const char *,ExceptionInfo *);
+  IsColorCacheInstantiated(ExceptionInfo *),
+  LoadColorCache(const char *,const char *,const size_t,ExceptionInfo *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  A c q u i r e C o l o r C a c h e                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireColorCache() caches one or more color configurations which provides a
+%  mapping between color attributes and a color name.
+%
+%  The format of the AcquireColorCache method is:
+%
+%      LinkedListInfo *AcquireColorCache(const char *filename,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: the font file name.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static LinkedListInfo *AcquireColorCache(const char *filename,
+  ExceptionInfo *exception)
+{
+  const StringInfo
+    *option;
+
+  LinkedListInfo
+    *color_cache,
+    *options;
+
+  MagickStatusType
+    status;
+
+  register ssize_t
+    i;
+
+  /*
+    Load external color map.
+  */
+  color_cache=NewLinkedList(0);
+  if (color_cache == (LinkedListInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  status=MagickTrue;
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    status&=LoadColorCache((const char *) GetStringInfoDatum(option),
+      GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  /*
+    Load built-in color map.
+  */
+  for (i=0; i < (ssize_t) (sizeof(ColorMap)/sizeof(*ColorMap)); i++)
+  {
+    ColorInfo
+      *color_info;
+
+    register const ColorMapInfo
+      *p;
+
+    p=ColorMap+i;
+    color_info=(ColorInfo *) AcquireMagickMemory(sizeof(*color_info));
+    if (color_info == (ColorInfo *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
+        continue;
+      }
+    (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
+    color_info->path=(char *) "[built-in]";
+    color_info->name=(char *) p->name;
+    GetPixelInfo((Image *) NULL,&color_info->color);
+    color_info->color.red=(double) ScaleCharToQuantum(p->red);
+    color_info->color.green=(double) ScaleCharToQuantum(p->green);
+    color_info->color.blue=(double) ScaleCharToQuantum(p->blue);
+    color_info->color.alpha=(double) (QuantumRange*p->alpha);
+    color_info->compliance=(ComplianceType) p->compliance;
+    color_info->exempt=MagickTrue;
+    color_info->signature=MagickSignature;
+    status&=AppendValueToLinkedList(color_cache,color_info);
+    if (IfMagickFalse(status))
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
+  }
+  return(color_cache);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -862,8 +958,8 @@ MagickPrivate void ColorComponentTerminus(void)
   if (color_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&color_semaphore);
   LockSemaphoreInfo(color_semaphore);
-  if (color_list != (LinkedListInfo *) NULL)
-    color_list=DestroyLinkedList(color_list,DestroyColorElement);
+  if (color_cache != (LinkedListInfo *) NULL)
+    color_cache=DestroyLinkedList(color_cache,DestroyColorElement);
   UnlockSemaphoreInfo(color_semaphore);
   RelinquishSemaphoreInfo(&color_semaphore);
 }
@@ -909,8 +1005,8 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
     *q;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (color_list == (LinkedListInfo *) NULL)
-    if (IfMagickFalse(IsColorListInstantiated(exception)))
+  if (color_cache == (LinkedListInfo *) NULL)
+    if (IfMagickFalse(IsColorCacheInstantiated(exception)))
       return((const ColorInfo *) NULL);
   /*
     Strip names of whitespace.
@@ -929,8 +1025,8 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
     Search for color tag.
   */
   LockSemaphoreInfo(color_semaphore);
-  ResetLinkedListIterator(color_list);
-  p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+  ResetLinkedListIterator(color_cache);
+  p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       UnlockSemaphoreInfo(color_semaphore);
@@ -941,14 +1037,14 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
     if (((p->compliance & compliance) != 0) &&
         (LocaleCompare(colorname,p->name) == 0))
       break;
-    p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+    p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   }
   if (p == (ColorInfo *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
       "UnrecognizedColor","`%s'",name);
   else
-    (void) InsertValueInLinkedList(color_list,0,
-      RemoveElementByValueFromLinkedList(color_list,p));
+    (void) InsertValueInLinkedList(color_cache,0,
+      RemoveElementByValueFromLinkedList(color_cache,p));
   UnlockSemaphoreInfo(color_semaphore);
   return(p);
 }
@@ -1189,21 +1285,21 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   if (p == (const ColorInfo *) NULL)
     return((const ColorInfo **) NULL);
   colors=(const ColorInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(color_list)+1UL,sizeof(*colors));
+    GetNumberOfElementsInLinkedList(color_cache)+1UL,sizeof(*colors));
   if (colors == (const ColorInfo **) NULL)
     return((const ColorInfo **) NULL);
   /*
     Generate color list.
   */
   LockSemaphoreInfo(color_semaphore);
-  ResetLinkedListIterator(color_list);
-  p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+  ResetLinkedListIterator(color_cache);
+  p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   for (i=0; p != (const ColorInfo *) NULL; )
   {
     if (IsMagickFalse(p->stealth) &&
         IsMagickTrue(GlobExpression(p->name,pattern,MagickFalse)))
       colors[i++]=p;
-    p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+    p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   }
   UnlockSemaphoreInfo(color_semaphore);
   qsort((void *) colors,(size_t) i,sizeof(*colors),ColorInfoCompare);
@@ -1282,21 +1378,21 @@ MagickExport char **GetColorList(const char *pattern,
   if (p == (const ColorInfo *) NULL)
     return((char **) NULL);
   colors=(char **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(color_list)+1UL,sizeof(*colors));
+    GetNumberOfElementsInLinkedList(color_cache)+1UL,sizeof(*colors));
   if (colors == (char **) NULL)
     return((char **) NULL);
   /*
     Generate color list.
   */
   LockSemaphoreInfo(color_semaphore);
-  ResetLinkedListIterator(color_list);
-  p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+  ResetLinkedListIterator(color_cache);
+  p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   for (i=0; p != (const ColorInfo *) NULL; )
   {
     if (IsMagickFalse(p->stealth) &&
         IsMagickTrue(GlobExpression(p->name,pattern,MagickFalse)))
       colors[i++]=ConstantString(p->name);
-    p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+    p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   }
   UnlockSemaphoreInfo(color_semaphore);
   qsort((void *) colors,(size_t) i,sizeof(*colors),ColorCompare);
@@ -1493,33 +1589,36 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s C o l o r L i s t I n s t a n t i a t e d                             %
++   I s C o l o r C a c h e I n s t a n t i a t e d                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsColorListInstantiated() determines if the color list is instantiated.  If
+%  IsColorCacheInstantiated() determines if the color list is instantiated.  If
 %  not, it instantiates the list and returns it.
 %
 %  The format of the IsColorInstantiated method is:
 %
-%      MagickBooleanType IsColorListInstantiated(ExceptionInfo *exception)
+%      MagickBooleanType IsColorCacheInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType IsColorListInstantiated(ExceptionInfo *exception)
+static MagickBooleanType IsColorCacheInstantiated(ExceptionInfo *exception)
 {
-  if (color_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&color_semaphore);
-  LockSemaphoreInfo(color_semaphore);
-  if (color_list == (LinkedListInfo *) NULL)
-    (void) LoadColorLists(ColorFilename,exception);
-  UnlockSemaphoreInfo(color_semaphore);
-  return(color_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+  if (color_cache == (LinkedListInfo *) NULL)
+    {
+      if (color_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&color_semaphore);
+      LockSemaphoreInfo(color_semaphore);
+      if (color_cache == (LinkedListInfo *) NULL)
+        color_cache=AcquireColorCache(ColorFilename,exception);
+      UnlockSemaphoreInfo(color_semaphore);
+    }
+  return(color_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1800,12 +1899,12 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LoadColorList() loads the color configuration file which provides a mapping
+%  LoadColorCache() loads the color configurations which provides a mapping
 %  between color attributes and a color name.
 %
-%  The format of the LoadColorList method is:
+%  The format of the LoadColorCache method is:
 %
-%      MagickBooleanType LoadColorList(const char *xml,const char *filename,
+%      MagickBooleanType LoadColorCache(const char *xml,const char *filename,
 %        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1819,7 +1918,7 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadColorList(const char *xml,const char *filename,
+static MagickBooleanType LoadColorCache(const char *xml,const char *filename,
   const size_t depth,ExceptionInfo *exception)
 {
   char
@@ -1842,10 +1941,10 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
     "Loading color file \"%s\" ...",filename);
   if (xml == (char *) NULL)
     return(MagickFalse);
-  if (color_list == (LinkedListInfo *) NULL)
+  if (color_cache == (LinkedListInfo *) NULL)
     {
-      color_list=NewLinkedList(0);
-      if (color_list == (LinkedListInfo *) NULL)
+      color_cache=NewLinkedList(0);
+      if (color_cache == (LinkedListInfo *) NULL)
         {
           ThrowFileException(exception,ResourceLimitError,
             "MemoryAllocationFailed",filename);
@@ -1916,7 +2015,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
                   xml=FileToString(path,~0UL,exception);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadColorList(xml,path,depth+1,exception);
+                      status=LoadColorCache(xml,path,depth+1,exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }
@@ -1942,7 +2041,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(color_list,color_info);
+        status=AppendValueToLinkedList(color_cache,color_info);
         if (IfMagickFalse(status))
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
@@ -2009,108 +2108,6 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
   }
   token=(char *) RelinquishMagickMemory(token);
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  L o a d C o l o r L i s t s                                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LoadColorList() loads one or more color configuration file which provides a
-%  mapping between color attributes and a color name.
-%
-%  The format of the LoadColorLists method is:
-%
-%      MagickBooleanType LoadColorLists(const char *filename,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: the font file name.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType LoadColorLists(const char *filename,
-  ExceptionInfo *exception)
-{
-  const StringInfo
-    *option;
-
-  LinkedListInfo
-    *options;
-
-  MagickStatusType
-    status;
-
-  register ssize_t
-    i;
-
-  /*
-    Load external color map.
-  */
-  if (color_list == (LinkedListInfo *) NULL)
-    {
-      color_list=NewLinkedList(0);
-      if (color_list == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
-  status=MagickTrue;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    status&=LoadColorList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
-  /*
-    Load built-in color map.
-  */
-  for (i=0; i < (ssize_t) (sizeof(ColorMap)/sizeof(*ColorMap)); i++)
-  {
-    ColorInfo
-      *color_info;
-
-    register const ColorMapInfo
-      *p;
-
-    p=ColorMap+i;
-    color_info=(ColorInfo *) AcquireMagickMemory(sizeof(*color_info));
-    if (color_info == (ColorInfo *) NULL)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
-        continue;
-      }
-    (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
-    color_info->path=(char *) "[built-in]";
-    color_info->name=(char *) p->name;
-    GetPixelInfo((Image *) NULL,&color_info->color);
-    color_info->color.red=(double) ScaleCharToQuantum(p->red);
-    color_info->color.green=(double) ScaleCharToQuantum(p->green);
-    color_info->color.blue=(double) ScaleCharToQuantum(p->blue);
-    color_info->color.alpha=(double) (QuantumRange*p->alpha);
-    color_info->compliance=(ComplianceType) p->compliance;
-    color_info->exempt=MagickTrue;
-    color_info->signature=MagickSignature;
-    status&=AppendValueToLinkedList(color_list,color_info);
-    if (IfMagickFalse(status))
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
-  }
-  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -2524,8 +2521,8 @@ MagickExport MagickBooleanType QueryColorname(
     return(MagickFalse);
   alpha=color->alpha_trait == BlendPixelTrait ? color->alpha : OpaqueAlpha;
   (void) GetColorInfo("*",exception);
-  ResetLinkedListIterator(color_list);
-  p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+  ResetLinkedListIterator(color_cache);
+  p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   while (p != (const ColorInfo *) NULL)
   {
     if (((p->compliance & compliance) != 0) &&
@@ -2537,7 +2534,7 @@ MagickExport MagickBooleanType QueryColorname(
         (void) CopyMagickString(name,p->name,MaxTextExtent);
         break;
       }
-    p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+    p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   }
   return(MagickTrue);
 }
