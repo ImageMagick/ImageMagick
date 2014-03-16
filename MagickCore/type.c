@@ -158,12 +158,17 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
   assert(exception != (ExceptionInfo *) NULL);
   if (IsTypeTreeInstantiated(exception) == MagickFalse)
     return((const TypeInfo *) NULL);
+  LockSemaphoreInfo(type_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       ResetSplayTreeIterator(type_list);
-      return((const TypeInfo *) GetNextValueInSplayTree(type_list));
+      type_info=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+      UnlockSemaphoreInfo(type_semaphore);
+      return(type_info);
     }
-  return((const TypeInfo *) GetValueFromSplayTree(type_list,name));
+  type_info=(const TypeInfo *) GetValueFromSplayTree(type_list,name);
+  UnlockSemaphoreInfo(type_semaphore);
+  return(type_info);
 }
 
 /*

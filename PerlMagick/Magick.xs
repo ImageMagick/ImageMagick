@@ -10001,7 +10001,7 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
           channel_mask=SetImageChannelMask(image,channel);
-          image=RadialBlurImage(image,geometry_info.rho,exception);
+          image=RotationalBlurImage(image,geometry_info.rho,exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
           break;

@@ -369,14 +369,17 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   if (delegate_list == (LinkedListInfo *) NULL)
     if( IfMagickFalse(IsDelegateListInstantiated(exception)) )
       return((const DelegateInfo *) NULL);
-  if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
-    return((const DelegateInfo *) GetValueFromLinkedList(delegate_list,0));
   /*
     Search for named delegate.
   */
   LockSemaphoreInfo(delegate_semaphore);
   ResetLinkedListIterator(delegate_list);
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
+  if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
+    {
+      UnlockSemaphoreInfo(delegate_semaphore);
+      return(p);
+    }
   while (p != (const DelegateInfo *) NULL)
   {
     if (p->mode > 0)

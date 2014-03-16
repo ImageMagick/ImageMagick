@@ -254,8 +254,6 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMagicListInstantiated(exception) == MagickFalse)
     return((const MagicInfo *) NULL);
-  if (magic == (const unsigned char *) NULL)
-    return((const MagicInfo *) GetValueFromLinkedList(magic_list,0));
   if (length == 0)
     return((const MagicInfo *) NULL);
   /*
@@ -264,6 +262,11 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   LockSemaphoreInfo(magic_semaphore);
   ResetLinkedListIterator(magic_list);
   p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+  if (magic == (const unsigned char *) NULL)
+    {
+      UnlockSemaphoreInfo(magic_semaphore);
+      return(p);
+    }
   while (p != (const MagicInfo *) NULL)
   {
     assert(p->offset >= 0);
