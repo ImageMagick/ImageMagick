@@ -76,58 +76,6 @@
 #include "magick/transform.h"
 #include "magick/utility.h"
 
-static SemaphoreInfo
-  *constitute_semaphore = (SemaphoreInfo *) NULL;
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C o n s t i t u t e C o m p o n e n t G e n e s i s                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ConstituteComponentGenesis() instantiates the constitute component.
-%
-%  The format of the ConstituteComponentGenesis method is:
-%
-%      MagickBooleanType ConstituteComponentGenesis(void)
-%
-*/
-MagickExport MagickBooleanType ConstituteComponentGenesis(void)
-{
-  constitute_semaphore=AllocateSemaphoreInfo();
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C o n s t i t u t e C o m p o n e n t T e r m i n u s                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ConstituteComponentTerminus() destroys the constitute component.
-%
-%  The format of the ConstituteComponentTerminus method is:
-%
-%      ConstituteComponentTerminus(void)
-%
-*/
-MagickExport void ConstituteComponentTerminus(void)
-{
-  if (constitute_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&constitute_semaphore);
-  DestroySemaphoreInfo(&constitute_semaphore);
-}
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -524,8 +472,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       image=DestroyImage(image);
     }
   image=NewImageList();
-  if (constitute_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&constitute_semaphore);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (GetImageDecoder(magick_info) == (DecodeImageHandler *) NULL))
     {
@@ -542,10 +488,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     {
       thread_support=GetMagickThreadSupport(magick_info);
       if ((thread_support & DecoderThreadSupport) == 0)
-        LockSemaphoreInfo(constitute_semaphore);
+        LockSemaphoreInfo(magick_info->semaphore);
       image=GetImageDecoder(magick_info)(read_info,exception);
       if ((thread_support & DecoderThreadSupport) == 0)
-        UnlockSemaphoreInfo(constitute_semaphore);
+        UnlockSemaphoreInfo(magick_info->semaphore);
     }
   else
     {
@@ -573,11 +519,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         MaxTextExtent);
       *read_info->filename='\0';
       if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
-        LockSemaphoreInfo(constitute_semaphore);
+        LockSemaphoreInfo(delegate_info->semaphore);
       (void) InvokeDelegate(read_info,image,read_info->magick,(char *) NULL,
         exception);
       if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
-        UnlockSemaphoreInfo(constitute_semaphore);
+        UnlockSemaphoreInfo(delegate_info->semaphore);
       image=DestroyImageList(image);
       read_info->temporary=MagickTrue;
       (void) SetImageInfo(read_info,0,exception);
@@ -597,10 +543,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
       thread_support=GetMagickThreadSupport(magick_info);
       if ((thread_support & DecoderThreadSupport) == 0)
-        LockSemaphoreInfo(constitute_semaphore);
+        LockSemaphoreInfo(magick_info->semaphore);
       image=(Image *) (GetImageDecoder(magick_info))(read_info,exception);
       if ((thread_support & DecoderThreadSupport) == 0)
-        UnlockSemaphoreInfo(constitute_semaphore);
+        UnlockSemaphoreInfo(magick_info->semaphore);
     }
   if (read_info->temporary != MagickFalse)
     {
@@ -1153,8 +1099,6 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
           (void) CloseBlob(image);
         }
     }
-  if (constitute_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&constitute_semaphore);
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetImageEncoder(magick_info) != (EncodeImageHandler *) NULL))
     {
@@ -1163,10 +1107,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       */
       thread_support=GetMagickThreadSupport(magick_info);
       if ((thread_support & EncoderThreadSupport) == 0)
-        LockSemaphoreInfo(constitute_semaphore);
+        LockSemaphoreInfo(magick_info->semaphore);
       status=GetImageEncoder(magick_info)(write_info,image);
       if ((thread_support & EncoderThreadSupport) == 0)
-        UnlockSemaphoreInfo(constitute_semaphore);
+        UnlockSemaphoreInfo(magick_info->semaphore);
     }
   else
     {
@@ -1179,11 +1123,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
           */
           *write_info->filename='\0';
           if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
-            LockSemaphoreInfo(constitute_semaphore);
+            LockSemaphoreInfo(delegate_info->semaphore);
           status=InvokeDelegate(write_info,image,(char *) NULL,
             write_info->magick,&image->exception);
           if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
-            UnlockSemaphoreInfo(constitute_semaphore);
+            UnlockSemaphoreInfo(delegate_info->semaphore);
           (void) CopyMagickString(image->filename,filename,MaxTextExtent);
         }
       else
@@ -1233,10 +1177,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               */
               thread_support=GetMagickThreadSupport(magick_info);
               if ((thread_support & EncoderThreadSupport) == 0)
-                LockSemaphoreInfo(constitute_semaphore);
+                LockSemaphoreInfo(magick_info->semaphore);
               status=GetImageEncoder(magick_info)(write_info,image);
               if ((thread_support & EncoderThreadSupport) == 0)
-                UnlockSemaphoreInfo(constitute_semaphore);
+                UnlockSemaphoreInfo(magick_info->semaphore);
             }
         }
     }

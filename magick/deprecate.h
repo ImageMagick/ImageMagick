@@ -182,6 +182,7 @@ extern MagickExport MagickBooleanType
   CloneImageAttributes(Image *,const Image *) magick_attribute((deprecated)),
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const ssize_t,
     const ssize_t,const PaintMethod) magick_attribute((deprecated)),
+  ConstituteComponentGenesis(void) magick_attribute((deprecated)),
   DeleteImageAttribute(Image *,const char *) magick_attribute((deprecated)),
   DeleteMagickRegistry(const ssize_t) magick_attribute((deprecated)),
   DescribeImage(Image *,FILE *,const MagickBooleanType)
@@ -320,6 +321,7 @@ extern MagickExport void
   AcquireSemaphoreInfo(SemaphoreInfo **) magick_attribute((deprecated)),
   AllocateNextImage(const ImageInfo *,Image *) magick_attribute((deprecated)),
   *CloneMemory(void *,const void *,const size_t) magick_attribute((deprecated)),
+  ConstituteComponentTerminus(void) magick_attribute((deprecated)),
   DestroyConstitute(void),
   DestroyImageAttributes(Image *) magick_attribute((deprecated)),
   DestroyImages(Image *) magick_attribute((deprecated)),

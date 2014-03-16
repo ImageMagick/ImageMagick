@@ -44,12 +44,8 @@ extern MagickExport Image
   *ReadInlineImage(const ImageInfo *,const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  ConstituteComponentGenesis(void),
   WriteImage(const ImageInfo *,Image *),
   WriteImages(const ImageInfo *,Image *,const char *,ExceptionInfo *);
-
-extern MagickExport void
-  ConstituteComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

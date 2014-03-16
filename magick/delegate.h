@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+#include <stdarg.h>
+#include "magick/semaphore.h"
+
 typedef struct _DelegateInfo
 {
   char
@@ -44,6 +47,9 @@ typedef struct _DelegateInfo
 
   size_t
     signature;
+
+  SemaphoreInfo
+    *semaphore;
 } DelegateInfo;
 
 extern MagickExport char

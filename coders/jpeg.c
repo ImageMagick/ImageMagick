@@ -74,6 +74,7 @@
 #include "magick/property.h"
 #include "magick/quantum-private.h"
 #include "magick/resource_.h"
+#include "magick/semaphore.h"
 #include "magick/splay-tree.h"
 #include "magick/static.h"
 #include "magick/string_.h"
@@ -1464,6 +1465,7 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry=SetMagickInfo("JPEG");
   entry->thread_support=NoThreadSupport;
+  entry->semaphore=AllocateSemaphoreInfo();
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
@@ -1478,6 +1480,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
   entry->thread_support=NoThreadSupport;
+  entry->semaphore=AllocateSemaphoreInfo();
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
@@ -1491,6 +1494,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PJPEG");
   entry->thread_support=NoThreadSupport;
+  entry->semaphore=AllocateSemaphoreInfo();
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;

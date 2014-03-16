@@ -185,9 +185,6 @@ static void *DestroyTypeNode(void *type_info)
 static SplayTreeInfo *AcquireTypeCache(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  return(LoadTypeCache(TypeMap,"built-in",0,exception));
-#else
   char
     *font_path,
     path[MaxTextExtent];
@@ -212,6 +209,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
   *path='\0';
   options=GetConfigureOptions(filename,exception);
   option=(const StringInfo *) GetNextValueInLinkedList(options);
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   while (option != (const StringInfo *) NULL)
   {
     (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
@@ -219,8 +217,10 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
       GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
+#endif
   options=DestroyConfigureOptions(options);
   font_path=GetEnvironmentValue("MAGICK_FONT_PATH");
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   if (font_path != (char *) NULL)
     {
       char
@@ -239,11 +239,10 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
         }
       font_path=DestroyString(font_path);
     }
-  if ((type_cache == (SplayTreeInfo *) NULL) ||
-      (GetNumberOfNodesInSplayTree(type_cache) == 0))
+#endif
+  if (GetNumberOfNodesInSplayTree(type_cache) == 0)
     status&=LoadTypeCache(type_cache,TypeMap,"built-in",0,exception);
   return(type_cache);
-#endif
 }
 
 /*
