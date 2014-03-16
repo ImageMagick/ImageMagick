@@ -28,14 +28,6 @@ using namespace std;
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 
-#define GetPPException \
-  ExceptionInfo \
-    exceptionInfo; \
-  GetExceptionInfo(&exceptionInfo)
-#define ThrowPPException \
-  throwException(exceptionInfo); \
-  (void) DestroyExceptionInfo(&exceptionInfo)
-
 MagickPPExport const char *Magick::borderGeometryDefault="6x6+0+0";
 MagickPPExport const char *Magick::frameGeometryDefault="25x25+6+6";
 MagickPPExport const char *Magick::raiseGeometryDefault="6x6+0+0";
@@ -3439,6 +3431,24 @@ void Magick::Image::opaque(const Color &opaqueColor_,const Color &penColor_)
   throwImageException();
 }
 
+void Magick::Image::orderedDither(std::string thresholdMap_)
+{
+  modifyImage();
+  GetPPException;
+  (void) OrderedPosterizeImage(image(),thresholdMap_.c_str(),&exceptionInfo);
+  ThrowPPException;
+}
+
+void Magick::Image::orderedDitherChannel(const ChannelType channel_,
+  std::string thresholdMap_)
+{
+  modifyImage();
+  GetPPException;
+  (void) OrderedPosterizeImageChannel(image(),channel_,thresholdMap_.c_str(),
+    &exceptionInfo);
+  ThrowPPException;
+}
+
 void Magick::Image::perceptible(const double epsilon_)
 {
   modifyImage();
@@ -3963,6 +3973,57 @@ void Magick::Image::segment(const double clusterThreshold_,
   throwImageException();
 }
 
+void Magick::Image::selectiveBlur(const double radius_,const double sigma_,
+  const double threshold_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=SelectiveBlurImage(constImage(),radius_,sigma_,threshold_,
+    &exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
+void Magick::Image::selectiveBlurChannel(const ChannelType channel_,
+  const double radius_,const double sigma_,const double threshold_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=SelectiveBlurImageChannel(constImage(),channel_,radius_,sigma_,
+    threshold_,&exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
+Magick::Image Magick::Image::separate(const ChannelType channel_)
+{
+  MagickCore::Image
+    *image;
+
+  GetPPException;
+  image=SeparateImage(constImage(),channel_,&exceptionInfo);
+  ThrowPPException;
+  if (image == (MagickCore::Image *) NULL)
+    return(Magick::Image());
+  else
+    return(Magick::Image(image));
+}
+
+void Magick::Image::sepiaTone(const double threshold_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=SepiaToneImage(constImage(),threshold_,&exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
 Magick::PixelPacket *Magick::Image::setPixels(const ssize_t x_,
   const ssize_t y_,const size_t columns_,const size_t rows_)
 {
@@ -4074,6 +4135,18 @@ std::string Magick::Image::signature(const bool force_) const
   property=GetImageProperty(constImage(),"Signature");
 
   return(std::string(property));
+}
+
+void Magick::Image::sketch(const double radius_,const double sigma_,
+  const double angle_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=SketchImage(constImage(),radius_,sigma_,angle_,&exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
 }
 
 void Magick::Image::solarize(const double factor_)
@@ -4278,6 +4351,18 @@ void Magick::Image::thumbnail(const Geometry &geometry_)
   ThrowPPException;
 }
 
+void Magick::Image::tint(const std::string opacity_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=TintImage(constImage(),opacity_.c_str(),constOptions()->fillColor(),
+    &exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
 void Magick::Image::transform(const Geometry &imageGeometry_)
 {
   modifyImage();
@@ -4390,6 +4475,20 @@ void Magick::Image::trim(void)
   ThrowPPException;
 }
 
+Magick::Image Magick::Image::uniqueColors(void)
+{
+  MagickCore::Image
+    *image;
+
+  GetPPException;
+  image=UniqueImageColors(constImage(),&exceptionInfo);
+  ThrowPPException;
+  if (image == (MagickCore::Image *) NULL)
+    return(Magick::Image());
+  else
+    return(Magick::Image(image));
+}
+
 void Magick::Image::unsharpmask(const double radius_,const double sigma_,
   const double amount_,const double threshold_)
 {
@@ -4413,6 +4512,18 @@ void Magick::Image::unsharpmaskChannel(const ChannelType channel_,
   GetPPException;
   newImage=UnsharpMaskImageChannel(constImage(),channel_,radius_,sigma_,
     amount_,threshold_,&exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
+void Magick::Image::vignette(const double radius_,const double sigma_,
+  const ssize_t x_,const ssize_t y_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=VignetteImage(constImage(),radius_,sigma_,x_,y_,&exceptionInfo);
   replaceImage(newImage);
   ThrowPPException;
 }
