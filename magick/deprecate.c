@@ -5762,7 +5762,7 @@ MagickExport unsigned int QuantizationError(Image *image)
 */
 
 MagickExport Image *RadialBlurImage(const Image *image,const double angle,
-  ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   return(RotationalBlurImage(image,angle,exception));
 }
@@ -5772,7 +5772,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
 {
   return(RotationalBlurImageChannel(image,channel,angle,exception));
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
