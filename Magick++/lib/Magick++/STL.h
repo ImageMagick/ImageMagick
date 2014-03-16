@@ -2663,6 +2663,24 @@ namespace Magick
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
+  // Smush images from list into single image in either horizontal or
+  // vertical direction.
+  template<class InputIterator>
+  void smushImages(Image *smushedImage_,InputIterator first_,
+    InputIterator last_,const ssize_t offset_,bool stack_=false)
+  {
+    MagickCore::Image
+      *newImage;
+
+    GetPPException;
+    linkImages(first_,last_);
+    newImage=MagickCore::SmushImages(first_->constImage(),
+      (MagickBooleanType) stack_,offset_,&exceptionInfo);
+    unlinkImages(first_,last_);
+    smushedImage_->replaceImage(newImage);
+    ThrowPPException;
+  }
+
   // Write Images
   template <class InputIterator>
   void writeImages( InputIterator first_,

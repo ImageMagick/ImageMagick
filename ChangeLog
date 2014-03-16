@@ -1,5 +1,7 @@
 2014-03-15  6.8.8-9 Dirk Lemstra <dirk@snakeware...>
   * Added tiff:ignore-tags to ignore specific tags.
+  * Added orderedDither, selectiveBlur, separate, sepiaTone, sketch,
+    smushImages, tint, uniqueColors and vignette to Magick++.
 
 2014-03-11  6.8.8-9 Cristy  <quetzlzacatenango@image...>
   * The -define jpeg:extent option overrides the image quality (reference
