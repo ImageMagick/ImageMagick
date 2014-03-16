@@ -623,13 +623,15 @@ const struct sRGB_info_struct sRGB_info[] =
   setjmp/longjmp is claimed to be safe on these platforms:
   setjmp/longjmp is alleged to be unsafe on these platforms:
 */
-#ifndef SETJMP_IS_THREAD_SAFE
-#define PNG_SETJMP_NOT_THREAD_SAFE
-#endif
+#ifdef PNG_SETJMP_SUPPORTED
+# ifndef IMPNG_SETJMP_IS_THREAD_SAFE
+#   define IMPNG_SETJMP_NOT_THREAD_SAFE
+# endif
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+# ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
 static SemaphoreInfo
   *ping_semaphore = (SemaphoreInfo *) NULL;
+# endif
 #endif
 
 /*
@@ -2307,7 +2309,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
 
@@ -2332,7 +2334,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
    *    that libpng is able to clean up, and that the semaphore is unlocked.
    */
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
   LockSemaphoreInfo(ping_semaphore);
 #endif
 
@@ -3192,7 +3194,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
 
@@ -3565,7 +3567,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       pixel_info=RelinquishVirtualMemory(pixel_info);
       image->colors=2;
       (void) SetImageBackgroundColor(image);
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
       if (logging != MagickFalse)
@@ -3965,7 +3967,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  exit ReadOnePNGImage()");
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
   UnlockSemaphoreInfo(ping_semaphore);
 #endif
 
@@ -7580,7 +7582,7 @@ ModuleExport size_t RegisterPNGImage(void)
   entry->note=ConstantString(JNGNote);
   (void) RegisterMagickInfo(entry);
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
   ping_semaphore=AllocateSemaphoreInfo();
 #endif
 
@@ -7618,7 +7620,7 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG00");
   (void) UnregisterMagickInfo("JNG");
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
   if (ping_semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&ping_semaphore);
 #endif
@@ -9440,7 +9442,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
       png_destroy_write_struct(&ping,&ping_info);
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
 
@@ -9458,7 +9460,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    *    that libpng is able to clean up, and that the semaphore is unlocked.
    */
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
   LockSemaphoreInfo(ping_semaphore);
 #endif
 
@@ -11353,7 +11355,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  exit WriteOnePNGImage()");
 
-#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
   UnlockSemaphoreInfo(ping_semaphore);
 #endif
 
