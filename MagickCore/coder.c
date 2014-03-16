@@ -324,15 +324,23 @@ MagickPrivate void CoderComponentTerminus(void)
 MagickExport const CoderInfo *GetCoderInfo(const char *name,
   ExceptionInfo *exception)
 {
+  const CoderInfo
+    *coder_info;
+
   assert(exception != (ExceptionInfo *) NULL);
   if (IsCoderTreeInstantiated(exception) == MagickFalse)
     return((const CoderInfo *) NULL);
+  LockSemaphoreInfo(coder_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       ResetSplayTreeIterator(coder_list);
-      return((const CoderInfo *) GetNextValueInSplayTree(coder_list));
+      coder_info=(const CoderInfo *) GetNextValueInSplayTree(coder_list);
+      UnlockSemaphoreInfo(coder_semaphore);
+      return(coder_info);
     }
-  return((const CoderInfo *) GetValueFromSplayTree(coder_list,name));
+  coder_info=(const CoderInfo *) GetValueFromSplayTree(coder_list,name);
+  UnlockSemaphoreInfo(coder_semaphore);
+  return(coder_info);
 }
 
 /*
