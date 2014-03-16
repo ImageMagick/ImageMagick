@@ -1495,39 +1495,39 @@ am__magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_D
 	magick/utility-private.h magick/version.c magick/version.h \
 	magick/version-private.h magick/vms.h magick/widget.c \
 	magick/widget.h magick/xml-tree.c magick/xml-tree.h \
-	magick/xwindow.c magick/xwindow.h magick/nt-feature.c \
-	magick/nt-base.c coders/aai.c coders/art.c coders/avs.c \
-	coders/bgr.c coders/bmp.c coders/braille.c coders/cals.c \
-	coders/caption.c coders/cin.c coders/cip.c coders/clip.c \
-	coders/cmyk.c coders/cut.c coders/dcm.c coders/dds.c \
-	coders/debug.c coders/dib.c coders/dng.c coders/dot.c \
-	coders/dpx.c coders/fax.c coders/fd.c coders/fits.c \
-	coders/gif.c coders/gradient.c coders/gray.c coders/hald.c \
-	coders/hdr.c coders/histogram.c coders/hrz.c coders/html.c \
-	coders/icon.c coders/info.c coders/inline.c coders/ipl.c \
-	coders/jnx.c coders/json.c coders/label.c coders/mac.c \
-	coders/magick.c coders/map.c coders/mask.c coders/mat.c \
-	coders/matte.c coders/meta.c coders/miff.c coders/mono.c \
-	coders/mpc.c coders/mpeg.c coders/mpr.c coders/msl.c \
-	coders/mtv.c coders/mvg.c coders/null.c coders/otb.c \
-	coders/palm.c coders/pango.c coders/pattern.c coders/pcd.c \
-	coders/pcl.c coders/pcx.c coders/pdb.c coders/pdf.c \
-	coders/pes.c coders/pict.c coders/pix.c coders/plasma.c \
-	coders/pnm.c coders/preview.c coders/ps.c coders/ps2.c \
-	coders/ps3.c coders/psd.c coders/pwp.c coders/raw.c \
-	coders/rgb.c coders/rgf.c coders/rla.c coders/rle.c \
-	coders/scr.c coders/sct.c coders/sfw.c coders/sgi.c \
-	coders/stegano.c coders/sun.c coders/svg.c coders/tga.c \
-	coders/thumbnail.c coders/tile.c coders/tim.c coders/ttf.c \
-	coders/txt.c coders/uil.c coders/url.c coders/uyvy.c \
-	coders/vicar.c coders/vid.c coders/viff.c coders/wbmp.c \
-	coders/wpg.c coders/xbm.c coders/xc.c coders/xcf.c \
-	coders/xpm.c coders/xps.c coders/ycbcr.c coders/yuv.c \
-	coders/dps.c coders/djvu.c coders/exr.c coders/fpx.c \
-	coders/clipboard.c coders/emf.c coders/jbig.c coders/jpeg.c \
-	coders/jp2.c coders/png.c coders/ept.c coders/tiff.c \
-	coders/webp.c coders/wmf.c coders/x.c coders/xwd.c \
-	filters/analyze.c
+	magick/xml-tree-private.h magick/xwindow.c magick/xwindow.h \
+	magick/nt-feature.c magick/nt-base.c coders/aai.c coders/art.c \
+	coders/avs.c coders/bgr.c coders/bmp.c coders/braille.c \
+	coders/cals.c coders/caption.c coders/cin.c coders/cip.c \
+	coders/clip.c coders/cmyk.c coders/cut.c coders/dcm.c \
+	coders/dds.c coders/debug.c coders/dib.c coders/dng.c \
+	coders/dot.c coders/dpx.c coders/fax.c coders/fd.c \
+	coders/fits.c coders/gif.c coders/gradient.c coders/gray.c \
+	coders/hald.c coders/hdr.c coders/histogram.c coders/hrz.c \
+	coders/html.c coders/icon.c coders/info.c coders/inline.c \
+	coders/ipl.c coders/jnx.c coders/json.c coders/label.c \
+	coders/mac.c coders/magick.c coders/map.c coders/mask.c \
+	coders/mat.c coders/matte.c coders/meta.c coders/miff.c \
+	coders/mono.c coders/mpc.c coders/mpeg.c coders/mpr.c \
+	coders/msl.c coders/mtv.c coders/mvg.c coders/null.c \
+	coders/otb.c coders/palm.c coders/pango.c coders/pattern.c \
+	coders/pcd.c coders/pcl.c coders/pcx.c coders/pdb.c \
+	coders/pdf.c coders/pes.c coders/pict.c coders/pix.c \
+	coders/plasma.c coders/pnm.c coders/preview.c coders/ps.c \
+	coders/ps2.c coders/ps3.c coders/psd.c coders/pwp.c \
+	coders/raw.c coders/rgb.c coders/rgf.c coders/rla.c \
+	coders/rle.c coders/scr.c coders/sct.c coders/sfw.c \
+	coders/sgi.c coders/stegano.c coders/sun.c coders/svg.c \
+	coders/tga.c coders/thumbnail.c coders/tile.c coders/tim.c \
+	coders/ttf.c coders/txt.c coders/uil.c coders/url.c \
+	coders/uyvy.c coders/vicar.c coders/vid.c coders/viff.c \
+	coders/wbmp.c coders/wpg.c coders/xbm.c coders/xc.c \
+	coders/xcf.c coders/xpm.c coders/xps.c coders/ycbcr.c \
+	coders/yuv.c coders/dps.c coders/djvu.c coders/exr.c \
+	coders/fpx.c coders/clipboard.c coders/emf.c coders/jbig.c \
+	coders/jpeg.c coders/jp2.c coders/png.c coders/ept.c \
+	coders/tiff.c coders/webp.c coders/wmf.c coders/x.c \
+	coders/xwd.c filters/analyze.c
 am__objects_1 = magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-accelerate.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-annotate.lo \
@@ -4357,6 +4357,7 @@ MAGICK_BASE_SRCS = \
 	magick/widget.h \
 	magick/xml-tree.c \
 	magick/xml-tree.h \
+	magick/xml-tree-private.h \
 	magick/xwindow.c \
 	magick/xwindow.h 
 
@@ -4511,6 +4512,7 @@ MAGICK_NOINST_HDRS = \
 	magick/token-private.h \
 	magick/utility-private.h \
 	magick/version-private.h \
+	magick/xml-tree-private.h \
 	magick/xwindow-private.h \
 	magick/vms.h
 
