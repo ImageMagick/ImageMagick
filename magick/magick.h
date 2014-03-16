@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+#include <stdarg.h>
+#include "magick/semaphore.h"
+
 typedef enum
 {
   UndefinedFormatType,
@@ -94,6 +97,9 @@ typedef struct _MagickInfo
 
   char
     *mime_type;
+
+  SemaphoreInfo
+    *semaphore;
 } MagickInfo;
 
 extern MagickExport char

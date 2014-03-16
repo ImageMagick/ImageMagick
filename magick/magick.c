@@ -825,6 +825,8 @@ static void *DestroyMagickNode(void *magick_info)
     p->description=DestroyString(p->description);
   if (p->name != (char *) NULL)
     p->name=DestroyString(p->name);
+  if (p->semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&p->semaphore);
   return(RelinquishMagickMemory(p));
 }
 
@@ -1328,7 +1330,6 @@ MagickExport void MagickCoreGenesis(const char *path,
   (void) ColorComponentGenesis();
   (void) TypeComponentGenesis();
   (void) MimeComponentGenesis();
-  (void) ConstituteComponentGenesis();
   (void) AnnotateComponentGenesis();
 #if defined(MAGICKCORE_X11_DELEGATE)
   (void) XComponentGenesis();
@@ -1368,7 +1369,6 @@ MagickExport void MagickCoreTerminus(void)
   XComponentTerminus();
 #endif
   AnnotateComponentTerminus();
-  ConstituteComponentTerminus();
   MimeComponentTerminus();
   TypeComponentTerminus();
   ColorComponentTerminus();

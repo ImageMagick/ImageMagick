@@ -170,9 +170,6 @@ static MagickBooleanType
 static LinkedListInfo *AcquireDelegateCache(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  return(LoadDelegateCache(DelegateMap,"built-in",0,exception));
-#else
   const StringInfo
     *option;
 
@@ -189,18 +186,18 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
   status=MagickTrue;
   options=GetConfigureOptions(filename,exception);
   option=(const StringInfo *) GetNextValueInLinkedList(options);
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   while (option != (const StringInfo *) NULL)
   {
     status&=LoadDelegateCache(delegate_cache,(const char *)
       GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
+#endif
   options=DestroyConfigureOptions(options);
-  if ((delegate_cache == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(delegate_cache) != MagickFalse))
+  if (IsLinkedListEmpty(delegate_cache) != MagickFalse)
     status&=LoadDelegateCache(delegate_cache,DelegateMap,"built-in",0,exception);
   return(delegate_cache);
-#endif
 }
 
 /*
@@ -260,6 +257,8 @@ static void *DestroyDelegate(void *delegate_info)
     p->encode=DestroyString(p->encode);
   if (p->commands != (char *) NULL)
     p->commands=DestroyString(p->commands);
+  if (p->semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&p->semaphore);
   p=(DelegateInfo *) RelinquishMagickMemory(p);
   return((void *) NULL);
 }
@@ -1478,6 +1477,8 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         if (LocaleCompare((char *) keyword,"thread-support") == 0)
           {
             delegate_info->thread_support=IsMagickTrue(token);
+            if (delegate_info->thread_support != MagickFalse)
+              delegate_info->semaphore=AllocateSemaphoreInfo();
             break;
           }
         break;

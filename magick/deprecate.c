@@ -1422,6 +1422,51 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C o n s t i t u t e C o m p o n e n t G e n e s i s                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConstituteComponentGenesis() instantiates the constitute component.
+%
+%  The format of the ConstituteComponentGenesis method is:
+%
+%      MagickBooleanType ConstituteComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType ConstituteComponentGenesis(void)
+{
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o n s t i t u t e C o m p o n e n t T e r m i n u s                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConstituteComponentTerminus() destroys the constitute component.
+%
+%  The format of the ConstituteComponentTerminus method is:
+%
+%      ConstituteComponentTerminus(void)
+%
+*/
+MagickExport void ConstituteComponentTerminus(void)
+{
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e l e t e I m a g e A t t r i b u t e                                   %
 %                                                                             %
 %                                                                             %
