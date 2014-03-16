@@ -58,6 +58,7 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/xml-tree.h"
+#include "MagickCore/xml-tree-private.h"
 
 /*
   Define declarations.
@@ -822,7 +823,7 @@ static MagickBooleanType LoadPolicyCache(const char *xml,const char *filename,
                     (void) CopyMagickString(path,token,MaxTextExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MaxTextExtent);
-                  xml=FileToString(path,~0UL,exception);
+                  xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
                       status=LoadPolicyCache(xml,path,depth+1,exception);

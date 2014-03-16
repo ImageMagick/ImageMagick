@@ -26,7 +26,8 @@ extern "C" {
 #endif
 
 extern MagickPrivate char
-  *CanonicalXMLContent(const char *,const MagickBooleanType);
+  *CanonicalXMLContent(const char *,const MagickBooleanType),
+  *FileToXML(const char *,const size_t);
 
 extern MagickPrivate const char
   **GetXMLTreeProcessingInstructions(XMLTreeInfo *,const char *);
