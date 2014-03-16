@@ -201,7 +201,7 @@ static const MagicMapInfo
  };
 
 static LinkedListInfo
-  *magic_list = (LinkedListInfo *) NULL;
+  *magic_cache = (LinkedListInfo *) NULL;
 
 static SemaphoreInfo
   *magic_semaphore = (SemaphoreInfo *) NULL;
@@ -210,8 +210,108 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  IsMagicListInstantiated(ExceptionInfo *),
-  LoadMagicLists(const char *,ExceptionInfo *);
+  IsMagicCacheInstantiated(ExceptionInfo *),
+  LoadMagicCache(LinkedListInfo *,const char *,const char *,const size_t,
+    ExceptionInfo *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  A c q u i r e M a g i c C a c h e                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireMagicCache() caches one or more magic configurations which provides a
+%  mapping between magic attributes and a magic name.
+%
+%  The format of the AcquireMagicCache method is:
+%
+%      LinkedListInfo *AcquireMagicCache(const char *filename,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: the font file name.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static LinkedListInfo *AcquireMagicCache(const char *filename,
+  ExceptionInfo *exception)
+{
+  char
+    path[MaxTextExtent];
+
+  const StringInfo
+    *option;
+
+  LinkedListInfo
+    *magic_cache,
+    *options;
+
+  MagickStatusType
+    status;
+
+  register ssize_t
+    i;
+
+  magic_cache=NewLinkedList(0);
+  if (magic_cache == (LinkedListInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  /*
+    Load external magic map.
+  */
+  status=MagickTrue;
+  *path='\0';
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
+    status&=LoadMagicCache(magic_cache,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  /*
+    Load built-in magic map.
+  */
+  for (i=0; i < (ssize_t) (sizeof(MagicMap)/sizeof(*MagicMap)); i++)
+  {
+    MagicInfo
+      *magic_info;
+
+    register const MagicMapInfo
+      *p;
+
+    p=MagicMap+i;
+    magic_info=(MagicInfo *) AcquireMagickMemory(sizeof(*magic_info));
+    if (magic_info == (MagicInfo *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
+        continue;
+      }
+    (void) ResetMagickMemory(magic_info,0,sizeof(*magic_info));
+    magic_info->path=(char *) "[built-in]";
+    magic_info->name=(char *) p->name;
+    magic_info->offset=p->offset;
+    magic_info->target=(char *) p->magic;
+    magic_info->magic=(unsigned char *) p->magic;
+    magic_info->length=p->length;
+    magic_info->exempt=MagickTrue;
+    magic_info->signature=MagickSignature;
+    status&=AppendValueToLinkedList(magic_cache,magic_info);
+    if (status == MagickFalse)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
+  }
+  options=DestroyConfigureOptions(options);
+  return(magic_cache);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -249,16 +349,14 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (IsMagicListInstantiated(exception) == MagickFalse)
-    return((const MagicInfo *) NULL);
-  if (length == 0)
+  if (IsMagicCacheInstantiated(exception) == MagickFalse)
     return((const MagicInfo *) NULL);
   /*
     Search for magic tag.
   */
   LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_list);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+  ResetLinkedListIterator(magic_cache);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
   if (magic == (const unsigned char *) NULL)
     {
       UnlockSemaphoreInfo(magic_semaphore);
@@ -270,11 +368,11 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     if (((size_t) (p->offset+p->length) <= length) &&
         (memcmp(magic+p->offset,p->magic,p->length) == 0))
       break;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
   }
   if (p != (const MagicInfo *) NULL)
-    (void) InsertValueInLinkedList(magic_list,0,
-      RemoveElementByValueFromLinkedList(magic_list,p));
+    (void) InsertValueInLinkedList(magic_cache,0,
+      RemoveElementByValueFromLinkedList(magic_cache,p));
   UnlockSemaphoreInfo(magic_semaphore);
   return(p);
 }
@@ -352,21 +450,21 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   if (p == (const MagicInfo *) NULL)
     return((const MagicInfo **) NULL);
   aliases=(const MagicInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
+    GetNumberOfElementsInLinkedList(magic_cache)+1UL,sizeof(*aliases));
   if (aliases == (const MagicInfo **) NULL)
     return((const MagicInfo **) NULL);
   /*
     Generate magic list.
   */
   LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_list);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+  ResetLinkedListIterator(magic_cache);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
   for (i=0; p != (const MagicInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       aliases[i++]=p;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
   }
   UnlockSemaphoreInfo(magic_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicInfoCompare);
@@ -447,18 +545,18 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
   if (p == (const MagicInfo *) NULL)
     return((char **) NULL);
   aliases=(char **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
+    GetNumberOfElementsInLinkedList(magic_cache)+1UL,sizeof(*aliases));
   if (aliases == (char **) NULL)
     return((char **) NULL);
   LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_list);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+  ResetLinkedListIterator(magic_cache);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
   for (i=0; p != (const MagicInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       aliases[i++]=ConstantString(p->name);
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
   }
   UnlockSemaphoreInfo(magic_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicCompare);
@@ -502,33 +600,36 @@ MagickExport const char *GetMagicName(const MagicInfo *magic_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s M a g i c L i s t I n s t a n t i a t e d                             %
++   I s M a g i c C a c h e I n s t a n t i a t e d                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsMagicListInstantiated() determines if the magic list is instantiated.
+%  IsMagicCacheInstantiated() determines if the magic list is instantiated.
 %  If not, it instantiates the list and returns it.
 %
 %  The format of the IsMagicInstantiated method is:
 %
-%      MagickBooleanType IsMagicListInstantiated(ExceptionInfo *exception)
+%      MagickBooleanType IsMagicCacheInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType IsMagicListInstantiated(ExceptionInfo *exception)
+static MagickBooleanType IsMagicCacheInstantiated(ExceptionInfo *exception)
 {
-  if (magic_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&magic_semaphore);
-  LockSemaphoreInfo(magic_semaphore);
-  if (magic_list == (LinkedListInfo *) NULL)
-    (void) LoadMagicLists(MagicFilename,exception);
-  UnlockSemaphoreInfo(magic_semaphore);
-  return(magic_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+  if (magic_cache == (LinkedListInfo *) NULL)
+    {
+      if (magic_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&magic_semaphore);
+      LockSemaphoreInfo(magic_semaphore);
+      if (magic_cache == (LinkedListInfo *) NULL)
+        magic_cache=AcquireMagicCache(MagicFilename,exception);
+      UnlockSemaphoreInfo(magic_semaphore);
+    }
+  return(magic_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -629,13 +730,14 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LoadMagicList() loads the magic configuration file which provides a mapping
+%  LoadMagicCache() loads the magic configurations which provides a mapping
 %  between magic attributes and a magic name.
 %
-%  The format of the LoadMagicList method is:
+%  The format of the LoadMagicCache method is:
 %
-%      MagickBooleanType LoadMagicList(const char *xml,const char *filename,
-%        const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
+%        const char *xml,const char *filename,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -648,8 +750,9 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
-  const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
+  const char *xml,const char *filename,const size_t depth,
+  ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -671,16 +774,6 @@ static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
     "Loading magic configure file \"%s\" ...",filename);
   if (xml == (char *) NULL)
     return(MagickFalse);
-  if (magic_list == (LinkedListInfo *) NULL)
-    {
-      magic_list=NewLinkedList(0);
-      if (magic_list == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
   status=MagickTrue;
   magic_info=(MagicInfo *) NULL;
   token=AcquireString(xml);
@@ -745,7 +838,8 @@ static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
                   xml=FileToString(path,~0UL,exception);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadMagicList(xml,path,depth+1,exception);
+                      status&=LoadMagicCache(magic_cache,xml,path,depth+1,
+                        exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }
@@ -771,7 +865,7 @@ static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(magic_list,magic_info);
+        status=AppendValueToLinkedList(magic_cache,magic_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
@@ -889,111 +983,6 @@ static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  L o a d M a g i c L i s t s                                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LoadMagicLists() loads one or more magic configuration file which provides a
-%  mapping between magic attributes and a magic name.
-%
-%  The format of the LoadMagicLists method is:
-%
-%      MagickBooleanType LoadMagicLists(const char *filename,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: the font file name.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType LoadMagicLists(const char *filename,
-  ExceptionInfo *exception)
-{
-  char
-    path[MaxTextExtent];
-
-  const StringInfo
-    *option;
-
-  LinkedListInfo
-    *options;
-
-  MagickStatusType
-    status;
-
-  register ssize_t
-    i;
-
-  if (magic_list == (LinkedListInfo *) NULL)
-    {
-      magic_list=NewLinkedList(0);
-      if (magic_list == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
-  status=MagickTrue;
-  /*
-    Load external magic map.
-  */
-  *path='\0';
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
-    status&=LoadMagicList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  /*
-    Load built-in magic map.
-  */
-  for (i=0; i < (ssize_t) (sizeof(MagicMap)/sizeof(*MagicMap)); i++)
-  {
-    MagicInfo
-      *magic_info;
-
-    register const MagicMapInfo
-      *p;
-
-    p=MagicMap+i;
-    magic_info=(MagicInfo *) AcquireMagickMemory(sizeof(*magic_info));
-    if (magic_info == (MagicInfo *) NULL)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
-        continue;
-      }
-    (void) ResetMagickMemory(magic_info,0,sizeof(*magic_info));
-    magic_info->path=(char *) "[built-in]";
-    magic_info->name=(char *) p->name;
-    magic_info->offset=p->offset;
-    magic_info->target=(char *) p->magic;
-    magic_info->magic=(unsigned char *) p->magic;
-    magic_info->length=p->length;
-    magic_info->exempt=MagickTrue;
-    magic_info->signature=MagickSignature;
-    status&=AppendValueToLinkedList(magic_list,magic_info);
-    if (status == MagickFalse)
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
-  }
-  options=DestroyConfigureOptions(options);
-  return(status != 0 ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   M a g i c C o m p o n e n t G e n e s i s                                 %
 %                                                                             %
 %                                                                             %
@@ -1058,8 +1047,8 @@ MagickExport void MagicComponentTerminus(void)
   if (magic_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&magic_semaphore);
   LockSemaphoreInfo(magic_semaphore);
-  if (magic_list != (LinkedListInfo *) NULL)
-    magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);
+  if (magic_cache != (LinkedListInfo *) NULL)
+    magic_cache=DestroyLinkedList(magic_cache,DestroyMagicElement);
   UnlockSemaphoreInfo(magic_semaphore);
   DestroySemaphoreInfo(&magic_semaphore);
 }

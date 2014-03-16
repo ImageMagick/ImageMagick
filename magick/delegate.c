@@ -128,7 +128,7 @@ static const char
   Global declaractions.
 */
 static LinkedListInfo
-  *delegate_list = (LinkedListInfo *) NULL;
+  *delegate_cache = (LinkedListInfo *) NULL;
 
 static SemaphoreInfo
   *delegate_semaphore = (SemaphoreInfo *) NULL;
@@ -137,8 +137,71 @@ static SemaphoreInfo
   Forward declaractions.
 */
 static MagickBooleanType
-  IsDelegateListInstantiated(ExceptionInfo *),
-  LoadDelegateLists(const char *,ExceptionInfo *);
+  IsDelegateCacheInstantiated(ExceptionInfo *),
+  LoadDelegateCache(LinkedListInfo *,const char *,const char *,const size_t,
+    ExceptionInfo *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  A c q u i r e D e l e g a t e C a c h e                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireDelegateCache() caches one or more delegate configurations which
+%  provides a mapping between delegate attributes and a delegate name.
+%
+%  The format of the AcquireDelegateCache method is:
+%
+%      LinkedListInfo *AcquireDelegateCache(const char *filename,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: the font file name.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static LinkedListInfo *AcquireDelegateCache(const char *filename,
+  ExceptionInfo *exception)
+{
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+  return(LoadDelegateCache(DelegateMap,"built-in",0,exception));
+#else
+  const StringInfo
+    *option;
+
+  LinkedListInfo
+    *delegate_cache,
+    *options;
+
+  MagickStatusType
+    status;
+
+  delegate_cache=NewLinkedList(0);
+  if (delegate_cache == (LinkedListInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  status=MagickTrue;
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    status&=LoadDelegateCache(delegate_cache,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  if ((delegate_cache == (LinkedListInfo *) NULL) ||
+      (IsLinkedListEmpty(delegate_cache) != MagickFalse))
+    status&=LoadDelegateCache(delegate_cache,DelegateMap,"built-in",0,exception);
+  return(delegate_cache);
+#endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -207,8 +270,8 @@ MagickExport void DelegateComponentTerminus(void)
   if (delegate_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&delegate_semaphore);
   LockSemaphoreInfo(delegate_semaphore);
-  if (delegate_list != (LinkedListInfo *) NULL)
-    delegate_list=DestroyLinkedList(delegate_list,DestroyDelegate);
+  if (delegate_cache != (LinkedListInfo *) NULL)
+    delegate_cache=DestroyLinkedList(delegate_cache,DestroyDelegate);
   UnlockSemaphoreInfo(delegate_semaphore);
   DestroySemaphoreInfo(&delegate_semaphore);
 }
@@ -363,14 +426,14 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (IsDelegateListInstantiated(exception) == MagickFalse)
+  if (IsDelegateCacheInstantiated(exception) == MagickFalse)
     return((const DelegateInfo *) NULL);
   /*
     Search for named delegate.
   */
   LockSemaphoreInfo(delegate_semaphore);
-  ResetLinkedListIterator(delegate_list);
-  p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
+  ResetLinkedListIterator(delegate_cache);
+  p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     {
       UnlockSemaphoreInfo(delegate_semaphore);
@@ -382,14 +445,14 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
       {
         if (LocaleCompare(p->decode,decode) == 0)
           break;
-        p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
+        p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
         continue;
       }
     if (p->mode < 0)
       {
         if (LocaleCompare(p->encode,encode) == 0)
           break;
-        p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
+        p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
         continue;
       }
     if (LocaleCompare(decode,p->decode) == 0)
@@ -401,11 +464,11 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
     if (LocaleCompare(decode,p->decode) == 0)
       if (LocaleCompare(encode,"*") == 0)
         break;
-    p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
+    p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   }
   if (p != (const DelegateInfo *) NULL)
-    (void) InsertValueInLinkedList(delegate_list,0,
-      RemoveElementByValueFromLinkedList(delegate_list,p));
+    (void) InsertValueInLinkedList(delegate_cache,0,
+      RemoveElementByValueFromLinkedList(delegate_cache,p));
   UnlockSemaphoreInfo(delegate_semaphore);
   return(p);
 }
@@ -491,22 +554,22 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   if (p == (const DelegateInfo *) NULL)
     return((const DelegateInfo **) NULL);
   delegates=(const DelegateInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(delegate_list)+1UL,sizeof(*delegates));
+    GetNumberOfElementsInLinkedList(delegate_cache)+1UL,sizeof(*delegates));
   if (delegates == (const DelegateInfo **) NULL)
     return((const DelegateInfo **) NULL);
   /*
     Generate delegate list.
   */
   LockSemaphoreInfo(delegate_semaphore);
-  ResetLinkedListIterator(delegate_list);
-  p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
+  ResetLinkedListIterator(delegate_cache);
+  p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   for (i=0; p != (const DelegateInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         ((GlobExpression(p->decode,pattern,MagickFalse) != MagickFalse) ||
          (GlobExpression(p->encode,pattern,MagickFalse) != MagickFalse)))
       delegates[i++]=p;
-    p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
+    p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   }
   UnlockSemaphoreInfo(delegate_semaphore);
   qsort((void *) delegates,(size_t) i,sizeof(*delegates),DelegateInfoCompare);
@@ -587,12 +650,12 @@ MagickExport char **GetDelegateList(const char *pattern,
   if (p == (const DelegateInfo *) NULL)
     return((char **) NULL);
   delegates=(char **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(delegate_list)+1UL,sizeof(*delegates));
+    GetNumberOfElementsInLinkedList(delegate_cache)+1UL,sizeof(*delegates));
   if (delegates == (char **) NULL)
     return((char **) NULL);
   LockSemaphoreInfo(delegate_semaphore);
-  ResetLinkedListIterator(delegate_list);
-  p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
+  ResetLinkedListIterator(delegate_cache);
+  p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   for (i=0; p != (const DelegateInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
@@ -601,7 +664,7 @@ MagickExport char **GetDelegateList(const char *pattern,
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->encode,pattern,MagickFalse) != MagickFalse))
       delegates[i++]=ConstantString(p->encode);
-    p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
+    p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   }
   UnlockSemaphoreInfo(delegate_semaphore);
   qsort((void *) delegates,(size_t) i,sizeof(*delegates),DelegateCompare);
@@ -678,33 +741,36 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s D e l e g a t e L i s t I n s t a n t i a t e d                       %
++   I s D e l e g a t e C a c h e I n s t a n t i a t e d                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsDelegateListInstantiated() determines if the delegate list is instantiated.
+%  IsDelegateCacheInstantiated() determines if the delegate list is instantiated.
 %  If not, it instantiates the list and returns it.
 %
 %  The format of the IsDelegateInstantiated method is:
 %
-%      MagickBooleanType IsDelegateListInstantiated(ExceptionInfo *exception)
+%      MagickBooleanType IsDelegateCacheInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType IsDelegateListInstantiated(ExceptionInfo *exception)
+static MagickBooleanType IsDelegateCacheInstantiated(ExceptionInfo *exception)
 {
-  if (delegate_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&delegate_semaphore);
-  LockSemaphoreInfo(delegate_semaphore);
-  if (delegate_list == (LinkedListInfo *) NULL)
-    (void) LoadDelegateLists(DelegateFilename,exception);
-  UnlockSemaphoreInfo(delegate_semaphore);
-  return(delegate_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+  if (delegate_cache == (LinkedListInfo *) NULL)
+    {
+      if (delegate_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&delegate_semaphore);
+      LockSemaphoreInfo(delegate_semaphore);
+      if (delegate_cache == (LinkedListInfo *) NULL)
+        delegate_cache=AcquireDelegateCache(DelegateFilename,exception);
+      UnlockSemaphoreInfo(delegate_semaphore);
+    }
+  return(delegate_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1174,13 +1240,14 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LoadDelegateList() loads the delegate configuration file which provides a
+%  LoadDelegateCache() loads the delegate configurations which provides a
 %  mapping between delegate attributes and a delegate name.
 %
-%  The format of the LoadDelegateList method is:
+%  The format of the LoadDelegateCache method is:
 %
-%      MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
-%        const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
+%        const char *xml,const char *filename,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1193,8 +1260,9 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
-  const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
+  const char *xml,const char *filename,const size_t depth,
+  ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1216,16 +1284,6 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
     "Loading delegate configuration file \"%s\" ...",filename);
   if (xml == (const char *) NULL)
     return(MagickFalse);
-  if (delegate_list == (LinkedListInfo *) NULL)
-    {
-      delegate_list=NewLinkedList(0);
-      if (delegate_list == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
   status=MagickTrue;
   delegate_info=(DelegateInfo *) NULL;
   token=AcquireString(xml);
@@ -1290,7 +1348,8 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
                   xml=FileToString(path,~0UL,exception);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadDelegateList(xml,path,depth+1,exception);
+                      status&=LoadDelegateCache(delegate_cache,xml,path,depth+1,
+                        exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }
@@ -1316,7 +1375,7 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(delegate_list,delegate_info);
+        status=AppendValueToLinkedList(delegate_cache,delegate_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
@@ -1429,62 +1488,4 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
   }
   token=(char *) RelinquishMagickMemory(token);
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  L o a d D e l e g a t e L i s t s                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LoadDelegateList() loads one or more delegate configuration file which
-%  provides a mapping between delegate attributes and a delegate name.
-%
-%  The format of the LoadDelegateLists method is:
-%
-%      MagickBooleanType LoadDelegateLists(const char *filename,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: the font file name.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType LoadDelegateLists(const char *filename,
-  ExceptionInfo *exception)
-{
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  return(LoadDelegateList(DelegateMap,"built-in",0,exception));
-#else
-  const StringInfo
-    *option;
-
-  LinkedListInfo
-    *options;
-
-  MagickStatusType
-    status;
-
-  status=MagickFalse;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    status&=LoadDelegateList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
-  if ((delegate_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(delegate_list) != MagickFalse))
-    status&=LoadDelegateList(DelegateMap,"built-in",0,exception);
-  return(status != 0 ? MagickTrue : MagickFalse);
-#endif
 }

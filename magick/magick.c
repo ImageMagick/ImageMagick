@@ -408,6 +408,10 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMagickTreeInstantiated(exception) == MagickFalse)
     return((const MagickInfo *) NULL);
+#if defined(MAGICKCORE_MODULES_SUPPORT)
+  if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
+    (void) OpenModules(exception);
+#endif
   /*
     Find name in list.
   */
@@ -416,10 +420,6 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
-#if defined(MAGICKCORE_MODULES_SUPPORT)
-      if (LocaleCompare(name,"*") == 0)
-        (void) OpenModules(exception);
-#endif
       ResetSplayTreeIterator(magick_list);
       p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
       UnlockSemaphoreInfo(magick_semaphore);
@@ -831,39 +831,45 @@ static void *DestroyMagickNode(void *magick_info)
 static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 {
   (void) exception;
-  if (magick_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&magick_semaphore);
-  LockSemaphoreInfo(magick_semaphore);
   if (magick_list == (SplayTreeInfo *) NULL)
     {
-      MagickBooleanType
-        status;
-
-      MagickInfo
-        *magick_info;
-
-      magick_list=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
-        DestroyMagickNode);
+      if (magick_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&magick_semaphore);
+      LockSemaphoreInfo(magick_semaphore);
       if (magick_list == (SplayTreeInfo *) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-      magick_info=SetMagickInfo("ephemeral");
-      magick_info->stealth=MagickTrue;
-      status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
-      if (status == MagickFalse)
-        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-      magick_info=SetMagickInfo("clipmask");
-      magick_info->stealth=MagickTrue;
-      status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
-      if (status == MagickFalse)
-        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        {
+          MagickBooleanType
+            status;
+
+          MagickInfo
+            *magick_info;
+
+          magick_list=NewSplayTree(CompareSplayTreeString,(void *(*)(void *))
+            NULL,DestroyMagickNode);
+          if (magick_list == (SplayTreeInfo *) NULL)
+            ThrowFatalException(ResourceLimitFatalError,
+              "MemoryAllocationFailed");
+          magick_info=SetMagickInfo("ephemeral");
+          magick_info->stealth=MagickTrue;
+          status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
+          if (status == MagickFalse)
+            ThrowFatalException(ResourceLimitFatalError,
+              "MemoryAllocationFailed");
+          magick_info=SetMagickInfo("clipmask");
+          magick_info->stealth=MagickTrue;
+          status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
+          if (status == MagickFalse)
+            ThrowFatalException(ResourceLimitFatalError,
+              "MemoryAllocationFailed");
 #if defined(MAGICKCORE_MODULES_SUPPORT)
-      (void) GetModuleInfo((char *) NULL,exception);
+          (void) GetModuleInfo((char *) NULL,exception);
 #endif
 #if !defined(MAGICKCORE_BUILD_MODULES)
-      RegisterStaticModules();
+          RegisterStaticModules();
 #endif
+        }
+      UnlockSemaphoreInfo(magick_semaphore);
     }
-  UnlockSemaphoreInfo(magick_semaphore);
   return(magick_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
