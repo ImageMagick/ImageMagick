@@ -1,3 +1,8 @@
+2014-03-16  6.8.8-9 Glenn Randers-Pehrson <glennrp@image...>
+  * Do not block threads in the png codec when PNG_SETJMP_SUPPORTED is not
+    defined (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=23&t=25218).
+
 2014-03-15  6.8.8-9 Dirk Lemstra <dirk@snakeware...>
   * Added tiff:ignore-tags to ignore specific tags.
   * Added orderedDither, selectiveBlur, separate, sepiaTone, sketch,
