@@ -66,6 +66,7 @@
 #include "magick/utility.h"
 #include "magick/utility-private.h"
 #include "magick/xml-tree.h"
+#include "magick/xml-tree-private.h"
 
 /*
   Define declarations.
@@ -1344,7 +1345,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
                     (void) CopyMagickString(path,token,MaxTextExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MaxTextExtent);
-                  xml=FileToString(path,~0UL,exception);
+                  xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
                       status&=LoadDelegateCache(delegate_cache,xml,path,depth+1,

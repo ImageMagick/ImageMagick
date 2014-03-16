@@ -291,6 +291,7 @@ MAGICK_BASE_SRCS = \
 	magick/widget.h \
 	magick/xml-tree.c \
 	magick/xml-tree.h \
+	magick/xml-tree-private.h \
 	magick/xwindow.c \
 	magick/xwindow.h 
 
@@ -450,6 +451,7 @@ MAGICK_NOINST_HDRS = \
 	magick/token-private.h \
 	magick/utility-private.h \
 	magick/version-private.h \
+	magick/xml-tree-private.h \
 	magick/xwindow-private.h \
 	magick/vms.h
 

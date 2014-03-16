@@ -54,6 +54,7 @@
 #include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/xml-tree.h"
+#include "magick/xml-tree-private.h"
 
 /*
   Define declarations.
@@ -843,7 +844,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,const char *xm
               (void) CopyMagickString(path,attribute,MaxTextExtent);
             else
               (void) ConcatenateMagickString(path,attribute,MaxTextExtent);
-            xml=FileToString(path,~0UL,exception);
+            xml=FileToXML(path,~0UL);
             if (xml != (char *) NULL)
               {
                 status&=LoadMimeCache(mime_cache,xml,path,depth+1,exception);

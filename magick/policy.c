@@ -55,6 +55,7 @@
 #include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/xml-tree.h"
+#include "magick/xml-tree-private.h"
 
 /*
   Define declarations.
@@ -812,7 +813,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
                     (void) CopyMagickString(path,token,MaxTextExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MaxTextExtent);
-                  xml=FileToString(path,~0UL,exception);
+                  xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
                       status&=LoadPolicyCache(policy_cache,xml,path,depth+1,

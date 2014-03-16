@@ -1598,7 +1598,6 @@ MagickExport MagickBooleanType DeleteMagickRegistry(const ssize_t id)
 */
 MagickExport void DestroyConstitute(void)
 {
-  ConstituteComponentTerminus();
 }
 
 /*
