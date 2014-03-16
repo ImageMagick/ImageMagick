@@ -1051,6 +1051,12 @@ namespace Magick
     // Change color of opaque pixel to specified pen color.
     void opaque(const Color &opaqueColor_,const Color &penColor_);
 
+    // Perform a ordered dither based on a number of pre-defined dithering
+    // threshold maps, but over multiple intensity levels.
+    void orderedDither(std::string thresholdMap_);
+    void orderedDitherChannel(const ChannelType channel_,
+      std::string thresholdMap_);
+
     // Set each pixel whose value is less than epsilon to epsilon or
     // -epsilon (whichever is closer) otherwise the pixel value remains
     // unchanged.
@@ -1189,12 +1195,6 @@ namespace Magick
     // Resize image by using pixel sampling algorithm
     void sample(const Geometry &geometry_);
 
-    // Allocates a pixel cache region to store image pixels as defined
-    // by the region rectangle.  This area is subsequently transferred
-    // from the pixel cache to the image via syncPixels.
-    Quantum *setPixels(const ::ssize_t x_, const ::ssize_t y_,
-      const size_t columns_,const size_t rows_);
-
     // Resize image by using simple ratio algorithm
     void scale(const Geometry &geometry_);
 
@@ -1204,6 +1204,29 @@ namespace Magick
     // QuantizeColorSpace and Verbose image attributes
     void segment(const double clusterThreshold_=1.0,
       const double smoothingThreshold_=1.5);
+
+    // Selectively blur pixels within a contrast threshold. It is similar to
+    // the unsharpen mask that sharpens everything with contrast above a
+    // certain threshold.
+    void selectiveBlur(const double radius_,const double sigma_,
+      const double threshold_);
+    void selectiveBlurChannel(const ChannelType channel_,const double radius_,
+      const double sigma_,const double threshold_);
+
+    // Separates a channel from the image and returns it as a grayscale image.
+    Image separate(const ChannelType channel_);
+
+    // Applies a special effect to the image, similar to the effect achieved in
+    // a photo darkroom by sepia toning.  Threshold ranges from 0 to 
+    // QuantumRange and is a measure of the extent of the sepia toning.
+    // A threshold of 80% is a good starting point for a reasonable tone.
+    void sepiaTone(const double threshold_);
+
+    // Allocates a pixel cache region to store image pixels as defined
+    // by the region rectangle.  This area is subsequently transferred
+    // from the pixel cache to the image via syncPixels.
+    Quantum *setPixels(const ::ssize_t x_, const ::ssize_t y_,
+      const size_t columns_,const size_t rows_);
 
     // Shade image using distant light source
     void shade(const double azimuth_=30,const double elevation_=30,
@@ -1235,6 +1258,13 @@ namespace Magick
     // the signature regardless of whether the image data has been
     // modified.
     std::string signature(const bool force_=false) const;
+
+    // Simulates a pencil sketch. We convolve the image with a Gaussian
+    // operator of the given radius and standard deviation (sigma). For
+    // reasonable results, radius should be larger than sigma. Use a
+    // radius of 0 and SketchImage() selects a suitable radius for you.
+    void sketch(const double radius_=0.0,const double sigma_=1.0,
+      const double angle_=0.0);
 
     // Solarize image (similar to effect seen when exposing a
     // photographic film to light during the development process)
@@ -1288,6 +1318,11 @@ namespace Magick
     // Resize image to thumbnail size
     void thumbnail(const Geometry &geometry_);
 
+    // Applies a color vector to each pixel in the image. The length of the
+    // vector is 0 for black and white and at its maximum for the midtones.
+    // The vector weighting function is f(x)=(1-(4.0*((x-0.5)*(x-0.5))))
+    void tint(const std::string opacity_);
+
     // Transform image based on image and crop geometries
     // Crop geometry is optional
     void transform(const Geometry &imageGeometry_);
@@ -1322,6 +1357,9 @@ namespace Magick
     // Trim edges that are the background color from the image
     void trim(void);
 
+    // Returns the unique colors of an image.
+    Image uniqueColors(void);
+
     // Replace image with a sharpened version of the original image
     // using the unsharp mask algorithm.
     //  radius_
@@ -1338,6 +1376,10 @@ namespace Magick
       const double amount_,const double threshold_);
     void unsharpmaskChannel(const ChannelType channel_,const double radius_,
       const double sigma_,const double amount_,const double threshold_);
+
+    // Softens the edges of the image in vignette style.
+    void vignette(const double radius_=0.0,const double sigma_=1.0,
+      const ssize_t x_=0,const ssize_t y_=0);
 
     // Map image pixels to a sine wave
     void wave(const double amplitude_=25.0,const double wavelength_=150.0);

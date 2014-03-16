@@ -16,14 +16,6 @@ using namespace std;
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
 
-#define GetPPException \
-  ExceptionInfo \
-    exceptionInfo; \
-  GetExceptionInfo(&exceptionInfo)
-#define ThrowPPException \
-  throwException(exceptionInfo); \
-  (void) DestroyExceptionInfo(&exceptionInfo)
-
 static bool magick_initialized=false;
 
 // Clone C++ string as allocated C string, de-allocating any existing string
