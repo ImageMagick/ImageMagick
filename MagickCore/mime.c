@@ -853,7 +853,7 @@ static MagickBooleanType LoadMimeCache(const char *xml,const char *filename,
               (void) CopyMagickString(path,attribute,MaxTextExtent);
             else
               (void) ConcatenateMagickString(path,attribute,MaxTextExtent);
-            xml=FileToString(path,~0UL,exception);
+            xml=FileToXML(path,~0UL);
             if (xml != (char *) NULL)
               {
                 status=LoadMimeCache(xml,path,depth+1,exception);

@@ -49,6 +49,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/log.h"
@@ -534,6 +535,163 @@ MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
   xml_info->tag=DestroyString(xml_info->tag);
   xml_info=(XMLTreeInfo *) RelinquishMagickMemory(xml_info);
   return((XMLTreeInfo *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   F i l e T o X M L                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  FileToXML() returns the contents of a file as a XML string.
+%
+%  The format of the FileToXML method is:
+%
+%      char *FileToXML(const char *filename,const size_t extent)
+%
+%  A description of each parameter follows:
+%
+%    o filename: the filename.
+%
+%    o extent: Maximum length of the string.
+%
+*/
+
+static inline size_t MagickMin(const size_t x,const size_t y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
+MagickPrivate char *FileToXML(const char *filename,const size_t extent)
+{
+  char
+    *xml;
+
+  int
+    file;
+
+  MagickOffsetType
+    offset;
+
+  register size_t
+    i;
+
+  size_t
+    length;
+
+  ssize_t
+    count;
+
+  void
+    *map;
+
+  assert(filename != (const char *) NULL);
+  length=0;
+  file=fileno(stdin);
+  if (LocaleCompare(filename,"-") != 0)
+    file=open_utf8(filename,O_RDONLY | O_BINARY,0);
+  if (file == -1)
+    return((char *) NULL);
+  offset=(MagickOffsetType) lseek(file,0,SEEK_END);
+  count=0;
+  if ((file == fileno(stdin)) || (offset < 0) ||
+      (offset != (MagickOffsetType) ((ssize_t) offset)))
+    {
+      size_t
+        quantum;
+
+      struct stat
+        file_stats;
+
+      /*
+        Stream is not seekable.
+      */
+      offset=(MagickOffsetType) lseek(file,0,SEEK_SET);
+      quantum=(size_t) MagickMaxBufferExtent;
+      if ((fstat(file,&file_stats) == 0) && (file_stats.st_size != 0))
+        quantum=(size_t) MagickMin((MagickSizeType) file_stats.st_size,
+          MagickMaxBufferExtent);
+      xml=(char *) AcquireQuantumMemory(quantum,sizeof(*xml));
+      for (i=0; xml != (char *) NULL; i+=count)
+      {
+        count=read(file,xml+i,quantum);
+        if (count <= 0)
+          {
+            count=0;
+            if (errno != EINTR)
+              break;
+          }
+        if (~((size_t) i) < (quantum+1))
+          {
+            xml=(char *) RelinquishMagickMemory(xml);
+            break;
+          }
+        xml=(char *) ResizeQuantumMemory(xml,i+quantum+1,sizeof(*xml));
+        if ((size_t) (i+count) >= extent)
+          break;
+      }
+      if (LocaleCompare(filename,"-") != 0)
+        file=close(file);
+      if (xml == (char *) NULL)
+        return((char *) NULL);
+      if (file == -1)
+        {
+          xml=(char *) RelinquishMagickMemory(xml);
+          return((char *) NULL);
+        }
+      length=(size_t) MagickMin(i+count,extent);
+      xml[length]='\0';
+      return(xml);
+    }
+  length=(size_t) MagickMin((MagickSizeType) offset,extent);
+  xml=(char *) NULL;
+  if (~length >= (MaxTextExtent-1))
+    xml=(char *) AcquireQuantumMemory(length+MaxTextExtent,sizeof(*xml));
+  if (xml == (char *) NULL)
+    {
+      file=close(file);
+      return((char *) NULL);
+    }
+  map=MapBlob(file,ReadMode,0,length);
+  if (map != (char *) NULL)
+    {
+      (void) memcpy(xml,map,length);
+      (void) UnmapBlob(map,length);
+    }
+  else
+    {
+      (void) lseek(file,0,SEEK_SET);
+      for (i=0; i < length; i+=count)
+      {
+        count=read(file,xml+i,(size_t) MagickMin(length-i,(MagickSizeType)
+          SSIZE_MAX));
+        if (count <= 0)
+          {
+            count=0;
+            if (errno != EINTR)
+              break;
+          }
+      }
+      if (i < length)
+        {
+          file=close(file)-1;
+          xml=(char *) RelinquishMagickMemory(xml);
+          return((char *) NULL);
+        }
+    }
+  xml[length]='\0';
+  if (LocaleCompare(filename,"-") != 0)
+    file=close(file);
+  if (file == -1)
+    xml=(char *) RelinquishMagickMemory(xml);
+  return(xml);
 }
 
 /*
