@@ -267,18 +267,18 @@ MagickExport MagickBooleanType NTIsMagickConflict(const char *magick)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTLoadTypeLists() loads a Windows TrueType fonts.
+%  NTAcquireTypeCache() loads a Windows TrueType fonts.
 %
-%  The format of the NTLoadTypeLists method is:
+%  The format of the NTAcquireTypeCache method is:
 %
-%      MagickBooleanType NTLoadTypeLists(SplayTreeInfo *type_list)
+%      MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache)
 %
 %  A description of each parameter follows:
 %
-%    o type_list: A linked list of fonts.
+%    o type_cache: A linked list of fonts.
 %
 */
-MagickExport MagickBooleanType NTLoadTypeLists(SplayTreeInfo *type_list,
+MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
   ExceptionInfo *exception)
 {
   HKEY
@@ -538,7 +538,7 @@ MagickExport MagickBooleanType NTLoadTypeLists(SplayTreeInfo *type_list,
         type_info->family=ConstantString(buffer);
 
         list_entries++;
-        status=AddValueToSplayTree(type_list,ConstantString(type_info->name),
+        status=AddValueToSplayTree(type_cache,ConstantString(type_info->name),
           type_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),

@@ -118,14 +118,132 @@ static SemaphoreInfo
   *type_semaphore = (SemaphoreInfo *) NULL;
 
 static SplayTreeInfo
-  *type_list = (SplayTreeInfo *) NULL;
+  *type_cache = (SplayTreeInfo *) NULL;
 
 /*
   Forward declarations.
 */
 static MagickBooleanType
   IsTypeTreeInstantiated(ExceptionInfo *),
-  LoadTypeLists(const char *,ExceptionInfo *);
+  LoadTypeCache(const char *,const char *,const size_t,ExceptionInfo *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  A c q u i r e T y p e S p l a y T r e e                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireTypeCache() caches one or more type configuration files which
+%  provides a mapping between type attributes and a type name.
+%
+%  The format of the AcquireTypeCache method is:
+%
+%      SplayTreeInfo *AcquireTypeCache(const char *filename,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: the font file name.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static void *DestroyTypeNode(void *type_info)
+{
+  register TypeInfo
+    *p;
+
+  p=(TypeInfo *) type_info;
+  if (p->path != (char *) NULL)
+    p->path=DestroyString(p->path);
+  if (p->name != (char *) NULL)
+    p->name=DestroyString(p->name);
+  if (p->description != (char *) NULL)
+    p->description=DestroyString(p->description);
+  if (p->family != (char *) NULL)
+    p->family=DestroyString(p->family);
+  if (p->encoding != (char *) NULL)
+    p->encoding=DestroyString(p->encoding);
+  if (p->foundry != (char *) NULL)
+    p->foundry=DestroyString(p->foundry);
+  if (p->format != (char *) NULL)
+    p->format=DestroyString(p->format);
+  if (p->metrics != (char *) NULL)
+    p->metrics=DestroyString(p->metrics);
+  if (p->glyphs != (char *) NULL)
+    p->glyphs=DestroyString(p->glyphs);
+  return(RelinquishMagickMemory(p));
+}
+
+static SplayTreeInfo *AcquireTypeCache(const char *filename,
+  ExceptionInfo *exception)
+{
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+  return(LoadTypeCache(TypeMap,"built-in",0,exception));
+#else
+  char
+    *font_path,
+    path[MaxTextExtent];
+
+  const StringInfo
+    *option;
+
+  LinkedListInfo
+    *options;
+
+  MagickStatusType
+    status;
+
+  SplayTreeInfo
+    *type_cache;
+
+  type_cache=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
+    DestroyTypeNode);
+  if (type_cache == (SplayTreeInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  status=MagickTrue;
+  *path='\0';
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
+    status&=LoadTypeCache((const char *) GetStringInfoDatum(option),
+      GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  font_path=GetEnvironmentValue("MAGICK_FONT_PATH");
+  if (font_path != (char *) NULL)
+    {
+      char
+        *option;
+
+      /*
+        Search MAGICK_FONT_PATH.
+      */
+      (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",font_path,
+        DirectorySeparator,filename);
+      option=FileToString(path,~0UL,exception);
+      if (option != (void *) NULL)
+        {
+          status&=LoadTypeCache(option,path,0,exception);
+          option=DestroyString(option);
+        }
+      font_path=DestroyString(font_path);
+    }
+  if ((type_cache == (SplayTreeInfo *) NULL) ||
+      (GetNumberOfNodesInSplayTree(type_cache) == 0))
+    status&=LoadTypeCache(TypeMap,"built-in",0,exception);
+  return(type_cache);
+#endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,18 +273,21 @@ static MagickBooleanType
 MagickExport const TypeInfo *GetTypeInfo(const char *name,
   ExceptionInfo *exception)
 {
+  const TypeInfo
+    *type_info;
+
   assert(exception != (ExceptionInfo *) NULL);
   if (IsTypeTreeInstantiated(exception) == MagickFalse)
     return((const TypeInfo *) NULL);
   LockSemaphoreInfo(type_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
-      ResetSplayTreeIterator(type_list);
-      type_info=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+      ResetSplayTreeIterator(type_cache);
+      type_info=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
       UnlockSemaphoreInfo(type_semaphore);
       return(type_info);
     }
-  type_info=(const TypeInfo *) GetValueFromSplayTree(type_list,name);
+  type_info=(const TypeInfo *) GetValueFromSplayTree(type_cache,name);
   UnlockSemaphoreInfo(type_semaphore);
   return(type_info);
 }
@@ -265,17 +386,17 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     Check for an exact type match.
   */
   (void) GetTypeInfo("*",exception);
-  if (type_list == (SplayTreeInfo *) NULL)
+  if (type_cache == (SplayTreeInfo *) NULL)
     return((TypeInfo *) NULL);
   LockSemaphoreInfo(type_semaphore);
-  ResetSplayTreeIterator(type_list);
+  ResetSplayTreeIterator(type_cache);
   type_info=(const TypeInfo *) NULL;
-  p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+  p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
   while (p != (const TypeInfo *) NULL)
   {
     if (p->family == (char *) NULL)
       {
-        p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+        p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
         continue;
       }
     if (family == (const char *) NULL)
@@ -283,30 +404,30 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
         if ((LocaleCompare(p->family,"arial") != 0) &&
             (LocaleCompare(p->family,"helvetica") != 0))
           {
-            p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+            p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
             continue;
           }
       }
     else
       if (LocaleCompare(p->family,family) != 0)
         {
-          p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+          p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
           continue;
         }
     if ((style != UndefinedStyle) && (style != AnyStyle) && (p->style != style))
       {
-        p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+        p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
         continue;
       }
     if ((stretch != UndefinedStretch) && (stretch != AnyStretch) &&
         (p->stretch != stretch))
       {
-        p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+        p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
         continue;
       }
     if ((weight != 0) && (p->weight != weight))
       {
-        p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+        p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
         continue;
       }
     type_info=p;
@@ -320,13 +441,13 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   */
   max_score=0;
   LockSemaphoreInfo(type_semaphore);
-  ResetSplayTreeIterator(type_list);
-  p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+  ResetSplayTreeIterator(type_cache);
+  p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
   while (p != (const TypeInfo *) NULL)
   {
     if (p->family == (char *) NULL)
       {
-        p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+        p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
         continue;
       }
     if (family == (const char *) NULL)
@@ -334,14 +455,14 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
         if ((LocaleCompare(p->family,"arial") != 0) &&
             (LocaleCompare(p->family,"helvetica") != 0))
           {
-            p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+            p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
             continue;
           }
       }
     else
       if (LocaleCompare(p->family,family) != 0)
         {
-          p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+          p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
           continue;
         }
     score=0;
@@ -369,7 +490,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
         max_score=score;
         type_info=p;
       }
-    p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+    p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
   }
   UnlockSemaphoreInfo(type_semaphore);
   if (type_info != (const TypeInfo *) NULL)
@@ -476,21 +597,21 @@ MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
   if (p == (const TypeInfo *) NULL)
     return((const TypeInfo **) NULL);
   fonts=(const TypeInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfNodesInSplayTree(type_list)+1UL,sizeof(*fonts));
+    GetNumberOfNodesInSplayTree(type_cache)+1UL,sizeof(*fonts));
   if (fonts == (const TypeInfo **) NULL)
     return((const TypeInfo **) NULL);
   /*
     Generate type list.
   */
   LockSemaphoreInfo(type_semaphore);
-  ResetSplayTreeIterator(type_list);
-  p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+  ResetSplayTreeIterator(type_cache);
+  p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
   for (i=0; p != (const TypeInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       fonts[i++]=p;
-    p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+    p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
   }
   UnlockSemaphoreInfo(type_semaphore);
   qsort((void *) fonts,(size_t) i,sizeof(*fonts),TypeInfoCompare);
@@ -569,21 +690,21 @@ MagickExport char **GetTypeList(const char *pattern,size_t *number_fonts,
   if (p == (const TypeInfo *) NULL)
     return((char **) NULL);
   fonts=(char **) AcquireQuantumMemory((size_t)
-    GetNumberOfNodesInSplayTree(type_list)+1UL,sizeof(*fonts));
+    GetNumberOfNodesInSplayTree(type_cache)+1UL,sizeof(*fonts));
   if (fonts == (char **) NULL)
     return((char **) NULL);
   /*
     Generate type list.
   */
   LockSemaphoreInfo(type_semaphore);
-  ResetSplayTreeIterator(type_list);
-  p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+  ResetSplayTreeIterator(type_cache);
+  p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
   for (i=0; p != (const TypeInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       fonts[i++]=ConstantString(p->name);
-    p=(const TypeInfo *) GetNextValueInSplayTree(type_list);
+    p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
   }
   UnlockSemaphoreInfo(type_semaphore);
   qsort((void *) fonts,(size_t) i,sizeof(*fonts),TypeCompare);
@@ -617,7 +738,7 @@ MagickExport char **GetTypeList(const char *pattern,size_t *number_fonts,
 */
 
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
-MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
+MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
   ExceptionInfo *exception)
 {
 #if !defined(FC_FULLNAME)
@@ -770,7 +891,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
     if (weight >= FC_WEIGHT_BLACK)
       type_info->weight=900;
     type_info->glyphs=ConstantString((const char *) file);
-    (void) AddValueToSplayTree(type_list,type_info->name,type_info);
+    (void) AddValueToSplayTree(type_cache,type_info->name,type_info);
   }
   FcFontSetDestroy(font_set);
   FcConfigDestroy(font_config);
@@ -780,21 +901,24 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
 
 static MagickBooleanType IsTypeTreeInstantiated(ExceptionInfo *exception)
 {
-  if (type_semaphore == (SemaphoreInfo *) NULL)
-  ActivateSemaphoreInfo(&type_semaphore);
-  LockSemaphoreInfo(type_semaphore);
-  if (type_list == (SplayTreeInfo *) NULL)
+  if (type_cache == (SplayTreeInfo *) NULL)
     {
-      (void) LoadTypeLists(MagickTypeFilename,exception);
+      if (type_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&type_semaphore);
+      LockSemaphoreInfo(type_semaphore);
+      if (type_cache == (SplayTreeInfo *) NULL)
+        {
+          type_cache=AcquireTypeCache(MagickTypeFilename,exception);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-      (void) NTLoadTypeLists(type_list,exception);
+          (void) NTAcquireTypeCache(type_cache,exception);
 #endif
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
-      (void) LoadFontConfigFonts(type_list,exception);
+          (void) LoadFontConfigFonts(type_cache,exception);
 #endif
+        }
+      UnlockSemaphoreInfo(type_semaphore);
     }
-  UnlockSemaphoreInfo(type_semaphore);
-  return(type_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
+  return(type_cache != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -896,12 +1020,12 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LoadTypeList() loads the type configuration file which provides a mapping
+%  LoadTypeCache() loads the type configurations which provides a mapping
 %  between type attributes and a type name.
 %
-%  The format of the LoadTypeList method is:
+%  The format of the LoadTypeCache method is:
 %
-%      MagickBooleanType LoadTypeList(const char *xml,const char *filename,
+%      MagickBooleanType LoadTypeCache(const char *xml,const char *filename,
 %        const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -916,35 +1040,8 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %
 */
 
-static void *DestroyTypeNode(void *type_info)
-{
-  register TypeInfo
-    *p;
-
-  p=(TypeInfo *) type_info;
-  if (p->path != (char *) NULL)
-    p->path=DestroyString(p->path);
-  if (p->name != (char *) NULL)
-    p->name=DestroyString(p->name);
-  if (p->description != (char *) NULL)
-    p->description=DestroyString(p->description);
-  if (p->family != (char *) NULL)
-    p->family=DestroyString(p->family);
-  if (p->encoding != (char *) NULL)
-    p->encoding=DestroyString(p->encoding);
-  if (p->foundry != (char *) NULL)
-    p->foundry=DestroyString(p->foundry);
-  if (p->format != (char *) NULL)
-    p->format=DestroyString(p->format);
-  if (p->metrics != (char *) NULL)
-    p->metrics=DestroyString(p->metrics);
-  if (p->glyphs != (char *) NULL)
-    p->glyphs=DestroyString(p->glyphs);
-  return(RelinquishMagickMemory(p));
-}
-
 static inline MagickBooleanType SetTypeNodePath(const char *filename,
-char *font_path,const char *token,char **target)
+  char *font_path,const char *token,char **target)
 {
   char
    *path;
@@ -980,7 +1077,7 @@ char *font_path,const char *token,char **target)
   return(MagickTrue);
 }
 
-static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
+static MagickBooleanType LoadTypeCache(const char *xml,const char *filename,
   const size_t depth,ExceptionInfo *exception)
 {
   char
@@ -1004,11 +1101,11 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
     "Loading type configure file \"%s\" ...",filename);
   if (xml == (const char *) NULL)
     return(MagickFalse);
-  if (type_list == (SplayTreeInfo *) NULL)
+  if (type_cache == (SplayTreeInfo *) NULL)
     {
-      type_list=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
+      type_cache=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
         DestroyTypeNode);
-      if (type_list == (SplayTreeInfo *) NULL)
+      if (type_cache == (SplayTreeInfo *) NULL)
         {
           ThrowFileException(exception,ResourceLimitError,
             "MemoryAllocationFailed",filename);
@@ -1093,7 +1190,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
                   sans_exception=DestroyExceptionInfo(sans_exception);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadTypeList(xml,path,depth+1,exception);
+                      status=LoadTypeCache(xml,path,depth+1,exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }
@@ -1118,7 +1215,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AddValueToSplayTree(type_list,type_info->name,type_info);
+        status=AddValueToSplayTree(type_cache,type_info->name,type_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",type_info->name);
@@ -1255,89 +1352,6 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  L o a d T y p e L i s t s                                                  %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LoadTypeList() loads one or more type configuration files which provides a
-%  mapping between type attributes and a type name.
-%
-%  The format of the LoadTypeLists method is:
-%
-%      MagickBooleanType LoadTypeLists(const char *filename,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: the font file name.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType LoadTypeLists(const char *filename,
-  ExceptionInfo *exception)
-{
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  return(LoadTypeList(TypeMap,"built-in",0,exception));
-#else
-  char
-    *font_path,
-    path[MaxTextExtent];
-
-  const StringInfo
-    *option;
-
-  LinkedListInfo
-    *options;
-
-  MagickStatusType
-    status;
-
-  status=MagickFalse;
-  *path='\0';
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
-    status&=LoadTypeList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
-  font_path=GetEnvironmentValue("MAGICK_FONT_PATH");
-  if (font_path != (char *) NULL)
-    {
-      char
-        *option;
-
-      /*
-        Search MAGICK_FONT_PATH.
-      */
-      (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",font_path,
-        DirectorySeparator,filename);
-      option=FileToString(path,~0UL,exception);
-      if (option != (void *) NULL)
-        {
-          status&=LoadTypeList(option,path,0,exception);
-          option=DestroyString(option);
-        }
-      font_path=DestroyString(font_path);
-    }
-  if ((type_list == (SplayTreeInfo *) NULL) ||
-      (GetNumberOfNodesInSplayTree(type_list) == 0))
-    status&=LoadTypeList(TypeMap,"built-in",0,exception);
-  return(status != 0 ? MagickTrue : MagickFalse);
-#endif
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   T y p e C o m p o n e n t G e n e s i s                                   %
 %                                                                             %
 %                                                                             %
@@ -1380,8 +1394,8 @@ MagickPrivate void TypeComponentTerminus(void)
   if (type_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&type_semaphore);
   LockSemaphoreInfo(type_semaphore);
-  if (type_list != (SplayTreeInfo *) NULL)
-    type_list=DestroySplayTree(type_list);
+  if (type_cache != (SplayTreeInfo *) NULL)
+    type_cache=DestroySplayTree(type_cache);
   UnlockSemaphoreInfo(type_semaphore);
   RelinquishSemaphoreInfo(&type_semaphore);
 }
