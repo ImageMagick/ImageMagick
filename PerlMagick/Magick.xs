@@ -9810,7 +9810,7 @@ Mogrify(ref,...)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          image=RadialBlurImageChannel(image,channel,geometry_info.rho,
+          image=RotationalBlurImageChannel(image,channel,geometry_info.rho,
             exception);
           break;
         }

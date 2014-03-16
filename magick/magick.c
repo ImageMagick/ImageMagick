@@ -408,24 +408,23 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMagickTreeInstantiated(exception) == MagickFalse)
     return((const MagickInfo *) NULL);
-  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    {
-#if defined(MAGICKCORE_MODULES_SUPPORT)
-      if (LocaleCompare(name,"*") == 0)
-        (void) OpenModules(exception);
-#endif
-      LockSemaphoreInfo(magick_semaphore);
-      ResetSplayTreeIterator(magick_list);
-      p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-      UnlockSemaphoreInfo(magick_semaphore);
-      return(p);
-    }
   /*
     Find name in list.
   */
   LockSemaphoreInfo(magick_semaphore);
   ResetSplayTreeIterator(magick_list);
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
+  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
+    {
+#if defined(MAGICKCORE_MODULES_SUPPORT)
+      if (LocaleCompare(name,"*") == 0)
+        (void) OpenModules(exception);
+#endif
+      ResetSplayTreeIterator(magick_list);
+      p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
+      UnlockSemaphoreInfo(magick_semaphore);
+      return(p);
+    }
   while (p != (const MagickInfo *) NULL)
   {
     if (LocaleCompare(p->name,name) == 0)

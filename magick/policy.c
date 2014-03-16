@@ -168,12 +168,12 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   if (IsPolicyListInstantiated(exception) == MagickFalse)
     return((PolicyInfo *) NULL);
-  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    return((PolicyInfo *) GetValueFromLinkedList(policy_list,0));
   /*
     Strip names of whitespace.
   */
-  (void) CopyMagickString(policyname,name,MaxTextExtent);
+  *policyname='\0';
+  if (name != (const char *) NULL)
+    (void) CopyMagickString(policyname,name,MaxTextExtent);
   for (q=policyname; *q != '\0'; q++)
   {
     if (isspace((int) ((unsigned char) *q)) == 0)
@@ -187,6 +187,11 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
   LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_list);
   p=(PolicyInfo *) GetNextValueInLinkedList(policy_list);
+  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
+    {
+      UnlockSemaphoreInfo(policy_semaphore);
+      return(p);
+    }
   while (p != (PolicyInfo *) NULL)
   {
     if (LocaleCompare(policyname,p->name) == 0)

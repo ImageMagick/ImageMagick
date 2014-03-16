@@ -908,12 +908,12 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
   assert(exception != (ExceptionInfo *) NULL);
   if (IsColorListInstantiated(exception) == MagickFalse)
     return((const ColorInfo *) NULL);
-  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    return((const ColorInfo *) GetValueFromLinkedList(color_list,0));
   /*
     Strip names of whitespace.
   */
-  (void) CopyMagickString(colorname,name,MaxTextExtent);
+  *colorname='\0';
+  if (name != (const char *) NULL)
+    (void) CopyMagickString(colorname,name,MaxTextExtent);
   for (q=colorname; *q != '\0'; q++)
   {
     if (isspace((int) ((unsigned char) *q)) == 0)
@@ -927,6 +927,11 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
   LockSemaphoreInfo(color_semaphore);
   ResetLinkedListIterator(color_list);
   p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
+  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
+    {
+      UnlockSemaphoreInfo(color_semaphore);
+      return(p);
+    }
   while (p != (const ColorInfo *) NULL)
   {
     if (((p->compliance & compliance) != 0) &&
