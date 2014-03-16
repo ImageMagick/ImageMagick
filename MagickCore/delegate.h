@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+#include <stdarg.h>
+#include "MagickCore/semaphore.h"
+
 typedef struct _DelegateInfo
 {
   char
@@ -37,6 +40,9 @@ typedef struct _DelegateInfo
     thread_support,
     spawn,
     stealth;
+
+  SemaphoreInfo
+    *semaphore;
                                                                                 
   size_t
     signature;

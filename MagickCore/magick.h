@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+#include <stdarg.h>
+#include "MagickCore/semaphore.h"
+
 typedef enum
 {
   UndefinedFormatType,
@@ -85,6 +88,9 @@ typedef struct _MagickInfo
 
   MagickBooleanType
     stealth;
+
+  SemaphoreInfo
+    *semaphore;
 
   size_t
     signature;

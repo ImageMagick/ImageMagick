@@ -188,9 +188,6 @@ static void *DestroyLocaleNode(void *locale_info)
 static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
   const char *locale,ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  return(LoadLocaleCache(LocaleMap,"built-in",locale,0,exception));
-#else
   const StringInfo
     *option;
 
@@ -210,15 +207,17 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
   status=MagickTrue;
   options=GetLocaleOptions(filename,exception);
   option=(const StringInfo *) GetNextValueInLinkedList(options);
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   while (option != (const StringInfo *) NULL)
   {
     status&=LoadLocaleCache((const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),locale,0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
+#endif
   options=DestroyLocaleOptions(options);
-  if ((locale_cache == (SplayTreeInfo *) NULL) ||
-      (GetNumberOfNodesInSplayTree(locale_cache) == 0))
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+  if (GetNumberOfNodesInSplayTree(locale_cache) == 0)
     {
       options=GetLocaleOptions("english.xml",exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
@@ -230,11 +229,10 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
       }
       options=DestroyLocaleOptions(options);
     }
-  if ((locale_cache == (SplayTreeInfo *) NULL) ||
-      (GetNumberOfNodesInSplayTree(locale_cache) == 0))
+#endif
+  if (GetNumberOfNodesInSplayTree(locale_cache) == 0)
     status&=LoadLocaleCache(LocaleMap,"built-in",locale,0,exception);
   return(locale_cache);
-#endif
 }
 
 #if defined(MAGICKCORE_HAVE_STRTOD_L)
