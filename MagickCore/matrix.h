@@ -30,7 +30,6 @@ extern MagickExport double
   **RelinquishMagickMatrix(double **,const size_t);
 
 extern MagickExport MagickBooleanType
-  GaussJordanElimination(double **,double **,const size_t,const size_t),
   GetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,void *),
   NullMatrix(MatrixInfo *),
   SetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,const void *);
@@ -42,10 +41,6 @@ MagickExport MatrixInfo
 MagickExport size_t
   GetMatrixColumns(const MatrixInfo *),
   GetMatrixRows(const MatrixInfo *);
-
-extern MagickExport void
-  LeastSquaresAddTerms(double **,double **,const double *,const double *,
-    const size_t,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

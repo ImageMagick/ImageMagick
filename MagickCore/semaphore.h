@@ -26,12 +26,12 @@ typedef struct SemaphoreInfo
   SemaphoreInfo;
 
 extern MagickExport SemaphoreInfo
-  *AcquireSemaphoreInfo(void);
+  *AcquireSemaphoreInfo(void),
+  *RelinquishSemaphoreInfo(SemaphoreInfo **);
 
 extern MagickExport void
   ActivateSemaphoreInfo(SemaphoreInfo **),
   LockSemaphoreInfo(SemaphoreInfo *),
-  RelinquishSemaphoreInfo(SemaphoreInfo **),
   UnlockSemaphoreInfo(SemaphoreInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
