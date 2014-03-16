@@ -105,7 +105,7 @@ static const ConfigureMapInfo
   };
 
 static LinkedListInfo
-  *configure_list = (LinkedListInfo *) NULL;
+  *configure_cache = (LinkedListInfo *) NULL;
 
 static SemaphoreInfo
   *configure_semaphore = (SemaphoreInfo *) NULL;
@@ -114,8 +114,102 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  IsConfigureListInstantiated(ExceptionInfo *),
-  LoadConfigureLists(const char *,ExceptionInfo *);
+  IsConfigureCacheInstantiated(ExceptionInfo *),
+  LoadConfigureCache(LinkedListInfo *,const char *,const char *,const size_t,
+    ExceptionInfo *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  A c q u i r e C o n f i g u r e C a c h e                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireConfigureCache() caches one or more configure configurations which
+%  provides a mapping between configure attributes and a configure name.
+%
+%  The format of the AcquireConfigureCache method is:
+%
+%      LinkedListInfo *AcquireConfigureCache(const char *filename,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: the font file name.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static LinkedListInfo *AcquireConfigureCache(const char *filename,
+  ExceptionInfo *exception)
+{
+  const StringInfo
+    *option;
+
+  LinkedListInfo
+    *configure_cache,
+    *options;
+
+  MagickStatusType
+    status;
+
+  register ssize_t
+    i;
+
+  /*
+    Load external configure map.
+  */
+  configure_cache=NewLinkedList(0);
+  if (configure_cache == (LinkedListInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  status=MagickTrue;
+  options=GetConfigureOptions(filename,exception);
+  option=(const StringInfo *) GetNextValueInLinkedList(options);
+  while (option != (const StringInfo *) NULL)
+  {
+    status&=LoadConfigureCache(configure_cache,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+  }
+  options=DestroyConfigureOptions(options);
+  /*
+    Load built-in configure map.
+  */
+  for (i=0; i < (ssize_t) (sizeof(ConfigureMap)/sizeof(*ConfigureMap)); i++)
+  {
+    ConfigureInfo
+      *configure_info;
+
+    register const ConfigureMapInfo
+      *p;
+
+    p=ConfigureMap+i;
+    configure_info=(ConfigureInfo *) AcquireMagickMemory(
+      sizeof(*configure_info));
+    if (configure_info == (ConfigureInfo *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
+        continue;
+      }
+    (void) ResetMagickMemory(configure_info,0,sizeof(*configure_info));
+    configure_info->path=(char *) "[built-in]";
+    configure_info->name=(char *) p->name;
+    configure_info->value=(char *) p->value;
+    configure_info->exempt=MagickTrue;
+    configure_info->signature=MagickSignature;
+    status&=AppendValueToLinkedList(configure_cache,configure_info);
+    if (status == MagickFalse)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        configure_info->name);
+  }
+  return(configure_cache);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -184,9 +278,9 @@ MagickExport void ConfigureComponentTerminus(void)
   if (configure_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&configure_semaphore);
   LockSemaphoreInfo(configure_semaphore);
-  if (configure_list != (LinkedListInfo *) NULL)
-    configure_list=DestroyLinkedList(configure_list,DestroyConfigureElement);
-  configure_list=(LinkedListInfo *) NULL;
+  if (configure_cache != (LinkedListInfo *) NULL)
+    configure_cache=DestroyLinkedList(configure_cache,DestroyConfigureElement);
+  configure_cache=(LinkedListInfo *) NULL;
   UnlockSemaphoreInfo(configure_semaphore);
   DestroySemaphoreInfo(&configure_semaphore);
 }
@@ -262,14 +356,14 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (IsConfigureListInstantiated(exception) == MagickFalse)
+  if (IsConfigureCacheInstantiated(exception) == MagickFalse)
     return((const ConfigureInfo *) NULL);
   /*
     Search for configure tag.
   */
   LockSemaphoreInfo(configure_semaphore);
-  ResetLinkedListIterator(configure_list);
-  p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
+  ResetLinkedListIterator(configure_cache);
+  p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       UnlockSemaphoreInfo(configure_semaphore);
@@ -279,11 +373,11 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   {
     if (LocaleCompare(name,p->name) == 0)
       break;
-    p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
+    p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
   }
   if (p != (ConfigureInfo *) NULL)
-    (void) InsertValueInLinkedList(configure_list,0,
-      RemoveElementByValueFromLinkedList(configure_list,p));
+    (void) InsertValueInLinkedList(configure_cache,0,
+      RemoveElementByValueFromLinkedList(configure_cache,p));
   UnlockSemaphoreInfo(configure_semaphore);
   return(p);
 }
@@ -362,21 +456,21 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
   if (p == (const ConfigureInfo *) NULL)
     return((const ConfigureInfo **) NULL);
   options=(const ConfigureInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(configure_list)+1UL,sizeof(*options));
+    GetNumberOfElementsInLinkedList(configure_cache)+1UL,sizeof(*options));
   if (options == (const ConfigureInfo **) NULL)
     return((const ConfigureInfo **) NULL);
   /*
     Generate configure list.
   */
   LockSemaphoreInfo(configure_semaphore);
-  ResetLinkedListIterator(configure_list);
-  p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
+  ResetLinkedListIterator(configure_cache);
+  p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
   for (i=0; p != (const ConfigureInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       options[i++]=p;
-    p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
+    p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
   }
   UnlockSemaphoreInfo(configure_semaphore);
   qsort((void *) options,(size_t) i,sizeof(*options),ConfigureInfoCompare);
@@ -456,18 +550,18 @@ MagickExport char **GetConfigureList(const char *pattern,
   if (p == (const ConfigureInfo *) NULL)
     return((char **) NULL);
   options=(char **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(configure_list)+1UL,sizeof(*options));
+    GetNumberOfElementsInLinkedList(configure_cache)+1UL,sizeof(*options));
   if (options == (char **) NULL)
     return((char **) NULL);
   LockSemaphoreInfo(configure_semaphore);
-  ResetLinkedListIterator(configure_list);
-  p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
+  ResetLinkedListIterator(configure_cache);
+  p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
   for (i=0; p != (const ConfigureInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       options[i++]=ConstantString(p->name);
-    p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_list);
+    p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
   }
   UnlockSemaphoreInfo(configure_semaphore);
   qsort((void *) options,(size_t) i,sizeof(*options),ConfigureCompare);
@@ -881,33 +975,36 @@ MagickExport const char *GetConfigureValue(const ConfigureInfo *configure_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s C o n f i g u r e L i s t I n s t a n t i a t e d                     %
++   I s C o n f i g u r e C a c h e I n s t a n t i a t e d                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsConfigureListInstantiated() determines if the configure list is
+%  IsConfigureCacheInstantiated() determines if the configure list is
 %  instantiated.  If not, it instantiates the list and returns it.
 %
 %  The format of the IsConfigureInstantiated method is:
 %
-%      MagickBooleanType IsConfigureListInstantiated(ExceptionInfo *exception)
+%      MagickBooleanType IsConfigureCacheInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType IsConfigureListInstantiated(ExceptionInfo *exception)
+static MagickBooleanType IsConfigureCacheInstantiated(ExceptionInfo *exception)
 {
-  if (configure_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&configure_semaphore);
-  LockSemaphoreInfo(configure_semaphore);
-  if (configure_list == (LinkedListInfo *) NULL)
-    (void) LoadConfigureLists(ConfigureFilename,exception);
-  UnlockSemaphoreInfo(configure_semaphore);
-  return(configure_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+  if (configure_cache == (LinkedListInfo *) NULL)
+    {
+      if (configure_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&configure_semaphore);
+      LockSemaphoreInfo(configure_semaphore);
+      if (configure_cache == (LinkedListInfo *) NULL)
+        configure_cache=AcquireConfigureCache(ConfigureFilename,exception);
+      UnlockSemaphoreInfo(configure_semaphore);
+    }
+  return(configure_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1006,13 +1103,14 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LoadConfigureList() loads the configure configuration file which provides a
+%  LoadConfigureCache() loads the configure configurations which provides a
 %  mapping between configure attributes and a configure name.
 %
-%  The format of the LoadConfigureList method is:
+%  The format of the LoadConfigureCache method is:
 %
-%      MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
-%        const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
+%        const char *xml,const char *filename,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1025,8 +1123,9 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
-  const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
+  const char *xml,const char *filename,const size_t depth,
+  ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1046,16 +1145,6 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
   */
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Loading configure file \"%s\" ...",filename);
-  if (configure_list == (LinkedListInfo *) NULL)
-    {
-      configure_list=NewLinkedList(0);
-      if (configure_list == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
   status=MagickTrue;
   configure_info=(ConfigureInfo *) NULL;
   token=AcquireString((char *) xml);
@@ -1120,7 +1209,8 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
                   xml=FileToString(path,~0UL,exception);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadConfigureList(xml,path,depth+1,exception);
+                      status=LoadConfigureCache(configure_cache,xml,path,depth+1,
+                        exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }
@@ -1147,7 +1237,7 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(configure_list,configure_info);
+        status=AppendValueToLinkedList(configure_cache,configure_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
@@ -1201,103 +1291,4 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
   }
   token=(char *) RelinquishMagickMemory(token);
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  L o a d C o n f i g u r e L i s t s                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LoadConfigureList() loads one or more configure configuration files which
-%  provides a mapping between configure attributes and a configure name.
-%
-%  The format of the LoadConfigureLists method is:
-%
-%      MagickBooleanType LoadConfigureLists(const char *filename,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: the font file name.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType LoadConfigureLists(const char *filename,
-  ExceptionInfo *exception)
-{
-  const StringInfo
-    *option;
-
-  LinkedListInfo
-    *options;
-
-  MagickStatusType
-    status;
-
-  register ssize_t
-    i;
-
-  /*
-    Load external configure map.
-  */
-  if (configure_list == (LinkedListInfo *) NULL)
-    {
-      configure_list=NewLinkedList(0);
-      if (configure_list == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
-  status=MagickTrue;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    status&=LoadConfigureList((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
-  /*
-    Load built-in configure map.
-  */
-  for (i=0; i < (ssize_t) (sizeof(ConfigureMap)/sizeof(*ConfigureMap)); i++)
-  {
-    ConfigureInfo
-      *configure_info;
-
-    register const ConfigureMapInfo
-      *p;
-
-    p=ConfigureMap+i;
-    configure_info=(ConfigureInfo *) AcquireMagickMemory(
-      sizeof(*configure_info));
-    if (configure_info == (ConfigureInfo *) NULL)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
-        continue;
-      }
-    (void) ResetMagickMemory(configure_info,0,sizeof(*configure_info));
-    configure_info->path=(char *) "[built-in]";
-    configure_info->name=(char *) p->name;
-    configure_info->value=(char *) p->value;
-    configure_info->exempt=MagickTrue;
-    configure_info->signature=MagickSignature;
-    status&=AppendValueToLinkedList(configure_list,configure_info);
-    if (status == MagickFalse)
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
-        configure_info->name);
-  }
-  return(status != 0 ? MagickTrue : MagickFalse);
 }
