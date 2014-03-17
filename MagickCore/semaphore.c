@@ -293,6 +293,14 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
+#if defined(MAGICKCORE_DEBUG)
+  if ((semaphore_info->reference_count > 0) &&
+      (IsMagickThreadEqual(semaphore_info->id) != MagickFalse))
+    {
+      (void) FormatLocaleFile(stderr,"Warning: unexpected recursive lock!\n");
+      (void) fflush(stderr);
+    }
+#endif
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_set_lock((omp_lock_t *) &semaphore_info->mutex);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
@@ -312,15 +320,9 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   EnterCriticalSection(&semaphore_info->mutex);
 #endif
 #if defined(MAGICKCORE_DEBUG)
-  if ((semaphore_info->reference_count > 0) &&
-      (IsMagickThreadEqual(semaphore_info->id) != MagickFalse))
-    {
-      (void) FormatLocaleFile(stderr,"Warning: unexpected recursive lock!\n");
-      (void) fflush(stderr);
-    }
-#endif
   semaphore_info->id=GetMagickThreadId();
   semaphore_info->reference_count++;
+#endif
 }
 
 /*
