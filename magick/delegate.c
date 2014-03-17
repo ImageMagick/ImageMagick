@@ -171,12 +171,8 @@ static MagickBooleanType
 static LinkedListInfo *AcquireDelegateCache(const char *filename,
   ExceptionInfo *exception)
 {
-  const StringInfo
-    *option;
-
   LinkedListInfo
-    *delegate_cache,
-    *options;
+    *delegate_cache;
 
   MagickStatusType
     status;
@@ -185,19 +181,28 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
   if (delegate_cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  while (option != (const StringInfo *) NULL)
   {
-    status&=LoadDelegateCache(delegate_cache,(const char *)
-      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+    const StringInfo
+      *option;
+
+    LinkedListInfo
+      *options;
+
+    options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
+    while (option != (const StringInfo *) NULL)
+    {
+      status&=LoadDelegateCache(delegate_cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+      option=(const StringInfo *) GetNextValueInLinkedList(options);
+    }
+    options=DestroyConfigureOptions(options);
   }
 #endif
-  options=DestroyConfigureOptions(options);
   if (IsLinkedListEmpty(delegate_cache) != MagickFalse)
-    status&=LoadDelegateCache(delegate_cache,DelegateMap,"built-in",0,exception);
+    status&=LoadDelegateCache(delegate_cache,DelegateMap,"built-in",0,
+      exception);
   return(delegate_cache);
 }
 

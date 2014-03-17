@@ -156,15 +156,8 @@ static MagickBooleanType
 static LinkedListInfo *AcquireMimeCache(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  return(LoadMimeCache(MimeMap,"built-in",0,exception));
-#else
-  const StringInfo
-    *option;
-
   LinkedListInfo
-    *mime_cache,
-    *options;
+    *mime_cache;
 
   MagickStatusType
     status;
@@ -173,22 +166,28 @@ static LinkedListInfo *AcquireMimeCache(const char *filename,
   if (mime_cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
-    status&=LoadMimeCache(mime_cache,(const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
+    const StringInfo
+      *option;
+
+    LinkedListInfo
+      *options;
+
+    options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
+    while (option != (const StringInfo *) NULL)
+    {
+      status&=LoadMimeCache(mime_cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+      option=(const StringInfo *) GetNextValueInLinkedList(options);
+    }
+    options=DestroyConfigureOptions(options);
   }
-  options=DestroyConfigureOptions(options);
-  if ((mime_cache == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(mime_cache) != MagickFalse))
-    status&=LoadMimeCache(mime_cache,MimeMap,"built-in",0,exception);
-  else
-    ClearMagickException(exception);
-  return(mime_cache);
 #endif
+  if (IsLinkedListEmpty(mime_cache) != MagickFalse)
+    status&=LoadMimeCache(mime_cache,MimeMap,"built-in",0,exception);
+  return(mime_cache);
 }
 
 /*
