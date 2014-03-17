@@ -185,16 +185,6 @@ static void *DestroyTypeNode(void *type_info)
 static SplayTreeInfo *AcquireTypeCache(const char *filename,
   ExceptionInfo *exception)
 {
-  char
-    *font_path,
-    path[MaxTextExtent];
-
-  const StringInfo
-    *option;
-
-  LinkedListInfo
-    *options;
-
   MagickStatusType
     status;
 
@@ -206,39 +196,49 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
   if (type_cache == (SplayTreeInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-  *path='\0';
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  while (option != (const StringInfo *) NULL)
   {
-    (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
-    status&=LoadTypeCache(type_cache,(const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-#endif
-  options=DestroyConfigureOptions(options);
-  font_path=GetEnvironmentValue("MAGICK_FONT_PATH");
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  if (font_path != (char *) NULL)
-    {
-      char
-        *option;
+    char
+      *font_path;
 
-      /*
-        Search MAGICK_FONT_PATH.
-      */
-      (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",font_path,
-        DirectorySeparator,filename);
-      option=FileToString(path,~0UL,exception);
-      if (option != (void *) NULL)
-        {
-          status&=LoadTypeCache(type_cache,option,path,0,exception);
-          option=DestroyString(option);
-        }
-      font_path=DestroyString(font_path);
+    const StringInfo
+      *option;
+
+    LinkedListInfo
+      *options;
+
+    options=GetConfigureOptions(filename,exception);
+    option=(const StringInfo *) GetNextValueInLinkedList(options);
+    while (option != (const StringInfo *) NULL)
+    {
+      (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
+      status&=LoadTypeCache(type_cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+      option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
+    options=DestroyConfigureOptions(options);
+    font_path=GetEnvironmentValue("MAGICK_FONT_PATH");
+    if (font_path != (char *) NULL)
+      {
+        char
+          path[MaxTextExtent],
+          *option;
+
+        /*
+          Search MAGICK_FONT_PATH.
+        */
+        *path='\0';
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",font_path,
+          DirectorySeparator,filename);
+        option=FileToString(path,~0UL,exception);
+        if (option != (void *) NULL)
+          {
+            status&=LoadTypeCache(type_cache,option,path,0,exception);
+            option=DestroyString(option);
+          }
+        font_path=DestroyString(font_path);
+      }
+  }
 #endif
   if (GetNumberOfNodesInSplayTree(type_cache) == 0)
     status&=LoadTypeCache(type_cache,TypeMap,"built-in",0,exception);
