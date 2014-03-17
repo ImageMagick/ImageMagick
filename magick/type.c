@@ -200,6 +200,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
   {
     char
       *font_path;
+      path[MaxTextExtent];
 
     const StringInfo
       *option;
@@ -207,6 +208,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
     LinkedListInfo
       *options;
 
+    *path='\0';
     options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
@@ -221,13 +223,11 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
     if (font_path != (char *) NULL)
       {
         char
-          path[MaxTextExtent],
           *option;
 
         /*
           Search MAGICK_FONT_PATH.
         */
-        *path='\0';
         (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",font_path,
           DirectorySeparator,filename);
         option=FileToString(path,~0UL,exception);
