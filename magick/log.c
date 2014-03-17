@@ -1250,7 +1250,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
   LockSemaphoreInfo(event_semaphore);
   if ((log_info->event_mask & type) == 0)
     {
-      UnlockSemaphoreInfo(log_semaphore);
+      UnlockSemaphoreInfo(event_semaphore);
       return(MagickTrue);
     }
   domain=CommandOptionToMnemonic(MagickLogEventOptions,type);
