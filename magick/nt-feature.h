@@ -33,8 +33,8 @@ extern MagickExport void
 #if !defined(XS_VERSION)
 
 extern MagickExport MagickBooleanType
-  NTIsMagickConflict(const char *),
-  NTLoadTypeLists(SplayTreeInfo *,ExceptionInfo *);
+  NTAcquireTypeCache(SplayTreeInfo *,ExceptionInfo *),
+  NTIsMagickConflict(const char *);
 
 #endif
 
