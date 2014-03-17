@@ -199,7 +199,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
     char
-      *font_path;
+      *font_path,
       path[MaxTextExtent];
 
     const StringInfo
