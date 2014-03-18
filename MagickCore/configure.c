@@ -118,7 +118,8 @@ static SemaphoreInfo
 */
 static MagickBooleanType
   IsConfigureCacheInstantiated(ExceptionInfo *),
-  LoadConfigureCache(const char *,const char *,const size_t,ExceptionInfo *);
+  LoadConfigureCache(LinkedListInfo *,const char *,const char *,const size_t,
+    ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -131,7 +132,7 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireConfigureCache() caches one or more configure configuration files which
+%  AcquireConfigureCache() caches one or more configure configurations which
 %  provides a mapping between configure attributes and a configure name.
 %
 %  The format of the AcquireConfigureCache method is:
@@ -173,8 +174,8 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status&=LoadConfigureCache((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
+    status&=LoadConfigureCache(configure_cache,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
@@ -1082,8 +1083,8 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
     (void) FormatLocaleFile(file,"\n");
   }
   (void) fflush(file);
-  configure_info=(const ConfigureInfo **)
-    RelinquishMagickMemory((void *) configure_info);
+  configure_info=(const ConfigureInfo **) RelinquishMagickMemory((void *)
+    configure_info);
   return(MagickTrue);
 }
 
@@ -1103,8 +1104,8 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
 %
 %  The format of the LoadConfigureCache method is:
 %
-%      MagickBooleanType LoadConfigureCache(const char *xml,const char *filename,
-%        const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
+%        const char *xml,const char *filename,const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1117,8 +1118,9 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadConfigureCache(const char *xml,const char *filename,
-  const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
+  const char *xml,const char *filename,const size_t depth,
+  ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1138,16 +1140,6 @@ static MagickBooleanType LoadConfigureCache(const char *xml,const char *filename
   */
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Loading configure file \"%s\" ...",filename);
-  if (configure_cache == (LinkedListInfo *) NULL)
-    {
-      configure_cache=NewLinkedList(0);
-      if (configure_cache == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
   status=MagickTrue;
   configure_info=(ConfigureInfo *) NULL;
   token=AcquireString((char *) xml);
@@ -1212,7 +1204,8 @@ static MagickBooleanType LoadConfigureCache(const char *xml,const char *filename
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadConfigureCache(xml,path,depth+1,exception);
+                      status&=LoadConfigureCache(configure_cache,xml,path,
+                        depth+1,exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }

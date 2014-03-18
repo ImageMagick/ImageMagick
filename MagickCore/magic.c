@@ -215,7 +215,8 @@ static SemaphoreInfo
 */
 static MagickBooleanType
   IsMagicCacheInstantiated(ExceptionInfo *),
-  LoadMagicCache(const char *,const char *,const size_t,ExceptionInfo *);
+  LoadMagicCache(LinkedListInfo *,const char *,const char *,const size_t,
+    ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -275,8 +276,8 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
   while (option != (const StringInfo *) NULL)
   {
     (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
-    status&=LoadMagicCache((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
+    status&=LoadMagicCache(magic_cache,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
@@ -738,8 +739,9 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %
 %  The format of the LoadMagicCache method is:
 %
-%      MagickBooleanType LoadMagicCache(const char *xml,const char *filename,
-%        const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
+%        const char *xml,const char *filename,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -752,8 +754,9 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadMagicCache(const char *xml,const char *filename,
-  const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
+  const char *xml,const char *filename,const size_t depth,
+  ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -775,16 +778,6 @@ static MagickBooleanType LoadMagicCache(const char *xml,const char *filename,
     "Loading magic configure file \"%s\" ...",filename);
   if (xml == (char *) NULL)
     return(MagickFalse);
-  if (magic_cache == (LinkedListInfo *) NULL)
-    {
-      magic_cache=NewLinkedList(0);
-      if (magic_cache == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
   status=MagickTrue;
   magic_info=(MagicInfo *) NULL;
   token=AcquireString(xml);
@@ -849,7 +842,8 @@ static MagickBooleanType LoadMagicCache(const char *xml,const char *filename,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadMagicCache(xml,path,depth+1,exception);
+                      status&=LoadMagicCache(magic_cache,xml,path,depth+1,
+                        exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }

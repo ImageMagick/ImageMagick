@@ -106,8 +106,8 @@ static volatile locale_t
 */
 static MagickBooleanType
   IsLocaleTreeInstantiated(ExceptionInfo *),
-  LoadLocaleCache(const char *,const char *,const char *,const size_t,
-    ExceptionInfo *);
+  LoadLocaleCache(SplayTreeInfo *,const char *,const char *,const char *,
+    const size_t,ExceptionInfo *);
 
 #if defined(MAGICKCORE_HAVE_STRTOD_L)
 /*
@@ -212,8 +212,9 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadLocaleCache((const char *) GetStringInfoDatum(option),
-        GetStringInfoPath(option),locale,0,exception);
+      status&=LoadLocaleCache(locale_cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),locale,0,
+        exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyLocaleOptions(options);
@@ -223,8 +224,9 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
         option=(const StringInfo *) GetNextValueInLinkedList(options);
         while (option != (const StringInfo *) NULL)
         {
-          status&=LoadLocaleCache((const char *) GetStringInfoDatum(option),
-            GetStringInfoPath(option),locale,0,exception);
+          status&=LoadLocaleCache(locale_cache,(const char *)
+            GetStringInfoDatum(option),GetStringInfoPath(option),locale,0,
+            exception);
           option=(const StringInfo *) GetNextValueInLinkedList(options);
         }
         options=DestroyLocaleOptions(options);
@@ -232,7 +234,8 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
   }
 #endif
   if (GetNumberOfNodesInSplayTree(locale_cache) == 0)
-    status&=LoadLocaleCache(LocaleMap,"built-in",locale,0,exception);
+    status&=LoadLocaleCache(locale_cache,LocaleMap,"built-in",locale,0,
+      exception);
   return(locale_cache);
 }
 
@@ -910,35 +913,38 @@ MagickExport const char *GetLocaleValue(const LocaleInfo *locale_info)
 */
 static MagickBooleanType IsLocaleTreeInstantiated(ExceptionInfo *exception)
 {
-  if (locale_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&locale_semaphore);
-  LockSemaphoreInfo(locale_semaphore);
   if (locale_cache == (SplayTreeInfo *) NULL)
     {
-      char
-        *locale;
+      if (locale_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&locale_semaphore);
+      LockSemaphoreInfo(locale_semaphore);
+      if (locale_cache == (SplayTreeInfo *) NULL)
+        {
+          char
+            *locale;
 
-      register const char
-        *p;
+          register const char
+            *p;
 
-      locale=(char *) NULL;
-      p=setlocale(LC_CTYPE,(const char *) NULL);
-      if (p != (const char *) NULL)
-        locale=ConstantString(p);
-      if (locale == (char *) NULL)
-        locale=GetEnvironmentValue("LC_ALL");
-      if (locale == (char *) NULL)
-        locale=GetEnvironmentValue("LC_MESSAGES");
-      if (locale == (char *) NULL)
-        locale=GetEnvironmentValue("LC_CTYPE");
-      if (locale == (char *) NULL)
-        locale=GetEnvironmentValue("LANG");
-      if (locale == (char *) NULL)
-        locale=ConstantString("C");
-      locale_cache=AcquireLocaleSplayTree(LocaleFilename,locale,exception);
-      locale=DestroyString(locale);
+          locale=(char *) NULL;
+          p=setlocale(LC_CTYPE,(const char *) NULL);
+          if (p != (const char *) NULL)
+            locale=ConstantString(p);
+          if (locale == (char *) NULL)
+            locale=GetEnvironmentValue("LC_ALL");
+          if (locale == (char *) NULL)
+            locale=GetEnvironmentValue("LC_MESSAGES");
+          if (locale == (char *) NULL)
+            locale=GetEnvironmentValue("LC_CTYPE");
+          if (locale == (char *) NULL)
+            locale=GetEnvironmentValue("LANG");
+          if (locale == (char *) NULL)
+            locale=ConstantString("C");
+          locale_cache=AcquireLocaleSplayTree(LocaleFilename,locale,exception);
+          locale=DestroyString(locale);
+        }
+      UnlockSemaphoreInfo(locale_semaphore);
     }
-  UnlockSemaphoreInfo(locale_semaphore);
   return(locale_cache != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
@@ -1090,8 +1096,9 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
 %
 %  The format of the LoadLocaleCache method is:
 %
-%      MagickBooleanType LoadLocaleCache(const char *xml,const char *filename,
-%        const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
+%        const char *xml,const char *filename,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1149,8 +1156,9 @@ static inline size_t MagickMin(const size_t x,const size_t y)
   return(y);
 }
 
-static MagickBooleanType LoadLocaleCache(const char *xml,const char *filename,
-  const char *locale,const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
+  const char *xml,const char *filename,const char *locale,const size_t depth,
+  ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1180,13 +1188,6 @@ static MagickBooleanType LoadLocaleCache(const char *xml,const char *filename,
     "Loading locale configure file \"%s\" ...",filename);
   if (xml == (const char *) NULL)
     return(MagickFalse);
-  if (locale_cache == (SplayTreeInfo *) NULL)
-    {
-      locale_cache=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
-        DestroyLocaleNode);
-      if (locale_cache == (SplayTreeInfo *) NULL)
-        return(MagickFalse);
-    }
   status=MagickTrue;
   locale_info=(LocaleInfo *) NULL;
   *tag='\0';
@@ -1270,7 +1271,8 @@ static MagickBooleanType LoadLocaleCache(const char *xml,const char *filename,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadLocaleCache(xml,path,locale,depth+1,exception);
+                      status&=LoadLocaleCache(locale_cache,xml,path,locale,
+                        depth+1,exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }

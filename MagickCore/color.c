@@ -796,7 +796,8 @@ static SemaphoreInfo
 */
 static MagickBooleanType
   IsColorCacheInstantiated(ExceptionInfo *),
-  LoadColorCache(const char *,const char *,const size_t,ExceptionInfo *);
+  LoadColorCache(LinkedListInfo *,const char *,const char *,const size_t,
+    ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -851,8 +852,8 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status&=LoadColorCache((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
+    status&=LoadColorCache(color_cache,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
@@ -1006,9 +1007,8 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
     *q;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (color_cache == (LinkedListInfo *) NULL)
-    if (IfMagickFalse(IsColorCacheInstantiated(exception)))
-      return((const ColorInfo *) NULL);
+  if (IfMagickFalse(IsColorCacheInstantiated(exception)))
+    return((const ColorInfo *) NULL);
   /*
     Strip names of whitespace.
   */
@@ -1905,8 +1905,9 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
 %
 %  The format of the LoadColorCache method is:
 %
-%      MagickBooleanType LoadColorCache(const char *xml,const char *filename,
-%        const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
+%        const char *xml,const char *filename,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1919,8 +1920,9 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadColorCache(const char *xml,const char *filename,
-  const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
+  const char *xml,const char *filename,const size_t depth,
+  ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1942,16 +1944,6 @@ static MagickBooleanType LoadColorCache(const char *xml,const char *filename,
     "Loading color file \"%s\" ...",filename);
   if (xml == (char *) NULL)
     return(MagickFalse);
-  if (color_cache == (LinkedListInfo *) NULL)
-    {
-      color_cache=NewLinkedList(0);
-      if (color_cache == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
   status=MagickTrue;
   color_info=(ColorInfo *) NULL;
   token=AcquireString(xml);
@@ -2016,7 +2008,8 @@ static MagickBooleanType LoadColorCache(const char *xml,const char *filename,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadColorCache(xml,path,depth+1,exception);
+                      status&=LoadColorCache(color_cache,xml,path,depth+1,
+                        exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }

@@ -199,7 +199,8 @@ static LogInfo
 
 static MagickBooleanType
   IsLogCacheInstantiated(ExceptionInfo *),
-  LoadLogCache(const char *,const char *,const size_t,ExceptionInfo *);
+  LoadLogCache(LinkedListInfo *,const char *,const char *,const size_t,
+    ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -254,7 +255,7 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status&=LoadLogCache((const char *) GetStringInfoDatum(option),
+    status&=LoadLogCache(log_cache,(const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
@@ -613,8 +614,8 @@ MagickExport const char *GetLogName(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsLogCacheInstantiated() determines if the log list is instantiated.  If not,
-%  it instantiates the list and returns it.
+%  IsLogCacheInstantiated() determines if the log list is instantiated.  If
+%  not, it instantiates the list and returns it.
 %
 %  The format of the IsLogInstantiated method is:
 %
@@ -1325,7 +1326,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
               "encoding=\"UTF-8\" standalone=\"yes\"?>\n");
           (void) FormatLocaleFile(log_info->file,"<log>\n");
         }
-      (void) FormatLocaleFile(log_info->file,"   <event>%s</event>\n",text);
+      (void) FormatLocaleFile(log_info->file,"  <event>%s</event>\n",text);
       (void) fflush(log_info->file);
     }
   if ((log_info->handler_mask & MethodHandler) != 0)
@@ -1380,8 +1381,8 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
 %
 %  The format of the LoadLogCache method is:
 %
-%      MagickBooleanType LoadLogCache(const char *xml,const char *filename,
-%        const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
+%        const char *filename,const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1394,8 +1395,8 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadLogCache(const char *xml,const char *filename,
-  const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
+  const char *filename,const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1415,16 +1416,6 @@ static MagickBooleanType LoadLogCache(const char *xml,const char *filename,
   */
   if (xml == (const char *) NULL)
     return(MagickFalse);
-  if (log_cache == (LinkedListInfo *) NULL)
-    {
-      log_cache=NewLinkedList(0);
-      if (log_cache == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
   status=MagickTrue;
   token=AcquireString((const char *) xml);
   for (q=(const char *) xml; *q != '\0'; )
@@ -1488,7 +1479,8 @@ static MagickBooleanType LoadLogCache(const char *xml,const char *filename,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status&=LoadLogCache(xml,path,depth+1,exception);
+                      status&=LoadLogCache(log_cache,xml,path,depth+1,
+                        exception);
                       xml=DestroyString(xml);
                     }
                 }
