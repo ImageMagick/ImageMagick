@@ -807,8 +807,8 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireColorCache() caches one or more color configurations which
-%  provides a mapping between color attributes and a color name.
+%  AcquireColorCache() caches one or more color configurations which provides a
+%  mapping between color attributes and a color name.
 %
 %  The format of the AcquireColorCache method is:
 %
@@ -849,8 +849,8 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status&=LoadColorCache(color_cache,(const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
+    status&=LoadColorCache(color_cache,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);

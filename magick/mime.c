@@ -648,8 +648,8 @@ MagickExport const char *GetMimeType(const MimeInfo *mime_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsMimeCacheInstantiated() determines if the mime list is instantiated.
-%  If not, it instantiates the list and returns it.
+%  IsMimeCacheInstantiated() determines if the mime list is instantiated.  If
+%  not, it instantiates the list and returns it.
 %
 %  The format of the IsMimeInstantiated method is:
 %
@@ -789,8 +789,9 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,const char *xml,
-  const char *filename,const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
+  const char *xml,const char *filename,const size_t depth,
+  ExceptionInfo *exception)
 {
   const char
     *attribute;

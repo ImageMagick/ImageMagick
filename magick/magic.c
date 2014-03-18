@@ -133,7 +133,7 @@ static const MagicMapInfo
     { "IPTC", 0, MagickString("\034\002") },
     { "JNG", 0, MagickString("\213JNG\r\n\032\n") },
     { "JPEG", 0, MagickString("\377\330\377") },
-    { "J2K", 0, MagickString("\xff\x4f\xff\x5 ") },
+    { "J2K", 0, MagickString("\xff\x4f\xff\x51") },
     { "JPC", 0, MagickString("\x0d\x0a\x87\x0a") },
     { "JP2", 4, MagickString("\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a") },
     { "MAT", 0, MagickString("MATLAB 5.0 MAT-file,") },

@@ -318,8 +318,8 @@ static SplayTreeInfo *AcquireCoderCache(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status&=LoadCoderCache(coder_cache,(const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
+    status&=LoadCoderCache(coder_cache,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
