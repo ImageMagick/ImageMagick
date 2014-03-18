@@ -1438,7 +1438,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",magick_info->name);
   if (magick_list == (SplayTreeInfo *) NULL)
     return((MagickInfo *) NULL);
-  if (magick_info->thread_support != MagickFalse)
+  if (magick_info->thread_support == NoThreadSupport)
     magick_info->semaphore=AllocateSemaphoreInfo();
   status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
   if (status == MagickFalse)
