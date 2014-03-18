@@ -329,16 +329,14 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %
 */
 
-static inline size_t MagickMax(const size_t x,
-  const size_t y)
+static inline size_t MagickMax(const size_t x,const size_t y)
 {
   if (x > y)
     return(x);
   return(y);
 }
 
-static inline size_t MagickMin(const size_t x,
-  const size_t y)
+static inline size_t MagickMin(const size_t x,const size_t y)
 {
   if (x < y)
     return(x);
