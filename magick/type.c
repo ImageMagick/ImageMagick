@@ -1026,8 +1026,9 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %
 %  The format of the LoadTypeCache method is:
 %
-%      MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,const char *xml,
-%        const char *filename,const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
+%        const char *xml,const char *filename,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1077,8 +1078,9 @@ static inline MagickBooleanType SetTypeNodePath(const char *filename,
   return(MagickTrue);
 }
 
-static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,const char *xml,
-  const char *filename,const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
+  const char *xml,const char *filename,const size_t depth,
+  ExceptionInfo *exception)
 {
   char
     font_path[MaxTextExtent],
