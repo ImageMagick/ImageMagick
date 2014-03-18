@@ -205,7 +205,7 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  A c q u i r e L o g L i s t s                                              %
+%  A c q u i r e L o g C a c h e                                              %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -612,8 +612,8 @@ MagickExport const char *GetLogName(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsLogCacheInstantiated() determines if the log list is instantiated.
-%  If not, it instantiates the list and returns it.
+%  IsLogCacheInstantiated() determines if the log list is instantiated.  If
+%  not, it instantiates the list and returns it.
 %
 %  The format of the IsLogInstantiated method is:
 %
@@ -1479,7 +1479,8 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status&=LoadLogCache(log_cache,xml,path,depth+1,exception);
+                      status&=LoadLogCache(log_cache,xml,path,depth+1,
+                        exception);
                       xml=DestroyString(xml);
                     }
                 }

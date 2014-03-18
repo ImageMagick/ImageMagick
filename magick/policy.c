@@ -142,8 +142,8 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquirePolicyCache() caches one or more policy configurations which
-%  provides a mapping between policy attributes and a policy name.
+%  AcquirePolicyCache() caches one or more policy configurations which provides
+%  a mapping between policy attributes and a policy name.
 %
 %  The format of the AcquirePolicyCache method is:
 %
@@ -164,8 +164,8 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
     *option;
 
   LinkedListInfo
-    *policy_cache,
-    *options;
+    *options,
+    *policy_cache;
 
   MagickStatusType
     status;

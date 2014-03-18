@@ -1384,7 +1384,7 @@ MagickExport MagickBooleanType TypeComponentGenesis(void)
 MagickExport void TypeComponentTerminus(void)
 {
   if (type_semaphore == (SemaphoreInfo *) NULL)
-		ActivateSemaphoreInfo(&type_semaphore);
+    ActivateSemaphoreInfo(&type_semaphore);
   LockSemaphoreInfo(type_semaphore);
   if (type_cache != (SplayTreeInfo *) NULL)
     type_cache=DestroySplayTree(type_cache);
