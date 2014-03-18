@@ -320,8 +320,8 @@ static SplayTreeInfo *AcquireCoderCache(const char *filename,
   option=(const StringInfo *) GetNextValueInLinkedList(options);
   while (option != (const StringInfo *) NULL)
   {
-    status&=LoadCoderCache(coder_cache,(const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
+    status&=LoadCoderCache(coder_cache,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);
@@ -641,8 +641,8 @@ MagickExport char **GetCoderList(const char *pattern,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsCoderTreeInstantiated() determines if the coder tree is instantiated.
-%  If not, it instantiates the tree and returns it.
+%  IsCoderTreeInstantiated() determines if the coder tree is instantiated.  If
+%  not, it instantiates the tree and returns it.
 %
 %  The format of the IsCoderInstantiated method is:
 %
@@ -661,7 +661,7 @@ static MagickBooleanType IsCoderTreeInstantiated(ExceptionInfo *exception)
         ActivateSemaphoreInfo(&coder_semaphore);
       LockSemaphoreInfo(coder_semaphore);
       if (coder_cache == (SplayTreeInfo *) NULL)
-        (void) AcquireCoderCache(MagickCoderFilename,exception);
+        coder_cache=AcquireCoderCache(MagickCoderFilename,exception);
       UnlockSemaphoreInfo(coder_semaphore);
     }
   return(coder_cache != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);

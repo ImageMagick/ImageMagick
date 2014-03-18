@@ -140,7 +140,8 @@ static SemaphoreInfo
 */
 static MagickBooleanType
   IsDelegateCacheInstantiated(ExceptionInfo *),
-  LoadDelegateCache(const char *,const char *,const size_t,ExceptionInfo *);
+  LoadDelegateCache(LinkedListInfo *,const char *,const char *,const size_t,
+    ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -193,15 +194,16 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadDelegateCache((const char *) GetStringInfoDatum(option),
-        GetStringInfoPath(option),0,exception);
+      status&=LoadDelegateCache(delegate_cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
   }
 #endif
   if (IfMagickTrue(IsLinkedListEmpty(delegate_cache)))
-    status&=LoadDelegateCache(DelegateMap,"built-in",0,exception);
+    status&=LoadDelegateCache(delegate_cache,DelegateMap,"built-in",0,
+      exception);
   return(delegate_cache);
 }
 
@@ -432,9 +434,8 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (delegate_cache == (LinkedListInfo *) NULL)
-    if( IfMagickFalse(IsDelegateCacheInstantiated(exception)) )
-      return((const DelegateInfo *) NULL);
+  if (IfMagickFalse(IsDelegateCacheInstantiated(exception)))
+    return((const DelegateInfo *) NULL);
   /*
     Search for named delegate.
   */
@@ -1258,8 +1259,9 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 %
 %  The format of the LoadDelegateCache method is:
 %
-%      MagickBooleanType LoadDelegateCache(const char *xml,const char *filename,
-%        const size_t depth,ExceptionInfo *exception)
+%      MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
+%        const char *xml,const char *filename,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1272,8 +1274,9 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadDelegateCache(const char *xml,const char *filename,
-  const size_t depth,ExceptionInfo *exception)
+static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
+  const char *xml,const char *filename,const size_t depth,
+  ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1295,16 +1298,6 @@ static MagickBooleanType LoadDelegateCache(const char *xml,const char *filename,
     "Loading delegate configuration file \"%s\" ...",filename);
   if (xml == (const char *) NULL)
     return(MagickFalse);
-  if (delegate_cache == (LinkedListInfo *) NULL)
-    {
-      delegate_cache=NewLinkedList(0);
-      if (delegate_cache == (LinkedListInfo *) NULL)
-        {
-          ThrowFileException(exception,ResourceLimitError,
-            "MemoryAllocationFailed",filename);
-          return(MagickFalse);
-        }
-    }
   status=MagickTrue;
   delegate_info=(DelegateInfo *) NULL;
   token=AcquireString(xml);
@@ -1369,7 +1362,8 @@ static MagickBooleanType LoadDelegateCache(const char *xml,const char *filename,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadDelegateCache(xml,path,depth+1,exception);
+                      status&=LoadDelegateCache(delegate_cache,xml,path,
+                        depth+1,exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }

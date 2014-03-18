@@ -536,7 +536,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
-  entry->semaphore=AcquireSemaphoreInfo();
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -552,7 +551,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
-  entry->semaphore=AcquireSemaphoreInfo();
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -568,7 +566,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
-  entry->semaphore=AcquireSemaphoreInfo();
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -584,7 +581,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
-  entry->semaphore=AcquireSemaphoreInfo();
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -600,7 +596,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->thread_support=NoThreadSupport;
-  entry->semaphore=AcquireSemaphoreInfo();
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
