@@ -265,7 +265,7 @@ static void *DestroyDelegate(void *delegate_info)
   if (p->commands != (char *) NULL)
     p->commands=DestroyString(p->commands);
   if (p->semaphore != (SemaphoreInfo *) NULL)
-    p->semaphore=RelinquishSemaphoreInfo(&p->semaphore);
+    RelinquishSemaphoreInfo(&p->semaphore);
   p=(DelegateInfo *) RelinquishMagickMemory(p);
   return((void *) NULL);
 }

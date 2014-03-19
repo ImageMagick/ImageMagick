@@ -95,7 +95,7 @@
 #endif
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-# include "magick/nt-feature.h"
+# include "MagickCore/nt-feature.h"
 #endif
 
 /*
