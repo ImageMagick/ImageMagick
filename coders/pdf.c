@@ -671,7 +671,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) FormatLocaleString(command,MaxTextExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
-    read_info->antialias != MagickFalse ? 4 : 1,options,filename,
+    read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
     postscript_filename,input_filename);
   status=InvokePDFDelegate(read_info->verbose,command,exception);
   (void) RelinquishUniqueFileResource(postscript_filename);
