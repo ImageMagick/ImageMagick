@@ -759,8 +759,8 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsDelegateCacheInstantiated() determines if the delegate list is instantiated.
-%  If not, it instantiates the list and returns it.
+%  IsDelegateCacheInstantiated() determines if the delegate cache is
+%  instantiated.  If not, it instantiates the cache and returns it.
 %
 %  The format of the IsDelegateInstantiated method is:
 %
@@ -1389,6 +1389,8 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
+        if (delegate_info->thread_support == MagickFalse)
+          delegate_info->semaphore=AcquireSemaphoreInfo();
         status=AppendValueToLinkedList(delegate_cache,delegate_info);
         if( IfMagickFalse(status) )
           (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1492,8 +1494,6 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         if (LocaleCompare((char *) keyword,"thread-support") == 0)
           {
             delegate_info->thread_support=IsStringTrue(token);
-            if (delegate_info->thread_support != MagickFalse)
-              delegate_info->semaphore=AcquireSemaphoreInfo();
             break;
           }
         break;
