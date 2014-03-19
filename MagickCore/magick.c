@@ -832,7 +832,7 @@ static void *DestroyMagickNode(void *magick_info)
   if (p->name != (char *) NULL)
     p->name=DestroyString(p->name);
   if (p->semaphore != (SemaphoreInfo *) NULL)
-    p->semaphore=RelinquishSemaphoreInfo(&p->semaphore);
+    RelinquishSemaphoreInfo(&p->semaphore);
   return(RelinquishMagickMemory(p));
 }
 

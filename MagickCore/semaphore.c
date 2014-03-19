@@ -340,15 +340,14 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 %
 %  The format of the RelinquishSemaphoreInfo method is:
 %
-%      SemaphoreInfo *RelinquishSemaphoreInfo(SemaphoreInfo **semaphore_info)
+%      void RelinquishSemaphoreInfo(SemaphoreInfo **semaphore_info)
 %
 %  A description of each parameter follows:
 %
 %    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
 %
 */
-MagickExport SemaphoreInfo *RelinquishSemaphoreInfo(
-  SemaphoreInfo **semaphore_info)
+MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
   assert((*semaphore_info) != (SemaphoreInfo *) NULL);
@@ -376,7 +375,6 @@ MagickExport SemaphoreInfo *RelinquishSemaphoreInfo(
   (*semaphore_info)->signature=(~MagickSignature);
   *semaphore_info=(SemaphoreInfo *) RelinquishSemaphoreMemory(*semaphore_info);
   UnlockMagickMutex();
-  return((SemaphoreInfo *) NULL);
 }
 
 /*
