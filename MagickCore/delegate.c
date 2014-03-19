@@ -1382,6 +1382,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(delegate_info,0,sizeof(*delegate_info));
         delegate_info->path=ConstantString(filename);
+        delegate_info->thread_support=MagickTrue;
         delegate_info->signature=MagickSignature;
         continue;
       }
@@ -1389,8 +1390,6 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        if (delegate_info->thread_support == MagickFalse)
-          delegate_info->semaphore=AcquireSemaphoreInfo();
         status=AppendValueToLinkedList(delegate_cache,delegate_info);
         if( IfMagickFalse(status) )
           (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1494,6 +1493,8 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         if (LocaleCompare((char *) keyword,"thread-support") == 0)
           {
             delegate_info->thread_support=IsStringTrue(token);
+            if (delegate_info->thread_support == MagickFalse)
+              delegate_info->semaphore=AcquireSemaphoreInfo();
             break;
           }
         break;
