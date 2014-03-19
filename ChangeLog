@@ -1,5 +1,5 @@
 2014-03-20  6.8.8-9 Cristy  <quetzlzacatenango@image...>
-  * New version 6.8.8-9, SVN revision 15184.
+  * New version 6.8.8-9, SVN revision 15192.
 
 2014-03-16  6.8.8-9 Glenn Randers-Pehrson <glennrp@image...>
   * Do not block threads in the png codec when PNG_SETJMP_SUPPORTED is not
