@@ -8936,7 +8936,6 @@ Mogrify(ref,...)
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             (DrawInfo *) NULL);
           if (attribute_flag[0] != 0)
-          if (attribute_flag[0] != 0)
             flags=ParsePageGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
