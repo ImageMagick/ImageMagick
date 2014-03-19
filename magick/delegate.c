@@ -1380,6 +1380,8 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
+        if (delegate_info->thread_support == MagickFalse)
+          delegate_info->semaphore=AllocateSemaphoreInfo();
         status=AppendValueToLinkedList(delegate_cache,delegate_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1483,8 +1485,6 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         if (LocaleCompare((char *) keyword,"thread-support") == 0)
           {
             delegate_info->thread_support=IsMagickTrue(token);
-            if (delegate_info->thread_support == MagickFalse)
-              delegate_info->semaphore=AllocateSemaphoreInfo();
             break;
           }
         break;
