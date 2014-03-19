@@ -34,7 +34,7 @@ extern MagickExport void
 
 extern MagickExport MagickBooleanType
   NTIsMagickConflict(const char *),
-  NTLoadTypeLists(SplayTreeInfo *,ExceptionInfo *);
+  NTAcquireTypeCache(SplayTreeInfo *,ExceptionInfo *);
 
 #endif
 
