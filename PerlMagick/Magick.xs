@@ -9220,7 +9220,8 @@ Mogrify(ref,...)
             quantize_info->colorspace=(ColorspaceType)
               argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            quantize_info->dither=argument_list[3].integer_reference != 0 ?
+            quantize_info->dither_method=(DitherMethod)
+              argument_list[3].integer_reference;
               MagickTrue : MagickFalse;
           if (attribute_flag[4] != 0)
             quantize_info->measure_error=
