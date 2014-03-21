@@ -1191,6 +1191,8 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace));
+  if (image->colorspace == colorspace)
+    return;
   /*
     Convert the reference image from an alternate colorspace to sRGB.
   */
