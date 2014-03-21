@@ -124,8 +124,8 @@ extern "C" {
 #endif
 
 #if defined(__apple_build_version__)
-#  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
-#  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
+#  define magick_alloc_size(x)
+#  define magick_alloc_sizes(x,y)
 #  define magick_cold_spot
 #  define magick_hot_spot
 #else
