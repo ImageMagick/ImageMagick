@@ -1850,15 +1850,17 @@ static void TIFFIgnoreTags(TIFF *tiff)
   Image
    *image;
 
-  TIFFFieldInfo
-    *ignore;
-
   register ssize_t
     i;
 
   size_t
     count;
 
+  TIFFFieldInfo
+    *ignore;
+
+  if (TIFFGetReadProc(tiff) != TIFFReadBlob)
+    return;
   image=(Image *)TIFFClientdata(tiff);
   tags=GetImageArtifact(image,"tiff:ignore-tags");
   if (tags == (const char *) NULL)
