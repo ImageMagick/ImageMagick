@@ -123,13 +123,7 @@ extern "C" {
 #  define magick_unreferenced(x)  /* nothing */
 #endif
 
-#if defined(__apple_build_version__)
-#  define magick_alloc_size(x)
-#  define magick_alloc_sizes(x,y)
-#  define magick_cold_spot
-#  define magick_hot_spot
-#else
-#if defined(__clang__) || (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
+#if (defined(__clang__) || (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))) && !defined(__apple_build_version__)
 #  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
 #  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
 #  define magick_cold_spot  __attribute__((__cold__))
@@ -139,7 +133,6 @@ extern "C" {
 #  define magick_alloc_sizes(x,y)  /* nothing */
 #  define magick_cold_spot
 #  define magick_hot_spot
-#endif
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
