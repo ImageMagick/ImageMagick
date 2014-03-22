@@ -1192,8 +1192,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
             if (image->alpha_trait == BlendPixelTrait)
-              SetPixelAlpha(image,
-                ScaleShortToQuantum((unsigned short) opacity),q);
+              SetPixelAlpha(image,ScaleShortToQuantum((unsigned short)
+                opacity),q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1287,8 +1287,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
             if (image->alpha_trait == BlendPixelTrait)
-              SetPixelAlpha(image,
-                ScaleShortToQuantum((unsigned short) opacity),q);
+              SetPixelAlpha(image,ScaleShortToQuantum((unsigned short)
+                opacity),q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
