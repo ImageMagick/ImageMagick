@@ -1197,13 +1197,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (quantum_bits.opacity <= 8)
               opacity|=((opacity & 0xff00) >> 8);
             SetPixelRed(q,ScaleShortToQuantum((unsigned short) red));
-            SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
-              green));
+            SetPixelGreen(q,ScaleShortToQuantum((unsigned short) green));
             SetPixelBlue(q,ScaleShortToQuantum((unsigned short) blue));
             SetPixelOpacity(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
-              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short)
-                opacity));
+              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short) opacity));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1293,8 +1291,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (quantum_bits.opacity == 8)
               opacity|=(opacity >> 8);
             SetPixelRed(q,ScaleShortToQuantum((unsigned short) red));
-            SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
-              green));
+            SetPixelGreen(q,ScaleShortToQuantum((unsigned short) green));
             SetPixelBlue(q,ScaleShortToQuantum((unsigned short) blue));
             SetPixelOpacity(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
