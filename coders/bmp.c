@@ -1024,7 +1024,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sample=shift.opacity;
         while (((bmp_info.alpha_mask << sample) & 0x80000000UL) != 0)
           sample++;
-        quantum_bits.opacity=ClampToQuantum((MagickRealType) sample-shift.opacity);
+        quantum_bits.opacity=ClampToQuantum((MagickRealType) sample-
+          shift.opacity);
       }
     switch (bmp_info.bits_per_pixel)
     {
