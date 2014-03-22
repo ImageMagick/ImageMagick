@@ -1140,7 +1140,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace,exception));
   if (image->colorspace == colorspace)
-    return;
+    return(MagickTrue);
   /*
     Convert the reference image from an alternate colorspace to sRGB.
   */
