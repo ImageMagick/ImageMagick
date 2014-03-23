@@ -45,6 +45,7 @@
 #include "magick/coder.h"
 #include "magick/client.h"
 #include "magick/configure.h"
+#include "magick/deprecate.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/log.h"
@@ -829,7 +830,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
 %
 %  The format of the IsModuleTreeInstantiated() method is:
 %
-%      IsModuleTreeInstantiated(Exceptioninfo *exception)
+%      MagickBooleanType IsModuleTreeInstantiated(Exceptioninfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -893,6 +894,11 @@ static MagickBooleanType IsModuleTreeInstantiated(
       UnlockSemaphoreInfo(module_semaphore);
     }
   return(module_list != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
+}
+
+MagickExport MagickBooleanType InitializeModuleList(ExceptionInfo *exception)
+{
+  return(IsModuleTreeInstantiated(exception));
 }
 
 /*
