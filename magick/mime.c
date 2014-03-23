@@ -41,6 +41,7 @@
 #include "magick/blob.h"
 #include "magick/client.h"
 #include "magick/configure.h"
+#include "magick/deprecate.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/hashmap.h"
@@ -188,6 +189,13 @@ static LinkedListInfo *AcquireMimeCache(const char *filename,
   if (IsLinkedListEmpty(mime_cache) != MagickFalse)
     status&=LoadMimeCache(mime_cache,MimeMap,"built-in",0,exception);
   return(mime_cache);
+}
+
+MagickExport MagickBooleanType LoadMimeLists(const char *name,
+  ExceptionInfo *exception)
+{
+  mime_cache=AcquireMimeCache(name,exception);
+  return(mime_cache != (LinkedListInfo *) NULL);
 }
 
 /*
@@ -763,14 +771,14 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L o a d M i m e L i s t                                                   %
++   L o a d M i m e C a c h e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LoadMimeCache() loads the magic configurations which provides a mapping
-%  between magic attributes and a magic name.
+%  LoadMimeCache() loads the mime configurations which provides a mapping
+%  between mime attributes and a mime name.
 %
 %  The format of the LoadMimeCache method is:
 %

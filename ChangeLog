@@ -1,3 +1,8 @@
+2014-03-23  6.8.8-10 Cristy  <quetzlzacatenango@image...>
+  * Although they are internal methods, deprecate InitializeModuleList(),
+    LoadMimeLists(), and RelinquishCommandQueue() (reference
+   http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25263).
+
 2014-03-20  6.8.8-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-9, SVN revision 15192.
 

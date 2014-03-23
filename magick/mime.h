@@ -35,7 +35,6 @@ extern MagickExport const char
 
 extern MagickExport MagickBooleanType
   ListMimeInfo(FILE *,ExceptionInfo *),
-  LoadMimeLists(const char *,ExceptionInfo *),
   MimeComponentGenesis(void);
 
 extern MagickExport const MimeInfo

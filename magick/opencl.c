@@ -2690,7 +2690,7 @@ MagickPrivate cl_kernel AcquireOpenCLKernel(
   return (cl_kernel)NULL;
 }
 
-MagickPrivate MagickBooleanType RelinquishOpenCLKernel(
+MagickExport MagickBooleanType RelinquishOpenCLKernel(
   MagickCLEnv magick_unused(clEnv),cl_kernel magick_unused(kernel))
 {
   magick_unreferenced(clEnv);
