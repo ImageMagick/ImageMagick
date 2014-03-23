@@ -703,8 +703,8 @@ MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
 
   assert(matrix_info != (const MatrixInfo *) NULL);
   assert(matrix_info->signature == MagickSignature);
-  i=(MagickOffsetType) matrix_info->rows*EdgeX(x,matrix_info->columns)+
-    EdgeY(y,matrix_info->rows);
+  i=(MagickOffsetType) EdgeY(y,matrix_info->rows)*matrix_info->columns+
+    EdgeX(x,matrix_info->columns);
   if (matrix_info->type != DiskCache)
     {
       (void) memcpy(value,(unsigned char *) matrix_info->elements+i*
@@ -974,7 +974,7 @@ MagickExport MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
 
   assert(matrix_info != (const MatrixInfo *) NULL);
   assert(matrix_info->signature == MagickSignature);
-  i=(MagickOffsetType) matrix_info->rows*x+y;
+  i=(MagickOffsetType) y*matrix_info->columns+x;
   if ((i < 0) ||
       ((MagickSizeType) (i*matrix_info->stride) >= matrix_info->length))
     return(MagickFalse);
