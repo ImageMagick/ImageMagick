@@ -643,6 +643,24 @@ MagickExport size_t GetMatrixColumns(const MatrixInfo *matrix_info)
 %
 */
 
+static inline ssize_t EdgeX(const ssize_t x,const size_t columns)
+{
+  if (x < 0L)
+    return(0L);
+  if (x >= (ssize_t) columns)
+    return((ssize_t) (columns-1));
+  return(x);
+}
+
+static inline ssize_t EdgeY(const ssize_t y,const size_t rows)
+{
+  if (y < 0L)
+    return(0L);
+  if (y >= (ssize_t) rows)
+    return((ssize_t) (rows-1));
+  return(y);
+}
+
 static inline MagickOffsetType ReadMatrixElements(
   const MatrixInfo *restrict matrix_info,const MagickOffsetType offset,
   const MagickSizeType length,unsigned char *restrict buffer)
@@ -686,10 +704,8 @@ MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
 
   assert(matrix_info != (const MatrixInfo *) NULL);
   assert(matrix_info->signature == MagickSignature);
-  i=(MagickOffsetType) matrix_info->rows*x+y;
-  if ((i < 0) ||
-      ((MagickSizeType) (i*matrix_info->stride) >= matrix_info->length))
-    return(MagickFalse);
+  i=(MagickOffsetType) EdgeY(y,matrix_info->rows)*matrix_info->columns+
+    EdgeX(x,matrix_info->columns);
   if (matrix_info->type != DiskCache)
     {
       (void) memcpy(value,(unsigned char *) matrix_info->elements+i*
@@ -959,7 +975,7 @@ MagickExport MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
 
   assert(matrix_info != (const MatrixInfo *) NULL);
   assert(matrix_info->signature == MagickSignature);
-  i=(MagickOffsetType) matrix_info->rows*x+y;
+  i=(MagickOffsetType) y*matrix_info->columns+x;
   if ((i < 0) ||
       ((MagickSizeType) (i*matrix_info->stride) >= matrix_info->length))
     return(MagickFalse);
