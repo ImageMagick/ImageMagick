@@ -642,6 +642,24 @@ MagickExport size_t GetMatrixColumns(const MatrixInfo *matrix_info)
 %
 */
 
+static inline ssize_t EdgeX(const ssize_t x,const size_t columns)
+{
+  if (x < 0L)
+    return(0L);
+  if (x >= (ssize_t) columns)
+    return((ssize_t) (columns-1));
+  return(x);
+}
+
+static inline ssize_t EdgeY(const ssize_t y,const size_t rows)
+{
+  if (y < 0L)
+    return(0L);
+  if (y >= (ssize_t) rows)
+    return((ssize_t) (rows-1));
+  return(y);
+}
+
 static inline MagickOffsetType ReadMatrixElements(
   const MatrixInfo *restrict matrix_info,const MagickOffsetType offset,
   const MagickSizeType length,unsigned char *restrict buffer)
@@ -674,24 +692,6 @@ static inline MagickOffsetType ReadMatrixElements(
       }
   }
   return(i);
-}
-
-static inline ssize_t EdgeX(const ssize_t x,const size_t columns)
-{
-  if (x < 0L)
-    return(0L);
-  if (x >= (ssize_t) columns)
-    return((ssize_t) (columns-1));
-  return(x);
-}
-
-static inline ssize_t EdgeY(const ssize_t y,const size_t rows)
-{
-  if (y < 0L)
-    return(0L);
-  if (y >= (ssize_t) rows)
-    return((ssize_t) (rows-1));
-  return(y);
 }
 
 MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
