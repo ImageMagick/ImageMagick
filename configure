@@ -3698,7 +3698,7 @@ MAGICK_PATCHLEVEL_VERSION=10
 
 MAGICK_VERSION=6.8.8-10
 
-MAGICK_SVN_REVISION=15191:15192M
+MAGICK_SVN_REVISION=15214:15215M
 
 
 # Substitute library versioning
@@ -23643,7 +23643,70 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-# The cast to long int works around a bug in the HP C Compiler
+if test ${cross_compiling} = "no"; then
+
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for long double with more range or precision than double" >&5
+$as_echo_n "checking for long double with more range or precision than double... " >&6; }
+if ${ac_cv_type_long_double_wider+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <float.h>
+	    long double const a[] =
+	      {
+		 0.0L, DBL_MIN, DBL_MAX, DBL_EPSILON,
+		 LDBL_MIN, LDBL_MAX, LDBL_EPSILON
+	      };
+	    long double
+	    f (long double x)
+	    {
+	       return ((x + (unsigned long int) 10) * (-1 / x) + a[0]
+			+ (x ? f (x) : 'c'));
+	    }
+
+int
+main ()
+{
+static int test_array [1 - 2 * !((0 < ((DBL_MAX_EXP < LDBL_MAX_EXP)
+		   + (DBL_MANT_DIG < LDBL_MANT_DIG)
+		   - (LDBL_MAX_EXP < DBL_MAX_EXP)
+		   - (LDBL_MANT_DIG < DBL_MANT_DIG)))
+	    && (int) LDBL_EPSILON == 0
+	  )];
+test_array [0] = 0;
+return test_array [0];
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_type_long_double_wider=yes
+else
+  ac_cv_type_long_double_wider=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_type_long_double_wider" >&5
+$as_echo "$ac_cv_type_long_double_wider" >&6; }
+  if test $ac_cv_type_long_double_wider = yes; then
+
+$as_echo "#define HAVE_LONG_DOUBLE_WIDER 1" >>confdefs.h
+
+  fi
+
+    ac_cv_c_long_double=$ac_cv_type_long_double_wider
+    if test $ac_cv_c_long_double = yes; then
+
+$as_echo "#define HAVE_LONG_DOUBLE 1" >>confdefs.h
+
+    fi
+
+fi
+if test "${ac_cv_c_have_long_double}" = "yes" ; then
+  # The cast to long int works around a bug in the HP C Compiler
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
 # declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
 # This bug is HP SR number 8606223364.
@@ -23676,6 +23739,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+fi
 
 # Obtain size of an 'signed short' and define as SIZEOF_SIGNED_SHORT
 # The cast to long int works around a bug in the HP C Compiler
