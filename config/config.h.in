@@ -272,7 +272,8 @@
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
 
-/* Define to 1 if the system has the type `long double'. */
+/* Define to 1 if the type `long double' works and has more range or precision
+   than `double'. */
 #undef HAVE_LONG_DOUBLE
 
 /* Define to 1 if the type `long double' works and has more range or precision
