@@ -9222,24 +9222,24 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             quantize_info->dither_method=(DitherMethod)
               argument_list[3].integer_reference;
-              MagickTrue : MagickFalse;
           if (attribute_flag[4] != 0)
             quantize_info->measure_error=
               argument_list[4].integer_reference != 0 ? MagickTrue : MagickFalse;
           if (attribute_flag[6] != 0)
             (void) QueryColorCompliance(argument_list[6].string_reference,
-              &image->transparent_color,exception);
+              AllCompliance,&image->transparent_color,exception);
           if (attribute_flag[7] != 0)
             quantize_info->dither_method=(DitherMethod)
               argument_list[7].integer_reference;
           if (attribute_flag[5] && argument_list[5].integer_reference)
-              (void) QuantizeImages(quantize_info,image,exception);
-          else if ((image->storage_class == DirectClass) ||
-              (image->colors > quantize_info->number_colors) ||
-              (quantize_info->colorspace == GRAYColorspace))
-            (void) QuantizeImage(quantize_info,image,exception);
+            (void) QuantizeImages(quantize_info,image,exception);
           else
-            CompressImageColormap(image,exception);
+            if ((image->storage_class == DirectClass) ||
+               (image->colors > quantize_info->number_colors) ||
+               (quantize_info->colorspace == GRAYColorspace))
+             (void) QuantizeImage(quantize_info,image,exception);
+           else
+             CompressImageColormap(image,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
           break;
         }
