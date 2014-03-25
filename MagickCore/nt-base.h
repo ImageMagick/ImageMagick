@@ -37,6 +37,7 @@ extern "C" {
 #include <io.h>
 #include <process.h>
 #include <errno.h>
+#include <malloc.h>
 #if defined(_DEBUG) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #include <crtdbg.h>
 #endif

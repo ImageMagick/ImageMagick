@@ -1003,12 +1003,7 @@ AC_CHECK_SIZEOF([double_t], [], [[#include <math.h>]])
 # Get size of float, double and long double for comparaison.
 AC_CHECK_SIZEOF([float])
 AC_CHECK_SIZEOF([double])
-if test ${cross_compiling} = "no"; then
-  AC_C_LONG_DOUBLE
-fi
-if test "${ac_cv_c_have_long_double}" = "yes" ; then
-  AC_CHECK_SIZEOF([long double])
-fi
+AC_CHECK_SIZEOF([long double])
 
 # Obtain size of an 'signed short' and define as SIZEOF_SIGNED_SHORT
 AC_CHECK_SIZEOF(signed short)
