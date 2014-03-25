@@ -338,9 +338,7 @@ extern MagickPrivate MagickBooleanType
   OpenCLThrowMagickException(ExceptionInfo *,
     const char *,const char *,const size_t,
     const ExceptionType,const char *,const char *,...),
-  RelinquishOpenCLCommandQueue(MagickCLEnv, cl_command_queue);
-
-extern MagickExport MagickBooleanType 
+  RelinquishOpenCLCommandQueue(MagickCLEnv, cl_command_queue),
   RelinquishOpenCLKernel(MagickCLEnv, cl_kernel);
 
 extern MagickPrivate unsigned long 

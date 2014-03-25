@@ -2670,7 +2670,7 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(
   return (cl_command_queue) NULL;
 }
 
-MagickPrivate MagickBooleanType RelinquishCommandQueue(
+MagickExport MagickBooleanType RelinquishCommandQueue(
   MagickCLEnv magick_unused(clEnv),cl_command_queue magick_unused(queue))
 {
   magick_unreferenced(clEnv);
@@ -2690,7 +2690,7 @@ MagickPrivate cl_kernel AcquireOpenCLKernel(
   return (cl_kernel)NULL;
 }
 
-MagickExport MagickBooleanType RelinquishOpenCLKernel(
+MagickPrivate MagickBooleanType RelinquishOpenCLKernel(
   MagickCLEnv magick_unused(clEnv),cl_kernel magick_unused(kernel))
 {
   magick_unreferenced(clEnv);
