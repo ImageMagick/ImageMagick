@@ -272,13 +272,13 @@ t/reference/jng/write_jdaa.miff
 t/reference/jng/write_prog_idat.miff
 t/reference/jng/write_prog_jdaa.miff
 t/reference/jng/write_prog.miff
-t/reference/jp2/read_jp2.miff
-t/reference/jp2/read_jpc.miff
-t/reference/jp2/read_pgx.miff
 t/reference/jpeg/read_non_interlaced.miff
 t/reference/jpeg/read_plane_interlaced.miff
 t/reference/jpeg/write_non_interlaced.miff
 t/reference/jpeg/write_plane_interlaced.miff
+t/reference/openjp2/read_jp2.miff
+t/reference/openjp2/read_jpc.miff
+t/reference/openjp2/read_pgx.miff
 t/reference/read/gradient.miff
 t/reference/read/granite.miff
 t/reference/read/input_avs.miff
