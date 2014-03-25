@@ -411,8 +411,7 @@
 #define MAGICKCORE_HAVE_LOCALTIME_R 1
 #endif
 
-/* Define to 1 if the type `long double' works and has more range or precision
-   than `double'. */
+/* Define to 1 if the system has the type `long double'. */
 #ifndef MAGICKCORE_HAVE_LONG_DOUBLE
 #define MAGICKCORE_HAVE_LONG_DOUBLE 1
 #endif
@@ -1317,7 +1316,9 @@
 #endif
 
 /* The size of `long double', as computed by sizeof. */
-/* #undef SIZEOF_LONG_DOUBLE */
+#ifndef MAGICKCORE_SIZEOF_LONG_DOUBLE
+#define MAGICKCORE_SIZEOF_LONG_DOUBLE 16
+#endif
 
 /* The size of `off_t', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_OFF_T
