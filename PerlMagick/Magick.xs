@@ -420,8 +420,8 @@ static struct
       {"channel", MagickChannelOptions} } },
     { "WhiteThreshold", { {"threshold", StringReference},
       {"channel", MagickChannelOptions} } },
-    { "RadialBlur", { {"geometry", StringReference}, {"angle", RealReference},
-      {"channel", MagickChannelOptions} } },
+    { "RotationalBlur", { {"geometry", StringReference},
+      {"angle", RealReference}, {"channel", MagickChannelOptions} } },
     { "Thumbnail", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference} } },
     { "Strip", },
@@ -7411,8 +7411,8 @@ Mogrify(ref,...)
     BlackThresholdImage= 160
     WhiteThreshold     = 161
     WhiteThresholdImage= 162
-    RadialBlur         = 163
-    RadialBlurImage    = 164
+    RotationalBlur     = 163
+    RotationalBlurImage= 164
     Thumbnail          = 165
     ThumbnailImage     = 166
     Strip              = 167
@@ -9987,7 +9987,7 @@ Mogrify(ref,...)
           (void) SetImageChannelMask(image,channel_mask);
           break;
         }
-        case 82:  /* RadialBlur */
+        case 82:  /* RotationalBlur */
         {
           if (attribute_flag[0] != 0)
             {
