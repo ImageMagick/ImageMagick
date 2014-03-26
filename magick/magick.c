@@ -1318,7 +1318,6 @@ MagickExport void MagickCoreGenesis(const char *path,
   (void) ConfigureComponentGenesis();
   (void) PolicyComponentGenesis();
   (void) CacheComponentGenesis();
-  (void) RegistryComponentGenesis();
   (void) ResourceComponentGenesis();
   (void) CoderComponentGenesis();
   (void) MagickComponentGenesis();
@@ -1334,6 +1333,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 #if defined(MAGICKCORE_X11_DELEGATE)
   (void) XComponentGenesis();
 #endif
+  (void) RegistryComponentGenesis();
   instantiate_magickcore=MagickTrue;
   UnlockMagickMutex();
 }
@@ -1365,6 +1365,7 @@ MagickExport void MagickCoreTerminus(void)
       UnlockMagickMutex();
       return;
     }
+  RegistryComponentTerminus();
 #if defined(MAGICKCORE_X11_DELEGATE)
   XComponentTerminus();
 #endif
@@ -1386,7 +1387,6 @@ MagickExport void MagickCoreTerminus(void)
 #endif
   CoderComponentTerminus();
   ResourceComponentTerminus();
-  RegistryComponentTerminus();
   CacheComponentTerminus();
   PolicyComponentTerminus();
   ConfigureComponentTerminus();
