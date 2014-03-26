@@ -357,6 +357,7 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
 {
   char
     *directory,
+    *p,
     *value;
 
   ExceptionInfo
@@ -414,9 +415,19 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
     (void) FormatLocaleString(path,MaxTextExtent,"%smagick-%.20gXXXXXXXXXXXX",
       directory,(double) getpid());
   else
-    (void) FormatLocaleString(path,MaxTextExtent,"%s%smagick-%.20gXXXXXXXXXXXX",
-      directory,DirectorySeparator,(double) getpid());
+    (void) FormatLocaleString(path,MaxTextExtent,
+      "%s%smagick-%.20gXXXXXXXXXXXX",directory,DirectorySeparator,
+      (double) getpid());
   directory=DestroyString(directory);
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+  /*
+    Ghostscript does not like backslashes so we need to replace them. The
+    forward slash also works under Windows.
+  */
+  for (p=(path[1] == *DirectorySeparator ? path+2 : path); *p != '\0'; p++)
+    if (*p == *DirectorySeparator)
+      *p='/';
+#endif
   return(MagickTrue);
 }
 
