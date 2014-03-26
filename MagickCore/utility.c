@@ -1794,9 +1794,6 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   char
     *passes;
 
-  ExceptionInfo
-    *exception;
-
   int
     file,
     status;
@@ -1815,11 +1812,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
 
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(MagickFalse);
-  exception=AcquireExceptionInfo();
-  passes=(char *) GetImageRegistry(StringRegistryType,"shred-passes",exception);
-  exception=DestroyExceptionInfo(exception);
-  if (passes == (char *) NULL)
-    passes=GetEnvironmentValue("MAGICK_SHRED_PASSES");
+  passes=GetEnvironmentValue("MAGICK_SHRED_PASSES");
   if (passes == (char *) NULL)
     {
       /*
