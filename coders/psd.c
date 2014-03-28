@@ -465,7 +465,7 @@ static inline size_t GetPSDPacketSize(Image *image)
   return(1);
 }
 
-static inline MagickSizeType GetPSDSize(PSDInfo *psd_info,Image *image)
+static inline MagickSizeType GetPSDSize(const PSDInfo *psd_info,Image *image)
 {
   if (psd_info->version == 1)
     return((MagickSizeType) ReadBlobMSBLong(image));
@@ -797,7 +797,7 @@ static MagickStatusType ReadPSDChannelRaw(Image *image,const size_t channels,
 }
 
 static inline MagickOffsetType *ReadPSDRLEOffsets(Image *image,
-  PSDInfo *psd_info,const size_t size)
+  const PSDInfo *psd_info,const size_t size)
 {
   MagickOffsetType
     *offsets;
@@ -819,7 +819,7 @@ static inline MagickOffsetType *ReadPSDRLEOffsets(Image *image,
   return offsets;
 }
 
-static MagickStatusType ReadPSDChannelRLE(Image *image,PSDInfo *psd_info,
+static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
   const ssize_t type,MagickOffsetType *offsets,ExceptionInfo *exception)
 {
   MagickStatusType
@@ -1017,7 +1017,7 @@ static MagickStatusType ReadPSDChannelZip(Image *image,
 #endif
 }
 
-static MagickStatusType ReadPSDChannel(Image *image,PSDInfo *psd_info,
+static MagickStatusType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
   const LayerInfo* layer_info,const size_t channel,
   const PSDCompressionType compression,ExceptionInfo *exception)
 {
@@ -1081,7 +1081,7 @@ static MagickStatusType ReadPSDChannel(Image *image,PSDInfo *psd_info,
   return(status);
 }
 
-static MagickStatusType ReadPSDLayer(Image *image,PSDInfo *psd_info,
+static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   LayerInfo* layer_info,ExceptionInfo *exception)
 {
   char
@@ -1152,8 +1152,9 @@ static MagickStatusType ReadPSDLayer(Image *image,PSDInfo *psd_info,
   return(status);
 }
 
-static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
-  MagickBooleanType skip_layers,ExceptionInfo *exception)
+static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
+  const PSDInfo *psd_info,const MagickBooleanType skip_layers,
+  ExceptionInfo *exception)
 {
   char
     type[4];
@@ -1428,36 +1429,38 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
           }
       }
 
-      for (i=0; i < number_layers; i++)
-      {
-        if (layer_info[i].image == (Image *) NULL)
+      if (image_info->ping == MagickFalse)
         {
-          for (j=0; j < layer_info[i].channels; j++)
+          for (i=0; i < number_layers; i++)
           {
-            if (DiscardBlobBytes(image,layer_info[i].channel_info[j].size) ==
-                  MagickFalse)
+            if (layer_info[i].image == (Image *) NULL)
               {
-                layer_info=DestroyLayerInfo(layer_info,number_layers);
-                ThrowBinaryException(CorruptImageError,
-                  "UnexpectedEndOfFile",image->filename);
+                for (j=0; j < layer_info[i].channels; j++)
+                {
+                  if (DiscardBlobBytes(image,
+                      layer_info[i].channel_info[j].size) == MagickFalse)
+                    {
+                      layer_info=DestroyLayerInfo(layer_info,number_layers);
+                      ThrowBinaryException(CorruptImageError,
+                        "UnexpectedEndOfFile",image->filename);
+                    }
+                }
+                continue;
               }
+
+            if (image->debug != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "  reading data for layer %.20g",(double) i);
+                status=ReadPSDLayer(image,psd_info,&layer_info[i],exception);
+                if (status == MagickFalse)
+                  break;
+
+            status=SetImageProgress(image,LoadImagesTag,i,(MagickSizeType)
+              number_layers);
+            if (status == MagickFalse)
+              break;
           }
-          continue;
         }
-
-        if (image->debug != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  reading data for layer %.20g",(double) i);
-
-        status=ReadPSDLayer(image,psd_info,&layer_info[i],exception);
-        if (status == MagickFalse)
-          break;
-
-        status=SetImageProgress(image,LoadImagesTag,i,(MagickSizeType)
-          number_layers);
-        if (status == MagickFalse)
-          break;
-      }
 
       if (status != MagickFalse)
       {
@@ -1492,8 +1495,8 @@ static MagickStatusType ReadPSDLayers(Image *image,PSDInfo *psd_info,
   return(status);
 }
 
-static MagickStatusType ReadPSDMergedImage(Image* image,PSDInfo* psd_info,
-  ExceptionInfo *exception)
+static MagickStatusType ReadPSDMergedImage(Image* image,
+  const PSDInfo* psd_info,ExceptionInfo *exception)
 {
   MagickOffsetType
     *offsets;
@@ -1722,14 +1725,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
         &has_merged_image);
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
-   /*
-     If we are only "pinging" the image, then we're done - so return.
-   */
-  if (image_info->ping != MagickFalse)
-    {
-      (void) CloseBlob(image);
-      return(GetFirstImageInList(image));
-    }
   /*
     Layer and mask block.
   */
@@ -1757,7 +1752,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
     }
   else
     {
-      if (ReadPSDLayers(image,&psd_info,skip_layers,exception) != MagickTrue)
+      if (ReadPSDLayers(image,image_info,&psd_info,skip_layers,exception) !=
+          MagickTrue)
         {
           (void) CloseBlob(image);
           return((Image *) NULL);
@@ -1767,7 +1763,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
       */
       SeekBlob(image,offset+length,SEEK_SET);
     }
-
+  /*
+    If we are only "pinging" the image, then we're done - so return.
+  */
+  if (image_info->ping != MagickFalse)
+    {
+      (void) CloseBlob(image);
+      return(image);
+    }
   /*
     Read the precombined layer, present for PSD < 4 compatibility.
   */
@@ -1781,7 +1784,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
     length != 0)
     {
       SeekBlob(image,offset,SEEK_SET);
-      if (ReadPSDLayers(image,&psd_info,MagickFalse,exception) !=
+      if (ReadPSDLayers(image,image_info,&psd_info,MagickFalse,exception) !=
         MagickTrue)
         {
           (void) CloseBlob(image);
