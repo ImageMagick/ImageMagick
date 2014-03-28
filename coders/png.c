@@ -7025,7 +7025,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       q+=GetPixelChannels(image);
                     }
                     n+=GetPixelChannels(image);
-                    p+=GetPixelChannels(image);
                   }
 
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -8521,6 +8520,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image->depth = 8;
 #endif
 
+  image_colors = (int) image->colors;
+  number_opaque = (int) image->colors;
+  number_transparent = 0;
+  number_semitransparent = 0;
+
   if (image->storage_class != PseudoClass && mng_info->write_png_colortype &&
      (mng_info->write_png_colortype > 4 || (mng_info->write_png_depth >= 8 &&
      mng_info->write_png_colortype < 4 &&
@@ -8529,25 +8533,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      /* Avoid the expensive BUILD_PALETTE operation if we're sure that we
       * are not going to need the result.
       */
-     image_colors = (int) image->colors;
-     number_opaque = (int) image->colors;
      if (mng_info->write_png_colortype == 1 ||
         mng_info->write_png_colortype == 5)
        ping_have_color=MagickFalse;
-     else
-       ping_have_color=MagickTrue;
-     ping_have_non_bw=MagickFalse;
 
      if (image->alpha_trait == BlendPixelTrait)
        {
          number_transparent = 2;
          number_semitransparent = 1;
-       }
-
-     else
-       {
-         number_transparent = 0;
-         number_semitransparent = 0;
        }
   }
 
@@ -12428,6 +12421,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   if (jng_alpha_quality >= 1000)
     jng_alpha_quality /= 1000;
 
+  length=0;
+
   if (transparent)
     {
       jng_color_type=14;
@@ -12502,7 +12497,6 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Creating PNG blob.");
-          length=0;
 
           (void) CopyMagickString(jpeg_image_info->magick,"PNG",MaxTextExtent);
           (void) CopyMagickString(jpeg_image->magick,"PNG",MaxTextExtent);
@@ -13361,7 +13355,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
          if (need_defi && final_delay > 2 && (final_delay != 4) &&
             (final_delay != 5) && (final_delay != 10) && (final_delay != 20) &&
-            (final_delay != 25) && (final_delay != 50) && (final_delay !=
+            (final_delay != 25) && (final_delay != 50) && (1UL*final_delay !=
                1UL*image->ticks_per_second))
            mng_info->need_fram=MagickTrue;  /* make it exact; cannot be VLC */
        }
