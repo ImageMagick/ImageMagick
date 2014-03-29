@@ -544,6 +544,9 @@ static struct
     { "Poly", { {"terms", ArrayReference},
       {"channel", MagickChannelOptions} } },
     { "Grayscale", { {"method", MagickNoiseOptions} } },
+    { "CannyEdge", { {"geometry", StringReference},
+      {"radius", RealReference}, {"sigma", RealReference},
+      {"low-factor", RealReference}, {"high-factor", RealReference} } },
   };
 
 static SplayTreeInfo
@@ -7525,6 +7528,8 @@ Mogrify(ref,...)
     PolyImage          = 274
     Grayscale          = 275
     GrayscaleImage     = 276
+    CannyEdge          = 278
+    CannyEdgeImage     = 279
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11090,6 +11095,36 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             method=(PixelIntensityMethod) argument_list[0].integer_reference;
           (void) GrayscaleImage(image,method,exception);
+          break;
+        }
+        case 138:  /* Canny */
+        {
+          if (attribute_flag[0] != 0)
+            {
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry_info);
+              if ((flags & SigmaValue) == 0)
+                geometry_info.sigma=1.0;
+              if ((flags & XiValue) == 0)
+                geometry_info.xi=0.35;
+              if ((flags & PsiValue) == 0)
+                geometry_info.psi=0.75;
+            }
+          if (attribute_flag[1] != 0)
+            geometry_info.rho=argument_list[1].real_reference;
+          if (attribute_flag[2] != 0)
+            geometry_info.sigma=argument_list[2].real_reference;
+          if (attribute_flag[3] != 0)
+            geometry_info.xi=argument_list[3].real_reference;
+          if (attribute_flag[4] != 0)
+            geometry_info.psi=argument_list[4].real_reference;
+          if (attribute_flag[5] != 0)
+            channel=(ChannelType) argument_list[5].integer_reference;
+          channel_mask=SetImageChannelMask(image,channel);
+          image=CannyEdgeImage(image,geometry_info.rho,geometry_info.sigma,
+            geometry_info.xi,geometry_info.psi,exception);
+          if (image != (Image *) NULL)
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
       }

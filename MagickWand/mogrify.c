@@ -981,6 +981,23 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       }
       case 'c':
       {
+        if (LocaleCompare("canny",option+1) == 0)
+          {
+            /*
+              Detect edges in the image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=1.0;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=0.35;
+            if ((flags & PsiValue) == 0)
+              geometry_info.psi=0.75;
+            mogrify_image=CannyEdgeImage(*image,geometry_info.rho,
+              geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
+            break;
+          }
         if (LocaleCompare("cdl",option+1) == 0)
           {
             char
@@ -3286,6 +3303,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-bordercolor color   border color",
       "-brightness-contrast geometry",
       "                     improve brightness / contrast of the image",
+      "-canny geometry      detect edges in the image",
       "-cdl filename        color correct with a color decision list",
       "-charcoal geometry   simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
@@ -3999,6 +4017,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
       case 'c':
       {
         if (LocaleCompare("cache",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("canny",option+1) == 0)
           {
             if (*option == '+')
               break;

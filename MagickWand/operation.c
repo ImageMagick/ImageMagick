@@ -1914,6 +1914,21 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'c':
     {
+      if (LocaleCompare("canny",option+1) == 0)
+        {
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=1.0;
+          if ((flags & XiValue) == 0)
+            geometry_info.xi=0.35;
+          if ((flags & PsiValue) == 0)
+            geometry_info.psi=0.75;
+          new_image=CannyEdgeImage(_image,geometry_info.rho,
+            geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
+          break;
+        }
       if (LocaleCompare("cdl",option+1) == 0)
         {
           /* Note: arguments do not have percent escapes expanded */

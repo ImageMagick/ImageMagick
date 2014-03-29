@@ -177,6 +177,7 @@ static MagickBooleanType ConvertUsage(void)
       "-bordercolor color   border color",
       "-brightness-contrast geometry",
       "                     improve brightness / contrast of the image",
+      "-canny geometry      detect edges in the image",
       "-cdl filename        color correct with a color decision list",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
@@ -853,6 +854,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
       case 'c':
       {
         if (LocaleCompare("cache",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("canny",option+1) == 0)
           {
             if (*option == '+')
               break;
