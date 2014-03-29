@@ -837,8 +837,9 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %  The format of the EdgeImage method is:
 %
 %      Image *CannyEdgeImage(const Image *image,const double radius,
-%        const double sigma,const double low_threshold,const double high_threadhold,
-%        const size_t threshold,ExceptionInfo *exception)
+%        const double sigma,const double low_threshold,
+%        const double high_threshold,const size_t threshold,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -858,7 +859,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %
 */
 MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
-  const double sigma,const double low_threshold,const double high_threadhold,
+  const double sigma,const double low_threshold,const double high_threshold,
   ExceptionInfo *exception)
 {
   typedef struct _CannyInfo
@@ -1000,7 +1001,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   }
   edge_view=DestroyCacheView(edge_view);
   /*
-    Apply non-maximal suppression to the edge strength of the gradient image.
+    Apply non-maximal suppression to the magnitude of the gradient image
+    followed by hysteresis thresholding.
   */
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1033,6 +1035,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       double
         angle;
 
+      /*
+        Non-maximum suppression.
+      */
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
       angle=fabs(RadiansToDegrees(pixel.theta));
       if ((angle >= 22.5) && (angle < 67.5))
@@ -1069,10 +1074,58 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
               (void) GetMatrixElement(pixel_cache,x+1,y,&alpha_pixel);
               (void) GetMatrixElement(pixel_cache,x-1,y,&beta_pixel);
             }
-      q->red=ClampToQuantum(pixel.magnitude);
+      /*
+        Hysteresis thresholding.
+      */
       if ((pixel.magnitude < alpha_pixel.magnitude) ||
-          (pixel.magnitude < beta_pixel.magnitude))
-        q->red=0;
+          (pixel.magnitude < beta_pixel.magnitude) ||
+          (pixel.magnitude < low_threshold))
+        q->red=0;  /* < low threshold: remove edge */
+      else
+        if (pixel.magnitude > high_threshold)
+          q->red=QuantumRange;  /* > high threshold: edge */
+        else
+          {
+            double
+              magnitude;
+
+            ssize_t
+              u,
+              v;
+
+            magnitude=0;
+            for (v=(-1); v <= 1; v++)
+            {
+              for (u=(-1); u <= 1; u++)
+              {
+                (void) GetMatrixElement(pixel_cache,x+u,y+v,&alpha_pixel);
+                if (alpha_pixel.magnitude > magnitude)
+                  magnitude=alpha_pixel.magnitude;
+              }
+            }
+            if (magnitude > high_threshold)
+              q->red=QuantumRange;  /* neighbor > high threshold: edge */
+            else
+              if (magnitude < low_threshold)
+                q->red=0;  /* neighbor < low threshold: remove edge */
+              else
+                {
+                  magnitude=0;
+                  for (v=(-2); v <= 2; v++)
+                  {
+                    for (u=(-2); u <= 2; u++)
+                    {
+                      (void) GetMatrixElement(pixel_cache,x+u,y+v,&alpha_pixel);
+                      if (alpha_pixel.magnitude > magnitude)
+                        magnitude=alpha_pixel.magnitude;
+                    }
+                  }
+                  if (magnitude > high_threshold)
+                    q->red=QuantumRange; /* neighbor > high threshold: edge */
+                  else
+                    q->red=0; /* remove edge */
+                }
+          }
       q->green=q->red;
       q->blue=q->red;
       q++;
