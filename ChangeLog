@@ -1,3 +1,9 @@
+2014-03-24  6.8.9-0 Cristy  <quetzlzacatenango@image...>
+  * Don't transform sRGB compatible colorspaces to sRGB, doing so
+    inadvertingly promotes colormapped images to DirectClass.
+
+2014-03-23  6.8.8-10 Cristy  <quetzlzacatenango@image...>
+  * Although they are internal methods, deprecate InitializeModuleList(),
 2014-03-28  6.8.8-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-9, SVN revision 15239.
 
