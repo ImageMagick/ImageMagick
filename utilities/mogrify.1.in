@@ -134,6 +134,7 @@ Image Operators:
   \-brightness-contrast geometry
                        improve brightness / contrast of the image
   \-cdl filename        color correct with a color decision list
+  \-canny geometry      detect edges in the image
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
   \-clamp               keep pixel values in range (0-QuantumRange)

@@ -824,6 +824,60 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     C a n n y E d g e I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CannyEdgeImage() uses a multi-stage algorithm to detect a wide range of
+%  edges in images.
+%
+%  The format of the EdgeImage method is:
+%
+%      Image *CannyEdgeImage(const Image *image,const double radius,
+%        const double sigma,const double low_factor,const double high_factor,
+%        const size_t threshold,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel type.
+%
+%    o radius: the radius of the gaussian smoothing filter.
+%
+%    o sigma: the sigma of the gaussian smoothing filter.
+%
+%    o low_factor: use this low factor in hysteresis.
+%
+%    o hight_factor: use this high factor in hysteresis.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
+  const double sigma,const double low_factor,const double high_factor,
+  ExceptionInfo *exception)
+{
+  Image
+    *edge_image;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  edge_image=(Image *) NULL;
+  return(edge_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     C o n v o l v e I m a g e                                               %
 %                                                                             %
 %                                                                             %
