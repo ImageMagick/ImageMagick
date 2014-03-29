@@ -245,6 +245,8 @@ static const OptionInfo
     { "-brightness-contrast", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+cache", 0L, GlobalOptionFlag, MagickFalse },
     { "-cache", 1L, GlobalOptionFlag, MagickFalse },
+    { "+canny", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-canny", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+cdl", 1L, DeprecateOptionFlag, MagickFalse },
     { "-cdl", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+channel", 0L, ImageInfoOptionFlag | ListOperatorOptionFlag, MagickFalse },

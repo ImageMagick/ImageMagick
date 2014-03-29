@@ -962,6 +962,23 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       }
       case 'c':
       {
+        if (LocaleCompare("canny",option+1) == 0)
+          {
+            /*
+              Detect edges in the image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=1.0;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=0.35;
+            if ((flags & PsiValue) == 0)
+              geometry_info.psi=0.75;
+            mogrify_image=CannyEdgeImage(*image,geometry_info.rho,
+              geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
+            break;
+          }
         if (LocaleCompare("cdl",option+1) == 0)
           {
             char
@@ -1078,7 +1095,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               for (x=0; x < (ssize_t) mask_image->columns; x++)
               {
                 if (mask_image->matte == MagickFalse)
-                  SetPixelOpacity(q,ClampToQuantum(GetPixelIntensity(mask_image,q)));
+                  SetPixelOpacity(q,ClampToQuantum(GetPixelIntensity(mask_image,
+                    q)));
                 SetPixelRed(q,GetPixelOpacity(q));
                 SetPixelGreen(q,GetPixelOpacity(q));
                 SetPixelBlue(q,GetPixelOpacity(q));
@@ -3333,6 +3351,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-bordercolor color   border color",
       "-brightness-contrast geometry",
       "                     improve brightness / contrast of the image",
+      "-canny geometry      detect edges in the image",
       "-cdl filename        color correct with a color decision list",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
