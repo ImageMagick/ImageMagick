@@ -1191,10 +1191,11 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == colorspace)
     return(MagickTrue);
-  if ((colorspace == Rec709LumaColorspace) && (colorspace == sRGBColorspace))
+  if ((image->colorspace == Rec709LumaColorspace) &&
+      (colorspace == sRGBColorspace))
     return(MagickTrue);
-  if ((colorspace == GRAYColorspace) && (colorspace == sRGBColorspace) &&
-      (image->gamma != 1.0))
+  if ((image->colorspace == GRAYColorspace) &&
+      (image->gamma != 1.0) && (colorspace == sRGBColorspace))
     return(MagickTrue);
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace));
