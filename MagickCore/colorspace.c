@@ -1137,10 +1137,13 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (colorspace == UndefinedColorspace)
-    return(SetImageColorspace(image,colorspace,exception));
   if (image->colorspace == colorspace)
     return(MagickTrue);
+  if ((IssRGBCompatibleColorspace(image->colorspace) != MagickFalse) &&
+      (colorspace == sRGBColorspace))
+    return(MagickTrue);
+  if (colorspace == UndefinedColorspace)
+    return(SetImageColorspace(image,colorspace,exception));
   /*
     Convert the reference image from an alternate colorspace to sRGB.
   */
