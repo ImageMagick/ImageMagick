@@ -343,7 +343,7 @@ static const struct ReferenceFormats
     { "UYVY", UndefinedCompression, 0.0 },
     { "VDA", UndefinedCompression, 0.0 },
     { "VICAR", UndefinedCompression, 0.0 },
-    { "VIFF", UndefinedCompression, 0.0 },
+    { "VIFF", UndefinedCompression, 0.004 },
     { "VST", UndefinedCompression, 0.0 },
     { "WBMP", UndefinedCompression, 0.0 },
     { "WPG", UndefinedCompression, 0.0 },
