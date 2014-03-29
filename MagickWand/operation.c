@@ -1922,9 +1922,14 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
-            geometry_info.xi=0.35;
+            geometry_info.xi=0.35*QuantumRange;
           if ((flags & PsiValue) == 0)
-            geometry_info.psi=0.75;
+            geometry_info.psi=0.75*QuantumRange;
+          if ((flags & PercentValue) != 0)
+            {
+              geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
+              geometry_info.psi=(double) QuantumRange*geometry_info.psi/100.0;
+            }
           new_image=CannyEdgeImage(_image,geometry_info.rho,
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
           break;
