@@ -63,6 +63,8 @@ extern MagickExport Image
   *AdaptiveSharpenImage(const Image *,const double,const double,
      ExceptionInfo *),
   *BlurImage(const Image *,const double,const double,ExceptionInfo *),
+  *CannyEdgeImage(const Image *,const double,const double,const double,
+    const double,ExceptionInfo *),
   *ConvolveImage(const Image *,const KernelInfo *,ExceptionInfo *),
   *DespeckleImage(const Image *,ExceptionInfo *),
   *EdgeImage(const Image *,const double,ExceptionInfo *),
