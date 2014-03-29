@@ -61,6 +61,7 @@
 #include "magick/image-private.h"
 #include "magick/list.h"
 #include "magick/log.h"
+#include "magick/matrix.h"
 #include "magick/memory_.h"
 #include "magick/memory-private.h"
 #include "magick/monitor.h"
@@ -836,7 +837,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %  The format of the EdgeImage method is:
 %
 %      Image *CannyEdgeImage(const Image *image,const double radius,
-%        const double sigma,const double low_factor,const double high_factor,
+%        const double sigma,const double low_threshold,const double high_threadhold,
 %        const size_t threshold,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -849,19 +850,46 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %
 %    o sigma: the sigma of the gaussian smoothing filter.
 %
-%    o low_factor: use this low factor in hysteresis.
+%    o low_threshold: use this low threshold in hysteresis.
 %
-%    o hight_factor: use this high factor in hysteresis.
+%    o hight_factor: use this high threshold in hysteresis.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
-  const double sigma,const double low_factor,const double high_factor,
+  const double sigma,const double low_threshold,const double high_threadhold,
   ExceptionInfo *exception)
 {
+  typedef struct _CannyInfo
+  {
+    double
+      Dx,
+      Dy,
+      magnitude,
+      theta;
+  } CannyInfo;
+
+  CacheView
+    *edge_view;
+
+  char
+    geometry[MaxTextExtent];
+
   Image
     *edge_image;
+
+  KernelInfo
+    *kernel_info;
+
+  MagickBooleanType
+    status;
+
+  MatrixInfo
+    *pixel_cache;
+
+  ssize_t
+    y;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -869,7 +897,190 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  edge_image=(Image *) NULL;
+  /*
+    Filter out noise before trying to locate and detect any edges.
+  */
+  (void) FormatLocaleString(geometry,MaxTextExtent,
+    "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  edge_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
+    kernel_info,UndefinedCompositeOp,0.0,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  if (edge_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageColorspace(edge_image,GRAYColorspace) == MagickFalse)
+    {
+      edge_image=DestroyImage(edge_image);
+      return((Image *) NULL);
+    }
+  /*
+    Find the edge strength by taking the gradient of the image.
+  */
+  pixel_cache=AcquireMatrixInfo(edge_image->columns,edge_image->rows,
+    sizeof(CannyInfo),exception);
+  if (pixel_cache == (MatrixInfo *) NULL)
+    {
+      edge_image=DestroyImage(edge_image);
+      return((Image *) NULL);
+    }
+  status=MagickTrue;
+  edge_view=AcquireVirtualCacheView(edge_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(edge_image,edge_image,edge_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) edge_image->rows; y++)
+  {
+    register const PixelPacket
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(edge_view,-1,y-1,edge_image->columns+2,3,
+      exception);
+    if (p == (const PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) edge_image->columns; x++)
+    {
+      CannyInfo
+        pixel;
+
+      register const PixelPacket
+        *restrict kernel_pixels;
+
+      ssize_t
+        v;
+
+      static double
+        Gx[3][3] =
+        {
+          { -1.0,  0.0, +1.0 },
+          { -2.0,  0.0, +2.0 },
+          { -1.0,  0.0, +1.0 }
+        },
+        Gy[3][3] =
+        {
+          { +1.0, +2.0, +1.0 },
+          {  0.0,  0.0,  0.0 },
+          { -1.0, -2.0, -1.0 }
+        };
+
+      (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+      kernel_pixels=p;
+      for (v=0; v < 3; v++)
+      {
+        ssize_t
+          u;
+
+        for (u=0; u < 3; u++)
+        {
+          double
+            intensity;
+
+          intensity=GetPixelIntensity(edge_image,kernel_pixels+u);
+          pixel.Dx+=Gx[u][v]*intensity;
+          pixel.Dy+=Gy[u][v]*intensity;
+        }
+        kernel_pixels+=edge_image->columns+3;
+      }
+      pixel.magnitude=sqrt(pixel.Dx*pixel.Dx+pixel.Dy*pixel.Dy);
+      pixel.theta=atan2(pixel.Dy,pixel.Dx);
+      if (SetMatrixElement(pixel_cache,x,y,&pixel) == MagickFalse)
+        continue;
+      p++;
+    }
+  }
+  edge_view=DestroyCacheView(edge_view);
+  /*
+    Apply non-maximal suppression to the edge strength of the gradient image.
+  */
+  edge_view=AcquireAuthenticCacheView(edge_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(edge_image,edge_image,edge_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) edge_image->rows; y++)
+  {
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(edge_view,0,y,edge_image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) edge_image->columns; x++)
+    {
+      CannyInfo
+        pixel,
+        alpha_pixel,
+        beta_pixel;
+
+      double
+        angle;
+
+      (void) GetMatrixElement(pixel_cache,x,y,&pixel);
+      angle=fabs(RadiansToDegrees(pixel.theta));
+      if ((angle >= 22.5) && (angle < 67.5))
+        {
+          /*
+            45 degrees.
+          */
+          (void) GetMatrixElement(pixel_cache,x+1,y+1,&alpha_pixel);
+          (void) GetMatrixElement(pixel_cache,x-1,y-1,&beta_pixel);
+        }
+      else
+        if ((angle >= 67.5) && (angle < 112.5))
+          {
+            /*
+              90 degrees.
+            */
+            (void) GetMatrixElement(pixel_cache,x,y+1,&alpha_pixel);
+            (void) GetMatrixElement(pixel_cache,x,y-1,&beta_pixel);
+          }
+        else
+          if ((angle >= 112.5) && (angle < 157.5))
+            {
+              /*
+                135 degrees.
+              */
+              (void) GetMatrixElement(pixel_cache,x+1,y-1,&alpha_pixel);
+              (void) GetMatrixElement(pixel_cache,x-1,y+1,&beta_pixel);
+            }
+          else
+            {
+              /*
+                0 degrees.
+              */
+              (void) GetMatrixElement(pixel_cache,x+1,y,&alpha_pixel);
+              (void) GetMatrixElement(pixel_cache,x-1,y,&beta_pixel);
+            }
+      q->red=ClampToQuantum(pixel.magnitude);
+      if ((pixel.magnitude < alpha_pixel.magnitude) ||
+          (pixel.magnitude < beta_pixel.magnitude))
+        q->red=0;
+      q->green=q->red;
+      q->blue=q->red;
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  pixel_cache=DestroyMatrixInfo(pixel_cache);
   return(edge_image);
 }
 
@@ -958,7 +1169,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     kernel_info->values[i]=kernel[i];
   convolve_image=AccelerateConvolveImageChannel(image,channel,kernel_info,
     exception);
-  if (convolve_image == (Image *) NULL) 
+  if (convolve_image == (Image *) NULL)
     convolve_image=MorphologyApply(image,channel,ConvolveMorphology,1,
       kernel_info,UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
@@ -977,7 +1188,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DespeckleImage() reduces the speckle noise in an image while perserving the
-%  edges of the original image.  A speckle removing filter uses a complementary 
+%  edges of the original image.  A speckle removing filter uses a complementary
 %  hulling technique (raising pixels that are darker than their surrounding
 %  neighbors, then complementarily lowering pixels that are brighter than their
 %  surrounding neighbors) to reduce the speckle index of that image (reference
@@ -1026,9 +1237,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
     SignedQuantum
       v;
 
-    /* i = y*(columns+2)+1; */
     i=(2*y+1)+y*columns;
-    
     if (polarity > 0)
       for (x=0; x < (ssize_t) columns; x++)
       {
@@ -1356,7 +1565,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   kernel_info->values[i/2]=(double) kernel_info->width*kernel_info->height-1.0;
   edge_image=AccelerateConvolveImageChannel(image,DefaultChannels,kernel_info,
     exception);
-  if (edge_image == (Image *) NULL) 
+  if (edge_image == (Image *) NULL)
     edge_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
       kernel_info,UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
@@ -1598,7 +1807,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
       message=DestroyString(message);
     }
   filter_image=AccelerateConvolveImageChannel(image,channel,kernel,exception);
-  if (filter_image != (Image *) NULL) 
+  if (filter_image != (Image *) NULL)
     {
 #ifdef MAGICKCORE_CLPERFMARKER
       clEndPerfMarkerAMD();
@@ -2886,14 +3095,13 @@ MagickExport Image *RotationalBlurImageChannel(const Image *image,
     cos_theta[i]=cos((double) (theta*i-offset));
     sin_theta[i]=sin((double) (theta*i-offset));
   }
-
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (blur_image == (Image *) NULL) 
-  {
-    cos_theta=(MagickRealType *) RelinquishMagickMemory(cos_theta);
-    sin_theta=(MagickRealType *) RelinquishMagickMemory(sin_theta);
-    return((Image *) NULL);
-  }
+  if (blur_image == (Image *) NULL)
+    {
+      cos_theta=(MagickRealType *) RelinquishMagickMemory(cos_theta);
+      sin_theta=(MagickRealType *) RelinquishMagickMemory(sin_theta);
+      return((Image *) NULL);
+    }
   if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
   {
     cos_theta=(MagickRealType *) RelinquishMagickMemory(cos_theta);
@@ -2902,7 +3110,6 @@ MagickExport Image *RotationalBlurImageChannel(const Image *image,
     blur_image=DestroyImage(blur_image);
     return((Image *) NULL);
   }
-
   /*
     Radial blur image.
   */
@@ -3022,8 +3229,7 @@ MagickExport Image *RotationalBlurImageChannel(const Image *image,
               (blur_center.x+center.x*cos_theta[i]-center.y*sin_theta[i]+0.5),
               (ssize_t) (blur_center.y+center.x*sin_theta[i]+center.y*
               cos_theta[i]+0.5),&pixel,exception);
-            alpha=(MagickRealType) (QuantumScale*
-              GetPixelAlpha(&pixel));
+            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(&pixel));
             qixel.red+=alpha*pixel.red;
             qixel.green+=alpha*pixel.green;
             qixel.blue+=alpha*pixel.blue;
