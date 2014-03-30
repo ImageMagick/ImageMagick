@@ -1030,8 +1030,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           /*
             0 degrees.
           */
-          (void) GetMatrixElement(pixel_cache,x+1,y,&alpha_pixel);
-          (void) GetMatrixElement(pixel_cache,x-1,y,&beta_pixel);
+          (void) GetMatrixElement(pixel_cache,x-1,y,&alpha_pixel);
+          (void) GetMatrixElement(pixel_cache,x+1,y,&beta_pixel);
         }
       else
         if ((direction > 1.0) && (direction <= 3.0))
@@ -1039,8 +1039,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
             /*
               45 degrees.
             */
-            (void) GetMatrixElement(pixel_cache,x+1,y+1,&alpha_pixel);
-            (void) GetMatrixElement(pixel_cache,x-1,y-1,&beta_pixel);
+            (void) GetMatrixElement(pixel_cache,x-1,y-1,&alpha_pixel);
+            (void) GetMatrixElement(pixel_cache,x+1,y+1,&beta_pixel);
           }
         else
           if ((direction > 3.0) && (direction <= 5.0))
@@ -1048,16 +1048,16 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
               /*
                 90 degrees.
               */
-              (void) GetMatrixElement(pixel_cache,x,y+1,&alpha_pixel);
-              (void) GetMatrixElement(pixel_cache,x,y-1,&beta_pixel);
+              (void) GetMatrixElement(pixel_cache,x,y-1,&alpha_pixel);
+              (void) GetMatrixElement(pixel_cache,x,y+1,&beta_pixel);
             }
           else
             {
               /*
                 135 degrees.
               */
-              (void) GetMatrixElement(pixel_cache,x+1,y-1,&alpha_pixel);
-              (void) GetMatrixElement(pixel_cache,x-1,y+1,&beta_pixel);
+              (void) GetMatrixElement(pixel_cache,x-1,y+1,&alpha_pixel);
+              (void) GetMatrixElement(pixel_cache,x+1,y-1,&beta_pixel);
             }
       if ((pixel.magnitude < alpha_pixel.magnitude) ||
           (pixel.magnitude < beta_pixel.magnitude))
@@ -1095,7 +1095,6 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     for (x=0; x < (ssize_t) edge_image->columns; x++)
     {
       CannyInfo
-        alpha_pixel,
         pixel;
 
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
@@ -1122,9 +1121,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
               {
                 if ((u == 0) && (v == 0))
                   continue;
-                (void) GetMatrixElement(pixel_cache,x+u,y+v,&alpha_pixel);
-                if (alpha_pixel.magnitude > magnitude)
-                  magnitude=alpha_pixel.magnitude;
+                (void) GetMatrixElement(pixel_cache,x+u,y+v,&pixel);
+                if (pixel.magnitude > magnitude)
+                  magnitude=pixel.magnitude;
               }
             }
             if (magnitude > high_threshold)
@@ -1144,9 +1143,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
                     {
                       if ((u == 0) && (v == 0))
                         continue;
-                      (void) GetMatrixElement(pixel_cache,x+u,y+v,&alpha_pixel);
-                      if (alpha_pixel.magnitude > magnitude)
-                        magnitude=alpha_pixel.magnitude;
+                      (void) GetMatrixElement(pixel_cache,x+u,y+v,&pixel);
+                      if (pixel.magnitude > magnitude)
+                        magnitude=pixel.magnitude;
                     }
                   }
                   if (magnitude > high_threshold)
