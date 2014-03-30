@@ -1053,7 +1053,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           (void) GetMatrixElement(pixel_cache,x-1,y,&beta_pixel);
         }
       else
-        if (((theta <= (3.0*MagickPI)) && (((1.0*MagickPI)/8.0) <= theta)) ||
+        if (((theta < (3.0*MagickPI)) && (((1.0*MagickPI)/8.0) <= theta)) ||
             ((theta < ((11.0*MagickPI)/8.0)) && (((9.0*MagickPI)/8.0) <= theta)))
           {
             /*
@@ -1063,9 +1063,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
             (void) GetMatrixElement(pixel_cache,x-1,y-1,&beta_pixel);
           }
         else
-          if (((theta <= (5.0*MagickPI)) && (((3.0*MagickPI)/8.0) <= theta)) ||
-              ((theta < ((13.0*MagickPI)/8.0)) &&
-              (((11.0*MagickPI)/8.0) <= theta)))
+          if (((theta < (5.0*MagickPI)) && (((3.0*MagickPI)/8.0) <= theta)) ||
+              ((theta < ((13.0*MagickPI)/8.0)) && (((11.0*MagickPI)/8.0) <= theta)))
             {
               /*
                 90 degrees.
