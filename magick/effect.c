@@ -1090,14 +1090,18 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
               magnitude;
 
             ssize_t
-              u,
               v;
 
             magnitude=0;
             for (v=(-1); v <= 1; v++)
             {
+              ssize_t
+                u;
+
               for (u=(-1); u <= 1; u++)
               {
+                if ((u == 0) && (v == 0))
+                  continue;
                 (void) GetMatrixElement(pixel_cache,x+u,y+v,&alpha_pixel);
                 if (alpha_pixel.magnitude > magnitude)
                   magnitude=alpha_pixel.magnitude;
@@ -1113,8 +1117,13 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
                   magnitude=0;
                   for (v=(-2); v <= 2; v++)
                   {
+                    ssize_t
+                      u;
+
                     for (u=(-2); u <= 2; u++)
                     {
+                      if ((u == 0) && (v == 0))
+                        continue;
                       (void) GetMatrixElement(pixel_cache,x+u,y+v,&alpha_pixel);
                       if (alpha_pixel.magnitude > magnitude)
                         magnitude=alpha_pixel.magnitude;
