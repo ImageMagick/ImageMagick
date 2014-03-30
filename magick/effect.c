@@ -945,7 +945,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(edge_view,-1,y-1,edge_image->columns+3,3,
+    p=GetCacheViewVirtualPixels(edge_view,-1,y-1,edge_image->columns+2,3,
       exception);
     if (p == (const PixelPacket *) NULL)
       {
@@ -993,7 +993,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           pixel.Dx+=Gx[v][u]*intensity;
           pixel.Dy+=Gy[v][u]*intensity;
         }
-        kernel_pixels+=edge_image->columns+3;
+        kernel_pixels+=edge_image->columns+2;
       }
       pixel.magnitude=sqrt(pixel.Dx*pixel.Dx+pixel.Dy*pixel.Dy);
       pixel.theta=atan2(pixel.Dy,pixel.Dx);
