@@ -456,23 +456,22 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 #if defined(MAGICKCORE_HAVE_MKSTEMP)
   {
     char
-      *filename;
+      path[MaxTextExtent];
 
     int
       file;
 
-    filename=ConstantString("magickXXXXXX");
-    file=mkstemp(filename);
+    (void) GetPathTemplate(path);
+    file=mkstemp(path);
 #if defined(__OS2__)
     setmode(file,O_BINARY);
 #endif
     if (file != -1)
       (void) close(file);
-    (void) remove_utf8(filename);
-    SetStringInfoLength(chaos,strlen(filename));
-    SetStringInfoDatum(chaos,(unsigned char *) filename);
+    (void) remove_utf8(path);
+    SetStringInfoLength(chaos,strlen(path));
+    SetStringInfoDatum(chaos,(unsigned char *) path);
     ConcatenateStringInfo(entropy,chaos);
-    filename=DestroyString(filename);
   }
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
