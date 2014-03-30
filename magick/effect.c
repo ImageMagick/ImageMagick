@@ -1001,8 +1001,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   }
   edge_view=DestroyCacheView(edge_view);
   /*
-    Apply non-maximal suppression to the magnitude of the gradient image
-    followed by hysteresis thresholding.
+    Hysteresis thresholding.
   */
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1011,26 +1010,15 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
-    register PixelPacket
-      *restrict q;
-
     register ssize_t
       x;
 
-    if (status == MagickFalse)
-      continue;
-    q=GetCacheViewAuthenticPixels(edge_view,0,y,edge_image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
     for (x=0; x < (ssize_t) edge_image->columns; x++)
     {
       CannyInfo
-        pixel,
         alpha_pixel,
-        beta_pixel;
+        beta_pixel,
+        pixel;
 
       double
         theta;
@@ -1080,12 +1068,50 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
               (void) GetMatrixElement(pixel_cache,x+1,y-1,&alpha_pixel);
               (void) GetMatrixElement(pixel_cache,x-1,y+1,&beta_pixel);
             }
+      if ((pixel.magnitude < alpha_pixel.magnitude) ||
+          (pixel.magnitude < beta_pixel.magnitude))
+        {
+          pixel.magnitude=0.0;
+          (void) SetMatrixElement(pixel_cache,x,y,&pixel);
+        }
+    }
+  }
+  edge_view=DestroyCacheView(edge_view);
+  /*
+    Hysteresis thresholding.
+  */
+  edge_view=AcquireAuthenticCacheView(edge_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(edge_image,edge_image,edge_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) edge_image->rows; y++)
+  {
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(edge_view,0,y,edge_image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) edge_image->columns; x++)
+    {
+      CannyInfo
+        alpha_pixel,
+        pixel;
+
       /*
         Hysteresis thresholding.
       */
-      if ((pixel.magnitude < alpha_pixel.magnitude) ||
-          (pixel.magnitude < beta_pixel.magnitude) ||
-          (pixel.magnitude < low_threshold))
+      (void) GetMatrixElement(pixel_cache,x,y,&pixel);
+      if (pixel.magnitude < low_threshold)
         q->red=0;  /* < low threshold: remove edge */
       else
         if (pixel.magnitude > high_threshold)
@@ -1148,6 +1174,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
       status=MagickFalse;
   }
+  edge_view=DestroyCacheView(edge_view);
   pixel_cache=DestroyMatrixInfo(pixel_cache);
   return(edge_image);
 }
