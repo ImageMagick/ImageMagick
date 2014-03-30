@@ -867,8 +867,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     double
       Dx,
       Dy,
-      magnitude,
-      theta;
+      magnitude;
 
     MagickBooleanType
       suppress;
@@ -996,7 +995,6 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         kernel_pixels+=edge_image->columns+2;
       }
       pixel.magnitude=sqrt(pixel.Dx*pixel.Dx+pixel.Dy*pixel.Dy);
-      pixel.theta=atan2(pixel.Dy,pixel.Dx);
       if (SetMatrixElement(pixel_cache,x,y,&pixel) == MagickFalse)
         continue;
       p++;
@@ -1027,7 +1025,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         direction;
 
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
-      direction=8.0*(fmod(pixel.theta+MagickPI,MagickPI)/MagickPI);
+      direction=8.0*(fmod(atan2(pixel.Dy,pixel.Dx)+MagickPI,MagickPI)/MagickPI);
       if ((direction <= 1.0) || (direction > 7.0))
         {
           /*
@@ -1062,12 +1060,11 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
               (void) GetMatrixElement(pixel_cache,x-1,y+1,&alpha_pixel);
               (void) GetMatrixElement(pixel_cache,x+1,y-1,&beta_pixel);
             }
+      pixel.suppress=MagickFalse;
       if ((pixel.magnitude < alpha_pixel.magnitude) ||
           (pixel.magnitude < beta_pixel.magnitude))
-        {
-          pixel.suppress=MagickTrue;
-          (void) SetMatrixElement(pixel_cache,x,y,&pixel);
-        }
+        pixel.suppress=MagickTrue;
+      (void) SetMatrixElement(pixel_cache,x,y,&pixel);
     }
   }
   edge_view=DestroyCacheView(edge_view);
