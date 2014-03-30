@@ -869,6 +869,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       Dy,
       magnitude,
       theta;
+
+    MagickBooleanType
+      suppress;
   } CannyInfo;
 
   CacheView
@@ -928,6 +931,10 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     }
   status=MagickTrue;
   edge_view=AcquireVirtualCacheView(edge_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(edge_image,edge_image,edge_image->rows,1)
+#endif
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
     register const PixelPacket
@@ -1000,6 +1007,10 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     Non-maxima suppression.
   */
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(edge_image,edge_image,edge_image->rows,1)
+#endif
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
     register ssize_t
@@ -1054,7 +1065,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       if ((pixel.magnitude < alpha_pixel.magnitude) ||
           (pixel.magnitude < beta_pixel.magnitude))
         {
-          pixel.magnitude=0.0;
+          pixel.suppress=MagickTrue;
           (void) SetMatrixElement(pixel_cache,x,y,&pixel);
         }
     }
@@ -1064,6 +1075,10 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     Hysteresis thresholding.
   */
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(edge_image,edge_image,edge_image->rows,1)
+#endif
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
     register PixelPacket
@@ -1086,7 +1101,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         pixel;
 
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
-      if (pixel.magnitude < low_threshold)
+      if ((pixel.magnitude < low_threshold) || (pixel.suppress != MagickFalse))
         q->red=0;  /* < low threshold: remove edge */
       else
         if (pixel.magnitude > high_threshold)
