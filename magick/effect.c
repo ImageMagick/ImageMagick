@@ -1099,7 +1099,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
       if (pixel.magnitude < low_threshold)
-        q->red=0;  /* < low threshold: remove edge */
+        q->red=0;  /* < low threshold: discard edge */
       else
         if (pixel.magnitude > high_threshold)
           q->red=QuantumRange;  /* > high threshold: edge */
@@ -1130,7 +1130,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
               q->red=QuantumRange;  /* neighbor > high threshold: edge */
             else
               if (magnitude < low_threshold)
-                q->red=0;  /* neighbor < low threshold: remove edge */
+                q->red=0;  /* neighbor < low threshold: discard edge */
               else
                 {
                   magnitude=0;
@@ -1151,7 +1151,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
                   if (magnitude > high_threshold)
                     q->red=QuantumRange; /* neighbor > high threshold: edge */
                   else
-                    q->red=0; /* remove edge */
+                    q->red=0; /* discard edge */
                 }
           }
       q->green=q->red;
