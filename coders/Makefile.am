@@ -163,6 +163,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/rla.c \
 	coders/rle.c \
 	coders/scr.c \
+	coders/screenshot.c \
 	coders/sct.c \
 	coders/sfw.c \
 	coders/sgi.c \
