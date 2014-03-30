@@ -143,8 +143,12 @@ static inline MagickOffsetType WriteMatrixElements(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PWRITE)
+  LockSemaphoreInfo(matrix_info->semaphore);
   if (lseek(matrix_info->file,offset,SEEK_SET) < 0)
-    return((MagickOffsetType) -1);
+    {
+      UnlockSemaphoreInfo(matrix_info->semaphore);
+      return((MagickOffsetType) -1);
+    }
 #endif
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
@@ -163,6 +167,9 @@ static inline MagickOffsetType WriteMatrixElements(
           break;
       }
   }
+#if !defined(MAGICKCORE_HAVE_PWRITE)
+  UnlockSemaphoreInfo(matrix_info->semaphore);
+#endif
   return(i);
 }
 
@@ -678,8 +685,12 @@ static inline MagickOffsetType ReadMatrixElements(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PREAD)
+  LockSemaphoreInfo(matrix_info->semaphore);
   if (lseek(matrix_info->file,offset,SEEK_SET) < 0)
-    return((MagickOffsetType) -1);
+    {
+      UnlockSemaphoreInfo(matrix_info->semaphore);
+      return((MagickOffsetType) -1);
+    }
 #endif
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
@@ -698,6 +709,9 @@ static inline MagickOffsetType ReadMatrixElements(
           break;
       }
   }
+#if !defined(MAGICKCORE_HAVE_PREAD)
+  UnlockSemaphoreInfo(matrix_info->semaphore);
+#endif
   return(i);
 }
 
@@ -718,10 +732,8 @@ MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
         matrix_info->stride,matrix_info->stride);
       return(MagickTrue);
     }
-  LockSemaphoreInfo(matrix_info->semaphore);
   count=ReadMatrixElements(matrix_info,i*matrix_info->stride,
     matrix_info->stride,value);
-  UnlockSemaphoreInfo(matrix_info->semaphore);
   if (count != (MagickOffsetType) matrix_info->stride)
     return(MagickFalse);
   return(MagickTrue);
@@ -993,10 +1005,8 @@ MagickExport MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
         matrix_info->stride,value,matrix_info->stride);
       return(MagickTrue);
     }
-  LockSemaphoreInfo(matrix_info->semaphore);
   count=WriteMatrixElements(matrix_info,i*matrix_info->stride,
     matrix_info->stride,value);
-  UnlockSemaphoreInfo(matrix_info->semaphore);
   if (count != (MagickOffsetType) matrix_info->stride)
     return(MagickFalse);
   return(MagickTrue);
