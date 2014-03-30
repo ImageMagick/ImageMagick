@@ -987,8 +987,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
             intensity;
 
           intensity=GetPixelIntensity(edge_image,kernel_pixels+u);
-          pixel.Dx+=Gx[u][v]*intensity;
-          pixel.Dy+=Gy[u][v]*intensity;
+          pixel.Dx+=Gx[v][u]*intensity;
+          pixel.Dy+=Gy[v][u]*intensity;
         }
         kernel_pixels+=edge_image->columns+3;
       }
@@ -1033,50 +1033,54 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         beta_pixel;
 
       double
-        angle;
+        theta;
 
       /*
         Non-maximum suppression.
       */
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
-      angle=RadiansToDegrees(pixel.theta);
-      if (((angle >= 22.5) && (angle < 67.5)) ||
-          ((angle <= -157.5) && (angle > -202.5)))
+      theta=pixel.theta;
+      if (theta < 0.0)
+        theta+=2.0*MagickPI;
+      if (((theta < (MagickPI/8.0)) && (0.0 <= theta)) ||
+          ((theta <= (2.0*MagickPI)) && (((15.0*MagickPI)/8.0) <= theta)) ||
+          ((theta < ((9.0*MagickPI)/8.0)) && (((7.0*MagickPI)/8.0) <= theta)))
         {
           /*
-            45 degrees.
+            0 degrees.
           */
-          (void) GetMatrixElement(pixel_cache,x+1,y+1,&alpha_pixel);
-          (void) GetMatrixElement(pixel_cache,x-1,y-1,&beta_pixel);
+          (void) GetMatrixElement(pixel_cache,x+1,y,&alpha_pixel);
+          (void) GetMatrixElement(pixel_cache,x-1,y,&beta_pixel);
         }
       else
-        if (((angle >= 67.5) && (angle < 112.5)) ||
-            ((angle <= -67.5) && (angle > -112.5)))
+        if (((theta <= (3.0*MagickPI)) && (((1.0*MagickPI)/8.0) <= theta)) ||
+            ((theta < ((11.0*MagickPI)/8.0)) && (((9.0*MagickPI)/8.0) <= theta)))
           {
             /*
-              90 degrees.
+              45 degrees.
             */
-            (void) GetMatrixElement(pixel_cache,x,y+1,&alpha_pixel);
-            (void) GetMatrixElement(pixel_cache,x,y-1,&beta_pixel);
+            (void) GetMatrixElement(pixel_cache,x+1,y+1,&alpha_pixel);
+            (void) GetMatrixElement(pixel_cache,x-1,y-1,&beta_pixel);
           }
         else
-          if (((angle >= 112.5) && (angle < 157.5)) ||
-              ((angle <= -22.5) && (angle > -67.5)))
-              {
-                /*
-                  135 degrees.
-                */
-                (void) GetMatrixElement(pixel_cache,x+1,y-1,&alpha_pixel);
-                (void) GetMatrixElement(pixel_cache,x-1,y+1,&beta_pixel);
-              }
-            else
-              {
-                /*
-                  0 degrees.
-                */
-                (void) GetMatrixElement(pixel_cache,x+1,y,&alpha_pixel);
-                (void) GetMatrixElement(pixel_cache,x-1,y,&beta_pixel);
-              }
+          if (((theta <= (5.0*MagickPI)) && (((3.0*MagickPI)/8.0) <= theta)) ||
+              ((theta < ((13.0*MagickPI)/8.0)) &&
+              (((11.0*MagickPI)/8.0) <= theta)))
+            {
+              /*
+                90 degrees.
+              */
+              (void) GetMatrixElement(pixel_cache,x,y+1,&alpha_pixel);
+              (void) GetMatrixElement(pixel_cache,x,y-1,&beta_pixel);
+            }
+          else
+            {
+              /*
+                135 degrees.
+              */
+              (void) GetMatrixElement(pixel_cache,x+1,y-1,&alpha_pixel);
+              (void) GetMatrixElement(pixel_cache,x-1,y+1,&beta_pixel);
+            }
       /*
         Hysteresis thresholding.
       */
