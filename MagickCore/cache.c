@@ -3264,8 +3264,12 @@ static inline MagickOffsetType WritePixelCacheRegion(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PWRITE)
+  LockSemaphoreInfo(cache_info->file_semaphore);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
-    return((MagickOffsetType) -1);
+    {
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      return((MagickOffsetType) -1);
+    }
 #endif
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
@@ -3284,6 +3288,9 @@ static inline MagickOffsetType WritePixelCacheRegion(
           break;
       }
   }
+#if !defined(MAGICKCORE_HAVE_PREAD)
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
+#endif
   return(i);
 }
 
@@ -4027,8 +4034,12 @@ static inline MagickOffsetType ReadPixelCacheRegion(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PREAD)
+  LockSemaphoreInfo(cache_info->file_semaphore);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
-    return((MagickOffsetType) -1);
+    {
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      return((MagickOffsetType) -1);
+    }
 #endif
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
@@ -4047,6 +4058,9 @@ static inline MagickOffsetType ReadPixelCacheRegion(
           break;
       }
   }
+#if !defined(MAGICKCORE_HAVE_PREAD)
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
+#endif
   return(i);
 }
 
@@ -4115,12 +4129,10 @@ static MagickBooleanType ReadPixelCacheMetacontent(
       /*
         Read meta content from disk.
       */
-      LockSemaphoreInfo(cache_info->file_semaphore);
       if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
-          UnlockSemaphoreInfo(cache_info->file_semaphore);
           return(MagickFalse);
         }
       if ((cache_info->columns == nexus_info->region.width) &&
@@ -4142,7 +4154,6 @@ static MagickBooleanType ReadPixelCacheMetacontent(
       }
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
-      UnlockSemaphoreInfo(cache_info->file_semaphore);
       break;
     }
     case DistributedCache:
@@ -4282,12 +4293,10 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *restrict cache_info,
       /*
         Read pixels from disk.
       */
-      LockSemaphoreInfo(cache_info->file_semaphore);
       if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
-          UnlockSemaphoreInfo(cache_info->file_semaphore);
           return(MagickFalse);
         }
       if ((cache_info->columns == nexus_info->region.width) &&
@@ -4307,7 +4316,6 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *restrict cache_info,
       }
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
-      UnlockSemaphoreInfo(cache_info->file_semaphore);
       break;
     }
     case DistributedCache:
@@ -5093,12 +5101,10 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
       /*
         Write associated pixels to disk.
       */
-      LockSemaphoreInfo(cache_info->file_semaphore);
       if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
-          UnlockSemaphoreInfo(cache_info->file_semaphore);
           return(MagickFalse);
         }
       if ((cache_info->columns == nexus_info->region.width) &&
@@ -5120,7 +5126,6 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
       }
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
-      UnlockSemaphoreInfo(cache_info->file_semaphore);
       break;
     }
     case DistributedCache:
@@ -5260,12 +5265,10 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *restrict cache_info,
       /*
         Write pixels to disk.
       */
-      LockSemaphoreInfo(cache_info->file_semaphore);
       if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
-          UnlockSemaphoreInfo(cache_info->file_semaphore);
           return(MagickFalse);
         }
       if ((cache_info->columns == nexus_info->region.width) &&
@@ -5286,7 +5289,6 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *restrict cache_info,
       }
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
-      UnlockSemaphoreInfo(cache_info->file_semaphore);
       break;
     }
     case DistributedCache:
