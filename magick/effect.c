@@ -1034,7 +1034,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           (void) GetMatrixElement(pixel_cache,x-1,y,&beta_pixel);
         }
       else
-        if ((direction > 1.0) || (direction <= 3.0))
+        if ((direction > 1.0) && (direction <= 3.0))
           {
             /*
               45 degrees.
@@ -1043,7 +1043,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
             (void) GetMatrixElement(pixel_cache,x-1,y-1,&beta_pixel);
           }
         else
-          if ((direction > 3.0) || (direction <= 5.0))
+          if ((direction > 3.0) && (direction <= 5.0))
             {
               /*
                 90 degrees.
