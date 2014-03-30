@@ -1001,7 +1001,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   }
   edge_view=DestroyCacheView(edge_view);
   /*
-    Hysteresis thresholding.
+    Non-maxima suppression.
   */
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1021,18 +1021,11 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         pixel;
 
       double
-        theta;
+        direction;
 
-      /*
-        Non-maximum suppression.
-      */
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
-      theta=pixel.theta;
-      if (theta < 0.0)
-        theta+=2.0*MagickPI;
-      if (((theta < (MagickPI/8.0)) && (0.0 <= theta)) ||
-          ((theta <= (2.0*MagickPI)) && (((15.0*MagickPI)/8.0) <= theta)) ||
-          ((theta < ((9.0*MagickPI)/8.0)) && (((7.0*MagickPI)/8.0) <= theta)))
+      direction=8.0*(fmod(pixel.theta+MagickPI,MagickPI)/MagickPI);
+      if ((direction <= 1.0) || (direction > 7.0))
         {
           /*
             0 degrees.
@@ -1041,8 +1034,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           (void) GetMatrixElement(pixel_cache,x-1,y,&beta_pixel);
         }
       else
-        if (((theta < (3.0*MagickPI)) && (((1.0*MagickPI)/8.0) <= theta)) ||
-            ((theta < ((11.0*MagickPI)/8.0)) && (((9.0*MagickPI)/8.0) <= theta)))
+        if ((direction > 1.0) || (direction <= 3.0))
           {
             /*
               45 degrees.
@@ -1051,8 +1043,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
             (void) GetMatrixElement(pixel_cache,x-1,y-1,&beta_pixel);
           }
         else
-          if (((theta < (5.0*MagickPI)) && (((3.0*MagickPI)/8.0) <= theta)) ||
-              ((theta < ((13.0*MagickPI)/8.0)) && (((11.0*MagickPI)/8.0) <= theta)))
+          if ((direction > 3.0) || (direction <= 5.0))
             {
               /*
                 90 degrees.
@@ -1107,9 +1098,6 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         alpha_pixel,
         pixel;
 
-      /*
-        Hysteresis thresholding.
-      */
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
       if (pixel.magnitude < low_threshold)
         q->red=0;  /* < low threshold: remove edge */
