@@ -3215,8 +3215,12 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   /*
     Open pixel cache on disk.
   */
+  LockSemaphoreInfo(cache_info->file_semaphore);
   if (cache_info->file != -1)
-    return(MagickTrue);  /* cache already open */
+    {
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      return(MagickTrue);  /* cache already open */
+    }
   if (*cache_info->cache_filename == '\0')
     file=AcquireUniqueFileResource(cache_info->cache_filename);
   else
@@ -3246,10 +3250,14 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
       }
     }
   if (file == -1)
-    return(MagickFalse);
+    {
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      return(MagickFalse);
+    }
   (void) AcquireMagickResource(FileResource,1);
   cache_info->file=file;
   cache_info->mode=mode;
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
   return(MagickTrue);
 }
 
