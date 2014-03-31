@@ -3070,8 +3070,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 }
           }
       }
-    if (photometric == PHOTOMETRIC_RGB)
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
     switch (image->endian)
     {
       case LSBEndian:
