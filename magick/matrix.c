@@ -226,6 +226,7 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
   matrix_info->signature=MagickSignature;
   matrix_info->columns=columns;
   matrix_info->rows=rows;
+  matrix_info->stride=stride;
   matrix_info->semaphore=AllocateSemaphoreInfo();
   synchronize=GetEnvironmentValue("MAGICK_SYNCHRONIZE");
   if (synchronize != (const char *) NULL)
