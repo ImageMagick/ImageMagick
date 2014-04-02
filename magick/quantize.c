@@ -2721,6 +2721,8 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         depth--;
       if ((image->matte != MagickFalse) && (depth > 5))
         depth--;
+      if (IsGrayImage(image,&image->exception) != MagickFalse)
+        depth=8;
     }
   /*
     Initialize color cube.
