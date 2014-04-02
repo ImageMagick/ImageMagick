@@ -2722,7 +2722,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
       if ((image->matte != MagickFalse) && (depth > 5))
         depth--;
       if (IsGrayImage(image,&image->exception) != MagickFalse)
-        depth=8;
+        depth=MaxTreeDepth;
     }
   /*
     Initialize color cube.
