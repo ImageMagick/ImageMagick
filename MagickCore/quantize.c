@@ -2767,6 +2767,8 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         depth--;
       if ((image->alpha_trait == BlendPixelTrait) && (depth > 5))
         depth--;
+      if (IsImageGray(image,exception) != MagickFalse)
+        depth=MaxTreeDepth;
     }
   /*
     Initialize color cube.
