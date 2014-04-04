@@ -45,7 +45,7 @@
 #    include <windows.h>
 #  else
      /* All MinGW needs ... */
-#    include "magick/nt-base-private.h"
+#    include "MagickCore/nt-base-private.h"
 #    include <wingdi.h>
 #  endif
 #endif
@@ -131,7 +131,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
     int
       i;
 
-    register PixelPacket
+    register Quantum
       *q;
 
     register ssize_t
@@ -156,7 +156,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
       if (hDC == (HDC) NULL)
         ThrowReaderException(CoderError,"UnableToCreateDC");
 
-      screen=AcquireImage(image_info);
+      screen=AcquireImage(image_info,exception);
       screen->columns=(size_t) GetDeviceCaps(hDC,HORZRES);
       screen->rows=(size_t) GetDeviceCaps(hDC,VERTRES);
       screen->storage_class=DirectClass;
@@ -201,14 +201,14 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
       for (y=0; y < (ssize_t) screen->rows; y++)
       {
         q=QueueAuthenticPixels(screen,0,y,screen->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         for (x=0; x < (ssize_t) screen->columns; x++)
         {
-          SetPixelRed(q,ScaleCharToQuantum(p->rgbtRed));
-          SetPixelGreen(q,ScaleCharToQuantum(p->rgbtGreen));
-          SetPixelBlue(q,ScaleCharToQuantum(p->rgbtBlue));
-          SetPixelOpacity(q,OpaqueOpacity);
+          SetPixelRed(image,ScaleCharToQuantum(p->rgbtRed),q);
+          SetPixelGreen(image,ScaleCharToQuantum(p->rgbtGreen),q);
+          SetPixelBlue(image,ScaleCharToQuantum(p->rgbtBlue),q);
+          SetPixelAlpha(image,OpaqueAlpha,q);
           p++;
           q++;
         }
