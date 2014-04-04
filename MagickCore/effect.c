@@ -897,8 +897,8 @@ typedef struct _CannyInfo
     y;
 } CannyInfo;
 
-static MagickBooleanType IsAuthenticPixel(const Image *image,const ssize_t x,
-  const ssize_t y)
+static inline MagickBooleanType IsAuthenticPixel(const Image *image,
+  const ssize_t x,const ssize_t y)
 {
   if ((x < 0) || (x >= (ssize_t) image->columns))
     return(MagickFalse);
