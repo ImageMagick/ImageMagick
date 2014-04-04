@@ -837,8 +837,9 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %  The format of the EdgeImage method is:
 %
 %      Image *CannyEdgeImage(const Image *image,const double radius,
-%        const double sigma,const double lower_percent,const double higher_percent,
-%        const size_t threshold,ExceptionInfo *exception)
+%        const double sigma,const double lower_percent,
+%        const double upper_percent,const size_t threshold,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -852,7 +853,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %
 %    o lower_percent: percentage of edge pixels in the lower threshold.
 %
-%    o higher_percent: percentage of edge pixels in the upper threshold.
+%    o upper_percent: percentage of edge pixels in the upper threshold.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -967,7 +968,7 @@ static MagickBooleanType TraceEdges(Image *edge_image,CacheView *trace_view,
 }
 
 MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
-  const double sigma,const double lower_percent,const double higher_percent,
+  const double sigma,const double lower_percent,const double upper_percent,
   ExceptionInfo *exception)
 {
   CacheView
@@ -1255,7 +1256,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     count+=histogram[i];
   upper_threshold=(double) ScaleShortToQuantum((unsigned short) i);
   for (i=0; histogram[i] == 0; i++) ;
-  lower_threshold=higher_percent*(upper_threshold+
+  lower_threshold=upper_percent*(upper_threshold+
     ScaleShortToQuantum((unsigned short) i));
   histogram=(size_t *) RelinquishMagickMemory(histogram);
   /*
