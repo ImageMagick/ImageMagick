@@ -102,6 +102,7 @@ static const char
     "-black-threshold 20%",
     "-blur 0x0.5",
     "-border 6x6",
+    "-canny 0x1+10%+80%",
     "-charcoal 0x1",
     "-chop 8x6+20+30",
     "-colors 16",
