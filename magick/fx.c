@@ -4180,6 +4180,7 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
         SetPixelGreen(q,ClampToQuantum(tone));
       if ((double) GetPixelBlue(q) < tone)
         SetPixelBlue(q,ClampToQuantum(tone));
+      SetPixelOpacity(q,GetPixelOpacity(p));
       p++;
       q++;
     }
