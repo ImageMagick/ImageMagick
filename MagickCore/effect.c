@@ -933,18 +933,17 @@ static MagickBooleanType TraceEdge(Image *edge_image,CacheView *edge_view,
 
             for (u=(-1); u <= 1; u++)
             {
-              if (((y != 0) || (u != 0)) &&
-                  (IsAuthenticPixel(edge_image,x+u,y+v) != MagickFalse))
-                {
-                  (void) GetMatrixElement(pixel_cache,x+u,y+v,&pixel);
-                  if (pixel.intensity >= threshold)
-                    {
-                      status=TraceEdge(edge_image,edge_view,pixel_cache,x+u,y+v,
-                        threshold,exception);
-                      if (status != MagickFalse)
-                        return(MagickTrue);
-                    }
-                }
+              if ((u == 0) && (v == 0))
+                continue;
+              if (IsAuthenticPixel(edge_image,x+u,y+v) == MagickFalse)
+                continue;
+              (void) GetMatrixElement(pixel_cache,x+u,y+v,&pixel);
+              if (pixel.intensity < threshold)
+                continue;
+              status=TraceEdge(edge_image,edge_view,pixel_cache,x+u,y+v,
+                threshold,exception);
+              if (status != MagickFalse)
+                return(MagickTrue);
             }
           }
           return(MagickTrue);
