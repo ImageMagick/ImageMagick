@@ -959,11 +959,11 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     i;
 
   size_t
+    *histogram,
     number_pixels;
 
   ssize_t
     count,
-    histogram[65536],
     y;
 
   assert(image != (const Image *) NULL);
@@ -1076,7 +1076,14 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   /*
     Non-maxima suppression; reset edge image.
   */
-  (void) ResetMagickMemory(histogram,0,sizeof(histogram));
+  histogram=(size_t) AcquireQuantumMemory(65536,sizeof(*histogram));
+  if (histogram == (size_t *) NULL)
+    {
+      pixel_cache=DestroyMatrixInfo(pixel_cache);
+      edge_image=DestroyImage(edge_image);
+      return((Image *) NULL);
+    }
+  (void) ResetMagickMemory(histogram,0,65536*sizeof(*histogram));
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
@@ -1092,7 +1099,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    q=GetCacheViewAuthenticPixels(edge_view,0,y,edge_image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(edge_view,0,y,edge_image->columns,1,
+      exception);
     if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
@@ -1204,9 +1212,10 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   for (i=65535; count < (ssize_t) number_pixels; i--)
     count+=histogram[i];
   high_threshold=(double) ScaleShortToQuantum((unsigned short) i);
-  for (i=1; (histogram[i] == 0) && (i < 65535); i++) ;
+  for (i=1; histogram[i] == 0; i++) ;
   low_threshold=high_percent*(high_threshold+
     ScaleShortToQuantum((unsigned short) i));
+  histogram=(size_t *) RelinquishMagickMemory(histogram);
   /*
     Hysteresis thresholding.
   */
