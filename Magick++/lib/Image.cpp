@@ -393,6 +393,16 @@ size_t Magick::Image::baseRows(void) const
   return(constImage()->magick_rows);
 }
 
+void Magick::Image::blackPointCompensation(const bool flag_)
+{
+  image()->black_point_compensation=(MagickBooleanType) flag_;
+}
+
+bool Magick::Image::blackPointCompensation(void) const
+{
+  return(static_cast<bool>(constImage()->black_point_compensation));
+}
+
 void Magick::Image::borderColor(const Color &borderColor_)
 {
   modifyImage();
