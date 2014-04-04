@@ -11996,11 +11996,11 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
        value=GetImageOption(image_info,"png:exclude-chunk");
 
        if (value == NULL)
-         value=GetImageArtifact(image,"png:exclude-chunks");
+         value=GetImageArtifact(image,"png:exclude-chunk");
       }
     else
       {
-       value=GetImageOption(image_info,"png:exclude-chunk");
+       value=GetImageOption(image_info,"png:exclude-chunks");
 
        if (value == NULL)
          value=GetImageArtifact(image,"png:exclude-chunks");
@@ -12129,11 +12129,11 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
        value=GetImageOption(image_info,"png:include-chunk");
 
        if (value == NULL)
-         value=GetImageArtifact(image,"png:include-chunks");
+         value=GetImageArtifact(image,"png:include-chunk");
       }
     else
       {
-       value=GetImageOption(image_info,"png:include-chunk");
+       value=GetImageOption(image_info,"png:include-chunks");
 
        if (value == NULL)
          value=GetImageArtifact(image,"png:include-chunks");
