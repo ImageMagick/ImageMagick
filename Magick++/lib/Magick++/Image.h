@@ -156,6 +156,10 @@ namespace Magick
     // Base image height (before transformations)
     size_t baseRows(void) const;
 
+    // Use black point compensation.
+    void blackPointCompensation(const bool flag_);
+    bool blackPointCompensation(void) const;
+
     // Image border color
     void borderColor(const Color &color_);
     Color borderColor(void) const;
