@@ -2563,7 +2563,7 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
   if ((*length+strlen(xml_info->tag)+MaxTextExtent) > *extent)
     {
       *extent=(*length)+strlen(xml_info->tag)+MaxTextExtent;
-      *source=(char *) ResizeQuantumMemory(*source,*extent,sizeof(*source));
+      *source=(char *) ResizeQuantumMemory(*source,*extent,sizeof(**source));
       if (*source == (char *) NULL)
         return(*source);
     }
