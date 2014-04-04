@@ -500,7 +500,7 @@ MagickExport PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
 %
 %      MagickBooleaNType GetOneCacheViewAuthenticPixel(
 %        const CacheView *cache_view,const ssize_t x,const ssize_t y,
-%        Pixelpacket *pixel,ExceptionInfo *exception)
+%        PixelPacket *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
