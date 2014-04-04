@@ -1065,7 +1065,8 @@ MagickExport MagickBooleanType IsMagickCoreInstantiated(void)
 */
 MagickExport MagickBooleanType MagickComponentGenesis(void)
 {
-  magick_semaphore=AllocateSemaphoreInfo();
+  if (magick_semaphore == (SemaphoreInfo *) NULL)
+    magick_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 

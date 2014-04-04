@@ -211,7 +211,7 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e l e g a t e C o m p o n e n t T e r m i n u s                         %
++   D e l e g a t e C o m p o n e n t G e n e s i s                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -226,7 +226,8 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
 */
 MagickExport MagickBooleanType DelegateComponentGenesis(void)
 {
-  delegate_semaphore=AllocateSemaphoreInfo();
+  if (delegate_semaphore == (SemaphoreInfo *) NULL)
+    delegate_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
