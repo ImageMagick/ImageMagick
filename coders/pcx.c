@@ -1106,8 +1106,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
                 GetPixelLuma(image,&image->colormap[1]) ? 1 : 0);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               indexes=GetVirtualIndexQueue(image);
