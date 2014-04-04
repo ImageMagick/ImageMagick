@@ -1404,7 +1404,8 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
 */
 MagickPrivate MagickBooleanType LocaleComponentGenesis(void)
 {
-  locale_semaphore=AcquireSemaphoreInfo();
+  if (locale_semaphore == (SemaphoreInfo *) NULL)
+    locale_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 

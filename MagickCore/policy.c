@@ -951,7 +951,8 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
 */
 MagickPrivate MagickBooleanType PolicyComponentGenesis(void)
 {
-  policy_semaphore=AcquireSemaphoreInfo();
+  if (policy_semaphore == (SemaphoreInfo *) NULL)
+    policy_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 

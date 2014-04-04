@@ -1149,7 +1149,8 @@ MagickPrivate MagickBooleanType ModuleComponentGenesis(void)
   MagickBooleanType
     status;
 
-  module_semaphore=AcquireSemaphoreInfo();
+  if (module_semaphore == (SemaphoreInfo *) NULL)
+    module_semaphore=AcquireSemaphoreInfo();
   exception=AcquireExceptionInfo();
   status=IsModuleTreeInstantiated(exception);
   exception=DestroyExceptionInfo(exception);

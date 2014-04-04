@@ -967,7 +967,8 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   /*
     Set Magick resource limits.
   */
-  resource_semaphore=AcquireSemaphoreInfo();
+  if (resource_semaphore == (SemaphoreInfo *) NULL)
+    resource_semaphore=AcquireSemaphoreInfo();
   pagesize=GetMagickPageSize();
   pages=(-1);
 #if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)

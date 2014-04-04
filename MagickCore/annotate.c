@@ -145,7 +145,8 @@ static MagickBooleanType
 */
 MagickPrivate MagickBooleanType AnnotateComponentGenesis(void)
 {
-  annotate_semaphore=AcquireSemaphoreInfo();
+  if (annotate_semaphore == (SemaphoreInfo *) NULL)
+    annotate_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 

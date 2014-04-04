@@ -324,7 +324,8 @@ MagickPrivate const void *AcquirePixelCachePixels(const Image *image,
 */
 MagickPrivate MagickBooleanType CacheComponentGenesis(void)
 {
-  cache_semaphore=AcquireSemaphoreInfo();
+  if (cache_semaphore == (SemaphoreInfo *) NULL)
+    cache_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
