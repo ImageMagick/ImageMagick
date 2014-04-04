@@ -865,7 +865,7 @@ typedef struct _CannyInfo
     intensity;
 
   int
-    direction;
+    orientation;
 } CannyInfo;
 
 static MagickBooleanType IsAuthenticPixel(const Image *image,const ssize_t x,
@@ -1074,32 +1074,32 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         kernel_pixels+=edge_image->columns+2;
       }
       pixel.magnitude=sqrt(dx*dx+dy*dy);
-      pixel.direction=2;
+      pixel.orientation=2;
       if (dx != 0.0)
         {
           double
-            sector;
+            theta;
 
-          sector=dy/dx;
-          if (sector < 0.0)
+          theta=dy/dx;
+          if (theta < 0.0)
             {
-              if (sector < -2.41421356237)
-                pixel.direction=0;
+              if (theta < -2.41421356237)
+                pixel.orientation=0;
               else
-                if (sector < -0.414213562373)
-                  pixel.direction=1;
+                if (theta < -0.414213562373)
+                  pixel.orientation=1;
                 else
-                  pixel.direction=2;
+                  pixel.orientation=2;
             }
           else
             {
-              if (sector > 2.41421356237)
-                pixel.direction=0;
+              if (theta > 2.41421356237)
+                pixel.orientation=0;
               else
-                if (sector > 0.414213562373)
-                  pixel.direction=3;
+                if (theta > 0.414213562373)
+                  pixel.orientation=3;
                 else
-                  pixel.direction=2;
+                  pixel.orientation=2;
             }
         }
       if (SetMatrixElement(pixel_cache,x,y,&pixel) == MagickFalse)
@@ -1149,7 +1149,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         pixel;
 
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
-      switch (pixel.direction)
+      switch (pixel.orientation)
       {
         case 0:
         {
