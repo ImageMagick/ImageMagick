@@ -377,7 +377,7 @@ static SplayTreeInfo *AcquireCoderCache(const char *filename,
 */
 MagickExport MagickBooleanType CoderComponentGenesis(void)
 {
-  if (code_semaphore == (SemaphoreInfo *) NULL)
+  if (coder_semaphore == (SemaphoreInfo *) NULL)
     coder_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
