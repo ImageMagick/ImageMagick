@@ -545,7 +545,7 @@ static struct
     { "Grayscale", { {"method", MagickPixelIntensityOptions} } },
     { "CannyEdge", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
-      {"low-factor", RealReference}, {"high-factor", RealReference} } },
+      {"lower-percent", RealReference}, {"upper-percent", RealReference} } },
   };
 
 static SplayTreeInfo
