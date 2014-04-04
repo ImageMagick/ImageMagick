@@ -148,7 +148,7 @@ static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
   quantum[7]=(*pixels++);
   quantum[6]=(*pixels++);
   quantum[5]=(*pixels++);
-  quantum[5]=(*pixels++);
+  quantum[4]=(*pixels++);
   quantum[3]=(*pixels++);
   quantum[2]=(*pixels++);
   quantum[1]=(*pixels++);
