@@ -1002,7 +1002,8 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
 */
 MagickPrivate MagickBooleanType MagicComponentGenesis(void)
 {
-  magic_semaphore=AcquireSemaphoreInfo();
+  if (magic_semaphore == (SemaphoreInfo *) NULL)
+    magic_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 

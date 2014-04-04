@@ -227,7 +227,8 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
 */
 MagickPrivate MagickBooleanType DelegateComponentGenesis(void)
 {
-  delegate_semaphore=AcquireSemaphoreInfo();
+  if (delegate_semaphore == (SemaphoreInfo *) NULL)
+    delegate_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 

@@ -798,7 +798,8 @@ MagickPrivate MagickBooleanType LogComponentGenesis(void)
   ExceptionInfo
     *exception;
 
-  log_semaphore=AcquireSemaphoreInfo();
+  if (log_semaphore == (SemaphoreInfo *) NULL)
+    log_semaphore=AcquireSemaphoreInfo();
   exception=AcquireExceptionInfo();
   (void) GetLogInfo("*",exception);
   exception=DestroyExceptionInfo(exception);

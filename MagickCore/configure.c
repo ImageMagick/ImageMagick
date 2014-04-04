@@ -234,7 +234,8 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
 */
 MagickPrivate MagickBooleanType ConfigureComponentGenesis(void)
 {
-  configure_semaphore=AcquireSemaphoreInfo();
+  if (configure_semaphore == (SemaphoreInfo *) NULL)
+    configure_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
