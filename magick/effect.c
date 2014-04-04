@@ -866,6 +866,10 @@ typedef struct _CannyInfo
 
   int
     orientation;
+
+  ssize_t
+    x,
+    y;
 } CannyInfo;
 
 static MagickBooleanType IsAuthenticPixel(const Image *image,const ssize_t x,
@@ -878,61 +882,88 @@ static MagickBooleanType IsAuthenticPixel(const Image *image,const ssize_t x,
   return(MagickTrue);
 }
 
-static MagickBooleanType TraceEdge(Image *edge_image,CacheView *edge_view,
+static MagickBooleanType TraceEdges(Image *edge_image,CacheView *trace_view,
   MatrixInfo *pixel_cache,const ssize_t x,const ssize_t y,
   const double lower_threshold,ExceptionInfo *exception)
 {
   CannyInfo
     pixel;
 
-  PixelPacket
-    *q;
+  size_t
+    number_edges;
 
-  MagickBooleanType
-    status;
+  if (GetMatrixElement(pixel_cache,0,0,&pixel) == MagickFalse)
+    return(MagickFalse);
+  pixel.x=x;
+  pixel.y=y;
+  if (SetMatrixElement(pixel_cache,0,0,&pixel) == MagickFalse)
+    return(MagickFalse);
+  number_edges=1;
+  do
+  {
+    MagickBooleanType
+      status;
 
-  q=GetCacheViewAuthenticPixels(edge_view,x,y,1,1,exception);
-  if ((q != (PixelPacket *) NULL) && (GetPixelIntensity(edge_image,q) == 0))
+    ssize_t
+      v,
+      x_offset,
+      y_offset;
+
+    number_edges--;
+    status=GetMatrixElement(pixel_cache,(ssize_t) number_edges,0,&pixel);
+    if (status == MagickFalse)
+      return(MagickFalse);
+    x_offset=pixel.x;
+    y_offset=pixel.y;
+    for (v=(-1); v <= 1; v++)
     {
       ssize_t
-        v;
+        u;
 
-      /*      
-        Edge due to pixel gradient between upper and lower thresholds.
-      */
-      q->red=QuantumRange;
-      q->green=QuantumRange;
-      q->blue=QuantumRange;
-      status=SyncCacheViewAuthenticPixels(edge_view,exception);
-      if (status != MagickFalse)
-        {
-          for (v=(-1); v <= 1; v++)
+      for (u=(-1); u <= 1; u++)
+      {
+        PixelPacket
+          *q;
+
+        if ((u == 0) && (v == 0))
+          continue;
+        if (IsAuthenticPixel(edge_image,x_offset+u,y_offset+v) == MagickFalse)
+          continue;
+        /*
+          Not an edge if gradient value is below the lower threshold.
+        */
+        q=GetCacheViewAuthenticPixels(trace_view,x_offset+u,y_offset+v,1,1,
+          exception);
+        if (q == (PixelPacket *) NULL)
+          return(MagickFalse);
+        status=GetMatrixElement(pixel_cache,x_offset+u,y_offset+v,&pixel);
+        if (status == MagickFalse)
+          return(MagickFalse);
+        if ((pixel.intensity >= lower_threshold) &&
+            (GetPixelIntensity(edge_image,q) == 0))
           {
-            ssize_t
-              u;
-
-            for (u=(-1); u <= 1; u++)
-            {
-              if ((u == 0) && (v == 0))
-                continue;
-              if (IsAuthenticPixel(edge_image,x+u,y+v) == MagickFalse)
-                continue;
-              /*
-                Not an edge if gradient value is below the lower threshold.
-              */
-              (void) GetMatrixElement(pixel_cache,x+u,y+v,&pixel);
-              if (pixel.intensity < lower_threshold)
-                continue;
-              status=TraceEdge(edge_image,edge_view,pixel_cache,x+u,y+v,
-                lower_threshold,exception);
-              if (status != MagickFalse)
-                return(MagickTrue);
-            }
+            q->red=QuantumRange;
+            q->green=QuantumRange;
+            q->blue=QuantumRange;
+            status=SyncCacheViewAuthenticPixels(trace_view,exception);
+            if (status == MagickFalse)
+              return(MagickFalse);
+            status=GetMatrixElement(pixel_cache,(ssize_t) number_edges,0,
+              &pixel);
+            if (status == MagickFalse)
+              return(MagickFalse);
+            pixel.x=x_offset+u;
+            pixel.y=y_offset+v;
+            status=SetMatrixElement(pixel_cache,(ssize_t) number_edges,0,
+              &pixel);
+            if (status == MagickFalse)
+              return(MagickFalse);
+            number_edges++;
           }
-          return(MagickTrue);
-        }
+      }
     }
-  return(MagickFalse);
+  } while (number_edges != 0);
+  return(MagickTrue);
 }
 
 MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
@@ -940,7 +971,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
   CacheView
-    *edge_view;
+    *edge_view,
+    *trace_view;
 
   char
     geometry[MaxTextExtent];
@@ -1230,6 +1262,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     Hysteresis threshold.
   */
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
+  trace_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(edge_image,edge_image,edge_image->rows,1)
@@ -1259,14 +1292,26 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       /*
         Edge if pixel gradient higher than upper threshold.
       */
-      (void) GetMatrixElement(pixel_cache,x,y,&pixel);
-      if (pixel.intensity >= upper_threshold)
-        (void) TraceEdge(edge_image,edge_view,pixel_cache,x,y,lower_threshold,
-          exception);
+      status=GetMatrixElement(pixel_cache,x,y,&pixel);
+      if (status == MagickFalse)
+        break;
+      if ((pixel.intensity >= upper_threshold) &&
+          (GetPixelIntensity(edge_image,q) == 0))
+        {
+          q->red=QuantumRange;
+          q->green=QuantumRange;
+          q->blue=QuantumRange;
+          status=TraceEdges(edge_image,trace_view,pixel_cache,x,y,
+            lower_threshold,exception);
+          if (status == MagickFalse)
+            break;
+        }
+      q++;
     }
     if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
       status=MagickFalse;
   }
+  trace_view=DestroyCacheView(trace_view);
   edge_view=DestroyCacheView(edge_view);
   pixel_cache=DestroyMatrixInfo(pixel_cache);
   return(edge_image);
