@@ -905,7 +905,7 @@ static MagickBooleanType IsAuthenticPixel(const Image *image,const ssize_t x,
 
 static MagickBooleanType TraceEdge(Image *edge_image,CacheView *edge_view,
   MatrixInfo *pixel_cache,const ssize_t x,const ssize_t y,
-  const double threshold,ExceptionInfo *exception)
+  const double lower_threshold,ExceptionInfo *exception)
 {
   CannyInfo
     pixel;
@@ -944,10 +944,10 @@ static MagickBooleanType TraceEdge(Image *edge_image,CacheView *edge_view,
                 Not an edge if gradient value is below the lower threshold.
               */
               (void) GetMatrixElement(pixel_cache,x+u,y+v,&pixel);
-              if (pixel.intensity < threshold)
+              if (pixel.intensity < lower_threshold)
                 continue;
               status=TraceEdge(edge_image,edge_view,pixel_cache,x+u,y+v,
-                threshold,exception);
+                lower_threshold,exception);
               if (status != MagickFalse)
                 return(MagickTrue);
             }
