@@ -878,8 +878,8 @@ static MagickBooleanType IsAuthenticPixel(const Image *image,const ssize_t x,
 }
 
 static MagickBooleanType TraceEdge(Image *edge_image,CacheView *edge_view,
-  MatrixInfo *pixel_cache,const ssize_t x,const ssize_t y,const double threshold,
-  ExceptionInfo *exception)
+  MatrixInfo *pixel_cache,const ssize_t x,const ssize_t y,
+  const double threshold,ExceptionInfo *exception)
 {
   CannyInfo
     pixel;
@@ -1076,7 +1076,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   /*
     Non-maxima suppression; reset edge image.
   */
-  histogram=(size_t) AcquireQuantumMemory(65536,sizeof(*histogram));
+  histogram=(size_t *) AcquireQuantumMemory(65536,sizeof(*histogram));
   if (histogram == (size_t *) NULL)
     {
       pixel_cache=DestroyMatrixInfo(pixel_cache);
@@ -1212,7 +1212,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   for (i=65535; count < (ssize_t) number_pixels; i--)
     count+=histogram[i];
   high_threshold=(double) ScaleShortToQuantum((unsigned short) i);
-  for (i=1; histogram[i] == 0; i++) ;
+  for (i=0; histogram[i] == 0; i++) ;
   low_threshold=high_percent*(high_threshold+
     ScaleShortToQuantum((unsigned short) i));
   histogram=(size_t *) RelinquishMagickMemory(histogram);
