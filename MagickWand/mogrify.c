@@ -991,13 +991,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
             if ((flags & XiValue) == 0)
-              geometry_info.xi=0.35*QuantumRange;
+              geometry_info.xi=0.35;
             if ((flags & PsiValue) == 0)
-              geometry_info.psi=0.75*QuantumRange;
+              geometry_info.psi=0.75;
             if ((flags & PercentValue) != 0)
               {
-                geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
-                geometry_info.psi=(double) QuantumRange*geometry_info.psi/100.0;
+                geometry_info.xi=(double) geometry_info.xi/100.0;
+                geometry_info.psi=(double) geometry_info.psi/100.0;
               }
             mogrify_image=CannyEdgeImage(*image,geometry_info.rho,
               geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
