@@ -837,7 +837,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %  The format of the EdgeImage method is:
 %
 %      Image *CannyEdgeImage(const Image *image,const double radius,
-%        const double sigma,const double low_percent,const double high_percent,
+%        const double sigma,const double lower_percent,const double higher_percent,
 %        const size_t threshold,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -850,9 +850,9 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %
 %    o sigma: the sigma of the gaussian smoothing filter.
 %
-%    o low_percent: percentage of pixels in the low threshold.
+%    o lower_percent: percentage of edge pixels in the lower threshold.
 %
-%    o high_percent: percentage of pixels in the high threshold.
+%    o higher_percent: percentage of edge pixels in the upper threshold.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -897,6 +897,9 @@ static MagickBooleanType TraceEdge(Image *edge_image,CacheView *edge_view,
       ssize_t
         v;
 
+      /*      
+        Edge due to pixel gradient between upper and lower thresholds.
+      */
       q->red=QuantumRange;
       q->green=QuantumRange;
       q->blue=QuantumRange;
@@ -914,6 +917,9 @@ static MagickBooleanType TraceEdge(Image *edge_image,CacheView *edge_view,
                 continue;
               if (IsAuthenticPixel(edge_image,x+u,y+v) == MagickFalse)
                 continue;
+              /*
+                Not an edge if gradient value is below the lower threshold.
+              */
               (void) GetMatrixElement(pixel_cache,x+u,y+v,&pixel);
               if (pixel.intensity < threshold)
                 continue;
@@ -930,7 +936,7 @@ static MagickBooleanType TraceEdge(Image *edge_image,CacheView *edge_view,
 }
 
 MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
-  const double sigma,const double low_percent,const double high_percent,
+  const double sigma,const double lower_percent,const double higher_percent,
   ExceptionInfo *exception)
 {
   CacheView
@@ -940,8 +946,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     geometry[MaxTextExtent];
 
   double
-    high_threshold,
-    low_threshold;
+    upper_threshold,
+    lower_threshold;
 
   Image
     *edge_image;
@@ -973,7 +979,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   /*
-    Filter out noise before trying to locate and detect any edges.
+    Filter out noise.
   */
   (void) FormatLocaleString(geometry,MaxTextExtent,
     "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
@@ -991,7 +997,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   /*
-    Find the edge strength by taking the gradient of the image.
+    Find the intensity gradient of the image.
   */
   pixel_cache=AcquireMatrixInfo(edge_image->columns,edge_image->rows,
     sizeof(CannyInfo),exception);
@@ -1108,7 +1114,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   }
   edge_view=DestroyCacheView(edge_view);
   /*
-    Non-maxima suppression; reset edge image.
+    Non-maxima suppression, remove pixels that are not considered to be part
+    of an edge.
   */
   histogram=(size_t *) AcquireQuantumMemory(65536,sizeof(*histogram));
   if (histogram == (size_t *) NULL)
@@ -1209,18 +1216,18 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   /*
     Estimate hysteresis threshold.
   */
-  number_pixels=(size_t) (low_percent*(image->columns*image->rows-
+  number_pixels=(size_t) (lower_percent*(image->columns*image->rows-
     histogram[0]));
   count=0;
   for (i=65535; count < (ssize_t) number_pixels; i--)
     count+=histogram[i];
-  high_threshold=(double) ScaleShortToQuantum((unsigned short) i);
+  upper_threshold=(double) ScaleShortToQuantum((unsigned short) i);
   for (i=0; histogram[i] == 0; i++) ;
-  low_threshold=high_percent*(high_threshold+
+  lower_threshold=higher_percent*(upper_threshold+
     ScaleShortToQuantum((unsigned short) i));
   histogram=(size_t *) RelinquishMagickMemory(histogram);
   /*
-    Hysteresis thresholding.
+    Hysteresis threshold.
   */
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1249,9 +1256,12 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       CannyInfo
         pixel;
 
+      /*
+        Edge if pixel gradient higher than upper threshold.
+      */
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
-      if (pixel.intensity >= high_threshold)
-        (void) TraceEdge(edge_image,edge_view,pixel_cache,x,y,low_threshold,
+      if (pixel.intensity >= upper_threshold)
+        (void) TraceEdge(edge_image,edge_view,pixel_cache,x,y,lower_threshold,
           exception);
     }
     if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
