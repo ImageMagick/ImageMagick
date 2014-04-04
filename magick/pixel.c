@@ -4420,13 +4420,13 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
               pixels[i].index+=pixels[i+2].index;
             }
       }
-      if ((x-x_offset) >= 0.75 )
+      if ((x-x_offset) >= 0.75)
         {
           alpha[0]=alpha[1];
           pixels[0]=pixels[1];
         }
       else
-        if ((x-x_offset) > 0.25 )
+        if ((x-x_offset) > 0.25)
           {
             gamma*=2.0;  /* double number of pixels blended */
             alpha[0]+=alpha[1];  /* add up alpha weights */
