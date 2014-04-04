@@ -886,10 +886,11 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 typedef struct _CannyInfo
 {
   double
-    Dx,
-    Dy,
     magnitude,
     intensity;
+
+  int
+    orientation;
 } CannyInfo;
 
 static MagickBooleanType IsAuthenticPixel(const Image *image,const ssize_t x,
@@ -1051,6 +1052,10 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       CannyInfo
         pixel;
 
+      double
+        dx,
+        dy;
+
       register const Quantum
         *restrict kernel_pixels;
 
@@ -1072,6 +1077,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         };
 
       (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+      dx=0.0;
+      dy=0.0;
       kernel_pixels=p;
       for (v=0; v < 3; v++)
       {
@@ -1084,12 +1091,40 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
             intensity;
 
           intensity=GetPixelIntensity(edge_image,kernel_pixels+u);
-          pixel.Dx+=Gx[v][u]*intensity;
-          pixel.Dy+=Gy[v][u]*intensity;
+          dx+=Gx[v][u]*intensity;
+          dy+=Gy[v][u]*intensity;
         }
         kernel_pixels+=edge_image->columns+2;
       }
-      pixel.magnitude=sqrt(pixel.Dx*pixel.Dx+pixel.Dy*pixel.Dy);
+      pixel.magnitude=sqrt(dx*dx+dy*dy);
+      pixel.orientation=2;
+      if (dx != 0.0)
+        {
+          double
+            theta;
+
+          theta=dy/dx;
+          if (theta < 0.0)
+            {
+              if (theta < -2.41421356237)
+                pixel.orientation=0;
+              else
+                if (theta < -0.414213562373)
+                  pixel.orientation=1;
+                else
+                  pixel.orientation=2;
+            }
+          else
+            {
+              if (theta > 2.41421356237)
+                pixel.orientation=0;
+              else
+                if (theta > 0.414213562373)
+                  pixel.orientation=3;
+                else
+                  pixel.orientation=2;
+            }
+        }
       if (SetMatrixElement(pixel_cache,x,y,&pixel) == MagickFalse)
         continue;
       p+=GetPixelChannels(edge_image);
@@ -1136,39 +1171,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         beta_pixel,
         pixel;
 
-      ssize_t
-        direction;
-
       (void) GetMatrixElement(pixel_cache,x,y,&pixel);
-      direction=2;
-      if (pixel.Dx != 0.0)
-        {
-          double
-            sector;
-
-          sector=pixel.Dy/pixel.Dx;
-          if (sector < 0.0)
-            {
-              if (sector < -2.41421356237)
-                direction=0;
-              else
-                if (sector < -0.414213562373)
-                  direction=1;
-                else
-                  direction=2;
-            }
-          else
-            {
-              if (sector > 2.41421356237)
-                direction=0;
-              else
-                if (sector > 0.414213562373)
-                  direction=3;
-                else
-                  direction=2;
-            }
-        }
-      switch (direction)
+      switch (pixel.orientation)
       {
         case 0:
         {
