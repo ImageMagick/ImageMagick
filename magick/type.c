@@ -1359,7 +1359,8 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
 */
 MagickExport MagickBooleanType TypeComponentGenesis(void)
 {
-  type_semaphore=AllocateSemaphoreInfo();
+  if (type_semaphore == (SemaphoreInfo *) NULL)
+    type_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 

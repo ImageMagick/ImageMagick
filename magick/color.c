@@ -916,7 +916,8 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
 */
 MagickExport MagickBooleanType ColorComponentGenesis(void)
 {
-  color_semaphore=AllocateSemaphoreInfo();
+  if (color_semaphore == (SemaphoreInfo *) NULL)
+    color_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 

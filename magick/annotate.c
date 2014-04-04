@@ -138,7 +138,8 @@ static MagickBooleanType
 */
 MagickExport MagickBooleanType AnnotateComponentGenesis(void)
 {
-  annotate_semaphore=AllocateSemaphoreInfo();
+  if (annotate_semaphore == (SemaphoreInfo *) NULL)
+    annotate_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 

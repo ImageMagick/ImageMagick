@@ -1164,7 +1164,8 @@ MagickExport MagickBooleanType ModuleComponentGenesis(void)
   MagickBooleanType
     status;
 
-  module_semaphore=AllocateSemaphoreInfo();
+  if (module_semaphore == (SemaphoreInfo *) NULL)
+    module_semaphore=AllocateSemaphoreInfo();
   exception=AcquireExceptionInfo();
   status=IsModuleTreeInstantiated(exception);
   exception=DestroyExceptionInfo(exception);

@@ -999,7 +999,8 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
 */
 MagickExport MagickBooleanType MagicComponentGenesis(void)
 {
-  magic_semaphore=AllocateSemaphoreInfo();
+  if (magic_semaphore == (SemaphoreInfo *) NULL)
+    magic_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 

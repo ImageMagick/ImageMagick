@@ -749,7 +749,8 @@ MagickExport double GetRandomValue(RandomInfo *random_info)
 */
 MagickExport MagickBooleanType RandomComponentGenesis(void)
 {
-  random_semaphore=AllocateSemaphoreInfo();
+  if (random_semaphore == (SemaphoreInfo *) NULL)
+    random_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 

@@ -296,7 +296,8 @@ MagickExport char *GetNextImageRegistry(void)
 */
 MagickExport MagickBooleanType RegistryComponentGenesis(void)
 {
-  registry_semaphore=AllocateSemaphoreInfo();
+  if (registry_semaphore == (SemaphoreInfo *) NULL)
+    registry_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
