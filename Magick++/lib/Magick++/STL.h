@@ -2324,20 +2324,16 @@ namespace Magick
   void fxImages(Image *fxImage_,InputIterator first_,InputIterator last_,
     const std::string expression)
   {
-    MagickCore::ExceptionInfo
-      exceptionInfo;
-
     MagickCore::Image
       *image;
 
-    MagickCore::GetExceptionInfo(&exceptionInfo);
+    GetPPException;
     linkImages(first_,last_);
     image=FxImageChannel(first_->constImage(),DefaultChannels,
       expression.c_str(),&exceptionInfo);
     unlinkImages(first_,last_);
     fxImage_->replaceImage(image);
-    throwException(exceptionInfo);
-    (void) DestroyExceptionInfo(&exceptionInfo);
+    ThrowPPException;
   }
 
   // Replace the colors of a sequence of images with the closest color
@@ -2415,57 +2411,54 @@ namespace Magick
 
   // Create a composite image by combining several separate images.
   template <class Container, class InputIterator>
-  void montageImages( Container *montageImages_,
-          InputIterator first_,
-          InputIterator last_,
-          const Montage &montageOpts_ ) {
+  void montageImages(Container *montageImages_,InputIterator first_,
+    InputIterator last_,const Montage &options_)
+  {
+    MagickCore::Image
+      *images;
 
-    MagickCore::MontageInfo* montageInfo =
-      static_cast<MagickCore::MontageInfo*>(MagickCore::AcquireMagickMemory(sizeof(MagickCore::MontageInfo)));
+    MagickCore::MontageInfo
+      *montageInfo;
+
+    montageInfo=static_cast<MagickCore::MontageInfo*>(
+      MagickCore::AcquireMagickMemory(sizeof(MagickCore::MontageInfo)));
 
     // Update montage options with those set in montageOpts_
-    montageOpts_.updateMontageInfo( *montageInfo );
+    options_.updateMontageInfo(*montageInfo);
 
     // Update options which must transfer to image options
-    if ( montageOpts_.label().length() != 0 )
-      first_->label( montageOpts_.label() );
+    if (options_.label().length() != 0)
+      first_->label(options_.label());
 
     // Create linked image list
-    linkImages( first_, last_ );
+    linkImages(first_,last_);
 
     // Reset output container to pristine state
     montageImages_->clear();
 
     // Do montage
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
-    MagickCore::Image *images = MagickCore::MontageImages( first_->image(),
-               montageInfo,
-               &exceptionInfo );
-    if ( images != 0 )
-      {
-  insertImages( montageImages_, images );
-      }
+    GetPPException;
+    images=MagickCore::MontageImages(first_->image(),montageInfo,
+      &exceptionInfo);
+    if (images != (MagickCore::Image *) NULL)
+      insertImages(montageImages_,images);
 
     // Clean up any allocated data in montageInfo
-    MagickCore::DestroyMontageInfo( montageInfo );
+    MagickCore::DestroyMontageInfo(montageInfo);
 
     // Unlink linked image list
-    unlinkImages( first_, last_ );
+    unlinkImages(first_, last_);
 
     // Report any montage error
-    throwException( exceptionInfo );
+    throwException(exceptionInfo);
 
     // Apply transparency to montage images
-    if ( montageImages_->size() > 0 && montageOpts_.transparentColor().isValid() )
-      {
-  for_each( first_, last_, transparentImage( montageOpts_.transparentColor() ) );
-      }
+    if (montageImages_->size() > 0 && options_.transparentColor().isValid())
+      for_each(first_,last_,transparentImage(options_.transparentColor()));
 
     // Report any transparentImage() error
-    MagickCore::GetImageException( first_->image(), &exceptionInfo );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    MagickCore::GetImageException(first_->image(),&exceptionInfo);
+    ThrowPPException;
   }
 
   // Morph a set of images
@@ -2560,19 +2553,19 @@ namespace Magick
 
   // Adds the names of the profiles from the image to the container.
   template <class Container>
-  void profileNames( Container *names_, const Image* image_ )
+  void profileNames(Container *names_,const Image* image_)
   {
-    const char*
-      name;
+    const char
+      *name;
 
     names_->clear();
 
-    MagickCore::ResetImageProfileIterator( image_->constImage() );
-    name=MagickCore::GetNextImageProfile( image_->constImage() );
+    MagickCore::ResetImageProfileIterator(image_->constImage());
+    name=MagickCore::GetNextImageProfile(image_->constImage());
     while (name != (const char *) NULL)
     {
-      names_->push_back( std::string(name) );
-      name=MagickCore::GetNextImageProfile( image_->constImage() );
+      names_->push_back(std::string(name));
+      name=MagickCore::GetNextImageProfile(image_->constImage());
     }
   }
 
