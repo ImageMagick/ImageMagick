@@ -432,8 +432,8 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
   (void) ResetMagickMemory(transform,0,number_threads*sizeof(*transform));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    transform[i]=cmsCreateTransformTHR(image,source_profile,source_type,
-      target_profile,target_type,intent,flags);
+    transform[i]=cmsCreateTransformTHR((cmsContext) image,source_profile,
+      source_type,target_profile,target_type,intent,flags);
     if (transform[i] == (cmsHTRANSFORM) NULL)
       return(DestroyTransformThreadSet(transform));
   }
@@ -605,7 +605,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         cms_exception.image=image;
         cms_exception.exception=exception;
         (void) cms_exception;
-        source_profile=cmsOpenProfileFromMemTHR(&cms_exception,
+        source_profile=cmsOpenProfileFromMemTHR((cmsContext) &cms_exception,
           GetStringInfoDatum(profile),(cmsUInt32Number)
           GetStringInfoLength(profile));
         if (source_profile == (cmsHPROFILE) NULL)
@@ -661,9 +661,9 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if (icc_profile != (StringInfo *) NULL)
               {
                 target_profile=source_profile;
-                source_profile=cmsOpenProfileFromMemTHR(&cms_exception,
-                  GetStringInfoDatum(icc_profile),(cmsUInt32Number)
-                  GetStringInfoLength(icc_profile));
+                source_profile=cmsOpenProfileFromMemTHR((cmsContext)
+                  &cms_exception,GetStringInfoDatum(icc_profile),
+                  (cmsUInt32Number) GetStringInfoLength(icc_profile));
                 if (source_profile == (cmsHPROFILE) NULL)
                   ThrowProfileException(ResourceLimitError,
                     "ColorspaceColorProfileMismatch",name);
