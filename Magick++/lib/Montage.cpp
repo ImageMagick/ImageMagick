@@ -15,7 +15,7 @@
 #include "Magick++/Montage.h"
 #include "Magick++/Functions.h"
 
-Magick::Montage::Montage ( void )
+Magick::Montage::Montage(void)
   : _backgroundColor("#ffffff"),
     _compose(OverCompositeOp),
     _fileName(),
@@ -34,12 +34,213 @@ Magick::Montage::Montage ( void )
 {
 }
 
-Magick::Montage::~Montage( void )
+Magick::Montage::~Montage(void)
 {
-  // Nothing to do
 }
 
-Magick::MontageFramed::MontageFramed ( void )
+inline void Magick::Montage::backgroundColor(const Magick::Color &backgroundColor_)
+{
+  _backgroundColor=backgroundColor_;
+}
+
+inline Magick::Color Magick::Montage::backgroundColor(void) const
+{
+  return(_backgroundColor);
+}
+
+inline void Magick::Montage::compose(Magick::CompositeOperator compose_)
+{
+  _compose=compose_;
+}
+
+inline Magick::CompositeOperator Magick::Montage::compose(void) const
+{
+  return(_compose);
+}
+
+inline void Magick::Montage::fileName(const std::string &fileName_)
+{
+  _fileName=fileName_;
+}
+
+inline std::string Magick::Montage::fileName(void) const
+{
+  return(_fileName);
+}
+
+inline void Magick::Montage::fillColor(const Color &fill_)
+{
+  _fill=fill_;
+}
+
+inline Magick::Color Magick::Montage::fillColor(void) const
+{
+  return(_fill);
+}
+
+inline void Magick::Montage::font(const std::string &font_)
+{
+  _font=font_;
+}
+
+inline std::string Magick::Montage::font(void) const
+{
+  return(_font);
+}
+
+inline void Magick::Montage::geometry(const Magick::Geometry &geometry_)
+{
+  _geometry=geometry_;
+}
+
+inline Magick::Geometry Magick::Montage::geometry(void) const
+{
+  return(_geometry);
+}
+
+inline void Magick::Montage::gravity(Magick::GravityType gravity_)
+{
+  _gravity=gravity_;
+}
+
+inline Magick::GravityType Magick::Montage::gravity(void) const
+{
+  return(_gravity);
+}
+
+inline void Magick::Montage::label(const std::string &label_)
+{
+  _label=label_;
+}
+
+inline std::string Magick::Montage::label(void) const
+{
+  return(_label);
+}
+
+inline void Magick::Montage::pointSize(size_t pointSize_)
+{
+  _pointSize=pointSize_;
+}
+
+inline size_t Magick::Montage::pointSize(void) const
+{
+  return(_pointSize);
+}
+
+inline void Magick::Montage::shadow(bool shadow_)
+{
+  _shadow=shadow_;
+}
+
+inline bool Magick::Montage::shadow(void) const
+{
+  return(_shadow);
+}
+
+inline void Magick::Montage::strokeColor(const Color &stroke_)
+{
+  _stroke=stroke_;
+}
+
+inline Magick::Color Magick::Montage::strokeColor(void) const
+{
+  return(_stroke);
+}
+
+inline void Magick::Montage::texture(const std::string &texture_)
+{
+  _texture=texture_;
+}
+
+inline std::string Magick::Montage::texture(void) const
+{
+  return(_texture);
+}
+
+inline void Magick::Montage::tile(const Geometry &tile_)
+{
+  _tile=tile_;
+}
+
+inline Magick::Geometry Magick::Montage::tile(void) const
+{
+  return(_tile);
+}
+
+inline void Magick::Montage::title(const std::string &title_)
+{
+  _title=title_;
+}
+
+inline std::string Magick::Montage::title(void) const
+{
+  return(_title);
+}
+
+inline void Magick::Montage::transparentColor(const Magick::Color &transparentColor_)
+{
+  _transparentColor=transparentColor_;
+}
+
+inline Magick::Color Magick::Montage::transparentColor(void) const
+{
+  return(_transparentColor);
+}
+
+void Magick::Montage::updateMontageInfo(MontageInfo &montageInfo_ ) const
+{
+  (void) MagickCore::ResetMagickMemory(&montageInfo_,0,sizeof(montageInfo_));
+
+  // background_color
+  montageInfo_.background_color=_backgroundColor;
+  // border_color
+  montageInfo_.border_color=Color();
+  // border_width
+  montageInfo_.border_width=0;
+  // filename
+  if (_font.length() != 0)
+    {
+      _fileName.copy(montageInfo_.filename,MaxTextExtent-1);
+      montageInfo_.filename[ _fileName.length() ] = 0; // null terminate
+    }
+  // fill
+  montageInfo_.fill=_fill;
+  // font
+  if (_font.length() != 0)
+    Magick::CloneString(&montageInfo_.font,_font);
+  // geometry
+  if (_geometry.isValid())
+    Magick::CloneString(&montageInfo_.geometry,_geometry);
+  // gravity
+  montageInfo_.gravity=_gravity;
+  // matte_color
+  montageInfo_.matte_color=Color();
+  // pointsize
+  montageInfo_.pointsize=_pointSize;
+  // shadow
+  montageInfo_.shadow=static_cast<MagickBooleanType>
+    (_shadow ? MagickTrue : MagickFalse);
+  // signature (validity stamp)
+  montageInfo_.signature=MagickSignature;
+  // stroke
+  montageInfo_.stroke=_stroke;
+  // texture
+  if (_texture.length() != 0)
+    Magick::CloneString(&montageInfo_.texture,_texture);
+  // tile
+  if (_tile.isValid())
+    Magick::CloneString(&montageInfo_.tile,_tile);
+  // title
+  if (_title.length() != 0)
+    Magick::CloneString(&montageInfo_.title,_title);
+}
+
+//
+// Implementation of MontageFramed
+//
+
+Magick::MontageFramed::MontageFramed(void)
   : _borderColor("#dfdfdf"),
     _borderWidth(0),
     _frame(),
@@ -47,89 +248,62 @@ Magick::MontageFramed::MontageFramed ( void )
 {
 }
 
-/* virtual */ Magick::MontageFramed::~MontageFramed ( void )
+Magick::MontageFramed::~MontageFramed(void)
 {
-  // Nothing to do
 }
 
-void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
+inline void Magick::MontageFramed::borderColor(const Magick::Color &borderColor_)
 {
-
-  memset(&montageInfo_,0,sizeof(MontageInfo));
-
-  // background_color
-  montageInfo_.background_color = _backgroundColor;
-  // border_color
-  montageInfo_.border_color = Color();
-  // border_width
-  montageInfo_.border_width = 0;
-  // filename
-  _fileName.copy( montageInfo_.filename, MaxTextExtent - 1 );
-  montageInfo_.filename[ _fileName.length() ] = 0; // null terminate
-  // fill
-  montageInfo_.fill = _fill;
-  // font
-  if ( _font.length() != 0 )
-    Magick::CloneString( &montageInfo_.font, _font );
-  else
-    montageInfo_.font=(char *) RelinquishMagickMemory(montageInfo_.font);
-  // frame
-  montageInfo_.frame=(char *) montageInfo_.frame;
-  // geometry
-  if ( _geometry.isValid() )
-    Magick::CloneString( &montageInfo_.geometry, _geometry );
-  else
-    montageInfo_.geometry=(char *)
-      RelinquishMagickMemory(montageInfo_.geometry);
-  // gravity
-  montageInfo_.gravity = _gravity;
-  // matte_color
-  montageInfo_.matte_color = Color();
-  // pointsize
-  montageInfo_.pointsize = _pointSize;
-  // shadow
-  montageInfo_.shadow = static_cast<MagickBooleanType>
-    (_shadow ? MagickTrue : MagickFalse);
-  // signature (validity stamp)
-  montageInfo_.signature = MagickSignature;
-  // stroke
-  montageInfo_.stroke = _stroke;
-  // texture
-  if ( _texture.length() != 0 )
-    Magick::CloneString( &montageInfo_.texture, _texture );
-  else
-    montageInfo_.texture=(char *) RelinquishMagickMemory(montageInfo_.texture);
-  // tile
-  if ( _tile.isValid() )
-    Magick::CloneString( &montageInfo_.tile, _tile );
-  else
-    montageInfo_.tile=(char *) RelinquishMagickMemory(montageInfo_.tile);
-  // title
-  if ( _title.length() != 0 )
-    Magick::CloneString( &montageInfo_.title, _title );
-  else
-    montageInfo_.title=(char *) RelinquishMagickMemory(montageInfo_.title);
+  _borderColor=borderColor_;
 }
 
-//
-// Implementation of MontageFramed
-//
+inline Magick::Color Magick::MontageFramed::borderColor(void) const
+{
+  return(_borderColor);
+}
 
-/* virtual */ void
-Magick::MontageFramed::updateMontageInfo ( MontageInfo &montageInfo_ ) const
+inline void Magick::MontageFramed::borderWidth(size_t borderWidth_)
+{
+  _borderWidth=borderWidth_;
+}
+
+inline size_t Magick::MontageFramed::borderWidth(void) const
+{
+  return(_borderWidth);
+}
+
+inline void Magick::MontageFramed::frameGeometry(const Magick::Geometry &frame_)
+{
+  _frame=frame_;
+}
+
+inline Magick::Geometry Magick::MontageFramed::frameGeometry(void) const
+{
+  return(_frame);
+}
+
+inline void Magick::MontageFramed::matteColor(const Magick::Color &matteColor_)
+{
+  _matteColor=matteColor_;
+}
+
+inline Magick::Color Magick::MontageFramed::matteColor(void) const
+{
+  return(_matteColor);
+}
+
+void Magick::MontageFramed::updateMontageInfo(MontageInfo &montageInfo_) const
 {
   // Do base updates
-  Montage::updateMontageInfo ( montageInfo_ );
+  Montage::updateMontageInfo(montageInfo_);
 
   // border_color
-  montageInfo_.border_color = _borderColor;
+  montageInfo_.border_color=_borderColor;
   // border_width
-  montageInfo_.border_width = _borderWidth;
+  montageInfo_.border_width=_borderWidth;
   // frame
-  if ( _frame.isValid() )
-    Magick::CloneString( &montageInfo_.frame, _frame );
-  else
-    montageInfo_.frame=(char *) RelinquishMagickMemory(montageInfo_.frame);
+  if (_frame.isValid())
+    Magick::CloneString(&montageInfo_.frame,_frame);
   // matte_color
-  montageInfo_.matte_color = _matteColor;
+  montageInfo_.matte_color=_matteColor;
 }
