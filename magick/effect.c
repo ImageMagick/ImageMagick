@@ -1055,7 +1055,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(edge_view,-1,y-1,edge_image->columns+2,3,
+    p=GetCacheViewVirtualPixels(edge_view,0,y,edge_image->columns+1,2,
       exception);
     if (p == (const PixelPacket *) NULL)
       {
@@ -1078,38 +1078,36 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         v;
 
       static double
-        Gx[3][3] =
+        Gx[2][2] =
         {
-          { -1.0,  0.0, +1.0 },
-          { -2.0,  0.0, +2.0 },
-          { -1.0,  0.0, +1.0 }
+          { -1.0,  +1.0 },
+          { -1.0,  +1.0 }
         },
-        Gy[3][3] =
+        Gy[2][2] =
         {
-          { +1.0, +2.0, +1.0 },
-          {  0.0,  0.0,  0.0 },
-          { -1.0, -2.0, -1.0 }
+          { +1.0, +1.0 },
+          { -1.0, -1.0 }
         };
 
       (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
       dx=0.0;
       dy=0.0;
       kernel_pixels=p;
-      for (v=0; v < 3; v++)
+      for (v=0; v < 2; v++)
       {
         ssize_t
           u;
 
-        for (u=0; u < 3; u++)
+        for (u=0; u < 2; u++)
         {
           double
             intensity;
 
           intensity=GetPixelIntensity(edge_image,kernel_pixels+u);
-          dx+=Gx[v][u]*intensity;
-          dy+=Gy[v][u]*intensity;
+          dx+=3.0*Gx[v][u]*intensity/2.0;
+          dy+=3.0*Gy[v][u]*intensity/2.0;
         }
-        kernel_pixels+=edge_image->columns+2;
+        kernel_pixels+=edge_image->columns+1;
       }
       pixel.magnitude=sqrt(dx*dx+dy*dy);
       pixel.orientation=2;
