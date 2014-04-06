@@ -287,6 +287,11 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           break;
         }
+        case VP8_STATUS_INVALID_PARAM:
+        {
+          ThrowReaderException(CorruptImageError,"invalid parameter");
+          break;
+        }
         case VP8_STATUS_BITSTREAM_ERROR:
         {
           ThrowReaderException(CorruptImageError,"CorruptImage");
@@ -295,6 +300,16 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
         case VP8_STATUS_UNSUPPORTED_FEATURE:
         {
           ThrowReaderException(CoderError,"DataEncodingSchemeIsNotSupported");
+          break;
+        }
+        case VP8_STATUS_SUSPENDED:
+        {
+          ThrowReaderException(CorruptImageError,"decoder suspended");
+          break;
+        }
+        case VP8_STATUS_USER_ABORT:
+        {
+          ThrowReaderException(CorruptImageError,"user abort");
           break;
         }
         case VP8_STATUS_NOT_ENOUGH_DATA:
@@ -377,10 +392,10 @@ ModuleExport size_t RegisterWEBPImage(void)
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadWEBPImage;
   entry->encoder=(EncodeImageHandler *) WriteWEBPImage;
-  (void) FormatLocaleString(version,MaxTextExtent,"libwebp %d.%d.%d",
+  (void) FormatLocaleString(version,MaxTextExtent,"libwebp %d.%d.%d (%04X)",
     (WebPGetDecoderVersion() >> 16) & 0xff,
     (WebPGetDecoderVersion() >> 8) & 0xff,
-    (WebPGetDecoderVersion() >> 0) & 0xff);
+    (WebPGetDecoderVersion() >> 0) & 0xff,WEBP_ENCODER_ABI_VERSION);
 #endif
   entry->description=ConstantString("WebP Image Format");
   entry->mime_type=ConstantString("image/x-webp");
@@ -619,7 +634,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       break;
   }
   webp_status=WebPEncode(&configure,&picture);
-  if (webp_status == 0)
+  if (webp_status != VP8_ENC_OK)
     {
       const char
         *message;
