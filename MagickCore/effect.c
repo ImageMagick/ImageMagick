@@ -1053,6 +1053,11 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       edge_image=DestroyImage(edge_image);
       return((Image *) NULL);
     }
+  if (NormalizeImage(edge_image,exception) == MagickFalse)
+    {
+      edge_image=DestroyImage(edge_image);
+      return((Image *) NULL);
+    }
   /*
     Find the intensity gradient of the image.
   */
