@@ -1238,6 +1238,7 @@ if (1) {
           */
           (void) GetMatrixElement(pixel_cache,x-1,y,&alpha_pixel);
           (void) GetMatrixElement(pixel_cache,x+1,y,&beta_pixel);
+          break;
         }
         case 3:
         {
@@ -1246,6 +1247,7 @@ if (1) {
           */
           (void) GetMatrixElement(pixel_cache,x+1,y-1,&alpha_pixel);
           (void) GetMatrixElement(pixel_cache,x-1,y+1,&beta_pixel);
+          break;
         }
       }
       pixel.intensity=pixel.magnitude;
