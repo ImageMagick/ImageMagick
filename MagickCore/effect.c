@@ -1134,7 +1134,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         kernel_pixels+=edge_image->columns+1;
       }
       pixel.magnitude=sqrt(dx*dx+dy*dy);
-      pixel.orientation=2;
+      pixel.orientation=0;
       if (dx != 0.0)
         {
           double
@@ -1144,22 +1144,22 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           if (theta < 0.0)
             {
               if (theta < -2.41421356237)
-                pixel.orientation=0;
+                pixel.orientation=2;
               else
                 if (theta < -0.414213562373)
                   pixel.orientation=1;
                 else
-                  pixel.orientation=2;
+                  pixel.orientation=0;
             }
           else
             {
               if (theta > 2.41421356237)
-                pixel.orientation=0;
+                pixel.orientation=2;
               else
                 if (theta > 0.414213562373)
                   pixel.orientation=3;
                 else
-                  pixel.orientation=2;
+                  pixel.orientation=0;
             }
         }
       if (SetMatrixElement(pixel_cache,x,y,&pixel) == MagickFalse)
@@ -1217,8 +1217,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           /*
             0 degrees.
           */
-          (void) GetMatrixElement(pixel_cache,x,y-1,&alpha_pixel);
-          (void) GetMatrixElement(pixel_cache,x,y+1,&beta_pixel);
+          (void) GetMatrixElement(pixel_cache,x-1,y,&alpha_pixel);
+          (void) GetMatrixElement(pixel_cache,x+1,y,&beta_pixel);
           break;
         }
         case 1:
@@ -1235,8 +1235,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           /*
             90 degrees.
           */
-          (void) GetMatrixElement(pixel_cache,x-1,y,&alpha_pixel);
-          (void) GetMatrixElement(pixel_cache,x+1,y,&beta_pixel);
+          (void) GetMatrixElement(pixel_cache,x,y-1,&alpha_pixel);
+          (void) GetMatrixElement(pixel_cache,x,y+1,&beta_pixel);
+          break;
         }
         case 3:
         {
@@ -1245,6 +1246,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           */
           (void) GetMatrixElement(pixel_cache,x+1,y-1,&alpha_pixel);
           (void) GetMatrixElement(pixel_cache,x-1,y+1,&beta_pixel);
+          break;
         }
       }
       pixel.intensity=pixel.magnitude;
