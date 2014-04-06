@@ -1053,11 +1053,6 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       edge_image=DestroyImage(edge_image);
       return((Image *) NULL);
     }
-  if (NormalizeImage(edge_image,exception) == MagickFalse)
-    {
-      edge_image=DestroyImage(edge_image);
-      return((Image *) NULL);
-    }
   /*
     Find the intensity gradient of the image.
   */
@@ -1142,17 +1137,34 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         kernel_pixels+=edge_image->columns+1;
       }
       pixel.magnitude=sqrt(dx*dx+dy*dy);
-      orientation=8.0*(fmod(atan2(dy,dx)+MagickPI,MagickPI)/MagickPI);
-      if ((orientation <= 1.0) || (orientation > 7.0))
-        pixel.orientation=0;
-      else
-        if ((orientation > 1.0) && (orientation <= 3.0))
-          pixel.orientation=3;
-        else
-          if ((orientation > 3.0) && (orientation <= 5.0))
-            pixel.orientation=2;
+      pixel.orientation=0;
+      if (dx != 0.0)
+        {
+          double
+            theta;
+
+          theta=dy/dx;
+          if (theta < 0.0)
+            {
+              if (theta < -2.41421356237)
+                pixel.orientation=2;
+              else
+                if (theta < -0.414213562373)
+                  pixel.orientation=1;
+                else
+                  pixel.orientation=0;
+            }
           else
-            pixel.orientation=1;
+            {
+              if (theta > 2.41421356237)
+                pixel.orientation=2;
+              else
+                if (theta > 0.414213562373)
+                  pixel.orientation=3;
+                else
+                  pixel.orientation=0;
+            }
+        }
       if (SetMatrixElement(pixel_cache,x,y,&pixel) == MagickFalse)
         continue;
       p+=GetPixelChannels(edge_image);
