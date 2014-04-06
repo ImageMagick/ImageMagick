@@ -462,6 +462,8 @@ ModuleExport void UnregisterWEBPImage(void)
 #if WEBP_ENCODER_ABI_VERSION >= 0x0100
 static int WebPEncodeProgress(int percent,const WebPPicture* picture)
 {
+#define EncodeImageTag  "Encode/Image"
+
   Image
     *image;
 
@@ -469,7 +471,7 @@ static int WebPEncodeProgress(int percent,const WebPPicture* picture)
     status;
 
   image=(Image *) picture->custom_ptr;
-  status=SetImageProgress(image,SaveImageTag,percent-1,100);
+  status=SetImageProgress(image,EncodeImageTag,percent-1,100);
   return(status == MagickFalse ? 0 : 1);
 }
 #endif
