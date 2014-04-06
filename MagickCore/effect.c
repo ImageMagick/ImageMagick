@@ -1330,7 +1330,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
       status=MagickFalse;
   }
-  trace_view=DestroyCacheView(edge_view);
+  trace_view=DestroyCacheView(trace_view);
   edge_view=DestroyCacheView(edge_view);
   pixel_cache=DestroyMatrixInfo(pixel_cache);
   return(edge_image);
