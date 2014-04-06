@@ -663,7 +663,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %    Sobel:{angle}
 %      Sobel 'Edge' convolution kernel (3x3)
 %          | -1, 0, 1 |
-%          | -2, 0,-2 |
+%          | -2, 0, 2 |
 %          | -1, 0, 1 |
 %
 %    Roberts:{angle}

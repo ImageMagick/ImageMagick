@@ -1029,6 +1029,12 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       edge_image=DestroyImage(edge_image);
       return((Image *) NULL);
     }
+if (1) {
+  ImageInfo *image_info=AcquireImageInfo();
+  Image *clone=CloneImage(edge_image,0,0,MagickTrue,exception);
+  strcpy(clone->filename,"canny-blur.pgm");
+  WriteImage(image_info,clone);
+}
   /*
     Find the intensity gradient of the image.
   */
@@ -1144,6 +1150,25 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     }
   }
   edge_view=DestroyCacheView(edge_view);
+if (1) {
+  char buffer[1024];
+  FILE *file=fopen("canny-magnitude.pgm","w");
+  sprintf(buffer,"P5\n%lu %lu\n%d\n",edge_image->columns,edge_image->rows,255);
+  fwrite(buffer,strlen(buffer),1,file);
+  for (y=0; y < (ssize_t) edge_image->rows; y++)
+  {
+    register ssize_t x;
+    for (x=0; x < (ssize_t) edge_image->columns; x++)
+    {
+      CannyInfo pixel;
+      unsigned char magnitude;
+      (void) GetMatrixElement(pixel_cache,x,y,&pixel);
+      magnitude=ScaleQuantumToChar(ClampToQuantum(pixel.magnitude));
+      fwrite(&magnitude,1,1,file);
+    }
+  }
+  fclose(file);
+}
   /*
     Non-maxima suppression, remove pixels that are not considered to be part
     of an edge.
@@ -1244,6 +1269,25 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       status=MagickFalse;
   }
   edge_view=DestroyCacheView(edge_view);
+if (1) {
+  char buffer[1024];
+  FILE *file=fopen("canny-suppression.pgm","w");
+  sprintf(buffer,"P5\n%lu %lu\n%d\n",edge_image->columns,edge_image->rows,255);
+  fwrite(buffer,strlen(buffer),1,file);
+  for (y=0; y < (ssize_t) edge_image->rows; y++)
+  {
+    register ssize_t x;
+    for (x=0; x < (ssize_t) edge_image->columns; x++)
+    {
+      CannyInfo pixel;
+      unsigned char intensity;
+      (void) GetMatrixElement(pixel_cache,x,y,&pixel);
+      intensity=ScaleQuantumToChar(ClampToQuantum(pixel.intensity));
+      fwrite(&intensity,1,1,file);
+    }
+  }
+  fclose(file);
+}
   /*
     Estimate hysteresis threshold.
   */
