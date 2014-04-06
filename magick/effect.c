@@ -1231,8 +1231,8 @@ if (1) {
           /*
             135 degrees.
           */
-          (void) GetMatrixElement(pixel_cache,x-1,y+1,&beta_pixel);
-          (void) GetMatrixElement(pixel_cache,x+1,y-1,&alpha_pixel);
+          (void) GetMatrixElement(pixel_cache,x-1,y+1,&alpha_pixel);
+          (void) GetMatrixElement(pixel_cache,x+1,y-1,&beta_pixel);
           break;
         }
       }
