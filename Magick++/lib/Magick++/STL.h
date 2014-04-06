@@ -2393,30 +2393,30 @@ namespace Magick
     // Create linked image list
     linkImages(first_,last_);
 
-    // Reset output container to pristine state
-    montageImages_->clear();
-
     // Do montage
     GetPPException;
     images=MagickCore::MontageImages(first_->image(),montageInfo,
       &exceptionInfo);
+
+    // Unlink linked image list
+    unlinkImages(first_,last_);
+
+    // Reset output container to pristine state
+    montageImages_->clear();
+
     if (images != (MagickCore::Image *) NULL)
       insertImages(montageImages_,images);
 
     // Clean up any allocated data in montageInfo
     MagickCore::DestroyMontageInfo(montageInfo);
 
-    // Unlink linked image list
-    unlinkImages(first_,last_);
-
     // Report any montage error
-    throwException(exceptionInfo);
+    ThrowPPException;
 
     // Apply transparency to montage images
     if (montageImages_->size() > 0 && options_.transparentColor().isValid())
-      for_each(first_,last_,transparentImage(options_.transparentColor()));
-
-    (void) MagickCore::DestroyExceptionInfo(&exceptionInfo);
+      for_each(montageImages_->begin(),montageImages_->end(),transparentImage(
+        options_.transparentColor()));
   }
 
   // Morph a set of images
