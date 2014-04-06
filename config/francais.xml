@@ -1350,6 +1350,11 @@
         Réduire le brillant du contraste de l'image
       </message>
     </DullContrast>
+    <Encode>
+      <message name="Image">
+        encode l'image
+      </message>
+    </Encode>
     <Equalize>
       <message name="Image">
         Egaliser l'image

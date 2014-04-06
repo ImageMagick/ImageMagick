@@ -1365,6 +1365,11 @@
         dull image contrast
       </message>
     </DullContrast>
+    <Encode>
+      <message name="Image">
+        encode image
+      </message>
+    </Encode>
     <Equalize>
       <message name="Image">
         equalize image
