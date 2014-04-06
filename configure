@@ -794,9 +794,6 @@ OPENEXR_DELEGATE_FALSE
 OPENEXR_DELEGATE_TRUE
 OPENEXR_LIBS
 OPENEXR_CFLAGS
-MUPDF_LIBS
-MUPDF_DELEGATE_FALSE
-MUPDF_DELEGATE_TRUE
 LZMA_DELEGATE_FALSE
 LZMA_DELEGATE_TRUE
 LZMA_LIBS
@@ -1188,7 +1185,6 @@ with_lcms2
 with_openjp2
 with_lqr
 with_lzma
-with_mupdf
 with_openexr
 with_pango
 with_png
@@ -1961,7 +1957,6 @@ Optional Packages:
   --without-openjp2       disable OpenJP2 support
   --without-lqr           disable Liquid Rescale support
   --without-lzma          disable LZMA support
-  --with-mupdf            enable MUPDF support
   --without-openexr       disable OpenEXR support
   --without-pango         disable PANGO support
   --without-png           disable PNG support
@@ -3702,7 +3697,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=15237:15269M
+MAGICK_SVN_REVISION=15366:15369M
 
 
 # Substitute library versioning
@@ -26195,7 +26190,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick mupdf openjp2/include png tiff/libtiff ttf/include wand webp/src wmf/include xml/include zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick openjp2/include png tiff/libtiff ttf/include wand webp/src wmf/include xml/include zlib; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -26206,7 +26201,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick mupdf openjp2 png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick openjp2 png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
@@ -30438,116 +30433,6 @@ else
   LZMA_DELEGATE_FALSE=
 fi
 
-
-
-
-
-#
-# Check for MUPDF delegate library.
-#
-
-# Check whether --with-mupdf was given.
-if test "${with_mupdf+set}" = set; then :
-  withval=$with_mupdf; with_mupdf=$withval
-else
-  with_mupdf='no'
-fi
-
-
-if test "$with_mupdf" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-mupdf=$with_mupdf "
-fi
-
-have_mupdf='no'
-MUPDF_LIBS=''
-if test "$with_mupdf" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for MUPDF" >&5
-$as_echo_n "checking for MUPDF... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "mupdf/fitz.h" "ac_cv_header_mupdf_fitz_h" "$ac_includes_default"
-if test "x$ac_cv_header_mupdf_fitz_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for fz_new_context in -lmupdf" >&5
-$as_echo_n "checking for fz_new_context in -lmupdf... " >&6; }
-if ${ac_cv_lib_mupdf_fz_new_context+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lmupdf -lmupdf $FREETYPE_LIBS $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char fz_new_context ();
-int
-main ()
-{
-return fz_new_context ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_mupdf_fz_new_context=yes
-else
-  ac_cv_lib_mupdf_fz_new_context=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mupdf_fz_new_context" >&5
-$as_echo "$ac_cv_lib_mupdf_fz_new_context" >&6; }
-if test "x$ac_cv_lib_mupdf_fz_new_context" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if MUPDF package is complete" >&5
-$as_echo_n "checking if MUPDF package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_mupdf='no (failed tests)'
-        else
-            MUPDF_LIBS='-lmupdf'
-            LIBS="$MUPDF_LIBS $LIBS"
-
-$as_echo "#define MUPDF_DELEGATE 1" >>confdefs.h
-
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_mupdf='yes'
-        fi
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    fi
-fi
- if test "$have_mupdf" = 'yes'; then
-  MUPDF_DELEGATE_TRUE=
-  MUPDF_DELEGATE_FALSE='#'
-else
-  MUPDF_DELEGATE_TRUE='#'
-  MUPDF_DELEGATE_FALSE=
-fi
 
 
 
@@ -35699,9 +35584,6 @@ fi
 if test "$have_avconv"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES mpeg"
 fi
-if test "$have_mupdf"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES mupdf"
-fi
 if test "$have_fftw"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES fftw"
 fi
@@ -36252,10 +36134,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${LZMA_DELEGATE_TRUE}" && test -z "${LZMA_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"LZMA_DELEGATE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${MUPDF_DELEGATE_TRUE}" && test -z "${MUPDF_DELEGATE_FALSE}"; then
-  as_fn_error $? "conditional \"MUPDF_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${OPENEXR_DELEGATE_TRUE}" && test -z "${OPENEXR_DELEGATE_FALSE}"; then
@@ -39030,7 +38908,6 @@ LQR               --with-lqr=$with_lqr		$have_lqr
 LTDL              --with-ltdl=$with_ltdl		$have_ltdl
 LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
-MUPDF             --with-mupdf=$with_mupdf		$have_mupdf
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
 PANGO             --with-pango=$with_pango		$have_pango
 PERL              --with-perl=$with_perl		$have_perl
@@ -39110,7 +38987,6 @@ LQR               --with-lqr=$with_lqr		$have_lqr
 LTDL              --with-ltdl=$with_ltdl		$have_ltdl
 LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
-MUPDF             --with-mupdf=$with_mupdf		$have_mupdf
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
 PANGO             --with-pango=$with_pango		$have_pango
 PERL              --with-perl=$with_perl		$have_perl
