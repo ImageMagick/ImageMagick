@@ -1301,16 +1301,16 @@
         dull image contrast
       </message>
     </DullContrast>
-    <Equalize>
-      <message name="Image">
-        equalize image
-      </message>
-    </Equalize>
     <Encode>
       <message name="Image">
         encode image
       </message>
     </Encode>
+    <Equalize>
+      <message name="Image">
+        equalize image
+      </message>
+    </Equalize>
     <Flip>
       <message name="Image">
         flip image
