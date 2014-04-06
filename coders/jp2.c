@@ -345,7 +345,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (opj_read_header(jp2_stream,jp2_codec,&jp2_image) == 0)
     {
       opj_stream_set_user_data(jp2_stream,NULL);
-      opj_stream_destroy_v3(jp2_stream);
+      opj_stream_destroy(jp2_stream);
       opj_destroy_codec(jp2_codec);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
@@ -360,7 +360,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       if (jp2_status == 0)
         {
           opj_stream_set_user_data(jp2_stream,NULL);
-          opj_stream_destroy_v3(jp2_stream);
+          opj_stream_destroy(jp2_stream);
           opj_destroy_codec(jp2_codec);
           opj_image_destroy(jp2_image);
           ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
@@ -378,13 +378,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (jp2_status == 0)
     {
       opj_stream_set_user_data(jp2_stream,NULL);
-      opj_stream_destroy_v3(jp2_stream);
+      opj_stream_destroy(jp2_stream);
       opj_destroy_codec(jp2_codec);
       opj_image_destroy(jp2_image);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
   opj_stream_set_user_data(jp2_stream,NULL);
-  opj_stream_destroy_v3(jp2_stream);
+  opj_stream_destroy(jp2_stream);
   for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
   {
     if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0))
@@ -1038,7 +1038,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       (opj_end_compress(jp2_codec,jp2_stream) == 0))
     {
       opj_stream_set_user_data(jp2_stream,NULL);
-      opj_stream_destroy_v3(jp2_stream);
+      opj_stream_destroy(jp2_stream);
       opj_destroy_codec(jp2_codec);
       opj_image_destroy(jp2_image);
       ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
@@ -1047,7 +1047,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     Free resources.
   */
   opj_stream_set_user_data(jp2_stream,NULL);
-  opj_stream_destroy_v3(jp2_stream);
+  opj_stream_destroy(jp2_stream);
   opj_destroy_codec(jp2_codec);
   opj_image_destroy(jp2_image);
   (void) CloseBlob(image);
