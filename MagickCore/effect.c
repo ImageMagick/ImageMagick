@@ -1095,6 +1095,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         dx,
         dy;
 
+      int
+        orientation;
+
       register const Quantum
         *restrict kernel_pixels;
 
@@ -1134,34 +1137,17 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         kernel_pixels+=edge_image->columns+1;
       }
       pixel.magnitude=sqrt(dx*dx+dy*dy);
-      pixel.orientation=0;
-      if (dx != 0.0)
-        {
-          double
-            theta;
-
-          theta=dy/dx;
-          if (theta < 0.0)
-            {
-              if (theta < -2.41421356237)
-                pixel.orientation=2;
-              else
-                if (theta < -0.414213562373)
-                  pixel.orientation=1;
-                else
-                  pixel.orientation=0;
-            }
+      orientation=8.0*(fmod(atan2(dy,dx)+MagickPI,MagickPI)/MagickPI);
+      if ((orientation <= 1.0) || (orientation > 7.0))
+        pixel.orientation=0;
+      else
+        if ((orientation > 1.0) && (orientation <= 3.0))
+          pixel.orientation=3;
+        else
+          if ((orientation > 3.0) && (orientation <= 5.0))
+            pixel.orientation=2;
           else
-            {
-              if (theta > 2.41421356237)
-                pixel.orientation=2;
-              else
-                if (theta > 0.414213562373)
-                  pixel.orientation=3;
-                else
-                  pixel.orientation=0;
-            }
-        }
+            pixel.orientation=1;
       if (SetMatrixElement(pixel_cache,x,y,&pixel) == MagickFalse)
         continue;
       p+=GetPixelChannels(edge_image);
@@ -1244,8 +1230,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           /*
             135 degrees.
           */
-          (void) GetMatrixElement(pixel_cache,x+1,y-1,&alpha_pixel);
-          (void) GetMatrixElement(pixel_cache,x-1,y+1,&beta_pixel);
+          (void) GetMatrixElement(pixel_cache,x-1,y+1,&alpha_pixel);
+          (void) GetMatrixElement(pixel_cache,x+1,y-1,&beta_pixel);
           break;
         }
       }
