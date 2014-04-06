@@ -1177,9 +1177,6 @@
 /* Module directory dirname */
 /* #undef MODULES_DIRNAME */
 
-/* Define if you have MUPDF library */
-/* #undef MUPDF_DELEGATE */
-
 /* Magick API method prefix */
 /* #undef NAMESPACE_PREFIX */
 
