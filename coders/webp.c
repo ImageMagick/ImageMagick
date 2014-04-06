@@ -652,7 +652,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       break;
   }
   webp_status=WebPEncode(&configure,&picture);
-  if (webp_status != VP8_ENC_OK)
+  if (webp_status == 0)
     {
       const char
         *message;
