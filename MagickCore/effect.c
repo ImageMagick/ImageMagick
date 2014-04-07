@@ -1295,25 +1295,18 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
-    register Quantum
-      *restrict q;
-
     register ssize_t
       x;
 
     if (status == MagickFalse)
       continue;
-    q=GetCacheViewAuthenticPixels(edge_view,0,y,edge_image->columns,1,
-      exception);
-    if (q == (Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
     for (x=0; x < (ssize_t) edge_image->columns; x++)
     {
       CannyInfo
         pixel;
+
+      register Quantum
+        *restrict q;
 
       /*
         Edge if pixel gradient higher than upper threshold.
@@ -1321,16 +1314,24 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       status=GetMatrixElement(pixel_cache,x,y,&pixel);
       if (status == MagickFalse)
         break;
+      q=GetCacheViewAuthenticPixels(edge_view,x,y,1,1,exception);
+      if (q == (PixelPacket *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
       if ((pixel.intensity >= upper_threshold) &&
           (GetPixelIntensity(edge_image,q) == 0))
         {
           *q=QuantumRange;
+          status=SyncCacheViewAuthenticPixels(edge_view,exception);
+          if (status == MagickFalse)
+            continue;
           status=TraceEdges(edge_image,trace_view,pixel_cache,x,y,
             lower_threshold,exception);
           if (status == MagickFalse)
-            break;
+            continue;
         }
-      q+=GetPixelChannels(edge_image);
     }
     if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
       status=MagickFalse;
