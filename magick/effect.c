@@ -1351,7 +1351,7 @@ if (1) {
           status=TraceEdges(edge_image,trace_view,pixel_cache,x,y,
             lower_threshold,exception);
           if (status == MagickFalse)
-            break;
+            continue;
         }
     }
     if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
