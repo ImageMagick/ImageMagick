@@ -100,7 +100,7 @@ static const unsigned char
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireString() returns an new extented string, containing a clone of the
+%  AcquireString() returns an new extended string, containing a clone of the
 %  given string.
 %
 %  An extended string is the string length, plus an extra MaxTextExtent space
@@ -174,15 +174,12 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
   (void) ResetMagickMemory(string_info,0,sizeof(*string_info));
   string_info->signature=MagickSignature;
   string_info->length=length;
-  if (string_info->length != 0)
-    {
-      string_info->datum=(unsigned char *) NULL;
-      if (~string_info->length >= (MaxTextExtent-1))
-        string_info->datum=(unsigned char *) AcquireQuantumMemory(
-          string_info->length+MaxTextExtent,sizeof(*string_info->datum));
-      if (string_info->datum == (unsigned char *) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-    }
+  string_info->datum=(unsigned char *) NULL;
+  if (~string_info->length >= (MaxTextExtent-1))
+    string_info->datum=(unsigned char *) AcquireQuantumMemory(
+      string_info->length+MaxTextExtent,sizeof(*string_info->datum));
+  if (string_info->datum == (unsigned char *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   return(string_info);
 }
 
