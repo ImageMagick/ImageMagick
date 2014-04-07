@@ -1003,8 +1003,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     geometry[MaxTextExtent];
 
   double
-    upper_threshold,
-    lower_threshold;
+    lower_threshold,
+    upper_threshold;
 
   Image
     *edge_image;
