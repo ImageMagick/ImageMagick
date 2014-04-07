@@ -2247,8 +2247,8 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %  The format of the StringToArrayOfDoubles method is:
 %
-%     double *StringToArrayOfDoubles(const char *string,
-%          size_t *count, ExceptionInfo *exception)
+%     double *StringToArrayOfDoubles(const char *string,size_t *count,
+%       ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2333,7 +2333,7 @@ MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StringToken() Looks for any one of given delimiters and splits the string
+%  StringToken() looks for any one of given delimiters and splits the string
 %  into two separate strings by replacing the delimiter character found with a
 %  nul character.
 %
