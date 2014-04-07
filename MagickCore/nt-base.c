@@ -1137,7 +1137,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
       else
         is_64_bit_version=TRUE;
 #else
-      flags=KEY_WOW64_64KEY;
+        flags=KEY_WOW64_64KEY;
 #endif
 #endif
     }
@@ -1145,6 +1145,9 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
     {
       (void) NTLocateGhostscript(flags,&root_index,&product_family,
       &major_version,&minor_version);
+#if !defined(_WIN64)
+      is_64_bit_version=TRUE;
+#endif
     }
   if (product_family == NULL)
     return(FALSE);
