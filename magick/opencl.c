@@ -2385,7 +2385,7 @@ MagickExport MagickBooleanType InitImageMagickOpenCL(
   ImageMagickOpenCLMode mode,void *userSelectedDevice,void *selectedDevice,
   ExceptionInfo *exception)
 {
-  MagickBooleanType status = MagickTrue;
+  MagickBooleanType status = MagickFalse;
   MagickCLEnv clEnv = NULL;
   MagickBooleanType flag;
 
