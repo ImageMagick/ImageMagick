@@ -863,8 +863,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %      Image *CannyEdgeImage(const Image *image,const double radius,
 %        const double sigma,const double lower_precent,
-%        const double upper_percent,const size_t threshold,
-%        ExceptionInfo *exception)
+%        const double upper_percent,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
