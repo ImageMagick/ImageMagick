@@ -12,6 +12,8 @@
   * Use temporary path rather then current working directory (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25313).
   * Support -canny edge detection option.
+  * Use MAGICKCORE_LIBOPENJP2_DELEGATE instead of MAGICKCORE_JP2_DELEGATE
+    (reference www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25376).
 
 2014-03-28  6.8.8-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-9, SVN revision 15239.

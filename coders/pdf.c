@@ -1276,7 +1276,7 @@ RestoreMSCWarning
         break;
       }
 #endif
-#if !defined(MAGICKCORE_JP2_DELEGATE)
+#if !defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
       case JPEG2000Compression:
       {
         compression=RLECompression;
