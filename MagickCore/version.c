@@ -142,7 +142,7 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_JPEG_DELEGATE) && defined(MAGICKCORE_PNG_DELEGATE)
   "jng "
 #endif
-#if defined(MAGICKCORE_JP2_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   "jp2 "
 #endif
 #if defined(MAGICKCORE_JPEG_DELEGATE)
