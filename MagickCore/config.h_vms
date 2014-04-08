@@ -212,7 +212,7 @@
 #define MAGICKCORE_JPEG_DELEGATE 1
 
 /* Define if you have JPEG version 2 Jasper library */
-#define MAGICKCORE_JP2_DELEGATE 1
+#define MAGICKCORE_LIBOPENJP2_DELEGATE 1
 
 /* Define if you have Ghostscript library */
 #undef MAGICKCORE_GS_DELEGATE
