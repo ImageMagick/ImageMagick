@@ -2702,7 +2702,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
           CompositeOperatorToPSDBlendMode(next_image->compose));
         (void) WriteBlobByte(image,255); /* layer opacity */
         (void) WriteBlobByte(image,0);
-        (void) WriteBlobByte(image,1); /* layer propertys - visible, etc. */
+        (void) WriteBlobByte(image,next_image->compose==NoCompositeOp ?
+          1 << 0x02 : 1); /* layer properties - visible, etc. */
         (void) WriteBlobByte(image,0);
         property=(const char *) GetImageProperty(next_image,"label",exception);
         if (property == (const char *) NULL)
