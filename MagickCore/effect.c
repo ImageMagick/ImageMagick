@@ -1137,7 +1137,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       }
       pixel.magnitude=sqrt(dx*dx+dy*dy);
       pixel.orientation=0;
-      if (dx != 0.0)
+      if (fabs(dx) > MagickEpsilon)
         {
           double
             theta;
