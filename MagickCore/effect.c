@@ -1244,8 +1244,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           /*
             135 degrees, northeast and southwest.
           */
-          (void) GetMatrixElement(pixel_cache,x-1,y+1,&alpha_pixel);
           (void) GetMatrixElement(pixel_cache,x+1,y-1,&beta_pixel);
+          (void) GetMatrixElement(pixel_cache,x-1,y+1,&alpha_pixel);
           break;
         }
       }
