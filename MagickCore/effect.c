@@ -998,6 +998,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     *edge_view,
     *trace_view;
 
+  CannyInfo
+    pixel;
+
   char
     geometry[MaxTextExtent];
 
@@ -1130,8 +1133,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
             intensity;
 
           intensity=GetPixelIntensity(edge_image,kernel_pixels+u);
-          dx+=1.5*Gx[v][u]*intensity;
-          dy+=1.5*Gy[v][u]*intensity;
+          dx+=0.5*Gx[v][u]*intensity;
+          dy+=0.5*Gy[v][u]*intensity;
         }
         kernel_pixels+=edge_image->columns+1;
       }
@@ -1174,14 +1177,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     Non-maxima suppression, remove pixels that are not considered to be part
     of an edge.
   */
-  histogram=(size_t *) AcquireQuantumMemory(65536,sizeof(*histogram));
-  if (histogram == (size_t *) NULL)
-    {
-      pixel_cache=DestroyMatrixInfo(pixel_cache);
-      edge_image=DestroyImage(edge_image);
-      return((Image *) NULL);
-    }
-  (void) ResetMagickMemory(histogram,0,65536*sizeof(*histogram));
+  (void) GetMatrixElement(pixel_cache,0,0,&pixel);
+  max=pixel.intensity;
+  min=pixel.intensity;
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
@@ -1255,14 +1253,16 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       if ((pixel.magnitude < alpha_pixel.magnitude) ||
           (pixel.magnitude < beta_pixel.magnitude))
         pixel.intensity=0;
-      else
-        if (pixel.magnitude > QuantumRange)
-          pixel.intensity=QuantumRange;
       (void) SetMatrixElement(pixel_cache,x,y,&pixel);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp critical (MagickCore_CannyEdgeImage)
 #endif
-      histogram[ScaleQuantumToShort(ClampToQuantum(pixel.intensity))]++;
+      {
+        if (pixel.intensity < min)
+          min=pixel.intensity;
+        if (pixel.intensity > max)
+          max=pixel.intensity;
+      }
       *q=0;
       q+=GetPixelChannels(edge_image);
     }
@@ -1273,16 +1273,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   /*
     Estimate hysteresis threshold.
   */
-  number_pixels=(size_t) (lower_precent*(image->columns*image->rows-
-    histogram[0]));
-  count=0;
-  for (i=65535; count < (ssize_t) number_pixels; i--)
-    count+=histogram[i];
-  upper_threshold=(double) ScaleShortToQuantum((unsigned short) i);
-  for (i=0; histogram[i] == 0; i++) ;
-  lower_threshold=upper_percent*(upper_threshold+
-    ScaleShortToQuantum((unsigned short) i));
-  histogram=(size_t *) RelinquishMagickMemory(histogram);
+  lower_threshold=lower_percent*(max-min)+min;
+  upper_threshold=upper_percent*(max-min)+min;
   /*
     Hysteresis threshold.
   */
