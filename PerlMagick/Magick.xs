@@ -10868,6 +10868,11 @@ Mogrify(ref,...)
                 geometry_info.xi=0.35;
               if ((flags & PsiValue) == 0)
                 geometry_info.psi=0.75;
+              if ((flags & PercentValue) != 0)
+                {
+                  geometry_info.xi=(double) geometry_info.xi/100.0;
+                  geometry_info.psi=(double) geometry_info.psi/100.0;
+                }
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].real_reference;
