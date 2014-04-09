@@ -1927,11 +1927,11 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.psi=0.75;
           if ((flags & PercentValue) != 0)
             {
-              geometry_info.xi=(double) geometry_info.xi/100.0;
-              geometry_info.psi=(double) geometry_info.psi/100.0;
+              geometry_info.xi/=100.0;
+              geometry_info.psi/=100.0;
             }
-          new_image=CannyEdgeImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
+          new_image=CannyEdgeImage(_image,geometry_info.rho,geometry_info.sigma,
+            geometry_info.xi,geometry_info.psi,_exception);
           break;
         }
       if (LocaleCompare("cdl",option+1) == 0)
