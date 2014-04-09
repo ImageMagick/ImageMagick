@@ -1130,13 +1130,13 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
             intensity;
 
           intensity=GetPixelIntensity(edge_image,kernel_pixels+u);
-          dx+=3.0*Gx[v][u]*intensity/2.0;
-          dy+=3.0*Gy[v][u]*intensity/2.0;
+          dx+=0.5*Gx[v][u]*intensity;
+          dy+=0.5*Gy[v][u]*intensity;
         }
         kernel_pixels+=edge_image->columns+1;
       }
       pixel.magnitude=sqrt(dx*dx+dy*dy);
-      pixel.orientation=0;
+      pixel.orientation=2;
       if (fabs(dx) > MagickEpsilon)
         {
           double
