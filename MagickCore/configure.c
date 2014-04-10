@@ -1106,7 +1106,8 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
 %  The format of the LoadConfigureCache method is:
 %
 %      MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
-%        const char *xml,const char *filename,const size_t depth,ExceptionInfo *exception)
+%        const char *xml,const char *filename,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
