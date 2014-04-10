@@ -1211,8 +1211,8 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status=LoadConfigureCache(configure_cache,xml,path,depth+1,
-                        exception);
+                      status&=LoadConfigureCache(configure_cache,xml,path,
+                        depth+1,exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
                 }

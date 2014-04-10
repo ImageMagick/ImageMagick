@@ -1113,7 +1113,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %
 %    o compliance: Adhere to this color standard: SVG, X11, or XPM.
 %
-%    tuple:  The color tuple.
+%    o tuple:  The color tuple.
 %
 */
 MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,

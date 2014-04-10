@@ -754,7 +754,7 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsDelegateCacheInstantiated() determines if the delegate cache is
-%  instantiated.  %  If not, it instantiates the cache and returns it.
+%  instantiated.  If not, it instantiates the cache and returns it.
 %
 %  The format of the IsDelegateInstantiated method is:
 %
