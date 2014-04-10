@@ -764,14 +764,14 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L o a d M i m e L i s t                                                   %
++   L o a d M i m e C a c h e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LoadMimeCache() loads the magic configurations which provides a mapping
-%  between magic attributes and a magic name.
+%  LoadMimeCache() loads the mime configurations which provides a mapping
+%  between mime attributes and a mime name.
 %
 %  The format of the LoadMimeCache method is:
 %
@@ -959,7 +959,8 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
     if (attribute != (const char *) NULL)
       mime_info->priority=(ssize_t) strtol(attribute,(char **) NULL,0);
     attribute=GetXMLTreeAttribute(mime,"stealth");
-    mime_info->stealth=IsStringTrue(attribute);
+    if (attribute != (const char *) NULL)
+      mime_info->stealth=IsStringTrue(attribute);
     attribute=GetXMLTreeAttribute(mime,"type");
     if (attribute != (const char *) NULL)
       mime_info->type=ConstantString(attribute);
