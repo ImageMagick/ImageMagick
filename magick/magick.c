@@ -651,7 +651,7 @@ MagickExport char **GetMagickList(const char *pattern,
 %
 %      const char *GetMagickMimeType(const MagickInfo *magick_info)
 %
-%  A mime_type of each parameter follows:
+%  A description of each parameter follows:
 %
 %    o magick_info:  The magick info.
 %
