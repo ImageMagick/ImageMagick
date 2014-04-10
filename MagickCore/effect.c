@@ -1143,25 +1143,25 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       if (fabs(dx) > MagickEpsilon)
         {
           double
-            theta;
+            slope;
 
-          theta=dy/dx;
-          if (theta < 0.0)
+          slope=dy/dx;
+          if (slope < 0.0)
             {
-              if (theta < -2.41421356237)
+              if (slope < -2.41421356237)
                 pixel.orientation=0;
               else
-                if (theta < -0.414213562373)
+                if (slope < -0.414213562373)
                   pixel.orientation=1;
                 else
                   pixel.orientation=2;
             }
           else
             {
-              if (theta > 2.41421356237)
+              if (slope > 2.41421356237)
                 pixel.orientation=0;
               else
-                if (theta > 0.414213562373)
+                if (slope > 0.414213562373)
                   pixel.orientation=3;
                 else
                   pixel.orientation=2;
