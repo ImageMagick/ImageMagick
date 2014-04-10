@@ -1922,9 +1922,9 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
-            geometry_info.xi=0.35;
+            geometry_info.xi=0.10;
           if ((flags & PsiValue) == 0)
-            geometry_info.psi=0.75;
+            geometry_info.psi=0.30;
           if ((flags & PercentValue) != 0)
             {
               geometry_info.xi/=100.0;
