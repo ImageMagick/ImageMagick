@@ -1295,8 +1295,6 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
             continue;
         }
     }
-    if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
-      status=MagickFalse;
   }
   trace_view=DestroyCacheView(trace_view);
   edge_view=DestroyCacheView(edge_view);
