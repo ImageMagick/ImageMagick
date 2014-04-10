@@ -866,11 +866,53 @@ typedef struct _CannyInfo
 
   int
     orientation;
+} CannyInfo;
 
+typedef struct _EdgeInfo
+{
   ssize_t
     x,
     y;
-} CannyInfo;
+} EdgeInfo;
+
+static inline MatrixInfo **DestroyEdgeInfoThreadSet(MatrixInfo **edge_info)
+{
+  register ssize_t
+    i;
+
+  assert(edge_info != (MatrixInfo **) NULL);
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
+    if (edge_info[i] != (MatrixInfo *) NULL)
+      edge_info[i]=DestroyMatrixInfo(edge_info[i]);
+  return((MatrixInfo **) RelinquishAlignedMemory(edge_info));
+}
+
+static inline MatrixInfo **AcquireMatrixInfoThreadSet(
+  const unsigned long columns,const unsigned long rows,ExceptionInfo *exception)
+{
+  register ssize_t
+    i;
+
+  MatrixInfo
+    **edge_info;
+
+  size_t
+    number_threads;
+
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  edge_info=(MatrixInfo **) AcquireAlignedMemory(number_threads,
+    sizeof(*edge_info));
+  if (edge_info == (MatrixInfo **) NULL)
+    return((MatrixInfo **) NULL);
+  (void) ResetMagickMemory(edge_info,0,number_threads*sizeof(*edge_info));
+  for (i=0; i < (ssize_t) number_threads; i++)
+  {
+    edge_info[i]=AcquireMatrixInfo(columns,rows,sizeof(EdgeInfo),exception);
+    if (edge_info[i] == (MatrixInfo *) NULL)
+      return(DestroyEdgeInfoThreadSet(edge_info));
+  }
+  return(edge_info);
+}
 
 static inline MagickBooleanType IsAuthenticPixel(const Image *image,
   const ssize_t x,const ssize_t y)
@@ -883,20 +925,23 @@ static inline MagickBooleanType IsAuthenticPixel(const Image *image,
 }
 
 static MagickBooleanType TraceEdges(Image *edge_image,CacheView *trace_view,
-  MatrixInfo *pixel_cache,const ssize_t x,const ssize_t y,
-  const double lower_threshold,ExceptionInfo *exception)
+  MatrixInfo *pixel_cache,MatrixInfo *edge_cache,const ssize_t x,
+  const ssize_t y,const double lower_threshold,ExceptionInfo *exception)
 {
   CannyInfo
     pixel;
 
+  EdgeInfo
+    edge;
+
   size_t
     number_edges;
 
-  if (GetMatrixElement(pixel_cache,0,0,&pixel) == MagickFalse)
+  if (GetMatrixElement(edge_cache,0,0,&edge) == MagickFalse)
     return(MagickFalse);
-  pixel.x=x;
-  pixel.y=y;
-  if (SetMatrixElement(pixel_cache,0,0,&pixel) == MagickFalse)
+  edge.x=x;
+  edge.y=y;
+  if (SetMatrixElement(edge_cache,0,0,&edge) == MagickFalse)
     return(MagickFalse);
   number_edges=1;
   do
@@ -905,16 +950,12 @@ static MagickBooleanType TraceEdges(Image *edge_image,CacheView *trace_view,
       status;
 
     ssize_t
-      v,
-      x_offset,
-      y_offset;
+      v;
 
     number_edges--;
-    status=GetMatrixElement(pixel_cache,(ssize_t) number_edges,0,&pixel);
+    status=GetMatrixElement(edge_cache,(ssize_t) number_edges,0,&edge);
     if (status == MagickFalse)
       return(MagickFalse);
-    x_offset=pixel.x;
-    y_offset=pixel.y;
     for (v=(-1); v <= 1; v++)
     {
       ssize_t
@@ -927,16 +968,16 @@ static MagickBooleanType TraceEdges(Image *edge_image,CacheView *trace_view,
 
         if ((u == 0) && (v == 0))
           continue;
-        if (IsAuthenticPixel(edge_image,x_offset+u,y_offset+v) == MagickFalse)
+        if (IsAuthenticPixel(edge_image,edge.x+u,edge.y+v) == MagickFalse)
           continue;
         /*
           Not an edge if gradient value is below the lower threshold.
         */
-        q=GetCacheViewAuthenticPixels(trace_view,x_offset+u,y_offset+v,1,1,
+        q=GetCacheViewAuthenticPixels(trace_view,edge.x+u,edge.y+v,1,1,
           exception);
         if (q == (PixelPacket *) NULL)
           return(MagickFalse);
-        status=GetMatrixElement(pixel_cache,x_offset+u,y_offset+v,&pixel);
+        status=GetMatrixElement(pixel_cache,edge.x+u,edge.y+v,&pixel);
         if (status == MagickFalse)
           return(MagickFalse);
         if ((pixel.intensity >= lower_threshold) &&
@@ -948,14 +989,9 @@ static MagickBooleanType TraceEdges(Image *edge_image,CacheView *trace_view,
             status=SyncCacheViewAuthenticPixels(trace_view,exception);
             if (status == MagickFalse)
               return(MagickFalse);
-            status=GetMatrixElement(pixel_cache,(ssize_t) number_edges,0,
-              &pixel);
-            if (status == MagickFalse)
-              return(MagickFalse);
-            pixel.x=x_offset+u;
-            pixel.y=y_offset+v;
-            status=SetMatrixElement(pixel_cache,(ssize_t) number_edges,0,
-              &pixel);
+            edge.x+=u;
+            edge.y+=v;
+            status=SetMatrixElement(edge_cache,(ssize_t) number_edges,0,&edge);
             if (status == MagickFalse)
               return(MagickFalse);
             number_edges++;
@@ -996,6 +1032,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     status;
 
   MatrixInfo
+    **edge_cache,
     *pixel_cache;
 
   ssize_t
@@ -1247,6 +1284,14 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   /*
     Hysteresis threshold.
   */
+  edge_cache=AcquireMatrixInfoThreadSet(edge_image->columns,edge_image->rows,
+    exception);
+  if (edge_cache == (MatrixInfo **) NULL)
+    {
+      pixel_cache=DestroyMatrixInfo(pixel_cache);
+      edge_image=DestroyImage(edge_image);
+      return((Image *) NULL);
+    }
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
   trace_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1255,6 +1300,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     register ssize_t
       x;
 
@@ -1289,15 +1337,19 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           status=SyncCacheViewAuthenticPixels(edge_view,exception);
           if (status == MagickFalse)
             continue;
-          status=TraceEdges(edge_image,trace_view,pixel_cache,x,y,
-            lower_threshold,exception);
+          status=TraceEdges(edge_image,trace_view,pixel_cache,edge_cache[id],x,
+            y,lower_threshold,exception);
           if (status == MagickFalse)
             continue;
         }
     }
   }
+  /*
+    Free resources.
+  */
   trace_view=DestroyCacheView(trace_view);
   edge_view=DestroyCacheView(edge_view);
+  edge_cache=DestroyEdgeInfoThreadSet(edge_cache);
   pixel_cache=DestroyMatrixInfo(pixel_cache);
   return(edge_image);
 }
