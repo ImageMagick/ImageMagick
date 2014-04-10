@@ -900,45 +900,6 @@ typedef struct _EdgeInfo
     y;
 } EdgeInfo;
 
-static inline MatrixInfo **DestroyEdgeInfoThreadSet(MatrixInfo **edge_info)
-{
-  register ssize_t
-    i;
-
-  assert(edge_info != (MatrixInfo **) NULL);
-  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
-    if (edge_info[i] != (MatrixInfo *) NULL)
-      edge_info[i]=DestroyMatrixInfo(edge_info[i]);
-  return((MatrixInfo **) RelinquishAlignedMemory(edge_info));
-}
-
-static inline MatrixInfo **AcquireMatrixInfoThreadSet(
-  const unsigned long columns,const unsigned long rows,ExceptionInfo *exception)
-{
-  register ssize_t
-    i;
-
-  MatrixInfo
-    **edge_info;
-
-  size_t
-    number_threads;
-
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  edge_info=(MatrixInfo **) AcquireAlignedMemory(number_threads,
-    sizeof(*edge_info));
-  if (edge_info == (MatrixInfo **) NULL)
-    return((MatrixInfo **) NULL);
-  (void) ResetMagickMemory(edge_info,0,number_threads*sizeof(*edge_info));
-  for (i=0; i < (ssize_t) number_threads; i++)
-  {
-    edge_info[i]=AcquireMatrixInfo(columns,rows,sizeof(EdgeInfo),exception);
-    if (edge_info[i] == (MatrixInfo *) NULL)
-      return(DestroyEdgeInfoThreadSet(edge_info));
-  }
-  return(edge_info);
-}
-
 static inline MagickBooleanType IsAuthenticPixel(const Image *image,
   const ssize_t x,const ssize_t y)
 {
@@ -1056,7 +1017,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     status;
 
   MatrixInfo
-    **edge_cache,
+    *edge_cache,
     *pixel_cache;
 
   ssize_t
@@ -1306,9 +1267,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   /*
     Hysteresis threshold.
   */
-  edge_cache=AcquireMatrixInfoThreadSet(edge_image->columns,edge_image->rows,
-    exception);
-  if (edge_cache == (MatrixInfo **) NULL)
+  edge_cache=AcquireMatrixInfo(edge_image->columns,edge_image->rows,
+    sizeof(EdgeInfo),exception);
+  if (edge_cache == (MatrixInfo *) NULL)
     {
       pixel_cache=DestroyMatrixInfo(pixel_cache);
       edge_image=DestroyImage(edge_image);
@@ -1316,15 +1277,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     }
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
   trace_view=AcquireAuthenticCacheView(edge_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(edge_image,edge_image,edge_image->rows,1)
-#endif
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     register ssize_t
       x;
 
@@ -1357,8 +1311,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           status=SyncCacheViewAuthenticPixels(edge_view,exception);
           if (status == MagickFalse)
             continue;
-          status=TraceEdges(edge_image,trace_view,pixel_cache,edge_cache[id],x,
-            y,lower_threshold,exception);
+          status=TraceEdges(edge_image,trace_view,pixel_cache,edge_cache,x,y,
+            lower_threshold,exception);
           if (status == MagickFalse)
             continue;
         }
@@ -1369,7 +1323,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
  */
   trace_view=DestroyCacheView(trace_view);
   edge_view=DestroyCacheView(edge_view);
-  edge_cache=DestroyEdgeInfoThreadSet(edge_cache);
+  edge_cache=DestroyMatrixInfo(edge_cache);
   pixel_cache=DestroyMatrixInfo(pixel_cache);
   return(edge_image);
 }
