@@ -46,6 +46,7 @@ Features and Capabilities
       * Montage: juxtapose image thumbnails on an image canvas.
       * Generalized pixel distortion: correct for, or induce image distortions
         including perspective.
+      * Computer vision: Canny edge detection.
       * Morphology of shapes: extract features, describe shapes and recognize
         patterns in images.
       * Motion picture support: read and write the common image formats used in
