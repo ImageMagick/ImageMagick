@@ -3100,7 +3100,7 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
           qsort(quantize_error,cube_info->nodes,sizeof(MagickRealType),
             MagickRealTypeCompare);
           cube_info->next_threshold=quantize_error[MagickMax(cube_info->nodes-
-            110*cube_info->maximum_colors/100,0)];
+            110*(cube_info->maximum_colors+1)/100,0)];
           quantize_error=(MagickRealType *) RelinquishMagickMemory(
             quantize_error);
         }
