@@ -869,8 +869,6 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %    o image: the image.
 %
-%    o channel: the channel type.
-%
 %    o radius: the radius of the gaussian smoothing filter.
 %
 %    o sigma: the sigma of the gaussian smoothing filter.
