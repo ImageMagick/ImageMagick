@@ -250,6 +250,8 @@ static const char *CompositeOperatorToPSDBlendMode(CompositeOperator op)
     case DifferenceCompositeOp:  blend_mode = "diff";  break;
     case DarkenCompositeOp:    blend_mode = "dark";  break;
     case LightenCompositeOp:  blend_mode = "lite";  break;
+    case HardLightCompositeOp:    blend_mode = "hLit";  break;
+    case SoftLightCompositeOp:    blend_mode = "sLit";  break;
     case HueCompositeOp:    blend_mode = "hue ";  break;
     case SaturateCompositeOp:  blend_mode = "sat ";  break;
     case ColorizeCompositeOp:  blend_mode = "colr";  break;
@@ -613,9 +615,9 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
   if (LocaleNCompare(mode,"over",4) == 0)
     return(OverlayCompositeOp);
   if (LocaleNCompare(mode,"hLit",4) == 0)
-    return(OverCompositeOp);
+    return(HardLightCompositeOp);
   if (LocaleNCompare(mode,"sLit",4) == 0)
-    return(OverCompositeOp);
+    return(SoftLightCompositeOp);
   if (LocaleNCompare(mode,"smud",4) == 0)
     return(OverCompositeOp);
   if (LocaleNCompare(mode,"div ",4) == 0)
