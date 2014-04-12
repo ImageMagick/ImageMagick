@@ -964,8 +964,8 @@ static MagickBooleanType TraceEdges(Image *edge_image,CacheView *trace_view,
         status=GetMatrixElement(pixel_cache,edge.x+u,edge.y+v,&pixel);
         if (status == MagickFalse)
           return(MagickFalse);
-        if ((pixel.intensity >= lower_threshold) &&
-            (GetPixelIntensity(edge_image,q) == 0))
+        if ((GetPixelIntensity(edge_image,q) == 0.0) &&
+            (pixel.intensity >= lower_threshold))
           {
             *q=QuantumRange;
             status=SyncCacheViewAuthenticPixels(trace_view,exception);
@@ -1302,8 +1302,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           status=MagickFalse;
           continue;
         }
-      if ((pixel.intensity >= upper_threshold) &&
-          (GetPixelIntensity(edge_image,q) == 0))
+      if ((GetPixelIntensity(edge_image,q) == 0.0) &&
+          (pixel.intensity >= upper_threshold))
         {
           *q=QuantumRange;
           status=SyncCacheViewAuthenticPixels(edge_view,exception);
