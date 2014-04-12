@@ -244,22 +244,21 @@ static const char *CompositeOperatorToPSDBlendMode(CompositeOperator op)
 
   switch (op)
   {
-    case OverCompositeOp:    blend_mode = "norm";  break;
-    case MultiplyCompositeOp:  blend_mode = "mul ";  break;
-    case DissolveCompositeOp:  blend_mode = "diss";  break;
-    case DifferenceCompositeOp:  blend_mode = "diff";  break;
-    case DarkenCompositeOp:    blend_mode = "dark";  break;
-    case LightenCompositeOp:  blend_mode = "lite";  break;
-    case HardLightCompositeOp:    blend_mode = "hLit";  break;
-    case SoftLightCompositeOp:    blend_mode = "sLit";  break;
-    case HueCompositeOp:    blend_mode = "hue ";  break;
-    case SaturateCompositeOp:  blend_mode = "sat ";  break;
-    case ColorizeCompositeOp:  blend_mode = "colr";  break;
-    case LuminizeCompositeOp:  blend_mode = "lum ";  break;
-    case ScreenCompositeOp:    blend_mode = "scrn";  break;
-    case OverlayCompositeOp:  blend_mode = "over";  break;
-    default:
-      blend_mode = "norm";
+    case ColorizeCompositeOp:   blend_mode = "colr";  break;
+    case DarkenCompositeOp:     blend_mode = "dark";  break;
+    case DifferenceCompositeOp: blend_mode = "diff";  break;
+    case DissolveCompositeOp:   blend_mode = "diss";  break;
+    case HardLightCompositeOp:  blend_mode = "hLit";  break;
+    case HueCompositeOp:        blend_mode = "hue ";  break;
+    case LightenCompositeOp:    blend_mode = "lite";  break;
+    case LuminizeCompositeOp:   blend_mode = "lum ";  break;
+    case MultiplyCompositeOp:   blend_mode = "mul ";  break;
+    case OverCompositeOp:       blend_mode = "norm";  break;
+    case OverlayCompositeOp:    blend_mode = "over";  break;
+    case SaturateCompositeOp:   blend_mode = "sat ";  break;
+    case ScreenCompositeOp:     blend_mode = "scrn";  break;
+    case SoftLightCompositeOp:  blend_mode = "sLit";  break;
+    default:                    blend_mode = "norm";
   }
   return(blend_mode);
 }
@@ -627,9 +626,9 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
   return(OverCompositeOp);
 }
 
-static MagickStatusType ReadPSDChannelPixels(Image *image,
-  const size_t channels,const size_t row,const ssize_t type,
-  const unsigned char *pixels,ExceptionInfo *exception)
+static MagickStatusType ReadPSDChannelPixels(Image *image,const size_t channels,
+  const size_t row,const ssize_t type,const unsigned char *pixels,
+  ExceptionInfo *exception)
 {
   Quantum
     pixel;
