@@ -1125,7 +1125,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         }
         kernel_pixels+=edge_image->columns+1;
       }
-      pixel.magnitude=sqrt(dx*dx+dy*dy);
+      pixel.magnitude=hypot(dx,dy);
       pixel.orientation=0;
       if (fabs(dx) > MagickEpsilon)
         {
