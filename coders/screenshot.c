@@ -125,7 +125,6 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
       hDC;
 
     Image
-      *image,
       *screen;
 
     int
