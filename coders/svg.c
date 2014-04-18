@@ -3078,7 +3078,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return((Image *) NULL);
   svg_info=AcquireSVGInfo();
   if (svg_info == (SVGInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      (void) fclose(file);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   svg_info->file=file;
   svg_info->exception=exception;
   svg_info->image=image;

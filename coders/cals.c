@@ -145,7 +145,7 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
 {
   char
     filename[MaxTextExtent],
-    header[129],
+    header[MaxTextExtent],
     message[MaxTextExtent];
 
   FILE

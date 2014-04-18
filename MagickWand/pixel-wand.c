@@ -741,7 +741,7 @@ WandExport char *PixelGetColorAsString(const PixelWand *wand)
 WandExport char *PixelGetColorAsNormalizedString(const PixelWand *wand)
 {
   char
-    color[MaxTextExtent];
+    color[2*MaxTextExtent];
 
   assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == WandSignature);

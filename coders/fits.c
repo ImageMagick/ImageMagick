@@ -333,10 +333,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         keyword[i]=tolower((int) ((unsigned char) keyword[i]));
       }
       keyword[i]='\0';
+      (void) ResetMagickMemory(value,0,sizeof(value));
       count=ReadBlob(image,72,(unsigned char *) value);
       if (count != 72)
         break;
-      value[72]='\0';
       p=value;
       if (*p == '=')
         {

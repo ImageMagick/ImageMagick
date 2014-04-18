@@ -797,8 +797,8 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
       }
     else
       {
-        count=WriteBlob(image,4*image->columns*sizeof(*pixel),pixel);
-        if (count != (ssize_t) (4*image->columns*sizeof(*pixel)))
+        count=WriteBlob(image,4*image->columns*sizeof(*pixels),pixels);
+        if (count != (ssize_t) (4*image->columns*sizeof(*pixels)))
           break;
       }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

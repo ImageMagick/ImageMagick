@@ -3669,7 +3669,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
     changed;        /* number pixels changed by last primitive operation */
 
   char
-    v_info[80];
+    v_info[MaxTextExtent];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
