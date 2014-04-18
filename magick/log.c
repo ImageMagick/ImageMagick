@@ -748,6 +748,8 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
               (void) FormatLocaleFile(file,"%s ",LogHandlers[j].name);
               length+=strlen(LogHandlers[j].name);
             }
+          if (LogHandlers[j].name == (const char * NULL))
+            break;
         }
         for (j=(ssize_t) length; j <= 12; j++)
           (void) FormatLocaleFile(file," ");

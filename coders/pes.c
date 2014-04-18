@@ -506,7 +506,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=0; i < (ssize_t) number_colors; i++)
   {
     j=(int) ReadBlobByte(image);
-    blocks[i].color=PESColor+j;
+    blocks[i].color=PESColor+(j < 0 ? 0 : j);
     blocks[i].offset=0;
   }
   for ( ; i < 256L; i++)
