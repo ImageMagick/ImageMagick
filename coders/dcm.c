@@ -3572,7 +3572,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
         length=(size_t) ReadBlobLSBLong(image);
         if (tag == 0xFFFEE0DD)
-          break; /* sequence delimiter tag */
+          {
+            (void) fclose(file);
+            break; /* sequence delimiter tag */
+          }
         if (tag != 0xFFFEE000)
           {
             (void) fclose(file);
