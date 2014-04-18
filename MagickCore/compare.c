@@ -13,7 +13,7 @@
 %                      MagickCore Image Comparison Methods                    %
 %                                                                             %
 %                              Software Design                                %
-%                                   Cristy                                    %
+%                                  Cristy                                     %
 %                               December 2003                                 %
 %                                                                             %
 %                                                                             %
