@@ -690,6 +690,7 @@ MagickExport unsigned char *DetachBlob(BlobInfo *blob_info)
   if (blob_info->mapped != MagickFalse)
     {
       (void) UnmapBlob(blob_info->data,blob_info->length);
+      blob_info->data=(unsigned char *) NULL;
       RelinquishMagickResource(MapResource,blob_info->length);
     }
   blob_info->mapped=MagickFalse;
@@ -1162,6 +1163,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename)
   blob=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*blob));
   if (blob == (unsigned char *) NULL)
     {
+      file=close(file);
       ThrowFileException(&image->exception,ResourceLimitError,
         "MemoryAllocationFailed",filename);
       return(MagickFalse);
@@ -1705,6 +1707,8 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   if ((file == -1) || (i < length))
     {
+      if (file == -1)
+        file=close(file);
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
       return(MagickFalse);
     }

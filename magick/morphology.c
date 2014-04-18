@@ -3864,7 +3864,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
     changed;        /* number pixels changed by last primitive operation */
 
   char
-    v_info[80];
+    v_info[MaxTextExtent];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
