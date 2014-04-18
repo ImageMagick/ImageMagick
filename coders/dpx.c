@@ -1742,36 +1742,36 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Write film header.
   */
-  *dpx.film.id='\0';
+  (void) ResetMagickMemory(dpx.film.id,0,sizeof(dpx.film.id));
   value=GetImageArtifact(image,"dpx:film.id");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.id,value,sizeof(dpx.film.id));
   offset+=WriteBlob(image,sizeof(dpx.film.id),(unsigned char *) dpx.film.id);
-  *dpx.film.type='\0';
+  (void) ResetMagickMemory(dpx.film.type,0,sizeof(dpx.film.type));
   value=GetImageArtifact(image,"dpx:film.type");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.type,value,sizeof(dpx.film.type));
   offset+=WriteBlob(image,sizeof(dpx.film.type),(unsigned char *)
     dpx.film.type);
-  *dpx.film.offset='\0';
+  (void) ResetMagickMemory(dpx.film.offset,0,sizeof(dpx.film.offset));
   value=GetImageArtifact(image,"dpx:film.offset");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.offset,value,sizeof(dpx.film.offset));
   offset+=WriteBlob(image,sizeof(dpx.film.offset),(unsigned char *)
     dpx.film.offset);
-  *dpx.film.prefix='\0';
+  (void) ResetMagickMemory(dpx.film.prefix,0,sizeof(dpx.film.prefix));
   value=GetImageArtifact(image,"dpx:film.prefix");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.prefix,value,sizeof(dpx.film.prefix));
   offset+=WriteBlob(image,sizeof(dpx.film.prefix),(unsigned char *)
     dpx.film.prefix);
-  *dpx.film.count='\0';
+  (void) ResetMagickMemory(dpx.film.count,0,sizeof(dpx.film.count));
   value=GetImageArtifact(image,"dpx:film.count");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.count,value,sizeof(dpx.film.count));
   offset+=WriteBlob(image,sizeof(dpx.film.count),(unsigned char *)
     dpx.film.count);
-  *dpx.film.format='\0';
+  (void) ResetMagickMemory(dpx.film.format,0,sizeof(dpx.film.format));
   value=GetImageArtifact(image,"dpx:film.format");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.format,value,sizeof(dpx.film.format));
@@ -1802,7 +1802,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   if (value != (const char *) NULL)
     dpx.film.shutter_angle=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.film.shutter_angle);
-  *dpx.film.frame_id='\0';
+  (void) ResetMagickMemory(dpx.film.frame_id,0,sizeof(dpx.film.frame_id));
   value=GetImageArtifact(image,"dpx:film.frame_id");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.frame_id,value,sizeof(dpx.film.frame_id));
