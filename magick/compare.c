@@ -13,7 +13,7 @@
 %                      MagickCore Image Comparison Methods                    %
 %                                                                             %
 %                              Software Design                                %
-%                                   Cristy                                    %
+%                                  Cristy                                     %
 %                               December 2003                                 %
 %                                                                             %
 %                                                                             %
@@ -1070,10 +1070,9 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
           (image->colorspace == CMYKColorspace) &&
           (reconstruct_image->colorspace == CMYKColorspace))
         distortion[BlackChannel]+=area*QuantumScale*(Sa*
-          GetPixelIndex(indexes+x)-
-          image_statistics[OpacityChannel].mean)*(Da*
+          GetPixelIndex(indexes+x)-image_statistics[BlackChannel].mean)*(Da*
           GetPixelIndex(reconstruct_indexes+x)-
-          reconstruct_statistics[OpacityChannel].mean);
+          reconstruct_statistics[BlackChannel].mean);
       p++;
       q++;
     }
