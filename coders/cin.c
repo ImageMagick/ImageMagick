@@ -605,6 +605,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     cin.origination.model);
   (void) SetImageProperty(image,"dpx:origination.model",cin.origination.model,
     exception);
+  (void) ResetMagickMemory(cin.origination.serial,0, 
+    sizeof(cin.origination.serial));
   offset+=ReadBlob(image,sizeof(cin.origination.serial),(unsigned char *)
     cin.origination.serial);
   (void) SetImageProperty(image,"dpx:origination.serial",

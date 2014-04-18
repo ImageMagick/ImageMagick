@@ -228,6 +228,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,24,(unsigned char *) rla_info.white_point);
   rla_info.job_number=(int) ReadBlobMSBLong(image);
   count=ReadBlob(image,128,(unsigned char *) rla_info.name);
+  (void) ResetMagickMemory(value,0,sizeof(rla_info.description));
   count=ReadBlob(image,128,(unsigned char *) rla_info.description);
   count=ReadBlob(image,64,(unsigned char *) rla_info.program);
   count=ReadBlob(image,32,(unsigned char *) rla_info.machine);

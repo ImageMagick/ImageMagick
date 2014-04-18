@@ -3566,7 +3566,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (tag == 0xFFFEE0DD)
           break; /* sequence delimiter tag */
         if (tag != 0xFFFEE000)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          {
+            (void) fclose(file);
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          }
         for ( ; length != 0; length--)
         {
           c=ReadBlobByte(image);
