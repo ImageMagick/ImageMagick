@@ -911,13 +911,13 @@ MagickExport void DistributePixelCacheServer(const int port,
       sizeof(one));
     if (status == -1)
       {
-        (void) close(status);
+        (void) close(server_socket);
         continue;
       }
     status=bind(server_socket,p->ai_addr,p->ai_addrlen);
     if (status == -1)
       {
-        (void) close(status);
+        (void) close(server_socket);
         continue;
       }
     break;
