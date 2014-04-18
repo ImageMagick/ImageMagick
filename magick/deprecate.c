@@ -3698,7 +3698,10 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       }
       delta.x=x-floor(x);
       for (i=0; i < 4L; i++)
+      {
+        pixels[4*i].colorspace=image->colorspace;
         BicubicInterpolate(pixels+4*i,delta.x,u+i);
+      }
       delta.y=y-floor(y);
       BicubicInterpolate(u,delta.y,&pixel);
       break;

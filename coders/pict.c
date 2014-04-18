@@ -1394,6 +1394,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           (void) fputc(c,file);
         }
         (void) fclose(file);
+        (void) close(unique_file);
         tile_image=ReadImage(read_info,exception);
         (void) RelinquishUniqueFileResource(read_info->filename);
         read_info=DestroyImageInfo(read_info);

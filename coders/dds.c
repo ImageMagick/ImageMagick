@@ -1116,6 +1116,11 @@ static void CompressClusterFit(const size_t count,
   gridrcp.z = 1.0f/31.0f;
   gridrcp.w = 0.0f;
 
+  xSumwSum.x = 0.0f;
+  xSumwSum.y = 0.0f;
+  xSumwSum.z = 0.0f;
+  xSumwSum.w = 0.0f;
+
   ConstructOrdering(count,points,principle,pointsWeights,&xSumwSum,order,0);
 
   for (iterationIndex = 0;;)
@@ -2647,6 +2652,9 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
 static void WriteDDSInfo(Image *image, const size_t pixelFormat,
   const size_t compression, const size_t mipmaps)
 {
+  char
+    software[MaxTextExtent];
+
   register ssize_t
     i;
 
@@ -2684,7 +2692,9 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
 
   (void) WriteBlobLSBLong(image,0x00);
   (void) WriteBlobLSBLong(image,(unsigned int) mipmaps+1);
-  (void) WriteBlob(image,44,(unsigned char *) "IMAGEMAGICK");
+  (void) ResetMagickMemory(software,0,sizeof(software));
+  (void) strcpy(software,"IMAGEMAGICK");
+  (void) WriteBlob(image,44,(unsigned char *) software);
 
   (void) WriteBlobLSBLong(image,32);
   (void) WriteBlobLSBLong(image,format);

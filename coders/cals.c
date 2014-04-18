@@ -435,7 +435,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   Image *image)
 {
   char
-    header[129];
+    header[MaxTextExtent];
 
   Image
     *group4_image;
@@ -530,6 +530,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
     default:
     {
       orient_y=270;
+      break;
     }
   }
   (void) FormatLocaleString(header,MaxTextExtent,"rorient: %03ld,%03ld",

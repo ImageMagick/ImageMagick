@@ -4281,8 +4281,8 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
   x_offset=(ssize_t) floor(x);
   y_offset=(ssize_t) floor(y);
   interpolate = method;
-  if ( interpolate == UndefinedInterpolatePixel )
-    interpolate = image->interpolate;
+  if (interpolate == UndefinedInterpolatePixel)
+    interpolate=image->interpolate;
   switch (interpolate)
   {
     case AverageInterpolatePixel:        /* nearest 4 neighbours */
@@ -4561,7 +4561,10 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         }
       indexes=GetCacheViewVirtualIndexQueue(image_view);
       for (i=0; i < 4L; i++)
+      {
+        pixels[i].colorspace=image->colorspace;
         AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels+i,alpha+i);
+      }
       delta.x=x-x_offset;
       delta.y=y-y_offset;
       luma.x=fabs(MagickPixelLuma(pixels+0)-MagickPixelLuma(pixels+3));
