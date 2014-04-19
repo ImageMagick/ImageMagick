@@ -421,6 +421,8 @@ static const OptionInfo
     { "-help", 0L, SpecialOperatorOptionFlag, MagickFalse },
     { "+highlight-color", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-highlight-color", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+hough-lines", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-hough-lines", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+iconGeometry", 0L, NonConvertOptionFlag, MagickFalse },
     { "-iconGeometry", 1L, NonConvertOptionFlag, MagickFalse },
     { "+iconic", 0L, NonConvertOptionFlag, MagickFalse },
