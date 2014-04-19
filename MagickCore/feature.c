@@ -583,7 +583,6 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
 {
   return((Image *) NULL);
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
