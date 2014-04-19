@@ -547,6 +547,9 @@ static struct
     { "CannyEdge", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
       {"lower-percent", RealReference}, {"upper-percent", RealReference} } },
+    { "HoughLines", { {"geometry", StringReference},
+      {"width", IntegerReference}, {"height", IntegerReference},
+      {"threshold", IntegerReference} } },
   };
 
 static SplayTreeInfo
@@ -7530,6 +7533,8 @@ Mogrify(ref,...)
     GrayscaleImage     = 276
     CannyEdge          = 278
     CannyEdgeImage     = 279
+    HoughLines         = 280
+    HoughLinesImage    = 281
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11130,6 +11135,25 @@ Mogrify(ref,...)
             geometry_info.xi,geometry_info.psi,exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
+          break;
+        }
+        case 139:  /* HoughLines */
+        {
+          if (attribute_flag[0] != 0)
+            {
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry_info);
+              if ((flags & SigmaValue) == 0)
+                geometry_info.sigma=geometry_info.rho;
+            }
+          if (attribute_flag[1] != 0)
+            geometry_info.rho=(double) argument_list[1].integer_reference;
+          if (attribute_flag[2] != 0)
+            geometry_info.sigma=(double) argument_list[2].integer_reference;
+          if (attribute_flag[3] != 0)
+            geometry_info.xi=(double) argument_list[3].integer_reference;
+          image=HoughLinesImage(image,(size_t) geometry_info.rho,(size_t)
+            geometry_info.sigma,(size_t) geometry_info.xi,exception);
           break;
         }
       }

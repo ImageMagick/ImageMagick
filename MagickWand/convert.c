@@ -1733,6 +1733,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if ((LocaleCompare("help",option+1) == 0) ||
             (LocaleCompare("-help",option+1) == 0))
           return(ConvertUsage());
+        if (LocaleCompare("hough-lines",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
       case 'i':
