@@ -445,6 +445,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       switch (pixel.orientation)
       {
         case 0:
+        default:
         {
           /*
             0 degrees, north and south.
