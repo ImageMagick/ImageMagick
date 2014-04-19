@@ -560,17 +560,17 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     H o u g h T r a n s f o r m I m a g e                                   %
+%     H o u g h L i n e s I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  HoughTransformImage() detects lines in an image.
+%  HoughLinesImage() identifies lines in the image.
 %
-%  The format of the HoughTransformImage method is:
+%  The format of the HoughLinesImage method is:
 %
-%      Image *HoughTransformImage(const Image *image,const size_t width,
+%      Image *HoughLinesImage(const Image *image,const size_t width,
 %        const size_t height,const size_t threshold,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -584,7 +584,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *HoughTransformImage(const Image *image,const size_t width,
+MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
   const size_t height,const size_t threshold,ExceptionInfo *exception)
 {
   CacheView
@@ -614,6 +614,7 @@ MagickExport Image *HoughTransformImage(const Image *image,const size_t width,
   size_t
     accumulator_height,
     accumulator_width,
+    line_count,
     n,
     number_segments;
 
@@ -710,6 +711,9 @@ MagickExport Image *HoughTransformImage(const Image *image,const size_t width,
   /*
     Generate segments from accumulator.
   */
+  line_count=image->columns > image->rows ? image->columns/4 : image->rows/4;
+  if (threshold != 0)
+    line_count=threshold;
   n=0;
   for (y=0; y < (ssize_t) accumulator_height; y++)
   {
@@ -722,7 +726,7 @@ MagickExport Image *HoughTransformImage(const Image *image,const size_t width,
         count;
 
       (void) GetMatrixElement(accumulator,x,y,&count);
-      if (count >= threshold)
+      if (count >= line_count)
         {
           size_t
             maxima;
