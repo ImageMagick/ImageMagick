@@ -69,8 +69,6 @@ extern MagickExport Image
   *BlurImage(const Image *,const double,const double,ExceptionInfo *),
   *BlurImageChannel(const Image *,const ChannelType,const double,const double,
     ExceptionInfo *),
-  *CannyEdgeImage(const Image *,const double,const double,const double,
-    const double,ExceptionInfo *),
   *ConvolveImage(const Image *,const size_t,const double *,ExceptionInfo *),
   *ConvolveImageChannel(const Image *,const ChannelType,const size_t,
     const double *,ExceptionInfo *),
