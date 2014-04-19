@@ -70,10 +70,12 @@
 #include "magick/image-private.h"
 #include "magick/magic.h"
 #include "magick/magick.h"
+#include "magick/matrix.h"
 #include "magick/memory_.h"
 #include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/morphology-private.h"
 #include "magick/option.h"
 #include "magick/paint.h"
 #include "magick/pixel-private.h"
@@ -89,6 +91,732 @@
 #include "magick/timer.h"
 #include "magick/utility.h"
 #include "magick/version.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     C a n n y E d g e I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CannyEdgeImage() uses a multi-stage algorithm to detect a wide range of
+%  edges in images.
+%
+%  The format of the EdgeImage method is:
+%
+%      Image *CannyEdgeImage(const Image *image,const double radius,
+%        const double sigma,const double lower_percent,
+%        const double upper_percent,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o radius: the radius of the gaussian smoothing filter.
+%
+%    o sigma: the sigma of the gaussian smoothing filter.
+%
+%    o lower_percent: percentage of edge pixels in the lower threshold.
+%
+%    o upper_percent: percentage of edge pixels in the upper threshold.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+typedef struct _CannyInfo
+{
+  double
+    magnitude,
+    intensity;
+
+  int
+    orientation;
+
+  ssize_t
+    x,
+    y;
+} CannyInfo;
+
+static inline MagickBooleanType IsAuthenticPixel(const Image *image,
+  const ssize_t x,const ssize_t y)
+{
+  if ((x < 0) || (x >= (ssize_t) image->columns))
+    return(MagickFalse);
+  if ((y < 0) || (y >= (ssize_t) image->rows))
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
+static MagickBooleanType TraceEdges(Image *edge_image,CacheView *edge_view,
+  MatrixInfo *canny_cache,const ssize_t x,const ssize_t y,
+  const double lower_threshold,ExceptionInfo *exception)
+{
+  CannyInfo
+    edge,
+    pixel;
+
+  MagickBooleanType
+    status;
+
+  register PixelPacket
+    *q;
+
+  register ssize_t
+    i;
+
+  q=GetCacheViewAuthenticPixels(edge_view,x,y,1,1,exception);
+  if (q == (PixelPacket *) NULL)
+    return(MagickFalse);
+  q->red=QuantumRange;
+  q->green=QuantumRange;
+  q->blue=QuantumRange;
+  status=SyncCacheViewAuthenticPixels(edge_view,exception);
+  if (status == MagickFalse)
+    return(MagickFalse);
+  if (GetMatrixElement(canny_cache,0,0,&edge) == MagickFalse)
+    return(MagickFalse);
+  edge.x=x;
+  edge.y=y;
+  if (SetMatrixElement(canny_cache,0,0,&edge) == MagickFalse)
+    return(MagickFalse);
+  for (i=1; i != 0; )
+  {
+    ssize_t
+      v;
+
+    i--;
+    status=GetMatrixElement(canny_cache,i,0,&edge);
+    if (status == MagickFalse)
+      return(MagickFalse);
+    for (v=(-1); v <= 1; v++)
+    {
+      ssize_t
+        u;
+
+      for (u=(-1); u <= 1; u++)
+      {
+        if ((u == 0) && (v == 0))
+          continue;
+        if (IsAuthenticPixel(edge_image,edge.x+u,edge.y+v) == MagickFalse)
+          continue;
+        /*
+          Not an edge if gradient value is below the lower threshold.
+        */
+        q=GetCacheViewAuthenticPixels(edge_view,edge.x+u,edge.y+v,1,1,
+          exception);
+        if (q == (PixelPacket *) NULL)
+          return(MagickFalse);
+        status=GetMatrixElement(canny_cache,edge.x+u,edge.y+v,&pixel);
+        if (status == MagickFalse)
+          return(MagickFalse);
+        if ((GetPixelIntensity(edge_image,q) == 0.0) &&
+            (pixel.intensity >= lower_threshold))
+          {
+            q->red=QuantumRange;
+            q->green=QuantumRange;
+            q->blue=QuantumRange;
+            status=SyncCacheViewAuthenticPixels(edge_view,exception);
+            if (status == MagickFalse)
+              return(MagickFalse);
+            edge.x+=u;
+            edge.y+=v;
+            status=SetMatrixElement(canny_cache,i,0,&edge);
+            if (status == MagickFalse)
+              return(MagickFalse);
+            i++;
+          }
+      }
+    }
+  }
+  return(MagickTrue);
+}
+
+MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
+  const double sigma,const double lower_percent,const double upper_percent,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *edge_view;
+
+  CannyInfo
+    pixel;
+
+  char
+    geometry[MaxTextExtent];
+
+  double
+    lower_threshold,
+    max,
+    min,
+    upper_threshold;
+
+  Image
+    *edge_image;
+
+  KernelInfo
+    *kernel_info;
+
+  MagickBooleanType
+    status;
+
+  MatrixInfo
+    *canny_cache;
+
+  ssize_t
+    y;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  /*
+    Filter out noise.
+  */
+  (void) FormatLocaleString(geometry,MaxTextExtent,
+    "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  edge_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
+    kernel_info,UndefinedCompositeOp,0.0,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  if (edge_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageColorspace(edge_image,GRAYColorspace) == MagickFalse)
+    {
+      edge_image=DestroyImage(edge_image);
+      return((Image *) NULL);
+    }
+  /*
+    Find the intensity gradient of the image.
+  */
+  canny_cache=AcquireMatrixInfo(edge_image->columns,edge_image->rows,
+    sizeof(CannyInfo),exception);
+  if (canny_cache == (MatrixInfo *) NULL)
+    {
+      edge_image=DestroyImage(edge_image);
+      return((Image *) NULL);
+    }
+  status=MagickTrue;
+  edge_view=AcquireVirtualCacheView(edge_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(edge_image,edge_image,edge_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) edge_image->rows; y++)
+  {
+    register const PixelPacket
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(edge_view,0,y,edge_image->columns+1,2,
+      exception);
+    if (p == (const PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) edge_image->columns; x++)
+    {
+      CannyInfo
+        pixel;
+
+      double
+        dx,
+        dy;
+
+      register const PixelPacket
+        *restrict kernel_pixels;
+
+      ssize_t
+        v;
+
+      static double
+        Gx[2][2] =
+        {
+          { -1.0,  +1.0 },
+          { -1.0,  +1.0 }
+        },
+        Gy[2][2] =
+        {
+          { +1.0, +1.0 },
+          { -1.0, -1.0 }
+        };
+
+      (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+      dx=0.0;
+      dy=0.0;
+      kernel_pixels=p;
+      for (v=0; v < 2; v++)
+      {
+        ssize_t
+          u;
+
+        for (u=0; u < 2; u++)
+        {
+          double
+            intensity;
+
+          intensity=GetPixelIntensity(edge_image,kernel_pixels+u);
+          dx+=0.5*Gx[v][u]*intensity;
+          dy+=0.5*Gy[v][u]*intensity;
+        }
+        kernel_pixels+=edge_image->columns+1;
+      }
+      pixel.magnitude=hypot(dx,dy);
+      pixel.orientation=0;
+      if (fabs(dx) > MagickEpsilon)
+        {
+          double
+            slope;
+
+          slope=dy/dx;
+          if (slope < 0.0)
+            {
+              if (slope < -2.41421356237)
+                pixel.orientation=0;
+              else
+                if (slope < -0.414213562373)
+                  pixel.orientation=1;
+                else
+                  pixel.orientation=2;
+            }
+          else
+            {
+              if (slope > 2.41421356237)
+                pixel.orientation=0;
+              else
+                if (slope > 0.414213562373)
+                  pixel.orientation=3;
+                else
+                  pixel.orientation=2;
+            }
+        }
+      if (SetMatrixElement(canny_cache,x,y,&pixel) == MagickFalse)
+        continue;
+      p++;
+    }
+  }
+  edge_view=DestroyCacheView(edge_view);
+  /*
+    Non-maxima suppression, remove pixels that are not considered to be part
+    of an edge.
+  */
+  (void) GetMatrixElement(canny_cache,0,0,&pixel);
+  max=pixel.intensity;
+  min=pixel.intensity;
+  edge_view=AcquireAuthenticCacheView(edge_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(edge_image,edge_image,edge_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) edge_image->rows; y++)
+  {
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(edge_view,0,y,edge_image->columns,1,
+      exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) edge_image->columns; x++)
+    {
+      CannyInfo
+        alpha_pixel,
+        beta_pixel,
+        pixel;
+
+      (void) GetMatrixElement(canny_cache,x,y,&pixel);
+      switch (pixel.orientation)
+      {
+        case 0:
+        {
+          /*
+            0 degrees, north and south.
+          */
+          (void) GetMatrixElement(canny_cache,x,y-1,&alpha_pixel);
+          (void) GetMatrixElement(canny_cache,x,y+1,&beta_pixel);
+          break;
+        }
+        case 1:
+        {
+          /*
+            45 degrees, northwest and southeast.
+          */
+          (void) GetMatrixElement(canny_cache,x-1,y-1,&alpha_pixel);
+          (void) GetMatrixElement(canny_cache,x+1,y+1,&beta_pixel);
+          break;
+        }
+        case 2:
+        {
+          /*
+            90 degrees, east and west.
+          */
+          (void) GetMatrixElement(canny_cache,x-1,y,&alpha_pixel);
+          (void) GetMatrixElement(canny_cache,x+1,y,&beta_pixel);
+          break;
+        }
+        case 3:
+        {
+          /*
+            135 degrees, northeast and southwest.
+          */
+          (void) GetMatrixElement(canny_cache,x+1,y-1,&beta_pixel);
+          (void) GetMatrixElement(canny_cache,x-1,y+1,&alpha_pixel);
+          break;
+        }
+      }
+      pixel.intensity=pixel.magnitude;
+      if ((pixel.magnitude < alpha_pixel.magnitude) ||
+          (pixel.magnitude < beta_pixel.magnitude))
+        pixel.intensity=0;
+      (void) SetMatrixElement(canny_cache,x,y,&pixel);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp critical (MagickCore_CannyEdgeImage)
+#endif
+      {
+        if (pixel.intensity < min)
+          min=pixel.intensity;
+        if (pixel.intensity > max)
+          max=pixel.intensity;
+      }
+      q->red=0;
+      q->green=0;
+      q->blue=0;
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  edge_view=DestroyCacheView(edge_view);
+  /*
+    Estimate hysteresis threshold.
+  */
+  lower_threshold=lower_percent*(max-min)+min;
+  upper_threshold=upper_percent*(max-min)+min;
+  /*
+    Hysteresis threshold.
+  */
+  edge_view=AcquireAuthenticCacheView(edge_image,exception);
+  for (y=0; y < (ssize_t) edge_image->rows; y++)
+  {
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    for (x=0; x < (ssize_t) edge_image->columns; x++)
+    {
+      CannyInfo
+        pixel;
+
+      register const PixelPacket
+        *restrict p;
+
+      /*
+        Edge if pixel gradient higher than upper threshold.
+      */
+      p=GetCacheViewVirtualPixels(edge_view,x,y,1,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        continue;
+      status=GetMatrixElement(canny_cache,x,y,&pixel);
+      if (status == MagickFalse)
+        continue;
+      if ((GetPixelIntensity(edge_image,p) == 0.0) &&
+          (pixel.intensity >= upper_threshold))
+        status=TraceEdges(edge_image,edge_view,canny_cache,x,y,lower_threshold,
+          exception);
+    }
+  }
+  edge_view=DestroyCacheView(edge_view);
+  /*
+    Free resources.
+  */
+  canny_cache=DestroyMatrixInfo(canny_cache);
+  return(edge_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     H o u g h T r a n s f o r m I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  HoughTransformImage() detects lines in an image.
+%
+%  The format of the HoughTransformImage method is:
+%
+%      Image *HoughTransformImage(const Image *image,const size_t width,
+%        const size_t height,const size_t threshold,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o width, height: find line pairs as local maxima in this neighborhood.
+%
+%    o threshold: the line count threshold.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *HoughTransformImage(const Image *image,const size_t width,
+  const size_t height,const size_t threshold,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  double
+    hough_height;
+
+  Image
+    *transform_image = NULL;
+
+  MagickBooleanType
+    status;
+
+  MatrixInfo
+    *accumulator;
+
+  PointInfo
+    center;
+
+  SegmentInfo
+    *segments;
+
+  register ssize_t
+    y;
+
+  size_t
+    accumulator_height,
+    accumulator_width,
+    n,
+    number_segments;
+
+  /*
+    Create the accumulator.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  accumulator_width=180;
+  hough_height=((sqrt(2.0)*(double) (image->rows > image->columns ?
+    image->rows : image->columns))/2.0);
+  accumulator_height=(size_t) (2.0*hough_height);
+  accumulator=AcquireMatrixInfo(accumulator_width,accumulator_height,
+    sizeof(size_t),exception);
+  number_segments=accumulator_height;
+  segments=(SegmentInfo *) AcquireQuantumMemory(number_segments,
+    sizeof(*segments));
+  if ((accumulator == (MatrixInfo *) NULL) ||
+      (segments == (SegmentInfo *) NULL))
+    {
+      if (accumulator != (MatrixInfo *) NULL)
+        accumulator=DestroyMatrixInfo(accumulator);
+      if (segments != (SegmentInfo *) NULL)
+        segments=(SegmentInfo *) RelinquishMagickMemory(segments);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  if (NullMatrix(accumulator) == MagickFalse)
+    {
+      accumulator=DestroyMatrixInfo(accumulator);
+      segments=(SegmentInfo *) RelinquishMagickMemory(segments);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  /*
+    Populate the accumulator.
+  */
+  status=MagickTrue;
+  center.x=image->columns/2.0;
+  center.y=image->rows/2.0;
+  image_view=AcquireVirtualCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const PixelPacket
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if (GetPixelIntensity(image,p) > (QuantumRange/2))
+        {
+          register ssize_t
+            i;
+
+          for (i=0; i < 180; i++)
+          {
+            double
+              radius;
+
+            size_t
+              count;
+
+            radius=(((double) x-center.x)*cos(DegreesToRadians((double) i)))+
+              (((double) y-center.y)*sin(DegreesToRadians((double) i)));
+            (void) GetMatrixElement(accumulator,i,(ssize_t)
+              round(radius+hough_height),&count);
+            count++;
+            (void) SetMatrixElement(accumulator,i,(ssize_t)
+              round(radius+hough_height),&count);
+          }
+        }
+      p++;
+    }
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    {
+      segments=(SegmentInfo *) RelinquishMagickMemory(segments);
+      accumulator=DestroyMatrixInfo(accumulator);
+      return((Image *) NULL);
+    }
+  /*
+    Generate segments from accumulator.
+  */
+  n=0;
+  for (y=0; y < (ssize_t) accumulator_height; y++)
+  {
+    register ssize_t
+      x;
+
+    for (x=0; x < (ssize_t) accumulator_width; x++)
+    {
+      size_t
+        count;
+
+      (void) GetMatrixElement(accumulator,x,y,&count);
+      if (count >= threshold)
+        {
+          size_t
+            maxima;
+
+          ssize_t
+            v;
+
+          /*
+            Is point a local maxima?
+          */
+          maxima=count;
+          for (v=((ssize_t) -(height/2)); v < ((ssize_t) (height/2)); v++)
+          {
+            ssize_t
+              u;
+
+            for (u=((ssize_t) -(width/2)); u < ((ssize_t) (width/2)); u++)
+            {
+              if ((u != 0) || (v !=0))
+                {
+                  (void) GetMatrixElement(accumulator,x+u,y+v,&count);
+                  if (count > maxima)
+                    {
+                      maxima=count;
+                      break;
+                    }
+                }
+            }
+            if (u < (ssize_t) (width/2))
+              break;
+          }
+          (void) GetMatrixElement(accumulator,x,y,&count);
+          if (maxima > count)
+            continue;
+          if (n >= number_segments)
+            {
+              number_segments<<=1;
+              segments=(SegmentInfo *) ResizeMagickMemory(segments,
+                number_segments*sizeof(*segments));
+              if (segments == (SegmentInfo *) NULL)
+                break;
+            }
+          if ((x >= 45) && (x <= 135))
+            {
+              /*
+                y = (r-x cos(t))/sin(t)
+              */
+              segments[n].x1=0.0;
+              segments[n].y1=((double) (y-(accumulator_height/2))-((
+                segments[n].x1-(image->columns/2))*cos(DegreesToRadians((double)
+                x))))/sin(DegreesToRadians((double) x))+(image->rows/2);
+              segments[n].x2=(double) image->columns;
+              segments[n].y2=((double) (y-(accumulator_height/2))-((
+                segments[n].x2-(image->columns/2))*cos(DegreesToRadians((double)
+                x))))/sin(DegreesToRadians((double) x))+(image->rows/2);
+            }
+          else
+            {
+              /*
+                x = (r-y cos(t))/sin(t)
+              */
+              segments[n].y1=0.0;
+              segments[n].x1=((double) (y-(accumulator_height/2))-((
+                segments[n].y1-(image->rows/2))*sin(DegreesToRadians((double)
+                x))))/cos(DegreesToRadians((double) x))+(image->columns/2);
+              segments[n].y2=(double) image->rows;
+              segments[n].x2=((double) (y-(accumulator_height/2))-((
+                segments[n].y2-(image->rows/2))*sin(DegreesToRadians((double)
+                x))))/cos(DegreesToRadians((double) x))+(image->columns/2);
+            }
+          n++;
+        }
+    }
+    if (segments == (SegmentInfo *) NULL)
+      break;
+  }
+  if (segments == (SegmentInfo *) NULL)
+    return((Image *) NULL);
+  number_segments=n;
+  segments=(SegmentInfo *) ResizeMagickMemory(segments,number_segments*
+    sizeof(*segments));
+  if (segments == (SegmentInfo *) NULL)
+    return((Image *) NULL);
+  /*
+    Free resources.
+  */
+  segments=(SegmentInfo *) RelinquishMagickMemory(segments);
+  accumulator=DestroyMatrixInfo(accumulator);
+  transform_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (transform_image != (Image *) NULL)
+    return(transform_image);
+  return(transform_image);
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

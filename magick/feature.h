@@ -47,6 +47,12 @@ typedef struct _ChannelFeatures
 extern MagickExport ChannelFeatures
   *GetImageChannelFeatures(const Image *,const size_t,ExceptionInfo *);
 
+extern MagickExport Image
+  *CannyEdgeImage(const Image *,const double,const double,const double,
+    const double,ExceptionInfo *),
+  *HoughTransformImage(const Image *,const size_t,const size_t,const size_t,
+    ExceptionInfo *);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
