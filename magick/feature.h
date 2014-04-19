@@ -50,7 +50,7 @@ extern MagickExport ChannelFeatures
 extern MagickExport Image
   *CannyEdgeImage(const Image *,const double,const double,const double,
     const double,ExceptionInfo *),
-  *HoughTransformImage(const Image *,const size_t,const size_t,const size_t,
+  *HoughLinesImage(const Image *,const size_t,const size_t,const size_t,
     ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

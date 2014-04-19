@@ -1817,6 +1817,18 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SetImageArtifact(*image,option+1,argv[i+1]);
             break;
           }
+        if (LocaleCompare("hough-lines",option+1) == 0)
+          {
+            /*
+              Identify lines in the image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=geometry_info.rho;
+            mogrify_image=HoughLinesImage(*image,(size_t) geometry_info.rho,              (size_t) geometry_info.sigma,(size_t) geometry_info.xi,exception);
+            break;
+          }
         break;
       }
       case 'i':
@@ -4088,6 +4100,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               break;
             i++;
             if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("canny",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
