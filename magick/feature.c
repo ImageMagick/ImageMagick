@@ -584,6 +584,17 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline double MagickRound(double x)
+{
+  /*
+    Round the fraction to nearest integer.
+  */
+  if ((x-floor(x)) < (ceil(x)-x))
+    return(floor(x));
+  return(ceil(x));
+}
+
 MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
   const size_t height,const size_t threshold,ExceptionInfo *exception)
 {
