@@ -692,10 +692,10 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
             radius=(((double) x-center.x)*cos(DegreesToRadians((double) i)))+
               (((double) y-center.y)*sin(DegreesToRadians((double) i)));
             (void) GetMatrixElement(accumulator,i,(ssize_t)
-              round(radius+hough_height),&count);
+              MagickRound(radius+hough_height),&count);
             count++;
             (void) SetMatrixElement(accumulator,i,(ssize_t)
-              round(radius+hough_height),&count);
+              MagickRound(radius+hough_height),&count);
           }
         }
       p++;
