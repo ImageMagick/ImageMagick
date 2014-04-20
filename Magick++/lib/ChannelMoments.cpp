@@ -10,6 +10,7 @@
 
 #include "Magick++/Include.h"
 #include "Magick++/ChannelMoments.h"
+#include "Magick++/Exception.h"
 
 using namespace std;
 
@@ -98,7 +99,7 @@ double Magick::ChannelMoments::ellipseIntensity(void) const
 double Magick::ChannelMoments::huInvariants(const size_t index_) const
 {
   if (index_ > 7)
-    throw std::out_of_range("Valid range for index is 0-7");
+    throw ErrorOption("Valid range for index is 0-7");
 
   return(_huInvariants.at(index_));
 }
