@@ -74,6 +74,7 @@ MAGICKPP_CLEANFILES = \
 Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = \
 	Magick++/lib/Blob.cpp \
 	Magick++/lib/BlobRef.cpp \
+	Magick++/lib/ChannelMoments.cpp \
 	Magick++/lib/CoderInfo.cpp \
 	Magick++/lib/Color.cpp \
 	Magick++/lib/Drawable.cpp \
@@ -92,6 +93,7 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 	Magick++/lib/Magick++.h \
 	Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/BlobRef.h \
+	Magick++/lib/Magick++/ChannelMoments.h \
 	Magick++/lib/Magick++/CoderInfo.h \
 	Magick++/lib/Magick++/Color.h \
 	Magick++/lib/Magick++/Drawable.h \
@@ -121,6 +123,7 @@ magickppinc_HEADERS = $(MAGICKPP_INCHEADERS)
 
 MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Blob.h \
+	Magick++/lib/Magick++/ChannelMoments.h \
 	Magick++/lib/Magick++/CoderInfo.h \
 	Magick++/lib/Magick++/Color.h \
 	Magick++/lib/Magick++/Drawable.h \

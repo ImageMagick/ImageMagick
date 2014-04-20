@@ -1211,6 +1211,7 @@ namespace Magick
   using MagickCore::GetImageDistortion;
   using MagickCore::GetImageInfo;
   using MagickCore::GetImageInfoFile;
+  using MagickCore::GetImageChannelMoments;
   using MagickCore::GetImageOption;
   using MagickCore::GetAuthenticPixels;
   using MagickCore::GetImageProfile;

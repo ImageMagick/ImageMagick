@@ -3279,6 +3279,26 @@ void Magick::Image::modulate(const double brightness_,const double saturation_,
   throwImageException();
 }
 
+Magick::ChannelMoments Magick::Image::moments(void)
+{
+  ChannelMoments
+    channelMoments;
+
+  MagickCore::ChannelMoments*
+    channel_moments;
+
+  GetPPException;
+  channel_moments=GetImageChannelMoments(constImage(),&exceptionInfo);
+  if (channel_moments != (MagickCore::ChannelMoments *) NULL)
+    {
+      channelMoments=ChannelMoments(channel_moments);
+      channel_moments=(MagickCore::ChannelMoments *) RelinquishMagickMemory(
+        channel_moments);
+    }
+  ThrowPPException;
+  return(channelMoments);
+}
+
 void Magick::Image::morphology(const MorphologyMethod method_,
   const std::string kernel_,const ssize_t iterations_)
 {
