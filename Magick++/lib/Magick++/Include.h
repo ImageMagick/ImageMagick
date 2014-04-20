@@ -1214,6 +1214,7 @@ namespace Magick
   using MagickCore::GetExceptionInfo;
   using MagickCore::GetGeometry;
   using MagickCore::GetImageArtifact;
+  using MagickCore::GetImageMoments;
   using MagickCore::GetImageBoundingBox;
   using MagickCore::GetImageDistortion;
   using MagickCore::GetImageDepth;
