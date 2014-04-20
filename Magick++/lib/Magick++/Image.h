@@ -12,6 +12,7 @@
 #include <string>
 #include <list>
 #include "Magick++/Blob.h"
+#include "Magick++/ChannelMoments.h"
 #include "Magick++/Color.h"
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"
@@ -1017,6 +1018,9 @@ namespace Magick
     // Modulate percent hue, saturation, and brightness of an image
     void modulate(const double brightness_,const double saturation_,
       const double hue_);
+
+    // Returns the normalized moments of one or more image channels.
+    ChannelMoments moments(void);
 
     // Applies a kernel to the image according to the given mophology method.
     void morphology(const MorphologyMethod method_,const std::string kernel_,
