@@ -2133,11 +2133,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
   while (isspace((int) ((unsigned char) *expression)) != 0)
     expression++;
   if (*expression == '\0')
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "MissingExpression","`%s'",expression);
-      return(0.0);
-    }
+    return(0.0);
   *subexpression='\0';
   p=FxOperatorPrecedence(expression,exception);
   if (p != (const char *) NULL)
