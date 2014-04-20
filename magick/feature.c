@@ -41,8 +41,8 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/property.h"
 #include "magick/animate.h"
+#include "magick/artifact.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
@@ -80,6 +80,7 @@
 #include "magick/paint.h"
 #include "magick/pixel-private.h"
 #include "magick/profile.h"
+#include "magick/property.h"
 #include "magick/quantize.h"
 #include "magick/random_.h"
 #include "magick/resource_.h"
@@ -602,11 +603,24 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
   CacheView
     *image_view;
 
+  char
+    message[MaxTextExtent],
+    path[MaxTextExtent];
+
+  const char
+    *artifact;
+
   double
     hough_height;
 
   Image
-    *transform_image = NULL;
+    *lines_image = NULL;
+
+  ImageInfo
+    *image_info;
+
+  int
+    file;
 
   MagickBooleanType
     status;
@@ -617,18 +631,13 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
   PointInfo
     center;
 
-  SegmentInfo
-    *segments;
-
   register ssize_t
     y;
 
   size_t
     accumulator_height,
     accumulator_width,
-    line_count,
-    n,
-    number_segments;
+    line_count;
 
   /*
     Create the accumulator.
@@ -645,30 +654,19 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
   accumulator_height=(size_t) (2.0*hough_height);
   accumulator=AcquireMatrixInfo(accumulator_width,accumulator_height,
     sizeof(size_t),exception);
-  number_segments=accumulator_height;
-  segments=(SegmentInfo *) AcquireQuantumMemory(number_segments,
-    sizeof(*segments));
-  if ((accumulator == (MatrixInfo *) NULL) ||
-      (segments == (SegmentInfo *) NULL))
-    {
-      if (accumulator != (MatrixInfo *) NULL)
-        accumulator=DestroyMatrixInfo(accumulator);
-      if (segments != (SegmentInfo *) NULL)
-        segments=(SegmentInfo *) RelinquishMagickMemory(segments);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
+  if (accumulator == (MatrixInfo *) NULL)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   if (NullMatrix(accumulator) == MagickFalse)
     {
       accumulator=DestroyMatrixInfo(accumulator);
-      segments=(SegmentInfo *) RelinquishMagickMemory(segments);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   /*
     Populate the accumulator.
   */
   status=MagickTrue;
-  center.x=image->columns/2.0;
-  center.y=image->rows/2.0;
+  center.x=(double) (image->columns/2);
+  center.y=(double) (image->rows/2);
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -716,17 +714,24 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     {
-      segments=(SegmentInfo *) RelinquishMagickMemory(segments);
       accumulator=DestroyMatrixInfo(accumulator);
       return((Image *) NULL);
     }
   /*
-    Generate segments from accumulator.
+    Generate line segments from accumulator.
   */
+  file=AcquireUniqueFileResource(path);
+  if (file == -1)
+    {
+      accumulator=DestroyMatrixInfo(accumulator);
+      return((Image *) NULL);
+    }
+  (void) sprintf(message,"viewbox 0 0 %.20g %.20g\n",(double) image->columns,
+    (double) image->rows);
+  (void) write(file,message,strlen(message));
   line_count=image->columns > image->rows ? image->columns/4 : image->rows/4;
   if (threshold != 0)
     line_count=threshold;
-  n=0;
   for (y=0; y < (ssize_t) accumulator_height; y++)
   {
     register ssize_t
@@ -740,6 +745,12 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
       (void) GetMatrixElement(accumulator,x,y,&count);
       if (count >= line_count)
         {
+          double
+            x1,
+            x2,
+            y1,
+            y2;
+
           size_t
             maxima;
 
@@ -773,66 +784,64 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
           (void) GetMatrixElement(accumulator,x,y,&count);
           if (maxima > count)
             continue;
-          if (n >= number_segments)
-            {
-              number_segments<<=1;
-              segments=(SegmentInfo *) ResizeMagickMemory(segments,
-                number_segments*sizeof(*segments));
-              if (segments == (SegmentInfo *) NULL)
-                break;
-            }
           if ((x >= 45) && (x <= 135))
             {
               /*
                 y = (r-x cos(t))/sin(t)
               */
-              segments[n].x1=0.0;
-              segments[n].y1=((double) (y-(accumulator_height/2))-((
-                segments[n].x1-(image->columns/2))*cos(DegreesToRadians((double)
-                x))))/sin(DegreesToRadians((double) x))+(image->rows/2);
-              segments[n].x2=(double) image->columns;
-              segments[n].y2=((double) (y-(accumulator_height/2))-((
-                segments[n].x2-(image->columns/2))*cos(DegreesToRadians((double)
-                x))))/sin(DegreesToRadians((double) x))+(image->rows/2);
+              x1=0.0;
+              y1=((double) (y-(accumulator_height/2))-((x1-(image->columns/2))*
+                cos(DegreesToRadians((double) x))))/sin(DegreesToRadians(
+                (double) x))+(image->rows/2);
+              x2=(double) image->columns;
+              y2=((double) (y-(accumulator_height/2))-((x2-(image->columns/2))*
+                cos(DegreesToRadians((double) x))))/sin(DegreesToRadians(
+                (double) x))+(image->rows/2);
             }
           else
             {
               /*
                 x = (r-y cos(t))/sin(t)
               */
-              segments[n].y1=0.0;
-              segments[n].x1=((double) (y-(accumulator_height/2))-((
-                segments[n].y1-(image->rows/2))*sin(DegreesToRadians((double)
-                x))))/cos(DegreesToRadians((double) x))+(image->columns/2);
-              segments[n].y2=(double) image->rows;
-              segments[n].x2=((double) (y-(accumulator_height/2))-((
-                segments[n].y2-(image->rows/2))*sin(DegreesToRadians((double)
-                x))))/cos(DegreesToRadians((double) x))+(image->columns/2);
+              y1=0.0;
+              x1=((double) (y-(accumulator_height/2))-((y1-(image->rows/2))*
+                sin(DegreesToRadians((double) x))))/cos(DegreesToRadians(
+                (double) x))+(image->columns/2);
+              y2=(double) image->rows;
+              x2=((double) (y-(accumulator_height/2))-((y2-(image->rows/2))*
+                sin(DegreesToRadians((double) x))))/cos(DegreesToRadians(
+                (double) x))+(image->columns/2);
             }
-          n++;
+          (void) sprintf(message,"line %g,%g %g,%g\n",x1,y1,x2,y2);
+          (void) write(file,message,strlen(message));
         }
     }
-    if (segments == (SegmentInfo *) NULL)
-      break;
   }
-  if (segments == (SegmentInfo *) NULL)
-    return((Image *) NULL);
-  number_segments=n;
-  segments=(SegmentInfo *) ResizeMagickMemory(segments,number_segments*
-    sizeof(*segments));
-  if (segments == (SegmentInfo *) NULL)
-    return((Image *) NULL);
-  /*
-    Free resources.
-  */
-  segments=(SegmentInfo *) RelinquishMagickMemory(segments);
+  (void) close(file);
   accumulator=DestroyMatrixInfo(accumulator);
-  transform_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (transform_image != (Image *) NULL)
-    return(transform_image);
-  return(transform_image);
+  /*
+    Render lines to image canvas.
+  */
+  image_info=AcquireImageInfo();
+  image_info->background_color=image->background_color;
+  (void) FormatLocaleString(image_info->filename,MaxTextExtent,"mvg:%s",path);
+  artifact=GetImageArtifact(image,"background");
+  if (artifact != (const char *) NULL)
+    (void) SetImageOption(image_info,"background",artifact);
+  artifact=GetImageArtifact(image,"fill");
+  if (artifact != (const char *) NULL)
+    (void) SetImageOption(image_info,"fill",artifact);
+  artifact=GetImageArtifact(image,"stroke");
+  if (artifact != (const char *) NULL)
+    (void) SetImageOption(image_info,"stroke",artifact);
+  artifact=GetImageArtifact(image,"strokewidth");
+  if (artifact != (const char *) NULL)
+    (void) SetImageOption(image_info,"strokewidth",artifact);
+  lines_image=ReadImage(image_info,exception);
+  image_info=DestroyImageInfo(image_info);
+  (void) RelinquishUniqueFileResource(path);
+  return(lines_image);
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

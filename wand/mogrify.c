@@ -1826,7 +1826,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=geometry_info.rho;
-            mogrify_image=HoughLinesImage(*image,(size_t) geometry_info.rho,              (size_t) geometry_info.sigma,(size_t) geometry_info.xi,exception);
+            mogrify_image=HoughLinesImage(*image,(size_t) geometry_info.rho,
+              (size_t) geometry_info.sigma,(size_t) geometry_info.xi,exception);
             break;
           }
         break;
