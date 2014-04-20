@@ -9,6 +9,7 @@
 #define Magick_ChannelMoments_header
 
 #include "Magick++/Include.h"
+#include <stdexcept>
 #include <vector>
 
 namespace Magick
