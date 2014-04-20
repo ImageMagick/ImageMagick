@@ -726,8 +726,8 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
       accumulator=DestroyMatrixInfo(accumulator);
       return((Image *) NULL);
     }
-  (void) sprintf(message,"viewbox 0 0 %.20g %.20g\n",(double) image->columns,
-    (double) image->rows);
+  (void) FormatLocaleString(message,MaxTextExtent,"viewbox 0 0 %.20g %.20g\n",
+    (double) image->columns,(double) image->rows);
   (void) write(file,message,strlen(message));
   line_count=image->columns > image->rows ? image->columns/4 : image->rows/4;
   if (threshold != 0)
@@ -812,7 +812,8 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
                 sin(DegreesToRadians((double) x))))/cos(DegreesToRadians(
                 (double) x))+(image->columns/2);
             }
-          (void) sprintf(message,"line %g,%g %g,%g\n",x1,y1,x2,y2);
+          (void) FormatLocaleString(message,MaxTextExtent,"line %g,%g %g,%g\n",
+            x1,y1,x2,y2);
           (void) write(file,message,strlen(message));
         }
     }
