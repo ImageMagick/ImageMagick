@@ -557,12 +557,16 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   value=GetImageOption(image_info,"webp:image-hint");
   if (value != (char *) NULL)
     {
-      if (LocaleCompare(value,"graph") == 0)
-        configure.image_hint=WEBP_HINT_GRAPH;
+      if (LocaleCompare(value,"default") == 0)
+        configure.image_hint=WEBP_HINT_DEFAULT;
       if (LocaleCompare(value,"photo") == 0)
         configure.image_hint=WEBP_HINT_PHOTO;
       if (LocaleCompare(value,"picture") == 0)
         configure.image_hint=WEBP_HINT_PICTURE;
+#if WEBP_ENCODER_ABI_VERSION >= 0x0200
+      if (LocaleCompare(value,"graph") == 0)
+        configure.image_hint=WEBP_HINT_GRAPH;
+#endif
     }
   value=GetImageOption(image_info,"webp:target-size");
   if (value != (char *) NULL)
@@ -613,6 +617,19 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   value=GetImageOption(image_info,"webp:partition-limit");
   if (value != (char *) NULL)
     configure.partition_limit=StringToInteger(value);
+#if WEBP_ENCODER_ABI_VERSION >= 0x0201
+  value=GetImageOption(image_info,"webp:low-memory");
+  if (value != (char *) NULL)
+    configure.low_memory=(int) ParseCommandOption(MagickBooleanOptions,
+      MagickFalse,value);
+  value=GetImageOption(image_info,"webp:partition-limit");
+  if (value != (char *) NULL)
+    configure.emulate_jpeg_size=(int) ParseCommandOption(MagickBooleanOptions,
+      MagickFalse,value);
+  value=GetImageOption(image_info,"webp:thread-level");
+  if (value != (char *) NULL)
+    configure.thread_level=StringToInteger(value);
+#endif
   if (WebPValidateConfig(&configure) == 0)
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
   /*
