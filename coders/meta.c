@@ -1063,15 +1063,45 @@ static int jpeg_extract(Image *ifile, Image *ofile)
 }
 #endif
 
+static inline void CopyBlob(Image *source,Image *destination)
+{
+  ssize_t
+    i;
+
+  unsigned char
+    *buffer;
+
+  ssize_t
+    count,
+    length;
+
+  buffer=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
+    sizeof(*buffer));
+  if (buffer != (unsigned char *) NULL)
+    {
+      i=0;
+      while ((length=ReadBlob(source,MagickMaxBufferExtent,buffer)) != 0)
+      {
+        count=0;
+        for (i=0; i < (ssize_t) length; i+=count)
+        {
+          count=WriteBlob(destination,(size_t) (length-i),buffer+i);
+          if (count <= 0)
+            break;
+        }
+        if (i < (ssize_t) length)
+          break;
+      }
+      buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+    }
+}
+
 static Image *ReadMETAImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   Image
     *buff,
     *image;
-
-  int
-    c;
 
   MagickBooleanType
     status;
@@ -1138,15 +1168,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             (void) WriteBlobByte(buff,0x0);
         }
       else
-        {
-          for ( ; ; )
-          {
-            c=ReadBlobByte(image);
-            if (c == EOF)
-              break;
-            (void) WriteBlobByte(buff,(unsigned char) c);
-          }
-        }
+        CopyBlob(image,buff);
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
@@ -1214,48 +1236,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             }
         }
       else
-        {
-#ifdef SLOW_METHOD
-          for ( ; ; )
-          {
-            /* Really - really slow - FIX ME PLEASE!!!! */
-            c=ReadBlobByte(image);
-            if (c == EOF)
-              break;
-            (void) WriteBlobByte(buff,c);
-          }
-#else
-          ssize_t
-            i;
-
-          unsigned char
-            *buffer;
-
-          ssize_t
-            count,
-            length;
-
-          buffer=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
-            sizeof(*buffer));
-          if (buffer != (unsigned char *) NULL)
-            {
-              i=0;
-              while ((length=ReadBlob(image,MagickMaxBufferExtent,buffer)) != 0)
-              {
-                count=0;
-                for (i=0; i < (ssize_t) length; i+=count)
-                {
-                  count=WriteBlob(buff,(size_t) (length-i),buffer+i);
-                  if (count <= 0)
-                    break;
-                }
-                if (i < (ssize_t) length)
-                  break;
-              }
-              buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-            }
-#endif
-        }
+        CopyBlob(image,buff);
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
@@ -1281,13 +1262,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       AttachBlob(buff->blob,blob,length);
-      for ( ; ; )
-      {
-        c=ReadBlobByte(image);
-        if (c == EOF)
-          break;
-        (void) WriteBlobByte(buff,(unsigned char) c);
-      }
+      CopyBlob(image,buff);
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
@@ -1300,9 +1275,6 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
     }
   if (LocaleCompare(image_info->magick,"IPTC") == 0)
     {
-      register unsigned char
-        *p;
-
       buff=AcquireImage((ImageInfo *) NULL,exception);
       if (buff == (Image *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1313,40 +1285,11 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       AttachBlob(buff->blob,blob,length);
-      /* write out the header - length field patched below */
-      (void) WriteBlob(buff,11,(unsigned char *) "8BIM\04\04\0\0\0\0\0");
-      (void) WriteBlobByte(buff,0xc6);
-      if (LocaleCompare(image_info->magick,"IPTCTEXT") == 0)
-        {
-          length=(size_t) parse8BIM(image,buff);
-          if (length & 1)
-            (void) WriteBlobByte(buff,0x00);
-        }
-      else if (LocaleCompare(image_info->magick,"IPTCWTEXT") == 0)
-        {
-        }
-      else
-        {
-          for ( ; ; )
-          {
-            c=ReadBlobByte(image);
-            if (c == EOF)
-              break;
-            (void) WriteBlobByte(buff,(unsigned char) c);
-          }
-        }
+      CopyBlob(image,buff);
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      /*
-        subtract off the length of the 8BIM stuff.
-      */
-      length=GetStringInfoLength(profile)-12;
-      p=GetStringInfoDatum(profile);
-      p[10]=(unsigned char) (length >> 8);
-      p[11]=(unsigned char) (length & 0xff);
-      SetStringInfoDatum(profile,GetBlobStreamData(buff));
       (void) SetImageProfile(image,"8bim",profile,exception);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
@@ -1365,13 +1308,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       AttachBlob(buff->blob,blob,length);
-      for ( ; ; )
-      {
-        c=ReadBlobByte(image);
-        if (c == EOF)
-          break;
-        (void) WriteBlobByte(buff,(unsigned char) c);
-      }
+      CopyBlob(image,buff);
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
