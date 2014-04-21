@@ -122,7 +122,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ssize_t
       job_number;
 
-    unsigned char
+    char
       name[128],
       description[128],
       program[64],
@@ -221,31 +221,31 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   rla_info.number_channels+=rla_info.number_matte_channels;
   rla_info.number_auxiliary_channels=(short) ReadBlobMSBShort(image);
   rla_info.revision=(short) ReadBlobMSBShort(image);
-  count=ReadBlob(image,16,rla_info.gamma);
-  count=ReadBlob(image,24,rla_info.red_primary);
-  count=ReadBlob(image,24,rla_info.green_primary);
-  count=ReadBlob(image,24,rla_info.blue_primary);
-  count=ReadBlob(image,24,rla_info.white_point);
+  count=ReadBlob(image,16,(unsigned char *) rla_info.gamma);
+  count=ReadBlob(image,24,(unsigned char *) rla_info.red_primary);
+  count=ReadBlob(image,24,(unsigned char *) rla_info.green_primary);
+  count=ReadBlob(image,24,(unsigned char *) rla_info.blue_primary);
+  count=ReadBlob(image,24,(unsigned char *) rla_info.white_point);
   rla_info.job_number=(int) ReadBlobMSBLong(image);
-  count=ReadBlob(image,128,rla_info.name);
-  count=ReadBlob(image,128,rla_info.description);
-  count=ReadBlob(image,64,rla_info.program);
-  count=ReadBlob(image,32,rla_info.machine);
-  count=ReadBlob(image,32,rla_info.user);
-  count=ReadBlob(image,20,rla_info.date);
-  count=ReadBlob(image,24,rla_info.aspect);
-  count=ReadBlob(image,8,rla_info.aspect_ratio);
-  count=ReadBlob(image,32,rla_info.chan);
+  count=ReadBlob(image,128,(unsigned char *) rla_info.name);
+  count=ReadBlob(image,128,(unsigned char *) rla_info.description);
+  count=ReadBlob(image,64,(unsigned char *) rla_info.program);
+  count=ReadBlob(image,32,(unsigned char *) rla_info.machine);
+  count=ReadBlob(image,32,(unsigned char *) rla_info.user);
+  count=ReadBlob(image,20,(unsigned char *) rla_info.date);
+  count=ReadBlob(image,24,(unsigned char *) rla_info.aspect);
+  count=ReadBlob(image,8,(unsigned char *) rla_info.aspect_ratio);
+  count=ReadBlob(image,32,(unsigned char *) rla_info.chan);
   rla_info.field=(short) ReadBlobMSBShort(image);
-  count=ReadBlob(image,12,rla_info.time);
-  count=ReadBlob(image,32,rla_info.filter);
+  count=ReadBlob(image,12,(unsigned char *) rla_info.time);
+  count=ReadBlob(image,32,(unsigned char *) rla_info.filter);
   rla_info.bits_per_channel=(short) ReadBlobMSBShort(image);
   rla_info.matte_type=(short) ReadBlobMSBShort(image);
   rla_info.matte_bits=(short) ReadBlobMSBShort(image);
   rla_info.auxiliary_type=(short) ReadBlobMSBShort(image);
   rla_info.auxiliary_bits=(short) ReadBlobMSBShort(image);
-  count=ReadBlob(image,32,rla_info.auxiliary);
-  count=ReadBlob(image,36,rla_info.space);
+  count=ReadBlob(image,32,(unsigned char *) rla_info.auxiliary);
+  count=ReadBlob(image,36,(unsigned char *) rla_info.space);
   if ((size_t) count != 36)
     ThrowReaderException(CorruptImageError,"UnableToReadImageData");
   rla_info.next=(int) ReadBlobMSBLong(image);
@@ -264,7 +264,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (scanlines == (ssize_t *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (*rla_info.description != '\0')
-    (void) SetImageProperty(image,"comment",rla_info.description);
+    (void) SetImageProperty(image,"comment",(char *) rla_info.description);
   /*
     Read offsets to each scanline data.
   */
