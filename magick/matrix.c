@@ -939,11 +939,11 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
   else
     if (min_value == max_value)
       {
-        scale_factor=(MagickRealType) QuantumRange/min_value;
+        scale_factor=(double) QuantumRange/min_value;
         min_value=0;
       }
     else
-      scale_factor=(MagickRealType) QuantumRange/(max_value-min_value);
+      scale_factor=(double) QuantumRange/(max_value-min_value);
   /*
     Convert matrix to image.
   */
