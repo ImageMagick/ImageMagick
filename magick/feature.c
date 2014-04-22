@@ -820,17 +820,6 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
     }
   }
   (void) close(file);
-  artifact=GetImageArtifact(image,"hough-lines:accumulator");
-  if (IsMagickTrue(artifact) != MagickFalse)
-    {
-      Image
-        *accumulator_image;
-
-      accumulator_image=MatrixToImage(accumulator,exception);
-      if (accumulator_image != (Image *) NULL)
-        AppendImageToList(&lines_image,accumulator_image);
-    }
-  accumulator=DestroyMatrixInfo(accumulator);
   /*
     Render lines to image canvas.
   */
@@ -850,6 +839,21 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
   if (artifact != (const char *) NULL)
     (void) SetImageOption(image_info,"strokewidth",artifact);
   lines_image=ReadImage(image_info,exception);
+  artifact=GetImageArtifact(image,"hough-lines:accumulator");
+  if ((lines_image != (Image *) NULL) &&
+      (IsMagickTrue(artifact) != MagickFalse))
+    {
+      Image
+        *accumulator_image;
+
+      accumulator_image=MatrixToImage(accumulator,exception);
+      if (accumulator_image != (Image *) NULL)
+        AppendImageToList(&lines_image,accumulator_image);
+    }
+  /*
+    Free resources.
+  */
+  accumulator=DestroyMatrixInfo(accumulator);
   image_info=DestroyImageInfo(image_info);
   (void) RelinquishUniqueFileResource(path);
   return(GetFirstImageInList(lines_image));
