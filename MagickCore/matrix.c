@@ -50,6 +50,7 @@
 #include "MagickCore/pixel-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
+#include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
 
 /*
@@ -857,6 +858,37 @@ MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
       vectors[i][j]+=results[i]*terms[j];
   }
   return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a t r i x T o I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MatrixToImage() returns a matrix as an image.
+%
+%  The format of the MatrixToImage method is:
+%
+%      Image *MatrixToImage(const MatrixInfo *matrix_info,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o matrix_info: the matrix.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
+  ExceptionInfo *exception)
+{
+  return((Image *) NULL);
 }
 
 /*
