@@ -870,7 +870,8 @@ MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MatrixToImage() returns a matrix as an image.
+%  MatrixToImage() returns a matrix as an image.  The matrix elements must be
+%  of type double otherwise nonsense is returned.
 %
 %  The format of the MatrixToImage method is:
 %
@@ -903,7 +904,7 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
   assert(matrix_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (matrix_info->stride != sizeof(double))
+  if (matrix_info->stride < sizeof(double))
     return((Image *) NULL);
   /*
     Determine range of matrix.
