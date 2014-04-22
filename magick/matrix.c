@@ -934,7 +934,7 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
           max_value=value;
     }
   }
-  if ((min_value == 0) && (max_value == 0))
+  if ((min_value == 0.0) && (max_value == 0.0))
     scale_factor=0;
   else
     if (min_value == max_value)
@@ -980,7 +980,7 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
     {
       if (GetMatrixElement(matrix_info,x,y,&value) == MagickFalse)
         continue;
-      value=(value-min_value)*scale_factor;
+      value=scale_factor*(value-min_value);
       q->red=ClampToQuantum(value);
       q->green=q->red;
       q->blue=q->red;
