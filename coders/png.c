@@ -8433,7 +8433,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image->depth = 8;
 #endif
 
-  if (image->storage_class != PseudoClass && mng_info->write_png_colortype &&
+  if (mng_info->write_png_colortype &&
      (mng_info->write_png_colortype > 4 || (mng_info->write_png_depth >= 8 &&
      mng_info->write_png_colortype < 4 && image->matte == MagickFalse)))
   {
@@ -8462,7 +8462,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        }
   }
 
-  else
+  if (mng_info->write_png_colortype < 7)
   {
   /* BUILD_PALETTE
    *
@@ -9390,8 +9390,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   image_colors=(int) image->colors;
   image_matte=image->matte;
 
-  mng_info->IsPalette=image->storage_class == PseudoClass &&
-    image_colors <= 256 && image->colormap != NULL;
+  if (mng_info->write_png_colortype > 4)
+    mng_info->IsPalette=image->storage_class == PseudoClass &&
+      image_colors <= 256 && image->colormap != NULL;
+  else
+    mng_info->IsPalette = MagickFalse;
 
   if ((mng_info->write_png_colortype == 4 || mng_info->write_png8) &&
      (image->colors == 0 || image->colormap == NULL))
@@ -11690,6 +11693,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       mng_info->write_png_colortype = /* 6 */  7;
       mng_info->write_png_depth = 8;
       image->depth = 8;
+      image->matte = MagickTrue;
 
       if (image->matte != MagickFalse)
         (void) SetImageType(image,TrueColorMatteType);
@@ -11705,6 +11709,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       mng_info->write_png_colortype = /* 2 */ 3;
       mng_info->write_png_depth = 16;
       image->depth = 16;
+      image->matte = MagickTrue;
 
       if (image->matte != MagickFalse)
         (void) SetImageType(image,TrueColorMatteType);
@@ -11720,6 +11725,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       mng_info->write_png_colortype = /* 6 */  7;
       mng_info->write_png_depth = 16;
       image->depth = 16;
+      image->matte = MagickTrue;
 
       if (image->matte != MagickFalse)
         (void) SetImageType(image,TrueColorMatteType);
