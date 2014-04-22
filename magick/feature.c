@@ -654,7 +654,7 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
     image->rows : image->columns))/2.0);
   accumulator_height=(size_t) (2.0*hough_height);
   accumulator=AcquireMatrixInfo(accumulator_width,accumulator_height,
-    sizeof(size_t),exception);
+    sizeof(double),exception);
   if (accumulator == (MatrixInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   if (NullMatrix(accumulator) == MagickFalse)
@@ -695,10 +695,8 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
           for (i=0; i < 180; i++)
           {
             double
+              count,
               radius;
-
-            size_t
-              count;
 
             radius=(((double) x-center.x)*cos(DegreesToRadians((double) i)))+
               (((double) y-center.y)*sin(DegreesToRadians((double) i)));
@@ -740,20 +738,18 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
 
     for (x=0; x < (ssize_t) accumulator_width; x++)
     {
-      size_t
+      double
         count;
 
       (void) GetMatrixElement(accumulator,x,y,&count);
       if (count >= line_count)
         {
           double
+            maxima,
             x1,
             x2,
             y1,
             y2;
-
-          size_t
-            maxima;
 
           ssize_t
             v;
