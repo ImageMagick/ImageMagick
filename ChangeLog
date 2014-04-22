@@ -1,7 +1,10 @@
-2014-03-11  6.8.9-0 Cristy  <quetzlzacatenango@image...>
+2014-04-22  6.8.9-1 Cristy  <quetzlzacatenango@image...>
+  * Support new -hough-lines option.
+
+2014-04-11  6.8.9-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-0, SVN revision 15441.
 
-2013-04-03  6.8.9-0 Glenn Randers-Pehrson <glennrp@image...>
+2014-04-03  6.8.9-0 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed bug with -strip failing to exclude PNG chunks (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25353).
 
