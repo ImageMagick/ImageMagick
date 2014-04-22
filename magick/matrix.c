@@ -891,6 +891,12 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
   CacheView
     *image_view;
 
+  double
+    max_value,
+    min_value,
+    scale_factor,
+    value;
+
   Image
     *image;
 
@@ -909,11 +915,11 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
   /*
     Determine range of matrix.
   */
+  (void) GetMatrixElement(matrix_info,0,0,&value);
+  min_value=value;
+  max_value=value;
   for (y=0; y < (ssize_t) matrix_info->rows; y++)
   {
-    double
-      value;
-
     register ssize_t
       x;
 
@@ -921,8 +927,23 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
     {
       if (GetMatrixElement(matrix_info,x,y,&value) == MagickFalse)
         continue;
+      if (value < min_value)
+        min_value=value;
+      else
+        if (value > max_value)
+          max_value=value;
     }
   }
+  if ((min_value == 0) && (max_value == 0))
+    scale_factor=0;
+  else
+    if (min_value == max_value)
+      {
+        scale_factor=(MagickRealType) QuantumRange/min_value;
+        min_value=0;
+      }
+    else
+      scale_factor=(MagickRealType) QuantumRange/(max_value-min_value);
   /*
     Convert matrix to image.
   */
@@ -959,9 +980,10 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
     {
       if (GetMatrixElement(matrix_info,x,y,&value) == MagickFalse)
         continue;
-      q->red=0;
-      q->green=0;
-      q->blue=0;
+      value=(value-min_value)*scale_factor;
+      q->red=ClampToQuantum(value);
+      q->green=q->red;
+      q->blue=q->red;
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

@@ -90,6 +90,7 @@
 #include "magick/string_.h"
 #include "magick/thread-private.h"
 #include "magick/timer.h"
+#include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 
@@ -819,6 +820,16 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
     }
   }
   (void) close(file);
+  artifact=GetImageArtifact(image,"hough-lines:accumulator");
+  if (IsMagickTrue(artifact) != MagickFalse)
+    {
+      Image
+        *accumulator_image;
+
+      accumulator_image=MatrixToImage(accumulator,exception);
+      if (accumulator_image != (Image *) NULL)
+        AppendImageToList(&lines_image,accumulator_image);
+    }
   accumulator=DestroyMatrixInfo(accumulator);
   /*
     Render lines to image canvas.
@@ -841,7 +852,7 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
   lines_image=ReadImage(image_info,exception);
   image_info=DestroyImageInfo(image_info);
   (void) RelinquishUniqueFileResource(path);
-  return(lines_image);
+  return(GetFirstImageInList(lines_image));
 }
 
 /*
