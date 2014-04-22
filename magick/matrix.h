@@ -29,6 +29,9 @@ extern MagickExport double
   **AcquireMagickMatrix(const size_t,const size_t),
   **RelinquishMagickMatrix(double **,const size_t);
 
+extern MagickExport Image
+  *MatrixToImage(const MatrixInfo *,ExceptionInfo *);
+
 extern MagickExport MagickBooleanType
   GaussJordanElimination(double **,double **,const size_t,const size_t),
   GetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,void *),

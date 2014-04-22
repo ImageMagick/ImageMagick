@@ -49,6 +49,7 @@
 #include "magick/pixel-private.h"
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
+#include "magick/thread-private.h"
 #include "magick/utility.h"
 
 /*
@@ -856,6 +857,119 @@ MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
       vectors[i][j]+=results[i]*terms[j];
   }
   return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a t r i x T o I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MatrixToImage() returns a matrix as an image.
+%
+%  The format of the MatrixToImage method is:
+%
+%      Image *MatrixToImage(const MatrixInfo *matrix_info,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o matrix_info: the matrix.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  assert(matrix_info != (const MatrixInfo *) NULL);
+  assert(matrix_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if (matrix_info->stride != sizeof(double))
+    return((Image *) NULL);
+  /*
+    Determine range of matrix.
+  */
+  for (y=0; y < (ssize_t) matrix_info->rows; y++)
+  {
+    double
+      value;
+
+    register ssize_t
+      x;
+
+    for (x=0; x < (ssize_t) matrix_info->columns; x++)
+    {
+      if (GetMatrixElement(matrix_info,x,y,&value) == MagickFalse)
+        continue;
+    }
+  }
+  /*
+    Convert matrix to image.
+  */
+  image=AcquireImage((ImageInfo *) NULL);
+  image->columns=matrix_info->columns;
+  image->rows=matrix_info->rows;
+  image->colorspace=GRAYColorspace;
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    double
+      value;
+
+    register PixelPacket
+      *q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if (GetMatrixElement(matrix_info,x,y,&value) == MagickFalse)
+        continue;
+      q->red=0;
+      q->green=0;
+      q->blue=0;
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    image=DestroyImage(image);
+  return(image);
 }
 
 /*
