@@ -666,8 +666,8 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
     Populate the accumulator.
   */
   status=MagickTrue;
-  center.x=image->columns/2.0;
-  center.y=image->rows/2.0;
+  center.x=(double) image->columns/2.0;
+  center.y=(double) image->rows/2.0;
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -742,7 +742,7 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
         count;
 
       (void) GetMatrixElement(accumulator,x,y,&count);
-      if (count >= line_count)
+      if (count >= (double) line_count)
         {
           double
             maxima,
@@ -787,13 +787,13 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
                 y = (r-x cos(t))/sin(t)
               */
               x1=0.0;
-              y1=((y-(accumulator_height/2.0))-((x1-(image->columns/2.0))*
-                cos(DegreesToRadians((double) x))))/sin(DegreesToRadians(
-                (double) x))+(image->rows/2.0);
+              y1=(double) ((y-(accumulator_height/2.0))-((x1-(image->columns/
+                2.0))*cos(DegreesToRadians((double) x))))/
+                sin(DegreesToRadians((double) x))+(image->rows/2.0);
               x2=(double) image->columns;
-              y2=((y-(accumulator_height/2.0))-((x2-(image->columns/2.0))*
-                cos(DegreesToRadians((double) x))))/sin(DegreesToRadians(
-                (double) x))+(image->rows/2.0);
+              y2=(double) ((y-(accumulator_height/2.0))-((x2-(image->columns/
+                2.0))*cos(DegreesToRadians((double) x))))/
+                sin(DegreesToRadians((double) x))+(image->rows/2.0);
             }
           else
             {
@@ -801,11 +801,11 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
                 x = (r-y cos(t))/sin(t)
               */
               y1=0.0;
-              x1=((y-(accumulator_height/2.0))-((y1-(image->rows/2.0))*
+              x1=(double) ((y-(accumulator_height/2.0))-((y1-(image->rows/2.0))*
                 sin(DegreesToRadians((double) x))))/cos(DegreesToRadians(
                 (double) x))+(image->columns/2.0);
               y2=(double) image->rows;
-              x2=((y-(accumulator_height/2.0))-((y2-(image->rows/2.0))*
+              x2=(double) ((y-(accumulator_height/2.0))-((y2-(image->rows/2.0))*
                 sin(DegreesToRadians((double) x))))/cos(DegreesToRadians(
                 (double) x))+(image->columns/2.0);
             }
