@@ -30,7 +30,7 @@ extern MagickExport double
   **RelinquishMagickMatrix(double **,const size_t);
 
 extern MagickExport Image
-  *MatrixToImage(const MatrixInfo *,ExceptionInfo *));
+  *MatrixToImage(const MatrixInfo *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   GetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,void *),
