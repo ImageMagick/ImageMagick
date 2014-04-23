@@ -4713,7 +4713,7 @@ void Magick::Image::whiteThresholdChannel(const ChannelType channel_,
 void Magick::Image::write(Blob *blob_)
 {
   size_t
-    length=2048; // Efficient size for small images
+    length=0;
 
   void
     *data;
@@ -4721,14 +4721,15 @@ void Magick::Image::write(Blob *blob_)
   modifyImage();
   GetPPException;
   data=ImagesToBlob(constImageInfo(),image(),&length,&exceptionInfo);
+  if (length > 0)
+    blob_->updateNoCopy(data,length,Blob::MallocAllocator);
   ThrowPPException;
-  blob_->updateNoCopy(data,length,Blob::MallocAllocator);
 }
 
 void Magick::Image::write(Blob *blob_,const std::string &magick_)
 {
   size_t
-    length=2048; // Efficient size for small images
+    length=0;
 
   void
     *data;
@@ -4737,15 +4738,16 @@ void Magick::Image::write(Blob *blob_,const std::string &magick_)
   magick(magick_);
   GetPPException;
   data=ImagesToBlob(constImageInfo(),image(),&length,&exceptionInfo);
+  if (length > 0)
+    blob_->updateNoCopy(data,length,Blob::MallocAllocator);
   ThrowPPException;
-  blob_->updateNoCopy(data,length,Blob::MallocAllocator);
 }
 
 void Magick::Image::write(Blob *blob_,const std::string &magick_,
   const size_t depth_)
 {
   size_t
-    length=2048; // Efficient size for small images
+    length=0;
 
   void
     *data;
@@ -4755,8 +4757,9 @@ void Magick::Image::write(Blob *blob_,const std::string &magick_,
   depth(depth_);
   GetPPException;
   data=ImagesToBlob(constImageInfo(),image(),&length,&exceptionInfo);
+  if (length > 0)
+    blob_->updateNoCopy(data,length,Blob::MallocAllocator);
   ThrowPPException;
-  blob_->updateNoCopy(data,length,Blob::MallocAllocator);
 }
 
 void Magick::Image::write(const ssize_t x_,const ssize_t y_,
