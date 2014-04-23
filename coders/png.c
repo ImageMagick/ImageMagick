@@ -9446,7 +9446,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   image_colors=(int) image->colors;
   image_matte=image->alpha_trait == BlendPixelTrait ? MagickTrue : MagickFalse;
 
-  if (mng_info->write_png_colortype > 4)
+  if (mng_info->write_png_colortype < 5)
     mng_info->IsPalette=image->storage_class == PseudoClass &&
       image_colors <= 256 && image->colormap != NULL;
   else
