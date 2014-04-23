@@ -11587,8 +11587,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
   mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0;
 
   value=GetImageOption(image_info,"png:format");
+  if (value == (char *) NULL)
+    if (LocaleCompare(image_info->magick,"PNG00") == 0)
 
-  if (value != (char *) NULL)
+  if (value != (char *) NULL || LocaleCompare(image_info->magick,"PNG00") == 0)
     {
       mng_info->write_png8 = MagickFalse;
       mng_info->write_png24 = MagickFalse;
@@ -11614,7 +11616,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       else if (LocaleCompare(value,"png64") == 0)
         mng_info->write_png64 = MagickTrue;
 
-      else if (LocaleCompare(value,"png00") == 0)
+      else if ((LocaleCompare(value,"png00") == 0) ||
+         LocaleCompare(image_info->magick,"PNG00") == 0)
         {
           /* Retrieve png:IHDR.bit-depth-orig and png:IHDR.color-type-orig */
           value=GetImageProperty(image,"png:IHDR.bit-depth-orig");
@@ -11628,10 +11631,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
             if (LocaleCompare(value,"1") == 0)
               mng_info->write_png_depth = 1;
 
-            else if (LocaleCompare(value,"1") == 0)
+            else if (LocaleCompare(value,"2") == 0)
               mng_info->write_png_depth = 2;
 
-            else if (LocaleCompare(value,"2") == 0)
+            else if (LocaleCompare(value,"4") == 0)
               mng_info->write_png_depth = 4;
 
             else if (LocaleCompare(value,"8") == 0)
