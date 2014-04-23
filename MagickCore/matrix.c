@@ -47,6 +47,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/matrix.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/pixel-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
@@ -871,7 +872,8 @@ MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MatrixToImage() returns a matrix as an image.
+%  MatrixToImage() returns a matrix as an image.  The matrix elements must be
+%  of type double otherwise nonsense is returned.
 %
 %  The format of the MatrixToImage method is:
 %
@@ -888,7 +890,109 @@ MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
 MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
   ExceptionInfo *exception)
 {
-  return((Image *) NULL);
+  CacheView
+    *image_view;
+
+  double
+    max_value,
+    min_value,
+    scale_factor,
+    value;
+
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  assert(matrix_info != (const MatrixInfo *) NULL);
+  assert(matrix_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if (matrix_info->stride < sizeof(double))
+    return((Image *) NULL);
+  /*
+    Determine range of matrix.
+  */
+  (void) GetMatrixElement(matrix_info,0,0,&value);
+  min_value=value;
+  max_value=value;
+  for (y=0; y < (ssize_t) matrix_info->rows; y++)
+  {
+    register ssize_t
+      x;
+
+    for (x=0; x < (ssize_t) matrix_info->columns; x++)
+    {
+      if (GetMatrixElement(matrix_info,x,y,&value) == MagickFalse)
+        continue;
+      if (value < min_value)
+        min_value=value;
+      else
+        if (value > max_value)
+          max_value=value;
+    }
+  }
+  if ((min_value == 0.0) && (max_value == 0.0))
+    scale_factor=0;
+  else
+    if (min_value == max_value)
+      {
+        scale_factor=(double) QuantumRange/min_value;
+        min_value=0;
+      }
+    else
+      scale_factor=(double) QuantumRange/(max_value-min_value);
+  /*
+    Convert matrix to image.
+  */
+  image=AcquireImage((ImageInfo *) NULL,exception);
+  image->columns=matrix_info->columns;
+  image->rows=matrix_info->rows;
+  image->colorspace=GRAYColorspace;
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    double
+      value;
+
+    register Quantum
+      *q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if (GetMatrixElement(matrix_info,x,y,&value) == MagickFalse)
+        continue;
+      value=scale_factor*(value-min_value);
+      *q=ClampToQuantum(value);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    image=DestroyImage(image);
+  return(image);
 }
 
 /*

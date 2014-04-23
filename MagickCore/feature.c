@@ -41,8 +41,8 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
-#include "MagickCore/property.h"
 #include "MagickCore/animate.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
@@ -79,6 +79,7 @@
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/profile.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/random_.h"
@@ -561,7 +562,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  HoughLinesImage() identifies lines in an image.
+%  HoughLinesImage() identifies lines in the image.
 %
 %  The format of the HoughLinesImage method is:
 %
@@ -579,10 +580,272 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline double MagickRound(double x)
+{
+  /*
+    Round the fraction to nearest integer.
+  */
+  if ((x-floor(x)) < (ceil(x)-x))
+    return(floor(x));
+  return(ceil(x));
+}
+
 MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
   const size_t height,const size_t threshold,ExceptionInfo *exception)
 {
-  return((Image *) NULL);
+  CacheView
+    *image_view;
+
+  char
+    message[MaxTextExtent],
+    path[MaxTextExtent];
+
+  const char
+    *artifact;
+
+  double
+    hough_height;
+
+  Image
+    *lines_image = NULL;
+
+  ImageInfo
+    *image_info;
+
+  int
+    file;
+
+  MagickBooleanType
+    status;
+
+  MatrixInfo
+    *accumulator;
+
+  PointInfo
+    center;
+
+  register ssize_t
+    y;
+
+  size_t
+    accumulator_height,
+    accumulator_width,
+    line_count;
+
+  /*
+    Create the accumulator.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  accumulator_width=180;
+  hough_height=((sqrt(2.0)*(double) (image->rows > image->columns ?
+    image->rows : image->columns))/2.0);
+  accumulator_height=(size_t) (2.0*hough_height);
+  accumulator=AcquireMatrixInfo(accumulator_width,accumulator_height,
+    sizeof(double),exception);
+  if (accumulator == (MatrixInfo *) NULL)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  if (NullMatrix(accumulator) == MagickFalse)
+    {
+      accumulator=DestroyMatrixInfo(accumulator);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  /*
+    Populate the accumulator.
+  */
+  status=MagickTrue;
+  center.x=(double) image->columns/2.0;
+  center.y=(double) image->rows/2.0;
+  image_view=AcquireVirtualCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if (GetPixelIntensity(image,p) > (QuantumRange/2))
+        {
+          register ssize_t
+            i;
+
+          for (i=0; i < 180; i++)
+          {
+            double
+              count,
+              radius;
+
+            radius=(((double) x-center.x)*cos(DegreesToRadians((double) i)))+
+              (((double) y-center.y)*sin(DegreesToRadians((double) i)));
+            (void) GetMatrixElement(accumulator,i,(ssize_t)
+              MagickRound(radius+hough_height),&count);
+            count++;
+            (void) SetMatrixElement(accumulator,i,(ssize_t)
+              MagickRound(radius+hough_height),&count);
+          }
+        }
+      p+=GetPixelChannels(image);
+    }
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    {
+      accumulator=DestroyMatrixInfo(accumulator);
+      return((Image *) NULL);
+    }
+  /*
+    Generate line segments from accumulator.
+  */
+  file=AcquireUniqueFileResource(path);
+  if (file == -1)
+    {
+      accumulator=DestroyMatrixInfo(accumulator);
+      return((Image *) NULL);
+    }
+  (void) FormatLocaleString(message,MaxTextExtent,"viewbox 0 0 %.20g %.20g\n",
+    (double) image->columns,(double) image->rows);
+  (void) write(file,message,strlen(message));
+  line_count=image->columns > image->rows ? image->columns/4 : image->rows/4;
+  if (threshold != 0)
+    line_count=threshold;
+  for (y=0; y < (ssize_t) accumulator_height; y++)
+  {
+    register ssize_t
+      x;
+
+    for (x=0; x < (ssize_t) accumulator_width; x++)
+    {
+      double
+        count;
+
+      (void) GetMatrixElement(accumulator,x,y,&count);
+      if (count >= (double) line_count)
+        {
+          double
+            maxima,
+            x1,
+            x2,
+            y1,
+            y2;
+
+          ssize_t
+            v;
+
+          /*
+            Is point a local maxima?
+          */
+          maxima=count;
+          for (v=((ssize_t) -(height/2)); v < ((ssize_t) (height/2)); v++)
+          {
+            ssize_t
+              u;
+
+            for (u=((ssize_t) -(width/2)); u < ((ssize_t) (width/2)); u++)
+            {
+              if ((u != 0) || (v !=0))
+                {
+                  (void) GetMatrixElement(accumulator,x+u,y+v,&count);
+                  if (count > maxima)
+                    {
+                      maxima=count;
+                      break;
+                    }
+                }
+            }
+            if (u < (ssize_t) (width/2))
+              break;
+          }
+          (void) GetMatrixElement(accumulator,x,y,&count);
+          if (maxima > count)
+            continue;
+          if ((x >= 45) && (x <= 135))
+            {
+              /*
+                y = (r-x cos(t))/sin(t)
+              */
+              x1=0.0;
+              y1=(double) ((y-(accumulator_height/2.0))-((x1-(image->columns/
+                2.0))*cos(DegreesToRadians((double) x))))/
+                sin(DegreesToRadians((double) x))+(image->rows/2.0);
+              x2=(double) image->columns;
+              y2=(double) ((y-(accumulator_height/2.0))-((x2-(image->columns/
+                2.0))*cos(DegreesToRadians((double) x))))/
+                sin(DegreesToRadians((double) x))+(image->rows/2.0);
+            }
+          else
+            {
+              /*
+                x = (r-y cos(t))/sin(t)
+              */
+              y1=0.0;
+              x1=(double) ((y-(accumulator_height/2.0))-((y1-(image->rows/2.0))*
+                sin(DegreesToRadians((double) x))))/cos(DegreesToRadians(
+                (double) x))+(image->columns/2.0);
+              y2=(double) image->rows;
+              x2=(double) ((y-(accumulator_height/2.0))-((y2-(image->rows/2.0))*
+                sin(DegreesToRadians((double) x))))/cos(DegreesToRadians(
+                (double) x))+(image->columns/2.0);
+            }
+          (void) FormatLocaleString(message,MaxTextExtent,"line %g,%g %g,%g\n",
+            x1,y1,x2,y2);
+          (void) write(file,message,strlen(message));
+        }
+    }
+  }
+  (void) close(file);
+  /*
+    Render lines to image canvas.
+  */
+  image_info=AcquireImageInfo();
+  image_info->background_color=image->background_color;
+  (void) FormatLocaleString(image_info->filename,MaxTextExtent,"mvg:%s",path);
+  artifact=GetImageArtifact(image,"background");
+  if (artifact != (const char *) NULL)
+    (void) SetImageOption(image_info,"background",artifact);
+  artifact=GetImageArtifact(image,"fill");
+  if (artifact != (const char *) NULL)
+    (void) SetImageOption(image_info,"fill",artifact);
+  artifact=GetImageArtifact(image,"stroke");
+  if (artifact != (const char *) NULL)
+    (void) SetImageOption(image_info,"stroke",artifact);
+  artifact=GetImageArtifact(image,"strokewidth");
+  if (artifact != (const char *) NULL)
+    (void) SetImageOption(image_info,"strokewidth",artifact);
+  lines_image=ReadImage(image_info,exception);
+  artifact=GetImageArtifact(image,"hough-lines:accumulator");
+  if ((lines_image != (Image *) NULL) &&
+      (IsStringTrue(artifact) != MagickFalse))
+    {
+      Image
+        *accumulator_image;
+
+      accumulator_image=MatrixToImage(accumulator,exception);
+      if (accumulator_image != (Image *) NULL)
+        AppendImageToList(&lines_image,accumulator_image);
+    }
+  /*
+    Free resources.
+  */
+  accumulator=DestroyMatrixInfo(accumulator);
+  image_info=DestroyImageInfo(image_info);
+  (void) RelinquishUniqueFileResource(path);
+  return(GetFirstImageInList(lines_image));
 }
 
 /*
