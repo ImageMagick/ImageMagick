@@ -757,12 +757,12 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
             Is point a local maxima?
           */
           maxima=count;
-          for (v=((ssize_t) -(height/2)); v < ((ssize_t) (height/2)); v++)
+          for (v=(-((ssize_t) height/2)); v < (((ssize_t) height/2)); v++)
           {
             ssize_t
               u;
 
-            for (u=((ssize_t) -(width/2)); u < ((ssize_t) (width/2)); u++)
+            for (u=(-((ssize_t) width/2)); u < (((ssize_t) width/2)); u++)
             {
               if ((u != 0) || (v !=0))
                 {
