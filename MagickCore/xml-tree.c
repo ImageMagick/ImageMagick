@@ -458,6 +458,52 @@ static char **DestroyXMLTreeAttributes(char **attributes)
   return((char **) NULL);
 }
 
+static void DestroyXMLTreeChild(XMLTreeInfo *xml_info)
+{
+  XMLTreeInfo
+    *node,
+    *prev;
+
+  node=xml_info->child;
+  while(node != (XMLTreeInfo *) NULL)
+  {
+    prev=(XMLTreeInfo *) NULL;
+    while(node->child != (XMLTreeInfo *) NULL)
+    {
+      prev=node;
+      node=node->child;
+    }
+    DestroyXMLTree(node);
+    if (prev != (XMLTreeInfo* ) NULL)
+      prev->child=(XMLTreeInfo *) NULL;
+    node=prev;
+  }
+  xml_info->child=(XMLTreeInfo *) NULL;
+}
+
+static void DestroyXMLTreeOrdered(XMLTreeInfo *xml_info)
+{
+  XMLTreeInfo
+    *node,
+    *prev;
+
+  node=xml_info->ordered;
+  while(node != (XMLTreeInfo *) NULL)
+  {
+    prev=(XMLTreeInfo *) NULL;
+    while(node->ordered != (XMLTreeInfo *) NULL)
+    {
+      prev=node;
+      node=node->ordered;
+    }
+    DestroyXMLTree(node);
+    if (prev != (XMLTreeInfo* ) NULL)
+      prev->ordered=(XMLTreeInfo *) NULL;
+    node=prev;
+  }
+  xml_info->ordered=(XMLTreeInfo *) NULL;
+}
+
 static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
 {
   char
@@ -528,10 +574,8 @@ MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
          (((XMLTreeRoot *) xml_info)->signature == MagickSignature));
   if (xml_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (xml_info->child != (XMLTreeInfo *) NULL)
-    xml_info->child=DestroyXMLTree(xml_info->child);
-  if (xml_info->ordered != (XMLTreeInfo *) NULL)
-    xml_info->ordered=DestroyXMLTree(xml_info->ordered);
+  DestroyXMLTreeChild(xml_info);
+  DestroyXMLTreeOrdered(xml_info);
   DestroyXMLTreeRoot(xml_info);
   xml_info->attributes=DestroyXMLTreeAttributes(xml_info->attributes);
   xml_info->content=DestroyString(xml_info->content);
