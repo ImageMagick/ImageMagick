@@ -11745,7 +11745,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_colortype = /* 6 */  7;
       mng_info->write_png_depth = 8;
       image->depth = 8;
-      image->alpha_trait == BlendPixelTrait;
+      image->alpha_trait = BlendPixelTrait;
 
       (void) SetImageType(image,TrueColorMatteType,exception);
       (void) SyncImage(image,exception);
@@ -11771,7 +11771,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_colortype = /* 6 */  7;
       mng_info->write_png_depth = 16;
       image->depth = 16;
-      image->alpha_trait == BlendPixelTrait;
+      image->alpha_trait = BlendPixelTrait;
 
       (void) SetImageType(image,TrueColorMatteType,exception);
       (void) SyncImage(image,exception);
