@@ -738,11 +738,10 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
       if (count >= (double) line_count)
         {
           double
-            maxima,
-            x1,
-            x2,
-            y1,
-            y2;
+            maxima;
+
+          SegmentInfo
+            line;
 
           ssize_t
             v;
@@ -779,13 +778,13 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
               /*
                 y = (r-x cos(t))/sin(t)
               */
-              x1=0.0;
-              y1=(double) ((y-(accumulator_height/2.0))-((x1-(image->columns/
-                2.0))*cos(DegreesToRadians((double) x))))/
+              line.x1=0.0;
+              line.y1=((double) (y-(accumulator_height/2.0))-((line.x1-
+                (image->columns/2.0))*cos(DegreesToRadians((double) x))))/
                 sin(DegreesToRadians((double) x))+(image->rows/2.0);
-              x2=(double) image->columns;
-              y2=(double) ((y-(accumulator_height/2.0))-((x2-(image->columns/
-                2.0))*cos(DegreesToRadians((double) x))))/
+              line.x2=(double) image->columns;
+              line.y2=((double) (y-(accumulator_height/2.0))-((line.x2-
+                (image->columns/2.0))*cos(DegreesToRadians((double) x))))/
                 sin(DegreesToRadians((double) x))+(image->rows/2.0);
             }
           else
@@ -793,17 +792,19 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
               /*
                 x = (r-y cos(t))/sin(t)
               */
-              y1=0.0;
-              x1=(double) ((y-(accumulator_height/2.0))-((y1-(image->rows/2.0))*
-                sin(DegreesToRadians((double) x))))/cos(DegreesToRadians(
-                (double) x))+(image->columns/2.0);
-              y2=(double) image->rows;
-              x2=(double) ((y-(accumulator_height/2.0))-((y2-(image->rows/2.0))*
-                sin(DegreesToRadians((double) x))))/cos(DegreesToRadians(
-                (double) x))+(image->columns/2.0);
+              line.y1=0.0;
+              line.x1=((double) (y-(accumulator_height/2.0))-((line.y1-
+                (image->rows/2.0))*sin(DegreesToRadians((double) x))))/
+                cos(DegreesToRadians((double) x))+(image->columns/2.0);
+              line.y2=(double) image->rows;
+              line.x2=((double) (y-(accumulator_height/2.0))-((line.y2-
+                (image->rows/2.0))*sin(DegreesToRadians((double) x))))/
+                cos(DegreesToRadians((double) x))+(image->columns/2.0);
             }
-          (void) FormatLocaleString(message,MaxTextExtent,"line %g,%g %g,%g\n",
-            x1,y1,x2,y2);
+          (void) FormatLocaleString(message,MaxTextExtent,
+            "line %.20g,%.20g %.20g,%.20g  # %.20g\n",
+            (double) ((ssize_t) line.x1),(double) ((ssize_t) line.y1),
+            (double) ((ssize_t) line.x2),(double) ((ssize_t) line.y2),maxima);
           (void) write(file,message,strlen(message));
         }
     }
