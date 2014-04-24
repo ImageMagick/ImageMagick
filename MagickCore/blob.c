@@ -399,14 +399,16 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         *images;
 
       /*
-        Restore original filenames.
+        Restore original filenames and image format.
       */
       for (images=GetFirstImageInList(image); images != (Image *) NULL; )
       {
-        (void) CopyMagickMemory(images->filename,image_info->filename,
-          sizeof(images->filename));
-        (void) CopyMagickMemory(images->magick_filename,image_info->filename,
-          sizeof(images->magick_filename));
+        (void) CopyMagickString(images->filename,image_info->filename,
+          MaxTextExtent);
+        (void) CopyMagickString(images->magick_filename,image_info->filename,
+          MaxTextExtent);
+        (void) CopyMagickString(images->magick,magick_info->name,
+          MaxTextExtent);
         images=GetNextImageInList(images);
       }
     }
