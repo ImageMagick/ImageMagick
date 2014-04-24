@@ -802,9 +802,7 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
                 cos(DegreesToRadians((double) x))+(image->columns/2.0);
             }
           (void) FormatLocaleString(message,MaxTextExtent,
-            "line %.20g,%.20g %.20g,%.20g  # %.20g\n",
-            (double) ((ssize_t) line.x1),(double) ((ssize_t) line.y1),
-            (double) ((ssize_t) line.x2),(double) ((ssize_t) line.y2),maxima);
+            "line %g,%g %g,%g  # %g\n",line.x1,line.y1,line.x2,line.y2,maxima);
           (void) write(file,message,strlen(message));
         }
     }
