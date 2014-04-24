@@ -473,7 +473,7 @@ static void DestroyXMLTreeChild(XMLTreeInfo *xml_info)
       prev=node;
       node=node->child;
     }
-    DestroyXMLTree(node);
+    (void) DestroyXMLTree(node);
     if (prev != (XMLTreeInfo* ) NULL)
       prev->child=(XMLTreeInfo *) NULL;
     node=prev;
@@ -496,7 +496,7 @@ static void DestroyXMLTreeOrdered(XMLTreeInfo *xml_info)
       prev=node;
       node=node->ordered;
     }
-    DestroyXMLTree(node);
+    (void) DestroyXMLTree(node);
     if (prev != (XMLTreeInfo* ) NULL)
       prev->ordered=(XMLTreeInfo *) NULL;
     node=prev;
@@ -609,7 +609,8 @@ MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
 %
 */
 
-static inline size_t MagickMin(const size_t x,const size_t y)
+static inline MagickSizeType MagickMin(const MagickSizeType x,
+  const MagickSizeType y)
 {
   if (x < y)
     return(x);
