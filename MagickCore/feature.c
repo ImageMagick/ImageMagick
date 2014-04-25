@@ -718,6 +718,10 @@ MagickExport Image *HoughLinesImage(const Image *image,const size_t width,
       accumulator=DestroyMatrixInfo(accumulator);
       return((Image *) NULL);
     }
+  (void) FormatLocaleString(message,MaxTextExtent,
+    "# Hough line transform: %.20gx%.20g%+.20g\n",(double) width,
+    (double) height,(double) threshold);
+  (void) write(file,message,strlen(message));
   (void) FormatLocaleString(message,MaxTextExtent,"viewbox 0 0 %.20g %.20g\n",
     (double) image->columns,(double) image->rows);
   (void) write(file,message,strlen(message));
