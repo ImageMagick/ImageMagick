@@ -2719,7 +2719,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           CLIWandWarnReplaced(IfNormalOp?"-alpha Set":"-alpha Off");
           (void) SetImageAlphaChannel(_image,IfNormalOp ? SetAlphaChannel :
-                         DeactivateAlphaChannel, _exception);
+            DeactivateAlphaChannel, _exception);
           break;
         }
       if (LocaleCompare("mean-shift",option+1) == 0)
@@ -2730,11 +2730,11 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
-            geometry_info.xi=3;
-          if ((flags & PsiValue) == 0)
-            geometry_info.psi10030;
-          new_image=MeanShiftImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
+            geometry_info.xi=0.10*QuantumRange;
+          if ((flags & PercentValue) != 0)
+            geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
+          new_image=MeanShiftImage(_image,(size_t) geometry_info.rho,
+            (size_t) geometry_info.sigma,geometry_info.xi,_exception);
           break;
         }
       if (LocaleCompare("median",option+1) == 0)

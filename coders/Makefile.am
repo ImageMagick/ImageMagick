@@ -182,6 +182,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/vicar.c \
 	coders/vid.c \
 	coders/viff.c \
+	coders/vips.c \
 	coders/wbmp.c \
 	coders/wpg.c \
 	coders/xbm.c \
@@ -305,6 +306,7 @@ coders_LTLIBRARIES = \
 	coders/vicar.la \
 	coders/vid.la \
 	coders/viff.la \
+	coders/vips.la \
 	coders/wbmp.la \
 	coders/wpg.la \
 	coders/xbm.la \
@@ -990,6 +992,12 @@ coders_viff_la_SOURCES     = coders/viff.c
 coders_viff_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_viff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_viff_la_LIBADD      = $(MAGICKCORE_LIBS)
+
+# VIPS coder module
+coders_vips_la_SOURCES     = coders/vips.c
+coders_vips_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
+coders_vips_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_vips_la_LIBADD      = $(MAGICKCORE_LIBS)
 
 # WBMP coder module
 coders_wbmp_la_SOURCES     = coders/wbmp.c
