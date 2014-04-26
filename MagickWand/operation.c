@@ -1922,9 +1922,9 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
-            geometry_info.xi=0.10;
+            geometry_info.xi=10;
           if ((flags & PsiValue) == 0)
-            geometry_info.psi=0.30;
+            geometry_info.psi=30;
           if ((flags & PercentValue) != 0)
             {
               geometry_info.xi/=100.0;
@@ -2488,6 +2488,25 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
+    case 'h':
+    {
+      if (LocaleCompare("hough-lines",option+1) == 0)
+        {
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=1.0;
+          if ((flags & XiValue) == 0)
+            geometry_info.xi=3;
+          if ((flags & PsiValue) == 0)
+            geometry_info.psi10030;
+          new_image=HoughLineImage(_image,geometry_info.rho,
+            geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
+          break;
+        }
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
+    }
     case 'i':
     {
       if (LocaleCompare("identify",option+1) == 0)
@@ -2701,6 +2720,21 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           CLIWandWarnReplaced(IfNormalOp?"-alpha Set":"-alpha Off");
           (void) SetImageAlphaChannel(_image,IfNormalOp ? SetAlphaChannel :
                          DeactivateAlphaChannel, _exception);
+          break;
+        }
+      if (LocaleCompare("mean-shift",option+1) == 0)
+        {
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=1.0;
+          if ((flags & XiValue) == 0)
+            geometry_info.xi=3;
+          if ((flags & PsiValue) == 0)
+            geometry_info.psi10030;
+          new_image=MeanShiftImage(_image,geometry_info.rho,
+            geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
           break;
         }
       if (LocaleCompare("median",option+1) == 0)

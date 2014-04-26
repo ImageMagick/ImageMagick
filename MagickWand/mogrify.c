@@ -1806,7 +1806,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=geometry_info.rho;
-            mogrify_image=HoughLinesImage(*image,(size_t) geometry_info.rho,
+            mogrify_image=HoughLineImage(*image,(size_t) geometry_info.rho,
               (size_t) geometry_info.sigma,(size_t) geometry_info.xi,exception);
             break;
           }
@@ -2092,6 +2092,23 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             (void) SetImageAlphaChannel(*image,(*option == '-') ?
               SetAlphaChannel : DeactivateAlphaChannel,exception);
+            break;
+          }
+        if (LocaleCompare("mean-shift",option+1) == 0)
+          {
+            /*
+              Detect edges in the image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=geometry_info.rho;
+            if ((flags & PsiValue) == 0)
+              geometry_info.psi=3;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=100;
+            mogrify_image=MeanShiftImage(*image,(size_t) geometry_info.rho,
+              (size_t) geometry_info.sigma,(size_t) geometry_info.xi,exception);
             break;
           }
         if (LocaleCompare("median",option+1) == 0)
@@ -3365,6 +3382,8 @@ static MagickBooleanType MogrifyUsage(void)
       "                     reduce image noise and reduce detail levels",
       "-geometry geometry   preferred size or location of the image",
       "-grayscale method    convert image to grayscale",
+      "-hough-lines geometry",
+      "                     identify lines in the image",
       "-identify            identify the format and characteristics of the image",
       "-ift                 implements the inverse discrete Fourier transform (DFT)",
       "-implode amount      implode image pixels about the center",
@@ -3379,6 +3398,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
       "-magnify             double the size of the image with pixel art scaling",
+      "-mean-shift geometry delineate arbitrarily shaped clusters in the image",
       "-median geometry     apply a median filter to the image",
       "-mode geometry       make each pixel the 'predominant color' of the",
       "                     neighborhood",
@@ -4869,6 +4889,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if ((LocaleCompare("help",option+1) == 0) ||
             (LocaleCompare("-help",option+1) == 0))
           return(MogrifyUsage());
+        if (LocaleCompare("hough-lines",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         ThrowMogrifyException(OptionError,"UnrecognizedOption",option)
       }
       case 'i':
@@ -5160,6 +5191,28 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("maximum",option+1) == 0)
           break;
+        if (LocaleCompare("mean-shift",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("median",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("metric",option+1) == 0)
           {
             ssize_t
@@ -5179,17 +5232,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("minimum",option+1) == 0)
           break;
         if (LocaleCompare("modulate",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) argc)
-              ThrowMogrifyException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
-            break;
-          }
-        if (LocaleCompare("median",option+1) == 0)
           {
             if (*option == '+')
               break;

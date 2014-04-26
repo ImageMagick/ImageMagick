@@ -259,6 +259,7 @@ static const OptionInfo
     { "-brightness-contrast", 1L, SimpleOperatorFlag, MagickFalse },
     { "+cache", 0L, GlobalOptionFlag, MagickFalse },
     { "-cache", 1L, GlobalOptionFlag, MagickFalse },
+    { "+canny", 1L, DeprecateOptionFlag, MagickTrue },
     { "-canny", 1L, SimpleOperatorFlag, MagickTrue },
     { "+caption", 0L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-caption", 1L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
@@ -438,6 +439,7 @@ static const OptionInfo
     { "-hald-clut", 0L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "+highlight-color", 0L, NonMagickOptionFlag | ImageInfoOptionFlag, MagickFalse },
     { "-highlight-color", 1L, NonMagickOptionFlag | ImageInfoOptionFlag, MagickFalse },
+    { "+hough-lines", 1L, DeprecateOptionFlag, MagickTrue },
     { "-hough-lines", 1L, SimpleOperatorFlag, MagickTrue },
     { "+iconGeometry", 0L, NonMagickOptionFlag, MagickFalse },
     { "-iconGeometry", 1L, NonMagickOptionFlag, MagickFalse },
@@ -505,6 +507,8 @@ static const OptionInfo
     { "-mattecolor", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+maximum", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-maximum", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
+    { "+mean-shift", 1L, DeprecateOptionFlag, MagickTrue },
+    { "-mean-shift", 1L, SimpleOperatorFlag, MagickTrue },
     { "+median", 1L, DeprecateOptionFlag, MagickTrue },
     { "-median", 1L, ReplacedOptionFlag | SimpleOperatorFlag | FireOptionFlag, MagickTrue },
     { "+metric", 0L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
@@ -780,8 +784,6 @@ static const OptionInfo
     { "-window-group", 1L, NonMagickOptionFlag, MagickFalse },
     { "+write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { "-write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
-    { "+zzz", 0L, UndefinedOptionFlag, MagickTrue },  /* required by CLI */
-    { "-zzz", 0L, UndefinedOptionFlag, MagickFalse },  /* binary search */
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   },
   ComposeOptions[] =

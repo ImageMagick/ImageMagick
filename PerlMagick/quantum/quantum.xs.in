@@ -547,9 +547,12 @@ static struct
     { "CannyEdge", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
       {"lower-percent", RealReference}, {"upper-percent", RealReference} } },
-    { "HoughLines", { {"geometry", StringReference},
+    { "HoughLine", { {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
       {"threshold", IntegerReference} } },
+    { "MeanShift", { {"geometry", StringReference},
+      {"width", IntegerReference}, {"height", IntegerReference},
+      {"shift", IntegerReference}, {"iterations", IntegerReference} } },
   };
 
 static SplayTreeInfo
@@ -7533,8 +7536,10 @@ Mogrify(ref,...)
     GrayscaleImage     = 276
     CannyEdge          = 278
     CannyEdgeImage     = 279
-    HoughLines         = 280
-    HoughLinesImage    = 281
+    HoughLine          = 280
+    HoughLineImage     = 281
+    MeanShift          = 282
+    MeanShiftImage     = 283
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11137,7 +11142,7 @@ Mogrify(ref,...)
             (void) SetImageChannelMask(image,channel_mask);
           break;
         }
-        case 139:  /* HoughLines */
+        case 139:  /* HoughLine */
         {
           if (attribute_flag[0] != 0)
             {
@@ -11152,7 +11157,30 @@ Mogrify(ref,...)
             geometry_info.sigma=(double) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
             geometry_info.xi=(double) argument_list[3].integer_reference;
-          image=HoughLinesImage(image,(size_t) geometry_info.rho,(size_t)
+          image=HoughLineImage(image,(size_t) geometry_info.rho,(size_t)
+            geometry_info.sigma,(size_t) geometry_info.xi,exception);
+          break;
+        }
+        case 140:  /* MeanShift */
+        {
+          if (attribute_flag[0] != 0)
+            {
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry_info);
+              if ((flags & SigmaValue) == 0)
+                geometry_info.sigma=geometry_info.rho;
+              if ((flags & PsiValue) == 0)
+                geometry_info.psi=3;
+              if ((flags & XiValue) == 0)
+                geometry_info.xi=100;
+            }
+          if (attribute_flag[1] != 0)
+            geometry_info.rho=(double) argument_list[1].integer_reference;
+          if (attribute_flag[2] != 0)
+            geometry_info.sigma=(double) argument_list[2].integer_reference;
+          if (attribute_flag[3] != 0)
+            geometry_info.xi=(double) argument_list[3].integer_reference;
+          image=MeanShiftImage(image,(size_t) geometry_info.rho,(size_t)
             geometry_info.sigma,(size_t) geometry_info.xi,exception);
           break;
         }
