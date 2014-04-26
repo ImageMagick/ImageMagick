@@ -551,7 +551,7 @@ static struct
       {"threshold", IntegerReference} } },
     { "MeanShift", { {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
-      {"shift", IntegerReference}, {"iterations", IntegerReference} } },
+      {"distance", RealReference} } },
   };
 
 static SplayTreeInfo
@@ -10923,19 +10923,19 @@ Mogrify(ref,...)
                 &geometry_info);
               if ((flags & SigmaValue) == 0)
                 geometry_info.sigma=geometry_info.rho;
-              if ((flags & PsiValue) == 0)
-                geometry_info.psi=3;
               if ((flags & XiValue) == 0)
-                geometry_info.xi=100;
+                geometry_info.xi=0.10*QuantumRange;
+              if ((flags & PercentValue) != 0)
+                geometry_info.xi=QuantumRange*geometry_info.xi/100.0;
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=(double) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
             geometry_info.sigma=(double) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            geometry_info.xi=(double) argument_list[3].integer_reference;
+            geometry_info.xi=(double) argument_list[3].real_reference;
           image=MeanShiftImage(image,(size_t) geometry_info.rho,(size_t)
-            geometry_info.sigma,(size_t) geometry_info.xi,exception);
+            geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
       }

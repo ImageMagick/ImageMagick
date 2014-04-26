@@ -2034,8 +2034,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 %  The format of the MeanShiftImage method is:
 %
 %      Image *MeanShiftImage(const Image *image,const size_t width,
-%        const size_t height,const size_t shift,const size_t iterations,
-%        ExceptionInfo *exception)
+%        const size_t height,const double distance,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2043,15 +2042,13 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 %
 %    o width, height: find clusters as local maxima in this neighborhood.
 %
-%    o shift: the shift threshold.
-%
-%    o iterations: maximum iteration to find local maxima.
+%    o distance: the color distance.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
-  const size_t height,const size_t shift,ExceptionInfo *exception)
+  const size_t height,const double distance,ExceptionInfo *exception)
 {
   return((Image *) NULL);
 }
