@@ -2050,5 +2050,64 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
   const size_t height,const double distance,ExceptionInfo *exception)
 {
-  return((Image *) NULL);
+  CacheView
+    *image_view,
+    *mean_view;
+
+  Image
+    *mean_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  mean_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  if (mean_image == (Image *) NULL)
+    return((Image *) NULL);
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+  mean_view=AcquireAuthenticCacheView(mean_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(mean_image,mean_image,mean_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) mean_image->rows; y++)
+  {
+    register const PixelPacket
+      *restrict p;
+
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(mean_view,0,y,mean_image->columns,1,
+      exception);
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) mean_image->columns; x++)
+    {
+      *q=(*p);
+      p++;
+      q++;
+    }
+  }
+  mean_view=DestroyCacheView(mean_view);
+  image_view=DestroyCacheView(image_view);
+  return(mean_image);
 }
