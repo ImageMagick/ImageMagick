@@ -2125,10 +2125,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=geometry_info.rho;
-            if ((flags & PsiValue) == 0)
-              geometry_info.psi=3;
             if ((flags & XiValue) == 0)
-              geometry_info.xi=100;
+              geometry_info.xi=0.10*QuantumRange;
+            if ((flags & PercentValue) != 0)
+              geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
             mogrify_image=MeanShiftImage(*image,(size_t) geometry_info.rho,
               (size_t) geometry_info.sigma,(size_t) geometry_info.xi,exception);
             break;

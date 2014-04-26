@@ -52,7 +52,7 @@ extern MagickExport Image
     const double,ExceptionInfo *),
   *HoughLineImage(const Image *,const size_t,const size_t,const size_t,
     ExceptionInfo *),
-  *MeanShiftImage(const Image *,const size_t,const size_t,const size_t,
+  *MeanShiftImage(const Image *,const size_t,const size_t,const double,
     ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
