@@ -3,6 +3,7 @@
 
 2014-04-22  6.8.9-1 Cristy  <quetzlzacatenango@image...>
   * Support new -hough-lines option.
+  * Support new -mean-shift option.
 
 2014-04-11  6.8.9-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-0, SVN revision 15441.

@@ -491,6 +491,8 @@ static const OptionInfo
     { "-mattecolor", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+maximum", 0L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-maximum", 0L, ListOperatorOptionFlag | FireOptionFlag | DeprecateOptionFlag, MagickFalse },
+    { "+mean-shift", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-mean-shift", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+median", 1L, DeprecateOptionFlag, MagickFalse },
     { "-median", 1L, SimpleOperatorOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+metric", 0L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },

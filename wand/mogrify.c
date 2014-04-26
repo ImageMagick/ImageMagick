@@ -1826,7 +1826,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=geometry_info.rho;
-            mogrify_image=HoughLinesImage(*image,(size_t) geometry_info.rho,
+            mogrify_image=HoughLineImage(*image,(size_t) geometry_info.rho,
               (size_t) geometry_info.sigma,(size_t) geometry_info.xi,exception);
             break;
           }
@@ -2114,6 +2114,23 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SetImageAlphaChannel(*image,(*option == '-') ?
               SetAlphaChannel : DeactivateAlphaChannel );
             InheritException(exception,&(*image)->exception);
+            break;
+          }
+        if (LocaleCompare("mean-shift",option+1) == 0)
+          {
+            /*
+              Delineate arbitrarily shaped clusters in the image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=geometry_info.rho;
+            if ((flags & PsiValue) == 0)
+              geometry_info.psi=3;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=100;
+            mogrify_image=MeanShiftImage(*image,(size_t) geometry_info.rho,
+              (size_t) geometry_info.sigma,(size_t) geometry_info.xi,exception);
             break;
           }
         if (LocaleCompare("median",option+1) == 0)
@@ -3430,6 +3447,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
       "-magnify             double the size of the image with pixel art scaling",
+      "-mean-shift geometry delineate arbitrarily shaped clusters in the image",
       "-median geometry     apply a median filter to the image",
       "-mode geometry       make each pixel the 'predominant color' of the",
       "                     neighborhood",
@@ -4920,6 +4938,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("hald-clut",option+1) == 0)
           break;
+        if (LocaleCompare("hough-lines",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if ((LocaleCompare("help",option+1) == 0) ||
             (LocaleCompare("-help",option+1) == 0))
           return(MogrifyUsage());
@@ -5243,9 +5272,18 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("maximum",option+1) == 0)
           break;
-        if (LocaleCompare("minimum",option+1) == 0)
-          break;
-        if (LocaleCompare("modulate",option+1) == 0)
+        if (LocaleCompare("mean-shift",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("median",option+1) == 0)
           {
             if (*option == '+')
               break;
@@ -5256,7 +5294,9 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
-        if (LocaleCompare("median",option+1) == 0)
+        if (LocaleCompare("minimum",option+1) == 0)
+          break;
+        if (LocaleCompare("modulate",option+1) == 0)
           {
             if (*option == '+')
               break;
