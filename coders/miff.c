@@ -1730,18 +1730,22 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
 {
   if (image->storage_class != DirectClass)
     {
+      unsigned int
+        value;
+
+      value=(unsigned int) index;
       switch (image->depth)
       {
         case 32:
         {
-          *pixels++=(unsigned char) ((size_t) index >> 24);
-          *pixels++=(unsigned char) ((size_t) index >> 16);
+          *pixels++=(unsigned char) (value >> 24);
+          *pixels++=(unsigned char) (value >> 16);
         }
         case 16:
-          *pixels++=(unsigned char) ((size_t) index >> 8);
+          *pixels++=(unsigned char) (value >> 8);
         case 8:
         {
-          *pixels++=(unsigned char) index;
+          *pixels++=(unsigned char) value;
           break;
         }
         default:
