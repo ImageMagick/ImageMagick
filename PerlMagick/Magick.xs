@@ -11150,6 +11150,8 @@ Mogrify(ref,...)
                 &geometry_info);
               if ((flags & SigmaValue) == 0)
                 geometry_info.sigma=geometry_info.rho;
+              if ((flags & XiValue) == 0)
+                geometry_info.xi=40;
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=(double) argument_list[1].integer_reference;
