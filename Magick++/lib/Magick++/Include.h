@@ -1034,6 +1034,7 @@ namespace Magick
   using MagickCore::CacheFatalError;
   using MagickCore::CacheWarning;
   using MagickCore::CharcoalImage;
+  using MagickCore::CannyEdgeImage;
   using MagickCore::ChopImage;
   using MagickCore::ClampImage;
   using MagickCore::ClampToQuantum;

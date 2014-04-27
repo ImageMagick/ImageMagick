@@ -672,6 +672,10 @@ namespace Magick
     void brightnessContrastChannel(const ChannelType channel_,
       const double brightness_=0.0,const double contrast_=0.0);
 
+    // Uses a multi-stage algorithm to detect a wide range of edges in images.
+    void cannyEdge(const double radius_=0.0,const double sigma_=1.0,
+      const double lowerPercent_=0.1,const double upperPercent_=0.3);
+
     // Extract channel from image
     void channel(const ChannelType channel_);
 
