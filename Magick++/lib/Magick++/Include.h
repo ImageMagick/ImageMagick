@@ -1252,6 +1252,7 @@ namespace Magick
   using MagickCore::GreaterValue;
   using MagickCore::HaldClutImage;
   using MagickCore::HeightValue;
+  using MagickCore::HoughLineImage;
   using MagickCore::ImageError;
   using MagickCore::ImageFatalError;
   using MagickCore::ImageInfo;

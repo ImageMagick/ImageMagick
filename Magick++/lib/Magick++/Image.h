@@ -965,6 +965,10 @@ namespace Magick
     // Apply a color lookup table (Hald CLUT) to the image.
     void haldClut(const Image &clutImage_);
 
+    // Identifies lines in the image.
+    void houghLine(const size_t width_,const size_t height_,
+      const size_t threshold_=40);
+
     // Implode image (special effect)
     void implode(const double factor_);
 
