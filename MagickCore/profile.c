@@ -1186,9 +1186,14 @@ static void WriteTo8BimProfile(Image *image,const char *name,
     value;
 
   unsigned short
-    id;
+    id,
+    profile_id;
 
-  if (LocaleCompare(name,"iptc") != 0)
+  if (LocaleCompare(name,"iptc") == 0)
+    profile_id=0x0404;
+  else if (LocaleCompare(name,"xmp") == 0)
+    profile_id=0x0424;
+  else
     return;
   profile=(StringInfo *)GetValueFromSplayTree((SplayTreeInfo *)image->profiles,
     "8bim");
@@ -1215,7 +1220,7 @@ static void WriteTo8BimProfile(Image *image,const char *name,
       break;
     if ((count & 0x01) != 0)
       count++;
-    if (id == 0x0404)
+    if (id == profile_id)
       {
         size_t
           offset,
