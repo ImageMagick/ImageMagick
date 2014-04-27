@@ -1160,7 +1160,7 @@ static inline const unsigned char *ReadResourceShort(const unsigned char *p,
 }
 
 static void WriteTo8BimProfile(Image *image,const char *name,
-  const StringInfo *iptc_profile)
+  const StringInfo *profile)
 {
 
   const unsigned char
@@ -1174,7 +1174,7 @@ static void WriteTo8BimProfile(Image *image,const char *name,
     length;
 
   StringInfo
-    *profile;
+    *profile_8bim;
 
   ssize_t
     count;
@@ -1189,18 +1189,20 @@ static void WriteTo8BimProfile(Image *image,const char *name,
     id,
     profile_id;
 
-  if (LocaleCompare(name,"iptc") == 0)
+  if (LocaleCompare(name,"icc") == 0)
+    profile_id=0x040f;
+  else if (LocaleCompare(name,"iptc") == 0)
     profile_id=0x0404;
   else if (LocaleCompare(name,"xmp") == 0)
     profile_id=0x0424;
   else
     return;
-  profile=(StringInfo *)GetValueFromSplayTree((SplayTreeInfo *)image->profiles,
-    "8bim");
-  if (profile == (StringInfo *) NULL)
+  profile_8bim=(StringInfo *)GetValueFromSplayTree((SplayTreeInfo *)
+    image->profiles,"8bim");
+  if (profile_8bim == (StringInfo *) NULL)
     return;
-  datum=GetStringInfoDatum(profile);
-  length=GetStringInfoLength(profile);
+  datum=GetStringInfoDatum(profile_8bim);
+  length=GetStringInfoLength(profile_8bim);
   for (p=datum; p < (datum+length-16); )
   {
     s=p;
@@ -1234,7 +1236,7 @@ static void WriteTo8BimProfile(Image *image,const char *name,
 
         new_count=0;
         rest=(datum+length)-(p+count);
-        if (iptc_profile == (StringInfo *) NULL)
+        if (profile == (StringInfo *) NULL)
           {
             offset=(s-datum);
             new_profile=AcquireStringInfo(offset+rest);
@@ -1243,15 +1245,14 @@ static void WriteTo8BimProfile(Image *image,const char *name,
         else
           {
             offset=(p-datum);
-            new_count=iptc_profile->length;
+            new_count=profile->length;
             if ((new_count & 0x01) != 0)
               new_count++;
             new_profile=AcquireStringInfo(offset+new_count+rest);
             (void) CopyMagickMemory(new_profile->datum,datum,offset-4);
-            WriteResourceLong(new_profile->datum+offset-4,
-              iptc_profile->length);
-            (void) CopyMagickMemory(new_profile->datum+offset,
-              iptc_profile->datum,iptc_profile->length);
+            WriteResourceLong(new_profile->datum+offset-4,profile->length);
+            (void) CopyMagickMemory(new_profile->datum+offset,profile->datum,
+              profile->length);
           }
         (void) CopyMagickMemory(new_profile->datum+offset+new_count,p+count,
           rest);
