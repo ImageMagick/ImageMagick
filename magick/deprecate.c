@@ -3680,6 +3680,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
+      for (i=0; i < 4L; i++)
+        GetMagickPixelPacket(image,u+i);
       for (i=0; i < 16L; i++)
       {
         GetMagickPixelPacket(image,pixels+i);
