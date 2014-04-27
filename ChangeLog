@@ -6,7 +6,7 @@
   * Support new -mean-shift option.
 
 2014-04-20  6.8.9-1 Dirk Lemstra <dirk@snakeware...>
-  * Added image moments to Magick++.
+  * Added image moments and canny edge to Magick++.
   * The 8bim profile will be updated when the iptc/xmp profile is changed.
   * Fix for stack overflow in DestroyXMLTree in Windows (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25457).
