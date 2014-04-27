@@ -2034,7 +2034,8 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 %  The format of the MeanShiftImage method is:
 %
 %      Image *MeanShiftImage(const Image *image,const size_t width,
-%        const size_t height,const double distance,ExceptionInfo *exception)
+%        const size_t height,const double color_distance,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2042,17 +2043,20 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 %
 %    o width, height: find clusters as local maxima in this neighborhood.
 %
-%    o distance: the color distance.
+%    o color_distance: the color distance.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
-  const size_t height,const double distance,ExceptionInfo *exception)
+  const size_t height,const double color_distance,ExceptionInfo *exception)
 {
+#define MaxMeanShiftIterations  100
+
   CacheView
     *image_view,
-    *mean_view;
+    *mean_view,
+    *pixel_view;
 
   Image
     *mean_image;
@@ -2072,8 +2076,15 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
   mean_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (mean_image == (Image *) NULL)
     return((Image *) NULL);
+  if (SetImageStorageClass(mean_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&mean_image->exception);
+      mean_image=DestroyImage(mean_image);
+      return((Image *) NULL);
+    }
   status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(image,exception);
+  image_view=AcquireVirtualCacheView(image,exception);
+  pixel_view=AcquireVirtualCacheView(image,exception);
   mean_view=AcquireAuthenticCacheView(mean_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
@@ -2081,6 +2092,9 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
 #endif
   for (y=0; y < (ssize_t) mean_image->rows; y++)
   {
+    register const IndexPacket
+      *restrict indexes;
+
     register const PixelPacket
       *restrict p;
 
@@ -2100,14 +2114,110 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
         status=MagickFalse;
         continue;
       }
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (ssize_t) mean_image->columns; x++)
     {
-      *q=(*p);
+      MagickPixelPacket
+        mean_pixel,
+        previous_pixel;
+
+      PointInfo
+        mean_location,
+        previous_location;
+
+      register ssize_t
+        i;
+
+      GetMagickPixelPacket(image,&mean_pixel);
+      SetMagickPixelPacket(image,p,indexes+x,&mean_pixel);
+      mean_location.x=(double) x;
+      mean_location.y=(double) y;
+      for (i=0; i < MaxMeanShiftIterations; i++)
+      {
+        double
+          distance,
+          gamma;
+
+        MagickPixelPacket
+          sum_pixel;
+
+        PointInfo
+          sum_location;
+
+        ssize_t
+          count,
+          v;
+
+        sum_location.x=0.0;
+        sum_location.y=0.0;
+        GetMagickPixelPacket(image,&sum_pixel);
+        previous_location.x=mean_location.x;
+        previous_location.y=mean_location.y;
+        previous_pixel=mean_pixel;
+        count=0;
+        for (v=(-((ssize_t) height/2)); v < (((ssize_t) height/2)); v++)
+        {
+          ssize_t
+            u;
+
+          for (u=(-((ssize_t) width/2)); u < (((ssize_t) width/2)); u++)
+          {
+            PixelPacket
+              pixel;
+
+            status=GetOneCacheViewVirtualPixel(pixel_view,(ssize_t)
+              (mean_location.x+u),(ssize_t) (mean_location.y+v),&pixel,
+              exception);
+            distance=(mean_pixel.red-previous_pixel.red)*
+              (mean_pixel.red-previous_pixel.red)+
+              (mean_pixel.green-previous_pixel.green)*
+              (mean_pixel.green-previous_pixel.green)+
+              (mean_pixel.blue-previous_pixel.blue)*
+              (mean_pixel.blue-previous_pixel.blue);
+            if (distance <= (color_distance*color_distance))
+              {
+                sum_location.x+=mean_location.x+u;
+                sum_location.y+=mean_location.y+v;
+                sum_pixel.red+=pixel.red;
+                sum_pixel.green+=pixel.green;
+                sum_pixel.blue+=pixel.blue;
+                sum_pixel.opacity+=pixel.opacity;
+                count++;
+              }
+          }
+        }
+        gamma=1.0/count;
+        mean_location.x=gamma*sum_location.x;
+        mean_location.y=gamma*sum_location.y;
+        mean_pixel.red=gamma*sum_pixel.red;
+        mean_pixel.green=gamma*sum_pixel.green;
+        mean_pixel.blue=gamma*sum_pixel.blue;
+        mean_pixel.opacity=gamma*sum_pixel.opacity;
+        distance=(mean_location.x-previous_location.x)*
+          (mean_location.x-previous_location.x)+
+          (mean_location.y-previous_location.y)*
+          (mean_location.y-previous_location.y)+
+          (mean_pixel.red-previous_pixel.red)*
+          (mean_pixel.red-previous_pixel.red)+
+          (mean_pixel.green-previous_pixel.green)*
+          (mean_pixel.green-previous_pixel.green)+
+          (mean_pixel.blue-previous_pixel.blue)*
+          (mean_pixel.blue-previous_pixel.blue);
+        if (distance <= 3.0)
+          break;
+      }
+      q->red=ClampToQuantum(mean_pixel.red);
+      q->green=ClampToQuantum(mean_pixel.green);
+      q->blue=ClampToQuantum(mean_pixel.blue);
+      q->opacity=ClampToQuantum(mean_pixel.opacity);
       p++;
       q++;
     }
+    if (SyncCacheViewAuthenticPixels(mean_view,exception) == MagickFalse)
+      status=MagickFalse;
   }
   mean_view=DestroyCacheView(mean_view);
+  pixel_view=DestroyCacheView(pixel_view);
   image_view=DestroyCacheView(image_view);
   return(mean_image);
 }
