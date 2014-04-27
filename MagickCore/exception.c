@@ -152,22 +152,13 @@ static void *DestroyExceptionElement(void *exception)
 
 MagickExport void ClearMagickException(ExceptionInfo *exception)
 {
-  register ExceptionInfo
-    *p;
-
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (exception->exceptions  == (void *) NULL)
+  if (exception->exceptions == (void *) NULL)
     return;
   LockSemaphoreInfo(exception->semaphore);
-  p=(ExceptionInfo *) RemoveLastElementFromLinkedList((LinkedListInfo *)
-    exception->exceptions);
-  while (p != (ExceptionInfo *) NULL)
-  {
-    (void) DestroyExceptionElement(p);
-    p=(ExceptionInfo *) RemoveLastElementFromLinkedList((LinkedListInfo *)
-      exception->exceptions);
-  }
+  ClearLinkedList((LinkedListInfo *) exception->exceptions,
+      DestroyExceptionElement);
   exception->severity=UndefinedException;
   exception->reason=(char *) NULL;
   exception->description=(char *) NULL;
