@@ -2017,7 +2017,8 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 %  The format of the MeanShiftImage method is:
 %
 %      Image *MeanShiftImage(const Image *image,const size_t width,
-%        const size_t height,const double distance,ExceptionInfo *exception)
+%        const size_t height,const double color_distance,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2025,13 +2026,176 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 %
 %    o width, height: find clusters as local maxima in this neighborhood.
 %
-%    o distance: the color distance.
+%    o color_distance: the color distance.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
-  const size_t height,const double shift,ExceptionInfo *exception)
+  const size_t height,const double color_distance,ExceptionInfo *exception)
 {
-  return((Image *) NULL);
+#define MaxMeanShiftIterations  100
+
+  CacheView
+    *image_view,
+    *mean_view,
+    *pixel_view;
+
+  Image
+    *mean_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  mean_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  if (mean_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(mean_image,DirectClass,exception) == MagickFalse)
+    {
+      mean_image=DestroyImage(mean_image);
+      return((Image *) NULL);
+    }
+  status=MagickTrue;
+  image_view=AcquireVirtualCacheView(image,exception);
+  pixel_view=AcquireVirtualCacheView(image,exception);
+  mean_view=AcquireAuthenticCacheView(mean_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(mean_image,mean_image,mean_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) mean_image->rows; y++)
+  {
+    register const Quantum
+      *restrict p;
+
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(mean_view,0,y,mean_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) mean_image->columns; x++)
+    {
+      PixelInfo
+        mean_pixel,
+        previous_pixel;
+
+      PointInfo
+        mean_location,
+        previous_location;
+
+      register ssize_t
+        i;
+
+      GetPixelInfo(image,&mean_pixel);
+      GetPixelInfoPixel(image,p,&mean_pixel);
+      mean_location.x=(double) x;
+      mean_location.y=(double) y;
+      for (i=0; i < MaxMeanShiftIterations; i++)
+      {
+        double
+          distance,
+          gamma;
+
+        PixelInfo
+          sum_pixel;
+
+        PointInfo
+          sum_location;
+
+        ssize_t
+          count,
+          v;
+
+        sum_location.x=0.0;
+        sum_location.y=0.0;
+        GetPixelInfo(image,&sum_pixel);
+        previous_location.x=mean_location.x;
+        previous_location.y=mean_location.y;
+        previous_pixel=mean_pixel;
+        count=0;
+        for (v=(-((ssize_t) height/2)); v < (((ssize_t) height/2)); v++)
+        {
+          ssize_t
+            u;
+
+          for (u=(-((ssize_t) width/2)); u < (((ssize_t) width/2)); u++)
+          {
+            PixelInfo
+              pixel;
+
+            status=GetOneCacheViewVirtualPixelInfo(pixel_view,(ssize_t)
+              (mean_location.x+u),(ssize_t) (mean_location.y+v),&pixel,
+              exception);
+            distance=(mean_pixel.red-previous_pixel.red)*
+              (mean_pixel.red-previous_pixel.red)+
+              (mean_pixel.green-previous_pixel.green)*
+              (mean_pixel.green-previous_pixel.green)+
+              (mean_pixel.blue-previous_pixel.blue)*
+              (mean_pixel.blue-previous_pixel.blue);
+            if (distance <= (color_distance*color_distance))
+              {
+                sum_location.x+=mean_location.x+u;
+                sum_location.y+=mean_location.y+v;
+                sum_pixel.red+=pixel.red;
+                sum_pixel.green+=pixel.green;
+                sum_pixel.blue+=pixel.blue;
+                sum_pixel.alpha+=pixel.alpha;
+                count++;
+              }
+          }
+        }
+        gamma=1.0/count;
+        mean_location.x=gamma*sum_location.x;
+        mean_location.y=gamma*sum_location.y;
+        mean_pixel.red=gamma*sum_pixel.red;
+        mean_pixel.green=gamma*sum_pixel.green;
+        mean_pixel.blue=gamma*sum_pixel.blue;
+        mean_pixel.alpha=gamma*sum_pixel.alpha;
+        distance=(mean_location.x-previous_location.x)*
+          (mean_location.x-previous_location.x)+
+          (mean_location.y-previous_location.y)*
+          (mean_location.y-previous_location.y)+
+          (mean_pixel.red-previous_pixel.red)*
+          (mean_pixel.red-previous_pixel.red)+
+          (mean_pixel.green-previous_pixel.green)*
+          (mean_pixel.green-previous_pixel.green)+
+          (mean_pixel.blue-previous_pixel.blue)*
+          (mean_pixel.blue-previous_pixel.blue);
+        if (distance <= 3.0)
+          break;
+      }
+      SetPixelRed(mean_image,ClampToQuantum(mean_pixel.red),q);
+      SetPixelGreen(mean_image,ClampToQuantum(mean_pixel.green),q);
+      SetPixelBlue(mean_image,ClampToQuantum(mean_pixel.blue),q);
+      SetPixelAlpha(mean_image,ClampToQuantum(mean_pixel.alpha),q);
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(mean_image);
+    }
+    if (SyncCacheViewAuthenticPixels(mean_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  mean_view=DestroyCacheView(mean_view);
+  pixel_view=DestroyCacheView(pixel_view);
+  image_view=DestroyCacheView(image_view);
+  return(mean_image);
 }
