@@ -2188,8 +2188,8 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
           }
         }
         gamma=1.0/count;
-        mean_location.x=gamma*sum_location.x;
-        mean_location.y=gamma*sum_location.y;
+        mean_location.x=MagickRound(gamma*sum_location.x);
+        mean_location.y=MagickRound(gamma*sum_location.y);
         mean_pixel.red=gamma*sum_pixel.red;
         mean_pixel.green=gamma*sum_pixel.green;
         mean_pixel.blue=gamma*sum_pixel.blue;
