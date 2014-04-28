@@ -1904,12 +1904,12 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
             Is point a local maxima?
           */
           maxima=count;
-          for (v=(-((ssize_t) height/2)); v < (((ssize_t) height/2)); v++)
+          for (v=(-((ssize_t) height/2)); v <= (((ssize_t) height/2)); v++)
           {
             ssize_t
               u;
 
-            for (u=(-((ssize_t) width/2)); u < (((ssize_t) width/2)); u++)
+            for (u=(-((ssize_t) width/2)); u <= (((ssize_t) width/2)); u++)
             {
               if ((u != 0) || (v !=0))
                 {
@@ -2133,12 +2133,12 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
         previous_location.y=mean_location.y;
         previous_pixel=mean_pixel;
         count=0;
-        for (v=(-((ssize_t) height/2)); v < (((ssize_t) height/2)); v++)
+        for (v=(-((ssize_t) height/2)); v <= (((ssize_t) height/2)); v++)
         {
           ssize_t
             u;
 
-          for (u=(-((ssize_t) width/2)); u < (((ssize_t) width/2)); u++)
+          for (u=(-((ssize_t) width/2)); u <= (((ssize_t) width/2)); u++)
           {
             if ((v*v+u*u) <= ((width/2)*(height/2)))
               {
