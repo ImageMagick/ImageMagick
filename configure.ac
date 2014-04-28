@@ -4083,12 +4083,11 @@ Options used to compile and link:
   VERSION         = $PACKAGE_VERSION
   CC              = $CC
   CFLAGS          = $CFLAGS
-  CPPFLAGS        = $MAGICK_CPPFLAGS
-  PCFLAGS         = $MAGICK_PCFLAGS
+  CPPFLAGS        = $CPPFLAGS
+  PCFLAGS         = $PCFLAGS
   DEFS            = $DEFS
   LDFLAGS         = $LDFLAGS
-  MAGICK_LDFLAGS  = $MAGICK_LDFLAGS
-  LIBS            = $MAGICK_LIBS
+  LIBS            = $LIBS
   CXX             = $CXX
   CXXFLAGS        = $CXXFLAGS
   FEATURES        = $MAGICK_FEATURES
