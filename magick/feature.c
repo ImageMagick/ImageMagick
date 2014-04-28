@@ -2168,8 +2168,8 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
                   pixel;
 
                 status=GetOneCacheViewVirtualPixel(pixel_view,(ssize_t)
-                  MagickRound(mean_location.x+u),(ssize_t) MagickRound(
-                  mean_location.y+v),&pixel,exception);
+                  (mean_location.x+u),(ssize_t) (mean_location.y+v),&pixel,
+                  exception);
                 distance=(mean_pixel.red-previous_pixel.red)*
                   (mean_pixel.red-pixel.red)+(mean_pixel.green-pixel.green)*
                   (mean_pixel.green-pixel.green)+(mean_pixel.blue-pixel.blue)*
@@ -2188,8 +2188,8 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
           }
         }
         gamma=1.0/count;
-        mean_location.x=gamma*sum_location.x;
-        mean_location.y=gamma*sum_location.y;
+        mean_location.x=MagickRound(gamma*sum_location.x);
+        mean_location.y=MagickRound(gamma*sum_location.y);
         mean_pixel.red=gamma*sum_pixel.red;
         mean_pixel.green=gamma*sum_pixel.green;
         mean_pixel.blue=gamma*sum_pixel.blue;
