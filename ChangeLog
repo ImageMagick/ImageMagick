@@ -12,6 +12,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25457).
   * Added new coder for VIPS image format (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=25445).
+  * Moved detection of type to a separate method in Magick++. The type() method
+    no longer modifies the type of the image. Use determineType() instead.
 
 2014-04-11  6.8.9-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-0, SVN revision 15441.
