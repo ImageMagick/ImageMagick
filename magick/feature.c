@@ -2162,7 +2162,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
 
           for (u=(-((ssize_t) width/2)); u <= (((ssize_t) width/2)); u++)
           {
-            if ((v*v+u*u) <= ((width/2)*(height/2)))
+            if ((v*v+u*u) <= (ssize_t) ((width/2)*(height/2)))
               {
                 PixelPacket
                   pixel;
