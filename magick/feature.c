@@ -2171,11 +2171,11 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
                   (mean_location.x+u),(ssize_t) (mean_location.y+v),&pixel,
                   exception);
                 distance=(mean_pixel.red-previous_pixel.red)*
-                  (mean_pixel.red-previous_pixel.red)+
-                  (mean_pixel.green-previous_pixel.green)*
-                  (mean_pixel.green-previous_pixel.green)+
-                  (mean_pixel.blue-previous_pixel.blue)*
-                  (mean_pixel.blue-previous_pixel.blue);
+                  (mean_pixel.red-pixel.red)+
+                  (mean_pixel.green-pixel.green)*
+                  (mean_pixel.green-pixel.green)+
+                  (mean_pixel.blue-pixel.blue)*
+                  (mean_pixel.blue-pixel.blue);
                 if (distance <= (color_distance*color_distance))
                   {
                     sum_location.x+=mean_location.x+u;
