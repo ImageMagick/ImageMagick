@@ -1555,15 +1555,12 @@ void Magick::Image::transformSkewY(const double skewy_)
 
 Magick::ImageType Magick::Image::type(void) const
 {
-  ImageType
-    image_type;
-
-  GetPPException;
-  image_type=constOptions()->type();
-  if (image_type == UndefinedType)
-    image_type=GetImageType(constImage(),&exceptionInfo);
-  ThrowPPException;
-  return image_type;
+  if (constOptions()->type() != UndefinedType)
+    return(constOptions()->type());
+  else if (constImage()->type != UndefinedType)
+    return(constImage()->type);
+  else
+    return(determineType());
 }
 
 void Magick::Image::type(const Magick::ImageType type_)
@@ -2636,6 +2633,17 @@ void Magick::Image::despeckle(void)
   newImage=DespeckleImage(constImage(),&exceptionInfo);
   replaceImage(newImage);
   ThrowPPException;
+}
+
+Magick::ImageType Magick::Image::determineType(void) const
+{
+  ImageType
+    image_type;
+
+  GetPPException;
+  image_type=GetImageType(constImage(),&exceptionInfo);
+  ThrowPPException;
+  return(image_type);
 }
 
 void Magick::Image::display(void)
