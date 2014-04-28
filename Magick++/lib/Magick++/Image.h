@@ -830,6 +830,10 @@ namespace Magick
     // Despeckle image (reduce speckle noise)
     void despeckle(void);
 
+    // Determines the color type of the image. This method can be used to
+    // automaticly make the type GrayScale.
+    ImageType determineType(void) const;
+
     // Display image on screen
     void display(void);
 
