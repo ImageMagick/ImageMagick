@@ -2184,7 +2184,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
           (mean_pixel.green-previous_pixel.green)+
           (mean_pixel.blue-previous_pixel.blue)*
           (mean_pixel.blue-previous_pixel.blue);
-        if (distance <= 3.0)
+        if (distance <= (double) ScaleCharToQuantum(3))
           break;
       }
       SetPixelRed(mean_image,ClampToQuantum(mean_pixel.red),q);
