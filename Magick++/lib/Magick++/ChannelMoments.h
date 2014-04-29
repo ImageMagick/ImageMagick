@@ -29,13 +29,18 @@ namespace Magick
     //
     // Implemementation methods
     //
-    ChannelMoments(const MagickCore::ChannelMoments *channelMoments_);
+
+    ChannelMoments(const ChannelType channel_,
+      const MagickCore::ChannelMoments *channelMoments_);
 
     // X position of centroid
     double centroidX(void) const;
 
     // Y position of centroid
     double centroidY(void) const;
+
+    // The channel
+    ChannelType channel(void) const;
 
     // X position of ellipse axis
     double ellipseAxisX(void) const;
@@ -57,6 +62,7 @@ namespace Magick
 
   private:
     std::vector<double> _huInvariants;
+    ChannelType _channel;
     double _centroidX;
     double _centroidY;
     double _ellipseAxisX;
@@ -66,6 +72,30 @@ namespace Magick
     double _ellipseIntensity;
   };
 
+  class MagickPPExport ImageMoments
+  {
+  public:
+
+    // Default constructor
+    ImageMoments(void);
+
+    // Copy constructor
+    ImageMoments(const ImageMoments &imageMoments_);
+
+    // Destroy image moments
+    ~ImageMoments(void);
+
+    // Returns the moments for the specified channel
+    ChannelMoments channel(const ChannelType channel_=CompositeChannels) const;
+
+    //
+    // Implemementation methods
+    //
+    ImageMoments(const MagickCore::Image *image_);
+
+  private:
+    std::vector<ChannelMoments> _channels;
+  };
 }
 
 #endif // Magick_ChannelMoments_header
