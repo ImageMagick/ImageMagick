@@ -2151,8 +2151,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
         sum_location.x=0.0;
         sum_location.y=0.0;
         GetMagickPixelPacket(image,&sum_pixel);
-        previous_location.x=mean_location.x;
-        previous_location.y=mean_location.y;
+        previous_location=mean_location;
         previous_pixel=mean_pixel;
         count=0;
         for (v=(-((ssize_t) height/2)); v <= (((ssize_t) height/2)); v++)
