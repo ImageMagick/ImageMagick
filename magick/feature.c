@@ -2194,9 +2194,9 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
         mean_pixel.blue=gamma*sum_pixel.blue;
         mean_pixel.opacity=gamma*sum_pixel.opacity;
         distance=(mean_location.x-previous_location.x)*
-          QuantumScale*(mean_location.x-previous_location.x)+
-          QuantumScale*(mean_location.y-previous_location.y)*
-          QuantumScale*(mean_location.y-previous_location.y)+
+          (mean_location.x-previous_location.x)+
+          (mean_location.y-previous_location.y)*
+          (mean_location.y-previous_location.y)+
           QuantumScale*(mean_pixel.red-previous_pixel.red)*
           QuantumScale*(mean_pixel.red-previous_pixel.red)+
           QuantumScale*(mean_pixel.green-previous_pixel.green)*
