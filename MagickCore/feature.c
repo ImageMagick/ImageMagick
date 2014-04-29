@@ -2175,12 +2175,12 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
           (mean_location.x-previous_location.x)+
           (mean_location.y-previous_location.y)*
           (mean_location.y-previous_location.y)+
-          QuantumScale*(mean_pixel.red-previous_pixel.red)*
-          QuantumScale*(mean_pixel.red-previous_pixel.red)+
-          QuantumScale*(mean_pixel.green-previous_pixel.green)*
-          QuantumScale*(mean_pixel.green-previous_pixel.green)+
-          QuantumScale*(mean_pixel.blue-previous_pixel.blue)*
-          QuantumScale*(mean_pixel.blue-previous_pixel.blue);
+          255.0*QuantumScale*(mean_pixel.red-previous_pixel.red)*
+          255.0*QuantumScale*(mean_pixel.red-previous_pixel.red)+
+          255.0*QuantumScale*(mean_pixel.green-previous_pixel.green)*
+          255.0*QuantumScale*(mean_pixel.green-previous_pixel.green)+
+          255.0*QuantumScale*(mean_pixel.blue-previous_pixel.blue)*
+          255.0*QuantumScale*(mean_pixel.blue-previous_pixel.blue);
         if (distance <= 3.0)
           break;
       }
