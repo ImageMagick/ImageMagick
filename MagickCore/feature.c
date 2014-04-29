@@ -2024,7 +2024,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 %
 %    o image: the image.
 %
-%    o width, height: find clusters as local maxima in this neighborhood.
+%    o width, height: find pixels in this neighborhood.
 %
 %    o color_distance: the color distance.
 %
@@ -2148,10 +2148,9 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
                 status=GetOneCacheViewVirtualPixelInfo(pixel_view,(ssize_t)
                   (mean_location.x+u),(ssize_t) (mean_location.y+v),&pixel,
                   exception);
-                distance=(mean_pixel.red-previous_pixel.red)*
-                  (mean_pixel.red-pixel.red)+(mean_pixel.green-pixel.green)*
-                  (mean_pixel.green-pixel.green)+(mean_pixel.blue-pixel.blue)*
-                  (mean_pixel.blue-pixel.blue);
+                distance=(mean_pixel.red-pixel.red)*(mean_pixel.red-pixel.red)+
+                  (mean_pixel.green-pixel.green)*(mean_pixel.green-pixel.green)+
+                  (mean_pixel.blue-pixel.blue)*(mean_pixel.blue-pixel.blue);
                 if (distance <= (color_distance*color_distance))
                   {
                     sum_location.x+=mean_location.x+u;
@@ -2166,7 +2165,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
           }
         }
         gamma=1.0/count;
-        mean_location.x=MagickRound(gamma*sum_location.x):
+        mean_location.x=MagickRound(gamma*sum_location.x);
         mean_location.y=MagickRound(gamma*sum_location.y);
         mean_pixel.red=gamma*sum_pixel.red;
         mean_pixel.green=gamma*sum_pixel.green;
@@ -2176,13 +2175,13 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
           (mean_location.x-previous_location.x)+
           (mean_location.y-previous_location.y)*
           (mean_location.y-previous_location.y)+
-          (mean_pixel.red-previous_pixel.red)*
-          (mean_pixel.red-previous_pixel.red)+
-          (mean_pixel.green-previous_pixel.green)*
-          (mean_pixel.green-previous_pixel.green)+
-          (mean_pixel.blue-previous_pixel.blue)*
-          (mean_pixel.blue-previous_pixel.blue);
-        if (distance <= (double) ScaleCharToQuantum(3))
+          QuantumScale*(mean_pixel.red-previous_pixel.red)*
+          QuantumScale*(mean_pixel.red-previous_pixel.red)+
+          QuantumScale*(mean_pixel.green-previous_pixel.green)*
+          QuantumScale*(mean_pixel.green-previous_pixel.green)+
+          QuantumScale*(mean_pixel.blue-previous_pixel.blue)*
+          QuantumScale*(mean_pixel.blue-previous_pixel.blue);
+        if (distance <= 3.0)
           break;
       }
       SetPixelRed(mean_image,ClampToQuantum(mean_pixel.red),q);
