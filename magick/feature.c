@@ -242,6 +242,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   const double sigma,const double lower_percent,const double upper_percent,
   ExceptionInfo *exception)
 {
+#define CannyEdgeImageTag  "CannyEdge/Image"
+
   CacheView
     *edge_view;
 
@@ -265,6 +267,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   MatrixInfo
     *canny_cache;
@@ -415,6 +420,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     Non-maxima suppression, remove pixels that are not considered to be part
     of an edge.
   */
+  progress=0;
   (void) GetMatrixElement(canny_cache,0,0,&pixel);
   max=pixel.intensity;
   min=pixel.intensity;
@@ -509,6 +515,19 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     }
     if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
       status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_CannyEdgeImage)
+#endif
+        proceed=SetImageProgress(image,CannyEdgeImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   edge_view=DestroyCacheView(edge_view);
   /*
@@ -1761,6 +1780,8 @@ static inline double MagickRound(double x)
 MagickExport Image *HoughLineImage(const Image *image,const size_t width,
   const size_t height,const size_t threshold,ExceptionInfo *exception)
 {
+#define HoughLineImageTag  "HoughLine/Image"
+
   CacheView
     *image_view;
 
@@ -1785,6 +1806,9 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   MatrixInfo
     *accumulator;
@@ -1826,6 +1850,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
     Populate the accumulator.
   */
   status=MagickTrue;
+  progress=0;
   center.x=(double) image->columns/2.0;
   center.y=(double) image->rows/2.0;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1869,6 +1894,19 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
         }
       p++;
     }
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_HoughLineImage)
+#endif
+        proceed=SetImageProgress(image,HoughLineImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
@@ -2051,8 +2089,8 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
   const size_t height,const double color_distance,ExceptionInfo *exception)
 {
-#define MeanShiftImageTag  "MeanShift/Image"
 #define MaxMeanShiftIterations  100
+#define MeanShiftImageTag  "MeanShift/Image"
 
   CacheView
     *image_view,
@@ -2225,7 +2263,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MeanShiftImageChannel)
+        #pragma omp critical (MagickCore_MeanShiftImage)
 #endif
         proceed=SetImageProgress(image,MeanShiftImageTag,progress++,
           image->rows);
