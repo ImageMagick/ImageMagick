@@ -2035,6 +2035,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
   const size_t height,const double color_distance,ExceptionInfo *exception)
 {
 #define MaxMeanShiftIterations  100
+#define MeanShiftImageTag  "MeanShift/Image"
 
   CacheView
     *image_view,
@@ -2046,6 +2047,9 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
 
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   ssize_t
     y;
@@ -2065,11 +2069,12 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
       return((Image *) NULL);
     }
   status=MagickTrue;
+  progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
   pixel_view=AcquireVirtualCacheView(image,exception);
   mean_view=AcquireAuthenticCacheView(mean_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
+  #pragma omp parallel for schedule(static,4) shared(status,progress) \
     magick_threads(mean_image,mean_image,mean_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) mean_image->rows; y++)
@@ -2192,6 +2197,19 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
     }
     if (SyncCacheViewAuthenticPixels(mean_view,exception) == MagickFalse)
       status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_MeanShiftImage)
+#endif
+        proceed=SetImageProgress(image,MeanShiftImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   mean_view=DestroyCacheView(mean_view);
   pixel_view=DestroyCacheView(pixel_view);
