@@ -784,6 +784,8 @@ static const OptionInfo
     { "-window-group", 1L, NonMagickOptionFlag, MagickFalse },
     { "+write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { "-write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
+    { "+xyyz", 1L, DeprecateOptionFlag, MagickTrue },  /* padding */
+    { "-xyyz", 1L, SimpleOperatorFlag, MagickTrue },  /* padding */
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   },
   ComposeOptions[] =
