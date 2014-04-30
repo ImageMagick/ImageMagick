@@ -1748,7 +1748,16 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  HoughLineImage() identifies lines in the image.
+%  Use HoughLineImage() in conjunction with any binary edge extracted image (we
+%  recommand Canny) to identify lines in the image.  The algorithm accumulates
+%  counts for every white pixel for every possible orientation (for angles from
+%  0 to 179 in 1 degree increments) and distance from the center of the image to
+%  the corner (in 1 px increments) and stores the counts in an accumulator matrix
+%  of angle vs distance. The size of the accumulator is 180x(diagonal/2). Next
+%  it searches this space for peaks in counts and converts the locations of the
+%  peaks to slope and intercept in the normal x,y input image space. Use the
+%  slope/intercepts to find the endpoints clipped to the bounds of the image. The
+%  lines are then drawn. The counts are a measure of the length of the lines
 %
 %  The format of the HoughLineImage method is:
 %
