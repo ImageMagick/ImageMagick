@@ -1,5 +1,8 @@
 2014-04-22  6.8.9-1 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed bug with the PNG00 subformat when the original format was PNG32.
+  * The "-strip" option now only removes profiles and comments from PNG
+    output.  Previously the background, density, and other metadata were
+    also discarded.
 
 2014-04-22  6.8.9-1 Cristy  <quetzlzacatenango@image...>
   * Support new -hough-lines option.
