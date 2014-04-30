@@ -2050,7 +2050,17 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MeanShiftImage() delineate arbitrarily shaped clusters in the image.
+%  MeanShiftImage() delineate arbitrarily shaped clusters in the image. For
+%  each pixel, it visits all the pixels in the neighborhood specified by
+%  the window centered at the pixel and excludes those that are outside the
+%  radius=(window-1)/2 surrounding the pixel. From those pixels, it finds those
+%  that are within the specified color distance from the current mean, and
+%  computes a new x,y centroid from those coordinates and a new mean. This new
+%  x,y centroid is used as the center for a new window. This process iterates
+%  until it converges and the final mean is replaces the (original window
+%  center) pixel value. It repeats this process for the next pixel, etc., 
+%  until it processes all pixels in the image. Results are typically better with
+%  colorspaces other than sRGB. We recommend YIQ, YUV or YCbCr.
 %
 %  The format of the MeanShiftImage method is:
 %
