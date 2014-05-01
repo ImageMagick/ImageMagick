@@ -144,7 +144,7 @@ testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Opaque.miff', '
 testFilterCompare('input.miff',  q//, 'reference/filter/Quantize.miff', 'Quantize', q//, 0.2, 1.03);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/RadialBlur.miff', 'RadialBlur', q/10/, 0.002, 0.02);
+testFilterCompare('input.miff',  q//, 'reference/filter/RadialBlur.miff', 'RadialBlur', q/10/, 0.004, 0.4);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Raise.miff', 'Raise', q/'10x10'/, 0.002, 0.02);
