@@ -926,7 +926,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read DPX film header.
       */
       offset+=ReadBlob(image,sizeof(dpx.film.id),(unsigned char *) dpx.film.id);
-      if (*dpx.film.type != '\0')
+      if (*dpx.film.id != '\0')
         (void) FormatImageProperty(image,"dpx:film.id","%.2s",dpx.film.id);
       offset+=ReadBlob(image,sizeof(dpx.film.type),(unsigned char *)
         dpx.film.type);

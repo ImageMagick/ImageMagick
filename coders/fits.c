@@ -167,8 +167,8 @@ static inline double GetFITSPixel(Image *image,int bits_per_pixel)
   return(ReadBlobDouble(image));
 }
 
-static void GetFITSPixelExtrema(Image *image,const int bits_per_pixel,
-  double *minima,double *maxima)
+static MagickOffsetType GetFITSPixelExtrema(Image *image,
+  const int bits_per_pixel,double *minima,double *maxima)
 {
   double
     pixel;
@@ -183,6 +183,8 @@ static void GetFITSPixelExtrema(Image *image,const int bits_per_pixel,
     i;
 
   offset=TellBlob(image);
+  if (offset == -1)
+    return(-1);
   number_pixels=(MagickSizeType) image->columns*image->rows;
   *minima=GetFITSPixel(image,bits_per_pixel);
   *maxima=(*minima);
@@ -194,7 +196,7 @@ static void GetFITSPixelExtrema(Image *image,const int bits_per_pixel,
     if (pixel > *maxima)
       *maxima=pixel;
   }
-  (void) SeekBlob(image,offset,SEEK_SET);
+  return(SeekBlob(image,offset,SEEK_SET));
 }
 
 static inline double GetFITSPixelRange(const size_t depth)
@@ -428,7 +430,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
       {
         if (fits_info.zero == 0.0)
-          GetFITSPixelExtrema(image,fits_info.bits_per_pixel,
+          (void) GetFITSPixelExtrema(image,fits_info.bits_per_pixel,
             &fits_info.min_data,&fits_info.max_data);
         else
           fits_info.max_data=GetFITSPixelRange((size_t)

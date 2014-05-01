@@ -448,7 +448,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                     r+=GetPixelChannels(image);
                   }
 
-                              SyncAuthenticPixels(image,exception);
+                              (void) SyncAuthenticPixels(image,exception);
                         }
         }
         q=(unsigned char *) RelinquishMagickMemory(q);

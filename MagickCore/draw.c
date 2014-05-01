@@ -1536,7 +1536,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
       {
         offset-=length;
         n++;
-        length=scale*(draw_info->dash_pattern[n]+(n == 0 ? -0.5 : 0.5));
+        length=scale*(draw_info->dash_pattern[n]+0.5);
         continue;
       }
     if (offset < length)

@@ -1220,7 +1220,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
         length=2UL*(bytes_per_line+2UL)+2UL;
         dib_data=(unsigned char *) AcquireQuantumMemory(length,
           (image->rows+2UL)*sizeof(*dib_data));
-        if (pixels == (unsigned char *) NULL)
+        if (dib_data == (unsigned char *) NULL)
           {
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1256,7 +1256,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
             Dump colormap to file.
           */
           dib_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
-            (1UL << dib_info.bits_per_pixel),4*sizeof(dib_colormap));
+            (1UL << dib_info.bits_per_pixel),4*sizeof(*dib_colormap));
           if (dib_colormap == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           q=dib_colormap;
