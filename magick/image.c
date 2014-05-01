@@ -3352,6 +3352,9 @@ MagickExport Image *SmushImages(const Image *images,
 */
 MagickExport MagickBooleanType StripImage(Image *image)
 {
+  MagickBooleanType
+    status;
+
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -3359,9 +3362,9 @@ MagickExport MagickBooleanType StripImage(Image *image)
   (void) DeleteImageProperty(image,"comment");
   (void) DeleteImageProperty(image,"date:create");
   (void) DeleteImageProperty(image,"date:modify");
-  (void) SetImageArtifact(image,"png:exclude-chunk",
+  status=SetImageArtifact(image,"png:exclude-chunk",
     "EXIF,iCCP,iTXt,sRGB,tEXt,zCCP,zTXt,date");
-  return(MagickTrue);
+  return(status);
 }
 
 /*
