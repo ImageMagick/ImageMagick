@@ -1293,11 +1293,10 @@ MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
     }
   if (status != Z_OK)
     ThrowBinaryException(CoderError,"UnableToZipCompressImage",image->filename)
-  else
-    for (i=0; i < (ssize_t) compress_packets; i++)
-      (void) WriteBlobByte(image,compress_pixels[i]);
+  for (i=0; i < (ssize_t) compress_packets; i++)
+    (void) WriteBlobByte(image,compress_pixels[i]);
   compress_pixels=(unsigned char *) RelinquishMagickMemory(compress_pixels);
-  return(status == Z_OK ? MagickTrue : MagickFalse);
+  return(MagickTrue);
 }
 #else
 MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,

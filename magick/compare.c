@@ -1314,7 +1314,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   if (image_phash == (ChannelPerceptualHash *) NULL)
     return(MagickFalse);
   reconstruct_phash=GetImageChannelPerceptualHash(reconstruct_image,exception);
-  if (image_phash == (ChannelPerceptualHash *) NULL)
+  if (reconstruct_phash == (ChannelPerceptualHash *) NULL)
     {
       image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
       return(MagickFalse);

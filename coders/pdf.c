@@ -2232,7 +2232,7 @@ RestoreMSCWarning
                 *q++=ScaleQuantumToChar(GetPixelRed(p));
                 *q++=ScaleQuantumToChar(GetPixelGreen(p));
                 *q++=ScaleQuantumToChar(GetPixelBlue(p));
-                if (image->colorspace == CMYKColorspace)
+                if (tile_image->colorspace == CMYKColorspace)
                   *q++=ScaleQuantumToChar(GetPixelIndex(indexes+x));
                 p++;
               }

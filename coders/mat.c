@@ -486,6 +486,7 @@ z_stream zip_info;
 FILE *mat_file;
 size_t magick_size;
 size_t extent;
+int file;
 
 int status;
 
@@ -506,7 +507,10 @@ int status;
     return NULL;
   }
 
-  mat_file = fdopen(AcquireUniqueFileResource(clone_info->filename),"w");
+  mat_file=0;
+  file = AcquireUniqueFileResource(clone_info->filename);
+  if (file != -1)
+    mat_file = fdopen(file,"w");
   if(!mat_file)
   {
     RelinquishMagickMemory(CacheBlock);
