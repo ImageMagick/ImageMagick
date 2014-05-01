@@ -1039,7 +1039,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
         Initialize default viewing parameters.
       */
       contrast=1.0;
-      contrast_valid=MagickFalse;
+      contrast_valid=MagickTrue;
       color_twist.byy=1.0;
       color_twist.byc1=0.0;
       color_twist.byc2=0.0;
@@ -1056,16 +1056,16 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
       color_twist.dummy5_zero=0.0;
       color_twist.dummy6_zero=0.0;
       color_twist.dummy7_one=1.0;
-      color_twist_valid=MagickFalse;
+      color_twist_valid=MagickTrue;
       sharpen=0.0;
-      sharpen_valid=MagickFalse;
+      sharpen_valid=MagickTrue;
       aspect_ratio=(double) image->columns/image->rows;
-      aspect_ratio_valid=MagickFalse;
+      aspect_ratio_valid=MagickTrue;
       view_rect.left=(float) 0.1;
       view_rect.width=aspect_ratio-0.2;
       view_rect.top=(float) 0.1;
       view_rect.height=(float) 0.8; /* 1.0-0.2 */
-      view_rect_valid=MagickFalse;
+      view_rect_valid=MagickTrue;
       affine.a11=1.0;
       affine.a12=0.0;
       affine.a13=0.0;
@@ -1082,7 +1082,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
       affine.a42=0.0;
       affine.a43=0.0;
       affine.a44=1.0;
-      affine_valid=MagickFalse;
+      affine_valid=MagickTrue;
       if (0)
         {
           /*
@@ -1093,37 +1093,37 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
           SetColorBalance(0.5,1.0,1.0,&color_twist);
           color_twist_valid=MagickTrue;
         }
-      if (affine_valid)
+      if (affine_valid != MagickFalse)
         {
           fpx_status=FPX_SetImageAffineMatrix(flashpix,&affine);
           if (fpx_status != FPX_OK)
             ThrowWriterException(DelegateError,"UnableToSetAffineMatrix");
         }
-      if (aspect_ratio_valid)
+      if (aspect_ratio_valid != MagickFalse)
         {
           fpx_status=FPX_SetImageResultAspectRatio(flashpix,&aspect_ratio);
           if (fpx_status != FPX_OK)
             ThrowWriterException(DelegateError,"UnableToSetAspectRatio");
         }
-      if (color_twist_valid)
+      if (color_twist_valid != MagickFalse)
         {
           fpx_status=FPX_SetImageColorTwistMatrix(flashpix,&color_twist);
           if (fpx_status != FPX_OK)
             ThrowWriterException(DelegateError,"UnableToSetColorTwist");
         }
-      if (contrast_valid)
+      if (contrast_valid != MagickFalse)
         {
           fpx_status=FPX_SetImageContrastAdjustment(flashpix,&contrast);
           if (fpx_status != FPX_OK)
             ThrowWriterException(DelegateError,"UnableToSetContrast");
         }
-      if (sharpen_valid)
+      if (sharpen_valid != MagickFalse)
         {
           fpx_status=FPX_SetImageFilteringValue(flashpix,&sharpen);
           if (fpx_status != FPX_OK)
             ThrowWriterException(DelegateError,"UnableToSetFilteringValue");
         }
-      if (view_rect_valid)
+      if (view_rect_valid != MagickFalse)
         {
           fpx_status=FPX_SetImageROI(flashpix,&view_rect);
           if (fpx_status != FPX_OK)

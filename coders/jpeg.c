@@ -577,9 +577,9 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   for (i=0; i < 10; i++)
     magick[i]=(char) GetCharacter(jpeg_info);
   magick[10]='\0';
+  length-=10;
   if (length <= 10)
     return(TRUE);
-  length-=10;
   if (LocaleCompare(magick,"Photoshop ") != 0)
     {
       /*

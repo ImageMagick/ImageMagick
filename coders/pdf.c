@@ -2241,7 +2241,7 @@ RestoreMSCWarning
                 *q++=ScaleQuantumToChar(GetPixelRed(tile_image,p));
                 *q++=ScaleQuantumToChar(GetPixelGreen(tile_image,p));
                 *q++=ScaleQuantumToChar(GetPixelBlue(tile_image,p));
-                if (image->colorspace == CMYKColorspace)
+                if (tile_image->colorspace == CMYKColorspace)
                   *q++=ScaleQuantumToChar(GetPixelBlack(tile_image,p));
                 p+=GetPixelChannels(tile_image);
               }

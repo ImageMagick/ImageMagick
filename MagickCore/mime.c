@@ -382,7 +382,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
     }
     p=(const MimeInfo *) GetNextValueInLinkedList(mime_cache);
   }
-  if (p != (const MimeInfo *) NULL)
+  if (mime_info != (const MimeInfo *) NULL)
     (void) InsertValueInLinkedList(mime_cache,0,
       RemoveElementByValueFromLinkedList(mime_cache,p));
   UnlockSemaphoreInfo(mime_semaphore);

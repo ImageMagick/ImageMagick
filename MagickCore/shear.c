@@ -759,13 +759,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   rotate_view=AcquireAuthenticCacheView(rotate_image,exception);
   switch (rotations)
   {
-    case 0:
-    {
-      /*
-        Rotate 0 degrees.
-      */
-      break;
-    }
     case 1:
     {
       size_t
@@ -1104,6 +1097,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
       break;
     }
+    default:
+      break;
   }
   rotate_view=DestroyCacheView(rotate_view);
   image_view=DestroyCacheView(image_view);

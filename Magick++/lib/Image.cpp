@@ -590,7 +590,7 @@ void Magick::Image::colorMapSize(const size_t entries_)
 
   modifyImage();
   GetPPException;
-  AcquireImageColormap(image(),entries_,&exceptionInfo);
+  (void) AcquireImageColormap(image(),entries_,&exceptionInfo);
   ThrowPPException;
 }
 
@@ -2768,7 +2768,7 @@ void Magick::Image::erase(void)
 {
   modifyImage();
   GetPPException;
-  SetImageBackgroundColor(image(),&exceptionInfo);
+  (void) SetImageBackgroundColor(image(),&exceptionInfo);
   ThrowPPException;
 }
 
@@ -4468,7 +4468,7 @@ void Magick::Image::swirl(const double degrees_)
 void Magick::Image::syncPixels(void)
 {
   GetPPException;
-  (*SyncAuthenticPixels)(image(),&exceptionInfo);
+  (void) (*SyncAuthenticPixels)(image(),&exceptionInfo);
   ThrowPPException;
 }
 

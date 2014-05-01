@@ -3591,7 +3591,7 @@ MagickPrivate int XConfirmWidget(Display *display,XWindows *windows,
             /*
               Dismiss button status changed.
             */
-            dismiss_info.raised=cancel_info.raised == MagickFalse ?
+            dismiss_info.raised=dismiss_info.raised == MagickFalse ?
               MagickTrue : MagickFalse;
             XDrawBeveledButton(display,&windows->widget,&dismiss_info);
             break;
