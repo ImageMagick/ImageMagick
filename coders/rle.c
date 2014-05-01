@@ -223,7 +223,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bits_per_pixel=1UL*ReadBlobByte(image);
     number_colormaps=1UL*ReadBlobByte(image);
     one=1;
-    map_length=one << ReadBlobByte(image);
+    map_length=one << (unsigned char) ReadBlobByte(image);
     if ((number_planes == 0) || (number_planes == 2) || (bits_per_pixel != 8) ||
         (image->columns == 0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");

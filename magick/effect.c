@@ -2353,8 +2353,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) FormatLocaleString(factor,MaxTextExtent,"100,%g",
-          2.0*percentage);
+        (void) FormatLocaleString(factor,MaxTextExtent,"100,%g",2.0*percentage);
         (void) ModulateImage(preview_image,factor);
         (void) FormatLocaleString(label,MaxTextExtent,"modulate %s",factor);
         break;
@@ -2481,7 +2480,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           }
           case 5:
           {
-            (void) CopyMagickString(factor,"Poisson",MaxTextExtent);
+            (void) CopyMagickString(factor,"poisson",MaxTextExtent);
             break;
           }
           default:

@@ -513,7 +513,7 @@ void Magick::Image::colorMapSize(const size_t entries_)
       "Colormap entries must not exceed MaxColormapSize");
 
   modifyImage();
-  AcquireImageColormap(image(),entries_);
+  (void) AcquireImageColormap(image(),entries_);
 }
 
 size_t Magick::Image::colorMapSize(void)
@@ -2669,7 +2669,7 @@ void Magick::Image::equalize(void)
 void Magick::Image::erase(void)
 {
   modifyImage();
-  SetImageBackgroundColor(image());
+  (void) SetImageBackgroundColor(image());
   throwImageException();
 }
 
@@ -4359,7 +4359,7 @@ void Magick::Image::swirl(const double degrees_)
 void Magick::Image::syncPixels(void)
 {
   GetPPException;
-  (*SyncAuthenticPixels)(image(),&exceptionInfo);
+  (void) (*SyncAuthenticPixels)(image(),&exceptionInfo);
   ThrowPPException;
 }
 

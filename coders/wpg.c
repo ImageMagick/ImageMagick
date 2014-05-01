@@ -752,7 +752,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   clone_info->length=0;
 
   /* Obtain temporary file */
-  AcquireUniqueFilename(postscript_file);
+  (void) AcquireUniqueFilename(postscript_file);
   ps_file=fopen_utf8(postscript_file,"wb");
   if (ps_file == (FILE *) NULL)
     goto FINISH;
