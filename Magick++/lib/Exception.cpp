@@ -172,6 +172,15 @@ Magick::ErrorOption::~ErrorOption() throw()
 {
 }
 
+Magick::ErrorPolicy::~ErrorPolicy() throw()
+{
+}
+
+Magick::ErrorPolicy::ErrorPolicy(const std::string& what_)
+  : Error(what_)
+{
+}
+
 Magick::ErrorRegistry::ErrorRegistry(const std::string& what_)
   : Error(what_)
 {
@@ -358,6 +367,15 @@ Magick::WarningRegistry::WarningRegistry(const std::string& what_)
 {
 }
 
+Magick::WarningPolicy::~WarningPolicy() throw()
+{
+}
+
+Magick::WarningPolicy::WarningPolicy(const std::string& what_)
+  : Warning(what_)
+{
+}
+
 Magick::WarningRegistry::~WarningRegistry() throw()
 {
 }
@@ -518,6 +536,11 @@ MagickPPExport void Magick::throwException(ExceptionInfo &exception_)
       throw ErrorOption(message);
     case OptionWarning:
       throw WarningOption(message);
+    case PolicyWarning:
+      throw WarningPolicy(message);
+    case PolicyError:
+    case PolicyFatalError:
+      throw ErrorPolicy(message);
     case RegistryError:
     case RegistryFatalError:
       throw ErrorRegistry(message);
