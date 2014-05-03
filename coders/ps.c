@@ -114,15 +114,55 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static int MagickDLLCall PostscriptDelegateMessage(void *handle,
+  const char *msg,int len)
+{
+  char
+    **messages;
+
+  size_t offset;
+
+  offset=0;
+  messages=(char **)handle;
+  if (*messages == (char *) NULL)
+    *messages=(char *) AcquireQuantumMemory(len+1,sizeof(char *));
+  else
+    {
+      offset=strlen(*messages);
+      *messages=(char *) ResizeQuantumMemory(*messages,offset+len+1,
+        sizeof(char *));
+    }
+  (void) memcpy(*messages+offset,msg,len);
+  (*messages)[offset+len] ='\0';
+  return(len);
+}
+
 static MagickBooleanType InvokePostscriptDelegate(
   const MagickBooleanType verbose,const char *command,ExceptionInfo *exception)
 {
+#define SetArgsStart \
+  if (args_start == (const char *) NULL) \
+    { \
+      if (command[0] != '"') \
+        args_start=strchr(command,' '); \
+      else \
+        { \
+          args_start=strchr(command+1,'"'); \
+          if (args_start != (const char *) NULL) \
+            args_start++; \
+        } \
+    }
+
+  const char
+    *args_start=NULL;
+
   int
     status;
 
 #if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
   char
-    **argv;
+    **argv,
+    *errors;
 
   const GhostInfo
     *ghost_info;
@@ -145,15 +185,18 @@ static MagickBooleanType InvokePostscriptDelegate(
 
   ghost_info=(&ghost_info_struct);
   (void) ResetMagickMemory(&ghost_info,0,sizeof(ghost_info));
+  ghost_info_struct.delete_instance=(void (*)(gs_main_instance *))
+    gsapi_delete_instance;
+  ghost_info_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
   ghost_info_struct.new_instance=(int (*)(gs_main_instance **,void *))
     gsapi_new_instance;
   ghost_info_struct.init_with_args=(int (*)(gs_main_instance *,int,char **))
     gsapi_init_with_args;
   ghost_info_struct.run_string=(int (*)(gs_main_instance *,const char *,int,
     int *)) gsapi_run_string;
-  ghost_info_struct.delete_instance=(void (*)(gs_main_instance *))
-    gsapi_delete_instance;
-  ghost_info_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
+  ghost_info_struct.set_stdio=(int (*)(gs_main_instance *,int(*)(void *,char *,
+    int),int(*)(void *,const char *,int),int(*)(void *, const char *, int)))
+    gsapi_set_stdio;
 #endif
   if (ghost_info == (GhostInfo *) NULL)
     {
@@ -163,9 +206,11 @@ static MagickBooleanType InvokePostscriptDelegate(
   if (verbose != MagickFalse)
     {
       (void) fputs("[ghostscript library]",stdout);
-      (void) fputs(strchr(command,' '),stdout);
+      SetArgsStart
+      (void) fputs(args_start,stdout);
     }
-  status=(ghost_info->new_instance)(&interpreter,(void *) NULL);
+  errors=(char *) NULL;
+  status=(ghost_info->new_instance)(&interpreter,(void *) &errors);
   if (status < 0)
     {
       status=SystemCommand(MagickFalse,verbose,command,exception);
@@ -175,6 +220,8 @@ static MagickBooleanType InvokePostscriptDelegate(
   argv=StringToArgv(command,&argc);
   if (argv == (char **) NULL)
     return(MagickFalse);
+  (void) (ghost_info->set_stdio)(interpreter,(int(MagickDLLCall *)(void *,
+    char *,int)) NULL,PostscriptDelegateMessage,PostscriptDelegateMessage);
   status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
     status=(ghost_info->run_string)(interpreter,"systemdict /start get exec\n",
@@ -189,17 +236,18 @@ static MagickBooleanType InvokePostscriptDelegate(
   argv=(char **) RelinquishMagickMemory(argv);
   if ((status != 0) && (status != -101))
     {
-      char
-        *message;
-
-      message=GetExceptionMessage(errno);
+      SetArgsStart
       (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-        "`%s': %s",command,message);
-      message=DestroyString(message);
+        "PostscriptDelegateFailed","`[ghostscript library]%s': %s",args_start,
+        errors);
+      if (errors != (char *) NULL)
+        errors=DestroyString(errors);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Ghostscript returns status %d, exit code %d",status,code);
       return(MagickFalse);
     }
+  if (errors != (char *) NULL)
+    errors=DestroyString(errors);
   return(MagickTrue);
 #else
   status=SystemCommand(MagickFalse,verbose,command,exception);
@@ -835,8 +883,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (postscript_image == (Image *) NULL)
     {
       image=DestroyImageList(image);
-      ThrowFileException(exception,DelegateError,"PostscriptDelegateFailed",
-        image_info->filename);
       return((Image *) NULL);
     }
   if (LocaleCompare(postscript_image->magick,"BMP") == 0)

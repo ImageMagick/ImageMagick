@@ -1367,6 +1367,8 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
   if (ghost_handle == (void *) NULL)
     return(FALSE);
   (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
+  ghost_info.delete_instance=(void (MagickDLLCall *) (gs_main_instance *)) (
+    lt_dlsym(ghost_handle,"gsapi_delete_instance"));
   ghost_info.exit=(int (MagickDLLCall *)(gs_main_instance*))
     lt_dlsym(ghost_handle,"gsapi_exit");
   ghost_info.init_with_args=(int (MagickDLLCall *)(gs_main_instance *,int,
@@ -1375,11 +1377,14 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
     lt_dlsym(ghost_handle,"gsapi_new_instance"));
   ghost_info.run_string=(int (MagickDLLCall *)(gs_main_instance *,const char *,
     int,int *)) (lt_dlsym(ghost_handle,"gsapi_run_string"));
-  ghost_info.delete_instance=(void (MagickDLLCall *) (gs_main_instance *)) (
-    lt_dlsym(ghost_handle,"gsapi_delete_instance"));
-  if ((ghost_info.exit == NULL) || (ghost_info.init_with_args == NULL) ||
-      (ghost_info.new_instance == NULL) || (ghost_info.run_string == NULL) ||
-      (ghost_info.delete_instance == NULL))
+  ghost_info.set_stdio=(int (MagickDLLCall *)(gs_main_instance *,int(
+    MagickDLLCall *)(void *,char *,int),int(MagickDLLCall *)(void *,
+    const char *,int),int(MagickDLLCall *)(void *,const char *,int)))
+    (lt_dlsym(ghost_handle,"gsapi_set_stdio"));
+  if ((ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
+      (ghost_info.init_with_args == NULL) || (ghost_info.new_instance == NULL)
+      || (ghost_info.run_string == NULL) || (ghost_info.set_stdio == NULL)
+      )
     return(FALSE);
   return(TRUE);
 }

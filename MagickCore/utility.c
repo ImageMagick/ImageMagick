@@ -2028,7 +2028,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
 #endif
   if (status < 0)
     (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-      "'%s' (%d)",command,status);
+      "FailedToExecuteCommand","`%s' (%d)",command,status);
   if (shell_command != command)
     shell_command=DestroyString(shell_command);
   for (i=0; i < (ssize_t) number_arguments; i++)
