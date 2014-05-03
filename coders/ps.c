@@ -153,6 +153,18 @@ static MagickBooleanType InvokePostscriptDelegate(
         } \
     }
 
+#define ExecuteGhostscriptCommand \
+  { \
+    status=SystemCommand(MagickFalse,verbose,command,exception); \
+    if (status == 0) \
+      return(MagickTrue); \
+    if (status < 0) \
+      return(MagickFalse); \
+    (void) ThrowMagickException(exception,GetMagickModule(),DelegateError, \
+      "FailedToExecuteCommand","`%s' (%d)",command,status); \
+    return(MagickFalse); \
+  }
+
   const char
     *args_start=NULL;
 
@@ -199,10 +211,7 @@ static MagickBooleanType InvokePostscriptDelegate(
     gsapi_set_stdio;
 #endif
   if (ghost_info == (GhostInfo *) NULL)
-    {
-      status=SystemCommand(MagickFalse,verbose,command,exception);
-      return(status == 0 ? MagickTrue : MagickFalse);
-    }
+    ExecuteGhostscriptCommand
   if (verbose != MagickFalse)
     {
       (void) fputs("[ghostscript library]",stdout);
@@ -212,10 +221,7 @@ static MagickBooleanType InvokePostscriptDelegate(
   errors=(char *) NULL;
   status=(ghost_info->new_instance)(&interpreter,(void *) &errors);
   if (status < 0)
-    {
-      status=SystemCommand(MagickFalse,verbose,command,exception);
-      return(status == 0 ? MagickTrue : MagickFalse);
-    }
+    ExecuteGhostscriptCommand
   code=0;
   argv=StringToArgv(command,&argc);
   if (argv == (char **) NULL)
