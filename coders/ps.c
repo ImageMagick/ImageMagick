@@ -185,7 +185,7 @@ static MagickBooleanType InvokePostscriptDelegate(
     ghost_info_struct;
 
   ghost_info=(&ghost_info_struct);
-  (void) ResetMagickMemory(&ghost_info,0,sizeof(ghost_info));
+  (void) ResetMagickMemory(&ghost_info_struct,0,sizeof(ghost_info_struct));
   ghost_info_struct.delete_instance=(void (*)(gs_main_instance *))
     gsapi_delete_instance;
   ghost_info_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
