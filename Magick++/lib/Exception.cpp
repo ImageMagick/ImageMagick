@@ -172,6 +172,15 @@ Magick::ErrorOption::~ErrorOption() throw()
 {
 }
 
+Magick::ErrorPolicy::~ErrorPolicy() throw()
+{
+}
+
+Magick::ErrorPolicy::ErrorPolicy(const std::string& what_)
+  : Error(what_)
+{
+}
+
 Magick::ErrorRegistry::ErrorRegistry(const std::string& what_)
   : Error(what_)
 {
@@ -345,6 +354,15 @@ Magick::WarningMonitor::~WarningMonitor() throw()
 }
 
 Magick::WarningOption::WarningOption(const std::string& what_)
+  : Warning(what_)
+{
+}
+
+Magick::WarningPolicy::~WarningPolicy() throw()
+{
+}
+
+Magick::WarningPolicy::WarningPolicy(const std::string& what_)
   : Warning(what_)
 {
 }

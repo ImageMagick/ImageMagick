@@ -143,6 +143,13 @@ namespace Magick
     ~ErrorOption() throw();
   };
 
+  class MagickPPExport ErrorPolicy: public Error
+  {
+  public:
+    explicit ErrorPolicy(const std::string& what_);
+    ~ErrorPolicy() throw();
+  };
+
   class MagickPPExport ErrorRegistry: public Error
   {
   public:
@@ -285,6 +292,13 @@ namespace Magick
   public:
     explicit WarningOption(const std::string& what_);
     ~WarningOption() throw();
+  };
+
+  class MagickPPExport WarningPolicy: public Warning
+  {
+  public:
+    explicit WarningPolicy(const std::string& what_);
+    ~WarningPolicy() throw();
   };
 
   class MagickPPExport WarningRegistry: public Warning
