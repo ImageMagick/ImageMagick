@@ -480,6 +480,7 @@ z_stream zip_info;
 FILE *mat_file;
 size_t magick_size;
 size_t extent;
+int file;
 
 int status;
 
