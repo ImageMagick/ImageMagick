@@ -43,6 +43,9 @@ typedef struct gs_main_instance_s
 
 typedef struct _GhostInfo
 {
+  void
+    (MagickDLLCall *delete_instance)(gs_main_instance *);
+
   int
     (MagickDLLCall *exit)(gs_main_instance *);
 
@@ -55,8 +58,10 @@ typedef struct _GhostInfo
   int
     (MagickDLLCall *run_string)(gs_main_instance *,const char *,int,int *);
 
-  void
-    (MagickDLLCall *delete_instance)(gs_main_instance *);
+  int
+    (MagickDLLCall *set_stdio)(gs_main_instance *,int(MagickDLLCall *)(void *,
+      char *,int),int(MagickDLLCall *)(void *,const char *,int),
+      int(MagickDLLCall *)(void *,const char *,int));
 } GhostInfo;
 
 extern MagickPrivate MagickBooleanType
