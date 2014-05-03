@@ -1319,6 +1319,9 @@ namespace Magick
   using MagickCore::PixelWand;
   using MagickCore::PointInfo;
   using MagickCore::PolaroidImage;
+  using MagickCore::PolicyWarning;
+  using MagickCore::PolicyError;
+  using MagickCore::PolicyFatalError;
   using MagickCore::PopDrawingWand;
   using MagickCore::PosterizeImage;
   using MagickCore::ProfileImage;
