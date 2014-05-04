@@ -1222,6 +1222,7 @@ namespace Magick
   using MagickCore::GetMagickInfo;
   using MagickCore::GetMagickPixelPacket;
   using MagickCore::GetMultilineTypeMetrics;
+  using MagickCore::GetNextValueInLinkedList;
   using MagickCore::GetNumberColors;
   using MagickCore::GetPageGeometry;
   using MagickCore::GetQuantizeInfo;
@@ -1258,8 +1259,10 @@ namespace Magick
   using MagickCore::LevelImageChannel;
   using MagickCore::LevelColorsImageChannel;
   using MagickCore::LinearStretchImage;
+  using MagickCore::LinkedListInfo;
   using MagickCore::LiquidRescaleImage;
   using MagickCore::LocaleCompare;
+  using MagickCore::LockSemaphoreInfo;
   using MagickCore::LogMagickEvent;
   using MagickCore::MagickCoreTerminus;
   using MagickCore::MagickInfo;
@@ -1335,6 +1338,7 @@ namespace Magick
   using MagickCore::RelinquishMagickMemory;
   using MagickCore::RemapImage;
   using MagickCore::ResampleImage;
+  using MagickCore::ResetLinkedListIterator;
   using MagickCore::ResizeImage;
   using MagickCore::ResizeMagickMemory;
   using MagickCore::ResourceLimitError;
@@ -1417,6 +1421,7 @@ namespace Magick
   using MagickCore::UndefinedException;
   using MagickCore::UndefinedRegistryType;
   using MagickCore::UniqueImageColors;
+  using MagickCore::UnlockSemaphoreInfo;
   using MagickCore::UnregisterMagickInfo;
   using MagickCore::UnsharpMaskImage;
   using MagickCore::UnsharpMaskImageChannel;
