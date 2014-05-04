@@ -381,6 +381,9 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define MonoColorType  1
 #define RGBColorType  3
 
+  char
+    property[MaxTextExtent];
+
   CINInfo
     cin;
 
@@ -456,19 +459,22 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   offset+=4;
   offset+=ReadBlob(image,sizeof(cin.file.version),(unsigned char *)
     cin.file.version);
-  (void) SetImageProperty(image,"dpx:file.version",cin.file.version,exception);
+  (void) CopyMagickString(property,cin.file.version,sizeof(cin.file.version));
+  (void) SetImageProperty(image,"dpx:file.version",property,exception);
   offset+=ReadBlob(image,sizeof(cin.file.filename),(unsigned char *)
     cin.file.filename);
-  (void) SetImageProperty(image,"dpx:file.filename",cin.file.filename,
-    exception);
+  (void) CopyMagickString(property,cin.file.filename,sizeof(cin.file.filename));
+  (void) SetImageProperty(image,"dpx:file.filename",property,exception);
   offset+=ReadBlob(image,sizeof(cin.file.create_date),(unsigned char *)
     cin.file.create_date);
-  (void) SetImageProperty(image,"dpx:file.create_date",cin.file.create_date,
-    exception);
+  (void) CopyMagickString(property,cin.file.create_date,
+    sizeof(cin.file.create_date));
+  (void) SetImageProperty(image,"dpx:file.create_date",property,exception);
   offset+=ReadBlob(image,sizeof(cin.file.create_time),(unsigned char *)
     cin.file.create_time);
-  (void) SetImageProperty(image,"dpx:file.create_time",cin.file.create_time,
-    exception);
+  (void) CopyMagickString(property,cin.file.create_time,
+    sizeof(cin.file.create_time));
+  (void) SetImageProperty(image,"dpx:file.create_time",property,exception);
   offset+=ReadBlob(image,sizeof(cin.file.reserve),(unsigned char *)
     cin.file.reserve);
   /*
@@ -552,7 +558,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->chromaticity.blue_primary.y=cin.image.blue_primary_chromaticity[1];
   offset+=ReadBlob(image,sizeof(cin.image.label),(unsigned char *)
     cin.image.label);
-  (void) SetImageProperty(image,"dpx:image.label",cin.image.label,exception);
+  (void) CopyMagickString(property,cin.image.label,sizeof(cin.image.label));
+  (void) SetImageProperty(image,"dpx:image.label",property,exception);
   offset+=ReadBlob(image,sizeof(cin.image.reserve),(unsigned char *)
     cin.image.reserve);
   /*
@@ -587,30 +594,38 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (double) cin.origination.y_offset);
   offset+=ReadBlob(image,sizeof(cin.origination.filename),(unsigned char *)
     cin.origination.filename);
-  (void) SetImageProperty(image,"dpx:origination.filename",
-    cin.origination.filename,exception);
+  (void) CopyMagickString(property,cin.origination.filename,
+    sizeof(cin.origination.filename));
+  (void) SetImageProperty(image,"dpx:origination.filename",property,exception);
   offset+=ReadBlob(image,sizeof(cin.origination.create_date),(unsigned char *)
     cin.origination.create_date);
-  (void) SetImageProperty(image,"dpx:origination.create_date",
-    cin.origination.create_date,exception);
+  (void) CopyMagickString(property,cin.origination.create_date,
+    sizeof(cin.origination.create_date));
+  (void) SetImageProperty(image,"dpx:origination.create_date",property,
+    exception);
   offset+=ReadBlob(image,sizeof(cin.origination.create_time),(unsigned char *)
     cin.origination.create_time);
-  (void) SetImageProperty(image,"dpx:origination.create_time",
-    cin.origination.create_time,exception);
+  (void) CopyMagickString(property,cin.origination.create_time,
+    sizeof(cin.origination.create_time));
+  (void) SetImageProperty(image,"dpx:origination.create_time",property,
+    exception);
   offset+=ReadBlob(image,sizeof(cin.origination.device),(unsigned char *)
     cin.origination.device);
-  (void) SetImageProperty(image,"dpx:origination.device",
-    cin.origination.device,exception);
+  (void) CopyMagickString(property,cin.origination.device,
+    sizeof(cin.origination.device));
+  (void) SetImageProperty(image,"dpx:origination.device",property,exception);
   offset+=ReadBlob(image,sizeof(cin.origination.model),(unsigned char *)
     cin.origination.model);
-  (void) SetImageProperty(image,"dpx:origination.model",cin.origination.model,
-    exception);
+  (void) CopyMagickString(property,cin.origination.model,
+    sizeof(cin.origination.model));
+  (void) SetImageProperty(image,"dpx:origination.model",property,exception);
   (void) ResetMagickMemory(cin.origination.serial,0, 
     sizeof(cin.origination.serial));
   offset+=ReadBlob(image,sizeof(cin.origination.serial),(unsigned char *)
     cin.origination.serial);
-  (void) SetImageProperty(image,"dpx:origination.serial",
-    cin.origination.serial,exception);
+  (void) CopyMagickString(property,cin.origination.serial,
+    sizeof(cin.origination.serial));
+  (void) SetImageProperty(image,"dpx:origination.serial",property,exception);
   cin.origination.x_pitch=ReadBlobFloat(image);
   offset+=4;
   cin.origination.y_pitch=ReadBlobFloat(image);
@@ -656,8 +671,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset+=4;
       offset+=ReadBlob(image,sizeof(cin.film.format),(unsigned char *)
         cin.film.format);
-      (void) SetImageProperty(image,"dpx:film.format",cin.film.format,
-        exception);
+      (void) CopyMagickString(property,cin.film.format,sizeof(cin.film.format));
+      (void) SetImageProperty(image,"dpx:film.format",property,exception);
       cin.film.frame_position=ReadBlobLong(image);
       offset+=4;
       if (cin.film.frame_position != ~0UL)
@@ -670,12 +685,14 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
           cin.film.frame_rate);
       offset+=ReadBlob(image,sizeof(cin.film.frame_id),(unsigned char *)
         cin.film.frame_id);
-      (void) SetImageProperty(image,"dpx:film.frame_id",cin.film.frame_id,
-        exception);
+      (void) CopyMagickString(property,cin.film.frame_id,
+        sizeof(cin.film.frame_id));
+      (void) SetImageProperty(image,"dpx:film.frame_id",property,exception);
       offset+=ReadBlob(image,sizeof(cin.film.slate_info),(unsigned char *)
         cin.film.slate_info);
-      (void) SetImageProperty(image,"dpx:film.slate_info",cin.film.slate_info,
-        exception);
+      (void) CopyMagickString(property,cin.film.slate_info,
+        sizeof(cin.film.slate_info));
+      (void) SetImageProperty(image,"dpx:film.slate_info",property,exception);
       offset+=ReadBlob(image,sizeof(cin.film.reserve),(unsigned char *)
         cin.film.reserve);
     }
