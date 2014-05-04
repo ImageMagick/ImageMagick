@@ -1235,6 +1235,7 @@ namespace Magick
   using MagickCore::GetMagickInfo;
   using MagickCore::GetMultilineTypeMetrics;
   using MagickCore::GetNextValueInLinkedList;
+  using MagickCore::GetNumberOfElementsInLinkedList;
   using MagickCore::GetPixelBlue;
   using MagickCore::GetPixelGreen;
   using MagickCore::GetPixelInfo;
@@ -1245,6 +1246,7 @@ namespace Magick
   using MagickCore::GetStringInfoDatum;
   using MagickCore::GetStringInfoLength;
   using MagickCore::GetTypeMetrics;
+  using MagickCore::GetValueFromLinkedList;
   using MagickCore::GetVirtualMetacontent;
   using MagickCore::GetVirtualPixels;
   using MagickCore::GetImageVirtualPixelMethod;
