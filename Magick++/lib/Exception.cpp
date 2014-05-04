@@ -833,6 +833,9 @@ MagickPPExport void Magick::throwException(ExceptionInfo &exception_)
   MagickBooleanType
     relinquish;
 
+  size_t
+    index;
+
   // Just return if there is no reported error
   if (exception_.severity == UndefinedException)
     return;
@@ -842,11 +845,12 @@ MagickPPExport void Magick::throwException(ExceptionInfo &exception_)
   LockSemaphoreInfo(exception_.semaphore);
   if (exception_.exceptions != (void *) NULL)
     {
-      ResetLinkedListIterator((LinkedListInfo *) exception_.exceptions);
-      p=(const ExceptionInfo *) GetNextValueInLinkedList((LinkedListInfo *)
+      index=GetNumberOfElementsInLinkedList((LinkedListInfo *)
         exception_.exceptions);
-      while (p != (const ExceptionInfo *) NULL)
+      while(index > 0)
       {
+        p=(const ExceptionInfo *) GetValueFromLinkedList((LinkedListInfo *)
+          exception_.exceptions,--index);
         if ((p->severity != exception_.severity) || (LocaleCompare(p->reason,
             exception_.reason) != 0) || (LocaleCompare(p->description,
             exception_.description) != 0))
@@ -860,8 +864,6 @@ MagickPPExport void Magick::throwException(ExceptionInfo &exception_)
                 nestedException=q;
               }
           }
-        p=(const ExceptionInfo *) GetNextValueInLinkedList((LinkedListInfo *)
-          exception_.exceptions);
       }
     }
   UnlockSemaphoreInfo(exception_.semaphore);

@@ -1224,11 +1224,13 @@ namespace Magick
   using MagickCore::GetMultilineTypeMetrics;
   using MagickCore::GetNextValueInLinkedList;
   using MagickCore::GetNumberColors;
+  using MagickCore::GetNumberOfElementsInLinkedList;
   using MagickCore::GetPageGeometry;
   using MagickCore::GetQuantizeInfo;
   using MagickCore::GetStringInfoDatum;
   using MagickCore::GetStringInfoLength;
   using MagickCore::GetTypeMetrics;
+  using MagickCore::GetValueFromLinkedList;
   using MagickCore::GetVirtualIndexQueue;
   using MagickCore::GetVirtualPixels;
   using MagickCore::GetImageVirtualPixelMethod;
