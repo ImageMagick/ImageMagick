@@ -2967,14 +2967,18 @@ static MagickBooleanType WriteMipmaps(Image *image, const size_t pixelFormat,
 static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
   const ssize_t *map)
 {
-  unsigned char
-    color[3],
-    index,
-    indices[16];
-
   DDSVector3
     start,
     end;
+
+  register ssize_t
+    i;
+
+  unsigned char
+    color[3],
+    index,
+    indexes[16],
+    indices[16];
 
   color[0] = (unsigned char) ClampToLimit(255.0f*points->x,255);
   color[1] = (unsigned char) ClampToLimit(255.0f*points->y,255);
@@ -2982,7 +2986,9 @@ static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
 
   ComputeEndPoints(DDS_LOOKUP,color,&start,&end,&index);
 
-  RemapIndices(map,&index,indices);
+  for (i=0; i< 16; i++)
+    indexes[i]=index;
+  RemapIndices(map,indexes,indices);
   WriteIndices(image,start,end,indices);
 }
 
