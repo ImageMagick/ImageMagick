@@ -182,30 +182,116 @@ static MagickBooleanType IsVIPS(const unsigned char *magick,const size_t length)
 %
 */
 
-static inline Quantum ReadVIPSPixelNONE(Image *image,const VIPSBandFormat format)
+static inline MagickBooleanType IsSupportedCombination(
+  const VIPSBandFormat format,const VIPSType type)
 {
-  switch(format)
+  switch(type)
   {
-    case VIPSBandFormatUCHAR:
-    case VIPSBandFormatCHAR:
-      return(ScaleCharToQuantum((unsigned char) ReadBlobByte(image)));
-    case VIPSBandFormatUSHORT:
-    case VIPSBandFormatSHORT:
-      return(ScaleShortToQuantum(ReadBlobShort(image)));
-    case VIPSBandFormatUINT:
-    case VIPSBandFormatINT:
-      return(ScaleLongToQuantum(ReadBlobLong(image)));
-    case VIPSBandFormatFLOAT:
-      return(ScaleMapToQuantum((MagickRealType) ReadBlobFloat(image)));
-    case VIPSBandFormatDOUBLE:
-      return(ScaleMapToQuantum((MagickRealType) ReadBlobDouble(image)));
-    default:
-      return((Quantum) 0);
+    case VIPSTypeB_W:
+    case VIPSTypeCMYK:
+    case VIPSTypeRGB:
+    case VIPSTypesRGB:
+      return(MagickTrue);
+    case VIPSTypeGREY16:
+    case VIPSTypeRGB16:
+      switch(format)
+      {
+        case VIPSBandFormatUSHORT:
+        case VIPSBandFormatSHORT:
+        case VIPSBandFormatUINT:
+        case VIPSBandFormatINT:
+        case VIPSBandFormatFLOAT:
+        case VIPSBandFormatDOUBLE:
+          return(MagickTrue);
+      }
   }
+  return(MagickFalse);
+}
+
+static inline Quantum ReadVIPSPixelNONE(Image *image,
+  const VIPSBandFormat format,const VIPSType type)
+{
+  switch(type)
+  {
+    case VIPSTypeB_W:
+    case VIPSTypeRGB:
+      {
+        unsigned char
+          c=0;
+
+        switch(format)
+        {
+          case VIPSBandFormatUCHAR:
+          case VIPSBandFormatCHAR:
+            c=(unsigned char) ReadBlobByte(image);
+            break;
+          case VIPSBandFormatUSHORT:
+          case VIPSBandFormatSHORT:
+            c=(unsigned char) ReadBlobShort(image);
+            break;
+          case VIPSBandFormatUINT:
+          case VIPSBandFormatINT:
+            c=(unsigned char) ReadBlobLong(image);
+            break;
+          case VIPSBandFormatFLOAT:
+            c=(unsigned char) ReadBlobFloat(image);
+            break;
+          case VIPSBandFormatDOUBLE:
+            c=(unsigned char) ReadBlobDouble(image);
+            break;
+        }
+        return(ScaleCharToQuantum(c));
+      }
+    case VIPSTypeGREY16:
+    case VIPSTypeRGB16:
+      {
+        unsigned short
+          s=0;
+
+        switch(format)
+        {
+          case VIPSBandFormatUSHORT:
+          case VIPSBandFormatSHORT:
+            s=(unsigned short) ReadBlobShort(image);
+            break;
+          case VIPSBandFormatUINT:
+          case VIPSBandFormatINT:
+            s=(unsigned short) ReadBlobLong(image);
+            break;
+          case VIPSBandFormatFLOAT:
+            s=(unsigned short) ReadBlobFloat(image);
+            break;
+          case VIPSBandFormatDOUBLE:
+            s=(unsigned short) ReadBlobDouble(image);
+            break;
+        }
+        return(ScaleShortToQuantum(s));
+      }
+    case VIPSTypeCMYK:
+    case VIPSTypesRGB:
+      switch(format)
+      {
+        case VIPSBandFormatUCHAR:
+        case VIPSBandFormatCHAR:
+          return(ScaleCharToQuantum((unsigned char) ReadBlobByte(image)));
+        case VIPSBandFormatUSHORT:
+        case VIPSBandFormatSHORT:
+          return(ScaleShortToQuantum(ReadBlobShort(image)));
+        case VIPSBandFormatUINT:
+        case VIPSBandFormatINT:
+          return(ScaleLongToQuantum(ReadBlobLong(image)));
+        case VIPSBandFormatFLOAT:
+          return((Quantum) ((float) QuantumRange*(ReadBlobFloat(image)/1.0)));
+        case VIPSBandFormatDOUBLE:
+          return((Quantum) ((double) QuantumRange*(ReadBlobDouble(
+            image)/1.0)));
+      }
+  }
+  return((Quantum) 0);
 }
 
 static MagickBooleanType ReadVIPSPixelsNONE(Image *image,
-  const VIPSBandFormat format,const unsigned int channels,
+  const VIPSBandFormat format,const VIPSType type,const unsigned int channels,
   ExceptionInfo *exception)
 {
   Quantum
@@ -227,30 +313,30 @@ static MagickBooleanType ReadVIPSPixelsNONE(Image *image,
       return MagickFalse;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      pixel=ReadVIPSPixelNONE(image,format);
+      pixel=ReadVIPSPixelNONE(image,format,type);
       SetPixelRed(image,pixel,q);
       if (channels < 3)
         {
           SetPixelGreen(image,pixel,q);
           SetPixelBlue(image,pixel,q);
           if (channels == 2)
-            SetPixelAlpha(image,ReadVIPSPixelNONE(image,format),q);
+            SetPixelAlpha(image,ReadVIPSPixelNONE(image,format,type),q);
         }
       else
         {
-          SetPixelGreen(image,ReadVIPSPixelNONE(image,format),q);
-          SetPixelBlue(image,ReadVIPSPixelNONE(image,format),q);
+          SetPixelGreen(image,ReadVIPSPixelNONE(image,format,type),q);
+          SetPixelBlue(image,ReadVIPSPixelNONE(image,format,type),q);
           if (channels == 4)
             {
               if (image->colorspace == CMYKColorspace)
-                SetPixelIndex(image,ReadVIPSPixelNONE(image,format),q);
+                SetPixelIndex(image,ReadVIPSPixelNONE(image,format,type),q);
               else
-                SetPixelAlpha(image,ReadVIPSPixelNONE(image,format),q);
+                SetPixelAlpha(image,ReadVIPSPixelNONE(image,format,type),q);
             }
           else if (channels == 5)
             {
-              SetPixelIndex(image,ReadVIPSPixelNONE(image,format),q);
-              SetPixelAlpha(image,ReadVIPSPixelNONE(image,format),q);
+              SetPixelIndex(image,ReadVIPSPixelNONE(image,format,type),q);
+              SetPixelAlpha(image,ReadVIPSPixelNONE(image,format,type),q);
             }
         }
       q+=GetPixelChannels(image);
@@ -335,11 +421,11 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
     case VIPSBandFormatDOUBLE:
       image->depth=64;
       break;
+    default:
     case VIPSBandFormatCOMPLEX:
     case VIPSBandFormatDPCOMPLEX:
     case VIPSBandFormatNOTSET:
-      ThrowReaderException(CorruptImageError,"Unsupported VIPS band format");
-      break;
+      ThrowReaderException(CoderError,"Unsupported band format");
   }
   coding=(VIPSCoding) ReadBlobLong(image);
   type=(VIPSType) ReadBlobLong(image);
@@ -356,14 +442,6 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
       if (channels == 2)
         image->alpha_trait=BlendPixelTrait;
       break;
-    case VIPSTypeLAB:
-    case VIPSTypeLABS:
-    case VIPSTypeLABQ:
-      SetImageColorspace(image,LabColorspace,exception);
-      break;
-    case VIPSTypeLCH:
-      SetImageColorspace(image,LCHColorspace,exception);
-      break;
     case VIPSTypeRGB:
     case VIPSTypeRGB16:
       SetImageColorspace(image,RGBColorspace,exception);
@@ -375,17 +453,18 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
       if (channels == 4)
         image->alpha_trait=BlendPixelTrait;
       break;
-    case VIPSTypeXYZ:
-      SetImageColorspace(image,XYZColorspace,exception);
-      break;
     default:
     case VIPSTypeFOURIER:
     case VIPSTypeHISTOGRAM:
+    case VIPSTypeLAB:
+    case VIPSTypeLABS:
+    case VIPSTypeLABQ:
+    case VIPSTypeLCH:
     case VIPSTypeMULTIBAND:
     case VIPSTypeUCS:
+    case VIPSTypeXYZ:
     case VIPSTypeYXY:
-      ThrowReaderException(CorruptImageError,"Unsupported VIPS colorspace");
-      break;
+      ThrowReaderException(CoderError,"Unsupported colorspace");
   }
   image->units=PixelsPerCentimeterResolution;
   image->resolution.x=ReadBlobFloat(image)*10;
@@ -398,10 +477,15 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
   (void) ReadBlobLongLong(image);
   if (image_info->ping != MagickFalse)
     return(image);
+  if (IsSupportedCombination(format,type) == MagickFalse)
+    ThrowReaderException(CoderError,
+      "Unsupported combination of band format and colorspace");
+  if (channels == 0 || channels > 5)
+    ThrowReaderException(CoderError,"Unsupported number of channels");
   if (coding == VIPSCodingNONE)
-    status=ReadVIPSPixelsNONE(image,format,channels,exception);
+    status=ReadVIPSPixelsNONE(image,format,type,channels,exception);
   else
-    ThrowReaderException(CorruptImageError,"Unsupported VIPS coding");
+    ThrowReaderException(CoderError,"Unsupported coding");
   metadata=(char *) NULL;
   while ((n=ReadBlob(image,MaxTextExtent-1,(unsigned char *) buffer)) != 0)
   {
