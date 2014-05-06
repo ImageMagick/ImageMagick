@@ -806,15 +806,12 @@ Magick::Exception* Magick::createException(const MagickCore::ExceptionInfo *exce
 MagickPPExport void Magick::throwExceptionExplicit(
   const ExceptionType severity_,const char* reason_,const char* description_)
 {
-  ExceptionInfo
-    exception;
-
   // Just return if there is no reported error
   if (severity_ == UndefinedException)
     return;
 
   GetPPException;
-  ThrowException(&exception,severity_,reason_, description_);
+  ThrowException(&exceptionInfo,severity_,reason_, description_);
   ThrowPPException;
 }
 
