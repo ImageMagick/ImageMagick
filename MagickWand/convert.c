@@ -634,7 +634,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("adaptive-blur",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -643,7 +643,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("adaptive-resize",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -652,7 +652,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("adaptive-sharpen",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -665,7 +665,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -692,12 +692,12 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -710,7 +710,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -721,7 +721,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -742,7 +742,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -751,7 +751,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -762,7 +762,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -775,7 +775,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -786,7 +786,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -797,7 +797,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -808,7 +808,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -819,7 +819,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -830,7 +830,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -839,14 +839,14 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("brightness-contrast",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -861,7 +861,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -872,7 +872,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -892,7 +892,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -904,7 +904,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             channel=ParseChannelOption(argv[i]);
             if (channel < 0)
@@ -920,7 +920,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             channel=ParsePixelChannelOption(argv[i]);
             if (channel < 0)
@@ -933,7 +933,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -944,7 +944,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -959,14 +959,14 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("clip-path",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -986,7 +986,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             else
               {
                 i++;
-                if (i == (ssize_t) (argc-1))
+                if (i >= (ssize_t) (argc-1))
                   ThrowConvertException(OptionError,"MissingArgument",option);
                 if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
                   ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1006,7 +1006,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1020,7 +1020,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             kernel_info=AcquireKernelInfo(argv[i]);
             if (kernel_info == (KernelInfo *) NULL)
@@ -1033,7 +1033,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if ((i == (ssize_t) (argc-1)) ||
+            if ((i >= (ssize_t) (argc-1)) ||
                 (IsGeometry(argv[i]) == MagickFalse))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
@@ -1046,7 +1046,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
@@ -1111,7 +1111,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             compress=ParseCommandOption(MagickCompressOptions,MagickFalse,
               argv[i]);
@@ -1127,7 +1127,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("contrast-stretch",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1141,7 +1141,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             kernel_info=AcquireKernelInfo(argv[i]);
             if (kernel_info == (KernelInfo *) NULL)
@@ -1154,7 +1154,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1165,7 +1165,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1180,7 +1180,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1236,7 +1236,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1247,7 +1247,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1258,7 +1258,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1269,7 +1269,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1299,7 +1299,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1332,7 +1332,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"UnrecognizedDistortMethod",
                 argv[i]);
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1357,7 +1357,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1366,7 +1366,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1377,7 +1377,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1392,7 +1392,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1403,7 +1403,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1414,7 +1414,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1423,7 +1423,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1435,7 +1435,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             endian=ParseCommandOption(MagickEndianOptions,MagickFalse,
               argv[i]);
@@ -1463,7 +1463,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"UnrecognizedEvaluateOperator",
                 argv[i]);
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1490,7 +1490,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1501,7 +1501,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1516,7 +1516,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1525,7 +1525,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1538,7 +1538,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1550,7 +1550,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             filter=ParseCommandOption(MagickFilterOptions,MagickFalse,argv[i]);
             if (filter < 0)
@@ -1569,12 +1569,12 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1583,7 +1583,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1592,7 +1592,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             format=argv[i];
             break;
@@ -1602,7 +1602,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1622,7 +1622,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (op < 0)
               ThrowConvertException(OptionError,"UnrecognizedFunction",argv[i]);
              i++;
-             if (i == (ssize_t) (argc-1))
+             if (i >= (ssize_t) (argc-1))
                ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1631,7 +1631,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1642,7 +1642,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1653,7 +1653,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1663,7 +1663,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             (LocaleCompare("gaussian",option+1) == 0))
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1674,7 +1674,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1688,7 +1688,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,
               argv[i]);
@@ -1705,7 +1705,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             method=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,
               argv[i]);
@@ -1719,7 +1719,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1739,7 +1739,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1758,7 +1758,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1769,7 +1769,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1783,7 +1783,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             intensity=ParseCommandOption(MagickPixelIntensityOptions,
               MagickFalse,argv[i]);
@@ -1800,7 +1800,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             intent=ParseCommandOption(MagickIntentOptions,MagickFalse,argv[i]);
             if (intent < 0)
@@ -1815,7 +1815,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             interlace=ParseCommandOption(MagickInterlaceOptions,MagickFalse,
               argv[i]);
@@ -1829,7 +1829,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1857,7 +1857,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1872,7 +1872,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1896,7 +1896,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1910,7 +1910,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             type=ParseCommandOption(MagickLayerOptions,MagickFalse,argv[i]);
             if (type < 0)
@@ -1921,7 +1921,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("level",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1930,7 +1930,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("level-colors",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1967,7 +1967,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("linear-stretch",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -1976,7 +1976,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("liquid-rescale",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2015,7 +2015,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2030,7 +2030,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2039,7 +2039,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2050,7 +2050,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2061,7 +2061,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2072,7 +2072,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2101,7 +2101,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2112,7 +2112,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2129,7 +2129,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2155,7 +2155,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"UnrecognizedMorphologyMethod",
                 token);
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             kernel_info=AcquireKernelInfo(argv[i]);
             if (kernel_info == (KernelInfo *) NULL)
@@ -2170,7 +2170,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2185,7 +2185,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("noise",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (*option == '+')
               {
@@ -2213,7 +2213,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("opaque",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2222,7 +2222,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2234,7 +2234,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             orientation=ParseCommandOption(MagickOrientationOptions,
               MagickFalse,argv[i]);
@@ -2261,7 +2261,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2272,7 +2272,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2285,7 +2285,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2296,7 +2296,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2307,7 +2307,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2318,7 +2318,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2329,7 +2329,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2343,7 +2343,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             preview=ParseCommandOption(MagickPreviewOptions,MagickFalse,
               argv[i]);
@@ -2357,7 +2357,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2366,14 +2366,14 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("profile",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2386,7 +2386,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2400,7 +2400,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
@@ -2418,7 +2418,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("rotational-blur",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2427,7 +2427,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("raise",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2438,7 +2438,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2449,7 +2449,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2462,7 +2462,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2473,7 +2473,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2484,7 +2484,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2495,7 +2495,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2506,7 +2506,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2524,7 +2524,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2533,7 +2533,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("rotate",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2548,7 +2548,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2559,7 +2559,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2570,7 +2570,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2581,7 +2581,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2592,7 +2592,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2603,7 +2603,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2612,7 +2612,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("selective-blur",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2625,7 +2625,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2646,7 +2646,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("shade",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2657,7 +2657,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2666,7 +2666,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("sharpen",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2677,7 +2677,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2686,7 +2686,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("shear",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2695,7 +2695,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("sigmoidal-contrast",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2706,7 +2706,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2717,7 +2717,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2726,7 +2726,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("smush",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2737,7 +2737,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2756,7 +2756,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"UnrecognizedSparseColorMethod",
                 argv[i]);
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2765,7 +2765,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2776,7 +2776,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if ((i == (ssize_t) (argc-1)) ||
+            if ((i >= (ssize_t) (argc-1)) ||
                 (IsGeometry(argv[i]) == MagickFalse))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
@@ -2796,7 +2796,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"UnrecognizedStatisticType",
                 argv[i]);
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2810,7 +2810,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             stretch=ParseCommandOption(MagickStretchOptions,MagickFalse,
               argv[i]);
@@ -2826,7 +2826,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2835,7 +2835,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2849,7 +2849,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             style=ParseCommandOption(MagickStyleOptions,MagickFalse,argv[i]);
             if (style < 0)
@@ -2867,7 +2867,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2878,7 +2878,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2897,7 +2897,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2906,7 +2906,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2917,7 +2917,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2928,7 +2928,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2937,7 +2937,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2948,7 +2948,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2959,7 +2959,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("transparent",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2968,7 +2968,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -2981,7 +2981,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -2997,7 +2997,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             type=ParseCommandOption(MagickTypeOptions,MagickFalse,argv[i]);
             if (type < 0)
@@ -3014,7 +3014,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -3028,7 +3028,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             units=ParseCommandOption(MagickResolutionOptions,MagickFalse,
               argv[i]);
@@ -3042,7 +3042,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -3065,7 +3065,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -3074,7 +3074,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -3088,7 +3088,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             method=ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
               argv[i]);
@@ -3104,7 +3104,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("wave",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -3115,7 +3115,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
@@ -3124,7 +3124,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -3135,7 +3135,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
@@ -3144,7 +3144,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("write",option+1) == 0)
           {
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }

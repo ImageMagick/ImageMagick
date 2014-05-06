@@ -484,11 +484,11 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             i++;
             break;
@@ -535,7 +535,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             channel=ParseChannelOption(argv[i]);
             if (channel < 0)
@@ -741,7 +741,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
@@ -756,7 +756,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             break;
           }
@@ -798,7 +798,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             filter=ParseCommandOption(MagickFilterOptions,MagickFalse,argv[i]);
             if (filter < 0)
@@ -817,7 +817,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             break;
           }
@@ -1056,7 +1056,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
@@ -1078,7 +1078,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
@@ -1157,7 +1157,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
@@ -1217,7 +1217,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowImportException(OptionError,"MissingArgument",option);
             break;
           }

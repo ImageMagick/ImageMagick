@@ -218,7 +218,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConjureException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConjureInvalidArgumentException(option,argv[i]);
@@ -253,7 +253,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) (argc-1))
+            if (i >= (ssize_t) (argc-1))
               ThrowConjureException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConjureInvalidArgumentException(option,argv[i]);
