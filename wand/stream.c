@@ -310,7 +310,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             break;
           }
@@ -337,7 +337,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             channel=ParseChannelOption(argv[i]);
             if (channel < 0)
@@ -353,7 +353,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             colorspace=ParseCommandOption(MagickColorspaceOptions,MagickFalse,
               argv[i]);
@@ -370,7 +370,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             compress=ParseCommandOption(MagickCompressOptions,MagickFalse,
               argv[i]);
@@ -445,7 +445,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowStreamInvalidArgumentException(option,argv[i]);
@@ -460,7 +460,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowStreamInvalidArgumentException(option,argv[i]);
@@ -601,7 +601,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
@@ -643,7 +643,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowStreamInvalidArgumentException(option,argv[i]);
@@ -680,7 +680,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             type=ParseCommandOption(MagickStorageOptions,MagickFalse,argv[i]);
             if (type < 0)
@@ -702,7 +702,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             break;
           }
@@ -726,7 +726,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             method=ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
               argv[i]);

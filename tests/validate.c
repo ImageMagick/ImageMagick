@@ -2336,7 +2336,7 @@ int main(int argc,char **argv)
             if (*option == '+')
               break;
             i++;
-            if (i == (ssize_t) argc)
+            if (i >= (ssize_t) argc)
               ThrowValidateException(OptionError,"MissingArgument",option);
             validate=ParseCommandOption(MagickValidateOptions,MagickFalse,
               argv[i]);

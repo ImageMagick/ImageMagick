@@ -397,7 +397,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             channel=ParseChannelOption(argv[i]);
             if (channel < 0)
@@ -414,7 +414,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             colorspace=ParseCommandOption(MagickColorspaceOptions,MagickFalse,
               argv[i]);
@@ -448,7 +448,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             compress=ParseCommandOption(MagickCompressOptions,MagickFalse,
               argv[i]);
@@ -484,7 +484,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
@@ -547,7 +547,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompareInvalidArgumentException(option,argv[i]);
@@ -562,7 +562,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
@@ -571,7 +571,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompareInvalidArgumentException(option,argv[i]);
@@ -596,7 +596,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompareInvalidArgumentException(option,argv[i]);
@@ -614,7 +614,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
@@ -707,7 +707,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
@@ -752,7 +752,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
         if (LocaleCompare("profile",option+1) == 0)
           {
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
@@ -765,7 +765,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompareInvalidArgumentException(option,argv[i]);
@@ -779,7 +779,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
@@ -821,7 +821,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompareInvalidArgumentException(option,argv[i]);
@@ -888,7 +888,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
@@ -928,7 +928,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             method=ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
               argv[i]);
