@@ -7,6 +7,8 @@
 2014-04-22  6.8.9-1 Cristy  <quetzlzacatenango@image...>
   * Support new -hough-lines option.
   * Support new -mean-shift option.
+  * identify -units without argument no longer faults (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25542).
 
 2014-04-20  6.8.9-1 Dirk Lemstra <dirk@snakeware...>
   * Added image moments, canny edge and hough line to Magick++.
