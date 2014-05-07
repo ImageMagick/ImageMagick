@@ -3984,7 +3984,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -4025,7 +4025,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -4131,7 +4131,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -4154,7 +4154,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             channel=ParseChannelOption(argv[i]);
             if (channel < 0)
@@ -4167,7 +4167,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -4229,7 +4229,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             kernel_info=AcquireKernelInfo(argv[i]);
             if (kernel_info == (KernelInfo *) NULL)
@@ -4380,7 +4380,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -4436,7 +4436,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -4535,7 +4535,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"UnrecognizedDistortMethod",
                 argv[i]);
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -4569,7 +4569,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -4580,7 +4580,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -4665,7 +4665,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"UnrecognizedEvaluateOperator",
                 argv[i]);
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -4718,7 +4718,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -4727,7 +4727,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -4831,7 +4831,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (op < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedFunction",argv[i]);
              i++;
-             if (i >= (ssize_t) (argc-1))
+             if (i == (ssize_t) argc)
                ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -4851,7 +4851,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -4914,7 +4914,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             method=ParseCommandOption(MagickPixelIntensityOptions,MagickFalse,
               argv[i]);
@@ -4945,7 +4945,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -4981,7 +4981,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             intensity=ParseCommandOption(MagickPixelIntensityOptions,
               MagickFalse,argv[i]);
@@ -4998,7 +4998,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             intent=ParseCommandOption(MagickIntentOptions,MagickFalse,argv[i]);
             if (intent < 0)
@@ -5028,7 +5028,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -5056,7 +5056,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -5071,7 +5071,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -5108,7 +5108,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             type=ParseCommandOption(MagickLayerOptions,MagickFalse,argv[i]);
             if (type < 0)
@@ -5279,7 +5279,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -5329,7 +5329,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -5355,7 +5355,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"UnrecognizedMorphologyMethod",
                 token);
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             kernel_info=AcquireKernelInfo(argv[i]);
             if (kernel_info == (KernelInfo *) NULL)
@@ -5435,7 +5435,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             orientation=ParseCommandOption(MagickOrientationOptions,MagickFalse,
               argv[i]);
@@ -5559,7 +5559,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -5593,7 +5593,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             colorspace=ParseCommandOption(MagickColorspaceOptions,MagickFalse,
               argv[i]);
@@ -5643,7 +5643,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -5677,7 +5677,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -5899,7 +5899,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("sigmoidal-contrast",option+1) == 0)
           {
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -5961,7 +5961,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"UnrecognizedSparseColorMethod",
                 argv[i]);
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -6002,7 +6002,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"UnrecognizedStatisticType",
                 argv[i]);
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -6016,7 +6016,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             stretch=ParseCommandOption(MagickStretchOptions,MagickFalse,argv[i]);
             if (stretch < 0)
@@ -6054,7 +6054,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             style=ParseCommandOption(MagickStyleOptions,MagickFalse,argv[i]);
             if (style < 0)
@@ -6067,7 +6067,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -6106,7 +6106,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -6126,7 +6126,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
@@ -6172,7 +6172,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -6316,7 +6316,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
@@ -6345,7 +6345,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("write",option+1) == 0)
           {
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
