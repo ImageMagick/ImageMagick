@@ -552,7 +552,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             channel=ParseChannelOption(argv[i]);
             if (channel < 0)
@@ -576,7 +576,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             else
               {
                 i++;
-                if (i >= (ssize_t) (argc-1))
+                if (i == (ssize_t) argc)
                   ThrowAnimateException(OptionError,"MissingArgument",option);
                 if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
                   ThrowAnimateInvalidArgumentException(option,argv[i]);
@@ -676,7 +676,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             break;
           }
@@ -778,7 +778,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowAnimateInvalidArgumentException(option,argv[i]);
@@ -811,7 +811,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             filter=ParseCommandOption(MagickFilterOptions,MagickFalse,argv[i]);
             if (filter < 0)
@@ -847,7 +847,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             break;
           }
@@ -885,7 +885,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,
               argv[i]);
@@ -1040,7 +1040,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowAnimateInvalidArgumentException(option,argv[i]);
@@ -1146,7 +1146,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
@@ -1189,7 +1189,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowAnimateInvalidArgumentException(option,argv[i]);
@@ -1240,7 +1240,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowAnimateInvalidArgumentException(option,argv[i]);
@@ -1336,7 +1336,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if (i >= (ssize_t) (argc-1))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             break;
           }
