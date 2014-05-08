@@ -9,8 +9,8 @@
   * Support new -mean-shift option.
   * identify -units without argument no longer faults (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25542).
-  * Require OpenJP2 version 2.0.1 (opj_stream_set_user_data() method signature
-    change between 2.0.0 and 2.0.1).
+  * Require OpenJP2 version 2.1.0 (opj_stream_set_user_data() method signature
+    change between 2.0.0 and 2.1.0).
 
 2014-04-20  6.8.9-1 Dirk Lemstra <dirk@snakeware...>
   * Added image moments, canny edge and hough line to Magick++.
