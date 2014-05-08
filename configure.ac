@@ -2408,7 +2408,7 @@ LIBOPENJP2_LIBS=""
 LIBOPENJP2_PKG=""
 if test "x$with_openjp2" = "xyes"; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    PKG_CHECK_MODULES(LIBOPENJP2,[libopenjp2 >= 2.0.1], have_openjp2=yes, have_openjp2=no)
+    PKG_CHECK_MODULES(LIBOPENJP2,[libopenjp2 >= 2.1.0], have_openjp2=yes, have_openjp2=no)
     AC_MSG_RESULT([])
 fi
 
