@@ -128,7 +128,6 @@ t/mpeg/input.mpg
 t/mpeg/read.t
 t/openjp2/input.jp2
 t/openjp2/input.jpc
-t/openjp2/input.pgx
 t/openjp2/read.t
 t/ping.t
 t/png/input_16.png
@@ -278,7 +277,6 @@ t/reference/jpeg/write_non_interlaced.miff
 t/reference/jpeg/write_plane_interlaced.miff
 t/reference/openjp2/read_jp2.miff
 t/reference/openjp2/read_jpc.miff
-t/reference/openjp2/read_pgx.miff
 t/reference/read/gradient.miff
 t/reference/read/granite.miff
 t/reference/read/input_avs.miff
