@@ -203,9 +203,12 @@ static inline MagickBooleanType IsSupportedCombination(
         case VIPSBandFormatFLOAT:
         case VIPSBandFormatDOUBLE:
           return(MagickTrue);
+        default:
+          return(MagickFalse);
       }
+    default:
+      return(MagickFalse);
   }
-  return(MagickFalse);
 }
 
 static inline Quantum ReadVIPSPixelNONE(Image *image,
@@ -217,7 +220,7 @@ static inline Quantum ReadVIPSPixelNONE(Image *image,
     case VIPSTypeRGB:
       {
         unsigned char
-          c=0;
+          c;
 
         switch(format)
         {
@@ -239,6 +242,9 @@ static inline Quantum ReadVIPSPixelNONE(Image *image,
           case VIPSBandFormatDOUBLE:
             c=(unsigned char) ReadBlobDouble(image);
             break;
+          default:
+            c=0;
+            break;
         }
         return(ScaleCharToQuantum(c));
       }
@@ -246,7 +252,7 @@ static inline Quantum ReadVIPSPixelNONE(Image *image,
     case VIPSTypeRGB16:
       {
         unsigned short
-          s=0;
+          s;
 
         switch(format)
         {
@@ -263,6 +269,9 @@ static inline Quantum ReadVIPSPixelNONE(Image *image,
             break;
           case VIPSBandFormatDOUBLE:
             s=(unsigned short) ReadBlobDouble(image);
+            break;
+          default:
+            s=0;
             break;
         }
         return(ScaleShortToQuantum(s));
@@ -285,9 +294,12 @@ static inline Quantum ReadVIPSPixelNONE(Image *image,
         case VIPSBandFormatDOUBLE:
           return((Quantum) ((double) QuantumRange*(ReadBlobDouble(
             image)/1.0)));
+        default:
+          return((Quantum) 0);
       }
+    default:
+      return((Quantum) 0);
   }
-  return((Quantum) 0);
 }
 
 static MagickBooleanType ReadVIPSPixelsNONE(Image *image,
@@ -676,6 +688,7 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
       else
         (void) WriteBlobLong(image, VIPSTypeRGB);
       break;
+    default:
     case sRGBColorspace:
       (void) SetImageColorspace(image,sRGBColorspace);
       (void) WriteBlobLong(image,VIPSTypesRGB);
