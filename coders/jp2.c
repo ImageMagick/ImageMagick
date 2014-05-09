@@ -354,8 +354,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         Extract an area from the image.
       */
       jp2_status=opj_set_decode_area(jp2_codec,jp2_image,image->extract_info.x,
-        image->extract_info.y,image->extract_info.x+image->columns,
-        image->extract_info.y+image->rows);
+        image->extract_info.y,image->extract_info.x+(ssize_t) image->columns,
+        image->extract_info.y+(ssize_t) image->rows);
       if (jp2_status == 0)
         {
           opj_stream_destroy(jp2_stream);
@@ -364,8 +364,16 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
         }
     }
-  if ((opj_decode(jp2_codec,jp2_stream,jp2_image) == 0) ||
-      (opj_end_decompress(jp2_codec,jp2_stream) == 0))
+  if (image_info->number_scenes != 0)
+    jp2_status=opj_get_decoded_tile(jp2_codec,jp2_stream,jp2_image,
+      (unsigned int) image_info->scene);
+  else
+    {
+      jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
+      if (jp2_status != 0)
+        jp2_status=opj_end_decompress(jp2_codec,jp2_stream);
+    }
+  if (jp2_status == 0)
     {
       opj_stream_destroy(jp2_stream);
       opj_destroy_codec(jp2_codec);
@@ -784,7 +792,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   */
   opj_set_default_encoder_parameters(&parameters);
   for (i=1; i < 6; i++)
-    if (((1UL << (i+2)) > image->columns) && ((1UL << (i+2)) > image->rows))
+    if (((1U << (i+2)) > image->columns) && ((1U << (i+2)) > image->rows))
       break;
   parameters.numresolution=i;
   option=GetImageOption(image_info,"jp2:number-resolutions");
@@ -810,10 +818,10 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
         Set tile size.
       */
       flags=ParseAbsoluteGeometry(image_info->extract,&geometry);
-      parameters.cp_tdx=geometry.width;
-      parameters.cp_tdy=geometry.width;
+      parameters.cp_tdx=(ssize_t) geometry.width;
+      parameters.cp_tdy=(ssize_t) geometry.width;
       if ((flags & HeightValue) != 0)
-        parameters.cp_tdy=geometry.height;
+        parameters.cp_tdy=(ssize_t) geometry.height;
       if ((flags & XValue) != 0)
         parameters.cp_tx0=geometry.x;
       if ((flags & YValue) != 0)
