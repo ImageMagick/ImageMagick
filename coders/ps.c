@@ -114,6 +114,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
 static int MagickDLLCall PostscriptDelegateMessage(void *handle,
   const char *msg,int len)
 {
@@ -136,10 +137,15 @@ static int MagickDLLCall PostscriptDelegateMessage(void *handle,
   (*messages)[offset+len] ='\0';
   return(len);
 }
+#endif
 
 static MagickBooleanType InvokePostscriptDelegate(
   const MagickBooleanType verbose,const char *command,ExceptionInfo *exception)
 {
+  int
+    status;
+
+#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
 #define SetArgsStart \
   if (args_start == (const char *) NULL) \
     { \
@@ -165,16 +171,12 @@ static MagickBooleanType InvokePostscriptDelegate(
     return(MagickFalse); \
   }
 
-  const char
-    *args_start=NULL;
-
-  int
-    status;
-
-#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
   char
     **argv,
     *errors;
+
+  const char
+    *args_start=NULL;
 
   const GhostInfo
     *ghost_info;

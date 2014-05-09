@@ -125,6 +125,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
 static int MagickDLLCall PDFDelegateMessage(void *handle,const char *msg,
   int len)
 {
@@ -147,10 +148,15 @@ static int MagickDLLCall PDFDelegateMessage(void *handle,const char *msg,
   (*messages)[offset+len] ='\0';
   return(len);
 }
+#endif
 
 static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
   const char *command,ExceptionInfo *exception)
 {
+  int
+    status;
+
+#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
 #define SetArgsStart \
   if (args_start == (const char *) NULL) \
     { \
@@ -176,16 +182,12 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
     return(MagickFalse); \
   }
 
-  const char
-    *args_start=NULL;
-
-  int
-    status;
-
-#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
   char
     **argv,
     *errors;
+
+  const char
+    *args_start=NULL;
 
   const GhostInfo
     *ghost_info;
