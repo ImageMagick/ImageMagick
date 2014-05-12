@@ -157,7 +157,7 @@ typedef struct _LogMapInfo
   Static declarations.
 */
 static const HandlerInfo
-  LogHandlers[] =
+  LogHandlers[32] =
   {
     { "Console", ConsoleHandler },
     { "Debug", DebugHandler },
@@ -166,6 +166,30 @@ static const HandlerInfo
     { "None", NoHandler },
     { "Stderr", StderrHandler },
     { "Stdout", StdoutHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
+    { (char *) NULL, UndefinedHandler },
     { (char *) NULL, UndefinedHandler }
   };
 
