@@ -1503,7 +1503,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
       dpx.file.image_offset=(((dpx.file.image_offset+0x2000-1)/0x2000)*0x2000);
     }
   offset+=WriteBlobLong(image,dpx.file.image_offset);
-  (void) strncpy(dpx.file.version,"V2.0",sizeof(dpx.file.version));
+  (void) strncpy(dpx.file.version,"V2.0",sizeof(dpx.file.version)-1);
   offset+=WriteBlob(image,8,(unsigned char *) &dpx.file.version);
   dpx.file.file_size=(unsigned int) (4U*image->columns*image->rows+
     dpx.file.image_offset);
@@ -1523,7 +1523,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   offset+=WriteBlobLong(image,dpx.file.user_size);
   value=GetImageArtifact(image,"dpx:file.filename");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.file.filename,value,sizeof(dpx.file.filename));
+    (void) strncpy(dpx.file.filename,value,sizeof(dpx.file.filename)-1);
   offset+=WriteBlob(image,sizeof(dpx.file.filename),(unsigned char *)
     dpx.file.filename);
   seconds=time((time_t *) NULL);
@@ -1532,21 +1532,20 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   offset+=WriteBlob(image,sizeof(dpx.file.timestamp),(unsigned char *)
     dpx.file.timestamp);
   (void) strncpy(dpx.file.creator,GetMagickVersion((size_t *) NULL),
-    sizeof(dpx.file.creator));
+    sizeof(dpx.file.creator)-1);
   value=GetImageArtifact(image,"dpx:file.creator");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.file.creator,value,sizeof(dpx.file.creator));
+    (void) strncpy(dpx.file.creator,value,sizeof(dpx.file.creator)-1);
   offset+=WriteBlob(image,sizeof(dpx.file.creator),(unsigned char *)
     dpx.file.creator);
   value=GetImageArtifact(image,"dpx:file.project");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.file.project,value,sizeof(dpx.file.project));
+    (void) strncpy(dpx.file.project,value,sizeof(dpx.file.project)-1);
   offset+=WriteBlob(image,sizeof(dpx.file.project),(unsigned char *)
     dpx.file.project);
   value=GetImageArtifact(image,"dpx:file.copyright");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.file.copyright,value,
-      sizeof(dpx.file.copyright));
+    (void) strncpy(dpx.file.copyright,value,sizeof(dpx.file.copyright)-1);
   offset+=WriteBlob(image,sizeof(dpx.file.copyright),(unsigned char *)
     dpx.file.copyright);
   dpx.file.encrypt_key=(~0U);
@@ -1694,19 +1693,21 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   value=GetImageArtifact(image,"dpx:orientation.filename");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.orientation.filename,value,
-      sizeof(dpx.orientation.filename));
+      sizeof(dpx.orientation.filename)-1);
   offset+=WriteBlob(image,sizeof(dpx.orientation.filename),(unsigned char *)
     dpx.orientation.filename);
   offset+=WriteBlob(image,sizeof(dpx.orientation.timestamp),(unsigned char *)
     dpx.orientation.timestamp);
   value=GetImageArtifact(image,"dpx:orientation.device");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.orientation.device,value,sizeof(dpx.orientation.device));
+    (void) strncpy(dpx.orientation.device,value,
+      sizeof(dpx.orientation.device)-1);
   offset+=WriteBlob(image,sizeof(dpx.orientation.device),(unsigned char *)
     dpx.orientation.device);
   value=GetImageArtifact(image,"dpx:orientation.serial");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.orientation.serial,value,sizeof(dpx.orientation.serial));
+    (void) strncpy(dpx.orientation.serial,value,
+      sizeof(dpx.orientation.serial)-1);
   offset+=WriteBlob(image,sizeof(dpx.orientation.serial),(unsigned char *)
     dpx.orientation.serial);
   for (i=0; i < 4; i++)
@@ -1745,36 +1746,36 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) ResetMagickMemory(dpx.film.id,0,sizeof(dpx.film.id));
   value=GetImageArtifact(image,"dpx:film.id");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.film.id,value,sizeof(dpx.film.id));
+    (void) strncpy(dpx.film.id,value,sizeof(dpx.film.id)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.id),(unsigned char *) dpx.film.id);
   (void) ResetMagickMemory(dpx.film.type,0,sizeof(dpx.film.type));
   value=GetImageArtifact(image,"dpx:film.type");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.film.type,value,sizeof(dpx.film.type));
+    (void) strncpy(dpx.film.type,value,sizeof(dpx.film.type)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.type),(unsigned char *)
     dpx.film.type);
   (void) ResetMagickMemory(dpx.film.offset,0,sizeof(dpx.film.offset));
   value=GetImageArtifact(image,"dpx:film.offset");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.film.offset,value,sizeof(dpx.film.offset));
+    (void) strncpy(dpx.film.offset,value,sizeof(dpx.film.offset)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.offset),(unsigned char *)
     dpx.film.offset);
   (void) ResetMagickMemory(dpx.film.prefix,0,sizeof(dpx.film.prefix));
   value=GetImageArtifact(image,"dpx:film.prefix");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.film.prefix,value,sizeof(dpx.film.prefix));
+    (void) strncpy(dpx.film.prefix,value,sizeof(dpx.film.prefix)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.prefix),(unsigned char *)
     dpx.film.prefix);
   (void) ResetMagickMemory(dpx.film.count,0,sizeof(dpx.film.count));
   value=GetImageArtifact(image,"dpx:film.count");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.film.count,value,sizeof(dpx.film.count));
+    (void) strncpy(dpx.film.count,value,sizeof(dpx.film.count)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.count),(unsigned char *)
     dpx.film.count);
   (void) ResetMagickMemory(dpx.film.format,0,sizeof(dpx.film.format));
   value=GetImageArtifact(image,"dpx:film.format");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.film.format,value,sizeof(dpx.film.format));
+    (void) strncpy(dpx.film.format,value,sizeof(dpx.film.format)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.format),(unsigned char *)
     dpx.film.format);
   dpx.film.frame_position=0U;
@@ -1805,12 +1806,12 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) ResetMagickMemory(dpx.film.frame_id,0,sizeof(dpx.film.frame_id));
   value=GetImageArtifact(image,"dpx:film.frame_id");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.film.frame_id,value,sizeof(dpx.film.frame_id));
+    (void) strncpy(dpx.film.frame_id,value,sizeof(dpx.film.frame_id)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.frame_id),(unsigned char *)
     dpx.film.frame_id);
   value=GetImageArtifact(image,"dpx:film.slate");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.film.slate,value,sizeof(dpx.film.slate));
+    (void) strncpy(dpx.film.slate,value,sizeof(dpx.film.slate)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.slate),(unsigned char *)
     dpx.film.slate);
   offset+=WriteBlob(image,sizeof(dpx.film.reserve),(unsigned char *)
@@ -1904,7 +1905,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   value=GetImageArtifact(image,"dpx:user.id");
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.user.id,value,sizeof(dpx.user.id));
+    (void) strncpy(dpx.user.id,value,sizeof(dpx.user.id)-1);
   offset+=WriteBlob(image,sizeof(dpx.user.id),(unsigned char *) dpx.user.id);
   if (profile != (StringInfo *) NULL)
     offset+=WriteBlob(image,GetStringInfoLength(profile),
