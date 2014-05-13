@@ -299,6 +299,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
       (void) SetImageProperty(image,"comment",comment,exception);
       comment=DestroyString(comment);
     }
+  if (image_info->ping != MagickFalse)
+    {
+      (void) CloseBlob(image);
+      return(image);
+    }
   (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
   pixel.alpha=(MagickRealType) OpaqueAlpha;
   if (tga_info.colormap_type != 0)
