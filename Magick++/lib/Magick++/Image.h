@@ -143,6 +143,9 @@ namespace Magick
     void animationDelay(const size_t delay_);
     size_t animationDelay(void) const;
 
+    // Lessen (or intensify) when adding noise to an image.
+    void attenuate(const double attenuate_);
+
     // Number of iterations to loop an animation (e.g. Netscape loop
     // extension) for.
     void animationIterations(const size_t iterations_);
@@ -307,6 +310,9 @@ namespace Magick
     void gifDisposeMethod(const DisposeType disposeMethod_);
     DisposeType gifDisposeMethod(void) const;
 
+    // When comparing images, emphasize pixel differences with this color.
+    void highlightColor(const Color color_);
+
     // ICC color profile (BLOB)
     void iccColorProfile(const Blob &colorProfile_);
     Blob iccColorProfile(void) const;
@@ -330,6 +336,9 @@ namespace Magick
     // Image label
     void label(const std::string &label_);
     std::string label(void) const;
+
+    // When comparing images, de-emphasize pixel differences with this color.
+    void lowlightColor(const Color color_);
 
     // File type magick identifier (.e.g "GIF")
     void magick(const std::string &magick_);
