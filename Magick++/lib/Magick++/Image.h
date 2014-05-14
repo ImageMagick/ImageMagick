@@ -140,6 +140,9 @@ namespace Magick
     void animationIterations(const size_t iterations_);
     size_t animationIterations(void) const;
 
+    // Lessen (or intensify) when adding noise to an image.
+    void attenuate(const double attenuate_);
+
     // Image background color
     void backgroundColor(const Color &color_);
     Color backgroundColor(void) const;
@@ -295,6 +298,9 @@ namespace Magick
     void gifDisposeMethod(const size_t disposeMethod_);
     size_t gifDisposeMethod(void) const;
 
+    // When comparing images, emphasize pixel differences with this color.
+    void highlightColor(const Color color_);
+
     // ICC color profile (BLOB)
     void iccColorProfile(const Blob &colorProfile_);
     Blob iccColorProfile(void) const;
@@ -323,6 +329,9 @@ namespace Magick
     // This method is now deprecated. Please use strokeWidth instead.
     void lineWidth(const double lineWidth_);
     double lineWidth(void) const;
+
+    // When comparing images, de-emphasize pixel differences with this color.
+    void lowlightColor(const Color color_);
 
     // File type magick identifier (.e.g "GIF")
     void magick(const std::string &magick_);

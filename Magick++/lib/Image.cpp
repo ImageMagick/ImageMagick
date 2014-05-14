@@ -350,6 +350,16 @@ size_t Magick::Image::animationIterations(void) const
   return(constImage()->iterations);
 }
 
+void Magick::Image::attenuate(const double attenuate_)
+{
+  char
+    value[MaxTextExtent];
+
+  modifyImage();
+  FormatLocaleString(value,MaxTextExtent,"%.20g",attenuate_);
+  (void) SetImageArtifact(image(),"attenuate",value);
+}
+
 void Magick::Image::backgroundColor(const Color &backgroundColor_)
 {
   modifyImage();
@@ -738,8 +748,13 @@ off_t Magick::Image::fileSize(void) const
 
 void Magick::Image::fillColor(const Magick::Color &fillColor_)
 {
+  std::string
+    value;
+
   modifyImage();
   options()->fillColor(fillColor_);
+  value=fillColor_;
+  artifact("fill",value);
 }
 
 Magick::Color Magick::Image::fillColor(void) const
@@ -886,6 +901,15 @@ size_t Magick::Image::gifDisposeMethod(void) const
   return ((size_t) constImage()->dispose);
 }
 
+void Magick::Image::highlightColor(const Color color_)
+{
+  std::string
+    value;
+
+  value=color_;
+  artifact("highlight-color",value);
+}
+
 // ICC ICM color profile (BLOB)
 void Magick::Image::iccColorProfile(const Magick::Blob &colorProfile_)
 {
@@ -979,9 +1003,9 @@ bool Magick::Image::isValid(void) const
 void Magick::Image::label(const std::string &label_)
 {
   modifyImage();
-  SetImageProperty(image(),"Label",NULL);
+  (void) SetImageProperty(image(),"Label",NULL);
   if (label_.length() > 0)
-    SetImageProperty(image(),"Label",label_.c_str());
+    (void) SetImageProperty(image(),"Label",label_.c_str());
   throwImageException();
 }
 
@@ -996,6 +1020,15 @@ std::string Magick::Image::label(void) const
     return(std::string(value));
 
   return(std::string());
+}
+
+void Magick::Image::lowlightColor(const Color color_)
+{
+  std::string
+    value;
+
+  value=color_;
+  artifact("lowlight-color",value);
 }
 
 void Magick::Image::magick(const std::string &magick_)
@@ -1322,8 +1355,13 @@ bool Magick::Image::strokeAntiAlias(void) const
 
 void Magick::Image::strokeColor(const Magick::Color &strokeColor_)
 {
+  std::string
+    value;
+
   modifyImage();
   options()->strokeColor(strokeColor_);
+  value=strokeColor_;
+  artifact("stroke",value);
 }
 
 Magick::Color Magick::Image::strokeColor(void) const
@@ -1420,8 +1458,13 @@ Magick::Image Magick::Image::strokePattern(void) const
 
 void Magick::Image::strokeWidth(const double strokeWidth_)
 {
+  char
+    value[MaxTextExtent];
+
   modifyImage();
   options()->strokeWidth(strokeWidth_);
+  FormatLocaleString(value,MaxTextExtent,"%.20g",strokeWidth_);
+  (void) SetImageArtifact(image(),"strokewidth",value);
 }
 
 double Magick::Image::strokeWidth(void) const
