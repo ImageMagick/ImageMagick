@@ -2211,7 +2211,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         case EqualOperator:
         {
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          return(fabs(alpha-(*beta)) < MagickEpsilon ? MagickEpsilon : 0.0);
+          return(fabs(alpha-(*beta)) < MagickEpsilon ? 1.0 : 0.0);
         }
         case NotEqualOperator:
         {
