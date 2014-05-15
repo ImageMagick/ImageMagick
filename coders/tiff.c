@@ -2849,6 +2849,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (image_info->type != OptimizeType))
       (void) SetImageType(image,image_info->type);
     compression=UndefinedCompression;
+    if (image->compression != JPEGCompression)
+      compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
     switch (compression)
