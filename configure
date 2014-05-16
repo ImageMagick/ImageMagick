@@ -709,6 +709,7 @@ MVDelegate
 MrSIDDecodeDelegate
 MPEGEncodeDelegate
 MPEGDecodeDelegate
+MogrifyDelegate
 MANDelegate
 LaunchDelegate
 LPRDelegate
@@ -719,15 +720,15 @@ ILBMEncodeDelegate
 ILBMDecodeDelegate
 HTMLDecodeDelegate
 HPGLDecodeDelegate
+GVCDecodeDelegate
 GnuplotDecodeDelegate
-MogrifyDelegate
 DisplayDelegate
-ConvertDelegate
 EditorDelegate
 EchoDelegate
 DVIDecodeDelegate
-GVCDecodeDelegate
+DOCDecodeDelegate
 DNGDecodeDelegate
+ConvertDelegate
 CatDelegate
 BrowseDelegate
 BZIPDelegate
@@ -3693,7 +3694,7 @@ MAGICK_PATCHLEVEL_VERSION=2
 
 MAGICK_VERSION=6.8.9-2
 
-MAGICK_SVN_REVISION=15697:15700M
+MAGICK_SVN_REVISION=15718:15719M
 
 
 # Substitute library versioning
@@ -32681,6 +32682,7 @@ BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='xdg-open'
 CatDelegateDefault='cat'
 DNGDecodeDelegateDefault='ufraw-batch'
+DOCDecodeDelegateDefault='soffice'
 GVCDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
 EchoDelegateDefault='echo'
@@ -32938,6 +32940,47 @@ $as_echo "no" >&6; }
 fi
 
 
+# Extract the first word of ""$ConvertDelegateDefault"", so it can be a program name with args.
+set dummy "$ConvertDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ConvertDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ConvertDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ConvertDelegate="$ConvertDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ConvertDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_ConvertDelegate" && ac_cv_path_ConvertDelegate=""$ConvertDelegateDefault""
+  ;;
+esac
+fi
+ConvertDelegate=$ac_cv_path_ConvertDelegate
+if test -n "$ConvertDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ConvertDelegate" >&5
+$as_echo "$ConvertDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
 # Extract the first word of ""$DNGDecodeDelegateDefault"", so it can be a program name with args.
 set dummy "$DNGDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -32979,16 +33022,16 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$GVCDecodeDelegateDefault"", so it can be a program name with args.
-set dummy "$GVCDecodeDelegateDefault"; ac_word=$2
+# Extract the first word of ""$DOCDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$DOCDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_GVCDecodeDelegate+:} false; then :
+if ${ac_cv_path_DOCDecodeDelegate+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  case $GVCDecodeDelegate in
+  case $DOCDecodeDelegate in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_GVCDecodeDelegate="$GVCDecodeDelegate" # Let the user override the test with a path.
+  ac_cv_path_DOCDecodeDelegate="$DOCDecodeDelegate" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -32998,7 +33041,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_GVCDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_DOCDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -33006,14 +33049,14 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_GVCDecodeDelegate" && ac_cv_path_GVCDecodeDelegate=""$GVCDecodeDelegateDefault""
+  test -z "$ac_cv_path_DOCDecodeDelegate" && ac_cv_path_DOCDecodeDelegate=""$DOCDecodeDelegateDefault""
   ;;
 esac
 fi
-GVCDecodeDelegate=$ac_cv_path_GVCDecodeDelegate
-if test -n "$GVCDecodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GVCDecodeDelegate" >&5
-$as_echo "$GVCDecodeDelegate" >&6; }
+DOCDecodeDelegate=$ac_cv_path_DOCDecodeDelegate
+if test -n "$DOCDecodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DOCDecodeDelegate" >&5
+$as_echo "$DOCDecodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -33143,47 +33186,6 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$ConvertDelegateDefault"", so it can be a program name with args.
-set dummy "$ConvertDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_ConvertDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $ConvertDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_ConvertDelegate="$ConvertDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_ConvertDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_ConvertDelegate" && ac_cv_path_ConvertDelegate=""$ConvertDelegateDefault""
-  ;;
-esac
-fi
-ConvertDelegate=$ac_cv_path_ConvertDelegate
-if test -n "$ConvertDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ConvertDelegate" >&5
-$as_echo "$ConvertDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
 # Extract the first word of ""$DisplayDelegateDefault"", so it can be a program name with args.
 set dummy "$DisplayDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -33225,47 +33227,6 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$MogrifyDelegateDefault"", so it can be a program name with args.
-set dummy "$MogrifyDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_MogrifyDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $MogrifyDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_MogrifyDelegate="$MogrifyDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_MogrifyDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_MogrifyDelegate" && ac_cv_path_MogrifyDelegate=""$MogrifyDelegateDefault""
-  ;;
-esac
-fi
-MogrifyDelegate=$ac_cv_path_MogrifyDelegate
-if test -n "$MogrifyDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MogrifyDelegate" >&5
-$as_echo "$MogrifyDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
 # Extract the first word of ""$GnuplotDecodeDelegateDefault"", so it can be a program name with args.
 set dummy "$GnuplotDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -33301,6 +33262,47 @@ GnuplotDecodeDelegate=$ac_cv_path_GnuplotDecodeDelegate
 if test -n "$GnuplotDecodeDelegate"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GnuplotDecodeDelegate" >&5
 $as_echo "$GnuplotDecodeDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+# Extract the first word of ""$GVCDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$GVCDecodeDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_GVCDecodeDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $GVCDecodeDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_GVCDecodeDelegate="$GVCDecodeDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_GVCDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_GVCDecodeDelegate" && ac_cv_path_GVCDecodeDelegate=""$GVCDecodeDelegateDefault""
+  ;;
+esac
+fi
+GVCDecodeDelegate=$ac_cv_path_GVCDecodeDelegate
+if test -n "$GVCDecodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GVCDecodeDelegate" >&5
+$as_echo "$GVCDecodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -33711,6 +33713,47 @@ MANDelegate=$ac_cv_path_MANDelegate
 if test -n "$MANDelegate"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MANDelegate" >&5
 $as_echo "$MANDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+# Extract the first word of ""$MogrifyDelegateDefault"", so it can be a program name with args.
+set dummy "$MogrifyDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_MogrifyDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $MogrifyDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MogrifyDelegate="$MogrifyDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_MogrifyDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_MogrifyDelegate" && ac_cv_path_MogrifyDelegate=""$MogrifyDelegateDefault""
+  ;;
+esac
+fi
+MogrifyDelegate=$ac_cv_path_MogrifyDelegate
+if test -n "$MogrifyDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MogrifyDelegate" >&5
+$as_echo "$MogrifyDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -34808,6 +34851,7 @@ if test "$with_frozenpaths" != 'yes'; then
   ConvertDelegate="$ConvertDelegateDefault"
   DisplayDelegate="$DisplayDelegateDefault"
   DNGDecodeDelegate="$DNGDecodeDelegateDefault"
+  DOCDecodeDelegate="$DOCDecodeDelegateDefault"
   DVIDecodeDelegate="$DVIDecodeDelegateDefault"
   EchoDelegate="$EchoDelegateDefault"
   EditorDelegate="$EditorDelegateDefault"
