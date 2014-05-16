@@ -1076,15 +1076,16 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   seconds=time((time_t *) NULL);
   (void) memset(timestamp,0,sizeof(timestamp));
   (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
-  (void) memset(cin.origination.create_date,0,sizeof(cin.file.create_date));
-  (void) CopyMagickString(cin.file.create_date,timestamp,11);
+  (void) memset(cin.origination.create_date,0,
+    sizeof(cin.origination.create_date));
+  (void) CopyMagickString(cin.origination.create_date,timestamp,11);
   offset+=WriteBlob(image,sizeof(cin.origination.create_date),(unsigned char *)
     cin.origination.create_date);
   (void) memset(cin.origination.create_time,0,
      sizeof(cin.origination.create_time));
   (void) CopyMagickString(cin.origination.create_time,timestamp+11,15);
   offset+=WriteBlob(image,sizeof(cin.origination.create_time),(unsigned char *)
-    cin.file.create_time);
+    cin.origination.create_time);
   value=GetCINProperty(image_info,image,"dpx:origination.device",exception);
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.origination.device,value,
