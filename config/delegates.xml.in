@@ -73,8 +73,8 @@
   <delegate decode="browse" stealth="True" spawn="True" command="&quot;@BrowseDelegate@&quot; http://www.imagemagick.org/; rm &quot;%i&quot;"/>
   <delegate decode="cdr" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
   <delegate decode="cgm" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
-  <delegate decode="doc" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; ; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
-  <delegate decode="docx" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; ; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="doc" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="docx" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="dng:decode" command="&quot;@DNGDecodeDelegate@&quot; --silent --create-id=also --out-type=png --out-depth=16 &quot;--output=%u.png&quot; &quot;%i&quot;"/>
   <delegate decode="dot" command='&quot;@GVCDecodeDelegate@&quot; -Tsvg &quot;%i&quot; -o &quot;%o&quot;' />
   <delegate decode="dvi" command="&quot;@DVIDecodeDelegate@&quot; -q -o &quot;%o&quot; &quot;%i&quot;"/>
@@ -94,7 +94,7 @@
   <delegate decode="miff" encode="show" spawn="True" command="&quot;@DisplayDelegate@&quot; -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
   <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;@DisplayDelegate@&quot; -immutable -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
   <delegate decode="mpeg:decode" command="&quot;@MPEGDecodeDelegate@&quot; -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%Z&quot;"/>
-  <delegate decode="odt" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; ; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="odt" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="pcl:cmyk" stealth="True" command="&quot;@PCLDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@PCLCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="pcl:color" stealth="True" command="&quot;@PCLDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@PCLColorDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="pcl:mono" stealth="True" command="&quot;@PCLDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@PCLMonoDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
