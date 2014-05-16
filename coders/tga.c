@@ -789,7 +789,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   */
   (void) WriteBlobByte(image,tga_info.id_length);
   (void) WriteBlobByte(image,tga_info.colormap_type);
-  (void) WriteBlobByte(image,tga_info.image_type);
+  (void) WriteBlobByte(image,(unsigned char) tga_info.image_type);
   (void) WriteBlobLSBShort(image,tga_info.colormap_index);
   (void) WriteBlobLSBShort(image,tga_info.colormap_length);
   (void) WriteBlobByte(image,tga_info.colormap_size);
@@ -894,7 +894,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
             }
           if (i >= 3)
             {
-              WriteBlobByte(image,(unsigned char) (i-1 | 0x80));
+              WriteBlobByte(image,(unsigned char) ((i-1) | 0x80));
               WriteTGAPixel(image,tga_info.image_type,p);
               p+=(i*channels);
             }
