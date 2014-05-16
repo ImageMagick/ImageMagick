@@ -874,6 +874,9 @@ static inline const char *GetCINProperty(const ImageInfo *image_info,
 static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
+  char
+    timestamp[MaxTextExtent];
+
   const char
     *value;
 
@@ -973,12 +976,14 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
 #else
   (void) memcpy(&local_time,localtime(&seconds),sizeof(local_time));
 #endif
-  (void) strftime(cin.file.create_date,sizeof(cin.file.create_date),"%Y:%m:%d",
-    &local_time);
+  (void) memset(timestamp,0,sizeof(timestamp));
+  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
+  (void) memset(cin.file.create_date,0,sizeof(cin.file.create_date));
+  (void) CopyMagickString(cin.file.create_date,timestamp,11);
   offset+=WriteBlob(image,sizeof(cin.file.create_date),(unsigned char *)
     cin.file.create_date);
-  (void) strftime(cin.file.create_time,sizeof(cin.file.create_time),
-    "%H:%M:%S%Z",&local_time);
+  (void) memset(cin.file.create_time,0,sizeof(cin.file.create_time));
+  (void) CopyMagickString(cin.file.create_time,timestamp+11,15);
   offset+=WriteBlob(image,sizeof(cin.file.create_time),(unsigned char *)
     cin.file.create_time);
   offset+=WriteBlob(image,sizeof(cin.file.reserve),(unsigned char *)
@@ -1069,14 +1074,17 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   offset+=WriteBlob(image,sizeof(cin.origination.filename),(unsigned char *)
     cin.origination.filename);
   seconds=time((time_t *) NULL);
-  (void) strftime(cin.origination.create_date,
-    sizeof(cin.origination.create_date),"%Y:%m:%d",&local_time);
+  (void) memset(timestamp,0,sizeof(timestamp));
+  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
+  (void) memset(cin.origination.create_date,0,sizeof(cin.file.create_date));
+  (void) CopyMagickString(cin.file.create_date,timestamp,11);
   offset+=WriteBlob(image,sizeof(cin.origination.create_date),(unsigned char *)
     cin.origination.create_date);
-  (void) strftime(cin.origination.create_time,
-    sizeof(cin.origination.create_time),"%H:%M:%S%Z",&local_time);
+  (void) memset(cin.origination.create_time,0,
+     sizeof(cin.origination.create_time));
+  (void) CopyMagickString(cin.origination.create_time,timestamp+11,15);
   offset+=WriteBlob(image,sizeof(cin.origination.create_time),(unsigned char *)
-    cin.origination.create_time);
+    cin.file.create_time);
   value=GetCINProperty(image_info,image,"dpx:origination.device",exception);
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.origination.device,value,
