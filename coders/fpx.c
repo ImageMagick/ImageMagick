@@ -83,40 +83,6 @@ static MagickBooleanType
   WriteFPXImage(const ImageInfo *,Image *);
 #endif
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I s F P X                                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsFPX() returns MagickTrue if the image format type, identified by the
-%  magick string, is FPX.
-%
-%  The format of the IsFPX method is:
-%
-%      MagickBooleanType IsFPX(const unsigned char *magick,const size_t length)
-%
-%  A description of each parameter follows:
-%
-%    o magick: compare image format pattern against these bytes.
-%
-%    o length: Specifies the length of the magick string.
-%
-*/
-static MagickBooleanType IsFPX(const unsigned char *magick,const size_t length)
-{
-  if (length < 4)
-    return(MagickFalse);
-  if (memcmp(magick,"\320\317\021\340",4) == 0)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
 #if defined(MAGICKCORE_FPX_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -534,7 +500,6 @@ ModuleExport size_t RegisterFPXImage(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
-  entry->magick=(IsImageFormatHandler *) IsFPX;
   entry->description=ConstantString("FlashPix Format");
   entry->module=ConstantString("FPX");
   (void) RegisterMagickInfo(entry);
