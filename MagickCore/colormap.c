@@ -89,8 +89,8 @@
 %
 %  The format of the AcquireImageColormap method is:
 %
-%      MagickBooleanType AcquireImageColormap(Image *image,
-%        const size_t colors,ExceptionInfo *exception)
+%      MagickBooleanType AcquireImageColormap(Image *image,const size_t colors,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -116,9 +116,6 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
   register ssize_t
     i;
 
-  size_t
-    length;
-
   /*
     Allocate image colormap.
   */
@@ -126,14 +123,13 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  image->colors=colors;
-  length=(size_t) colors;
+  image->colors=MagickMax(colors,2);
   if (image->colormap == (PixelInfo *) NULL)
-    image->colormap=(PixelInfo *) AcquireQuantumMemory(length,
+    image->colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,
       sizeof(*image->colormap));
   else
-    image->colormap=(PixelInfo *) ResizeQuantumMemory(image->colormap,length,
-      sizeof(*image->colormap));
+    image->colormap=(PixelInfo *) ResizeQuantumMemory(image->colormap,
+      image->colors,sizeof(*image->colormap));
   if (image->colormap == (PixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
