@@ -896,5 +896,6 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
           break;
       }
   }
-  return(status);
+  (void) CloseBlob(image);
+  return(MagickTrue);
 }
