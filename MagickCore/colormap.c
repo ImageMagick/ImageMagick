@@ -131,14 +131,18 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     image->colormap=(PixelInfo *) ResizeQuantumMemory(image->colormap,
       image->colors,sizeof(*image->colormap));
   if (image->colormap == (PixelInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
+    {
+      image->colors=0;
+      image->storage_class=DirectClass;
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   for (i=0; i < (ssize_t) image->colors; i++)
   {
     double
       pixel;
 
-    pixel=(double) (i*(QuantumRange/MagickMax(colors-1,1)));
+    pixel=(double) (i*(QuantumRange/(image->colors-1)));
     GetPixelInfo(image,image->colormap+i);
     image->colormap[i].alpha_trait=BlendPixelTrait;
     image->colormap[i].red=pixel;
