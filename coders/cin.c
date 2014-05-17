@@ -984,7 +984,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   offset+=WriteBlob(image,sizeof(cin.file.create_date),(unsigned char *)
     cin.file.create_date);
   (void) memset(cin.file.create_time,0,sizeof(cin.file.create_time));
-  (void) CopyMagickString(cin.file.create_time,timestamp+11,15);
+  (void) CopyMagickString(cin.file.create_time,timestamp+11,11);
   offset+=WriteBlob(image,sizeof(cin.file.create_time),(unsigned char *)
     cin.file.create_time);
   offset+=WriteBlob(image,sizeof(cin.file.reserve),(unsigned char *)
