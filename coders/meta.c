@@ -2010,6 +2010,8 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
       }
     if (taglen < 0)
       return(-1);
+    if (taglen > 65535)
+      return(-1);
     /* make a buffer to hold the tag datand snag it from the input stream */
     str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MaxTextExtent),
       sizeof(*str));
