@@ -552,6 +552,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
+  if (number_images > 65535)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   header=(unsigned char *) RelinquishMagickMemory(header);
   /*
     Determine resolution by scene specification.

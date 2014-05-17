@@ -3284,9 +3284,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
           default:
             p++;
             *q++=(*p);
-            continue;
         }
-        continue; /* never reached! */
+        continue;
       case '&':
         if (LocaleNCompare("&lt;",p,4) == 0)
           *q++='<', p+=3;
