@@ -961,7 +961,11 @@ MagickExport int Tokenizer(TokenInfo *token_info,const unsigned flag,
     switch (token_info->state)
     {
       case IN_WHITE:
+      {
         token_info->state=IN_TOKEN;
+        StoreToken(token_info,token,max_token_length,c);
+        break;
+      }
       case IN_TOKEN:
       case IN_QUOTE:
       {

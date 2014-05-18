@@ -274,7 +274,6 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
             {
               if (matte_image[i] != 0)
                 SetPixelIndex(image,image->colors,q);
-              p++;
               q+=GetPixelChannels(image);
             }
           }
