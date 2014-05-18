@@ -1817,9 +1817,13 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
         for (i=0; i < (ssize_t) target_image->columns; i++)
         {
           p=GetCacheViewVirtualPixels(image_view,x+i,y+j,1,1,exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
           indexes=GetCacheViewVirtualIndexQueue(image_view);
           SetMagickPixelPacket(image,p,indexes,&pixel);
           q=GetCacheViewVirtualPixels(target_view,i,j,1,1,exception);
+          if (q == (const PixelPacket *) NULL)
+            break;
           target_indexes=GetCacheViewVirtualIndexQueue(target_view);
           SetMagickPixelPacket(image,q,target_indexes,&target);
           if (IsMagickColorSimilar(&pixel,&target) == MagickFalse)
