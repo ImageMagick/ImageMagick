@@ -572,6 +572,8 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
       {
         if (*(p+4) == 0)
           *has_merged_image=MagickFalse;
+        p+=count;
+        break;
       }
       default:
       {
