@@ -89,6 +89,14 @@ static int ConvertMain(int argc,char **argv)
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
 int main(int argc,char **argv)
 {
+  register int
+    i;
+
+  for (i=0; i < argc; i++)
+    if (argv[i] == (char *) NULL)
+      break;
+  if (i < argc)
+    return(-1);
   return(ConvertMain(argc,argv));
 }
 #else
