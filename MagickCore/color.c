@@ -1770,8 +1770,12 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
         for (i=0; i < (ssize_t) target_image->columns; i++)
         {
           p=GetCacheViewVirtualPixels(image_view,x+i,y+j,1,1,exception);
+          if (p == (const Quantum *) NULL)
+            break;
           GetPixelInfoPixel(image,p,&pixel);
           q=GetCacheViewVirtualPixels(target_view,i,j,1,1,exception);
+          if (q == (const Quantum *) NULL)
+            break;
           GetPixelInfoPixel(image,q,&target);
           if (IfMagickFalse(IsFuzzyEquivalencePixelInfo(&pixel,&target)))
             break;
