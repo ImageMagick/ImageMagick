@@ -1969,15 +1969,18 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
           Add namespace to XMP profile.
         */
         xmp_profile=StringToStringInfo("http://ns.adobe.com/xap/1.0/ ");
-        ConcatenateStringInfo(xmp_profile,profile);
-        GetStringInfoDatum(xmp_profile)[28]='\0';
-        for (i=0; i < (ssize_t) GetStringInfoLength(xmp_profile); i+=65533L)
-        {
-          length=MagickMin(GetStringInfoLength(xmp_profile)-i,65533L);
-          jpeg_write_marker(jpeg_info,XML_MARKER,
-            GetStringInfoDatum(xmp_profile)+i,(unsigned int) length);
-        }
-        xmp_profile=DestroyStringInfo(xmp_profile);
+        if (xmp_profile != (StringINfo *) NULL)
+          {
+            ConcatenateStringInfo(xmp_profile,profile);
+            GetStringInfoDatum(xmp_profile)[28]='\0';
+            for (i=0; i < (ssize_t) GetStringInfoLength(xmp_profile); i+=65533L)
+            {
+              length=MagickMin(GetStringInfoLength(xmp_profile)-i,65533L);
+              jpeg_write_marker(jpeg_info,XML_MARKER,
+                GetStringInfoDatum(xmp_profile)+i,(unsigned int) length);
+            }
+            xmp_profile=DestroyStringInfo(xmp_profile);
+          }
       }
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));

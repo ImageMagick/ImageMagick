@@ -1519,7 +1519,8 @@ static char *ParseEntities(char *xml,char **entities,int state)
                   xml=p+offset;
                   entity=strchr(xml,';');
                 }
-              (void) CopyMagickMemory(xml+length,entity+1,strlen(entity));
+              if (entity != (char *) NULL)
+                (void) CopyMagickMemory(xml+length,entity+1,strlen(entity));
               (void) strncpy(xml,entities[i],length);
             }
         }
@@ -1922,7 +1923,8 @@ static void ParseOpenTag(XMLTreeRoot *root,char *tag,char **attributes)
     xml_info->tag=ConstantString(tag);
   else
     xml_info=AddChildToXMLTree(xml_info,tag,strlen(xml_info->content));
-  xml_info->attributes=attributes;
+  if (xml_info != (XMLTreeInfo *) NULL)
+    xml_info->attributes=attributes;
   root->node=xml_info;
 }
 
