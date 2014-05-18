@@ -1837,13 +1837,16 @@ static int formatIPTC(Image *ifile, Image *ofile)
   while (c != EOF)
   {
     if (c == 0x1c)
-      foundiptc = 1;
+      foundiptc=1;
     else
       {
         if (foundiptc)
-          return -1;
+          return(-1);
         else
-          continue;
+          {
+            c=0;
+            continue;
+          }
       }
 
     /* we found the 0x1c tag and now grab the dataset and record number tags */
