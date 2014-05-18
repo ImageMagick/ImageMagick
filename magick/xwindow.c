@@ -3085,13 +3085,13 @@ MagickExport void XGetPixelPacket(Display *display,
   /*
     Set highlight color.
   */
-  pixel->highlight_color.red=(unsigned short) ((
+  pixel->highlight_color.red=(unsigned short) (((MagickRealType)
     pixel->matte_color.red*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
-  pixel->highlight_color.green=(unsigned short) ((
+  pixel->highlight_color.green=(unsigned short) (((MagickRealType)
     pixel->matte_color.green*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
-  pixel->highlight_color.blue=(unsigned short) ((
+  pixel->highlight_color.blue=(unsigned short) (((MagickRealType)
     pixel->matte_color.blue*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
   pixel->highlight_color.pixel=
