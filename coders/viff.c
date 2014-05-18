@@ -619,8 +619,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Convert bitmap scanline.
         */
-        (void) SetImageType(image,BilevelType,exception);
-        (void) SetImageType(image,PaletteType,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -630,12 +628,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           {
             for (bit=0; bit < 8; bit++)
             {
-              if (GetPixelLuma(image,q) < (QuantumRange/2.0))
-                {
-                  quantum=(size_t) GetPixelIndex(image,q);
-                  quantum|=0x01;
-                  SetPixelIndex(image,quantum,q);
-                }
+              quantum=((*p) & (0x01 << bit) ? 0 : 1);
+              SetPixelIndex(image,quantum,q);
               q+=GetPixelChannels(image);
             }
             p++;
@@ -643,13 +637,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
-                if (GetPixelLuma(image,q) < (QuantumRange/2.0))
-                  {
-                    quantum=(size_t) GetPixelIndex(image,q);
-                    quantum|=0x01;
-                    SetPixelIndex(image,quantum,q);
-                    q+=GetPixelChannels(image);
-                  }
+              {
+                quantum=((*p) & (0x01 << bit) ? 0 : 1);
+                SetPixelIndex(image,quantum,q);
+                q+=GetPixelChannels(image);
+              }
               p++;
             }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
