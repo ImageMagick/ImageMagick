@@ -1086,8 +1086,8 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
         /*
           Convert SGI uncompressed pixels.
         */
-        offsets=(ssize_t *) AcquireQuantumMemory(iris_info.rows*iris_info.depth,
-          sizeof(*offsets));
+        offsets=(ssize_t *) AcquireQuantumMemory(iris_info.rows,
+          iris_info.depth*sizeof(*offsets));
         runlength=(size_t *) AcquireQuantumMemory(iris_info.rows,
           iris_info.depth*sizeof(*runlength));
         packet_info=AcquireVirtualMemory((2*(size_t) iris_info.columns+10)*
