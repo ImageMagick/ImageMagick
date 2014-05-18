@@ -1699,7 +1699,8 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *decoder;
 
   size_t
-    n, num_images;
+    n,
+    num_images;
 
   /*
     Open image file.
@@ -1817,10 +1818,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /* Start a new image */
         AcquireNextImage(image_info,image);
         if (GetNextImageInList(image) == (Image *) NULL)
-          {
-            image = DestroyImageList(image);
-            return((Image *) NULL);
-          }
+          return(DestroyImageList(image));
         image=SyncNextImageInList(image);
       }
  
@@ -2781,6 +2779,8 @@ static void WriteFourCC(Image *image, const size_t compression,
         rows = image->rows - y;
 
       p=GetVirtualPixels(image,x,y,columns,rows,exception);
+      if (p == (const PixelPacket *) NULL)
+        break;
 
       for (i=0; i<16; i++)
       {
@@ -3019,6 +3019,8 @@ static void WriteUncompressed(Image *image, ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
 
     for (x=0; x < (ssize_t) image->columns; x++)
     {
