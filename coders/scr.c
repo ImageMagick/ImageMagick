@@ -213,6 +213,8 @@ static Image *ReadSCRImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for(z=7;z>-1;z--)
           {
               q=QueueAuthenticPixels(image,pix,piy,1,1,exception);
+              if (q == (Quantum *) NULL)
+                break;
 
               if(binar[z])
             {
