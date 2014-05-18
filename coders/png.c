@@ -4312,8 +4312,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               (p[2] << 8) | p[3]);
             jng_height=(size_t) ((p[4] << 24) | (p[5] << 16) |
               (p[6] << 8) | p[7]);
-            if ((jng_width == 0) || (jng_height == 0))
-              ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
             jng_color_type=p[8];
             jng_image_sample_depth=p[9];
             jng_image_compression_method=p[10];
@@ -4703,9 +4701,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   color_image_info->ping=MagickFalse;   /* To do: avoid this */
   jng_image=ReadImage(color_image_info,exception);
-
-  if (jng_image == (Image *) NULL)
-    return((Image *) NULL);
 
   (void) RelinquishUniqueFileResource(color_image->filename);
   unique_filenames--;
@@ -5219,6 +5214,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         if (memcmp(type,mng_MHDR,4) == 0)
           {
+            if (length < 12)
+              ThrowReaderException(CorruptImageError,"CorruptImage");
+
             mng_info->mng_width=(size_t) ((p[0] << 24) | (p[1] << 16) |
                 (p[2] << 8) | p[3]);
 
@@ -5246,8 +5244,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             frame_delay=default_frame_delay;
             simplicity=0;
 
-            if (length > 16)
+            if (length > 27)
               {
+                /* Skip nominal layer count, frame count, and play time */
                 p+=16;
                 simplicity=(size_t) mng_get_long(p);
               }
@@ -12000,7 +11999,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
 
   excluding=MagickFalse;
 
-  for (source=0; source<1; source++)
+  for (source=0; source<2; source++)
   {
     if (source==0)
       {
@@ -12133,7 +12132,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
     }
   }
 
-  for (source=0; source<1; source++)
+  for (source=0; source<2; source++)
   {
     if (source==0)
       {
