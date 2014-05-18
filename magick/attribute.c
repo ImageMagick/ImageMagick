@@ -165,13 +165,15 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   GetMagickPixelPacket(image,&target[1]);
   p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,0,1,1,
     exception);
-  SetMagickPixelPacket(image,p,GetCacheViewVirtualIndexQueue(image_view),
-    &target[1]);
+  if (p != (const PixelPacket *) NULL)
+    SetMagickPixelPacket(image,p,GetCacheViewVirtualIndexQueue(image_view),
+      &target[1]);
   GetMagickPixelPacket(image,&target[2]);
   p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
     exception);
-  SetMagickPixelPacket(image,p,GetCacheViewVirtualIndexQueue(image_view),
-    &target[2]);
+  if (p != (const PixelPacket *) NULL)
+    SetMagickPixelPacket(image,p,GetCacheViewVirtualIndexQueue(image_view),
+      &target[2]);
   status=MagickTrue;
   GetMagickPixelPacket(image,&zero);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

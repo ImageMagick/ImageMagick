@@ -2824,7 +2824,8 @@ MagickExport Image *XAnimateImages(Display *display,
         Free X resources.
       */
       if (windows->image.mapped != MagickFalse)
-        (void) XWithdrawWindow(display,windows->image.id,windows->image.screen);      XDelay(display,SuspendTime);
+        (void) XWithdrawWindow(display,windows->image.id,windows->image.screen);
+      XDelay(display,SuspendTime);
       (void) XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
       if (resource_info->map_type == (char *) NULL)
         (void) XFreeStandardColormap(display,visual_info,map_info,pixel);
