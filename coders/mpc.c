@@ -1409,6 +1409,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
               q=PopLongPixel(MSBEndian,pixel,q);
               pixel=ScaleQuantumToLong(image->colormap[i].blue);
               q=PopLongPixel(MSBEndian,pixel,q);
+              break;
             }
             case 16:
             {
