@@ -621,8 +621,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Convert bitmap scanline.
         */
-        (void) SetImageType(image,BilevelType);
-        (void) SetImageType(image,PaletteType);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -632,23 +630,19 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           for (x=0; x < (ssize_t) (image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
-              if (GetPixelLuma(image,q) < (QuantumRange/2.0))
-                {
-                  quantum=(size_t) GetPixelIndex(indexes+x+bit);
-                  quantum|=0x01;
-                  SetPixelIndex(indexes+x+bit,quantum);
-                }
+            {
+              quantum=((*p) & (0x01 << bit) ? 0 : 1);
+              SetPixelIndex(indexes+x+bit,quantum);
+             }
             p++;
           }
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
-                if (GetPixelLuma(image,q) < (QuantumRange/2.0))
-                  {
-                    quantum=(size_t) GetPixelIndex(indexes+x+bit);
-                    quantum|=0x01;
-                    SetPixelIndex(indexes+x+bit,quantum);
-                  }
+              {
+                quantum=((*p) & (0x01 << bit) ? 0 : 1);
+                SetPixelIndex(indexes+x+bit,quantum);
+              }
               p++;
             }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1220,8 +1214,7 @@ RestoreMSCWarning
             */
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
