@@ -108,7 +108,7 @@
 %  CannyEdgeImage() uses a multi-stage algorithm to detect a wide range of
 %  edges in images.
 %
-%  The format of the EdgeImage method is:
+%  The format of the CannyEdgeImage method is:
 %
 %      Image *CannyEdgeImage(const Image *image,const double radius,
 %        const double sigma,const double lower_percent,
