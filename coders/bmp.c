@@ -1267,9 +1267,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             pixel=(size_t) (*p++);
-            pixel|=(*p++ << 8);
-            pixel|=(*p++ << 16);
-            pixel|=(*p++ << 24);
+            pixel|=((size_t) *p++ << 8);
+            pixel|=((size_t) *p++ << 16);
+            pixel|=((size_t) *p++ << 24);
             red=((pixel & bmp_info.red_mask) << shift.red) >> 16;
             if (quantum_bits.red == 8)
               red|=(red >> 8);
