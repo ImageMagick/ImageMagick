@@ -341,16 +341,16 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
         if (endian == LSBEndian)
           {
             value=(ssize_t) (*q++);
-            value|=(*q++) << 8;
-            value|=(*q++) << 16;
-            value|=(*q++) << 24;
+            value|=((ssize_t) *q++) << 8;
+            value|=((ssize_t) *q++) << 16;
+            value|=((ssize_t) *q++) << 24;
           }
         else
           {
             value=(ssize_t) (*q++) << 24;
-            value|=(*q++) << 16;
-            value|=(*q++) << 8;
-            value|=(*q++);
+            value|=((ssize_t) *q++) << 16;
+            value|=((ssize_t) *q++) << 8;
+            value|=((ssize_t) *q++);
           }
         if (p->mask == 0)
           {

@@ -1683,7 +1683,7 @@ static void ParseProcessingInstructions(XMLTreeRoot *root,char *xml,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   root->processing_instructions[i][j+2]=(char *) ResizeQuantumMemory(
     root->processing_instructions[i][j+1],(size_t) (j+1),
-    sizeof(**root->processing_instructions));
+    sizeof(*root->processing_instructions));
   if (root->processing_instructions[i][j+2] == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) CopyMagickString(root->processing_instructions[i][j+2]+j-1,
