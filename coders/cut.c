@@ -246,6 +246,8 @@ static int GetCutColors(Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (intensity < GetPixelRed(q))
