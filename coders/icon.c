@@ -1334,11 +1334,11 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       }
     if (GetNextImageInList(next) == (Image *) NULL)
       break;
-    next=SyncNextImageInList(next);
     status=SetImageProgress(next,SaveImagesTag,scene++,
       GetImageListLength(next));
     if (status == MagickFalse)
       break;
+    next=SyncNextImageInList(next);
   } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
   offset=SeekBlob(image,0,SEEK_SET);
   (void) offset;

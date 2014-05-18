@@ -213,8 +213,9 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
       {
         case 32:
         {
-          pixel->index=ConstrainColormapIndex(image,
-            (*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3),exception);
+          pixel->index=ConstrainColormapIndex(image,((size_t) *p << 24) |
+            ((size_t) *(p+1) << 16) | ((size_t) *(p+2) << 8) | (size_t) *(p+3),
+            exception);
           p+=4;
           break;
         }

@@ -3142,17 +3142,16 @@ MagickPrivate void XGetPixelInfo(Display *display,
   /*
     Set highlight color.
   */
-  pixel->highlight_color.red=(unsigned short) ((
+  pixel->highlight_color.red=(unsigned short) (((double) 
     pixel->matte_color.red*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
-  pixel->highlight_color.green=(unsigned short) ((
+  pixel->highlight_color.green=(unsigned short) (((double) 
     pixel->matte_color.green*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
-  pixel->highlight_color.blue=(unsigned short) ((
+  pixel->highlight_color.blue=(unsigned short) (((double) 
     pixel->matte_color.blue*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
-  pixel->highlight_color.pixel=
-    XStandardPixel(map_info,&pixel->highlight_color);
+  pixel->highlight_color.pixel=XStandardPixel(map_info,&pixel->highlight_color);
   pixel->highlight_color.flags=(char) (DoRed | DoGreen | DoBlue);
   /*
     Set shadow color.
