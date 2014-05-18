@@ -77,7 +77,7 @@ WandExport size_t AcquireWandId(void)
     id = 0;
 
   if (wand_semaphore == (SemaphoreInfo *) NULL)
-		ActivateSemaphoreInfo(&wand_semaphore);
+    ActivateSemaphoreInfo(&wand_semaphore);
   LockSemaphoreInfo(wand_semaphore);
   if ((wand_ids == (SplayTreeInfo *) NULL) && (instantiate_wand == MagickFalse))
     {
