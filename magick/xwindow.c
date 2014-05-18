@@ -5531,12 +5531,9 @@ MagickExport MagickBooleanType XMakeImage(Display *display,
           window->shared_memory=MagickFalse;
           if (status != False)
             XShmDetach(display,&segment_info[1]);
-          if (ximage != (XImage *) NULL)
-            {
-              ximage->data=NULL;
-              XDestroyImage(ximage);
-              ximage=(XImage *) NULL;
-            }
+          ximage->data=NULL;
+          XDestroyImage(ximage);
+          ximage=(XImage *) NULL;
           if (segment_info[1].shmid >= 0)
             {
               if (segment_info[1].shmaddr != NULL)
