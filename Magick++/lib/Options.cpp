@@ -351,7 +351,7 @@ void Magick::Options::magick ( const std::string &magick_ )
 
 std::string Magick::Options::magick(void) const
 {
-  if (_imageInfo->magick && *_imageInfo->magick)
+  if (*_imageInfo->magick)
     return(std::string(_imageInfo->magick));
  
   return(std::string());

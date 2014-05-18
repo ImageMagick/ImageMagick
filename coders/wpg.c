@@ -550,6 +550,11 @@ RestoreMSCWarning \
 /* WPG2 raster reader. */
 static int UnpackWPG2Raster(Image *image,int bpp)
 {
+  int XorMe = 0;
+
+  int
+    RunCount;
+
   size_t
     x,
     y;
@@ -557,15 +562,12 @@ static int UnpackWPG2Raster(Image *image,int bpp)
   ssize_t
     ldblk;
 
-  int XorMe = 0;
-
   unsigned int
     SampleSize=1;
 
   unsigned char
     bbuf,
     *BImgBuff,
-    RunCount,
     SampleBuffer[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
   unsigned int

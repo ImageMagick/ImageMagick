@@ -2309,14 +2309,17 @@ void Magick::Image::colorMatrix(const size_t order_,
   GetPPException;
   
   kernel_info=AcquireKernelInfo("1");
-  kernel_info->width=order_;
-  kernel_info->height=order_;
-  kernel_info->values=(double *) color_matrix_;
-  newImage=ColorMatrixImage(constImage(),kernel_info,&exceptionInfo);
-  kernel_info->values=(double *) NULL;
-  kernel_info=DestroyKernelInfo(kernel_info);
-  replaceImage(newImage);
-  ThrowPPException;
+  if (kernel_info != (KernelInfo *) NULL)
+    {
+      kernel_info->width=order_;
+      kernel_info->height=order_;
+      kernel_info->values=(double *) color_matrix_;
+      newImage=ColorMatrixImage(constImage(),kernel_info,&exceptionInfo);
+      kernel_info->values=(double *) NULL;
+      kernel_info=DestroyKernelInfo(kernel_info);
+      replaceImage(newImage);
+      ThrowPPException;
+    }
 }
 
 bool Magick::Image::compare(const Image &reference_)

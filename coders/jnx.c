@@ -270,6 +270,8 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (tile_offset == -1)
         continue;
       restore_offset=TellBlob(image);
+      if (restore_offset < 0)
+        continue;
       offset=SeekBlob(image,(MagickOffsetType) tile_offset,SEEK_SET);
       if (offset != (MagickOffsetType) tile_offset)
         continue;
