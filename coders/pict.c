@@ -925,6 +925,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       code=ReadBlobByte(image);
     if (version == 2)
       code=(int) ReadBlobMSBShort(image);
+    if (code < 0)
+      break;
     if (code > 0xa1)
       {
         if (image->debug != MagickFalse)
