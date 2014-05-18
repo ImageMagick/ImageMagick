@@ -2495,7 +2495,7 @@ MagickPrivate XMLTreeInfo *SetXMLTreeAttribute(XMLTreeInfo *xml_info,
   j-=2;
   (void) CopyMagickMemory(xml_info->attributes[j+1]+(i/2),
     xml_info->attributes[j+1]+(i/2)+1,(size_t) (((j+2)/2)-(i/2))*
-    sizeof(*xml_info->attributes));
+    sizeof(**xml_info->attributes));
   return(xml_info);
 }
 
