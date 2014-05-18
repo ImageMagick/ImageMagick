@@ -12752,7 +12752,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           register ssize_t
             i;
 
-          ssize_t
+          size_t
             len;
 
           /* Write IDAT chunk header */
@@ -12772,11 +12772,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
             if (*(p)==73 && *(p+1)==68 && *(p+2)==65 && *(p+3)==84) /* IDAT */
               {
                 /* Found an IDAT chunk. */
-                (void) WriteBlobMSBULong(image,(size_t) len);
-                LogPNGChunk(logging,mng_IDAT,(size_t) len);
-                (void) WriteBlob(image,(size_t) len+4,p);
-                (void) WriteBlobMSBULong(image,
-                    crc32(0,p,(uInt) len+4));
+                (void) WriteBlobMSBULong(image,len);
+                LogPNGChunk(logging,mng_IDAT,len);
+                (void) WriteBlob(image,len+4,p);
+                (void) WriteBlobMSBULong(image,crc32(0,p,(uInt) len+4));
               }
 
             else
