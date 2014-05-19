@@ -1060,7 +1060,7 @@ DisableMSCWarning(4310)
       "      </rdf:Description>\n"
       "      <rdf:Description rdf:about=\"\"\n"
       "            xmlns:pdfaid=\"http://www.aiim.org/pdfa/ns/id/\">\n"
-      "         <pdfaid:part>2</pdfaid:part>\n"
+      "         <pdfaid:part>3</pdfaid:part>\n"
       "         <pdfaid:conformance>B</pdfaid:conformance>\n"
       "      </rdf:Description>\n"
       "   </rdf:RDF>\n"
