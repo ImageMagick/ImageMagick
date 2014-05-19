@@ -1930,8 +1930,8 @@ static char *SanitizeSystemCommand(const char *command)
 
   static char
     whitelist[] = 
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-"
-      ".@&;<>|\\\'\":%";
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
+      ".@&;<>|/\\\'\":%";
 
   sanitize_command=AcquireString(command);
   p=sanitize_command;
