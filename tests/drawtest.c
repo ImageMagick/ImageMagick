@@ -63,7 +63,7 @@
   exit(-1); \
 }
 
-static MagickBooleanType ScribbleImage (MagickWand *canvas)
+static MagickBooleanType ScribbleImage(MagickWand *canvas)
 {
   DrawingWand
     *picasso;

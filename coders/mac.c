@@ -239,7 +239,7 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
-  (void) SyncImage(image);
+  (void) SyncImage(image,exception);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }

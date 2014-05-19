@@ -1969,7 +1969,7 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
           Add namespace to XMP profile.
         */
         xmp_profile=StringToStringInfo("http://ns.adobe.com/xap/1.0/ ");
-        if (xmp_profile != (StringINfo *) NULL)
+        if (xmp_profile != (StringInfo *) NULL)
           {
             ConcatenateStringInfo(xmp_profile,profile);
             GetStringInfoDatum(xmp_profile)[28]='\0';
