@@ -6,6 +6,8 @@
 
 AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
 
+MAGICKPP_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/Magick++/lib
+
 if WITH_MAGICK_PLUS_PLUS
 MAGICKPP_LIBS = Magick++/lib/libMagick++-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.la
 MAGICKPP_LDADD = $(MAGICKPP_LIBS) $(top_builddir)/magick/libMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.la
@@ -111,6 +113,9 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 	Magick++/lib/Magick++/Thread.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
+Magick___lib_libMagick___la_CPPFLAGS = \
+	$(MAGICKPP_CPPFLAGS)
+
 magickpptopincdir = $(INCLUDE_PATH)
 magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
 
@@ -174,68 +179,87 @@ MAGICKPP_CHECK_PGRMS_OPT = \
 	Magick++/tests/readWriteImages
 
 Magick___demo_analyze_SOURCES		= Magick++/demo/analyze.cpp
-Magick___demo_analyze_LDADD		= $(MAGICKPP_LDADD)
+Magick___demo_analyze_LDADD		  = $(MAGICKPP_LDADD)
+Magick___demo_analyze_CPPFLAGS  = $(MAGICKPP_CPPFLAGS)
 
 Magick___demo_button_SOURCES		= Magick++/demo/button.cpp
-Magick___demo_button_LDADD		= $(MAGICKPP_LDADD)
+Magick___demo_button_LDADD		  = $(MAGICKPP_LDADD)
+Magick___demo_button_CPPFLAGS   = $(MAGICKPP_CPPFLAGS)
 
-Magick___demo_demo_SOURCES		= Magick++/demo/demo.cpp
-Magick___demo_demo_LDADD		= $(MAGICKPP_LDADD)
+Magick___demo_demo_SOURCES	   	= Magick++/demo/demo.cpp
+Magick___demo_demo_LDADD		    = $(MAGICKPP_LDADD)
+Magick___demo_demo_CPPFLAGS     = $(MAGICKPP_CPPFLAGS)
 
 Magick___demo_detrans_SOURCES		= Magick++/demo/detrans.cpp
-Magick___demo_detrans_LDADD		= $(MAGICKPP_LDADD)
+Magick___demo_detrans_LDADD		  = $(MAGICKPP_LDADD)
+Magick___demo_detrans_CPPFLAGS  = $(MAGICKPP_CPPFLAGS)
 
-Magick___demo_flip_SOURCES		= Magick++/demo/flip.cpp
-Magick___demo_flip_LDADD		= $(MAGICKPP_LDADD)
+Magick___demo_flip_SOURCES		  = Magick++/demo/flip.cpp
+Magick___demo_flip_LDADD		    = $(MAGICKPP_LDADD)
+Magick___demo_flip_CPPFLAGS     = $(MAGICKPP_CPPFLAGS)
 
 Magick___demo_gravity_SOURCES		= Magick++/demo/gravity.cpp
-Magick___demo_gravity_LDADD		= $(MAGICKPP_LDADD)
+Magick___demo_gravity_LDADD		  = $(MAGICKPP_LDADD)
+Magick___demo_gravity_CPPFLAGS  = $(MAGICKPP_CPPFLAGS)
 
 Magick___demo_piddle_SOURCES		= Magick++/demo/piddle.cpp
-Magick___demo_piddle_LDADD		= $(MAGICKPP_LDADD)
+Magick___demo_piddle_LDADD		  = $(MAGICKPP_LDADD)
+Magick___demo_piddle_CPPFLAGS   = $(MAGICKPP_CPPFLAGS)
 
 Magick___demo_shapes_SOURCES		= Magick++/demo/shapes.cpp
-Magick___demo_shapes_LDADD		= $(MAGICKPP_LDADD)
+Magick___demo_shapes_LDADD		  = $(MAGICKPP_LDADD)
+Magick___demo_shapes_CPPFLAGS   = $(MAGICKPP_CPPFLAGS)
 
 Magick___demo_zoom_SOURCES		= Magick++/demo/zoom.cpp
-Magick___demo_zoom_LDADD		= $(MAGICKPP_LDADD)
+Magick___demo_zoom_LDADD		  = $(MAGICKPP_LDADD)
+Magick___demo_zoom_CPPFLAGS   = $(MAGICKPP_CPPFLAGS)
 
-Magick___tests_appendImages_SOURCES	= Magick++/tests/appendImages.cpp
-Magick___tests_appendImages_LDADD	= $(MAGICKPP_LDADD)
+Magick___tests_appendImages_SOURCES	  = Magick++/tests/appendImages.cpp
+Magick___tests_appendImages_LDADD	    = $(MAGICKPP_LDADD)
+Magick___tests_appendImages_CPPFLAGS	= $(MAGICKPP_CPPFLAGS)
 
-Magick___tests_attributes_SOURCES	= Magick++/tests/attributes.cpp
-Magick___tests_attributes_LDADD		= $(MAGICKPP_LDADD)
+Magick___tests_attributes_SOURCES	    = Magick++/tests/attributes.cpp
+Magick___tests_attributes_LDADD		    = $(MAGICKPP_LDADD)
+Magick___tests_attributes_CPPFLAGS	  = $(MAGICKPP_CPPFLAGS)
 
 Magick___tests_averageImages_SOURCES	= Magick++/tests/averageImages.cpp
-Magick___tests_averageImages_LDADD	= $(MAGICKPP_LDADD)
+Magick___tests_averageImages_LDADD	  = $(MAGICKPP_LDADD)
+Magick___tests_averageImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 
 Magick___tests_coalesceImages_SOURCES	= Magick++/tests/coalesceImages.cpp
-Magick___tests_coalesceImages_LDADD	= $(MAGICKPP_LDADD)
+Magick___tests_coalesceImages_LDADD	  = $(MAGICKPP_LDADD)
+Magick___tests_coalesceImages_CPPFLAGS= $(MAGICKPP_CPPFLAGS)
 
-Magick___tests_coderInfo_SOURCES	= Magick++/tests/coderInfo.cpp
-Magick___tests_coderInfo_LDADD		= $(MAGICKPP_LDADD)
+Magick___tests_coderInfo_SOURCES	    = Magick++/tests/coderInfo.cpp
+Magick___tests_coderInfo_LDADD		    = $(MAGICKPP_LDADD)
+Magick___tests_coderInfo_CPPFLAGS     = $(MAGICKPP_CPPFLAGS)
 
-Magick___tests_color_SOURCES		= Magick++/tests/color.cpp
-Magick___tests_color_LDADD		= $(MAGICKPP_LDADD)
+Magick___tests_color_SOURCES		      = Magick++/tests/color.cpp
+Magick___tests_color_LDADD		        = $(MAGICKPP_LDADD)
+Magick___tests_color_CPPFLAGS         = $(MAGICKPP_CPPFLAGS)
 
 Magick___tests_colorHistogram_SOURCES	= Magick++/tests/colorHistogram.cpp
-Magick___tests_colorHistogram_LDADD	= $(MAGICKPP_LDADD)
+Magick___tests_colorHistogram_LDADD	  = $(MAGICKPP_LDADD)
+Magick___tests_colorHistogram_CPPFLAGS= $(MAGICKPP_CPPFLAGS)
 
-Magick___tests_exceptions_SOURCES	= Magick++/tests/exceptions.cpp
-Magick___tests_exceptions_LDADD		= $(MAGICKPP_LDADD)
+Magick___tests_exceptions_SOURCES	    = Magick++/tests/exceptions.cpp
+Magick___tests_exceptions_LDADD		    = $(MAGICKPP_LDADD)
+Magick___tests_exceptions_CPPFLAGS    = $(MAGICKPP_CPPFLAGS)
 
 Magick___tests_montageImages_SOURCES	= Magick++/tests/montageImages.cpp
-Magick___tests_montageImages_LDADD	= $(MAGICKPP_LDADD)
+Magick___tests_montageImages_LDADD	  = $(MAGICKPP_LDADD)
+Magick___tests_montageImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 
-Magick___tests_morphImages_SOURCES	= Magick++/tests/morphImages.cpp
-Magick___tests_morphImages_LDADD	= $(MAGICKPP_LDADD)
+Magick___tests_morphImages_SOURCES	  = Magick++/tests/morphImages.cpp
+Magick___tests_morphImages_LDADD	    = $(MAGICKPP_LDADD)
+Magick___tests_morphImages_CPPFLAGS   = $(MAGICKPP_CPPFLAGS)
 
 Magick___tests_readWriteBlob_SOURCES	= Magick++/tests/readWriteBlob.cpp
-Magick___tests_readWriteBlob_LDADD	= $(MAGICKPP_LDADD)
+Magick___tests_readWriteBlob_LDADD	  = $(MAGICKPP_LDADD)
+Magick___tests_readWriteBlob_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 
 Magick___tests_readWriteImages_SOURCES	= Magick++/tests/readWriteImages.cpp
-Magick___tests_readWriteImages_LDADD	= $(MAGICKPP_LDADD)
-
+Magick___tests_readWriteImages_LDADD	  = $(MAGICKPP_LDADD)
+Magick___tests_readWriteImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 
 MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
-

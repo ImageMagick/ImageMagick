@@ -17,6 +17,8 @@
 
 wandincdir = $(INCLUDE_PATH)/wand
 
+WAND_CPPFLAGS = $(AM_CPPFLAGS)
+
 WAND_SOURCES = \
 	wand/MagickWand.h \
 	wand/animate.c \
@@ -119,7 +121,7 @@ WAND_BUILT_SRCS =
 MAGICKWAND_LIBS = wand/libMagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.la
 
 wand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(WAND_SOURCES)
-wand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
+wand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = $(WAND_CPPFLAGS)
 
 if HAVE_LD_VERSION_SCRIPT
 wand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/wand/libMagickWand.map
