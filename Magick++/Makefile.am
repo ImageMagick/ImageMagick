@@ -4,7 +4,7 @@
 # Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008
 #
 
-AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
+# AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
 
 MAGICKPP_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/Magick++/lib
 

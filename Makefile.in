@@ -121,6 +121,8 @@
 # Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008
 #
 
+# AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
+
 #  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
@@ -2264,14 +2266,6 @@ DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	$(utilities_identify_SOURCES) $(utilities_import_SOURCES) \
 	$(utilities_magick_SOURCES) $(utilities_mogrify_SOURCES) \
 	$(utilities_montage_SOURCES) $(utilities_stream_SOURCES)
-RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
-	ctags-recursive dvi-recursive html-recursive info-recursive \
-	install-data-recursive install-dvi-recursive \
-	install-exec-recursive install-html-recursive \
-	install-info-recursive install-pdf-recursive \
-	install-ps-recursive install-recursive installcheck-recursive \
-	installdirs-recursive pdf-recursive ps-recursive \
-	tags-recursive uninstall-recursive
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -2298,14 +2292,6 @@ HEADERS = $(MagickCoreinc_HEADERS) $(MagickCoreincarch_HEADERS) \
 	$(MagickWandinc_HEADERS) $(include_HEADERS) \
 	$(magickppinc_HEADERS) $(magickpptopinc_HEADERS) \
 	$(noinst_HEADERS)
-RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
-  distclean-recursive maintainer-clean-recursive
-am__recursive_targets = \
-  $(RECURSIVE_TARGETS) \
-  $(RECURSIVE_CLEAN_TARGETS) \
-  $(am__extra_recursive_targets)
-AM_RECURSIVE_TARGETS = $(am__recursive_targets:-recursive=) TAGS CTAGS \
-	cscope check recheck distdir dist dist-all distcheck
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -2326,6 +2312,7 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
+AM_RECURSIVE_TARGETS = cscope check recheck
 am__tty_colors_dummy = \
   mgn= red= grn= lgn= blu= brg= std=; \
   am__color_tests=no
@@ -2504,7 +2491,6 @@ am__set_b = \
 TEST_LOGS = $(am__test_logs3:.tap.log=.log)
 TAP_LOG_COMPILE = $(TAP_LOG_COMPILER) $(AM_TAP_LOG_FLAGS) \
 	$(TAP_LOG_FLAGS)
-DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -2515,31 +2501,6 @@ am__remove_distdir = \
       || { sleep 5 && rm -rf "$(distdir)"; }; \
   else :; fi
 am__post_remove_distdir = $(am__remove_distdir)
-am__relativize = \
-  dir0=`pwd`; \
-  sed_first='s,^\([^/]*\)/.*$$,\1,'; \
-  sed_rest='s,^[^/]*/*,,'; \
-  sed_last='s,^.*/\([^/]*\)$$,\1,'; \
-  sed_butlast='s,/*[^/]*$$,,'; \
-  while test -n "$$dir1"; do \
-    first=`echo "$$dir1" | sed -e "$$sed_first"`; \
-    if test "$$first" != "."; then \
-      if test "$$first" = ".."; then \
-        dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
-        dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
-      else \
-        first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
-        if test "$$first2" = "$$first"; then \
-          dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
-        else \
-          dir2="../$$dir2"; \
-        fi; \
-        dir0="$$dir0"/"$$first"; \
-      fi; \
-    fi; \
-    dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
-  done; \
-  reldir="$$dir2"
 DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.bz2 $(distdir).tar.lz \
 	$(distdir).tar.xz $(distdir).zip
 GZIP_ENV = --best
@@ -2937,12 +2898,11 @@ top_srcdir = @top_srcdir@
 type_include_files = @type_include_files@
 windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
-	-I$(top_srcdir)/Magick++/lib
+topincludedir = @includedir@/MagickCore
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 ACLOCAL_AMFLAGS = -I m4
 MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
 MODULECOMMONCPPFLAGS = $(AM_CPPFLAGS)
-SUBDIRS = .
 
 # Options to pass when running configure in the distcheck target.
 #
@@ -5203,7 +5163,7 @@ HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 @RPM_DELEGATE_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm
 
 all: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .cpp .lo .log .o .obj .sh .sh$(EXEEXT) .tap .tap$(EXEEXT) .trs
@@ -10801,61 +10761,14 @@ uninstall-magickpptopincHEADERS:
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(magickpptopincdir)'; $(am__uninstall_files_from_dir)
 
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run 'make' without going through this Makefile.
-# To change the values of 'make' variables: instead of editing Makefiles,
-# (1) if the variable is set in 'config.status', edit 'config.status'
-#     (which will cause the Makefiles to be regenerated when you run 'make');
-# (2) otherwise, pass the desired values on the 'make' command line.
-$(am__recursive_targets):
-	@fail=; \
-	if $(am__make_keepgoing); then \
-	  failcom='fail=yes'; \
-	else \
-	  failcom='exit 1'; \
-	fi; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	case "$@" in \
-	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
-	  *) list='$(SUBDIRS)' ;; \
-	esac; \
-	for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	  || eval $$failcom; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
-tags: tags-recursive
+tags: tags-am
 TAGS: tags
 
 tags-am: $(TAGS_DEPENDENCIES) $(am__tagged_files)
 	set x; \
 	here=`pwd`; \
-	if ($(ETAGS) --etags-include --version) >/dev/null 2>&1; then \
-	  include_option=--etags-include; \
-	  empty_fix=.; \
-	else \
-	  include_option=--include; \
-	  empty_fix=; \
-	fi; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test ! -f $$subdir/TAGS || \
-	      set "$$@" "$$include_option=$$here/$$subdir/TAGS"; \
-	  fi; \
-	done; \
 	$(am__define_uniq_tagged_files); \
 	shift; \
 	if test -z "$(ETAGS_ARGS)$$*$$unique"; then :; else \
@@ -10868,7 +10781,7 @@ tags-am: $(TAGS_DEPENDENCIES) $(am__tagged_files)
 	      $$unique; \
 	  fi; \
 	fi
-ctags: ctags-recursive
+ctags: ctags-am
 
 CTAGS: ctags
 ctags-am: $(TAGS_DEPENDENCIES) $(am__tagged_files)
@@ -10887,7 +10800,7 @@ cscope: cscope.files
 clean-cscope:
 	-rm -f cscope.files
 cscope.files: clean-cscope cscopelist
-cscopelist: cscopelist-recursive
+cscopelist: cscopelist-am
 
 cscopelist-am: $(am__tagged_files)
 	list='$(am__tagged_files)'; \
@@ -11109,31 +11022,6 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    $(am__make_dryrun) \
-	      || test -d "$(distdir)/$$subdir" \
-	      || $(MKDIR_P) "$(distdir)/$$subdir" \
-	      || exit 1; \
-	    dir1=$$subdir; dir2="$(distdir)/$$subdir"; \
-	    $(am__relativize); \
-	    new_distdir=$$reldir; \
-	    dir1=$$subdir; dir2="$(top_distdir)"; \
-	    $(am__relativize); \
-	    new_top_distdir=$$reldir; \
-	    echo " (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir="$$new_top_distdir" distdir="$$new_distdir" \\"; \
-	    echo "     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)"; \
-	    ($(am__cd) $$subdir && \
-	      $(MAKE) $(AM_MAKEFLAGS) \
-	        top_distdir="$$new_top_distdir" \
-	        distdir="$$new_distdir" \
-		am__remove_distdir=: \
-		am__skip_length_check=: \
-		am__skip_mode_fix=: \
-	        distdir) \
-	      || exit 1; \
-	  fi; \
-	done
 	$(MAKE) $(AM_MAKEFLAGS) \
 	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
 	  dist-hook
@@ -11268,26 +11156,25 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS check-local
 check: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) check-recursive
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
 		$(HEADERS) all-local
 install-binPROGRAMS: install-libLTLIBRARIES
 
-installdirs: installdirs-recursive
-installdirs-am:
+installdirs:
 	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(MagickCoreincdir)" "$(DESTDIR)$(MagickCoreincarchdir)" "$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) install-recursive
-install-exec: install-exec-recursive
-install-data: install-data-recursive
-uninstall: uninstall-recursive
+	$(MAKE) $(AM_MAKEFLAGS) install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-strip:
 	if test -z '$(STRIP)'; then \
 	  $(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
@@ -11334,27 +11221,27 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-clean: clean-recursive
+clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-checkPROGRAMS \
 	clean-codersLTLIBRARIES clean-filtersLTLIBRARIES clean-generic \
 	clean-libLTLIBRARIES clean-libtool clean-local \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
-distclean: distclean-recursive
+distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-libtool distclean-local distclean-tags
 
-dvi: dvi-recursive
+dvi: dvi-am
 
 dvi-am:
 
 html-am:
 
-info: info-recursive
+info: info-am
 
 info-am:
 
@@ -11367,34 +11254,34 @@ install-data-am: install-MagickCoreincHEADERS \
 	install-magickpptopincHEADERS install-man \
 	install-pkgconfigDATA
 
-install-dvi: install-dvi-recursive
+install-dvi: install-dvi-am
 
 install-dvi-am:
 
 install-exec-am: install-binPROGRAMS install-binSCRIPTS \
 	install-exec-local install-libLTLIBRARIES
 
-install-html: install-html-recursive
+install-html: install-html-am
 
 install-html-am:
 
-install-info: install-info-recursive
+install-info: install-info-am
 
 install-info-am:
 
 install-man: install-man1
 
-install-pdf: install-pdf-recursive
+install-pdf: install-pdf-am
 
 install-pdf-am:
 
-install-ps: install-ps-recursive
+install-ps: install-ps-am
 
 install-ps-am:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
 	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
@@ -11402,16 +11289,16 @@ maintainer-clean: maintainer-clean-recursive
 maintainer-clean-am: distclean-am maintainer-clean-generic \
 	maintainer-clean-local
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-pdf: pdf-recursive
+pdf: pdf-am
 
 pdf-am:
 
-ps: ps-recursive
+ps: ps-am
 
 ps-am:
 
@@ -11428,21 +11315,20 @@ uninstall-am: uninstall-MagickCoreincHEADERS \
 
 uninstall-man: uninstall-man1
 
-.MAKE: $(am__recursive_targets) all check check-am install install-am \
-	install-strip
+.MAKE: all check check-am install install-am install-strip
 
-.PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am all-local \
-	am--refresh check check-TESTS check-am check-local clean \
-	clean-binPROGRAMS clean-checkPROGRAMS clean-codersLTLIBRARIES \
-	clean-cscope clean-filtersLTLIBRARIES clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-local \
-	clean-noinstLTLIBRARIES cscope cscopelist-am ctags ctags-am \
-	dist dist-all dist-bzip2 dist-gzip dist-hook dist-lzip \
-	dist-shar dist-tarZ dist-xz dist-zip distcheck distclean \
-	distclean-compile distclean-generic distclean-hdr \
-	distclean-libtool distclean-local distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am html \
-	html-am info info-am install install-MagickCoreincHEADERS \
+.PHONY: CTAGS GTAGS TAGS all all-am all-local am--refresh check \
+	check-TESTS check-am check-local clean clean-binPROGRAMS \
+	clean-checkPROGRAMS clean-codersLTLIBRARIES clean-cscope \
+	clean-filtersLTLIBRARIES clean-generic clean-libLTLIBRARIES \
+	clean-libtool clean-local clean-noinstLTLIBRARIES cscope \
+	cscopelist-am ctags ctags-am dist dist-all dist-bzip2 \
+	dist-gzip dist-hook dist-lzip dist-shar dist-tarZ dist-xz \
+	dist-zip distcheck distclean distclean-compile \
+	distclean-generic distclean-hdr distclean-libtool \
+	distclean-local distclean-tags distcleancheck distdir \
+	distuninstallcheck dvi dvi-am html html-am info info-am \
+	install install-MagickCoreincHEADERS \
 	install-MagickCoreincarchHEADERS install-MagickWandincHEADERS \
 	install-am install-binPROGRAMS install-binSCRIPTS \
 	install-codersLTLIBRARIES install-configlibDATA \
@@ -11455,11 +11341,11 @@ uninstall-man: uninstall-man1
 	install-magickppincHEADERS install-magickpptopincHEADERS \
 	install-man install-man1 install-pdf install-pdf-am \
 	install-pkgconfigDATA install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-local mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	recheck tags tags-am uninstall uninstall-MagickCoreincHEADERS \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic maintainer-clean-local mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am recheck tags tags-am uninstall \
+	uninstall-MagickCoreincHEADERS \
 	uninstall-MagickCoreincarchHEADERS \
 	uninstall-MagickWandincHEADERS uninstall-am \
 	uninstall-binPROGRAMS uninstall-binSCRIPTS \
