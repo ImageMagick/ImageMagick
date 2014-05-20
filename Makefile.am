@@ -17,14 +17,14 @@
 #  Top-Level Makefile for building ImageMagick.
 #
 
+topincludedir = @includedir@/magick
+
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
 ACLOCAL_AMFLAGS = -I m4
 
 MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
 MODULECOMMONCPPFLAGS = $(AM_CPPFLAGS)
-
-SUBDIRS = .
 
 # Options to pass when running configure in the distcheck target.
 #

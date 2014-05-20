@@ -21,6 +21,7 @@ magickincarchdir = $(INCLUDEARCH_PATH)/magick
 # Headers which are installed
 magickinc_HEADERS = \
 	$(MAGICK_INCLUDE_HDRS)
+
 magickincarch_HEADERS = \
 	$(MAGICK_INCLUDEARCH_HDRS)
 
@@ -482,4 +483,3 @@ magick-install-data-local:
 MAGICK_UNINSTALL_LOCAL_TARGETS = magick-uninstall-local
 magick-uninstall-local:
 	rm -f $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
-
