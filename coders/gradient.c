@@ -146,9 +146,9 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   if (GetPixelLuma(image,&start_color) > (QuantumRange/2))
     (void) CopyMagickString(colorname,"black",MaxTextExtent);
   if (icc_color == MagickFalse)
-    (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
+    (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname);
   else
-    (void) sscanf(image_info->filename,"%*[^-]-%*[^-]-%s",colorname);
+    (void) sscanf(image_info->filename,"%*[^-]-%*[^-]-%[^-]",colorname);
   if (QueryColorDatabase(colorname,&stop_color,exception) == MagickFalse)
     {
       image=DestroyImage(image);
