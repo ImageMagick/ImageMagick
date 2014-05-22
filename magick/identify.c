@@ -710,7 +710,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   else
     (void) FormatLocaleFile(file,"  Format: %s (%s)\n",image->magick,
       GetMagickDescription(magick_info));
-  if ((magick_info == (const MagickInfo *) NULL) ||
+  if ((magick_info != (const MagickInfo *) NULL) &&
       (GetMagickMimeType(magick_info) != (const char *) NULL))
     (void) FormatLocaleFile(file,"  Mime type: %s\n",GetMagickMimeType(
       magick_info));
