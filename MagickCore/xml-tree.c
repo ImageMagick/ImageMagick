@@ -1577,7 +1577,7 @@ static void ParseCharacterContent(XMLTreeRoot *root,char *xml,
 }
 
 static XMLTreeInfo *ParseCloseTag(XMLTreeRoot *root,char *tag,
-  char *magick_unused(xml),ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   if ((root->node == (XMLTreeInfo *) NULL) ||
       (root->node->tag == (char *) NULL) || (strcmp(tag,root->node->tag) != 0))
@@ -1928,6 +1928,28 @@ static void ParseOpenTag(XMLTreeRoot *root,char *tag,char **attributes)
   root->node=xml_info;
 }
 
+static const char *ignore_tags[3] =
+{
+  "rdf:Bag",
+  "rdf:Seq",
+  (const char *)NULL
+};
+
+static inline MagickBooleanType CanIgnoreTag(const char *tag)
+{
+  register ssize_t
+    i;
+
+  i=0;
+  while (ignore_tags[i] != (const char *) NULL)
+  {
+    if (LocaleCompare(tag,ignore_tags[i]) == 0)
+      return(MagickTrue);
+    i++;
+  }
+  return(MagickFalse);
+}
+
 MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
 {
   char
@@ -1950,6 +1972,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
     i;
 
   size_t
+    ignore_depth,
     length;
 
   ssize_t
@@ -1990,6 +2013,8 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
       return((XMLTreeInfo *) NULL);
     }
   attribute=(char **) NULL;
+  l=0;
+  ignore_depth=0;
   for (p++; ; p++)
   {
     attributes=(char **) sentinel;
@@ -2011,80 +2036,91 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
         p+=strcspn(p,XMLWhitespace "/>");
         while (isspace((int) ((unsigned char) *p)) != 0)
           *p++='\0';
-        if ((*p != '\0') && (*p != '/') && (*p != '>'))
+        if (ignore_depth == 0)
           {
-            /*
-              Find tag in default attributes list.
-            */
-            i=0;
-            while ((root->attributes[i] != (char **) NULL) &&
-                   (strcmp(root->attributes[i][0],tag) != 0))
-              i++;
-            attribute=root->attributes[i];
-          }
-        for (l=0; (*p != '\0') && (*p != '/') && (*p != '>'); l+=2)
-        {
-          /*
-            Attribute.
-          */
-          if (l == 0)
-            attributes=(char **) AcquireQuantumMemory(4,sizeof(*attributes));
-          else
-            attributes=(char **) ResizeQuantumMemory(attributes,(size_t) (l+4),
-              sizeof(*attributes));
-          if (attributes == (char **) NULL)
+            if ((*p != '\0') && (*p != '/') && (*p != '>'))
+              {
+                /*
+                  Find tag in default attributes list.
+                */
+                i=0;
+                while ((root->attributes[i] != (char **) NULL) &&
+                       (strcmp(root->attributes[i][0],tag) != 0))
+                  i++;
+                attribute=root->attributes[i];
+              }
+            for (l=0; (*p != '\0') && (*p != '/') && (*p != '>'); l+=2)
             {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                ResourceLimitError,"MemoryAllocationFailed","`%s'","");
-              utf8=DestroyString(utf8);
-              return(&root->root);
-            }
-          attributes[l+2]=(char *) NULL;
-          attributes[l+1]=(char *) NULL;
-          attributes[l]=p;
-          p+=strcspn(p,XMLWhitespace "=/>");
-          if ((*p != '=') && (isspace((int) ((unsigned char) *p)) == 0))
-            attributes[l]=ConstantString("");
-          else
-            {
-              *p++='\0';
-              p+=strspn(p,XMLWhitespace "=");
-              c=(*p);
-              if ((c == '"') || (c == '\''))
+              /*
+                Attribute.
+              */
+              if (l == 0)
+                attributes=(char **) AcquireQuantumMemory(4,
+                  sizeof(*attributes));
+              else
+                attributes=(char **) ResizeQuantumMemory(attributes,
+                  (size_t) (l+4),sizeof(*attributes));
+              if (attributes == (char **) NULL)
                 {
-                  /*
-                    Attributes value.
-                  */
-                  p++;
-                  attributes[l+1]=p;
-                  while ((*p != '\0') && (*p != c))
-                    p++;
-                  if (*p != '\0')
-                    *p++='\0';
-                  else
-                    {
-                      attributes[l]=ConstantString("");
-                      attributes[l+1]=ConstantString("");
-                      (void) DestroyXMLTreeAttributes(attributes);
-                      (void) ThrowMagickException(exception,GetMagickModule(),
-                        OptionWarning,"ParseError","missing %c",c);
-                      utf8=DestroyString(utf8);
-                      return(&root->root);
-                    }
-                  j=1;
-                  while ((attribute != (char **) NULL) &&
-                         (attribute[j] != (char *) NULL) &&
-                         (strcmp(attribute[j],attributes[l]) != 0))
-                    j+=3;
-                  attributes[l+1]=ParseEntities(attributes[l+1],root->entities,
-                    (attribute != (char **) NULL) && (attribute[j] !=
-                    (char *) NULL) ? *attribute[j+2] : ' ');
+                  (void) ThrowMagickException(exception,GetMagickModule(),
+                    ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+                  utf8=DestroyString(utf8);
+                  return(&root->root);
                 }
-              attributes[l]=ConstantString(attributes[l]);
+              attributes[l+2]=(char *) NULL;
+              attributes[l+1]=(char *) NULL;
+              attributes[l]=p;
+              p+=strcspn(p,XMLWhitespace "=/>");
+              if ((*p != '=') && (isspace((int) ((unsigned char) *p)) == 0))
+                attributes[l]=ConstantString("");
+              else
+                {
+                  *p++='\0';
+                  p+=strspn(p,XMLWhitespace "=");
+                  c=(*p);
+                  if ((c == '"') || (c == '\''))
+                    {
+                      /*
+                        Attributes value.
+                      */
+                      p++;
+                      attributes[l+1]=p;
+                      while ((*p != '\0') && (*p != c))
+                        p++;
+                      if (*p != '\0')
+                        *p++='\0';
+                      else
+                        {
+                          attributes[l]=ConstantString("");
+                          attributes[l+1]=ConstantString("");
+                          (void) DestroyXMLTreeAttributes(attributes);
+                          (void) ThrowMagickException(exception,
+                            GetMagickModule(),OptionWarning,"ParseError",
+                            "missing %c",c);
+                          utf8=DestroyString(utf8);
+                          return(&root->root);
+                        }
+                      j=1;
+                      while ((attribute != (char **) NULL) &&
+                             (attribute[j] != (char *) NULL) &&
+                             (strcmp(attribute[j],attributes[l]) != 0))
+                        j+=3;
+                      attributes[l+1]=ParseEntities(attributes[l+1],
+                        root->entities,(attribute != (char **) NULL) &&
+                        (attribute[j] != (char *) NULL) ? *attribute[j+2] :
+                        ' ');
+                    }
+                  attributes[l]=ConstantString(attributes[l]);
+                }
+              while (isspace((int) ((unsigned char) *p)) != 0)
+                p++;
             }
-          while (isspace((int) ((unsigned char) *p)) != 0)
-            p++;
-        }
+          }
+        else
+          {
+            while((*p != '\0') && (*p != '/') && (*p != '>'))
+              p++;
+          }
         if (*p == '/')
           {
             /*
@@ -2101,8 +2137,11 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                 utf8=DestroyString(utf8);
                 return(&root->root);
               }
-            ParseOpenTag(root,tag,attributes);
-            (void) ParseCloseTag(root,tag,p,exception);
+            if (ignore_depth == 0 && CanIgnoreTag(tag) == MagickFalse)
+              {
+                ParseOpenTag(root,tag,attributes);
+                (void) ParseCloseTag(root,tag,exception);
+              }
           }
         else
           {
@@ -2110,7 +2149,10 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
             if ((*p == '>') || ((*p == '\0') && (terminal == '>')))
               {
                 *p='\0';
-                ParseOpenTag(root,tag,attributes);
+                if (ignore_depth == 0 && CanIgnoreTag(tag) == MagickFalse)
+                  ParseOpenTag(root,tag,attributes);
+                else
+                  ignore_depth++;
                 *p=c;
               }
             else
@@ -2141,11 +2183,14 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
               return(&root->root);
             }
           *p='\0';
-          if (ParseCloseTag(root,tag,p,exception) != (XMLTreeInfo *) NULL)
+          if (ignore_depth == 0 && ParseCloseTag(root,tag,exception) !=
+              (XMLTreeInfo *) NULL)
             {
               utf8=DestroyString(utf8);
               return(&root->root);
             }
+          if (ignore_depth > 0)
+            ignore_depth--;
           *p=c;
           if (isspace((int) ((unsigned char) *p)) != 0)
             p+=strspn(p,XMLWhitespace);
@@ -2176,7 +2221,8 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
               if (p != (char *) NULL)
                 {
                   p+=2;
-                  ParseCharacterContent(root,tag+8,(size_t) (p-tag-10),'c');
+                  if (ignore_depth == 0)
+                    ParseCharacterContent(root,tag+8,(size_t) (p-tag-10),'c');
                 }
               else
                 {
@@ -2261,7 +2307,8 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
           p++;
         if (*p == '\0')
           break;
-        ParseCharacterContent(root,tag,(size_t) (p-tag),'&');
+        if (ignore_depth == 0)
+          ParseCharacterContent(root,tag,(size_t) (p-tag),'&');
       }
     else
       if (*p == '\0')
