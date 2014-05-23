@@ -1928,22 +1928,23 @@ static void ParseOpenTag(XMLTreeRoot *root,char *tag,char **attributes)
   root->node=xml_info;
 }
 
-static const char *ignore_tags[3] =
-{
-  "rdf:Bag",
-  "rdf:Seq",
-  (const char *)NULL
-};
+static const char
+  *skip_tags[3] =
+  {
+    "rdf:Bag",
+    "rdf:Seq",
+    (const char *)NULL
+  };
 
-static inline MagickBooleanType CanIgnoreTag(const char *tag)
+static inline MagickBooleanType IsSkipTag(const char *tag)
 {
   register ssize_t
     i;
 
   i=0;
-  while (ignore_tags[i] != (const char *) NULL)
+  while (skip_tags[i] != (const char *) NULL)
   {
-    if (LocaleCompare(tag,ignore_tags[i]) == 0)
+    if (LocaleCompare(tag,skip_tags[i]) == 0)
       return(MagickTrue);
     i++;
   }
@@ -2137,7 +2138,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                 utf8=DestroyString(utf8);
                 return(&root->root);
               }
-            if (ignore_depth == 0 && CanIgnoreTag(tag) == MagickFalse)
+            if ((ignore_depth == 0) && (IsSkipTag(tag) == MagickFalse))
               {
                 ParseOpenTag(root,tag,attributes);
                 (void) ParseCloseTag(root,tag,exception);
@@ -2149,7 +2150,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
             if ((*p == '>') || ((*p == '\0') && (terminal == '>')))
               {
                 *p='\0';
-                if (ignore_depth == 0 && CanIgnoreTag(tag) == MagickFalse)
+                if ((ignore_depth == 0) && (IsSkipTag(tag) == MagickFalse))
                   ParseOpenTag(root,tag,attributes);
                 else
                   ignore_depth++;

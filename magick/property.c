@@ -1654,15 +1654,13 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
           if (child == (XMLTreeInfo *) NULL && SkipXMPValue(content) ==
               MagickFalse)
             (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
-              ConstantString(GetXMLTreeTag(node)),
-              ConstantString(content));
+              ConstantString(GetXMLTreeTag(node)),ConstantString(content));
           while (child != (XMLTreeInfo *) NULL)
           {
             content=GetXMLTreeContent(child);
             if (SkipXMPValue(content) == MagickFalse)
               (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
-                ConstantString(GetXMLTreeTag(child)),
-                ConstantString(content));
+                ConstantString(GetXMLTreeTag(child)),ConstantString(content));
             child=GetXMLTreeSibling(child);
           }
           node=GetXMLTreeSibling(node);
