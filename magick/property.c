@@ -1577,10 +1577,28 @@ static MagickBooleanType GetICCProperty(const Image *image,const char *property)
   return(MagickTrue);
 }
 
+static MagickBooleanType SkipXMPValue(const char *value)
+{
+  if (value == (const char*) NULL)
+    return(MagickTrue);
+
+  while(*value != '\0')
+  {
+    if (!isspace((int) ((const char) *value)))
+      return(MagickFalse);
+    value++;
+  }
+
+  return(MagickTrue);
+}
+
 static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
 {
   char
     *xmp_profile;
+
+  const char
+    *content;
 
   const StringInfo
     *profile;
@@ -1632,16 +1650,19 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
         while (node != (XMLTreeInfo *) NULL)
         {
           child=GetXMLTreeChild(node,(const char *) NULL);
-          if (child == (XMLTreeInfo *) NULL)
+          content=GetXMLTreeContent(node);
+          if (child == (XMLTreeInfo *) NULL && SkipXMPValue(content) ==
+              MagickFalse)
             (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
               ConstantString(GetXMLTreeTag(node)),
-              ConstantString(GetXMLTreeContent(node)));
+              ConstantString(content));
           while (child != (XMLTreeInfo *) NULL)
           {
-            if (LocaleCompare(GetXMLTreeTag(child),"rdf:Seq") != 0)
+            content=GetXMLTreeContent(child);
+            if (SkipXMPValue(content) == MagickFalse)
               (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
                 ConstantString(GetXMLTreeTag(child)),
-                ConstantString(GetXMLTreeContent(child)));
+                ConstantString(content));
             child=GetXMLTreeSibling(child);
           }
           node=GetXMLTreeSibling(node);
