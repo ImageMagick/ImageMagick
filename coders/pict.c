@@ -1338,6 +1338,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             /*
               Skip to next op code.
             */
+            if (code < 0)
+              break;
             if (codes[code].length == -1)
               (void) ReadBlobMSBShort(image);
             else
