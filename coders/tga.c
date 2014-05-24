@@ -507,10 +507,10 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
         SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(image);
     }
-    if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
+    if (((tga_info.attributes & 0xc0) >> 6) == 4)
       offset+=4;
     else
-      if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
+      if (((tga_info.attributes & 0xc0) >> 6) == 2)
         offset+=2;
       else
         offset++;
@@ -882,7 +882,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
             {
               if (count > 0)
                 {
-                  WriteBlobByte(image,(unsigned char) (--count));
+                  (void) WriteBlobByte(image,(unsigned char) (--count));
                   while (count >= 0)
                   {
                     WriteTGAPixel(image,tga_info.image_type,p-((count+1)*
