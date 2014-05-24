@@ -8939,6 +8939,9 @@ MagickPrivate MagickBooleanType XRenderImage(Image *image,
   resource_info.background_color=AcquireString("#ffffffffffff");
   resource_info.foreground_color=AcquireString("#000000000000");
   map_info=XAllocStandardColormap();
+  visual_info=(XVisualInfo *) NULL;
+  font_info=(XFontStruct *) NULL;
+  pixel.pixels=(unsigned long *) NULL;
   if (map_info == (XStandardColormap *) NULL)
     {
       ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
@@ -8951,11 +8954,12 @@ MagickPrivate MagickBooleanType XRenderImage(Image *image,
   visual_info=XBestVisualInfo(display,map_info,&resource_info);
   if (visual_info == (XVisualInfo *) NULL)
     {
+      XFreeResources(display,visual_info,map_info,&pixel,font_info,
+        &resource_info,(XWindowInfo *) NULL);
       ThrowXWindowException(XServerError,"UnableToGetVisual",image->filename);
       return(MagickFalse);
     }
   map_info->colormap=(Colormap) NULL;
-  pixel.pixels=(unsigned long *) NULL;
   /*
     Initialize Standard Colormap info.
   */
@@ -8970,16 +8974,9 @@ MagickPrivate MagickBooleanType XRenderImage(Image *image,
   font_info=XBestFont(display,&resource_info,MagickFalse);
   if (font_info == (XFontStruct *) NULL)
     {
-      ThrowXWindowException(XServerError,"UnableToLoadFont",draw_info->font);
-      return(MagickFalse);
-    }
-  if ((map_info == (XStandardColormap *) NULL) ||
-      (visual_info == (XVisualInfo *) NULL) ||
-      (font_info == (XFontStruct *) NULL))
-    {
       XFreeResources(display,visual_info,map_info,&pixel,font_info,
         &resource_info,(XWindowInfo *) NULL);
-      ThrowXWindowException(XServerError,"UnableToLoadFont",image->filename);
+      ThrowXWindowException(XServerError,"UnableToLoadFont",draw_info->font);
       return(MagickFalse);
     }
   cache_info=(*draw_info);
