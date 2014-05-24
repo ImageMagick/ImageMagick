@@ -4312,6 +4312,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               (p[2] << 8) | p[3]);
             jng_height=(size_t) ((p[4] << 24) | (p[5] << 16) |
               (p[6] << 8) | p[7]);
+            if ((jng_width == 0) || (jng_height == 0))
+              ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
             jng_color_type=p[8];
             jng_image_sample_depth=p[9];
             jng_image_compression_method=p[10];
@@ -4713,9 +4715,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "    Copying jng_image pixels to main image.");
-
-  image->rows=jng_height;
   image->columns=jng_width;
+  image->rows=jng_height;
   length=image->columns*sizeof(PixelPacket);
 
   for (y=0; y < (ssize_t) image->rows; y++)
