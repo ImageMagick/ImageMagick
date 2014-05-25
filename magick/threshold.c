@@ -1297,9 +1297,9 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
   MagickStatusType
     status;
 
-  status=MagickFalse;
-  if ( file == (FILE *) NULL )
-    file = stdout;
+  status=MagickTrue;
+  if (file == (FILE *) NULL)
+    file=stdout;
   options=GetConfigureOptions(ThresholdsFilename,exception);
   (void) FormatLocaleFile(file,
     "\n   Threshold Maps for Ordered Dither Operations\n");

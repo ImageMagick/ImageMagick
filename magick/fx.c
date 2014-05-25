@@ -1440,7 +1440,8 @@ static double FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
   length=GetImageListLength(fx_info->images);
   while (i < 0)
     i+=(ssize_t) length;
-  i%=length;
+  if (length != 0)
+    i%=length;
   image=GetImageFromList(fx_info->images,i);
   if (image == (Image *) NULL)
     {

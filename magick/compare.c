@@ -457,8 +457,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   return(status);
 }
 
-static size_t GetNumberChannels(const Image *image,
-  const ChannelType channel)
+static size_t GetNumberChannels(const Image *image,const ChannelType channel)
 {
   size_t
     channels;
@@ -476,7 +475,7 @@ static size_t GetNumberChannels(const Image *image,
   if (((channel & IndexChannel) != 0) &&
       (image->colorspace == CMYKColorspace))
     channels++;
-  return(channels);
+  return(channels == 0 ? 1 : channels);
 }
 
 static MagickBooleanType GetFuzzDistortion(const Image *image,
@@ -596,7 +595,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     distortion[i]/=((double) image->columns*image->rows);
   if (((channel & OpacityChannel) != 0) && ((image->matte != MagickFalse) ||
       (reconstruct_image->matte != MagickFalse)))
-    distortion[CompositeChannels]/=(double) (GetNumberChannels(image,channel)-1);
+    distortion[CompositeChannels]/=(double)
+      (GetNumberChannels(image,channel)-1);
   else
     distortion[CompositeChannels]/=(double) GetNumberChannels(image,channel);
   distortion[CompositeChannels]=sqrt(distortion[CompositeChannels]);
