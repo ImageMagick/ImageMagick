@@ -1971,7 +1971,8 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
         xmp_profile=StringToStringInfo("http://ns.adobe.com/xap/1.0/ ");
         if (xmp_profile != (StringInfo *) NULL)
           {
-            ConcatenateStringInfo(xmp_profile,profile);
+            if (profile != (StringInfo *) NULL)
+              ConcatenateStringInfo(xmp_profile,profile);
             GetStringInfoDatum(xmp_profile)[28]='\0';
             for (i=0; i < (ssize_t) GetStringInfoLength(xmp_profile); i+=65533L)
             {
