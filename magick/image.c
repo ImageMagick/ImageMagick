@@ -1908,9 +1908,8 @@ MagickExport MagickBooleanType ModifyImage(Image **image,
 %
 %  The format of the NewMagickImage method is:
 %
-%      Image *NewMagickImage(const ImageInfo *image_info,
-%        const size_t width,const size_t height,
-%        const MagickPixelPacket *background)
+%      Image *NewMagickImage(const ImageInfo *image_info,const size_t width,
+%        const size_t height,const MagickPixelPacket *background)
 %
 %  A description of each parameter follows:
 %
@@ -1924,8 +1923,7 @@ MagickExport MagickBooleanType ModifyImage(Image **image,
 %
 */
 MagickExport Image *NewMagickImage(const ImageInfo *image_info,
-  const size_t width,const size_t height,
-  const MagickPixelPacket *background)
+  const size_t width,const size_t height,const MagickPixelPacket *background)
 {
   CacheView
     *image_view;

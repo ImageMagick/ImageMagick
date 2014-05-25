@@ -5476,9 +5476,12 @@ MagickExport MagickBooleanType XMakeImage(Display *display,
         (char *) NULL,&segment_info[1],width,height);
       if (ximage == (XImage *) NULL)
         window->shared_memory=MagickFalse;
-      length=(size_t) ximage->bytes_per_line*ximage->height;
-      if (CheckOverflowException(length,ximage->bytes_per_line,ximage->height))
-        window->shared_memory=MagickFalse;
+      else
+        {
+          length=(size_t) ximage->bytes_per_line*ximage->height;
+          if (CheckOverflowException(length,ximage->bytes_per_line,ximage->height))
+            window->shared_memory=MagickFalse;
+        }
       if (window->shared_memory != MagickFalse)
         segment_info[1].shmid=shmget(IPC_PRIVATE,length,IPC_CREAT | 0777);
       if (window->shared_memory != MagickFalse)

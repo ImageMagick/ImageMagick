@@ -652,7 +652,8 @@ static MagickBooleanType ClonePixelCacheRepository(
       */
       CopyPixels(clone_info->pixels,cache_info->pixels,cache_info->columns*
         cache_info->rows);
-      if (cache_info->active_index_channel != MagickFalse)
+      if ((cache_info->active_index_channel != MagickFalse) &&
+          (clone_info->active_index_channel != MagickFalse))
         (void) memcpy(clone_info->indexes,cache_info->indexes,
           cache_info->columns*cache_info->rows*sizeof(*cache_info->indexes));
       return(MagickTrue);
