@@ -279,12 +279,10 @@ static void GetMontageGeometry(char *geometry,const size_t number_images,
   (void) GetGeometry(geometry,x_offset,y_offset,tiles_per_row,tiles_per_column);
   if ((*tiles_per_column == 0) && (*tiles_per_row == 0))
     *tiles_per_column=(size_t) sqrt((double) number_images);
-  if (*tiles_per_column == 0)
-    *tiles_per_column=(size_t)
-      ceil((double) number_images/(*tiles_per_row));
-  if (*tiles_per_row == 0)
-    *tiles_per_row=(size_t)
-      ceil((double) number_images/(*tiles_per_column));
+  if ((*tiles_per_column == 0) && (*tiles_per_row != 0))
+    *tiles_per_column=(size_t) ceil((double) number_images/(*tiles_per_row));
+  if ((*tiles_per_row == 0) && (*tiles_per_column != 0))
+    *tiles_per_row=(size_t) ceil((double) number_images/(*tiles_per_column));
 }
 
 static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
