@@ -3025,8 +3025,8 @@ MagickPrivate int XCommandWidget(Display *display,XWindows *windows,
             }
           submenu_info=selection_info[i];
           submenu_info.active=MagickTrue;
-          toggle_info.y=
-            submenu_info.y+(submenu_info.height >> 1)-(toggle_info.height >> 1);
+          toggle_info.y=submenu_info.y+(submenu_info.height >> 1)-
+            (toggle_info.height >> 1);
           id=i;
           (void) XCheckWindowEvent(display,windows->widget.id,LeaveWindowMask,
             event);
@@ -3165,15 +3165,15 @@ MagickPrivate int XCommandWidget(Display *display,XWindows *windows,
         selection_info[i].bevel_width--;
         selection_info[i].height=(unsigned int) ((3*height) >> 1);
         selection_info[i].x=(QuantumMargin >> 1)+4;
-        selection_info[i].width=(unsigned int)
-          (windows->command.width-(selection_info[i].x << 1));
+        selection_info[i].width=(unsigned int) (windows->command.width-
+          (selection_info[i].x << 1));
         selection_info[i].y=y;
         y+=selection_info[i].height+(selection_info[i].bevel_width << 1)+6;
       }
       XGetWidgetInfo((char *) NULL,&toggle_info);
       toggle_info.bevel_width--;
-      toggle_info.width=(unsigned int)
-        (((5*height) >> 3)-(toggle_info.bevel_width << 1));
+      toggle_info.width=(unsigned int) (((5*height) >> 3)-
+        (toggle_info.bevel_width << 1));
       toggle_info.height=toggle_info.width;
       toggle_info.x=selection_info[0].x+selection_info[0].width-
         toggle_info.width-(QuantumMargin >> 1);
@@ -3203,8 +3203,8 @@ MagickPrivate int XCommandWidget(Display *display,XWindows *windows,
         if (i >= (int) windows->command.data)
           continue;
         toggle_info.raised=MagickFalse;
-        toggle_info.y=selection_info[i].y+
-          (selection_info[i].height >> 1)-(toggle_info.height >> 1);
+        toggle_info.y=selection_info[i].y+(selection_info[i].height >> 1)-
+          (toggle_info.height >> 1);
         XDrawTriangleEast(display,&windows->command,&toggle_info);
       }
       XHighlightWidget(display,&windows->command,BorderOffset,BorderOffset);

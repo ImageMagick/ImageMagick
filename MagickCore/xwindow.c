@@ -7163,6 +7163,8 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
     magnify>>=1;
   while (magnify > windows->magnify.height)
     magnify>>=1;
+  if (magnify == 0)
+    magnify=1;
   if (magnify != previous_magnify)
     {
       Status
