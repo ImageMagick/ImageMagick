@@ -1838,8 +1838,8 @@ MagickExport MagickBooleanType ModifyImage(Image **image,
 %
 %  The format of the NewMagickImage method is:
 %
-%      Image *NewMagickImage(const ImageInfo *image_info,
-%        const size_t width,const size_t height,const PixelInfo *background,
+%      Image *NewMagickImage(const ImageInfo *image_info,const size_t width,
+%        const size_t height,const PixelInfo *background,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
