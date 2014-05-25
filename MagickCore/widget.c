@@ -3202,7 +3202,7 @@ MagickPrivate int XCommandWidget(Display *display,XWindows *windows,
         XDrawBeveledButton(display,&windows->command,&selection_info[i]);
         if (i >= (int) windows->command.data)
           continue;
-        toggle_info.raised=i == id ? MagickTrue : MagickFalse;
+        toggle_info.raised=MagickFalse;
         toggle_info.y=selection_info[i].y+
           (selection_info[i].height >> 1)-(toggle_info.height >> 1);
         XDrawTriangleEast(display,&windows->command,&toggle_info);
