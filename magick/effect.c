@@ -2473,12 +2473,12 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
             (void) CopyMagickString(factor,"impulse",MaxTextExtent);
             break;
           }
-          case 4:
+          case 5:
           {
             (void) CopyMagickString(factor,"laplacian",MaxTextExtent);
             break;
           }
-          case 5:
+          case 6:
           {
             (void) CopyMagickString(factor,"poisson",MaxTextExtent);
             break;

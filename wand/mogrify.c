@@ -8692,8 +8692,7 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
     return(MagickTrue);
   (void) SetImageInfoProgressMonitor(image_info,(MagickProgressMonitor) NULL,
     (void *) NULL);
-  status=0;
-
+  status=MagickTrue;
 #if 0
   (void) FormatLocaleFile(stderr, "mogrify start %s %d (%s)\n",argv[0],argc,
     post?"post":"pre");
@@ -8719,17 +8718,16 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
     proceed=SetImageProgress(*images,MogrifyImageTag,(MagickOffsetType) i, n);
     if (proceed == MagickFalse)
       break;
-    if ( (*images)->next == (Image *) NULL )
+    if ((*images)->next == (Image *) NULL)
       break;
     *images=(*images)->next;
     i++;
   }
-  assert( *images != (Image *) NULL );
+  assert(*images != (Image *) NULL);
 #if 0
   (void) FormatLocaleFile(stderr,"mogrify end %ld of %ld\n",(long)
     GetImageIndexInList(*images),(long)GetImageListLength(*images));
 #endif
-
   /*
     Post-process, multi-image sequence operators
   */
