@@ -4864,8 +4864,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
   crop_info.height=0;
   root=XRootWindow(display,XDefaultScreen(display));
   target=(Window) NULL;
-  if ((image_info->filename != (char *) NULL) &&
-      (*image_info->filename != '\0'))
+  if (*image_info->filename != '\0')
     {
       if (LocaleCompare(image_info->filename,"root") == 0)
         target=root;

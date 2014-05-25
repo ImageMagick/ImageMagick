@@ -1489,40 +1489,41 @@ static char *ParseEntities(char *xml,char **entities,int state)
           if (entities[i++] == (char *) NULL)
             xml++;
           else
-            {
-              /*
-                Found a match.
-              */
-              length=strlen(entities[i]);
-              entity=strchr(xml,';');
-              if ((length-1L) >= (size_t) (entity-xml))
-                {
-                  offset=(ssize_t) (xml-p);
-                  extent=(size_t) (offset+length+strlen(entity));
-                  if (p != q)
-                    p=(char *) ResizeQuantumMemory(p,extent,sizeof(*p));
-                  else
-                    {
-                      char
-                        *xml;
+            if (entities[i] != (char *) NULL)
+              {
+                /*
+                  Found a match.
+                */
+                length=strlen(entities[i]);
+                entity=strchr(xml,';');
+                if ((length-1L) >= (size_t) (entity-xml))
+                  {
+                    offset=(ssize_t) (xml-p);
+                    extent=(size_t) (offset+length+strlen(entity));
+                    if (p != q)
+                      p=(char *) ResizeQuantumMemory(p,extent,sizeof(*p));
+                    else
+                      {
+                        char
+                          *xml;
 
-                      xml=(char *) AcquireQuantumMemory(extent,sizeof(*xml));
-                      if (xml != (char *) NULL)
-                        {
-                          (void) CopyMagickString(xml,p,extent*sizeof(*xml));
-                          p=xml;
-                        }
-                    }
-                  if (p == (char *) NULL)
-                    ThrowFatalException(ResourceLimitFatalError,
-                      "MemoryAllocationFailed");
-                  xml=p+offset;
-                  entity=strchr(xml,';');
-                }
-              if (entity != (char *) NULL)
-                (void) CopyMagickMemory(xml+length,entity+1,strlen(entity));
-              (void) strncpy(xml,entities[i],length);
-            }
+                        xml=(char *) AcquireQuantumMemory(extent,sizeof(*xml));
+                        if (xml != (char *) NULL)
+                          {
+                            (void) CopyMagickString(xml,p,extent*sizeof(*xml));
+                            p=xml;
+                          }
+                      }
+                    if (p == (char *) NULL)
+                      ThrowFatalException(ResourceLimitFatalError,
+                        "MemoryAllocationFailed");
+                    xml=p+offset;
+                    entity=strchr(xml,';');
+                  }
+                if (entity != (char *) NULL)
+                  (void) CopyMagickMemory(xml+length,entity+1,strlen(entity));
+                (void) strncpy(xml,entities[i],length);
+              }
         }
       else
         if (((state == ' ') || (state == '*')) &&
