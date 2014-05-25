@@ -874,7 +874,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->ping=image->ping;
   clone_image->debug=IsEventLogging();
   clone_image->semaphore=AcquireSemaphoreInfo();
-  if ((columns == 0) && (rows == 0))
+  if ((columns == 0) || (rows == 0))
     {
       if (image->montage != (char *) NULL)
         (void) CloneString(&clone_image->montage,image->montage);
@@ -894,7 +894,6 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->columns=columns;
   clone_image->rows=rows;
   clone_image->cache=ClonePixelCache(image->cache);
-
   return(clone_image);
 }
 
