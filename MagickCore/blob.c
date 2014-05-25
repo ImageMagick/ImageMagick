@@ -723,7 +723,8 @@ MagickExport unsigned char *DetachBlob(BlobInfo *blob_info)
 %
 %  The format of the DiscardBlobBytes method is:
 %
-%      MagickBooleanType DiscardBlobBytes(Image *image,const size_t length)
+%      MagickBooleanType DiscardBlobBytes(Image *image,
+%        const MagickSizeType length)
 %
 %  A description of each parameter follows.
 %
@@ -3822,10 +3823,13 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
           if (image->blob->synchronize != MagickFalse)
             {
               int
+                file,
                 status;
 
-              status=posix_fallocate(fileno(image->blob->file_info.file),offset,
-                extent-offset);
+              file=fileno(image->blob->file_info.file);
+              if (file == -1)
+                return(MagickFalse);
+              status=posix_fallocate(file,offset,extent-offset);
               if (status != 0)
                 return(MagickFalse);
             }

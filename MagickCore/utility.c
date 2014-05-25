@@ -453,6 +453,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
               decode=(unsigned char *) RelinquishMagickMemory(decode);
               return((unsigned char *) NULL);
             }
+          break;
         }
       }
     }
