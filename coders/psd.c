@@ -1198,12 +1198,11 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
           if ((count != 0) && (LocaleNCompare(type,"Lr16",4) == 0))
             size=GetPSDSize(psd_info,image);
           else
-            if (DiscardBlobBytes(image,size-(ssize_t) quantum-12) == MagickFalse)
+            if (DiscardBlobBytes(image,(MagickSizeType) size-quantum-12) == MagickFalse)
               ThrowFileException(exception,CorruptImageError,
                 "UnexpectedEndOfFile",image->filename);
         }
     }
-
   status=MagickTrue;
   if (size != 0)
     {
