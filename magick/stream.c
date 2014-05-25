@@ -444,7 +444,7 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
   assert(image->signature == MagickSignature);
   *pixel=image->background_color;
   pixels=GetAuthenticPixelsStream(image,x,y,1,1,exception);
-  if (pixels != (PixelPacket *) NULL)
+  if (pixels == (PixelPacket *) NULL)
     return(MagickFalse);
   *pixel=(*pixels);
   return(MagickTrue);
@@ -494,7 +494,7 @@ static MagickBooleanType GetOneVirtualPixelFromStream(const Image *image,
   assert(image->signature == MagickSignature);
   *pixel=image->background_color;
   pixels=GetVirtualPixelStream(image,virtual_pixel_method,x,y,1,1,exception);
-  if (pixels != (const PixelPacket *) NULL)
+  if (pixels == (const PixelPacket *) NULL)
     return(MagickFalse);
   *pixel=(*pixels);
   return(MagickTrue);
