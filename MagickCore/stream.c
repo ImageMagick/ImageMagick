@@ -444,7 +444,7 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
   const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
   register Quantum
-    *q;
+    *p;
 
   register ssize_t
     i;
@@ -452,8 +452,8 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
-  q=GetAuthenticPixelsStream(image,x,y,1,1,exception);
-  if (q != (Quantum *) NULL)
+  p=GetAuthenticPixelsStream(image,x,y,1,1,exception);
+  if (p == (Quantum *) NULL)
     {
       pixel[RedPixelChannel]=ClampToQuantum(image->background_color.red);
       pixel[GreenPixelChannel]=ClampToQuantum(image->background_color.green);
@@ -465,7 +465,7 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel channel=GetPixelChannelChannel(image,i);
-    pixel[channel]=q[i];
+    pixel[channel]=p[i];
   }
   return(MagickTrue);
 }
