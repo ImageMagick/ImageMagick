@@ -1432,10 +1432,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
               q=GetCacheViewAuthenticPixels(image_view,x_offset,y_offset,1,1,
                 exception);
             if (q == (PixelPacket *) NULL)
-              {
-                q++;
-                continue;
-              }
+              continue;
             (void) GetFillColor(draw_info,x_offset,y_offset,&fill_color);
             fill_opacity=QuantumRange-fill_opacity*(QuantumRange-
               fill_color.opacity);

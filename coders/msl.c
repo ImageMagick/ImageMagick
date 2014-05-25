@@ -570,7 +570,7 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
       (msl_info->draw_info == (DrawInfo **) NULL) ||
       (msl_info->attributes == (Image **) NULL) ||
       (msl_info->image == (Image **) NULL))
-    ThrowMSLException(ResourceLimitFatalError,"MemoryAllocationFailed","msl");
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
   msl_info->draw_info[n]=CloneDrawInfo(msl_info->image_info[n-1],
     msl_info->draw_info[n-1]);
@@ -581,7 +581,7 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   msl_info->image[n]=(Image *) image;
   if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
       (msl_info->attributes[n] == (Image *) NULL))
-    ThrowMSLException(ResourceLimitFatalError,"MemoryAllocationFailed","msl");
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   if (msl_info->number_groups != 0)
     msl_info->group_info[msl_info->number_groups-1].numImages++;
 }
