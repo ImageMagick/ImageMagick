@@ -104,7 +104,7 @@ const char* accelerateKernels =
   STRINGIFY(
     inline CLQuantum ScaleCharToQuantum(const unsigned char value)
     {
-      return((Quantum) (16843009.0*value));
+      return((CLQuantum) (16843009.0*value));
     }
   )
 
