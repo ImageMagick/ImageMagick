@@ -1297,7 +1297,7 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
   MagickStatusType
     status;
 
-  status=0;
+  status=MAgickTrue;
   if (file == (FILE *) NULL)
     file=stdout;
   options=GetConfigureOptions(ThresholdsFilename,exception);

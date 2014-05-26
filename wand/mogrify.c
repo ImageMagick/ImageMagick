@@ -8692,12 +8692,11 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
     return(MagickTrue);
   (void) SetImageInfoProgressMonitor(image_info,(MagickProgressMonitor) NULL,
     (void *) NULL);
-  status=0;
+  status=MagickTrue;
 #if 0
   (void) FormatLocaleFile(stderr, "mogrify start %s %d (%s)\n",argv[0],argc,
     post?"post":"pre");
 #endif
-
   /*
     Pre-process multi-image sequence operators
   */

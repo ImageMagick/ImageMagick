@@ -1012,7 +1012,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
-    if (status != MagickFalse)
+    if (status == MagickFalse)
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
           GetMagickModule());
@@ -1104,7 +1104,7 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
-    if (status != MagickFalse)
+    if (status == MagickFalse)
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
           GetMagickModule());
@@ -1195,7 +1195,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
-    if (status != MagickFalse)
+    if (status == MagickFalse)
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
           GetMagickModule());
@@ -1287,7 +1287,7 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
-    if (status != MagickFalse)
+    if (status == MagickFalse)
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
           GetMagickModule());
@@ -2086,7 +2086,7 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
-    if (status != MagickFalse)
+    if (status == MagickFalse)
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
@@ -2177,7 +2177,7 @@ static size_t ValidateStreamCommand(ImageInfo *image_info,
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
-    if (status != MagickFalse)
+    if (status == MagickFalse)
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
