@@ -2184,7 +2184,7 @@ RestoreMSCWarning
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
                 *q++=ScaleQuantumToChar(ClampToQuantum(
-                   GetPixelLuma(image,p)));
+                   GetPixelLuma(tile_image,p)));
                 p++;
               }
             }
