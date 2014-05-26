@@ -565,11 +565,9 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   */
   for (i=0; i < 4; i++)
     (void) GetCharacter(jpeg_info);
-  if (length <= 4)
+  if (length <= 11)
     return(TRUE);
   length-=4;
-  if (length <= 7)
-    return(TRUE);
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
   profile=BlobToStringInfo((const void *) NULL,length);
