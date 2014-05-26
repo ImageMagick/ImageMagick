@@ -299,7 +299,17 @@ static inline Quantum ScaleLongToQuantum(const unsigned int value)
 #endif
 }
 
-static inline Quantum ScaleMapToQuantum(const double value)
+static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) ((value+MagickULLConstant(551911719039))/
+    MagickULLConstant(1103823438079)));
+#else
+  return((Quantum) (value/1103823438079.0));
+#endif
+}
+
+static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);
@@ -322,6 +332,19 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
   if ((16843009.0*quantum) >= 4294967295.0)
     return(4294967295UL);
   return((unsigned int) (16843009.0*quantum+0.5));
+#endif
+}
+
+static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((MagickSizeType) (MagickULLConstant(551911719039)*quantum));
+#else
+  if (quantum <= 0.0)
+    return(0UL);
+  if ((551911719039.0*quantum) >= 18446744073709551615.0)
+    return(MagickULLConstant(18446744073709551615));
+  return((MagickSizeType) (1103823438079.0*quantum+0.5));
 #endif
 }
 
@@ -379,7 +402,17 @@ static inline Quantum ScaleLongToQuantum(const unsigned int value)
 #endif
 }
 
-static inline Quantum ScaleMapToQuantum(const double value)
+static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) ((value+MagickULLConstant(8421376))/
+    MagickULLConstant(16842752)));
+#else
+  return((Quantum) (value/16842752.0));
+#endif
+}
+
+static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);
@@ -402,6 +435,19 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
   if ((65537.0*quantum) >= 4294967295.0)
     return(4294967295U);
   return((unsigned int) (65537.0*quantum+0.5));
+#endif
+}
+
+static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((MagickSizeType) (MagickULLConstant(16842752)*quantum));
+#else
+  if (quantum <= 0.0)
+    return(0UL);
+  if ((65537.0*quantum) >= 18446744073709551615.0)
+    return(MagickULLConstant(18446744073709551615));
+  return((MagickSizeType) (16842752.0*quantum+0.5));
 #endif
 }
 
@@ -450,7 +496,12 @@ static inline Quantum ScaleLongToQuantum(const unsigned int value)
   return((Quantum) value);
 }
 
-static inline Quantum ScaleMapToQuantum(const double value)
+static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
+{
+  return((Quantum) value);
+}
+
+static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);
@@ -473,6 +524,15 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
   if ((quantum) >= 4294967295.0)
     return(4294967295);
   return((unsigned int) (quantum+0.5));
+#endif
+}
+
+static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((MagickSizeType) quantum);
+#else
+  return((MagickSizeType) (quantum+0.5));
 #endif
 }
 
@@ -523,7 +583,12 @@ static inline Quantum ScaleLongToQuantum(const unsigned int value)
   return((Quantum) (4294967297.0*value));
 }
 
-static inline Quantum ScaleMapToQuantum(const double value)
+static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
+{
+  return((Quantum) (18446744073709551615.0*value));
+}
+
+static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);
@@ -535,6 +600,11 @@ static inline Quantum ScaleMapToQuantum(const double value)
 static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 {
   return((unsigned int) (quantum/4294967297.0+0.5));
+}
+
+static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
+{
+  return((MagickSizeType) (quantum/18446744073709551615.0+0.5));
 }
 
 static inline unsigned int ScaleQuantumToMap(const Quantum quantum)
