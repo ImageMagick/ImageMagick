@@ -2163,7 +2163,7 @@ MagickExport const OptionInfo *GetCommandOptionInfo(const char *value)
   assert(*value != '\0');
 
   /* count up table items - first time only */
-  if ( table_size == 0 )
+  /* if ( table_size == 0 ) */  /* binary search not working now */
     {
       l=-1;
       for (i=0; option_info[i].mnemonic != (const char *) NULL; i++)
