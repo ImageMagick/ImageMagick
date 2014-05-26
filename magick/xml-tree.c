@@ -1496,7 +1496,8 @@ static char *ParseEntities(char *xml,char **entities,int state)
                 */
                 length=strlen(entities[i]);
                 entity=strchr(xml,';');
-                if ((length-1L) >= (size_t) (entity-xml))
+                if ((entity != (char *) NULL) && 
+                    ((length-1L) >= (size_t) (entity-xml)))
                   {
                     offset=(ssize_t) (xml-p);
                     extent=(size_t) (offset+length+strlen(entity));

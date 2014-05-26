@@ -2220,7 +2220,7 @@ RestoreMSCWarning
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
                 Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
-                  GetPixelLuma(image,p))));
+                  GetPixelLuma(tile_image,p))));
                 p++;
               }
             }
