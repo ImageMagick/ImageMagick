@@ -877,7 +877,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       p=option;
       for (i=0; sscanf(p,"%f",&parameters.tcp_rates[i]) == 1; i++)
       {
-        if (i > 100)
+        if (i >= 100)
           break;
         while ((*p != '\0') && (*p != ','))
           p++;

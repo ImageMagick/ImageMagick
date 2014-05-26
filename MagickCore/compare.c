@@ -453,7 +453,7 @@ static size_t GetImageChannels(const Image *image)
     if ((traits & UpdatePixelTrait) != 0)
       channels++;
   }
-  return(channels);
+  return(channels == 0 ? 1 : channels);
 }
 
 static MagickBooleanType GetFuzzDistortion(const Image *image,

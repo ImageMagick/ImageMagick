@@ -1263,6 +1263,7 @@ WandExport void PixelGetQuantumPacket(const PixelWand *wand,PixelInfo *packet)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(packet != (PixelInfo *) NULL);
   packet->alpha=(double) ClampToQuantum(wand->pixel.alpha);
+  packet->alpha_trait=wand->pixel.alpha_trait;
   if (wand->pixel.colorspace == CMYKColorspace)
     {
       packet->red=(double) ClampToQuantum(QuantumRange-

@@ -2696,7 +2696,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
       (IfMagickFalse(IsGrayColorspace(black_color->colorspace)) ||
        IfMagickFalse(IsGrayColorspace(white_color->colorspace))))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
-  status=MagickFalse;
+  status=MagickTrue;
   if( IfMagickFalse(invert) )
     {
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)

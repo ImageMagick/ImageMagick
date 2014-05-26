@@ -690,7 +690,8 @@ static MagickBooleanType ClonePixelCacheRepository(
           clone_nexus[id],exception);
         if (pixels == (Quantum *) NULL)
           continue;
-        if (clone_nexus[id]->metacontent != (void *) NULL)
+        if ((clone_nexus[id]->metacontent != (void *) NULL) &&
+            (cache_nexus[id]->metacontent != (void *) NULL))
           (void) memcpy(clone_nexus[id]->metacontent,
             cache_nexus[id]->metacontent,length*
             sizeof(cache_nexus[id]->metacontent));
