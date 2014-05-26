@@ -1736,7 +1736,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
       if (LocaleNCompare(symbol,"minima",6) == 0)
         return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
       if (LocaleCompare(symbol,"m") == 0)
-        return(QuantumScale*pixel.blue);
+        return(QuantumScale*pixel.green);
       break;
     }
     case 'N':
@@ -1815,7 +1815,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
     case 'y':
     {
       if (LocaleCompare(symbol,"y") == 0)
-        return(QuantumScale*pixel.green);
+        return(QuantumScale*pixel.blue);
       break;
     }
     case 'Z':
