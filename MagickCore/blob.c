@@ -3830,7 +3830,7 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
                 status;
 
               file=fileno(image->blob->file_info.file);
-              if (file == -1)
+              if ((file == -1) || (offset < 0))
                 return(MagickFalse);
               status=posix_fallocate(file,offset,extent-offset);
               if (status != 0)

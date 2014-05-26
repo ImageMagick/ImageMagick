@@ -550,6 +550,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
     y;
 
   ssize_t
+    i,
     ldblk;
 
   unsigned int
@@ -559,9 +560,6 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
     bbuf,
     *BImgBuff,
     SampleBuffer[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-
-  unsigned int
-    i;
 
   x=0;
   y=0;

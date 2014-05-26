@@ -3366,7 +3366,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
     */
     {
       char
-        pattern[MaxTextExtent];
+        pattern[2*MaxTextExtent];
 
       const char
         *key,
@@ -3382,8 +3382,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
       p++;  /* advance p to just inside the opening brace */
       depth=1;
       if ( *p == ']' ) {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionWarning,"UnknownImageProperty","\"%%[]\"");
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+          "UnknownImageProperty","\"%%[]\"");
         break;
       }
       for (len=0; len<(MaxTextExtent-1L) && (*p != '\0');)

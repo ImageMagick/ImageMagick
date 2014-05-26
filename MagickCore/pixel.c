@@ -2112,6 +2112,8 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
   pixel->black=0.0;
   pixel->alpha=(double) OpaqueAlpha;
   pixel->index=0.0;
+  pixel->count=0;
+  pixel->fuzz=0.0;
   if (image == (const Image *) NULL)
     return;
   pixel->storage_class=image->storage_class;

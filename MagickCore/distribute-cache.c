@@ -207,7 +207,6 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     result->ai_protocol);
   if (client_socket == -1)
     {
-      (void) close(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "DistributedPixelCache","'%s'",hostname);
       return(-1);
@@ -215,6 +214,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   status=connect(client_socket,result->ai_addr,result->ai_addrlen);
   if (status == -1)
     {
+      (void) close(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "DistributedPixelCache","'%s'",hostname);
       return(-1);

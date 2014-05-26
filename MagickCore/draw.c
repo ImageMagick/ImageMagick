@@ -4348,6 +4348,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
 
           (void) GetOneCacheViewVirtualPixelInfo(image_view,x,y,&target,
             exception);
+          GetPixelInfo(image,&pixel);
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum

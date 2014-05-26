@@ -122,7 +122,10 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   {
     input=fopen_utf8(argv[i],"rb");
     if (input == (FILE *) NULL)
-      ThrowFileException(exception,FileOpenError,"UnableToOpenFile",argv[i]);
+      {
+        ThrowFileException(exception,FileOpenError,"UnableToOpenFile",argv[i]);
+        continue;
+      }
     for (c=fgetc(input); c != EOF; c=fgetc(input))
       (void) fputc((char) c,output);
     (void) fclose(input);
