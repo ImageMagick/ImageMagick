@@ -533,10 +533,10 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
       break;
     }
   }
-  (void) FormatLocaleString(header,MaxTextExtent,"rorient: %03ld,%03ld",
+  (void) FormatLocaleString(header,sizeof(header),"rorient: %03ld,%03ld",
     (long) orient_x,(long) orient_y);
   count=WriteCALSRecord(image,header);
-  (void) FormatLocaleString(header,MaxTextExtent,"rpelcnt: %06lu,%06lu",
+  (void) FormatLocaleString(header,sizeof(header),"rpelcnt: %06lu,%06lu",
     (unsigned long) image->columns,(unsigned long) image->rows);
   count=WriteCALSRecord(image,header);
   density=200;
@@ -548,7 +548,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
       (void) ParseGeometry(image_info->density,&geometry_info);
       density=(size_t) floor(geometry_info.rho+0.5);
     }
-  (void) FormatLocaleString(header,MaxTextExtent,"rdensty: %04lu",
+  (void) FormatLocaleString(header,sizeof(header),"rdensty: %04lu",
     (unsigned long) density);
   count=WriteCALSRecord(image,header);
   count=WriteCALSRecord(image,"notes: NONE");

@@ -3416,7 +3416,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
     */
     {
       char
-        pattern[MaxTextExtent];
+        pattern[2*MaxTextExtent];
 
       const char
         *key,
