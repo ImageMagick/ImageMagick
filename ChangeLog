@@ -8,6 +8,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25614).
   * Fix IdentifyImage() crash when image->magick member is null (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25615).
+  * The -format M and Y channels are no longer reversed (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25633).
 
 2014-05-12  6.8.9-2 Dirk Lemstra <dirk@snakeware...>
   * Bump major Magick++ library version.
