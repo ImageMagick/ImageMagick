@@ -348,8 +348,8 @@ loop_exit:
 % flag.
 %
 */
-WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
-     char **argv, int index )
+WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
+  int index)
 {
   const char
     *option,
@@ -671,8 +671,8 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   return(MagickTrue);
 }
 
-WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
-  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
+  char **argv,char **metadata,ExceptionInfo *exception)
 {
   MagickCLI
     *cli_wand;
