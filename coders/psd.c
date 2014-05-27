@@ -1646,8 +1646,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
   if (psd_info.mode == LabMode)
     SetImageColorspace(image,LabColorspace);
   if (psd_info.mode == CMYKMode)
+  {
     SetImageColorspace(image,CMYKColorspace);
-  if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
+    image->matte = psd_info.channels > 4 ? MagickTrue : MagickFalse;
+  }
+  else if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
       (psd_info.mode == DuotoneMode))
     {
       status=AcquireImageColormap(image,psd_info.depth != 16 ? 256 : 65536);
@@ -1657,8 +1660,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Image colormap allocated");
       SetImageColorspace(image,GRAYColorspace);
+      image->matte = psd_info.channels > 1 ? MagickTrue : MagickFalse;
     }
-  image->matte=MagickFalse;
+  else
+    image->matte = psd_info.channels > 3 ? MagickTrue : MagickFalse;
   /*
     Read PSD raster colormap only present for indexed and duotone images.
   */
