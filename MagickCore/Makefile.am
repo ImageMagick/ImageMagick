@@ -493,15 +493,3 @@ MAGICKCORE_EXTRA_DIST = \
 	MagickCore/nt-feature.c \
 	MagickCore/vms.c \
 	MagickCore/xwdfile.h_vms 
-
-# Install magick-baseconfig.h
-MAGICKCORE_INSTALL_DATA_LOCAL_TARGETS = MagickCore-install-data-local
-MagickCore-install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(MagickCoreincdir)
-	$(INSTALL_HEADER) MagickCore/magick-baseconfig.h $(DESTDIR)$(MagickCoreincdir)/magick-baseconfig.h
-
-# Uninstall magick-config.h
-MAGICKCORE_UNINSTALL_LOCAL_TARGETS = MagickCore-uninstall-local
-MagickCore-uninstall-local:
-	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-baseconfig.h
-
