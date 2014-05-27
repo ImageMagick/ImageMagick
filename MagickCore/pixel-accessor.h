@@ -354,12 +354,12 @@ static inline void GetPixelInfoPixel(const Image *restrict image,
     pixel_info->black=(MagickRealType)
       pixel[image->channel_map[BlackPixelChannel].offset];
   pixel_info->alpha=(MagickRealType) OpaqueAlpha;
-  pixel_info->alpha_trait=MagickFalse;
+  pixel_info->alpha_trait=UndefinedPixelTrait;
   if (image->channel_map[AlphaPixelChannel].traits != UndefinedPixelTrait)
     {
       pixel_info->alpha=(MagickRealType)
         pixel[image->channel_map[AlphaPixelChannel].offset];
-      pixel_info->alpha_trait=MagickTrue;
+      pixel_info->alpha_trait=BlendPixelTrait;
     }
   pixel_info->index=0.0f;
   if (image->channel_map[IndexPixelChannel].traits != UndefinedPixelTrait)
