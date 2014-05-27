@@ -17,6 +17,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=12335).
   * Improved performance of parsing the xmp profile (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25612).
+  * Fixed detecting transparency in PSD files (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25634).
 
 2014-05-09  6.8.9-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-1, SVN revision 15697.
