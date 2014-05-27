@@ -2769,7 +2769,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             if (fabs(pixel-p[center+i]) > MagickEpsilon)
               changes[id]++;
             gamma=PerceptibleReciprocal(gamma);
-            gamma*=(double) kernel->height*kernel->width/count;
+            if (count != 0)
+              gamma*=(double) kernel->height*kernel->width/count;
             SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
               pixel),q);
           }

@@ -1912,7 +1912,7 @@ static size_t GetImageChannels(const Image *image)
     if (traits != UndefinedPixelTrait)
       channels++;
   }
-  return(channels);
+  return(channels == 0 ? 1 : channels);
 }
 
 MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
