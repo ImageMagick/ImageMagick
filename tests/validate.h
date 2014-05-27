@@ -33,7 +33,6 @@ static const char
   *composite_options[] =
   {
     "",
-    "-compose Add",
     "-compose Atop",
     "-compose Blend",
     "-compose Bumpmap",
@@ -71,6 +70,8 @@ static const char
     "-compose Luminize",
     "-compose Minus",
     "-compose Modulate",
+    "-compose ModulusAdd",
+    "-compose ModulusSubtract",
     "-compose Multiply",
     "-compose None",
     "-compose Out",
@@ -87,7 +88,6 @@ static const char
     "-compose SrcOut",
     "-compose SrcOver",
     "-compose Src",
-    "-compose Subtract",
     "-compose Threshold",
     "-compose Xor",
     "-geometry +35+65 -label Magick",
@@ -156,7 +156,7 @@ static const char
     "-paint 0x1",
     "-raise 10x10",
     "-random-threshold 10%",
-    "-recolor '0.9 0 0, 0 0.9 0, 0 0 1.2'",
+    "-color-matrix '0.9 0 0, 0 0.9 0, 0 0 1.2'",
     "-density 75x75 -resample 50x50",
     "-resize 10%",
     "-resize 50%",
