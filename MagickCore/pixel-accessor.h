@@ -341,6 +341,8 @@ static inline PixelTrait GetPixelRedTraits(const Image *restrict image)
 static inline void GetPixelInfoPixel(const Image *restrict image,
   const Quantum *restrict pixel,PixelInfo *restrict pixel_info)
 {
+  pixel_info->colorspace=image->colorspace;
+  pixel_info->fuzz=image->fuzz;
   pixel_info->red=(MagickRealType)
     pixel[image->channel_map[RedPixelChannel].offset];
   pixel_info->green=(MagickRealType)
@@ -352,9 +354,13 @@ static inline void GetPixelInfoPixel(const Image *restrict image,
     pixel_info->black=(MagickRealType)
       pixel[image->channel_map[BlackPixelChannel].offset];
   pixel_info->alpha=(MagickRealType) OpaqueAlpha;
+  pixel_info->alpha_trait=MagickFalse;
   if (image->channel_map[AlphaPixelChannel].traits != UndefinedPixelTrait)
-    pixel_info->alpha=(MagickRealType)
-      pixel[image->channel_map[AlphaPixelChannel].offset];
+    {
+      pixel_info->alpha=(MagickRealType)
+        pixel[image->channel_map[AlphaPixelChannel].offset];
+      pixel_info->alpha_trait=MagickTrue;
+    }
   pixel_info->index=0.0f;
   if (image->channel_map[IndexPixelChannel].traits != UndefinedPixelTrait)
     pixel_info->index=(MagickRealType)
