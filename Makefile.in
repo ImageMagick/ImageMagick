@@ -4519,12 +4519,6 @@ MAGICK_EXTRA_DIST = \
 	magick/xwdfile.h_vms 
 
 
-# Install magick-baseconfig.h
-MAGICK_INSTALL_DATA_LOCAL_TARGETS = magick-install-data-local
-
-# Uninstall magick-config.h
-MAGICK_UNINSTALL_LOCAL_TARGETS = magick-uninstall-local
-
 # Where filter modules get installed
 filtersdir = $(FILTER_PATH)
 MAGICK_FILTER_CPPFLAGS = $(AM_CPPFLAGS)
@@ -11299,11 +11293,6 @@ uninstall-man: uninstall-man1
 	uninstall-magickpptopincHEADERS uninstall-man uninstall-man1 \
 	uninstall-pkgconfigDATA uninstall-wandincHEADERS
 
-magick-install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(magickincarchdir)
-	$(INSTALL_HEADER) magick/magick-baseconfig.h $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
-magick-uninstall-local:
-	rm -f $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
 
 $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.xs: $(PERLMAGICK)/quantum/quantum.xs
 	$(AM_V_GEN) $(LN_S) quantum.xs $@
@@ -11400,9 +11389,9 @@ all-local: $(MAGICKPP_LOCAL_TARGETS) $(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINE
 
 install-exec-local: $(PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS)
 
-install-data-local: $(MAGICK_INSTALL_DATA_LOCAL_TARGETS) $(PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS) $(HTML_INSTALL_DATA_TARGETS)
+install-data-local: $(PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS) $(HTML_INSTALL_DATA_TARGETS)
 
-uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) $(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) $(HTML_UNINSTALL_DATA_TARGETS)
+uninstall-local: $(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) $(HTML_UNINSTALL_DATA_TARGETS)
 
 clean-local: $(PERLMAGICK_CLEAN_LOCAL_TARGETS)
 

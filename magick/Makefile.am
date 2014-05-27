@@ -472,14 +472,3 @@ MAGICK_EXTRA_DIST = \
 	magick/nt-feature.c \
 	magick/vms.c \
 	magick/xwdfile.h_vms 
-
-# Install magick-baseconfig.h
-MAGICK_INSTALL_DATA_LOCAL_TARGETS = magick-install-data-local
-magick-install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(magickincarchdir)
-	$(INSTALL_HEADER) magick/magick-baseconfig.h $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
-
-# Uninstall magick-config.h
-MAGICK_UNINSTALL_LOCAL_TARGETS = magick-uninstall-local
-magick-uninstall-local:
-	rm -f $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
