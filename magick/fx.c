@@ -1950,6 +1950,17 @@ static const char *FxOperatorPrecedence(const char *expression,
           }
         break;
       }
+      case 'E':
+      case 'e':
+      {
+        if ((isdigit((int) ((unsigned char) c)) != 0) &&
+            ((LocaleNCompare(expression,"E+",2) == 0) ||
+             (LocaleNCompare(expression,"E-",2) == 0)))
+          {
+            expression+=2;  /* scientific notation */
+            break;
+          }
+      }
       case 'J':
       case 'j':
       {
