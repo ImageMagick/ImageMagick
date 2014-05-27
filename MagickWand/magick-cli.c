@@ -834,5 +834,5 @@ Magick_Command_Exit:
   cli_wand->wand.exception = (ExceptionInfo *)NULL;
   cli_wand=DestroyMagickCLI(cli_wand);
 
-  return(IsMagickTrue(exception->severity > ErrorException));
+  return(IsMagickTrue(exception->severity < ErrorException));
 }
