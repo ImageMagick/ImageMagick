@@ -177,11 +177,11 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
             status=MagickTrue;
           CatchException(exception);
         }
-        if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
-          {
-            (void) fputs(*metadata,stdout);
-            *metadata=DestroyString(*metadata);
-          }
+      if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
+        {
+          (void) fputs(*metadata,stdout);
+          *metadata=DestroyString(*metadata);
+        }
       return(status);
     }
   number_threads=GetOpenMPMaximumThreads();
