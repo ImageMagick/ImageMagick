@@ -1188,7 +1188,7 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
       count=ReadBlob(image,4,(unsigned char *) type);
       if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
         {
-          if (DiscardBlobBytes(image,(MagickSizeType) size-quantum-8) == MagickFalse)
+          if (DiscardBlobBytes(image,(MagickSizeType) (size-quantum-8)) == MagickFalse)
             ThrowFileException(exception,CorruptImageError,
               "UnexpectedEndOfFile",image->filename);
         }
@@ -1341,7 +1341,7 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
                 /*
                   Skip over the rest of the layer mask information.
                 */
-                if (DiscardBlobBytes(image,length-16) == MagickFalse)
+                if (DiscardBlobBytes(image,(MagickSizeType) (length-16)) == MagickFalse)
                   {
                     layer_info=DestroyLayerInfo(layer_info,number_layers);
                     ThrowFileException(exception,CorruptImageError,
@@ -1390,7 +1390,7 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                  "      unsupported data: length=%.20g",(double)
                  ((MagickOffsetType) (size-combined_length)));
-             if (DiscardBlobBytes(image,size-combined_length) == MagickFalse)
+             if (DiscardBlobBytes(image,(MagickSizeType) (size-combined_length)) == MagickFalse)
                {
                  layer_info=DestroyLayerInfo(layer_info,number_layers);
                  ThrowBinaryException(CorruptImageError,
@@ -1434,7 +1434,7 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
               {
                 for (j=0; j < layer_info[i].channels; j++)
                 {
-                  if (DiscardBlobBytes(image,
+                  if (DiscardBlobBytes(image,(MagickSizeType)
                       layer_info[i].channel_info[j].size) == MagickFalse)
                     {
                       layer_info=DestroyLayerInfo(layer_info,number_layers);
