@@ -12767,7 +12767,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           p=blob+8;
           for (i=8; i<(ssize_t) length; i+=len+12)
           {
-            len=(*p<<24)|((*(p+1))<<16)|((*(p+2))<<8)|(*(p+3));
+            len=(size_t) (*p<<24)|((*(p+1))<<16)|((*(p+2))<<8)|(*(p+3));
             p+=4;
 
             if (*(p)==73 && *(p+1)==68 && *(p+2)==65 && *(p+3)==84) /* IDAT */
