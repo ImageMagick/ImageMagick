@@ -215,14 +215,14 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
-  (void) LevelImage(edge_image,"20%,95%");
+  (void) AutoLevelImage(edge_image);
   gaussian_image=BlurImage(edge_image,radius,sigma,exception);
   if (gaussian_image != (Image *) NULL)
     {
       edge_image=DestroyImage(edge_image);
       edge_image=gaussian_image;
     }
-  (void) LevelImage(edge_image,"10%,95%");
+  (void) AutoLevelImage(edge_image);
   /*
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
@@ -537,14 +537,14 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
       sharp_image=DestroyImage(sharp_image);
       return((Image *) NULL);
     }
-  (void) LevelImage(edge_image,"20%,95%");
+  (void) AutoLevelImage(edge_image);
   gaussian_image=BlurImage(edge_image,radius,sigma,exception);
   if (gaussian_image != (Image *) NULL)
     {
       edge_image=DestroyImage(edge_image);
       edge_image=gaussian_image;
     }
-  (void) LevelImage(edge_image,"10%,95%");
+  (void) AutoLevelImage(edge_image);
   /*
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
