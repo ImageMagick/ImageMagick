@@ -13,6 +13,8 @@
   * Remove Makefile race condition where two targets attempt to install
     magick-baseconfig.h (reference
 		http://git.buildroot.net/buildroot/commit/?id=7395ee9d3b88e45798143e05a28d6d4b51409130)
+  * Fix memory leak in BlobToStringInfo() (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25639).
 
 2014-05-12  6.8.9-2 Dirk Lemstra <dirk@snakeware...>
   * Bump major Magick++ library version.

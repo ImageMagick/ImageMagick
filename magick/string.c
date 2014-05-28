@@ -24,7 +24,6 @@
 %  obtain a copy of the license at                                            %
 %                                                                             %
 %    http://www.imagemagick.org/script/license.php                            %
-%                                                                             %
 %  unless required by applicable law or agreed to in writing, software        %
 %  distributed under the license is distributed on an "as is" basis,          %
 %  without warranties or conditions of any kind, either express or implied.   %
@@ -214,6 +213,9 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
     *string_info;
 
   string_info=AcquireStringInfo(0);
+  if (string_info->datum != (unsigned char *) NULL)
+    string_info->datum=(unsigned char *) RelinquishMagickMemory(
+      string_info->datum);
   string_info->length=length;
   if (~string_info->length >= (MaxTextExtent-1))
     string_info->datum=(unsigned char *) AcquireQuantumMemory(
@@ -648,6 +650,9 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
   string[length]='\0';
   file=close(file)-1;
   string_info=AcquireStringInfo(0);
+  if (string_info->datum != (unsigned char *) NULL)
+    string_info->datum=(unsigned char *) RelinquishMagickMemory( 
+      string_info->datum);
   (void) CopyMagickString(string_info->path,filename,MaxTextExtent);
   string_info->length=length;
   string_info->datum=(unsigned char *) string;
@@ -1026,6 +1031,9 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(exception != (ExceptionInfo *) NULL);
   string_info=AcquireStringInfo(0);
+  if (string_info->datum != (unsigned char *) NULL)
+    string_info->datum=(unsigned char *) RelinquishMagickMemory( 
+      string_info->datum);
   (void) CopyMagickString(string_info->path,filename,MaxTextExtent);
   string_info->datum=FileToBlob(filename,extent,&string_info->length,exception);
   if (string_info->datum == (unsigned char *) NULL)
