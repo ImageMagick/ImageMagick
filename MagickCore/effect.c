@@ -126,51 +126,6 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
-  const char *levels,ExceptionInfo *exception)
-{
-  double
-    black_point,
-    gamma,
-    white_point;
-
-  GeometryInfo
-    geometry_info;
-
-  MagickBooleanType
-    status;
-
-  MagickStatusType
-    flags;
-
-  /*
-    Parse levels.
-  */
-  if (levels == (char *) NULL)
-    return(MagickFalse);
-  flags=ParseGeometry(levels,&geometry_info);
-  black_point=geometry_info.rho;
-  white_point=(double) QuantumRange;
-  if ((flags & SigmaValue) != 0)
-    white_point=geometry_info.sigma;
-  gamma=1.0;
-  if ((flags & XiValue) != 0)
-    gamma=geometry_info.xi;
-  if ((flags & PercentValue) != 0)
-    {
-      black_point*=(double) image->columns*image->rows/100.0;
-      white_point*=(double) image->columns*image->rows/100.0;
-    }
-  if ((flags & SigmaValue) == 0)
-    white_point=(double) QuantumRange-black_point;
-  if ((flags & AspectValue ) == 0)
-    status=LevelImage(image,black_point,white_point,gamma,exception);
-  else
-    status=LevelizeImage(image,black_point,white_point,gamma,exception);
-  return(status);
-}
-
 MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
@@ -237,14 +192,14 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
-  (void) AdaptiveLevelImage(edge_image,"20%,95%",exception);
+  (void) AutoLevelImage(edge_image,exception);
   gaussian_image=BlurImage(edge_image,radius,sigma,exception);
   if (gaussian_image != (Image *) NULL)
     {
       edge_image=DestroyImage(edge_image);
       edge_image=gaussian_image;
     }
-  (void) AdaptiveLevelImage(edge_image,"10%,95%",exception);
+  (void) AutoLevelImage(edge_image,exception);
   /*
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
@@ -552,7 +507,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   /*
-    Edge detect the image brighness channel, level, sharp, and level again.
+    Edge detect the image brightness channel, level, sharp, and level again.
   */
   edge_image=EdgeImage(image,radius,exception);
   if (edge_image == (Image *) NULL)
@@ -560,14 +515,14 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
       sharp_image=DestroyImage(sharp_image);
       return((Image *) NULL);
     }
-  (void) AdaptiveLevelImage(edge_image,"20%,95%",exception);
+  (void) AutoLevelImage(edge_image,exception);
   gaussian_image=BlurImage(edge_image,radius,sigma,exception);
   if (gaussian_image != (Image *) NULL)
     {
       edge_image=DestroyImage(edge_image);
       edge_image=gaussian_image;
     }
-  (void) AdaptiveLevelImage(edge_image,"10%,95%",exception);
+  (void) AutoLevelImage(edge_image,exception);
   /*
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
