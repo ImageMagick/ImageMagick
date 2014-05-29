@@ -3464,7 +3464,8 @@ MagickExport MagickBooleanType SyncImage(Image *image)
         SetPixelRGBO(q,image->colormap+(ssize_t) index);
       q++;
     }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixelsExplicit(image_view,exception) ==
+        MagickFalse)
       status=MagickFalse;
   }
   image_view=DestroyCacheView(image_view);

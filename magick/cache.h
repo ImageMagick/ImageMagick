@@ -63,7 +63,8 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   PersistPixelCache(Image *,const char *,const MagickBooleanType,
     MagickOffsetType *,ExceptionInfo *),
-  SyncAuthenticPixels(Image *,ExceptionInfo *);
+  SyncAuthenticPixels(Image *,ExceptionInfo *),
+  SyncAuthenticPixelsExplicit(Image *,ExceptionInfo *);
 
 extern MagickExport MagickSizeType
   GetImageExtent(const Image *);

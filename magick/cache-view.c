@@ -1006,3 +1006,44 @@ MagickExport MagickBooleanType SyncCacheViewAuthenticPixels(
   return(SyncAuthenticPixelCacheNexus(cache_view->image,
     cache_view->nexus_info[id],exception));
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S y n c C a c h e V i e w A u t h e n t i c P i x e l s E x p l i c i t   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncCacheViewAuthenticPixelsExplicit() saves the cache view pixels to the
+%  in-memory or disk cache. The method ignores mask set on the image and
+%  flushes all the pixels. It returns MagickTrue if the pixel region is
+%  flushed, otherwise MagickFalse.
+%
+%  The format of the SyncCacheViewAuthenticPixelsExplicit method is:
+%
+%      MagickBooleanType SyncCacheViewAuthenticPixelsExplicit(
+%        CacheView *cache_view,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o cache_view: the cache view.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType SyncCacheViewAuthenticPixelsExplicit(
+  CacheView *restrict cache_view,ExceptionInfo *exception)
+{
+  const int
+    id = GetOpenMPThreadId();
+
+  assert(cache_view != (CacheView *) NULL);
+  assert(cache_view->signature == MagickSignature);
+  assert(id < (int) cache_view->number_threads);
+  return(SyncAuthenticPixelCacheNexusExplicit(cache_view->image,
+    cache_view->nexus_info[id],exception));
+}
