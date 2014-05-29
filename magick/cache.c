@@ -5165,7 +5165,7 @@ MagickExport MagickBooleanType SyncAuthenticPixels(Image *image,
   return(SyncAuthenticPixelCacheNexus(image,cache_info->nexus_info[id],
     exception));
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5212,7 +5212,7 @@ MagickExport MagickBooleanType SyncAuthenticPixelsExplicit(Image *image,
   return(SyncAuthenticPixelCacheNexusExplicit(image,cache_info->nexus_info[id],
     exception));
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
