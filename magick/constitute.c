@@ -1102,13 +1102,19 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetImageEncoder(magick_info) != (EncodeImageHandler *) NULL))
     {
+      Image
+        *clip_mask;
+        
       /*
-        Call appropriate image writer based on image type.
+        Call appropriate image writer based on image type, do not clip.
       */
       thread_support=GetMagickThreadSupport(magick_info);
       if ((thread_support & EncoderThreadSupport) == 0)
         LockSemaphoreInfo(magick_info->semaphore);
+      clip_mask=image->clip_mask;
+      image->clip_mask=(Image *) NULL;
       status=GetImageEncoder(magick_info)(write_info,image);
+      image->clip_mask=clip_mask;
       if ((thread_support & EncoderThreadSupport) == 0)
         UnlockSemaphoreInfo(magick_info->semaphore);
     }
