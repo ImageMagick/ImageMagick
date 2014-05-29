@@ -5016,66 +5016,6 @@ MagickExport MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   S y n c A u t h e n t i c P i x e l C a c h e N e x u s E x p l i c i t   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SyncAuthenticPixelCacheNexusExplicit() saves the authentic image pixels to
-%  the in-memory or disk cache. The method ignores mask set on the image and
-%  syncs all the pixels. The method returns MagickTrue if the pixel region
-%  is synced, otherwise MagickFalse.
-%
-%  The format of the SyncAuthenticPixelCacheNexusExplicit() method is:
-%
-%      MagickBooleanType SyncAuthenticPixelCacheNexusExplicit(Image *image,
-%        NexusInfo *nexus_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o nexus_info: the cache nexus to sync.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType SyncAuthenticPixelCacheNexusExplicit(
-  Image *image,NexusInfo *restrict nexus_info,ExceptionInfo *exception)
-{
-  CacheInfo
-    *restrict cache_info;
-
-  MagickBooleanType
-    status;
-
-  /*
-    Transfer pixels to the cache.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->cache == (Cache) NULL)
-    ThrowBinaryException(CacheError,"PixelCacheIsNotOpen",image->filename);
-  cache_info=(CacheInfo *) image->cache;
-  assert(cache_info->signature == MagickSignature);
-  if (cache_info->type == UndefinedCache)
-    return(MagickFalse);
-  if (nexus_info->authentic_pixel_cache != MagickFalse)
-    return(MagickTrue);
-  assert(cache_info->signature == MagickSignature);
-  status=WritePixelCachePixels(cache_info,nexus_info,exception);
-  if ((cache_info->active_index_channel != MagickFalse) &&
-      (WritePixelCacheIndexes(cache_info,nexus_info,exception) == MagickFalse))
-    return(MagickFalse);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   S y n c A u t h e n t i c P i x e l C a c h e                             %
 %                                                                             %
 %                                                                             %
@@ -5107,14 +5047,18 @@ static MagickBooleanType SyncAuthenticPixelsCache(Image *image,
   const int
     id = GetOpenMPThreadId();
 
+  MagickBooleanType
+    status;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  return(SyncAuthenticPixelCacheNexus(image,cache_info->nexus_info[id],
-    exception));
+  status=SyncAuthenticPixelCacheNexus(image,cache_info->nexus_info[id],
+    exception);
+  return(status);
 }
 
 /*
@@ -5153,6 +5097,9 @@ MagickExport MagickBooleanType SyncAuthenticPixels(Image *image,
   const int
     id = GetOpenMPThreadId();
 
+  MagickBooleanType
+    status;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
@@ -5162,55 +5109,9 @@ MagickExport MagickBooleanType SyncAuthenticPixels(Image *image,
        (SyncAuthenticPixelsHandler) NULL)
     return(cache_info->methods.sync_authentic_pixels_handler(image,exception));
   assert(id < (int) cache_info->number_threads);
-  return(SyncAuthenticPixelCacheNexus(image,cache_info->nexus_info[id],
-    exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S y n c A u t h e n t i c P i x e l s E x p l i c i t                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SyncAuthenticPixelsExplicit() saves the image pixels to the in-memory or
-%  disk cache. The method ignores mask set on the image and flushes all the
-%  pixels. The method returns MagickTrue if the pixel region is flushed,
-%  otherwise MagickFalse.
-%
-%  The format of the SyncAuthenticPixelsExplicit() method is:
-%
-%      MagickBooleanType SyncAuthenticPixelsExplicit(Image *image,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType SyncAuthenticPixelsExplicit(Image *image,
-  ExceptionInfo *exception)
-{
-  CacheInfo
-    *restrict cache_info;
-
-  const int
-    id = GetOpenMPThreadId();
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(image->cache != (Cache) NULL);
-  cache_info=(CacheInfo *) image->cache;
-  assert(cache_info->signature == MagickSignature);
-  assert(id < (int) cache_info->number_threads);
-  return(SyncAuthenticPixelCacheNexusExplicit(image,cache_info->nexus_info[id],
-    exception));
+  status=SyncAuthenticPixelCacheNexus(image,cache_info->nexus_info[id],
+    exception);
+  return(status);
 }
 
 /*
