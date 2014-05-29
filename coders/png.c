@@ -8267,7 +8267,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 r++;
              }
 
-             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+             if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
                 break;
            }
 
@@ -8301,7 +8301,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 r++;
              }
 
-             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+             if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
                 break;
            }
 
@@ -8334,7 +8334,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 r++;
              }
 
-             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+             if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
                 break;
            }
 
@@ -8366,7 +8366,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 r++;
              }
 
-             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+             if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
                 break;
            }
 
@@ -8397,7 +8397,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 r++;
              }
 
-             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+             if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
                 break;
            }
 
@@ -8926,7 +8926,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 q++;
               }
 
-              if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
                  break;
             }
           }
@@ -9040,7 +9040,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               r++;
           }
 
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
              break;
 
           if (image_colors != 0 && image_colors <= 256 &&
@@ -9089,7 +9089,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               r++;
             }
 
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
                break;
           }
         }
@@ -9140,7 +9140,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               r++;
             }
 
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
                break;
           }
         }
@@ -9194,7 +9194,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               r++;
             }
 
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
                break;
           }
         }
@@ -9257,7 +9257,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             r++;
           }
 
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          if (SyncAuthenticPixelsExplicit(image,exception) == MagickFalse)
              break;
 
         }
