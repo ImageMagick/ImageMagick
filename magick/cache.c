@@ -4995,10 +4995,12 @@ MagickExport MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
   assert(cache_info->signature == MagickSignature);
   if (cache_info->type == UndefinedCache)
     return(MagickFalse);
-  if ((image->clip_mask != (Image *) NULL) &&
+  if ((image->storage_class == DirectClass) &&
+      (image->clip_mask != (Image *) NULL) &&
       (ClipPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
     return(MagickFalse);
-  if ((image->mask != (Image *) NULL) &&
+  if ((image->storage_class == DirectClass) &&
+      (image->mask != (Image *) NULL) &&
       (MaskPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
     return(MagickFalse);
   if (nexus_info->authentic_pixel_cache != MagickFalse)
