@@ -424,7 +424,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->clip_mask == (Image *) NULL)
-    return(MagickFalse);
+    return(MagickTrue);
   cache_info=(CacheInfo *) image->cache;
   if (cache_info == (Cache) NULL)
     return(MagickFalse);
