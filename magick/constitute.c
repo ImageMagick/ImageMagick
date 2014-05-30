@@ -968,6 +968,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     *magick_info;
 
   ExceptionInfo
+    *exception,
     *sans_exception;
 
   ImageInfo
@@ -996,6 +997,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       image_info->filename);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  exception=(&image->exception);
   sans_exception=AcquireExceptionInfo();
   write_info=CloneImageInfo(image_info);
   (void) CopyMagickString(write_info->filename,image->filename,MaxTextExtent);
@@ -1006,7 +1008,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     {
       if (image->clip_mask == (Image *) NULL)
         {
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          (void) ThrowMagickException(exception,GetMagickModule(),
             OptionError,"NoClipPathDefined","`%s'",image->filename);
           write_info=DestroyImageInfo(write_info);
           return(MagickFalse);
@@ -1055,7 +1057,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       (IsTaintImage(image) == MagickFalse))
     {
       delegate_info=GetDelegateInfo(image->magick,write_info->magick,
-        &image->exception);
+        exception);
       if ((delegate_info != (const DelegateInfo *) NULL) &&
           (GetDelegateMode(delegate_info) == 0) &&
           (IsPathAccessible(image->magick_filename) != MagickFalse))
@@ -1066,7 +1068,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
           (void) CopyMagickString(image->filename,image->magick_filename,
             MaxTextExtent);
           status=InvokeDelegate(write_info,image,image->magick,
-            write_info->magick,&image->exception);
+            write_info->magick,exception);
           write_info=DestroyImageInfo(write_info);
           (void) CopyMagickString(image->filename,filename,MaxTextExtent);
           return(status);
@@ -1081,7 +1083,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
         filename[MaxTextExtent];
 
       (void) CopyMagickString(filename,image->filename,MaxTextExtent);
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       (void) CopyMagickString(image->filename,filename,MaxTextExtent);
       if (status != MagickFalse)
         {
@@ -1115,7 +1117,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   else
     {
       delegate_info=GetDelegateInfo((char *) NULL,write_info->magick,
-        &image->exception);
+        exception);
       if (delegate_info != (DelegateInfo *) NULL)
         {
           /*
@@ -1125,7 +1127,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
           if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
             LockSemaphoreInfo(delegate_info->semaphore);
           status=InvokeDelegate(write_info,image,(char *) NULL,
-            write_info->magick,&image->exception);
+            write_info->magick,exception);
           if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
             UnlockSemaphoreInfo(delegate_info->semaphore);
           (void) CopyMagickString(image->filename,filename,MaxTextExtent);
@@ -1140,7 +1142,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             {
               (void) CopyMagickString(write_info->magick,image->magick,
                 MaxTextExtent);
-              magick_info=GetMagickInfo(write_info->magick,&image->exception);
+              magick_info=GetMagickInfo(write_info->magick,exception);
             }
           if ((magick_info == (const MagickInfo *) NULL) ||
               (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
@@ -1150,22 +1152,22 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
 
               GetPathComponent(image->filename,ExtensionPath,extension);
               if (*extension != '\0')
-                magick_info=GetMagickInfo(extension,&image->exception);
+                magick_info=GetMagickInfo(extension,exception);
               else
-                magick_info=GetMagickInfo(image->magick,&image->exception);
+                magick_info=GetMagickInfo(image->magick,exception);
               (void) CopyMagickString(image->filename,filename,MaxTextExtent);
             }
           if ((magick_info == (const MagickInfo *) NULL) ||
               (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
             {
-              magick_info=GetMagickInfo(image->magick,&image->exception);
+              magick_info=GetMagickInfo(image->magick,exception);
               if ((magick_info == (const MagickInfo *) NULL) ||
                   (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
-                (void) ThrowMagickException(&image->exception,GetMagickModule(),
+                (void) ThrowMagickException(exception,GetMagickModule(),
                   MissingDelegateError,"NoEncodeDelegateForThisImageFormat",
                   "`%s'",write_info->magick);
               else
-                (void) ThrowMagickException(&image->exception,GetMagickModule(),
+                (void) ThrowMagickException(exception,GetMagickModule(),
                   MissingDelegateWarning,"NoEncodeDelegateForThisImageFormat",
                   "`%s'",write_info->magick);
             }
@@ -1185,18 +1187,18 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
         }
     }
   if (GetBlobError(image) != MagickFalse)
-    ThrowFileException(&image->exception,FileOpenError,
+    ThrowFileException(exception,FileOpenError,
       "AnErrorHasOccurredWritingToFile",image->filename);
   if (temporary != MagickFalse)
     {
       /*
         Copy temporary image file to permanent.
       */
-      status=OpenBlob(write_info,image,ReadBinaryBlobMode,&image->exception);
+      status=OpenBlob(write_info,image,ReadBinaryBlobMode,exception);
       if (status != MagickFalse)
         {
           (void) RelinquishUniqueFileResource(write_info->filename);
-          status=ImageToFile(image,write_info->filename,&image->exception);
+          status=ImageToFile(image,write_info->filename,exception);
         }
       (void) CloseBlob(image);
       (void) RelinquishUniqueFileResource(image->filename);
