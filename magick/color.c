@@ -1677,9 +1677,9 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
       /*
         Transparencies are involved - set alpha distance
       */
-      pixel=(MagickRealType) ((image->matte != MagickFalse ? GetPixelOpacity(p) :
-        OpaqueOpacity)-(image->matte != MagickFalse ? q->opacity :
-        OpaqueOpacity));
+      pixel=(MagickRealType) ((image->matte != MagickFalse ?
+        GetPixelOpacity(p) : OpaqueOpacity)-(image->matte != MagickFalse ?
+        q->opacity : OpaqueOpacity));
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);
@@ -1703,13 +1703,14 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
       (image->colorspace == HSLColorspace) ||
       (image->colorspace == HWBColorspace))
     {
-      /* This calculates a arc distance for hue.  Really it should be a vector
-         angle of 'S'/'W' length with 'L'/'B' forming appropriate cones.  In
-         other words this is a hack - Anthony
+      /*
+        This calculates a arc distance for hue.  Really it should be a vector
+        angle of 'S'/'W' length with 'L'/'B' forming appropriate cones.  In
+        other words this is a hack - Anthony
       */
-      if (fabs((double) pixel) > (QuantumRange/2))
+      if (fabs((double) pixel) > (QuantumRange/2.0))
         pixel-=QuantumRange;
-      pixel*=2;
+      pixel*=2.0;
     }
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
@@ -1965,14 +1966,14 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   if ((p->colorspace == HCLColorspace) || (p->colorspace == HSBColorspace) ||
       (p->colorspace == HSLColorspace) || (p->colorspace == HWBColorspace))
     {
-      /* This calculates a arc distance for hue
-         Really if should be a vector angle of 'S'/'W' length
-         with 'L'/'B' forming appropriate cones.
-         In other words this is a hack - Anthony
+      /*
+        This calculates a arc distance for hue.  Really if should be a vector
+        angle of 'S'/'W' length with 'L'/'B' forming appropriate cones.  In
+        other words this is a hack - Anthony
       */
-      if (fabs((double) pixel) > (QuantumRange/2))
+      if (fabs((double) pixel) > (QuantumRange/2.))
         pixel-=QuantumRange;
-      pixel*=2;
+      pixel*=2.0;
     }
   distance+=pixel*pixel*scale;
   if (distance > fuzz)
