@@ -3782,7 +3782,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           (LocaleCompare("-version",option+1) == 0))
         {
           ListMagickVersion(stdout);
-          return(MagickFalse);
+          return(MagickTrue);
         }
     }
   if (argc < 2)
