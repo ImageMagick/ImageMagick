@@ -135,6 +135,8 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   quantum=MagickMin((size_t) GetBlobSize(image),MagickMaxBufferExtent);
+  if (quantum == 0)
+    quantum=MagickMaxBufferExtent;
   inline_image=(unsigned char *) AcquireQuantumMemory(quantum,
     sizeof(*inline_image));
   count=0;
