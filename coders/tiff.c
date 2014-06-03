@@ -709,10 +709,15 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
       {
         if (exif_info[i].variable_length != 0)
           {
+            int
+              tiff_status;
+
             uint16
               *shorty;
 
-            if (TIFFGetField(tiff,exif_info[i].tag,&sans,&shorty,&sans,&sans) == 1)
+            tiff_status=TIFFGetField(tiff,exif_info[i].tag,&sans,&shorty,&sans,
+              &sans);
+            if (tiff_status == 1)
               (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty[0]);
           }
         else
