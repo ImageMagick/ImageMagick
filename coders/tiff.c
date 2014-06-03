@@ -1009,20 +1009,23 @@ RestoreMSCWarning
     (void) SetImageProperty(image,"tiff:endian",TIFFIsBigEndian(tiff) == 0 ?
       "lsb" : "msb");
 #endif
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_IMAGEWIDTH,&width);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_IMAGELENGTH,&height);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&interlace);
-    bits_per_sample=8;
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format);
+    if ((TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width) != 1) ||
+        (TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&interlace) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric) != 1))
+      {
+        TIFFClose(tiff);
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     if (sample_format == SAMPLEFORMAT_IEEEFP)
       (void) SetImageProperty(image,"quantum:format","floating-point");
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
     switch (photometric)
     {
       case PHOTOMETRIC_MINISBLACK:
@@ -1048,6 +1051,12 @@ RestoreMSCWarning
       case PHOTOMETRIC_CIELAB:
       {
         (void) SetImageProperty(image,"tiff:photometric","CIELAB");
+        break;
+      }
+      case PHOTOMETRIC_LOGL:
+      case PHOTOMETRIC_LOGLUV:
+      {
+        (void) TIFFSetField(tiff,TIFFTAG_SGILOGDATAFMT,SGILOGDATAFMT_FLOAT);
         break;
       }
       case PHOTOMETRIC_SEPARATED:
@@ -1103,8 +1112,6 @@ RestoreMSCWarning
     if ((option == (const char *) NULL) ||
         (IsMagickTrue(option) != MagickFalse))
       TIFFGetEXIFProperties(tiff,image);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
-      &samples_per_pixel);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
     x_resolution=(float) image->x_resolution;
     y_resolution=(float) image->y_resolution;
@@ -1118,6 +1125,7 @@ RestoreMSCWarning
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position);
     image->page.x=(ssize_t) ceil(x_position*x_resolution-0.5);
     image->page.y=(ssize_t) ceil(y_position*y_resolution-0.5);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation);
     image->orientation=(OrientationType) orientation;
     chromaticity=(float *) NULL;
     (void) TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity);
