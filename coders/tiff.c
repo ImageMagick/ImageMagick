@@ -575,18 +575,16 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image)
   unsigned char
     *profile;
 
-#if defined(TIFFTAG_ICCPROFILE)
   length=0;
+#if defined(TIFFTAG_ICCPROFILE)
   if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&profile) == 1)
     (void) ReadProfile(image,"icc",profile,(ssize_t) length);
 #endif
 #if defined(TIFFTAG_PHOTOSHOP)
-  length=0;
   if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&profile) == 1)
     (void) ReadProfile(image,"8bim",profile,(ssize_t) length);
 #endif
 #if defined(TIFFTAG_RICHTIFFIPTC)
-  length=0;
   if (TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&profile) == 1)
     {
       if (TIFFIsByteSwapped(tiff) != 0)
@@ -595,11 +593,9 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image)
     }
 #endif
 #if defined(TIFFTAG_XMLPACKET)
-  length=0;
   if (TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&profile) == 1)
     (void) ReadProfile(image,"xmp",profile,(ssize_t) length);
 #endif
-  length=0;
   if (TIFFGetField(tiff,37724,&length,&profile) == 1)
     (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length);
   if (TIFFGetField(tiff,34118,&length,&profile) == 1)
@@ -891,6 +887,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   Image
     *image;
 
+  int
+    tiff_status;
+
   MagickBooleanType
     associated_alpha,
     debug,
@@ -1112,12 +1111,18 @@ RestoreMSCWarning
     if ((option == (const char *) NULL) ||
         (IsMagickTrue(option) != MagickFalse))
       TIFFGetEXIFProperties(tiff,image);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
     if ((TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&x_resolution) == 1) &&
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution) == 1))
       {
         image->x_resolution=x_resolution;
         image->y_resolution=y_resolution;
+      }
+    if (TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units) == 1)
+      {
+        if (units == RESUNIT_INCH)
+          image->units=PixelsPerInchResolution;
+        if (units == RESUNIT_CENTIMETER)
+          image->units=PixelsPerCentimeterResolution;
       }
     if ((TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position) == 1) &&
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position) == 1))
@@ -1168,11 +1173,16 @@ RestoreMSCWarning
            char
              sampling_factor[MaxTextExtent];
 
+           int
+             tiff_status;
+
            uint16
              horizontal,
              vertical;
 
-           if (TIFFGetFieldDefaulted(tiff,TIFFTAG_YCBCRSUBSAMPLING,&horizontal,&vertical) == 1)
+           tiff_status=TIFFGetFieldDefaulted(tiff,TIFFTAG_YCBCRSUBSAMPLING,
+             &horizontal,&vertical);
+           if (tiff_status == 1)
              {
                (void) FormatLocaleString(sampling_factor,MaxTextExtent,"%dx%d",
                  horizontal,vertical);
@@ -1232,7 +1242,9 @@ RestoreMSCWarning
         break;
     }
     associated_alpha=MagickFalse;
-    if (TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,&sample_info) == 1)
+    tiff_status=TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
+      &sample_info);
+    if (tiff_status == 1)
       {
         if (extra_samples == 0)
           {
@@ -1267,10 +1279,6 @@ RestoreMSCWarning
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
       }
-    if (units == RESUNIT_INCH)
-      image->units=PixelsPerInchResolution;
-    if (units == RESUNIT_CENTIMETER)
-      image->units=PixelsPerCentimeterResolution;
     if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages) == 1)
       image->scene=value;
     if (image_info->ping != MagickFalse)
@@ -1324,6 +1332,9 @@ RestoreMSCWarning
         if ((image->storage_class == PseudoClass) &&
             (photometric == PHOTOMETRIC_PALETTE))
           {
+            int
+              tiff_status;
+
             size_t
               range;
 
@@ -1335,7 +1346,9 @@ RestoreMSCWarning
             /*
               Initialize colormap.
             */
-            if (TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,&green_colormap,&blue_colormap) == 1)
+            tiff_status=TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,
+              &green_colormap,&blue_colormap);
+            if (tiff_status == 1)
               {
                 if ((red_colormap != (uint16 *) NULL) &&
                     (green_colormap != (uint16 *) NULL) &&
