@@ -723,6 +723,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       " -sPCLPassword=%s",option);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(filename);
+  (void) RelinquishUniqueFileResource(filename);
   (void) ConcatenateMagickString(filename,"%d",MaxTextExtent);
   (void) FormatLocaleString(command,MaxTextExtent,
     GetDelegateCommands(delegate_info),
