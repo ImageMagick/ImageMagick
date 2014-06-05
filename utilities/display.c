@@ -116,6 +116,6 @@ int wmain(int argc,wchar_t *argv[])
   for (i=0; i < argc; i++)
     utf8[i]=DestroyString(utf8[i]);
   utf8=(char **) RelinquishMagickMemory(utf8);
-  return(status != MagickFalse ? 0 : 1);
+  return(status);
 }
 #endif
