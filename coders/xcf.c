@@ -512,8 +512,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               }
               case 3:
               {
-                SetPixelAlpha(q,data == 0 ? QuantumRange-TransparentOpacity :
-                  alpha);
+                SetPixelAlpha(q,ScaleCharToQuantum(data));
                 break;
               }
             }
@@ -572,8 +571,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               }
               case 3:
               {
-                SetPixelAlpha(q,data == 0 ? QuantumRange-TransparentOpacity :
-                  alpha);
+                SetPixelAlpha(q,ScaleCharToQuantum(data));
                 break;
               }
             }
