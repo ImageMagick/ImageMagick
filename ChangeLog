@@ -1,3 +1,7 @@
+2014-06-07  6.8.9-3 Dirk Lemstra <dirk@snakeware...>
+  * Fixed creation of SVG from 8bim clip path. (reference 
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=25594).
+
 2014-06-02  6.8.9-3 Cristy  <quetzlzacatenango@image...>
   * The -version option returns 0 status (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25667).
