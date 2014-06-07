@@ -491,7 +491,10 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 }
                 case 1:
                 {
-                  SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
+                  if (inDocInfo->image_type == GIMP_GRAY)
+                    SetPixelGray(tile_image,ScaleCharToQuantum(data),q);
+                  else
+                    SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
                   break;
                 }
                 case 2:
@@ -550,7 +553,10 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 }
                 case 1:
                 {
-                  SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
+                  if (inDocInfo->image_type == GIMP_GRAY)
+                    SetPixelGray(tile_image,ScaleCharToQuantum(data),q);
+                  else
+                    SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
                   break;
                 }
                 case 2:
