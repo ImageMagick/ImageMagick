@@ -471,129 +471,119 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               length=(size_t) ((*xcfdata << 8) + xcfdata[1]);
               xcfdata+=2;
             }
-            size-=length;
-            if (size < 0)
-              goto bogus_rle;
-            if (&xcfdata[length-1] > xcfdatalimit)
-              goto bogus_rle;
-            while (length-- > 0)
-            {
-              data=(*xcfdata++);
-              switch (i)
-              {
-                case 0:
-                {
-                  SetPixelRed(q,ScaleCharToQuantum(data));
-                  if (inDocInfo->image_type != GIMP_GRAY)
-                    {
-                      SetPixelGreen(q,ScaleCharToQuantum(data));
-                      SetPixelBlue(q,ScaleCharToQuantum(data));
-                      SetPixelAlpha(q,data == 255U ? alpha :
-                        ScaleCharToQuantum(data));
-                    }
-                  else
-                    {
-                      SetPixelGreen(q,GetPixelRed(q));
-                      SetPixelBlue(q,GetPixelRed(q));
-                      SetPixelAlpha(q,data == 255U ? alpha :
-                        ScaleCharToQuantum(data));
-                    }
-                  break;
-                }
-                case 1:
-                {
-                  SetPixelGreen(q,ScaleCharToQuantum(data));
-                  if (inDocInfo->image_type == GIMP_GRAY)
-                    {
-                      SetPixelRed(q,GetPixelGreen(q));
-                      SetPixelBlue(q,GetPixelGreen(q));
-                    }
-                  break;
-                }
-                case 2:
-                {
-                  SetPixelBlue(q,ScaleCharToQuantum(data));
-                  break;
-                }
-                case 3:
-                {
-                  SetPixelAlpha(q,data == 255U ? alpha :
-                    ScaleCharToQuantum(data));
-                  break;
-                }
-              }
-              q++;
-            }
-          }
-        else
+          size-=length;
+          if (size < 0)
+            goto bogus_rle;
+          if (&xcfdata[length-1] > xcfdatalimit)
+            goto bogus_rle;
+          while (length-- > 0)
           {
-            length+=1;
-            if (length == 128)
-              {
-                if (xcfdata >= xcfdatalimit)
-                  goto bogus_rle;
-                length=(size_t) ((*xcfdata << 8) + xcfdata[1]);
-                xcfdata+=2;
-              }
-            size-=length;
-            if (size < 0)
-              goto bogus_rle;
-            if (xcfdata > xcfdatalimit)
-              goto bogus_rle;
-            pixel=(*xcfdata++);
-            for (j=0; j < (ssize_t) length; j++)
+            data=(*xcfdata++);
+            switch (i)
             {
-              data=pixel;
-              switch (i)
+              case 0:
               {
-                case 0:
-                {
-                  SetPixelRed(q,ScaleCharToQuantum(data));
-                  if (inDocInfo->image_type != GIMP_GRAY)
-                    {
-                      SetPixelGreen(q,ScaleCharToQuantum(data));
-                      SetPixelBlue(q,ScaleCharToQuantum(data));
-                      SetPixelAlpha(q,data == 255U ? alpha :
-                        ScaleCharToQuantum(data));
-                    }
-                  else
-                    {
-                      SetPixelGreen(q,GetPixelRed(q));
-                      SetPixelBlue(q,GetPixelRed(q));
-                      SetPixelAlpha(q,data == 255U ? alpha :
-                        ScaleCharToQuantum(data));
-                    }
-                  break;
-                }
-                case 1:
-                {
-                  SetPixelGreen(q,ScaleCharToQuantum(data));
-                  if (inDocInfo->image_type == GIMP_GRAY)
-                    {
-                      SetPixelRed(q,GetPixelGreen(q));
-                      SetPixelBlue(q,GetPixelGreen(q));
-                    }
-                  break;
-                }
-                case 2:
-                {
-                  SetPixelBlue(q,ScaleCharToQuantum(data));
-                  break;
-                }
-                case 3:
-                {
-                  SetPixelAlpha(q,data == 255U ? alpha :
-                    ScaleCharToQuantum(data));
-                  break;
-                }
+                SetPixelRed(q,ScaleCharToQuantum(data));
+                if (inDocInfo->image_type == GIMP_GRAY)
+                  {
+                    SetPixelGreen(q,ScaleCharToQuantum(data));
+                    SetPixelBlue(q,ScaleCharToQuantum(data));
+                  }
+                else
+                  {
+                    SetPixelGreen(q,GetPixelRed(q));
+                    SetPixelBlue(q,GetPixelRed(q));
+                  }
+                SetPixelAlpha(q,alpha);
+                break;
               }
-              q++;
+              case 1:
+              {
+                if (inDocInfo->image_type == GIMP_GRAY)
+                  SetPixelAlpha(q,ScaleCharToQuantum(data));
+                else
+                  SetPixelGreen(q,ScaleCharToQuantum(data));
+                break;
+              }
+              case 2:
+              {
+                SetPixelBlue(q,ScaleCharToQuantum(data));
+                break;
+              }
+              case 3:
+              {
+                SetPixelAlpha(q,data == 0 ? QuantumRange-TransparentOpacity :
+                  alpha);
+                break;
+              }
             }
+            q++;
           }
-      }
-      if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
-        break;
+        }
+      else
+        {
+          length+=1;
+          if (length == 128)
+            {
+              if (xcfdata >= xcfdatalimit)
+                goto bogus_rle;
+              length=(size_t) ((*xcfdata << 8) + xcfdata[1]);
+              xcfdata+=2;
+            }
+          size-=length;
+          if (size < 0)
+            goto bogus_rle;
+          if (xcfdata > xcfdatalimit)
+            goto bogus_rle;
+          pixel=(*xcfdata++);
+          for (j=0; j < (ssize_t) length; j++)
+          {
+            data=pixel;
+            switch (i)
+            {
+              case 0:
+              {
+                SetPixelRed(q,ScaleCharToQuantum(data));
+                if (inDocInfo->image_type == GIMP_GRAY)
+                  {
+                    SetPixelGreen(q,ScaleCharToQuantum(data));
+                    SetPixelBlue(q,ScaleCharToQuantum(data));
+                  }
+                else
+                  {
+                    SetPixelGreen(q,GetPixelRed(q));
+                    SetPixelBlue(q,GetPixelRed(q));
+                  }
+                SetPixelAlpha(q,alpha);
+                break;
+              }
+              case 1:
+              {
+                if (inDocInfo->image_type == GIMP_GRAY)
+                  SetPixelAlpha(q,ScaleCharToQuantum(data));
+                else
+                  SetPixelGreen(q,ScaleCharToQuantum(data));
+                break;
+              }
+              case 2:
+              {
+                SetPixelBlue(q,ScaleCharToQuantum(data));
+                break;
+              }
+              case 3:
+              {
+                SetPixelAlpha(q,data == 0 ? QuantumRange-TransparentOpacity :
+                  alpha);
+                break;
+              }
+            }
+            q++;
+          }
+        }
     }
+    if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
+      break;
+  }
   xcfodata=(unsigned char *) RelinquishMagickMemory(xcfodata);
   return(MagickTrue);
 
