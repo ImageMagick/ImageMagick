@@ -2039,12 +2039,12 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
             else
               if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
                 (void) FormatLocaleString(message,MaxTextExtent,
-                  "V %g %g %g %g\n",point[0].x,point[0].y,
+                  "Q %g %g %g %g\n",point[0].x,point[0].y,
                   point[1].x,point[1].y);
               else
                 if ((point[0].x == point[1].x) && (point[0].y == point[1].y))
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "Y %g %g %g %g\n",last[2].x,last[2].y,
+                    "S %g %g %g %g\n",last[2].x,last[2].y,
                     point[1].x,point[1].y);
                 else
                   (void) FormatLocaleString(message,MaxTextExtent,
@@ -2072,12 +2072,12 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
             else
               if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
                 (void) FormatLocaleString(message,MaxTextExtent,
-                  "V %g %g %g %g Z\n",first[0].x,first[0].y,
+                  "Q %g %g %g %g Z\n",first[0].x,first[0].y,
                   first[1].x,first[1].y);
               else
                 if ((first[0].x == first[1].x) && (first[0].y == first[1].y))
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "Y %g %g %g %g Z\n",last[2].x,last[2].y,
+                    "S %g %g %g %g Z\n",last[2].x,last[2].y,
                     first[1].x,first[1].y);
                 else
                   (void) FormatLocaleString(message,MaxTextExtent,
