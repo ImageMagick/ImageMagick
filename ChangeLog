@@ -1,3 +1,6 @@
+2014-06-08  6.8.9-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.9-3, SVN revision 15975.
+
 2014-06-07  6.8.9-3 Glenn Randers-Pehrson <glennrp@image...>
   * Quiet warning about unused variable "skip_to_iend" in coders/png.c.
 
