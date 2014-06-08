@@ -1,5 +1,5 @@
 2014-06-07  6.8.9-3 Glenn Randers-Pehrson <glennrp@image...>
-  * Quiet warning about unused variable "skip_to_iend".
+  * Quiet warning about unused variable "skip_to_iend" in coders/png.c.
 
 2014-06-07  6.8.9-3 Dirk Lemstra <dirk@snakeware...>
   * Fixed creation of SVG from 8bim clip path. (reference 
