@@ -1,3 +1,6 @@
+2014-06-07  6.8.9-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Quiet warning about unused variable "skip_to_iend".
+
 2014-06-07  6.8.9-3 Dirk Lemstra <dirk@snakeware...>
   * Fixed creation of SVG from 8bim clip path. (reference 
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=25594).
