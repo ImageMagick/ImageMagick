@@ -4247,8 +4247,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   unsigned int
     read_JSEP,
-    reading_idat,
-    skip_to_iend;
+    reading_idat;
 
   size_t
     length;
@@ -4292,7 +4291,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   read_JSEP=MagickFalse;
   reading_idat=MagickFalse;
-  skip_to_iend=MagickFalse;
   for (;;)
   {
     char
@@ -4343,16 +4341,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       }
 
     (void) ReadBlobMSBLong(image);  /* read crc word */
-
-#if 0
-    if (skip_to_iend)
-      {
-        if (length)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
-
-        continue;
-      }
-#endif
 
     if (memcmp(type,mng_JHDR,4) == 0)
       {
