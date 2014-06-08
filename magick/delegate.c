@@ -900,7 +900,7 @@ static char *SanitizeDelegateCommand(const char *command)
   static char
     whitelist[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
-      ".@&;<>|/\\\'\":%";
+      ".@&;<>|/\\\'\":%=";
 
   sanitize_command=AcquireString(command);
   p=sanitize_command;
