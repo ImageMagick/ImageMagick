@@ -7,6 +7,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25667).
   * The inline coder can now read from standard input (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25641).
+  * Add '=' character to the santize whitelist.
 
 2014-05-30  6.8.9-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-2, SVN revision 15932.
