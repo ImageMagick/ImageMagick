@@ -176,6 +176,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
   image->gravity=clone_image->gravity;
   image->compose=clone_image->compose;
   image->orientation=clone_image->orientation;
+  image->scene=clone_image->scene;
   image->dispose=clone_image->dispose;
   image->delay=clone_image->delay;
   image->ticks_per_second=clone_image->ticks_per_second;
