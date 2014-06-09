@@ -113,3 +113,101 @@ Magick::void* Magick::Pixels::metacontent(void)
   return pixel_metacontent;
 }
 */
+
+Magick::PixelData::PixelData(Magick::Image &image_,std::string map_,
+  const StorageType type_)
+{
+  init(image_,0,0,image_.columns(),image_.rows(),map_,type_);
+}
+
+Magick::PixelData::PixelData(Magick::Image &image_,const ::ssize_t x_,
+  const ::ssize_t y_,const size_t width_,const size_t height_,std::string map_,
+  const StorageType type_)
+{
+  init(image_,x_,y_,width_,height_,map_,type_);
+}
+
+Magick::PixelData::~PixelData(void)
+{
+  relinquish();
+}
+
+const void *Magick::PixelData::data(void) const
+{
+  return(_data);
+}
+
+const ::ssize_t Magick::PixelData::length(void) const
+{
+  return(_length);
+}
+
+const ::ssize_t Magick::PixelData::size(void) const
+{
+  return(_size);
+}
+
+
+void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
+  const ::ssize_t y_,const size_t width_,const size_t height_,
+  std::string map_,const StorageType type_)
+{
+  size_t
+    size;
+
+  _data=(void *) NULL;
+  _length=0;
+  _size=0;
+  if ((x_ < 0) || (width_ < 0) || (y_ < 0) || (height_ < 0) ||
+      (x_ > image_.columns()) || (width_ + x_ > image_.columns()) ||
+      (y_ > image_.rows()) || (height_ + y_ > image_.rows()) ||
+      (map_.length() == 0))
+    return;
+
+  switch(type_)
+  {
+    case CharPixel:
+      size=sizeof(unsigned char);
+      break;
+    case DoublePixel:
+      size=sizeof(double);
+      break;
+    case FloatPixel:
+      size=sizeof(float);
+      break;
+    case LongPixel:
+      size=sizeof(unsigned int);
+      break;
+    case LongLongPixel:
+      size=sizeof(MagickSizeType);
+      break;
+    case QuantumPixel:
+      size=sizeof(Quantum);
+      break;
+    case ShortPixel:
+      size=sizeof(unsigned short);
+      break;
+    default:
+      throwExceptionExplicit(OptionError,"Invalid type");
+      return;
+  }
+
+  _length=width_*height_*map_.length();
+  _size=_length*size;
+  _data=AcquireMagickMemory(_size);
+
+  GetPPException;
+  MagickCore::ExportImagePixels(image_.constImage(),x_,y_,width_,height_,
+    map_.c_str(),type_,_data,&exceptionInfo);
+  if (exceptionInfo.severity != UndefinedException)
+    relinquish();
+  ThrowPPException;
+}
+
+void Magick::PixelData::relinquish(void) throw()
+{
+  if (_data != (void *)NULL)
+    _data=RelinquishMagickMemory(_data);
+  _length=0;
+  _size=0;
+}
