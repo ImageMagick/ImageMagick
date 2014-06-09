@@ -2818,6 +2818,62 @@ void Magick::Image::erase(void)
   ThrowPPException;
 }
 
+void *Magick::Image::exportPixels(const ::ssize_t x_,const ::ssize_t y_,
+  const size_t width_,const size_t height_,std::string map_,
+  const StorageType type_)
+{
+  size_t
+    size;
+
+  void
+    *result;
+
+  result=(void *) NULL;
+  if ((x_ < 0) || (width_ < 0) || (y_ < 0) || (height_ < 0) ||
+      (x_ > image()->columns) || (width_ + x_ > image()->columns) ||
+      (y_ > image()->rows) || (height_ + y_ > image()->rows) ||
+      (map_.length() == 0))
+    return(result);
+
+  switch(type_)
+  {
+    case CharPixel:
+      size=sizeof(unsigned char);
+      break;
+    case DoublePixel:
+      size=sizeof(double);
+      break;
+    case FloatPixel:
+      size=sizeof(float);
+      break;
+    case LongPixel:
+      size=sizeof(unsigned int);
+      break;
+    case LongLongPixel:
+      size=sizeof(MagickSizeType);
+      break;
+    case QuantumPixel:
+      size=sizeof(Quantum);
+      break;
+    case ShortPixel:
+      size=sizeof(unsigned short);
+      break;
+    default:
+      throwExceptionExplicit(OptionError,"Invalid type");
+      return(result);
+  }
+
+  result=AcquireMagickMemory(width_*height_*map_.length()*size);
+
+  GetPPException;
+  MagickCore::ExportImagePixels(image(),x_,y_,width_,height_,map_.c_str(),
+    type_,result,&exceptionInfo);
+  if (exceptionInfo.severity != UndefinedException)
+    result=RelinquishMagickMemory(result);
+  ThrowPPException;
+  return(result);
+}
+
 void Magick::Image::extent(const Geometry &geometry_ )
 {
   MagickCore::Image
