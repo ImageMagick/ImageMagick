@@ -197,7 +197,7 @@ void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
   _data=AcquireMagickMemory(_size);
 
   GetPPException;
-  MagickCore::ExportImagePixels(image_.constImage(),x_,y_,width_,height_,
+  MagickCore::ExportImagePixels(image_.image(),x_,y_,width_,height_,
     map_.c_str(),type_,_data,&exceptionInfo);
   if (exceptionInfo.severity != UndefinedException)
     relinquish();
