@@ -1137,8 +1137,8 @@ RestoreMSCWarning
     if ((TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position) == 1) &&
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position) == 1))
       {
-        image->page.x=(ssize_t) ceil(x_position*x_resolution-0.5);
-        image->page.y=(ssize_t) ceil(y_position*y_resolution-0.5);
+        image->page.x=(ssize_t) ceil(x_position*image->resolution.x-0.5);
+        image->page.y=(ssize_t) ceil(y_position*image->resolution.y-0.5);
       }
     if (TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation) == 1)
       image->orientation=(OrientationType) orientation;
