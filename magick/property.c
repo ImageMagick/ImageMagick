@@ -173,7 +173,6 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
   image->endian=clone_image->endian;
   image->gravity=clone_image->gravity;
   image->compose=clone_image->compose;
-  image->scene=clone_image->scene;
   image->orientation=clone_image->orientation;
   image->dispose=clone_image->dispose;
   image->delay=clone_image->delay;
@@ -190,9 +189,8 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
     {
       if (image->properties != (void *) NULL)
         DestroyImageProperties(image);
-      image->properties=CloneSplayTree((SplayTreeInfo *)
-        clone_image->properties,(void *(*)(void *)) ConstantString,
-        (void *(*)(void *)) ConstantString);
+      image->properties=CloneSplayTree((SplayTreeInfo *) clone_image->properties,
+        (void *(*)(void *)) ConstantString,(void *(*)(void *)) ConstantString);
     }
   return(MagickTrue);
 }
