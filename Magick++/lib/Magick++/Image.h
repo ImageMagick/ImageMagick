@@ -881,11 +881,6 @@ namespace Magick
     // Erase image to current "background color"
     void erase(void);
 
-    // Returns a copy of the pixels at the specified location
-    void *exportPixels(const ::ssize_t x_,const ::ssize_t y_,
-      const size_t width_,const size_t height_,std::string map_,
-      const StorageType type_);
-
     // Extend the image as defined by the geometry.
     void extent(const Geometry &geometry_);
     void extent(const Geometry &geometry_,const Color &backgroundColor);
