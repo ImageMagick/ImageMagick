@@ -1240,6 +1240,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image attributes.
     */
+    meta_image->scene=image->scene;
     CloneImageProperties(image,meta_image);
     DestroyImageProperties(meta_image);
     CloneImageProfiles(image,meta_image);
