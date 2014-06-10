@@ -3404,15 +3404,6 @@ static MagickBooleanType IsPoint(const char *point)
 
 static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 {
-  ssize_t
-    y;
-
-  register const Quantum
-    *p;
-
-  register ssize_t
-    x;
-
 #if defined(MAGICKCORE_AUTOTRACE_DELEGATE)
   {
     at_bitmap_type
@@ -3430,11 +3421,18 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     ImageType
       type;
 
+    register const PixelPacket
+      *p;
+
     register ssize_t
-      i;
+      i,
+      x;
 
     size_t
       number_planes;
+
+    ssize_t
+      y;
 
     /*
       Trace image and write as SVG.
@@ -3450,7 +3448,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-      if (p == (const Quantum *) NULL)
+      if (p == (const PixelPacket *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
@@ -3479,13 +3477,30 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 #else
   {
     char
-      message[MaxTextExtent],
-      tuple[MaxTextExtent];
+      *base64,
+      message[MaxTextExtent];
 
-    PixelInfo
-      pixel;
+    Image
+      *clone_image;
 
-    (void) WriteBlobString(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
+    ImageInfo
+      *image_info;
+
+    register char
+      *p;
+
+    size_t
+      blob_length,
+      encode_length;
+
+    ssize_t
+      i;
+
+    unsigned char
+      *blob;
+
+    (void) WriteBlobString(image,
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
     (void) WriteBlobString(image,
       "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n");
     (void) WriteBlobString(image,
@@ -3494,23 +3509,33 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
       "<svg width=\"%.20g\" height=\"%.20g\">\n",(double) image->columns,
       (double) image->rows);
     (void) WriteBlobString(image,message);
-    GetPixelInfo(image,&pixel);
-    for (y=0; y < (ssize_t) image->rows; y++)
+    clone_image=CloneImage(image,0,0,MagickTrue,exception);
+    if (clone_image == (Image *) NULL)
+      return(MagickFalse);
+    image_info=AcquireImageInfo();
+    (void) CopyMagickString(image_info->magick,"PNG",MaxTextExtent);
+    blob_length=2048;
+    blob=(unsigned char *) ImageToBlob(image_info,clone_image,&blob_length,
+      exception);
+    encode_length=0;
+    base64=Base64Encode(blob,blob_length,&encode_length);
+    blob=(unsigned char *) RelinquishMagickMemory(blob);
+    (void) FormatLocaleString(message,MaxTextExtent,
+      "  <image id=\"image%.20g\" width=\"%.20g\" height=\"%.20g\" "
+      "x=\"%.20g\" y=\"%.20g\"\n    xlink:href=\"data:image/png;base64,",
+      (double) image->scene,(double) image->columns,(double) image->rows,
+      (double) image->page.x,(double) image->page.y);
+    (void) WriteBlobString(image,message);
+    p=base64;
+    for (i=(ssize_t) encode_length; i > 0; i-=76)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-      if (p == (const Quantum *) NULL)
-        break;
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        GetPixelInfoPixel(image,p,&pixel);
-        (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);
-        (void) FormatLocaleString(message,MaxTextExtent,
-          "  <circle cx=\"%.20g\" cy=\"%.20g\" r=\"1\" fill=\"%s\"/>\n",
-          (double) x,(double) y,tuple);
-        (void) WriteBlobString(image,message);
-        p+=GetPixelChannels(image);
-      }
+      (void) FormatLocaleString(message,MaxTextExtent,"%.76s",p);
+      (void) WriteBlobString(image,message);
+      p+=76;
+      if (i > 76)
+        (void) WriteBlobString(image,"\n");
     }
+    (void) WriteBlobString(image,"\" />\n");
     (void) WriteBlobString(image,"</svg>\n");
   }
 #endif
