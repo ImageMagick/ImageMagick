@@ -196,6 +196,7 @@ static const CoderMapInfo
     { "RADIAL-GRADIENT", "GRADIENT" },
     { "RAF", "DNG" },
     { "RAS", "SUN" },
+    { "RAW", "DNG" },
     { "RGBA", "RGB" },
     { "RGBO", "RGB" },
     { "RMF", "DNG" },
