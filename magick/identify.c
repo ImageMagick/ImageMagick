@@ -612,6 +612,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           max_locations,channel_statistics);
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
+      exception=DestroyExceptionInfo(exception);
       return(ferror(file) != 0 ? MagickFalse : MagickTrue);
     }
   *format='\0';
@@ -682,6 +683,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         floor(elapsed_time))));
       (void) FormatLocaleFile(file,"\n");
       (void) fflush(file);
+      exception=DestroyExceptionInfo(exception);
       return(ferror(file) != 0 ? MagickFalse : MagickTrue);
     }
   /*
