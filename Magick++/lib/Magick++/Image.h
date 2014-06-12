@@ -1078,7 +1078,8 @@ namespace Magick
     void oilPaint(const double radius_=0.0,const double sigma=1.0);
 
     // Change color of opaque pixel to specified pen color.
-    void opaque(const Color &opaqueColor_,const Color &penColor_);
+    void opaque(const Color &opaqueColor_,const Color &penColor_,
+      const bool invert_=false);
 
     // Perform a ordered dither based on a number of pre-defined dithering
     // threshold maps, but over multiple intensity levels.

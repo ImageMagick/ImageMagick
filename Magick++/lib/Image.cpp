@@ -3584,7 +3584,8 @@ void Magick::Image::oilPaint(const double radius_,const double sigma_)
   ThrowPPException;
 }
 
-void Magick::Image::opaque(const Color &opaqueColor_,const Color &penColor_)
+void Magick::Image::opaque(const Color &opaqueColor_,const Color &penColor_,
+  const bool invert_)
 {
   std::string
     opaqueColor,
@@ -3609,7 +3610,8 @@ void Magick::Image::opaque(const Color &opaqueColor_,const Color &penColor_)
     &exceptionInfo);
   (void) QueryColorCompliance(penColor.c_str(),AllCompliance,&pen,
     &exceptionInfo);
-  OpaquePaintImage(image(),&opaque,&pen,MagickFalse,&exceptionInfo);
+  OpaquePaintImage(image(),&opaque,&pen,invert_ ? MagickTrue : MagickFalse,
+    &exceptionInfo);
   ThrowPPException;
 }
 
