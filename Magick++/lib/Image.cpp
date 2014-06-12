@@ -3499,7 +3499,8 @@ void Magick::Image::opacity(const unsigned int opacity_)
   SetImageOpacity(image(),opacity_);
 }
 
-void Magick::Image::opaque(const Color &opaqueColor_,const Color &penColor_)
+void Magick::Image::opaque(const Color &opaqueColor_,const Color &penColor_,
+  const bool invert_)
 {
   MagickPixelPacket
     opaque,
@@ -3521,7 +3522,7 @@ void Magick::Image::opaque(const Color &opaqueColor_,const Color &penColor_)
   (void) QueryMagickColor(opaqueColor.c_str(),&opaque,&image()->exception);
   (void) QueryMagickColor(penColor.c_str(),&pen,&image()->exception);
   modifyImage();
-  OpaquePaintImage(image(),&opaque,&pen,MagickFalse);
+  OpaquePaintImage(image(),&opaque,&pen,invert_ ? MagickTrue : MagickFalse);
   throwImageException();
 }
 
