@@ -3499,6 +3499,11 @@ void Magick::Image::opacity(const unsigned int opacity_)
   SetImageOpacity(image(),opacity_);
 }
 
+void Magick::Image::opaque(const Color &opaqueColor_,const Color &penColor_)
+{
+  opaque(opaqueColor_,penColor_,false);
+}
+
 void Magick::Image::opaque(const Color &opaqueColor_,const Color &penColor_,
   const bool invert_)
 {
