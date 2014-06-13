@@ -849,8 +849,8 @@ MagickExport LinkedListInfo *GetLocaleOptions(const char *filename,
         xml=AcquireStringInfo(0);
         SetStringInfoLength(xml,strlen(blob)+1);
         SetStringInfoDatum(xml,(const unsigned char *) blob);
+        blob=(char *) RelinquishMagickMemory(blob);
         SetStringInfoPath(xml,filename);
-        blob=(char *)RelinquishMagickMemory(blob);
         (void) AppendValueToLinkedList(messages,xml);
       }
   }
