@@ -1063,7 +1063,7 @@ MagickExport Image *DestroyImage(Image *image)
   if (image->ascii85 != (Ascii85Info*) NULL)
     image->ascii85=(Ascii85Info *) RelinquishMagickMemory(image->ascii85);
   DestroyBlob(image);
-  (void) DestroyExceptionInfo(&image->exception);
+  (void) ClearExceptionInfo(&image->exception,MagickTrue);
   if (image->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&image->semaphore);
   image->signature=(~MagickSignature);

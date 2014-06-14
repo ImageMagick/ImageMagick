@@ -400,18 +400,18 @@ static void DefaultWarningHandler(const ExceptionType magick_unused(severity),
 %    o exception: the exception info.
 %
 */
-MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
+MagickPrivate MagickBooleanType ClearExceptionInfo(ExceptionInfo *exception,
+  MagickBooleanType relinquish)
 {
-  MagickBooleanType
-    relinquish;
-
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (exception->semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&exception->semaphore);
   LockSemaphoreInfo(exception->semaphore);
+  if (relinquish == MagickFalse)
+    relinquish=exception->relinquish;
   exception->severity=UndefinedException;
-  if (exception->relinquish != MagickFalse)
+  if (relinquish != MagickFalse)
     {
       exception->signature=(~MagickSignature);
       if (exception->exceptions != (void *) NULL)
@@ -421,13 +421,16 @@ MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
   else if (exception->exceptions != (void *) NULL)
     ClearLinkedList((LinkedListInfo *) exception->exceptions,
       DestroyExceptionElement);
-  relinquish=exception->relinquish;
   UnlockSemaphoreInfo(exception->semaphore);
   if (relinquish != MagickFalse)
-    {
-      DestroySemaphoreInfo(&exception->semaphore);
-      exception=(ExceptionInfo *) RelinquishMagickMemory(exception);
-    }
+    DestroySemaphoreInfo(&exception->semaphore);
+  return(relinquish);
+}
+
+MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
+{
+  if (ClearExceptionInfo(exception,MagickFalse) != MagickFalse)
+    exception=(ExceptionInfo *) RelinquishMagickMemory(exception);
   return(exception);
 }
 

@@ -89,6 +89,9 @@ extern "C" {
   return(MagickFalse); \
 }
 
+MagickPrivate MagickBooleanType ClearExceptionInfo(ExceptionInfo *,
+  MagickBooleanType);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
