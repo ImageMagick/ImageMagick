@@ -89,6 +89,7 @@ typedef enum
   PoissonNoiseEvaluateOperator,
   PowEvaluateOperator,
   RightShiftEvaluateOperator,
+  RootMeanSquareEvaluateOperator,
   SetEvaluateOperator,
   SineEvaluateOperator,
   SubtractEvaluateOperator,
@@ -119,6 +120,7 @@ typedef enum
   MinimumStatistic,
   ModeStatistic,
   NonpeakStatistic,
+  RootMeanSquareStatistic,
   StandardDeviationStatistic
 } StatisticType;
 
