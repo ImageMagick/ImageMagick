@@ -89,6 +89,7 @@ typedef enum
   PoissonNoiseEvaluateOperator,
   PowEvaluateOperator,
   RightShiftEvaluateOperator,
+  RootMeanSquareEvaluateOperator,
   SetEvaluateOperator,
   SineEvaluateOperator,
   SubtractEvaluateOperator,
