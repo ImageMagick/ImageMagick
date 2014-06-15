@@ -2704,7 +2704,7 @@ static inline void GetRootMeanSquarePixelList(PixelList *pixel_list,
     count;
 
   /*
-    Find the mean value for each of the color.
+    Find the root mean square value for each of the color.
   */
   p=(&pixel_list->skip_list);
   color=65536L;
