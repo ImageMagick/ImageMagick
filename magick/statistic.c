@@ -3141,13 +3141,13 @@ static void GetRootMeanSquarePixelList(PixelList *pixel_list,
       count+=list->nodes[color].count;
     } while (count < (ssize_t) pixel_list->length);
     sum/=pixel_list->length;
-    channels[channel]=(unsigned short) sum;
+    channels[channel]=(unsigned short) sqrt(sum);
   }
-  pixel->red=(MagickRealType) ScaleShortToQuantum(sqrt(channels[0]));
-  pixel->green=(MagickRealType) ScaleShortToQuantum(sqrt(channels[1]));
-  pixel->blue=(MagickRealType) ScaleShortToQuantum(sqrt(channels[2]));
-  pixel->opacity=(MagickRealType) ScaleShortToQuantum(sqrt(channels[3]));
-  pixel->index=(MagickRealType) ScaleShortToQuantum(sqrt(channels[4]));
+  pixel->red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel->green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel->blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel->opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel->index=(MagickRealType) ScaleShortToQuantum(channels[4]);
 }
 
 static void GetStandardDeviationPixelList(PixelList *pixel_list,
