@@ -400,6 +400,7 @@ static void DefaultWarningHandler(const ExceptionType magick_unused(severity),
 %    o exception: the exception info.
 %
 */
+
 MagickPrivate MagickBooleanType ClearExceptionInfo(ExceptionInfo *exception,
   MagickBooleanType relinquish)
 {
