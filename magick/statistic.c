@@ -361,6 +361,11 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
       result=(MagickRealType) ((size_t) pixel >> (size_t) (value+0.5));
       break;
     }
+    case RootMeanSquareEvaluateOperator:
+    {
+      result=(MagickRealType) (pixel*pixel+value);
+      break;
+    }
     case SetEvaluateOperator:
     {
       result=value;
@@ -691,6 +696,16 @@ MagickExport Image *EvaluateImages(const Image *images,
             evaluate_pixel[x].blue/=number_images;
             evaluate_pixel[x].opacity/=number_images;
             evaluate_pixel[x].index/=number_images;
+          }
+        if (op == RootMeanSquareEvaluateOperator)
+          for (x=0; x < (ssize_t) image->columns; x++)
+          {
+            evaluate_pixel[x].red=sqrt(evaluate_pixel[x].red/number_images);
+            evaluate_pixel[x].green=sqrt(evaluate_pixel[x].green/number_images);
+            evaluate_pixel[x].blue=sqrt(evaluate_pixel[x].blue/number_images);
+            evaluate_pixel[x].opacity=sqrt(evaluate_pixel[x].opacity/
+              number_images);
+            evaluate_pixel[x].index=sqrt(evaluate_pixel[x].index/number_images);
           }
         if (op == MultiplyEvaluateOperator)
           for (x=0; x < (ssize_t) image->columns; x++)

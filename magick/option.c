@@ -1031,6 +1031,8 @@ static const OptionInfo
     { "PoissonNoise", PoissonNoiseEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Pow", PowEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "RightShift", RightShiftEvaluateOperator, UndefinedOptionFlag, MagickFalse },
+    { "RMS", RootMeanSquareEvaluateOperator, UndefinedOptionFlag, MagickFalse },
+    { "RootMeanSquare", RootMeanSquareEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Set", SetEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Sin", SineEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Sine", SineEvaluateOperator, UndefinedOptionFlag, MagickFalse },
