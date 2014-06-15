@@ -3126,7 +3126,7 @@ static void GetRootMeanSquarePixelList(PixelList *pixel_list,
     channels[ListChannels];
 
   /*
-    Find the mean value for each of the color.
+    Find the root mean square value for each of the color.
   */
   for (channel=0; channel < 5; channel++)
   {
@@ -3137,7 +3137,7 @@ static void GetRootMeanSquarePixelList(PixelList *pixel_list,
     do
     {
       color=list->nodes[color].next[0];
-      sum*=(MagickRealType) list->nodes[color].count*color;
+      sum+=(MagickRealType) (list->nodes[color].count*color*color);
       count+=list->nodes[color].count;
     } while (count < (ssize_t) pixel_list->length);
     sum/=pixel_list->length;
