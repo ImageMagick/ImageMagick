@@ -361,6 +361,11 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
       result=(MagickRealType) ((size_t) pixel >> (size_t) (value+0.5));
       break;
     }
+    case RootMeanSquareEvaluateOperator:
+    {
+      result=(MagickRealType) (pixel*value);
+      break;
+    }
     case SetEvaluateOperator:
     {
       result=value;
@@ -691,6 +696,16 @@ MagickExport Image *EvaluateImages(const Image *images,
             evaluate_pixel[x].blue/=number_images;
             evaluate_pixel[x].opacity/=number_images;
             evaluate_pixel[x].index/=number_images;
+          }
+        if (op == RootMeanSquareEvaluateOperator)
+          for (x=0; x < (ssize_t) image->columns; x++)
+          {
+            evaluate_pixel[x].red=sqrt(evaluate_pixel[x].red/number_images);
+            evaluate_pixel[x].green=sqrt(evaluate_pixel[x].green/number_images);
+            evaluate_pixel[x].blue=sqrt(evaluate_pixel[x].blue/number_images);
+            evaluate_pixel[x].opacity=sqrt(evaluate_pixel[x].opacity/
+              number_images);
+            evaluate_pixel[x].index=sqrt(evaluate_pixel[x].index/number_images);
           }
         if (op == MultiplyEvaluateOperator)
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -3104,6 +3119,52 @@ static void GetNonpeakPixelList(PixelList *pixel_list,MagickPixelPacket *pixel)
   pixel->index=(MagickRealType) ScaleShortToQuantum(channels[4]);
 }
 
+static void GetRootMeanSquarePixelList(PixelList *pixel_list,
+  MagickPixelPacket *pixel)
+{
+  MagickRealType
+    sum;
+
+  register SkipList
+    *list;
+
+  register ssize_t
+    channel;
+
+  size_t
+    color;
+
+  ssize_t
+    count;
+
+  unsigned short
+    channels[ListChannels];
+
+  /*
+    Find the mean value for each of the color.
+  */
+  for (channel=0; channel < 5; channel++)
+  {
+    list=pixel_list->lists+channel;
+    color=65536L;
+    count=0;
+    sum=0.0;
+    do
+    {
+      color=list->nodes[color].next[0];
+      sum*=(MagickRealType) list->nodes[color].count*color;
+      count+=list->nodes[color].count;
+    } while (count < (ssize_t) pixel_list->length);
+    sum/=pixel_list->length;
+    channels[channel]=(unsigned short) sum;
+  }
+  pixel->red=(MagickRealType) ScaleShortToQuantum(sqrt(channels[0]));
+  pixel->green=(MagickRealType) ScaleShortToQuantum(sqrt(channels[1]));
+  pixel->blue=(MagickRealType) ScaleShortToQuantum(sqrt(channels[2]));
+  pixel->opacity=(MagickRealType) ScaleShortToQuantum(sqrt(channels[3]));
+  pixel->index=(MagickRealType) ScaleShortToQuantum(sqrt(channels[4]));
+}
+
 static void GetStandardDeviationPixelList(PixelList *pixel_list,
   MagickPixelPacket *pixel)
 {
@@ -3425,6 +3486,11 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         case NonpeakStatistic:
         {
           GetNonpeakPixelList(pixel_list[id],&pixel);
+          break;
+        }
+        case RootMeanSquareStatistic:
+        {
+          GetRootMeanSquarePixelList(pixel_list[id],&pixel);
           break;
         }
         case StandardDeviationStatistic:

@@ -1031,6 +1031,8 @@ static const OptionInfo
     { "PoissonNoise", PoissonNoiseEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Pow", PowEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "RightShift", RightShiftEvaluateOperator, UndefinedOptionFlag, MagickFalse },
+    { "RMS", RootMeanSquareEvaluateOperator, UndefinedOptionFlag, MagickFalse },
+    { "RootMeanSquare", RootMeanSquareEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Set", SetEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Sin", SineEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Sine", SineEvaluateOperator, UndefinedOptionFlag, MagickFalse },
@@ -1563,6 +1565,8 @@ static const OptionInfo
     { "Minimum", MinimumStatistic, UndefinedOptionFlag, MagickFalse },
     { "Mode", ModeStatistic, UndefinedOptionFlag, MagickFalse },
     { "Nonpeak", NonpeakStatistic, UndefinedOptionFlag, MagickFalse },
+    { "RMS", RootMeanSquareStatistic, UndefinedOptionFlag, MagickFalse },
+    { "RootMeanSquare", RootMeanSquareStatistic, UndefinedOptionFlag, MagickFalse },
     { "StandardDeviation", StandardDeviationStatistic, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedMethod, UndefinedOptionFlag, MagickFalse }
   },

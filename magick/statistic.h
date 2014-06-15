@@ -98,7 +98,8 @@ typedef enum
   AbsEvaluateOperator,
   ExponentialEvaluateOperator,
   MedianEvaluateOperator,
-  SumEvaluateOperator
+  SumEvaluateOperator,
+  RootMeanSquareEvaluateOperator
 } MagickEvaluateOperator;
 
 typedef enum
@@ -120,7 +121,8 @@ typedef enum
   MinimumStatistic,
   ModeStatistic,
   NonpeakStatistic,
-  StandardDeviationStatistic
+  StandardDeviationStatistic,
+  RootMeanSquareStatistic
 } StatisticType;
 
 extern MagickExport ChannelStatistics
