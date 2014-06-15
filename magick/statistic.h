@@ -98,8 +98,7 @@ typedef enum
   AbsEvaluateOperator,
   ExponentialEvaluateOperator,
   MedianEvaluateOperator,
-  SumEvaluateOperator,
-  RootMeanSquareEvaluateOperator
+  SumEvaluateOperator
 } MagickEvaluateOperator;
 
 typedef enum
