@@ -369,6 +369,11 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
       result=(double) ((size_t) pixel >> (size_t) (value+0.5));
       break;
     }
+    case RootMeanSquareEvaluateOperator:
+    {
+      result=(double) (pixel*pixel+value);
+      break;
+    }
     case SetEvaluateOperator:
     {
       result=value;
@@ -697,6 +702,13 @@ MagickExport Image *EvaluateImages(const Image *images,
                 for (j=0; j < (ssize_t) (number_images-1); j++)
                   evaluate_pixel[x].channel[i]*=QuantumScale;
               }
+              break;
+            }
+            case RootMeanSquareEvaluateOperator:
+            {
+              for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+                evaluate_pixel[x].channel[i]=sqrt(evaluate_pixel[x].channel[i]/
+                  number_images);
               break;
             }
             default:
