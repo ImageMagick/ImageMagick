@@ -158,7 +158,7 @@ MagickExport void ClearMagickException(ExceptionInfo *exception)
     return;
   LockSemaphoreInfo(exception->semaphore);
   ClearLinkedList((LinkedListInfo *) exception->exceptions,
-      DestroyExceptionElement);
+    DestroyExceptionElement);
   exception->severity=UndefinedException;
   exception->reason=(char *) NULL;
   exception->description=(char *) NULL;
