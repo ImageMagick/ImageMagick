@@ -369,6 +369,11 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
       result=(double) ((size_t) pixel >> (size_t) (value+0.5));
       break;
     }
+    case RootMeanSquareEvaluateOperator:
+    {
+      result=(double) (pixel*value);
+      break;
+    }
     case SetEvaluateOperator:
     {
       result=value;
@@ -697,6 +702,13 @@ MagickExport Image *EvaluateImages(const Image *images,
                 for (j=0; j < (ssize_t) (number_images-1); j++)
                   evaluate_pixel[x].channel[i]*=QuantumScale;
               }
+              break;
+            }
+            case RootMeanSquareEvaluateOperator:
+            {
+              for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+                evaluate_pixel[x].channel[i]=sqrt(evaluate_pixel[x].channel[i]/
+                  (double) number_images);
               break;
             }
             default:
@@ -2688,6 +2700,38 @@ static inline void GetNonpeakPixelList(PixelList *pixel_list,Quantum *pixel)
   *pixel=ScaleShortToQuantum((unsigned short) color);
 }
 
+static inline void GetRootMeanSquarePixelList(PixelList *pixel_list,
+  Quantum *pixel)
+{
+  double
+    sum;
+
+  register SkipList
+    *p;
+
+  size_t
+    color;
+
+  ssize_t
+    count;
+
+  /*
+    Find the mean value for each of the color.
+  */
+  p=(&pixel_list->skip_list);
+  color=65536L;
+  count=0;
+  sum=0.0;
+  do
+  {
+    color=p->nodes[color].next[0];
+    sum*=(double) p->nodes[color].count*color;
+    count+=p->nodes[color].count;
+  } while (count < (ssize_t) pixel_list->length);
+  sum/=pixel_list->length;
+  *pixel=ScaleShortToQuantum((unsigned short) sqrt(sum));
+}
+
 static inline void GetStandardDeviationPixelList(PixelList *pixel_list,
   Quantum *pixel)
 {
@@ -2957,6 +3001,11 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
           case NonpeakStatistic:
           {
             GetNonpeakPixelList(pixel_list[id],&pixel);
+            break;
+          }
+          case RootMeanSquareStatistic:
+          {
+            GetRootMeanSquarePixelList(pixel_list[id],&pixel);
             break;
           }
           case StandardDeviationStatistic:
