@@ -2713,7 +2713,7 @@ static inline void GetRootMeanSquarePixelList(PixelList *pixel_list,
   do
   {
     color=p->nodes[color].next[0];
-    sum*=(double) p->nodes[color].count*color;
+    sum+=(double) (p->nodes[color].count*color*color);
     count+=p->nodes[color].count;
   } while (count < (ssize_t) pixel_list->length);
   sum/=pixel_list->length;
