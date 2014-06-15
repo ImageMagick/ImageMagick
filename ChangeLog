@@ -1,3 +1,6 @@
+2014-06-15  6.8.9-4 Cristy  <quetzlzacatenango@image...>
+  * Support RMS argument for -evaluate and -statistic options.
+
 2014-06-08  6.8.9-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-3, SVN revision 15975.
 
