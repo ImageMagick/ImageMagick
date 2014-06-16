@@ -47,6 +47,9 @@
      /* All MinGW needs ... */
 #    include "magick/nt-base-private.h"
 #    include <wingdi.h>
+#  ifndef DISPLAY_DEVICE_ACTIVE
+#    define DISPLAY_DEVICE_ACTIVE    0x00000001
+#  endif
 #  endif
 #endif
 #include "magick/blob.h"
