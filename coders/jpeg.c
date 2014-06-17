@@ -520,8 +520,11 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
       status=SetImageProfile(image,"icc",profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          image->filename);
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+          return(FALSE);
+        }
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -623,8 +626,11 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
       status=SetImageProfile(image,"8bim",profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          image->filename);
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+          return(FALSE);
+        }
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2360,7 +2366,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         }
       jpeg_info=DestroyImageInfo(jpeg_info);
     }
-  jpeg_set_quality(&jpeg_info,quality,MagickTrue);
+  jpeg_set_quality(&jpeg_info,quality,TRUE);
 #if (JPEG_LIB_VERSION >= 70)
   option=GetImageOption(image_info,"quality");
   if (option != (const char *) NULL)
@@ -2381,7 +2387,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             (geometry_info.rho+0.5));
           jpeg_info.q_scale_factor[1]=jpeg_quality_scaling((int)
             (geometry_info.sigma+0.5));
-          jpeg_default_qtables(&jpeg_info,MagickTrue);
+          jpeg_default_qtables(&jpeg_info,TRUE);
         }
     }
 #endif
@@ -2500,7 +2506,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           table=DestroyQuantizationTable(table);
         }
     }
-  jpeg_start_compress(&jpeg_info,MagickTrue);
+  jpeg_start_compress(&jpeg_info,TRUE);
   if (image->debug != MagickFalse)
     {
       if (image->storage_class == PseudoClass)

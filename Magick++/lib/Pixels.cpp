@@ -158,7 +158,7 @@ void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
   _data=(void *) NULL;
   _length=0;
   _size=0;
-  if ((x_ < 0) || (width_ < 0) || (y_ < 0) || (height_ < 0) ||
+  if ((x_ < 0) || (width_ == 0) || (y_ < 0) || (height_ == 0) ||
       (x_ > image_.columns()) || (width_ + x_ > image_.columns()) ||
       (y_ > image_.rows()) || (height_ + y_ > image_.rows()) ||
       (map_.length() == 0))

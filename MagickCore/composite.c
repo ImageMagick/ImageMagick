@@ -194,22 +194,6 @@ static inline MagickRealType MagickMax(const MagickRealType x,
   return(y);
 }
 
-static inline MagickRealType ConvertHueToRGB(MagickRealType m1,
-  MagickRealType m2,MagickRealType hue)
-{
-  if (hue < 0.0)
-    hue+=1.0;
-  if (hue > 1.0)
-    hue-=1.0;
-  if ((6.0*hue) < 1.0)
-    return(m1+6.0*(m2-m1)*hue);
-  if ((2.0*hue) < 1.0)
-    return(m2);
-  if ((3.0*hue) < 2.0)
-    return(m1+6.0*(m2-m1)*(2.0/3.0-hue));
-  return(m1);
-}
-
 static void HCLComposite(const MagickRealType hue,const MagickRealType chroma,
   const MagickRealType luma,MagickRealType *red,MagickRealType *green,
   MagickRealType *blue)
