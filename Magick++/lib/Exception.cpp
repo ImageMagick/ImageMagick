@@ -811,11 +811,11 @@ MagickPPExport void Magick::throwExceptionExplicit(
     return;
 
   GetPPException;
-  ThrowException(&exceptionInfo,severity_,reason_, description_);
+  ThrowException(exceptionInfo,severity_,reason_, description_);
   ThrowPPException;
 }
 
-MagickPPExport void Magick::throwException(ExceptionInfo &exception_)
+MagickPPExport void Magick::throwException(ExceptionInfo *exception_)
 {
   const ExceptionInfo
     *p;
@@ -827,30 +827,27 @@ MagickPPExport void Magick::throwException(ExceptionInfo &exception_)
   ExceptionType
     severity;
 
-  MagickBooleanType
-    relinquish;
-
   size_t
     index;
 
   // Just return if there is no reported error
-  if (exception_.severity == UndefinedException)
+  if (exception_->severity == UndefinedException)
     return;
 
-  std::string message=formatExceptionMessage(&exception_);
+  std::string message=formatExceptionMessage(exception_);
   nestedException=(Exception *) NULL;
-  LockSemaphoreInfo(exception_.semaphore);
-  if (exception_.exceptions != (void *) NULL)
+  LockSemaphoreInfo(exception_->semaphore);
+  if (exception_->exceptions != (void *) NULL)
     {
       index=GetNumberOfElementsInLinkedList((LinkedListInfo *)
-        exception_.exceptions);
+        exception_->exceptions);
       while(index > 0)
       {
         p=(const ExceptionInfo *) GetValueFromLinkedList((LinkedListInfo *)
-          exception_.exceptions,--index);
-        if ((p->severity != exception_.severity) || (LocaleCompare(p->reason,
-            exception_.reason) != 0) || (LocaleCompare(p->description,
-            exception_.description) != 0))
+          exception_->exceptions,--index);
+        if ((p->severity != exception_->severity) || (LocaleCompare(p->reason,
+            exception_->reason) != 0) || (LocaleCompare(p->description,
+            exception_->description) != 0))
           {
             if (nestedException == (Exception *) NULL)
               nestedException=createException(p);
@@ -863,12 +860,9 @@ MagickPPExport void Magick::throwException(ExceptionInfo &exception_)
           }
       }
     }
-  UnlockSemaphoreInfo(exception_.semaphore);
-  severity=exception_.severity;
-  relinquish=exception_.relinquish;
-  DestroyExceptionInfo(&exception_);
-  if (relinquish)
-    GetExceptionInfo(&exception_);
+  severity=exception_->severity;
+  UnlockSemaphoreInfo(exception_->semaphore);
+  DestroyExceptionInfo(exception_);
 
   switch (severity)
   {

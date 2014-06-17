@@ -76,14 +76,14 @@ extern "C" {
 #define ThrowXWindowException(severity,tag,context) \
 { \
   ExceptionInfo \
-    exception; \
+    *exception; \
  \
-  GetExceptionInfo(&exception); \
-  (void) ThrowMagickException(&exception,GetMagickModule(),severity, \
+  exception=AcquireExceptionInfo(); \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
     tag == (const char *) NULL ? "unknown" : tag,"`%s': %s",context, \
     strerror(errno)); \
-  CatchException(&exception); \
-  (void) DestroyExceptionInfo(&exception); \
+  CatchException(exception); \
+  (void) DestroyExceptionInfo(exception); \
 }
 #define ThrowXWindowFatalException(severity,tag,context) \
 { \

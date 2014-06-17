@@ -16,24 +16,20 @@
 
 Magick::Pixels::Pixels(Magick::Image &image_)
   : _image(image_),
-    _view(AcquireVirtualCacheView(_image.image(),&_exception)),
     _x(0),
     _y(0),
     _columns(0),
     _rows(0)
 {
-  GetExceptionInfo(&_exception);
-
-  if (!_view)
-    _image.throwImageException();
+  GetPPException;
+  _view=AcquireVirtualCacheView(_image.image(),exceptionInfo);
+  ThrowPPException;
 }
 
 Magick::Pixels::~Pixels(void)
 {
-  if (_view)
+  if (_view != (MagickCore::CacheView *) NULL)
     _view=DestroyCacheView(_view);
-
-  (void) DestroyExceptionInfo(&_exception);
 }
 
 Magick::PixelPacket* Magick::Pixels::get(const ssize_t x_,const ssize_t y_,
@@ -44,11 +40,10 @@ Magick::PixelPacket* Magick::Pixels::get(const ssize_t x_,const ssize_t y_,
   _columns=columns_;
   _rows=rows_;
 
+  GetPPException;
   PixelPacket* pixels=GetCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
-    &_exception);
-
-  if (!pixels)
-    throwException(_exception);
+    exceptionInfo);
+  ThrowPPException;
 
   return pixels;
 }
@@ -61,11 +56,10 @@ const Magick::PixelPacket* Magick::Pixels::getConst(const ssize_t x_,
   _columns=columns_;
   _rows=rows_;
 
+  GetPPException;
   const PixelPacket* pixels=GetCacheViewVirtualPixels(_view,x_,y_,columns_,
-    rows_,&_exception);
-
-  if (!pixels)
-    throwException(_exception);
+    rows_,exceptionInfo);
+  ThrowPPException;
 
   return pixels;
 }
@@ -78,19 +72,19 @@ Magick::PixelPacket* Magick::Pixels::set(const ssize_t x_,const ssize_t y_,
   _columns=columns_;
   _rows=rows_;
 
+  GetPPException;
   PixelPacket* pixels=QueueCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
-    &_exception);
-
-  if (!pixels)
-    throwException(_exception);
+    exceptionInfo);
+  ThrowPPException;
 
   return pixels;
 }
 
 void Magick::Pixels::sync(void)
 {
-  if( !SyncCacheViewAuthenticPixels(_view,&_exception))
-    throwException(_exception);
+  GetPPException;
+  (void) SyncCacheViewAuthenticPixels(_view,exceptionInfo);
+  ThrowPPException;
 }
 
 Magick::IndexPacket* Magick::Pixels::indexes (void)
@@ -185,8 +179,8 @@ void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
 
   GetPPException;
   MagickCore::ExportImagePixels(image_.constImage(),x_,y_,width_,height_,
-    map_.c_str(),type_,_data,&exceptionInfo);
-  if (exceptionInfo.severity != UndefinedException)
+    map_.c_str(),type_,_data,exceptionInfo);
+  if (exceptionInfo->severity != UndefinedException)
     relinquish();
   ThrowPPException;
 }

@@ -1198,7 +1198,6 @@ namespace Magick
   using MagickCore::GetCacheViewVirtualPixels;
   using MagickCore::GetColorTuple;
   using MagickCore::GetDrawInfo;
-  using MagickCore::GetExceptionInfo;
   using MagickCore::GetGeometry;
   using MagickCore::GetImageArtifact;
   using MagickCore::GetImageBoundingBox;
@@ -1453,10 +1452,10 @@ namespace Magick
 //////////////////////////////////////////////////////////////////////
 #define GetPPException \
   MagickCore::ExceptionInfo \
-    exceptionInfo; \
-  MagickCore::GetExceptionInfo(&exceptionInfo)
+    *exceptionInfo; \
+  exceptionInfo=MagickCore::AcquireExceptionInfo()
 #define ThrowPPException \
   throwException(exceptionInfo); \
-  (void) MagickCore::DestroyExceptionInfo(&exceptionInfo)
+  (void) MagickCore::DestroyExceptionInfo(exceptionInfo)
 
 #endif // Magick_Include_header

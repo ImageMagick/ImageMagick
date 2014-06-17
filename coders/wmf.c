@@ -638,7 +638,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
     *ddata = WMF_MAGICK_GetData(API);
 
   ExceptionInfo
-    exception;
+    *exception;
 
   Image
     *image;
@@ -656,11 +656,12 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   if (bmp_draw->bmp.data == 0)
     return;
 
-  GetExceptionInfo(&exception);
+  exception=AcquireExceptionInfo();
   image = (Image*)bmp_draw->bmp.data;
   if (!image)
     {
-       InheritException(&ddata->image->exception,&exception);
+       InheritException(&ddata->image->exception,exception);
+       (void) DestroyExceptionInfo(exception);
        return;
     }
 
@@ -680,7 +681,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
       crop_info.width = bmp_draw->crop.w;
       crop_info.height = bmp_draw->crop.h;
 
-      crop_image = CropImage( image, &crop_info, &exception );
+      crop_image = CropImage( image, &crop_info, exception );
       if (crop_image)
         {
           image=DestroyImageList(image);
@@ -688,10 +689,10 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
           bmp_draw->bmp.data = (void*)image;
         }
       else
-        InheritException(&ddata->image->exception,&exception);
+        InheritException(&ddata->image->exception,exception);
     }
 
-  QueryColorDatabase( "white", &white, &exception );
+  QueryColorDatabase( "white", &white, exception );
 
   if ( ddata->image_info->texture ||
        !(IsColorEqual(&ddata->image_info->background_color,&white)) ||
@@ -704,9 +705,10 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
       Set image white background to transparent so that it may be
       overlaid over non-white backgrounds.
     */
-    QueryMagickColor( "white", &white, &exception );
+    QueryMagickColor( "white", &white, exception );
     TransparentPaintImage( image, &white, QuantumRange, MagickFalse );
   }
+  (void) DestroyExceptionInfo(exception);
 
   width = fabs(bmp_draw->pixel_width * (double) bmp_draw->crop.w);
   height = fabs(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
@@ -733,7 +735,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
     *ddata = WMF_MAGICK_GetData(API);
 
   ExceptionInfo
-    exception;
+    *exception;
 
   Image
     *image;
@@ -743,7 +745,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
 
   bmp_read->bmp.data = 0;
 
-  GetExceptionInfo(&exception);
+  exception=AcquireExceptionInfo();
 
   image_info=CloneImageInfo((ImageInfo *) 0);
   (void) CopyMagickString(image_info->magick,"DIB",MaxTextExtent);
@@ -762,7 +764,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
    bmp_read->width, bmp_read->height);
 #endif
   image=BlobToImage(image_info, (const void *) bmp_read->buffer,
-    bmp_read->length, &exception);
+    bmp_read->length, exception);
   image_info=DestroyImageInfo(image_info);
   if (image == (Image *) NULL)
     {
@@ -784,6 +786,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
       bmp_read->bmp.width  = (U16)image->columns;
       bmp_read->bmp.height = (U16)image->rows;
     }
+  (void) DestroyExceptionInfo(exception);
 }
 
 static void ipa_bmp_free(wmfAPI * API, wmfBMP * bmp)
@@ -878,9 +881,9 @@ static void ipa_device_begin(wmfAPI * API)
         *image_info;
 
       ExceptionInfo
-        exception;
+        *exception;
 
-      GetExceptionInfo(&exception);
+      exception=AcquireExceptionInfo();
 
       image_info = CloneImageInfo((ImageInfo *) 0);
       (void) CopyMagickString(image_info->filename,ddata->image_info->texture,
@@ -888,7 +891,7 @@ static void ipa_device_begin(wmfAPI * API)
       if ( ddata->image_info->size )
         CloneString(&image_info->size,ddata->image_info->size);
 
-      image = ReadImage(image_info,&exception);
+      image = ReadImage(image_info,exception);
       image_info=DestroyImageInfo(image_info);
       if (image)
         {
@@ -921,9 +924,10 @@ static void ipa_device_begin(wmfAPI * API)
         {
           LogMagickEvent(CoderEvent,GetMagickModule(),
             "reading texture image failed!");
-          InheritException(&ddata->image->exception,&exception);
+          InheritException(&ddata->image->exception,exception);
         }
     }
+  (void) DestroyExceptionInfo(exception);
 
   DrawSetClipRule(WmfDrawingWand,EvenOddRule); /* Default for WMF is ALTERNATE polygon fill mode */
   draw_fill_color_string(WmfDrawingWand,"none"); /* Default brush is WHITE_BRUSH */
@@ -1874,13 +1878,8 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
             const Image
               *image;
 
-            ExceptionInfo
-              exception;
-
             MagickWand
               *magick_wand;
-
-            GetExceptionInfo(&exception);
 
             image = (Image*)brush_bmp->data;
 
@@ -2398,7 +2397,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
     *ddata = WMF_MAGICK_GetData(API);
 
   ExceptionInfo
-    exception;
+    *exception;
 
   const TypeInfo
     *type_info,
@@ -2418,11 +2417,12 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
   if (magick_font->ps_name != (char *) NULL)
     magick_font->ps_name=DestroyString(magick_font->ps_name);
 
-  GetExceptionInfo(&exception);
-  type_info_base=GetTypeInfo("*",&exception);
+  exception=AcquireExceptionInfo();
+  type_info_base=GetTypeInfo("*",exception);
   if (type_info_base == 0)
     {
-      InheritException(&ddata->image->exception,&exception);
+      InheritException(&ddata->image->exception,exception);
+      (void) DestroyExceptionInfo(exception);
       return;
     }
 
@@ -2444,13 +2444,14 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
       else
         target_weight = WMF_FONT_WEIGHT(font);
       type_info=GetTypeInfoByFamily(wmf_font_name,AnyStyle,AnyStretch,
-        target_weight,&exception);
+        target_weight,exception);
       if (type_info == (const TypeInfo *) NULL)
         type_info=GetTypeInfoByFamily(wmf_font_name,AnyStyle,AnyStretch,0,
-          &exception);
+          exception);
       if (type_info != (const TypeInfo *) NULL)
         CloneString(&magick_font->ps_name,type_info->name);
     }
+  (void) DestroyExceptionInfo(exception);
 
   /* Now let's try simple substitution mappings from WMFFontMap */
   if (!magick_font->ps_name)

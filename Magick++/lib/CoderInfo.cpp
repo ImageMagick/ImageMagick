@@ -42,16 +42,12 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
     _isWritable(false),
     _isMultiFrame(false)
 {
-  ExceptionInfo
-    exceptionInfo;
-
   const Magick::MagickInfo
     *magickInfo;
 
-  GetExceptionInfo(&exceptionInfo);
-  magickInfo=GetMagickInfo(name_.c_str(),&exceptionInfo);
-  throwException(exceptionInfo);
-  (void) DestroyExceptionInfo(&exceptionInfo);
+  GetPPException;
+  magickInfo=GetMagickInfo(name_.c_str(),exceptionInfo);
+  ThrowPPException;
   if (magickInfo == 0)
     {
       throwExceptionExplicit(OptionError,"Coder not found",name_.c_str());

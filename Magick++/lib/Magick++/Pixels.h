@@ -65,13 +65,12 @@ namespace Magick
     Pixels(const Pixels& pixels_);
     const Pixels& operator=(const Pixels& pixels_);
 
-    Magick::Image             _image;     // Image reference
-    MagickCore::CacheView     *_view;     // Image view handle
-    ::ssize_t                 _x;         // Left ordinate of view
-    ::ssize_t                 _y;         // Top ordinate of view
-    size_t                    _columns;   // Width of view
-    size_t                    _rows;      // Height of view
-    MagickCore::ExceptionInfo _exception; // Any thrown exception
+    Magick::Image             _image;      // Image reference
+    MagickCore::CacheView     *_view;      // Image view handle
+    ::ssize_t                 _x;          // Left ordinate of view
+    ::ssize_t                 _y;          // Top ordinate of view
+    size_t                    _columns;    // Width of view
+    size_t                    _rows;       // Height of view
 
   }; // class Pixels
 

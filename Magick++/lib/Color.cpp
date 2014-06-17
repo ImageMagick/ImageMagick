@@ -171,15 +171,12 @@ const Magick::Color& Magick::Color::operator=
 // Set color via X11 color specification string
 const Magick::Color& Magick::Color::operator=(const std::string &x11color_)
 {
-  ExceptionInfo
-    exception;
-
   PixelPacket
     target_color;
 
   initPixel();
-  GetExceptionInfo(&exception);
-  if (QueryColorDatabase(x11color_.c_str(),&target_color,&exception))
+  GetPPException;
+  if (QueryColorDatabase(x11color_.c_str(),&target_color,exceptionInfo))
     {
       redQuantum( target_color.red );
       greenQuantum( target_color.green );
@@ -192,11 +189,8 @@ const Magick::Color& Magick::Color::operator=(const std::string &x11color_)
         _pixelType=RGBPixel;
     }
   else
-    {
-      _isValid=false;
-      throwException(exception);
-    }
-  (void) DestroyExceptionInfo(&exception);
+    _isValid=false;
+  ThrowPPException;
 
   return(*this);
 }
