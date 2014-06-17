@@ -665,8 +665,8 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"BITPIX  =           %10ld",
-    (long) (quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*
-    image->depth);
+    (long) ((quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*
+    image->depth));
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS   =           %10lu",
