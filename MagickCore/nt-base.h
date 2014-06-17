@@ -142,9 +142,14 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && (__MSVCRT_VERSION__ < 0x800)
+#if !defined(lseek)
 #  define lseek  _lseeki64
+#endif
 #else
+#if !defined(lseek)
 #  define lseek  _lseek
+#endif
+#else
 #endif
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
 #if !defined(lt_dlclose)
