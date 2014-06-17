@@ -624,7 +624,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     *draw_info;
 
   ExceptionInfo
-    exception;
+    *exception;
 
   GeometryInfo
     geometry_info;
@@ -660,7 +660,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.startElement(%s",tag);
-  GetExceptionInfo(&exception);
+  exception=AcquireExceptionInfo();
   msl_info=(MSLInfo *) context;
   n=msl_info->n;
   keyword=(const char *) NULL;
@@ -859,7 +859,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->fill,
-                        &exception);
+                        exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"family") == 0)
@@ -882,7 +882,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       break;
@@ -968,7 +968,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "stroke") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->stroke,
-                        &exception);
+                        exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
@@ -1017,7 +1017,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "undercolor") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->undercolor,
-                        &exception);
+                        exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1288,7 +1288,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
                       (void) QueryColorDatabase(value,
-                        &msl_info->image[n]->border_color,&exception);
+                        &msl_info->image[n]->border_color,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1301,7 +1301,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       break;
@@ -1527,7 +1527,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       break;
@@ -1635,7 +1635,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"bordercolor") == 0)
                     {
-                      (void) QueryMagickColor(value,&target,&exception);
+                      (void) QueryMagickColor(value,&target,exception);
                       paint_method=FillToBorderMethod;
                       break;
                     }
@@ -1649,7 +1649,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"fill") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->fill,
-                        &exception);
+                        exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"fuzz") == 0)
@@ -1668,11 +1668,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        geometry.x,geometry.y,&target,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1686,7 +1686,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.x=StringToLong(value);
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        geometry.x,geometry.y,&target,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1700,7 +1700,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.y=StringToLong(value);
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        geometry.x,geometry.y,&target,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1787,7 +1787,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           (LocaleCompare(attribute,value) == 0))
                         {
                           composite_image=CloneImage(msl_info->image[j],0,0,
-                            MagickFalse,&exception);
+                            MagickFalse,exception);
                           break;
                         }
                     }
@@ -1838,7 +1838,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "color") == 0)
                     {
                       (void) QueryColorDatabase(value,
-                        &composite_image->background_color,&exception);
+                        &composite_image->background_color,exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"compose") == 0)
@@ -1853,11 +1853,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       (void) GetOneVirtualPixel(msl_info->image[n],geometry.x,
-                        geometry.y,&target,&exception);
+                        geometry.y,&target,exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"gravity") == 0)
@@ -1936,18 +1936,18 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if (composite_image->matte != MagickTrue)
                         (void) SetImageOpacity(composite_image,OpaqueOpacity);
                       composite_view=AcquireAuthenticCacheView(composite_image,
-                        &exception);
+                        exception);
                       for (y=0; y < (ssize_t) composite_image->rows ; y++)
                       {
                         q=GetCacheViewAuthenticPixels(composite_view,0,y,
-                          (ssize_t) composite_image->columns,1,&exception);
+                          (ssize_t) composite_image->columns,1,exception);
                         for (x=0; x < (ssize_t) composite_image->columns; x++)
                         {
                           if (q->opacity == OpaqueOpacity)
                             q->opacity=ClampToQuantum(opacity);
                           q++;
                         }
-                        if (SyncCacheViewAuthenticPixels(composite_view,&exception) == MagickFalse)
+                        if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
                           break;
                       }
                       composite_view=DestroyCacheView(composite_view);
@@ -1963,7 +1963,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"rotate") == 0)
                     {
                       rotate_image=RotateImage(composite_image,
-                        StringToDouble(value,(char **) NULL),&exception);
+                        StringToDouble(value,(char **) NULL),exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2019,7 +2019,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.x=StringToLong(value);
                       (void) GetOneVirtualPixel(msl_info->image[n],geometry.x,
-                        geometry.y,&target,&exception);
+                        geometry.y,&target,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2033,7 +2033,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.y=StringToLong(value);
                       (void) GetOneVirtualPixel(msl_info->image[n],geometry.x,
-                        geometry.y,&target,&exception);
+                        geometry.y,&target,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2054,7 +2054,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             (double) composite_image->rows,(double) geometry.x,(double)
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
-            &exception);
+            exception);
           if (rotate_image == (Image *) NULL)
             CompositeImageChannel(image,channel,compose,composite_image,
               geometry.x,geometry.y);
@@ -2155,7 +2155,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParseGravityGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2447,7 +2447,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->fill,
-                        &exception);
+                        exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"family") == 0)
@@ -2470,7 +2470,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       break;
@@ -2575,7 +2575,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "stroke") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->stroke,
-                        &exception);
+                        exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
@@ -2624,7 +2624,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "undercolor") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->undercolor,
-                        &exception);
+                        exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3044,7 +3044,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
                       (void) QueryColorDatabase(value,
-                        &msl_info->image[n]->matte_color,&exception);
+                        &msl_info->image[n]->matte_color,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3057,7 +3057,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       frame_info.width=geometry.width;
@@ -3356,8 +3356,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       "xc:",MaxTextExtent);
                     (void) ConcatenateMagickString(msl_info->image_info[n]->
                       filename,value,MaxTextExtent);
-                    next_image=ReadImage(msl_info->image_info[n],&exception);
-                    CatchException(&exception);
+                    next_image=ReadImage(msl_info->image_info[n],exception);
+                    CatchException(exception);
                     if (next_image == (Image *) NULL)
                       continue;
                     if (msl_info->image[n] == (Image *) NULL)
@@ -3630,7 +3630,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           (LocaleCompare(attribute,value) == 0))
                         {
                           affinity_image=CloneImage(msl_info->image[j],0,0,
-                            MagickFalse,&exception);
+                            MagickFalse,exception);
                           break;
                         }
                     }
@@ -3689,7 +3689,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"bordercolor") == 0)
                     {
-                      (void) QueryMagickColor(value,&target,&exception);
+                      (void) QueryMagickColor(value,&target,exception);
                       paint_method=FillToBorderMethod;
                       break;
                     }
@@ -3716,11 +3716,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        geometry.x,geometry.y,&target,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3746,7 +3746,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.x=StringToLong(value);
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        geometry.x,geometry.y,&target,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3760,7 +3760,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.y=StringToLong(value);
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        geometry.x,geometry.y,&target,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -4212,8 +4212,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 (const char *) tag);
               break;
             }
-          (void) QueryMagickColor("none",&target,&exception);
-          (void) QueryMagickColor("none",&fill_color,&exception);
+          (void) QueryMagickColor("none",&target,exception);
+          (void) QueryMagickColor("none",&fill_color,exception);
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
             {
@@ -4244,7 +4244,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"fill") == 0)
                     {
-                      (void) QueryMagickColor(value,&fill_color,&exception);
+                      (void) QueryMagickColor(value,&fill_color,exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"fuzz") == 0)
@@ -4350,7 +4350,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               profile=GetImageProfile(msl_info->image[n],"iptc");
               if (profile != (StringInfo *) NULL)
                 profile_info->profile=(void *) CloneStringInfo(profile);
-              profile_image=GetImageCache(profile_info,keyword,&exception);
+              profile_image=GetImageCache(profile_info,keyword,exception);
               profile_info=DestroyImageInfo(profile_info);
               if (profile_image == (Image *) NULL)
                 {
@@ -4382,7 +4382,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           *q=(*++p);
                         break;
                       }
-                  profile=FileToStringInfo(filename,~0UL,&exception);
+                  profile=FileToStringInfo(filename,~0UL,exception);
                   if (profile != (StringInfo *) NULL)
                     {
                       (void) ProfileImage(msl_info->image[n],name,
@@ -4625,7 +4625,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->fill,
-                        &exception);
+                        exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"family") == 0)
@@ -4648,7 +4648,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       break;
@@ -4733,7 +4733,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "stroke") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->stroke,
-                        &exception);
+                        exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
@@ -4782,7 +4782,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "undercolor") == 0)
                     {
                       (void) QueryColorDatabase(value,&draw_info->undercolor,
-                        &exception);
+                        exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -4918,7 +4918,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       break;
@@ -5000,8 +5000,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
                       value,MaxTextExtent);
-                    image=ReadImage(msl_info->image_info[n],&exception);
-                    CatchException(&exception);
+                    image=ReadImage(msl_info->image_info[n],exception);
+                    CatchException(exception);
                     if (image == (Image *) NULL)
                       continue;
                     AppendImageToList(&msl_info->image[n],image);
@@ -5377,7 +5377,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParseRegionGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5466,7 +5466,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParsePageGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       break;
@@ -5749,7 +5749,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParseRegionGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5825,7 +5825,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
                       flags=ParseRegionGeometry(msl_info->image[n],value,
-                        &geometry,&exception);
+                        &geometry,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -6499,7 +6499,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
                       (void) QueryColorDatabase(value,
-                        &msl_info->image[n]->background_color,&exception);
+                        &msl_info->image[n]->background_color,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -7074,7 +7074,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           (LocaleCompare(attribute,value) == 0))
                         {
                           texture_image=CloneImage(msl_info->image[j],0,0,
-                            MagickFalse,&exception);
+                            MagickFalse,exception);
                           break;
                         }
                     }
@@ -7164,7 +7164,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 MagickPixelPacket
                   target;
 
-                (void) QueryMagickColor(value,&target,&exception);
+                (void) QueryMagickColor(value,&target,exception);
                 (void) TransparentPaintImage(msl_info->image[n],&target,
                   TransparentOpacity,MagickFalse);
                 break;
@@ -7267,6 +7267,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   }
   if ( value != NULL )
     value=DestroyString(value);
+  exception=DestroyExceptionInfo(exception);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
 }
 

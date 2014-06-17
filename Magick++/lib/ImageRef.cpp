@@ -22,7 +22,7 @@ Magick::ImageRef::ImageRef(void)
     _mutexLock()
 {
   _image=AcquireImage(_options->imageInfo());
-  throwException(_image->exception);
+  throwException(&_image->exception);
 }
 
 Magick::ImageRef::ImageRef(MagickCore::Image *image_)

@@ -417,7 +417,7 @@ namespace Magick
 
   // Thow exception based on ImageMagick's ExceptionInfo
   extern MagickPPExport void throwException(
-    MagickCore::ExceptionInfo &exception_);
+    MagickCore::ExceptionInfo *exception_);
 
 } // namespace Magick
 

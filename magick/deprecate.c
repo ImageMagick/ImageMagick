@@ -2650,6 +2650,38 @@ MagickExport PixelPacket *GetCacheViewPixels(CacheView *cache_view,const ssize_t
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t E x c e p t i o n I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetExceptionInfo() initializes an exception to default values.
+%
+%  The format of the GetExceptionInfo method is:
+%
+%      GetExceptionInfo(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: the exception info.
+%
+*/
+MagickExport void GetExceptionInfo(ExceptionInfo *exception)
+{
+  assert(exception != (ExceptionInfo *) NULL);
+  (void) ResetMagickMemory(exception,0,sizeof(*exception));
+  exception->severity=UndefinedException;
+  exception->exceptions=(void *) NewLinkedList(0);
+  exception->semaphore=AllocateSemaphoreInfo();
+  exception->signature=MagickSignature;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e A t t r i b u t e                                         %
 %                                                                             %
 %                                                                             %

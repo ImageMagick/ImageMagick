@@ -190,7 +190,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   image->ticks_per_second=UndefinedTicksPerSecond;
   image->compose=OverCompositeOp;
   image->blur=1.0;
-  GetExceptionInfo(&image->exception);
+  InitializeExceptionInfo(&image->exception);
   (void) QueryColorDatabase(BackgroundColor,&image->background_color,
     &image->exception);
   (void) QueryColorDatabase(BorderColor,&image->border_color,&image->exception);
@@ -831,7 +831,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   (void) CloneImageProperties(clone_image,image);
   (void) CloneImageArtifacts(clone_image,image);
   GetTimerInfo(&clone_image->timer);
-  GetExceptionInfo(&clone_image->exception);
+  InitializeExceptionInfo(&clone_image->exception);
   InheritException(&clone_image->exception,&image->exception);
   if (image->ascii85 != (void *) NULL)
     Ascii85Initialize(clone_image);

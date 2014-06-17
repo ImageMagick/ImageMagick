@@ -664,7 +664,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     y;
 
   ExceptionInfo
-    exception;
+    *exception;
 
   MagickBooleanType
     status;
@@ -724,10 +724,10 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&exception);
+  exception=AcquireExceptionInfo();
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  GetExceptionInfo(&exception);
   quantize_info=AcquireQuantizeInfo(image_info);
   flags=0;
   currentOffset=0;
@@ -742,7 +742,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   do
   {
     (void) TransformImageColorspace(image,sRGBColorspace);
-    count=GetNumberColors(image,NULL,&exception);
+    count=GetNumberColors(image,NULL,exception);
     for (bits_per_pixel=1;  (one << bits_per_pixel) < count; bits_per_pixel*=2) ;
     if (image_info->depth > 100)
       bits_per_pixel=image_info->depth-100;
@@ -822,13 +822,13 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
             *affinity_image;
 
           affinity_image=ConstituteImage(256,1,"RGB",CharPixel,&PalmPalette,
-            &exception);
+            exception);
           (void) TransformImageColorspace(affinity_image,
             affinity_image->colorspace);
           (void) RemapImage(quantize_info,image,affinity_image);
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            p=GetAuthenticPixels(image,0,y,image->columns,1,&exception);
+            p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
             indexes=GetAuthenticIndexQueue(image);
             for (x=0; x < (ssize_t) image->columns; x++)
               SetPixelIndex(indexes+x,FindColor(&image->colormap[
@@ -852,7 +852,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     {
       ptr=one_row;
       (void) ResetMagickMemory(ptr,0,bytes_per_row);
-      p=GetAuthenticPixels(image,0,y,image->columns,1,&exception);
+      p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
       if (p == (PixelPacket *) NULL)
         break;
       indexes=GetAuthenticIndexQueue(image);
@@ -987,6 +987,6 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   } while (image_info->adjoin != MagickFalse);
   quantize_info=DestroyQuantizeInfo(quantize_info);
   (void) CloseBlob(image);
-  (void) DestroyExceptionInfo(&exception);
+  (void) DestroyExceptionInfo(exception);
   return(MagickTrue);
 }

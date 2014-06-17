@@ -731,7 +731,6 @@ static void SVGStartDocument(void *context)
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.startDocument()");
   svg_info=(SVGInfo *) context;
-  GetExceptionInfo(svg_info->exception);
   parser=svg_info->parser;
   svg_info->document=xmlNewDoc(parser->version);
   if (svg_info->document == (xmlDocPtr) NULL)
