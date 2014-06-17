@@ -1115,13 +1115,6 @@ static inline double MagickMax(const double x,const double y)
   return(y);
 }
 
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static double FxChannelStatistics(FxInfo *fx_info,Image *image,
   PixelChannel channel,const char *symbol,ExceptionInfo *exception)
 {

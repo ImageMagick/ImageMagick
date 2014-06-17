@@ -135,19 +135,6 @@ static MagickBooleanType IsPNM(const unsigned char *magick,const size_t extent)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline ssize_t ConstrainPixel(Image *image,const ssize_t offset,
-  const size_t extent,ExceptionInfo *exception)
-{
-  if ((offset < 0) || (offset > (ssize_t) extent))
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-        "InvalidPixel","`%s'",image->filename);
-      return(0);
-    }
-  return(offset);
-}
-
 static void PNMComment(Image *image,ExceptionInfo *exception)
 {
   int
