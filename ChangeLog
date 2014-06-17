@@ -1,6 +1,8 @@
 2014-06-15  6.8.9-4 Cristy  <quetzlzacatenango@image...>
   * Support RMS argument for -evaluate-sequence and -statistic options.
   * Fix lseek define for a successful compile under 64-bit MinGW.
+  * Pipe image to display program no longer reports an exception (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23532).
 
 2014-06-08  6.8.9-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-3, SVN revision 15975.
