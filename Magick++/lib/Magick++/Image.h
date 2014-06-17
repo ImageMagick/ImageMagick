@@ -1097,9 +1097,8 @@ namespace Magick
     void opacity(const unsigned int opacity_);
 
     // Change color of opaque pixel to specified pen color.
-    void opaque(const Color &opaqueColor_,const Color &penColor_);
     void opaque(const Color &opaqueColor_,const Color &penColor_,
-      const bool invert_);
+      const bool invert_=MagickFalse);
 
     // Perform a ordered dither based on a number of pre-defined dithering
     // threshold maps, but over multiple intensity levels.
