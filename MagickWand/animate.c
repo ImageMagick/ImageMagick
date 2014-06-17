@@ -399,19 +399,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
         if (isatty(STDIN_FILENO) != MagickFalse)
           option="logo:";
         else
-          {
-            int
-              c;
-
-            c=getc(stdin);
-            if (c == EOF)
-              option="logo:";
-            else
-              {
-                c=ungetc(c,stdin);
-                option="-";
-              }
-          }
+          option="-";
     if (LocaleCompare(option,"(") == 0)
       {
         FireImageStack(MagickFalse,MagickTrue,pend);
