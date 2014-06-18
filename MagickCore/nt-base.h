@@ -149,7 +149,6 @@ extern "C" {
 #if !defined(lseek)
 #  define lseek  _lseek
 #endif
-#else
 #endif
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
 #if !defined(lt_dlclose)
