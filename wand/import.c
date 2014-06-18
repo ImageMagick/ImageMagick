@@ -209,13 +209,6 @@ static MagickBooleanType ImportUsage(void)
   return(MagickFalse);
 }
 
-static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **wand_unused(metadata),ExceptionInfo *exception)
 {

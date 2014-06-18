@@ -453,7 +453,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     {
       while (length-- > 0)
         (void) GetCharacter(jpeg_info);
-      return(MagickTrue);
+      return(TRUE);
     }
   for (i=0; i < 12; i++)
     magick[i]=(char) GetCharacter(jpeg_info);
@@ -464,7 +464,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
       */
       for (i=0; i < (ssize_t) (length-12); i++)
         (void) GetCharacter(jpeg_info);
-      return(MagickTrue);
+      return(TRUE);
     }
   (void) GetCharacter(jpeg_info);  /* id */
   (void) GetCharacter(jpeg_info);  /* markers */
@@ -494,8 +494,11 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
       status=SetImageProfile(image,"icc",profile);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          image->filename);
+        {
+          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+          return(FALSE);
+        }
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -593,8 +596,11 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
       status=SetImageProfile(image,"8bim",profile);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          image->filename);
+        {
+          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+          return(FALSE);
+        }
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2209,7 +2215,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           */
           status=AcquireMagickResource(MemoryResource,length);
           RelinquishMagickResource(MemoryResource,length);
-          jpeg_info.optimize_coding=status;
+          jpeg_info.optimize_coding=status == MagickFalse ? FALSE : TRUE;
         }
     }
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
@@ -2316,7 +2322,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         }
       jpeg_info=DestroyImageInfo(jpeg_info);
     }
-  jpeg_set_quality(&jpeg_info,quality,MagickTrue);
+  jpeg_set_quality(&jpeg_info,quality,TRUE);
 #if (JPEG_LIB_VERSION >= 70)
   option=GetImageOption(image_info,"quality");
   if (option != (const char *) NULL)
@@ -2337,7 +2343,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             (geometry_info.rho+0.5));
           jpeg_info.q_scale_factor[1]=jpeg_quality_scaling((int)
             (geometry_info.sigma+0.5));
-          jpeg_default_qtables(&jpeg_info,MagickTrue);
+          jpeg_default_qtables(&jpeg_info,TRUE);
         }
     }
 #endif
@@ -2455,7 +2461,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           table=DestroyQuantizationTable(table);
         }
     }
-  jpeg_start_compress(&jpeg_info,MagickTrue);
+  jpeg_start_compress(&jpeg_info,TRUE);
   if (image->debug != MagickFalse)
     {
       if (image->storage_class == PseudoClass)

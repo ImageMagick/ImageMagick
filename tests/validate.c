@@ -235,27 +235,6 @@ static void ConvertYCbCrToRGB(const double Y,const double Cb,
   ConvertYPbPrToRGB(Y,Cb,Cr,red,green,blue);
 }
 
-static inline void ConvertLCHabToXYZ(const double luma,const double chroma,
-  const double hue,double *X,double *Y,double *Z)
-{
-  ConvertLabToXYZ(luma,chroma*cos(hue*MagickPI/180.0),chroma*
-    sin(hue*MagickPI/180.0),X,Y,Z);
-}
-
-static inline void ConvertXYZToLCHab(const double X,const double Y,
-  const double Z,double *luma,double *chroma,double *hue)
-{
-  double
-    a,
-    b;
-
-  ConvertXYZToLab(X,Y,Z,luma,&a,&b);
-  *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5))/255.0+0.5;
-  *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI/360.0;
-  if (*hue < 0.0)
-    *hue+=1.0;
-}
-
 static inline void ConvertLMSToXYZ(const double L,const double M,const double S,
   double *X,double *Y,double *Z)
 {
