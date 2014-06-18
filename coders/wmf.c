@@ -774,7 +774,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
       (void) FormatLocaleString(description,MaxTextExtent,
         "packed DIB at offset %ld",bmp_read->offset);
       (void) ThrowMagickException(&ddata->image->exception,GetMagickModule(),
-        CorruptImageError,exception.reason,"`%s'",exception.description);
+        CorruptImageError,exception->reason,"`%s'",exception->description);
     }
   else
     {
@@ -926,8 +926,8 @@ static void ipa_device_begin(wmfAPI * API)
             "reading texture image failed!");
           InheritException(&ddata->image->exception,exception);
         }
+      (void) DestroyExceptionInfo(exception);
     }
-  (void) DestroyExceptionInfo(exception);
 
   DrawSetClipRule(WmfDrawingWand,EvenOddRule); /* Default for WMF is ALTERNATE polygon fill mode */
   draw_fill_color_string(WmfDrawingWand,"none"); /* Default brush is WHITE_BRUSH */
