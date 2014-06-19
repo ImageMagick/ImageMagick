@@ -546,6 +546,7 @@ namespace Magick
   using MagickCore::ExponentialEvaluateOperator;
   using MagickCore::MedianEvaluateOperator;
   using MagickCore::SumEvaluateOperator;
+  using MagickCore::RootMeanSquareEvaluateOperator;
 
   // Fill rules
   using MagickCore::FillRule;
