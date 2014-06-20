@@ -169,16 +169,13 @@ const Magick::Color& Magick::Color::operator=(const MagickCore::PixelInfo &color
 
 const Magick::Color& Magick::Color::operator=(const std::string &color_)
 {
-  ExceptionInfo
-    exception;
-
   PixelInfo
     target_color;
 
   initPixel();
-  GetExceptionInfo(&exception);
+  GetPPException;
   if (QueryColorCompliance(color_.c_str(),AllCompliance,&target_color,
-      &exception))
+      exceptionInfo))
     {
       quantumRed(target_color.red);
       quantumGreen(target_color.green);
@@ -191,11 +188,8 @@ const Magick::Color& Magick::Color::operator=(const std::string &color_)
          _pixelType=RGBPixel;
     }
   else
-    {
-      _isValid = false;
-      throwException(exception);
-    }
-  (void) DestroyExceptionInfo( &exception );
+    _isValid = false;
+  ThrowPPException;
 
   return(*this);
 }

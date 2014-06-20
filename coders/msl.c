@@ -629,7 +629,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     *draw_info;
 
   ExceptionInfo
-    exception;
+    *exception;
 
   GeometryInfo
     geometry_info;
@@ -665,7 +665,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.startElement(%s",tag);
-  GetExceptionInfo(&exception);
+  exception=AcquireExceptionInfo();
   msl_info=(MSLInfo *) context;
   n=msl_info->n;
   keyword=(const char *) NULL;
@@ -7322,6 +7322,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   }
   if ( value != NULL )
     value=DestroyString(value);
+  (void) DestroyExceptionInfo(exception);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
 }
 

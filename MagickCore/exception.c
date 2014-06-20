@@ -107,12 +107,12 @@ MagickExport ExceptionInfo *AcquireExceptionInfo(void)
   exception=(ExceptionInfo *) AcquireMagickMemory(sizeof(*exception));
   if (exception == (ExceptionInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  GetExceptionInfo(exception);
+  InitializeExceptionInfo(exception);
   exception->relinquish=MagickTrue;
   return(exception);
 }
 
-/*
+/*l
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -247,7 +247,7 @@ MagickExport ExceptionInfo *CloneExceptionInfo(ExceptionInfo *exception)
   clone_exception=(ExceptionInfo *) AcquireMagickMemory(sizeof(*exception));
   if (clone_exception == (ExceptionInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  GetExceptionInfo(clone_exception);
+  InitializeExceptionInfo(clone_exception);
   InheritException(clone_exception,exception);
   clone_exception->relinquish=MagickTrue;
   return(clone_exception);
@@ -426,38 +426,6 @@ MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
       exception=(ExceptionInfo *) RelinquishMagickMemory(exception);
     }
   return(exception);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t E x c e p t i o n I n f o                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetExceptionInfo() initializes an exception to default values.
-%
-%  The format of the GetExceptionInfo method is:
-%
-%      GetExceptionInfo(ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o exception: the exception info.
-%
-*/
-MagickExport void GetExceptionInfo(ExceptionInfo *exception)
-{
-  assert(exception != (ExceptionInfo *) NULL);
-  (void) ResetMagickMemory(exception,0,sizeof(*exception));
-  exception->severity=UndefinedException;
-  exception->exceptions=(void *) NewLinkedList(0);
-  exception->semaphore=AcquireSemaphoreInfo();
-  exception->signature=MagickSignature;
 }
 
 /*
@@ -668,6 +636,38 @@ MagickExport void InheritException(ExceptionInfo *exception,
       relative->exceptions);
   }
   UnlockSemaphoreInfo(relative->semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I n i t i a l i z e t E x c e p t i o n I n f o                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InitializeExceptionInfo() initializes an exception to default values.
+%
+%  The format of the InitializeExceptionInfo method is:
+%
+%      InitializeExceptionInfo(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: the exception info.
+%
+*/
+MagickPrivate void InitializeExceptionInfo(ExceptionInfo *exception)
+{
+  assert(exception != (ExceptionInfo *) NULL);
+  (void) ResetMagickMemory(exception,0,sizeof(*exception));
+  exception->severity=UndefinedException;
+  exception->exceptions=(void *) NewLinkedList(0);
+  exception->semaphore=AcquireSemaphoreInfo();
+  exception->signature=MagickSignature;
 }
 
 /*

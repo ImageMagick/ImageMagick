@@ -144,7 +144,7 @@ Magick::ImageMoments::ImageMoments(const MagickCore::Image *image)
     channel_moments;
 
   GetPPException;
-  channel_moments=GetImageMoments(image,&exceptionInfo);
+  channel_moments=GetImageMoments(image,exceptionInfo);
   if (channel_moments != (MagickCore::ChannelMoments *) NULL)
     {
       switch(image->colorspace)
