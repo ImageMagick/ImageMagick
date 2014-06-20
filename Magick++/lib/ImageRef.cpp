@@ -22,7 +22,7 @@ Magick::ImageRef::ImageRef(void)
     _mutexLock()
 {
   GetPPException;
-  _image=AcquireImage(_options->imageInfo(),&exceptionInfo);
+  _image=AcquireImage(_options->imageInfo(),exceptionInfo);
   ThrowPPException;
 }
 

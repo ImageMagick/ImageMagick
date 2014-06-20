@@ -17,24 +17,20 @@
 
 Magick::Pixels::Pixels(Magick::Image &image_)
   : _image(image_),
-    _view(AcquireVirtualCacheView(_image.image(),&_exception)),
     _x(0),
     _y(0),
     _columns(0),
     _rows(0)
 {
-  GetExceptionInfo(&_exception);
-
-  if (!_view)
-    throwExceptionExplicit(OptionError,"Empty view detected.");
+  GetPPException;
+    _view=AcquireVirtualCacheView(_image.image(),exceptionInfo),
+  ThrowPPException;
 }
 
 Magick::Pixels::~Pixels(void)
 {
   if (_view)
     _view=DestroyCacheView(_view);
-  
-  (void) DestroyExceptionInfo(&_exception);
 }
 
 Magick::Quantum* Magick::Pixels::get(const ssize_t x_,const ssize_t y_,
@@ -45,11 +41,10 @@ Magick::Quantum* Magick::Pixels::get(const ssize_t x_,const ssize_t y_,
   _columns=columns_;
   _rows=rows_;
 
+  GetPPException;
   Quantum* pixels=GetCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
-    &_exception);
-
-  if (!pixels)
-    throwException(_exception);
+    exceptionInfo);
+  ThrowPPException;
 
   return pixels;
 }
@@ -62,11 +57,10 @@ const Magick::Quantum* Magick::Pixels::getConst(const ssize_t x_,
   _columns=columns_;
   _rows=rows_;
 
+  GetPPException;
   const Quantum* pixels=GetCacheViewVirtualPixels(_view,x_,y_,columns_,rows_,
-    &_exception);
-
-  if (!pixels)
-    throwException(_exception);
+    exceptionInfo);
+  ThrowPPException;
 
   return pixels;
 }
@@ -86,19 +80,19 @@ Magick::Quantum* Magick::Pixels::set(const ssize_t x_,const ssize_t y_,
   _columns=columns_;
   _rows=rows_;
 
+  GetPPException;
   Quantum* pixels=QueueCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
-    &_exception);
-
-  if (!pixels)
-    throwException(_exception);
+    exceptionInfo);
+  ThrowPPException;
 
   return pixels;
 }
 
 void Magick::Pixels::sync(void)
 {
-  if(!SyncCacheViewAuthenticPixels(_view,&_exception))
-    throwException(_exception);
+  GetPPException;
+  SyncCacheViewAuthenticPixels(_view,exceptionInfo);
+  ThrowPPException;
 }
 
 // Return pixel colormap index array
@@ -198,8 +192,8 @@ void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
 
   GetPPException;
   MagickCore::ExportImagePixels(image_.image(),x_,y_,width_,height_,
-    map_.c_str(),type_,_data,&exceptionInfo);
-  if (exceptionInfo.severity != UndefinedException)
+    map_.c_str(),type_,_data,exceptionInfo);
+  if (exceptionInfo->severity != UndefinedException)
     relinquish();
   ThrowPPException;
 }

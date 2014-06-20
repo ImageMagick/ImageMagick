@@ -74,7 +74,6 @@ namespace Magick
     ::ssize_t                 _y;         // Top ordinate of view
     size_t                    _columns;   // Width of view
     size_t                    _rows;      // Height of view
-    MagickCore::ExceptionInfo _exception; // Any thrown exception
 
   }; // class Pixels
 

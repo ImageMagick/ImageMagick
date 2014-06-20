@@ -862,9 +862,9 @@ static void ipa_device_begin(wmfAPI * API)
         *image_info;
 
       ExceptionInfo
-        exception;
+        *exception;
 
-      GetExceptionInfo(&exception);
+      exception=AcquireExceptionInfo();
 
       image_info = CloneImageInfo((ImageInfo *) 0);
       (void) CopyMagickString(image_info->filename,ddata->image_info->texture,
@@ -872,7 +872,8 @@ static void ipa_device_begin(wmfAPI * API)
       if ( ddata->image_info->size )
         CloneString(&image_info->size,ddata->image_info->size);
 
-      image = ReadImage(image_info,&exception);
+      image = ReadImage(image_info,exception);
+      (void) DestroyExceptionInfo(exception);
       image_info=DestroyImageInfo(image_info);
       if (image)
         {
@@ -1860,13 +1861,8 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
             const Image
               *image;
 
-            ExceptionInfo
-              exception;
-
             MagickWand
               *magick_wand;
-
-            GetExceptionInfo(&exception);
 
             image = (Image*)brush_bmp->data;
 

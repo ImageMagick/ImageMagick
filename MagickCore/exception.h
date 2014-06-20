@@ -161,7 +161,6 @@ extern MagickExport MagickBooleanType
 extern MagickExport void
   CatchException(ExceptionInfo *),
   ClearMagickException(ExceptionInfo *),
-  GetExceptionInfo(ExceptionInfo *),
   InheritException(ExceptionInfo *,const ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),
   MagickFatalError(const ExceptionType,const char *,const char *),

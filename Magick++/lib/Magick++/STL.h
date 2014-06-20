@@ -1914,13 +1914,9 @@ namespace Magick
   template <class InputIterator>
   void animateImages( InputIterator first_,
           InputIterator last_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickCore::AnimateImages( first_->imageInfo(), first_->image() );
     unlinkImages( first_, last_ );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
   // Append images from list into single image in either horizontal or
@@ -1930,16 +1926,14 @@ namespace Magick
          InputIterator first_,
          InputIterator last_,
          bool stack_ = false) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     linkImages( first_, last_ );
     MagickCore::Image* image = MagickCore::AppendImages( first_->image(),
                    (MagickBooleanType) stack_,
-                   &exceptionInfo ); 
+                   exceptionInfo ); 
     unlinkImages( first_, last_ );
     appendedImage_->replaceImage( image );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Average a set of images.
@@ -1948,15 +1942,13 @@ namespace Magick
   void averageImages( Image *averagedImage_,
           InputIterator first_,
           InputIterator last_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     linkImages( first_, last_ );
     MagickCore::Image* image = MagickCore::EvaluateImages( first_->image(),
-      MagickCore::MeanEvaluateOperator, &exceptionInfo );
+      MagickCore::MeanEvaluateOperator, exceptionInfo );
     unlinkImages( first_, last_ );
     averagedImage_->replaceImage( image );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Merge a sequence of images.
@@ -1968,13 +1960,12 @@ namespace Magick
   void coalesceImages( Container *coalescedImages_,
                        InputIterator first_,
                        InputIterator last_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     // Build image list
     linkImages( first_, last_ );
     MagickCore::Image* images = MagickCore::CoalesceImages( first_->image(),
-                                                          &exceptionInfo);
+                                                          exceptionInfo);
     // Unlink image list
     unlinkImages( first_, last_ );
 
@@ -1985,8 +1976,7 @@ namespace Magick
     insertImages( coalescedImages_, images );
 
     // Report any error
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Return format coders matching specified conditions.
@@ -2006,10 +1996,9 @@ namespace Magick
                       ) {
     // Obtain first entry in MagickInfo list
     size_t number_formats;
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     char **coder_list =
-      MagickCore::GetMagickList( "*", &number_formats, &exceptionInfo );
+      MagickCore::GetMagickList( "*", &number_formats, exceptionInfo );
     if( !coder_list )
       {
         throwException( exceptionInfo );
@@ -2023,7 +2012,7 @@ namespace Magick
     for ( ::ssize_t i=0; i < (::ssize_t) number_formats; i++)
       {
         const MagickCore::MagickInfo *magick_info =
-          MagickCore::GetMagickInfo( coder_list[i], &exceptionInfo );
+          MagickCore::GetMagickInfo( coder_list[i], exceptionInfo );
         coder_list[i]=(char *)
           MagickCore::RelinquishMagickMemory( coder_list[i] );
 
@@ -2062,8 +2051,7 @@ namespace Magick
           }
       }
     coder_list=(char **) MagickCore::RelinquishMagickMemory( coder_list );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   //
@@ -2109,15 +2097,13 @@ namespace Magick
   template <class Container >
   void colorHistogram( Container *histogram_, const Image image)
   {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     // Obtain histogram array
     size_t colors;
     MagickCore::PixelInfo *histogram_array = 
-      MagickCore::GetImageHistogram( image.constImage(), &colors, &exceptionInfo );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+      MagickCore::GetImageHistogram( image.constImage(), &colors, exceptionInfo );
+    ThrowPPException;
 
     // Clear out container
     histogram_->clear();
@@ -2143,14 +2129,12 @@ namespace Magick
                       InputIterator first_,
                       InputIterator last_,
                       const ChannelType channel_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     linkImages( first_, last_ );
-    MagickCore::Image* image = CombineImages( first_->image(), channel_, &exceptionInfo );
+    MagickCore::Image* image = CombineImages( first_->image(), channel_, exceptionInfo );
     unlinkImages( first_, last_ );
     combinedImage_->replaceImage( image );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Break down an image sequence into constituent parts.  This is
@@ -2159,13 +2143,12 @@ namespace Magick
   void deconstructImages( Container *deconstructedImages_,
                           InputIterator first_,
                           InputIterator last_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     // Build image list
     linkImages( first_, last_ );
     MagickCore::Image* images = DeconstructImages( first_->image(),
-                                                   &exceptionInfo);
+                                                   exceptionInfo);
     // Unlink image list
     unlinkImages( first_, last_ );
 
@@ -2176,8 +2159,7 @@ namespace Magick
     insertImages( deconstructedImages_, images );
 
     // Report any error
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   //
@@ -2186,13 +2168,11 @@ namespace Magick
   template <class InputIterator>
   void displayImages( InputIterator first_,
           InputIterator last_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     linkImages( first_, last_ );
     MagickCore::DisplayImages( first_->imageInfo(), first_->image() );
     unlinkImages( first_, last_ );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Applies a value to the image with an arithmetic, relational,
@@ -2204,14 +2184,12 @@ namespace Magick
                        InputIterator first_,
                        InputIterator last_,
                        const MagickEvaluateOperator operator_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     linkImages( first_, last_ );
-    MagickCore::Image* image = EvaluateImages( first_->image(), operator_, &exceptionInfo );
+    MagickCore::Image* image = EvaluateImages( first_->image(), operator_, exceptionInfo );
     unlinkImages( first_, last_ );
     evaluatedImage_->replaceImage( image );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Merge a sequence of image frames which represent image layers.
@@ -2220,15 +2198,13 @@ namespace Magick
   void flattenImages( Image *flattendImage_,
           InputIterator first_,
           InputIterator last_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     linkImages( first_, last_ );
     MagickCore::Image* image = MagickCore::MergeImageLayers( first_->image(),
-      FlattenLayer,&exceptionInfo );
+      FlattenLayer,exceptionInfo );
     unlinkImages( first_, last_ );
     flattendImage_->replaceImage( image );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Implements the discrete Fourier transform (DFT) of the image either as a
@@ -2236,12 +2212,11 @@ namespace Magick
   template <class Container >
   void forwardFourierTransformImage( Container *fourierImages_,
     const Image &image_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     // Build image list
     MagickCore::Image* images = ForwardFourierTransformImage(
-      image_.constImage(), MagickTrue, &exceptionInfo);
+      image_.constImage(), MagickTrue, exceptionInfo);
 
     // Ensure container is empty
     fourierImages_->clear();
@@ -2250,19 +2225,17 @@ namespace Magick
     insertImages( fourierImages_, images );
 
     // Report any error
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
   template <class Container >
   void forwardFourierTransformImage( Container *fourierImages_,
     const Image &image_, const bool magnitude_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     // Build image list
     MagickCore::Image* images = ForwardFourierTransformImage(
       image_.constImage(), magnitude_ == true ? MagickTrue : MagickFalse,
-      &exceptionInfo);
+      exceptionInfo);
 
     // Ensure container is empty
     fourierImages_->clear();
@@ -2271,8 +2244,7 @@ namespace Magick
     insertImages( fourierImages_, images );
 
     // Report any error
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Applies a mathematical expression to a sequence of images.
@@ -2280,20 +2252,16 @@ namespace Magick
   void fxImages(Image *fxImage_,InputIterator first_,InputIterator last_,
     const std::string expression)
   {
-    MagickCore::ExceptionInfo
-      exceptionInfo;
-
     MagickCore::Image
       *image;
 
-    MagickCore::GetExceptionInfo(&exceptionInfo);
+    GetPPException;
     linkImages(first_,last_);
     image=FxImageChannel(first_->constImage(),DefaultChannels,
-      expression.c_str(),&exceptionInfo);
+      expression.c_str(),exceptionInfo);
     unlinkImages(first_,last_);
     fxImage_->replaceImage(image);
-    throwException(exceptionInfo);
-    (void) DestroyExceptionInfo(&exceptionInfo);
+    ThrowPPException;
   }
 
   // Replace the colors of a sequence of images with the closest color
@@ -2307,9 +2275,6 @@ namespace Magick
       bool dither_ = false,
       bool measureError_ = false ) {
 
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
-    MagickCore::QuantizeInfo quantizeInfo;
     MagickCore::GetQuantizeInfo( &quantizeInfo );
     quantizeInfo.dither_method = dither_ ? MagickCore::RiemersmaDitherMethod :
       MagickCore::NoDitherMethod;
@@ -2319,18 +2284,16 @@ namespace Magick
     if ( exceptionInfo.severity != MagickCore::UndefinedException )
       {
         unlinkImages( first_, last_ );
-        throwException( exceptionInfo );
       }
 
     MagickCore::Image* image = first_->image();
     while( image )
       {
         // Calculate quantization error
-        MagickCore::ExceptionInfo exceptionInfo;
-        MagickCore::GetExceptionInfo( &exceptionInfo );
+        GetPPException;
         if ( measureError_ )
           {
-            MagickCore::GetImageQuantizeError( image, &exceptionInfo );
+            MagickCore::GetImageQuantizeError( image, exceptionInfo );
             if ( exceptionInfo.severity > MagickCore::UndefinedException )
               {
                 unlinkImages( first_, last_ );
@@ -2339,17 +2302,15 @@ namespace Magick
           }
   
         // Udate DirectClass representation of pixels
-        MagickCore::SyncImage( image, &exceptionInfo );
+        MagickCore::SyncImage( image, exceptionInfo );
         unlinkImages( first_, last_ );
-        throwException( exceptionInfo );
-        (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+        ThrowPPException;
 
         // Next image
         image=image->next;
       }
 
     unlinkImages( first_, last_ );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
 
   // Composes all the image layers from the current given
@@ -2359,14 +2320,12 @@ namespace Magick
                          InputIterator first_,
                          InputIterator last_,
                          const LayerMethod method_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     linkImages( first_, last_ );
-    MagickCore::Image* image = MergeImageLayers( first_->image(), method_, &exceptionInfo );
+    MagickCore::Image* image = MergeImageLayers( first_->image(), method_, exceptionInfo );
     unlinkImages( first_, last_ );
     mergedImage_->replaceImage( image );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Create a composite image by combining several separate images.
@@ -2396,7 +2355,7 @@ namespace Magick
     // Do montage
     GetPPException;
     images=MagickCore::MontageImages(first_->image(),montageInfo,
-      &exceptionInfo);
+      exceptionInfo);
 
     // Unlink linked image list
     unlinkImages(first_,last_);
@@ -2425,13 +2384,12 @@ namespace Magick
         InputIterator first_,
         InputIterator last_,
         size_t frames_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     // Build image list
     linkImages( first_, last_ );
     MagickCore::Image* images = MagickCore::MorphImages( first_->image(), frames_,
-                   &exceptionInfo);
+                   exceptionInfo);
     // Unlink image list
     unlinkImages( first_, last_ );
 
@@ -2442,8 +2400,7 @@ namespace Magick
     insertImages( morphedImages_, images );
 
     // Report any error
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Inlay a number of images to form a single coherent picture.
@@ -2451,15 +2408,13 @@ namespace Magick
   void mosaicImages( Image *mosaicImage_,
          InputIterator first_,
          InputIterator last_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     linkImages( first_, last_ );
     MagickCore::Image* image = MagickCore::MergeImageLayers( first_->image(),
-       MosaicLayer,&exceptionInfo ); 
+       MosaicLayer,exceptionInfo ); 
     unlinkImages( first_, last_ );
     mosaicImage_->replaceImage( image );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Compares each image the GIF disposed forms of the previous image in
@@ -2470,11 +2425,10 @@ namespace Magick
   void optimizeImageLayers( Container *optimizedImages_,
                             InputIterator first_,
                             InputIterator last_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     linkImages( first_, last_ );
-    MagickCore::Image* images = OptimizeImageLayers( first_->image(), &exceptionInfo );
+    MagickCore::Image* images = OptimizeImageLayers( first_->image(), exceptionInfo );
 
     unlinkImages( first_, last_ );
 
@@ -2482,8 +2436,7 @@ namespace Magick
 
     insertImages( optimizedImages_, images );
 
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
   
   // optimizeImagePlusLayers is exactly as optimizeImageLayers, but may
@@ -2493,11 +2446,10 @@ namespace Magick
   void optimizePlusImageLayers( Container *optimizedImages_,
                                 InputIterator first_,
                                 InputIterator last_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     linkImages( first_, last_ );
-    MagickCore::Image* images = OptimizePlusImageLayers( first_->image(), &exceptionInfo );
+    MagickCore::Image* images = OptimizePlusImageLayers( first_->image(), exceptionInfo );
 
     unlinkImages( first_, last_ );
 
@@ -2505,8 +2457,7 @@ namespace Magick
 
     insertImages( optimizedImages_, images );
 
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPDrawException;
   }
 
   // Adds the names of the profiles from the image to the container.
@@ -2533,8 +2484,7 @@ namespace Magick
   void quantizeImages( InputIterator first_,
            InputIterator last_,
            bool measureError_ = false ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     linkImages( first_, last_ );
 
@@ -2543,7 +2493,6 @@ namespace Magick
     if ( exceptionInfo.severity > MagickCore::UndefinedException )
       {
   unlinkImages( first_, last_ );
-  throwException( exceptionInfo );
       }
 
     MagickCore::Image* image = first_->image();
@@ -2551,17 +2500,17 @@ namespace Magick
       {
   // Calculate quantization error
   if ( measureError_ )
-    MagickCore::GetImageQuantizeError( image,  &exceptionInfo );
+    MagickCore::GetImageQuantizeError( image,  exceptionInfo );
 
   // Update DirectClass representation of pixels
-  MagickCore::SyncImage( image, &exceptionInfo );
+  MagickCore::SyncImage( image, exceptionInfo );
 
   // Next image
   image=image->next;
       }
 
     unlinkImages( first_, last_ );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Read images into existing container (appending to container)
@@ -2572,27 +2521,23 @@ namespace Magick
     MagickCore::ImageInfo *imageInfo = MagickCore::CloneImageInfo(0);
     imageSpec_.copy( imageInfo->filename, MaxTextExtent-1 );
     imageInfo->filename[ imageSpec_.length() ] = 0;
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
-    MagickCore::Image* images =  MagickCore::ReadImage( imageInfo, &exceptionInfo );
+    GetPPException;
+    MagickCore::Image* images =  MagickCore::ReadImage( imageInfo, exceptionInfo );
     MagickCore::DestroyImageInfo(imageInfo);
     insertImages( sequence_, images);
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
   template <class Container>
   void readImages( Container *sequence_,
        const Blob &blob_ ) {
     MagickCore::ImageInfo *imageInfo = MagickCore::CloneImageInfo(0);
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     MagickCore::Image *images = MagickCore::BlobToImage( imageInfo,
                    blob_.data(),
-                   blob_.length(), &exceptionInfo );
+                   blob_.length(), exceptionInfo );
     MagickCore::DestroyImageInfo(imageInfo);
     insertImages( sequence_, images );
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Returns a separate grayscale image for each channel specified.
@@ -2600,17 +2545,15 @@ namespace Magick
   void separateImages( Container *separatedImages_,
                        const Image &image_,
                        const ChannelType channel_ ) {
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
-    MagickCore::Image* images = MagickCore::SeparateImages( image_.constImage(), &exceptionInfo );
+    MagickCore::Image* images = MagickCore::SeparateImages( image_.constImage(), exceptionInfo );
 
     separatedImages_->clear();
 
     insertImages( separatedImages_, images );
 
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
   // Smush images from list into single image in either horizontal or
@@ -2625,7 +2568,7 @@ namespace Magick
     GetPPException;
     linkImages(first_,last_);
     newImage=MagickCore::SmushImages(first_->constImage(),
-      (MagickBooleanType) stack_,offset_,&exceptionInfo);
+      (MagickBooleanType) stack_,offset_,exceptionInfo);
     unlinkImages(first_,last_);
     smushedImage_->replaceImage(newImage);
     ThrowPPException;
@@ -2640,24 +2583,22 @@ namespace Magick
 
     first_->adjoin( adjoin_ );
 
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
 
     linkImages( first_, last_ );
     ::ssize_t errorStat = MagickCore::WriteImages( first_->constImageInfo(),
                                             first_->image(),
                                             imageSpec_.c_str(),
-                                            &exceptionInfo );
+                                            exceptionInfo );
     unlinkImages( first_, last_ );
 
     if ( errorStat != false )
       {
-        (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+        (void) MagickCore::DestroyExceptionInfo( exceptionInfo );
         return;
       }
 
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
   // Write images to BLOB
   template <class InputIterator>
@@ -2670,19 +2611,17 @@ namespace Magick
 
     linkImages( first_, last_ );
 
-    MagickCore::ExceptionInfo exceptionInfo;
-    MagickCore::GetExceptionInfo( &exceptionInfo );
+    GetPPException;
     size_t length = 2048; // Efficient size for small images
     void* data = MagickCore::ImagesToBlob( first_->imageInfo(),
            first_->image(),
            &length,
-           &exceptionInfo);
+           exceptionInfo);
     blob_->updateNoCopy( data, length, Magick::Blob::MallocAllocator );
 
     unlinkImages( first_, last_ );
 
-    throwException( exceptionInfo );
-    (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+    ThrowPPException;
   }
 
 } // namespace Magick

@@ -1212,7 +1212,6 @@ namespace Magick
   using MagickCore::GetCacheViewVirtualPixels;
   using MagickCore::GetColorTuple;
   using MagickCore::GetDrawInfo;
-  using MagickCore::GetExceptionInfo;
   using MagickCore::GetGeometry;
   using MagickCore::GetImageArtifact;
   using MagickCore::GetImageMoments;
@@ -1458,8 +1457,8 @@ namespace Magick
 //////////////////////////////////////////////////////////////////////
 #define GetPPException \
   MagickCore::ExceptionInfo \
-    exceptionInfo; \
-  MagickCore::GetExceptionInfo(&exceptionInfo)
+    *exceptionInfo; \
+  exceptionInfo=MagickCore::AcquireExceptionInfo();
 #define ClonePPDrawException(wand) \
   MagickCore::ExceptionInfo \
     *exceptionInfo; \
@@ -1471,10 +1470,10 @@ namespace Magick
     channel_mask; \
   channel_mask=MagickCore::SetImageChannelMask(image(),channel)
 #define ThrowPPDrawException \
-  throwException(*exceptionInfo); \
+  throwException(exceptionInfo); \
   (void) MagickCore::DestroyExceptionInfo(exceptionInfo)
 #define ThrowPPException \
   throwException(exceptionInfo); \
-  (void) MagickCore::DestroyExceptionInfo(&exceptionInfo)
+  (void) MagickCore::DestroyExceptionInfo(exceptionInfo)
 
 #endif // Magick_Include_header
