@@ -2275,16 +2275,14 @@ namespace Magick
       bool dither_ = false,
       bool measureError_ = false ) {
 
+    MagickCore::QuantizeInfo quantizeInfo;
     MagickCore::GetQuantizeInfo( &quantizeInfo );
     quantizeInfo.dither_method = dither_ ? MagickCore::RiemersmaDitherMethod :
       MagickCore::NoDitherMethod;
     linkImages( first_, last_ );
     MagickCore::RemapImages( &quantizeInfo, first_->image(),
         mapImage_.constImage());
-    if ( exceptionInfo.severity != MagickCore::UndefinedException )
-      {
-        unlinkImages( first_, last_ );
-      }
+    unlinkImages( first_, last_ );
 
     MagickCore::Image* image = first_->image();
     while( image )
@@ -2294,7 +2292,7 @@ namespace Magick
         if ( measureError_ )
           {
             MagickCore::GetImageQuantizeError( image, exceptionInfo );
-            if ( exceptionInfo.severity > MagickCore::UndefinedException )
+            if ( exceptionInfo->severity > MagickCore::UndefinedException )
               {
                 unlinkImages( first_, last_ );
                 throwException( exceptionInfo );
@@ -2490,10 +2488,7 @@ namespace Magick
 
     MagickCore::QuantizeImages( first_->quantizeInfo(),
              first_->image() );
-    if ( exceptionInfo.severity > MagickCore::UndefinedException )
-      {
   unlinkImages( first_, last_ );
-      }
 
     MagickCore::Image* image = first_->image();
     while( image != 0 )
