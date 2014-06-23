@@ -10935,7 +10935,7 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry_info.sigma=(double) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            geometry_info.xi=(double) argument_list[3].integer_reference;
+            geometry_info.xi=(double) argument_list[3].real_reference;
           image=MeanShiftImage(image,(size_t) geometry_info.rho,(size_t)
             geometry_info.sigma,geometry_info.xi,exception);
           break;
