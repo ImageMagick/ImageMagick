@@ -1,3 +1,6 @@
+2014-06-23  6.8.9-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.9-4, SVN revision 16055.
+
 2014-06-15  6.8.9-4 Cristy  <quetzlzacatenango@image...>
   * Support RMS argument for -evaluate-sequence and -statistic options.
   * Fix lseek define for a successful compile under 64-bit MinGW.
