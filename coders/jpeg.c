@@ -1095,15 +1095,15 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
   option=GetImageOption(image_info,"jpeg:skip-profile");
   if ((option == (const char *) NULL) ||
-      (GlobExpression("ICC",option,MagickTrue) != MagickFalse))
+      (GlobExpression("ICC",option,MagickTrue) == MagickFalse))
     jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadICCProfile);
   if ((option == (const char *) NULL) ||
-      (GlobExpression("IPTC",option,MagickTrue) != MagickFalse))
+      (GlobExpression("IPTC",option,MagickTrue) == MagickFalse))
     jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadIPTCProfile);
   for (i=1; i < 16; i++)
     if ((i != 2) && (i != 13) && (i != 14))
       if ((option == (const char *) NULL) ||
-          (GlobExpression("APP",option,MagickTrue) != MagickFalse))
+          (GlobExpression("APP",option,MagickTrue) == MagickFalse))
         jpeg_set_marker_processor(&jpeg_info,(int) (JPEG_APP0+i),ReadProfile);
   i=(ssize_t) jpeg_read_header(&jpeg_info,TRUE);
   if ((image_info->colorspace == YCbCrColorspace) ||
