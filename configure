@@ -3694,7 +3694,7 @@ MAGICK_PATCHLEVEL_VERSION=5
 
 MAGICK_VERSION=6.8.9-5
 
-MAGICK_SVN_REVISION=16055:16057M
+MAGICK_SVN_REVISION=16055:16059M
 
 
 # Substitute library versioning
@@ -8024,20 +8024,20 @@ fi
 
 
 
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking CFLAGS for maximum warnings" >&5
 $as_echo_n "checking CFLAGS for maximum warnings... " >&6; }
 if ${ac_cv_cflags_warn_all+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_cv_cflags_warn_all="no, unknown"
- ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
- ac_save_CFLAGS="$CFLAGS"
-for ac_arg in "-pedantic  % -Wall"          "-xstrconst % -v"             "-std1      % -verbose -w0 -warnprotos"    "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd"    "-ansi -ansiE % -fullwarn"    "+ESlit     % +w1"            "-Xc        % -pvctl,fullmsg"    "-h conform % -h msglevel 2"    #
+ac_save_CFLAGS="$CFLAGS"
+for ac_arg in "-warn all  % -warn all"      "-pedantic  % -Wall"          "-xstrconst % -v"             "-std1      % -verbose -w0 -warnprotos"    "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd"    "-ansi -ansiE % -fullwarn"    "+ESlit     % +w1"            "-Xc        % -pvctl,fullmsg"    "-h conform % -h msglevel 2"    #
 do CFLAGS="$ac_save_CFLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -8055,37 +8055,46 @@ if ac_fn_c_try_compile "$LINENO"; then :
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 done
- CFLAGS="$ac_save_CFLAGS"
- ac_ext=c
+CFLAGS="$ac_save_CFLAGS"
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cflags_warn_all" >&5
+$as_echo "$ac_cv_cflags_warn_all" >&6; }
+
+
+case ".$ac_cv_cflags_warn_all" in
+     .ok|.ok,*)  ;;
+   .|.no|.no,*)  ;;
+   *) if ${CFLAGS+:} false; then :
+  case " $CFLAGS " in
+    *" $ac_cv_cflags_warn_all "*)
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains \$ac_cv_cflags_warn_all"; } >&5
+  (: CFLAGS already contains $ac_cv_cflags_warn_all) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+      ;;
+    *)
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS \$ac_cv_cflags_warn_all\""; } >&5
+  (: CFLAGS="$CFLAGS $ac_cv_cflags_warn_all") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+      CFLAGS="$CFLAGS $ac_cv_cflags_warn_all"
+      ;;
+   esac
+else
+  CFLAGS="$ac_cv_cflags_warn_all"
+fi
+ ;;
+esac
+
+ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cflags_warn_all" >&5
-$as_echo "$ac_cv_cflags_warn_all" >&6; }
-case ".$ac_cv_cflags_warn_all" in
-     .ok|.ok,*)  ;;
-   .|.no|.no,*)
- ;;
-   *)
-   if echo " $CFLAGS " | grep " $ac_cv_cflags_warn_all " 2>&1 >/dev/null
-   then { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS does contain \$ac_cv_cflags_warn_all"; } >&5
-  (: CFLAGS does contain $ac_cv_cflags_warn_all) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-   else { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS \$ac_cv_cflags_warn_all\""; } >&5
-  (: CFLAGS="$CFLAGS $ac_cv_cflags_warn_all") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-                      CFLAGS="$CFLAGS $ac_cv_cflags_warn_all"
-   fi
- ;;
-esac
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether ${MAKE-make} sets \$(MAKE)" >&5
@@ -8308,11 +8317,12 @@ $as_echo "#define HAVE___ATTRIBUTE__ 1" >>confdefs.h
 
 
 
+
 # Check whether --with-gcc-arch was given.
 if test "${with_gcc_arch+set}" = set; then :
   withval=$with_gcc_arch; ax_gcc_arch=$withval
 else
-  ax_gcc_arch=no
+  ax_gcc_arch=yes
 fi
 
 
@@ -8332,7 +8342,7 @@ if test "x$ax_gcc_arch" = xyes; then
 ax_gcc_arch=""
 if test "$cross_compiling" = no; then
 case $host_cpu in
-  i[3456]86*|x86_64*) # use cpuid codes
+  i[3456]86*|x86_64*|amd64*) # use cpuid codes
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -8448,24 +8458,24 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
           case $ax_cv_gcc_x86_cpuid_1 in
 	    *5[48]?:*:*:*) ax_gcc_arch="pentium-mmx pentium" ;;
 	    *5??:*:*:*) ax_gcc_arch=pentium ;;
-	    *0?6[3456]?:*:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
-	    *0?6a?:*[01]:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
-	    *0?6a?:*[234]:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
-	    *0?6[9de]?:*:*:*) ax_gcc_arch="pentium-m pentium3 pentiumpro" ;;
-	    *0?6[78b]?:*:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
-	    *0?6f?:*:*:*|*1?66?:*:*:*) ax_gcc_arch="core2 pentium-m pentium3 pentiumpro" ;;
 	    *1?6[7d]?:*:*:*) ax_gcc_arch="penryn core2 pentium-m pentium3 pentiumpro" ;;
 	    *1?6[aef]?:*:*:*|*2?6[5cef]?:*:*:*) ax_gcc_arch="corei7 core2 pentium-m pentium3 pentiumpro" ;;
 	    *1?6c?:*:*:*|*[23]?66?:*:*:*) ax_gcc_arch="atom core2 pentium-m pentium3 pentiumpro" ;;
 	    *2?6[ad]?:*:*:*) ax_gcc_arch="corei7-avx corei7 core2 pentium-m pentium3 pentiumpro" ;;
-	    *0?6??:*:*:*) ax_gcc_arch=pentiumpro ;;
-	    *6??:*:*:*) ax_gcc_arch="core2 pentiumpro" ;;
-	    ?000?f3[347]:*:*:*|?000?f41347:*:*:*|?000?f6?:*:*:*)
+	    *[1-9a-f]?6??:*:*:*) ax_gcc_arch="core2 pentiumpro" ;;
+	    *6[3456]?:*:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
+	    *6a?:*[01]:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
+	    *6a?:*[234]:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
+	    *6[9de]?:*:*:*) ax_gcc_arch="pentium-m pentium3 pentiumpro" ;;
+	    *6[78b]?:*:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
+	    *6f?:*:*:*) ax_gcc_arch="core2 pentium-m pentium3 pentiumpro" ;;
+	    *6??:*:*:*) ax_gcc_arch=pentiumpro ;;
+	    *f3[347]:*:*:*|*f41347:*:*:*|*f6?:*:*:*)
 		case $host_cpu in
 	          x86_64*) ax_gcc_arch="nocona pentium4 pentiumpro" ;;
 	          *) ax_gcc_arch="prescott pentium4 pentiumpro" ;;
 	        esac ;;
-	    ?000?f??:*:*:*) ax_gcc_arch="pentium4 pentiumpro";;
+	    *f??:*:*:*) ax_gcc_arch="pentium4 pentiumpro";;
           esac ;;
        *:68747541:*:*) # AMD
           case $ax_cv_gcc_x86_cpuid_1 in
@@ -8537,13 +8547,13 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 			ax_gcc_arch="athlon-xp athlon-4 athlon k7" ;;
                  *) ax_gcc_arch="athlon-4 athlon k7" ;;
 	       esac ;;
-	    ?00??f[4cef8b]?:*:*:*) ax_gcc_arch="athlon64 k8" ;;
-	    ?00??f5?:*:*:*) ax_gcc_arch="opteron k8" ;;
-	    ?00??f7?:*:*:*) ax_gcc_arch="athlon-fx opteron k8" ;;
-	    ?00??f??:*:*:*) ax_gcc_arch="k8" ;;
-	    ?05??f??:*:*:*) ax_gcc_arch="btver1 amdfam10 k8" ;;
-	    ?06??f??:*:*:*) ax_gcc_arch="bdver1 amdfam10 k8" ;;
-	    *f??:*:*:*) ax_gcc_arch="amdfam10 k8" ;;
+	    *5??f??:*:*:*) ax_gcc_arch="btver1 amdfam10 k8" ;;
+	    *6??f??:*:*:*) ax_gcc_arch="bdver1 amdfam10 k8" ;;
+	    *[1-9a-f]??f??:*:*:*) ax_gcc_arch="amdfam10 k8" ;;
+	    *f[4cef8b]?:*:*:*) ax_gcc_arch="athlon64 k8" ;;
+	    *f5?:*:*:*) ax_gcc_arch="opteron k8" ;;
+	    *f7?:*:*:*) ax_gcc_arch="athlon-fx opteron k8" ;;
+	    *f??:*:*:*) ax_gcc_arch="k8" ;;
           esac ;;
 	*:746e6543:*:*) # IDT
 	   case $ax_cv_gcc_x86_cpuid_1 in
@@ -8605,7 +8615,7 @@ fi
 
 
      cputype=`(((grep cpu /proc/cpuinfo | cut -d: -f2) ; ($PRTDIAG -v |grep -i sparc) ; grep -i cpu /var/run/dmesg.boot ) | head -n 1) 2> /dev/null`
-     cputype=`echo "$cputype" | tr -d ' -' |tr $as_cr_LETTERS $as_cr_letters`
+     cputype=`echo "$cputype" | tr -d ' -' | $SED 's/SPARCIIi/SPARCII/' |tr $as_cr_LETTERS $as_cr_letters`
      case $cputype in
          *ultrasparciv*) ax_gcc_arch="ultrasparc4 ultrasparc3 ultrasparc v9" ;;
          *ultrasparciii*) ax_gcc_arch="ultrasparc3 ultrasparc v9" ;;
@@ -8627,8 +8637,8 @@ fi
   alphaev79) ax_gcc_arch="ev79 ev7 ev69 ev68 ev67" ;;
 
   powerpc*)
-     cputype=`((grep cpu /proc/cpuinfo | head -n 1 | cut -d: -f2 | cut -d, -f1 | sed 's/ //g') ; /usr/bin/machine ; /bin/machine; grep CPU /var/run/dmesg.boot | head -n 1 | cut -d" " -f2) 2> /dev/null`
-     cputype=`echo $cputype | sed -e 's/ppc//g;s/ *//g'`
+     cputype=`((grep cpu /proc/cpuinfo | head -n 1 | cut -d: -f2 | cut -d, -f1 | $SED 's/ //g') ; /usr/bin/machine ; /bin/machine; grep CPU /var/run/dmesg.boot | head -n 1 | cut -d" " -f2) 2> /dev/null`
+     cputype=`echo $cputype | $SED -e 's/ppc//g;s/ *//g'`
      case $cputype in
        *750*) ax_gcc_arch="750 G3" ;;
        *740[0-9]*) ax_gcc_arch="$cputype 7400 G4" ;;
@@ -8954,6 +8964,7 @@ else
            ibm:       __xlc__,__xlC__,__IBMC__,__IBMCPP__
            pathscale: __PATHCC__,__PATHSCALE__
            clang:     __clang__
+           fujitsu:   __FUJITSU
            gnu:       __GNUC__
            sun:       __SUNPRO_C,__SUNPRO_CC
            hp:        __HP_cc,__HP_aCC
@@ -9003,20 +9014,20 @@ $as_echo "$ax_cv_c_compiler_vendor" >&6; }
 # The AX_CFLAGS_WARN_ALL macro doesn't currently work for sunpro
 # compiler.
 if test "$ax_cv_c_compiler_vendor" != "sun"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking CFLAGS for maximum warnings" >&5
-$as_echo_n "checking CFLAGS for maximum warnings... " >&6; }
-if ${ac_cv_cflags_warn_all+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_cv_cflags_warn_all="no, unknown"
- ac_ext=c
+  ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
- ac_save_CFLAGS="$CFLAGS"
-for ac_arg in "-pedantic  % -Wall"          "-xstrconst % -v"             "-std1      % -verbose -w0 -warnprotos"    "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd"    "-ansi -ansiE % -fullwarn"    "+ESlit     % +w1"            "-Xc        % -pvctl,fullmsg"    "-h conform % -h msglevel 2"    #
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking CFLAGS for maximum warnings" >&5
+$as_echo_n "checking CFLAGS for maximum warnings... " >&6; }
+if ${ac_cv_cflags_warn_all+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_cv_cflags_warn_all="no, unknown"
+ac_save_CFLAGS="$CFLAGS"
+for ac_arg in "-warn all  % -warn all"      "-pedantic  % -Wall"          "-xstrconst % -v"             "-std1      % -verbose -w0 -warnprotos"    "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd"    "-ansi -ansiE % -fullwarn"    "+ESlit     % +w1"            "-Xc        % -pvctl,fullmsg"    "-h conform % -h msglevel 2"    #
 do CFLAGS="$ac_save_CFLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -9034,37 +9045,46 @@ if ac_fn_c_try_compile "$LINENO"; then :
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 done
- CFLAGS="$ac_save_CFLAGS"
- ac_ext=c
+CFLAGS="$ac_save_CFLAGS"
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cflags_warn_all" >&5
+$as_echo "$ac_cv_cflags_warn_all" >&6; }
+
+
+case ".$ac_cv_cflags_warn_all" in
+     .ok|.ok,*)  ;;
+   .|.no|.no,*)  ;;
+   *) if ${CFLAGS+:} false; then :
+  case " $CFLAGS " in
+    *" $ac_cv_cflags_warn_all "*)
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains \$ac_cv_cflags_warn_all"; } >&5
+  (: CFLAGS already contains $ac_cv_cflags_warn_all) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+      ;;
+    *)
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS \$ac_cv_cflags_warn_all\""; } >&5
+  (: CFLAGS="$CFLAGS $ac_cv_cflags_warn_all") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+      CFLAGS="$CFLAGS $ac_cv_cflags_warn_all"
+      ;;
+   esac
+else
+  CFLAGS="$ac_cv_cflags_warn_all"
+fi
+ ;;
+esac
+
+ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cflags_warn_all" >&5
-$as_echo "$ac_cv_cflags_warn_all" >&6; }
-case ".$ac_cv_cflags_warn_all" in
-     .ok|.ok,*)  ;;
-   .|.no|.no,*)
- ;;
-   *)
-   if echo " $CFLAGS " | grep " $ac_cv_cflags_warn_all " 2>&1 >/dev/null
-   then { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS does contain \$ac_cv_cflags_warn_all"; } >&5
-  (: CFLAGS does contain $ac_cv_cflags_warn_all) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-   else { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS \$ac_cv_cflags_warn_all\""; } >&5
-  (: CFLAGS="$CFLAGS $ac_cv_cflags_warn_all") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-                      CFLAGS="$CFLAGS $ac_cv_cflags_warn_all"
-   fi
- ;;
-esac
 
 fi
 
@@ -9396,6 +9416,37 @@ case ${host_os} in
         ;;
 esac
 
+# Clang doesn't consider unrecognized options an error unless we specify
+# -Werror. We throw in some extra Clang-specific options to ensure that
+# this doesn't happen for GCC, which also accepts -Werror.
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if compiler needs -Werror to reject unknown flags" >&5
+$as_echo_n "checking if compiler needs -Werror to reject unknown flags... " >&6; }
+save_CFLAGS="$CFLAGS"
+ax_pthread_extra_flags="-Werror"
+CFLAGS="$CFLAGS $ax_pthread_extra_flags -Wunknown-warning-option -Wsizeof-array-argument"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+int foo(void);
+int
+main ()
+{
+foo()
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  ax_pthread_extra_flags=
+                   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+CFLAGS="$save_CFLAGS"
+
 if test x"$ax_pthread_ok" = xno; then
 for flag in $ax_pthread_flags; do
 
@@ -9465,7 +9516,7 @@ $as_echo_n "checking for the pthreads library -l$flag... " >&6; }
         save_LIBS="$LIBS"
         save_CFLAGS="$CFLAGS"
         LIBS="$PTHREAD_LIBS $LIBS"
-        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS $ax_pthread_extra_flags"
 
         # Check for various functions.  We must include pthread.h,
         # since some functions may be macros.  (On the Sequent, we
@@ -9563,12 +9614,13 @@ $as_echo_n "checking if more special flags are required for pthreads... " >&6; }
             if test "$GCC" = "yes"; then
                 flag="-D_REENTRANT"
             else
+                # TODO: What about Clang on Solaris?
                 flag="-mt -D_REENTRANT"
             fi
             ;;
         esac
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${flag}" >&5
-$as_echo "${flag}" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $flag" >&5
+$as_echo "$flag" >&6; }
         if test "x$flag" != xno; then
             PTHREAD_CFLAGS="$flag $PTHREAD_CFLAGS"
         fi
@@ -9581,8 +9633,7 @@ else
 
                 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-                    #include <pthread.h>
+#include <pthread.h>
 int
 main ()
 {
@@ -9704,7 +9755,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
         DEF_THREAD="$PTHREAD_CFLAGS"
         CFLAGS="$CFLAGS $DEF_THREAD"
         CXXFLAGS="$CXXFLAGS $DEF_THREAD"
-	THREAD_LIBS="$PTHREAD_LIBS"
+        THREAD_LIBS="$PTHREAD_LIBS"
         if test "$CC" != "$PTHREAD_CC"; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads." >&5
 $as_echo "$as_me: WARNING: Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads." >&2;}
@@ -9906,6 +9957,37 @@ case ${host_os} in
         ;;
 esac
 
+# Clang doesn't consider unrecognized options an error unless we specify
+# -Werror. We throw in some extra Clang-specific options to ensure that
+# this doesn't happen for GCC, which also accepts -Werror.
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if compiler needs -Werror to reject unknown flags" >&5
+$as_echo_n "checking if compiler needs -Werror to reject unknown flags... " >&6; }
+save_CFLAGS="$CFLAGS"
+ax_pthread_extra_flags="-Werror"
+CFLAGS="$CFLAGS $ax_pthread_extra_flags -Wunknown-warning-option -Wsizeof-array-argument"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+int foo(void);
+int
+main ()
+{
+foo()
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  ax_pthread_extra_flags=
+                   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+CFLAGS="$save_CFLAGS"
+
 if test x"$ax_pthread_ok" = xno; then
 for flag in $ax_pthread_flags; do
 
@@ -9975,7 +10057,7 @@ $as_echo_n "checking for the pthreads library -l$flag... " >&6; }
         save_LIBS="$LIBS"
         save_CFLAGS="$CFLAGS"
         LIBS="$PTHREAD_LIBS $LIBS"
-        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS $ax_pthread_extra_flags"
 
         # Check for various functions.  We must include pthread.h,
         # since some functions may be macros.  (On the Sequent, we
@@ -10073,12 +10155,13 @@ $as_echo_n "checking if more special flags are required for pthreads... " >&6; }
             if test "$GCC" = "yes"; then
                 flag="-D_REENTRANT"
             else
+                # TODO: What about Clang on Solaris?
                 flag="-mt -D_REENTRANT"
             fi
             ;;
         esac
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${flag}" >&5
-$as_echo "${flag}" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $flag" >&5
+$as_echo "$flag" >&6; }
         if test "x$flag" != xno; then
             PTHREAD_CFLAGS="$flag $PTHREAD_CFLAGS"
         fi
@@ -10091,8 +10174,7 @@ else
 
                 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-                    #include <pthread.h>
+#include <pthread.h>
 int
 main ()
 {
@@ -25960,8 +26042,7 @@ $as_echo_n "checking whether the compiler implements namespaces... " >&6; }
 if ${ax_cv_cxx_namespaces+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-
- ac_ext=cpp
+  ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
@@ -25970,13 +26051,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 namespace Outer { namespace Inner { int i = 0; }}
-int
-main ()
-{
-using namespace Outer::Inner; return i;
-  ;
-  return 0;
-}
+                                   using namespace Outer::Inner; int foo(void) { return i;}
 _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
   ax_cv_cxx_namespaces=yes
@@ -35527,7 +35602,11 @@ if test "$have_perl" != 'no'; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for perl version" >&5
 $as_echo_n "checking for perl version... " >&6; }
 
-        perl_version=`$PERL --version 2>&1 | $GREP "This is perl" | $SED -e 's/.* v\([0-9]*\.[0-9]*\.[0-9]*\) .*/\1/'`
+        perl_version=`$PERL --version 2>&1 \
+          | $SED -n -e '/This is perl/b inspect
+b
+: inspect
+s/.* (\{0,1\}v\([0-9]*\.[0-9]*\.[0-9]*\))\{0,1\} .*/\1/;p'`
 
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: $perl_version" >&5
 $as_echo "$perl_version" >&6; }
@@ -37967,7 +38046,6 @@ $as_echo X"$ac_prefix_conf_OUT" |
       rm -f "$ac_prefix_conf_OUT"
       mv $tmp/pconfig.h "$ac_prefix_conf_OUT"
     fi
-    cp conftest.prefix _configs.sed
   else
     as_fn_error $? "input file $ac_prefix_conf_INP does not exist - skip generating $ac_prefix_conf_OUT" "$LINENO" 5
   fi
