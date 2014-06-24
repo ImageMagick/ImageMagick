@@ -35,7 +35,7 @@
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 11
+#serial 12
 
 AC_DEFUN([AX_PROG_PERL_VERSION],[
     AC_REQUIRE([AC_PROG_SED])
@@ -46,7 +46,11 @@ AC_DEFUN([AX_PROG_PERL_VERSION],[
 
         AC_MSG_CHECKING([for perl version])
         changequote(<<,>>)
-        perl_version=`$PERL --version 2>&1 | $GREP "This is perl" | $SED -e 's/.* v\([0-9]*\.[0-9]*\.[0-9]*\) .*/\1/'`
+        perl_version=`$PERL --version 2>&1 \
+          | $SED -n -e '/This is perl/b inspect
+b
+: inspect
+s/.* (\{0,1\}v\([0-9]*\.[0-9]*\.[0-9]*\))\{0,1\} .*/\1/;p'`
         changequote([,])
         AC_MSG_RESULT($perl_version)
 
