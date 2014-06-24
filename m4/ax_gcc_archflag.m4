@@ -64,14 +64,15 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 11
+#serial 14
 
 AC_DEFUN([AX_GCC_ARCHFLAG],
 [AC_REQUIRE([AC_PROG_CC])
 AC_REQUIRE([AC_CANONICAL_HOST])
+AC_REQUIRE([AC_PROG_SED])
 
 AC_ARG_WITH(gcc-arch, [AS_HELP_STRING([--with-gcc-arch=<arch>], [use architecture <arch> for gcc -march/-mtune, instead of guessing])],
-	ax_gcc_arch=$withval, ax_gcc_arch=no)
+	ax_gcc_arch=$withval, ax_gcc_arch=yes)
 
 AC_MSG_CHECKING([for gcc architecture flag])
 AC_MSG_RESULT([])
@@ -85,7 +86,7 @@ if test "x$ax_gcc_arch" = xyes; then
 ax_gcc_arch=""
 if test "$cross_compiling" = no; then
 case $host_cpu in
-  i[[3456]]86*|x86_64*) # use cpuid codes
+  i[[3456]]86*|x86_64*|amd64*) # use cpuid codes
      AX_GCC_X86_CPUID(0)
      AX_GCC_X86_CPUID(1)
      case $ax_cv_gcc_x86_cpuid_0 in
@@ -93,24 +94,24 @@ case $host_cpu in
           case $ax_cv_gcc_x86_cpuid_1 in
 	    *5[[48]]?:*:*:*) ax_gcc_arch="pentium-mmx pentium" ;;
 	    *5??:*:*:*) ax_gcc_arch=pentium ;;
-	    *0?6[[3456]]?:*:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
-	    *0?6a?:*[[01]]:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
-	    *0?6a?:*[[234]]:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
-	    *0?6[[9de]]?:*:*:*) ax_gcc_arch="pentium-m pentium3 pentiumpro" ;;
-	    *0?6[[78b]]?:*:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
-	    *0?6f?:*:*:*|*1?66?:*:*:*) ax_gcc_arch="core2 pentium-m pentium3 pentiumpro" ;;
 	    *1?6[[7d]]?:*:*:*) ax_gcc_arch="penryn core2 pentium-m pentium3 pentiumpro" ;;
 	    *1?6[[aef]]?:*:*:*|*2?6[[5cef]]?:*:*:*) ax_gcc_arch="corei7 core2 pentium-m pentium3 pentiumpro" ;;
 	    *1?6c?:*:*:*|*[[23]]?66?:*:*:*) ax_gcc_arch="atom core2 pentium-m pentium3 pentiumpro" ;;
 	    *2?6[[ad]]?:*:*:*) ax_gcc_arch="corei7-avx corei7 core2 pentium-m pentium3 pentiumpro" ;;
-	    *0?6??:*:*:*) ax_gcc_arch=pentiumpro ;;
-	    *6??:*:*:*) ax_gcc_arch="core2 pentiumpro" ;;
-	    ?000?f3[[347]]:*:*:*|?000?f4[1347]:*:*:*|?000?f6?:*:*:*)
+	    *[[1-9a-f]]?6??:*:*:*) ax_gcc_arch="core2 pentiumpro" ;;
+	    *6[[3456]]?:*:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
+	    *6a?:*[[01]]:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
+	    *6a?:*[[234]]:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
+	    *6[[9de]]?:*:*:*) ax_gcc_arch="pentium-m pentium3 pentiumpro" ;;
+	    *6[[78b]]?:*:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
+	    *6f?:*:*:*) ax_gcc_arch="core2 pentium-m pentium3 pentiumpro" ;;
+	    *6??:*:*:*) ax_gcc_arch=pentiumpro ;;
+	    *f3[[347]]:*:*:*|*f4[1347]:*:*:*|*f6?:*:*:*)
 		case $host_cpu in
 	          x86_64*) ax_gcc_arch="nocona pentium4 pentiumpro" ;;
 	          *) ax_gcc_arch="prescott pentium4 pentiumpro" ;;
 	        esac ;;
-	    ?000?f??:*:*:*) ax_gcc_arch="pentium4 pentiumpro";;
+	    *f??:*:*:*) ax_gcc_arch="pentium4 pentiumpro";;
           esac ;;
        *:68747541:*:*) # AMD
           case $ax_cv_gcc_x86_cpuid_1 in
@@ -128,13 +129,13 @@ case $host_cpu in
 			ax_gcc_arch="athlon-xp athlon-4 athlon k7" ;;
                  *) ax_gcc_arch="athlon-4 athlon k7" ;;
 	       esac ;;
-	    ?00??f[[4cef8b]]?:*:*:*) ax_gcc_arch="athlon64 k8" ;;
-	    ?00??f5?:*:*:*) ax_gcc_arch="opteron k8" ;;
-	    ?00??f7?:*:*:*) ax_gcc_arch="athlon-fx opteron k8" ;;
-	    ?00??f??:*:*:*) ax_gcc_arch="k8" ;;
-	    ?05??f??:*:*:*) ax_gcc_arch="btver1 amdfam10 k8" ;;
-	    ?06??f??:*:*:*) ax_gcc_arch="bdver1 amdfam10 k8" ;;
-	    *f??:*:*:*) ax_gcc_arch="amdfam10 k8" ;;
+	    *5??f??:*:*:*) ax_gcc_arch="btver1 amdfam10 k8" ;;
+	    *6??f??:*:*:*) ax_gcc_arch="bdver1 amdfam10 k8" ;;
+	    *[[1-9a-f]]??f??:*:*:*) ax_gcc_arch="amdfam10 k8" ;;
+	    *f[[4cef8b]]?:*:*:*) ax_gcc_arch="athlon64 k8" ;;
+	    *f5?:*:*:*) ax_gcc_arch="opteron k8" ;;
+	    *f7?:*:*:*) ax_gcc_arch="athlon-fx opteron k8" ;;
+	    *f??:*:*:*) ax_gcc_arch="k8" ;;
           esac ;;
 	*:746e6543:*:*) # IDT
 	   case $ax_cv_gcc_x86_cpuid_1 in
@@ -155,7 +156,7 @@ case $host_cpu in
   sparc*)
      AC_PATH_PROG([PRTDIAG], [prtdiag], [prtdiag], [$PATH:/usr/platform/`uname -i`/sbin/:/usr/platform/`uname -m`/sbin/])
      cputype=`(((grep cpu /proc/cpuinfo | cut -d: -f2) ; ($PRTDIAG -v |grep -i sparc) ; grep -i cpu /var/run/dmesg.boot ) | head -n 1) 2> /dev/null`
-     cputype=`echo "$cputype" | tr -d ' -' |tr $as_cr_LETTERS $as_cr_letters`
+     cputype=`echo "$cputype" | tr -d ' -' | $SED 's/SPARCIIi/SPARCII/' |tr $as_cr_LETTERS $as_cr_letters`
      case $cputype in
          *ultrasparciv*) ax_gcc_arch="ultrasparc4 ultrasparc3 ultrasparc v9" ;;
          *ultrasparciii*) ax_gcc_arch="ultrasparc3 ultrasparc v9" ;;
@@ -177,8 +178,8 @@ case $host_cpu in
   alphaev79) ax_gcc_arch="ev79 ev7 ev69 ev68 ev67" ;;
 
   powerpc*)
-     cputype=`((grep cpu /proc/cpuinfo | head -n 1 | cut -d: -f2 | cut -d, -f1 | sed 's/ //g') ; /usr/bin/machine ; /bin/machine; grep CPU /var/run/dmesg.boot | head -n 1 | cut -d" " -f2) 2> /dev/null`
-     cputype=`echo $cputype | sed -e 's/ppc//g;s/ *//g'`
+     cputype=`((grep cpu /proc/cpuinfo | head -n 1 | cut -d: -f2 | cut -d, -f1 | $SED 's/ //g') ; /usr/bin/machine ; /bin/machine; grep CPU /var/run/dmesg.boot | head -n 1 | cut -d" " -f2) 2> /dev/null`
+     cputype=`echo $cputype | $SED -e 's/ppc//g;s/ *//g'`
      case $cputype in
        *750*) ax_gcc_arch="750 G3" ;;
        *740[[0-9]]*) ax_gcc_arch="$cputype 7400 G4" ;;

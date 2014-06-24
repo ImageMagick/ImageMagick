@@ -110,8 +110,8 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 	Magick++/lib/Magick++/Thread.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = \
-	$(MAGICKPP_CPPFLAGS)
+Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = \ 
+	$(MAGICKPP_CPPFLAGS) $(LIBRARY_EXTRA_CPPFLAGS)
 
 magickpptopincdir = $(INCLUDE_PATH)
 

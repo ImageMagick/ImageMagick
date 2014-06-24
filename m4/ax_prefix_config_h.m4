@@ -8,18 +8,14 @@
 #
 # DESCRIPTION
 #
-#   This is a new variant from ac_prefix_config_ this one will use a
-#   lowercase-prefix if the config-define was starting with a
-#   lowercase-char, e.g. "#define const", "#define restrict", or "#define
-#   off_t", (and this one can live in another directory, e.g.
-#   testpkg/config.h therefore I decided to move the output-header to be the
-#   first arg)
+#   Generate an installable config.h.
 #
-#   takes the usual config.h generated header file; looks for each of the
-#   generated "#define SOMEDEF" lines, and prefixes the defined name (ie.
-#   makes it "#define PREFIX_SOMEDEF". The result is written to the output
-#   config.header file. The PREFIX is converted to uppercase for the
-#   conversions.
+#   A package should not normally install its config.h as a system header,
+#   but if it must, this macro can be used to avoid namespace pollution by
+#   making a copy of config.h with a prefix added to all the macro names.
+#
+#   Each "#define SOMEDEF" line of the configuration header has the given
+#   prefix added, in the same case as the first character of the macro name.
 #
 #   Defaults:
 #
@@ -27,9 +23,7 @@
 #     PREFIX = $PACKAGE
 #     ORIG-HEADER, from AM_CONFIG_HEADER(config.h)
 #
-#   Your configure.ac script should contain both macros in this order, and
-#   unlike the earlier variations of this prefix-macro it is okay to place
-#   the AX_PREFIX_CONFIG_H call before the AC_OUTPUT invokation.
+#   Your configure.ac script should contain both macros in this order.
 #
 #   Example:
 #
@@ -42,9 +36,10 @@
 #     AC_OUTPUT(Makefile)                 # creates the "config.h" now
 #                                         # and also mylib/_config.h
 #
-#   if the argument to AX_PREFIX_CONFIG_H would have been omitted then the
-#   default outputfile would have been called simply "testpkg-config.h", but
-#   even under the name "mylib/_config.h" it contains prefix-defines like
+#   If the argument to AX_PREFIX_CONFIG_H would have been omitted then the
+#   default output file would have been called simply "testpkg-config.h",
+#   but even under the name "mylib/_config.h" it contains prefix-defines
+#   like
 #
 #     #ifndef TESTPKG_VERSION
 #     #define TESTPKG_VERSION "0.1.1"
@@ -56,11 +51,10 @@
 #     #define _testpkg_const _const
 #     #endif
 #
-#   and this "mylib/_config.h" can be installed along with other
-#   header-files, which is most convenient when creating a shared library
-#   (that has some headers) where some functionality is dependent on the
-#   OS-features detected at compile-time. No need to invent some
-#   "mylib-confdefs.h.in" manually. :-)
+#   and this "mylib/_config.h" can be installed along with other header
+#   files, which is most convenient when creating a shared library (that has
+#   some headers) whose functionality depends on features detected at
+#   compile-time. No need to invent some "mylib-confdefs.h.in" manually.
 #
 #   Note that some AC_DEFINEs that end up in the config.h file are actually
 #   self-referential - e.g. AC_C_INLINE, AC_C_CONST, and the AC_TYPE_OFF_T
@@ -89,6 +83,7 @@
 #
 # LICENSE
 #
+#   Copyright (c) 2014 Reuben Thomas <rrt@sc3d.org>
 #   Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
 #   Copyright (c) 2008 Marten Svantesson
 #   Copyright (c) 2008 Gerald Point <Gerald.Point@labri.fr>
@@ -119,12 +114,12 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 11
+#serial 15
 
 AC_DEFUN([AX_PREFIX_CONFIG_H],[dnl
 AC_PREREQ([2.62])
 AC_BEFORE([AC_CONFIG_HEADERS],[$0])dnl
-AC_CONFIG_COMMANDS([ifelse($1,,$PACKAGE-config.h,$1)],[dnl
+AC_CONFIG_COMMANDS(m4_default([$1], [$PACKAGE-config.h]),[dnl
 AS_VAR_PUSHDEF([_OUT],[ac_prefix_conf_OUT])dnl
 AS_VAR_PUSHDEF([_DEF],[ac_prefix_conf_DEF])dnl
 AS_VAR_PUSHDEF([_PKG],[ac_prefix_conf_PKG])dnl
@@ -133,12 +128,12 @@ AS_VAR_PUSHDEF([_UPP],[ac_prefix_conf_UPP])dnl
 AS_VAR_PUSHDEF([_INP],[ac_prefix_conf_INP])dnl
 m4_pushdef([_script],[conftest.prefix])dnl
 m4_pushdef([_symbol],[m4_cr_Letters[]m4_cr_digits[]_])dnl
-_OUT=`echo ifelse($1, , $PACKAGE-config.h, $1)`
+_OUT=`echo m4_default([$1], [$PACKAGE-config.h])`
 _DEF=`echo _$_OUT | sed -e "y:m4_cr_letters:m4_cr_LETTERS[]:" -e "s/@<:@^m4_cr_Letters@:>@/_/g"`
-_PKG=`echo ifelse($2, , $PACKAGE, $2)`
+_PKG=`echo m4_default([$2], [$PACKAGE])`
 _LOW=`echo _$_PKG | sed -e "y:m4_cr_LETTERS-:m4_cr_letters[]_:"`
 _UPP=`echo $_PKG | sed -e "y:m4_cr_letters-:m4_cr_LETTERS[]_:"  -e "/^@<:@m4_cr_digits@:>@/s/^/_/"`
-_INP=`echo "ifelse($3,,,$3)" | sed -e 's/ *//'`
+_INP=`echo "$3" | sed -e 's/ *//'`
 if test ".$_INP" = "."; then
    for ac_file in : $CONFIG_HEADERS; do test "_$ac_file" = _: && continue
      case "$ac_file" in
@@ -192,7 +187,6 @@ else
       rm -f "$_OUT"
       mv $tmp/pconfig.h "$_OUT"
     fi
-    cp _script _configs.sed
   else
     AC_MSG_ERROR([input file $_INP does not exist - skip generating $_OUT])
   fi
