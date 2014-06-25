@@ -182,6 +182,7 @@ extern MagickExport MagickBooleanType
   DefineImageOption(ImageInfo *,const char *),
   DeleteImageOption(ImageInfo *,const char *),
   IsCommandOption(const char *),
+  IsOptionMember(const char *,const char *),
   ListCommandOptions(FILE *,const CommandOption,ExceptionInfo *),
   SetImageOption(ImageInfo *,const char *,const char *);
 
