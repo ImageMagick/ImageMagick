@@ -53,6 +53,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
+#include "MagickCore/optioni-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/profile-private.h"
@@ -518,43 +519,21 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
   if ((datum == (const void *) NULL) || (length == 0))
     {
       char
-        **arguments,
-        *names;
-
-      int
-        number_arguments;
-
-      register ssize_t
-        i;
+        *next;
 
       /*
         Delete image profile(s).
       */
-      names=ConstantString(name);
-      (void) SubstituteString(&names,","," ");
-      arguments=StringToArgv(names,&number_arguments);
-      names=DestroyString(names);
-      if (arguments == (char **) NULL)
-        return(MagickTrue);
       ResetImageProfileIterator(image);
-      for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+      for (next=GetNextImageProfile(image); next != (const char *) NULL; )
       {
-        for (i=1; i < (ssize_t) number_arguments; i++)
-        {
-          if ((*arguments[i] == '!') &&
-              (LocaleCompare(name,arguments[i]+1) == 0))
-            break;
-          if (GlobExpression(name,arguments[i],MagickTrue) != MagickFalse)
-            {
-              (void) DeleteImageProfile(image,name);
-              break;
-            }
-        }
-        name=GetNextImageProfile(image);
+        if (IsOptionMember(next,name) != MagickFalse)
+          {
+            (void) DeleteImageProfile(image,name);
+            ResetImageProfileIterator(image);
+          }
+          name=GetNextImageProfile(image);
       }
-      for (i=0; i < (ssize_t) number_arguments; i++)
-        arguments[i]=DestroyString(arguments[i]);
-      arguments=(char **) RelinquishMagickMemory(arguments);
       return(MagickTrue);
     }
   /*
