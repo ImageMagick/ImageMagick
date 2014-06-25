@@ -22,9 +22,6 @@
 extern "C" {
 #endif
 
-extern MagickPrivate MagickBooleanType
-  IsOptionMember(const char *,const char *);
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
