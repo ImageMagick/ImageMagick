@@ -1094,7 +1094,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_create_decompress(&jpeg_info);
   JPEGSourceManager(&jpeg_info,image);
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
-  option=GetImageOption(image_info,"jpeg:skip-profile");
+  option=GetImageOption(image_info,"profile:skip");
   if (IsOptionMember("ICC",option) == MagickFalse)
     jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadICCProfile);
   if (IsOptionMember("IPTC",option) == MagickFalse)
