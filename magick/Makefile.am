@@ -208,6 +208,7 @@ MAGICK_BASE_SRCS = \
 	magick/opencl-private.h \
 	magick/option.c \
 	magick/option.h \
+	magick/option-private.h \
 	magick/paint.c \
 	magick/paint.h \
 	magick/pixel.c \
@@ -437,6 +438,7 @@ MAGICK_NOINST_HDRS = \
 	magick/nt-base-private.h \
 	magick/nt-feature.h \
 	magick/opencl.h \
+	magick/option-private.h \
 	magick/pixel-private.h \
 	magick/quantum-private.h \
 	magick/random-private.h \
