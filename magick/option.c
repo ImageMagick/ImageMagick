@@ -2245,7 +2245,7 @@ MagickExport const char *CommandOptionToMnemonic(const CommandOption option,
 %    o options: one or more options separated by commas.
 %
 */
-MagickPrivate MagickBooleanType IsOptionMember(const char *option,
+MagickExport MagickBooleanType IsOptionMember(const char *option,
   const char *options)
 {
   char
