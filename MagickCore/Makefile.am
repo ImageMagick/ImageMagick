@@ -204,6 +204,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/opencl-private.h \
 	MagickCore/option.c \
 	MagickCore/option.h \
+	MagickCore/option-private.h \
 	MagickCore/paint.c \
 	MagickCore/paint.h \
 	MagickCore/pixel.c \
@@ -450,6 +451,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/nt-base.h \
 	MagickCore/nt-feature.h \
 	MagickCore/opencl-private.h \
+	MagickCore/option-private.h \
  	MagickCore/pixel-private.h \
  	MagickCore/policy-private.h \
  	MagickCore/profile-private.h \

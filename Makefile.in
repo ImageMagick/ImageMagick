@@ -494,7 +494,8 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	MagickCore/nt-base.h MagickCore/nt-base-private.h \
 	MagickCore/nt-feature.h MagickCore/opencl.c \
 	MagickCore/opencl.h MagickCore/opencl-private.h \
-	MagickCore/option.c MagickCore/option.h MagickCore/paint.c \
+	MagickCore/option.c MagickCore/option.h \
+	MagickCore/option-private.h MagickCore/paint.c \
 	MagickCore/paint.h MagickCore/pixel.c MagickCore/pixel.h \
 	MagickCore/pixel-accessor.h MagickCore/pixel-private.h \
 	MagickCore/policy.c MagickCore/policy.h \
@@ -4283,6 +4284,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/opencl-private.h \
 	MagickCore/option.c \
 	MagickCore/option.h \
+	MagickCore/option-private.h \
 	MagickCore/paint.c \
 	MagickCore/paint.h \
 	MagickCore/pixel.c \
@@ -4524,6 +4526,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/nt-base.h \
 	MagickCore/nt-feature.h \
 	MagickCore/opencl-private.h \
+	MagickCore/option-private.h \
  	MagickCore/pixel-private.h \
  	MagickCore/policy-private.h \
  	MagickCore/profile-private.h \

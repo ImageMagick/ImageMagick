@@ -64,6 +64,7 @@
 #include "MagickCore/montage.h"
 #include "MagickCore/morphology.h"
 #include "MagickCore/option.h"
+#include "MagickCore/option-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/property.h"
@@ -2362,6 +2363,66 @@ MagickExport const char *CommandOptionToMnemonic(const CommandOption option,
   if (option_info[i].mnemonic == (const char *) NULL)
     return("undefined");
   return(option_info[i].mnemonic);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s O p t i o n M e m b e r                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsOptionMember() returns MagickTrue if the option is a member of the options
+%  list (e.g. ICC is a member of xmp,icc,iptc).
+%
+%  The format of the IsOptionMember function is:
+%
+%      MagickBooleanType IsOptionMember(const char *option,
+%        const char *options)
+%
+%  A description of each parameter follows:
+%
+%    o option: an option or option expression (e.g. ICC or *).
+%
+%    o options: one or more options separated by commas.
+%
+%
+*/
+MagickPrivate MagickBooleanType IsOptionMember(const char *option,
+  const char *options)
+{
+  char
+    **option_list,
+    *string;
+
+  int
+    number_options;
+
+  register ssize_t
+    i;
+
+  /*
+    Is option a member of the options list?
+  */
+  string=ConstantString(options);
+  (void) SubstituteString(&string,","," ");
+  option_list=StringToArgv(string,&number_options);
+  string=DestroyString(string);
+  if (option_list == (char **) NULL)
+    return(MagickFalse);
+  for (i=1; i < (ssize_t) number_options; i++)
+  {
+    if ((*option_list[i] == '!') &&
+        (LocaleCompare(option,option_list[i]+1) == 0))
+      return(MagickFalse);
+    if (GlobExpression(option,option_list[i],MagickTrue) != MagickFalse)
+      return(MagickTrue);
+  }
+  return(MagickFalse);
 }
 
 /*
