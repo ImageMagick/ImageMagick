@@ -1470,13 +1470,14 @@ am__magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_D
 	magick/morphology-private.h magick/nt-base.h \
 	magick/nt-base-private.h magick/nt-feature.h magick/opencl.c \
 	magick/opencl.h magick/opencl-private.h magick/option.c \
-	magick/option.h magick/paint.c magick/paint.h magick/pixel.c \
-	magick/pixel.h magick/pixel-accessor.h magick/pixel-private.h \
-	magick/policy.c magick/policy.h magick/PreRvIcccm.c \
-	magick/PreRvIcccm.h magick/prepress.c magick/prepress.h \
-	magick/property.c magick/property.h magick/profile.c \
-	magick/profile.h magick/quantize.c magick/quantize.h \
-	magick/quantum.c magick/quantum.h magick/quantum-export.c \
+	magick/option.h magick/option-private.h magick/paint.c \
+	magick/paint.h magick/pixel.c magick/pixel.h \
+	magick/pixel-accessor.h magick/pixel-private.h magick/policy.c \
+	magick/policy.h magick/PreRvIcccm.c magick/PreRvIcccm.h \
+	magick/prepress.c magick/prepress.h magick/property.c \
+	magick/property.h magick/profile.c magick/profile.h \
+	magick/quantize.c magick/quantize.h magick/quantum.c \
+	magick/quantum.h magick/quantum-export.c \
 	magick/quantum-import.c magick/quantum-private.h \
 	magick/random.c magick/random_.h magick/random-private.h \
 	magick/registry.c magick/registry.h magick/resample.c \
@@ -4262,6 +4263,7 @@ MAGICK_BASE_SRCS = \
 	magick/opencl-private.h \
 	magick/option.c \
 	magick/option.h \
+	magick/option-private.h \
 	magick/paint.c \
 	magick/paint.h \
 	magick/pixel.c \
@@ -4486,6 +4488,7 @@ MAGICK_NOINST_HDRS = \
 	magick/nt-base-private.h \
 	magick/nt-feature.h \
 	magick/opencl.h \
+	magick/option-private.h \
 	magick/pixel-private.h \
 	magick/quantum-private.h \
 	magick/random-private.h \
