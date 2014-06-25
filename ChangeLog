@@ -1,3 +1,6 @@
+2014-06-25  6.8.9-5 Cristy  <quetzlzacatenango@image...>
+  * Use -define profile:skip=icc, for example,  to skip color profiles on read.
+
 2014-06-23  6.8.9-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-4, SVN revision 16057.
 

@@ -69,6 +69,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/option.h"
+#include "magick/option-private.h"
 #include "magick/pixel-accessor.h"
 #include "magick/profile.h"
 #include "magick/property.h"
@@ -1059,16 +1060,13 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   JPEGSourceManager(&jpeg_info,image);
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
   option=GetImageOption(image_info,"jpeg:skip-profile");
-  if ((option == (const char *) NULL) ||
-      (GlobExpression("ICC",option,MagickTrue) == MagickFalse))
+  if (IsOptionMember("ICC",option) == MagickFalse)
     jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadICCProfile);
-  if ((option == (const char *) NULL) ||
-      (GlobExpression("IPTC",option,MagickTrue) == MagickFalse))
+  if (IsOptionMember("IPTC",option) == MagickFalse)
     jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadIPTCProfile);
   for (i=1; i < 16; i++)
     if ((i != 2) && (i != 13) && (i != 14))
-      if ((option == (const char *) NULL) ||
-          (GlobExpression("APP",option,MagickTrue) == MagickFalse))
+      if (IsOptionMember("APP",option) == MagickFalse)
         jpeg_set_marker_processor(&jpeg_info,(int) (JPEG_APP0+i),ReadProfile);
   i=(ssize_t) jpeg_read_header(&jpeg_info,TRUE);
   if ((image_info->colorspace == YCbCrColorspace) ||
