@@ -2264,7 +2264,7 @@ MagickPrivate MagickBooleanType IsOptionMember(const char *option,
   /*
     Is option a member of the options list?
   */
-  if (*options == (const char *) NULL)
+  if (options == (const char *) NULL)
     return(MagickFalse);
   string=ConstantString(options);
   (void) SubstituteString(&string,","," ");
