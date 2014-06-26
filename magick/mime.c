@@ -195,7 +195,7 @@ MagickExport MagickBooleanType LoadMimeLists(const char *name,
   ExceptionInfo *exception)
 {
   mime_cache=AcquireMimeCache(name,exception);
-  return(mime_cache != (LinkedListInfo *) NULL);
+  return(mime_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -807,7 +807,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
   MimeInfo
     *mime_info = (MimeInfo *) NULL;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   XMLTreeInfo
@@ -978,7 +978,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
     mime=GetNextXMLTreeTag(mime);
   }
   mime_map=DestroyXMLTree(mime_map);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

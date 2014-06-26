@@ -2172,7 +2172,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
   const char
     *q;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   /*
@@ -2338,7 +2338,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

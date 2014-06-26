@@ -735,7 +735,7 @@ MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
       return(MagickTrue);
     }
   count=ReadMatrixElements(matrix_info,i*matrix_info->stride,
-    matrix_info->stride,value);
+    matrix_info->stride,(unsigned char *) value);
   if (count != (MagickOffsetType) matrix_info->stride)
     return(MagickFalse);
   return(MagickTrue);
@@ -1144,7 +1144,7 @@ MagickExport MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
       return(MagickTrue);
     }
   count=WriteMatrixElements(matrix_info,i*matrix_info->stride,
-    matrix_info->stride,value);
+    matrix_info->stride,(unsigned char *) value);
   if (count != (MagickOffsetType) matrix_info->stride)
     return(MagickFalse);
   return(MagickTrue);

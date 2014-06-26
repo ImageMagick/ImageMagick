@@ -761,11 +761,11 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
   const char
     *q;
 
-  MagickBooleanType
-    status;
-
   MagicInfo
     *magic_info;
+
+  MagickStatusType
+    status;
 
   /*
     Load the magic map file.
@@ -975,7 +975,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

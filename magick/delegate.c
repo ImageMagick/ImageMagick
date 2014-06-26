@@ -1309,7 +1309,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
   DelegateInfo
     *delegate_info;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   /*
@@ -1525,5 +1525,5 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }

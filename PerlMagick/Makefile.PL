@@ -206,7 +206,7 @@ WriteMakefile
    'INC'	=> $INC_magick,
 
    # C compiler
-   #'CC' => 'gcc -std=gnu99 -std=gnu99',
+   #'CC' => 'g++',
 
    # C pre-processor flags (e.g. -I & -D options)
    # 'CPPFLAGS' => "$Config{'cppflags'} -pthread -I/usr/include/pango-1.0 -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng16 -I/usr/include/freetype2 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -I/usr/include/libxml2",
@@ -215,7 +215,7 @@ WriteMakefile
    'CCFLAGS' => $CCFLAGS_magick,
 
    # Linker
-   #'LD' => $Config{'ld'} == $Config{'cc'} ? 'gcc -std=gnu99 -std=gnu99' : $Config{'ld'},
+   #'LD' => $Config{'ld'} == $Config{'cc'} ? 'g++' : $Config{'ld'},
 
    # Linker flags for building an executable
    'LDFLAGS' =>  $LDFLAGS_magick,
