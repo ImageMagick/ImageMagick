@@ -394,6 +394,7 @@ namespace Magick
   using MagickCore::DstOverCompositeOp;
   using MagickCore::ExclusionCompositeOp;
   using MagickCore::HardLightCompositeOp;
+  using MagickCore::HardMixCompositeOp;
   using MagickCore::HueCompositeOp;
   using MagickCore::InCompositeOp;
   using MagickCore::IntensityCompositeOp;

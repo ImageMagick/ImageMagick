@@ -245,20 +245,29 @@ static const char *CompositeOperatorToPSDBlendMode(CompositeOperator op)
 
   switch (op)
   {
+    case ColorBurnCompositeOp:  blend_mode = "idiv";  break;
+    case ColorDodgeCompositeOp: blend_mode = "div ";  break;
     case ColorizeCompositeOp:   blend_mode = "colr";  break;
     case DarkenCompositeOp:     blend_mode = "dark";  break;
     case DifferenceCompositeOp: blend_mode = "diff";  break;
     case DissolveCompositeOp:   blend_mode = "diss";  break;
+    case ExclusionCompositeOp:  blend_mode = "smud";  break;
     case HardLightCompositeOp:  blend_mode = "hLit";  break;
+    case HardMixCompositeOp:    blend_mode = "hMix";  break;
     case HueCompositeOp:        blend_mode = "hue ";  break;
     case LightenCompositeOp:    blend_mode = "lite";  break;
+    case LinearBurnCompositeOp: blend_mode = "lbrn";  break;
+    case LinearDodgeCompositeOp:blend_mode = "lddg";  break;
+    case LinearLightCompositeOp:blend_mode = "lLit";  break;
     case LuminizeCompositeOp:   blend_mode = "lum ";  break;
     case MultiplyCompositeOp:   blend_mode = "mul ";  break;
     case OverCompositeOp:       blend_mode = "norm";  break;
     case OverlayCompositeOp:    blend_mode = "over";  break;
+    case PinLightCompositeOp:   blend_mode = "pLit";  break;
     case SaturateCompositeOp:   blend_mode = "sat ";  break;
     case ScreenCompositeOp:     blend_mode = "scrn";  break;
     case SoftLightCompositeOp:  blend_mode = "sLit";  break;
+    case VividLightCompositeOp: blend_mode = "vLit";  break;
     default:                    blend_mode = "norm";
   }
   return(blend_mode);
@@ -620,11 +629,23 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
   if (LocaleNCompare(mode,"sLit",4) == 0)
     return(SoftLightCompositeOp);
   if (LocaleNCompare(mode,"smud",4) == 0)
-    return(OverCompositeOp);
+    return(ExclusionCompositeOp);
   if (LocaleNCompare(mode,"div ",4) == 0)
-    return(OverCompositeOp);
+    return(ColorDodgeCompositeOp);
   if (LocaleNCompare(mode,"idiv",4) == 0)
-    return(OverCompositeOp);
+    return(ColorBurnCompositeOp);
+  if (LocaleNCompare(mode,"lbrn",4) == 0)
+    return(LinearBurnCompositeOp);
+  if (LocaleNCompare(mode,"lddg",4) == 0)
+    return(LinearDodgeCompositeOp);
+  if (LocaleNCompare(mode,"lLit",4) == 0)
+    return(LinearLightCompositeOp);
+  if (LocaleNCompare(mode,"vLit",4) == 0)
+    return(VividLightCompositeOp);
+  if (LocaleNCompare(mode,"pLit",4) == 0)
+    return(PinLightCompositeOp);
+  if (LocaleNCompare(mode,"hMix",4) == 0)
+    return(HardMixCompositeOp);
   return(OverCompositeOp);
 }
 
