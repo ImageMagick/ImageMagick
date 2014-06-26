@@ -1090,7 +1090,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
   const char
     *q;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   TypeInfo
@@ -1336,7 +1336,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

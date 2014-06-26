@@ -736,14 +736,14 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
     keyword[MaxTextExtent],
     *token;
 
-  PolicyInfo
-    *policy_info;
-
   const char
     *q;
 
-  MagickBooleanType
+  MagickStatusType
     status;
+
+  PolicyInfo
+    *policy_info;
 
   /*
     Load the policy map file.
@@ -925,7 +925,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

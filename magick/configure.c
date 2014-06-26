@@ -1139,7 +1139,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
   const char
     *q;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   /*
@@ -1292,5 +1292,5 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
