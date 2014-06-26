@@ -637,11 +637,11 @@ static MagickRealType HardMix(const MagickRealType Sca,
   MagickRealType
     gamma;
 
-  if ((Sca+Dca) < 1.0)
+  if ((Sa+Da) < 1.0)
     gamma=0.0;
   else
     gamma=1.0;
-  return((gamma*(1.0-Sa)*(1.0-Da))+Sca*(1.0-Sa)*Da+Dca*(1.0-Da)*Sa);
+  return((gamma*(1.0-Sca)*(1.0-Dca))+Sa*(1.0-Sca)*Dca+Da*(1.0-Dca)*Sca);
 }
 
 static inline void CompositeHardMix(const MagickPixelPacket *p,
