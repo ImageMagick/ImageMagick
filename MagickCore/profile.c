@@ -53,7 +53,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
-#include "MagickCore/optioni-private.h"
+#include "MagickCore/option-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/profile-private.h"
@@ -1186,7 +1186,7 @@ static void WriteTo8BimProfile(Image *image,const char *name,
       break;
     p=ReadResourceLong(p,&value);
     count=(ssize_t) value;
-    if ((p > (datum+length-count)) || (count > length))
+    if ((p > (datum+length-count)) || (count > (ssize_t) length))
       break;
     if ((count & 0x01) != 0)
       count++;
@@ -1277,7 +1277,7 @@ static void GetProfilesFromResourceBlock(Image *image,
       break;
     p=ReadResourceLong(p,&value);
     count=(ssize_t) value;
-    if ((p > (datum+length-count)) || (count > length))
+    if ((p > (datum+length-count)) || (count > (ssize_t) length))
       break;
     switch (id)
     {
