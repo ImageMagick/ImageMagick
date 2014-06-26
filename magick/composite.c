@@ -240,8 +240,7 @@ static inline void CompositeBumpmap(const MagickPixelPacket *p,
   composite->red=QuantumScale*intensity*q->red;
   composite->green=QuantumScale*intensity*q->green;
   composite->blue=QuantumScale*intensity*q->blue;
-  composite->opacity=(MagickRealType) QuantumScale*intensity*
-    p->opacity;
+  composite->opacity=(MagickRealType) QuantumScale*intensity*p->opacity;
   if (q->colorspace == CMYKColorspace)
     composite->index=QuantumScale*intensity*q->index;
 }
@@ -629,6 +628,38 @@ static inline void CompositeHardLight(const MagickPixelPacket *p,
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*HardLight(QuantumScale*p->index*Sa,Sa,QuantumScale*
+      q->index*Da,Da);
+}
+
+static MagickRealType HardMix(const MagickRealType Sca,
+  const MagickRealType Sa,const MagickRealType Dca,const MagickRealType Da)
+{
+  if ((2.0*Sca) < Sa)
+    return(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
+  return(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
+}
+
+static inline void CompositeHardMix(const MagickPixelPacket *p,
+  const MagickPixelPacket *q,MagickPixelPacket *composite)
+{
+  MagickRealType
+    Da,
+    gamma,
+    Sa;
+
+  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Da=1.0-QuantumScale*q->opacity;
+  gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
+  composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
+  gamma=QuantumRange/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+  composite->red=gamma*HardMix(QuantumScale*p->red*Sa,Sa,QuantumScale*
+    q->red*Da,Da);
+  composite->green=gamma*HardMix(QuantumScale*p->green*Sa,Sa,QuantumScale*
+    q->green*Da,Da);
+  composite->blue=gamma*HardMix(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+    q->blue*Da,Da);
+  if (q->colorspace == CMYKColorspace)
+    composite->index=gamma*HardMix(QuantumScale*p->index*Sa,Sa,QuantumScale*
       q->index*Da,Da);
 }
 
@@ -2609,6 +2640,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         case HardLightCompositeOp:
         {
           CompositeHardLight(&source,&destination,&composite);
+          break;
+        }
+        case HardMixCompositeOp:
+        {
+          CompositeHardMix(&source,&destination,&composite);
           break;
         }
         case OverlayCompositeOp:
