@@ -1883,14 +1883,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case HardMixCompositeOp:
           {
-            if ((2.0*Sca) < Sa)
-              {
-                pixel=QuantumRange*gamma*(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*
-                  (1.0-Sa));
-                break;
-              }
-            pixel=QuantumRange*gamma*(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*(1.0-Da)+
-              Dca*(1.0-Sa));
+            double
+              gamma;
+
+            if ((Sa+Da) < 1.0)
+              gamma=0.0;
+            else
+              gamma=1.0;
+            pixel=(gamma*(1.0-Sca)*(1.0-Dca))+Sa*(1.0-Sa)*Dca+Da*(1.0-Dca)*Sca;
             break;
           }
           case HueCompositeOp:
