@@ -789,7 +789,7 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
   CoderInfo
     *coder_info;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   /*
@@ -941,5 +941,5 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }

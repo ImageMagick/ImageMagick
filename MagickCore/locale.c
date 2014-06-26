@@ -1176,7 +1176,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
   LocaleInfo
     *locale_info;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   register char
@@ -1382,7 +1382,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
   }
   token=(char *) RelinquishMagickMemory(token);
   (void) SetFatalErrorHandler(fatal_handler);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
