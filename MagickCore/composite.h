@@ -58,6 +58,7 @@ typedef enum
   DstOverCompositeOp,
   ExclusionCompositeOp,
   HardLightCompositeOp,
+  HardMixCompositeOp,
   HueCompositeOp,
   InCompositeOp,
   IntensityCompositeOp,

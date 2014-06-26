@@ -1364,6 +1364,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         case DivideSrcCompositeOp:
         case ExclusionCompositeOp:
         case HardLightCompositeOp:
+        case HardMixCompositeOp:
         case LinearBurnCompositeOp:
         case LinearDodgeCompositeOp:
         case LinearLightCompositeOp:
@@ -1869,6 +1870,18 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             break;
           }
           case HardLightCompositeOp:
+          {
+            if ((2.0*Sca) < Sa)
+              {
+                pixel=QuantumRange*gamma*(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*
+                  (1.0-Sa));
+                break;
+              }
+            pixel=QuantumRange*gamma*(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*(1.0-Da)+
+              Dca*(1.0-Sa));
+            break;
+          }
+          case HardMixCompositeOp:
           {
             if ((2.0*Sca) < Sa)
               {
