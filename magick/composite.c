@@ -634,9 +634,14 @@ static inline void CompositeHardLight(const MagickPixelPacket *p,
 static MagickRealType HardMix(const MagickRealType Sca,
   const MagickRealType Sa,const MagickRealType Dca,const MagickRealType Da)
 {
-  if ((2.0*Sca) < Sa)
-    return(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
-  return(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
+  MagickRealType
+    gamma;
+
+  if ((Sa+Da) < 1.0)
+    gamma=0.0;
+  else
+    gamma=1.0;
+  return((gamma*(1.0-Sca)*(1.0-Dca))+Sa*(1.0-Sa)*Dca+Da*(1.0-Dca)*Sca);
 }
 
 static inline void CompositeHardMix(const MagickPixelPacket *p,
