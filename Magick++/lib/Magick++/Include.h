@@ -388,6 +388,7 @@ namespace Magick
   using MagickCore::DissolveCompositeOp;
   using MagickCore::ExclusionCompositeOp;
   using MagickCore::HardLightCompositeOp;
+  using MagickCore::HardMixCompositeOp;
   using MagickCore::HueCompositeOp;
   using MagickCore::InCompositeOp;
   using MagickCore::LightenCompositeOp;
