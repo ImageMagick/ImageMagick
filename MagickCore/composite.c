@@ -1890,7 +1890,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               gamma=0.0;
             else
               gamma=1.0;
-            pixel=(gamma*(1.0-Sca)*(1.0-Dca))+Sa*(1.0-Sa)*Dca+Da*(1.0-Dca)*Sca;
+            pixel=(gamma*(1.0-Sca)*(1.0-Dca))+Sa*(1.0-Sca)*Dca+Da*(1.0-Dca)*Sca;
             break;
           }
           case HueCompositeOp:
