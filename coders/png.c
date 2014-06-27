@@ -729,7 +729,6 @@ static png_byte mng_oFFs[5]={111,  70,  70, 115, (png_byte) '\0'};
 /*
 Other known chunks that are not yet supported by ImageMagick:
 static png_byte mng_hIST[5]={104,  73,  83,  84, (png_byte) '\0'};
-static png_byte mng_iCCP[5]={105,  67,  67,  80, (png_byte) '\0'};
 static png_byte mng_iTXt[5]={105,  84,  88, 116, (png_byte) '\0'};
 static png_byte mng_sPLT[5]={115,  80,  76,  84, (png_byte) '\0'};
 static png_byte mng_sTER[5]={115,  84,  69,  82, (png_byte) '\0'};
@@ -2257,18 +2256,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   ping_found_sRGB_cHRM = MagickFalse;
   ping_preserve_iCCP = MagickFalse;
 
-  {
-    const char
-      *value;
-
-    value=GetImageOption(image_info,"png:preserve-iCCP");
-
-    if (value == NULL)
-       value=GetImageArtifact(image,"png:preserve-iCCP");
-
-    if (value != NULL)
-       ping_preserve_iCCP=MagickTrue;
-  }
 
   /*
     Allocate the PNG structures
@@ -2372,6 +2359,30 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   else
     png_set_read_fn(ping,image,png_get_data);
 
+  {
+    const char
+      *value;
+
+    value=GetImageOption(image_info,"profile:skip");
+
+    if (IsOptionMember("ICC",value) == MagickFalse)
+    {
+
+       value=GetImageOption(image_info,"png:preserve-iCCP");
+
+       if (value == NULL)
+          value=GetImageArtifact(image,"png:preserve-iCCP");
+
+       if (value != NULL)
+          ping_preserve_iCCP=MagickTrue;
+    }
+#if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
+    else
+    {
+       png_set_keep_unknown_chunks(ping, 1, mng_iCCP, 1);
+    }
+#endif
+  }
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
   /* Ignore unused chunks and all unknown chunks except for vpAg */
 #if PNG_LIBPNG_VER < 10700 /* Avoid libpng16 warning */
@@ -2534,7 +2545,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 
 #ifdef PNG_READ_iCCP_SUPPORTED
-  if (ping_found_iCCP !=MagickTrue &&
+    if (ping_found_iCCP !=MagickTrue &&
       ping_found_sRGB != MagickTrue &&
       png_get_valid(ping,ping_info, PNG_INFO_iCCP))
     {
