@@ -66,14 +66,20 @@ MagickPPExport int Magick::operator <= ( const Magick::Color &left_,
 }
 
 Magick::Color::Color(void)
-  : _pixel(new PixelInfo),_isValid(false),_pixelOwn(true),_pixelType(RGBPixel)
+  : _pixel(new PixelInfo),
+    _isValid(false),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
 {
   initPixel();
 }
 
 Magick::Color::Color(const Quantum red_,const Quantum green_,
   const Quantum blue_)
-  : _pixel(new PixelInfo),_isValid(true),_pixelOwn(true),_pixelType(RGBPixel)
+  : _pixel(new PixelInfo),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
 {
   quantumRed(red_);
   quantumGreen(green_);
@@ -83,7 +89,10 @@ Magick::Color::Color(const Quantum red_,const Quantum green_,
 
 Magick::Color::Color(const Quantum red_,const Quantum green_,
   const Quantum blue_, const Quantum alpha_)
-  : _pixel(new PixelInfo),_isValid(true),_pixelOwn(true),_pixelType(RGBAPixel)
+  : _pixel(new PixelInfo),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(RGBAPixel)
 {
   quantumRed(red_);
   quantumGreen(green_);
@@ -92,7 +101,10 @@ Magick::Color::Color(const Quantum red_,const Quantum green_,
 }
 
 Magick::Color::Color(const char *color_)
-  : _pixel(new PixelInfo),_isValid(true),_pixelOwn(true),_pixelType(RGBPixel)
+  : _pixel(new PixelInfo),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
 {
   initPixel();
 
@@ -101,14 +113,19 @@ Magick::Color::Color(const char *color_)
 }
 
 Magick::Color::Color(const Magick::Color &color_)
-  : _pixel(new PixelInfo),_isValid(color_._isValid),_pixelOwn(true),
+  : _pixel(new PixelInfo),
+    _isValid(color_._isValid),
+    _pixelOwn(true),
     _pixelType(color_._pixelType)
 {
   *_pixel=*color_._pixel;
 }
 
 Magick::Color::Color(const PixelInfo &color_)
-  : _pixel(new PixelInfo),_isValid(true),_pixelOwn(true),_pixelType(RGBPixel)
+  : _pixel(new PixelInfo),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
 {
   *_pixel=color_;
 
@@ -117,7 +134,10 @@ Magick::Color::Color(const PixelInfo &color_)
 }
 
 Magick::Color::Color(const std::string &color_)
-  : _pixel(new PixelInfo),_isValid(true),_pixelOwn(true),_pixelType(RGBPixel)
+  : _pixel(new PixelInfo),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
 {
   initPixel();
 
