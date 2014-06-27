@@ -66,14 +66,19 @@ MagickPPExport int Magick::operator <= (const Magick::Color &left_,
 }
 
 Magick::Color::Color(void)
-  : _pixel(new PixelPacket),_pixelOwn(true),_isValid(false),
+  : _pixel(new PixelPacket),
+    _isValid(false),
+    _pixelOwn(true),
     _pixelType(RGBPixel)
 {
   initPixel();
 }
 
 Magick::Color::Color(Quantum red_,Quantum green_,Quantum blue_)
-  : _pixel(new PixelPacket),_pixelOwn(true),_isValid(true),_pixelType(RGBPixel)
+  : _pixel(new PixelPacket),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
 {
   redQuantum(red_);
   greenQuantum(green_);
@@ -82,7 +87,9 @@ Magick::Color::Color(Quantum red_,Quantum green_,Quantum blue_)
 }
 
 Magick::Color::Color(Quantum red_,Quantum green_,Quantum blue_,Quantum alpha_)
-  : _pixel(new PixelPacket),_pixelOwn(true),_isValid(true),
+  : _pixel(new PixelPacket),
+    _isValid(true),
+    _pixelOwn(true),
     _pixelType(RGBAPixel)
 {
   redQuantum(red_);
@@ -92,7 +99,10 @@ Magick::Color::Color(Quantum red_,Quantum green_,Quantum blue_,Quantum alpha_)
 }
 
 Magick::Color::Color(const char *x11color_)
-  : _pixel(new PixelPacket),_pixelOwn(true),_isValid(true),_pixelType(RGBPixel)
+  : _pixel(new PixelPacket),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
 {
   initPixel();
 
@@ -101,14 +111,19 @@ Magick::Color::Color(const char *x11color_)
 }
 
 Magick::Color::Color(const Magick::Color &color_)
-  : _pixel(new PixelPacket),_pixelOwn(true),_isValid(color_._isValid),
+  : _pixel(new PixelPacket),
+    _isValid(color_._isValid),
+    _pixelOwn(true),
     _pixelType(color_._pixelType)
 {
   *_pixel=*color_._pixel;
 }
 
 Magick::Color::Color(const PixelPacket &color_)
-  : _pixel(new PixelPacket),_pixelOwn(true),_isValid(true),_pixelType(RGBPixel)
+  : _pixel(new PixelPacket),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
 {
   *_pixel=color_;
 
@@ -117,7 +132,10 @@ Magick::Color::Color(const PixelPacket &color_)
 }
 
 Magick::Color::Color(const std::string &x11color_)
-  : _pixel(new PixelPacket),_pixelOwn(true),_isValid(true),_pixelType(RGBPixel)
+  : _pixel(new PixelPacket),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
 {
   initPixel();
 
