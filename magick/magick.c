@@ -1432,7 +1432,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
     status;
 
   /*
-    Delete any existing name.
+    Register a new image format.
   */
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
