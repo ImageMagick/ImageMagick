@@ -1049,6 +1049,31 @@ std::string Magick::Image::magick(void) const
   return(constOptions()->magick());
 }
 
+void Magick::Image::mask(const Magick::Image &mask_)
+{
+  modifyImage();
+
+  if (mask_.isValid())
+    SetImageMask(image(),mask_.constImage());
+  else
+    SetImageMask(image(),0);
+}
+
+Magick::Image Magick::Image::mask(void) const
+{
+  MagickCore::Image
+    *image;
+
+  GetPPException;
+  image=GetImageMask(constImage(),exceptionInfo);
+  ThrowPPException;
+
+  if (image == (MagickCore::Image *) NULL)
+    return(Magick::Image());
+  else
+    return(Magick::Image(image));
+}
+
 void Magick::Image::matte(const bool matteFlag_)
 {
   modifyImage();

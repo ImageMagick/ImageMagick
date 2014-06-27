@@ -337,6 +337,11 @@ namespace Magick
     void magick(const std::string &magick_);
     std::string magick(void) const;
 
+    // Associate a mask with the image. The mask must be the same dimensions
+    // as the image. Pass an invalid image to unset an existing clip mask.
+    void mask(const Image &mask_);
+    Image mask(void) const;
+
     // Image supports transparency (matte channel)
     void matte(const bool matteFlag_);
     bool matte(void) const;

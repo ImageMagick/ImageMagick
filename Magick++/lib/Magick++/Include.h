@@ -1207,13 +1207,14 @@ namespace Magick
   using MagickCore::GetImageChannelDepth;
   using MagickCore::GetImageChannelMean;
   using MagickCore::GetImageChannelKurtosis;
+  using MagickCore::GetImageChannelMoments;
   using MagickCore::GetImageChannelRange;
   using MagickCore::GetImageClipMask;
   using MagickCore::GetImageDepth;
   using MagickCore::GetImageDistortion;
   using MagickCore::GetImageInfo;
   using MagickCore::GetImageInfoFile;
-  using MagickCore::GetImageChannelMoments;
+  using MagickCore::GetImageMask;
   using MagickCore::GetImageOption;
   using MagickCore::GetAuthenticPixels;
   using MagickCore::GetImageProfile;
@@ -1370,6 +1371,7 @@ namespace Magick
   using MagickCore::SetImageExtent;
   using MagickCore::SetImageInfo;
   using MagickCore::SetImageInfoFile;
+  using MagickCore::SetImageMask;
   using MagickCore::SetImageOpacity;
   using MagickCore::SetImageOption;
   using MagickCore::SetImageProfile;
