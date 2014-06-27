@@ -140,7 +140,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   concurrent=MagickFalse;
   duration=(-1.0);
   iterations=1;
-  status=MagickFalse;
+  status=MagickTrue;
   regard_warnings=MagickFalse;
   for (i=1; i < (ssize_t) (argc-1); i++)
   {
@@ -170,7 +170,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
         {
           if ((exception->severity > ErrorException) ||
               (regard_warnings != MagickFalse))
-            status=MagickTrue;
+            status=MagickFalse;
           CatchException(exception);
         }
         if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
@@ -198,7 +198,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       {
         for (i=0; i < (ssize_t) iterations; i++)
         {
-          if (status != MagickFalse)
+          if (status == MagickFalse)
             continue;
           if (duration > 0)
             {
@@ -211,7 +211,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
             {
               if ((exception->severity > ErrorException) ||
                   (regard_warnings != MagickFalse))
-                status=MagickTrue;
+                status=MagickFalse;
               CatchException(exception);
             }
           if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
@@ -229,7 +229,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 #endif
         for (i=0; i < (ssize_t) iterations; i++)
         {
-          if (status != MagickFalse)
+          if (status == MagickFalse)
             continue;
           if (duration > 0)
             {
@@ -246,7 +246,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
               {
                 if ((exception->severity > ErrorException) ||
                     (regard_warnings != MagickFalse))
-                  status=MagickTrue;
+                  status=MagickFalse;
                 CatchException(exception);
               }
             if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
