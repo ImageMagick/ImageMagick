@@ -239,7 +239,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
             }
           status=command(image_info,argc,argv,metadata,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-           # pragma omp critical (MagickCore_CommandGenesis)
+           # pragma omp critical (MagickCore_MagickCommandGenesis)
 #endif
           {
             if (exception->severity != UndefinedException)
