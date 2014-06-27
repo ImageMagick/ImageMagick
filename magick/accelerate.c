@@ -134,7 +134,7 @@ static MagickBooleanType checkAccelerateCondition(const Image* image, const Chan
     && image->colorspace != sRGBColorspace
     && image->colorspace != GRAYColorspace)
     return MagickFalse;
-  
+
   /* check if the channel is supported */
   if (((channel&RedChannel) == 0)
   || ((channel&GreenChannel) == 0)
@@ -142,11 +142,15 @@ static MagickBooleanType checkAccelerateCondition(const Image* image, const Chan
   {
     return MagickFalse;
   }
-  
 
-  /* check if if the virtual pixel method is compatible with the OpenCL implementation */
+
+  /* check if the virtual pixel method is compatible with the OpenCL implementation */
   if ((GetImageVirtualPixelMethod(image) != UndefinedVirtualPixelMethod)&&
       (GetImageVirtualPixelMethod(image) != EdgeVirtualPixelMethod))
+    return MagickFalse;
+
+  /* check if the image has clip_mask / mask */
+  if ((image->clip_mask != (Image *) NULL) || (image->mask != (Image *) NULL))
     return MagickFalse;
 
   return MagickTrue;
