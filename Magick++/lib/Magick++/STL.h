@@ -2182,6 +2182,18 @@ namespace Magick
     ThrowPPException;
   }
 
+  template <class Container>
+  void cropToTiles(Container *tiledImages_,const Image image_,
+    const Geometry &geometry_)
+  {
+    GetPPException;
+    MagickCore::Image* images=CropImageToTiles(image_.constImage(),
+      static_cast<std::string>(geometry_).c_str(),exceptionInfo);
+    tiledImages_->clear();
+    insertImages(tiledImages_,images);
+    ThrowPPException;
+  }
+
   // Break down an image sequence into constituent parts.  This is
   // useful for creating GIF or MNG animation sequences.
   template <class InputIterator, class Container >

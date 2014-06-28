@@ -1051,6 +1051,7 @@ namespace Magick
   using MagickCore::CorruptImageFatalError;
   using MagickCore::CorruptImageWarning;
   using MagickCore::CropImage;
+  using MagickCore::CropImageToTiles;
   using MagickCore::CycleColormapImage;
   using MagickCore::DeconstructImages;
   using MagickCore::DecipherImage;
