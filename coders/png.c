@@ -2375,6 +2375,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
        if (value != NULL)
           ping_preserve_iCCP=MagickTrue;
+
+#if defined(PNG_SKIP_sRGB_CHECK_PROFILE) && defined(PNG_SET_OPTION_SUPPORTED)
+       /* Don't let libpng check for ICC/sRGB profile because we're going
+        * to do that anyway.  This feature was added at libpng-1.6.12.
+        */
+       png_set_option(ping, PNG_SKIP_sRGB_CHECK_PROFILE, PNG_OPTION_ON);
+#endif
     }
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
     else
