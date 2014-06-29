@@ -1,6 +1,7 @@
 2014-06-28  6.8.9-5 Glenn Randers-Pehrson <glennrp@image...>
-  * Do not let libpng16 check ICC/sRGB profiles; we do it ourselves anyway.
-    This should avoid emitting some "known incorrect profile" warnings.
+  * Do not let libpng16 check ICC/sRGB profiles in non-debug runs; we do
+    it ourselves anyway.  Avoids emitting "known incorrect profile" warnings.
+    For strict profile checking and warning, use "-debug coder".
 
 2014-06-27  6.8.9-5 Dirk Lemstra <dirk@snakeware...>
   * Disabled OpenCL acceleration when image has a 'mask' or 'clip-mask'.
