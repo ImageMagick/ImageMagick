@@ -1,3 +1,6 @@
+2014-07-01  6.8.9-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.9-5, SVN revision 16123.
+
 2014-06-28  6.8.9-5 Glenn Randers-Pehrson <glennrp@image...>
   * Do not let libpng16 check ICC/sRGB profiles in non-debug runs; we do
     it ourselves anyway.  Avoids emitting "known incorrect profile" warnings.
