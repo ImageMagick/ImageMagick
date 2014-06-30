@@ -1479,6 +1479,7 @@ static const OptionInfo
     { "Average", AveragePixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
     { "Brightness", BrightnessPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
     { "Lightness", LightnessPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
+    { "Mean", AveragePixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
     { "MS", MSPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
     { "Rec601Luma", Rec601LumaPixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
     { "Rec601Luminance", Rec601LuminancePixelIntensityMethod, UndefinedOptionFlag, MagickFalse },
