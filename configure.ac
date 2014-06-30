@@ -23,7 +23,7 @@ AC_PREREQ(2.69)
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [8])
 m4_define([magick_micro_version], [9])
-m4_define([magick_patchlevel_version], [5])
+m4_define([magick_patchlevel_version], [6])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_svn_revision], esyscmd([sh -c "(svnversion .) | awk '{ print \$1 }' | tr -d '\n'"]))
