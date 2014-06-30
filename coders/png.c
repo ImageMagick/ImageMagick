@@ -3764,9 +3764,26 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
         if (memcmp(text[i].key, "Raw profile type ",17) == 0)
           {
-            (void) Magick_png_read_raw_profile(ping,image,image_info,text,
-               (int) i,exception);
-            num_raw_profiles++;
+            const char
+              *value;
+
+            value=GetImageOption(image_info,"profile:skip");
+
+            if (IsOptionMember(text[i].key+17,value) == MagickFalse)
+            {
+               (void) Magick_png_read_raw_profile(ping,image,image_info,text,
+                  (int) i,exception);
+               num_raw_profiles++;
+               if (logging != MagickFalse)
+                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "    Read raw profile %s",text[i].key+17);
+            }
+            else
+            {
+               if (logging != MagickFalse)
+                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "    Skipping raw profile %s",text[i].key+17);
+            }
           }
 
         else
