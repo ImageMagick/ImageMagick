@@ -1,4 +1,8 @@
 2014-07-01  6.8.9-5 Cristy  <quetzlzacatenango@image...>
+  * Write LAB pixels as percentages in the TXT image format (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25830).
+
+2014-07-01  6.8.9-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-5, SVN revision 16123.
 
 2014-06-28  6.8.9-5 Glenn Randers-Pehrson <glennrp@image...>
