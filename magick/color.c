@@ -1204,7 +1204,7 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
-  if (pixel->depth > 8)
+  if ((pixel->colorspace == LabColorspace) || (pixel->depth > 8))
     {
       (void) FormatLocaleString(component,MaxTextExtent,"%.*g%%",
         GetMagickPrecision(),(100.0*QuantumScale*color));
