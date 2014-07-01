@@ -461,47 +461,33 @@ static char **DestroyXMLTreeAttributes(char **attributes)
 static void DestroyXMLTreeChild(XMLTreeInfo *xml_info)
 {
   XMLTreeInfo
-    *node,
-    *prev;
+    *child,
+    *node;
 
-  node=xml_info->child;
-  while(node != (XMLTreeInfo *) NULL)
+  child=xml_info->child;
+  while(child != (XMLTreeInfo *) NULL)
   {
-    prev=(XMLTreeInfo *) NULL;
-    while(node->child != (XMLTreeInfo *) NULL)
-    {
-      prev=node;
-      node=node->child;
-    }
+    node=child;
+    child=node->child;
+    node->child=(XMLTreeInfo *) NULL;
     (void) DestroyXMLTree(node);
-    if (prev != (XMLTreeInfo* ) NULL)
-      prev->child=(XMLTreeInfo *) NULL;
-    node=prev;
   }
-  xml_info->child=(XMLTreeInfo *) NULL;
 }
 
 static void DestroyXMLTreeOrdered(XMLTreeInfo *xml_info)
 {
   XMLTreeInfo
     *node,
-    *prev;
+    *ordered;
 
-  node=xml_info->ordered;
-  while(node != (XMLTreeInfo *) NULL)
+  ordered=xml_info->ordered;
+  while(ordered != (XMLTreeInfo *) NULL)
   {
-    prev=(XMLTreeInfo *) NULL;
-    while(node->ordered != (XMLTreeInfo *) NULL)
-    {
-      prev=node;
-      node=node->ordered;
-    }
+    node=ordered;
+    ordered=node->ordered;
+    node->ordered=(XMLTreeInfo *) NULL;
     (void) DestroyXMLTree(node);
-    if (prev != (XMLTreeInfo* ) NULL)
-      prev->ordered=(XMLTreeInfo *) NULL;
-    node=prev;
   }
-  xml_info->ordered=(XMLTreeInfo *) NULL;
 }
 
 static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
