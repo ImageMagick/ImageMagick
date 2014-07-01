@@ -500,7 +500,7 @@ WandExport MagickBooleanType PixelClearException(PixelWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelGetAlpha() returns the normalized alpha color of the pixel wand.
+%  PixelGetAlpha() returns the normalized alpha value of the pixel wand.
 %
 %  The format of the PixelGetAlpha method is:
 %
@@ -1472,7 +1472,7 @@ WandExport Quantum PixelGetYellowQuantum(const PixelWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelSetAlpha() sets the normalized alpha color of the pixel wand.
+%  PixelSetAlpha() sets the normalized alpha value of the pixel wand.
 %
 %  The format of the PixelSetAlpha method is:
 %
@@ -1506,18 +1506,17 @@ WandExport void PixelSetAlpha(PixelWand *wand,const double alpha)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelSetAlphaQuantum() sets the alpha color of the pixel wand.
+%  PixelSetAlphaQuantum() sets the alpha value of the pixel wand.
 %
 %  The format of the PixelSetAlphaQuantum method is:
 %
-%      void PixelSetAlphaQuantum(PixelWand *wand,
-%        const Quantum alpha)
+%      void PixelSetAlphaQuantum(PixelWand *wand,const Quantum alpha)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the pixel wand.
 %
-%    o alpha: the alpha color.
+%    o alpha: the alpha value.
 %
 */
 WandExport void PixelSetAlphaQuantum(PixelWand *wand,const Quantum alpha)
