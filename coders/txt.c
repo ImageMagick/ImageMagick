@@ -486,7 +486,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
               &y_offset,&red);
             green=red;
             blue=red;
-            break;       
+            break;
           }
           case CMYKColorspace:
           {
@@ -512,9 +512,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             count=(ssize_t) sscanf(text,
-              "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,
-              &y_offset,&red,&green,&blue);
-            break;       
+              "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,&y_offset,
+               &red,&green,&blue);
+            break;
           }
         }
         if (strchr(text,'%') != (char *) NULL)
@@ -535,11 +535,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         pixel.blue=ScaleAnyToQuantum((QuantumAny) (blue+0.5),range);
         pixel.index=ScaleAnyToQuantum((QuantumAny) (index+0.5),range);
         pixel.opacity=ScaleAnyToQuantum((QuantumAny) (opacity+0.5),range);
-        if (image->colorspace == LabColorspace)
-          {
-            pixel.green+=(range+1)/2.0;
-            pixel.blue+=(range+1)/2.0;
-          }
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
         if (q == (PixelPacket *) NULL)
           continue;
