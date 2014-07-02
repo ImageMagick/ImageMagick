@@ -4070,7 +4070,7 @@ Features(ref,...)
       if (channel_features == (ChannelFeatures *) NULL)
         continue;
       count++;
-      EXTEND(sp,75*count);
+      EXTEND(sp,280*count);
       for (i=0; i < 4; i++)
       {
         ChannelFeatures(RedChannel,i);
