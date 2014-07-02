@@ -4035,8 +4035,7 @@ Features(ref,...)
           PackageName);
         goto PerlException;
       }
-    info=GetPackageInfo(aTHX_ (void *) av,info,exception);
-    distance=1;
+    distance=1.0;
     for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
@@ -6218,7 +6217,6 @@ Histogram(ref,...)
           PackageName);
         goto PerlException;
       }
-    info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     count=0;
     for ( ; image; image=image->next)
     {
@@ -11597,7 +11595,6 @@ Mosaic(ref)
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
-    info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     (void) CopyMagickString(info->image_info->filename,image->filename,
       MaxTextExtent);
     SetImageInfo(info->image_info,0,&image->exception);
@@ -13969,7 +13966,6 @@ Statistics(ref,...)
           PackageName);
         goto PerlException;
       }
-    info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     count=0;
     for ( ; image; image=image->next)
     {
