@@ -523,8 +523,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (image->colorspace == LabColorspace)
           {
-            green+=(range+1)/2.0;
-            blue+=(range+1)/2.0;
+            green+=range/2.0;
+            blue+=range/2.0;
           }
         pixel.red=ScaleAnyToQuantum((QuantumAny) (red+0.5),range);
         pixel.green=ScaleAnyToQuantum((QuantumAny) (green+0.5),range);
@@ -739,8 +739,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         GetPixelInfoPixel(image,p,&pixel);
         if (pixel.colorspace == LabColorspace)
           {
-            pixel.green-=(QuantumRange+1)/2.0;
-            pixel.blue-=(QuantumRange+1)/2.0;
+            pixel.green-=QuantumRange/2.0;
+            pixel.blue-=QuantumRange/2.0;
           }
         if (LocaleCompare(image_info->magick,"SPARSE-COLOR") == 0)
           {
