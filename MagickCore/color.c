@@ -2372,6 +2372,15 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               (color->alpha_trait == BlendPixelTrait))
             color->alpha=(double) ClampToQuantum(QuantumRange*
               geometry_info.chi);
+          if (color->colorspace == LabColorspace)
+            {
+              if ((flags & SigmaValue) != 0)
+                color->green=(MagickRealType) ClampToQuantum(scale*
+                  geometry_info.sigma+(QuantumRange+1)/2.0);
+              if ((flags & XiValue) != 0)
+                color->blue=(MagickRealType) ClampToQuantum(scale*
+                  geometry_info.xi+(QuantumRange+1)/2.0);
+            }
           if (LocaleCompare(colorspace,"gray") == 0)
             {
               color->colorspace=GRAYColorspace;
