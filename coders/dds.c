@@ -192,7 +192,7 @@ typedef struct _DDSSingleColourLookup
 } DDSSingleColourLookup;
 
 typedef MagickBooleanType
-  DDSDecoder(Image *, DDSInfo *);
+  DDSDecoder(Image *, DDSInfo *, ExceptionInfo *);
 
 static const DDSSingleColourLookup DDSLookup_5_4[] =
 {
@@ -754,25 +754,25 @@ if (max - min < steps) \
 */
 static MagickBooleanType
   ConstructOrdering(const size_t, const DDSVector4 *, const DDSVector3,
-  DDSVector4 *, DDSVector4 *, unsigned char *, size_t);
+    DDSVector4 *, DDSVector4 *, unsigned char *, size_t);
 
 static MagickBooleanType
   ReadDDSInfo(Image *, DDSInfo *);
 
 static MagickBooleanType
-  ReadDXT1(Image *, DDSInfo *);
+  ReadDXT1(Image *, DDSInfo *, ExceptionInfo *);
 
 static MagickBooleanType
-  ReadDXT3(Image *, DDSInfo *);
+  ReadDXT3(Image *, DDSInfo *, ExceptionInfo *);
 
 static MagickBooleanType
-  ReadDXT5(Image *, DDSInfo *);
+  ReadDXT5(Image *, DDSInfo *, ExceptionInfo *);
 
 static MagickBooleanType
-  ReadUncompressedRGB(Image *, DDSInfo *);
+  ReadUncompressedRGB(Image *, DDSInfo *, ExceptionInfo *);
 
 static MagickBooleanType
-  ReadUncompressedRGBA(Image *, DDSInfo *);
+  ReadUncompressedRGBA(Image *, DDSInfo *, ExceptionInfo *);
 
 static void
   RemapIndices(const ssize_t *, const unsigned char *, unsigned char *);
@@ -791,18 +791,18 @@ static void
 
 static void
   WriteFourCC(Image *, const size_t, const MagickBooleanType,
-  const MagickBooleanType, ExceptionInfo *);
+    const MagickBooleanType, ExceptionInfo *);
 
 static void
   WriteImageData(Image *, const size_t, const size_t, const MagickBooleanType,
-  const MagickBooleanType, ExceptionInfo *);
+    const MagickBooleanType, ExceptionInfo *);
 
 static void
   WriteIndices(Image *, const DDSVector3, const DDSVector3, unsigned char *);
 
 static MagickBooleanType
   WriteMipmaps(Image *, const size_t, const size_t, const size_t,
-  const MagickBooleanType, const MagickBooleanType, ExceptionInfo *);
+    const MagickBooleanType, const MagickBooleanType, ExceptionInfo *);
 
 static void
   WriteSingleColorFit(Image *, const DDSVector4 *, const ssize_t *);
@@ -1835,7 +1835,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         return(GetFirstImageInList(image));
       }
 
-    if ((decoder)(image, &dds_info) != MagickTrue)
+    if ((decoder)(image, &dds_info, exception) != MagickTrue)
       {
         (void) CloseBlob(image);
         return(GetFirstImageInList(image));
@@ -1900,13 +1900,11 @@ static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
   return MagickTrue;
 }
 
-static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
+static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info,
+  ExceptionInfo *exception)
 {
   DDSColors
     colors;
-
-  ExceptionInfo
-    *exception;
 
   PixelPacket
     *q;
@@ -1929,7 +1927,6 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
     c0,
     c1;
 
-  exception=(&image->exception);
   for (y = 0; y < (ssize_t) dds_info->height; y += 4)
   {
     for (x = 0; x < (ssize_t) dds_info->width; x += 4)
@@ -1978,13 +1975,11 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
   return MagickTrue;
 }
 
-static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
+static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info,
+  ExceptionInfo *exception)
 {
   DDSColors
     colors;
-
-  ExceptionInfo
-    *exception;
 
   ssize_t
     j,
@@ -2010,7 +2005,6 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
     c0,
     c1;
 
-  exception=(&image->exception);
   for (y = 0; y < (ssize_t) dds_info->height; y += 4)
   {
     for (x = 0; x < (ssize_t) dds_info->width; x += 4)
@@ -2068,13 +2062,11 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
   return MagickTrue;
 }
 
-static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
+static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info,
+  ExceptionInfo *exception)
 {
   DDSColors
     colors;
-
-  ExceptionInfo
-    *exception;
 
   ssize_t
     j,
@@ -2104,7 +2096,6 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
     c0,
     c1;
 
-  exception=(&image->exception);
   for (y = 0; y < (ssize_t) dds_info->height; y += 4)
   {
     for (x = 0; x < (ssize_t) dds_info->width; x += 4)
@@ -2172,18 +2163,15 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
   return MagickTrue;
 }
 
-static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info)
+static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info,
+  ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   ssize_t
     x, y;
 
   PixelPacket
     *q;
 
-  exception=(&image->exception);
   for (y = 0; y < (ssize_t) dds_info->height; y++)
   {
     q = QueueAuthenticPixels(image, 0, y, dds_info->width, 1,exception);
@@ -2213,18 +2201,15 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info)
   return MagickTrue;
 }
 
-static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info)
+static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,
+  ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   ssize_t
     x, y;
 
   PixelPacket
     *q;
 
-  exception=(&image->exception);
   for (y = 0; y < (ssize_t) dds_info->height; y++)
   {
     q = QueueAuthenticPixels(image, 0, y, dds_info->width, 1,exception);
