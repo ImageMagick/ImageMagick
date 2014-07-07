@@ -749,6 +749,9 @@ if (max - min < steps) \
   = value
 #define VectorInit3(vector, value) vector.x = vector.y = vector.z = value
 
+#define IsBitMask(mask, r, g, b, a) (mask.r_bitmask == r && mask.g_bitmask == \
+  g && mask.b_bitmask == b && mask.alpha_bitmask == a)
+
 /*
   Forward declarations
 */
@@ -2166,11 +2169,19 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info,
 static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info,
   ExceptionInfo *exception)
 {
+  PixelPacket
+    *q;
+
   ssize_t
     x, y;
 
-  PixelPacket
-    *q;
+  unsigned short
+    color;
+
+  if (dds_info->pixelformat.rgb_bitcount == 16 && !IsBitMask(
+    dds_info->pixelformat,0xf800,0x07e0,0x001f,0x0000))
+    ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
+      image->filename);
 
   for (y = 0; y < (ssize_t) dds_info->height; y++)
   {
@@ -2181,14 +2192,28 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info,
 
     for (x = 0; x < (ssize_t) dds_info->width; x++)
     {
-      SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)));
-      SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)));
-      SetPixelRed(q,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)));
-      if (dds_info->pixelformat.rgb_bitcount == 32)
-        (void) ReadBlobByte(image);
+      if (dds_info->pixelformat.rgb_bitcount == 16)
+        {
+           color=ReadBlobShort(image);
+           SetPixelRed(q,ScaleCharToQuantum((unsigned char)
+             (((color >> 11)/31.0)*255)));
+           SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
+             ((((unsigned short)(color << 5) >> 10)/63.0)*255)));
+           SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
+             ((((unsigned short)(color << 11) >> 11)/31.0)*255)));
+        }
+      else
+        {
+          SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)));
+          SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)));
+          SetPixelRed(q,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)));
+          if (dds_info->pixelformat.rgb_bitcount == 32)
+            (void) ReadBlobByte(image);
+        }
+      SetPixelAlpha(q,QuantumRange);
       q++;
     }
  
@@ -2204,11 +2229,28 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info,
 static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,
   ExceptionInfo *exception)
 {
-  ssize_t
-    x, y;
-
   PixelPacket
     *q;
+
+  ssize_t
+    alphaBits,
+    x,
+    y;
+
+  unsigned short
+    color;
+
+  alphaBits=0;
+  if (dds_info->pixelformat.rgb_bitcount == 16)
+    {
+      if (IsBitMask(dds_info->pixelformat,0x7c00,0x03e0,0x001f,0x8000))
+        alphaBits=1;
+      else if (IsBitMask(dds_info->pixelformat,0x0f00,0x00f0,0x000f,0xf000))
+        alphaBits=4;
+      else
+        ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
+          image->filename);
+    }
 
   for (y = 0; y < (ssize_t) dds_info->height; y++)
   {
@@ -2219,14 +2261,42 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,
 
     for (x = 0; x < (ssize_t) dds_info->width; x++)
     {
-      SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)));
-      SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)));
-      SetPixelRed(q,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)));
-      SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)));
+      if (dds_info->pixelformat.rgb_bitcount == 16)
+        {
+           color=ReadBlobShort(image);
+           if (alphaBits == 1)
+             {
+               SetPixelAlpha(q,(color & (1 << 15)) ? QuantumRange : 0);
+               SetPixelRed(q,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 1) >> 11)/31.0)*255)));
+               SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 6) >> 11)/31.0)*255)));
+               SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 11) >> 11)/31.0)*255)));
+             }
+          else
+            {
+               SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
+                 (((color >> 12)/15.0)*255)));
+               SetPixelRed(q,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 4) >> 12)/15.0)*255)));
+               SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 8) >> 12)/15.0)*255)));
+               SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 12) >> 12)/15.0)*255)));
+            }
+        }
+      else
+        {
+          SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)));
+          SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)));
+          SetPixelRed(q,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)));
+          SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)));
+        }
       q++;
     }
 

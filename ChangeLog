@@ -1,4 +1,7 @@
-2014-07-01  6.8.9-5 Cristy  <quetzlzacatenango@image...>
+2014-07-07  6.8.9-6 Dirk Lemstra <dirk@snakeware...>
+  * Added support for R5G6B5, RGB5A1 and RGBA4 dds files.
+
+2014-07-01  6.8.9-6 Cristy  <quetzlzacatenango@image...>
   * Write LAB pixels as percentages in the TXT image format (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25830).
 
