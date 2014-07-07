@@ -975,6 +975,9 @@ namespace Magick
     Quantum *getPixels(const ::ssize_t x_,const ::ssize_t y_,
       const size_t columns_,const size_t rows_);
 
+    // Converts the colors in the image to gray.
+    void grayScale(const PixelIntensityMethod method_);
+
     // Apply a color lookup table (Hald CLUT) to the image.
     void haldClut(const Image &clutImage_);
 
