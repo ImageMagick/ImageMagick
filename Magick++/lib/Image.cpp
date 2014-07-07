@@ -3219,7 +3219,7 @@ Magick::Quantum *Magick::Image::getPixels(const ssize_t x_,const ssize_t y_,
   return(result);
 }
 
-void Magick::Image::grayScale(const PixelIntensityMethod method_)
+void Magick::Image::grayscale(const PixelIntensityMethod method_)
 {
   modifyImage();
   GetPPException;
