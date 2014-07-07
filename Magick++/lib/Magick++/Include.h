@@ -828,6 +828,22 @@ namespace Magick
   using MagickCore::CompositePixelChannel;
   using MagickCore::SyncPixelChannel;
 
+  // PixelInfo structure
+  using MagickCore::PixelInfo;
+
+  // Pixel intensity method
+  using MagickCore::PixelIntensityMethod;
+  using MagickCore::UndefinedPixelIntensityMethod;
+  using MagickCore::AveragePixelIntensityMethod;
+  using MagickCore::BrightnessPixelIntensityMethod;
+  using MagickCore::LightnessPixelIntensityMethod;
+  using MagickCore::MSPixelIntensityMethod;
+  using MagickCore::Rec601LumaPixelIntensityMethod;
+  using MagickCore::Rec601LuminancePixelIntensityMethod;
+  using MagickCore::Rec709LumaPixelIntensityMethod;
+  using MagickCore::Rec709LuminancePixelIntensityMethod;
+  using MagickCore::RMSPixelIntensityMethod;
+
   // PixelInterpolate methods
   using MagickCore::PixelInterpolateMethod;
   using MagickCore::UndefinedInterpolatePixel;
@@ -881,6 +897,9 @@ namespace Magick
   using MagickCore::CharcoalDrawingPreview;
   using MagickCore::JPEGPreview;
 
+  //  Quantum
+  using MagickCore::Quantum;
+
   // Quantum types
   using MagickCore::QuantumType;
   using MagickCore::IndexQuantum;
@@ -920,10 +939,6 @@ namespace Magick
   using MagickCore::UndefinedResolution;
   using MagickCore::PixelsPerInchResolution;
   using MagickCore::PixelsPerCentimeterResolution;
-
-  // PixelInfo structure
-  using MagickCore::PixelInfo;
-  using MagickCore::Quantum;
 
   // Sparse Color methods
   using MagickCore::SparseColorMethod;
@@ -1253,6 +1268,7 @@ namespace Magick
   using MagickCore::GetImageVirtualPixelMethod;
   using MagickCore::GlobExpression;
   using MagickCore::GravityAdjustGeometry;
+  using MagickCore::GrayscaleImage;
   using MagickCore::GreaterValue;
   using MagickCore::HaldClutImage;
   using MagickCore::HeightValue;
