@@ -820,6 +820,22 @@ namespace Magick
   using MagickCore::FillToBorderMethod;
   using MagickCore::ResetMethod;
 
+  // Pixel intensity method
+  using MagickCore::PixelIntensityMethod;
+  using MagickCore::UndefinedPixelIntensityMethod;
+  using MagickCore::AveragePixelIntensityMethod;
+  using MagickCore::BrightnessPixelIntensityMethod;
+  using MagickCore::LightnessPixelIntensityMethod;
+  using MagickCore::Rec601LumaPixelIntensityMethod;
+  using MagickCore::Rec601LuminancePixelIntensityMethod;
+  using MagickCore::Rec709LumaPixelIntensityMethod;
+  using MagickCore::Rec709LuminancePixelIntensityMethod;
+  using MagickCore::RMSPixelIntensityMethod;
+  using MagickCore::MSPixelIntensityMethod;
+
+  // PixelPacket structure
+  using MagickCore::PixelPacket;
+
   // Preview types.  Not currently used by Magick++
   using MagickCore::PreviewType;
   using MagickCore::UndefinedPreview;
@@ -892,9 +908,6 @@ namespace Magick
   using MagickCore::UndefinedResolution;
   using MagickCore::PixelsPerInchResolution;
   using MagickCore::PixelsPerCentimeterResolution;
-
-  // PixelPacket structure
-  using MagickCore::PixelPacket;
 
   // IndexPacket type
   using MagickCore::IndexPacket;
@@ -1239,6 +1252,7 @@ namespace Magick
   using MagickCore::GetImageVirtualPixelMethod;
   using MagickCore::GlobExpression;
   using MagickCore::GravityAdjustGeometry;
+  using MagickCore::GrayscaleImage;
   using MagickCore::GreaterValue;
   using MagickCore::HaldClutImage;
   using MagickCore::HeightValue;

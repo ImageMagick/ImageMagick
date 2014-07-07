@@ -3136,6 +3136,13 @@ Magick::PixelPacket *Magick::Image::getPixels(const ssize_t x_,
   return(result);
 }
 
+void Magick::Image::grayScale(const PixelIntensityMethod method_)
+{
+  modifyImage();
+  (void) GrayscaleImage(image(),method_);
+  throwImageException();
+}
+
 void Magick::Image::haldClut(const Image &clutImage_)
 {
   modifyImage();
