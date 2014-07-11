@@ -1073,7 +1073,17 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
 
     for (i = 0; i < numPlatforms; i++)
     {
+      char version[MaxTextExtent];
       cl_uint numDevices;
+      status = clEnv->library->clGetPlatformInfo(clEnv->platform, CL_PLATFORM_VERSION, MaxTextExtent, version, NULL);
+      if (status != CL_SUCCESS)
+      {
+        (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
+          "clGetPlatformInfo failed.", "(%d)", status);
+        goto cleanup;
+      }
+      if (strncmp(version,"OpenCL 1.0 ",11) == 0)
+        continue;
       status = clEnv->library->clGetDeviceIDs(platforms[i], deviceType, 1, &(clEnv->device), &numDevices);
       if (status != CL_SUCCESS)
       {
