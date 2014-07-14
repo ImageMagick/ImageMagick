@@ -1,3 +1,6 @@
+2014-07-14  6.8.9-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Removed some dead code (testing image->matte) in PNG64 encoder.
+
 2014-07-07  6.8.9-6 Dirk Lemstra <dirk@snakeware...>
   * Added support for R5G6B5, RGB5A1 and RGBA4 dds files.
 
