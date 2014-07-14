@@ -2805,29 +2805,67 @@ void Magick::Image::flip(void)
 void Magick::Image::floodFillColor(const Geometry &point_,
   const Magick::Color &fillColor_)
 {
-  floodFillTexture(point_,Image(Geometry(1,1),fillColor_));
+  floodFillColor(point_.xOff(),point_.yOff(),fillColor_,false);
+}
+
+void Magick::Image::floodFillColor(const Geometry &point_,
+  const Magick::Color &fillColor_,const bool invert_)
+{
+  floodFillColor(point_.xOff(),point_.yOff(),fillColor_,invert_);
 }
 
 void Magick::Image::floodFillColor(const ssize_t x_,const ssize_t y_,
   const Magick::Color &fillColor_)
 {
-  floodFillTexture(x_,y_,Image(Geometry(1,1),fillColor_));
+  floodFillColor(x_,y_,fillColor_,false);
+}
+
+void Magick::Image::floodFillColor(const ssize_t x_,const ssize_t y_,
+  const Magick::Color &fillColor_,const bool invert_)
+{
+  PixelPacket
+    pixel;
+
+  modifyImage();
+
+  pixel=pixelColor(x_,y_);
+  floodFill(x_,y_,(Magick::Image *)NULL,fillColor_,&pixel,invert_);
 }
 
 void Magick::Image::floodFillColor(const Geometry &point_,
   const Magick::Color &fillColor_,const Magick::Color &borderColor_)
 {
-  floodFillTexture(point_,Image(Geometry(1,1),fillColor_),borderColor_);
+  floodFillColor(point_.xOff(),point_.yOff(),fillColor_,borderColor_,false);
+}
+
+void Magick::Image::floodFillColor(const Geometry &point_,
+  const Magick::Color &fillColor_,const Magick::Color &borderColor_,
+  const bool invert_)
+{
+  floodFillColor(point_.xOff(),point_.yOff(),fillColor_,borderColor_,invert_);
 }
 
 void Magick::Image::floodFillColor(const ssize_t x_,const ssize_t y_,
   const Magick::Color &fillColor_,const Magick::Color &borderColor_)
 {
-  floodFillTexture(x_,y_,Image(Geometry(1,1),fillColor_),borderColor_);
+  floodFillColor(x_,y_,fillColor_,borderColor_,false);
+}
+
+void Magick::Image::floodFillColor(const ssize_t x_,const ssize_t y_,
+  const Magick::Color &fillColor_,const Magick::Color &borderColor_,
+  const bool invert_)
+{
+  PixelPacket
+    pixel;
+
+  modifyImage();
+
+  pixel=static_cast<PixelPacket>(borderColor_);
+  floodFill(x_,y_,(Magick::Image *)NULL,fillColor_,&pixel,invert_);
 }
 
 void Magick::Image::floodFillOpacity(const ssize_t x_,const ssize_t y_,
-  const unsigned int opacity_,const PaintMethod method_)
+  const unsigned int opacity_,const bool invert_)
 {
   MagickPixelPacket
     target;
@@ -2836,102 +2874,106 @@ void Magick::Image::floodFillOpacity(const ssize_t x_,const ssize_t y_,
     pixel;
 
   modifyImage();
-  GetMagickPixelPacket(image(),&target);
+
+  GetMagickPixelPacket(constImage(),&target);
   pixel=static_cast<PixelPacket>(pixelColor(x_,y_));
   target.red=pixel.red;
   target.green=pixel.green;
   target.blue=pixel.blue;
   target.opacity=opacity_;
-  FloodfillPaintImage(image(),DefaultChannels,options()->drawInfo(),&target,
-    static_cast<ssize_t>(x_), static_cast<ssize_t>(y_),
-    method_  == FloodfillMethod ? MagickFalse : MagickTrue);
+  (void) FloodfillPaintImage(image(),OpacityChannel,options()->drawInfo(),
+    &target,x_,y_,(MagickBooleanType)invert_);
   throwImageException();
 }
 
-void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
-  const Magick::Image &texture_)
+void Magick::Image::floodFillOpacity(const ssize_t x_,const ssize_t y_,
+  const unsigned int opacity_,const PaintMethod method_)
 {
-  floodFillTexture(point_.xOff(),point_.yOff(),texture_);
+  floodFillOpacity(x_,y_,opacity_,method_ == FloodfillMethod ? false : true);
 }
 
-void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
-  const Magick::Image &texture_)
+void Magick::Image::floodFillOpacity(const ::ssize_t x_,const ::ssize_t y_,
+  const unsigned int opacity_,const Color &target_,const bool invert_)
 {
-  MagickCore::Image
-    *fillPattern;
-
-  PixelPacket
-    *p;
-
-  modifyImage();
-
-  // Set drawing fill pattern
-  fillPattern=(MagickCore::Image *)NULL;
-  if (options()->fillPattern() != (MagickCore::Image *)NULL)
-    {
-      GetPPException;
-      fillPattern=CloneImage(options()->fillPattern(),0,0,MagickTrue,
-        exceptionInfo);
-      ThrowPPException;
-    }
-  options()->fillPattern(texture_.constImage());
-
-  // Fill image
-  Pixels pixels(*this);
-  p=pixels.get(x_,y_,1,1);
-  if (p)
-    {
-      MagickPixelPacket
-        target;
-
-      GetMagickPixelPacket(constImage(),&target);
-      target.red=p->red;
-      target.green=p->green;
-      target.blue=p->blue;
-
-      FloodfillPaintImage(image(),DefaultChannels,options()->drawInfo(),
-        &target,static_cast<ssize_t>(x_),static_cast<ssize_t>(y_),MagickFalse);
-    }
-  options()->fillPattern(fillPattern);
-  throwImageException();
-}
-
-void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
-  const Magick::Image &texture_,const Magick::Color &borderColor_)
-{
-  floodFillTexture(point_.xOff(),point_.yOff(),texture_,borderColor_);
-}
-
-void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
-  const Magick::Image &texture_,const Magick::Color &borderColor_)
-{
-  MagickCore::Image
-    *fillPattern;
-
   MagickPixelPacket
     target;
 
+  PixelPacket
+    pixel;
+
   modifyImage();
 
-  // Set drawing fill pattern
-  fillPattern=(MagickCore::Image *)NULL;
-  if (options()->fillPattern() != (MagickCore::Image *)NULL)
-    {
-      GetPPException;
-      fillPattern=CloneImage(options()->fillPattern(),0,0,MagickTrue,
-        exceptionInfo);
-      ThrowPPException;
-    }
-  options()->fillPattern(texture_.constImage());
-
   GetMagickPixelPacket(constImage(),&target);
-  target.red=static_cast<PixelPacket>(borderColor_).red;
-  target.green=static_cast<PixelPacket>(borderColor_).green;
-  target.blue=static_cast<PixelPacket>(borderColor_).blue;
-  FloodfillPaintImage(image(),DefaultChannels,options()->drawInfo(),&target,
-    static_cast<ssize_t>(x_),static_cast<ssize_t>(y_),MagickTrue);
-  options()->fillPattern(fillPattern);
+  pixel=static_cast<PixelPacket>(target_);
+  target.red=pixel.red;
+  target.green=pixel.green;
+  target.blue=pixel.blue;
+  target.opacity=opacity_;
+  (void) FloodfillPaintImage(image(),OpacityChannel,options()->drawInfo(),
+    &target,x_,y_,(MagickBooleanType)invert_);
   throwImageException();
+}
+
+void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
+  const Magick::Image &texture_)
+{
+  floodFillTexture(point_.xOff(),point_.yOff(),texture_,false);
+}
+
+void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
+  const Magick::Image &texture_,const bool invert_)
+{
+  floodFillTexture(point_.xOff(),point_.yOff(),texture_,invert_);
+}
+
+void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
+  const Magick::Image &texture_)
+{
+  floodFillTexture(x_,y_,texture_,false);
+}
+
+void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
+  const Magick::Image &texture_,const bool invert_)
+{
+  PixelPacket
+    pixel;
+
+  modifyImage();
+
+  pixel=static_cast<PixelPacket>(pixelColor(x_,y_));
+  floodFill(x_,y_,&texture_,Magick::Color(),&pixel,invert_);
+}
+
+void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
+  const Magick::Image &texture_,const Magick::Color &borderColor_)
+{
+  floodFillTexture(point_.xOff(),point_.yOff(),texture_,borderColor_,false);
+}
+
+void Magick::Image::floodFillTexture(const Magick::Geometry &point_,
+  const Magick::Image &texture_,const Magick::Color &borderColor_,
+  const bool invert_)
+{
+  floodFillTexture(point_.xOff(),point_.yOff(),texture_,borderColor_,invert_);
+}
+
+void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
+  const Magick::Image &texture_,const Magick::Color &borderColor_)
+{
+  floodFillTexture(x_,y_,texture_,borderColor_,false);
+}
+
+void Magick::Image::floodFillTexture(const ssize_t x_,const ssize_t y_,
+  const Magick::Image &texture_,const Magick::Color &borderColor_,
+  const bool invert_)
+{
+  PixelPacket
+    pixel;
+
+  modifyImage();
+
+  pixel=static_cast<PixelPacket>(borderColor_);
+  floodFill(x_,y_,&texture_,Magick::Color(),&pixel,invert_);
 }
 
 void Magick::Image::flop(void)
@@ -3328,18 +3370,8 @@ void Magick::Image::matteFloodfill(const Color &target_,
   const unsigned int opacity_,const ssize_t x_,const ssize_t y_,
   const Magick::PaintMethod method_)
 {
-  MagickPixelPacket
-    target;
-
-  modifyImage();
-  GetMagickPixelPacket(constImage(),&target);
-  target.red=static_cast<PixelPacket>(target_).red;
-  target.green=static_cast<PixelPacket>(target_).green;
-  target.blue=static_cast<PixelPacket>(target_).blue;
-  target.opacity=opacity_;
-  FloodfillPaintImage(image(),OpacityChannel,options()->drawInfo(),&target,x_,
-    y_,method_ == FloodfillMethod ? MagickFalse : MagickTrue);
-  throwImageException();
+  floodFillOpacity(x_,y_,opacity_,target_,
+    method_ == FloodfillMethod ? false : true);
 }
 
 void Magick::Image::medianFilter(const double radius_)
@@ -4912,4 +4944,50 @@ void Magick::Image::unregisterId(void)
 {
   modifyImage();
   _imgRef->id(-1);
+}
+
+void Magick::Image::floodFill(const ssize_t x_,const ssize_t y_,
+  const Magick::Image *fillPattern_,const Magick::Color &fill_,
+  const MagickCore::PixelPacket *target_,const bool invert_)
+{
+  Magick::Color
+    fillColor;
+
+  MagickCore::Image
+    *fillPattern;
+
+  MagickPixelPacket
+    target;
+
+  // Set drawing fill pattern or fill color
+  fillColor=options()->fillColor();
+  fillPattern=(MagickCore::Image *)NULL;
+  if (options()->fillPattern() != (MagickCore::Image *)NULL)
+    {
+      GetPPException;
+      fillPattern=CloneImage(options()->fillPattern(),0,0,MagickTrue,
+        exceptionInfo);
+      ThrowPPException;
+    }
+
+  if (fillPattern_ == (Magick::Image *)NULL)
+    {
+      options()->fillPattern((MagickCore::Image *)NULL);
+      options()->fillColor(fill_);
+    }
+  else
+    options()->fillPattern(fillPattern_->constImage());
+
+  GetMagickPixelPacket(image(),&target);
+  target.red=target_->red;
+  target.green=target_->green;
+  target.blue=target_->blue;
+
+  (void) FloodfillPaintImage(image(),DefaultChannels,options()->drawInfo(),
+    &target,static_cast<ssize_t>(x_),static_cast<ssize_t>(y_),
+    (MagickBooleanType) invert_);
+
+  options()->fillColor(fillColor);
+  options()->fillPattern(fillPattern);
+  throwImageException();
 }

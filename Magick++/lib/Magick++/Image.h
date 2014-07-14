@@ -900,36 +900,57 @@ namespace Magick
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
     void floodFillColor(const Geometry &point_,const Color &fillColor_);
+    void floodFillColor(const Geometry &point_,const Color &fillColor_,
+      const bool invert_);
     void floodFillColor(const ::ssize_t x_,const ::ssize_t y_,
       const Color &fillColor_);
+    void floodFillColor(const ::ssize_t x_,const ::ssize_t y_,
+      const Color &fillColor_,const bool invert_);
 
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
     void floodFillColor(const Geometry &point_,const Color &fillColor_,
       const Color &borderColor_);
+    void floodFillColor(const Geometry &point_,const Color &fillColor_,
+      const Color &borderColor_,const bool invert_);
     void floodFillColor(const ::ssize_t x_,const ::ssize_t y_,
       const Color &fillColor_,const Color &borderColor_);
+    void floodFillColor(const ::ssize_t x_,const ::ssize_t y_,
+      const Color &fillColor_,const Color &borderColor_,const bool invert_);
 
     // Floodfill pixels matching color (within fuzz factor) of target
     // pixel(x,y) with replacement opacity value using method.
     void floodFillOpacity(const ::ssize_t x_,const ::ssize_t y_,
+      const unsigned int opacity_,const bool invert_=false);
+    void floodFillOpacity(const ::ssize_t x_,const ::ssize_t y_,
       const unsigned int opacity_,const PaintMethod method_);
+    void floodFillOpacity(const ::ssize_t x_,const ::ssize_t y_,
+      const unsigned int opacity_,const Color &target_,
+      const bool invert_=false);
 
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
     void floodFillTexture(const Geometry &point_,const Image &texture_);
+    void floodFillTexture(const Geometry &point_,const Image &texture_,
+      const bool invert_);
     void floodFillTexture(const ::ssize_t x_,const ::ssize_t y_,
        const Image &texture_);
+    void floodFillTexture(const ::ssize_t x_,const ::ssize_t y_,
+       const Image &texture_,const bool invert_);
 
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
     void floodFillTexture(const Geometry &point_,const Image &texture_,
        const Color &borderColor_);
+    void floodFillTexture(const Geometry &point_,const Image &texture_,
+       const Color &borderColor_,const bool invert_);
     void floodFillTexture(const ::ssize_t x_,const ::ssize_t y_,
       const Image &texture_,const Color &borderColor_);
+    void floodFillTexture(const ::ssize_t x_,const ::ssize_t y_,
+      const Image &texture_,const Color &borderColor_,const bool invert_);
 
     // Flop image (reflect each scanline in the horizontal direction)
     void flop(void);
@@ -1511,6 +1532,10 @@ namespace Magick
     void unregisterId(void);
 
   private:
+
+    void floodFill(const ssize_t x_,const ssize_t y_,
+      const Magick::Image *fillPattern_,const Color &fill_,
+      const MagickCore::PixelPacket *target,const bool invert_);
 
     ImageRef *_imgRef;
   };
