@@ -456,74 +456,87 @@ namespace Magick
   private:
   };
 
+  // Floodfill designated area with a matte value
+  class MagickPPExport floodFillAlphaImage
+    : public std::unary_function<Image&,void>
+  {
+  public:
+    floodFillAlphaImage(const ::ssize_t x_,const ::ssize_t y_,
+     const unsigned int alpha_,const Color &target_,const bool invert_=false);
+
+    void operator()(Image &image_) const;
+
+  private:
+    Color        _target;
+    unsigned int _alpha;
+    ::ssize_t    _x;
+    ::ssize_t    _y;
+    bool         _invert;
+  };
+
   // Flood-fill image with color
-  class MagickPPExport floodFillColorImage : public std::unary_function<Image&,void>
+  class MagickPPExport floodFillColorImage
+    : public std::unary_function<Image&,void>
   {
   public:
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( const ::ssize_t x_,
-                         const ::ssize_t y_,
-       const Color &fillColor_ );
-
-    floodFillColorImage( const Geometry &point_,
-       const Color &fillColor_ );
+    floodFillColorImage(const Geometry &point_,const Color &fillColor_,
+      const bool invert_=false);
+    floodFillColorImage(const ::ssize_t x_,const ::ssize_t y_,
+      const Color &fillColor_,const bool invert_=false);
 
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( const ::ssize_t x_,
-                         const ::ssize_t y_,
-       const Color &fillColor_,
-       const Color &borderColor_ );
+    floodFillColorImage(const Geometry &point_,const Color &fillColor_,
+      const Color &borderColor_,const bool invert_=false);
+    floodFillColorImage(const ::ssize_t x_,const ::ssize_t y_,
+      const Color &fillColor_,const Color &borderColor_,
+      const bool invert_=false);
 
-    floodFillColorImage( const Geometry &point_,
-       const Color &fillColor_,
-       const Color &borderColor_ );
-
-    void operator()( Image &image_ ) const;
+    void operator()(Image &image_) const;
 
   private:
-    ::ssize_t   _x;
-    ::ssize_t   _y;
-    Color          _fillColor;
-    Color          _borderColor;
+    ::ssize_t _x;
+    ::ssize_t _y;
+    Color     _fillColor;
+    Color     _borderColor;
+    bool      _invert;
   };
 
   // Flood-fill image with texture
-  class MagickPPExport floodFillTextureImage : public std::unary_function<Image&,void>
+  class MagickPPExport floodFillTextureImage
+    : public std::unary_function<Image&,void>
   {
   public:
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( const ::ssize_t x_,
-                           const ::ssize_t y_,
-         const Image &texture_ );
-
-    floodFillTextureImage( const Geometry &point_,
-         const Image &texture_ );
+    floodFillTextureImage(const ::ssize_t x_,const ::ssize_t y_,
+      const Image &texture_,const bool invert_=false);
+    floodFillTextureImage(const Geometry &point_,const Image &texture_,
+      const bool invert_=false);
 
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( const ::ssize_t x_,
-                           const ::ssize_t y_,
-         const Image &texture_,
-         const Color &borderColor_ );
+    floodFillTextureImage(const ::ssize_t x_,const ::ssize_t y_,
+      const Image &texture_,const Color &borderColor_,
+      const bool invert_=false);
 
-    floodFillTextureImage( const Geometry &point_,
-         const Image &texture_,
-         const Color &borderColor_ );
+    floodFillTextureImage(const Geometry &point_,const Image &texture_,
+      const Color &borderColor_,const bool invert_=false);
 
-    void operator()( Image &image_ ) const;
+    void operator()(Image &image_) const;
 
   private:
-    ::ssize_t  _x;
-    ::ssize_t  _y;
-    Image         _texture;
-    Color         _borderColor;
+    ::ssize_t _x;
+    ::ssize_t _y;
+    Image     _texture;
+    Color     _borderColor;
+    bool      _invert;
   };
 
   // Flop image (reflect each scanline in the horizontal direction)
@@ -691,25 +704,6 @@ namespace Magick
   private:
     Image   _mapImage;
     bool    _dither;
-  };
-
-  // Floodfill designated area with a matte value
-  class MagickPPExport alphaFloodfillImage : public std::unary_function<Image&,void>
-  {
-  public:
-    alphaFloodfillImage( const Color &target_ ,
-       const unsigned int alpha_,
-       const ::ssize_t x_, const ::ssize_t y_,
-       const PaintMethod method_ );
-
-    void operator()( Image &image_ ) const;
-
-  private:
-    Color         _target;
-    unsigned int  _alpha;
-    ::ssize_t     _x;
-    ::ssize_t     _y;
-    PaintMethod   _method;
   };
 
   // Filter image by replacing each pixel component with the median
