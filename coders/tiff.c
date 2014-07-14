@@ -1013,12 +1013,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   {
 DisableMSCWarning(4127)
     if (0 && (image_info->verbose != MagickFalse))
-RestoreMSCWarning
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
-#if defined(MAGICKCORE_HAVE_TIFFISBIGENDIAN)
-    (void) SetImageProperty(image,"tiff:endian",TIFFIsBigEndian(tiff) == 0 ?
-      "lsb" : "msb",exception);
-#endif
+RestoreMSCWarning
     if ((TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width) != 1) ||
         (TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height) != 1) ||
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag) != 1) ||
@@ -1113,6 +1109,18 @@ RestoreMSCWarning
     image->endian=MSBEndian;
     if (endian == FILLORDER_LSB2MSB)
       image->endian=LSBEndian;
+#if defined(MAGICKCORE_HAVE_TIFFISBIGENDIAN)
+    if (TIFFIsBigEndian(tiff) == 0)
+      {
+        (void) SetImageProperty(image,"tiff:endian","lsb",exception);
+        image->endian=LSBEndian;
+      }
+    else
+      {
+        (void) SetImageProperty(image,"tiff:endian","msb",exception);
+        image->endian=MSBEndian;
+      }
+#endif
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
       SetImageColorspace(image,GRAYColorspace,exception);
