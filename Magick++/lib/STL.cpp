@@ -397,115 +397,120 @@ void Magick::flipImage::operator()( Magick::Image &image_ ) const
   image_.flip( );
 }
 
-// Flood-fill image with color
-// Flood-fill color across pixels starting at target-pixel and
-// stopping at pixels matching specified border color.  Uses current
-// fuzz setting when determining color match.
-Magick::floodFillColorImage::floodFillColorImage( const ssize_t x_,
-                                                  const ssize_t y_,
-                                                  const Magick::Color &fillColor_ )
-  : _x(x_),
+Magick::floodFillAlphaImage::floodFillAlphaImage(const ssize_t x_,
+  const ssize_t y_,const unsigned int alpha_,const Color &target_,
+  const bool invert_)
+  : _target(target_),
+    _alpha(alpha_),
+    _x(x_),
     _y(y_),
-    _fillColor(fillColor_),
-    _borderColor()
+    _invert(invert_)
 {
-}
-Magick::floodFillColorImage::floodFillColorImage( const Magick::Geometry &point_,
-                                                  const Magick::Color &fillColor_ )
-  : _x(point_.xOff()),
-    _y(point_.yOff()),
-    _fillColor(fillColor_),
-    _borderColor()
-{
-}
-// Flood-fill color across pixels starting at target-pixel and
-// stopping at pixels matching specified border color.  Uses current
-// fuzz setting when determining color match.
-Magick::floodFillColorImage::floodFillColorImage( const ssize_t x_,
-                                                  const ssize_t y_,
-                                                  const Magick::Color &fillColor_,
-                                                  const Magick::Color &borderColor_ )
-  : _x(x_),
-    _y(y_),
-    _fillColor(fillColor_),
-    _borderColor(borderColor_)
-{
-}
-Magick::floodFillColorImage::floodFillColorImage( const Geometry &point_,
-                                                  const Color &fillColor_,
-                                                  const Color &borderColor_ )
-  : _x(point_.xOff()),
-    _y(point_.yOff()),
-    _fillColor(fillColor_),
-    _borderColor(borderColor_)
-{
-}
-void Magick::floodFillColorImage::operator()( Magick::Image &image_ ) const
-{
-  if ( _borderColor.isValid() )
-    {
-      image_.floodFillColor( _x, _y, _fillColor, _borderColor );
-    }
-  else
-    {
-      image_.floodFillColor( _x, _y, _fillColor );
-    }
 }
 
-// Flood-fill image with texture
+void Magick::floodFillAlphaImage::operator()(Magick::Image &image_) const
+{
+  image_.floodFillAlpha(_x,_y,_alpha,_target,_invert);
+}
 
-// Flood-fill texture across pixels that match the color of the target
-// pixel and are neighbors of the target pixel.  Uses current fuzz
-// setting when determining color match.
-Magick::floodFillTextureImage::floodFillTextureImage( const ssize_t x_,
-                                                      const ssize_t y_,
-                                                      const Magick::Image &texture_ )
+Magick::floodFillColorImage::floodFillColorImage(const ssize_t x_,
+  const ssize_t y_,const Magick::Color &fillColor_,const bool invert_)
   : _x(x_),
     _y(y_),
-    _texture(texture_),
-    _borderColor()
+    _fillColor(fillColor_),
+    _borderColor(),
+    _invert(invert_)
 {
 }
-Magick::floodFillTextureImage::floodFillTextureImage( const Magick::Geometry &point_,
-                                                      const Magick::Image &texture_ )
+
+Magick::floodFillColorImage::floodFillColorImage(
+  const Magick::Geometry &point_,const Magick::Color &fillColor_,
+  const bool invert_)
   : _x(point_.xOff()),
     _y(point_.yOff()),
-    _texture(texture_),
-    _borderColor()
+    _fillColor(fillColor_),
+    _borderColor(),
+    _invert(invert_)
 {
 }
-// Flood-fill texture across pixels starting at target-pixel and
-// stopping at pixels matching specified border color.  Uses current
-// fuzz setting when determining color match.
-Magick::floodFillTextureImage::floodFillTextureImage( const ssize_t x_,
-                                                      const ssize_t y_,
-                                                      const Magick::Image &texture_,
-                                                      const Magick::Color &borderColor_ )
+
+Magick::floodFillColorImage::floodFillColorImage(const ssize_t x_,
+  const ssize_t y_,const Magick::Color &fillColor_,
+  const Magick::Color &borderColor_,const bool invert_)
   : _x(x_),
     _y(y_),
-    _texture(texture_),
-    _borderColor(borderColor_)
+    _fillColor(fillColor_),
+    _borderColor(borderColor_),
+    _invert(invert_)
 {
 }
-Magick::floodFillTextureImage::floodFillTextureImage( const Magick::Geometry &point_,
-                                                      const Magick::Image &texture_,
-                                                      const Magick::Color &borderColor_ )
+
+Magick::floodFillColorImage::floodFillColorImage(const Geometry &point_,
+  const Color &fillColor_,const Color &borderColor_,const bool invert_)
   : _x(point_.xOff()),
     _y(point_.yOff()),
-    _texture(texture_),
-    _borderColor(borderColor_)
+    _fillColor(fillColor_),
+    _borderColor(borderColor_),
+    _invert(invert_)
 {
 }
-void Magick::floodFillTextureImage::operator()( Magick::Image &image_ ) const
+void Magick::floodFillColorImage::operator()(Magick::Image &image_) const
 {
-  if ( _borderColor.isValid() )
-    {
-      image_.floodFillTexture( _x, _y, _texture, _borderColor );
-    }
+  if (_borderColor.isValid())
+    image_.floodFillColor(_x,_y,_fillColor,_borderColor,_invert);
   else
-    {
-      image_.floodFillTexture( _x, _y, _texture );
-    }
+    image_.floodFillColor(_x,_y,_fillColor,_invert);
+}
+
+Magick::floodFillTextureImage::floodFillTextureImage(const ssize_t x_,
+  const ssize_t y_,const Magick::Image &texture_,const bool invert_)
+  : _x(x_),
+    _y(y_),
+    _texture(texture_),
+    _borderColor(),
+    _invert(invert_)
+{
+}
+
+Magick::floodFillTextureImage::floodFillTextureImage(
+  const Magick::Geometry &point_,const Magick::Image &texture_,
+  const bool invert_)
+  : _x(point_.xOff()),
+    _y(point_.yOff()),
+    _texture(texture_),
+    _borderColor(),
+    _invert(invert_)
+{
+}
+
+Magick::floodFillTextureImage::floodFillTextureImage(const ssize_t x_,
+  const ssize_t y_,const Magick::Image &texture_,
+  const Magick::Color &borderColor_,const bool invert_)
+  : _x(x_),
+    _y(y_),
+    _texture(texture_),
+    _borderColor(borderColor_),
+    _invert(invert_)
+{
+}
+
+Magick::floodFillTextureImage::floodFillTextureImage(
+  const Magick::Geometry &point_,const Magick::Image &texture_,
+  const Magick::Color &borderColor_,const bool invert_)
+  : _x(point_.xOff()),
+    _y(point_.yOff()),
+    _texture(texture_),
+    _borderColor(borderColor_),
+    _invert(invert_)
+{
+}
+
+void Magick::floodFillTextureImage::operator()(Magick::Image &image_) const
+{
+  if (_borderColor.isValid())
+    image_.floodFillTexture(_x,_y,_texture,_borderColor,_invert);
+  else
+    image_.floodFillTexture(_x,_y,_texture,_invert);
 }
 
 // Flop image (reflect each scanline in the horizontal direction)
@@ -658,23 +663,6 @@ Magick::mapImage::mapImage( const Magick::Image &mapImage_ ,
 void Magick::mapImage::operator()( Magick::Image &image_ ) const
 {
   image_.map( _mapImage, _dither );
-}
-
-// Floodfill designated area with a matte value
-Magick::alphaFloodfillImage::alphaFloodfillImage( const Color &target_ ,
-                                                  const unsigned int alpha_,
-                                                  const ssize_t x_, const ssize_t y_,
-                                                  const PaintMethod method_ )
-  : _target( target_ ),
-    _alpha( alpha_ ),
-    _x( x_ ),
-    _y( y_ ),
-    _method( method_ )
-{
-}
-void Magick::alphaFloodfillImage::operator()( Magick::Image &image_ ) const
-{
-  image_.alphaFloodfill( _target, _alpha, _x, _y, _method );
 }
 
 // Filter image by replacing each pixel component with the median
