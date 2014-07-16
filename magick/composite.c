@@ -1526,7 +1526,7 @@ static inline void CompositeSoftLight(const MagickPixelPacket *p,
 }
 
 /*
-  Depreciated
+  Deprecated
   Multiply difference by amount, if differance larger than threshold???
   What use this is is completely unknown
   The Opacity calculation appears to be inverted  -- Anthony Thyssen
@@ -2258,7 +2258,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     {
       /*
         Determine the amount and threshold.
-        This Composition method is depreciated
+        This Composition method is deprecated
       */
       value=GetImageArtifact(composite_image,"compose:args");
       if (value != (char *) NULL)
