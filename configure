@@ -3694,7 +3694,7 @@ MAGICK_PATCHLEVEL_VERSION=6
 
 MAGICK_VERSION=6.8.9-6
 
-MAGICK_SVN_REVISION=16125:16133
+MAGICK_SVN_REVISION=16171M
 
 
 # Substitute library versioning
@@ -32771,7 +32771,7 @@ HTMLDecodeDelegateDefault='html2ps'
 ILBMDecodeDelegateDefault='ilbmtoppm'
 ILBMEncodeDelegateDefault='ppmtoilbm'
 JXRDecodeDelegateDefault='JxrDecApp'
-JXRMEncodeDelegateDefault='JxrEncApp'
+JXREncodeDelegateDefault='JxrEncApp'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
