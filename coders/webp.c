@@ -223,6 +223,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
     y;
 
   unsigned char
+    header[12],
     *stream;
 
   WebPDecoderConfig
@@ -254,12 +255,21 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   if (WebPInitDecoderConfig(&configure) == 0)
     ThrowReaderException(ResourceLimitError,"UnableToDecodeImageFile");
   webp_image->colorspace=MODE_RGBA;
-  length=(size_t) GetBlobSize(image);
+  count=ReadBlob(image,12,header);
+  if (count != 12)
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+  status=IsWEBP(header,count);
+  if (status == MagickFalse)
+    ThrowReaderException(CorruptImageError,"CorruptImage");
+  length=(size_t) (ReadWebPLSBWord(header+4)+8);
+  if (length < 12)
+    ThrowReaderException(CorruptImageError,"CorruptImage");
   stream=(unsigned char *) AcquireQuantumMemory(length,sizeof(*stream));
   if (stream == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  count=ReadBlob(image,length,stream);
-  if (count != (ssize_t) length)
+  (void) memcpy(stream,header,12);
+  count=ReadBlob(image,length-12,stream+12);
+  if (count != (ssize_t) (length-12))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   webp_status=WebPGetFeatures(stream,length,features);
   if (webp_status == VP8_STATUS_OK)

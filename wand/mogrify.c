@@ -3897,7 +3897,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         */
         image_info->synchronize=MagickTrue;
         status&=WriteImages(image_info,image,image->filename,exception);
-        if ((status == MagickFalse) && (*backup_filename != '\0'))
+        if ((status != MagickFalse) && (*backup_filename != '\0'))
           (void) remove_utf8(backup_filename);
         RemoveAllImageStack();
         continue;
