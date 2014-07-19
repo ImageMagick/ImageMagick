@@ -104,6 +104,23 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline MagickBooleanType ValidateImageMorphology(
+  const Image *restrict image,const Image *restrict reconstruct_image)
+{
+  /*
+    Does the image match the reconstructed image morphology?
+  */
+  if ((image->storage_class != reconstruct_image->storage_class) ||
+      (image->colorspace != reconstruct_image->colorspace) ||
+      (image->alpha_trait != reconstruct_image->alpha_trait) ||
+      (image->number_channels != reconstruct_image->number_channels) ||
+      (image->columns != reconstruct_image->columns) ||
+      (image->rows != reconstruct_image->rows))
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   const MetricType metric,double *distortion,ExceptionInfo *exception)
 {
@@ -140,9 +157,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (metric != PerceptualHashErrorMetric)
-    if ((reconstruct_image->columns != image->columns) ||
-        (reconstruct_image->rows != image->rows))
-      ThrowImageException(ImageError,"ImageSizeDiffers");
+    if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
+      ThrowImageException(ImageError,"ImageMorphologyDiffers");
   status=GetImageDistortion(image,reconstruct_image,metric,distortion,
     exception);
   if (status == MagickFalse)
@@ -1243,9 +1259,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (metric != PerceptualHashErrorMetric)
-    if ((reconstruct_image->columns != image->columns) ||
-        (reconstruct_image->rows != image->rows))
-      ThrowBinaryException(ImageError,"ImageSizeDiffers",image->filename);
+    if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
+      ThrowBinaryException(ImageError,"ImageMorphologyDiffers",image->filename);
   /*
     Get image distortion.
   */
@@ -1381,11 +1396,10 @@ MagickExport double *GetImageDistortions(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (metric != PerceptualHashErrorMetric)
-    if ((reconstruct_image->columns != image->columns) ||
-        (reconstruct_image->rows != image->rows))
+    if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ImageSizeDiffers","`%s'",image->filename);
+          "ImageMorphologyDiffers","`%s'",image->filename);
         return((double *) NULL);
       }
   /*
@@ -1543,9 +1557,8 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   assert(image->signature == MagickSignature);
   assert(reconstruct_image != (const Image *) NULL);
   assert(reconstruct_image->signature == MagickSignature);
-  if ((reconstruct_image->columns != image->columns) ||
-      (reconstruct_image->rows != image->rows))
-    ThrowBinaryException(ImageError,"ImageSizeDiffers",image->filename);
+  if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
+    ThrowBinaryException(ImageError,"ImageMorphologyDiffers",image->filename);
   area=0.0;
   maximum_error=0.0;
   mean_error_per_pixel=0.0;
@@ -1720,8 +1733,8 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   assert(offset != (RectangleInfo *) NULL);
   SetGeometry(reference,offset);
   *similarity_metric=MagickMaximumValue;
-  if ((reference->columns > image->columns) || (reference->rows > image->rows))
-    ThrowImageException(ImageError,"ImageSizeDiffers");
+  if (ValidateImageMorphology(image,reference) == MagickFalse)
+    ThrowImageException(ImageError,"ImageMorphologyDiffers");
   similarity_image=CloneImage(image,image->columns-reference->columns+1,
     image->rows-reference->rows+1,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
