@@ -1468,6 +1468,7 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 static inline MagickBooleanType ValidatePixelCacheMorphology(
   const Image *restrict image)
 {

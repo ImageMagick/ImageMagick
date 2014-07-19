@@ -504,6 +504,9 @@
         <message name="ImageDepthNotSupported">
           profondeur d'image non supportée
         </message>
+        <message name="ImageMorphologyDiffers">
+          différences dans la morphology de l'image
+        </message>
         <message name="ImageSequenceRequired">
           une séquence d'images est requise
         </message>
