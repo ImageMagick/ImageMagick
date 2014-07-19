@@ -1911,18 +1911,13 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
     return((char *) NULL);
   message=AcquireString((char *) NULL);
   (void) FormatLocaleString(message,MaxTextExtent,
-    "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-  (void) ConcatenateString(&path,message);
-  (void) FormatLocaleString(message,MaxTextExtent,
-    "<svg width=\"%.20g\" height=\"%.20g\">\n",(double) columns,(double) rows);
-  (void) ConcatenateString(&path,message);
-  (void) FormatLocaleString(message,MaxTextExtent,"<g>\n");
-  (void) ConcatenateString(&path,message);
-  (void) FormatLocaleString(message,MaxTextExtent,
-    "<path style=\"fill:#00000000;stroke:#00000000;");
-  (void) ConcatenateString(&path,message);
-  (void) FormatLocaleString(message,MaxTextExtent,
-    "stroke-width:0;stroke-antialiasing:false\" d=\"\n");
+    ("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
+    "<svg xmlns=\"http://www.w3.org/2000/svg\""
+    " width=\"%.20g\" height=\"%.20g\">\n"
+    "<g>\n"
+    "<path fill-rule=\"evenodd\" style=\"fill:#00000000;stroke:#00000000;"
+    "stroke-width:0;stroke-antialiasing:false\" d=\"\n"),
+    (double) columns,(double) rows);
   (void) ConcatenateString(&path,message);
   (void) ResetMagickMemory(point,0,sizeof(point));
   (void) ResetMagickMemory(first,0,sizeof(first));
@@ -2071,12 +2066,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
   /*
     Return an empty SVG image if the path does not have knots.
   */
-  (void) FormatLocaleString(message,MaxTextExtent,"\"/>\n");
-  (void) ConcatenateString(&path,message);
-  (void) FormatLocaleString(message,MaxTextExtent,"</g>\n");
-  (void) ConcatenateString(&path,message);
-  (void) FormatLocaleString(message,MaxTextExtent,"</svg>\n");
-  (void) ConcatenateString(&path,message);
+  (void) ConcatenateString(&path,"\"/>\n</g>\n</svg>\n");
   message=DestroyString(message);
   return(path);
 }
