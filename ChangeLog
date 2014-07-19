@@ -11,6 +11,12 @@
 2014-07-01  6.8.9-6 Cristy  <quetzlzacatenango@image...>
   * Write LAB pixels as percentages in the TXT image format (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25830).
+  * Throw exception when image morphology differs when comparing (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25927).
+  * Remove mogrify backup file (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25683).
+  * Read WEBP images from STDIN (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25886).
 
 2014-07-01  6.8.9-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-5, SVN revision 16123.
