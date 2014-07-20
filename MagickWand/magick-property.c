@@ -2072,11 +2072,12 @@ WandExport MagickBooleanType MagickSetExtract(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
+  if (wand->image_info->extract != (char *) NULL)
+    wand->image_info->extract=DestroyString(wand->image_info->extract);
   if (geometry != (const char *) NULL)
-    (void) CopyMagickString(wand->image_info->extract,geometry,MaxTextExtent);
+    (void) CloneString(&wand->image_info->extract,geometry);
   return(MagickTrue);
 }
 
