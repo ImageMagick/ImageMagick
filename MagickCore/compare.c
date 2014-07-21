@@ -113,9 +113,7 @@ static inline MagickBooleanType ValidateImageMorphology(
   */
   if ((image->storage_class != reconstruct_image->storage_class) ||
       (image->alpha_trait != reconstruct_image->alpha_trait) ||
-      (image->number_channels != reconstruct_image->number_channels) ||
-      (image->columns != reconstruct_image->columns) ||
-      (image->rows != reconstruct_image->rows))
+      (image->number_channels != reconstruct_image->number_channels))
     return(MagickFalse);
   return(MagickTrue);
 }
