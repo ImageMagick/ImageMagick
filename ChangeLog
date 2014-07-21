@@ -58,7 +58,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25667).
   * The inline coder can now read from standard input (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25641).
-  * Add '=' character to the santize whitelist.
+  * Add '=' character to the sanitize whitelist.
 
 2014-05-30  6.8.9-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-2, SVN revision 15932.
@@ -77,7 +77,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25633).
   * Remove Makefile race condition where two targets attempt to install
     magick-baseconfig.h (reference
-		http://git.buildroot.net/buildroot/commit/?id=7395ee9d3b88e45798143e05a28d6d4b51409130)
+    http://git.buildroot.net/buildroot/commit/?id=7395ee9d3b88e45798143e05a28d6d4b51409130)
   * Fix memory leak in BlobToStringInfo() (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25639).
   * In certain cases, -adaptive-sharpen failed to sharpen (reference
@@ -133,7 +133,7 @@
 
 2014-03-24  6.8.9-0 Cristy  <quetzlzacatenango@image...>
   * Don't transform sRGB compatible colorspaces to sRGB, doing so
-    inadvertingly promotes colormapped images to DirectClass.
+    inadvertently promotes colormapped images to DirectClass.
   * Use temporary path rather then current working directory (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25313).
   * Support -canny edge detection option.
