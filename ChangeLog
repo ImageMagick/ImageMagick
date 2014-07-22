@@ -1,3 +1,6 @@
+2014-07-22  6.8.9-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.9-6, SVN revision 16194.
+
 2014-07-19  6.8.9-6 Dirk Lemstra <dirk@snakeware...>
   * Fixed fill-rule in SVG clip path (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=25882).
