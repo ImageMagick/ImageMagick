@@ -2524,6 +2524,21 @@ namespace Magick
     ThrowPPException;
   }
 
+  // Compares each image the GIF disposed forms of the previous image in the
+  // sequence. Any pixel that does not change the displayed result is replaced
+  // with transparency. 
+  template<class InputIterator>
+  void optimizeTransparency(InputIterator first_,InputIterator last_)
+  {
+    GetPPException;
+
+    linkImages(first_,last_);
+    OptimizeImageTransparency(first_->image(),exceptionInfo);
+    unlinkImages(first_,last_ );
+
+    ThrowPPException;
+  }
+
   // Adds the names of the profiles from the image to the container.
   template <class Container>
   void profileNames(Container *names_,const Image* image_)
