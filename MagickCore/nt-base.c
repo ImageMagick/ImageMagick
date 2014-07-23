@@ -84,6 +84,9 @@ static GhostInfo
 
 static void
   *ghost_handle = (void *) NULL;
+
+static SemaphoreInfo
+  *ghost_semaphore = (SemaphoreInfo *) NULL;
 
 struct
 {
@@ -1359,13 +1362,25 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
   char
     path[MaxTextExtent];
 
+  if (ghost_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&ghost_semaphore);
+  LockSemaphoreInfo(ghost_semaphore);
   if (ghost_handle != (void *) NULL)
-    return(TRUE);
+    {
+      UnlockSemaphoreInfo(ghost_semaphore);
+      return(TRUE);
+    }
   if (NTGhostscriptDLL(path,sizeof(path)) == FALSE)
-    return(FALSE);
+    {
+      UnlockSemaphoreInfo(ghost_semaphore);
+      return(FALSE);
+    }
   ghost_handle=lt_dlopen(path);
   if (ghost_handle == (void *) NULL)
-    return(FALSE);
+    {
+      UnlockSemaphoreInfo(ghost_semaphore);
+      return(FALSE);
+    }
   (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
   ghost_info.delete_instance=(void (MagickDLLCall *) (gs_main_instance *)) (
     lt_dlsym(ghost_handle,"gsapi_delete_instance"));
@@ -1381,6 +1396,7 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
     MagickDLLCall *)(void *,char *,int),int(MagickDLLCall *)(void *,
     const char *,int),int(MagickDLLCall *)(void *,const char *,int)))
     (lt_dlsym(ghost_handle,"gsapi_set_stdio"));
+  UnlockSemaphoreInfo(ghost_semaphore);
   if ((ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
       (ghost_info.init_with_args == NULL) || (ghost_info.new_instance == NULL)
       || (ghost_info.run_string == NULL) || (ghost_info.set_stdio == NULL)
@@ -1413,11 +1429,18 @@ MagickPrivate int NTGhostscriptUnLoadDLL(void)
   int
     status;
 
-  if (ghost_handle == (void *) NULL)
-    return(FALSE);
-  status=lt_dlclose(ghost_handle);
-  ghost_handle=(void *) NULL;
-  (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
+  if (ghost_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&ghost_semaphore);
+  LockSemaphoreInfo(ghost_semaphore);
+  status=FALSE;
+  if (ghost_handle != (void *) NULL)
+    {
+      status=lt_dlclose(ghost_handle);
+      ghost_handle=(void *) NULL;
+      (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
+    }
+  UnlockSemaphoreInfo(ghost_semaphore);
+  RelinquishSemaphoreInfo(&ghost_semaphore);
   return(status);
 }
 

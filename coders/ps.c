@@ -236,9 +236,6 @@ static MagickBooleanType InvokePostscriptDelegate(
       0,&code);
   (ghost_info->exit)(interpreter);
   (ghost_info->delete_instance)(interpreter);
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  NTGhostscriptUnLoadDLL();
-#endif
   for (i=0; i < (ssize_t) argc; i++)
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
