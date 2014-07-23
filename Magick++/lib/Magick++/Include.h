@@ -1332,6 +1332,9 @@ namespace Magick
   using MagickCore::OptionError;
   using MagickCore::OptionFatalError;
   using MagickCore::OptionWarning;
+  using MagickCore::OptimizeImageLayers;
+  using MagickCore::OptimizeImageTransparency;
+  using MagickCore::OptimizePlusImageLayers;
   using MagickCore::ParseMetaGeometry;
   using MagickCore::PercentValue;
   using MagickCore::PerceptibleImage;
