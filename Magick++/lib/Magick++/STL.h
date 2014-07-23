@@ -2287,7 +2287,7 @@ namespace Magick
       MagickCore::NoDitherMethod;
     linkImages( first_, last_ );
     MagickCore::RemapImages( &quantizeInfo, first_->image(),
-        mapImage_.constImage());
+        (mapImage_.isValid() ? mapImage_.constImage() : (MagickCore::Image) NULL));
     unlinkImages( first_, last_ );
 
     MagickCore::Image* image = first_->image();
