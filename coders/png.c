@@ -726,8 +726,8 @@ static png_byte mng_JSEP[5]={ 74,  83,  69,  80, (png_byte) '\0'};
 static png_byte mng_oFFs[5]={111,  70,  70, 115, (png_byte) '\0'};
 #endif
 
-/*
-Other known chunks that are not yet supported by ImageMagick:
+#if 0
+/* Other known chunks that are not yet supported by ImageMagick: */
 static png_byte mng_hIST[5]={104,  73,  83,  84, (png_byte) '\0'};
 static png_byte mng_iTXt[5]={105,  84,  88, 116, (png_byte) '\0'};
 static png_byte mng_sPLT[5]={115,  80,  76,  84, (png_byte) '\0'};
@@ -735,7 +735,7 @@ static png_byte mng_sTER[5]={115,  84,  69,  82, (png_byte) '\0'};
 static png_byte mng_tEXt[5]={116,  69,  88, 116, (png_byte) '\0'};
 static png_byte mng_tIME[5]={116,  73,  77,  69, (png_byte) '\0'};
 static png_byte mng_zTXt[5]={122,  84,  88, 116, (png_byte) '\0'};
-*/
+#endif
 
 typedef struct _MngBox
 {
@@ -11579,7 +11579,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
     *value;
 
   int
-    i,
     source;
 
   /*
@@ -12084,10 +12083,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
     if (IsOptionMember("iccp",value) != MagickFalse)
       mng_info->ping_exclude_iCCP=MagickTrue;
 
-  /*
+#if 0
     if (IsOptionMember("itxt",value) != MagickFalse)
       mng_info->ping_exclude_iTXt=MagickTrue;
-   */
+#endif
 
     if (IsOptionMember("offs",value) != MagickFalse)
       mng_info->ping_exclude_oFFs=MagickTrue;
@@ -12202,10 +12201,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       if (IsOptionMember("iccp",value) != MagickFalse)
         mng_info->ping_exclude_iCCP=MagickFalse;
 
-    /*
+#if 0
       if (IsOptionMember("itxt",value) != MagickFalse)
         mng_info->ping_exclude_iTXt=MagickFalse;
-     */
+#endif
 
       if (IsOptionMember("offs",value) != MagickFalse)
         mng_info->ping_exclude_oFFs=MagickFalse;
@@ -12248,7 +12247,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
           mng_info->ping_exclude_vpAg=MagickFalse;
           mng_info->ping_exclude_zCCP=MagickFalse;
           mng_info->ping_exclude_zTXt=MagickFalse;
-          i--;
         }
     }
   }
@@ -12275,11 +12273,12 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
     if (mng_info->ping_exclude_iCCP != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    iCCP");
-/*
+#if 0
     if (mng_info->ping_exclude_iTXt != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    iTXt");
-*/
+#endif
+
     if (mng_info->ping_exclude_oFFs != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    oFFs");
