@@ -2339,7 +2339,7 @@ namespace Magick
     quantizeInfo.dither = dither_ ? MagickCore::MagickTrue : MagickCore::MagickFalse;
     linkImages( first_, last_ );
     MagickCore::RemapImages( &quantizeInfo, first_->image(),
-        (mapImage_.isValid() ? mapImage_.constImage() : (MagickCore::Image) NULL));
+        (mapImage_.isValid() ? mapImage_.constImage() : (const MagickCore::Image*) NULL));
     MagickCore::GetImageException( first_->image(), exceptionInfo );
     if ( exceptionInfo->severity != MagickCore::UndefinedException )
       {
