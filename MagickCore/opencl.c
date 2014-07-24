@@ -2792,7 +2792,7 @@ const char* GetOpenCLCachedFilesDirectory() {
 
 
 
-      home=GetEnvironmentValue("IMAGEMAGICK_OPENCL_CACHE_DIR");
+      home=GetEnvironmentValue("MAGICK_OPENCL_CACHE_DIR");
       if (home == (char *) NULL)
       {
 #ifdef MAGICKCORE_WINDOWS_SUPPORT
