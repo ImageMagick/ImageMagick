@@ -3261,6 +3261,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                     geometry_info.rho,(uint16) geometry_info.sigma);
               }
           }
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
+          &bits_per_sample);
         if (bits_per_sample == 12)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGTABLESMODE,JPEGTABLESMODE_QUANT);
 #endif
