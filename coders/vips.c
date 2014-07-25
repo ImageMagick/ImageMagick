@@ -653,8 +653,8 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
     (void) WriteBlobLSBLong(image,VIPS_MAGIC_LSB);
   else
     (void) WriteBlobLSBLong(image,VIPS_MAGIC_MSB);
-  (void) WriteBlobLong(image,image->columns);
-  (void) WriteBlobLong(image,image->rows);
+  (void) WriteBlobLong(image,(unsigned int) image->columns);
+  (void) WriteBlobLong(image,(unsigned int) image->rows);
   (void) SetImageStorageClass(image,DirectClass);
   channels=image->matte ? 4 : 3;
   if (IsGrayImage(image,&image->exception) != MagickFalse)
