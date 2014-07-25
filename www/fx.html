@@ -1,47 +1,54 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: The Fx Special Effects Image Operator</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="the, fx, special, effects, image, operator, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../images/wand.png"></link>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="http://www.imagemagick.org"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="the, fx, special, effects, image, operator, convert, edit, compose, image, pixel"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +64,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +84,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://localhost/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../discourse-server">
-  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
-  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +147,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,21 +173,50 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
@@ -190,44 +240,44 @@
 
 <p>The expression can be simple:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert -size 64x64 canvas:black -channel blue -fx "1/2" fx_navy.png</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 64x64 canvas:black -channel blue -fx "1/2" fx_navy.png</span></p>
 <p>Here, we convert a black to a navy blue image:</p>
 
 <p class="image">
-  <a href="../images/black.png"><img src="../images/black.png" width="64" height="64" alt="black"></img></a>
-  <img style="margin-top:22px; margin-bottom:22px;" src="../images/right.gif" width="20" height="20" alt="==&gt;"></img>
-  <a href="../images/navy.png"><img src="../images/navy.png" width="64" height="64" alt="navy"></img></a>
+  <a href="../images/black.png"><img src="../images/black.png" width="64" height="64" alt="black" /></a>
+  <img style="margin-top:22px; margin-bottom:22px;" src="../images/right.gif" width="20" height="20" alt="==>" />
+  <a href="../images/navy.png"><img src="../images/navy.png" width="64" height="64" alt="navy" /></a>
 </p>
 
 <p>Or the expression can be complex:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert rose.jpg \  <br></br>
-          -fx "(1.0/(1.0+exp(10.0*(0.5-u)))-0.006693)*1.0092503" \ <br></br>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose.jpg \  <br/>
+          -fx "(1.0/(1.0+exp(10.0*(0.5-u)))-0.006693)*1.0092503" \ <br/>
           rose-sigmoidal.png</span></p>
 <p>This expression results in a high contrast version of the image:</p>
 
 <p class="image">
-  <a href="../images/rose.jpg"><img src="../images/rose.jpg" width="70" height="46" alt="rose"></img></a>
-  <img style="margin-top:13px; margin-bottom:13px;" src="../images/right.gif" width="20" height="20" alt="==&gt;"></img>
-  <a href="../images/rose-sigmoidal.png"><img src="../images/rose-sigmoidal.png" width="70" height="46" alt="rose-sigmoidal"></img></a>
+  <a href="../images/rose.jpg"><img src="../images/rose.jpg" width="70" height="46" alt="rose" /></a>
+  <img style="margin-top:13px; margin-bottom:13px;" src="../images/right.gif" width="20" height="20" alt="==>" />
+  <a href="../images/rose-sigmoidal.png"><img src="../images/rose-sigmoidal.png" width="70" height="46" alt="rose-sigmoidal" /></a>
 </p>
 
 <p>The expression can include variable assignments.  Assignments, in most cases, reduce the complexity of an expression and permit some operations that might not be possible any other way.  For example, lets create a radial gradient:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert -size 70x70 canvas: \  <br></br>
-          -fx "Xi=i-w/2; Yj=j-h/2; 1.2*(0.5-hypot(Xi,Yj)/70.0)+0.5" \ <br></br>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 70x70 canvas: \  <br/>
+          -fx "Xi=i-w/2; Yj=j-h/2; 1.2*(0.5-hypot(Xi,Yj)/70.0)+0.5" \ <br/>
           radial-gradient.png</span></p>
 <p>The command above returns this image:</p>
 
 <p class="image">
-  <a href="../images/radial-gradient.png"><img src="../images/radial-gradient.png" width="70" height="70" alt="radial-gradient"></img></a>
+  <a href="../images/radial-gradient.png"><img src="../images/radial-gradient.png" width="70" height="70" alt="radial-gradient" /></a>
 </p>
 
 <p>This FX expression adds random noise to an image:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert photo.jpg -fx 'iso=32; rone=rand(); rtwo=rand(); \<br></br>
-     myn=sqrt(-2*ln(rone))*cos(2*Pi*rtwo); myntwo=sqrt(-2*ln(rtwo))* \<br></br>
-     cos(2*Pi*rone); pnoise=sqrt(p)*myn*sqrt(iso)* \ <br></br>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert photo.jpg -fx 'iso=32; rone=rand(); rtwo=rand(); \<br />
+     myn=sqrt(-2*ln(rone))*cos(2*Pi*rtwo); myntwo=sqrt(-2*ln(rtwo))* \<br />
+     cos(2*Pi*rone); pnoise=sqrt(p)*myn*sqrt(iso)* \ <br />
      channel(4.28,3.86,6.68,0)/255; max(0,p+pnoise)' noisy.png</span></p>
 <p>See <a href="http://www.imagemagick.org/Usage/transform/index.html#fx">Using FX, The Special Effects Image Operator</a> for more examples.</p>
 
@@ -437,17 +487,17 @@
 
 <p>As an example, we form an image by averaging the first image and third images (the second (index 1) image is ignored and just junked):</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert image1.jpg image2.jpg image3.jpg -fx "(u+u[2])/2.0" image.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image1.jpg image2.jpg image3.jpg -fx "(u+u[2])/2.0" image.jpg</span></p>
 <p>By default, the image to which <code>p</code>, <code>r</code>, <code>g</code>, <code>b</code>, <code>a</code>, etc., are applied is the current image <code>s</code> in the image list. This is equivelent to <code>u</code> except when used in an escape sequence <code>%[fx:...]</code>. </p>
 
 <p>It is important to note the special role played by the first image. This is the only image in the image sequence that is modified, other images are used only for their data. As an illustrative example, consider the following, and note that the setting <a href="command-line-options.html#channel">-channel red</a> instructs <a href="command-line-options.html#fx">-fx</a> to modify only the red channel; nothing in the green or blue channels will change. It is instructive to ponder why the result is not symmetric.</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert -channel red logo: -flop logo: -resize "20%"  -fx "(u+v)/2" image.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -channel red logo: -flop logo: -resize "20%"  -fx "(u+v)/2" image.jpg</span></p>
 <div class="image">
-  <a href="../images/logo-sm-flop.png"><img src="../images/logo-sm-flop.png" width="128" height="96" alt="logo-sm-flop.png"></img></a>
-  <a href="../images/logo-sm.png"><img src="../images/logo-sm.png" width="128" height="96" alt="logo-sm.png"></img></a>
-<img style="margin-top:38px; margin-bottom:38px;" src="../images/right.gif" width="20" height="20" alt="==&gt;"></img>
-  <a href="../images/logo-sm-fx.png"><img src="../images/logo-sm-fx.png" width="128" height="96" alt="logo-sm-fx.png"></img></a>
+  <a href="../images/logo-sm-flop.png"><img src="../images/logo-sm-flop.png" width="128" height="96" alt="logo-sm-flop.png" /></a>
+  <a href="../images/logo-sm.png"><img src="../images/logo-sm.png" width="128" height="96" alt="logo-sm.png" /></a>
+<img style="margin-top:38px; margin-bottom:38px;" src="../images/right.gif" width="20" height="20" alt="==>" />
+  <a href="../images/logo-sm-fx.png"><img src="../images/logo-sm-fx.png" width="128" height="96" alt="logo-sm-fx.png" /></a>
 </div>
 
 
@@ -483,7 +533,7 @@
 
 <p>Use the <a href="command-line-options.html#channel">-channel</a> setting to specify the output channel of the result. If no output channel is given, the result is set over all channels except the opacity channel. For example, to replace the red channel of <code>alpha.png</code> with the average of the green channels from the images <code>alpha.png</code> and <code>beta.png</code>, use:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert alpha.png beta.png -channel red -fx "(u.g+v.g)/2" gamma.png</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert alpha.png beta.png -channel red -fx "(u.g+v.g)/2" gamma.png</span></p>
 </div>
 
 <h3>Results</h3>
@@ -496,12 +546,12 @@
 
 <p>For use with <a href="command-line-options.html#format_identify_">-format</a>, the value-escape <code>%[fx: ]</code> is evaluated just once for each image in the current image sequence. As each image in the sequence is being evaluated, <code>s</code> and <code>t</code> successively refer to the current image and its index, while <code>i</code> and <code>j</code> are set to zero, and the current channel set to red (<a href="command-line-options.html#channel">-channel</a> is ignored). An example:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert  canvas:'rgb(25%,50%,75%)' rose: -colorspace rgb  \ <br></br>
-  -format 'Red channel of NW corner of image #%[fx:t] is %[fx: s]' info:</span><span class="crtout">Red channel of NW corner of image #0 is 0.453758 <br></br>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert  canvas:'rgb(25%,50%,75%)' rose: -colorspace rgb  \ <br/>
+  -format 'Red channel of NW corner of image #%[fx:t] is %[fx: s]' info:</span><span class='crtout'>Red channel of NW corner of image #0 is 0.453758 <br/>
   Red channel of NW corner of image #1 is 0.184588</span></p>
 <p>Here we use the image indexes to <em>rotate</em> each image differently, and use <code>-set</code> with the image index to set a different <em>pause delay</em> on the first image in the animation:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \ <br></br>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \ <br />
     -set delay '%[fx:t == 0 ? 240 : 10]' -loop 0 rose.gif</span></p><p>The color-escape <code>%[pixel: ]</code> is evaluated once per image and per color channel in that image (<a href="command-line-options.html#channel">-channel</a> is ignored), The values generated are then converted into a color string (a named color or hex color value).  The symbols <code>i</code> and <code>j</code> are set to zero, and <code>s</code> and <code>t</code> refer to each successively current image and index.</p>
 
 </div>
@@ -513,15 +563,15 @@
     <span id="linkbar-west"> </span>
 
     <span id="linkbar-center">
-      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
       <a href="../discourse-server">Discourse Server</a> •
+      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
       <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
       <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>
