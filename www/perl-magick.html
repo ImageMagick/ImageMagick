@@ -1,47 +1,53 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en" xsi:schemaLocation="http://www.w3.org/1999/xhtml                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"></meta>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
   <title>ImageMagick: PerlMagick, Perl API for ImageMagick</title>
-  <meta http-equiv="content-language" content="en-US"></meta>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"></meta>
-  <meta name="application-name" content="ImageMagick"></meta>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."></meta>
-  <meta name="application-url" content="http://www.imagemagick.org"></meta>
-  <meta name="generator" content="PHP"></meta>
-  <meta name="keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"></meta>
-  <meta name="rating" content="GENERAL"></meta>
-  <meta name="robots" content="INDEX, FOLLOW"></meta>
-  <meta name="generator" content="ImageMagick Studio LLC"></meta>
-  <meta name="author" content="ImageMagick Studio LLC"></meta>
-  <meta name="revisit-after" content="2 DAYS"></meta>
-  <meta name="resource-type" content="document"></meta>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"></meta>
-  <meta name="distribution" content="Global"></meta>
-  <link rel="icon" href="../images/wand.png"></link>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="canonical" href="http://www.imagemagick.org"></link>
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"></link>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="perlmagick, perl, api, for, imagemagick, convert, edit, compose, image, pixel"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
 
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   
   <!-- Add mousewheel plugin (this is optional) -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
   <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=2.0.6" type="text/css" media="screen"></link>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=2.0.6"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
   
   <script type="text/javascript">
   	$(document).ready(function() {
@@ -57,7 +63,15 @@
 
 <body id="www-imagemagick-org">
 
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-40133312-1', 'imagemagick.org');
+  ga('send', 'pageview');
+</script>
 
 <div class="titlebar">
 <div style="margin: 17px auto; float: left;">
@@ -69,12 +83,18 @@
     google_ad_height = 90;
   //-->
   </script>
-  
+  <script type="text/javascript"
+    src="http://localhost/pagead/show_ads.js">
+  </script>
 </div>
 <a href="../discourse-server">
-  <img src="../images/logo.jpg" alt="ImageMagick Logo" style="width: 123px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo" width="123" height="118"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
-  <img src="../images/sprite.jpg" alt="ImageMagick Sprite" style="width: 114px; height: 118px; border: 0px; float: right;"></img></a>
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite" width="114" height="118"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
 <div class="westbar">
@@ -126,7 +146,7 @@
     <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
-<div class="menu">
+<div  class="menu">
    <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
@@ -152,21 +172,50 @@
 <div class="menu">
   <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
-<div class="sub">
+<div  class="sub">
   <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
 </div>
 
 <div class="eastbar">
-  
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('offline-script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
+      script.parentNode.insertBefore(po, script);
+    })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","true");
+    /* ]]> */
+  </script>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    (function() {
+        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        var script = document.getElementsByTagName('offline-script')[0];
+        script.parentNode.insertBefore(po, script);
+    })();
+    /* ]]> */
+  </script>
   <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0"></img></a>
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-    
-    
+  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
@@ -199,19 +248,19 @@ yum install ImageMagick-perl
 
 <p>Unpack the distribution with this command:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">tar xvfz ImageMagick.tar.gz</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvzf ImageMagick.tar.gz</span></p>
 <p>Next configure and compile ImageMagick:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd ImageMagick-7.0.0</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">./configure -with-perl</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">make</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.8.9</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span></p>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo make install</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo make install</span></p>
 <p>You may need to configure the dynamic linker run-time bindings:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">sudo ldconfig /usr/local/lib</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo ldconfig /usr/local/lib</span></p>
 <p>Finally, verify the PerlMagick install worked properly, type</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">perl -e "use Image::Magick; print Image::Magick-&gt;QuantumDepth"</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>perl -e "use Image::Magick; print Image::Magick->QuantumDepth"</span></p>
 <p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images.</p>
 
 <p><b>Windows XP / Windows 2000</b></p>
@@ -220,17 +269,17 @@ yum install ImageMagick-perl
 
 <p>Next, type</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd PerlMagick</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">perl Makefile.nt</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">nmake</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">nmake install</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd PerlMagick</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>perl Makefile.nt</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>nmake</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>nmake install</span></p>
 <p>See the <a href="http://www.dylanbeattie.net/magick/">PerlMagick Windows HowTo</a> page for further installation instructions.</p>
 
 <p><b>Running the Regression Tests</b></p>
 
 <p>To verify a correct installation, type</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">make test</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make test</span></p>
 <p>Use <code>nmake test</code> under Windows. There are a few demonstration scripts available to exercise many of the functions PerlMagick can perform. Type</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cd demo</span><span class="crtout"></span><span class="crtprompt"> $magick&gt; </span><span class="crtin">make</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd demo</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span></p>
 <p>You are now ready to utilize the PerlMagick methods from within your Perl scripts.</p>
 
 </div>
@@ -284,7 +333,7 @@ yum install ImageMagick-perl
 
 <p>Some of the PerlMagick methods require external programs such as <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>. This may require an explicit path in your PATH environment variable to work properly. For example (in Unix),</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">$ENV{PATH}='/../bin:/usr/bin:/usr/local/bin';</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>$ENV{PATH}='/../bin:/usr/bin:/usr/local/bin';</span></p>
 <div style="margin: auto;">
 <h2><a id="example"></a>Example Script</h2>
 </div>
@@ -293,13 +342,13 @@ yum install ImageMagick-perl
 
 <pre class="code">
   #!/usr/local/bin/perl
-  use Image::Magick;<br></br>
-  my($image, $x);<br></br>
+  use Image::Magick;<br />
+  my($image, $x);<br />
   $image = Image::Magick-&gt;new;
   $x = $image-&gt;Read('girl.png', 'logo.png', 'rose.png');
-  warn "$x" if "$x";<br></br>
+  warn "$x" if "$x";<br />
   $x = $image-&gt;Crop(geometry=&gt;'100x100+100+100');
-  warn "$x" if "$x";<br></br>
+  warn "$x" if "$x";<br />
   $x = $image-&gt;Write('x.png');
   warn "$x" if "$x";
 </pre>
@@ -308,8 +357,8 @@ yum install ImageMagick-perl
 
 <pre class="code">
   #!/usr/local/bin/perl
-  use Image::Magick;<br></br>
-  my($image, $p, $q);<br></br>
+  use Image::Magick;<br />
+  my($image, $p, $q);<br />
   $image = new Image::Magick;
   $image-&gt;Read('x1.png');
   $image-&gt;Read('j*.jpg');
@@ -367,7 +416,7 @@ yum install ImageMagick-perl
 
 <p>Other clever things you can do with a PerlMagick objects include</p>
 
-<pre class="code">
+<pre  class="code">
   $i = $#$p"+1";   # return the number of images associated with object p
   push(@$q, @$p);  # push the images from object p onto object q
   @$p = ();        # delete the images but not the object p
@@ -453,7 +502,7 @@ yum install ImageMagick-perl
 
 <pre class="code">
   $filename = "image.png";
-  open(IMAGE, "&gt;$filename");
+  open(IMAGE, ">$filename");
   $image-&gt;Write(file=&gt;\*IMAGE, filename=&gt;$filename);
   close(IMAGE);
 </pre>
@@ -555,7 +604,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">AutoOrient</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">adjusts an image so that its orientation is suitable for viewing (i.e. top-left orientation)</td>
   </tr>
 
@@ -581,6 +630,12 @@ yum install ImageMagick-perl
     <td valign="top">Border</td>
     <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, bordercolor=&gt;<i><a href="color.html">color name</a></i>,  compose=&gt;{Undefined, Add, Atop, Blend, Bumpmap, Clear, ColorBurn, ColorDodge, Colorize, CopyBlack, CopyBlue, CopyCMYK, Cyan, CopyGreen, Copy, CopyMagenta, CopyOpacity, CopyRed, RGB, CopyYellow, Darken, Dst, Difference, Displace, Dissolve, DstAtop, DstIn, DstOut, DstOver, Dst, Exclusion, HardLight, Hue, In, Lighten, Luminize, Minus, Modulate, Multiply, None, Out, Overlay, Over, Plus, ReplaceCompositeOp, Saturate, Screen, SoftLight, Src, SrcAtop, SrcIn, SrcOut, SrcOver, Src, Subtract, Threshold, Xor },</td>
     <td valign="top">surround the image with a border of color</td>
+  </tr>
+
+  <tr>
+    <td valign="top">CannyEdge</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, 'lower-percent'=&gt;<i>double</i>, 'upper-percent'=&gt;<i>double</i></td>
+    <td valign="top">use a multi-stage algorithm to detect a wide range of edges in the image (e.g. CannyEdge('0x1+10%+40%')).</td>
   </tr>
 
   <tr>
@@ -621,7 +676,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Coalesce</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">merge a sequence of images</td>
   </tr>
 
@@ -705,7 +760,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Deconstruct</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">break down an image sequence into constituent parts</td>
   </tr>
 
@@ -729,7 +784,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Distort</td>
-    <td valign="top">points=&gt;<i>array of float values</i>, method=&gt;{Affine, AffineProjection, Bilinear, Perspective, Resize, ScaleRotateTranslate}, virtual-pixel=&gt;{Background Black Constant Dither Edge Gray Mirror Random Tile Transparent White}, best-fit=&gt;{True, False}</td>
+    <td valign="top">points=&gt;<i>array of float values</i>, method=&gt;{Affine, AffineProjection, Bilinear, Perspective, Resize, ScaleRotateTranslate}, 'virtual-pixel'=&gt;{Background Black Constant Dither Edge Gray Mirror Random Tile Transparent White}, 'best-fit'=&gt;{True, False}</td>
     <td valign="top">distort image</td>
   </tr>
 
@@ -759,13 +814,13 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Enhance</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">apply a digital filter to enhance a noisy image</td>
   </tr>
 
   <tr>
     <td valign="top">Equalize</td>
-    <td valign="top">channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}<br></br></td>
+    <td valign="top">channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}<br /></td>
     <td valign="top">perform histogram equalization to the image</td>
   </tr>
 
@@ -777,7 +832,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Evaluate</td>
-    <td valign="top">value=&gt;<i>double</i>, operator=&gt;<i>{Add, And, Divide, LeftShift, Max, Min, Multiply, Or, Rightshift, Subtract, Xor}</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow} </td>
+    <td valign="top">value=&gt;<i>double</i>, operator=&gt;<i>{Add, And, Divide, LeftShift, Max, Min, Multiply, Or, Rightshift, RMS, Subtract, Xor}</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow} </td>
     <td valign="top">apply an arithmetic, relational, or logical expression to the image</td>
   </tr>
 
@@ -789,13 +844,13 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Flip</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">reflect the image scanlines in the vertical direction</td>
   </tr>
 
   <tr>
     <td valign="top">Flop</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">reflect the image scanlines in the horizontal direction</td>
   </tr>
 
@@ -819,7 +874,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Function</td>
-    <td valign="top">parameters=&gt;<i>array of float values</i>, function=&gt;{Sin}, virtual-pixel=&gt;{Background Black Constant Dither Edge Gray Mirror Random Tile Transparent White}</td>
+    <td valign="top">parameters=&gt;<i>array of float values</i>, function=&gt;{Sin}, 'virtual-pixel'=&gt;{Background Black Constant Dither Edge Gray Mirror Random Tile Transparent White}</td>
     <td valign="top">apply a function to the image</td>
   </tr>
 
@@ -857,6 +912,12 @@ yum install ImageMagick-perl
     <td valign="top">HaldClut</td>
     <td valign="top">image=&gt;<i>image-handle</i>,  channel=&gt;{Red, RGB, All, etc.}</td>
     <td valign="top">apply a Hald color lookup table to an image sequence</td>
+  </tr>
+
+  <tr>
+    <td valign="top">HoughLine</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>double</i>, height=&gt;<i>double</i>, threshold=&gt;<i>double</i></td>
+    <td valign="top">identify lines in the image (e.g. HoughLine('9x9+195')).</td>
   </tr>
 
   <tr>
@@ -915,7 +976,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Magnify</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">double the size of the image with pixel art scaling</td>
   </tr>
 
@@ -932,6 +993,12 @@ yum install ImageMagick-perl
   </tr>
 
   <tr>
+    <td valign="top">MeanShift</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>double</i>, height=&gt;<i>double</i>, distance=&gt;<i>double</i></td>
+    <td valign="top">delineate arbitrarily shaped clusters in the image (e.g. MeanShift('7x7+10%')).</td>
+  </tr>
+
+  <tr>
     <td valign="top">MedianFilter</td>
     <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">replace each pixel with the median intensity pixel of a neighborhood.</td>
@@ -939,7 +1006,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Minify</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">half the size of an image</td>
   </tr>
 
@@ -975,7 +1042,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Normalize</td>
-    <td valign="top">channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}<br></br></td>
+    <td valign="top">channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}<br /></td>
     <td valign="top">transform image to span the full range of color values</td>
   </tr>
 
@@ -1029,12 +1096,6 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
   </tr>
 
   <tr>
-    <td valign="top">RadialBlur</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, angle=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
-    <td valign="top">radial blur the image.</td>
-  </tr>
-
-  <tr>
     <td valign="top">Raise</td>
     <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, raise=&gt;{True, False}</td>
     <td valign="top">lighten or darken image edges to create a 3-D effect</td>
@@ -1074,6 +1135,12 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
     <td valign="top">Rotate</td>
     <td valign="top">degrees=&gt;<i>double</i>, background=&gt;<i><a href="color.html">color name</a></i></td>
     <td valign="top">rotate an image</td>
+  </tr>
+
+  <tr>
+    <td valign="top">RotationalBlur</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, angle=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">radial blur the image.</td>
   </tr>
 
   <tr>
@@ -1149,7 +1216,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td valign="top">Signature</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">generate an SHA-256 message digest for the image pixel stream</td>
   </tr>
 
@@ -1167,7 +1234,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td valign="top">SparseColor</td>
-    <td valign="top">points=&gt;<i>array of float values</i>, method=&gt;{Barycentric, Bilinear, Shepards, Voronoi}, virtual-pixel=&gt;{Background Black Constant Dither Edge Gray Mirror Random Tile Transparent White}</td>
+    <td valign="top">points=&gt;<i>array of float values</i>, method=&gt;{Barycentric, Bilinear, Shepards, Voronoi}, 'virtual-pixel'=&gt;{Background Black Constant Dither Edge Gray Mirror Random Tile Transparent White}</td>
     <td valign="top">interpolate the image colors around the supplied points</td>
   </tr>
 
@@ -1185,7 +1252,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td valign="top">Statistic</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}, type=&gt;{Median, Mode, Mean, Maximum, Minimum, ReduceNoise}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}, type=&gt;{Median, Mode, Mean, Maximum, Minimum, ReduceNoise, RMS}</td>
     <td valign="top">replace each pixel with corresponding statistic from the neighborhood.</td>
   </tr>
   <tr>
@@ -1202,7 +1269,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td valign="top">Strip</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">strip an image of all profiles and comments.</td>
   </tr>
 
@@ -1244,19 +1311,19 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td valign="top">Transpose</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">flip image in the vertical direction and rotate 90 degrees</td>
   </tr>
 
   <tr>
     <td valign="top">Transverse</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">flop image in the horizontal direction and rotate 270 degrees</td>
   </tr>
 
   <tr>
     <td valign="top">Trim</td>
-    <td valign="top"><br></br></td>
+    <td valign="top"><br /></td>
     <td valign="top">remove edges that are the background color from the image</td>
   </tr>
 
@@ -2079,14 +2146,14 @@ can use the integers 1 and 0.</p>
 <pre class="code">
   use Image::Magick;
 
-  $logo=Image::Magick-&gt;New();
-  $logo-&gt;Read('logo:');
-  $sharp=Image::Magick-&gt;New();
-  $sharp-&gt;Read('logo:');
-  $sharp-&gt;Sharpen('0x1');
-  $difference=$logo-&gt;Compare(image=&gt;$sharp, metric=&gt;'rmse');
-  print $difference-&gt;Get('error'), "\n";
-  $difference-&gt;Display();
+  $logo=Image::Magick->New();
+  $logo->Read('logo:');
+  $sharp=Image::Magick->New();
+  $sharp->Read('logo:');
+  $sharp->Sharpen('0x1');
+  $difference=$logo->Compare(image=>$sharp, metric=>'rmse');
+  print $difference->Get('error'), "\n";
+  $difference->Display();
 </pre>
 
 <p>In addition to the reported root mean squared error of around 0.024, a difference image is displayed so you can visually identify the difference between the images.</p>
@@ -2151,7 +2218,7 @@ can use the integers 1 and 0.</p>
     <td valign="top">geometry</td>
     <td valign="top"><i>geometry</i></td>
     <td valign="top">preferred tile and border size of each tile of the composite
-image (e.g. 120x120+4+3&gt;)</td>
+image (e.g. 120x120+4+3>)</td>
   </tr>
 
   <tr>
@@ -2369,7 +2436,7 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
 <p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
 
 <pre class="code">
-  $p = $images-&gt;Transform(crop=&gt;'100x100+10+60');
+  $p = $images-&gt;Transform(crop=>'100x100+10+60');
 </pre>
 
 <p>The Flatten() method flattens a set of images and returns it. For example,</p>
@@ -2647,15 +2714,15 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
     <span id="linkbar-west"> </span>
 
     <span id="linkbar-center">
-      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
       <a href="../discourse-server">Discourse Server</a> •
+      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
       <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
       <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2013 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>
