@@ -731,8 +731,8 @@ static png_byte mng_JSEP[5]={ 74,  83,  69,  80, (png_byte) '\0'};
 static png_byte mng_oFFs[5]={111,  70,  70, 115, (png_byte) '\0'};
 #endif
 
-/*
-Other known chunks that are not yet supported by ImageMagick:
+#if 0
+/* Other known chunks that are not yet supported by ImageMagick: */
 static png_byte mng_hIST[5]={104,  73,  83,  84, (png_byte) '\0'};
 static png_byte mng_iTXt[5]={105,  84,  88, 116, (png_byte) '\0'};
 static png_byte mng_sPLT[5]={115,  80,  76,  84, (png_byte) '\0'};
@@ -740,7 +740,7 @@ static png_byte mng_sTER[5]={115,  84,  69,  82, (png_byte) '\0'};
 static png_byte mng_tEXt[5]={116,  69,  88, 116, (png_byte) '\0'};
 static png_byte mng_tIME[5]={116,  73,  77,  69, (png_byte) '\0'};
 static png_byte mng_zTXt[5]={122,  84,  88, 116, (png_byte) '\0'};
-*/
+#endif
 
 typedef struct _MngBox
 {
@@ -11628,7 +11628,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     *value;
 
   int
-    i,
     source;
 
   /*
@@ -12084,9 +12083,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     if (value != NULL)
     {
 
-    size_t
-      last;
-
     excluding=MagickTrue;
 
     if (logging != MagickFalse)
@@ -12099,81 +12095,73 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
               "  png:exclude-chunk=%s found in image properties.\n", value);
       }
 
-    last=strlen(value);
-
-    for (i=0; i<(int) last; i+=5)
+    if (IsOptionMember("none",value) != MagickFalse)
     {
+      mng_info->ping_exclude_bKGD=MagickFalse;
+      mng_info->ping_exclude_cHRM=MagickFalse;
+      mng_info->ping_exclude_date=MagickFalse;
+      mng_info->ping_exclude_EXIF=MagickFalse;
+      mng_info->ping_exclude_gAMA=MagickFalse;
+      mng_info->ping_exclude_iCCP=MagickFalse;
+      /* mng_info->ping_exclude_iTXt=MagickFalse; */
+      mng_info->ping_exclude_oFFs=MagickFalse;
+      mng_info->ping_exclude_pHYs=MagickFalse;
+      mng_info->ping_exclude_sRGB=MagickFalse;
+      mng_info->ping_exclude_tEXt=MagickFalse;
+      mng_info->ping_exclude_tRNS=MagickFalse;
+      mng_info->ping_exclude_vpAg=MagickFalse;
+      mng_info->ping_exclude_zCCP=MagickFalse;
+      mng_info->ping_exclude_zTXt=MagickFalse;
+    }
 
-      if (LocaleNCompare(value+i,"none",4) == 0)
-      {
-        mng_info->ping_exclude_bKGD=MagickFalse;
-        mng_info->ping_exclude_cHRM=MagickFalse;
-        mng_info->ping_exclude_date=MagickFalse;
-        mng_info->ping_exclude_EXIF=MagickFalse;
-        mng_info->ping_exclude_gAMA=MagickFalse;
-        mng_info->ping_exclude_iCCP=MagickFalse;
-        /* mng_info->ping_exclude_iTXt=MagickFalse; */
-        mng_info->ping_exclude_oFFs=MagickFalse;
-        mng_info->ping_exclude_pHYs=MagickFalse;
-        mng_info->ping_exclude_sRGB=MagickFalse;
-        mng_info->ping_exclude_tEXt=MagickFalse;
-        mng_info->ping_exclude_tRNS=MagickFalse;
-        mng_info->ping_exclude_vpAg=MagickFalse;
-        mng_info->ping_exclude_zCCP=MagickFalse;
-        mng_info->ping_exclude_zTXt=MagickFalse;
-      }
+    if (IsOptionMember("bkgd",value) != MagickFalse)
+      mng_info->ping_exclude_bKGD=MagickTrue;
 
-      if (LocaleNCompare(value+i,"bkgd",4) == 0)
-        mng_info->ping_exclude_bKGD=MagickTrue;
+    if (IsOptionMember("chrm",value) != MagickFalse)
+      mng_info->ping_exclude_cHRM=MagickTrue;
 
-      if (LocaleNCompare(value+i,"chrm",4) == 0)
-        mng_info->ping_exclude_cHRM=MagickTrue;
+    if (IsOptionMember("date",value) != MagickFalse)
+      mng_info->ping_exclude_date=MagickTrue;
 
-      if (LocaleNCompare(value+i,"date",4) == 0)
-        mng_info->ping_exclude_date=MagickTrue;
+    if (IsOptionMember("exif",value) != MagickFalse)
+      mng_info->ping_exclude_EXIF=MagickTrue;
 
-      if (LocaleNCompare(value+i,"exif",4) == 0)
-        mng_info->ping_exclude_EXIF=MagickTrue;
+    if (IsOptionMember("gama",value) != MagickFalse)
+      mng_info->ping_exclude_gAMA=MagickTrue;
 
-      if (LocaleNCompare(value+i,"gama",4) == 0)
-        mng_info->ping_exclude_gAMA=MagickTrue;
+    if (IsOptionMember("iccp",value) != MagickFalse)
+      mng_info->ping_exclude_iCCP=MagickTrue;
 
-      if (LocaleNCompare(value+i,"iccp",4) == 0)
-        mng_info->ping_exclude_iCCP=MagickTrue;
+#if 0
+    if (IsOptionMember("itxt",value) != MagickFalse)
+      mng_info->ping_exclude_iTXt=MagickTrue;
+#endif
 
-    /*
-      if (LocaleNCompare(value+i,"itxt",4) == 0)
-        mng_info->ping_exclude_iTXt=MagickTrue;
-     */
+    if (IsOptionMember("offs",value) != MagickFalse)
+      mng_info->ping_exclude_oFFs=MagickTrue;
 
-      if (LocaleNCompare(value+i,"gama",4) == 0)
-        mng_info->ping_exclude_gAMA=MagickTrue;
+    if (IsOptionMember("phys",value) != MagickFalse)
+      mng_info->ping_exclude_pHYs=MagickTrue;
 
-      if (LocaleNCompare(value+i,"offs",4) == 0)
-        mng_info->ping_exclude_oFFs=MagickTrue;
+    if (IsOptionMember("srgb",value) != MagickFalse)
+      mng_info->ping_exclude_sRGB=MagickTrue;
 
-      if (LocaleNCompare(value+i,"phys",4) == 0)
-        mng_info->ping_exclude_pHYs=MagickTrue;
+    if (IsOptionMember("text",value) != MagickFalse)
+      mng_info->ping_exclude_tEXt=MagickTrue;
 
-      if (LocaleNCompare(value+i,"srgb",4) == 0)
-        mng_info->ping_exclude_sRGB=MagickTrue;
+    if (IsOptionMember("trns",value) != MagickFalse)
+      mng_info->ping_exclude_tRNS=MagickTrue;
 
-      if (LocaleNCompare(value+i,"text",4) == 0)
-        mng_info->ping_exclude_tEXt=MagickTrue;
+    if (IsOptionMember("vpag",value) != MagickFalse)
+      mng_info->ping_exclude_vpAg=MagickTrue;
 
-      if (LocaleNCompare(value+i,"trns",4) == 0)
-        mng_info->ping_exclude_tRNS=MagickTrue;
+    if (IsOptionMember("zccp",value) != MagickFalse)
+      mng_info->ping_exclude_zCCP=MagickTrue;
 
-      if (LocaleNCompare(value+i,"vpag",4) == 0)
-        mng_info->ping_exclude_vpAg=MagickTrue;
+    if (IsOptionMember("ztxt",value) != MagickFalse)
+      mng_info->ping_exclude_zTXt=MagickTrue;
 
-      if (LocaleNCompare(value+i,"zccp",4) == 0)
-        mng_info->ping_exclude_zCCP=MagickTrue;
-
-      if (LocaleNCompare(value+i,"ztxt",4) == 0)
-        mng_info->ping_exclude_zTXt=MagickTrue;
-
-      if (LocaleNCompare(value+i,"all",3) == 0)
+    if (IsOptionMember("all",value) != MagickFalse)
       {
         mng_info->ping_exclude_bKGD=MagickTrue;
         mng_info->ping_exclude_cHRM=MagickTrue;
@@ -12190,8 +12178,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->ping_exclude_vpAg=MagickTrue;
         mng_info->ping_exclude_zCCP=MagickTrue;
         mng_info->ping_exclude_zTXt=MagickTrue;
-        i--;
-      }
       }
     }
   }
@@ -12215,12 +12201,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
     if (value != NULL)
     {
-    size_t
-      last;
+      excluding=MagickTrue;
 
-    excluding=MagickTrue;
-
-    if (logging != MagickFalse)
+      if (logging != MagickFalse)
       {
         if (source == 0)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -12230,11 +12213,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
               "  png:include-chunk=%s found in image properties.\n", value);
       }
 
-    last=strlen(value);
-
-    for (i=0; i<(int) last; i+=5)
-      {
-      if (LocaleNCompare(value+i,"none",4) == 0)
+      if (IsOptionMember("none",value) != MagickFalse)
         {
           mng_info->ping_exclude_bKGD=MagickTrue;
           mng_info->ping_exclude_cHRM=MagickTrue;
@@ -12253,57 +12232,54 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
           mng_info->ping_exclude_zTXt=MagickTrue;
         }
 
-      if (LocaleNCompare(value+i,"bkgd",4) == 0)
+      if (IsOptionMember("bkgd",value) != MagickFalse)
         mng_info->ping_exclude_bKGD=MagickFalse;
 
-      if (LocaleNCompare(value+i,"chrm",4) == 0)
+      if (IsOptionMember("chrm",value) != MagickFalse)
         mng_info->ping_exclude_cHRM=MagickFalse;
 
-      if (LocaleNCompare(value+i,"date",4) == 0)
+      if (IsOptionMember("date",value) != MagickFalse)
         mng_info->ping_exclude_date=MagickFalse;
 
-      if (LocaleNCompare(value+i,"exif",4) == 0)
+      if (IsOptionMember("exif",value) != MagickFalse)
         mng_info->ping_exclude_EXIF=MagickFalse;
 
-      if (LocaleNCompare(value+i,"gama",4) == 0)
+      if (IsOptionMember("gama",value) != MagickFalse)
         mng_info->ping_exclude_gAMA=MagickFalse;
 
-      if (LocaleNCompare(value+i,"iccp",4) == 0)
+      if (IsOptionMember("iccp",value) != MagickFalse)
         mng_info->ping_exclude_iCCP=MagickFalse;
 
-    /*
-      if (LocaleNCompare(value+i,"itxt",4) == 0)
+#if 0
+      if (IsOptionMember("itxt",value) != MagickFalse)
         mng_info->ping_exclude_iTXt=MagickFalse;
-     */
+#endif
 
-      if (LocaleNCompare(value+i,"gama",4) == 0)
-        mng_info->ping_exclude_gAMA=MagickFalse;
-
-      if (LocaleNCompare(value+i,"offs",4) == 0)
+      if (IsOptionMember("offs",value) != MagickFalse)
         mng_info->ping_exclude_oFFs=MagickFalse;
 
-      if (LocaleNCompare(value+i,"phys",4) == 0)
+      if (IsOptionMember("phys",value) != MagickFalse)
         mng_info->ping_exclude_pHYs=MagickFalse;
 
-      if (LocaleNCompare(value+i,"srgb",4) == 0)
+      if (IsOptionMember("srgb",value) != MagickFalse)
         mng_info->ping_exclude_sRGB=MagickFalse;
 
-      if (LocaleNCompare(value+i,"text",4) == 0)
+      if (IsOptionMember("text",value) != MagickFalse)
         mng_info->ping_exclude_tEXt=MagickFalse;
 
-      if (LocaleNCompare(value+i,"trns",4) == 0)
+      if (IsOptionMember("trns",value) != MagickFalse)
         mng_info->ping_exclude_tRNS=MagickFalse;
 
-      if (LocaleNCompare(value+i,"vpag",4) == 0)
+      if (IsOptionMember("vpag",value) != MagickFalse)
         mng_info->ping_exclude_vpAg=MagickFalse;
 
-      if (LocaleNCompare(value+i,"zccp",4) == 0)
+      if (IsOptionMember("zccp",value) != MagickFalse)
         mng_info->ping_exclude_zCCP=MagickFalse;
 
-      if (LocaleNCompare(value+i,"ztxt",4) == 0)
+      if (IsOptionMember("ztxt",value) != MagickFalse)
         mng_info->ping_exclude_zTXt=MagickFalse;
 
-      if (LocaleNCompare(value+i,"all",3) == 0)
+      if (IsOptionMember("all",value) != MagickFalse)
         {
           mng_info->ping_exclude_bKGD=MagickFalse;
           mng_info->ping_exclude_cHRM=MagickFalse;
@@ -12320,9 +12296,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
           mng_info->ping_exclude_vpAg=MagickFalse;
           mng_info->ping_exclude_zCCP=MagickFalse;
           mng_info->ping_exclude_zTXt=MagickFalse;
-          i--;
         }
-      }
     }
   }
 
@@ -12348,11 +12322,12 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     if (mng_info->ping_exclude_iCCP != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    iCCP");
-/*
+#if 0
     if (mng_info->ping_exclude_iTXt != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    iTXt");
-*/
+#endif
+
     if (mng_info->ping_exclude_oFFs != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    oFFs");
