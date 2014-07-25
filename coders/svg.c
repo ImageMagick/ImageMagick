@@ -2963,7 +2963,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             stride=4*image->columns;
 #if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
             stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
-              image->columns);
+              (int) image->columns);
 #endif
             pixel_info=AcquireVirtualMemory(stride,image->rows*sizeof(*pixels));
             if (pixel_info == (MemoryInfo *) NULL)
@@ -2977,7 +2977,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) SetImageBackgroundColor(image,exception);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
             cairo_surface=cairo_image_surface_create_for_data(pixels,
-              CAIRO_FORMAT_ARGB32,image->columns,image->rows,stride);
+              CAIRO_FORMAT_ARGB32,(int) image->columns,(int) image->rows,(int)
+              stride);
             if (cairo_surface == (cairo_surface_t *) NULL)
               {
                 pixel_info=RelinquishVirtualMemory(pixel_info);
