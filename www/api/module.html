@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, loadable, modules, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, loadable, modules, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../../index.html" />
@@ -228,7 +229,7 @@
 <div class="main">
 
 <h1>Module module Methods</h1>
-<p class="navigation-index">[<a href="module.html#AcquireModuleInfo">AcquireModuleInfo</a> &#8226; <a href="module.html#DestroyModuleList">DestroyModuleList</a> &#8226; <a href="module.html#GetModuleInfo">GetModuleInfo</a> &#8226; <a href="module.html#GetModuleInfoList">GetModuleInfoList</a> &#8226; <a href="module.html#GetModuleList">GetModuleList</a> &#8226; <a href="module.html#GetMagickModulePath">GetMagickModulePath</a> &#8226; <a href="module.html#InitializeModuleList">InitializeModuleList</a> &#8226; <a href="module.html#InvokeDynamicImageFilter">InvokeDynamicImageFilter</a> &#8226; <a href="module.html#ListModuleInfo">ListModuleInfo</a> &#8226; <a href="module.html#OpenModule">OpenModule</a> &#8226; <a href="module.html#OpenModules">OpenModules</a> &#8226; <a href="module.html#RegisterModule">RegisterModule</a> &#8226; <a href="module.html#TagToCoderModuleName">TagToCoderModuleName</a> &#8226; <a href="module.html#TagToFilterModuleName">TagToFilterModuleName</a> &#8226; <a href="module.html#TagToModuleName">TagToModuleName</a> &#8226; <a href="module.html#UnregisterModule">UnregisterModule</a>]</p>
+<p class="navigation-index">[<a href="module.html#AcquireModuleInfo">AcquireModuleInfo</a> &#8226; <a href="module.html#DestroyModuleList">DestroyModuleList</a> &#8226; <a href="module.html#GetModuleInfo">GetModuleInfo</a> &#8226; <a href="module.html#GetModuleInfoList">GetModuleInfoList</a> &#8226; <a href="module.html#GetModuleList">GetModuleList</a> &#8226; <a href="module.html#GetMagickModulePath">GetMagickModulePath</a> &#8226; <a href="module.html#IsModuleTreeInstantiated">IsModuleTreeInstantiated</a> &#8226; <a href="module.html#InvokeDynamicImageFilter">InvokeDynamicImageFilter</a> &#8226; <a href="module.html#ListModuleInfo">ListModuleInfo</a> &#8226; <a href="module.html#OpenModule">OpenModule</a> &#8226; <a href="module.html#OpenModules">OpenModules</a> &#8226; <a href="module.html#RegisterModule">RegisterModule</a> &#8226; <a href="module.html#TagToCoderModuleName">TagToCoderModuleName</a> &#8226; <a href="module.html#TagToFilterModuleName">TagToFilterModuleName</a> &#8226; <a href="module.html#TagToModuleName">TagToModuleName</a> &#8226; <a href="module.html#UnregisterModule">UnregisterModule</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="AcquireModuleInfo">AcquireModuleInfo</a></h2>
 <div class="doc-section">
@@ -360,15 +361,15 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="InitializeModuleList">InitializeModuleList</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="IsModuleTreeInstantiated">IsModuleTreeInstantiated</a></h2>
 <div class="doc-section">
 
-<p>InitializeModuleList() initializes the module loader.</p>
+<p>IsModuleTreeInstantiated() determines if the module tree is instantiated. If not, it instantiates the tree and returns it.</p>
 
-<p>The format of the InitializeModuleList() method is:</p>
+<p>The format of the IsModuleTreeInstantiated() method is:</p>
 
 <pre class="code">
-  InitializeModuleList(Exceptioninfo *exception)
+  MagickBooleanType IsModuleTreeInstantiated(Exceptioninfo *exception)
 </pre>
 
 <p>A description of each parameter follows.</p>
@@ -593,4 +594,3 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:57 -->

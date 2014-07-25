@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, features, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, features, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../../index.html" />
@@ -228,8 +229,42 @@
 <div class="main">
 
 <h1>Module feature Methods</h1>
-<p class="navigation-index">[<a href="feature.html#GetImageChannelFeatures">GetImageChannelFeatures</a>]</p>
+<p class="navigation-index">[<a href="feature.html#CannyEdgeImage">CannyEdgeImage</a> &#8226; <a href="feature.html#GetImageChannelFeatures">GetImageChannelFeatures</a> &#8226; <a href="feature.html#Use HoughLineImage">Use HoughLineImage</a> &#8226; <a href="feature.html#MeanShiftImage">MeanShiftImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="CannyEdgeImage">CannyEdgeImage</a></h2>
+<div class="doc-section">
+
+<p>CannyEdgeImage() uses a multi-stage algorithm to detect a wide range of edges in images.</p>
+
+<p>The format of the CannyEdgeImage method is:</p>
+
+<pre class="code">
+  Image *CannyEdgeImage(const Image *image,const double radius,
+    const double sigma,const double lower_percent,
+    const double upper_percent,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the gaussian smoothing filter.</p>
+
+<h5>sigma</h5>
+<p>the sigma of the gaussian smoothing filter.</p>
+
+<h5>lower_percent</h5>
+<p>percentage of edge pixels in the lower threshold.</p>
+
+<h5>upper_percent</h5>
+<p>percentage of edge pixels in the upper threshold.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="GetImageChannelFeatures">GetImageChannelFeatures</a></h2>
 <div class="doc-section">
 
@@ -261,6 +296,61 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="Use_HoughLineImage">Use HoughLineImage</a></h2>
+<div class="doc-section">
+
+<p>Use HoughLineImage() in conjunction with any binary edge extracted image (we recommand Canny) to identify lines in the image.  The algorithm accumulates counts for every white pixel for every possible orientation (for angles from 0 to 179 in 1 degree increments) and distance from the center of the image to the corner (in 1 px increments) and stores the counts in an accumulator matrix of angle vs distance. The size of the accumulator is 180x(diagonal/2). Next it searches this space for peaks in counts and converts the locations of the peaks to slope and intercept in the normal x,y input image space. Use the slope/intercepts to find the endpoints clipped to the bounds of the image. The lines are then drawn. The counts are a measure of the length of the lines</p>
+
+<p>The format of the HoughLineImage method is:</p>
+
+<pre class="code">
+  Image *HoughLineImage(const Image *image,const size_t width,
+    const size_t height,const size_t threshold,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>width, height</h5>
+<p>find line pairs as local maxima in this neighborhood.</p>
+
+<h5>threshold</h5>
+<p>the line count threshold.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="MeanShiftImage">MeanShiftImage</a></h2>
+<div class="doc-section">
+
+<p>MeanShiftImage() delineate arbitrarily shaped clusters in the image. For each pixel, it visits all the pixels in the neighborhood specified by the window centered at the pixel and excludes those that are outside the radius=(window-1)/2 surrounding the pixel. From those pixels, it finds those that are within the specified color distance from the current mean, and computes a new x,y centroid from those coordinates and a new mean. This new x,y centroid is used as the center for a new window. This process iterates until it converges and the final mean is replaces the (original window center) pixel value. It repeats this process for the next pixel, etc.,  until it processes all pixels in the image. Results are typically better with colorspaces other than sRGB. We recommend YIQ, YUV or YCbCr.</p>
+
+<p>The format of the MeanShiftImage method is:</p>
+
+<pre class="code">
+  Image *MeanShiftImage(const Image *image,const size_t width,
+    const size_t height,const double color_distance,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>width, height</h5>
+<p>find pixels in this neighborhood.</p>
+
+<h5>color_distance</h5>
+<p>the color distance.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 
@@ -282,4 +372,3 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 09:12 -->

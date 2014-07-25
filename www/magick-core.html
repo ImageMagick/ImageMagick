@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, low-level, c, api, for, imagemagick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="magickcore, low-level, c, api, for, imagemagick, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
@@ -295,75 +296,72 @@
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
 <p>Here is a example program that utilizes the MagickCore API to get you started, <a href="../source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
 
-<div class="viewport">
-  #include &lt;stdio.h>
-  #include &lt;stdlib.h>
-  #include &lt;string.h>
-  #include &lt;time.h>
-  #include &lt;magick/MagickCore.h>
+<div class="viewport">#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;string.h>
+#include &lt;time.h>
+#include &lt;magick/MagickCore.h>
 
-  int main(int argc,char **argv)
-  {
-    ExceptionInfo
-      *exception;
+int main(int argc,char **argv)
+{
+  ExceptionInfo
+    *exception;
 
-    Image
-      *image,
-      *images,
-      *resize_image,
-      *thumbnails;
+  Image
+    *image,
+    *images,
+    *resize_image,
+    *thumbnails;
 
-    ImageInfo
-      *image_info;
+  ImageInfo
+    *image_info;
 
-    if (argc != 3)
-      {
-        (void) fprintf(stdout,"Usage: %s image thumbnail\n",argv[0]);
-        exit(0);
-      }
-    /*
-      Initialize the image info structure and read an image.
-    */
-    MagickCoreGenesis(*argv,MagickTrue);
-    exception=AcquireExceptionInfo();
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    (void) strcpy(image_info-&gt;filename,argv[1]);
-    images=ReadImage(image_info,exception);
-    if (exception-&gt;severity != UndefinedException)
-      CatchException(exception);
-    if (images == (Image *) NULL)
-      exit(1);
-    /*
-      Convert the image to a thumbnail.
-    */
-    thumbnails=NewImageList();
-    while ((image=RemoveFirstImageFromList(&amp;images)) != (Image *) NULL)
+  if (argc != 3)
     {
-      resize_image=ResizeImage(image,106,80,LanczosFilter,1.0,exception);
-      if (resize_image == (Image *) NULL)
-        MagickError(exception-&gt;severity,exception-&gt;reason,exception-&gt;description);
-      (void) AppendImageToList(&amp;thumbnails,resize_image);
-      DestroyImage(image);
+      (void) fprintf(stdout,"Usage: %s image thumbnail\n",argv[0]);
+      exit(0);
     }
-    /*
-      Write the image thumbnail.
-    */
-    (void) strcpy(thumbnails-&gt;filename,argv[2]);
-    WriteImage(image_info,thumbnails);
-    /*
-      Destroy the image thumbnail and exit.
-    */
-    thumbnails=DestroyImageList(thumbnails);
-    image_info=DestroyImageInfo(image_info);
-    exception=DestroyExceptionInfo(exception);
-    MagickCoreTerminus();
-    return(0);
+  /*
+    Initialize the image info structure and read an image.
+  */
+  MagickCoreGenesis(*argv,MagickTrue);
+  exception=AcquireExceptionInfo();
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) strcpy(image_info-&gt;filename,argv[1]);
+  images=ReadImage(image_info,exception);
+  if (exception-&gt;severity != UndefinedException)
+    CatchException(exception);
+  if (images == (Image *) NULL)
+    exit(1);
+  /*
+    Convert the image to a thumbnail.
+  */
+  thumbnails=NewImageList();
+  while ((image=RemoveFirstImageFromList(&amp;images)) != (Image *) NULL)
+  {
+    resize_image=ResizeImage(image,106,80,LanczosFilter,1.0,exception);
+    if (resize_image == (Image *) NULL)
+      MagickError(exception-&gt;severity,exception-&gt;reason,exception-&gt;description);
+    (void) AppendImageToList(&amp;thumbnails,resize_image);
+    DestroyImage(image);
   }
-</div>
+  /*
+    Write the image thumbnail.
+  */
+  (void) strcpy(thumbnails-&gt;filename,argv[2]);
+  WriteImage(image_info,thumbnails);
+  /*
+    Destroy the image thumbnail and exit.
+  */
+  thumbnails=DestroyImageList(thumbnails);
+  image_info=DestroyImageInfo(image_info);
+  exception=DestroyExceptionInfo(exception);
+  MagickCoreTerminus();
+  return(0);
+}</div>
 <p><a id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
-<div class="viewport">
-#include &lt;stdio.h>
+<div class="viewport">#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;math.h>
 #include &lt;magick/MagickCore.h>
@@ -479,8 +477,7 @@ int main(int argc,char **argv)
   image_info=DestroyImageInfo(image_info);
   MagickCoreTerminus();
   return(0);
-}
-</div>
+}</div>
 </div>
 
 </div>
@@ -503,4 +500,4 @@ int main(int argc,char **argv)
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 09:10 -->
+<!-- Magick Cache 25th July 2014 04:08 -->

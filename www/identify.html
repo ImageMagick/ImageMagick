@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="command-line, tools:, identify, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="command-line, tools:, identify, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
@@ -296,14 +297,14 @@
     Tainted: False  <br/>
     Filesize: 3.97266kb  <br/>
     Number pixels: 3.14453kb  <br/>
-    Version: ImageMagick 6.8.8-7 2014-02-16 Q16 http://www.imagemagick.org</span></p>
+    Version: ImageMagick 6.8.9-5 2014-04-11 Q16 http://www.imagemagick.org</span></p>
 <p>To get the print size in inches of an image at 72 DPI, use:</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png</span><span class='crtout'>8.5 x 11 inches</span></p>
 <p>The depth and dimensions of a raw image must be specified on the command line:</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -depth 8 -size 640x480 image.raw</span><span class='crtout'>image.raw RGB 640x480 sRGB 9kb 0.000u 0:01</span></p>
-<p>Here we display the image texture features, image moments, and the number of unique colors in the image:</p>
+<p>Here we display the image texture features, moments, perceptual hash, and the number of unique colors in the image:</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -verbose -features 1 -moments -unique image.png</span></p>
 <p>Here is a special define that outputs the location of the minimum or maximum pixel of the image:</p>
@@ -458,7 +459,7 @@ transparent, extract, background, or shape the alpha channel</td>
 
   <tr>
     <td valign="top"><a href="command-line-options.html#moments">-moments</a></td>
-    <td valign="top">display image moments.</td>
+    <td valign="top">display image moments and perceptual hash.</td>
   </tr>
 
   <tr>
@@ -561,4 +562,4 @@ transparent, extract, background, or shape the alpha channel</td>
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:05 -->
+<!-- Magick Cache 25th July 2014 04:13 -->

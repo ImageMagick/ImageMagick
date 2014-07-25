@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="command-line, tools:, mogrify, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="command-line, tools:, mogrify, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
@@ -260,7 +261,7 @@ rose:</p>
 <p>Here image files 1.png, 2.png, etc., are left untouched and files 1.jpg, 2.jpg, etc., are created.  They are copies of their respective PNG images except are stored  in the JPEG image format.</p>
 
 
-<p>You can find additional examples of using <code>mogrify</code> in <a href="http://www-106.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in  <a href="http://www-106.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
+<p>You can find additional examples of using <code>mogrify</code> in <a href="http://www.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in  <a href="http://www.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 </div>
 
@@ -390,6 +391,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td valign="top"><a href="command-line-options.html#brightness-contrast">-brightness-contrast <em class="option">geometry</em></a></td>
     <td valign="top">improve brightness / contrast of the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#canny">-canny <em class="option">geometry</em></a></td>
+    <td valign="top">use a multi-stage algorithm to detect a wide range of edges in the image</td>
   </tr>
 
   <tr>
@@ -773,6 +779,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td valign="top"><a href="command-line-options.html#hough-lines">-hough-lines <em class="option">geometry</em></a></td>
+    <td valign="top">identify lines in the image</td>
+  </tr>
+
+  <tr>
     <td valign="top"><a href="command-line-options.html#identify">-identify</a></td>
     <td valign="top">identify the format and characteristics of the image</td>
   </tr>
@@ -885,6 +896,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td valign="top"><a href="command-line-options.html#median">-median <em class="option">radius</em></a></td>
     <td valign="top">apply a median filter to the image</td>
+  </tr>
+
+  <tr>
+    <td valign="top"><a href="command-line-options.html#mean-shift">-mean-shift <em class="option">geometry</em></a></td>
+    <td valign="top">delineate arbitrarily shaped clusters in the image</td>
   </tr>
 
   <tr>
@@ -1427,4 +1443,4 @@ transparent, extract, background, or shape the alpha channel</td>
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:59 -->
+<!-- Magick Cache 25th July 2014 04:05 -->

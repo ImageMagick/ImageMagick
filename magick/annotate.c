@@ -1298,20 +1298,18 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       glyph.id=FT_Get_Char_Index(face,'?');
     if ((glyph.id != 0) && (last_glyph.id != 0))
       {
-        if (fabs(draw_info->kerning) >= MagickEpsilon)
-          origin.x+=(FT_Pos) (64.0*direction*draw_info->kerning);
-        else
-          if (FT_HAS_KERNING(face))
-            {
-              FT_Vector
-                kerning;
+        if (FT_HAS_KERNING(face))
+          {
+            FT_Vector
+              kerning;
 
-              ft_status=FT_Get_Kerning(face,last_glyph.id,glyph.id,
-                ft_kerning_default,&kerning);
-              if (ft_status == 0)
-                origin.x+=(FT_Pos) (direction*kerning.x);
-            }
-        }
+            ft_status=FT_Get_Kerning(face,last_glyph.id,glyph.id,
+              ft_kerning_default,&kerning);
+            if (ft_status == 0)
+              origin.x+=(FT_Pos) (direction*kerning.x);
+          }
+        origin.x+=(FT_Pos) (64.0*direction*draw_info->kerning);
+      }
     glyph.origin=origin;
     ft_status=FT_Load_Glyph(face,glyph.id,flags);
     if (ft_status != 0)

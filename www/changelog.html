@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="changelog, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="changelog, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
@@ -228,7 +229,107 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2014-02-18  6.8.8-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2014-07-01  6.8.9-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.9-5, SVN revision 16123.</dd>
+<dt>2014-06-28  6.8.9-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Do not let libpng16 check ICC/sRGB profiles in non-debug runs; we do    it ourselves anyway.  Avoids emitting "known incorrect profile" warnings.    For strict profile checking and warning, use "-debug coder".</dd>
+<dt>2014-06-27  6.8.9-5 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
+  <dd> Disabled OpenCL acceleration when image has a 'mask' or 'clip-mask'.</dd>
+<dt>2014-06-25  6.8.9-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Use -define profile:skip=icc, for example,  to skip color profiles on read.</dd>
+<dt>2014-06-23  6.8.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.9-4, SVN revision 16057.</dd>
+<dt>2014-06-15  6.8.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support RMS argument for -evaluate-sequence and -statistic options.</dd>
+  <dd> Fix lseek define for a successful compile under 64-bit MinGW.</dd>
+  <dd> Pipe image to display program no longer reports an exception (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=23532).</dd>
+  <dd> Check that profile is non-NULL in coders/tiff.c (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25770).</dd>
+<dt>2014-06-08  6.8.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.9-3, SVN revision 15975.</dd>
+<dt>2014-06-07  6.8.9-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Quiet warning about unused variable "skip_to_iend" in coders/png.c.</dd>
+<dt>2014-06-07  6.8.9-3 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
+  <dd> Fixed creation of SVG from 8bim clip path. (reference     http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=25594).</dd>
+<dt>2014-06-02  6.8.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The -version option returns 0 status (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25667).</dd>
+  <dd> The inline coder can now read from standard input (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25641).</dd>
+  <dd> Add '=' character to the santize whitelist.</dd>
+<dt>2014-05-30  6.8.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.9-2, SVN revision 15932.</dd>
+<dt>2014-05-18  6.8.9-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed some bugs in the PNG codec discovered by coverity analysis.</dd>
+<dt>2014-05-14  6.8.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The -fx equality operator returns a proper boolean result now (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25580).</dd>
+  <dd> Permit spaces in the gradient color specification (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25614).</dd>
+  <dd> Fix IdentifyImage() crash when image-&gt;magick member is null (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25615).</dd>
+  <dd> The -format M and Y channels are no longer reversed (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25633).</dd>
+  <dd> Remove Makefile race condition where two targets attempt to install    magick-baseconfig.h (reference<dt>		http://git.buildroot.net/buildroot/commit/?id=7395ee9d3b88e45798143e05a28d6d4b51409130)</dt>
+  <dd> Fix memory leak in BlobToStringInfo() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25639).</dd>
+  <dd> In certain cases, -adaptive-sharpen failed to sharpen (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=23211</dd>
+<dt>2014-05-12  6.8.9-2 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
+  <dd> Bump major Magick++ library version.</dd>
+  <dd> Added support for writing RLE compressed TGA files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=12335).</dd>
+  <dd> Improved performance of parsing the xmp profile (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25612).</dd>
+  <dd> Fixed detecting transparency in PSD files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25634).</dd>
+<dt>2014-05-09  6.8.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.9-1, SVN revision 15697.</dd>
+<dt>2014-04-22  6.8.9-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed bug with the PNG00 subformat when the original format was PNG32.</dd>
+  <dd> The "-strip" option now only removes profiles and comments from PNG    output.  Previously the background, density, and other metadata were    also discarded.</dd>
+<dt>2014-04-22  6.8.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support new -hough-lines option.</dd>
+  <dd> Support new -mean-shift option.</dd>
+  <dd> identify -units without argument no longer faults (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25542).</dd>
+  <dd> Require OpenJP2 version 2.1.0 (opj_stream_set_user_data() method signature    change between 2.0.0 and 2.1.0).</dd>
+<dt>2014-04-20  6.8.9-1 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
+  <dd> Added image moments, canny edge and hough line to Magick++.</dd>
+  <dd> The 8bim profile will be updated when the icc/iptc/xmp profile is changed.</dd>
+  <dd> Fix for stack overflow in DestroyXMLTree in Windows (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25457).</dd>
+  <dd> Added new coder for VIPS image format (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=25445).</dd>
+  <dd> Moved detection of type to a separate method in Magick++. The type() method    no longer modifies the type of the image. Use determineType() instead.</dd>
+  <dd> Improved error messages when a coder uses Ghostscript.</dd>
+<dt>2014-04-11  6.8.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.9-0, SVN revision 15441.</dd>
+<dt>2014-04-03  6.8.9-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed bug with -strip failing to exclude PNG chunks (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25353).</dd>
+<dt>2014-03-30  6.8.9-0 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
+  <dd> Added new coder to take a screen shot of a monitor in Windows (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=23&amp;t=25191).</dd>
+<dt>2014-03-24  6.8.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Don't transform sRGB compatible colorspaces to sRGB, doing so    inadvertingly promotes colormapped images to DirectClass.</dd>
+  <dd> Use temporary path rather then current working directory (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25313).</dd>
+  <dd> Support -canny edge detection option.</dd>
+  <dd> Use MAGICKCORE_LIBOPENJP2_DELEGATE instead of MAGICKCORE_JP2_DELEGATE    (reference www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25376).</dd>
+<dt>2014-03-28  6.8.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.8-9, SVN revision 15239.</dd>
+<dt>2014-03-23  6.8.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Although they are internal methods, deprecate InitializeModuleList(),    LoadMimeLists(), and RelinquishCommandQueue() (reference   http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25263).</dd>
+<dt>2014-03-20  6.8.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.8-9, SVN revision 15192.</dd>
+<dt>2014-03-16  6.8.8-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Do not block threads in the png codec when PNG_SETJMP_SUPPORTED is not    defined (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=23&amp;t=25218).</dd>
+<dt>2014-03-15  6.8.8-9 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
+  <dd> Added tiff:ignore-tags to ignore specific tags.</dd>
+  <dd> Added orderedDither, selectiveBlur, separate, sepiaTone, sketch,    smushImages, tint, uniqueColors and vignette to Magick++.</dd>
+<dt>2014-03-11  6.8.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The -define jpeg:extent option overrides the image quality (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25200). </dd>
+<dt>2014-03-09  6.8.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.8-8, SVN revision 15097.</dd>
+<dt>2014-03-04  6.8.8-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Reset colorspace to Grayscale when reading a gray PNG image with    gamma &gt; 0.75 instead of when gamma==1.0 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25136).</dd>
+<dt>2014-02-22  6.8.8-8 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
+  <dd> The PSD reader creates a merged image if the image does not contain one.</dd>
+  <dd> Added option pdf:fit-page to scale a pdf to the specified size (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=25044).</dd>
+  <dd> The ResolutionInfo in the 8BIM profile will be updated when an image is    written.</dd>
+  <dd> Fixed UTF8 issues and added support for reading files with long path names    for the Windows distribution.</dd>
+<dt>2014-02-21  6.8.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Convert linear RGB to sRGB before writing the Targa image format.</dd>
+  <dd> Make sure we use the secure C library functions when compiling ImageMagick    on Windows.</dd>
+  <dd> Tweak color reduction optimization to return a full color palette (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=25098).</dd>
+  <dd> Patch configure.ac to support FlashPix under Debian (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25140).</dd>
+  <dd> OpenCL support writes to $HOME/.config/ImageMagick, if the path does not    exist, two calls to mkdir() are required (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25080).</dd>
+  <dd> Replace  MAGICKCORE_JP2_DELEGATE with MAGICKCORE_LIBOPENJP2_DELEGATE in    magick/static.c (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25153).</dd>
+  <dd> Eliminate thread race condition (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25168).</dd>
+<dt>2014-02-18  6.8.8-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.8.8-7, SVN revision 14908.</dd>
 <dt>2014-02-16  6.8.8-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Prevent possible buffer overflow in messaging system.</dd>
@@ -3549,4 +3650,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:37 -->
+<!-- Magick Cache 25th July 2014 04:05 -->

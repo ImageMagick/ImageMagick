@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="perlmagick, perl, api, for, imagemagick, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
@@ -257,7 +258,7 @@ yum install ImageMagick-perl
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvzf ImageMagick.tar.gz</span></p>
 <p>Next configure and compile ImageMagick:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.8</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.9</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span></p>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p>
@@ -639,6 +640,12 @@ yum install ImageMagick-perl
   </tr>
 
   <tr>
+    <td valign="top">CannyEdge</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, 'lower-percent'=&gt;<i>double</i>, 'upper-percent'=&gt;<i>double</i></td>
+    <td valign="top">use a multi-stage algorithm to detect a wide range of edges in the image (e.g. CannyEdge('0x1+10%+40%')).</td>
+  </tr>
+
+  <tr>
     <td valign="top">Charcoal</td>
     <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i></td>
     <td valign="top">simulate a charcoal drawing</td>
@@ -832,7 +839,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Evaluate</td>
-    <td valign="top">value=&gt;<i>double</i>, operator=&gt;<i>{Add, And, Divide, LeftShift, Max, Min, Multiply, Or, Rightshift, Subtract, Xor}</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow} </td>
+    <td valign="top">value=&gt;<i>double</i>, operator=&gt;<i>{Add, And, Divide, LeftShift, Max, Min, Multiply, Or, Rightshift, RMS, Subtract, Xor}</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow} </td>
     <td valign="top">apply an arithmetic, relational, or logical expression to the image</td>
   </tr>
 
@@ -915,6 +922,12 @@ yum install ImageMagick-perl
   </tr>
 
   <tr>
+    <td valign="top">HoughLine</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>double</i>, height=&gt;<i>double</i>, threshold=&gt;<i>double</i></td>
+    <td valign="top">identify lines in the image (e.g. HoughLine('9x9+195')).</td>
+  </tr>
+
+  <tr>
     <td valign="top">Identify</td>
     <td valign="top">file=&gt;<i>file</i>, features=&gt;<i>distance</i>, unique=&gt;{True, False}</td>
     <td valign="top">identify the attributes of an image</td>
@@ -984,6 +997,12 @@ yum install ImageMagick-perl
     <td valign="top">MatteFloodfill</td>
     <td valign="top">geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i> , matte=&gt;<i>integer</i>, bordercolor=&gt;<i><a href="color.html">color name</a></i>, fuzz=&gt;<i>double</i>, invert=&gt;{True, False}</td>
     <td valign="top">changes the matte value of any pixel that matches the color of the target pixel and is a neighbor. If you specify a border color, the matte value is changed for any neighbor pixel that is not that color.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">MeanShift</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>double</i>, height=&gt;<i>double</i>, distance=&gt;<i>double</i></td>
+    <td valign="top">delineate arbitrarily shaped clusters in the image (e.g. MeanShift('7x7+10%')).</td>
   </tr>
 
   <tr>
@@ -1084,12 +1103,6 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
   </tr>
 
   <tr>
-    <td valign="top">RadialBlur</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, angle=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
-    <td valign="top">radial blur the image.</td>
-  </tr>
-
-  <tr>
     <td valign="top">Raise</td>
     <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, raise=&gt;{True, False}</td>
     <td valign="top">lighten or darken image edges to create a 3-D effect</td>
@@ -1129,6 +1142,12 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
     <td valign="top">Rotate</td>
     <td valign="top">degrees=&gt;<i>double</i>, background=&gt;<i><a href="color.html">color name</a></i></td>
     <td valign="top">rotate an image</td>
+  </tr>
+
+  <tr>
+    <td valign="top">RotationalBlur</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, angle=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">radial blur the image.</td>
   </tr>
 
   <tr>
@@ -1240,7 +1259,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td valign="top">Statistic</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}, type=&gt;{Median, Mode, Mean, Maximum, Minimum, ReduceNoise}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}, type=&gt;{Median, Mode, Mean, Maximum, Minimum, ReduceNoise, RMS}</td>
     <td valign="top">replace each pixel with corresponding statistic from the neighborhood.</td>
   </tr>
   <tr>
@@ -2716,4 +2735,4 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:11 -->
+<!-- Magick Cache 25th July 2014 04:16 -->

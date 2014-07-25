@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, mime, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, mime, methods, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../../index.html" />
@@ -228,8 +229,29 @@
 <div class="main">
 
 <h1>Module mime Methods</h1>
-<p class="navigation-index">[<a href="mime.html#GetMimeInfoList">GetMimeInfoList</a> &#8226; <a href="mime.html#GetMimeList">GetMimeList</a> &#8226; <a href="mime.html#GetMimeDescription">GetMimeDescription</a> &#8226; <a href="mime.html#GetMimeType">GetMimeType</a> &#8226; <a href="mime.html#ListMimeInfo">ListMimeInfo</a> &#8226; <a href="mime.html#LoadMimeList">LoadMimeList</a>]</p>
+<p class="navigation-index">[<a href="mime.html#AcquireMimeCache">AcquireMimeCache</a> &#8226; <a href="mime.html#GetMimeInfoList">GetMimeInfoList</a> &#8226; <a href="mime.html#GetMimeList">GetMimeList</a> &#8226; <a href="mime.html#GetMimeDescription">GetMimeDescription</a> &#8226; <a href="mime.html#GetMimeType">GetMimeType</a> &#8226; <a href="mime.html#ListMimeInfo">ListMimeInfo</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="AcquireMimeCache">AcquireMimeCache</a></h2>
+<div class="doc-section">
+
+<p>AcquireMimeCache() caches one or more magic configurations which provides a mapping between magic attributes and a magic name.</p>
+
+<p>The format of the AcquireMimeCache method is:</p>
+
+<pre class="code">
+  LinkedListInfo *AcquireMimeCache(const char *filename,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>filename</h5>
+<p>the font file name.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeInfoList">GetMimeInfoList</a></h2>
 <div class="doc-section">
 
@@ -332,27 +354,6 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="LoadMimeList">LoadMimeList</a></h2>
-<div class="doc-section">
-
-<p>LoadMimeList() loads one or more magic configuration file which provides a mapping between magic attributes and a magic name.</p>
-
-<p>The format of the LoadMimeLists method is:</p>
-
-<pre class="code">
-  MagickBooleanType LoadMimeLists(const char *filename,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>filename</h5>
-<p>the font file name.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
 
 </div>
 
@@ -374,4 +375,3 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 09:12 -->

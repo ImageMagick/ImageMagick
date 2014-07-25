@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, statistics, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, statistics, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../../index.html" />
@@ -228,7 +229,7 @@
 <div class="main">
 
 <h1>Module statistic Methods</h1>
-<p class="navigation-index">[<a href="statistic.html#EvaluateImage">EvaluateImage</a> &#8226; <a href="statistic.html#FunctionImage">FunctionImage</a> &#8226; <a href="statistic.html#GetImageChannelKurtosis">GetImageChannelKurtosis</a> &#8226; <a href="statistic.html#GetImageChannelMean">GetImageChannelMean</a> &#8226; <a href="statistic.html#GetImageChannelMoments">GetImageChannelMoments</a> &#8226; <a href="statistic.html#GetImageChannelRange">GetImageChannelRange</a> &#8226; <a href="statistic.html#GetImageChannelStatistics">GetImageChannelStatistics</a> &#8226; <a href="statistic.html#PolynomialImage">PolynomialImage</a> &#8226; <a href="statistic.html#StatisticImage">StatisticImage</a>]</p>
+<p class="navigation-index">[<a href="statistic.html#EvaluateImage">EvaluateImage</a> &#8226; <a href="statistic.html#FunctionImage">FunctionImage</a> &#8226; <a href="statistic.html#GetImageChannelKurtosis">GetImageChannelKurtosis</a> &#8226; <a href="statistic.html#GetImageChannelMean">GetImageChannelMean</a> &#8226; <a href="statistic.html#GetImageChannelMoments">GetImageChannelMoments</a> &#8226; <a href="statistic.html#GetImageChannelPerceptualHash">GetImageChannelPerceptualHash</a> &#8226; <a href="statistic.html#GetImageChannelRange">GetImageChannelRange</a> &#8226; <a href="statistic.html#GetImageChannelStatistics">GetImageChannelStatistics</a> &#8226; <a href="statistic.html#PolynomialImage">PolynomialImage</a> &#8226; <a href="statistic.html#StatisticImage">StatisticImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="EvaluateImage">EvaluateImage</a></h2>
 <div class="doc-section">
@@ -373,7 +374,7 @@
 
 <pre class="code">
   ChannelMoments *GetImageChannelMoments(const Image *image,
-    const ChannelType channel,ExceptionInfo *exception)
+    ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -381,8 +382,26 @@
 <h5>image</h5>
 <p>the image.</p>
 
-<h5>channel</h5>
-<p>the channel.</p>
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelPerceptualHash">GetImageChannelPerceptualHash</a></h2>
+<div class="doc-section">
+
+<p>GetImageChannelPerceptualHash() returns the perceptual hash of one or more image channels.</p>
+
+<p>The format of the GetImageChannelPerceptualHash method is:</p>
+
+<pre class="code">
+  ChannelPerceptualHash *GetImageChannelPerceptualHash(const Image *image,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
 
 <h5>exception</h5>
 <p>return any errors or warnings in this structure.</p>
@@ -537,4 +556,3 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 09:12 -->

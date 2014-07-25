@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="formats, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="formats, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
@@ -700,7 +701,7 @@ the supported image formats.</p>
     <td valign="top"><a href="http://www.jpeg.org/">JPEG</a></td>
     <td valign="top">RW</td>
     <td valign="top">Joint Photographic Experts Group JFIF format</td>
-    <td valign="top">Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. -quality 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <code>jpeg:size</code>, for example <a href="command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <code>jpeg:extent</code>, for example <a href="command-line-options.html#define">-define jpeg:extent=400kb</a>.  Finally, to define one or more custom quantization tables, use <a href="command-line-options.html#define">-define jpeg:q-table=<i>filename</i>.</a></td>
+    <td valign="top">Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. -quality 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <code>jpeg:size</code>, for example <a href="command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <code>jpeg:extent</code>, for example <a href="command-line-options.html#define">-define jpeg:extent=400KB</a>.  To define one or more custom quantization tables, use <a href="command-line-options.html#define">-define jpeg:q-table=<i>filename</i></a>.</td>
   </tr>
 
   <tr>
@@ -907,7 +908,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td valign="top">PDF</td>
     <td valign="top">RW</td>
     <td valign="top">Portable Document Format</td>
-    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="command-line-options.html#define">-define</a> (e.g. <code>-define pdf:use-cropbox=true</code> or <code>-define pdf:use-trimbox=true</code>).  Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from  Postscript to PDF, use <code>-define delegate:bimodel=true</code>.</td>
+    <td valign="top">Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="command-line-options.html#define">-define</a> (e.g. <code>-define pdf:use-cropbox=true</code> or <code>-define pdf:use-trimbox=true</code>).  Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from  Postscript to PDF, use <code>-define delegate:bimodel=true</code>. Use <code>-define pdf:fit-page=true</code> to scale to the page size.</td>
   </tr>
 
   <tr>
@@ -1194,7 +1195,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td valign="top"><a href="http://www.libtiff.org/">TIFF</a></td>
     <td valign="top">RW</td>
     <td valign="top">Tagged Image File Format</td>
-    <td valign="top">Also known as <code>TIF</code>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <code>-define tiff:rows-per-strip=8</code>).  To define the tile geometry, use for example, <code>-define tiff:tile-geometry=128x128</code>. To specify a <em>signed</em> format, use  <code>-define quantum:format=signed</code>. To specify a single-precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 64 for a double-precision floating-point format.  Use <code>-define quantum:polarity=min-is-black</code> or <code>-define quantum:polarity=min-is-white</code> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <code>-define tiff:alpha=unassociated</code>.  Set the fill order with <code>-define tiff:fill-order=msb|lsb</code>. Set the TIFF endianess with <code>-define tiff:endian=msb|lsb</code>. Use <code>-define tiff:exif-properties=false</code> to skip reading the EXIF properties.  You can set a number of TIFF software attributes including host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="command-line-options.html#set">-set tiff:software "My Company"</a>.</td>
+    <td valign="top">Also known as <code>TIF</code>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <code>-define tiff:rows-per-strip=8</code>).  To define the tile geometry, use for example, <code>-define tiff:tile-geometry=128x128</code>. To specify a <em>signed</em> format, use  <code>-define quantum:format=signed</code>. To specify a single-precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 64 for a double-precision floating-point format.  Use <code>-define quantum:polarity=min-is-black</code> or <code>-define quantum:polarity=min-is-white</code> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <code>-define tiff:alpha=unassociated</code>.  Set the fill order with <code>-define tiff:fill-order=msb|lsb</code>. Set the TIFF endianess with <code>-define tiff:endian=msb|lsb</code>. Use <code>-define tiff:exif-properties=false</code> to skip reading the EXIF properties.  You can set a number of TIFF software attributes including document name, host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="command-line-options.html#set">-set tiff:software "My Company"</a>. If you want to ignore certain TIFF tags, use this option: <code>-define tiff:ignore-tags=comma-separated-list-of-tag-IDs</code></td>
   </tr>
 
   <tr>
@@ -2087,6 +2088,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 
 </div>
 
+
 </div>
 
 <div id="linkbar">
@@ -2107,4 +2109,4 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:07 -->
+<!-- Magick Cache 25th July 2014 04:10 -->
