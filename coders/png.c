@@ -8463,6 +8463,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image->depth = 8;
 #endif
 
+  image_colors = (int) image->colors;
+
   if (mng_info->write_png_colortype &&
      (mng_info->write_png_colortype > 4 || (mng_info->write_png_depth >= 8 &&
      mng_info->write_png_colortype < 4 && image->matte == MagickFalse)))
@@ -8470,7 +8472,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      /* Avoid the expensive BUILD_PALETTE operation if we're sure that we
       * are not going to need the result.
       */
-     image_colors = (int) image->colors;
      number_opaque = (int) image->colors;
      if (mng_info->write_png_colortype == 1 ||
         mng_info->write_png_colortype == 5)
@@ -12014,22 +12015,23 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
 
   excluding=MagickFalse;
 
-  for (source=0; source<2; source++)
+  for (source=0; source<4; source++)
   {
-    if (source==0)
-      {
-       value=GetImageOption(image_info,"png:exclude-chunk");
-
-       if (value == NULL)
-         value=GetImageArtifact(image,"png:exclude-chunk");
-      }
-    else
-      {
-       value=GetImageOption(image_info,"png:exclude-chunks");
-
-       if (value == NULL)
-         value=GetImageArtifact(image,"png:exclude-chunks");
-      }
+    switch (source)
+    {
+      case 0:
+        value=GetImageOption(image_info,"png:exclude-chunk");
+        break;
+      case 1:
+        value=GetImageArtifact(image,"png:exclude-chunk");
+        break;
+      case 2:
+        value=GetImageOption(image_info,"png:exclude-chunks");
+        break;
+      case 3:
+        value=GetImageArtifact(image,"png:exclude-chunks");
+        break;
+    }
 
     if (value != NULL)
     {
@@ -12133,22 +12135,23 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
     }
   }
 
-  for (source=0; source<2; source++)
+  for (source=0; source<4; source++)
   {
-    if (source==0)
-      {
-       value=GetImageOption(image_info,"png:include-chunk");
-
-       if (value == NULL)
-         value=GetImageArtifact(image,"png:include-chunk");
-      }
-    else
-      {
-       value=GetImageOption(image_info,"png:include-chunks");
-
-       if (value == NULL)
-         value=GetImageArtifact(image,"png:include-chunks");
-      }
+    switch (source)
+    {
+      case 0:
+        value=GetImageOption(image_info,"png:include-chunk");
+        break;
+      case 1:
+        value=GetImageArtifact(image,"png:include-chunk");
+        break;
+      case 2:
+        value=GetImageOption(image_info,"png:include-chunks");
+        break;
+      case 3:
+        value=GetImageArtifact(image,"png:include-chunks");
+        break;
+    }
 
     if (value != NULL)
     {
