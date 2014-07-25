@@ -7323,12 +7323,12 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
           }
         if (LocaleCompare("seed",option+1) == 0)
           {
-            size_t
+            unsigned long
               seed;
 
             if (*option == '+')
               {
-                seed=(size_t) time((time_t *) NULL);
+                seed=(unsigned long) time((time_t *) NULL);
                 SetRandomSecretKey(seed);
                 break;
               }
