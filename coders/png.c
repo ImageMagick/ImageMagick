@@ -12059,248 +12059,150 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
              GetMagickModule(),CoderWarning,
              "ignoring invalid defined png:compression-filter",
              "=%s",value);
+  }
+
+  for (source=0; source<8; source++)
+  {
+    value = NULL;
+
+    switch (source)
+    {
+      case 0:
+        value=GetImageOption(image_info,"png:exclude-chunks");
+        break;
+      case 1:
+        value=GetImageArtifact(image,"png:exclude-chunks");
+        break;
+      case 2:
+        value=GetImageOption(image_info,"png:exclude-chunk");
+        break;
+      case 3:
+        value=GetImageArtifact(image,"png:exclude-chunk");
+        break;
+      case 4:
+        value=GetImageOption(image_info,"png:include-chunks");
+        break;
+      case 5:
+        value=GetImageArtifact(image,"png:include-chunks");
+        break;
+      case 6:
+        value=GetImageOption(image_info,"png:include-chunk");
+        break;
+      case 7:
+        value=GetImageArtifact(image,"png:include-chunk");
+        break;
     }
 
-  excluding=MagickFalse;
+    if (value == NULL)
+       continue;
 
-  for (source=0; source<1; source++)
-  {
-    if (source==0)
-      {
-       value=GetImageOption(image_info,"png:exclude-chunk");
-
-       if (value == NULL)
-         value=GetImageArtifact(image,"png:exclude-chunk");
-      }
+    if (source < 4)
+      excluding = MagickTrue;
     else
-      {
-       value=GetImageOption(image_info,"png:exclude-chunks");
-
-       if (value == NULL)
-         value=GetImageArtifact(image,"png:exclude-chunks");
-      }
-
-    if (value != NULL)
-    {
-
-    excluding=MagickTrue;
+      excluding = MagickFalse;
 
     if (logging != MagickFalse)
       {
-        if (source == 0)
+        if (source == 0 || source == 2)
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  png:exclude-chunk=%s found in image options.\n", value);
+        else if (source == 1 || source == 3)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  png:exclude-chunk=%s found in image artifacts.\n", value);
-        else
+        else if (source == 4 || source == 6)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  png:exclude-chunk=%s found in image properties.\n", value);
+              "  png:include-chunk=%s found in image options.\n", value);
+        else /* if (source == 5 || source == 7) */
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  png:include-chunk=%s found in image artifacts.\n", value);
       }
-
-    if (IsOptionMember("none",value) != MagickFalse)
-    {
-      mng_info->ping_exclude_bKGD=MagickFalse;
-      mng_info->ping_exclude_cHRM=MagickFalse;
-      mng_info->ping_exclude_date=MagickFalse;
-      mng_info->ping_exclude_EXIF=MagickFalse;
-      mng_info->ping_exclude_gAMA=MagickFalse;
-      mng_info->ping_exclude_iCCP=MagickFalse;
-      /* mng_info->ping_exclude_iTXt=MagickFalse; */
-      mng_info->ping_exclude_oFFs=MagickFalse;
-      mng_info->ping_exclude_pHYs=MagickFalse;
-      mng_info->ping_exclude_sRGB=MagickFalse;
-      mng_info->ping_exclude_tEXt=MagickFalse;
-      mng_info->ping_exclude_tRNS=MagickFalse;
-      mng_info->ping_exclude_vpAg=MagickFalse;
-      mng_info->ping_exclude_zCCP=MagickFalse;
-      mng_info->ping_exclude_zTXt=MagickFalse;
-    }
-
-    if (IsOptionMember("bkgd",value) != MagickFalse)
-      mng_info->ping_exclude_bKGD=MagickTrue;
-
-    if (IsOptionMember("chrm",value) != MagickFalse)
-      mng_info->ping_exclude_cHRM=MagickTrue;
-
-    if (IsOptionMember("date",value) != MagickFalse)
-      mng_info->ping_exclude_date=MagickTrue;
-
-    if (IsOptionMember("exif",value) != MagickFalse)
-      mng_info->ping_exclude_EXIF=MagickTrue;
-
-    if (IsOptionMember("gama",value) != MagickFalse)
-      mng_info->ping_exclude_gAMA=MagickTrue;
-
-    if (IsOptionMember("iccp",value) != MagickFalse)
-      mng_info->ping_exclude_iCCP=MagickTrue;
-
-#if 0
-    if (IsOptionMember("itxt",value) != MagickFalse)
-      mng_info->ping_exclude_iTXt=MagickTrue;
-#endif
-
-    if (IsOptionMember("offs",value) != MagickFalse)
-      mng_info->ping_exclude_oFFs=MagickTrue;
-
-    if (IsOptionMember("phys",value) != MagickFalse)
-      mng_info->ping_exclude_pHYs=MagickTrue;
-
-    if (IsOptionMember("srgb",value) != MagickFalse)
-      mng_info->ping_exclude_sRGB=MagickTrue;
-
-    if (IsOptionMember("text",value) != MagickFalse)
-      mng_info->ping_exclude_tEXt=MagickTrue;
-
-    if (IsOptionMember("trns",value) != MagickFalse)
-      mng_info->ping_exclude_tRNS=MagickTrue;
-
-    if (IsOptionMember("vpag",value) != MagickFalse)
-      mng_info->ping_exclude_vpAg=MagickTrue;
-
-    if (IsOptionMember("zccp",value) != MagickFalse)
-      mng_info->ping_exclude_zCCP=MagickTrue;
-
-    if (IsOptionMember("ztxt",value) != MagickFalse)
-      mng_info->ping_exclude_zTXt=MagickTrue;
 
     if (IsOptionMember("all",value) != MagickFalse)
       {
-        mng_info->ping_exclude_bKGD=MagickTrue;
-        mng_info->ping_exclude_cHRM=MagickTrue;
-        mng_info->ping_exclude_date=MagickTrue;
-        mng_info->ping_exclude_EXIF=MagickTrue;
-        mng_info->ping_exclude_gAMA=MagickTrue;
-        mng_info->ping_exclude_iCCP=MagickTrue;
-        /* mng_info->ping_exclude_iTXt=MagickTrue; */
-        mng_info->ping_exclude_oFFs=MagickTrue;
-        mng_info->ping_exclude_pHYs=MagickTrue;
-        mng_info->ping_exclude_sRGB=MagickTrue;
-        mng_info->ping_exclude_tEXt=MagickTrue;
-        mng_info->ping_exclude_tRNS=MagickTrue;
-        mng_info->ping_exclude_vpAg=MagickTrue;
-        mng_info->ping_exclude_zCCP=MagickTrue;
-        mng_info->ping_exclude_zTXt=MagickTrue;
+        mng_info->ping_exclude_bKGD=excluding;
+        mng_info->ping_exclude_cHRM=excluding;
+        mng_info->ping_exclude_date=excluding;
+        mng_info->ping_exclude_EXIF=excluding;
+        mng_info->ping_exclude_gAMA=excluding;
+        mng_info->ping_exclude_iCCP=excluding;
+        /* mng_info->ping_exclude_iTXt=excluding; */
+        mng_info->ping_exclude_oFFs=excluding;
+        mng_info->ping_exclude_pHYs=excluding;
+        mng_info->ping_exclude_sRGB=excluding;
+        mng_info->ping_exclude_tEXt=excluding;
+        mng_info->ping_exclude_tRNS=excluding;
+        mng_info->ping_exclude_vpAg=excluding;
+        mng_info->ping_exclude_zCCP=excluding;
+        mng_info->ping_exclude_zTXt=excluding;
       }
-    }
-  }
-
-  for (source=0; source<1; source++)
-  {
-    if (source==0)
+    if (IsOptionMember("none",value) != MagickFalse)
       {
-       value=GetImageOption(image_info,"png:include-chunk");
-
-       if (value == NULL)
-         value=GetImageArtifact(image,"png:include-chunk");
-      }
-    else
-      {
-       value=GetImageOption(image_info,"png:include-chunks");
-
-       if (value == NULL)
-         value=GetImageArtifact(image,"png:include-chunks");
-      }
-
-    if (value != NULL)
-    {
-      excluding=MagickTrue;
-
-      if (logging != MagickFalse)
-      {
-        if (source == 0)
-           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  png:include-chunk=%s found in image artifacts.\n", value);
-        else
-           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  png:include-chunk=%s found in image properties.\n", value);
+        mng_info->ping_exclude_bKGD=!excluding;
+        mng_info->ping_exclude_cHRM=!excluding;
+        mng_info->ping_exclude_date=!excluding;
+        mng_info->ping_exclude_EXIF=!excluding;
+        mng_info->ping_exclude_gAMA=!excluding;
+        mng_info->ping_exclude_iCCP=!excluding;
+        /* mng_info->ping_exclude_iTXt=!excluding; */
+        mng_info->ping_exclude_oFFs=!excluding;
+        mng_info->ping_exclude_pHYs=!excluding;
+        mng_info->ping_exclude_sRGB=!excluding;
+        mng_info->ping_exclude_tEXt=!excluding;
+        mng_info->ping_exclude_tRNS=!excluding;
+        mng_info->ping_exclude_vpAg=!excluding;
+        mng_info->ping_exclude_zCCP=!excluding;
+        mng_info->ping_exclude_zTXt=!excluding;
       }
 
-      if (IsOptionMember("none",value) != MagickFalse)
-        {
-          mng_info->ping_exclude_bKGD=MagickTrue;
-          mng_info->ping_exclude_cHRM=MagickTrue;
-          mng_info->ping_exclude_date=MagickTrue;
-          mng_info->ping_exclude_EXIF=MagickTrue;
-          mng_info->ping_exclude_gAMA=MagickTrue;
-          mng_info->ping_exclude_iCCP=MagickTrue;
-          /* mng_info->ping_exclude_iTXt=MagickTrue; */
-          mng_info->ping_exclude_oFFs=MagickTrue;
-          mng_info->ping_exclude_pHYs=MagickTrue;
-          mng_info->ping_exclude_sRGB=MagickTrue;
-          mng_info->ping_exclude_tEXt=MagickTrue;
-          mng_info->ping_exclude_tRNS=MagickTrue;
-          mng_info->ping_exclude_vpAg=MagickTrue;
-          mng_info->ping_exclude_zCCP=MagickTrue;
-          mng_info->ping_exclude_zTXt=MagickTrue;
-        }
+    if (IsOptionMember("bkgd",value) != MagickFalse)
+      mng_info->ping_exclude_bKGD=excluding;
 
-      if (IsOptionMember("bkgd",value) != MagickFalse)
-        mng_info->ping_exclude_bKGD=MagickFalse;
+    if (IsOptionMember("chrm",value) != MagickFalse)
+      mng_info->ping_exclude_cHRM=excluding;
 
-      if (IsOptionMember("chrm",value) != MagickFalse)
-        mng_info->ping_exclude_cHRM=MagickFalse;
+    if (IsOptionMember("date",value) != MagickFalse)
+      mng_info->ping_exclude_date=excluding;
 
-      if (IsOptionMember("date",value) != MagickFalse)
-        mng_info->ping_exclude_date=MagickFalse;
+    if (IsOptionMember("exif",value) != MagickFalse)
+      mng_info->ping_exclude_EXIF=excluding;
 
-      if (IsOptionMember("exif",value) != MagickFalse)
-        mng_info->ping_exclude_EXIF=MagickFalse;
+    if (IsOptionMember("gama",value) != MagickFalse)
+      mng_info->ping_exclude_gAMA=excluding;
 
-      if (IsOptionMember("gama",value) != MagickFalse)
-        mng_info->ping_exclude_gAMA=MagickFalse;
-
-      if (IsOptionMember("iccp",value) != MagickFalse)
-        mng_info->ping_exclude_iCCP=MagickFalse;
+    if (IsOptionMember("iccp",value) != MagickFalse)
+      mng_info->ping_exclude_iCCP=excluding;
 
 #if 0
-      if (IsOptionMember("itxt",value) != MagickFalse)
-        mng_info->ping_exclude_iTXt=MagickFalse;
+    if (IsOptionMember("itxt",value) != MagickFalse)
+      mng_info->ping_exclude_iTXt=excluding;
 #endif
 
-      if (IsOptionMember("offs",value) != MagickFalse)
-        mng_info->ping_exclude_oFFs=MagickFalse;
+    if (IsOptionMember("offs",value) != MagickFalse)
+      mng_info->ping_exclude_oFFs=excluding;
 
-      if (IsOptionMember("phys",value) != MagickFalse)
-        mng_info->ping_exclude_pHYs=MagickFalse;
+    if (IsOptionMember("phys",value) != MagickFalse)
+      mng_info->ping_exclude_pHYs=excluding;
 
-      if (IsOptionMember("srgb",value) != MagickFalse)
-        mng_info->ping_exclude_sRGB=MagickFalse;
+    if (IsOptionMember("srgb",value) != MagickFalse)
+      mng_info->ping_exclude_sRGB=excluding;
 
-      if (IsOptionMember("text",value) != MagickFalse)
-        mng_info->ping_exclude_tEXt=MagickFalse;
+    if (IsOptionMember("text",value) != MagickFalse)
+      mng_info->ping_exclude_tEXt=excluding;
 
-      if (IsOptionMember("trns",value) != MagickFalse)
-        mng_info->ping_exclude_tRNS=MagickFalse;
+    if (IsOptionMember("trns",value) != MagickFalse)
+      mng_info->ping_exclude_tRNS=excluding;
 
-      if (IsOptionMember("vpag",value) != MagickFalse)
-        mng_info->ping_exclude_vpAg=MagickFalse;
+    if (IsOptionMember("vpag",value) != MagickFalse)
+      mng_info->ping_exclude_vpAg=excluding;
 
-      if (IsOptionMember("zccp",value) != MagickFalse)
-        mng_info->ping_exclude_zCCP=MagickFalse;
+    if (IsOptionMember("zccp",value) != MagickFalse)
+      mng_info->ping_exclude_zCCP=excluding;
 
-      if (IsOptionMember("ztxt",value) != MagickFalse)
-        mng_info->ping_exclude_zTXt=MagickFalse;
-
-      if (IsOptionMember("all",value) != MagickFalse)
-        {
-          mng_info->ping_exclude_bKGD=MagickFalse;
-          mng_info->ping_exclude_cHRM=MagickFalse;
-          mng_info->ping_exclude_date=MagickFalse;
-          mng_info->ping_exclude_EXIF=MagickFalse;
-          mng_info->ping_exclude_gAMA=MagickFalse;
-          mng_info->ping_exclude_iCCP=MagickFalse;
-          /* mng_info->ping_exclude_iTXt=MagickFalse; */
-          mng_info->ping_exclude_oFFs=MagickFalse;
-          mng_info->ping_exclude_pHYs=MagickFalse;
-          mng_info->ping_exclude_sRGB=MagickFalse;
-          mng_info->ping_exclude_tEXt=MagickFalse;
-          mng_info->ping_exclude_tRNS=MagickFalse;
-          mng_info->ping_exclude_vpAg=MagickFalse;
-          mng_info->ping_exclude_zCCP=MagickFalse;
-          mng_info->ping_exclude_zTXt=MagickFalse;
-        }
-    }
+    if (IsOptionMember("ztxt",value) != MagickFalse)
+      mng_info->ping_exclude_zTXt=excluding;
   }
 
-  if (excluding != MagickFalse && logging != MagickFalse)
+  if (logging != MagickFalse)
   {
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Chunks to be excluded from the output png:");
