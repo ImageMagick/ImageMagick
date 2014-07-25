@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="convert, edit, or, compose, bitmap, images, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="convert, edit, or, compose, bitmap, images, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="images/wand.png"/>
   <link rel="shortcut icon" href="images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="index.html" />
@@ -240,7 +241,7 @@
 
 <p>The ImageMagick development process ensures a <a href="http://upstream-tracker.org/versions/imagemagick.html">stable API</a> and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://code.google.com/p/address-sanitizer/">memory error</a> and <a href="https://code.google.com/p/data-race-test/wiki/ThreadSanitizer">thread data race</a> detection to prevent security vulnerabilities.</p>
 
-<p>The current release is ImageMagick 6.8.8-7 available from <a href="download">http://www.imagemagick.org/download</a>.  It runs on <a href="http://www.imagemagick.org/download/linux/">Linux</a>, <a href="http://www.imagemagick.org/download/binaries/">Windows</a>, <a href="http://www.imagemagick.org/download/binaries/">Mac Os X</a>, <a href="http://www.imagemagick.org/download/iOS/">iOS</a>, Android OS, and others.</p>
+<p>The current release is ImageMagick 6.8.9-5 available from <a href="download">http://www.imagemagick.org/download</a>.  It runs on <a href="http://www.imagemagick.org/download/linux/">Linux</a>, <a href="http://www.imagemagick.org/download/binaries/">Windows</a>, <a href="http://www.imagemagick.org/download/binaries/">Mac Os X</a>, <a href="http://www.imagemagick.org/download/iOS/">iOS</a>, Android OS, and others.</p>
 
 <p>The official ImageMagick web site is <a href="index.html">http://www.imagemagick.org</a>.</p>
 </div>
@@ -266,7 +267,8 @@
   <li><a href="www/composite.html">Composite</a>: overlap one image over another.</li>
   <li><a href="www/montage.html">Montage</a>: juxtapose image thumbnails on an image canvas.</li>
   <li><a href="http://www.imagemagick.org/Usage/distorts/">Generalized pixel distortion</a>: correct for, or induce image distortions including perspective.</li>
-  <li><a href="http://www.imagemagick.org/Usage/morphology/">Morphology of shapes</a>: extract features, describe shapes and recognize patterns in images.</li>
+  <li><a href="http://www.imagemagick.org/Usage/morphology/">Morphology of shapes</a>: extract features, describe shapes, and recognize patterns in images.</li>
+  <li><a href="http://www.imagemagick.org/Usage/transform/#vision">Delineate image features</a>: Canny edge detection, mean-shift, Hough lines.</li>
   <li><a href="www/motion-picture.html">Motion picture support</a>: read and write the common image formats used in digital film work.</li>
   <li><a href="www/fx.html">Image calculator</a>: apply a mathematical expression to an image or image channels.</li>
   <li><a href="http://www.imagemagick.org/Usage/fourier/">Discrete Fourier transform</a>: implements the forward and inverse <a href="http://en.wikipedia.org/wiki/Discrete_Fourier_transform">DFT</a>.</li>
@@ -278,7 +280,7 @@
   <li><a href="www/architecture.html#tera-pixel">Large image support</a>: read, process, or write mega-, giga-, or tera-pixel image sizes.</li>
   <li><a href="www/architecture.html#threads">Threads of execution support</a>: ImageMagick is thread safe and most internal algorithms execute in <a href="www/openmp.html">parallel</a> to take advantage of speed-ups offered by multicore processor chips.</li>
   <li><a href="www/distribute-pixel-cache.html">Distributed pixel cache</a>: offload intermediate pixel storage to one or more remote servers.</li>
-  <li><a href="www/architecture.html#distributed">Heterogeneous distributed processing</a>: certain algorithms are <a href="http://www.khronos.org/opencl/">OpenCL</a>-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</li>
+  <li><a href="www/architecture.html#distributed">Heterogeneous distributed processing</a>: certain algorithms are <a href="www/opencl.html">OpenCL</a>-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</li>
   <li><a href="www/binary-releases.html#iOS">ImageMagick on the iPhone</a>: convert, edit, or compose images on your <a href="http://www.apple.com/ios/">iOS</a> device such as the iPhone or iPad.</li>
 </ul>
 
@@ -323,4 +325,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:05 -->
+<!-- Magick Cache 25th July 2014 04:05 -->

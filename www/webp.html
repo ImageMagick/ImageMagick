@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="webp, encoding, options, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="webp, encoding, options, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
@@ -243,24 +244,49 @@
 <p>Here is a complete list of WebP encoding options:</p>
 
 <dl class="doc">
+<dt class="doc">alpha-compression=<em>value</em></dt>
+<dd>encode the alpha plane: 0 = none, 1 = compressed.</dd>
+<dt class="doc">alpha-filtering=<em>value</em></dt>
+<dd>predictive filtering method for alpha plane: 0=none, 1=fast, 2=best.</dd>
 <dt class="doc">alpha-quality=<em>value</em></dt>
 <dd>the compression value for alpha compression between 0 and 100. Lossless compression of alpha is achieved using a value of 100, while the lower values result in a lossy compression. The default is 100.</dd>
 <dt class="doc">auto-filter=<em>true, false</em></dt>
 <dd>when enabled, the algorithm spends additional time optimizing the filtering strength to reach a well-balanced quality.</dd>
+<dt class="doc">emulate-jpeg-size=<em>true, false</em></dt>
+<dd>return a similar compression to that of JPEG but with less degradation.</dd>
+<dt class="doc">filter-sharpness=<em>value</em></dt>
+<dd>filter sharpness.</dd>
 <dt class="doc">filter-strength=<em>value</em></dt>
 <dd>the strength of the deblocking filter, between 0 (no filtering) and 100 (maximum filtering). A value of 0 turns off any filtering. Higher values increase the strength of the filtering process applied after decoding the image. The higher the value, the smoother the image appears. Typical values are usually in the range of 20 to 50.</dd>
-<dt class="doc">image-hint=<em>photo, picture, graph</em></dt>
+<dt class="doc">filter-type=<em>value</em></dt>
+<dd>filter type: 0 = simple, 1 = strong</dd>
+<dt class="doc">image-hint=<em>default, photo, picture, graph</em></dt>
 <dd>the hint about the image type.</dd>
 <dt class="doc">lossless=<em>true, false</em></dt>
 <dd>encode the image without any loss.</dd>
+<dt class="doc">low-memory=<em>true, false</em></dt>
+<dd>reduce memory usage.</dd>
 <dt class="doc">method=<em>value</em></dt>
 <dd>the compression method to use. It controls the trade off between encoding speed and the compressed file size and quality. Possible values range from 0 to 6. Default value is 4. When higher values are utilized, the encoder spends more time inspecting additional encoding possibilities and decide on the quality gain. Lower value might result in faster processing time at the expense of larger file size and lower compression quality.</dd>
+<dt class="doc">preprocessing=<em>value</em></dt>
+<dd>Choose from: 0=none, 1=segment-smooth, 2=pseudo-random dithering.</dd>
+<dt class="doc">partitions=<em>value</em></dt>
+<dd>progressive decoding: choose 0 to 3.</dd>
+<dt class="doc">partition-limit=<em>value</em></dt>
+<dd>Choose 0 for no quality degradation and 100 for maximum degradation.</dd>
 <dt class="doc">pass=<em>value</em></dt>
 <dd>maximum number of passes to target compression size or PSNR.</dd>
+<dt class="doc">segment=<em>value</em></dt>
+<dd>Choose from 1 to 4, the maximum numbher of segments to use.</dd>
+<dt class="doc">show-compressed=<em>true, false</em></dt>
 <dt class="doc">sns-strength=<em>value</em></dt>
 <dd>the amplitude of the spatial noise shaping. Spatial noise shaping (SNS) refers to a general collection of built-in algorithms used to decide which area of the picture should use relatively less bits, and where else to better transfer these bits. The possible range goes from 0 (algorithm is off) to 100 (the maximal effect). The default value is 80. </dd>
 <dt class="doc">target-size=<em>value</em></dt>
 <dd>a target size (in bytes) to try and reach for the compressed output.  The compressor makes several passes of partial encoding in order to get as close as possible to this target.</dd>
+<dt class="doc">target-psnr=<em>value</em></dt>
+<dd>desired minimal distortion.</dd>
+<dt class="doc">thread-level=<em>value</em></dt>
+<dd>enable multi-threaded encoding.</dd>
 </dl>
 
 </div>
@@ -283,4 +309,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:16 -->
+<!-- Magick Cache 25th July 2014 05:32 -->

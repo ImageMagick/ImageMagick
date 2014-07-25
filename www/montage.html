@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="command-line, tools:, montage, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="command-line, tools:, montage, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
@@ -239,7 +240,7 @@
 
 <p>We list a few examples of the <code>montage</code> command here to illustrate its usefulness and ease of use.  To get started, let's montage two images into a single composite:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>montage -background #336699 -geometry +4+4 rose.jpg red-ball.png montage.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>montage -background '#336699' -geometry +4+4 rose.jpg red-ball.png montage.jpg</span></p>
 <p class="image">
   <a href="../images/rose.jpg">
   <img style="margin-top:14px; margin-bottom:14px;" src="../images/rose.jpg" width="70" height="46" alt="rose" />
@@ -255,7 +256,7 @@
 
 <p>Ok, let's add some decorations:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>montage -label %f -frame 5 -background #336699 -geometry +4+4 rose.jpg red-ball.png frame.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>montage -label %f -frame 5 -background '#336699' -geometry +4+4 rose.jpg red-ball.png frame.jpg</span></p>
 <p class="image">
   <a href="../images/rose.jpg">
   <img style="margin-top:31px; margin-bottom:31px;" src="../images/rose.jpg" width="70" height="46" alt="rose.jpg" />
@@ -269,7 +270,7 @@
   </a>
 </p>
 
-<p>You can find additional examples of using <code>montage</code> at <a href="http://www.imagemagick.org/Usage/montage/">Examples of ImageMagick Usage</a> and <a href="http://www-106.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in  <a href="http://www-106.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
+<p>You can find additional examples of using <code>montage</code> at <a href="http://www.imagemagick.org/Usage/montage/">Examples of ImageMagick Usage</a> and <a href="http://www.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in  <a href="http://www.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 </div>
 
@@ -806,4 +807,4 @@ transparent, extract, background, or shape the alpha channel</td>
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:42 -->
+<!-- Magick Cache 25th July 2014 04:10 -->

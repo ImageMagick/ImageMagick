@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, add, an, effect, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, add, an, effect, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../../index.html" />
@@ -228,7 +229,7 @@
 <div class="main">
 
 <h1>Module effect Methods</h1>
-<p class="navigation-index">[<a href="effect.html#AdaptiveBlurImage">AdaptiveBlurImage</a> &#8226; <a href="effect.html#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &#8226; <a href="effect.html#BlurImage">BlurImage</a> &#8226; <a href="effect.html#ConvolveImage">ConvolveImage</a> &#8226; <a href="effect.html#DespeckleImage">DespeckleImage</a> &#8226; <a href="effect.html#EdgeImage">EdgeImage</a> &#8226; <a href="effect.html#EmbossImage">EmbossImage</a> &#8226; <a href="effect.html#FilterImage">FilterImage</a> &#8226; <a href="effect.html#GaussianBlurImage">GaussianBlurImage</a> &#8226; <a href="effect.html#MotionBlurImage">MotionBlurImage</a> &#8226; <a href="effect.html#PreviewImage">PreviewImage</a> &#8226; <a href="effect.html#RadialBlurImage">RadialBlurImage</a> &#8226; <a href="effect.html#SelectiveBlurImage">SelectiveBlurImage</a> &#8226; <a href="effect.html#ShadeImage">ShadeImage</a> &#8226; <a href="effect.html#SharpenImage">SharpenImage</a> &#8226; <a href="effect.html#SpreadImage">SpreadImage</a> &#8226; <a href="effect.html#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
+<p class="navigation-index">[<a href="effect.html#AdaptiveBlurImage">AdaptiveBlurImage</a> &#8226; <a href="effect.html#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &#8226; <a href="effect.html#BlurImage">BlurImage</a> &#8226; <a href="effect.html#ConvolveImage">ConvolveImage</a> &#8226; <a href="effect.html#DespeckleImage">DespeckleImage</a> &#8226; <a href="effect.html#EdgeImage">EdgeImage</a> &#8226; <a href="effect.html#EmbossImage">EmbossImage</a> &#8226; <a href="effect.html#FilterImage">FilterImage</a> &#8226; <a href="effect.html#GaussianBlurImage">GaussianBlurImage</a> &#8226; <a href="effect.html#MotionBlurImage">MotionBlurImage</a> &#8226; <a href="effect.html#PreviewImage">PreviewImage</a> &#8226; <a href="effect.html#RotationalBlurImage">RotationalBlurImage</a> &#8226; <a href="effect.html#SelectiveBlurImage">SelectiveBlurImage</a> &#8226; <a href="effect.html#ShadeImage">ShadeImage</a> &#8226; <a href="effect.html#SharpenImage">SharpenImage</a> &#8226; <a href="effect.html#SpreadImage">SpreadImage</a> &#8226; <a href="effect.html#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="AdaptiveBlurImage">AdaptiveBlurImage</a></h2>
 <div class="doc-section">
@@ -363,7 +364,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="DespeckleImage">DespeckleImage</a></h2>
 <div class="doc-section">
 
-<p>DespeckleImage() reduces the speckle noise in an image while perserving the edges of the original image.  A speckle removing filter uses a complementary  hulling technique (raising pixels that are darker than their surrounding neighbors, then complementarily lowering pixels that are brighter than their surrounding neighbors) to reduce the speckle index of that image (reference Crimmins speckle removal).</p>
+<p>DespeckleImage() reduces the speckle noise in an image while perserving the edges of the original image.  A speckle removing filter uses a complementary hulling technique (raising pixels that are darker than their surrounding neighbors, then complementarily lowering pixels that are brighter than their surrounding neighbors) to reduce the speckle index of that image (reference Crimmins speckle removal).</p>
 
 <p>The format of the DespeckleImage method is:</p>
 
@@ -555,20 +556,20 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="RadialBlurImage">RadialBlurImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="RotationalBlurImage">RotationalBlurImage</a></h2>
 <div class="doc-section">
 
-<p>RadialBlurImage() applies a radial blur to the image.</p>
+<p>RotationalBlurImage() applies a rotational blur to the image.</p>
 
 <p>Andrew Protano contributed this effect.</p>
 
-<p>The format of the RadialBlurImage method is:</p>
+<p>The format of the RotationalBlurImage method is:</p>
 
 <pre class="code">
-      Image *RadialBlurImage(const Image *image,const double angle,
+      Image *RotationalBlurImage(const Image *image,const double angle,
   ExceptionInfo *exception)
-      Image *RadialBlurImageChannel(const Image *image,const ChannelType channel,
-  const double angle,ExceptionInfo *exception)
+      Image *RotationalBlurImageChannel(const Image *image,
+  const ChannelType channel,const double angle,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -580,7 +581,7 @@
 <p>the channel type.</p>
 
 <h5>angle</h5>
-<p>the angle of the radial blur.</p>
+<p>the angle of the rotational blur.</p>
 
 <h5>exception</h5>
 <p>return any errors or warnings in this structure.</p>
@@ -768,4 +769,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 09:12 -->
+<!-- Magick Cache 25th July 2014 04:05 -->

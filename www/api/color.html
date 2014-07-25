@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, count, the, colors, in, an, image, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, count, the, colors, in, an, image, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../../index.html" />
@@ -228,8 +229,29 @@
 <div class="main">
 
 <h1>Module color Methods</h1>
-<p class="navigation-index">[<a href="color.html#GetColorInfoList">GetColorInfoList</a> &#8226; <a href="color.html#GetColorList">GetColorList</a> &#8226; <a href="color.html#ListColorInfo">ListColorInfo</a> &#8226; <a href="color.html#LoadColorList">LoadColorList</a> &#8226; <a href="color.html#QueryColorCompliance">QueryColorCompliance</a> &#8226; <a href="color.html#QueryColorDatabase">QueryColorDatabase</a> &#8226; <a href="color.html#QueryColorname">QueryColorname</a> &#8226; <a href="color.html#QueryMagickColorCompliance">QueryMagickColorCompliance</a> &#8226; <a href="color.html#QueryMagickColor">QueryMagickColor</a> &#8226; <a href="color.html#QueryMagickColorname">QueryMagickColorname</a>]</p>
+<p class="navigation-index">[<a href="color.html#AcquireColorCache">AcquireColorCache</a> &#8226; <a href="color.html#GetColorInfoList">GetColorInfoList</a> &#8226; <a href="color.html#GetColorList">GetColorList</a> &#8226; <a href="color.html#ListColorInfo">ListColorInfo</a> &#8226; <a href="color.html#QueryColorCompliance">QueryColorCompliance</a> &#8226; <a href="color.html#QueryColorDatabase">QueryColorDatabase</a> &#8226; <a href="color.html#QueryColorname">QueryColorname</a> &#8226; <a href="color.html#QueryMagickColorCompliance">QueryMagickColorCompliance</a> &#8226; <a href="color.html#QueryMagickColor">QueryMagickColor</a> &#8226; <a href="color.html#QueryMagickColorname">QueryMagickColorname</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="AcquireColorCache">AcquireColorCache</a></h2>
+<div class="doc-section">
+
+<p>AcquireColorCache() caches one or more color configurations which provides a mapping between color attributes and a color name.</p>
+
+<p>The format of the AcquireColorCache method is:</p>
+
+<pre class="code">
+  LinkedListInfo *AcquireColorCache(const char *filename,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>filename</h5>
+<p>the font file name.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="GetColorInfoList">GetColorInfoList</a></h2>
 <div class="doc-section">
 
@@ -293,27 +315,6 @@
 
 <h5>file</h5>
 <p>List color names to this file handle.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="LoadColorList">LoadColorList</a></h2>
-<div class="doc-section">
-
-<p>LoadColorList() loads one or more color configuration file which provides a mapping between color attributes and a color name.</p>
-
-<p>The format of the LoadColorLists method is:</p>
-
-<pre class="code">
-  MagickBooleanType LoadColorLists(const char *filename,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>filename</h5>
-<p>the font file name.</p>
 
 <h5>exception</h5>
 <p>return any errors or warnings in this structure.</p>
@@ -506,4 +507,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 09:12 -->
+<!-- Magick Cache 25th July 2014 04:05 -->

@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, exceptions, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, exceptions, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../../index.html" />
@@ -228,7 +229,7 @@
 <div class="main">
 
 <h1>Module exception Methods</h1>
-<p class="navigation-index">[<a href="exception.html#AcquireExceptionInfo">AcquireExceptionInfo</a> &#8226; <a href="exception.html#ClearMagickException">ClearMagickException</a> &#8226; <a href="exception.html#CatchException">CatchException</a> &#8226; <a href="exception.html#CloneExceptionInfo">CloneExceptionInfo</a> &#8226; <a href="exception.html#DestroyExceptionInfo">DestroyExceptionInfo</a> &#8226; <a href="exception.html#GetExceptionInfo">GetExceptionInfo</a> &#8226; <a href="exception.html#GetExceptionMessage">GetExceptionMessage</a> &#8226; <a href="exception.html#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> &#8226; <a href="exception.html#InheritException">InheritException</a> &#8226; <a href="exception.html#MagickError">MagickError</a> &#8226; <a href="exception.html#MagickFatalError">MagickFatalError</a> &#8226; <a href="exception.html#MagickWarning">MagickWarning</a> &#8226; <a href="exception.html#SetErrorHandler">SetErrorHandler</a> &#8226; <a href="exception.html#SetFatalErrorHandler">SetFatalErrorHandler</a> &#8226; <a href="exception.html#SetWarningHandler">SetWarningHandler</a> &#8226; <a href="exception.html#ThrowException">ThrowException</a>]</p>
+<p class="navigation-index">[<a href="exception.html#AcquireExceptionInfo">AcquireExceptionInfo</a> &#8226; <a href="exception.html#ClearMagickException">ClearMagickException</a> &#8226; <a href="exception.html#CatchException">CatchException</a> &#8226; <a href="exception.html#CloneExceptionInfo">CloneExceptionInfo</a> &#8226; <a href="exception.html#DestroyExceptionInfo">DestroyExceptionInfo</a> &#8226; <a href="exception.html#GetExceptionMessage">GetExceptionMessage</a> &#8226; <a href="exception.html#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> &#8226; <a href="exception.html#InheritException">InheritException</a> &#8226; <a href="exception.html#InitializeExceptionInfo">InitializeExceptionInfo</a> &#8226; <a href="exception.html#MagickError">MagickError</a> &#8226; <a href="exception.html#MagickFatalError">MagickFatalError</a> &#8226; <a href="exception.html#MagickWarning">MagickWarning</a> &#8226; <a href="exception.html#SetErrorHandler">SetErrorHandler</a> &#8226; <a href="exception.html#SetFatalErrorHandler">SetFatalErrorHandler</a> &#8226; <a href="exception.html#SetWarningHandler">SetWarningHandler</a> &#8226; <a href="exception.html#ThrowException">ThrowException</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
 <div class="doc-section">
@@ -310,23 +311,6 @@
 <p>the exception info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="GetExceptionInfo">GetExceptionInfo</a></h2>
-<div class="doc-section">
-
-<p>GetExceptionInfo() initializes an exception to default values.</p>
-
-<p>The format of the GetExceptionInfo method is:</p>
-
-<pre class="code">
-  GetExceptionInfo(ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>exception</h5>
-<p>the exception info.</p>
-
- </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="GetExceptionMessage">GetExceptionMessage</a></h2>
 <div class="doc-section">
 
@@ -383,6 +367,23 @@
 
 <h5>relative</h5>
 <p>the related exception info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="InitializeExceptionInfo">InitializeExceptionInfo</a></h2>
+<div class="doc-section">
+
+<p>InitializeExceptionInfo() initializes an exception to default values.</p>
+
+<p>The format of the InitializeExceptionInfo method is:</p>
+
+<pre class="code">
+  InitializeExceptionInfo(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>exception</h5>
+<p>the exception info.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickError">MagickError</a></h2>
@@ -557,4 +558,3 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 09:12 -->

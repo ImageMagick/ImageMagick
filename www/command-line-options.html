@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition, resize, rotate, shear, distort or transform images automagically."/>
+  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="command-line, options, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, Magick++, MagickWand"/>
+  <meta name="keywords" content="command-line, options, convert, edit, compose, image, pixel"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -30,6 +30,7 @@
   <meta name="resource-type" content="document"/>
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
   <link rel="canonical" href="../index.html" />
@@ -229,7 +230,7 @@
 
 <h1>Command-line Options</h1>
 <p class="navigation-index">
-[ <a href="command-line-options.html#adaptive-blur">&#x2011;adaptive&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#adaptive-resize">&#x2011;adaptive&#x2011;resize</a> <span class='bull'> • </span> <a href="command-line-options.html#adaptive-sharpen">&#x2011;adaptive&#x2011;sharpen</a> <span class='bull'> • </span> <a href="command-line-options.html#adjoin">&#x2011;adjoin</a> <span class='bull'> • </span> <a href="command-line-options.html#affine">&#x2011;affine</a> <span class='bull'> • </span> <a href="command-line-options.html#alpha">&#x2011;alpha</a> <span class='bull'> • </span> <a href="command-line-options.html#annotate">&#x2011;annotate</a> <span class='bull'> • </span> <a href="command-line-options.html#antialias">&#x2011;antialias</a> <span class='bull'> • </span> <a href="command-line-options.html#append">&#x2011;append</a> <span class='bull'> • </span> <a href="command-line-options.html#attenuate">&#x2011;attenuate</a> <span class='bull'> • </span> <a href="command-line-options.html#authenticate">&#x2011;authenticate</a> <span class='bull'> • </span> <a href="command-line-options.html#auto-gamma">&#x2011;auto&#x2011;gamma</a> <span class='bull'> • </span> <a href="command-line-options.html#auto-level">&#x2011;auto&#x2011;level</a> <span class='bull'> • </span> <a href="command-line-options.html#auto-orient">&#x2011;auto&#x2011;orient</a> <span class='bull'> • </span> <a href="command-line-options.html#backdrop">&#x2011;backdrop</a> <span class='bull'> • </span> <a href="command-line-options.html#background">&#x2011;background</a> <span class='bull'> • </span> <a href="command-line-options.html#bench">&#x2011;bench</a> <span class='bull'> • </span> <a href="command-line-options.html#bias">&#x2011;bias</a> <span class='bull'> • </span> <a href="command-line-options.html#black-point-compensation">&#x2011;black&#x2011;point&#x2011;compensation</a> <span class='bull'> • </span> <a href="command-line-options.html#black-threshold">&#x2011;black&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#blend">&#x2011;blend</a> <span class='bull'> • </span> <a href="command-line-options.html#blue-primary">&#x2011;blue&#x2011;primary</a> <span class='bull'> • </span> <a href="command-line-options.html#blue-shift">&#x2011;blue&#x2011;shift</a> <span class='bull'> • </span> <a href="command-line-options.html#blur">&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#border">&#x2011;border</a> <span class='bull'> • </span> <a href="command-line-options.html#bordercolor">&#x2011;bordercolor</a> <span class='bull'> • </span> <a href="command-line-options.html#borderwidth">&#x2011;borderwidth</a> <span class='bull'> • </span> <a href="command-line-options.html#brightness-contrast">&#x2011;brightness&#x2011;contrast</a> <span class='bull'> • </span> <a href="command-line-options.html#cache">&#x2011;cache</a> <span class='bull'> • </span> <a href="command-line-options.html#caption">&#x2011;caption</a> <span class='bull'> • </span> <a href="command-line-options.html#cdl">&#x2011;cdl</a> <span class='bull'> • </span> <a href="command-line-options.html#channel">&#x2011;channel</a> <span class='bull'> • </span> <a href="command-line-options.html#charcoal">&#x2011;charcoal</a> <span class='bull'> • </span> <a href="command-line-options.html#chop">&#x2011;chop</a> <span class='bull'> • </span> <a href="command-line-options.html#clamp">&#x2011;clamp</a> <span class='bull'> • </span> <a href="command-line-options.html#clip">&#x2011;clip</a> <span class='bull'> • </span> <a href="command-line-options.html#clip-mask">&#x2011;clip&#x2011;mask</a> <span class='bull'> • </span> <a href="command-line-options.html#clip-path">&#x2011;clip&#x2011;path</a> <span class='bull'> • </span> <a href="command-line-options.html#clone">&#x2011;clone</a> <span class='bull'> • </span> <a href="command-line-options.html#clut">&#x2011;clut</a> <span class='bull'> • </span> <a href="command-line-options.html#coalesce">&#x2011;coalesce</a> <span class='bull'> • </span> <a href="command-line-options.html#colorize">&#x2011;colorize</a> <span class='bull'> • </span> <a href="command-line-options.html#colormap">&#x2011;colormap</a> <span class='bull'> • </span> <a href="command-line-options.html#color-matrix">&#x2011;color&#x2011;matrix</a> <span class='bull'> • </span> <a href="command-line-options.html#colors">&#x2011;colors</a> <span class='bull'> • </span> <a href="command-line-options.html#colorspace">&#x2011;colorspace</a> <span class='bull'> • </span> <a href="command-line-options.html#combine">&#x2011;combine</a> <span class='bull'> • </span> <a href="command-line-options.html#comment">&#x2011;comment</a> <span class='bull'> • </span> <a href="command-line-options.html#compare">&#x2011;compare</a> <span class='bull'> • </span> <a href="command-line-options.html#complex">&#x2011;complex</a> <span class='bull'> • </span> <a href="command-line-options.html#compose">&#x2011;compose</a> <span class='bull'> • </span> <a href="command-line-options.html#composite">&#x2011;composite</a> <span class='bull'> • </span> <a href="command-line-options.html#compress">&#x2011;compress</a> <span class='bull'> • </span> <a href="command-line-options.html#contrast">&#x2011;contrast</a> <span class='bull'> • </span> <a href="command-line-options.html#contrast-stretch">&#x2011;contrast&#x2011;stretch</a> <span class='bull'> • </span> <a href="command-line-options.html#convolve">&#x2011;convolve</a> <span class='bull'> • </span> <a href="command-line-options.html#crop">&#x2011;crop</a> <span class='bull'> • </span> <a href="command-line-options.html#cycle">&#x2011;cycle</a> <span class='bull'> • </span> <a href="command-line-options.html#debug">&#x2011;debug</a> <span class='bull'> • </span> <a href="command-line-options.html#decipher">&#x2011;decipher</a> <span class='bull'> • </span> <a href="command-line-options.html#deconstruct">&#x2011;deconstruct</a> <span class='bull'> • </span> <a href="command-line-options.html#define">&#x2011;define</a> <span class='bull'> • </span> <a href="command-line-options.html#delay">&#x2011;delay</a> <span class='bull'> • </span> <a href="command-line-options.html#delete">&#x2011;delete</a> <span class='bull'> • </span> <a href="command-line-options.html#density">&#x2011;density</a> <span class='bull'> • </span> <a href="command-line-options.html#depth">&#x2011;depth</a> <span class='bull'> • </span> <a href="command-line-options.html#descend">&#x2011;descend</a> <span class='bull'> • </span> <a href="command-line-options.html#deskew">&#x2011;deskew</a> <span class='bull'> • </span> <a href="command-line-options.html#despeckle">&#x2011;despeckle</a> <span class='bull'> • </span> <a href="command-line-options.html#direction">&#x2011;direction</a> <span class='bull'> • </span> <a href="command-line-options.html#displace">&#x2011;displace</a> <span class='bull'> • </span> <a href="command-line-options.html#display">&#x2011;display</a> <span class='bull'> • </span> <a href="command-line-options.html#dispose">&#x2011;dispose</a> <span class='bull'> • </span> <a href="command-line-options.html#dissimilarity-threshold">&#x2011;dissimilarity&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#dissolve">&#x2011;dissolve</a> <span class='bull'> • </span> <a href="command-line-options.html#distort">&#x2011;distort</a> <span class='bull'> • </span> <a href="command-line-options.html#distribute-cache">&#x2011;distribute&#x2011;cache</a> <span class='bull'> • </span> <a href="command-line-options.html#dither">&#x2011;dither</a> <span class='bull'> • </span> <a href="command-line-options.html#draw">&#x2011;draw</a> <span class='bull'> • </span> <a href="command-line-options.html#duplicate">&#x2011;duplicate</a> <span class='bull'> • </span> <a href="command-line-options.html#edge">&#x2011;edge</a> <span class='bull'> • </span> <a href="command-line-options.html#emboss">&#x2011;emboss</a> <span class='bull'> • </span> <a href="command-line-options.html#encipher">&#x2011;encipher</a> <span class='bull'> • </span> <a href="command-line-options.html#encoding">&#x2011;encoding</a> <span class='bull'> • </span> <a href="command-line-options.html#endian">&#x2011;endian</a> <span class='bull'> • </span> <a href="command-line-options.html#enhance">&#x2011;enhance</a> <span class='bull'> • </span> <a href="command-line-options.html#equalize">&#x2011;equalize</a> <span class='bull'> • </span> <a href="command-line-options.html#evaluate">&#x2011;evaluate</a> <span class='bull'> • </span> <a href="command-line-options.html#evaluate-sequence">&#x2011;evaluate&#x2011;sequence</a> <span class='bull'> • </span> <a href="command-line-options.html#extent">&#x2011;extent</a> <span class='bull'> • </span> <a href="command-line-options.html#extract">&#x2011;extract</a> <span class='bull'> • </span> <a href="command-line-options.html#family">&#x2011;family</a> <span class='bull'> • </span> <a href="command-line-options.html#features">&#x2011;features</a> <span class='bull'> • </span> <a href="command-line-options.html#fft">&#x2011;fft</a> <span class='bull'> • </span> <a href="command-line-options.html#fill">&#x2011;fill</a> <span class='bull'> • </span> <a href="command-line-options.html#filter">&#x2011;filter</a> <span class='bull'> • </span> <a href="command-line-options.html#flatten">&#x2011;flatten</a> <span class='bull'> • </span> <a href="command-line-options.html#flip">&#x2011;flip</a> <span class='bull'> • </span> <a href="command-line-options.html#floodfill">&#x2011;floodfill</a> <span class='bull'> • </span> <a href="command-line-options.html#flop">&#x2011;flop</a> <span class='bull'> • </span> <a href="command-line-options.html#font">&#x2011;font</a> <span class='bull'> • </span> <a href="command-line-options.html#foreground">&#x2011;foreground</a> <span class='bull'> • </span> <a href="command-line-options.html#format">&#x2011;format</a> <span class='bull'> • </span> <a href="command-line-options.html#format_identify_">&#x2011;format[identify]</a> <span class='bull'> • </span> <a href="command-line-options.html#frame">&#x2011;frame</a> <span class='bull'> • </span> <a href="command-line-options.html#frame_import_">&#x2011;frame[import]</a> <span class='bull'> • </span> <a href="command-line-options.html#function">&#x2011;function</a> <span class='bull'> • </span> <a href="command-line-options.html#fuzz">&#x2011;fuzz</a> <span class='bull'> • </span> <a href="command-line-options.html#fx">&#x2011;fx</a> <span class='bull'> • </span> <a href="command-line-options.html#gamma">&#x2011;gamma</a> <span class='bull'> • </span> <a href="command-line-options.html#gaussian-blur">&#x2011;gaussian&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#geometry">&#x2011;geometry</a> <span class='bull'> • </span> <a href="command-line-options.html#gravity">&#x2011;gravity</a> <span class='bull'> • </span> <a href="command-line-options.html#grayscale">&#x2011;grayscale</a> <span class='bull'> • </span> <a href="command-line-options.html#green-primary">&#x2011;green&#x2011;primary</a> <span class='bull'> • </span> <a href="command-line-options.html#hald-clut">&#x2011;hald&#x2011;clut</a> <span class='bull'> • </span> <a href="command-line-options.html#help">&#x2011;help</a> <span class='bull'> • </span> <a href="command-line-options.html#highlight-color">&#x2011;highlight&#x2011;color</a> <span class='bull'> • </span> <a href="command-line-options.html#iconGeometry">&#x2011;iconGeometry</a> <span class='bull'> • </span> <a href="command-line-options.html#iconic">&#x2011;iconic</a> <span class='bull'> • </span> <a href="command-line-options.html#identify">&#x2011;identify</a> <span class='bull'> • </span> <a href="command-line-options.html#ift">&#x2011;ift</a> <span class='bull'> • </span> <a href="command-line-options.html#immutable">&#x2011;immutable</a> <span class='bull'> • </span> <a href="command-line-options.html#implode">&#x2011;implode</a> <span class='bull'> • </span> <a href="command-line-options.html#insert">&#x2011;insert</a> <span class='bull'> • </span> <a href="command-line-options.html#intensity">&#x2011;intensity</a> <span class='bull'> • </span> <a href="command-line-options.html#intent">&#x2011;intent</a> <span class='bull'> • </span> <a href="command-line-options.html#interlace">&#x2011;interlace</a> <span class='bull'> • </span> <a href="command-line-options.html#interpolate">&#x2011;interpolate</a> <span class='bull'> • </span> <a href="command-line-options.html#interline-spacing">&#x2011;interline&#x2011;spacing</a> <span class='bull'> • </span> <a href="command-line-options.html#interword-spacing">&#x2011;interword&#x2011;spacing</a> <span class='bull'> • </span> <a href="command-line-options.html#kerning">&#x2011;kerning</a> <span class='bull'> • </span> <a href="command-line-options.html#label">&#x2011;label</a> <span class='bull'> • </span> <a href="command-line-options.html#lat">&#x2011;lat</a> <span class='bull'> • </span> <a href="command-line-options.html#layers">&#x2011;layers</a> <span class='bull'> • </span> <a href="command-line-options.html#level">&#x2011;level</a> <span class='bull'> • </span> <a href="command-line-options.html#level-colors">&#x2011;level&#x2011;colors</a> <span class='bull'> • </span> <a href="command-line-options.html#limit">&#x2011;limit</a> <span class='bull'> • </span> <a href="command-line-options.html#linear-stretch">&#x2011;linear&#x2011;stretch</a> <span class='bull'> • </span> <a href="command-line-options.html#linewidth">&#x2011;linewidth</a> <span class='bull'> • </span> <a href="command-line-options.html#liquid-rescale">&#x2011;liquid&#x2011;rescale</a> <span class='bull'> • </span> <a href="command-line-options.html#list">&#x2011;list</a> <span class='bull'> • </span> <a href="command-line-options.html#log">&#x2011;log</a> <span class='bull'> • </span> <a href="command-line-options.html#loop">&#x2011;loop</a> <span class='bull'> • </span> <a href="command-line-options.html#lowlight-color">&#x2011;lowlight&#x2011;color</a> <span class='bull'> • </span> <a href="command-line-options.html#magnify">&#x2011;magnify</a> <span class='bull'> • </span> <a href="command-line-options.html#map">&#x2011;map</a> <span class='bull'> • </span> <a href="command-line-options.html#map_stream_">&#x2011;map[stream]</a> <span class='bull'> • </span> <a href="command-line-options.html#mask">&#x2011;mask</a> <span class='bull'> • </span> <a href="command-line-options.html#mattecolor">&#x2011;mattecolor</a> <span class='bull'> • </span> <a href="command-line-options.html#median">&#x2011;median</a> <span class='bull'> • </span> <a href="command-line-options.html#metric">&#x2011;metric</a> <span class='bull'> • </span> <a href="command-line-options.html#mode">&#x2011;mode</a> <span class='bull'> • </span> <a href="command-line-options.html#modulate">&#x2011;modulate</a> <span class='bull'> • </span> <a href="command-line-options.html#moments">&#x2011;moments</a> <span class='bull'> • </span> <a href="command-line-options.html#monitor">&#x2011;monitor</a> <span class='bull'> • </span> <a href="command-line-options.html#monochrome">&#x2011;monochrome</a> <span class='bull'> • </span> <a href="command-line-options.html#morph">&#x2011;morph</a> <span class='bull'> • </span> <a href="command-line-options.html#morphology">&#x2011;morphology</a> <span class='bull'> • </span> <a href="command-line-options.html#mosaic">&#x2011;mosaic</a> <span class='bull'> • </span> <a href="command-line-options.html#motion-blur">&#x2011;motion&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#name">&#x2011;name</a> <span class='bull'> • </span> <a href="command-line-options.html#negate">&#x2011;negate</a> <span class='bull'> • </span> <a href="command-line-options.html#noise">&#x2011;noise</a> <span class='bull'> • </span> <a href="command-line-options.html#normalize">&#x2011;normalize</a> <span class='bull'> • </span> <a href="command-line-options.html#opaque">&#x2011;opaque</a> <span class='bull'> • </span> <a href="command-line-options.html#ordered-dither">&#x2011;ordered&#x2011;dither</a> <span class='bull'> • </span> <a href="command-line-options.html#orient">&#x2011;orient</a> <span class='bull'> • </span> <a href="command-line-options.html#page">&#x2011;page</a> <span class='bull'> • </span> <a href="command-line-options.html#paint">&#x2011;paint</a> <span class='bull'> • </span> <a href="command-line-options.html#path">&#x2011;path</a> <span class='bull'> • </span> <a href="command-line-options.html#pause_animate_">&#x2011;pause[animate]</a> <span class='bull'> • </span> <a href="command-line-options.html#pause_import_">&#x2011;pause[import]</a> <span class='bull'> • </span> <a href="command-line-options.html#pen">&#x2011;pen</a> <span class='bull'> • </span> <a href="command-line-options.html#perceptible">&#x2011;perceptible</a> <span class='bull'> • </span> <a href="command-line-options.html#ping">&#x2011;ping</a> <span class='bull'> • </span> <a href="command-line-options.html#pointsize">&#x2011;pointsize</a> <span class='bull'> • </span> <a href="command-line-options.html#polaroid">&#x2011;polaroid</a> <span class='bull'> • </span> <a href="command-line-options.html#poly">&#x2011;poly</a> <span class='bull'> • </span> <a href="command-line-options.html#posterize">&#x2011;posterize</a> <span class='bull'> • </span> <a href="command-line-options.html#precision">&#x2011;precision</a> <span class='bull'> • </span> <a href="command-line-options.html#preview">&#x2011;preview</a> <span class='bull'> • </span> <a href="command-line-options.html#print">&#x2011;print</a> <span class='bull'> • </span> <a href="command-line-options.html#process">&#x2011;process</a> <span class='bull'> • </span> <a href="command-line-options.html#profile">&#x2011;profile</a> <span class='bull'> • </span> <a href="command-line-options.html#quality">&#x2011;quality</a> <span class='bull'> • </span> <a href="command-line-options.html#quantize">&#x2011;quantize</a> <span class='bull'> • </span> <a href="command-line-options.html#quiet">&#x2011;quiet</a> <span class='bull'> • </span> <a href="command-line-options.html#radial-blur">&#x2011;radial&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#raise">&#x2011;raise</a> <span class='bull'> • </span> <a href="command-line-options.html#random-threshold">&#x2011;random&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#red-primary">&#x2011;red&#x2011;primary</a> <span class='bull'> • </span> <a href="command-line-options.html#regard-warnings">&#x2011;regard&#x2011;warnings</a> <span class='bull'> • </span> <a href="command-line-options.html#region">&#x2011;region</a> <span class='bull'> • </span> <a href="command-line-options.html#remap">&#x2011;remap</a> <span class='bull'> • </span> <a href="command-line-options.html#remote">&#x2011;remote</a> <span class='bull'> • </span> <a href="command-line-options.html#render">&#x2011;render</a> <span class='bull'> • </span> <a href="command-line-options.html#repage">&#x2011;repage</a> <span class='bull'> • </span> <a href="command-line-options.html#resample">&#x2011;resample</a> <span class='bull'> • </span> <a href="command-line-options.html#resize">&#x2011;resize</a> <span class='bull'> • </span> <a href="command-line-options.html#respect-parentheses">&#x2011;respect&#x2011;parentheses</a> <span class='bull'> • </span> <a href="command-line-options.html#reverse">&#x2011;reverse</a> <span class='bull'> • </span> <a href="command-line-options.html#roll">&#x2011;roll</a> <span class='bull'> • </span> <a href="command-line-options.html#rotate">&#x2011;rotate</a> <span class='bull'> • </span> <a href="command-line-options.html#sample">&#x2011;sample</a> <span class='bull'> • </span> <a href="command-line-options.html#sampling-factor">&#x2011;sampling&#x2011;factor</a> <span class='bull'> • </span> <a href="command-line-options.html#scale">&#x2011;scale</a> <span class='bull'> • </span> <a href="command-line-options.html#scene">&#x2011;scene</a> <span class='bull'> • </span> <a href="command-line-options.html#screen">&#x2011;screen</a> <span class='bull'> • </span> <a href="command-line-options.html#seed">&#x2011;seed</a> <span class='bull'> • </span> <a href="command-line-options.html#segment">&#x2011;segment</a> <span class='bull'> • </span> <a href="command-line-options.html#selective-blur">&#x2011;selective&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#separate">&#x2011;separate</a> <span class='bull'> • </span> <a href="command-line-options.html#sepia-tone">&#x2011;sepia&#x2011;tone</a> <span class='bull'> • </span> <a href="command-line-options.html#set">&#x2011;set</a> <span class='bull'> • </span> <a href="command-line-options.html#shade">&#x2011;shade</a> <span class='bull'> • </span> <a href="command-line-options.html#shadow">&#x2011;shadow</a> <span class='bull'> • </span> <a href="command-line-options.html#shared-memory">&#x2011;shared&#x2011;memory</a> <span class='bull'> • </span> <a href="command-line-options.html#sharpen">&#x2011;sharpen</a> <span class='bull'> • </span> <a href="command-line-options.html#shave">&#x2011;shave</a> <span class='bull'> • </span> <a href="command-line-options.html#shear">&#x2011;shear</a> <span class='bull'> • </span> <a href="command-line-options.html#sigmoidal-contrast">&#x2011;sigmoidal&#x2011;contrast</a> <span class='bull'> • </span> <a href="command-line-options.html#silent">&#x2011;silent</a> <span class='bull'> • </span> <a href="command-line-options.html#similarity-threshold">&#x2011;similarity&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#size">&#x2011;size</a> <span class='bull'> • </span> <a href="command-line-options.html#sketch">&#x2011;sketch</a> <span class='bull'> • </span> <a href="command-line-options.html#smush">&#x2011;smush</a> <span class='bull'> • </span> <a href="command-line-options.html#snaps">&#x2011;snaps</a> <span class='bull'> • </span> <a href="command-line-options.html#solarize">&#x2011;solarize</a> <span class='bull'> • </span> <a href="command-line-options.html#sparse-color">&#x2011;sparse&#x2011;color</a> <span class='bull'> • </span> <a href="command-line-options.html#splice">&#x2011;splice</a> <span class='bull'> • </span> <a href="command-line-options.html#spread">&#x2011;spread</a> <span class='bull'> • </span> <a href="command-line-options.html#statistic">&#x2011;statistic</a> <span class='bull'> • </span> <a href="command-line-options.html#stegano">&#x2011;stegano</a> <span class='bull'> • </span> <a href="command-line-options.html#stereo">&#x2011;stereo</a> <span class='bull'> • </span> <a href="command-line-options.html#stretch">&#x2011;stretch</a> <span class='bull'> • </span> <a href="command-line-options.html#strip">&#x2011;strip</a> <span class='bull'> • </span> <a href="command-line-options.html#stroke">&#x2011;stroke</a> <span class='bull'> • </span> <a href="command-line-options.html#strokewidth">&#x2011;strokewidth</a> <span class='bull'> • </span> <a href="command-line-options.html#style">&#x2011;style</a> <span class='bull'> • </span> <a href="command-line-options.html#subimage-search">&#x2011;subimage&#x2011;search</a> <span class='bull'> • </span> <a href="command-line-options.html#swap">&#x2011;swap</a> <span class='bull'> • </span> <a href="command-line-options.html#swirl">&#x2011;swirl</a> <span class='bull'> • </span> <a href="command-line-options.html#synchronize">&#x2011;synchronize</a> <span class='bull'> • </span> <a href="command-line-options.html#taint">&#x2011;taint</a> <span class='bull'> • </span> <a href="command-line-options.html#text-font">&#x2011;text&#x2011;font</a> <span class='bull'> • </span> <a href="command-line-options.html#texture">&#x2011;texture</a> <span class='bull'> • </span> <a href="command-line-options.html#threshold">&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#thumbnail">&#x2011;thumbnail</a> <span class='bull'> • </span> <a href="command-line-options.html#tile">&#x2011;tile</a> <span class='bull'> • </span> <a href="command-line-options.html#tile-offset">&#x2011;tile&#x2011;offset</a> <span class='bull'> • </span> <a href="command-line-options.html#tint">&#x2011;tint</a> <span class='bull'> • </span> <a href="command-line-options.html#title">&#x2011;title</a> <span class='bull'> • </span> <a href="command-line-options.html#transform">&#x2011;transform</a> <span class='bull'> • </span> <a href="command-line-options.html#transparent">&#x2011;transparent</a> <span class='bull'> • </span> <a href="command-line-options.html#transparent-color">&#x2011;transparent&#x2011;color</a> <span class='bull'> • </span> <a href="command-line-options.html#transpose">&#x2011;transpose</a> <span class='bull'> • </span> <a href="command-line-options.html#transverse">&#x2011;transverse</a> <span class='bull'> • </span> <a href="command-line-options.html#treedepth">&#x2011;treedepth</a> <span class='bull'> • </span> <a href="command-line-options.html#trim">&#x2011;trim</a> <span class='bull'> • </span> <a href="command-line-options.html#type">&#x2011;type</a> <span class='bull'> • </span> <a href="command-line-options.html#undercolor">&#x2011;undercolor</a> <span class='bull'> • </span> <a href="command-line-options.html#unique-colors">&#x2011;unique&#x2011;colors</a> <span class='bull'> • </span> <a href="command-line-options.html#units">&#x2011;units</a> <span class='bull'> • </span> <a href="command-line-options.html#unsharp">&#x2011;unsharp</a> <span class='bull'> • </span> <a href="command-line-options.html#update">&#x2011;update</a> <span class='bull'> • </span> <a href="command-line-options.html#verbose">&#x2011;verbose</a> <span class='bull'> • </span> <a href="command-line-options.html#version">&#x2011;version</a> <span class='bull'> • </span> <a href="command-line-options.html#view">&#x2011;view</a> <span class='bull'> • </span> <a href="command-line-options.html#vignette">&#x2011;vignette</a> <span class='bull'> • </span> <a href="command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a> <span class='bull'> • </span> <a href="command-line-options.html#visual">&#x2011;visual</a> <span class='bull'> • </span> <a href="command-line-options.html#watermark">&#x2011;watermark</a> <span class='bull'> • </span> <a href="command-line-options.html#wave">&#x2011;wave</a> <span class='bull'> • </span> <a href="command-line-options.html#weight">&#x2011;weight</a> <span class='bull'> • </span> <a href="command-line-options.html#white-point">&#x2011;white&#x2011;point</a> <span class='bull'> • </span> <a href="command-line-options.html#white-threshold">&#x2011;white&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#window">&#x2011;window</a> <span class='bull'> • </span> <a href="command-line-options.html#window-group">&#x2011;window&#x2011;group</a> <span class='bull'> • </span> <a href="command-line-options.html#write">&#x2011;write</a>  ] </p>
+[ <a href="command-line-options.html#adaptive-blur">&#x2011;adaptive&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#adaptive-resize">&#x2011;adaptive&#x2011;resize</a> <span class='bull'> • </span> <a href="command-line-options.html#adaptive-sharpen">&#x2011;adaptive&#x2011;sharpen</a> <span class='bull'> • </span> <a href="command-line-options.html#adjoin">&#x2011;adjoin</a> <span class='bull'> • </span> <a href="command-line-options.html#affine">&#x2011;affine</a> <span class='bull'> • </span> <a href="command-line-options.html#alpha">&#x2011;alpha</a> <span class='bull'> • </span> <a href="command-line-options.html#annotate">&#x2011;annotate</a> <span class='bull'> • </span> <a href="command-line-options.html#antialias">&#x2011;antialias</a> <span class='bull'> • </span> <a href="command-line-options.html#append">&#x2011;append</a> <span class='bull'> • </span> <a href="command-line-options.html#attenuate">&#x2011;attenuate</a> <span class='bull'> • </span> <a href="command-line-options.html#authenticate">&#x2011;authenticate</a> <span class='bull'> • </span> <a href="command-line-options.html#auto-gamma">&#x2011;auto&#x2011;gamma</a> <span class='bull'> • </span> <a href="command-line-options.html#auto-level">&#x2011;auto&#x2011;level</a> <span class='bull'> • </span> <a href="command-line-options.html#auto-orient">&#x2011;auto&#x2011;orient</a> <span class='bull'> • </span> <a href="command-line-options.html#backdrop">&#x2011;backdrop</a> <span class='bull'> • </span> <a href="command-line-options.html#background">&#x2011;background</a> <span class='bull'> • </span> <a href="command-line-options.html#bench">&#x2011;bench</a> <span class='bull'> • </span> <a href="command-line-options.html#bias">&#x2011;bias</a> <span class='bull'> • </span> <a href="command-line-options.html#black-point-compensation">&#x2011;black&#x2011;point&#x2011;compensation</a> <span class='bull'> • </span> <a href="command-line-options.html#black-threshold">&#x2011;black&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#blend">&#x2011;blend</a> <span class='bull'> • </span> <a href="command-line-options.html#blue-primary">&#x2011;blue&#x2011;primary</a> <span class='bull'> • </span> <a href="command-line-options.html#blue-shift">&#x2011;blue&#x2011;shift</a> <span class='bull'> • </span> <a href="command-line-options.html#blur">&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#border">&#x2011;border</a> <span class='bull'> • </span> <a href="command-line-options.html#bordercolor">&#x2011;bordercolor</a> <span class='bull'> • </span> <a href="command-line-options.html#borderwidth">&#x2011;borderwidth</a> <span class='bull'> • </span> <a href="command-line-options.html#brightness-contrast">&#x2011;brightness&#x2011;contrast</a> <span class='bull'> • </span> <a href="command-line-options.html#cache">&#x2011;cache</a> <span class='bull'> • </span> <a href="command-line-options.html#canny">&#x2011;canny</a> <span class='bull'> • </span> <a href="command-line-options.html#caption">&#x2011;caption</a> <span class='bull'> • </span> <a href="command-line-options.html#cdl">&#x2011;cdl</a> <span class='bull'> • </span> <a href="command-line-options.html#channel">&#x2011;channel</a> <span class='bull'> • </span> <a href="command-line-options.html#charcoal">&#x2011;charcoal</a> <span class='bull'> • </span> <a href="command-line-options.html#chop">&#x2011;chop</a> <span class='bull'> • </span> <a href="command-line-options.html#clamp">&#x2011;clamp</a> <span class='bull'> • </span> <a href="command-line-options.html#clip">&#x2011;clip</a> <span class='bull'> • </span> <a href="command-line-options.html#clip-mask">&#x2011;clip&#x2011;mask</a> <span class='bull'> • </span> <a href="command-line-options.html#clip-path">&#x2011;clip&#x2011;path</a> <span class='bull'> • </span> <a href="command-line-options.html#clone">&#x2011;clone</a> <span class='bull'> • </span> <a href="command-line-options.html#clut">&#x2011;clut</a> <span class='bull'> • </span> <a href="command-line-options.html#coalesce">&#x2011;coalesce</a> <span class='bull'> • </span> <a href="command-line-options.html#colorize">&#x2011;colorize</a> <span class='bull'> • </span> <a href="command-line-options.html#colormap">&#x2011;colormap</a> <span class='bull'> • </span> <a href="command-line-options.html#color-matrix">&#x2011;color&#x2011;matrix</a> <span class='bull'> • </span> <a href="command-line-options.html#colors">&#x2011;colors</a> <span class='bull'> • </span> <a href="command-line-options.html#colorspace">&#x2011;colorspace</a> <span class='bull'> • </span> <a href="command-line-options.html#combine">&#x2011;combine</a> <span class='bull'> • </span> <a href="command-line-options.html#comment">&#x2011;comment</a> <span class='bull'> • </span> <a href="command-line-options.html#compare">&#x2011;compare</a> <span class='bull'> • </span> <a href="command-line-options.html#complex">&#x2011;complex</a> <span class='bull'> • </span> <a href="command-line-options.html#compose">&#x2011;compose</a> <span class='bull'> • </span> <a href="command-line-options.html#composite">&#x2011;composite</a> <span class='bull'> • </span> <a href="command-line-options.html#compress">&#x2011;compress</a> <span class='bull'> • </span> <a href="command-line-options.html#contrast">&#x2011;contrast</a> <span class='bull'> • </span> <a href="command-line-options.html#contrast-stretch">&#x2011;contrast&#x2011;stretch</a> <span class='bull'> • </span> <a href="command-line-options.html#convolve">&#x2011;convolve</a> <span class='bull'> • </span> <a href="command-line-options.html#crop">&#x2011;crop</a> <span class='bull'> • </span> <a href="command-line-options.html#cycle">&#x2011;cycle</a> <span class='bull'> • </span> <a href="command-line-options.html#debug">&#x2011;debug</a> <span class='bull'> • </span> <a href="command-line-options.html#decipher">&#x2011;decipher</a> <span class='bull'> • </span> <a href="command-line-options.html#deconstruct">&#x2011;deconstruct</a> <span class='bull'> • </span> <a href="command-line-options.html#define">&#x2011;define</a> <span class='bull'> • </span> <a href="command-line-options.html#delay">&#x2011;delay</a> <span class='bull'> • </span> <a href="command-line-options.html#delete">&#x2011;delete</a> <span class='bull'> • </span> <a href="command-line-options.html#density">&#x2011;density</a> <span class='bull'> • </span> <a href="command-line-options.html#depth">&#x2011;depth</a> <span class='bull'> • </span> <a href="command-line-options.html#descend">&#x2011;descend</a> <span class='bull'> • </span> <a href="command-line-options.html#deskew">&#x2011;deskew</a> <span class='bull'> • </span> <a href="command-line-options.html#despeckle">&#x2011;despeckle</a> <span class='bull'> • </span> <a href="command-line-options.html#direction">&#x2011;direction</a> <span class='bull'> • </span> <a href="command-line-options.html#displace">&#x2011;displace</a> <span class='bull'> • </span> <a href="command-line-options.html#display">&#x2011;display</a> <span class='bull'> • </span> <a href="command-line-options.html#dispose">&#x2011;dispose</a> <span class='bull'> • </span> <a href="command-line-options.html#dissimilarity-threshold">&#x2011;dissimilarity&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#dissolve">&#x2011;dissolve</a> <span class='bull'> • </span> <a href="command-line-options.html#distort">&#x2011;distort</a> <span class='bull'> • </span> <a href="command-line-options.html#distribute-cache">&#x2011;distribute&#x2011;cache</a> <span class='bull'> • </span> <a href="command-line-options.html#dither">&#x2011;dither</a> <span class='bull'> • </span> <a href="command-line-options.html#draw">&#x2011;draw</a> <span class='bull'> • </span> <a href="command-line-options.html#duplicate">&#x2011;duplicate</a> <span class='bull'> • </span> <a href="command-line-options.html#edge">&#x2011;edge</a> <span class='bull'> • </span> <a href="command-line-options.html#emboss">&#x2011;emboss</a> <span class='bull'> • </span> <a href="command-line-options.html#encipher">&#x2011;encipher</a> <span class='bull'> • </span> <a href="command-line-options.html#encoding">&#x2011;encoding</a> <span class='bull'> • </span> <a href="command-line-options.html#endian">&#x2011;endian</a> <span class='bull'> • </span> <a href="command-line-options.html#enhance">&#x2011;enhance</a> <span class='bull'> • </span> <a href="command-line-options.html#equalize">&#x2011;equalize</a> <span class='bull'> • </span> <a href="command-line-options.html#evaluate">&#x2011;evaluate</a> <span class='bull'> • </span> <a href="command-line-options.html#evaluate-sequence">&#x2011;evaluate&#x2011;sequence</a> <span class='bull'> • </span> <a href="command-line-options.html#extent">&#x2011;extent</a> <span class='bull'> • </span> <a href="command-line-options.html#extract">&#x2011;extract</a> <span class='bull'> • </span> <a href="command-line-options.html#family">&#x2011;family</a> <span class='bull'> • </span> <a href="command-line-options.html#features">&#x2011;features</a> <span class='bull'> • </span> <a href="command-line-options.html#fft">&#x2011;fft</a> <span class='bull'> • </span> <a href="command-line-options.html#fill">&#x2011;fill</a> <span class='bull'> • </span> <a href="command-line-options.html#filter">&#x2011;filter</a> <span class='bull'> • </span> <a href="command-line-options.html#flatten">&#x2011;flatten</a> <span class='bull'> • </span> <a href="command-line-options.html#flip">&#x2011;flip</a> <span class='bull'> • </span> <a href="command-line-options.html#floodfill">&#x2011;floodfill</a> <span class='bull'> • </span> <a href="command-line-options.html#flop">&#x2011;flop</a> <span class='bull'> • </span> <a href="command-line-options.html#font">&#x2011;font</a> <span class='bull'> • </span> <a href="command-line-options.html#foreground">&#x2011;foreground</a> <span class='bull'> • </span> <a href="command-line-options.html#format">&#x2011;format</a> <span class='bull'> • </span> <a href="command-line-options.html#format_identify_">&#x2011;format[identify]</a> <span class='bull'> • </span> <a href="command-line-options.html#frame">&#x2011;frame</a> <span class='bull'> • </span> <a href="command-line-options.html#frame_import_">&#x2011;frame[import]</a> <span class='bull'> • </span> <a href="command-line-options.html#function">&#x2011;function</a> <span class='bull'> • </span> <a href="command-line-options.html#fuzz">&#x2011;fuzz</a> <span class='bull'> • </span> <a href="command-line-options.html#fx">&#x2011;fx</a> <span class='bull'> • </span> <a href="command-line-options.html#gamma">&#x2011;gamma</a> <span class='bull'> • </span> <a href="command-line-options.html#gaussian-blur">&#x2011;gaussian&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#geometry">&#x2011;geometry</a> <span class='bull'> • </span> <a href="command-line-options.html#gravity">&#x2011;gravity</a> <span class='bull'> • </span> <a href="command-line-options.html#grayscale">&#x2011;grayscale</a> <span class='bull'> • </span> <a href="command-line-options.html#green-primary">&#x2011;green&#x2011;primary</a> <span class='bull'> • </span> <a href="command-line-options.html#hald-clut">&#x2011;hald&#x2011;clut</a> <span class='bull'> • </span> <a href="command-line-options.html#help">&#x2011;help</a> <span class='bull'> • </span> <a href="command-line-options.html#highlight-color">&#x2011;highlight&#x2011;color</a> <span class='bull'> • </span> <a href="command-line-options.html#hough-lines">&#x2011;hough&#x2011;lines</a> <span class='bull'> • </span> <a href="command-line-options.html#iconGeometry">&#x2011;iconGeometry</a> <span class='bull'> • </span> <a href="command-line-options.html#iconic">&#x2011;iconic</a> <span class='bull'> • </span> <a href="command-line-options.html#identify">&#x2011;identify</a> <span class='bull'> • </span> <a href="command-line-options.html#ift">&#x2011;ift</a> <span class='bull'> • </span> <a href="command-line-options.html#immutable">&#x2011;immutable</a> <span class='bull'> • </span> <a href="command-line-options.html#implode">&#x2011;implode</a> <span class='bull'> • </span> <a href="command-line-options.html#insert">&#x2011;insert</a> <span class='bull'> • </span> <a href="command-line-options.html#intensity">&#x2011;intensity</a> <span class='bull'> • </span> <a href="command-line-options.html#intent">&#x2011;intent</a> <span class='bull'> • </span> <a href="command-line-options.html#interlace">&#x2011;interlace</a> <span class='bull'> • </span> <a href="command-line-options.html#interpolate">&#x2011;interpolate</a> <span class='bull'> • </span> <a href="command-line-options.html#interline-spacing">&#x2011;interline&#x2011;spacing</a> <span class='bull'> • </span> <a href="command-line-options.html#interword-spacing">&#x2011;interword&#x2011;spacing</a> <span class='bull'> • </span> <a href="command-line-options.html#kerning">&#x2011;kerning</a> <span class='bull'> • </span> <a href="command-line-options.html#label">&#x2011;label</a> <span class='bull'> • </span> <a href="command-line-options.html#lat">&#x2011;lat</a> <span class='bull'> • </span> <a href="command-line-options.html#layers">&#x2011;layers</a> <span class='bull'> • </span> <a href="command-line-options.html#level">&#x2011;level</a> <span class='bull'> • </span> <a href="command-line-options.html#level-colors">&#x2011;level&#x2011;colors</a> <span class='bull'> • </span> <a href="command-line-options.html#limit">&#x2011;limit</a> <span class='bull'> • </span> <a href="command-line-options.html#linear-stretch">&#x2011;linear&#x2011;stretch</a> <span class='bull'> • </span> <a href="command-line-options.html#linewidth">&#x2011;linewidth</a> <span class='bull'> • </span> <a href="command-line-options.html#liquid-rescale">&#x2011;liquid&#x2011;rescale</a> <span class='bull'> • </span> <a href="command-line-options.html#list">&#x2011;list</a> <span class='bull'> • </span> <a href="command-line-options.html#log">&#x2011;log</a> <span class='bull'> • </span> <a href="command-line-options.html#loop">&#x2011;loop</a> <span class='bull'> • </span> <a href="command-line-options.html#lowlight-color">&#x2011;lowlight&#x2011;color</a> <span class='bull'> • </span> <a href="command-line-options.html#magnify">&#x2011;magnify</a> <span class='bull'> • </span> <a href="command-line-options.html#map">&#x2011;map</a> <span class='bull'> • </span> <a href="command-line-options.html#map_stream_">&#x2011;map[stream]</a> <span class='bull'> • </span> <a href="command-line-options.html#mask">&#x2011;mask</a> <span class='bull'> • </span> <a href="command-line-options.html#mattecolor">&#x2011;mattecolor</a> <span class='bull'> • </span> <a href="command-line-options.html#median">&#x2011;median</a> <span class='bull'> • </span> <a href="command-line-options.html#mean-shift">&#x2011;mean&#x2011;shift</a> <span class='bull'> • </span> <a href="command-line-options.html#metric">&#x2011;metric</a> <span class='bull'> • </span> <a href="command-line-options.html#mode">&#x2011;mode</a> <span class='bull'> • </span> <a href="command-line-options.html#modulate">&#x2011;modulate</a> <span class='bull'> • </span> <a href="command-line-options.html#moments">&#x2011;moments</a> <span class='bull'> • </span> <a href="command-line-options.html#monitor">&#x2011;monitor</a> <span class='bull'> • </span> <a href="command-line-options.html#monochrome">&#x2011;monochrome</a> <span class='bull'> • </span> <a href="command-line-options.html#morph">&#x2011;morph</a> <span class='bull'> • </span> <a href="command-line-options.html#morphology">&#x2011;morphology</a> <span class='bull'> • </span> <a href="command-line-options.html#mosaic">&#x2011;mosaic</a> <span class='bull'> • </span> <a href="command-line-options.html#motion-blur">&#x2011;motion&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#name">&#x2011;name</a> <span class='bull'> • </span> <a href="command-line-options.html#negate">&#x2011;negate</a> <span class='bull'> • </span> <a href="command-line-options.html#noise">&#x2011;noise</a> <span class='bull'> • </span> <a href="command-line-options.html#normalize">&#x2011;normalize</a> <span class='bull'> • </span> <a href="command-line-options.html#opaque">&#x2011;opaque</a> <span class='bull'> • </span> <a href="command-line-options.html#ordered-dither">&#x2011;ordered&#x2011;dither</a> <span class='bull'> • </span> <a href="command-line-options.html#orient">&#x2011;orient</a> <span class='bull'> • </span> <a href="command-line-options.html#page">&#x2011;page</a> <span class='bull'> • </span> <a href="command-line-options.html#paint">&#x2011;paint</a> <span class='bull'> • </span> <a href="command-line-options.html#path">&#x2011;path</a> <span class='bull'> • </span> <a href="command-line-options.html#pause_animate_">&#x2011;pause[animate]</a> <span class='bull'> • </span> <a href="command-line-options.html#pause_import_">&#x2011;pause[import]</a> <span class='bull'> • </span> <a href="command-line-options.html#perceptible">&#x2011;perceptible</a> <span class='bull'> • </span> <a href="command-line-options.html#ping">&#x2011;ping</a> <span class='bull'> • </span> <a href="command-line-options.html#pointsize">&#x2011;pointsize</a> <span class='bull'> • </span> <a href="command-line-options.html#polaroid">&#x2011;polaroid</a> <span class='bull'> • </span> <a href="command-line-options.html#poly">&#x2011;poly</a> <span class='bull'> • </span> <a href="command-line-options.html#posterize">&#x2011;posterize</a> <span class='bull'> • </span> <a href="command-line-options.html#precision">&#x2011;precision</a> <span class='bull'> • </span> <a href="command-line-options.html#preview">&#x2011;preview</a> <span class='bull'> • </span> <a href="command-line-options.html#print">&#x2011;print</a> <span class='bull'> • </span> <a href="command-line-options.html#process">&#x2011;process</a> <span class='bull'> • </span> <a href="command-line-options.html#profile">&#x2011;profile</a> <span class='bull'> • </span> <a href="command-line-options.html#quality">&#x2011;quality</a> <span class='bull'> • </span> <a href="command-line-options.html#quantize">&#x2011;quantize</a> <span class='bull'> • </span> <a href="command-line-options.html#quiet">&#x2011;quiet</a> <span class='bull'> • </span> <a href="command-line-options.html#radial-blur">&#x2011;radial&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#raise">&#x2011;raise</a> <span class='bull'> • </span> <a href="command-line-options.html#random-threshold">&#x2011;random&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#red-primary">&#x2011;red&#x2011;primary</a> <span class='bull'> • </span> <a href="command-line-options.html#regard-warnings">&#x2011;regard&#x2011;warnings</a> <span class='bull'> • </span> <a href="command-line-options.html#region">&#x2011;region</a> <span class='bull'> • </span> <a href="command-line-options.html#remap">&#x2011;remap</a> <span class='bull'> • </span> <a href="command-line-options.html#remote">&#x2011;remote</a> <span class='bull'> • </span> <a href="command-line-options.html#render">&#x2011;render</a> <span class='bull'> • </span> <a href="command-line-options.html#repage">&#x2011;repage</a> <span class='bull'> • </span> <a href="command-line-options.html#resample">&#x2011;resample</a> <span class='bull'> • </span> <a href="command-line-options.html#resize">&#x2011;resize</a> <span class='bull'> • </span> <a href="command-line-options.html#respect-parentheses">&#x2011;respect&#x2011;parentheses</a> <span class='bull'> • </span> <a href="command-line-options.html#reverse">&#x2011;reverse</a> <span class='bull'> • </span> <a href="command-line-options.html#roll">&#x2011;roll</a> <span class='bull'> • </span> <a href="command-line-options.html#rotate">&#x2011;rotate</a> <span class='bull'> • </span> <a href="command-line-options.html#sample">&#x2011;sample</a> <span class='bull'> • </span> <a href="command-line-options.html#sampling-factor">&#x2011;sampling&#x2011;factor</a> <span class='bull'> • </span> <a href="command-line-options.html#scale">&#x2011;scale</a> <span class='bull'> • </span> <a href="command-line-options.html#scene">&#x2011;scene</a> <span class='bull'> • </span> <a href="command-line-options.html#screen">&#x2011;screen</a> <span class='bull'> • </span> <a href="command-line-options.html#seed">&#x2011;seed</a> <span class='bull'> • </span> <a href="command-line-options.html#segment">&#x2011;segment</a> <span class='bull'> • </span> <a href="command-line-options.html#selective-blur">&#x2011;selective&#x2011;blur</a> <span class='bull'> • </span> <a href="command-line-options.html#separate">&#x2011;separate</a> <span class='bull'> • </span> <a href="command-line-options.html#sepia-tone">&#x2011;sepia&#x2011;tone</a> <span class='bull'> • </span> <a href="command-line-options.html#set">&#x2011;set</a> <span class='bull'> • </span> <a href="command-line-options.html#shade">&#x2011;shade</a> <span class='bull'> • </span> <a href="command-line-options.html#shadow">&#x2011;shadow</a> <span class='bull'> • </span> <a href="command-line-options.html#shared-memory">&#x2011;shared&#x2011;memory</a> <span class='bull'> • </span> <a href="command-line-options.html#sharpen">&#x2011;sharpen</a> <span class='bull'> • </span> <a href="command-line-options.html#shave">&#x2011;shave</a> <span class='bull'> • </span> <a href="command-line-options.html#shear">&#x2011;shear</a> <span class='bull'> • </span> <a href="command-line-options.html#sigmoidal-contrast">&#x2011;sigmoidal&#x2011;contrast</a> <span class='bull'> • </span> <a href="command-line-options.html#silent">&#x2011;silent</a> <span class='bull'> • </span> <a href="command-line-options.html#similarity-threshold">&#x2011;similarity&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#size">&#x2011;size</a> <span class='bull'> • </span> <a href="command-line-options.html#sketch">&#x2011;sketch</a> <span class='bull'> • </span> <a href="command-line-options.html#smush">&#x2011;smush</a> <span class='bull'> • </span> <a href="command-line-options.html#snaps">&#x2011;snaps</a> <span class='bull'> • </span> <a href="command-line-options.html#solarize">&#x2011;solarize</a> <span class='bull'> • </span> <a href="command-line-options.html#sparse-color">&#x2011;sparse&#x2011;color</a> <span class='bull'> • </span> <a href="command-line-options.html#splice">&#x2011;splice</a> <span class='bull'> • </span> <a href="command-line-options.html#spread">&#x2011;spread</a> <span class='bull'> • </span> <a href="command-line-options.html#statistic">&#x2011;statistic</a> <span class='bull'> • </span> <a href="command-line-options.html#stegano">&#x2011;stegano</a> <span class='bull'> • </span> <a href="command-line-options.html#stereo">&#x2011;stereo</a> <span class='bull'> • </span> <a href="command-line-options.html#stretch">&#x2011;stretch</a> <span class='bull'> • </span> <a href="command-line-options.html#strip">&#x2011;strip</a> <span class='bull'> • </span> <a href="command-line-options.html#stroke">&#x2011;stroke</a> <span class='bull'> • </span> <a href="command-line-options.html#strokewidth">&#x2011;strokewidth</a> <span class='bull'> • </span> <a href="command-line-options.html#style">&#x2011;style</a> <span class='bull'> • </span> <a href="command-line-options.html#subimage-search">&#x2011;subimage&#x2011;search</a> <span class='bull'> • </span> <a href="command-line-options.html#swap">&#x2011;swap</a> <span class='bull'> • </span> <a href="command-line-options.html#swirl">&#x2011;swirl</a> <span class='bull'> • </span> <a href="command-line-options.html#synchronize">&#x2011;synchronize</a> <span class='bull'> • </span> <a href="command-line-options.html#taint">&#x2011;taint</a> <span class='bull'> • </span> <a href="command-line-options.html#text-font">&#x2011;text&#x2011;font</a> <span class='bull'> • </span> <a href="command-line-options.html#texture">&#x2011;texture</a> <span class='bull'> • </span> <a href="command-line-options.html#threshold">&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#thumbnail">&#x2011;thumbnail</a> <span class='bull'> • </span> <a href="command-line-options.html#tile">&#x2011;tile</a> <span class='bull'> • </span> <a href="command-line-options.html#tile-offset">&#x2011;tile&#x2011;offset</a> <span class='bull'> • </span> <a href="command-line-options.html#tint">&#x2011;tint</a> <span class='bull'> • </span> <a href="command-line-options.html#title">&#x2011;title</a> <span class='bull'> • </span> <a href="command-line-options.html#transform">&#x2011;transform</a> <span class='bull'> • </span> <a href="command-line-options.html#transparent">&#x2011;transparent</a> <span class='bull'> • </span> <a href="command-line-options.html#transparent-color">&#x2011;transparent&#x2011;color</a> <span class='bull'> • </span> <a href="command-line-options.html#transpose">&#x2011;transpose</a> <span class='bull'> • </span> <a href="command-line-options.html#transverse">&#x2011;transverse</a> <span class='bull'> • </span> <a href="command-line-options.html#treedepth">&#x2011;treedepth</a> <span class='bull'> • </span> <a href="command-line-options.html#trim">&#x2011;trim</a> <span class='bull'> • </span> <a href="command-line-options.html#type">&#x2011;type</a> <span class='bull'> • </span> <a href="command-line-options.html#undercolor">&#x2011;undercolor</a> <span class='bull'> • </span> <a href="command-line-options.html#unique-colors">&#x2011;unique&#x2011;colors</a> <span class='bull'> • </span> <a href="command-line-options.html#units">&#x2011;units</a> <span class='bull'> • </span> <a href="command-line-options.html#unsharp">&#x2011;unsharp</a> <span class='bull'> • </span> <a href="command-line-options.html#update">&#x2011;update</a> <span class='bull'> • </span> <a href="command-line-options.html#verbose">&#x2011;verbose</a> <span class='bull'> • </span> <a href="command-line-options.html#version">&#x2011;version</a> <span class='bull'> • </span> <a href="command-line-options.html#view">&#x2011;view</a> <span class='bull'> • </span> <a href="command-line-options.html#vignette">&#x2011;vignette</a> <span class='bull'> • </span> <a href="command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a> <span class='bull'> • </span> <a href="command-line-options.html#visual">&#x2011;visual</a> <span class='bull'> • </span> <a href="command-line-options.html#watermark">&#x2011;watermark</a> <span class='bull'> • </span> <a href="command-line-options.html#wave">&#x2011;wave</a> <span class='bull'> • </span> <a href="command-line-options.html#weight">&#x2011;weight</a> <span class='bull'> • </span> <a href="command-line-options.html#white-point">&#x2011;white&#x2011;point</a> <span class='bull'> • </span> <a href="command-line-options.html#white-threshold">&#x2011;white&#x2011;threshold</a> <span class='bull'> • </span> <a href="command-line-options.html#window">&#x2011;window</a> <span class='bull'> • </span> <a href="command-line-options.html#window-group">&#x2011;window&#x2011;group</a> <span class='bull'> • </span> <a href="command-line-options.html#write">&#x2011;write</a>  ] </p>
 
 <div class="doc-section">
 
@@ -984,6 +985,14 @@ symbol is no different than leaving it off.</p>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>(This option has been replaced by the <a href='command-line-options.html#limit'>-limit</a> option.)</td><td style='text-align:right;'></td></tr></table>
+
+<div style="margin: auto;">
+  <h4><a id="canny"></a>-canny <em class="arg">radius</em><br />-canny <em class="arg">radius</em>x<em class="arg">sigma</em>{<em class="arg">+lower-percent</em>}{<em class="arg">+upper-percent</em>}</h4>
+</div>
+
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Canny edge detector uses a multi-stage algorithm to detect a wide range of edges in the image.</td><td style='text-align:right;'></td></tr></table>
+
+<p>The thresholds range from 0 to 100% (e.g. -canny 0x1+10%+30%) with {<em class="arg">+lower-percent</em>} < {<em class="arg">+upper-percent</em>}. If {<em class="arg">+upper-percent</em>} is increased but {<em class="arg">+lower-percent</em>} remains the same, lesser edge components will be detected, but their lengths will be the same. If {<em class="arg">+lower-percent</em>} is increased but {<em class="arg">+upper-percent</em>} is the same, the same number of edge components will be detected but their lengths will be shorter. The default thresholds are shown. The <em class="arg">radius</em>x<em class="arg">sigma</em> controls a gaussian blur applied to the input image to reduce noise and smooth the edges.</p>
 
 <div style="margin: auto;">
   <h4><a id="caption"></a>-caption <em class="arg">string</em></h4>
@@ -1917,7 +1926,7 @@ option.</p>
 class="arg">filename</em>.</p>
 
 <p>For more information, see the webpage, <a
-href="../www/cipher.html">ImageMagick: Encipher or
+href="http://www.imagemagick.org/www/cipher.html">ImageMagick: Encipher or
 Decipher an Image</a>.</p>
 
 
@@ -1987,30 +1996,62 @@ available:</p>
    >-complex</a></dd>
 
 <dt>compose:args=<em class="arg">arguments</em></dt>
-<dd>Sets certain compose argument values when using convert ... -compose ...
+    <dd>Sets certain compose argument values when using convert ... -compose ...
     -composite. See <a href="compose.html"
     >Image Composition</a></dd>
 
-<dt>dcm:display-range=reset</dt>
-<dd>Sets the display range to the minimum and maximum pixel values for the
+<dt>convolve:scale=<em class="arg">{kernel_scale}[!^] [,{origin_addition}] [%]</em></dt>
+    <dd>Defines the kernel scaling. The special flag ! automatically scales to 
+    full dynamic range. The ! flag can be used in combination with a factor or 
+    percent. The factor or percent is then applied after the automatic scaling. 
+    An example is 50%!. This produces a result 50% darker than full dynamic 
+    range scaling. The ^ flag assures the kernel is 'zero-summing', for 
+    example when some values are positive and some are negative as in edge 
+    detection kernels. The origin addition adds that value to the center 
+    pixel of the kernel. This produces and effect that is like adding the image 	
+    that many times to the result of the filtered image. The typical value 
+    is 1 so that the original image is added to the result of the convolution. 
+    The default is 0.</dd>
+
+<dt>convolve:showkernel=<em class="arg">1</em></dt>
+    <dd>Outputs (to 'standard error') all the information about a specified <a
+    href="command-line-options.html#morphology" >-morphology convolve</a> kernel.</dd>
+
+<dt>dcm:display-range=<em class="arg">reset</em></dt>
+    <dd>Sets the display range to the minimum and maximum pixel values for the
     DCM image format.</dd>
+
+<dt>dds:cluster-fit=<em class="arg">true|false</em></dt>
+    <dd>Enables the dds cluster-fit.</dd>
+
+<dt>dds:compression=<em class="arg">dxt1|dxt5|none</em></dt>
+    <dd>Sets the dds compression.</dd>
+
+<dt>dds:mipmaps=<em class="arg">value</em></dt>
+    <dd>Sets the dds number of mipmaps.</dd>
+
+<dt>dds:weight-by-alpha=<em class="arg">true|false</em></dt>
+    <dd>Enables the dds alpha weighting.</dd>
+
+<dt>delegate:bimodel=<em class="arg">true</em></dt>
+    <dd>Specifies direct conversion from Postscript to PDF.</dd>
 
 <dt>distort:scale=<em class="arg">value</em></dt>
    <dd>Sets the output scaling factor for use with <a href="command-line-options.html#distort"
    >-distort</a></dd>
 
-<dt>distort:viewport=WxH+X+Y</dt>
+<dt>distort:viewport=<em class="arg">WxH+X+Y</em></dt>
    <dd>Sets the viewport for use with <a href="command-line-options.html#distort">-distort</a></dd>
 
 <dt>dot:layout-engine=<em class="arg">value</em></dt>
-<dd>Specifies the layout engine for the DOT image format (e.g.
+    <dd>Specifies the layout engine for the DOT image format (e.g.
     <code>neato</code>).</dd>
 
 <dt>filter:option=<em class="arg">value</em></dt>
-<dd>Set a filter option for use with <a href="command-line-options.html#resize">-resize</a>.
+    <dd>Set a filter option for use with <a href="command-line-options.html#resize">-resize</a>.
     See <a href="command-line-options.html#filter">-filter</a> for details.</dd>
 
-<dt>fourier:normalize=inverse</dt>
+<dt>fourier:normalize=<em class="arg">inverse</em></dt>
    <dd>Sets the location for the FFT/IFT normalization as use by 
     <a href="command-line-options.html#fft">+-fft</a> and <a href="command-line-options.html#ift">+-ift</a>. The default is 
     forward.</dd>
@@ -2019,19 +2060,46 @@ available:</p>
     <dd>Automatically stores multiple sizes when writing an ico image
     (requires a 256x256 input image).</dd>
 
+<dt>jp2:layer-number=<em class="arg">value</em></dt>
+    <dd>Sets the maximum number of quality layers to decode. Same for JPT, JC2,
+    and J2K</dd>
+
+<dt>jp2:number-resolutions=<em class="arg">value</em></dt>
+    <dd>Sets the number of resolutions to encode.Same for JPT, JC2, and J2K</dd>
+
+<dt>jp2:progression-order=<em class="arg">value</em></dt>
+    <dd>choose from LRCP, RLCP, RPCL, PCRL or CPRL. Same for JPT, JC2, and 
+    J2K</dd></dd>
+
+<dt>jp2:quality=<em class="arg">value,value...</em></dt>
+    <dd>Sets the quality layer PSNR, given in dB. The order is from left to 
+    right in ascending order. The default is a single lossless quality layer.  
+    Same for JPT, JC2, and J2K</dd></dd>
+
+<dt>jp2:rate=<em class="arg">value</em></dt>
+    <dd>Specify the compression factor to use while writing JPEG-2000 files. The
+    compression factor is the reciprocal of the compression ratio. The valid
+    range is 0.0 to 1.0, with 1.0 indicating lossless compression. If defined,
+    this value overrides the -quality setting.  A quality setting of 75
+    results in a rate value of 0.06641. Same for JPT, JC2, and J2K</dd></dd>
+
+<dt>jp2:reduce-factor=<em class="arg">value</em></dt>
+    <dd>Sets the number of highest resolution levels to be discarded.Same for 
+    JPT, JC2, and J2K</dd></dd>
+
 <dt>jpeg:block-smoothing=<em class="arg">on|off</em></dt>
 
 <dt>jpeg:colors=<em class="arg">value</em></dt>
-<dd>Set the desired number of colors and let the JPEG encoder do the
+    <dd>Set the desired number of colors and let the JPEG encoder do the
     quantizing.</dd>
 
 <dt>jpeg:dct-method=<em class="arg">value</em></dt>
-<dd>Choose from <code>default</code>, <code>fastest</code>, <code>float</code>,
-    <code>ifast</code>, and <code>islow</code>.</dd>
+    <dd>Choose from <code>default</code>, <code>fastest</code>, 
+    <code>float</code>, <code>ifast</code>, and <code>islow</code>.</dd>
 
 <dt>jpeg:extent=<em class="arg">value</em></dt>
-<dd>Restrict the maximum JPEG file size, for example <code>-define
-    jpeg:extent=400kb</code>.  The JPEG encoder will search for the highest
+    <dd>Restrict the maximum JPEG file size, for example <code>-define
+    jpeg:extent=400KB</code>.  The JPEG encoder will search for the highest
     compression quality level that results in an output file that does not
     exceed the value. The <code>-quality</code> option is ignored if it
     is also present.</dd>
@@ -2045,24 +2113,50 @@ available:</p>
 <dt>jpeg:sampling-factor=<em class="arg">sampling-factor-string</em></dt>
 
 <dt>jpeg:size=<em class="arg">geometry</em></dt>
-<dd>Set the size hint of a JPEG image, for
+    <dd>Set the size hint of a JPEG image, for
     example, <code>-define jpeg:size=128x128</code>.
     It is most useful for increasing performance and reducing the memory
     requirements when reducing the size of a large JPEG image.</dd>
 
-<dt>jp2:rate=<em class="arg">value</em></dt>
-<dd>Specify the compression factor to use while writing JPEG-2000 files. The
-    compression factor is the reciprocal of the compression ratio. The valid
-    range is 0.0 to 1.0, with 1.0 indicating lossless compression. If defined,
-    this value overrides the -quality setting.  A quality setting of 75
-    results in a rate value of 0.06641.</dd>
+<dt>json:features</dt>
+  <dd>includes features in verbose information</dd>
+
+<dt>json:limit</dt>
+
+<dt>json:locate</dt>
+
+<dt>json:moments</dt>
+  <dd>includes image moments in verbose information</dd>
 
 <dt>mng:need-cacheoff</dt>
   <dd>turn playback caching off for streaming MNG.</dd>
 
+<dt>morphology:compose=<em class="arg">compose-method</em></dt>
+    <dd>Specifies how to merge results generated by multiple<a
+    href="command-line-options.html#morphology" >-morphology</a> kernel. The default is none. One 
+    typical value is 'lighten' as used, for example, with the sobel edge 
+    kernels. </dd>
+
+<dt>morphology:showkernel=<em class="arg">1</em></dt>
+    <dd>Outputs (to 'standard error') all the information about a generated <a
+    href="command-line-options.html#morphology" >-morphology</a> kernel.</dd>
+
+<dt>pcl:fit-to-page=<em class="arg">true</em></dt>
+
+<dt>pdf:fit-page=<em class="arg">geometry</em></dt>
+    <dd> geometry specifies the scaling dimensions for resizing when the PDF is
+    being read. The geometry is either WxH{%} or page size. No offsets are
+    allowed. (introduced in IM 6.8.8-8)</dd>
+
+<dt>pdf:fit-to-page=<em class="arg">true</em></dt>
+
+<dt>pdf:use-cropbox=<em class="arg">true</em></dt>
+
+<dt>pdf:use-trimbox=<em class="arg">true</em></dt>
+
 <dt>png:bit-depth=<em class="arg">value</em></dt>
 <dt>png:color-type=<em class="arg">value</em></dt>
-<dd>desired bit-depth and color-type for PNG output.  You can force the PNG
+    <dd>desired bit-depth and color-type for PNG output.  You can force the PNG
     encoder to use a different bit-depth and color-type than it would have
     normally selected, but only if this does not cause any loss of image
     quality. Any attempt to reduce image quality is treated as an error and no
@@ -2080,7 +2174,9 @@ available:</p>
 <dt>png:compression-filter=<em class="arg">value</em></dt>
    <dd> valid values are 0 through 9. 0-4 are the corresponding PNG filters,
    5 means adaptive filtering except for images with a colormap, 6 means
-   adaptive filtering for all images, 7 means MNG "loco" compression, 8 means Z_RLE strategy with adaptive filtering, and 9 means Z_RLE strategy with no filtering.</dd>
+   adaptive filtering for all images, 7 means MNG "loco" compression, 8 means 
+   Z_RLE strategy with adaptive filtering, and 9 means Z_RLE strategy with no 
+   filtering.</dd>
 
 <dt>png:compression-level=<em class="arg">value</em></dt>
    <dd> valid values are 0 through 9, with 0 providing the least but fastest
@@ -2115,14 +2211,14 @@ available:</p>
    a PNG.</dd>
 
 <dt>png:exclude-chunk=<em class="arg">value</em></dt>
+
 <dt>png:include-chunk=<em class="arg">value</em></dt>
-<dd>ancillary chunks to be excluded from or included in PNG output.
+    <dd>ancillary chunks to be excluded from or included in PNG output.
 
     <p>The <em class="arg">value</em> can be the name of a PNG chunk-type such
     as <em class="arg">bKGD</em>, a comma-separated list of chunk-types,
-    or the word <em class="arg">all</em> or
-    the word <em class="arg">none</em>.  There must be no spaces in the
-    list.  Although PNG chunk-names are case-dependent, you can use
+    or the word <em class="arg">all</em> or the word <em class="arg">none</em>.
+    Although PNG chunk-names are case-dependent, you can use
     all lowercase names if you prefer.</p>
 
     <p>The "include-chunk" and "exclude-chunk" lists only affect the behavior
@@ -2160,7 +2256,7 @@ available:</p>
     following for PNG output:</p>
 
 <pre class="text">
-   -define png:include-chunk=none,trns,gama
+   -define png:exclude-chunk=EXIF,iCCP,iTXt,sRGB,tEXt,zCCP,zTXt,date
 </pre>
 
     <p>The default behavior is to include all known PNG ancillary chunks
@@ -2178,46 +2274,49 @@ available:</p>
 
     <p>You can also put <code>date</code> in the list to include or exclude
     the "Date:create" and "Date:modify" text chunks that ImageMagick normally
-    inserts in the output PNG.</p>
+    inserts in the output PNG.</p></dd>
 
-</dd>
+<dt>png:preserve-colormap[=<em class="arg">true</em>]</dt>
+    <dd>Use the existing image->colormap. Normally the PNG encoder will
+    try to optimize the palette, eliminating unused entries and putting
+    the transparent colors first.  If this flag is set, that behavior
+    is suppressed.</dd>
 
-<dt>png:preserve-colormap</dt>
-  <dd>Use the existing image->colormap. Normally the PNG encoder will
-      try to optimize the palette, eliminating unused entries and putting
-      the transparent colors first.  If this flag is set, that behavior
-      is suppressed.</dd>
+<dt>png:preserve-iCCP[=<em class="arg">true</em>]</dt>
+    <dd>By default, the PNG decoder and encoder examine any ICC profile
+    that is present, either from an <code>iCCP</code> chunk in the PNG
+    input or supplied via an option, and if the profile is recognized
+    to be the sRGB profile, converts it to the <code>sRGB</code> chunk.
+    You can use <code>-define png:preserve-iCCP</code> to prevent
+    this from happening; in such cases the <code>iCCP</code> chunk
+    will be read or written and no <code>sRGB</code> chunk will be
+    written.  There are some ICC profiles that claim to be sRGB but
+    have various errors that cause them to be rejected by libpng16; such
+    profiles are recognized anyhow and converted to the <code>sRGB</code>
+    chunk, but are rejected if the <code>-define png:preserve-iCCP</code>
+    is present. Note that not all "sRGB" ICC profiles are recognized
+    yet; we will add them to the list as we encounter them.</dd>
 
-<dt>png:preserve-iCCP</dt>
-   <dd>By default, the PNG decoder and encoder examine any ICC profile
-       that is present, either from an <code>iCCP</code> chunk in the PNG
-       input or supplied via an option, and if the profile is recognized
-       to be the sRGB profile, converts it to the <code>sRGB</code> chunk.
-       You can use <code>-define png:preserve-iCCP</code> to prevent
-       this from happening; in such cases the <code>iCCP</code> chunk
-       will be read or written and no <code>sRGB</code> chunk will be
-       written.  There are some ICC profiles that claim to be sRGB but
-       have various errors that cause them to be rejected by libpng16; such
-       profiles are recognized anyhow and converted to the <code>sRGB</code>
-       chunk, but are rejected if the <code>-define png:preserve-iCCP</code>
-       is present. Note that not all "sRGB" ICC profiles are recognized
-       yet; we will add them to the list as we encounter them.</dd>
+<dt>png:swap-bytes[=<em class="arg">true</em>]</dt>
+    <dd>The PNG specification requires that any multi-byte integers be stored in
+    network byte order (MSB-LSB endian).  This option allows you to
+    fix any invalid PNG files that have 16-bit samples stored incorrectly
+    in little-endian order (LSB-MSB).  The "-define png:swap-bytes" option
+    must appear before the input filename on the commandline.  The swapping
+    is done during the libpng decoding operation.</dd>
 
-<dt>png:swap-bytes</dt>
-   <dd>The PNG specification requires that any multi-byte integers be stored in
-       network byte order (MSB-LSB endian).  This option allows you to
-       fix any invalid PNG files that have 16-bit samples stored incorrectly
-       in little-endian order (LSB-MSB).  The "-define png:swap-bytes" option
-       must appear before the input filename on the commandline.  The swapping
-       is done during the libpng decoding operation.
+<dt>profile:skip=<em class="arg">name1,name2,...</em></dt>
+    <dd>Skip the named profile[s] when reading the image. Use skip="*" to
+    skip all named profiles in the image. Many named profiles exist,
+    including ICC, EXIF, APP1, IPTC, XMP, and others.</dd>
 
 <dt>ps:imagemask</dt>
-<dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will create
+    <dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will create
     Postscript files that render bilevel images with the Postscript imagemask
     operator instead of the image operator.</dd>
 
 <dt>quantum:format=<em class="arg">type</em></dt>
-<dd>Set the type to <code>floating-point</code> to specify a floating-point
+    <dd>Set the type to <code>floating-point</code> to specify a floating-point
     format for raw files (e.g. GRAY:) or for MIFF and TIFF images in HDRI mode
     to preserve negative values. If <a href="command-line-options.html#depth">-depth</a> 16 is
     included, the result is a single precision floating point format.
@@ -2225,24 +2324,38 @@ available:</p>
     double precision floating point format.</dd>
 
 <dt>quantum:polarity=<em class="arg">photometric-interpretation</em></dt>
-<dd>Set the photometric-interpretation of an image (typically for TIFF image
+    <dd>Set the photometric-interpretation of an image (typically for TIFF image
     file format) to either <code>min-is-black</code> (default) or
     <code>min-is-white</code>.</dd>
 
 <dt>sample:offset=<em class="arg">geometry</em></dt>
-<dd>Location of the sampling point within the sub-region being sampled,
-expressed as percentages (see <a href="command-line-options.html#sample" >-sample</a>).</dd>
+    <dd>Location of the sampling point within the sub-region being sampled,
+    expressed as percentages (see <a href="command-line-options.html#sample" >-sample</a>).</dd>
 
 <dt>showkernel=<em class="arg">1</em></dt>
-<dd>Outputs (to 'standard error') all the information about a generated <a
+    <dd>Outputs (to 'standard error') all the information about a generated <a
     href="command-line-options.html#morphology" >-morphology</a> kernel.</dd>
+
+
+<dt>tiff:alpha=<em class="arg">unassociated</em></dt>
+   <dd>Specify the extra samples as associated or unassociated alpha</dd>
+
+<dt>tiff:endian=<em class="arg">msb|lsb</em></dt>
+
+<dt>tiff:exif-properties=<em class="arg">false</em></dt>
+	<dd>Skips reading the EXIF properties.</dd>
+
+<dt>tiff:fill-order=<em class="arg">msb|lsb</em></dt>
+
+<dt>tiff:ignore-tags=<em class="arg">comma-separate-list-of-tag-IDs</em></dt>
+   <dd>Allows one or more tag ID values to be ignored.</dd>
 
 <dt>tiff:rows-per-strip=<em class="arg">value</em></dt>
    <dd>Sets the number of rows per strip</dd>
 
 <dt>tiff:tile-geometry=<em class="arg">WxH</em></dt>
-<dd>Sets the tile size for pyramid tiffs. Requires the suffix PTIF: before the
-    outputname</dd>
+	<dd>Sets the tile size for pyramid tiffs. Requires the suffix
+        PTIF: before the outputname</dd>
 </dl>
 
 <p>For example, to create a postscript file that will render only the black
@@ -2255,12 +2368,6 @@ use:</p>
 
 <p class="crtsnip">
 -define registry:temporary-path=/data/tmp
-</p>
-
-<p>If you want to keep the temporary files ImageMagick creates private, overwrite them with zeros or random data before they are removed.  On the first pass, the file is zeroed.  For subsequent passes, random data is written.  For example, to specify two passes:</p>
-
-<p class="crtsnip">
--define registry:shred-passes=2
 </p>
 
 <div style="margin: auto;">
@@ -3204,7 +3311,7 @@ image sequence.</p>
 >filename</em>.</p>
 
 <p>For more information, see the webpage, <a
-href="../www/cipher.html">ImageMagick: Encipher or
+href="http://www.imagemagick.org/www/cipher.html">ImageMagick: Encipher or
 Decipher an Image</a>.</p>
 
 
@@ -3304,6 +3411,8 @@ class="QR">QuantumRange</em>.)</p>
     <tr><td>Or  </td>             <td>Binary OR of pixels with <em class="arg">value</em>.</td></tr>
     <tr><td>Pow </td>             <td>Raise normalized pixels to the power <em class="arg">value</em>.</td></tr>
     <tr><td>RightShift </td>      <td>Shift the pixel values right by <em class="arg">value</em> bits (i.e., divide pixels by 2<sup><em class="arg">value</em></sup>).</td></tr>
+    <tr><td>RMS</td>            <td>Square the pixel and add the <em class="arg">value</em>.</td></tr>
+    <tr><td>RootMeanSquare</td>            <td>Square the pixel and add the <em class="arg">value</em>.</td></tr>
     <tr><td>Set </td>             <td>Set pixel equal to <em class="arg">value</em>.</td></tr>
     <tr><td>Sin, Sine </td>             <td>Apply sine to pixels with frequency <em class="arg">value</em> with 50% bias added.</td></tr>
     <tr><td>Subtract </td>        <td>Subtract <em class="arg">value</em> from pixels.</td></tr>
@@ -4198,7 +4307,7 @@ chunk, use</p>
 <p>Note that gamma adjustments are also available via the <a href="command-line-options.html#level">-level</a> operator.</p>
 
 <div style="margin: auto;">
-  <h4><a id="gaussian-blur"></a>-gaussian-blur <em class="arg">radius</em><br />-gaussian-blur <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">bias</em></h4>
+  <h4><a id="gaussian-blur"></a>-gaussian-blur <em class="arg">radius</em><br />-gaussian-blur <em class="arg">radius</em>x<em class="arg">sigma</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Blur the image with a Gaussian operator.</td><td style='text-align:right;'></td></tr></table>
@@ -4367,6 +4476,28 @@ mapping. </p>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>when comparing images, emphasize pixel differences with this color.</td><td style='text-align:right;'></td></tr></table>
+
+<div style="margin: auto;">
+  <h4><a id="hough-lines"></a>-hough-lines <em class="arg">width</em>x<em class="arg">height</em>{<em class="arg">+threshold</em>}</h4>
+</div>
+
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>identify straight lines in the image (e.g. -hough-lines 9x9+195).</td><td style='text-align:right;'></td></tr></table>
+
+<p>Use the Hough line detector with any binary edge extracted image to locate and draw any straight lines that it finds.</p>
+
+<p>The process accumulates counts for every white pixel in the binary edge image for every possible orientation (for angles from 0 to 179 in 1 deg increments) and distance from the center of the image to the corners (in 1 px increments). It stores the counts in an accumulator matrix of angle vs distance. The size of the accumulator will be 180x(diagonal/2). Next it searches the accumulator for peaks in counts and converts the locations of the peaks to slope and intercept in the normal x,y input image space. The algorithm uses slope/intercepts to find the endpoints clipped to the bounds of the image. The lines are drawn from the given endpoints. The counts are a measure of the length of the lines.</p.
+
+<p>The WxH arguments specify the filter size for locating the peaks in the Hough accumulator. The threshold excludes lines whose counts are less than the threshold value.<p>
+
+<p>Use <code><a href="command-line-options.html#background" >-background</a></code> to specify the color of the background onto which the lines will be drawn. The default is black.</p>
+
+<p>Use <code><a href="command-line-options.html#fill" >-fill</a></code> to specify the color of the lines. The default is black.</p>
+
+<p>Use <code><a href="command-line-options.html#stroke" >-stroke</a></code> and <code><a href="command-line-options.html#strokewidth" >-strokewidth</a></code> to specify the thickness of the lines. The default is black and no strokewidth.</p>
+
+<p>A text file listing the endpoints and counts may be created by using the suffix, .mvg, for the output image.</p>
+
+<p>Use <code><a href="command-line-options.html#define" >-define</a> hough-lines:accumulator=true</code> to return the accumulator image in addition to the lines image.</p>
 
 <div style="margin: auto;">
   <h4><a id="iconGeometry"></a>-iconGeometry <em class="arg">geometry</em></h4>
@@ -5377,6 +5508,16 @@ name. </p>
 name. </p>
 
 <div style="margin: auto;">
+  <h4><a id="mean-shift"></a>-mean-shift <em class="arg">width</em>x<em class="arg">height</em>{<em class="arg">+distance</em>{%}}</h4>
+</div>
+
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>image noise removal and color reduction/segmentation (e.g. -mean-shift 7x7+10%).</td><td style='text-align:right;'></td></tr></table>
+
+<p><em class="arg">width</em>x<em class="arg">height</em> is the window size and <em class="arg">distance</em> is the color distance measured in the range 0 to 1 or 0 to 100%</p>
+
+<p>The mean shift algorithm is iterative and thus slower the larger the window size. For each pixel, it gets all the pixels in the window centered at the pixel and excludes those that are outside the radius=sqrt((width-1)(height-1)/4) surrounding the pixel. From those pixels, it finds which of them are within the specified squared color distance from the current mean. It then computes a new x,y centroid from those coordinates and a new mean. This new x,y centroid is used as the center for a new window. This process is iterated until it converges and the final mean is then used to replace the original pixel value. It repeats this process for the next pixel, etc, until it processes all pixels in the image. Results are better when using other colorspaces rather than RGB. Recommend YIQ, YUV or YCbCr, which seem to give equivalent results.</p>
+
+<div style="margin: auto;">
   <h4><a id="metric"></a>-metric <em class="arg">type</em></h4>
 </div>
 
@@ -5484,7 +5625,7 @@ modulate.  Choose from <code>HCL</code>, <code>HCLp</code>, <code>HSB</code>, <c
   <h4><a id="moments"></a>-moments</h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>report image moments.</td><td style='text-align:right;'>[<a href="identify.html">identify</a>]</td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>report image moments and perceptual hash.</td><td style='text-align:right;'>[<a href="identify.html">identify</a>]</td></tr></table>
 
 
 <div style="margin: auto;">
@@ -5533,7 +5674,7 @@ Morphology</a>. </p>
 
 
 <div style="margin: auto;">
-  <h4><a id="motion-blur"></a>-motion-blur <em class="arg">radius</em><br />-motion-blur <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">angle</em>+<em class="arg">bias</em></h4>
+  <h4><a id="motion-blur"></a>-motion-blur <em class="arg">radius</em><br />-motion-blur <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">angle</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>simulate motion blur.</td><td style='text-align:right;'></td></tr></table>
@@ -5638,6 +5779,29 @@ that is better suited to mathematically generated images. </p>
 
 
 <div style="margin: auto;">
+  <h4><a id="opaque"></a>-opaque <em class="arg">color</em></h4>
+</div>
+
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>change this color to the fill color within the image.</td><td style='text-align:right;'></td></tr></table>
+
+<p>The <em class="arg">color</em> argument is defined using the format
+described under the <a href="command-line-options.html#fill" >-fill</a> option.  The <a href="command-line-options.html#fuzz"
+>-fuzz</a> setting can be used to match and replace colors similar to the one
+given.</p>
+
+<p>Use <a href="command-line-options.html#opaque">+opaque</a> to paint any pixel that does not match
+the target color. </p>
+
+<p>The <a href="command-line-options.html#transparent">-transparent</a>  operator is exactly the same
+as <a href="command-line-options.html#opaque" >-opaque</a> but replaces the matching color with
+transparency rather than the current <a href="command-line-options.html#fill">-fill</a> color setting.
+To ensure that it can do this it also ensures that the image has an alpha
+channel enabled, as per "<code><a href="command-line-options.html#alpha" >-alpha</a> set</code>", for
+the new transparent colors, and does not require you to modify the <a
+href="command-line-options.html#channel">-channel</a> to enable alpha channel handling. </p>
+
+
+<div style="margin: auto;">
   <h4><a id="ordered-dither"></a>-ordered-dither <em class="arg">threshold_map</em>{,<em class="arg">level</em>...}</h4>
 </div>
 
@@ -5695,29 +5859,6 @@ circles along the edges of a colored area. Also all the effects are purely
 on/off boolean effects, without anti-aliasing to make the circles smooth
 looking. Large dots can be made to look better with a small amount of blurring
 after being created. </p>
-
-
-<div style="margin: auto;">
-  <h4><a id="opaque"></a>-opaque <em class="arg">color</em></h4>
-</div>
-
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>change this color to the fill color within the image.</td><td style='text-align:right;'></td></tr></table>
-
-<p>The <em class="arg">color</em> argument is defined using the format
-described under the <a href="command-line-options.html#fill" >-fill</a> option.  The <a href="command-line-options.html#fuzz"
->-fuzz</a> setting can be used to match and replace colors similar to the one
-given.</p>
-
-<p>Use <a href="command-line-options.html#opaque">+opaque</a> to paint any pixel that does not match
-the target color. </p>
-
-<p>The <a href="command-line-options.html#transparent">-transparent</a>  operator is exactly the same
-as <a href="command-line-options.html#opaque" >-opaque</a> but replaces the matching color with
-transparency rather than the current <a href="command-line-options.html#fill">-fill</a> color setting.
-To ensure that it can do this it also ensures that the image has an alpha
-channel enabled, as per "<code><a href="command-line-options.html#alpha" >-alpha</a> set</code>", for
-the new transparent colors, and does not require you to modify the <a
-href="command-line-options.html#channel">-channel</a> to enable alpha channel handling. </p>
 
 
 <div style="margin: auto;">
@@ -6617,7 +6758,7 @@ and the display must support the <em class="arg">MIT-SHM</em> extension.
 Otherwise, this option is ignored. The default is <code>True</code>.</p>
 
 <div style="margin: auto;">
-  <h4><a id="sharpen"></a>-sharpen <em class="arg">radius</em><br />-sharpen <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">bias</em></h4>
+  <h4><a id="sharpen"></a>-sharpen <em class="arg">radius</em><br />-sharpen <em class="arg">radius</em>x<em class="arg">sigma</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>sharpen the image.</td><td style='text-align:right;'></td></tr></table>
@@ -6890,13 +7031,15 @@ swap.</p>
 
 <p>Choose from these statistic types:</p>
 <pre class="text">
-   Gradient   maximum difference in area
-   Maximum    maximum value per channel in neighborhood
-   Minimum    minimum value per channel in neighborhood
-   Mean       average value per channel in neighborhood
-   Median     median value per channel in neighborhood
-   Mode       mode (most frequent) value per channel in neighborhood
-   Nonpeak    value just before or after the median value per channel in neighborhood
+   Gradient            maximum difference (max - min) value in neighborhood
+   Maximum             maximum value per channel in neighborhood
+   Minimum             minimum value per channel in neighborhood
+   Mean                average value per channel in neighborhood
+   Median              median value per channel in neighborhood
+   Mode                mode (most frequent) value per channel in neighborhood
+   Nonpeak             value just before or after the median value per channel in neighborhood
+   RMS                 root mean square value per channel in neighborhood
+   StandardDeviation   standard deviation value per channel in neighborhood
 </pre>
 
 <div style="margin: auto;">
@@ -7635,6 +7778,7 @@ href="command-line-options.html#colors">-colors</a> to reduce the number of colo
 </div>
 </div>
 
+
 </div>
 
 <div id="linkbar">
@@ -7655,4 +7799,4 @@ href="command-line-options.html#colors">-colors</a> to reduce the number of colo
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 20th February 2014 07:06 -->
+<!-- Magick Cache 25th July 2014 04:06 -->
