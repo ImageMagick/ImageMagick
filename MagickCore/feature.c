@@ -1918,11 +1918,11 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
   (void) FormatLocaleString(message,MaxTextExtent,
     "# Hough line transform: %.20gx%.20g%+.20g\n",(double) width,
     (double) height,(double) threshold);
-  if ((size_t)write(file,message,strlen(message)) != strlen(message))
+  if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
     status=MagickFalse;
   (void) FormatLocaleString(message,MaxTextExtent,"viewbox 0 0 %.20g %.20g\n",
     (double) image->columns,(double) image->rows);
-  if ((size_t)write(file,message,strlen(message)) != strlen(message))
+  if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
     status=MagickFalse;
   line_count=image->columns > image->rows ? image->columns/4 : image->rows/4;
   if (threshold != 0)
@@ -2006,7 +2006,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
             }
           (void) FormatLocaleString(message,MaxTextExtent,
             "line %g,%g %g,%g  # %g\n",line.x1,line.y1,line.x2,line.y2,maxima);
-          if ((size_t)write(file,message,strlen(message)) != strlen(message))
+          if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
             status=MagickFalse;
         }
     }
