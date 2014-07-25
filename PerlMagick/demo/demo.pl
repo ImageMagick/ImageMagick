@@ -334,10 +334,10 @@ $example->Label('Quantize');
 $example->Quantize();
 push(@$images,$example);
 
-print "Radial Blur...\n";
+print "Rotational Blur...\n";
 $example=$model->Clone();
-$example->Label('Radial Blur');
-$example->RadialBlur(10);
+$example->Label('Rotational Blur');
+$example->RotationalBlur(10);
 push(@$images,$example);
 
 print "Raise...\n";
