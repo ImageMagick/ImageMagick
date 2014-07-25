@@ -972,9 +972,9 @@ static MagickStatusType ReadPSDChannelZip(Image *image,
   (void) ReadBlob(image,compact_size,compact_pixels);
 
   stream.next_in=(Bytef *)compact_pixels;
-  stream.avail_in=(uInt) compact_size;
+  stream.avail_in=(unsigned int) compact_size;
   stream.next_out=(Bytef *)pixels;
-  stream.avail_out=(uInt) count;
+  stream.avail_out=(unsigned int) count;
 
   if(inflateInit(&stream) == Z_OK)
     {
