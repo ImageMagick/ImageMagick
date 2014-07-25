@@ -3046,6 +3046,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 (const char *) tag);
               break;
             }
+          (void) ResetMagickMemory(&frame_info,0,sizeof(frame_info));
           SetGeometry(msl_info->image[n],&geometry);
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
