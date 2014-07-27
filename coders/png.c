@@ -2154,9 +2154,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   };
 #endif
 
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  Enter ReadOnePNGImage()");
-
   /* Define these outside of the following "if logging()" block so they will
    * show in debuggers.
    */
@@ -2180,25 +2177,27 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   (void) ConcatenateMagickString(zlib_runv,
          zlib_version,32);
 
-  if (logging)
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),
+       "  Enter ReadOnePNGImage()\n"
+       "    IM version     = %s\n"
+       "    Libpng version = %s",
+       im_vers, libpng_vers);
+
+  if (logging != MagickFalse)
+  {
+    if (LocaleCompare(libpng_vers,libpng_runv) != 0)
     {
-       LogMagickEvent(CoderEvent,GetMagickModule(),"    IM version     = %s",
-           im_vers);
-       LogMagickEvent(CoderEvent,GetMagickModule(),"    Libpng version = %s",
-           libpng_vers);
-       if (LocaleCompare(libpng_vers,libpng_runv) != 0)
-       {
-       LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
-           libpng_runv);
-       }
-       LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
-           zlib_vers);
-       if (LocaleCompare(zlib_vers,zlib_runv) != 0)
-       {
-       LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
-           zlib_runv);
-       }
+    LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+        libpng_runv);
     }
+    LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
+        zlib_vers);
+    if (LocaleCompare(zlib_vers,zlib_runv) != 0)
+    {
+    LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+        zlib_runv);
+    }
+  }
 
 #if (PNG_LIBPNG_VER < 10200)
   if (image_info->verbose)
@@ -2222,19 +2221,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (logging != MagickFalse)
   {
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    Before reading:");
-
-    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "      image->matte=%d",(int) image->matte);
-
-    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "      image->rendering_intent=%d",(int) image->rendering_intent);
-
-    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "      image->colorspace=%d",(int) image->colorspace);
-
-    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "      image->gamma=%f", image->gamma);
+      "    Before reading:\n"
+      "      image->matte=%d\n"
+      "      image->rendering_intent=%d\n"
+      "      image->colorspace=%d\n"
+      "      image->gamma=%f",
+      (int) image->matte, (int) image->rendering_intent,
+      (int) image->colorspace, image->gamma);
   }
   intent=Magick_RenderingIntent_to_PNG_RenderingIntent(image->rendering_intent);
 
@@ -2504,20 +2497,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (logging != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    PNG width: %.20g, height: %.20g",
-        (double) ping_width, (double) ping_height);
-
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    PNG color_type: %d, bit_depth: %d",
-        ping_color_type, ping_bit_depth);
-
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    PNG compression_method: %d",
-        ping_compression_method);
-
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "    PNG width: %.20g, height: %.20g\n"
+        "    PNG color_type: %d, bit_depth: %d\n"
+        "    PNG compression_method: %d\n"
         "    PNG interlace_method: %d, filter_method: %d",
+        (double) ping_width, (double) ping_height,
+        ping_color_type, ping_bit_depth,
+        ping_compression_method,
         ping_interlace_method,ping_filter_method);
+
     }
 
   if (png_get_valid(ping,ping_info, PNG_INFO_iCCP))
@@ -2911,20 +2899,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       unsigned int
         bkgd_scale;
 
-      /*
-        Set image background color.
-      */
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Reading PNG bKGD chunk.");
-
-      /* Scale background components to 16-bit, then scale
+      /* Set image background color.
+       * Scale background components to 16-bit, then scale
        * to quantum depth
        */
-        if (logging != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    raw ping_background=(%d,%d,%d).",ping_background->red,
-            ping_background->green,ping_background->blue);
 
         bkgd_scale = 1;
 
@@ -2946,12 +2924,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
         if (logging != MagickFalse)
           {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    bkgd_scale=%d.",bkgd_scale);
-
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    ping_background=(%d,%d,%d).",ping_background->red,
-              ping_background->green,ping_background->blue);
+            if (logging != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "    Reading PNG bKGD chunk, raw ping_background=(%d,%d,%d).\n"
+                 "    bkgd_scale=%d.  ping_background=(%d,%d,%d).",
+                 ping_background->red,ping_background->green,
+                 ping_background->blue,
+                 bkgd_scale,ping_background->red,
+                 ping_background->green,ping_background->blue);
           }
 
         image->background_color.red=
@@ -3023,10 +3003,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               if (logging != MagickFalse)
               {
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    Raw tRNS graylevel is %d.",ping_trans_color->gray);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    scaled graylevel is %d.",transparent_color.opacity);
+                  "    Raw tRNS graylevel = %d, scaled graylevel = %d.",
+                ping_trans_color->gray,transparent_color.opacity);
               }
               transparent_color.red=transparent_color.opacity;
               transparent_color.green=transparent_color.opacity;
@@ -3776,9 +3754,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             if (logging != MagickFalse)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "      length: %lu",(unsigned long) length);
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "      Keyword: %s",text[i].key);
+                "      length: %lu\n"
+                "      Keyword: %s",
+                (unsigned long) length,
+                text[i].key);
             }
 
             value=DestroyString(value);
@@ -4358,40 +4337,25 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             if (logging != MagickFalse)
               {
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    jng_width:      %16lu",(unsigned long) jng_width);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    jng_width:      %16lu",(unsigned long) jng_height);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    jng_color_type: %16d",jng_color_type);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    jng_image_sample_depth:      %3d",
-                  jng_image_sample_depth);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    jng_width:      %16lu,    jng_height:     %16lu\n"
+                  "    jng_color_type: %16d,     jng_image_sample_depth: %3d\n"
                   "    jng_image_compression_method:%3d",
+                  (unsigned long) jng_width, (unsigned long) jng_height,
+                  jng_color_type, jng_image_sample_depth,
                   jng_image_compression_method);
 
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    jng_image_interlace_method:  %3d",
-                  jng_image_interlace_method);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    jng_image_interlace_method:  %3d"
                   "    jng_alpha_sample_depth:      %3d",
+                  jng_image_interlace_method,
                   jng_alpha_sample_depth);
 
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    jng_alpha_compression_method:%3d",
-                  jng_alpha_compression_method);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    jng_alpha_filter_method:     %3d",
-                  jng_alpha_filter_method);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    jng_alpha_compression_method:%3d\n"
+                  "    jng_alpha_filter_method:     %3d\n"
                   "    jng_alpha_interlace_method:  %3d",
+                  jng_alpha_compression_method,
+                  jng_alpha_filter_method,
                   jng_alpha_interlace_method);
               }
           }
@@ -12017,33 +11981,29 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
   {
     value = NULL;
 
-    switch (source)
-    {
-      case 0:
-        value=GetImageOption(image_info,"png:exclude-chunks");
-        break;
-      case 1:
-        value=GetImageArtifact(image,"png:exclude-chunks");
-        break;
-      case 2:
-        value=GetImageOption(image_info,"png:exclude-chunk");
-        break;
-      case 3:
-        value=GetImageArtifact(image,"png:exclude-chunk");
-        break;
-      case 4:
-        value=GetImageOption(image_info,"png:include-chunks");
-        break;
-      case 5:
-        value=GetImageArtifact(image,"png:include-chunks");
-        break;
-      case 6:
-        value=GetImageOption(image_info,"png:include-chunk");
-        break;
-      case 7:
-        value=GetImageArtifact(image,"png:include-chunk");
-        break;
-    }
+    if (source == 0)
+      value=GetImageOption(image_info,"png:exclude-chunks");
+
+    if (source == 1)
+      value=GetImageArtifact(image,"png:exclude-chunks");
+
+    if (source == 2)
+      value=GetImageOption(image_info,"png:exclude-chunk");
+
+    if (source == 3)
+      value=GetImageArtifact(image,"png:exclude-chunk");
+
+    if (source == 4)
+      value=GetImageOption(image_info,"png:include-chunks");
+
+    if (source == 5)
+      value=GetImageArtifact(image,"png:include-chunks");
+
+    if (source == 6)
+      value=GetImageOption(image_info,"png:include-chunk");
+
+    if (source == 7)
+      value=GetImageArtifact(image,"png:include-chunk");
 
     if (value == NULL)
        continue;
@@ -12976,13 +12936,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
         *p;
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Checking input image(s)");
-
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    Image_info depth: %.20g",(double) image_info->depth);
-
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    Type: %d",image_info->type);
+        "  Checking input image(s)\n"
+        "    Image_info depth: %.20g,    Type: %d",
+        (double) image_info->depth, image_info->type);
 
       scene=0;
       for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
