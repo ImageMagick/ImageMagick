@@ -2187,7 +2187,7 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
       bluredImage=BlurImage(inputImage,10.0f,3.5f,exception);
       unsharpedImage=UnsharpMaskImage(bluredImage,2.0f,2.0f,50.0f,10.0f,
         exception);
-      resizedImage=ResizeImage(unsharpedImage,640,480,LanczosFilter,1.0,
+      resizedImage=ResizeImage(unsharpedImage,640,480,LanczosFilter,
         exception);
 
 #ifdef MAGICKCORE_CLPERFMARKER
