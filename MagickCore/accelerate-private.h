@@ -35,20 +35,12 @@ extern "C" {
 
 typedef struct _FloatPixelPacket
 {
-#ifdef MAGICK_PIXEL_RGBA  
   MagickRealType
     red,
     green,
     blue,
-    opacity;
-#endif
-#ifdef MAGICK_PIXEL_BGRA 
-  MagickRealType
-    blue,
-    green,
-    red,
-    opacity;
-#endif
+    alpha,
+    black;
 } FloatPixelPacket;
 
 const char* accelerateKernels =
