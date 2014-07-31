@@ -730,6 +730,8 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,const size_t channels,
                   q++;
                   x++;
                 }
+                x--;
+                continue;
               }
           }
         break;
