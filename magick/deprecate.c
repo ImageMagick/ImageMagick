@@ -5807,7 +5807,7 @@ MagickExport unsigned int QuantizationError(Image *image)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.3");
   return(GetImageQuantizeError(image));
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5887,8 +5887,8 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
-    *channel,const char *thresholds,ExceptionInfo *exception)
+MagickExport unsigned int RandomChannelThresholdImage(Image *image,
+  const char *channel,const char *thresholds,ExceptionInfo *exception)
 {
 #define RandomChannelThresholdImageText  "  RandomChannelThreshold image...  "
 
