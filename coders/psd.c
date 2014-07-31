@@ -725,6 +725,8 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
                   q+=GetPixelChannels(image);
                   x++;
                 }
+                x--;
+                continue;
               }
           }
         break;
