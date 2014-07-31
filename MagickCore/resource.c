@@ -891,22 +891,12 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
 
   assert(path != (const char *) NULL);
   (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
+  if (resource_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&resource_semaphore);
+  LockSemaphoreInfo(resource_semaphore);
   if (temporary_resources != (SplayTreeInfo *) NULL)
-    {
-      register char
-        *p;
-
-      ResetSplayTreeIterator(temporary_resources);
-      p=(char *) GetNextKeyInSplayTree(temporary_resources);
-      while (p != (char *) NULL)
-      {
-        if (LocaleCompare(p,path) == 0)
-          break;
-        p=(char *) GetNextKeyInSplayTree(temporary_resources);
-      }
-      if (p != (char *) NULL)
-        (void) DeleteNodeFromSplayTree(temporary_resources,p);
-    }
+    (void) DeleteNodeFromSplayTree(temporary_resources, (const void *) path);
+  UnlockSemaphoreInfo(resource_semaphore);
   (void) CopyMagickString(cache_path,path,MaxTextExtent);
   AppendImageFormat("cache",cache_path);
   (void) ShredFile(cache_path);
