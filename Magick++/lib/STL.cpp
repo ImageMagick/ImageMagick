@@ -8,6 +8,7 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
+#include <Magick++/Functions.h>
 #include <Magick++/Image.h>
 #include <Magick++/STL.h>
 
@@ -778,6 +779,70 @@ Magick::raiseImage::raiseImage( const Magick::Geometry &geometry_ ,
 void Magick::raiseImage::operator()( Magick::Image &image_ ) const
 {
   image_.raise( _geometry, _raisedFlag );
+}
+
+Magick::ReadOptions::ReadOptions(void)
+  : _imageInfo(static_cast<ImageInfo*>(AcquireMagickMemory(
+      sizeof(ImageInfo))))
+{
+  GetImageInfo(_imageInfo);
+}
+
+Magick::ReadOptions::ReadOptions(const Magick::ReadOptions& options_)
+  : _imageInfo(CloneImageInfo(options_._imageInfo))
+{
+}
+
+Magick::ReadOptions::~ReadOptions()
+{
+  _imageInfo=DestroyImageInfo(_imageInfo);
+}
+
+void Magick::ReadOptions::density(const Magick::Geometry &density_)
+{
+  if (!density_.isValid())
+    _imageInfo->density=(char *) RelinquishMagickMemory(_imageInfo->density);
+  else
+    Magick::CloneString(&_imageInfo->density,density_);
+}
+
+Magick::Geometry Magick::ReadOptions::density(void) const
+{
+  if (_imageInfo->density)
+    return(Geometry(_imageInfo->density));
+
+  return(Geometry());
+}
+
+void Magick::ReadOptions::depth(size_t depth_)
+{
+  _imageInfo->depth=depth_;
+}
+
+size_t Magick::ReadOptions::depth(void) const
+{
+  return(_imageInfo->depth);
+}
+
+void Magick::ReadOptions::size(const Geometry &geometry_)
+{
+  _imageInfo->size=(char *) RelinquishMagickMemory(_imageInfo->size);
+
+  if ( geometry_.isValid() )
+    Magick::CloneString(&_imageInfo->size,geometry_);
+}
+
+Magick::Geometry Magick::ReadOptions::size(void) const
+{
+  if (_imageInfo->size)
+    return(Geometry(_imageInfo->size));
+
+  return(Geometry());
+}
+
+MagickCore::ImageInfo *Magick::ReadOptions::imageInfo(void)
+{
+  return(_imageInfo);
 }
 
 // Reduce noise in image using a noise peak elimination filter

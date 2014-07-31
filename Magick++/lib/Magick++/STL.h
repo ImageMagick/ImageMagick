@@ -855,6 +855,45 @@ namespace Magick
     bool       _raisedFlag;
   };
 
+  class MagickPPExport ReadOptions
+  {
+  public:
+
+    // Default constructor
+    ReadOptions(void);
+
+    // Copy constructor
+    ReadOptions(const ReadOptions& options_);
+
+    // Destructor
+    ~ReadOptions();
+
+    // Vertical and horizontal resolution in pixels of the image
+    void density(const Geometry &geomery_);
+    Geometry density(void) const;
+
+    // Image depth (8 or 16)
+    void depth(size_t depth_);
+    size_t depth(void) const;
+
+    // Image size (required for raw formats)
+    void size(const Geometry &geometry_);
+    Geometry size(void) const;
+
+    //
+    // Internal implementation methods.  Please do not use.
+    //
+
+    MagickCore::ImageInfo *imageInfo(void);
+
+  private:
+
+    // Assignment not supported
+    ReadOptions& operator=(const ReadOptions&);
+
+    MagickCore::ImageInfo *_imageInfo;
+  };
+
   // Reduce noise in image using a noise peak elimination filter
   class MagickPPExport reduceNoiseImage : public std::unary_function<Image&,void>
   {
@@ -2532,29 +2571,53 @@ namespace Magick
 
   // Read images into existing container (appending to container)
   // FIXME: need a way to specify options like size, depth, and density.
-  template <class Container>
-  void readImages( Container *sequence_,
-       const std::string &imageSpec_ ) {
-    MagickCore::ImageInfo *imageInfo = MagickCore::CloneImageInfo(0);
-    imageSpec_.copy( imageInfo->filename, MaxTextExtent-1 );
-    imageInfo->filename[ imageSpec_.length() ] = 0;
+  template<class Container>
+  void readImages(Container *sequence_,const std::string &imageSpec_,
+    ReadOptions &options)
+  {
+    MagickCore::Image
+      *images;
+
+    MagickCore::ImageInfo
+      *imageInfo;
+
+    imageInfo=options.imageInfo();
+    imageSpec_.copy(imageInfo->filename,MaxTextExtent-1);
+    imageInfo->filename[imageSpec_.length()] = 0;
     GetPPException;
-    MagickCore::Image* images =  MagickCore::ReadImage( imageInfo, exceptionInfo );
-    MagickCore::DestroyImageInfo(imageInfo);
-    insertImages( sequence_, images);
+    images=MagickCore::ReadImage(imageInfo,exceptionInfo);
+    insertImages(sequence_,images);
     ThrowPPException;
   }
-  template <class Container>
-  void readImages( Container *sequence_,
-       const Blob &blob_ ) {
-    MagickCore::ImageInfo *imageInfo = MagickCore::CloneImageInfo(0);
+
+  template<class Container>
+  void readImages(Container *sequence_,const std::string &imageSpec_)
+  {
+    ReadOptions options;
+    readImages(sequence_,imageSpec_,options);
+  }
+
+  template<class Container>
+  void readImages(Container *sequence_,const Blob &blob_,ReadOptions &options)
+  {
+    MagickCore::Image
+      *images;
+
+    MagickCore::ImageInfo
+      *imageInfo;
+
     GetPPException;
-    MagickCore::Image *images = MagickCore::BlobToImage( imageInfo,
-                   blob_.data(),
-                   blob_.length(), exceptionInfo );
-    MagickCore::DestroyImageInfo(imageInfo);
-    insertImages( sequence_, images );
+    images=MagickCore::BlobToImage(imageInfo,blob_.data(),blob_.length(),
+      exceptionInfo);
+    insertImages(sequence_,images);
     ThrowPPException;
+  }
+
+  template<class Container>
+  void readImages(Container *sequence_,const Blob &blob_)
+  {
+    ReadOptions options;
+    readImages(sequence_,blob_,options);
   }
 
   // Returns a separate grayscale image for each channel specified.
