@@ -5368,13 +5368,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (logging != MagickFalse)
               {
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    repeat=%d",repeat);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    final_delay=%.20g",(double) final_delay);
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    image->iterations=%.20g",(double) image->iterations);
+                  "    repeat=%d,  final_delay=%.20g,  iterations=%.20g",
+                  repeat,(double) final_delay, (double) image->iterations);
               }
 
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
@@ -5435,12 +5430,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (logging != MagickFalse)
                   {
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                      "  x_off[%d]: %.20g",object_id,(double)
-                      mng_info->x_off[object_id]);
-
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                      "  y_off[%d]: %.20g",object_id,(double)
-                      mng_info->y_off[object_id]);
+                      "  x_off[%d]: %.20g,  y_off[%d]: %.20g",
+                      object_id,(double) mng_info->x_off[object_id],
+                      object_id,(double) mng_info->y_off[object_id]);
                   }
               }
 
@@ -11957,7 +11949,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
      value=GetImageArtifact(image,"png:compression-strategy");
   if (value != NULL)
   {
-
       if (LocaleCompare(value,"0") == 0)
         mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
 
@@ -11993,7 +11984,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
      value=GetImageArtifact(image,"png:compression-filter");
   if (value != NULL)
   {
-
       /* To do: combinations of filters allowed by libpng
        * masks 0x08 through 0xf8
        *
@@ -12096,6 +12086,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->ping_exclude_zCCP=excluding;
         mng_info->ping_exclude_zTXt=excluding;
       }
+
     if (IsOptionMember("none",value) != MagickFalse)
       {
         mng_info->ping_exclude_bKGD=!excluding;
@@ -12979,11 +12970,10 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
       scene=0;
       for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
       {
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Scene: %.20g",(double) scene++);
 
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "      Image depth: %.20g",(double) p->depth);
+           "    Scene: %.20g\n,   Image depth: %.20g",
+           (double) scene++, (double) p->depth);
 
         if (p->alpha_trait == BlendPixelTrait)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
