@@ -97,6 +97,12 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   char
     colorname[MaxTextExtent];
 
+  Image
+    *image;
+
+  ImageInfo
+    *read_info;
+
   MagickBooleanType
     icc_color,
     status;
@@ -109,9 +115,6 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     start_color,
     stop_color;
 
-  Image
-    *image;
-
   /*
     Initialize Image structure.
   */
@@ -122,9 +125,13 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
-  if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
+  (void) CopyMagickString(read_info->filename,"xc:",MaxTextExtent);
+  image=ReadImage(read_info,exception);
+  read_info=DestroyImageInfo(read_info);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
   (void) SetImageOpacity(image,(Quantum) TransparentOpacity);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   (void) CopyMagickString(colorname,image_info->filename,MaxTextExtent);
