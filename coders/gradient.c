@@ -124,7 +124,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) CopyMagickString(read_info->filename,"xc:",MaxTextExtent);
+  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"xc:%s",
+    image_info->filename);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
