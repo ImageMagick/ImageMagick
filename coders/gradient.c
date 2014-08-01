@@ -124,16 +124,16 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
+  (void) CopyMagickString(colorname,image_info->filename,MaxTextExtent);
+  (void) sscanf(image_info->filename,"%[^-]",colorname);
   (void) FormatLocaleString(read_info->filename,MaxTextExtent,"xc:%s",
-    image_info->filename);
+    colorname);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageAlpha(image,(Quantum) TransparentAlpha,exception);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
-  (void) CopyMagickString(colorname,image_info->filename,MaxTextExtent);
-  (void) sscanf(image_info->filename,"%[^-]",colorname);
   icc_color=MagickFalse;
   if (LocaleCompare(colorname,"icc") == 0)
     {
