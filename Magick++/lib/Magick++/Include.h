@@ -250,7 +250,7 @@ namespace MagickCore
 # endif
 #endif
 
-#if defined(WIN32) && defined(_VISUALC_)
+#if (defined(WIN32) || defined(WIN64)) && defined(_VISUALC_)
 #  pragma warning(disable : 4996) /* function deprecation warnings */
 #endif
 
