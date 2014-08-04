@@ -200,7 +200,7 @@ MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
 {
   if (clEnv != (MagickCLEnv)NULL)
   {
-    DestroySemaphoreInfo(&clEnv->lock);
+    RelinquishSemaphoreInfo(&clEnv->lock);
     RelinquishMagickMemory(clEnv);
     return MagickTrue;
   }
