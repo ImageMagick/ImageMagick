@@ -259,8 +259,6 @@ namespace Magick
     void textKerning(double kerning_);
     double textKerning(void) const;
 
-    void tileName(const std::string &tileName_);
-    std::string tileName(void) const;
     // Origin of coordinate system to use when annotating with text or drawing
     void transformOrigin(double tx_,double ty_);
 

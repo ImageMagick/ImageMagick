@@ -186,8 +186,8 @@ namespace Magick
     Color boxColor(void) const;
 
     // Set or obtain modulus channel depth
-    void channelDepth(const size_t depth_);
-    size_t channelDepth();
+    void channelDepth(const ChannelType channel_,const size_t depth_);
+    size_t channelDepth(const ChannelType channel_);
 
     // Returns the number of channels in this image.
     size_t channels() const;
@@ -343,6 +343,11 @@ namespace Magick
     // File type magick identifier (.e.g "GIF")
     void magick(const std::string &magick_);
     std::string magick(void) const;
+
+    // Associate a mask with the image. The mask must be the same dimensions
+    // as the image. Pass an invalid image to unset an existing clip mask.
+    void mask(const Image &mask_);
+    Image mask(void) const;
 
     // The mean error per pixel computed when an image is color reduced
     double meanErrorPerPixel(void) const;

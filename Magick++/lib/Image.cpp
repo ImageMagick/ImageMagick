@@ -500,21 +500,26 @@ Magick::Color Magick::Image::boxColor(void) const
   return(constOptions()->boxColor());
 }
 
-void Magick::Image::channelDepth(const size_t depth_)
+void Magick::Image::channelDepth(const ChannelType channel_,
+  const size_t depth_)
 {
   modifyImage();
   GetPPException;
+  SetPPChannelMask(channel_);
   SetImageDepth(image(),depth_,exceptionInfo);
+  RestorePPChannelMask;
   ThrowPPException;
 }
 
-size_t Magick::Image::channelDepth()
+size_t Magick::Image::channelDepth(const ChannelType channel_)
 {
   size_t
     channel_depth;
 
   GetPPException;
+  SetPPChannelMask(channel_);
   channel_depth=GetImageDepth(constImage(),exceptionInfo);
+  RestorePPChannelMask;
   ThrowPPException;
   return(channel_depth);
 }
@@ -1123,6 +1128,33 @@ void Magick::Image::lowlightColor(const Color color_)
 
   value=color_;
   artifact("lowlight-color",value);
+}
+
+void Magick::Image::mask(const Magick::Image &mask_)
+{
+  modifyImage();
+
+  GetPPException;
+  if (mask_.isValid())
+    SetImageMask(image(),mask_.constImage(),exceptionInfo);
+  else
+    SetImageMask(image(),(MagickCore::Image *) NULL,exceptionInfo);
+  ThrowPPException;
+}
+
+Magick::Image Magick::Image::mask(void) const
+{
+  MagickCore::Image
+    *image;
+
+  GetPPException;
+  image=GetImageMask(constImage(),exceptionInfo);
+  ThrowPPException;
+
+  if (image == (MagickCore::Image *) NULL)
+    return(Magick::Image());
+  else
+    return(Magick::Image(image));
 }
 
 void Magick::Image::magick(const std::string &magick_)

@@ -1864,6 +1864,49 @@ namespace Magick
   //
   //////////////////////////////////////////////////////////
 
+  // Changes the channel mask of the images and places the old
+  // values in the container.
+  template<class InputIterator, class Container>
+  void channelMaskImages(InputIterator first_,InputIterator last_,
+    Container *container_,const ChannelType channel_)
+  {
+    MagickCore::ChannelType
+      channel_mask;
+
+    container_->clear();
+    for (InputIterator iter = first_; iter != last_; ++iter)
+    {
+      iter->modifyImage();
+      channel_mask=MagickCore::SetImageChannelMask(iter->image(),channel_);
+      container_->push_back(channel_mask);
+    }
+  }
+
+  // Insert images in image list into existing container (appending to container)
+  // The images should not be deleted since only the image ownership is passed.
+  // The options are copied into the object.
+  template<class Container>
+  void insertImages(Container *sequence_,MagickCore::Image* images_)
+  {
+    MagickCore::Image
+      *image,
+      *next;
+
+    image=images_;
+    while (image != (MagickCore::Image *) NULL)
+    {
+      next=image->next;
+      image->next=(MagickCore::Image *) NULL;
+
+      if (next != (MagickCore::Image *) NULL)
+        next->previous=(MagickCore::Image *) NULL;
+
+      sequence_->push_back(Magick::Image(image));
+
+      image=next;
+    }
+  }
+
   // Link images together into an image list based on the ordering of
   // the container implied by the iterator. This step is done in
   // preparation for use with ImageMagick functions which operate on
@@ -1872,70 +1915,68 @@ namespace Magick
   // the container may be selected.  Specify first_ via the
   // container's begin() method and last_ via the container's end()
   // method in order to specify the entire container.
-  template <class InputIterator>
-  void linkImages( InputIterator first_,
-       InputIterator last_ ) {
+  template<class InputIterator>
+  void linkImages(InputIterator first_,InputIterator last_)
+  {
+    MagickCore::Image
+      *current,
+      *previous;
 
-    MagickCore::Image* previous = 0;
-    ::ssize_t scene = 0;
-    for ( InputIterator iter = first_; iter != last_; ++iter )
+    ::ssize_t
+      scene;
+
+    scene=0;
+    previous=(MagickCore::Image *) NULL;
+    for (InputIterator iter = first_; iter != last_; ++iter)
     {
       // Unless we reduce the reference count to one, the same image
       // structure may occur more than once in the container, causing
       // the linked list to fail.
       iter->modifyImage();
 
-      MagickCore::Image* current = iter->image();
+      current=iter->image();
 
-      current->previous = previous;
-      current->next = 0;
-      current->scene = scene++;
+      current->previous=previous;
+      current->next=(MagickCore::Image *) NULL;
+      current->scene=scene++;
 
-      if ( previous != 0)
-        previous->next = current;
+      if (previous != (MagickCore::Image *) NULL)
+        previous->next=current;
 
-      previous = current;
+      previous=current;
+    }
+  }
+
+  // Restores the channel mask of the images.
+  template<class InputIterator, class Container>
+  void restoreChannelMaskImages(InputIterator first_,InputIterator last_,
+    Container *container_)
+  {
+    Container::iterator channel_mask = container_->begin();
+    for (InputIterator iter = first_; iter != last_; ++iter)
+    {
+      iter->modifyImage();
+      (void) MagickCore::SetImageChannelMask(iter->image(),
+        (const MagickCore::ChannelType) *channel_mask);
+      channel_mask++;
     }
   }
 
   // Remove links added by linkImages. This should be called after the
   // ImageMagick function call has completed to reset the image list
   // back to its pristine un-linked state.
-  template <class InputIterator>
-  void unlinkImages( InputIterator first_,
-         InputIterator last_ ) {
-    for( InputIterator iter = first_; iter != last_; ++iter )
-      {
-  MagickCore::Image* image = iter->image();
-  image->previous = 0;
-  image->next = 0;
-      }
-  }
+  template<class InputIterator>
+  void unlinkImages(InputIterator first_,InputIterator last_)
+  {
+    MagickCore::Image
+      *image;
 
-  // Insert images in image list into existing container (appending to container)
-  // The images should not be deleted since only the image ownership is passed.
-  // The options are copied into the object.
-  template <class Container>
-  void insertImages( Container *sequence_,
-         MagickCore::Image* images_ ) {
-    MagickCore::Image *image = images_;
-    if ( image )
-      {
-  do
+    for (InputIterator iter = first_; iter != last_; ++iter)
     {
-      MagickCore::Image* next_image = image->next;
-      image->next = 0;
-    
-      if (next_image != 0)
-        next_image->previous=0;
-    
-      sequence_->push_back( Magick::Image( image ) );
-    
-      image=next_image;
-    } while( image );
-      
-  return;
-      }
+      image=iter->image();
+      image->previous=(MagickCore::Image *) NULL;
+      image->next=(MagickCore::Image *) NULL;
+    }
   }
 
   ///////////////////////////////////////////////////////////////////
@@ -2157,16 +2198,24 @@ namespace Magick
   // the pixels of each image in the sequence is assigned in order to the
   // specified channels of the combined image. The typical ordering would be
   // image 1 => Red, 2 => Green, 3 => Blue, etc.
-  template <class InputIterator >
-  void combineImages( Image *combinedImage_,
-                      InputIterator first_,
-                      InputIterator last_,
-                      const ChannelType channel_ ) {
+  template<class InputIterator >
+  void combineImages(Image *combinedImage_,InputIterator first_,
+    InputIterator last_,const ChannelType channel_,
+    const ColorspaceType colorspace_)
+  {
+    MagickCore::Image
+      *image;
+
+    std::list<const ChannelType>
+      channelMask;
+
     GetPPException;
-    linkImages( first_, last_ );
-    MagickCore::Image* image = CombineImages( first_->image(), channel_, exceptionInfo );
-    unlinkImages( first_, last_ );
-    combinedImage_->replaceImage( image );
+    linkImages(first_,last_);
+    channelMaskImages(first_,last_,&channelMask,channel_);
+    image=CombineImages(first_->image(),colorspace_,exceptionInfo);
+    restoreChannelMaskImages(first_,last_,&channelMask);
+    unlinkImages(first_,last_);
+    combinedImage_->replaceImage(image);
     ThrowPPException;
   }
 
@@ -2184,26 +2233,21 @@ namespace Magick
 
   // Break down an image sequence into constituent parts.  This is
   // useful for creating GIF or MNG animation sequences.
-  template <class InputIterator, class Container >
-  void deconstructImages( Container *deconstructedImages_,
-                          InputIterator first_,
-                          InputIterator last_ ) {
+  template<class InputIterator,class Container>
+  void deconstructImages(Container *deconstructedImages_,
+    InputIterator first_,InputIterator last_)
+  {
+    MagickCore::Image
+      *images;
+
     GetPPException;
+    linkImages(first_,last_);
+    images=CompareImagesLayers(first_->image(),CompareAnyLayer,exceptionInfo);
+    unlinkImages(first_,last_);
 
-    // Build image list
-    linkImages( first_, last_ );
-    MagickCore::Image* images = DeconstructImages( first_->image(),
-                                                   exceptionInfo);
-    // Unlink image list
-    unlinkImages( first_, last_ );
-
-    // Ensure container is empty
     deconstructedImages_->clear();
+    insertImages(deconstructedImages_,images);
 
-    // Move images to container
-    insertImages( deconstructedImages_, images );
-
-    // Report any error
     ThrowPPException;
   }
 
@@ -2302,8 +2346,7 @@ namespace Magick
 
     GetPPException;
     linkImages(first_,last_);
-    image=FxImageChannel(first_->constImage(),DefaultChannels,
-      expression.c_str(),exceptionInfo);
+    image=FxImage(first_->constImage(),expression.c_str(),exceptionInfo);
     unlinkImages(first_,last_);
     fxImage_->replaceImage(image);
     ThrowPPException;
@@ -2325,9 +2368,12 @@ namespace Magick
     quantizeInfo.dither_method = dither_ ? MagickCore::RiemersmaDitherMethod :
       MagickCore::NoDitherMethod;
     linkImages( first_, last_ );
+    GetPPException;
     MagickCore::RemapImages( &quantizeInfo, first_->image(),
-        (mapImage_.isValid() ? mapImage_.constImage() : (const MagickCore::Image*) NULL));
+        (mapImage_.isValid() ? mapImage_.constImage() :
+        (const MagickCore::Image*) NULL),exceptionInfo);
     unlinkImages( first_, last_ );
+    ThrowPPException;
 
     MagickCore::Image* image = first_->image();
     while( image )
@@ -2621,17 +2667,23 @@ namespace Magick
   }
 
   // Returns a separate grayscale image for each channel specified.
-  template <class Container >
-  void separateImages( Container *separatedImages_,
-                       const Image &image_,
-                       const ChannelType channel_ ) {
-    GetPPException;
+  template<class Container>
+  void separateImages(Container *separatedImages_,Image &image_,
+    const ChannelType channel_)
+  {
+    MagickCore::ChannelType
+      channel_mask;
 
-    MagickCore::Image* images = MagickCore::SeparateImages( image_.constImage(), exceptionInfo );
+    MagickCore::Image
+      *images;
+
+    GetPPException;
+    channel_mask=MagickCore::SetImageChannelMask(image_.image(),channel_);
+    images=SeparateImages(image_.constImage(),exceptionInfo);
+    MagickCore::SetPixelChannelMask(image_.image(),channel_mask);
 
     separatedImages_->clear();
-
-    insertImages( separatedImages_, images );
+    insertImages(separatedImages_,images);
 
     ThrowPPException;
   }

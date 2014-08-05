@@ -538,6 +538,7 @@ namespace Magick
   using MagickCore::OrEvaluateOperator;
   using MagickCore::PoissonNoiseEvaluateOperator;
   using MagickCore::PowEvaluateOperator;
+  using MagickCore::RootMeanSquareEvaluateOperator;
   using MagickCore::RightShiftEvaluateOperator;
   using MagickCore::SetEvaluateOperator;
   using MagickCore::SineEvaluateOperator;
@@ -1068,6 +1069,7 @@ namespace Magick
   using MagickCore::ColorMatrixImage;
   using MagickCore::CommandOptionToMnemonic;
   using MagickCore::CompareImages;
+  using MagickCore::CompareImagesLayers;
   using MagickCore::CompositeImage;
   using MagickCore::ConfigureError;
   using MagickCore::ConfigureFatalError;
