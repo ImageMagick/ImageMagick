@@ -171,7 +171,9 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterAAIImage();
   (void) RegisterARTImage();
   (void) RegisterAVSImage();
+  (void) RegisterBGRImage();
   (void) RegisterBMPImage();
+  (void) RegisterBRAILLEImage();
   (void) RegisterCALSImage();
   (void) RegisterCAPTIONImage();
   (void) RegisterCINImage();
@@ -238,6 +240,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterMAPImage();
   (void) RegisterMATImage();
   (void) RegisterMATTEImage();
+  (void) RegisterMASKImage();
   (void) RegisterMETAImage();
   (void) RegisterMIFFImage();
   (void) RegisterMONOImage();
@@ -349,6 +352,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterAAIImage();
   UnregisterARTImage();
   UnregisterAVSImage();
+  UnregisterBGRImage();
   UnregisterBMPImage();
   UnregisterBRAILLEImage();
   UnregisterCALSImage();
@@ -415,6 +419,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterMACImage();
   UnregisterMAGICKImage();
   UnregisterMAPImage();
+  UnregisterMASKImage();
   UnregisterMATImage();
   UnregisterMATTEImage();
   UnregisterMETAImage();
