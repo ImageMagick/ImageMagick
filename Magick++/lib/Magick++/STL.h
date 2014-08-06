@@ -2356,50 +2356,59 @@ namespace Magick
   // from a reference image.
   // Set dither_ to true to enable dithering.  Set measureError_ to
   // true in order to evaluate quantization error.
-  template <class InputIterator>
-  void mapImages( InputIterator first_,
-      InputIterator last_,
-      const Image& mapImage_,
-      bool dither_ = false,
-      bool measureError_ = false ) {
+  template<class InputIterator>
+  void mapImages(InputIterator first_,InputIterator last_,
+    const Image& mapImage_,bool dither_=false,bool measureError_=false)
+  {
+    MagickCore::Image
+      *image;
 
-    MagickCore::QuantizeInfo quantizeInfo;
-    MagickCore::GetQuantizeInfo( &quantizeInfo );
+    MagickCore::QuantizeInfo
+      quantizeInfo;
+
+    GetPPException;
+    MagickCore::GetQuantizeInfo(&quantizeInfo);
     quantizeInfo.dither_method = dither_ ? MagickCore::RiemersmaDitherMethod :
       MagickCore::NoDitherMethod;
-    linkImages( first_, last_ );
-    GetPPException;
-    MagickCore::RemapImages( &quantizeInfo, first_->image(),
-        (mapImage_.isValid() ? mapImage_.constImage() :
-        (const MagickCore::Image*) NULL),exceptionInfo);
-    unlinkImages( first_, last_ );
-    ThrowPPException;
+    linkImages(first_,last_);
+    MagickCore::RemapImages(&quantizeInfo,first_->image(),
+      (mapImage_.isValid() ? mapImage_.constImage() :
+      (const MagickCore::Image*) NULL),exceptionInfo);
+    unlinkImages(first_,last_);
+    if (exceptionInfo->severity != MagickCore::UndefinedException)
+      {
+        unlinkImages(first_,last_);
+        throwException(exceptionInfo);
+      }
 
-    MagickCore::Image* image = first_->image();
-    while( image )
+    image=first_->image();
+    while(image != (MagickCore::Image *) NULL)
       {
         // Calculate quantization error
-        GetPPException;
-        if ( measureError_ )
+        if (measureError_)
           {
-            MagickCore::GetImageQuantizeError( image, exceptionInfo );
-            if ( exceptionInfo->severity > MagickCore::UndefinedException )
+            MagickCore::GetImageQuantizeError(image,exceptionInfo);
+            if (exceptionInfo->severity > MagickCore::UndefinedException)
               {
-                unlinkImages( first_, last_ );
-                throwException( exceptionInfo );
+                unlinkImages(first_,last_);
+                throwException(exceptionInfo);
               }
           }
-  
-        // Udate DirectClass representation of pixels
-        MagickCore::SyncImage( image, exceptionInfo );
-        unlinkImages( first_, last_ );
-        ThrowPPException;
+
+        // Update DirectClass representation of pixels
+        MagickCore::SyncImage(image,exceptionInfo);
+        if (exceptionInfo->severity > MagickCore::UndefinedException)
+          {
+            unlinkImages(first_,last_);
+            throwException(exceptionInfo);
+          }
 
         // Next image
         image=image->next;
       }
 
-    unlinkImages( first_, last_ );
+    unlinkImages(first_,last_);
+    (void) MagickCore::DestroyExceptionInfo(exceptionInfo);
   }
 
   // Composes all the image layers from the current given
