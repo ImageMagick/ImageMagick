@@ -1927,6 +1927,8 @@ fi
 
 have_fpx='no'
 FPX_LIBS=''
+SAVED_LIBS=${LIBS}
+LIBS=${LIBS/-ldjvulibre/}
 if test "$with_fpx" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
     AC_MSG_CHECKING([for FlashPIX])
@@ -1955,6 +1957,7 @@ if test "$with_fpx" != 'no'; then
 fi
 AM_CONDITIONAL(FPX_DELEGATE, test "$have_fpx" = 'yes')
 AC_SUBST(FPX_LIBS)
+LIBS=${SAVED_LIBS}
 
 dnl ===========================================================================
 
