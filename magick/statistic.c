@@ -2338,7 +2338,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].mean=mean;
     channel_statistics[i].variance=channel_statistics[i].sum_squared;
     channel_statistics[i].standard_deviation=sqrt(
-      channel_statistics[i].variance-(sum*sum));
+      channel_statistics[i].variance-(mean*mean));
   }
   for (i=0; i < (ssize_t) CompositeChannels; i++)
   {
