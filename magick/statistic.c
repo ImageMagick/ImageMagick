@@ -2328,14 +2328,14 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   for (i=0; i < (ssize_t) CompositeChannels; i++)
   {
     double
-      sum; // 'Fix' for Visual Studio compiler optimization issue.
+      mean;
 
-    sum = channel_statistics[i].sum/area;
-    channel_statistics[i].sum=sum;
+    mean=channel_statistics[i].sum/area;
+    channel_statistics[i].sum=mean;
     channel_statistics[i].sum_squared/=area;
     channel_statistics[i].sum_cubed/=area;
     channel_statistics[i].sum_fourth_power/=area;
-    channel_statistics[i].mean=sum;
+    channel_statistics[i].mean=mean;
     channel_statistics[i].variance=channel_statistics[i].sum_squared;
     channel_statistics[i].standard_deviation=sqrt(
       channel_statistics[i].variance-(sum*sum));
