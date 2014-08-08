@@ -341,7 +341,7 @@ Magick::Quantum Magick::Color::scaleDoubleToQuantum(const double double_)
 
 double Magick::Color::scaleQuantumToDouble(const Magick::Quantum quantum_)
 {
-#if (MAGICKCORE_QUANTUM_DEPTH != 64)
+#if (MAGICKCORE_QUANTUM_DEPTH < 32)
   return (static_cast<double>(quantum_)/QuantumRange);
 #else
   return (quantum_/QuantumRange);
