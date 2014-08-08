@@ -117,7 +117,7 @@ namespace Magick
     }
 
     // Scale a value expressed as a Quantum (0-QuantumRange) to double range (0-1)
-#if (MAGICKCORE_QUANTUM_DEPTH < 64)
+#if (MAGICKCORE_QUANTUM_DEPTH < 32)
     static double scaleQuantumToDouble(const Quantum quantum_)
     {
       return (static_cast<double>(quantum_)/QuantumRange);
