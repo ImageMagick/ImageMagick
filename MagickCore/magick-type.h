@@ -77,7 +77,7 @@ typedef unsigned short Quantum;
 typedef float_t MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef float Quantum;
+typedef double Quantum;
 #define QuantumRange  4294967295.0
 #define QuantumFormat  "%g"
 #else
@@ -91,7 +91,7 @@ typedef unsigned int Quantum;
 #define MaxMap  65535UL
 
 typedef long double MagickRealType;
-typedef double_t Quantum;
+typedef long double Quantum;
 #define QuantumRange  18446744073709551615.0
 #define QuantumFormat  "%g"
 #else
