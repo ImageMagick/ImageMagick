@@ -32,9 +32,7 @@ MagickPPExport int Magick::operator == (const Magick::Geometry& left_,
     (left_.limitPixels() == right_.limitPixels()) &&
     (left_.percent() == right_.percent()) &&
     (left_.width() == right_.width()) &&
-    (left_.xNegative() == right_.xNegative()) &&
     (left_.xOff() == right_.xOff()) &&
-    (left_.yNegative() == right_.yNegative()) &&
     (left_.yOff() == right_.yOff()));
 }
 
@@ -73,8 +71,6 @@ Magick::Geometry::Geometry(void)
     _height(0),
     _xOff(0),
     _yOff(0),
-    _xNegative(false),
-    _yNegative(false),
     _isValid(false),
     _percent(false),
     _aspect(false),
@@ -90,8 +86,6 @@ Magick::Geometry::Geometry(const char *geometry_)
     _height(0),
     _xOff(0),
     _yOff(0),
-    _xNegative(false),
-    _yNegative(false),
     _isValid(false),
     _percent(false),
     _aspect(false),
@@ -108,8 +102,6 @@ Magick::Geometry::Geometry(const Geometry &geometry_)
     _height(geometry_._height),
     _xOff(geometry_._xOff),
     _yOff(geometry_._yOff),
-    _xNegative(geometry_._xNegative),
-    _yNegative(geometry_._yNegative),
     _isValid(geometry_._isValid),
     _percent(geometry_._percent),
     _aspect(geometry_._aspect),
@@ -125,8 +117,6 @@ Magick::Geometry::Geometry(const std::string &geometry_)
     _height(0),
     _xOff(0),
     _yOff(0),
-    _xNegative(false),
-    _yNegative(false),
     _isValid(false),
     _percent(false),
     _aspect(false),
@@ -144,8 +134,6 @@ Magick::Geometry::Geometry(size_t width_,size_t height_,ssize_t xOff_,
     _height(height_),
     _xOff(xOff_),
     _yOff(yOff_),
-    _xNegative(xNegative_),
-    _yNegative(yNegative_),
     _isValid(true),
     _percent(false),
     _aspect(false),
@@ -175,8 +163,6 @@ Magick::Geometry& Magick::Geometry::operator=(const Geometry& geometry_)
       _height=geometry_._height;
       _xOff=geometry_._xOff;
       _yOff=geometry_._yOff;
-      _xNegative=geometry_._xNegative;
-      _yNegative=geometry_._yNegative;
       _isValid=geometry_._isValid;
       _percent=geometry_._percent;
       _aspect=geometry_._aspect;
@@ -256,10 +242,10 @@ const Magick::Geometry& Magick::Geometry::operator=(
     }
 
   if ((flags & XNegative) != 0)
-    _xNegative=true;
+    _xOff=-_xOff;
 
   if ((flags & YNegative) != 0)
-    _yNegative=true;
+    _yOff=-_yOff;
 
   if ((flags & PercentValue) != 0)
     _percent=true;
@@ -308,7 +294,7 @@ Magick::Geometry::operator std::string() const
 
   if (_xOff || _yOff)
     {
-      if (_xNegative)
+      if (_xOff < 0)
         geometry+='-';
       else
         geometry+='+';
@@ -316,7 +302,7 @@ Magick::Geometry::operator std::string() const
       FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _xOff);
       geometry+=buffer;
 
-      if (_yNegative)
+      if (_yOff < 0)
         geometry+='-';
       else
         geometry+='+';
@@ -351,8 +337,6 @@ Magick::Geometry::Geometry(const MagickCore::RectangleInfo &rectangle_)
     _height(static_cast<size_t>(rectangle_.height)),
     _xOff(static_cast<ssize_t>(rectangle_.x)),
     _yOff(static_cast<ssize_t>(rectangle_.y)),
-    _xNegative(rectangle_.x < 0 ? true : false),
-    _yNegative(rectangle_.y < 0 ? true : false),
     _isValid(true),
     _percent(false),
     _aspect(false),
@@ -370,8 +354,6 @@ const Magick::Geometry& Magick::Geometry::operator=(
   _height=static_cast<size_t>(rectangle_.height),
   _xOff=static_cast<ssize_t>(rectangle_.x),
   _yOff=static_cast<ssize_t>(rectangle_.y),
-  _xNegative=rectangle_.x < 0 ? true : false,
-  _yNegative=rectangle_.y < 0 ? true : false,
   _isValid=true;
   return(*this);
 }
@@ -381,9 +363,118 @@ Magick::Geometry::operator MagickCore::RectangleInfo() const
   RectangleInfo rectangle;
   rectangle.width=_width;
   rectangle.height=_height;
-  _xNegative ? rectangle.x=static_cast<ssize_t>(0-_xOff) :
-    rectangle.x=static_cast<ssize_t>(_xOff);
-  _yNegative ? rectangle.y=static_cast<ssize_t>(0-_yOff) :
-    rectangle.y=static_cast<ssize_t>(_yOff);
+  rectangle.x=_xOff;
+  rectangle.y=_yOff;
   return(rectangle);
+}
+
+void Magick::Geometry::aspect(bool aspect_)
+{
+  _aspect=aspect_;
+}
+
+bool Magick::Geometry::aspect(void) const
+{
+  return(_aspect);
+}
+
+void Magick::Geometry::fillArea(bool fillArea_)
+{
+  _fillArea=fillArea_;
+}
+
+bool Magick::Geometry::fillArea(void) const
+{
+  return(_fillArea);
+}
+
+void Magick::Geometry::greater(bool greater_)
+{
+  _greater=greater_;
+}
+
+bool Magick::Geometry::greater(void) const
+{
+  return(_greater);
+}
+
+void Magick::Geometry::height(size_t height_)
+{
+  _height=height_;
+}
+
+size_t Magick::Geometry::height(void) const
+{
+  return(_height);
+}
+
+void Magick::Geometry::isValid(bool isValid_)
+{
+  _isValid=isValid_;
+}
+
+bool Magick::Geometry::isValid(void) const
+{
+  return(_isValid);
+}
+
+void Magick::Geometry::less(bool less_)
+{
+  _less=less_;
+}
+
+bool Magick::Geometry::less(void) const
+{
+  return(_less);
+}
+
+void Magick::Geometry::limitPixels(bool limitPixels_)
+{
+  _limitPixels=limitPixels_;
+}
+
+bool Magick::Geometry::limitPixels(void) const
+{
+  return(_limitPixels);
+}
+
+void Magick::Geometry::width(size_t width_)
+{
+  _width=width_;
+  isValid(true);
+}
+
+void Magick::Geometry::percent(bool percent_)
+{
+  _percent = percent_;
+}
+
+bool Magick::Geometry::percent(void) const
+{
+  return(_percent);
+}
+
+size_t Magick::Geometry::width(void) const
+{
+  return(_width);
+}
+
+void Magick::Geometry::xOff(::ssize_t xOff_)
+{
+  _xOff=xOff_;
+}
+
+::ssize_t Magick::Geometry::xOff(void) const
+{
+  return(_xOff);
+}
+
+inline void Magick::Geometry::yOff(::ssize_t yOff_)
+{
+  _yOff=yOff_;
+}
+
+::ssize_t Magick::Geometry::yOff(void) const
+{
+  return(_yOff);
 }
