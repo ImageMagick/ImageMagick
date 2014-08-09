@@ -825,6 +825,9 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        result;
+
       register ssize_t
         i;
 
@@ -837,8 +840,10 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
         if (((traits & CopyPixelTrait) != 0) ||
             (GetPixelReadMask(image,q) == 0))
           continue;
-        q[i]=ClampToQuantum(ApplyEvaluateOperator(random_info[id],q[i],op,
-          value));
+        result=ApplyEvaluateOperator(random_info[id],q[i],op,value);
+        if (op == MeanEvaluateOperator)
+          result/=2.0;
+        q[i]=ClampToQuantum(result);
       }
       q+=GetPixelChannels(image);
     }
