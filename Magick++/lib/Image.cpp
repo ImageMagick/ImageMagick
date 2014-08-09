@@ -3882,8 +3882,7 @@ void Magick::Image::read(const Blob &blob_)
   GetPPException;
   newImage=BlobToImage(imageInfo(),static_cast<const void *>(blob_.data()),
     blob_.length(),exceptionInfo);
-  replaceImage(newImage);
-  ThrowPPException;
+  read(newImage,exceptionInfo);
 }
 
 void Magick::Image::read(const Blob &blob_,const Geometry &size_)
@@ -3948,21 +3947,7 @@ void Magick::Image::read(const std::string &imageSpec_)
   GetPPException;
   options()->fileName(imageSpec_);
   newImage=ReadImage(imageInfo(),exceptionInfo);
-
-  // Ensure that multiple image frames were not read.
-  if (newImage && newImage->next)
-    {
-      MagickCore::Image
-         *next;
-
-      // Destroy any extra image frames
-      next=newImage->next;
-      newImage->next=0;
-      next->previous=0;
-      DestroyImageList(next);
-    }
-  replaceImage(newImage);
-  ThrowPPException;
+  read(newImage,exceptionInfo);
 }
 
 void Magick::Image::readPixels(const Magick::QuantumType quantum_,
@@ -4995,6 +4980,32 @@ void Magick::Image::unregisterId(void)
 {
   modifyImage();
   _imgRef->id(-1);
+}
+
+void Magick::Image::read(MagickCore::Image *image,
+  MagickCore::ExceptionInfo *exceptionInfo)
+{
+  // Ensure that multiple image frames were not read.
+  if (image != (MagickCore::Image *) NULL &&
+      image->next != (MagickCore::Image *) NULL)
+    {
+      MagickCore::Image
+        *next;
+
+      // Destroy any extra image frames
+      next=image->next;
+      image->next=(MagickCore::Image *) NULL;
+      next->previous=(MagickCore::Image *) NULL;
+      DestroyImageList(next);
+    }
+  replaceImage(image);
+  if (exceptionInfo->severity == MagickCore::UndefinedException &&
+      image == (MagickCore::Image *) NULL)
+    {
+      (void) MagickCore::DestroyExceptionInfo(exceptionInfo);
+      throwExceptionExplicit(ImageWarning,"No image was loaded.");
+    }
+  ThrowPPException;
 }
 
 void Magick::Image::floodFill(const ssize_t x_,const ssize_t y_,
