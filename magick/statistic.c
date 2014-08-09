@@ -829,27 +829,61 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      MagickRealType
+        result;
+
       if ((channel & RedChannel) != 0)
-        SetPixelRed(q,ClampToQuantum(ApplyEvaluateOperator(random_info[id],
-          GetPixelRed(q),op,value)));
+        {
+          result=ApplyEvaluateOperator(random_info[id],GetPixelRed(q),op,value);
+          if (op == MeanEvaluateOperator)
+            result/=2.0;
+          SetPixelRed(q,ClampToQuantum(result));
+        }
       if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,ClampToQuantum(ApplyEvaluateOperator(random_info[id],
-          GetPixelGreen(q),op,value)));
+        {
+          result=ApplyEvaluateOperator(random_info[id],GetPixelGreen(q),op,
+            value);
+          if (op == MeanEvaluateOperator)
+            result/=2.0;
+          SetPixelGreen(q,ClampToQuantum(result));
+        }
       if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,ClampToQuantum(ApplyEvaluateOperator(random_info[id],
-          GetPixelBlue(q),op,value)));
+        {
+          result=ApplyEvaluateOperator(random_info[id],GetPixelBlue(q),op,
+            value);
+          if (op == MeanEvaluateOperator)
+            result/=2.0;
+          SetPixelBlue(q,ClampToQuantum(result));
+        }
       if ((channel & OpacityChannel) != 0)
         {
           if (image->matte == MagickFalse)
-            SetPixelOpacity(q,ClampToQuantum(ApplyEvaluateOperator(
-              random_info[id],GetPixelOpacity(q),op,value)));
+            {
+              result=ApplyEvaluateOperator(random_info[id],GetPixelOpacity(q),
+                op,value);
+              if (op == MeanEvaluateOperator)
+                result/=2.0;
+              SetPixelOpacity(q,ClampToQuantum(result));
+            }
           else
-            SetPixelAlpha(q,ClampToQuantum(ApplyEvaluateOperator(
-              random_info[id],(Quantum) GetPixelAlpha(q),op,value)));
+            {
+              result=ApplyEvaluateOperator(random_info[id],GetPixelAlpha(q),
+                op,value);
+              if (op == MeanEvaluateOperator)
+                result/=2.0;
+              SetPixelAlpha(q,ClampToQuantum(result));
+            }
         }
       if (((channel & IndexChannel) != 0) && (indexes != (IndexPacket *) NULL))
         SetPixelIndex(indexes+x,ClampToQuantum(ApplyEvaluateOperator(
           random_info[id],GetPixelIndex(indexes+x),op,value)));
+        {
+          result=ApplyEvaluateOperator(random_info[id],GetPixelIndex(indexes+x),
+            op,value);
+          if (op == MeanEvaluateOperator)
+            result/=2.0;
+          SetPixelIndex(indexes+x,ClampToQuantum(result));
+        }
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
