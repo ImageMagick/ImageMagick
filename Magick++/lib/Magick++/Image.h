@@ -1495,6 +1495,9 @@ namespace Magick
 
   private:
 
+    void read(MagickCore::Image *image,
+      MagickCore::ExceptionInfo *exceptionInfo);
+
     void floodFill(const ssize_t x_,const ssize_t y_,
       const Magick::Image *fillPattern_,const Color &fill_,
       const PixelInfo *target,const bool invert_);
