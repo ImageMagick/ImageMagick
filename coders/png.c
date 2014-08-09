@@ -9829,8 +9829,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
 
           if (mng_info->write_png_colortype == 0 &&
-             (image_info->type == UndefinedType ||
-             image_info->type == OptimizeType))
+             image_info->type == UndefinedType)
             {
               if (ping_have_color == MagickFalse)
                 {
