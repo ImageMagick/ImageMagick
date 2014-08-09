@@ -1469,9 +1469,9 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         M00[channel]+=QuantumScale*p[i];
         M00[MaxPixelChannels]+=QuantumScale*p[i];
         M10[channel]+=x*QuantumScale*p[i];
-        M10[MaxPixelChannels]+=QuantumScale*p[i];
+        M10[MaxPixelChannels]+=x*QuantumScale*p[i];
         M01[channel]+=y*QuantumScale*p[i];
-        M01[MaxPixelChannels]+=QuantumScale*p[i];
+        M01[MaxPixelChannels]+=y*QuantumScale*p[i];
       }
       p+=GetPixelChannels(image);
     }
