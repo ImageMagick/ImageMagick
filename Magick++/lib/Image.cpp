@@ -4051,17 +4051,8 @@ void Magick::Image::roll(const Geometry &roll_)
   MagickCore::Image
     *newImage;
 
-  ssize_t
-    xOff=roll_.xOff(),
-    yOff=roll_.yOff();
-
-  if (roll_.xNegative())
-    xOff = 0 - xOff;
-  if (roll_.yNegative())
-    yOff = 0 - yOff;
-
   GetPPException;
-  newImage=RollImage(constImage(),xOff,yOff,exceptionInfo);
+  newImage=RollImage(constImage(),roll_.xOff(),roll_.yOff(),exceptionInfo);
   replaceImage(newImage);
   ThrowPPException;
 }

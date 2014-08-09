@@ -102,17 +102,9 @@ namespace Magick
     void width(size_t width_);
     size_t width(void) const;
 
-    // Sign of X offset negative? (X origin at right)
-    void xNegative(bool xNegative_);
-    bool xNegative(void) const;
-
     // X offset from origin
     void xOff(::ssize_t xOff_);
     ::ssize_t xOff(void) const;
-
-    // Sign of Y offset negative? (Y origin at bottom)
-    void yNegative(bool yNegative_);
-    bool yNegative(void) const;
 
     // Y offset from origin
     void yOff(::ssize_t yOff_);
@@ -136,8 +128,6 @@ namespace Magick
     size_t _height;
     ::ssize_t _xOff;
     ::ssize_t _yOff;
-    bool _xNegative;
-    bool _yNegative;
     bool _isValid;
     bool _percent;     // Interpret width & height as percentages (%)
     bool _aspect;      // Force exact size (!)
@@ -147,140 +137,5 @@ namespace Magick
     bool _limitPixels; // Resize using a pixel area count limit (@)
   };
 } // namespace Magick
-
-//
-// Inlines
-//
-
-inline void Magick::Geometry::aspect(bool aspect_)
-{
-  _aspect=aspect_;
-}
-
-inline bool Magick::Geometry::aspect(void) const
-{
-  return(_aspect);
-}
-
-inline void Magick::Geometry::fillArea(bool fillArea_)
-{
-  _fillArea=fillArea_;
-}
-
-inline bool Magick::Geometry::fillArea(void) const
-{
-  return(_fillArea);
-}
-
-inline void Magick::Geometry::greater(bool greater_)
-{
-  _greater=greater_;
-}
-
-inline bool Magick::Geometry::greater(void) const
-{
-  return(_greater);
-}
-
-inline void Magick::Geometry::height(size_t height_)
-{
-  _height=height_;
-}
-
-inline size_t Magick::Geometry::height(void) const
-{
-  return(_height);
-}
-
-inline void Magick::Geometry::isValid(bool isValid_)
-{
-  _isValid=isValid_;
-}
-
-inline bool Magick::Geometry::isValid(void) const
-{
-  return(_isValid);
-}
-
-inline void Magick::Geometry::less(bool less_)
-{
-  _less=less_;
-}
-
-inline bool Magick::Geometry::less(void) const
-{
-  return(_less);
-}
-
-inline void Magick::Geometry::limitPixels(bool limitPixels_)
-{
-  _limitPixels=limitPixels_;
-}
-
-inline bool Magick::Geometry::limitPixels(void) const
-{
-  return(_limitPixels);
-}
-
-inline void Magick::Geometry::width(size_t width_)
-{
-  _width=width_;
-  isValid(true);
-}
-
-inline void Magick::Geometry::percent(bool percent_)
-{
-  _percent = percent_;
-}
-
-inline bool Magick::Geometry::percent(void) const
-{
-  return(_percent);
-}
-
-inline size_t Magick::Geometry::width(void) const
-{
-  return(_width);
-}
-
-inline void Magick::Geometry::xNegative(bool xNegative_)
-{
-  _xNegative=xNegative_;
-}
-
-inline bool Magick::Geometry::xNegative(void) const
-{
-  return(_xNegative);
-}
-
-inline void Magick::Geometry::xOff(::ssize_t xOff_)
-{
-  _xOff=xOff_;
-}
-
-inline ::ssize_t Magick::Geometry::xOff(void) const
-{
-  return(_xOff);
-}
-
-inline void Magick::Geometry::yNegative(bool yNegative_)
-{
-  _yNegative=yNegative_;
-}
-
-inline bool Magick::Geometry::yNegative(void) const
-{
-  return(_yNegative);
-}
-
-inline void Magick::Geometry::yOff(::ssize_t yOff_)
-{
-  _yOff=yOff_;
-}
-
-inline ::ssize_t Magick::Geometry::yOff(void) const
-{
-  return(_yOff);
-}
 
 #endif // Magick_Geometry_header
