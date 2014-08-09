@@ -875,8 +875,6 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
             }
         }
       if (((channel & IndexChannel) != 0) && (indexes != (IndexPacket *) NULL))
-        SetPixelIndex(indexes+x,ClampToQuantum(ApplyEvaluateOperator(
-          random_info[id],GetPixelIndex(indexes+x),op,value)));
         {
           result=ApplyEvaluateOperator(random_info[id],GetPixelIndex(indexes+x),
             op,value);
