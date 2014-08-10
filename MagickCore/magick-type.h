@@ -64,7 +64,7 @@ typedef float_t MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
-#define QuantumRange  65535.0
+#define QuantumRange  65535.0f
 #define QuantumFormat  "%g"
 #else
 typedef unsigned short Quantum;
