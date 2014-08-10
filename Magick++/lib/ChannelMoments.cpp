@@ -152,33 +152,33 @@ Magick::ImageMoments::ImageMoments(const MagickCore::Image *image)
         case RGBColorspace:
         default:
           _channels.push_back(Magick::ChannelMoments(RedChannel,
-            &channel_moments[RedChannel]));
+            &channel_moments[RedPixelChannel]));
           _channels.push_back(Magick::ChannelMoments(GreenChannel,
-            &channel_moments[GreenChannel]));
+            &channel_moments[GreenPixelChannel]));
           _channels.push_back(Magick::ChannelMoments(BlueChannel,
-            &channel_moments[BlueChannel]));
+            &channel_moments[BluePixelChannel]));
           break;
         case CMYKColorspace:
           _channels.push_back(Magick::ChannelMoments(CyanChannel,
-            &channel_moments[CyanChannel]));
+            &channel_moments[CyanPixelChannel]));
           _channels.push_back(Magick::ChannelMoments(MagentaChannel,
-            &channel_moments[MagentaChannel]));
+            &channel_moments[MagentaPixelChannel]));
           _channels.push_back(Magick::ChannelMoments(YellowChannel,
-            &channel_moments[YellowChannel]));
+            &channel_moments[YellowPixelChannel]));
           _channels.push_back(Magick::ChannelMoments(BlackChannel,
-            &channel_moments[BlackChannel]));
+            &channel_moments[BlackPixelChannel]));
           break;
         case GRAYColorspace:
           _channels.push_back(Magick::ChannelMoments(GrayChannel,
-            &channel_moments[GrayChannel]));
+            &channel_moments[GrayPixelChannel]));
           break;
       }
       if (image->alpha_trait == BlendPixelTrait)
         _channels.push_back(Magick::ChannelMoments(AlphaChannel,
-          &channel_moments[AlphaChannel]));
+          &channel_moments[AlphaPixelChannel]));
       if (image->colorspace != GRAYColorspace)
         _channels.push_back(Magick::ChannelMoments(CompositeChannels,
-          &channel_moments[CompositeChannels]));
+          &channel_moments[CompositePixelChannel]));
       channel_moments=(MagickCore::ChannelMoments *) RelinquishMagickMemory(
         channel_moments);
     }
