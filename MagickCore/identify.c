@@ -862,14 +862,14 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (channel_phash != (ChannelPerceptualHash *) NULL)
     {
       (void) FormatLocaleFile(file,"  Channel perceptual hash:\n");
-      (void) PrintChannelPerceptualHash(file,RedChannel,"Red, Hue",
+      (void) PrintChannelPerceptualHash(file,RedPixelChannel,"Red, Hue",
         channel_phash);
-      (void) PrintChannelPerceptualHash(file,GreenChannel,"Green, Chroma",
+      (void) PrintChannelPerceptualHash(file,GreenPixelChannel,"Green, Chroma",
         channel_phash);
-      (void) PrintChannelPerceptualHash(file,BlueChannel,"Blue, Luma",
+      (void) PrintChannelPerceptualHash(file,BluePixelChannel,"Blue, Luma",
         channel_phash);
       if (image->alpha_trait == BlendPixelTrait)
-        (void) PrintChannelPerceptualHash(file,AlphaChannel,"Alpha, Alpha",
+        (void) PrintChannelPerceptualHash(file,AlphaPixelChannel,"Alpha, Alpha",
           channel_phash);
       channel_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(
         channel_phash);
