@@ -1380,6 +1380,26 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static size_t GetImageChannels(const Image *image)
+{
+  register ssize_t
+    i;
+
+  size_t
+    channels;
+
+  channels=0;
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel channel=GetPixelChannelChannel(image,i);
+    PixelTrait traits=GetPixelChannelTraits(image,channel);
+    if ((traits & UpdatePixelTrait) != 0)
+      channels++;
+  }
+  return(channels == 0 ? 1 : channels);
+}
+
 MagickExport ChannelMoments *GetImageMoments(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1560,17 +1580,17 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       p+=GetPixelChannels(image);
     }
   }
-  M00[MaxPixelChannels]/=GetPixelChannels(image);
-  M01[MaxPixelChannels]/=GetPixelChannels(image);
-  M02[MaxPixelChannels]/=GetPixelChannels(image);
-  M03[MaxPixelChannels]/=GetPixelChannels(image);
-  M10[MaxPixelChannels]/=GetPixelChannels(image);
-  M11[MaxPixelChannels]/=GetPixelChannels(image);
-  M12[MaxPixelChannels]/=GetPixelChannels(image);
-  M20[MaxPixelChannels]/=GetPixelChannels(image);
-  M21[MaxPixelChannels]/=GetPixelChannels(image);
-  M22[MaxPixelChannels]/=GetPixelChannels(image);
-  M30[MaxPixelChannels]/=GetPixelChannels(image);
+  M00[MaxPixelChannels]/=GetImageChannels(image);
+  M01[MaxPixelChannels]/=GetImageChannels(image);
+  M02[MaxPixelChannels]/=GetImageChannels(image);
+  M03[MaxPixelChannels]/=GetImageChannels(image);
+  M10[MaxPixelChannels]/=GetImageChannels(image);
+  M11[MaxPixelChannels]/=GetImageChannels(image);
+  M12[MaxPixelChannels]/=GetImageChannels(image);
+  M20[MaxPixelChannels]/=GetImageChannels(image);
+  M21[MaxPixelChannels]/=GetImageChannels(image);
+  M22[MaxPixelChannels]/=GetImageChannels(image);
+  M30[MaxPixelChannels]/=GetImageChannels(image);
   for (channel=0; channel <= MaxPixelChannels; channel++)
   {
     /*
@@ -1912,26 +1932,6 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static size_t GetImageChannels(const Image *image)
-{
-  register ssize_t
-    i;
-
-  size_t
-    channels;
-
-  channels=0;
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
-    PixelTrait traits=GetPixelChannelTraits(image,channel);
-    if ((traits & UpdatePixelTrait) != 0)
-      channels++;
-  }
-  return(channels == 0 ? 1 : channels);
-}
-
 MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   ExceptionInfo *exception)
 {
