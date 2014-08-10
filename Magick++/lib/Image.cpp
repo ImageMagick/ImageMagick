@@ -3629,8 +3629,7 @@ void Magick::Image::ping(const Blob& blob_)
 
   GetPPException;
   newImage=PingBlob(imageInfo(),blob_.data(),blob_.length(),exceptionInfo);
-  replaceImage(newImage);
-  ThrowPPException;
+  read(newImage,exceptionInfo);
 }
 
 void Magick::Image::ping(const std::string &imageSpec_)
@@ -3641,8 +3640,7 @@ void Magick::Image::ping(const std::string &imageSpec_)
   GetPPException;
   options()->fileName(imageSpec_);
   newImage=PingImage(imageInfo(),exceptionInfo);
-  replaceImage(newImage);
-  ThrowPPException;
+  read(newImage,exceptionInfo);
 }
 
 void Magick::Image::pixelColor(const ssize_t x_,const ssize_t y_,
