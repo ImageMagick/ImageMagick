@@ -632,7 +632,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   if (value != (char *) NULL)
     configure.low_memory=(int) ParseCommandOption(MagickBooleanOptions,
       MagickFalse,value);
-  value=GetImageOption(image_info,"webp:partition-limit");
+  value=GetImageOption(image_info,"webp:emulate-jpeg-size");
   if (value != (char *) NULL)
     configure.emulate_jpeg_size=(int) ParseCommandOption(MagickBooleanOptions,
       MagickFalse,value);
