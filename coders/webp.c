@@ -401,7 +401,7 @@ ModuleExport size_t RegisterWEBPImage(void)
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadWEBPImage;
   entry->encoder=(EncodeImageHandler *) WriteWEBPImage;
-  (void) FormatLocaleString(version,MaxTextExtent,"libwebp %d.%d.%d (%04X)",
+  (void) FormatLocaleString(version,MaxTextExtent,"libwebp %d.%d.%d[%04X]",
     (WebPGetDecoderVersion() >> 16) & 0xff,
     (WebPGetDecoderVersion() >> 8) & 0xff,
     (WebPGetDecoderVersion() >> 0) & 0xff,WEBP_ENCODER_ABI_VERSION);
