@@ -469,7 +469,7 @@ ModuleExport void UnregisterWEBPImage(void)
 %
 */
 
-#if WEBP_ENCODER_ABI_VERSION >= 0x0100
+#if WEBP_DECODER_ABI_VERSION >= 0x0100
 static int WebPEncodeProgress(int percent,const WebPPicture* picture)
 {
 #define EncodeImageTag  "Encode/Image"
@@ -544,7 +544,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
   picture.writer=WebPEncodeWriter;
   picture.custom_ptr=(void *) image;
-#if WEBP_ENCODER_ABI_VERSION >= 0x0100
+#if WEBP_DECODER_ABI_VERSION >= 0x0100
   picture.progress_hook=WebPEncodeProgress;
 #endif
   picture.stats=(&statistics);
@@ -573,7 +573,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
         configure.image_hint=WEBP_HINT_PHOTO;
       if (LocaleCompare(value,"picture") == 0)
         configure.image_hint=WEBP_HINT_PICTURE;
-#if WEBP_ENCODER_ABI_VERSION >= 0x0200
+#if WEBP_DECODER_ABI_VERSION >= 0x0200
       if (LocaleCompare(value,"graph") == 0)
         configure.image_hint=WEBP_HINT_GRAPH;
 #endif
@@ -627,7 +627,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   value=GetImageOption(image_info,"webp:partition-limit");
   if (value != (char *) NULL)
     configure.partition_limit=StringToInteger(value);
-#if WEBP_ENCODER_ABI_VERSION >= 0x0201
+#if WEBP_DECODER_ABI_VERSION >= 0x0201
   value=GetImageOption(image_info,"webp:low-memory");
   if (value != (char *) NULL)
     configure.low_memory=(int) ParseCommandOption(MagickBooleanOptions,
@@ -733,7 +733,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
           message="file too big (> 4GB)";
           break;
         }
-#if WEBP_ENCODER_ABI_VERSION >= 0x0100
+#if WEBP_DECODER_ABI_VERSION >= 0x0100
         case VP8_ENC_ERROR_USER_ABORT:
         {
           message="user abort";
