@@ -382,7 +382,7 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
   return(n);
 }
 
-static ssize_t PrintChannelPerceptualHash(FILE *file,const ChannelType channel,
+static ssize_t PrintChannelPerceptualHash(FILE *file,const PixelChannel channel,
   const char *name,const ChannelPerceptualHash *channel_phash)
 {
   register ssize_t
