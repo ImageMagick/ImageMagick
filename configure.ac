@@ -160,7 +160,7 @@ AM_INIT_AUTOMAKE([1.12 nostdinc color-tests foreign parallel-tests silent-rules 
 # Enable support for silent build rules
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
-# versionning of library
+# versioning of library
 MAGICK_LIB_VERSION="0x"
 if test ${MAGICK_LIBRARY_CURRENT} -lt 10 ; then
   MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}0
