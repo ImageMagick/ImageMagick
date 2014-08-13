@@ -1861,10 +1861,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       value=GetImageArtifact(composite_image,"compose:args");
       if (value != (char *) NULL)
         flags=ParseGeometry(value,&geometry_info);
-      if ((flags & WidthValue) == 0 ) {
+      if ((flags & WidthValue) == 0)
+        {
           (void) ThrowMagickException(exception,GetMagickModule(),
-               OptionWarning,"InvalidGeometry","'%s' '%s'",
-               "compose:args",value);
+            OptionWarning,"InvalidGeometry","'%s' '%s'","compose:args",value);
           composite_image=DestroyImage(composite_image);
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);
@@ -1959,8 +1959,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               MagickRealType
                 angle;
 
-              angle=angle_start+angle_range*QuantumScale*
-                GetPixelBlue(p);
+              angle=angle_start+angle_range*QuantumScale*GetPixelBlue(p);
               blur.x1=width*cos(angle);
               blur.x2=width*sin(angle);
               blur.y1=(-height*sin(angle));
@@ -1975,13 +1974,12 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           }
 #endif
           ScaleResampleFilter(resample_filter,
-              blur.x1*QuantumScale*GetPixelRed(p),
-              blur.y1*QuantumScale*GetPixelGreen(p),
-              blur.x2*QuantumScale*GetPixelRed(p),
-              blur.y2*QuantumScale*GetPixelGreen(p) );
-
-          (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
-            (double) y_offset+y,&pixel);
+            blur.x1*QuantumScale*GetPixelRed(p),
+            blur.y1*QuantumScale*GetPixelGreen(p),
+            blur.x2*QuantumScale*GetPixelRed(p),
+            blur.y2*QuantumScale*GetPixelGreen(p));
+          (void) ResamplePixelColor(resample_filter,(double) x_offset+x,(double)
+            y_offset+y,&pixel);
           SetPixelPacket(destination_image,&pixel,r,destination_indexes+x);
           p++;
           r++;
@@ -2097,10 +2095,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             else
               center.x=geometry_info.xi;
           if ((flags & YValue) == 0)
-            if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) (y_offset+(composite_image->rows-1)/2.0);
-            else
+            if ((flags & AspectValue) != 0)
               center.y=((MagickRealType) image->rows-1)/2.0;
+            else
+              center.y=(MagickRealType) (y_offset+(composite_image->rows-1)/
+                2.0);
           else
             if ((flags & AspectValue) == 0)
               center.y=(MagickRealType) (y_offset+geometry_info.psi);
