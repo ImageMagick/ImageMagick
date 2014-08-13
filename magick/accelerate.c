@@ -1530,6 +1530,17 @@ cleanup:
   return filteredImage;
 }
 
+static Image *ComputeUnsharpMaskImageSingle(const Image *image,
+  const ChannelType channel,const double radius,const double sigma,
+  const double gain,const double threshold,int blurOnly, ExceptionInfo *exception);
+
+static Image* ComputeBlurImageSingle(const Image* image,
+  const ChannelType channel,const double radius,const double sigma,
+  ExceptionInfo *exception)
+{
+  return ComputeUnsharpMaskImageSingle(image, channel, radius, sigma, 0.0, 0.0, 1, exception);
+}
+
 MagickExport Image* AccelerateBlurImage(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
   ExceptionInfo *exception)
@@ -1544,7 +1555,9 @@ MagickExport Image* AccelerateBlurImage(const Image *image,
       (checkAccelerateCondition(image, channel) == MagickFalse))
     return NULL;
 
-  if (splitImage(image) && (image->rows / 2 > radius)) 
+  if (radius < 12.1)
+	filteredImage=ComputeBlurImageSingle(image, channel, radius, sigma, exception);
+  else if (splitImage(image) && (image->rows / 2 > radius)) 
     filteredImage=ComputeBlurImageSection(image, channel, radius, sigma, exception);
   else
     filteredImage=ComputeBlurImage(image, channel, radius, sigma, exception);
@@ -2683,6 +2696,296 @@ cleanup:
   return filteredImage;
 }
 
+static Image *ComputeUnsharpMaskImageSingle(const Image *image,
+  const ChannelType magick_unused(channel),const double radius,const double sigma,
+  const double gain,const double threshold,int blurOnly, ExceptionInfo *exception)
+{
+  CacheView
+    *filteredImage_view,
+    *image_view;
+
+  char
+    geometry[MaxTextExtent];
+
+  cl_command_queue
+    queue;
+
+  cl_context
+    context;
+
+  cl_int
+    justBlur,
+    clStatus;
+
+  cl_kernel
+    unsharpMaskKernel;
+
+  cl_mem
+    filteredImageBuffer,
+    imageBuffer,
+    imageKernelBuffer;
+
+  cl_mem_flags
+    mem_flags;
+
+  const void
+    *inputPixels;
+
+  float
+    fGain,
+    fThreshold,
+    *kernelBufferPtr;
+
+  Image
+    *filteredImage;
+
+  KernelInfo
+    *kernel;
+
+  MagickBooleanType
+    outputReady;
+
+  MagickCLEnv
+    clEnv;
+
+  MagickSizeType
+    length;
+
+  void
+    *filteredPixels,
+    *hostPtr;
+
+  unsigned int
+    i,
+    imageColumns,
+    imageRows,
+    kernelWidth;
+
+  clEnv = NULL;
+  filteredImage = NULL;
+  filteredImage_view = NULL;
+  kernel = NULL;
+  context = NULL;
+  imageBuffer = NULL;
+  filteredImageBuffer = NULL;
+  imageKernelBuffer = NULL;
+  unsharpMaskKernel = NULL;
+  queue = NULL;
+  outputReady = MagickFalse;
+
+  magick_unreferenced(channel);
+
+  clEnv = GetDefaultOpenCLEnv();
+  context = GetOpenCLContext(clEnv);
+  queue = AcquireOpenCLCommandQueue(clEnv);
+
+  /* Create and initialize OpenCL buffers. */
+  {
+    image_view=AcquireVirtualCacheView(image,exception);
+    inputPixels=GetCacheViewVirtualPixels(image_view,0,0,image->columns,image->rows,exception);
+    if (inputPixels == (const void *) NULL)
+    {
+      (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning,"UnableToReadPixelCache.","`%s'",image->filename);
+      goto cleanup;
+    }
+
+    /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
+    if (ALIGNED(inputPixels,CLPixelPacket)) 
+    {
+      mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
+    }
+    else 
+    {
+      mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
+    }
+    /* create a CL buffer from image pixel buffer */
+    length = image->columns * image->rows;
+    imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
+    if (clStatus != CL_SUCCESS)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
+      goto cleanup;
+    }
+  }
+
+  /* create output */
+  {
+    filteredImage = CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+    assert(filteredImage != NULL);
+    if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
+      goto cleanup;
+    }
+    filteredImage_view=AcquireAuthenticCacheView(filteredImage,exception);
+    filteredPixels=GetCacheViewAuthenticPixels(filteredImage_view,0,0,filteredImage->columns,filteredImage->rows,exception);
+    if (filteredPixels == (void *) NULL)
+    {
+      (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning, "UnableToReadPixelCache.","`%s'",filteredImage->filename);
+      goto cleanup;
+    }
+
+    if (ALIGNED(filteredPixels,CLPixelPacket)) 
+    {
+      mem_flags = CL_MEM_WRITE_ONLY|CL_MEM_USE_HOST_PTR;
+      hostPtr = filteredPixels;
+    }
+    else 
+    {
+      mem_flags = CL_MEM_WRITE_ONLY;
+      hostPtr = NULL;
+    }
+
+    /* create a CL buffer from image pixel buffer */
+    length = image->columns * image->rows;
+    filteredImageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
+    if (clStatus != CL_SUCCESS)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
+      goto cleanup;
+    }
+  }
+
+  /* create the blur kernel */
+  {
+    (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
+    kernel=AcquireKernelInfo(geometry);
+    if (kernel == (KernelInfo *) NULL)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireKernelInfo failed.",".");
+      goto cleanup;
+    }
+
+    imageKernelBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_ONLY, kernel->width * sizeof(float), NULL, &clStatus);
+    if (clStatus != CL_SUCCESS)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
+      goto cleanup;
+    }
+
+
+    kernelBufferPtr = (float*)clEnv->library->clEnqueueMapBuffer(queue, imageKernelBuffer, CL_TRUE, CL_MAP_WRITE, 0, kernel->width * sizeof(float), 0, NULL, NULL, &clStatus);
+    if (clStatus != CL_SUCCESS)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueMapBuffer failed.",".");
+      goto cleanup;
+    }
+    for (i = 0; i < kernel->width; i++)
+    {
+      kernelBufferPtr[i] = (float) kernel->values[i];
+    }
+    clStatus = clEnv->library->clEnqueueUnmapMemObject(queue, imageKernelBuffer, kernelBufferPtr, 0, NULL, NULL);
+    if (clStatus != CL_SUCCESS)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueUnmapMemObject failed.", "'%s'", ".");
+      goto cleanup;
+    }
+  }
+
+  {
+    /* get the opencl kernel */
+    {
+      unsharpMaskKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "UnsharpMask");
+      if (unsharpMaskKernel == NULL)
+      {
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        goto cleanup;
+      };
+    }
+
+    {
+      imageColumns = image->columns;
+      imageRows = image->rows;
+      kernelWidth = kernel->width;
+      fGain = (float)gain;
+      fThreshold = (float)threshold;
+	  justBlur = blurOnly;
+
+      /* set the kernel arguments */
+      i = 0;
+      clStatus=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(unsigned int),(void *)&imageRows);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(cl_float4)*(8 * (32 + kernel->width)),(void *)NULL);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(float),(void *)&fGain);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(float),(void *)&fThreshold);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskKernel,i++,sizeof(cl_uint),(void *)&justBlur);
+      if (clStatus != CL_SUCCESS)
+      {
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
+        goto cleanup;
+      }
+    }
+
+    /* launch the kernel */
+    {
+      size_t gsize[2];
+      size_t wsize[2];
+
+      gsize[0] = ((image->columns + 7) / 8) * 8;
+      gsize[1] = ((image->rows + 31) / 32) * 32;
+      wsize[0] = 8;
+      wsize[1] = 32;
+
+      clStatus = clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, unsharpMaskKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
+      if (clStatus != CL_SUCCESS)
+      {
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
+        goto cleanup;
+      }
+      clEnv->library->clFlush(queue);
+    }
+  }
+
+  /* get result */
+  if (ALIGNED(filteredPixels,CLPixelPacket)) 
+  {
+    length = image->columns * image->rows;
+    clEnv->library->clEnqueueMapBuffer(queue, filteredImageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
+  }
+  else 
+  {
+    length = image->columns * image->rows;
+    clStatus = clEnv->library->clEnqueueReadBuffer(queue, filteredImageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), filteredPixels, 0, NULL, NULL);
+  }
+  if (clStatus != CL_SUCCESS)
+  {
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
+    goto cleanup;
+  }
+
+  outputReady=SyncCacheViewAuthenticPixels(filteredImage_view,exception);
+
+cleanup:
+  OpenCLLogException(__FUNCTION__,__LINE__,exception);
+
+  image_view=DestroyCacheView(image_view);
+  if (filteredImage_view != NULL)
+    filteredImage_view=DestroyCacheView(filteredImage_view);
+
+  if (kernel != NULL)			      kernel=DestroyKernelInfo(kernel);
+  if (imageBuffer!=NULL)		      clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer!=NULL)              clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (imageKernelBuffer!=NULL)                clEnv->library->clReleaseMemObject(imageKernelBuffer);
+  if (unsharpMaskKernel!=NULL)                RelinquishOpenCLKernel(clEnv, unsharpMaskKernel);
+  if (queue != NULL)                          RelinquishOpenCLCommandQueue(clEnv, queue);
+  if (outputReady == MagickFalse)
+  {
+    if (filteredImage != NULL)
+    {
+      DestroyImage(filteredImage);
+      filteredImage = NULL;
+    }
+  }
+  return(filteredImage);
+}
+
+
 MagickExport Image *AccelerateUnsharpMaskImage(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
   const double gain,const double threshold,ExceptionInfo *exception)
@@ -2697,10 +3000,13 @@ MagickExport Image *AccelerateUnsharpMaskImage(const Image *image,
       (checkAccelerateCondition(image, channel) == MagickFalse))
     return NULL;
 
-  if (splitImage(image) && (image->rows / 2 > radius)) 
+  if (radius < 12.1)
+    filteredImage = ComputeUnsharpMaskImageSingle(image,channel,radius,sigma,gain,threshold, 0, exception);
+  else if (splitImage(image) && (image->rows / 2 > radius)) 
     filteredImage = ComputeUnsharpMaskImageSection(image,channel,radius,sigma,gain,threshold,exception);
   else
     filteredImage = ComputeUnsharpMaskImage(image,channel,radius,sigma,gain,threshold,exception);
+
   return(filteredImage);
 }
 
@@ -5861,7 +6167,13 @@ static Image *ComputeAddNoiseImage(const Image *image,
     context;
 
   cl_int
+    inputPixelCount,
+    pixelsPerWorkitem,
     clStatus;
+
+  cl_uint
+    seed0,
+    seed1;
 
   cl_kernel
     addNoiseKernel;
@@ -5871,8 +6183,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
 
   cl_mem
     filteredImageBuffer,
-    imageBuffer,
-    randomNumberBuffer;
+    imageBuffer;
 
   const char
     *option;
@@ -5881,8 +6192,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
     *inputPixels;
 
   float
-    attenuate,
-    *randomNumberBufferPtr;
+    attenuate;
 
   MagickBooleanType
     outputReady;
@@ -5896,23 +6206,16 @@ static Image *ComputeAddNoiseImage(const Image *image,
   Image
     *filteredImage;
 
-  int
-    i;
-
   RandomInfo
     **restrict random_info;
 
   size_t
-    global_work_size[2];
+    global_work_size[1],
+    local_work_size[1];
 
   unsigned int
-    inputColumns,
-    inputRows,
     k,
-    numRandomNumberPerBuffer,
-    numRandomNumberPerPixel,
-    numRowsPerKernelLaunch,
-    r;
+    numRandomNumberPerPixel;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   unsigned long
@@ -5929,10 +6232,8 @@ static Image *ComputeAddNoiseImage(const Image *image,
   filteredImage = NULL;
   filteredImage_view = NULL;
   filteredPixels = NULL;
-  randomNumberBufferPtr = NULL;
   context = NULL;
   imageBuffer = NULL;
-  randomNumberBuffer = NULL;
   filteredImageBuffer = NULL;
   queue = NULL;
   addNoiseKernel = NULL;
@@ -6030,13 +6331,6 @@ static Image *ComputeAddNoiseImage(const Image *image,
     if ((channel & OpacityChannel) != 0)
       numRandomNumberPerPixel+=numRandPerChannel;
   }
-
-  numRowsPerKernelLaunch = 512;
-  /* create a buffer for random numbers */
-  numRandomNumberPerBuffer = (image->columns*numRowsPerKernelLaunch)*numRandomNumberPerPixel;
-  randomNumberBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_ONLY|CL_MEM_ALLOC_HOST_PTR, numRandomNumberPerBuffer*sizeof(float)
-                                      , NULL, &clStatus);
-
 
   /* set up the random number generators */
   attenuate=1.0;
@@ -6048,15 +6342,34 @@ static Image *ComputeAddNoiseImage(const Image *image,
   key=GetRandomSecretKey(random_info[0]);
 #endif
 
-  addNoiseKernel = AcquireOpenCLKernel(clEnv,MAGICK_OPENCL_ACCELERATE,"AddNoiseImage");
+  addNoiseKernel = AcquireOpenCLKernel(clEnv,MAGICK_OPENCL_ACCELERATE,"GenerateNoiseImage");
+
+  {
+    cl_uint computeUnitCount;
+    cl_uint workItemCount;
+    clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &computeUnitCount, NULL);
+    workItemCount = computeUnitCount * 2 * 256;			// 256 work items per group, 2 groups per CU
+    inputPixelCount = image->columns * image->rows;
+    pixelsPerWorkitem = (inputPixelCount + workItemCount - 1) / workItemCount;
+    pixelsPerWorkitem = ((pixelsPerWorkitem + 3) / 4) * 4;
+
+    local_work_size[0] = 256;
+    global_work_size[0] = workItemCount;
+  }
+  {
+    RandomInfo* randomInfo = AcquireRandomInfo();
+	const unsigned long* s = GetRandomInfoSeed(randomInfo);
+	seed0 = s[0];
+	GetPseudoRandomValue(randomInfo);
+	seed1 = s[0];
+	randomInfo = DestroyRandomInfo(randomInfo);
+  }
 
   k = 0;
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&imageBuffer);
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&filteredImageBuffer);
-  inputColumns = image->columns;
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(unsigned int),(void *)&inputColumns);
-  inputRows = image->rows;
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(unsigned int),(void *)&inputRows);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&inputPixelCount);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&pixelsPerWorkitem);  
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(ChannelType),(void *)&channel);
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(NoiseType),(void *)&noise_type);
   attenuate=1.0f;
@@ -6064,43 +6377,11 @@ static Image *ComputeAddNoiseImage(const Image *image,
   if (option != (char *) NULL)
     attenuate=(float)StringToDouble(option,(char **) NULL);
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(float),(void *)&attenuate);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&randomNumberBuffer);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&seed0);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&seed1);
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(unsigned int),(void *)&numRandomNumberPerPixel);
 
-  global_work_size[0] = inputColumns;
-  for (r = 0; r < inputRows; r+=numRowsPerKernelLaunch) 
-  {
-    /* Generate random numbers in the buffer */
-    randomNumberBufferPtr = (float*)clEnv->library->clEnqueueMapBuffer(queue, randomNumberBuffer, CL_TRUE, CL_MAP_WRITE, 0
-      , numRandomNumberPerBuffer*sizeof(float), 0, NULL, NULL, &clStatus);
-    if (clStatus != CL_SUCCESS)
-    {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueMapBuffer failed.",".");
-      goto cleanup;
-    }
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) \
-    num_threads((key == ~0UL) == 0 ? 1 : (size_t) GetMagickResourceLimit(ThreadResource))
-#endif
-    for (i = 0; i < numRandomNumberPerBuffer; i++)
-    {
-      const int id = GetOpenMPThreadId();
-      randomNumberBufferPtr[i] = (float)GetPseudoRandomValue(random_info[id]);
-    }
-
-    clStatus = clEnv->library->clEnqueueUnmapMemObject(queue, randomNumberBuffer, randomNumberBufferPtr, 0, NULL, NULL);
-    if (clStatus != CL_SUCCESS)
-    {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueUnmapMemObject failed.",".");
-      goto cleanup;
-    }
-
-    /* set the row offset */
-    clEnv->library->clSetKernelArg(addNoiseKernel,k,sizeof(unsigned int),(void *)&r);
-    global_work_size[1] = MAGICK_MIN(numRowsPerKernelLaunch, inputRows - r);
-    clEnv->library->clEnqueueNDRangeKernel(queue,addNoiseKernel,2,NULL,global_work_size,NULL,0,NULL,NULL);
-  }
+  clEnv->library->clEnqueueNDRangeKernel(queue,addNoiseKernel,1,NULL,global_work_size,NULL,0,NULL,NULL);
 
   if (ALIGNED(filteredPixels,CLPixelPacket)) 
   {
@@ -6130,7 +6411,6 @@ cleanup:
   if (queue!=NULL)                  RelinquishOpenCLCommandQueue(clEnv, queue);
   if (addNoiseKernel!=NULL)         RelinquishOpenCLKernel(clEnv, addNoiseKernel);
   if (imageBuffer!=NULL)		    clEnv->library->clReleaseMemObject(imageBuffer);
-  if (randomNumberBuffer!=NULL)     clEnv->library->clReleaseMemObject(randomNumberBuffer);
   if (filteredImageBuffer!=NULL)	  clEnv->library->clReleaseMemObject(filteredImageBuffer);
   if (outputReady == MagickFalse && filteredImage != NULL) 
     filteredImage=DestroyImage(filteredImage);
@@ -6138,322 +6418,7 @@ cleanup:
   return(filteredImage);
 }
 
-static Image *ComputeAddNoiseImageOptRandomNum(const Image*image,
-  const ChannelType channel,const NoiseType noise_type,
-  ExceptionInfo *exception) 
-{
-  CacheView
-    *filteredImage_view,
-    *image_view;
 
-  cl_command_queue
-    queue;
-
-  cl_context
-    context;
-
-  cl_int
-    clStatus;
-
-  cl_kernel
-    addNoiseKernel,
-    randomNumberGeneratorKernel;
-
-  cl_mem
-    filteredImageBuffer,
-    imageBuffer,
-    randomNumberBuffer,
-    randomNumberSeedsBuffer;
-
-  cl_mem_flags
-    mem_flags;
-
-  const char
-    *option;
-
-  const void
-    *inputPixels;
-
-  float
-    attenuate,
-    fNormalize;
-
-  Image
-    *filteredImage;
-
-  int
-    i;
-
-  MagickBooleanType
-    outputReady;
-
-  MagickCLEnv
-    clEnv;
-
-  MagickSizeType
-    length;
-
-  size_t
-    global_work_size[2],
-    random_work_size;
-
-  unsigned int
-    initRandom,
-    inputColumns,
-    inputRows,
-    k,
-    numRandomNumberGenerators,
-    numRandomNumberPerBuffer,
-    numRandomNumberPerPixel,
-    numRowsPerKernelLaunch,
-    r;
-
-  void
-    *filteredPixels,
-    *hostPtr;
-
-  outputReady = MagickFalse;
-  clEnv = NULL;
-  inputPixels = NULL;
-  filteredImage = NULL;
-  filteredImage_view = NULL;
-  filteredPixels = NULL;
-  context = NULL;
-  imageBuffer = NULL;
-  randomNumberBuffer = NULL;
-  filteredImageBuffer = NULL;
-  randomNumberSeedsBuffer = NULL;
-  queue = NULL;
-  addNoiseKernel = NULL;
-  randomNumberGeneratorKernel = NULL;
-
-  clEnv = GetDefaultOpenCLEnv();
-  context = GetOpenCLContext(clEnv);
-  queue = AcquireOpenCLCommandQueue(clEnv);
- 
-  image_view=AcquireVirtualCacheView(image,exception);
-  inputPixels=GetCacheViewVirtualPixels(image_view,0,0,image->columns,image->rows,exception);
-  if (inputPixels == (void *) NULL)
-  {
-    (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning,"UnableToReadPixelCache.","`%s'",image->filename);
-    goto cleanup;
-  }
-
-  if (ALIGNED(inputPixels,CLPixelPacket)) 
-  {
-    mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
-  }
-  else 
-  {
-    mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
-  }
-  /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
-    goto cleanup;
-  }
-
-
-  filteredImage = CloneImage(image,image->columns,image->rows,MagickTrue,exception);
-  assert(filteredImage != NULL);
-  if (SetImageStorageClass(filteredImage,DirectClass) != MagickTrue)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
-    goto cleanup;
-  }
-  filteredImage_view=AcquireAuthenticCacheView(filteredImage,exception);
-  filteredPixels=GetCacheViewAuthenticPixels(filteredImage_view,0,0,filteredImage->columns,filteredImage->rows,exception);
-  if (filteredPixels == (void *) NULL)
-  {
-    (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning, "UnableToReadPixelCache.","`%s'",filteredImage->filename);
-    goto cleanup;
-  }
-
-  if (ALIGNED(filteredPixels,CLPixelPacket)) 
-  {
-    mem_flags = CL_MEM_WRITE_ONLY|CL_MEM_USE_HOST_PTR;
-    hostPtr = filteredPixels;
-  }
-  else 
-  {
-    mem_flags = CL_MEM_WRITE_ONLY;
-    hostPtr = NULL;
-  }
-  /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  filteredImageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
-    goto cleanup;
-  }
-
-  /* find out how many random numbers needed by pixel */
-  numRandomNumberPerPixel = 0;
-  {
-    unsigned int numRandPerChannel = 0;
-    switch (noise_type)
-    {
-    case UniformNoise:
-    case ImpulseNoise:
-    case LaplacianNoise:
-    case RandomNoise:
-    default:
-      numRandPerChannel = 1;
-      break;
-    case GaussianNoise:
-    case MultiplicativeGaussianNoise:
-    case PoissonNoise:
-      numRandPerChannel = 2;
-      break;
-    };
-
-    if ((channel & RedChannel) != 0)
-      numRandomNumberPerPixel+=numRandPerChannel;
-    if ((channel & GreenChannel) != 0)
-      numRandomNumberPerPixel+=numRandPerChannel;
-    if ((channel & BlueChannel) != 0)
-      numRandomNumberPerPixel+=numRandPerChannel;
-    if ((channel & OpacityChannel) != 0)
-      numRandomNumberPerPixel+=numRandPerChannel;
-  }
-
-  numRowsPerKernelLaunch = 512;
-
-  /* create a buffer for random numbers */
-  numRandomNumberPerBuffer = (image->columns*numRowsPerKernelLaunch)*numRandomNumberPerPixel;
-  randomNumberBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_WRITE, numRandomNumberPerBuffer*sizeof(float)
-    , NULL, &clStatus);
-
-  {
-    /* setup the random number generators */
-    unsigned long* seeds;
-    numRandomNumberGenerators = 512;
-    randomNumberSeedsBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_ALLOC_HOST_PTR|CL_MEM_READ_WRITE
-                                            , numRandomNumberGenerators * 4 * sizeof(unsigned long), NULL, &clStatus);
-    if (clStatus != CL_SUCCESS)
-    {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
-      goto cleanup;
-    }
-    seeds = (unsigned long*) clEnv->library->clEnqueueMapBuffer(queue, randomNumberSeedsBuffer, CL_TRUE, CL_MAP_WRITE, 0
-                                                , numRandomNumberGenerators*4*sizeof(unsigned long), 0, NULL, NULL, &clStatus);
-    if (clStatus != CL_SUCCESS)
-    {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueMapBuffer failed.",".");
-      goto cleanup;
-    }
-
-    for (i = 0; i < numRandomNumberGenerators; i++) {
-      RandomInfo* randomInfo = AcquireRandomInfo();
-      const unsigned long* s = GetRandomInfoSeed(randomInfo);
-
-      if (i == 0)
-        fNormalize = GetRandomInfoNormalize(randomInfo);
-
-      seeds[i*4] = s[0];
-      randomInfo = DestroyRandomInfo(randomInfo);
-    }
-
-    clStatus = clEnv->library->clEnqueueUnmapMemObject(queue, randomNumberSeedsBuffer, seeds, 0, NULL, NULL);
-    if (clStatus != CL_SUCCESS)
-    {
-      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueUnmapMemObject failed.",".");
-      goto cleanup;
-    }
-
-    randomNumberGeneratorKernel = AcquireOpenCLKernel(clEnv,MAGICK_OPENCL_ACCELERATE
-                                                        ,"randomNumberGeneratorKernel");
-    
-    k = 0;
-    clEnv->library->clSetKernelArg(randomNumberGeneratorKernel,k++,sizeof(cl_mem),(void *)&randomNumberSeedsBuffer);
-    clEnv->library->clSetKernelArg(randomNumberGeneratorKernel,k++,sizeof(float),(void *)&fNormalize);
-    clEnv->library->clSetKernelArg(randomNumberGeneratorKernel,k++,sizeof(cl_mem),(void *)&randomNumberBuffer);
-    initRandom = 1;
-    clEnv->library->clSetKernelArg(randomNumberGeneratorKernel,k++,sizeof(unsigned int),(void *)&initRandom);
-    clEnv->library->clSetKernelArg(randomNumberGeneratorKernel,k++,sizeof(unsigned int),(void *)&numRandomNumberPerBuffer);
-
-    random_work_size = numRandomNumberGenerators;
-  }
-
-  addNoiseKernel = AcquireOpenCLKernel(clEnv,MAGICK_OPENCL_ACCELERATE,"AddNoiseImage");
-  k = 0;
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&imageBuffer);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&filteredImageBuffer);
-  inputColumns = image->columns;
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(unsigned int),(void *)&inputColumns);
-  inputRows = image->rows;
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(unsigned int),(void *)&inputRows);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(ChannelType),(void *)&channel);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(NoiseType),(void *)&noise_type);
-  attenuate=1.0f;
-  option=GetImageArtifact(image,"attenuate");
-  if (option != (char *) NULL)
-    attenuate=(float)StringToDouble(option,(char **) NULL);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(float),(void *)&attenuate);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&randomNumberBuffer);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(unsigned int),(void *)&numRandomNumberPerPixel);
-
-  global_work_size[0] = inputColumns;
-  for (r = 0; r < inputRows; r+=numRowsPerKernelLaunch) 
-  {
-    size_t generator_local_size = 64;
-    /* Generate random numbers in the buffer */
-    clEnv->library->clEnqueueNDRangeKernel(queue,randomNumberGeneratorKernel,1,NULL
-                            ,&random_work_size,&generator_local_size,0,NULL,NULL);
-    if (initRandom != 0)
-    {
-      /* make sure we only do init once */
-      initRandom = 0;
-      clEnv->library->clSetKernelArg(randomNumberGeneratorKernel,3,sizeof(unsigned int),(void *)&initRandom);
-    }
-
-    /* set the row offset */
-    clEnv->library->clSetKernelArg(addNoiseKernel,k,sizeof(unsigned int),(void *)&r);
-    global_work_size[1] = MAGICK_MIN(numRowsPerKernelLaunch, inputRows - r);
-    clEnv->library->clEnqueueNDRangeKernel(queue,addNoiseKernel,2,NULL,global_work_size,NULL,0,NULL,NULL);
-  }
-
-  if (ALIGNED(filteredPixels,CLPixelPacket)) 
-  {
-    length = image->columns * image->rows;
-    clEnv->library->clEnqueueMapBuffer(queue, filteredImageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
-  }
-  else 
-  {
-    length = image->columns * image->rows;
-    clStatus = clEnv->library->clEnqueueReadBuffer(queue, filteredImageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), filteredPixels, 0, NULL, NULL);
-  }
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
-    goto cleanup;
-  }
-
-  outputReady=SyncCacheViewAuthenticPixels(filteredImage_view,exception);
-
-cleanup:
-  OpenCLLogException(__FUNCTION__,__LINE__,exception);
-
-  image_view=DestroyCacheView(image_view);
-  if (filteredImage_view != NULL)
-    filteredImage_view=DestroyCacheView(filteredImage_view);
-
-  if (queue!=NULL)                  RelinquishOpenCLCommandQueue(clEnv, queue);
-  if (addNoiseKernel!=NULL)         RelinquishOpenCLKernel(clEnv, addNoiseKernel);
-  if (randomNumberGeneratorKernel!=NULL) RelinquishOpenCLKernel(clEnv, randomNumberGeneratorKernel);
-  if (imageBuffer!=NULL)		    clEnv->library->clReleaseMemObject(imageBuffer);
-  if (randomNumberBuffer!=NULL)     clEnv->library->clReleaseMemObject(randomNumberBuffer);
-  if (filteredImageBuffer!=NULL)	  clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (randomNumberSeedsBuffer!=NULL) clEnv->library->clReleaseMemObject(randomNumberSeedsBuffer);
-  if (outputReady == MagickFalse && filteredImage != NULL) 
-    filteredImage=DestroyImage(filteredImage);
-
-  return(filteredImage);
-}
 
 MagickExport Image *AccelerateAddNoiseImage(const Image *image,
   const ChannelType channel,const NoiseType noise_type,
@@ -6469,12 +6434,7 @@ MagickExport Image *AccelerateAddNoiseImage(const Image *image,
       (checkAccelerateCondition(image, channel) == MagickFalse))
     return NULL;
 
-DisableMSCWarning(4127)
-  if (sizeof(unsigned long) == 4)
-RestoreMSCWarning
-    filteredImage = ComputeAddNoiseImageOptRandomNum(image,channel,noise_type,exception);
-  else
-    filteredImage = ComputeAddNoiseImage(image,channel,noise_type,exception);
+  filteredImage = ComputeAddNoiseImage(image,channel,noise_type,exception);
   
   return(filteredImage);
 }

@@ -1334,6 +1334,96 @@ const char* accelerateKernels =
 
 
 
+    STRINGIFY(
+      __kernel void UnsharpMask(__global CLPixelType *im, __global CLPixelType *filtered_im,
+                         __constant float *filter,
+                         const unsigned int width, 
+                         const unsigned int imageColumns, const unsigned int imageRows,
+                         __local float4 *pixels, 
+                         const float gain, const float threshold, const unsigned int justBlur)
+      {
+        const int x = get_global_id(0);
+        const int y = get_global_id(1);
+
+        const unsigned int radius = (width - 1) / 2;
+				
+		int row = y - radius;
+		int baseRow = get_group_id(1) * get_local_size(1) - radius;
+		int endRow = (get_group_id(1) + 1) * get_local_size(1) + radius;
+				
+		while (row < endRow) {
+			int srcy =  (row < 0) ? -row : row;			// mirror pad
+			srcy = (srcy >= imageRows) ? (2 * imageRows - srcy - 1) : srcy;
+					
+			float4 value = 0.0f;
+					
+			int ix = x - radius;
+			int i = 0;
+
+			while (i + 7 < width) {
+				for (int j = 0; j < 8; ++j) {		// unrolled
+					int srcx = ix + j;
+					srcx = (srcx < 0) ? -srcx : srcx;
+					srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
+					value += filter[i + j] * convert_float4(im[srcx + srcy * imageColumns]);
+				}
+				ix += 8;
+				i += 8;
+			}
+
+			while (i < width) {
+				int srcx = (ix < 0) ? -ix : ix;			// mirror pad
+				srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
+				value += filter[i] * convert_float4(im[srcx + srcy * imageColumns]);
+				++i;
+				++ix;
+			}	
+			pixels[(row - baseRow) * get_local_size(0) + get_local_id(0)] = value;
+			row += get_local_size(1);
+		}
+				
+			
+		barrier(CLK_LOCAL_MEM_FENCE);
+
+						
+		const int px = get_local_id(0);
+		const int py = get_local_id(1);
+		const int prp = get_local_size(0);
+		float4 value = (float4)(0.0f);
+			
+		int i = 0;
+		while (i + 7 < width) {			// unrolled
+			value += (float4)(filter[i]) * pixels[px + (py + i) * prp];
+			value += (float4)(filter[i]) * pixels[px + (py + i + 1) * prp];
+			value += (float4)(filter[i]) * pixels[px + (py + i + 2) * prp];
+			value += (float4)(filter[i]) * pixels[px + (py + i + 3) * prp];
+			value += (float4)(filter[i]) * pixels[px + (py + i + 4) * prp];
+			value += (float4)(filter[i]) * pixels[px + (py + i + 5) * prp];
+			value += (float4)(filter[i]) * pixels[px + (py + i + 6) * prp];
+			value += (float4)(filter[i]) * pixels[px + (py + i + 7) * prp];
+			i += 8;
+		}
+		while (i < width) {
+			value += (float4)(filter[i]) * pixels[px + (py + i) * prp];
+			++i;
+		}
+
+		if (justBlur == 0) {		// apply sharpening
+			float4 srcPixel = convert_float4(im[x + y * imageColumns]);
+			float4 diff = srcPixel - value;
+
+			float quantumThreshold = QuantumRange*threshold;
+
+			int4 mask = isless(fabs(2.0f * diff), (float4)quantumThreshold);
+			value = select(srcPixel + diff * gain, srcPixel, mask);
+		}
+	
+		if ((x < imageColumns) && (y < imageRows))
+			filtered_im[x + y * imageColumns] = (CLPixelType)(ClampToQuantum(value.s0), ClampToQuantum(value.s1), ClampToQuantum(value.s2), ClampToQuantum(value.s3));
+		}	
+	)
+
+
   STRINGIFY(
 
   __kernel void HullPass1(const __global CLPixelType *inputImage, __global CLPixelType *outputImage
@@ -2599,71 +2689,139 @@ const char* accelerateKernels =
   }
   )
 
-  STRINGIFY(
 
-  inline float GetPseudoRandomValue(uint4* seed, const float normalizeRand) {
-    uint4 s = *seed;
-    do {
-      unsigned int alpha = (unsigned int) (s.y ^ (s.y << 11));
-      s.y=s.z;
-      s.z=s.w;
-      s.w=s.x;
-      s.x = (s.x ^ (s.x >> 19)) ^ (alpha ^ (alpha >> 8));
-    } while (s.x == ~0UL);
-    *seed = s;
-    return (normalizeRand*s.x);
-  }
+OPENCL_DEFINE(SigmaUniform, (attenuate*0.015625f))
+OPENCL_DEFINE(SigmaGaussian,(attenuate*0.015625f))
+OPENCL_DEFINE(SigmaImpulse,  (attenuate*0.1f))
+OPENCL_DEFINE(SigmaLaplacian, (attenuate*0.0390625f))
+OPENCL_DEFINE(SigmaMultiplicativeGaussian,  (attenuate*0.5f))
+OPENCL_DEFINE(SigmaPoisson,  (attenuate*12.5f))
+OPENCL_DEFINE(SigmaRandom,  (attenuate))
+OPENCL_DEFINE(TauGaussian,  (attenuate*0.078125f))
 
-  __kernel void randomNumberGeneratorKernel(__global uint* seeds, const float normalizeRand
-                                           , __global float* randomNumbers, const uint init
-                                           ,const uint numRandomNumbers) {
+STRINGIFY(
 
-    unsigned int id = get_global_id(0);
-    unsigned int seed[4];
+/*
+Part of MWC64X by David Thomas, dt10@imperial.ac.uk
+This is provided under BSD, full license is with the main package.
+See http://www.doc.ic.ac.uk/~dt10/research
+*/
 
-    if (init!=0) {
-      seed[0] = seeds[id*4];
-      seed[1] = 0x50a7f451;
-      seed[2] = 0x5365417e;
-      seed[3] = 0xc3a4171a;
-    }
-    else {
-      seed[0] = seeds[id*4];
-      seed[1] = seeds[id*4+1];
-      seed[2] = seeds[id*4+2];
-      seed[3] = seeds[id*4+3];
-    }
+// Pre: a<M, b<M
+// Post: r=(a+b) mod M
+ulong MWC_AddMod64(ulong a, ulong b, ulong M)
+{
+	ulong v=a+b;
+	//if( (v>=M) || (v<a) )
+	if( (v>=M) || (convert_float(v) < convert_float(a)) )	// workaround for what appears to be an optimizer bug.
+		v=v-M;
+	return v;
+}
 
-    unsigned int numRandomNumbersPerItem = (numRandomNumbers+get_global_size(0)-1)/get_global_size(0);
-    for (unsigned int i = 0; i < numRandomNumbersPerItem; i++) {
-      do
-      {
-        unsigned int alpha=(unsigned int) (seed[1] ^ (seed[1] << 11));
-        seed[1]=seed[2];
-        seed[2]=seed[3];
-        seed[3]=seed[0];
-        seed[0]=(seed[0] ^ (seed[0] >> 19)) ^ (alpha ^ (alpha >> 8));
-      } while (seed[0] == ~0UL);
-      unsigned int pos = (get_group_id(0)*get_local_size(0)*numRandomNumbersPerItem) 
-                          + get_local_size(0) * i + get_local_id(0);
-
-      if (pos >= numRandomNumbers)
-        break;
-      randomNumbers[pos] = normalizeRand*seed[0];
-    }
-
-    /* save the seeds for the time*/
-    seeds[id*4]   = seed[0];
-    seeds[id*4+1] = seed[1];
-    seeds[id*4+2] = seed[2];
-    seeds[id*4+3] = seed[3];
-  }
-
-  )
+// Pre: a<M,b<M
+// Post: r=(a*b) mod M
+// This could be done more efficently, but it is portable, and should
+// be easy to understand. It can be replaced with any of the better
+// modular multiplication algorithms (for example if you know you have
+// double precision available or something).
+ulong MWC_MulMod64(ulong a, ulong b, ulong M)
+{	
+	ulong r=0;
+	while(a!=0){
+		if(a&1)
+			r=MWC_AddMod64(r,b,M);
+		b=MWC_AddMod64(b,b,M);
+		a=a>>1;
+	}
+	return r;
+}
 
 
-  STRINGIFY(
-  
+// Pre: a<M, e>=0
+// Post: r=(a^b) mod M
+// This takes at most ~64^2 modular additions, so probably about 2^15 or so instructions on
+// most architectures
+ulong MWC_PowMod64(ulong a, ulong e, ulong M)
+{
+	ulong sqr=a, acc=1;
+	while(e!=0){
+		if(e&1)
+			acc=MWC_MulMod64(acc,sqr,M);
+		sqr=MWC_MulMod64(sqr,sqr,M);
+		e=e>>1;
+	}
+	return acc;
+}
+
+uint2 MWC_SkipImpl_Mod64(uint2 curr, ulong A, ulong M, ulong distance)
+{
+	ulong m=MWC_PowMod64(A, distance, M);
+	ulong x=curr.x*(ulong)A+curr.y;
+	x=MWC_MulMod64(x, m, M);
+	return (uint2)((uint)(x/A), (uint)(x%A));
+}
+
+uint2 MWC_SeedImpl_Mod64(ulong A, ulong M, uint vecSize, uint vecOffset, ulong streamBase, ulong streamGap)
+{
+	// This is an arbitrary constant for starting LCG jumping from. I didn't
+	// want to start from 1, as then you end up with the two or three first values
+	// being a bit poor in ones - once you've decided that, one constant is as
+	// good as any another. There is no deep mathematical reason for it, I just
+	// generated a random number.
+	enum{ MWC_BASEID = 4077358422479273989UL };
+	
+	ulong dist=streamBase + (get_global_id(0)*vecSize+vecOffset)*streamGap;
+	ulong m=MWC_PowMod64(A, dist, M);
+	
+	ulong x=MWC_MulMod64(MWC_BASEID, m, M);
+	return (uint2)((uint)(x/A), (uint)(x%A));
+}
+
+//! Represents the state of a particular generator
+typedef struct{ uint x; uint c; } mwc64x_state_t;
+
+enum{ MWC64X_A = 4294883355U };
+enum{ MWC64X_M = 18446383549859758079UL };
+
+void MWC64X_Step(mwc64x_state_t *s)
+{
+	uint X=s->x, C=s->c;
+	
+	uint Xn=MWC64X_A*X+C;
+	uint carry=(uint)(Xn<C);				// The (Xn<C) will be zero or one for scalar
+	uint Cn=mad_hi(MWC64X_A,X,carry);  
+	
+	s->x=Xn;
+	s->c=Cn;
+}
+
+void MWC64X_Skip(mwc64x_state_t *s, ulong distance)
+{
+	uint2 tmp=MWC_SkipImpl_Mod64((uint2)(s->x,s->c), MWC64X_A, MWC64X_M, distance);
+	s->x=tmp.x;
+	s->c=tmp.y;
+}
+
+void MWC64X_SeedStreams(mwc64x_state_t *s, ulong baseOffset, ulong perStreamOffset)
+{
+	uint2 tmp=MWC_SeedImpl_Mod64(MWC64X_A, MWC64X_M, 1, 0, baseOffset, perStreamOffset);
+	s->x=tmp.x;
+	s->c=tmp.y;
+}
+
+//! Return a 32-bit integer in the range [0..2^32)
+uint MWC64X_NextUint(mwc64x_state_t *s)
+{
+	uint res=s->x ^ s->c;
+	MWC64X_Step(s);
+	return res;
+}
+
+//
+// End of MWC64X excerpt
+//
+
+
   typedef enum
   {
     UndefinedNoise,
@@ -2676,29 +2834,13 @@ const char* accelerateKernels =
     RandomNoise
   } NoiseType;
 
-  typedef struct {
-    const global float* rns;
-  } RandomNumbers;
 
-
-  float ReadPseudoRandomValue(RandomNumbers* r) {
-    float v = *r->rns;
-    r->rns++;
-    return v;
+  float mwcReadPseudoRandomValue(mwc64x_state_t* rng) {
+	return (1.0f * MWC64X_NextUint(rng)) / (float)(0xffffffff);	// normalized to 1.0
   }
-  )
 
-  OPENCL_DEFINE(SigmaUniform, (attenuate*0.015625f))
-  OPENCL_DEFINE(SigmaGaussian,(attenuate*0.015625f))
-  OPENCL_DEFINE(SigmaImpulse,  (attenuate*0.1f))
-  OPENCL_DEFINE(SigmaLaplacian, (attenuate*0.0390625f))
-  OPENCL_DEFINE(SigmaMultiplicativeGaussian,  (attenuate*0.5f))
-  OPENCL_DEFINE(SigmaPoisson,  (attenuate*12.5f))
-  OPENCL_DEFINE(SigmaRandom,  (attenuate))
-  OPENCL_DEFINE(TauGaussian,  (attenuate*0.078125f))
-
-  STRINGIFY(
-  float GenerateDifferentialNoise(RandomNumbers* r, CLQuantum pixel, NoiseType noise_type, float attenuate) {
+  
+  float mwcGenerateDifferentialNoise(mwc64x_state_t* r, CLQuantum pixel, NoiseType noise_type, float attenuate) {
  
     float 
       alpha,
@@ -2707,7 +2849,7 @@ const char* accelerateKernels =
       sigma;
 
     noise = 0.0f;
-    alpha=ReadPseudoRandomValue(r);
+    alpha=mwcReadPseudoRandomValue(r);
     switch(noise_type) {
     case UniformNoise:
     default:
@@ -2723,7 +2865,7 @@ const char* accelerateKernels =
 
         if (alpha == 0.0f)
           alpha=1.0f;
-        beta=ReadPseudoRandomValue(r);
+        beta=mwcReadPseudoRandomValue(r);
         gamma=sqrt(-2.0f*log(alpha));
         sigma=gamma*cospi((2.0f*beta));
         tau=gamma*sinpi((2.0f*beta));
@@ -2767,7 +2909,7 @@ const char* accelerateKernels =
       sigma=1.0f;
       if (alpha > MagickEpsilon)
         sigma=sqrt(-2.0f*log(alpha));
-      beta=ReadPseudoRandomValue(r);
+      beta=mwcReadPseudoRandomValue(r);
       noise=(float) (pixel+pixel*SigmaMultiplicativeGaussian*sigma*
         cospi((float) (2.0f*beta))/2.0f);
       break;
@@ -2780,7 +2922,7 @@ const char* accelerateKernels =
       poisson=exp(-SigmaPoisson*QuantumScale*pixel);
       for (i=0; alpha > poisson; i++)
       {
-        beta=ReadPseudoRandomValue(r);
+        beta=mwcReadPseudoRandomValue(r);
         alpha*=beta;
       }
       noise=(float) (QuantumRange*i/SigmaPoisson);
@@ -2796,86 +2938,60 @@ const char* accelerateKernels =
     return noise;
   }
 
+
+
+
+
   __kernel
-  void AddNoiseImage(const __global CLPixelType* inputImage, __global CLPixelType* filteredImage
-                    ,const unsigned int inputColumns, const unsigned int inputRows
+  void GenerateNoiseImage(const __global CLPixelType* inputImage, __global CLPixelType* filteredImage
+                    ,const unsigned int inputPixelCount, const unsigned int pixelsPerWorkItem
                     ,const ChannelType channel 
                     ,const NoiseType noise_type, const float attenuate
-                    ,const __global float* randomNumbers, const unsigned int numRandomNumbersPerPixel
-                    ,const unsigned int rowOffset) {
+                    ,const unsigned int seed0, const unsigned int seed1
+					,const unsigned int numRandomNumbersPerPixel) {
 
-    unsigned int x = get_global_id(0);
-    unsigned int y = get_global_id(1) + rowOffset;
-    RandomNumbers r;
-    r.rns = randomNumbers + (get_global_id(1) * inputColumns + get_global_id(0))*numRandomNumbersPerPixel;
+	mwc64x_state_t rng;
+	rng.x = seed0;
+	rng.c = seed1;
 
-    CLPixelType p = inputImage[y*inputColumns+x];
-    CLPixelType q = filteredImage[y*inputColumns+x];
+	uint span = pixelsPerWorkItem * numRandomNumbersPerPixel;	// length of RNG substream each workitem will use
+	uint offset = span * get_local_size(0) * get_group_id(0);	// offset of this workgroup's RNG substream (in master stream);
 
-    if ((channel&RedChannel)!=0) {
-      setRed(&q,ClampToQuantum(GenerateDifferentialNoise(&r,getRed(p),noise_type,attenuate)));
-    }
+	MWC64X_SeedStreams(&rng, offset, span);						// Seed the RNG streams
+
+	uint pos = get_local_size(0) * get_group_id(0) * pixelsPerWorkItem + get_local_id(0);	// pixel to process
+
+	uint count = pixelsPerWorkItem;
+
+	while (count > 0) {
+		if (pos < inputPixelCount) {
+			CLPixelType p = inputImage[pos];
+
+			if ((channel&RedChannel)!=0) {
+			  setRed(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getRed(p),noise_type,attenuate)));
+			}
     
-    if ((channel&GreenChannel)!=0) {
-      setGreen(&q,ClampToQuantum(GenerateDifferentialNoise(&r,getGreen(p),noise_type,attenuate)));
-    }
+			if ((channel&GreenChannel)!=0) {
+			  setGreen(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getGreen(p),noise_type,attenuate)));
+			}
 
-    if ((channel&BlueChannel)!=0) {
-      setBlue(&q,ClampToQuantum(GenerateDifferentialNoise(&r,getBlue(p),noise_type,attenuate)));
-    }
+			if ((channel&BlueChannel)!=0) {
+			  setBlue(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getBlue(p),noise_type,attenuate)));
+			}
 
-    if ((channel & OpacityChannel) != 0) {
-      setOpacity(&q,ClampToQuantum(GenerateDifferentialNoise(&r,getOpacity(p),noise_type,attenuate)));
-    }
+			if ((channel & OpacityChannel) != 0) {
+			  setOpacity(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getOpacity(p),noise_type,attenuate)));
+			}
 
-    filteredImage[y*inputColumns+x] = q;
-  }
-
-  )
-
-  STRINGIFY(
-  __kernel 
-  void RandomImage(__global CLPixelType* inputImage,
-                   const uint imageColumns, const uint imageRows,
-                   __global uint* seeds,
-                   const float randNormNumerator,
-                   const uint randNormDenominator) {
-
-    unsigned int numGenerators = get_global_size(0);
-    unsigned numRandPixelsPerWorkItem = ((imageColumns*imageRows) + (numGenerators-1))
-                                        / numGenerators;
-
-    uint4 s;
-    s.x = seeds[get_global_id(0)*4];
-    s.y = seeds[get_global_id(0)*4+1];
-    s.z = seeds[get_global_id(0)*4+2];
-    s.w = seeds[get_global_id(0)*4+3];
-
-    unsigned int offset = get_group_id(0) * get_local_size(0) * numRandPixelsPerWorkItem;
-    for (unsigned int n = 0; n < numRandPixelsPerWorkItem; n++)
-    {
-      int i = offset + n*get_local_size(0) + get_local_id(0);
-      if (i >= imageColumns*imageRows)
-        break;
-
-      float rand = GetPseudoRandomValue(&s,randNormNumerator/randNormDenominator);
-      CLQuantum v = ClampToQuantum(QuantumRange*rand);
-
-      CLPixelType p;
-      setRed(&p,v);
-      setGreen(&p,v);
-      setBlue(&p,v);
-      setOpacity(&p,0);
-
-      inputImage[i] = p;
-    }
-
-    seeds[get_global_id(0)*4]   = s.x;
-    seeds[get_global_id(0)*4+1] = s.y;
-    seeds[get_global_id(0)*4+2] = s.z;
-    seeds[get_global_id(0)*4+3] = s.w;
+			filteredImage[pos] = p;
+			//filteredImage[pos] = (CLPixelType)(MWC64X_NextUint(&rng) % 256, MWC64X_NextUint(&rng) % 256, MWC64X_NextUint(&rng) % 256, 255);
+		}
+		pos += get_local_size(0);
+		--count;
+	}
   }
   )
+
 
   STRINGIFY(
     __kernel 
