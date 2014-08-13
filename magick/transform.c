@@ -1190,14 +1190,6 @@ MagickExport Image *ExtentImage(const Image *image,
     exception);
   if (extent_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(extent_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&extent_image->exception);
-      extent_image=DestroyImage(extent_image);
-      return((Image *) NULL);
-    }
-  if (extent_image->background_color.opacity != OpaqueOpacity)
-    extent_image->matte=MagickTrue;
   (void) SetImageBackgroundColor(extent_image);
   (void) CompositeImage(extent_image,image->compose,image,-geometry->x,
     -geometry->y);
