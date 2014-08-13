@@ -3694,7 +3694,7 @@ MAGICK_PATCHLEVEL_VERSION=7
 
 MAGICK_VERSION=6.8.9-7
 
-MAGICK_SVN_REVISION=16215:16229M
+MAGICK_SVN_REVISION=16304M
 
 
 # Substitute library versioning
@@ -4332,7 +4332,7 @@ fi
 AM_BACKSLASH='\'
 
 
-# versionning of library
+# versioning of library
 MAGICK_LIB_VERSION="0x"
 if test ${MAGICK_LIBRARY_CURRENT} -lt 10 ; then
   MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}0
@@ -28984,6 +28984,8 @@ fi
 
 have_fpx='no'
 FPX_LIBS=''
+SAVED_LIBS=${LIBS}
+LIBS=${LIBS/-ldjvulibre/}
 if test "$with_fpx" != 'no'; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
@@ -29087,6 +29089,7 @@ else
 fi
 
 
+LIBS=${SAVED_LIBS}
 
 
 #
