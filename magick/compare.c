@@ -125,8 +125,7 @@ static inline MagickBooleanType ValidateImageMorphology(
   /*
     Does the image match the reconstructed image morphology?
   */
-  if ((image->storage_class != reconstruct_image->storage_class) ||
-      (image->matte != reconstruct_image->matte) ||
+  if ((image->matte != reconstruct_image->matte) ||
       (image->channels != reconstruct_image->channels))
     return(MagickFalse);
   return(MagickTrue);
