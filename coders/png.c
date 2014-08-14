@@ -12088,21 +12088,35 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
     if (IsOptionMember("none",value) != MagickFalse)
       {
-        mng_info->ping_exclude_bKGD=!excluding;
-        mng_info->ping_exclude_cHRM=!excluding;
-        mng_info->ping_exclude_date=!excluding;
-        mng_info->ping_exclude_EXIF=!excluding;
-        mng_info->ping_exclude_gAMA=!excluding;
-        mng_info->ping_exclude_iCCP=!excluding;
+        mng_info->ping_exclude_bKGD=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_cHRM=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_date=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_EXIF=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_gAMA=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_iCCP=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
         /* mng_info->ping_exclude_iTXt=!excluding; */
-        mng_info->ping_exclude_oFFs=!excluding;
-        mng_info->ping_exclude_pHYs=!excluding;
-        mng_info->ping_exclude_sRGB=!excluding;
-        mng_info->ping_exclude_tEXt=!excluding;
-        mng_info->ping_exclude_tRNS=!excluding;
-        mng_info->ping_exclude_vpAg=!excluding;
-        mng_info->ping_exclude_zCCP=!excluding;
-        mng_info->ping_exclude_zTXt=!excluding;
+        mng_info->ping_exclude_oFFs=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_pHYs=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_sRGB=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_tEXt=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_tRNS=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_vpAg=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_zCCP=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_zTXt=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
       }
 
     if (IsOptionMember("bkgd",value) != MagickFalse)
