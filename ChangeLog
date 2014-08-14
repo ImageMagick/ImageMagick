@@ -1,3 +1,7 @@
+2014-07-14  6.8.9-7 Cristy  <quetzlzacatenango@image...>
+  * Fix off by one buglet when extracting profiles 8BIM (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26095).
+
 2014-07-31  6.8.9-7 Dirk Lemstra <dirk@snakeware...>
   * Fixed bug when reading 1 bit PSD. (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26015).
