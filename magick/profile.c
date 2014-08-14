@@ -1134,7 +1134,7 @@ static void WriteTo8BimProfile(Image *image,const char *name,
 
   const unsigned char
     *datum,
-    *s;
+    *q;
 
   register const unsigned char
     *p;
@@ -1160,13 +1160,15 @@ static void WriteTo8BimProfile(Image *image,const char *name,
 
   if (LocaleCompare(name,"icc") == 0)
     profile_id=0x040f;
-  else if (LocaleCompare(name,"iptc") == 0)
-    profile_id=0x0404;
-  else if (LocaleCompare(name,"xmp") == 0)
-    profile_id=0x0424;
   else
-    return;
-  profile_8bim=(StringInfo *)GetValueFromSplayTree((SplayTreeInfo *)
+    if (LocaleCompare(name,"iptc") == 0)
+      profile_id=0x0404;
+    else
+      if (LocaleCompare(name,"xmp") == 0)
+        profile_id=0x0424;
+      else
+        return;
+  profile_8bim=(StringInfo *) GetValueFromSplayTree((SplayTreeInfo *)
     image->profiles,"8bim");
   if (profile_8bim == (StringInfo *) NULL)
     return;
@@ -1174,7 +1176,7 @@ static void WriteTo8BimProfile(Image *image,const char *name,
   length=GetStringInfoLength(profile_8bim);
   for (p=datum; p < (datum+length-16); )
   {
-    s=p;
+    q=p;
     if (LocaleNCompare((char *) p,"8BIM",4) != 0)
       break;
     p+=4;
@@ -1187,51 +1189,52 @@ static void WriteTo8BimProfile(Image *image,const char *name,
       break;
     p=ReadResourceLong(p,&value);
     count=(ssize_t) value;
-    if ((p > (datum+length-count)) || (count > (ssize_t) length))
-      break;
     if ((count & 0x01) != 0)
       count++;
-    if (id == profile_id)
+    if ((p > (datum+length-count)) || (count > (ssize_t) length))
+      break;
+    if (id != profile_id)
+      p+=count;
+    else
       {
         size_t
-          offset,
-          rest;
+          extent,
+          offset;
 
         ssize_t
-          new_count;
+          extract_extent;
 
         StringInfo
-          *new_profile;
+          *extract_profile;
 
-        new_count=0;
-        rest=(datum+length)-(p+count);
+        extract_extent=0;
+        extent=(datum+length)-(p+count);
         if (profile == (StringInfo *) NULL)
           {
-            offset=(s-datum);
-            new_profile=AcquireStringInfo(offset+rest);
-            (void) CopyMagickMemory(new_profile->datum,datum,offset);
+            offset=(q-datum);
+            extract_profile=AcquireStringInfo(offset+extent);
+            (void) CopyMagickMemory(extract_profile->datum,datum,offset);
           }
         else
           {
             offset=(p-datum);
-            new_count=profile->length;
-            if ((new_count & 0x01) != 0)
-              new_count++;
-            new_profile=AcquireStringInfo(offset+new_count+rest);
-            (void) CopyMagickMemory(new_profile->datum,datum,offset-4);
-            WriteResourceLong(new_profile->datum+offset-4,profile->length);
-            (void) CopyMagickMemory(new_profile->datum+offset,profile->datum,
+            extract_extent=profile->length;
+            if ((extract_extent & 0x01) != 0)
+              extract_extent++;
+            extract_profile=AcquireStringInfo(offset+extract_extent+extent);
+            (void) CopyMagickMemory(extract_profile->datum,datum,offset-4);
+            (void) WriteResourceLong(extract_profile->datum+offset-4,
               profile->length);
+            (void) CopyMagickMemory(extract_profile->datum+offset,
+              profile->datum,profile->length);
           }
-        (void) CopyMagickMemory(new_profile->datum+offset+new_count,p+count,
-          rest);
+        (void) CopyMagickMemory(extract_profile->datum+offset+extract_extent,
+          p+count,extent);
         (void) AddValueToSplayTree((SplayTreeInfo *) image->profiles,
-          ConstantString("8bim"),CloneStringInfo(new_profile));
-        new_profile=DestroyStringInfo(new_profile);
+          ConstantString("8bim"),CloneStringInfo(extract_profile));
+        extract_profile=DestroyStringInfo(extract_profile);
         break;
       }
-    else
-      p+=count;
   }
 }
 
