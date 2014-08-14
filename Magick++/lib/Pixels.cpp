@@ -131,12 +131,12 @@ const void *Magick::PixelData::data(void) const
   return(_data);
 }
 
-const ::ssize_t Magick::PixelData::length(void) const
+::ssize_t Magick::PixelData::length(void) const
 {
   return(_length);
 }
 
-const ::ssize_t Magick::PixelData::size(void) const
+::ssize_t Magick::PixelData::size(void) const
 {
   return(_size);
 }
