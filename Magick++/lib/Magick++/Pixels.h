@@ -93,10 +93,10 @@ namespace Magick
     const void *data(void) const;
 
     // Length of the buffer
-    const ::ssize_t length(void) const;
+    ::ssize_t length(void) const;
 
     // Size of the buffer in bytes
-    const ::ssize_t size(void) const;
+    ::ssize_t size(void) const;
 
   private:
 
