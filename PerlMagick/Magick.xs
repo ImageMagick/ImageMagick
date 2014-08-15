@@ -218,7 +218,7 @@ static struct
       {"sigma", RealReference}, {"channel", MagickChannelOptions} } },
     { "Chop", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"x", IntegerReference},
-      {"y", IntegerReference} } },
+      {"y", IntegerReference}, {"gravity", MagickGravityOptions} } },
     { "Crop", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"fuzz", StringReference},
@@ -7920,6 +7920,8 @@ Mogrify(ref,...)
         }
         case 7:  /* Chop */
         {
+          if (attribute_flag[5] != 0)
+            image->gravity=(GravityType) argument_list[5].integer_reference;
           if (attribute_flag[0] != 0)
             flags=ParseGravityGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
@@ -10058,6 +10060,8 @@ Mogrify(ref,...)
         }
         case 87:  /* Splice */
         {
+          if (attribute_flag[7] != 0)
+            image->gravity=(GravityType) argument_list[7].integer_reference;
           if (attribute_flag[0] != 0)
             flags=ParseGravityGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
@@ -10075,8 +10079,6 @@ Mogrify(ref,...)
           if (attribute_flag[6] != 0)
             (void) QueryColorCompliance(argument_list[6].string_reference,
               AllCompliance,&image->background_color,exception);
-          if (attribute_flag[7] != 0)
-            image->gravity=(GravityType) argument_list[7].integer_reference;
           image=SpliceImage(image,&geometry,exception);
           break;
         }
