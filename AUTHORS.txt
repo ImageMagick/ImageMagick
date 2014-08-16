@@ -10,7 +10,8 @@ Siu Chi Chan
      and NVidia.  Adapted from MulticoreWare OpenCL contribution.
 
 Dirk Lemstra
-     Contributed to Magick++ and the Windows distribution.
+     Contributor to and maintainer of Magick++, OpenCL acceleration, and
+     the Windows build (configure, ImageMagickObject, etc.).
 
 Glenn Randers-Pehrson
      Contributed significantly to the utilities.  Authored support for JNG,
