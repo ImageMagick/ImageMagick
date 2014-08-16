@@ -401,7 +401,6 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_DEPENDENC
 am__dirstamp = $(am__leading_dot)dirstamp
 am_Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS = Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Blob.lo \
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-BlobRef.lo \
-	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.lo \
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-CoderInfo.lo \
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Color.lo \
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Drawable.lo \
@@ -414,6 +413,7 @@ am_Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECT
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Options.lo \
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Pixels.lo \
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ResourceLimits.lo \
+	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.lo \
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-STL.lo \
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Thread.lo \
 	Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-TypeMetric.lo
@@ -2288,7 +2288,6 @@ MANS = $(man_MANS)
 DATA = $(configlib_DATA) $(configshare_DATA) $(configsharearch_DATA) \
 	$(doc_DATA) $(pkgconfig_DATA)
 am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
-	Magick++/lib/Magick++/ChannelMoments.h \
 	Magick++/lib/Magick++/CoderInfo.h \
 	Magick++/lib/Magick++/Color.h Magick++/lib/Magick++/Drawable.h \
 	Magick++/lib/Magick++/Exception.h \
@@ -2297,7 +2296,8 @@ am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/Include.h \
 	Magick++/lib/Magick++/Montage.h Magick++/lib/Magick++/Pixels.h \
 	Magick++/lib/Magick++/ResourceLimits.h \
-	Magick++/lib/Magick++/STL.h Magick++/lib/Magick++/TypeMetric.h
+	Magick++/lib/Magick++/Statistic.h Magick++/lib/Magick++/STL.h \
+	Magick++/lib/Magick++/TypeMetric.h
 am__magickpptopinc_HEADERS_DIST = Magick++/lib/Magick++.h
 HEADERS = $(MagickCoreinc_HEADERS) $(MagickCoreincarch_HEADERS) \
 	$(MagickWandinc_HEADERS) $(include_HEADERS) \
@@ -4760,7 +4760,6 @@ MAGICKPP_CLEANFILES = \
 Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = \
 	Magick++/lib/Blob.cpp \
 	Magick++/lib/BlobRef.cpp \
-	Magick++/lib/ChannelMoments.cpp \
 	Magick++/lib/CoderInfo.cpp \
 	Magick++/lib/Color.cpp \
 	Magick++/lib/Drawable.cpp \
@@ -4773,13 +4772,13 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 	Magick++/lib/Options.cpp \
 	Magick++/lib/Pixels.cpp \
 	Magick++/lib/ResourceLimits.cpp \
+	Magick++/lib/Statistic.cpp \
 	Magick++/lib/STL.cpp \
 	Magick++/lib/Thread.cpp \
 	Magick++/lib/TypeMetric.cpp \
 	Magick++/lib/Magick++.h \
 	Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/BlobRef.h \
-	Magick++/lib/Magick++/ChannelMoments.h \
 	Magick++/lib/Magick++/CoderInfo.h \
 	Magick++/lib/Magick++/Color.h \
 	Magick++/lib/Magick++/Drawable.h \
@@ -4793,6 +4792,7 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 	Magick++/lib/Magick++/Options.h \
 	Magick++/lib/Magick++/Pixels.h \
 	Magick++/lib/Magick++/ResourceLimits.h \
+	Magick++/lib/Magick++/Statistic.h \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/Thread.h \
 	Magick++/lib/Magick++/TypeMetric.h
@@ -4809,7 +4809,6 @@ magickppincdir = $(topincludedir)/Magick++
 magickppinc_HEADERS = $(MAGICKPP_INCHEADERS)
 MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Blob.h \
-	Magick++/lib/Magick++/ChannelMoments.h \
 	Magick++/lib/Magick++/CoderInfo.h \
 	Magick++/lib/Magick++/Color.h \
 	Magick++/lib/Magick++/Drawable.h \
@@ -4821,6 +4820,7 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Montage.h \
 	Magick++/lib/Magick++/Pixels.h \
 	Magick++/lib/Magick++/ResourceLimits.h \
+	Magick++/lib/Magick++/Statistic.h \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
@@ -5436,9 +5436,6 @@ Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@
 Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-BlobRef.lo:  \
 	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.lo:  \
-	Magick++/lib/$(am__dirstamp) \
-	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
 Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-CoderInfo.lo:  \
 	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
@@ -5473,6 +5470,9 @@ Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@
 	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
 Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ResourceLimits.lo:  \
+	Magick++/lib/$(am__dirstamp) \
+	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
+Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.lo:  \
 	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
 Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-STL.lo:  \
@@ -7125,7 +7125,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_zoom-zoom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Blob.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-BlobRef.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-CoderInfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Color.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Drawable.Plo@am__quote@
@@ -7139,6 +7138,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Pixels.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ResourceLimits.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-STL.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Thread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-TypeMetric.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_appendImages-appendImages.Po@am__quote@
@@ -10216,13 +10216,6 @@ Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-BlobRef.lo `test -f 'Magick++/lib/BlobRef.cpp' || echo '$(srcdir)/'`Magick++/lib/BlobRef.cpp
 
-Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.lo: Magick++/lib/ChannelMoments.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.Tpo -c -o Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.lo `test -f 'Magick++/lib/ChannelMoments.cpp' || echo '$(srcdir)/'`Magick++/lib/ChannelMoments.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/ChannelMoments.cpp' object='Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ChannelMoments.lo `test -f 'Magick++/lib/ChannelMoments.cpp' || echo '$(srcdir)/'`Magick++/lib/ChannelMoments.cpp
-
 Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-CoderInfo.lo: Magick++/lib/CoderInfo.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-CoderInfo.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-CoderInfo.Tpo -c -o Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-CoderInfo.lo `test -f 'Magick++/lib/CoderInfo.cpp' || echo '$(srcdir)/'`Magick++/lib/CoderInfo.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-CoderInfo.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-CoderInfo.Plo
@@ -10306,6 +10299,13 @@ Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/ResourceLimits.cpp' object='Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ResourceLimits.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ResourceLimits.lo `test -f 'Magick++/lib/ResourceLimits.cpp' || echo '$(srcdir)/'`Magick++/lib/ResourceLimits.cpp
+
+Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.lo: Magick++/lib/Statistic.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.Tpo -c -o Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.lo `test -f 'Magick++/lib/Statistic.cpp' || echo '$(srcdir)/'`Magick++/lib/Statistic.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Statistic.cpp' object='Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-Statistic.lo `test -f 'Magick++/lib/Statistic.cpp' || echo '$(srcdir)/'`Magick++/lib/Statistic.cpp
 
 Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-STL.lo: Magick++/lib/STL.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-STL.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-STL.Tpo -c -o Magick++/lib/Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-STL.lo `test -f 'Magick++/lib/STL.cpp' || echo '$(srcdir)/'`Magick++/lib/STL.cpp
