@@ -4378,51 +4378,9 @@ void Magick::Image::spread(const size_t amount_)
   ThrowPPException;
 }
 
-void Magick::Image::statistics(ImageStatistics *statistics)
+Magick::ImageStatistics Magick::Image::statistics()
 {
-  double
-    maximum,
-    minimum;
-
-  GetPPException;
-
-  SetPPChannelMask(RedChannel);
-  (void) GetImageRange(constImage(),&minimum,&maximum,exceptionInfo);
-  statistics->red.minimum=minimum;
-  statistics->red.maximum=maximum;
-  (void) GetImageMean(constImage(),&statistics->red.mean,
-    &statistics->red.standard_deviation,exceptionInfo);
-  (void) GetImageKurtosis(constImage(),&statistics->red.kurtosis,
-    &statistics->red.skewness,exceptionInfo);
-
-  (void) SetImageChannelMask(image(),GreenChannel);
-  (void) GetImageRange(constImage(),&minimum,&maximum,exceptionInfo);
-  statistics->green.minimum=minimum;
-  statistics->green.maximum=maximum;
-  (void) GetImageMean(constImage(),&statistics->green.mean,
-    &statistics->green.standard_deviation,exceptionInfo);
-  (void) GetImageKurtosis(constImage(),&statistics->green.kurtosis,
-    &statistics->green.skewness,exceptionInfo);
-
-  (void) SetImageChannelMask(image(),GreenChannel);
-  (void) GetImageRange(constImage(),&minimum,&maximum,exceptionInfo);
-  statistics->blue.minimum=minimum;
-  statistics->blue.maximum=maximum;
-  (void) GetImageMean(constImage(),&statistics->blue.mean,
-    &statistics->blue.standard_deviation,exceptionInfo);
-  (void) GetImageKurtosis(constImage(),&statistics->blue.kurtosis,
-    &statistics->blue.skewness,exceptionInfo);
-
-  (void) SetImageChannelMask(image(),AlphaChannel);
-  (void) GetImageRange(constImage(),&minimum,&maximum,exceptionInfo);
-  statistics->alpha.minimum=minimum;
-  statistics->alpha.maximum=maximum;
-  (void) GetImageMean(constImage(),&statistics->alpha.mean,
-    &statistics->alpha.standard_deviation,exceptionInfo);
-  (void) GetImageKurtosis(constImage(),&statistics->alpha.kurtosis,
-    &statistics->alpha.skewness,exceptionInfo);
-  RestorePPChannelMask;
-  ThrowPPException;
+  return(ImageStatistics(constImage()));
 }
 
 void Magick::Image::stegano(const Image &watermark_)
