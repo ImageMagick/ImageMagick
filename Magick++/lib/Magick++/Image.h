@@ -12,11 +12,11 @@
 #include <string>
 #include <list>
 #include "Magick++/Blob.h"
-#include "Magick++/ChannelMoments.h"
 #include "Magick++/Color.h"
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"
 #include "Magick++/Geometry.h"
+#include "Magick++/Statistic.h"
 #include "Magick++/TypeMetric.h"
 
 namespace Magick
@@ -52,35 +52,6 @@ namespace Magick
   class MagickPPExport Image
   {
   public:
-
-    // Obtain image statistics. Statistics are normalized to the range
-    // of 0.0 to 1.0 and are output to the specified ImageStatistics
-    // structure.
-    typedef struct _ImageChannelStatistics
-    {
-      /* Minimum value observed */
-      double maximum;
-      /* Maximum value observed */
-      double minimum;
-      /* Average (mean) value observed */
-      double mean;
-      /* Standard deviation, sqrt(variance) */
-      double standard_deviation;
-      /* Variance */
-      double variance;
-      /* Kurtosis */
-      double kurtosis;
-      /* Skewness */
-      double skewness;
-    } ImageChannelStatistics;
-
-    typedef struct _ImageStatistics
-    {
-      ImageChannelStatistics red;
-      ImageChannelStatistics green;
-      ImageChannelStatistics blue;
-      ImageChannelStatistics alpha;
-    } ImageStatistics;
 
     // Default constructor
     Image(void);
@@ -1325,7 +1296,7 @@ namespace Magick
     // Spread pixels randomly within image by specified ammount
     void spread(const size_t amount_=3);
 
-    void statistics(ImageStatistics *statistics);
+    Magick::ImageStatistics statistics();
 
     // Add a digital watermark to the image (based on second image)
     void stegano(const Image &watermark_);

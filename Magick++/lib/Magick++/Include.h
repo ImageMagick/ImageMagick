@@ -863,6 +863,8 @@ namespace Magick
   // Pixel traits
   using MagickCore::PixelTrait;
   using MagickCore::UndefinedPixelTrait;
+  using MagickCore::CopyPixelTrait;
+  using MagickCore::UpdatePixelTrait;
   using MagickCore::BlendPixelTrait;
 
   // Preview types.  Not currently used by Magick++
