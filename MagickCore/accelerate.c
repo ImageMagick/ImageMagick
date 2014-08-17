@@ -62,6 +62,7 @@ Include declarations.
 #include "MagickCore/opencl.h"
 #include "MagickCore/opencl-private.h"
 #include "MagickCore/option.h"
+#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/pixel-private.h"
 #include "MagickCore/prepress.h"
 #include "MagickCore/quantize.h"
@@ -150,6 +151,20 @@ static MagickBooleanType checkAccelerateCondition(const Image* image,
 
   /* check if the image has read / write mask */
   if (image->read_mask != MagickFalse || image->write_mask != MagickFalse)
+    return(MagickFalse);
+
+  /* check if pixel order is RGBA */
+  if (GetPixelChannelOffset(image,RedPixelChannel) != 0 ||
+      GetPixelChannelOffset(image,GreenPixelChannel) != 1 ||
+      GetPixelChannelOffset(image,BluePixelChannel) != 2 ||
+      GetPixelChannelOffset(image,AlphaPixelChannel) != 3)
+    return(MagickFalse);
+
+  /* check if all channels are available */
+  if (((GetPixelRedTraits(image) & UpdatePixelTrait) == 0) ||
+      ((GetPixelGreenTraits(image) & UpdatePixelTrait) == 0) ||
+      ((GetPixelBlueTraits(image) & UpdatePixelTrait) == 0) ||
+      ((GetPixelAlphaTraits(image) & UpdatePixelTrait) == 0))
     return(MagickFalse);
 
   return(MagickTrue);
