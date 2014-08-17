@@ -1952,7 +1952,10 @@ namespace Magick
   void restoreChannelMaskImages(InputIterator first_,InputIterator last_,
     Container *container_)
   {
-    class Container::iterator channel_mask = container_->begin();
+    typename Container::iterator
+      channel_mask;
+
+    channel_mask=container_->begin();
     for (InputIterator iter = first_; iter != last_; ++iter)
     {
       iter->modifyImage();
