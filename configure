@@ -3694,7 +3694,7 @@ MAGICK_PATCHLEVEL_VERSION=8
 
 MAGICK_VERSION=6.8.9-8
 
-MAGICK_SVN_REVISION=16339M
+MAGICK_SVN_REVISION=16339:16342M
 
 
 # Substitute library versioning
@@ -33876,7 +33876,7 @@ $as_echo "no" >&6; }
 fi
 
 
-if test "$MPEGDecodeDelegate" == "$MPEGDecodeDelegateDefault" ; then
+if test "$MPEGDecodeDelegate" = "$MPEGDecodeDelegateDefault" ; then
   MPEGDecodeDelegateDefault='ffmpeg'
   # Extract the first word of ""$MPEGDecodeDelegateDefault"", so it can be a program name with args.
 set dummy "$MPEGDecodeDelegateDefault"; ac_word=$2
@@ -33961,7 +33961,7 @@ $as_echo "no" >&6; }
 fi
 
 
-if test "$MPEGEncodeDelegate" == "$MPEGEncodeDelegateDefault" ; then
+if test "$MPEGEncodeDelegate" = "$MPEGEncodeDelegateDefault" ; then
   MPEGEncodeDelegateDefault='ffmpeg'
   # Extract the first word of ""$MPEGEncodeDelegateDefault"", so it can be a program name with args.
 set dummy "$MPEGEncodeDelegateDefault"; ac_word=$2
