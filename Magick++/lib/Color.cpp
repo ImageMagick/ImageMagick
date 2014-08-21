@@ -238,6 +238,7 @@ Magick::Color::operator std::string() const
   pixel.green=_pixel->green;
   pixel.blue=_pixel->blue;
   pixel.alpha=_pixel->alpha;
+  pixel.alpha_trait=_pixel->alpha_trait;
   GetColorTuple(&pixel,MagickTrue,colorbuf);
 
   return(std::string(colorbuf));
@@ -277,7 +278,11 @@ void Magick::Color::isValid(bool valid_)
 void Magick::Color::quantumAlpha(const Magick::Quantum alpha_)
 {
   _pixel->alpha=alpha_;
-  _isValid=true ;
+  if (alpha_ == QuantumRange)
+    _pixel->alpha_trait=UndefinedPixelTrait;
+  else
+    _pixel->alpha_trait=BlendPixelTrait;
+  _isValid=true;
 }
 
 Magick::Quantum Magick::Color::quantumAlpha(void) const
@@ -353,7 +358,7 @@ void Magick::Color::initPixel()
   _pixel->red=0;
   _pixel->green=0;
   _pixel->blue=0;
-  _pixel->alpha=TransparentAlpha;
+  _pixel->alpha=OpaqueAlpha;
 }
 
 Magick::ColorGray::ColorGray(void)

@@ -49,7 +49,7 @@ namespace Magick
 
     // Construct Geometry from specified dimensions
     Geometry(size_t width_,size_t height_,::ssize_t xOff_=0,
-      ::ssize_t yOff_=0,bool xNegative_=false,bool yNegative_=false);
+      ::ssize_t yOff_=0);
 
     // Destructor
     ~Geometry(void);
