@@ -261,7 +261,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         distance=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
-        if (fabs((double) distance) >= MagickEpsilon)
+        if (fabs(distance) >= MagickEpsilon)
           difference=MagickTrue;
       }
       if (difference == MagickFalse)
@@ -737,8 +737,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        distance=fabs((double) (Sa*p[i]-Da*GetPixelChannel(reconstruct_image,
-          channel,q)));
+        distance=fabs(Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q));
         distortion[i]+=distance;
         distortion[CompositePixelChannel]+=distance;
         mean_error+=distance*distance;
