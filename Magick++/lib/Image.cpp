@@ -1253,9 +1253,7 @@ void Magick::Image::page(const Magick::Geometry &pageSize_)
 Magick::Geometry Magick::Image::page(void) const
 {
   return(Geometry(constImage()->page.width,constImage()->page.height,
-    AbsoluteValue(constImage()->page.x),AbsoluteValue(constImage()->page.y),
-    constImage()->page.x < 0 ? true : false,
-    constImage()->page.y < 0 ? true : false));
+    AbsoluteValue(constImage()->page.x),AbsoluteValue(constImage()->page.y)));
 }
 
 void Magick::Image::quality(const size_t quality_)

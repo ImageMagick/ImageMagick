@@ -129,7 +129,7 @@ Magick::Geometry::Geometry(const std::string &geometry_)
 }
 
 Magick::Geometry::Geometry(size_t width_,size_t height_,ssize_t xOff_,
-  ssize_t yOff_,bool xNegative_,bool yNegative_)
+  ssize_t yOff_)
   : _width(width_),
     _height(height_),
     _xOff(xOff_),
