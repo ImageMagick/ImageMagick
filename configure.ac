@@ -1810,50 +1810,6 @@ AC_SUBST(DPS_LIBS)
 dnl ===========================================================================
 
 #
-# Check for DJVU delegate library.
-#
-AC_ARG_WITH([djvu],
-    [AC_HELP_STRING([--without-djvu],
-                    [disable DjVu support])],
-    [with_djvu=$withval],
-    [with_djvu='yes'])
-
-if test "$with_djvu" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-djvu=$with_djvu "
-fi
-
-have_djvu='no'
-DJVU_LIBS=''
-if test "$with_djvu" != 'no'; then
-    AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for DJVU])
-    AC_MSG_RESULT([])
-    failed=0
-    passed=0
-    AC_CHECK_HEADER(libdjvu/ddjvuapi.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(djvulibre,ddjvu_context_create,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING([if DJVU package is complete])
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_djvu='no (failed tests)'
-        else
-            DJVU_LIBS='-ldjvulibre'
-            LIBS="$DJVU_LIBS $LIBS"
-            AC_DEFINE(DJVU_DELEGATE,1,Define if you have DJVU library)
-            AC_MSG_RESULT([yes])
-            have_djvu='yes'
-        fi
-    else
-        AC_MSG_RESULT([no])
-    fi
-fi
-AM_CONDITIONAL(DJVU_DELEGATE, test "$have_djvu" = 'yes')
-AC_SUBST(DJVU_LIBS)
-
-dnl ===========================================================================
-
-#
 # Set DejaVu font directory.
 #
 AC_ARG_WITH([dejavu-font-dir],
@@ -1927,8 +1883,6 @@ fi
 
 have_fpx='no'
 FPX_LIBS=''
-SAVED_LIBS=${LIBS}
-LIBS=${LIBS/-ldjvulibre/}
 if test "$with_fpx" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
     AC_MSG_CHECKING([for FlashPIX])
@@ -1957,7 +1911,50 @@ if test "$with_fpx" != 'no'; then
 fi
 AM_CONDITIONAL(FPX_DELEGATE, test "$have_fpx" = 'yes')
 AC_SUBST(FPX_LIBS)
-LIBS=${SAVED_LIBS}
+
+dnl ===========================================================================
+
+#
+# Check for DJVU delegate library.
+#
+AC_ARG_WITH([djvu],
+    [AC_HELP_STRING([--without-djvu],
+                    [disable DjVu support])],
+    [with_djvu=$withval],
+    [with_djvu='yes'])
+
+if test "$with_djvu" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-djvu=$with_djvu "
+fi
+
+have_djvu='no'
+DJVU_LIBS=''
+if test "$with_djvu" != 'no'; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    AC_MSG_CHECKING([for DJVU])
+    AC_MSG_RESULT([])
+    failed=0
+    passed=0
+    AC_CHECK_HEADER(libdjvu/ddjvuapi.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(djvulibre,ddjvu_context_create,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING([if DJVU package is complete])
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            AC_MSG_RESULT([no -- some components failed test])
+            have_djvu='no (failed tests)'
+        else
+            DJVU_LIBS='-ldjvulibre'
+            LIBS="$DJVU_LIBS $LIBS"
+            AC_DEFINE(DJVU_DELEGATE,1,Define if you have DJVU library)
+            AC_MSG_RESULT([yes])
+            have_djvu='yes'
+        fi
+    else
+        AC_MSG_RESULT([no])
+    fi
+fi
+AM_CONDITIONAL(DJVU_DELEGATE, test "$have_djvu" = 'yes')
+AC_SUBST(DJVU_LIBS)
 
 dnl ===========================================================================
 

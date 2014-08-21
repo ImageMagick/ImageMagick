@@ -831,15 +831,15 @@ FONTCONFIG_DELEGATE_FALSE
 FONTCONFIG_DELEGATE_TRUE
 FONTCONFIG_LIBS
 FONTCONFIG_CFLAGS
+DJVU_LIBS
+DJVU_DELEGATE_FALSE
+DJVU_DELEGATE_TRUE
 FPX_LIBS
 FPX_DELEGATE_FALSE
 FPX_DELEGATE_TRUE
 FFTW_LIBS
 FFTW_DELEGATE_FALSE
 FFTW_DELEGATE_TRUE
-DJVU_LIBS
-DJVU_DELEGATE_FALSE
-DJVU_DELEGATE_TRUE
 DPS_LIBS
 DPS_DELEGATE_FALSE
 DPS_DELEGATE_TRUE
@@ -1166,10 +1166,10 @@ with_x
 with_zlib
 with_autotrace
 with_dps
-with_djvu
 with_dejavu_font_dir
 with_fftw
 with_fpx
+with_djvu
 with_fontconfig
 with_freetype
 with_gslib
@@ -1936,11 +1936,11 @@ Optional Packages:
   --without-zlib          disable ZLIB support
   --with-autotrace        enable autotrace support
   --without-dps           disable Display Postscript support
-  --without-djvu          disable DjVu support
   --with-dejavu-font-dir=DIR
                           DejaVu font directory
   --without-fftw          disable FFTW support
   --without-fpx           disable FlashPIX support
+  --without-djvu          disable DjVu support
   --without-fontconfig    disable fontconfig support
   --without-freetype      disable Freetype support
   --with-gslib            enable Ghostscript library support
@@ -3694,7 +3694,7 @@ MAGICK_PATCHLEVEL_VERSION=8
 
 MAGICK_VERSION=6.8.9-8
 
-MAGICK_SVN_REVISION=16330:16332M
+MAGICK_SVN_REVISION=16339M
 
 
 # Substitute library versioning
@@ -28730,116 +28730,6 @@ fi
 
 
 #
-# Check for DJVU delegate library.
-#
-
-# Check whether --with-djvu was given.
-if test "${with_djvu+set}" = set; then :
-  withval=$with_djvu; with_djvu=$withval
-else
-  with_djvu='yes'
-fi
-
-
-if test "$with_djvu" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-djvu=$with_djvu "
-fi
-
-have_djvu='no'
-DJVU_LIBS=''
-if test "$with_djvu" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for DJVU" >&5
-$as_echo_n "checking for DJVU... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "libdjvu/ddjvuapi.h" "ac_cv_header_libdjvu_ddjvuapi_h" "$ac_includes_default"
-if test "x$ac_cv_header_libdjvu_ddjvuapi_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ddjvu_context_create in -ldjvulibre" >&5
-$as_echo_n "checking for ddjvu_context_create in -ldjvulibre... " >&6; }
-if ${ac_cv_lib_djvulibre_ddjvu_context_create+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ldjvulibre  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char ddjvu_context_create ();
-int
-main ()
-{
-return ddjvu_context_create ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_djvulibre_ddjvu_context_create=yes
-else
-  ac_cv_lib_djvulibre_ddjvu_context_create=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_djvulibre_ddjvu_context_create" >&5
-$as_echo "$ac_cv_lib_djvulibre_ddjvu_context_create" >&6; }
-if test "x$ac_cv_lib_djvulibre_ddjvu_context_create" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if DJVU package is complete" >&5
-$as_echo_n "checking if DJVU package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_djvu='no (failed tests)'
-        else
-            DJVU_LIBS='-ldjvulibre'
-            LIBS="$DJVU_LIBS $LIBS"
-
-$as_echo "#define DJVU_DELEGATE 1" >>confdefs.h
-
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_djvu='yes'
-        fi
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    fi
-fi
- if test "$have_djvu" = 'yes'; then
-  DJVU_DELEGATE_TRUE=
-  DJVU_DELEGATE_FALSE='#'
-else
-  DJVU_DELEGATE_TRUE='#'
-  DJVU_DELEGATE_FALSE=
-fi
-
-
-
-
-#
 # Set DejaVu font directory.
 #
 
@@ -28984,8 +28874,6 @@ fi
 
 have_fpx='no'
 FPX_LIBS=''
-SAVED_LIBS=${LIBS}
-LIBS=${LIBS/-ldjvulibre/}
 if test "$with_fpx" != 'no'; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
@@ -29089,7 +28977,116 @@ else
 fi
 
 
-LIBS=${SAVED_LIBS}
+
+
+#
+# Check for DJVU delegate library.
+#
+
+# Check whether --with-djvu was given.
+if test "${with_djvu+set}" = set; then :
+  withval=$with_djvu; with_djvu=$withval
+else
+  with_djvu='yes'
+fi
+
+
+if test "$with_djvu" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-djvu=$with_djvu "
+fi
+
+have_djvu='no'
+DJVU_LIBS=''
+if test "$with_djvu" != 'no'; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for DJVU" >&5
+$as_echo_n "checking for DJVU... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+    failed=0
+    passed=0
+    ac_fn_c_check_header_mongrel "$LINENO" "libdjvu/ddjvuapi.h" "ac_cv_header_libdjvu_ddjvuapi_h" "$ac_includes_default"
+if test "x$ac_cv_header_libdjvu_ddjvuapi_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ddjvu_context_create in -ldjvulibre" >&5
+$as_echo_n "checking for ddjvu_context_create in -ldjvulibre... " >&6; }
+if ${ac_cv_lib_djvulibre_ddjvu_context_create+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldjvulibre  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char ddjvu_context_create ();
+int
+main ()
+{
+return ddjvu_context_create ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_djvulibre_ddjvu_context_create=yes
+else
+  ac_cv_lib_djvulibre_ddjvu_context_create=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_djvulibre_ddjvu_context_create" >&5
+$as_echo "$ac_cv_lib_djvulibre_ddjvu_context_create" >&6; }
+if test "x$ac_cv_lib_djvulibre_ddjvu_context_create" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if DJVU package is complete" >&5
+$as_echo_n "checking if DJVU package is complete... " >&6; }
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+            have_djvu='no (failed tests)'
+        else
+            DJVU_LIBS='-ldjvulibre'
+            LIBS="$DJVU_LIBS $LIBS"
+
+$as_echo "#define DJVU_DELEGATE 1" >>confdefs.h
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+            have_djvu='yes'
+        fi
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    fi
+fi
+ if test "$have_djvu" = 'yes'; then
+  DJVU_DELEGATE_TRUE=
+  DJVU_DELEGATE_FALSE='#'
+else
+  DJVU_DELEGATE_TRUE='#'
+  DJVU_DELEGATE_FALSE=
+fi
+
+
 
 
 #
@@ -36223,16 +36220,16 @@ if test -z "${DPS_DELEGATE_TRUE}" && test -z "${DPS_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"DPS_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${DJVU_DELEGATE_TRUE}" && test -z "${DJVU_DELEGATE_FALSE}"; then
-  as_fn_error $? "conditional \"DJVU_DELEGATE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
 if test -z "${FFTW_DELEGATE_TRUE}" && test -z "${FFTW_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"FFTW_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${FPX_DELEGATE_TRUE}" && test -z "${FPX_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"FPX_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DJVU_DELEGATE_TRUE}" && test -z "${DJVU_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"DJVU_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${FONTCONFIG_DELEGATE_TRUE}" && test -z "${FONTCONFIG_DELEGATE_FALSE}"; then
