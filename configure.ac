@@ -3267,12 +3267,12 @@ AC_PATH_PROG(LaunchDelegate, "$LaunchDelegateDefault", "$LaunchDelegateDefault")
 AC_PATH_PROG(MANDelegate, "$MANDelegateDefault", "$MANDelegateDefault")
 AC_PATH_PROG(MogrifyDelegate, "$MogrifyDelegateDefault", "$MogrifyDelegateDefault")
 AC_PATH_PROG(MPEGDecodeDelegate, "$MPEGDecodeDelegateDefault", "$MPEGDecodeDelegateDefault")
-if test "$MPEGDecodeDelegate" == "$MPEGDecodeDelegateDefault" ; then
+if test "$MPEGDecodeDelegate" = "$MPEGDecodeDelegateDefault" ; then
   MPEGDecodeDelegateDefault='ffmpeg'
   AC_PATH_PROG(MPEGDecodeDelegate, "$MPEGDecodeDelegateDefault", "$MPEGDecodeDelegateDefault")
 fi;
 AC_PATH_PROG(MPEGEncodeDelegate, "$MPEGEncodeDelegateDefault", "$MPEGEncodeDelegateDefault")
-if test "$MPEGEncodeDelegate" == "$MPEGEncodeDelegateDefault" ; then
+if test "$MPEGEncodeDelegate" = "$MPEGEncodeDelegateDefault" ; then
   MPEGEncodeDelegateDefault='ffmpeg'
   AC_PATH_PROG(MPEGEncodeDelegate, "$MPEGEncodeDelegateDefault", "$MPEGEncodeDelegateDefault")
 fi;
