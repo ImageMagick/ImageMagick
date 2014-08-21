@@ -87,3 +87,4 @@ Features and Capabilities
   http://www.fmwconcepts.com/imagemagick/: a plethora of command-line scripts
   that perform geometric transforms, blurs, sharpens, edging, noise removal,
   and color manipulations.
+
