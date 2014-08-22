@@ -238,8 +238,8 @@ rm -rf %{buildroot}
 %files libs
 %defattr(-,root,root,-)
 %doc LICENSE NOTICE AUTHORS.txt QuickStart.txt
-%{_libdir}/libMagickCore-6.Q16.so.2*
-%{_libdir}/libMagickWand-6.Q16.so.2*
+%{_libdir}/libMagickCore-6.Q16.so*
+%{_libdir}/libMagickWand-6.Q16.so*
 %{_libdir}/%{name}-%{VERSION}
 %{_datadir}/%{name}-6
 %exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
@@ -283,7 +283,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
 %doc www/Magick++/COPYING
-%{_libdir}/libMagick++-6.Q16.so.3*
+%{_libdir}/libMagick++-6.Q16.so.*
 
 %files c++-devel
 %defattr(-,root,root,-)
