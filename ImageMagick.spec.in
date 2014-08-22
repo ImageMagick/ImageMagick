@@ -3,13 +3,15 @@
 %global Patchlevel  @PACKAGE_RELEASE@
 
 Name:           @PACKAGE_NAME@
-Version:        %{VERSION}
-Release:        %{Patchlevel}
+Version:        %{VERSION}.%{Patchlevel}
+Release:        4%{?dist}
 Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images.
 Group:          Applications/Multimedia
 License:        http://www.imagemagick.org/script/license.php
 Url:            http://www.imagemagick.org/
 Source0:        http://www.imagemagick.org/download/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
+
+Requires:       %{name}-libs = %{version}-%{release}
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
@@ -17,7 +19,8 @@ BuildRequires:  libtiff-devel, giflib-devel, zlib-devel, perl-devel >= 5.8.1
 BuildRequires:  ghostscript-devel, djvulibre-devel
 BuildRequires:  libwmf-devel, jasper-devel, libtool-ltdl-devel
 BuildRequires:  libX11-devel, libXext-devel, libXt-devel
-BuildRequires:  lcms-devel, libxml2-devel, librsvg2-devel, OpenEXR-devel
+BuildRequires:  lcms2-devel, libxml2-devel, librsvg2-devel, OpenEXR-devel
+BuildRequires:  fftw-devel, OpenEXR-devel, libwebp-devel
 
 %description
 ImageMagick is a software suite to create, edit, and compose bitmap images. It
@@ -54,15 +57,9 @@ approved by the OSI.
 Summary: Library links and header files for ImageMagick application development
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
-Requires: libX11-devel, libXext-devel, libXt-devel
-Requires: ghostscript-devel
-Requires: bzip2-devel
-Requires: freetype-devel
-Requires: libtiff-devel
-Requires: libjpeg-devel
-Requires: lcms-devel
-Requires: jasper-devel
-Requires: pkgconfig
+Requires: libX11-devel, libXext-devel, libXt-devel, ghostscript-devel
+Requires: bzip2-devel, freetype-devel, libtiff-devel, libjpeg-devel, lcms2-devel
+Requires: libwebp-devel, OpenEXR-devel, jasper-devel, pkgconfig
 Requires: %{name}-libs = %{version}-%{release}
 
 %description devel
@@ -161,19 +158,22 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
 
 %build
 %configure --enable-shared \
-           --disable-static \
-           --with-modules \
-           --with-perl \
-           --with-x \
-           --with-threads \
-           --with-magick_plus_plus \
-           --with-gslib \
-           --with-wmf \
-           --with-lcms \
-           --with-rsvg \
-           --with-xml \
-           --with-perl-options="INSTALLDIRS=vendor %{?perl_prefix} CC='%__cc -L$PWD/magick/.libs' LDDLFLAGS='-shared -L$PWD/magick/.libs'" \
-           --without-dps 
+        --disable-static \
+        --with-modules \
+        --with-perl \
+        --with-x \
+        --with-threads \
+        --with-magick_plus_plus \
+        --with-gslib \
+        --with-wmf \
+        --with-lcms2 \
+        --with-webp \
+        --with-openexr \
+        --with-rsvg \
+        --with-xml \
+        --with-perl-options="INSTALLDIRS=vendor %{?perl_prefix} CC='%__cc -L$PWD/magick/.libs' LDDLFLAGS='-shared -L$PWD/MagickCore/.libs'" \
+        --without-dps 
+
 # Disable rpath
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -184,7 +184,7 @@ make
 %install
 rm -rf %{buildroot}
 
-make install DESTDIR=%{buildroot} INSTALL="install -p"
+make %{?_smp_mflags} install DESTDIR=%{buildroot} INSTALL="install -p"
 cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{MAJOR_VERSION}
 rm %{buildroot}%{_libdir}/*.la
 
@@ -212,6 +212,10 @@ if [ -z perl-pkg-files ] ; then
     exit -1
 fi
 
+%check
+export LD_LIBRARY_PATH=%{buildroot}/%{_libdir}
+make %{?_smp_mflags} check
+
 %clean
 rm -rf %{buildroot}
 
@@ -224,66 +228,74 @@ rm -rf %{buildroot}
 %postun c++ -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root,-)
-%doc QuickStart.txt ChangeLog Platforms.txt
-%doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt
-%{_libdir}/libMagickCore*so*
-%{_libdir}/libMagickWand*so*
+%doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt ChangeLog Platforms.txt
 %{_bindir}/[a-z]*
-%{_libdir}/%{name}-%{VERSION}
-%{_datadir}/%{name}-%{MAJOR_VERSION}
 %{_mandir}/man[145]/[a-z]*
 %{_mandir}/man1/%{name}.*
-%exclude %{_libdir}/%{name}-%{VERSION}/modules-*/coders/djvu.*
-%{_sysconfdir}/%{name}-%{MAJOR_VERSION}
 
+%files libs
+%defattr(-,root,root,-)
+%doc LICENSE NOTICE AUTHORS.txt QuickStart.txt
+%{_libdir}/libMagickCore-7.Q16.so.2*
+%{_libdir}/libMagickWand-7.Q16.so.2*
+%{_libdir}/%{name}-%{VERSION}
+%{_datadir}/%{name}-7
+%exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
+%{_sysconfdir}/%{name}-7
 
 %files devel
 %defattr(-,root,root,-)
 %{_bindir}/MagickCore-config
+%{_bindir}/Magick-config
 %{_bindir}/MagickWand-config
-%{_libdir}/libMagickCore*so*
-%{_libdir}/libMagickWand*so*
-%{_libdir}/pkgconfig/MagickCore*.pc
-%{_libdir}/pkgconfig/ImageMagick*.pc
-%{_libdir}/pkgconfig/MagickWand*.pc
-%dir %{_includedir}/%{name}-%{MAJOR_VERSION}
-%{_includedir}/%{name}-%{MAJOR_VERSION}/MagickCore
-%{_includedir}/%{name}-%{MAJOR_VERSION}/MagickWand
+%{_bindir}/Wand-config
+%{_libdir}/libMagickCore-7.Q16.so
+%{_libdir}/libMagickWand-7.Q16.so
+%{_libdir}/pkgconfig/MagickCore.pc
+%{_libdir}/pkgconfig/MagickCore-7.Q16.pc
+%{_libdir}/pkgconfig/ImageMagick.pc
+%{_libdir}/pkgconfig/ImageMagick-7.Q16.pc
+%{_libdir}/pkgconfig/MagickWand.pc
+%{_libdir}/pkgconfig/MagickWand-7.Q16.pc
+%dir %{_includedir}/%{name}-6
+%{_includedir}/%{name}-7/MagickCore
+%{_includedir}/%{name}-7/MagickWand
 %{_mandir}/man1/MagickCore-config.*
 %{_mandir}/man1/MagickWand-config.*
 
 %files djvu
 %defattr(-,root,root,-)
-%{_libdir}/%{name}-%{version}/modules-Q*/coders/djvu.*
+%{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
 
 %files doc
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/%{name}-%{MAJOR_VERSION}
+%doc %{_datadir}/doc/%{name}-7
+%doc %{_datadir}/doc/%{name}-%{VERSION}
 %doc LICENSE
 
 %files c++
 %defattr(-,root,root,-)
 %doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
 %doc www/Magick++/COPYING
-%{_libdir}/libMagick++*so*
+%{_libdir}/libMagick++-7.Q16.so.3*
 
 %files c++-devel
 %defattr(-,root,root,-)
 %doc Magick++/examples
 %{_bindir}/Magick++-config
-%{_includedir}/%{name}-%{MAJOR_VERSION}/Magick++
-%{_includedir}/%{name}-%{MAJOR_VERSION}/Magick++.h
-%{_libdir}/libMagick++*so*
-%{_libdir}/pkgconfig/Magick++*.pc
-%{_libdir}/pkgconfig/ImageMagick++*.pc
+%{_includedir}/%{name}-7/Magick++
+%{_includedir}/%{name}-7/Magick++.h
+%{_libdir}/libMagick++-7.Q16.so
+%{_libdir}/pkgconfig/Magick++.pc
+%{_libdir}/pkgconfig/Magick++-7.Q16.pc
+%{_libdir}/pkgconfig/ImageMagick++.pc
+%{_libdir}/pkgconfig/ImageMagick++-7.Q16.pc
 %{_mandir}/man1/Magick++-config.*
 
 %files perl -f perl-pkg-files
 %defattr(-,root,root,-)
 %{_mandir}/man3/*
 %doc PerlMagick/demo/ PerlMagick/Changelog PerlMagick/README.txt
-
 
 %changelog
 * Sun May 01 2005 Cristy <cristy@mystic.es.dupont.com> 1.0-0
