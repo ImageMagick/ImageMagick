@@ -2492,7 +2492,7 @@ void Magick::Image::composite(const Image &compositeImage_,
 
   modifyImage();
   GetPPException;
-  CompositeImage(image(),compositeImage_.constImage(),compose_,MagickFalse,
+  CompositeImage(image(),compositeImage_.constImage(),compose_,MagickTrue,
     x,y,exceptionInfo);
   ThrowPPException;
 }
@@ -2508,7 +2508,7 @@ void Magick::Image::composite(const Image &compositeImage_,
   GravityAdjustGeometry(columns(),rows(),gravity_,&geometry);
 
   GetPPException;
-  CompositeImage(image(),compositeImage_.constImage(),compose_,MagickFalse,
+  CompositeImage(image(),compositeImage_.constImage(),compose_,MagickTrue,
     geometry.x,geometry.y,exceptionInfo);
   ThrowPPException;
 }
@@ -2521,7 +2521,7 @@ void Magick::Image::composite(const Image &compositeImage_,
   // results in updating current image.
   modifyImage();
   GetPPException;
-  CompositeImage(image(),compositeImage_.constImage(),compose_,MagickFalse,
+  CompositeImage(image(),compositeImage_.constImage(),compose_,MagickTrue,
     xOffset_,yOffset_,exceptionInfo);
   ThrowPPException;
 }
