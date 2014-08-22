@@ -116,7 +116,7 @@
 %
 %    o y_offset: the row offset of the composited image.
 %
-%  Extra Controls from Image meta-data in 'composite_image' (artifacts)
+%  Extra Controls from Image meta-data in 'image' (artifacts)
 %
 %    o "compose:args"
 %        A string containing extra numerical arguments for specific compose
@@ -898,7 +898,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
       SetGeometryInfo(&geometry_info);
       flags=NoValue;
-      value=GetImageArtifact(composite_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         flags=ParseGeometry(value,&geometry_info);
       if ((flags & (WidthValue|HeightValue)) == 0 )
@@ -1049,7 +1049,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Geometry arguments to dissolve factors.
       */
-      value=GetImageArtifact(composite_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         {
           flags=ParseGeometry(value,&geometry_info);
@@ -1082,7 +1082,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       const char
         *value;
 
-      value=GetImageArtifact(composite_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         {
           flags=ParseGeometry(value,&geometry_info);
@@ -1107,7 +1107,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         number of values)
       */
       SetGeometryInfo(&geometry_info);
-      value=GetImageArtifact(composite_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         (void) ParseGeometry(value,&geometry_info);
       break;
@@ -1120,7 +1120,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Determine the luma and chroma scale.
       */
-      value=GetImageArtifact(composite_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         {
           flags=ParseGeometry(value,&geometry_info);
@@ -1138,7 +1138,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Determine the amount and threshold.
       */
-      value=GetImageArtifact(composite_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         {
           flags=ParseGeometry(value,&geometry_info);
