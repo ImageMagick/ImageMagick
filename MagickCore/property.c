@@ -3884,12 +3884,6 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           image->compression=(CompressionType) compression;
           return(MagickTrue);
         }
-      if (LocaleCompare("copyright",property) == 0)
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-               OptionError,"SetReadOnlyProperty","`%s'",property);
-          return(MagickFalse);
-        }
       break; /* not an attribute, add as a property */
     }
     case 'D':
