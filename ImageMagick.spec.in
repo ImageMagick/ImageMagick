@@ -1,5 +1,4 @@
 %global VERSION  @PACKAGE_VERSION@
-%global MAJOR_VERSION  @MAGICK_MAJOR_VERSION@
 %global Patchlevel  @PACKAGE_RELEASE@
 
 Name:           @PACKAGE_NAME@
@@ -187,7 +186,7 @@ make
 rm -rf %{buildroot}
 
 make %{?_smp_mflags} install DESTDIR=%{buildroot} INSTALL="install -p"
-cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{MAJOR_VERSION}
+cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{VERSION}
 rm %{buildroot}%{_libdir}/*.la
 
 # fix weird perl Magick.so permissions
