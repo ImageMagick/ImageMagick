@@ -510,7 +510,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
       {
         if (IsOptionMember(next,name) != MagickFalse)
           {
-            (void) DeleteImageProfile(image,name);
+            (void) DeleteImageProfile(image,next);
             ResetImageProfileIterator(image);
           }
         next=GetNextImageProfile(image);
