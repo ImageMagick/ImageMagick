@@ -105,14 +105,33 @@
 %
 */
 
+static size_t GetImageChannels(const Image *image)
+{
+  register ssize_t
+    i;
+
+  size_t
+    channels;
+
+  channels=0;
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel channel=GetPixelChannelChannel(image,i);
+    PixelTrait traits=GetPixelChannelTraits(image,channel);
+    if ((traits & UpdatePixelTrait) != 0)
+      channels++;
+  }
+  return(channels == 0 ? 1 : channels);
+}
+
 static inline MagickBooleanType ValidateImageMorphology(
   const Image *restrict image,const Image *restrict reconstruct_image)
 {
   /*
     Does the image match the reconstructed image morphology?
-  if (image->number_channels != reconstruct_image->number_channels)
-    return(MagickFalse);
   */
+  if (GetImageChannels(image) != GetImageChannels(reconstruct_image))
+    return(MagickFalse);
   return(MagickTrue);
 }
 
@@ -446,25 +465,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
   return(status);
-}
-
-static size_t GetImageChannels(const Image *image)
-{
-  register ssize_t
-    i;
-
-  size_t
-    channels;
-
-  channels=0;
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
-    PixelTrait traits=GetPixelChannelTraits(image,channel);
-    if ((traits & UpdatePixelTrait) != 0)
-      channels++;
-  }
-  return(channels == 0 ? 1 : channels);
 }
 
 static MagickBooleanType GetFuzzDistortion(const Image *image,
