@@ -110,9 +110,9 @@ static inline MagickBooleanType ValidateImageMorphology(
 {
   /*
     Does the image match the reconstructed image morphology?
-  */
   if (image->number_channels != reconstruct_image->number_channels)
     return(MagickFalse);
+  */
   return(MagickTrue);
 }
 
