@@ -119,14 +119,35 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   return(highlight_image);
 }
 
+static size_t GetNumberChannels(const Image *image,const ChannelType channel)
+{
+  size_t
+    channels;
+
+  channels=0;
+  if ((channel & RedChannel) != 0)
+    channels++;
+  if ((channel & GreenChannel) != 0)
+    channels++;
+  if ((channel & BlueChannel) != 0)
+    channels++;
+  if (((channel & OpacityChannel) != 0) &&
+       (image->matte != MagickFalse))
+    channels++;
+  if (((channel & IndexChannel) != 0) &&
+      (image->colorspace == CMYKColorspace))
+    channels++;
+  return(channels == 0 ? 1 : channels);
+}
+
 static inline MagickBooleanType ValidateImageMorphology(
   const Image *restrict image,const Image *restrict reconstruct_image)
 {
   /*
     Does the image match the reconstructed image morphology?
   */
-  if ((image->matte != reconstruct_image->matte) ||
-      (image->channels != reconstruct_image->channels))
+  if (GetNumberChannels(image,DefaultChannels) !=
+      GetNumberChannels(reconstruct_image,DefaultChannels))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -466,27 +487,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
   return(status);
-}
-
-static size_t GetNumberChannels(const Image *image,const ChannelType channel)
-{
-  size_t
-    channels;
-
-  channels=0;
-  if ((channel & RedChannel) != 0)
-    channels++;
-  if ((channel & GreenChannel) != 0)
-    channels++;
-  if ((channel & BlueChannel) != 0)
-    channels++;
-  if (((channel & OpacityChannel) != 0) &&
-       (image->matte != MagickFalse))
-    channels++;
-  if (((channel & IndexChannel) != 0) &&
-      (image->colorspace == CMYKColorspace))
-    channels++;
-  return(channels == 0 ? 1 : channels);
 }
 
 static MagickBooleanType GetFuzzDistortion(const Image *image,
