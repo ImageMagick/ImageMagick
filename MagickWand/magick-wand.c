@@ -729,13 +729,12 @@ WandExport char **MagickQueryFonts(const char *pattern,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickQueryFonts() returns any image formats that match the specified
+%  MagickQueryFormats() returns any image formats that match the specified
 %  pattern (e.g.  "*" for all).
 %
-%  The format of the MagickQueryFonts function is:
+%  The format of the MagickQueryFormats function is:
 %
-%      char **MagickQueryFonts(const char *pattern,
-%        size_t *number_formats)
+%      char **MagickQueryFormats(const char *pattern,size_t *number_formats)
 %
 %  A description of each parameter follows:
 %
