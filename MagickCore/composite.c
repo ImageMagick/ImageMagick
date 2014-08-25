@@ -1066,14 +1066,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             destination_dissolve=geometry_info.sigma/100.0;
           if ((destination_dissolve-MagickEpsilon) < 0.0)
             destination_dissolve=0.0;
-       /* posible speed up?  -- from IMv6 update
-          clip_to_self=MagickFalse;
-          if ((destination_dissolve+MagickEpsilon) > 1.0 )
-            {
-              destination_dissolve=1.0;
-              clip_to_self=MagickTrue;
-            }
-        */
         }
       break;
     }
@@ -1566,7 +1558,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case CopyAlphaCompositeOp:
               {
                 pixel=QuantumRange*Sa;
-                if (composite_image->alpha_trait == BlendPixelTrait)
+                if (composite_image->alpha_trait != BlendPixelTrait)
                   pixel=GetPixelIntensity(composite_image,p);
                 break;
               }
