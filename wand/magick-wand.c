@@ -740,8 +740,7 @@ WandExport char **MagickQueryFonts(const char *pattern,
 %
 %  The format of the MagickQueryFormats function is:
 %
-%      char **MagickQueryFormats(const char *pattern,
-%        size_t *number_formats)
+%      char **MagickQueryFormats(const char *pattern,size_t *number_formats)
 %
 %  A description of each parameter follows:
 %
