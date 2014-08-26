@@ -4643,9 +4643,10 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 break;
               (void) FormatLocaleString(color,MaxTextExtent,
-                "%.20g,%.20g,%.20g,%.20g",image->background_color.red,
-                image->background_color.green,image->background_color.blue,
-                image->background_color.alpha);
+                "%.20g,%.20g,%.20g,%.20g",(double) image->background_color.red,
+                (double) image->background_color.green,
+                (double) image->background_color.blue,
+                (double) image->background_color.alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4701,9 +4702,10 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 break;
               (void) FormatLocaleString(color,MaxTextExtent,
-                "%.20g,%.20g,%.20g,%.20g",image->border_color.red,
-                image->border_color.green,image->border_color.blue,
-                image->border_color.alpha);
+                "%.20g,%.20g,%.20g,%.20g",(double) image->border_color.red,
+                (double) image->border_color.green,
+                (double) image->border_color.blue,
+                (double) image->border_color.alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4835,9 +4837,10 @@ Get(ref,...)
               if (j > (ssize_t) image->colors)
                 j%=image->colors;
               (void) FormatLocaleString(color,MaxTextExtent,
-                "%.20g,%.20g,%.20g,%.20g",image->colormap[j].red,
-                image->colormap[j].green,image->colormap[j].blue,
-                image->colormap[j].alpha);
+                "%.20g,%.20g,%.20g,%.20g",(double) image->colormap[j].red,
+                (double) image->colormap[j].green,
+                (double) image->colormap[j].blue,
+                (double) image->colormap[j].alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5307,9 +5310,10 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 break;
               (void) FormatLocaleString(color,MaxTextExtent,
-                "%.20g,%.20g,%.20g,%.20g",image->matte_color.red,
-                image->matte_color.green,image->matte_color.blue,
-                image->matte_color.alpha);
+                "%.20g,%.20g,%.20g,%.20g",(double) image->matte_color.red,
+                (double) image->matte_color.green,
+                (double) image->matte_color.blue,
+                (double) image->matte_color.alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5618,9 +5622,10 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 break;
               (void) FormatLocaleString(color,MaxTextExtent,
-                "%.20g,%.20g,%.20g,%.20g",image->transparent_color.red,
-                image->transparent_color.green,image->transparent_color.blue,
-                image->transparent_color.alpha);
+                "%.20g,%.20g,%.20g,%.20g",(double) image->transparent_color.red,
+                (double) image->transparent_color.green,
+                (double) image->transparent_color.blue,
+                (double) image->transparent_color.alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
