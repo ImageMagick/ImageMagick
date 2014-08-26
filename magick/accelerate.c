@@ -2932,7 +2932,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
       wsize[0] = 8;
       wsize[1] = 32;
 
-      clStatus = clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, unsharpMaskKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
+      clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, unsharpMaskKernel, 2, NULL, gsize, wsize, 0, NULL, NULL);
       if (clStatus != CL_SUCCESS)
       {
         (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -6340,6 +6340,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
   random_info=AcquireRandomInfoThreadSet();
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
+  (void) key;
 #endif
 
   addNoiseKernel = AcquireOpenCLKernel(clEnv,MAGICK_OPENCL_ACCELERATE,"GenerateNoiseImage");
@@ -6483,6 +6484,7 @@ static MagickBooleanType LaunchRandomImageKernel(MagickCLEnv clEnv,
 
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue,randomImageKernel,1,NULL,&global_work_size,
                                     &local_work_size,0,NULL,NULL);
+  (void) local_work_size;
 
   if (clStatus != CL_SUCCESS)
   {
