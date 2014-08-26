@@ -2539,7 +2539,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-        (double) QuantumScale*CurrentContext->fill.alpha);
+        (double) (QuantumScale*CurrentContext->fill.alpha));
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"fill-rule",0);
@@ -2660,7 +2660,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-        (double) QuantumScale*CurrentContext->stroke.alpha);
+        (double) (QuantumScale*CurrentContext->stroke.alpha));
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-width",0);
