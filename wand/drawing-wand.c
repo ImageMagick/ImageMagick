@@ -2522,7 +2522,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-        (double) QuantumScale*(QuantumRange-CurrentContext->fill.opacity));
+        (double) (QuantumScale*(QuantumRange-CurrentContext->fill.opacity)));
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"fill-rule",0);
@@ -2644,7 +2644,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-        (double) QuantumScale*(QuantumRange-CurrentContext->stroke.opacity));
+        (double) (QuantumScale*(QuantumRange-CurrentContext->stroke.opacity)));
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-width",0);
