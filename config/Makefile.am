@@ -47,6 +47,7 @@ configlib_DATA = \
 	config/type-windows.xml
 
 CONFIG_EXTRA_DIST = \
+	config/cmyk.icm \
 	config/coder.xml \
 	config/colors.xml \
 	config/config.h.in \
@@ -62,6 +63,7 @@ CONFIG_EXTRA_DIST = \
 	config/mime.xml \
 	config/policy.xml \
 	config/quantization-table.xml \
+	config/sRGB.icm \
 	config/thresholds.xml \
 	config/type-dejavu.xml.in \
 	config/type-ghostscript.xml.in \
