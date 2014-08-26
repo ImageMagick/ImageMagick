@@ -3261,6 +3261,7 @@ RestoreMSCWarning
   local_work_size[0] = workgroupSize;
   local_work_size[1] = 1;
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, horizontalKernel, 2, NULL, global_work_size, local_work_size, 0, NULL, NULL);
+  (void) local_work_size;
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -6358,6 +6359,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
   random_info=AcquireRandomInfoThreadSet();
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
+  (void) key;
 #endif
 
   addNoiseKernel = AcquireOpenCLKernel(clEnv,MAGICK_OPENCL_ACCELERATE,"GenerateNoiseImage");
