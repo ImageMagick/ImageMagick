@@ -1996,12 +1996,12 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         */
         for (i=0; i < 3; i++)
         {
-          size_t
+          unsigned int
             xx,
             yy;
 
-          yy=(size_t) ((int) ReadPropertyMSBLong(&blob,&length));
-          xx=(size_t) ((int) ReadPropertyMSBLong(&blob,&length));
+          yy=(unsigned int) ((int) ReadPropertyMSBLong(&blob,&length));
+          xx=(unsigned int) ((int) ReadPropertyMSBLong(&blob,&length));
           x=(ssize_t) xx;
           if (xx > 2147483647)
             x=(ssize_t) xx-4294967295U-1;
