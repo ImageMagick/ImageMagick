@@ -559,32 +559,6 @@ Magick::ClassType Magick::Image::classType(void) const
   return static_cast<Magick::ClassType>(constImage()->storage_class);
 }
 
-void Magick::Image::clipMask(const Magick::Image &clipMask_)
-{
-  modifyImage();
-
-  GetPPException;
-  if (clipMask_.isValid())
-    SetImageMask(image(),clipMask_.constImage(),exceptionInfo);
-  else
-    SetImageMask(image(),0,exceptionInfo);
-  ThrowPPException;
-}
-
-Magick::Image Magick::Image::clipMask(void) const
-{
-  MagickCore::Image
-    *image;
-
-  GetPPException;
-  image=GetImageMask(constImage(),exceptionInfo);
-  ThrowPPException;
-  if (image == (MagickCore::Image *) NULL)
-    return(Magick::Image());
-  else
-    return(Magick::Image(image));
-}
-
 void Magick::Image::colorFuzz(const double fuzz_)
 {
   modifyImage();
