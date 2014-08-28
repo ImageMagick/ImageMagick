@@ -513,7 +513,6 @@ extern MagickExport Image
   *CloneImage(const Image *,const size_t,const size_t,const MagickBooleanType,
     ExceptionInfo *),
   *DestroyImage(Image *),
-  *GetImageClipMask(const Image *,ExceptionInfo *),
   *GetImageMask(const Image *,ExceptionInfo *),
   *NewMagickImage(const ImageInfo *,const size_t,const size_t,const PixelInfo *,
     ExceptionInfo *),

@@ -172,12 +172,6 @@ namespace Magick
     void classType(const ClassType class_);
     ClassType classType(void) const;
 
-    // Associate a clip mask with the image. The clip mask must be the
-    // same dimensions as the image. Pass an invalid image to unset an
-    // existing clip mask.
-    void clipMask(const Image &clipMask_);
-    Image clipMask(void) const;
-
     // Colors within this distance are considered equal
     void colorFuzz(const double fuzz_);
     double colorFuzz(void) const;
@@ -316,7 +310,7 @@ namespace Magick
     std::string magick(void) const;
 
     // Associate a mask with the image. The mask must be the same dimensions
-    // as the image. Pass an invalid image to unset an existing clip mask.
+    // as the image. Pass an invalid image to unset an existing mask.
     void mask(const Image &mask_);
     Image mask(void) const;
 
