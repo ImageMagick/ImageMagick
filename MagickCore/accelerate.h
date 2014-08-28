@@ -32,8 +32,6 @@ extern MagickExport MagickBooleanType
   AccelerateCompositeImage(Image *,const ChannelType,const CompositeOperator,
     const Image *,const ssize_t,const ssize_t,const float,const float,ExceptionInfo *),
   AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
-  AccelerateConvolveImage(const Image *,const KernelInfo *,Image *,
-    ExceptionInfo *),
   AccelerateContrastStretchImageChannel(Image *, const ChannelType, const double, const double, 
     ExceptionInfo*),
   AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
@@ -43,8 +41,6 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   AccelerateModulateImage(Image*, double, double, double, 
     ColorspaceType, ExceptionInfo*),
-  AccelerateNegateImageChannel(Image*, const ChannelType, const MagickBooleanType,
-    ExceptionInfo *),
   AccelerateRandomImage(Image*, ExceptionInfo*);
 
 extern MagickExport Image
