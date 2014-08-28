@@ -4032,12 +4032,6 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
   /*
     Negate image.
   */
-
-  /* call opencl version */
-  status = AccelerateNegateImageChannel(image, channel, grayscale, &image->exception);
-  if (status == MagickTrue)
-    return status;
-
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);

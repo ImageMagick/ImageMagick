@@ -1941,42 +1941,6 @@ const char* accelerateKernels =
   )
 
   STRINGIFY(
-  __kernel void Negate(__global CLPixelType *im, 
-    const ChannelType channel)
-  {
-
-    const int x = get_global_id(0);  
-    const int y = get_global_id(1);
-    const int columns = get_global_size(0);
-    const int c = x + y * columns;
-
-    CLPixelType pixel = im[c];
-
-    CLQuantum
-        blue,
-        green,
-        red;
-
-    red=getRed(pixel);
-    green=getGreen(pixel);
-    blue=getBlue(pixel);
-
-    CLPixelType filteredPixel;
-  
-    if ((channel & RedChannel) !=0)
-      setRed(&filteredPixel, QuantumRange-red);
-    if ((channel & GreenChannel) !=0)
-      setGreen(&filteredPixel, QuantumRange-green);
-    if ((channel & BlueChannel) !=0)
-      setBlue(&filteredPixel, QuantumRange-blue);
-
-    filteredPixel.w = pixel.w;
-
-    im[c] = filteredPixel;
-  }
-  )
-
-  STRINGIFY(
   __kernel void Grayscale(__global CLPixelType *im, 
     const int method, const int colorspace)
   {
