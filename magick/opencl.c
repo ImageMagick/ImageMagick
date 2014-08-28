@@ -2257,7 +2257,7 @@ ds_status AccelerateScoreRelease(void* score) {
   return DS_SUCCESS;
 }
 
-ds_status canWriteProfileToFile(path)
+ds_status canWriteProfileToFile(const char *path)
 {
   FILE* profileFile = fopen(path, "wb");
 
@@ -2320,6 +2320,7 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
         break;
       }
     }
+  }
   else {
     if (clEnv->regenerateProfile != MagickFalse) {
       profileType = DS_EVALUATE_ALL;
