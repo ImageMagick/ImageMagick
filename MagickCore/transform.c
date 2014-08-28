@@ -2030,7 +2030,7 @@ MagickExport Image *SpliceImage(const Image *image,
 %  And finally if the crop succeeds and the resize failed, you will get a
 %  cropped image, as well as a 'false' or 'failed' report.
 %
-%  This function and should probably be depreciated in favor of direct calls
+%  This function and should probably be deprecated in favor of direct calls
 %  to CropImageToTiles() or ResizeImage(), as appropriate.
 %
 %  The format of the TransformImage method is:
