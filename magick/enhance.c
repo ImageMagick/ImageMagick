@@ -796,8 +796,8 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   {
     GetMagickPixelPacket(clut_image,clut_map+i);
     (void) InterpolateMagickPixelPacket(clut_image,clut_view,
-      UndefinedInterpolatePixel,QuantumScale*i*(clut_image->columns-adjust),
-      QuantumScale*i*(clut_image->rows-adjust),clut_map+i,exception);
+      UndefinedInterpolatePixel,(double) i*(clut_image->columns-adjust)/MaxMap,
+      (double) i*(clut_image->rows-adjust)/MaxMap,clut_map+i,exception);
   }
   clut_view=DestroyCacheView(clut_view);
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -1166,10 +1166,10 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   /* Call OpenCL version */
-  status = AccelerateContrastStretchImageChannel(image, channel, black_point, white_point, &image->exception);
+  status=AccelerateContrastStretchImageChannel(image,channel,black_point,
+    white_point,&image->exception);
   if (status == MagickTrue)
     return status;
-  
   histogram=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*histogram));
   stretch_map=(QuantumPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
