@@ -344,8 +344,8 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   {
     GetPixelInfo(clut_image,clut_map+i);
     (void) InterpolatePixelInfo(clut_image,clut_view,method,
-      QuantumScale*i*(clut_image->columns-adjust),QuantumScale*i*
-      (clut_image->rows-adjust),clut_map+i,exception);
+      (double) i*(clut_image->columns-adjust)/MaxMap,(double) i*
+      (clut_image->rows-adjust)/MaxMap,clut_map+i,exception);
   }
   clut_view=DestroyCacheView(clut_view);
   image_view=AcquireAuthenticCacheView(image,exception);
