@@ -1692,8 +1692,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
         delay=(size_t) (100*image->delay/MagickMax((size_t)
           image->ticks_per_second,1));
         (void) WriteBlobLSBShort(image,(unsigned short) delay);
-        (void) WriteBlobByte(image,(unsigned char) (opacity >= 0 ? opacity :
-          0));
+        (void) WriteBlobByte(image,(unsigned char) (opacity >= 0 ? opacity : 0));
         (void) WriteBlobByte(image,(unsigned char) 0x00);
         if ((LocaleCompare(write_info->magick,"GIF87") != 0) &&
             (GetImageProperty(image,"comment") != (const char *) NULL))
@@ -1806,7 +1805,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
                    */
                    (void) WriteBlob(image,11,(unsigned char *) "ICCRGBG1012");
                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "  Writing GIF Extension %s","ICCRGBG1012");
+                     "  Writing GIF Extension %s","ICCRGBG1012");
                  }
                else
                  if ((LocaleCompare(name,"IPTC") == 0))
@@ -1816,7 +1815,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
                      */
                      (void) WriteBlob(image,11,(unsigned char *) "MGKIPTC0000");
                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                         "  Writing GIF Extension %s","MGKIPTC0000");
+                       "  Writing GIF Extension %s","MGKIPTC0000");
                    }
                  else
                    if ((LocaleCompare(name,"8BIM") == 0))
@@ -1841,7 +1840,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
                          sizeof(extension));
                        (void) WriteBlob(image,11,(unsigned char *) extension);
                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "  Writing GIF Extension %s",name);
+                         "  Writing GIF Extension %s",name);
                      }
                offset=0;
                while ((ssize_t) length > offset)
