@@ -1607,8 +1607,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
                   opacity=i;
                   continue;
                 }
-              alpha=(double) TransparentAlpha-(double)
-                image->colormap[i].alpha;
+              alpha=(double) TransparentAlpha-(double) image->colormap[i].alpha;
               beta=(double) TransparentAlpha-(double)
                 image->colormap[opacity].alpha;
               if (alpha < beta)
@@ -1808,7 +1807,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
                    */
                    (void) WriteBlob(image,11,(unsigned char *) "ICCRGBG1012");
                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "  Writing GIF Extension %s","ICCRGBG1012");
+                     "  Writing GIF Extension %s","ICCRGBG1012");
                  }
                else
                  if ((LocaleCompare(name,"IPTC") == 0))
@@ -1818,7 +1817,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
                      */
                      (void) WriteBlob(image,11,(unsigned char *) "MGKIPTC0000");
                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                         "  Writing GIF Extension %s","MGKIPTC0000");
+                       "  Writing GIF Extension %s","MGKIPTC0000");
                    }
                  else
                    if ((LocaleCompare(name,"8BIM") == 0))
