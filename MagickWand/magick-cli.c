@@ -156,7 +156,7 @@ RestoreMSCWarning
     { MagickBooleanType status = GetScriptToken(token_info);
       cli_wand->line=token_info->token_line;
       cli_wand->column=token_info->token_column;
-      if( IfMagickFalse(status) )
+      if (status == MagickFalse)
         break; /* error or end of options */
     }
 

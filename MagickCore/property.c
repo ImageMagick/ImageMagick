@@ -136,7 +136,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if( IfMagickTrue(image->debug) )
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(clone_image != (const Image *) NULL);
   assert(clone_image->signature == MagickSignature);
@@ -280,7 +280,7 @@ MagickExport MagickBooleanType DeleteImageProperty(Image *image,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if( IfMagickTrue(image->debug) )
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
   if (image->properties == (void *) NULL)
@@ -315,7 +315,7 @@ MagickExport void DestroyImageProperties(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if( IfMagickTrue(image->debug) )
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
   if (image->properties != (void *) NULL)
@@ -3102,7 +3102,7 @@ MagickExport char *GetNextImageProperty(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if( IfMagickTrue(image->debug) )
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
   if (image->properties == (void *) NULL)
@@ -3702,7 +3702,7 @@ MagickExport char *RemoveImageProperty(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if( IfMagickTrue(image->debug) )
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
   if (image->properties == (void *) NULL)
@@ -3740,7 +3740,7 @@ MagickExport void ResetImagePropertyIterator(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if( IfMagickTrue(image->debug) )
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
   if (image->properties == (void *) NULL)
@@ -3792,7 +3792,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if( IfMagickTrue(image->debug) )
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->properties == (void *) NULL)
     image->properties=NewSplayTree(CompareSplayTreeString,
