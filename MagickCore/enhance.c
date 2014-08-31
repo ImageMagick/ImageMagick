@@ -1004,17 +1004,17 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   CacheView
     *image_view;
 
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
   double
     *black,
     *histogram,
     *stretch_map,
     *white;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
 
   register ssize_t
     i;
