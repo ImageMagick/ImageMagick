@@ -202,7 +202,7 @@ extern "C" {
 #define fprintf_l  _fprintf_s_l
 #endif
 #if !defined(read)
-#  define read  _read
+#  define read(fd,buffer,count)  _read(fd,buffer,(unsigned int) count)
 #endif
 #if !defined(readdir)
 #  define readdir(directory)  NTReadDirectory(directory)
@@ -260,7 +260,7 @@ extern "C" {
 #define vsnprintf_l  _vsnprintf_l
 #endif
 #if !defined(write)
-#  define write  _write
+#  define write(fd,buffer,count)  _write(fd,buffer,(unsigned int) count)
 #endif
 #if !defined(wstat) && !defined(__BORLANDC__)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
