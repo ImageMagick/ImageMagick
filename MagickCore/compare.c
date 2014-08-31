@@ -1597,10 +1597,13 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
           continue;
         distance=fabs(p[i]-(double) GetPixelChannel(reconstruct_image,
           channel,q));
-        mean_error_per_pixel+=distance;
-        mean_error+=distance*distance;
-        if (distance > maximum_error)
-          maximum_error=distance;
+        if (distance >= MagickEpsilon)
+          {
+            mean_error_per_pixel+=distance;
+            mean_error+=distance*distance;
+            if (distance > maximum_error)
+              maximum_error=distance;
+          }
         area++;
       }
       p+=GetPixelChannels(image);
