@@ -794,7 +794,7 @@ static unsigned int stringSignature(const char* string)
   clBeginPerfMarkerAMD(__FUNCTION__,"");
 #endif
 
-  stringLength = strlen(string);
+  stringLength = (unsigned int) strlen(string);
   signature = stringLength;
   n = stringLength/sizeof(unsigned int);
   p.s = string;
@@ -2226,7 +2226,7 @@ ds_status AccelerateScoreSerializer(ds_device* device, void** serializedScore, u
     char* s = (char*)malloc(sizeof(char)*256);
     sprintf(s,"%.4f",*((AccelerateScoreType*)device->score));
     *serializedScore = (void*)s;
-    *serializedScoreSize = strlen(s);
+    *serializedScoreSize = (unsigned int) strlen(s);
     return DS_SUCCESS;
   }
   else {

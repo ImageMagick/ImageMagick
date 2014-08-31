@@ -88,7 +88,7 @@ Include declarations.
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
-#define ALIGNED(pointer,type) ((((long)(pointer)) & (sizeof(type)-1)) == 0)
+#define ALIGNED(pointer,type) ((((size_t)(pointer)) & (sizeof(type)-1)) == 0)
 
 /* pad the global workgroup size to the next multiple of 
    the local workgroup size */
@@ -202,7 +202,7 @@ static MagickBooleanType splitImage(const Image* image)
   clEnv=GetDefaultOpenCLEnv();
 
   allocSize=GetOpenCLDeviceMaxMemAllocSize(clEnv);
-  tempSize=image->columns * image->rows * 4 * 4;
+  tempSize=(unsigned long) (image->columns * image->rows * 4 * 4);
 
   split = ((tempSize > allocSize) ? MagickTrue : MagickFalse);
   return(split);
@@ -387,7 +387,7 @@ static Image *ComputeConvolveImage(const Image* image,
     goto cleanup;
   }
 
-  kernelSize = kernel->width * kernel->height;
+  kernelSize = (unsigned int) (kernel->width * kernel->height);
   convolutionKernel = clEnv->library->clCreateBuffer(context, CL_MEM_READ_ONLY|CL_MEM_ALLOC_HOST_PTR, kernelSize * sizeof(float), NULL, &clStatus);
   if (clStatus != CL_SUCCESS)
   {
@@ -446,13 +446,13 @@ static Image *ComputeConvolveImage(const Image* image,
     i = 0;
     clStatus =clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
-    imageWidth = image->columns;
-    imageHeight = image->rows;
+    imageWidth = (unsigned int) image->columns;
+    imageHeight = (unsigned int) image->rows;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&imageWidth);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&imageHeight);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&convolutionKernel);
-    filterWidth = kernel->width;
-    filterHeight = kernel->height;
+    filterWidth = (unsigned int) kernel->width;
+    filterHeight = (unsigned int) kernel->height;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterWidth);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterHeight);
     matte = (image->alpha_trait==BlendPixelTrait)?1:0;
@@ -492,13 +492,13 @@ static Image *ComputeConvolveImage(const Image* image,
     i = 0;
     clStatus =clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
-    imageWidth = image->columns;
-    imageHeight = image->rows;
+    imageWidth = (unsigned int) image->columns;
+    imageHeight = (unsigned int) image->rows;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&imageWidth);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&imageHeight);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&convolutionKernel);
-    filterWidth = kernel->width;
-    filterHeight = kernel->height;
+    filterWidth = (unsigned int) kernel->width;
+    filterHeight = (unsigned int) kernel->height;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterWidth);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterHeight);
     matte = (image->alpha_trait==BlendPixelTrait)?1:0;
@@ -1047,8 +1047,8 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
       int chunkSize = 256;
 
       {
-        imageColumns = image->columns;
-        imageRows = image->rows;
+        imageColumns = (unsigned int) image->columns;
+        imageRows = (unsigned int) image->rows;
 
         /* set the kernel arguments */
         i = 0;
@@ -1056,7 +1056,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(ChannelType),&channel);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
-        kernelWidth = kernel->width;
+        kernelWidth = (unsigned int) kernel->width;
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&imageRows);
@@ -1093,8 +1093,8 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
       int chunkSize = 256;
 
       {
-        imageColumns = image->columns;
-        imageRows = image->rows;
+        imageColumns = (unsigned int) image->columns;
+        imageRows = (unsigned int) image->rows;
 
         /* set the kernel arguments */
         i = 0;
@@ -1102,7 +1102,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
         clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
         clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(ChannelType),&channel);
         clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
-        kernelWidth = kernel->width;
+        kernelWidth = (unsigned int) kernel->width;
         clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
         clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
         clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&imageRows);
@@ -1399,15 +1399,15 @@ static Image* ComputeBlurImageSection(const Image* image,
         int chunkSize = 256;
 
         {
-          imageColumns = image->columns;
+          imageColumns = (unsigned int) image->columns;
           if (sec == 0)
-            imageRows = image->rows / 2 + (kernel->width-1) / 2;
+            imageRows = (unsigned int) (image->rows / 2 + (kernel->width-1) / 2);
           else
-            imageRows = (image->rows - image->rows / 2) + (kernel->width-1) / 2;
+            imageRows = (unsigned int) ((image->rows - image->rows / 2) + (kernel->width-1) / 2);
 
-          offsetRows = sec * image->rows / 2;
+          offsetRows = (unsigned int) (sec * image->rows / 2);
 
-          kernelWidth = kernel->width;
+          kernelWidth = (unsigned int) kernel->width;
 
           /* set the kernel arguments */
           i = 0;
@@ -1453,15 +1453,15 @@ static Image* ComputeBlurImageSection(const Image* image,
         int chunkSize = 256;
 
         {
-          imageColumns = image->columns;
+          imageColumns = (unsigned int) image->columns;
           if (sec == 0)
-            imageRows = image->rows / 2;
+            imageRows = (unsigned int) (image->rows / 2);
           else
-            imageRows = (image->rows - image->rows / 2);
+            imageRows = (unsigned int) ((image->rows - image->rows / 2));
 
-          offsetRows = sec * image->rows / 2;
+          offsetRows = (unsigned int) (sec * image->rows / 2);
 
-          kernelWidth = kernel->width;
+          kernelWidth = (unsigned int) kernel->width;
 
           /* set the kernel arguments */
           i = 0;
@@ -2197,10 +2197,10 @@ static Image *ComputeUnsharpMaskImage(const Image *image,
     {
       chunkSize = 256;
 
-      imageColumns = image->columns;
-      imageRows = image->rows;
+      imageColumns = (unsigned int) image->columns;
+      imageRows = (unsigned int) image->rows;
 
-      kernelWidth = kernel->width;
+      kernelWidth = (unsigned int) kernel->width;
 
       /* set the kernel arguments */
       i = 0;
@@ -2241,11 +2241,11 @@ static Image *ComputeUnsharpMaskImage(const Image *image,
 
     {
       chunkSize = 256;
-      imageColumns = image->columns;
-      imageRows = image->rows;
-      kernelWidth = kernel->width;
-      fGain = (float)gain;
-      fThreshold = (float)threshold;
+      imageColumns = (unsigned int) image->columns;
+      imageRows = (unsigned int) image->rows;
+      kernelWidth = (unsigned int) kernel->width;
+      fGain = (float) gain;
+      fThreshold = (float) threshold;
 
       i = 0;
       clStatus=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
@@ -2563,15 +2563,15 @@ static Image *ComputeUnsharpMaskImageSection(const Image *image,
       {
         chunkSize = 256;
 
-        imageColumns = image->columns;
+        imageColumns = (unsigned int) image->columns;
         if (sec == 0)
-          imageRows = image->rows / 2 + (kernel->width-1) / 2;
+          imageRows = (unsigned int) (image->rows / 2 + (kernel->width-1) / 2);
         else
-          imageRows = (image->rows - image->rows / 2) + (kernel->width-1) / 2;
+          imageRows = (unsigned int) ((image->rows - image->rows / 2) + (kernel->width-1) / 2);
 
-        offsetRows = sec * image->rows / 2;
+        offsetRows = (unsigned int) (sec * image->rows / 2);
 
-        kernelWidth = kernel->width;
+        kernelWidth = (unsigned int) kernel->width;
 
         /* set the kernel arguments */
         i = 0;
@@ -2614,18 +2614,18 @@ static Image *ComputeUnsharpMaskImageSection(const Image *image,
       {
         chunkSize = 256;
 
-        imageColumns = image->columns;
+        imageColumns = (unsigned int) image->columns;
         if (sec == 0)
-          imageRows = image->rows / 2;
+          imageRows = (unsigned int) (image->rows / 2);
         else
-          imageRows = (image->rows - image->rows / 2);
+          imageRows = (unsigned int) (image->rows - image->rows / 2);
 
-        offsetRows = sec * image->rows / 2;
+        offsetRows = (unsigned int) (sec * image->rows / 2);
 
-        kernelWidth = kernel->width;
+        kernelWidth = (unsigned int) kernel->width;
 
-        fGain = (float)gain;
-        fThreshold = (float)threshold;
+        fGain = (float) gain;
+        fThreshold = (float) threshold;
 
         i = 0;
         clStatus=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
@@ -2914,11 +2914,11 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
     }
 
     {
-      imageColumns = image->columns;
-      imageRows = image->rows;
-      kernelWidth = kernel->width;
-      fGain = (float)gain;
-      fThreshold = (float)threshold;
+      imageColumns = (unsigned int) image->columns;
+      imageRows = (unsigned int) image->rows;
+      kernelWidth = (unsigned int) kernel->width;
+      fGain = (float) gain;
+      fThreshold = (float) threshold;
       justBlur = blurOnly;
 
       /* set the kernel arguments */
@@ -3660,15 +3660,15 @@ static Image *ComputeResizeImage(const Image* image,
       goto cleanup;
     }
     
-    status = resizeHorizontalFilter(imageBuffer, image->columns, image->rows, (image->alpha_trait==BlendPixelTrait)?1:0
-          , tempImageBuffer, resizedColumns, image->rows
+    status = resizeHorizontalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, (image->alpha_trait==BlendPixelTrait)?1:0
+          , tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows
           , resizeFilter, cubicCoefficientsBuffer
           , xFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
     
-    status = resizeVerticalFilter(tempImageBuffer, resizedColumns, image->rows, (image->alpha_trait==BlendPixelTrait)?1:0
-       , filteredImageBuffer, resizedColumns, resizedRows
+    status = resizeVerticalFilter(tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows, (image->alpha_trait==BlendPixelTrait)?1:0
+       , filteredImageBuffer, (unsigned int) resizedColumns, (unsigned int) resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
     if (status != MagickTrue)
@@ -3684,15 +3684,15 @@ static Image *ComputeResizeImage(const Image* image,
       goto cleanup;
     }
 
-    status = resizeVerticalFilter(imageBuffer, image->columns, image->rows, (image->alpha_trait==BlendPixelTrait)?1:0
-       , tempImageBuffer, image->columns, resizedRows
+    status = resizeVerticalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, (image->alpha_trait==BlendPixelTrait)?1:0
+       , tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
 
-    status = resizeHorizontalFilter(tempImageBuffer, image->columns, resizedRows, (image->alpha_trait==BlendPixelTrait)?1:0
-       , filteredImageBuffer, resizedColumns, resizedRows
+    status = resizeHorizontalFilter(tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows, (image->alpha_trait==BlendPixelTrait)?1:0
+       , filteredImageBuffer, (unsigned int) resizedColumns, (unsigned int) resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , xFactor, clEnv, queue, exception);
     if (status != MagickTrue)
@@ -5765,9 +5765,9 @@ static Image *ComputeDespeckleImage(const Image *image,
 
   clStatus =clEnv->library->clSetKernelArg(hullPass1,0,sizeof(cl_mem),(void *)&imageBuffer);
   clStatus |=clEnv->library->clSetKernelArg(hullPass1,1,sizeof(cl_mem),(void *)(tempImageBuffer+1));
-  imageWidth = image->columns;
+  imageWidth = (unsigned int) image->columns;
   clStatus |=clEnv->library->clSetKernelArg(hullPass1,2,sizeof(unsigned int),(void *)&imageWidth);
-  imageHeight = image->rows;
+  imageHeight = (unsigned int) image->rows;
   clStatus |=clEnv->library->clSetKernelArg(hullPass1,3,sizeof(unsigned int),(void *)&imageHeight);
   matte = (image->alpha_trait==BlendPixelTrait)?0:1;
   clStatus |=clEnv->library->clSetKernelArg(hullPass1,6,sizeof(int),(void *)&matte);
@@ -5779,9 +5779,9 @@ static Image *ComputeDespeckleImage(const Image *image,
 
   clStatus = clEnv->library->clSetKernelArg(hullPass2,0,sizeof(cl_mem),(void *)(tempImageBuffer+1));
   clStatus |=clEnv->library->clSetKernelArg(hullPass2,1,sizeof(cl_mem),(void *)tempImageBuffer);
-  imageWidth = image->columns;
+  imageWidth = (unsigned int) image->columns;
   clStatus |=clEnv->library->clSetKernelArg(hullPass2,2,sizeof(unsigned int),(void *)&imageWidth);
-  imageHeight = image->rows;
+  imageHeight = (unsigned int) image->rows;
   clStatus |=clEnv->library->clSetKernelArg(hullPass2,3,sizeof(unsigned int),(void *)&imageHeight);
   matte = (image->alpha_trait==BlendPixelTrait)?0:1;
   clStatus |=clEnv->library->clSetKernelArg(hullPass2,6,sizeof(int),(void *)&matte);
@@ -6172,7 +6172,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
     cl_uint workItemCount;
     clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &computeUnitCount, NULL);
     workItemCount = computeUnitCount * 2 * 256;			// 256 work items per group, 2 groups per CU
-    inputPixelCount = image->columns * image->rows;
+    inputPixelCount = (cl_int) (image->columns * image->rows);
     pixelsPerWorkitem = (inputPixelCount + workItemCount - 1) / workItemCount;
     pixelsPerWorkitem = ((pixelsPerWorkitem + 3) / 4) * 4;
 
@@ -6409,8 +6409,8 @@ static MagickBooleanType ComputeRandomImage(Image* image,
 
   status = LaunchRandomImageKernel(clEnv,queue,
                                    imageBuffer,
-                                   image->columns,
-                                   image->rows,
+                                   (unsigned int) image->columns,
+                                   (unsigned int) image->rows,
                                    randomNumberSeedsBuffer,
                                    GetNumRandGenerators(clEnv),
                                    exception);
@@ -6702,8 +6702,8 @@ static Image* ComputeMotionBlurImage(const Image *image,
     (void *)&imageBuffer);
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(cl_mem),
     (void *)&filteredImageBuffer);
-  imageWidth = image->columns;
-  imageHeight = image->rows;
+  imageWidth = (unsigned int) image->columns;
+  imageHeight = (unsigned int) image->rows;
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(unsigned int),
     &imageWidth);
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(unsigned int),
@@ -6736,9 +6736,9 @@ static Image* ComputeMotionBlurImage(const Image *image,
   local_work_size[0] = 16;
   local_work_size[1] = 16;
   global_work_size[0] = (size_t)padGlobalWorkgroupSizeToLocalWorkgroupSize(
-                                image->columns,local_work_size[0]);
+                                (unsigned int) image->columns,(unsigned int) local_work_size[0]);
   global_work_size[1] = (size_t)padGlobalWorkgroupSizeToLocalWorkgroupSize(
-                                image->rows,local_work_size[1]);
+                                (unsigned int) image->rows,(unsigned int) local_work_size[1]);
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, motionBlurKernel, 2, NULL, 
     global_work_size, local_work_size, 0, NULL, NULL);
 
@@ -6859,7 +6859,7 @@ static MagickBooleanType LaunchCompositeKernel(MagickCLEnv clEnv,
   local_work_size[1] = 1;
 
   global_work_size[0] = padGlobalWorkgroupSizeToLocalWorkgroupSize(inputWidth,
-    local_work_size[0]);
+    (unsigned int) local_work_size[0]);
   global_work_size[1] = inputHeight;
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, compositeKernel, 2, NULL, 
     global_work_size, local_work_size, 0, NULL, NULL);

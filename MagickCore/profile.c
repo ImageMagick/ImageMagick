@@ -1514,7 +1514,8 @@ static void WriteTo8BimProfile(Image *image,const char *name,
               extract_count++;
             extract_profile=AcquireStringInfo(offset+extract_count+extent);
             (void) CopyMagickMemory(extract_profile->datum,datum,offset-4);
-            WriteResourceLong(extract_profile->datum+offset-4,profile->length);
+            WriteResourceLong(extract_profile->datum+offset-4,
+              (unsigned int)profile->length);
             (void) CopyMagickMemory(extract_profile->datum+offset,
               profile->datum,profile->length);
           }
