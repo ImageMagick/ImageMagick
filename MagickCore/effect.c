@@ -3423,7 +3423,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
             (unsharp_traits == UndefinedPixelTrait))
           continue;
         if (((unsharp_traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(image,p) != 0))
+            (GetPixelReadMask(image,p) == 0))
           {
             SetPixelChannel(unsharp_image,channel,p[i],q);
             continue;
