@@ -154,7 +154,7 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
     if (sscanf(hash_.substr(i*5,5).c_str(),"%05x",&hex) != 1)
       throw ErrorOption("Invalid hash value");
 
-    value=((unsigned short)hex) / pow(10, (hex >> 17));
+    value=((unsigned short)hex) / pow(10.0, (double)(hex >> 17));
     if (hex & (1 << 16))
       value=-value;
     if (i < 7)
