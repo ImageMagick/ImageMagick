@@ -3627,6 +3627,11 @@ void Magick::Image::perceptibleChannel(const ChannelType channel_,
   ThrowPPException;
 }
 
+ Magick::ImagePerceptualHash Magick::Image::perceptualHash()
+{
+  return(ImagePerceptualHash(constImage()));
+}
+
 void Magick::Image::ping(const std::string &imageSpec_)
 {
   MagickCore::Image

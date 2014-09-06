@@ -1247,6 +1247,7 @@ namespace Magick
   using MagickCore::GetImageInfo;
   using MagickCore::GetImageInfoFile;
   using MagickCore::GetImageOption;
+  using MagickCore::GetImagePerceptualHash;
   using MagickCore::GetAuthenticPixels;
   using MagickCore::GetImageProfile;
   using MagickCore::GetImageProperty;

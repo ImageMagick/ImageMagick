@@ -109,11 +109,170 @@ Magick::ChannelMoments::ChannelMoments(const PixelChannel channel_,
     _ellipseEccentricity(channelMoments_->ellipse_eccentricity),
     _ellipseIntensity(channelMoments_->ellipse_intensity)
 {
-  size_t
+  register ssize_t
     i;
 
   for (i=0; i<8; i++)
     _huInvariants.push_back(channelMoments_->I[i]);
+}
+
+Magick::ChannelPerceptualHash::ChannelPerceptualHash(void)
+  : _channel(SyncPixelChannel),
+    _srgbHuPhash(7),
+    _hclpHuPhash(7)
+{
+}
+
+Magick::ChannelPerceptualHash::ChannelPerceptualHash(
+  const ChannelPerceptualHash &channelPerceptualHash_)
+  : _channel(channelPerceptualHash_._channel),
+    _srgbHuPhash(channelPerceptualHash_._srgbHuPhash),
+    _hclpHuPhash(channelPerceptualHash_._hclpHuPhash)
+{
+}
+
+Magick::ChannelPerceptualHash::ChannelPerceptualHash(
+  const PixelChannel channel_,const std::string &hash_)
+  : _channel(channel_),
+    _srgbHuPhash(7),
+    _hclpHuPhash(7)
+{
+  register ssize_t
+    i;
+
+  if (hash_.length() != 70)
+    throw ErrorOption("Invalid hash length");
+
+  for (i=0; i<14; i++)
+  {
+    unsigned long
+      hex;
+
+    double
+      value;
+
+    if (sscanf(hash_.substr(i*5,5).c_str(),"%05x",&hex) != 1)
+      throw ErrorOption("Invalid hash value");
+
+    value=((unsigned short)hex) / pow(10, (hex >> 17));
+    if (hex & (1 << 16))
+      value=-value;
+    if (i < 7)
+      _srgbHuPhash[i]=value;
+    else
+      _hclpHuPhash[i-7]=value;
+  }
+}
+
+Magick::ChannelPerceptualHash::~ChannelPerceptualHash(void)
+{
+}
+
+Magick::ChannelPerceptualHash::operator std::string() const
+{
+  std::string
+    hash;
+
+  register ssize_t
+    i;
+
+  if (!isValid())
+    return(std::string());
+
+  for (i=0; i<14; i++)
+  {
+    char
+      buffer[6];
+
+    double
+      value;
+
+    unsigned long
+      hex;
+
+    if (i < 7)
+      value=_srgbHuPhash[i];
+    else
+      value=_hclpHuPhash[i-7];
+
+    hex=0;
+    while(hex < 7 && fabs(value*10) < 65536)
+    {
+      value=value*10;
+      hex++;
+    }
+
+    hex=(hex<<1);
+    if (value < 0.0)
+      hex|=1;
+    hex=(hex<<16)+(unsigned long)(value < 0.0 ? -(value - 0.5) : value + 0.5);
+    (void) FormatLocaleString(buffer,6,"%05x",hex);
+    hash+=std::string(buffer);
+  }
+  return(hash);
+}
+
+Magick::PixelChannel Magick::ChannelPerceptualHash::channel() const
+{
+  return(_channel);
+}
+
+bool Magick::ChannelPerceptualHash::isValid() const
+{
+  return(_channel != SyncPixelChannel);
+}
+
+double Magick::ChannelPerceptualHash::sumSquaredDifferences(
+  const ChannelPerceptualHash &channelPerceptualHash_)
+{
+  double
+    ssd;
+
+  register ssize_t
+    i;
+
+  ssd=0.0;
+  for (i=0; i<7; i++)
+  {
+    ssd+=((_srgbHuPhash[i]-channelPerceptualHash_._srgbHuPhash[i])*
+      (_srgbHuPhash[i]-channelPerceptualHash_._srgbHuPhash[i]));
+    ssd+=((_hclpHuPhash[i]-channelPerceptualHash_._hclpHuPhash[i])*
+      (_hclpHuPhash[i]-channelPerceptualHash_._hclpHuPhash[i]));
+  }
+  return(ssd);
+}
+
+double Magick::ChannelPerceptualHash::srgbHuPhash(const size_t index_) const
+{
+  if (index_ > 6)
+    throw ErrorOption("Valid range for index is 0-6");
+
+  return(_srgbHuPhash.at(index_));
+}
+
+double Magick::ChannelPerceptualHash::hclpHuPhash(const size_t index_) const
+{
+  if (index_ > 6)
+    throw ErrorOption("Valid range for index is 0-6");
+
+  return(_hclpHuPhash.at(index_));
+}
+
+Magick::ChannelPerceptualHash::ChannelPerceptualHash(
+  const PixelChannel channel_,
+  const MagickCore::ChannelPerceptualHash *channelPerceptualHash_)
+  : _channel(channel_),
+    _srgbHuPhash(7),
+    _hclpHuPhash(7)
+{
+  register ssize_t
+    i;
+
+  for (i=0; i<7; i++)
+  {
+    _srgbHuPhash[i]=channelPerceptualHash_->srgb_hu_phash[i];
+    _hclpHuPhash[i]=channelPerceptualHash_->hclp_hu_phash[i];
+  }
 }
 
 Magick::ChannelStatistics::ChannelStatistics(void)
@@ -305,6 +464,128 @@ Magick::ImageMoments::ImageMoments(const MagickCore::Image *image)
         &channel_moments[CompositePixelChannel]));
       channel_moments=(MagickCore::ChannelMoments *) RelinquishMagickMemory(
         channel_moments);
+    }
+  ThrowPPException;
+}
+
+Magick::ImagePerceptualHash::ImagePerceptualHash(void)
+  : _channels()
+{
+}
+
+Magick::ImagePerceptualHash::ImagePerceptualHash(
+  const ImagePerceptualHash &imagePerceptualHash_)
+  : _channels(imagePerceptualHash_._channels)
+{
+}
+
+Magick::ImagePerceptualHash::ImagePerceptualHash(const std::string &hash_)
+  : _channels()
+{
+  if (hash_.length() != 210)
+    throw ErrorOption("Invalid hash length");
+
+  _channels.push_back(Magick::ChannelPerceptualHash(RedPixelChannel,
+    hash_.substr(0, 70)));
+  _channels.push_back(Magick::ChannelPerceptualHash(GreenPixelChannel,
+    hash_.substr(70, 70)));
+  _channels.push_back(Magick::ChannelPerceptualHash(BluePixelChannel,
+    hash_.substr(140, 70)));
+}
+
+Magick::ImagePerceptualHash::~ImagePerceptualHash(void)
+{
+}
+
+Magick::ImagePerceptualHash::operator std::string() const
+{
+  if (!isValid())
+    return(std::string());
+
+  return static_cast<std::string>(_channels[0]) +
+    static_cast<std::string>(_channels[1]) + 
+    static_cast<std::string>(_channels[2]);
+}
+
+Magick::ChannelPerceptualHash Magick::ImagePerceptualHash::channel(
+  const PixelChannel channel_) const
+{
+  for (std::vector<ChannelPerceptualHash>::const_iterator it =
+       _channels.begin(); it != _channels.end(); ++it)
+  {
+    if (it->channel() == channel_)
+      return(*it);
+  }
+  return(ChannelPerceptualHash());
+}
+
+bool Magick::ImagePerceptualHash::isValid() const
+{
+  if (_channels.size() != 3)
+    return(false);
+
+  if (_channels[0].channel() != RedPixelChannel)
+    return(false);
+
+  if (_channels[1].channel() != GreenPixelChannel)
+    return(false);
+
+  if (_channels[2].channel() != BluePixelChannel)
+    return(false);
+
+  return(true);
+}
+
+double Magick::ImagePerceptualHash::sumSquaredDifferences(
+      const ImagePerceptualHash &channelPerceptualHash_)
+{
+  double
+    ssd;
+
+  register ssize_t
+    i;
+
+  if (!isValid())
+    throw ErrorOption("instance is not valid");
+  if (!channelPerceptualHash_.isValid())
+    throw ErrorOption("channelPerceptualHash_ is not valid");
+
+  ssd=0.0;
+  for (i=0; i<3; i++)
+  {
+    ssd+=_channels[i].sumSquaredDifferences(_channels[i]);
+  }
+  return(ssd);
+}
+
+Magick::ImagePerceptualHash::ImagePerceptualHash(
+  const MagickCore::Image *image)
+  : _channels()
+{
+  MagickCore::ChannelPerceptualHash*
+    channel_perceptual_hash;
+
+  PixelTrait
+    traits;
+
+  GetPPException;
+  channel_perceptual_hash=GetImagePerceptualHash(image,exceptionInfo);
+  if (channel_perceptual_hash != (MagickCore::ChannelPerceptualHash *) NULL)
+    {
+      traits=GetPixelChannelTraits(image,RedPixelChannel);
+      if ((traits & UpdatePixelTrait) != 0)
+        _channels.push_back(Magick::ChannelPerceptualHash(RedPixelChannel,
+          &channel_perceptual_hash[RedPixelChannel]));
+      traits=GetPixelChannelTraits(image,GreenPixelChannel);
+      if ((traits & UpdatePixelTrait) != 0)
+        _channels.push_back(Magick::ChannelPerceptualHash(GreenPixelChannel,
+          &channel_perceptual_hash[GreenPixelChannel]));
+      traits=GetPixelChannelTraits(image,BluePixelChannel);
+      if ((traits & UpdatePixelTrait) != 0)
+        _channels.push_back(Magick::ChannelPerceptualHash(BluePixelChannel,
+          &channel_perceptual_hash[BluePixelChannel]));
+      channel_perceptual_hash=(MagickCore::ChannelPerceptualHash *)
+        RelinquishMagickMemory(channel_perceptual_hash);
     }
   ThrowPPException;
 }

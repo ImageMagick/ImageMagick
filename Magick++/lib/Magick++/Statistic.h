@@ -64,8 +64,8 @@ namespace Magick
       const MagickCore::ChannelMoments *channelMoments_);
 
   private:
-    std::vector<double> _huInvariants;
     PixelChannel _channel;
+    std::vector<double> _huInvariants;
     double _centroidX;
     double _centroidY;
     double _ellipseAxisX;
@@ -73,6 +73,55 @@ namespace Magick
     double _ellipseAngle;
     double _ellipseEccentricity;
     double _ellipseIntensity;
+  };
+
+  class MagickPPExport ChannelPerceptualHash
+  {
+  public:
+
+    // Default constructor
+    ChannelPerceptualHash(void);
+
+    // Copy constructor
+    ChannelPerceptualHash(const ChannelPerceptualHash &channelPerceptualHash_);
+
+    // Constructor using the specified hash string
+    ChannelPerceptualHash(const PixelChannel channel_,
+      const std::string &hash_);
+
+    // Destroy channel perceptual hash
+    ~ChannelPerceptualHash(void);
+
+    // Return hash string
+    operator std::string() const;
+
+    // The channel
+    PixelChannel channel(void) const;
+
+    // Does object contain valid channel perceptual hash?
+    bool isValid() const;
+
+    // Returns the sum squared difference between this hash and the other hash
+    double sumSquaredDifferences(
+      const ChannelPerceptualHash &channelPerceptualHash_);
+
+    // SRGB hu preceptual hash (valid range for index is 0-6)
+    double srgbHuPhash(const size_t index_) const;
+
+    // HCLp hu preceptual hash (valid range for index is 0-6)
+    double hclpHuPhash(const size_t index_) const;
+
+    //
+    // Implemementation methods
+    //
+
+    ChannelPerceptualHash(const PixelChannel channel_,
+      const MagickCore::ChannelPerceptualHash *channelPerceptualHash_);
+
+  private:
+    PixelChannel _channel;
+    std::vector<double> _srgbHuPhash;
+    std::vector<double> _hclpHuPhash;
   };
 
   // Obtain image statistics. Statistics are normalized to the range
@@ -183,6 +232,44 @@ namespace Magick
 
   private:
     std::vector<ChannelMoments> _channels;
+  };
+
+  class MagickPPExport ImagePerceptualHash
+  {
+  public:
+
+    // Default constructor
+    ImagePerceptualHash(void);
+
+    // Copy constructor
+    ImagePerceptualHash(const ImagePerceptualHash &imagePerceptualHash_);
+
+    // Constructor using the specified hash string
+    ImagePerceptualHash(const std::string &hash_);
+
+    // Destroy image perceptual hash
+    ~ImagePerceptualHash(void);
+
+    // Return hash string
+    operator std::string() const;
+
+    // Returns the perceptual hash for the specified channel
+    ChannelPerceptualHash channel(const PixelChannel channel_) const;
+
+    // Does object contain valid perceptual hash?
+    bool isValid() const;
+
+    // Returns the sum squared difference between this hash and the other hash
+    double sumSquaredDifferences(
+      const ImagePerceptualHash &channelPerceptualHash_);
+
+    //
+    // Implemementation methods
+    //
+    ImagePerceptualHash(const MagickCore::Image *image_);
+
+  private:
+    std::vector<ChannelPerceptualHash> _channels;
   };
 
   class MagickPPExport ImageStatistics
