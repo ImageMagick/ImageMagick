@@ -60,8 +60,8 @@ typedef struct _ChannelMoments
 typedef struct _ChannelPerceptualHash
 {
   double
-    P[32],
-    Q[32];
+    srgb_moment[32],
+    hclp_moment[32];
 } ChannelPerceptualHash;
 
 typedef enum

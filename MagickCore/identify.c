@@ -394,8 +394,8 @@ static ssize_t PrintChannelPerceptualHash(FILE *file,const PixelChannel channel,
   n=FormatLocaleFile(file,"    %s:\n",name);
   for (i=0; i < 7; i++)
     n+=FormatLocaleFile(file,"      PH%.20g: %.*g, %.*g\n",i+1.0,
-      GetMagickPrecision(),channel_phash[channel].P[i],
-      GetMagickPrecision(),channel_phash[channel].Q[i]);
+      GetMagickPrecision(),channel_phash[channel].srgb_moment[i],
+      GetMagickPrecision(),channel_phash[channel].hclp_moment[i]);
   return(n);
 }
 
