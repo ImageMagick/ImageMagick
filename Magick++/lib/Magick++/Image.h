@@ -1070,6 +1070,9 @@ namespace Magick
     void perceptible(const double epsilon_);
     void perceptibleChannel(const ChannelType channel_,const double epsilon_);
 
+    // Returns the perceptual hash for this image.
+    Magick::ImagePerceptualHash perceptualHash();
+
     // Ping is similar to read except only enough of the image is read
     // to determine the image columns, rows, and filesize.  Access the
     // columns(), rows(), and fileSize() attributes after invoking
@@ -1290,6 +1293,7 @@ namespace Magick
     // Spread pixels randomly within image by specified ammount
     void spread(const size_t amount_=3);
 
+    // Returns the statistics for this image.
     Magick::ImageStatistics statistics();
 
     // Add a digital watermark to the image (based on second image)
