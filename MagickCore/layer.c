@@ -1943,7 +1943,7 @@ MagickExport Image *MergeImageLayers(Image *image,const LayerMethod method,
             page.y=next->page.y;
           }
         if ((ssize_t) width < (next->page.x+(ssize_t) next->columns-page.x))
-          width=(size_t) next->page.x+(ssize_t)next->columns-page.x;
+          width=(size_t) next->page.x+(ssize_t) next->columns-page.x;
         if ((ssize_t) height < (next->page.y+(ssize_t) next->rows-page.y))
           height=(size_t) next->page.y+(ssize_t) next->rows-page.y;
       }
