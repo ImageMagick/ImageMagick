@@ -145,7 +145,7 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
 
   for (i=0; i<14; i++)
   {
-    unsigned long
+    unsigned int
       hex;
 
     double
@@ -187,7 +187,7 @@ Magick::ChannelPerceptualHash::operator std::string() const
     double
       value;
 
-    unsigned long
+    unsigned int
       hex;
 
     if (i < 7)
@@ -205,7 +205,7 @@ Magick::ChannelPerceptualHash::operator std::string() const
     hex=(hex<<1);
     if (value < 0.0)
       hex|=1;
-    hex=(hex<<16)+(unsigned long)(value < 0.0 ? -(value - 0.5) : value + 0.5);
+    hex=(hex<<16)+(unsigned int)(value < 0.0 ? -(value - 0.5) : value + 0.5);
     (void) FormatLocaleString(buffer,6,"%05x",hex);
     hash+=std::string(buffer);
   }
