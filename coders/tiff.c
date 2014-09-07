@@ -999,10 +999,17 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       */
       for (i=0; i < (ssize_t) image_info->scene; i++)
       {
-        (void) TIFFReadDirectory(tiff);
+        status=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
+        if (status == MagickFalse)
+          {
+            TIFFClose(tiff);
+            image=DestroyImageList(image);
+            return((Image *) NULL);
+          }
         AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
           {
+            TIFFClose(tiff);
             image=DestroyImageList(image);
             return((Image *) NULL);
           }
