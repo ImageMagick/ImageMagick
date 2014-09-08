@@ -393,7 +393,8 @@ static ssize_t PrintChannelMoments(FILE *file,const ChannelType channel,
   const char *name,const double scale,const ChannelMoments *channel_moments)
 {
   double
-    powers[8] = { 1.0, 2.0, 3.0, 3.0, 6.0, 4.0, 6.0, 4.0 };
+    powers[MaximumNumberOfImageMoments] =
+      { 1.0, 2.0, 3.0, 3.0, 6.0, 4.0, 6.0, 4.0 };
 
   register ssize_t
     i;
@@ -416,7 +417,7 @@ static ssize_t PrintChannelMoments(FILE *file,const ChannelType channel,
     GetMagickPrecision(),pow(scale,powers[0])*
     channel_moments[channel].ellipse_intensity,GetMagickPrecision(),
     channel_moments[channel].ellipse_intensity);
-  for (i=0; i < 8; i++)
+  for (i=0; i < MaximumNumberOfImageMoments; i++)
     n+=FormatLocaleFile(file,"      I%.20g: %.*g (%.*g)\n",i+1.0,
       GetMagickPrecision(),channel_moments[channel].I[i]/pow(scale,powers[i]),
       GetMagickPrecision(),channel_moments[channel].I[i]);
@@ -433,7 +434,7 @@ static ssize_t PrintChannelPerceptualHash(FILE *file,const ChannelType channel,
     n;
 
   n=FormatLocaleFile(file,"    %s:\n",name);
-  for (i=0; i < MaximumNumberOfPerceptualHashes; i++)
+  for (i=0; i < MaximumNumberOfImageMoments; i++)
     n+=FormatLocaleFile(file,"      PH%.20g: %.*g, %.*g\n",i+1.0,
       GetMagickPrecision(),channel_phash[channel].P[i],
       GetMagickPrecision(),channel_phash[channel].Q[i]);
