@@ -1748,7 +1748,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(
   if (perceptual_hash == (ChannelPerceptualHash *) NULL)
     return((ChannelPerceptualHash *) NULL);
   for (channel=0; channel <= MaxPixelChannels; channel++)
-    for (i=0; i < 7; i++)
+    for (i=0; i < MaximumNumberOfImageMoments; i++)
       perceptual_hash[channel].srgb_hu_phash[i]=
         (-MagickLog10(moments[channel].I[i]));
   moments=(ChannelMoments *) RelinquishMagickMemory(moments);
@@ -1779,7 +1779,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(
       return((ChannelPerceptualHash *) NULL);
     }
   for (channel=0; channel <= MaxPixelChannels; channel++)
-    for (i=0; i < 7; i++)
+    for (i=0; i < MaximumNumberOfImageMoments; i++)
       perceptual_hash[channel].hclp_hu_phash[i]=
         (-MagickLog10(moments[channel].I[i]));
   moments=(ChannelMoments *) RelinquishMagickMemory(moments);

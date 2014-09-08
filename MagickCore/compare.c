@@ -1154,7 +1154,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       i;
 
     difference=0.0;
-    for (i=0; i < 7; i++)
+    for (i=0; i < MaximumNumberOfImageMoments; i++)
     {
       double
         alpha,
@@ -1185,7 +1185,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       i;
 
     difference=0.0;
-    for (i=0; i < 7; i++)
+    for (i=0; i < MaximumNumberOfImageMoments; i++)
     {
       double
         alpha,
@@ -1209,8 +1209,6 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
   return(MagickTrue);
 }
-
-
 
 static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
