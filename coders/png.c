@@ -3679,8 +3679,20 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
            */
           image->intensity = Rec709LuminancePixelIntensityMethod;
           SetImageColorspace(image,GRAYColorspace);
-          image->gamma = image_gamma;
         }
+      else
+        {
+          RenderingIntent
+            save_rendering_intent = image->rendering_intent;
+          ChromaticityInfo
+            save_chromaticity = image->chromaticity;
+
+          SetImageColorspace(image,GRAYColorspace);
+          image->rendering_intent = save_rendering_intent;
+          image->chromaticity = save_chromaticity;
+        }
+
+      image->gamma = image_gamma;
     }
 
   (void)LogMagickEvent(CoderEvent,GetMagickModule(),
