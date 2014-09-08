@@ -3100,8 +3100,20 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
            */
           image->intensity = Rec709LuminancePixelIntensityMethod;
           SetImageColorspace(image,GRAYColorspace,exception);
-          image->gamma = image_gamma;
         }
+      else
+        {
+          RenderingIntent
+            save_rendering_intent = image->rendering_intent;
+          ChromaticityInfo
+            save_chromaticity = image->chromaticity;
+
+          SetImageColorspace(image,GRAYColorspace,exception);
+          image->rendering_intent = save_rendering_intent;
+          image->chromaticity = save_chromaticity;
+        }
+
+      image->gamma = image_gamma;
     }
   
   (void)LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3305,7 +3317,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         /*
           Convert image to DirectClass pixel packets.
         */
-        image->alpha_trait=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
+        image->alpha_trait=
+            (((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
             ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
             (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
             BlendPixelTrait : UndefinedPixelTrait;
@@ -3618,6 +3631,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 
   png_read_end(ping,end_info);
+
+  if (logging != MagickFalse)
+  {
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       "  image->storage_class=%d\n",(int) image->storage_class);
+  }
 
   if (image_info->number_scenes != 0 && mng_info->scenes_found-1 <
       (ssize_t) image_info->first_scene && image->delay != 0)
@@ -4164,13 +4183,19 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
            image->chromaticity.white_point.x<0.3128f &&
            image->chromaticity.white_point.y>0.3289f &&
            image->chromaticity.white_point.y<0.3291f))
-    SetImageColorspace(image,RGBColorspace,exception);
+    {
+       SetImageColorspace(image,RGBColorspace,exception);
+    }
 
   if (logging != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  page.w: %.20g, page.h: %.20g,page.x: %.20g, page.y: %.20g.",
-            (double) image->page.width,(double) image->page.height,
-            (double) image->page.x,(double) image->page.y);
+    {
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "  page.w: %.20g, page.h: %.20g,page.x: %.20g, page.y: %.20g.",
+               (double) image->page.width,(double) image->page.height,
+               (double) image->page.x,(double) image->page.y);
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "  image->colorspace: %d", (int) image->colorspace);
+    }
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit ReadPNGImage()");
