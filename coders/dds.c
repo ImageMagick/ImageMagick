@@ -42,10 +42,12 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -59,31 +61,14 @@
 #include "magick/option.h"
 #include "magick/pixel-accessor.h"
 #include "magick/profile.h"
+#include "magick/quantum.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/module.h"
 #include "magick/transform.h"
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/compress.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/pixel-accessor.h"
-#include "magick/quantum.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/string-private.h"
+
 /*
   Definitions
 */
@@ -99,6 +84,7 @@
 #define DDPF_ALPHAPIXELS  0x00000001
 #define DDPF_FOURCC       0x00000004
 #define DDPF_RGB          0x00000040
+#define DDPF_LUMINANCE    0x00020000
 
 #define FOURCC_DXT1       0x31545844
 #define FOURCC_DXT3       0x33545844
@@ -1755,6 +1741,20 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           decoder = ReadUncompressedRGB;
         }
     }
+  else if (dds_info.pixelformat.flags & DDPF_LUMINANCE)
+   {
+      compression = NoCompression;
+      if (dds_info.pixelformat.flags & DDPF_ALPHAPIXELS)
+        {
+          /* Not sure how to handle this */
+          ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+        }
+      else
+        {
+          matte = MagickFalse;
+          decoder = ReadUncompressedRGB;
+        }
+    }
   else if (dds_info.pixelformat.flags & DDPF_FOURCC)
     {
       switch (dds_info.pixelformat.fourcc)
@@ -1766,7 +1766,6 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           decoder = ReadDXT1;
           break;
         }
-
         case FOURCC_DXT3:
         {
           matte = MagickTrue;
@@ -1774,7 +1773,6 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           decoder = ReadDXT3;
           break;
         }
-
         case FOURCC_DXT5:
         {
           matte = MagickTrue;
@@ -1782,7 +1780,6 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           decoder = ReadDXT5;
           break;
         }
-
         default:
         {
           /* Unknown FOURCC */
@@ -2178,7 +2175,9 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info,
   unsigned short
     color;
 
-  if (dds_info->pixelformat.rgb_bitcount == 16 && !IsBitMask(
+  if (dds_info->pixelformat.rgb_bitcount == 8)
+    (void) SetImageType(image,GrayscaleType);
+  else if (dds_info->pixelformat.rgb_bitcount == 16 && !IsBitMask(
     dds_info->pixelformat,0xf800,0x07e0,0x001f,0x0000))
     ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
       image->filename);
@@ -2192,7 +2191,9 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info,
 
     for (x = 0; x < (ssize_t) dds_info->width; x++)
     {
-      if (dds_info->pixelformat.rgb_bitcount == 16)
+      if (dds_info->pixelformat.rgb_bitcount == 8)
+        SetPixelGray(q,ScaleCharToQuantum(ReadBlobByte(image)));
+      else if (dds_info->pixelformat.rgb_bitcount == 16)
         {
            color=ReadBlobShort(image);
            SetPixelRed(q,ScaleCharToQuantum((unsigned char)
@@ -2245,6 +2246,11 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,
     {
       if (IsBitMask(dds_info->pixelformat,0x7c00,0x03e0,0x001f,0x8000))
         alphaBits=1;
+      else if (IsBitMask(dds_info->pixelformat,0x00ff,0x00ff,0x00ff,0xff00))
+        {
+          alphaBits=2;
+          (void) SetImageType(image,GrayscaleMatteType);
+        }
       else if (IsBitMask(dds_info->pixelformat,0x0f00,0x00f0,0x000f,0xf000))
         alphaBits=4;
       else
@@ -2274,6 +2280,12 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,
                SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
                  ((((unsigned short)(color << 11) >> 11)/31.0)*255)));
              }
+          else if (alphaBits == 2)
+            {
+               SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
+                 (color >> 8)));
+               SetPixelGray(q,ScaleCharToQuantum((unsigned char)color));
+            }
           else
             {
                SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)

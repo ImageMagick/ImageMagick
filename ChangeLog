@@ -1,3 +1,7 @@
+2014-07-31  6.8.9-8 Dirk Lemstra <dirk@snakeware...>
+  * Added support for some legacy dds formats (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=26184).
+
 2014-08-16  6.8.9-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-7, SVN revision 16330.
 
