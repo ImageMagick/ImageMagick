@@ -1330,7 +1330,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
       return(MagickFalse);
     }
-  for (i=0; i < MaximumNumberOfPerceptualHashes; i++)
+  for (i=0; i < MaximumNumberOfImageMoments; i++)
   {
     /*
       Compute sum of moment differences squared.
@@ -1377,7 +1377,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   /*
     Compute perceptual hash in the HCLP colorspace.
   */
-  for (i=0; i < MaximumNumberOfPerceptualHashes; i++)
+  for (i=0; i < MaximumNumberOfImageMoments; i++)
   {
     /*
       Compute sum of moment differences squared.

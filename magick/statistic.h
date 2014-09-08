@@ -24,7 +24,7 @@ extern "C" {
 
 #include "magick/draw.h"
 
-#define MaximumNumberOfPerceptualHashes  7
+#define MaximumNumberOfImageMoments  8
 
 typedef struct _ChannelStatistics
 {
