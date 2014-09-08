@@ -352,7 +352,8 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
   const char *name,const double scale,const ChannelMoments *channel_moments)
 {
   double
-    powers[8] = { 1.0, 2.0, 3.0, 3.0, 6.0, 4.0, 6.0, 4.0 };
+    powers[MaximumNumberOfImageMoments] =
+      { 1.0, 2.0, 3.0, 3.0, 6.0, 4.0, 6.0, 4.0 };
 
   register ssize_t
     i;
