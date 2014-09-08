@@ -433,7 +433,7 @@ static ssize_t PrintChannelPerceptualHash(FILE *file,const ChannelType channel,
     n;
 
   n=FormatLocaleFile(file,"    %s:\n",name);
-  for (i=0; i < 7; i++)
+  for (i=0; i < MaximumNumberOfPerceptualHashes; i++)
     n+=FormatLocaleFile(file,"      PH%.20g: %.*g, %.*g\n",i+1.0,
       GetMagickPrecision(),channel_phash[channel].P[i],
       GetMagickPrecision(),channel_phash[channel].Q[i]);
