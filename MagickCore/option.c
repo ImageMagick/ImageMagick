@@ -1790,7 +1790,7 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
 %
 */
 MagickPrivate MagickBooleanType CommandComponentGenesis(void)
-{ 
+{
   if (command_semaphore == (SemaphoreInfo *) NULL)
     command_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
