@@ -249,7 +249,7 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  A c q u i r e C o d e r S p l a y T r e e                                  %
++  A c q u i r e C o d e r C a c h e                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
