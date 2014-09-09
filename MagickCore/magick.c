@@ -65,6 +65,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/module-private.h"
 #include "MagickCore/nt-base-private.h"
+#include "MagickCore/option-private.h"
 #include "MagickCore/random-private.h"
 #include "MagickCore/registry.h"
 #include "MagickCore/registry-private.h"
@@ -1340,6 +1341,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 #if defined(MAGICKCORE_X11_DELEGATE)
   (void) XComponentGenesis();
 #endif
+  (void) CommandComponentGenesis();
   (void) RegistryComponentGenesis();
   instantiate_magickcore=MagickTrue;
   UnlockMagickMutex();
@@ -1373,6 +1375,7 @@ MagickExport void MagickCoreTerminus(void)
       return;
     }
   RegistryComponentTerminus();
+  CommandComponentTerminus();
 #if defined(MAGICKCORE_X11_DELEGATE)
   XComponentTerminus();
 #endif
