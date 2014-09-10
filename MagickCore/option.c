@@ -2192,7 +2192,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
 %
 %  The format of the GetCommandOptionInfo method is:
 %
-%      const char **GetCommandOptionInfo(const CommandOption option)
+%      const char **GetCommandOptionInfo(const char *option)
 %
 %  A description of each parameter follows:
 %
@@ -2341,8 +2341,8 @@ MagickExport MagickBooleanType IsCommandOption(const char *option)
   if ((*option != '-') && (*option != '+'))
     return(MagickFalse);
   if (strlen(option) == 1)
-    return(IsMagickTrue( (*option == '{') || (*option == '}')
-                      || (*option == '[') || (*option == ']') ));
+    return(IsMagickTrue((*option == '{') || (*option == '}') ||
+      (*option == '[') || (*option == ']')));
   option++;
   if (*option == '-')
     return(MagickTrue);
