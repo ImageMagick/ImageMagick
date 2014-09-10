@@ -2071,21 +2071,21 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetCommandOptions() returns a list of values.
+%  GetCommandOptions() returns a list of command options.
 %
 %  The format of the GetCommandOptions method is:
 %
-%      const char **GetCommandOptions(const CommandOption value)
+%      const char **GetCommandOptions(const CommandOption option)
 %
 %  A description of each parameter follows:
 %
-%    o value: the value.
+%    o option: the option.
 %
 */
-MagickExport char **GetCommandOptions(const CommandOption value)
+MagickExport char **GetCommandOptions(const CommandOption option)
 {
   char
-    **values;
+    **options;
 
   const OptionInfo
     *option_info;
@@ -2093,17 +2093,17 @@ MagickExport char **GetCommandOptions(const CommandOption value)
   register ssize_t
     i;
 
-  option_info=GetOptionInfo(value);
+  option_info=GetOptionInfo(option);
   if (option_info == (const OptionInfo *) NULL)
     return((char **) NULL);
   for (i=0; option_info[i].mnemonic != (const char *) NULL; i++) ;
-  values=(char **) AcquireQuantumMemory((size_t) i+1UL,sizeof(*values));
-  if (values == (char **) NULL)
+  options=(char **) AcquireQuantumMemory((size_t) i+1UL,sizeof(*options));
+  if (options == (char **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   for (i=0; option_info[i].mnemonic != (const char *) NULL; i++)
-    values[i]=AcquireString(option_info[i].mnemonic);
-  values[i]=(char *) NULL;
-  return(values);
+    options[i]=AcquireString(option_info[i].mnemonic);
+  options[i]=(char *) NULL;
+  return(options);
 }
 
 /*
