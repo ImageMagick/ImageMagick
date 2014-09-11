@@ -183,7 +183,7 @@ Image *AutoResizeImage(const Image *image,const char *option,
       p++;
 
     size=(size_t)strtol(p,&q,10);
-    if (p == q || size < 16 || size > 255)
+    if (p == q || size < 16 || size > 256)
         return((Image *) NULL);
 
     p=q;
