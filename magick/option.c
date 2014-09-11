@@ -2028,7 +2028,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
     for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
       if (LocaleCompare(token,option_info[i].mnemonic) == 0)
         {
-          if (*token == '!')
+          if (negate != MagickFalse)
             option_types=option_types &~ option_info[i].flags;
           else
             option_types=option_types | option_info[i].flags;
@@ -2045,7 +2045,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
         for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
           if (LocaleCompare(token,option_info[i].mnemonic) == 0)
             {
-              if (*token == '!')
+              if (negate != MagickFalse)
                 option_types=option_types &~ option_info[i].flags;
               else
                 option_types=option_types | option_info[i].flags;
@@ -2548,7 +2548,7 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
     for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
       if (LocaleCompare(token,option_info[i].mnemonic) == 0)
         {
-          if (*token == '!')
+          if (negate != MagickFalse)
             option_types=option_types &~ option_info[i].type;
           else
             option_types=option_types | option_info[i].type;
@@ -2565,7 +2565,7 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
         for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
           if (LocaleCompare(token,option_info[i].mnemonic) == 0)
             {
-              if (*token == '!')
+              if (negate != MagickFalse)
                 option_types=option_types &~ option_info[i].type;
               else
                 option_types=option_types | option_info[i].type;
