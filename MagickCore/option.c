@@ -2143,32 +2143,22 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
           *command_info;
 
         command_info=GetCommandOptionInfo(token);
-        if (command_info->mnemonic != (const char *) NULL)
+        if ((command_info->mnemonic == (const char *) NULL) &&
+            ((strchr(token+1,'-') != (char *) NULL) ||
+             (strchr(token+1,'_') != (char *) NULL)))
           {
-            if (*token == '!')
-              option_types=option_types &~ command_info->flags;
-            else
-              option_types=option_types | command_info->flags;
+            while ((q=strchr(token+1,'-')) != (char *) NULL)
+              (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
+            while ((q=strchr(token+1,'_')) != (char *) NULL)
+              (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
+            command_info=GetCommandOptionInfo(token);
           }
-        else
-          if ((strchr(token+1,'-') != (char *) NULL) ||
-              (strchr(token+1,'_') != (char *) NULL))
-            {
-              while ((q=strchr(token+1,'-')) != (char *) NULL)
-                (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
-              while ((q=strchr(token+1,'_')) != (char *) NULL)
-                (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
-              command_info=GetCommandOptionInfo(token);
-              if (command_info->mnemonic != (const char *) NULL)
-                {
-                  if (*token == '!')
-                    option_types=option_types &~ command_info->flags;
-                  else
-                    option_types=option_types | command_info->flags;
-                }
-            }
         if (command_info->mnemonic == (const char *) NULL)
           return(-1);
+        if (*token == '!')
+          option_types=option_types &~ command_info->flags;
+        else
+          option_types=option_types | command_info->flags;
       }
     else
       {
@@ -2177,13 +2167,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
 
         for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
           if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-            {
-              if (*token == '!')
-                option_types=option_types &~ option_info[i].flags;
-              else
-                option_types=option_types | option_info[i].flags;
-              break;
-            }
+            break;
         if ((option_info[i].mnemonic == (char *) NULL) &&
             ((strchr(token+1,'-') != (char *) NULL) ||
              (strchr(token+1,'_') != (char *) NULL)))
@@ -2194,16 +2178,14 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
               (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
             for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
               if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-                {
-                  if (*token == '!')
-                    option_types=option_types &~ option_info[i].flags;
-                  else
-                    option_types=option_types | option_info[i].flags;
-                  break;
-                }
+                break;
           }
         if (option_info[i].mnemonic == (char *) NULL)
           return(-1);
+        if (*token == '!')
+          option_types=option_types &~ option_info[i].flags;
+        else
+          option_types=option_types | option_info[i].flags;
       }
     if (list == MagickFalse)
       break;
@@ -2751,32 +2733,22 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
           *command_info;
 
         command_info=GetCommandOptionInfo(token);
-        if (command_info->mnemonic != (const char *) NULL)
-          {
-            if (*token == '!')
-              option_types=option_types &~ command_info->type;
-            else
-              option_types=option_types | command_info->type;
-          }
-        else
-          if ((strchr(token+1,'-') != (char *) NULL) ||
-              (strchr(token+1,'_') != (char *) NULL))
+        if ((command_info->mnemonic == (const char *) NULL) &&
+            ((strchr(token+1,'-') != (char *) NULL) ||
+             (strchr(token+1,'_') != (char *) NULL)))
             {
               while ((q=strchr(token+1,'-')) != (char *) NULL)
                 (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
               while ((q=strchr(token+1,'_')) != (char *) NULL)
                 (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
               command_info=GetCommandOptionInfo(token);
-              if (command_info->mnemonic != (const char *) NULL)
-                {
-                  if (*token == '!')
-                    option_types=option_types &~ command_info->type;
-                  else
-                    option_types=option_types | command_info->type;
-                }
             }
         if (command_info->mnemonic == (const char *) NULL)
           return(-1);
+        if (*token == '!')
+          option_types=option_types &~ command_info->type;
+        else
+          option_types=option_types | command_info->type;
       }
     else
       {
@@ -2785,13 +2757,7 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
 
         for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
           if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-            {
-              if (*token == '!')
-                option_types=option_types &~ option_info[i].type;
-              else
-                option_types=option_types | option_info[i].type;
-              break;
-            }
+            break;
         if ((option_info[i].mnemonic == (char *) NULL) &&
             ((strchr(token+1,'-') != (char *) NULL) ||
              (strchr(token+1,'_') != (char *) NULL)))
@@ -2802,16 +2768,14 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
               (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
             for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
               if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-                {
-                  if (*token == '!')
-                    option_types=option_types &~ option_info[i].type;
-                  else
-                    option_types=option_types | option_info[i].type;
-                  break;
-                }
+                break;
           }
         if (option_info[i].mnemonic == (char *) NULL)
           return(-1);
+        if (*token == '!')
+          option_types=option_types &~ option_info[i].type;
+        else
+          option_types=option_types | option_info[i].type;
       }
     if (list == MagickFalse)
       break;
