@@ -2155,7 +2155,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
           }
         if (command_info->mnemonic == (const char *) NULL)
           return(-1);
-        if (*token == '!')
+        if (negate != MagickFalse)
           option_types=option_types &~ command_info->flags;
         else
           option_types=option_types | command_info->flags;
@@ -2182,7 +2182,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
           }
         if (option_info[i].mnemonic == (char *) NULL)
           return(-1);
-        if (*token == '!')
+        if (negate != MagickFalse)
           option_types=option_types &~ option_info[i].flags;
         else
           option_types=option_types | option_info[i].flags;
@@ -2745,7 +2745,7 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
             }
         if (command_info->mnemonic == (const char *) NULL)
           return(-1);
-        if (*token == '!')
+        if (negate != MagickFalse)
           option_types=option_types &~ command_info->type;
         else
           option_types=option_types | command_info->type;
@@ -2772,7 +2772,7 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
           }
         if (option_info[i].mnemonic == (char *) NULL)
           return(-1);
-        if (*token == '!')
+        if (negate != MagickFalse)
           option_types=option_types &~ option_info[i].type;
         else
           option_types=option_types | option_info[i].type;
