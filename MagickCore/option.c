@@ -182,6 +182,9 @@ static const OptionInfo
   },
   CommandOptions[] =
   {
+    /*
+      Must be ordered lexigraphically.
+    */
     { "(", 0L, NoImageOperatorFlag, MagickTrue },
     { ")", 0L, NoImageOperatorFlag, MagickTrue },
     { "{", 0L, NoImageOperatorFlag, MagickTrue },
@@ -714,14 +717,14 @@ static const OptionInfo
     { "-tile", 1L, DrawInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "+tile-offset", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-tile-offset", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+tint", 1L, SimpleOperatorFlag, MagickFalse },
     { "-tint", 1L, SimpleOperatorFlag, MagickFalse },
+    { "+tint", 1L, SimpleOperatorFlag, MagickFalse },
     { "+title", 0L, NonMagickOptionFlag, MagickFalse },
     { "-title", 1L, NonMagickOptionFlag, MagickFalse },
     { "+transform", 0L, DeprecateOptionFlag, MagickTrue },
     { "-transform", 0L, ReplacedOptionFlag | SimpleOperatorFlag, MagickTrue },
-    { "+transparent", 1L, SimpleOperatorFlag, MagickFalse },
     { "-transparent", 1L, SimpleOperatorFlag, MagickFalse },
+    { "+transparent", 1L, SimpleOperatorFlag, MagickFalse },
     { "+transparent-color", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-transparent-color", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+transpose", 0L, DeprecateOptionFlag, MagickTrue },
@@ -736,8 +739,8 @@ static const OptionInfo
     { "-type", 1L, ImageInfoOptionFlag | SimpleOperatorFlag, MagickFalse },
     { "+undercolor", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-undercolor", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
-    { "+unique", 0L, SimpleOperatorFlag, MagickFalse },
     { "-unique", 0L, SimpleOperatorFlag, MagickFalse },
+    { "+unique", 0L, SimpleOperatorFlag, MagickFalse },
     { "+unique-colors", 0L, DeprecateOptionFlag, MagickTrue },
     { "-unique-colors", 0L, SimpleOperatorFlag, MagickFalse },
     { "+units", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -748,8 +751,8 @@ static const OptionInfo
     { "-update", 1L, NonMagickOptionFlag, MagickFalse },
     { "+use-pixmap", 0L, NonMagickOptionFlag, MagickFalse },
     { "-use-pixmap", 1L, NonMagickOptionFlag, MagickFalse },
-    { "+verbose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-verbose", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+verbose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+version", 0L, DeprecateOptionFlag, MagickTrue },
     { "-version", 0L, NoImageOperatorFlag, MagickFalse },
     { "+view", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -774,8 +777,8 @@ static const OptionInfo
     { "-window", 1L, NonMagickOptionFlag, MagickFalse },
     { "+window-group", 0L, NonMagickOptionFlag, MagickFalse },
     { "-window-group", 1L, NonMagickOptionFlag, MagickFalse },
-    { "+write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { "-write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
+    { "+write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   },
   ComposeOptions[] =
@@ -1719,12 +1722,6 @@ static const OptionInfo
     { "White", WhiteVirtualPixelMethod, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedVirtualPixelMethod, UndefinedOptionFlag, MagickFalse }
   };
-
-static SemaphoreInfo
-  *command_semaphore = (SemaphoreInfo *) NULL;
-
-static SplayTreeInfo
-  *command_cache = (SplayTreeInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1769,60 +1766,6 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
         (void *(*)(void *)) ConstantString,(void *(*)(void *)) ConstantString);
     }
   return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C o m m a n d C o m p o n e n t G e n e s i s                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CommandComponentGenesis() instantiates the command component.
-%
-%  The format of the CommandComponentGenesis method is:
-%
-%      MagickBooleanType CommandComponentGenesis(void)
-%
-*/
-MagickPrivate MagickBooleanType CommandComponentGenesis(void)
-{
-  if (command_semaphore == (SemaphoreInfo *) NULL)
-    command_semaphore=AcquireSemaphoreInfo();
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C o m m a n d C o m p o n e n t T e r m i n u s                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CommandComponentTerminus() destroys the command component.
-%
-%  The format of the CommandComponentTerminus method is:
-%
-%      CommandComponentTerminus(void)
-%
-*/
-MagickPrivate void CommandComponentTerminus(void)
-{
-  if (command_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&command_semaphore);
-  LockSemaphoreInfo(command_semaphore);
-  if (command_cache != (SplayTreeInfo *) NULL)
-    command_cache=DestroySplayTree(command_cache);
-  UnlockSemaphoreInfo(command_semaphore);
-  RelinquishSemaphoreInfo(&command_semaphore);
 }
 
 /*
@@ -2141,15 +2084,10 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
       *q++=(*p++);
     }
     *q='\0';
-    if (option == MagickCommandOptions)
-      command_info=GetCommandOptionInfo(token);
-    else
-      {
-        for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
-          if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-            break;
-        command_info=option_info+i;
-      }
+    for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
+      if (LocaleCompare(token,option_info[i].mnemonic) == 0)
+        break;
+    command_info=option_info+i;
     if ((command_info->mnemonic == (const char *) NULL) &&
         ((strchr(token+1,'-') != (char *) NULL) ||
          (strchr(token+1,'_') != (char *) NULL)))
@@ -2158,15 +2096,10 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
           (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
         while ((q=strchr(token+1,'_')) != (char *) NULL)
           (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
-        if (option == MagickCommandOptions)
-          command_info=GetCommandOptionInfo(token);
-        else
-          {
-            for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
-              if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-                break;
-            command_info=option_info+i;
-          }
+        for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
+          if (LocaleCompare(token,option_info[i].mnemonic) == 0)
+            break;
+        command_info=option_info+i;
       }
     if (command_info->mnemonic == (const char *) NULL)
       return(-1);
@@ -2206,35 +2139,13 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
 */
 MagickExport const OptionInfo *GetCommandOptionInfo(const char *option)
 {
-  register const OptionInfo
-    *p;
+  register ssize_t
+    i;
 
-  if (command_cache == (SplayTreeInfo *) NULL)
-    {
-      if (command_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&command_semaphore);
-      LockSemaphoreInfo(command_semaphore);
-      if (command_cache == (SplayTreeInfo *) NULL)
-        {
-          register ssize_t
-            i;
-
-          /*
-            Load the command option splay-tree.
-          */
-          command_cache=NewSplayTree(CompareSplayTreeString,NULL,NULL);
-          for (i=0; CommandOptions[i].mnemonic != (const char *) NULL; i++)
-            (void) AddValueToSplayTree(command_cache,CommandOptions[i].mnemonic,
-              CommandOptions+i);
-          (void) AddValueToSplayTree(command_cache,CommandOptions[i].mnemonic,
-            CommandOptions+i);
-        }
-      UnlockSemaphoreInfo(command_semaphore);
-    }
-  p=(const OptionInfo *) GetValueFromSplayTree(command_cache,option);
-  if (p != NULL)
-    return(p);
-  return((const OptionInfo *) GetValueFromSplayTree(command_cache,NULL));
+  for (i=0; CommandOptions[i].mnemonic != (char *) NULL; i++)
+    if (LocaleCompare(option,CommandOptions[i].mnemonic) == 0)
+      break;
+  return(CommandOptions+i);
 }
 
 /*
@@ -2718,15 +2629,10 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
       *q++=(*p++);
     }
     *q='\0';
-    if (option == MagickCommandOptions)
-      command_info=GetCommandOptionInfo(token);
-    else
-      {
-        for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
-          if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-            break;
-        command_info=option_info+i;
-      }
+    for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
+      if (LocaleCompare(token,option_info[i].mnemonic) == 0)
+        break;
+    command_info=option_info+i;
     if ((command_info->mnemonic == (const char *) NULL) &&
         ((strchr(token+1,'-') != (char *) NULL) ||
          (strchr(token+1,'_') != (char *) NULL)))
@@ -2735,15 +2641,10 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
             (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
           while ((q=strchr(token+1,'_')) != (char *) NULL)
             (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
-          if (option == MagickCommandOptions)
-            command_info=GetCommandOptionInfo(token);
-          else
-            {
-              for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
-                if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-                  break;
-              command_info=option_info+i;
-            }
+          for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
+            if (LocaleCompare(token,option_info[i].mnemonic) == 0)
+              break;
+          command_info=option_info+i;
         }
     if (command_info->mnemonic == (const char *) NULL)
       return(-1);
