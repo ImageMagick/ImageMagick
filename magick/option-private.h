@@ -22,12 +22,6 @@
 extern "C" {
 #endif
 
-extern MagickPrivate MagickBooleanType
-  CommandComponentGenesis(void);
-
-extern MagickPrivate void
-  CommandComponentTerminus(void);
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
