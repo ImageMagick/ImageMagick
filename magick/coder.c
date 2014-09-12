@@ -146,6 +146,7 @@ static const CoderMapInfo
     { "JBG", "JBIG" },
     { "JNG", "PNG" },
     { "JPC", "JP2" },
+    { "JPT", "JP2" },
     { "JPM", "JP2" },
     { "J2C", "JP2" },
     { "J2K", "JP2" },
