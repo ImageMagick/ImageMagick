@@ -182,28 +182,47 @@ static const OptionInfo
   },
   CommandOptions[] =
   {
-    { "+adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "-adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
+    /*
+      Order by popularity then lexigraphically.
+    */
+    { "+alpha", 1L, DeprecateOptionFlag, MagickFalse },
+    { "-alpha", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+background", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "-background", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "+format", 0L, DeprecateOptionFlag, MagickFalse },
+    { "-format", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "-quiet", 0L, GlobalOptionFlag | FireOptionFlag, MagickFalse },
+    { "+quiet", 0L, GlobalOptionFlag | FireOptionFlag, MagickFalse },
+    { "+repage", 0L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-repage", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-regard-warnings", 0L, GenesisOptionFlag, MagickFalse },
+    { "+regard-warnings", 0L, GenesisOptionFlag, MagickFalse },
+    { "+size", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "-size", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "+virtual-pixel", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
+    { "-virtual-pixel", 1L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
+    { "+resize", 1L, DeprecateOptionFlag, MagickFalse },
+    { "-resize", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+adaptive-blur", 1L, DeprecateOptionFlag, MagickFalse },
     { "-adaptive-blur", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+adaptive-resize", 1L, DeprecateOptionFlag, MagickFalse },
     { "-adaptive-resize", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+adaptive-sharpen", 1L, DeprecateOptionFlag, MagickFalse },
     { "-adaptive-sharpen", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+affine", 0L, DrawInfoOptionFlag, MagickFalse },
     { "-affine", 1L, DrawInfoOptionFlag, MagickFalse },
     { "+affinity", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-affinity", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
-    { "+alpha", 1L, DeprecateOptionFlag, MagickFalse },
-    { "-alpha", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+annotate", 0L, DeprecateOptionFlag, MagickFalse },
     { "-annotate", 2L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+antialias", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-antialias", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
-    { "+append", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "+antialias", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-append", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+attenuate", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+append", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-attenuate", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+attenuate", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+authenticate", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-authenticate", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+auto-gamma", 0L, DeprecateOptionFlag, MagickFalse },
@@ -212,18 +231,16 @@ static const OptionInfo
     { "-auto-level", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+auto-orient", 0L, DeprecateOptionFlag, MagickFalse },
     { "-auto-orient", 0L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+average", 0L, ListOperatorOptionFlag | FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "-average", 0L, ListOperatorOptionFlag | FireOptionFlag | DeprecateOptionFlag, MagickFalse },
+    { "+average", 0L, ListOperatorOptionFlag | FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+backdrop", 0L, NonConvertOptionFlag, MagickFalse },
     { "-backdrop", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+background", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "-background", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+bench", 0L, GenesisOptionFlag, MagickFalse },
     { "-bench", 1L, GenesisOptionFlag, MagickFalse },
     { "+bias", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-bias", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+black-point-compensation", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-black-point-compensation", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+black-point-compensation", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+black-threshold", 0L, DeprecateOptionFlag, MagickFalse },
     { "-black-threshold", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+blend", 0L, NonConvertOptionFlag, MagickFalse },
@@ -246,8 +263,8 @@ static const OptionInfo
     { "-brightness-contrast", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+cache", 0L, GlobalOptionFlag, MagickFalse },
     { "-cache", 1L, GlobalOptionFlag, MagickFalse },
-    { "+canny", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-canny", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+canny", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+cdl", 1L, DeprecateOptionFlag, MagickFalse },
     { "-cdl", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+channel", 0L, ImageInfoOptionFlag | ListOperatorOptionFlag, MagickFalse },
@@ -258,8 +275,8 @@ static const OptionInfo
     { "-chop", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+clamp", 0L, DeprecateOptionFlag, MagickFalse },
     { "-clamp", 0L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+clip", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "-clip", 0L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+clip", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+clip-mask", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "-clip-mask", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+clip-path", 0L, SimpleOperatorOptionFlag, MagickFalse },
@@ -294,10 +311,10 @@ static const OptionInfo
     { "-composite", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+compress", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-compress", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+concurrent", 0L, GenesisOptionFlag, MagickTrue },
     { "-concurrent", 0L, GenesisOptionFlag, MagickTrue },
-    { "+contrast", 0L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+concurrent", 0L, GenesisOptionFlag, MagickTrue },
     { "-contrast", 0L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+contrast", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+contrast-stretch", 1L, DeprecateOptionFlag, MagickFalse },
     { "-contrast-stretch", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+convolve", 1L, DeprecateOptionFlag, MagickFalse },
@@ -312,8 +329,8 @@ static const OptionInfo
     { "-decipher", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+deconstruct", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "-deconstruct", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+define", 1L, ImageInfoOptionFlag | FireOptionFlag, MagickFalse },
     { "-define", 1L, ImageInfoOptionFlag | FireOptionFlag, MagickFalse },
+    { "+define", 1L, ImageInfoOptionFlag | FireOptionFlag, MagickFalse },
     { "+delay", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-delay", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+delete", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
@@ -332,24 +349,24 @@ static const OptionInfo
     { "-direction", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+displace", 0L, NonConvertOptionFlag, MagickFalse },
     { "-displace", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+display", 1L, ImageInfoOptionFlag, MagickFalse },
     { "-display", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
+    { "+display", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+dispose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-dispose", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+dissimilarity-threshold", 0L, NonConvertOptionFlag | ImageInfoOptionFlag, MagickFalse },
     { "-dissimilarity-threshold", 1L, NonConvertOptionFlag | ImageInfoOptionFlag, MagickFalse },
     { "+dissolve", 0L, NonConvertOptionFlag, MagickFalse },
     { "-dissolve", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+distort", 2L, SimpleOperatorOptionFlag, MagickFalse },
     { "-distort", 2L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+distort", 2L, SimpleOperatorOptionFlag, MagickFalse },
     { "+dither", 0L, ListOperatorOptionFlag | ImageInfoOptionFlag | QuantizeInfoOptionFlag, MagickFalse },
     { "-dither", 1L, ListOperatorOptionFlag | ImageInfoOptionFlag | QuantizeInfoOptionFlag, MagickFalse },
     { "+draw", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "-draw", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+duplicate", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-duplicate", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+duration", 1L, GenesisOptionFlag, MagickFalse },
     { "-duration", 1L, GenesisOptionFlag, MagickFalse },
+    { "+duration", 1L, GenesisOptionFlag, MagickFalse },
     { "+edge", 1L, DeprecateOptionFlag, MagickFalse },
     { "-edge", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+emboss", 1L, DeprecateOptionFlag, MagickFalse },
@@ -376,8 +393,8 @@ static const OptionInfo
     { "-family", 1L, DrawInfoOptionFlag, MagickFalse },
     { "+features", 0L, SimpleOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-features", 1L, SimpleOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+fft", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-fft", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "+fft", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+fill", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-fill", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+filter", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -386,24 +403,22 @@ static const OptionInfo
     { "-flatten", 0L, ListOperatorOptionFlag | FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+flip", 0L, DeprecateOptionFlag, MagickFalse },
     { "-flip", 0L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-floodfill", 2L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+floodfill", 2L, SimpleOperatorOptionFlag, MagickFalse },
     { "+flop", 0L, DeprecateOptionFlag, MagickFalse },
     { "-flop", 0L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+floodfill", 2L, SimpleOperatorOptionFlag, MagickFalse },
-    { "-floodfill", 2L, SimpleOperatorOptionFlag, MagickFalse },
     { "+font", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-font", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+foreground", 0L, NonConvertOptionFlag, MagickFalse },
     { "-foreground", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+format", 0L, DeprecateOptionFlag, MagickFalse },
-    { "-format", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+frame", 1L, DeprecateOptionFlag, MagickFalse },
     { "-frame", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+fuzz", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-fuzz", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+fx", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-fx", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+gamma", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-gamma", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+gamma", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+gaussian", 1L, DeprecateOptionFlag, MagickFalse },
     { "-gaussian", 1L, SimpleOperatorOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+gaussian-blur", 1L, DeprecateOptionFlag, MagickFalse },
@@ -418,22 +433,22 @@ static const OptionInfo
     { "-green-primary", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+hald-clut", 0L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-hald-clut", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+help", 0L, SpecialOperatorOptionFlag, MagickFalse },
     { "-help", 0L, SpecialOperatorOptionFlag, MagickFalse },
-    { "+highlight-color", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+help", 0L, SpecialOperatorOptionFlag, MagickFalse },
     { "-highlight-color", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+hough-lines", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+highlight-color", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-hough-lines", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+hough-lines", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+iconGeometry", 0L, NonConvertOptionFlag, MagickFalse },
     { "-iconGeometry", 1L, NonConvertOptionFlag, MagickFalse },
     { "+iconic", 0L, NonConvertOptionFlag, MagickFalse },
     { "-iconic", 1L, NonConvertOptionFlag, MagickFalse },
     { "+identify", 0L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-identify", 0L, SimpleOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+ift", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-ift", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+immutable", 0L, NonConvertOptionFlag, MagickFalse },
+    { "+ift", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-immutable", 0L, NonConvertOptionFlag, MagickFalse },
+    { "+immutable", 0L, NonConvertOptionFlag, MagickFalse },
     { "+implode", 0L, DeprecateOptionFlag, MagickFalse },
     { "-implode", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+insert", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
@@ -460,10 +475,10 @@ static const OptionInfo
     { "-lat", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+layers", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-layers", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+level", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-level", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+level-colors", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+level", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-level-colors", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+level-colors", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+limit", 0L, GlobalOptionFlag | FireOptionFlag, MagickFalse },
     { "-limit", 2L, GlobalOptionFlag | FireOptionFlag, MagickFalse },
     { "+linear-stretch", 1L, DeprecateOptionFlag, MagickFalse },
@@ -486,14 +501,14 @@ static const OptionInfo
     { "-map", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+mask", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "-mask", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+matte", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "-matte", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag | DeprecateOptionFlag, MagickFalse },
+    { "+matte", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+mattecolor", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-mattecolor", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+maximum", 0L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-maximum", 0L, ListOperatorOptionFlag | FireOptionFlag | DeprecateOptionFlag, MagickFalse },
-    { "+mean-shift", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-mean-shift", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+mean-shift", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+median", 1L, DeprecateOptionFlag, MagickFalse },
     { "-median", 1L, SimpleOperatorOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+metric", 0L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
@@ -504,32 +519,32 @@ static const OptionInfo
     { "-mode", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+modulate", 1L, DeprecateOptionFlag, MagickFalse },
     { "-modulate", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+moments", 0L, SimpleOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-moments", 0L, SimpleOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+monitor", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
+    { "+moments", 0L, SimpleOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-monitor", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
+    { "+monitor", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
     { "+monochrome", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-monochrome", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
     { "+morph", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-morph", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+morphology", 2L, DeprecateOptionFlag, MagickFalse },
     { "-morphology", 2L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+mosaic", 0L, ListOperatorOptionFlag | FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "-mosaic", 0L, ListOperatorOptionFlag | FireOptionFlag | DeprecateOptionFlag, MagickFalse },
+    { "+mosaic", 0L, ListOperatorOptionFlag | FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+motion-blur", 1L, DeprecateOptionFlag, MagickFalse },
     { "-motion-blur", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+name", 0L, NonConvertOptionFlag, MagickFalse },
     { "-name", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+negate", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "-negate", 0L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+noise", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+negate", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "-noise", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+noop", 0L, SpecialOperatorOptionFlag, MagickFalse },
+    { "+noise", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-noop", 0L, SpecialOperatorOptionFlag, MagickFalse },
+    { "+noop", 0L, SpecialOperatorOptionFlag, MagickFalse },
     { "+normalize", 0L, DeprecateOptionFlag, MagickFalse },
     { "-normalize", 0L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+opaque", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-opaque", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+opaque", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+ordered-dither", 0L, DeprecateOptionFlag, MagickFalse },
     { "-ordered-dither", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+orient", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -540,22 +555,22 @@ static const OptionInfo
     { "-page", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+paint", 0L, DeprecateOptionFlag, MagickFalse },
     { "-paint", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+passphrase", 0L, DeprecateOptionFlag, MagickFalse },
+    { "-passphrase", 1L, DeprecateOptionFlag, MagickFalse },
     { "+path", 0L, SpecialOperatorOptionFlag, MagickFalse },
     { "-path", 1L, SpecialOperatorOptionFlag, MagickFalse },
     { "+pause", 0L, NonConvertOptionFlag, MagickFalse },
     { "-pause", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+passphrase", 0L, DeprecateOptionFlag, MagickFalse },
-    { "-passphrase", 1L, DeprecateOptionFlag, MagickFalse },
     { "+pen", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "-pen", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag | DeprecateOptionFlag, MagickFalse },
-    { "+ping", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-ping", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "+poly", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
-    { "-poly", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "+ping", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+pointsize", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-pointsize", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+polaroid", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "-polaroid", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+poly", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
+    { "-poly", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+posterize", 1L, DeprecateOptionFlag, MagickFalse },
     { "-posterize", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+preview", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -564,42 +579,34 @@ static const OptionInfo
     { "-print", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+process", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-process", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+profile", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-profile", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+profile", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+quality", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-quality", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+quantize", 0L, QuantizeInfoOptionFlag, MagickFalse },
     { "-quantize", 1L, QuantizeInfoOptionFlag, MagickFalse },
-    { "+quiet", 0L, GlobalOptionFlag | FireOptionFlag, MagickFalse },
-    { "-quiet", 0L, GlobalOptionFlag | FireOptionFlag, MagickFalse },
     { "+radial-blur", 1L, DeprecateOptionFlag, MagickFalse },
     { "-radial-blur", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+raise", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-raise", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+raise", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+random-threshold", 1L, DeprecateOptionFlag, MagickFalse },
     { "-random-threshold", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+recolor", 1L, DeprecateOptionFlag, MagickFalse },
     { "-recolor", 1L, SimpleOperatorOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+red-primary", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-red-primary", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+regard-warnings", 0L, GenesisOptionFlag, MagickFalse },
-    { "-regard-warnings", 0L, GenesisOptionFlag, MagickFalse },
     { "+region", 0L, SpecialOperatorOptionFlag, MagickFalse },
     { "-region", 1L, SpecialOperatorOptionFlag, MagickFalse },
-    { "+remote", 0L, NonConvertOptionFlag, MagickFalse },
-    { "-remote", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+render", 0L, DrawInfoOptionFlag, MagickFalse },
-    { "-render", 0L, DrawInfoOptionFlag, MagickFalse },
     { "+remap", 0L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-remap", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+repage", 0L, SimpleOperatorOptionFlag, MagickFalse },
-    { "-repage", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+remote", 0L, NonConvertOptionFlag, MagickFalse },
+    { "-remote", 1L, NonConvertOptionFlag, MagickFalse },
+    { "-render", 0L, DrawInfoOptionFlag, MagickFalse },
+    { "+render", 0L, DrawInfoOptionFlag, MagickFalse },
     { "+resample", 1L, DeprecateOptionFlag, MagickFalse },
     { "-resample", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+resize", 1L, DeprecateOptionFlag, MagickFalse },
-    { "-resize", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+respect-parenthesis", 0L, SpecialOperatorOptionFlag, MagickFalse },
     { "-respect-parenthesis", 0L, SpecialOperatorOptionFlag, MagickFalse },
+    { "+respect-parenthesis", 0L, SpecialOperatorOptionFlag, MagickFalse },
     { "+reverse", 0L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
     { "-reverse", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+roll", 1L, DeprecateOptionFlag, MagickFalse },
@@ -611,12 +618,12 @@ static const OptionInfo
     { "-sample", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+sampling-factor", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-sampling-factor", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+sans", 1L, NonConvertOptionFlag, MagickTrue },
-    { "-sans", 1L, NonConvertOptionFlag, MagickTrue },
-    { "+sans0", 0L, NonConvertOptionFlag, MagickTrue },
     { "-sans0", 0L, NonConvertOptionFlag, MagickTrue },
-    { "+sans2", 2L, NonConvertOptionFlag, MagickTrue },
+    { "+sans0", 0L, NonConvertOptionFlag, MagickTrue },
+    { "-sans", 1L, NonConvertOptionFlag, MagickTrue },
+    { "+sans", 1L, NonConvertOptionFlag, MagickTrue },
     { "-sans2", 2L, NonConvertOptionFlag, MagickTrue },
+    { "+sans2", 2L, NonConvertOptionFlag, MagickTrue },
     { "+scale", 1L, DeprecateOptionFlag, MagickFalse },
     { "-scale", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+scene", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -649,18 +656,16 @@ static const OptionInfo
     { "-shave", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+shear", 1L, DeprecateOptionFlag, MagickFalse },
     { "-shear", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+sigmoidal-contrast", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-sigmoidal-contrast", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+sigmoidal-contrast", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+silent", 0L, NonConvertOptionFlag, MagickFalse },
     { "-silent", 1L, NonConvertOptionFlag, MagickFalse },
     { "+similarity-threshold", 0L, NonConvertOptionFlag | ImageInfoOptionFlag, MagickFalse },
     { "-similarity-threshold", 1L, NonConvertOptionFlag | ImageInfoOptionFlag, MagickFalse },
-    { "+size", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "-size", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+sketch", 1L, DeprecateOptionFlag, MagickFalse },
     { "-sketch", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+smush", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-smush", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "+smush", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+snaps", 0L, NonConvertOptionFlag, MagickFalse },
     { "-snaps", 1L, NonConvertOptionFlag, MagickFalse },
     { "+solarize", 1L, DeprecateOptionFlag, MagickFalse },
@@ -683,20 +688,20 @@ static const OptionInfo
     { "-strip", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+stroke", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-stroke", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
-    { "+strokewidth", 1L, ImageInfoOptionFlag, MagickFalse },
     { "-strokewidth", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
+    { "+strokewidth", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+style", 0L, DrawInfoOptionFlag, MagickFalse },
     { "-style", 1L, DrawInfoOptionFlag, MagickFalse },
-    { "+subimage-search", 0L, NonConvertOptionFlag, MagickFalse },
     { "-subimage-search", 0L, NonConvertOptionFlag, MagickFalse },
+    { "+subimage-search", 0L, NonConvertOptionFlag, MagickFalse },
     { "+swap", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-swap", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+swirl", 1L, DeprecateOptionFlag, MagickFalse },
     { "-swirl", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+synchronize", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-synchronize", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "+taint", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+synchronize", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-taint", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+taint", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+text-font", 0L, NonConvertOptionFlag, MagickFalse },
     { "-text-font", 1L, NonConvertOptionFlag, MagickFalse },
     { "+texture", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -709,16 +714,16 @@ static const OptionInfo
     { "-tile", 1L, DrawInfoOptionFlag, MagickFalse },
     { "+tile-offset", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-tile-offset", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+tint", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-tint", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+tint", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+title", 0L, NonConvertOptionFlag, MagickFalse },
     { "-title", 1L, NonConvertOptionFlag, MagickFalse },
     { "+transform", 0L, DeprecateOptionFlag, MagickFalse },
     { "-transform", 0L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+transparent", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-transparent", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+transparent-color", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "+transparent", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-transparent-color", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "+transparent-color", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+transpose", 0L, DeprecateOptionFlag, MagickFalse },
     { "-transpose", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+transverse", 0L, DeprecateOptionFlag, MagickFalse },
@@ -743,16 +748,14 @@ static const OptionInfo
     { "-update", 1L, NonConvertOptionFlag, MagickFalse },
     { "+use-pixmap", 0L, NonConvertOptionFlag, MagickFalse },
     { "-use-pixmap", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+verbose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-verbose", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+verbose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+version", 0L, SpecialOperatorOptionFlag, MagickFalse },
     { "-version", 1L, SpecialOperatorOptionFlag, MagickFalse },
     { "+view", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-view", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+vignette", 1L, DeprecateOptionFlag, MagickFalse },
     { "-vignette", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+virtual-pixel", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
-    { "-virtual-pixel", 1L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
     { "+visual", 0L, NonConvertOptionFlag, MagickFalse },
     { "-visual", 1L, NonConvertOptionFlag, MagickFalse },
     { "+watermark", 0L, NonConvertOptionFlag, MagickFalse },
@@ -769,8 +772,8 @@ static const OptionInfo
     { "-window", 1L, NonConvertOptionFlag, MagickFalse },
     { "+window-group", 0L, NonConvertOptionFlag, MagickFalse },
     { "-window-group", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+write", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-write", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "+write", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   },
   ComposeOptions[] =
@@ -1670,12 +1673,6 @@ static const OptionInfo
     { "White", WhiteVirtualPixelMethod, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedVirtualPixelMethod, UndefinedOptionFlag, MagickFalse }
   };
-
-static SemaphoreInfo
-  *command_semaphore = (SemaphoreInfo *) NULL;
-
-static SplayTreeInfo
-  *command_cache = (SplayTreeInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1720,60 +1717,6 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
         (void *(*)(void *)) ConstantString,(void *(*)(void *)) ConstantString);
     }
   return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C o m m a n d C o m p o n e n t G e n e s i s                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CommandComponentGenesis() instantiates the command component.
-%
-%  The format of the CommandComponentGenesis method is:
-%
-%      MagickBooleanType CommandComponentGenesis(void)
-%
-*/
-MagickPrivate MagickBooleanType CommandComponentGenesis(void)
-{
-  if (command_semaphore == (SemaphoreInfo *) NULL)
-    command_semaphore=AllocateSemaphoreInfo();
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C o m m a n d C o m p o n e n t T e r m i n u s                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CommandComponentTerminus() destroys the command component.
-%
-%  The format of the CommandComponentTerminus method is:
-%
-%      CommandComponentTerminus(void)
-%
-*/
-MagickPrivate void CommandComponentTerminus(void)
-{
-  if (command_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&command_semaphore);
-  LockSemaphoreInfo(command_semaphore);
-  if (command_cache != (SplayTreeInfo *) NULL)
-    command_cache=DestroySplayTree(command_cache);
-  UnlockSemaphoreInfo(command_semaphore);
-  DestroySemaphoreInfo(&command_semaphore);
 }
 
 /*
@@ -1968,39 +1911,6 @@ MagickExport const char *GetImageOption(const ImageInfo *image_info,
 %
 */
 
-static const OptionInfo *GetCommandOptionInfo(const char *option)
-{
-  register const OptionInfo
-    *p;
-
-  if (command_cache == (SplayTreeInfo *) NULL)
-    {
-      if (command_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&command_semaphore);
-      LockSemaphoreInfo(command_semaphore);
-      if (command_cache == (SplayTreeInfo *) NULL)
-        {
-          register ssize_t
-            i;
-
-          /*
-            Load the command option splay-tree.
-          */
-          command_cache=NewSplayTree(CompareSplayTreeString,NULL,NULL);
-          for (i=0; CommandOptions[i].mnemonic != (const char *) NULL; i++)
-            (void) AddValueToSplayTree(command_cache,CommandOptions[i].mnemonic,
-              CommandOptions+i);
-          (void) AddValueToSplayTree(command_cache,CommandOptions[i].mnemonic,
-            CommandOptions+i);
-        }
-      UnlockSemaphoreInfo(command_semaphore);
-    }
-  p=(const OptionInfo *) GetValueFromSplayTree(command_cache,option);
-  if (p != NULL)
-    return(p);
-  return((const OptionInfo *) GetValueFromSplayTree(command_cache,NULL));
-}
-
 static const OptionInfo *GetOptionInfo(const CommandOption option)
 {
   switch (option)
@@ -2119,15 +2029,10 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
       *q++=(*p++);
     }
     *q='\0';
-    if (option == MagickCommandOptions)
-      command_info=GetCommandOptionInfo(token);
-    else
-      {
-        for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
-          if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-            break;
-        command_info=option_info+i;
-      }
+    for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
+      if (LocaleCompare(token,option_info[i].mnemonic) == 0)
+        break;
+    command_info=option_info+i;
     if ((command_info->mnemonic == (const char *) NULL) &&
         ((strchr(token+1,'-') != (char *) NULL) ||
          (strchr(token+1,'_') != (char *) NULL)))
@@ -2136,15 +2041,10 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
           (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
         while ((q=strchr(token+1,'_')) != (char *) NULL)
           (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
-        if (option == MagickCommandOptions)
-          command_info=GetCommandOptionInfo(token);
-        else
-          {
-            for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
-              if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-                break;
-            command_info=option_info+i;
-          }
+        for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
+          if (LocaleCompare(token,option_info[i].mnemonic) == 0)
+            break;
+        command_info=option_info+i;
       }
     if (command_info->mnemonic == (const char *) NULL)
       return(-1);
@@ -2644,15 +2544,10 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
       *q++=(*p++);
     }
     *q='\0';
-    if (option == MagickCommandOptions)
-      command_info=GetCommandOptionInfo(token);
-    else
-      {
-        for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
-          if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-            break;
-        command_info=option_info+i;
-      }
+    for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
+      if (LocaleCompare(token,option_info[i].mnemonic) == 0)
+        break;
+    command_info=option_info+i;
     if ((command_info->mnemonic == (const char *) NULL) &&
         ((strchr(token+1,'-') != (char *) NULL) ||
          (strchr(token+1,'_') != (char *) NULL)))
@@ -2661,15 +2556,10 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
             (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
           while ((q=strchr(token+1,'_')) != (char *) NULL)
             (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
-          if (option == MagickCommandOptions)
-            command_info=GetCommandOptionInfo(token);
-          else
-            {
-              for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
-                if (LocaleCompare(token,option_info[i].mnemonic) == 0)
-                  break;
-              command_info=option_info+i;
-            }
+          for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
+            if (LocaleCompare(token,option_info[i].mnemonic) == 0)
+              break;
+          command_info=option_info+i;
         }
     if (command_info->mnemonic == (const char *) NULL)
       return(-1);
