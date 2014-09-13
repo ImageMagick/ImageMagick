@@ -25,9 +25,9 @@ extern "C" {
 #endif
 
 #define MagickImageCoderSignature  ((size_t) \
-  (((MagickLibVersion) << 8) | MAGICKCORE_QUANTUM_DEPTH))
+  (((MagickLibInterface) << 8) | MAGICKCORE_QUANTUM_DEPTH))
 #define MagickImageFilterSignature  ((size_t) \
-  (((MagickLibVersion) << 8) | MAGICKCORE_QUANTUM_DEPTH))
+  (((MagickLibInterface) << 8) | MAGICKCORE_QUANTUM_DEPTH))
 
 typedef enum
 {
