@@ -1745,6 +1745,12 @@ MagickExport Image *SpliceImage(const Image *image,
       splice_image=DestroyImage(splice_image);
       return((Image *) NULL);
     }
+  if ((IsPixelInfoGray(&splice_image->background_color) == MagickFalse) &&
+      (IsGrayColorspace(splice_image->colorspace) != MagickFalse))
+    (void) SetImageColorspace(splice_image,sRGBColorspace,exception);
+  if ((splice_image->background_color.alpha_trait == BlendPixelTrait) &&
+      (splice_image->alpha_trait != BlendPixelTrait))
+    (void) SetImageAlpha(splice_image,OpaqueAlpha,exception);
   (void) SetImageBackgroundColor(splice_image,exception);
   /*
     Respect image geometry.
@@ -1854,6 +1860,10 @@ MagickExport Image *SpliceImage(const Image *image,
           continue;
         SetPixelChannel(splice_image,channel,p[i],q);
       }
+      SetPixelRed(splice_image,GetPixelRed(image,p),q);
+      SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
+      SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
+      SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }
@@ -1881,6 +1891,10 @@ MagickExport Image *SpliceImage(const Image *image,
           continue;
         SetPixelChannel(splice_image,channel,p[i],q);
       }
+      SetPixelRed(splice_image,GetPixelRed(image,p),q);
+      SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
+      SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
+      SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }
@@ -1951,6 +1965,10 @@ MagickExport Image *SpliceImage(const Image *image,
           continue;
         SetPixelChannel(splice_image,channel,p[i],q);
       }
+      SetPixelRed(splice_image,GetPixelRed(image,p),q);
+      SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
+      SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
+      SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }
@@ -1978,6 +1996,10 @@ MagickExport Image *SpliceImage(const Image *image,
           continue;
         SetPixelChannel(splice_image,channel,p[i],q);
       }
+      SetPixelRed(splice_image,GetPixelRed(image,p),q);
+      SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
+      SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
+      SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }

@@ -462,9 +462,11 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           {
             PixelChannel channel=GetPixelChannelChannel(image,i);
             PixelTrait traits=GetPixelChannelTraits(image,channel);
-            if ((traits & (CopyPixelTrait | UpdatePixelTrait)) == 0)
+            PixelTrait frame_traits=GetPixelChannelTraits(frame_image,channel);
+            if ((traits == UndefinedPixelTrait) ||
+                (frame_traits == UndefinedPixelTrait))
               continue;
-            q[i]=p[i];
+            SetPixelChannel(frame_image,channel,p[i],q);
           }
           SetPixelRed(frame_image,GetPixelRed(image,p),q);
           SetPixelGreen(frame_image,GetPixelGreen(image,p),q);
