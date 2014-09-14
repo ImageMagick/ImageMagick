@@ -1790,7 +1790,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"UnrecognizedAlphaChannelOption",
               option,arg1);
           (void) SetImageAlphaChannel(_image,(AlphaChannelOption) parse,
-            exception);
+            _exception);
           break;
         }
       if (LocaleCompare("annotate",option+1) == 0)
