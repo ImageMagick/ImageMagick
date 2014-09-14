@@ -230,6 +230,12 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       frame_image=DestroyImage(frame_image);
       return((Image *) NULL);
     }
+  if ((IsPixelInfoGray(&frame_image->border_color) == MagickFalse) &&
+      (IsGrayColorspace(frame_image->colorspace) != MagickFalse))
+    (void) SetImageColorspace(frame_image,sRGBColorspace,exception);
+  if ((frame_image->matte_color.alpha_trait == BlendPixelTrait) &&
+      (frame_image->alpha_trait != BlendPixelTrait))
+    (void) SetImageAlpha(frame_image,OpaqueAlpha,exception);
   frame_image->page=image->page;
   if ((image->page.width != 0) && (image->page.height != 0))
     {
@@ -460,6 +466,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
               continue;
             q[i]=p[i];
           }
+          SetPixelRed(frame_image,GetPixelRed(image,p),q);
+          SetPixelGreen(frame_image,GetPixelGreen(image,p),q);
+          SetPixelBlue(frame_image,GetPixelBlue(image,p),q);
+          SetPixelAlpha(frame_image,GetPixelAlpha(image,p),q);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(frame_image);
         }
