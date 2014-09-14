@@ -166,6 +166,14 @@ MagickExport Image *BorderImage(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline size_t MagickMin(const ssize_t x,const ssize_t y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
 MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   const CompositeOperator compose,ExceptionInfo *exception)
 {
@@ -451,6 +459,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           register ssize_t
             i;
 
+          size_t
+            number_channels;
+
           if (GetPixelReadMask(image,q) == 0)
             {
               SetPixelBackgoundColor(frame_image,q);
@@ -458,7 +469,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
               q+=GetPixelChannels(frame_image);
               continue;
             }
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          number_channels=MagickMin(GetPixelChannels(image),
+            GetPixelChannels(frame_image));
+          for (i=0; i < (ssize_t) number_channels; i++)
           {
             PixelChannel channel=GetPixelChannelChannel(image,i);
             PixelTrait traits=GetPixelChannelTraits(image,channel);
