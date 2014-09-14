@@ -603,7 +603,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
     next->taint=MagickFalse;
     GetPathComponent(magick_filename,MagickPath,magick_path);
-    if (*magick_path == '\0')
+    if (*magick_path == '\0' && *next->magick == '\0')
       (void) CopyMagickString(next->magick,magick,MaxTextExtent);
     (void) CopyMagickString(next->magick_filename,magick_filename,
       MaxTextExtent);
