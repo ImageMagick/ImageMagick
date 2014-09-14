@@ -615,6 +615,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           OS/2 BMP image file.
         */
+        (void) CopyMagickString(image->magick,"BMP2",MaxTextExtent);
         bmp_info.width=(ssize_t) ((short) ReadBlobLSBShort(image));
         bmp_info.height=(ssize_t) ((short) ReadBlobLSBShort(image));
         bmp_info.planes=ReadBlobLSBShort(image);
@@ -770,6 +771,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->gamma=(bmp_info.gamma_scale.x+bmp_info.gamma_scale.y+
               bmp_info.gamma_scale.z)/3.0;
           }
+        else
+          (void) CopyMagickString(image->magick,"BMP3",MaxTextExtent);
 
         if (bmp_info.size > 108)
           {
