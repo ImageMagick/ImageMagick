@@ -2880,8 +2880,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         if ((traits == UndefinedPixelTrait) ||
             (morphology_traits == UndefinedPixelTrait))
           continue;
-        if (((morphology_traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(image,p+center) == 0))
+        if (GetPixelReadMask(image,p+center) == 0)
           {
             SetPixelChannel(morphology_image,channel,p[center+i],q);
             continue;
@@ -2932,7 +2931,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                  http://www.cs.umd.edu/~djacobs/CMSC426/Convolution.pdf
             */
             k=(&kernel->values[kernel->width*kernel->height-1]);
-            count=0;
             if ((morphology_traits & BlendPixelTrait) == 0)
               {
                 /*
@@ -2943,10 +2941,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   for (u=0; u < (ssize_t) kernel->width; u++)
                   {
                     if (IfNaN(*k) == MagickFalse)
-                      {
-                        pixel+=(*k)*pixels[i];
-                        count++;
-                      }
+                      pixel+=(*k)*pixels[i];
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
@@ -2957,15 +2952,19 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
               Alpha blending.
             */
+            count=0;
+            gamma=0.0;
+            alpha=1.0;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
                 if (IfNaN(*k) == MagickFalse)
                   {
-                    alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-                    pixel+=(*k)*alpha*pixels[i];
-                    gamma+=(*k)*alpha;
+                    if (channel != AlphaPixelChannel)
+                      alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+                    pixel+=alpha*(*k)*pixels[i];
+                    gamma+=alpha*(*k);
                     count++;
                   }
                 k--;
@@ -3201,7 +3200,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(morphology_image);
     }
-    if ( SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
