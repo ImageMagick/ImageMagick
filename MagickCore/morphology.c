@@ -2947,15 +2947,13 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             */
             count=0;
             gamma=0.0;
-            alpha=1.0;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
                 if (IfNaN(*k) == MagickFalse)
                   {
-                    if (channel != AlphaPixelChannel)
-                      alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+                    alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                     pixel+=alpha*(*k)*pixels[i];
                     gamma+=alpha*(*k);
                     count++;
