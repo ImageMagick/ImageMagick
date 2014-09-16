@@ -2710,8 +2710,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             if ((traits == UndefinedPixelTrait) ||
                 (morphology_traits == UndefinedPixelTrait))
               continue;
-            if (((morphology_traits & CopyPixelTrait) != 0) ||
-                (GetPixelReadMask(image,p+center) == 0))
+            if (GetPixelReadMask(image,p+center) == 0)
               {
                 SetPixelChannel(morphology_image,channel,p[center+i],q);
                 continue;
@@ -2719,7 +2718,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             k=(&kernel->values[kernel->width*kernel->height-1]);
             pixels=p;
             pixel=bias;
-            count=0;
             if ((morphology_traits & BlendPixelTrait) == 0)
               {
                 /*
@@ -2730,27 +2728,22 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   for (u=0; u < (ssize_t) kernel->width; u++)
                   {
                     if (IfNaN(*k) == MagickFalse)
-                      {
-                        pixel+=(*k)*pixels[i];
-                        count++;
-                      }
+                      pixel+=(*k)*pixels[i];
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
                 }
                 if (fabs(pixel-p[center+i]) > MagickEpsilon)
                   changes[id]++;
-                gamma=1.0;
-                if (count != 0)
-                  gamma=(double) kernel->height*kernel->width/count;
-                SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
-                  pixel),q);
+                SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),
+                  q);
                 continue;
               }
             /*
               Alpha blending.
             */
             gamma=0.0;
+            count=0;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
@@ -3194,7 +3187,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         if (fabs(pixel-p[center+i]) > MagickEpsilon)
           changes[id]++;
         gamma=PerceptibleReciprocal(gamma);
-        gamma*=(double) kernel->height*kernel->width/count;
+        if (count != 0)
+          gamma*=(double) kernel->height*kernel->width/count;
         SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(image);
@@ -3930,7 +3924,6 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           count++;
           changed = MorphologyPrimitive(curr_image, work_image, primitive,
                        this_kernel, bias, exception);
-
           if ( IfMagickTrue(verbose) ) {
             if ( kernel_loop > 1 )
               (void) FormatLocaleFile(stderr, "\n"); /* add end-of-line from previous */
