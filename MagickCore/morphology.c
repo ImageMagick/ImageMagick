@@ -2672,66 +2672,38 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         center=(ssize_t) GetPixelChannels(image)*offset.y;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          double
-            alpha,
-            gamma[MaxPixelChannels],
-            pixel[MaxPixelChannels];
-
-          PixelChannel
-            channel;
-
-          PixelTrait
-            morphology_traits,
-            traits;
-
-          register const MagickRealType
-            *restrict k;
-
-          register const Quantum
-            *restrict pixels;
-
           register ssize_t
-            i,
-            u;
+            i;
 
-          size_t
-            count[MaxPixelChannels];
-
-          ssize_t
-            v;
-
-          k=(&kernel->values[kernel->width*kernel->height-1]);
-          pixels=p;
-          alpha=1.0;
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            pixel[i]=bias;
-            gamma[i]=0.0;
-            count[i]=0;
-          }
-          for (v=0; v < (ssize_t) kernel->height; v++)
-          {
-            for (u=0; u < (ssize_t) kernel->width; u++)
-            {
-              for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-                if (IfNaN(*k) == MagickFalse)
-                  {
-                    channel=GetPixelChannelChannel(image,i);
-                    traits=GetPixelChannelTraits(image,channel);
-                    morphology_traits=GetPixelChannelTraits(morphology_image,
-                      channel);
-                    if ((morphology_traits & BlendPixelTrait) != 0)
-                      alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-                    pixel[i]+=(*k)*alpha*pixels[i];
-                    gamma[i]+=(*k)*alpha;
-                    count[i]++;
-                  }
-              k--;
-              pixels+=GetPixelChannels(image);
-            }
-          }
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-          {
+            double
+              alpha,
+              gamma,
+              pixel;
+
+            PixelChannel
+              channel;
+
+            PixelTrait
+              morphology_traits,
+              traits;
+
+            register const MagickRealType
+              *restrict k;
+
+            register const Quantum
+              *restrict pixels;
+
+            register ssize_t
+              u;
+
+            size_t
+              count;
+
+            ssize_t
+              v;
+
             channel=GetPixelChannelChannel(image,i);
             traits=GetPixelChannelTraits(image,channel);
             morphology_traits=GetPixelChannelTraits(morphology_image,channel);
@@ -2743,13 +2715,57 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 SetPixelChannel(morphology_image,channel,p[center+i],q);
                 continue;
               }
-            if (fabs(pixel[i]-p[center+i]) > MagickEpsilon)
+            k=(&kernel->values[kernel->width*kernel->height-1]);
+            pixels=p;
+            pixel=bias;
+            if ((morphology_traits & BlendPixelTrait) == 0)
+              {
+                /*
+                  No alpha blending.
+                */
+                for (v=0; v < (ssize_t) kernel->height; v++)
+                {
+                  for (u=0; u < (ssize_t) kernel->width; u++)
+                  {
+                    if (IfNaN(*k) == MagickFalse)
+                      pixel+=(*k)*pixels[i];
+                    k--;
+                    pixels+=GetPixelChannels(image);
+                  }
+                }
+                if (fabs(pixel-p[center+i]) > MagickEpsilon)
+                  changes[id]++;
+                SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),
+                  q);
+                continue;
+              }
+            /*
+              Alpha blending.
+            */
+            gamma=0.0;
+            count=0;
+            for (v=0; v < (ssize_t) kernel->height; v++)
+            {
+              for (u=0; u < (ssize_t) kernel->width; u++)
+              {
+                if (IfNaN(*k) == MagickFalse)
+                  {
+                    alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+                    pixel+=(*k)*alpha*pixels[i];
+                    gamma+=(*k)*alpha;
+                    count++;
+                  }
+                k--;
+                pixels+=GetPixelChannels(image);
+              }
+            }
+            if (fabs(pixel-p[center+i]) > MagickEpsilon)
               changes[id]++;
-            gamma[i]=PerceptibleReciprocal(gamma[i]);
-            if (count[i] != 0)
-              gamma[i]*=(double) kernel->height*kernel->width/count[i];
-            SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma[i]*
-              pixel[i]),q);
+            gamma=PerceptibleReciprocal(gamma);
+            if (count != 0)
+              gamma*=(double) kernel->height*kernel->width/count;
+            SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
+              pixel),q);
           }
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(morphology_image);
@@ -2908,17 +2924,36 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                  http://www.cs.umd.edu/~djacobs/CMSC426/Convolution.pdf
             */
             k=(&kernel->values[kernel->width*kernel->height-1]);
+            if ((morphology_traits & BlendPixelTrait) == 0)
+              {
+                /*
+                  No alpha blending.
+                */
+                for (v=0; v < (ssize_t) kernel->height; v++)
+                {
+                  for (u=0; u < (ssize_t) kernel->width; u++)
+                  {
+                    if (IfNaN(*k) == MagickFalse)
+                      pixel+=(*k)*pixels[i];
+                    k--;
+                    pixels+=GetPixelChannels(image);
+                  }
+                  pixels+=(image->columns-1)*GetPixelChannels(image);
+                }
+                break;
+              }
+            /*
+              Alpha blending.
+            */
             count=0;
             gamma=0.0;
-            alpha=1.0;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
                 if (IfNaN(*k) == MagickFalse)
                   {
-                    if ((morphology_traits & BlendPixelTrait) == 0)
-                      alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+                    alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                     pixel+=alpha*(*k)*pixels[i];
                     gamma+=alpha*(*k);
                     count++;
