@@ -2587,8 +2587,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   image_view=AcquireVirtualCacheView(image,exception);
   morphology_view=AcquireAuthenticCacheView(morphology_image,exception);
   width=image->columns+kernel->width-1;
-  offset.x=0.0;
-  offset.y=0.0;
+  offset.x=0;
+  offset.y=0;
   switch (method)
   {
     case ConvolveMorphology:
@@ -2672,38 +2672,76 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         center=(ssize_t) GetPixelChannels(image)*offset.y;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
+          double
+            gamma[MaxPixelChannels],
+            pixel[MaxPixelChannels];
+
+          PixelChannel
+            channel;
+
+          PixelTrait
+            morphology_traits,
+            traits;
+
+          register const MagickRealType
+            *restrict k;
+
+          register const Quantum
+            *restrict pixels;
+
           register ssize_t
             i;
 
+          size_t
+            count[MaxPixelChannels];
+
+          ssize_t
+            v;
+
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            double
-              alpha,
-              gamma,
-              pixel;
-
-            PixelChannel
-              channel;
-
-            PixelTrait
-              morphology_traits,
-              traits;
-
-            register const MagickRealType
-              *restrict k;
-
-            register const Quantum
-              *restrict pixels;
-
+            pixel[i]=bias;
+            gamma[i]=0.0;
+            count[i]=0;
+          }
+          pixels=p;
+          k=(&kernel->values[kernel->width*kernel->height-1]);
+          for (v=0; v < (ssize_t) kernel->height; v++)
+          {
             register ssize_t
               u;
 
-            size_t
-              count;
+            for (u=0; u < (ssize_t) kernel->width; u++)
+            {
+              if (IfNaN(*k) == MagickFalse)
+                {
+                  double
+                    alpha;
 
-            ssize_t
-              v;
-
+                  alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+                  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+                  {
+                    channel=GetPixelChannelChannel(image,i);
+                    traits=GetPixelChannelTraits(image,channel);
+                    if ((traits & BlendPixelTrait) == 0)
+                      {
+                        pixel[i]+=(*k)*pixels[i];
+                        gamma[i]=1.0;
+                      }
+                    else
+                      {
+                        pixel[i]+=alpha*(*k)*pixels[i];
+                        gamma[i]+=alpha*(*k);
+                      }
+                    count[i]++;
+                  }
+                }
+              k--;
+              pixels+=GetPixelChannels(image);
+            }
+          }
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
             channel=GetPixelChannelChannel(image,i);
             traits=GetPixelChannelTraits(image,channel);
             morphology_traits=GetPixelChannelTraits(morphology_image,channel);
@@ -2715,57 +2753,13 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 SetPixelChannel(morphology_image,channel,p[center+i],q);
                 continue;
               }
-            k=(&kernel->values[kernel->width*kernel->height-1]);
-            pixels=p;
-            pixel=bias;
-            if ((morphology_traits & BlendPixelTrait) == 0)
-              {
-                /*
-                  No alpha blending.
-                */
-                for (v=0; v < (ssize_t) kernel->height; v++)
-                {
-                  for (u=0; u < (ssize_t) kernel->width; u++)
-                  {
-                    if (IfNaN(*k) == MagickFalse)
-                      pixel+=(*k)*pixels[i];
-                    k--;
-                    pixels+=GetPixelChannels(image);
-                  }
-                }
-                if (fabs(pixel-p[center+i]) > MagickEpsilon)
-                  changes[id]++;
-                SetPixelChannel(morphology_image,channel,ClampToQuantum(pixel),
-                  q);
-                continue;
-              }
-            /*
-              Alpha blending.
-            */
-            gamma=0.0;
-            count=0;
-            for (v=0; v < (ssize_t) kernel->height; v++)
-            {
-              for (u=0; u < (ssize_t) kernel->width; u++)
-              {
-                if (IfNaN(*k) == MagickFalse)
-                  {
-                    alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-                    pixel+=(*k)*alpha*pixels[i];
-                    gamma+=(*k)*alpha;
-                    count++;
-                  }
-                k--;
-                pixels+=GetPixelChannels(image);
-              }
-            }
-            if (fabs(pixel-p[center+i]) > MagickEpsilon)
+            if (fabs(pixel[i]-p[center+i]) > MagickEpsilon)
               changes[id]++;
-            gamma=PerceptibleReciprocal(gamma);
-            if (count != 0)
-              gamma*=(double) kernel->height*kernel->width/count;
-            SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
-              pixel),q);
+            gamma[i]=PerceptibleReciprocal(gamma[i]);
+            if (count[i] != 0)
+              gamma[i]*=(double) kernel->height*kernel->width/count[i];
+            SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma[i]*
+              pixel[i]),q);
           }
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(morphology_image);
@@ -4136,7 +4130,7 @@ MagickExport Image *MorphologyImage(const Image *image,
    * This is done BEFORE the ShowKernelInfo() function is called so that
    * users can see the results of the 'option:convolve:scale' option.
    */
-  if ( method == ConvolveMorphology || method == CorrelateMorphology ) {
+  if ((method == ConvolveMorphology) || (method == CorrelateMorphology)) {
       const char
         *artifact;
 
