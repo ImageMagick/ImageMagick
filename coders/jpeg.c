@@ -1514,7 +1514,6 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) FormatLocaleString(version,MaxTextExtent,"%d",JPEG_LIB_VERSION);
 #endif
   entry=SetMagickInfo("JPEG");
-  entry->thread_support=NoThreadSupport;
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
@@ -1528,7 +1527,6 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
-  entry->thread_support=NoThreadSupport;
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
@@ -1541,7 +1539,6 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PJPEG");
-  entry->thread_support=NoThreadSupport;
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
