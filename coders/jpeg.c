@@ -414,9 +414,9 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   image=error_manager->image;
   length=(size_t) ((size_t) GetCharacter(jpeg_info) << 8);
   length+=GetCharacter(jpeg_info);
-  length-=2;
-  if (length <= 0)
+  if (length <= 2)
     return(TRUE);
+  length-=2;
   comment=BlobToStringInfo((const void *) NULL,length);
   if (comment == (StringInfo *) NULL)
     {
