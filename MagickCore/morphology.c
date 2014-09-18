@@ -2648,10 +2648,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
       /*
         Optimized 1-D vertical (column-based) convolution kernel.
-     */
+      */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-     #pragma omp parallel for schedule(static,4) shared(progress,status) \
-       magick_threads(image,morphology_image,image->columns,1)
+      #pragma omp parallel for schedule(static,4) shared(progress,status) \
+        magick_threads(image,morphology_image,image->columns,1)
 #endif
       for (x=0; x < (ssize_t) image->columns; x++)
       {
@@ -2716,25 +2716,17 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             for (u=0; u < (ssize_t) kernel->width; u++)
             {
               if (IfNaN(*k) == MagickFalse)
+                for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
                 {
                   double
                     alpha;
 
                   alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-                  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-                  {
-                    if ((traits[i] & BlendPixelTrait) == 0)
-                      {
-                        pixel[i]+=(*k)*pixels[i];
-                        gamma[i]=1.0;
-                      }
-                    else
-                      {
-                        pixel[i]+=alpha*(*k)*pixels[i];
-                        gamma[i]+=alpha*(*k);
-                      }
-                    count[i]++;
-                  }
+                  if ((traits[i] & BlendPixelTrait) == 0)
+                    alpha=1.0;
+                  pixel[i]+=alpha*(*k)*pixels[i];
+                  gamma[i]+=alpha*(*k);
+                  count[i]++;
                 }
               k--;
               pixels+=GetPixelChannels(image);
