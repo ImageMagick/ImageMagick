@@ -2554,25 +2554,32 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     *image_view,
     *morphology_view;
 
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
   OffsetInfo
     offset;
 
+  PixelChannel
+    channel[MaxPixelChannels];
+
+  PixelTrait
+    morphology_traits[MaxPixelChannels],
+    traits[MaxPixelChannels];
+
   register ssize_t
     i;
-
-  ssize_t
-    y;
 
   size_t
     *changes,
     changed,
     width;
 
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2584,9 +2591,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   assert(exception->signature == MagickSignature);
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
-  morphology_view=AcquireAuthenticCacheView(morphology_image,exception);
-  width=image->columns+kernel->width-1;
   offset.x=0;
   offset.y=0;
   switch (method)
@@ -2615,7 +2619,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     }
     default:
     {
-      assert("Not a Primitive Morphology Method" != (char *) NULL);
+      assert("not a primitive morphology method" != (char *) NULL);
       break;
     }
   }
@@ -2626,19 +2630,24 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     changes[i]=0;
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    channel[i]=GetPixelChannelChannel(image,i);
+    traits[i]=GetPixelChannelTraits(image,channel[i]);
+    morphology_traits[i]=GetPixelChannelTraits(morphology_image,channel[i]);
+  }
+  image_view=AcquireVirtualCacheView(image,exception);
+  morphology_view=AcquireAuthenticCacheView(morphology_image,exception);
   if ((method == ConvolveMorphology) && (kernel->width == 1))
     {
       const int
         id = GetOpenMPThreadId();
 
-      register ssize_t
+      ssize_t
         x;
 
       /*
-        Special handling (for speed) of vertical (blur) kernels.  This performs
-        its handling in columns rather than in rows.  This is only done
-        for convolve as it is the only method that generates very large 1-D
-        vertical kernels (such as a 'BlurKernel')
+        Optimized 1-D vertical (column-based) convolution kernel.
      */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
      #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -2675,13 +2684,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           double
             gamma[MaxPixelChannels],
             pixel[MaxPixelChannels];
-
-          PixelChannel
-            channel;
-
-          PixelTrait
-            morphology_traits,
-            traits;
 
           register const MagickRealType
             *restrict k;
@@ -2721,9 +2723,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
                   {
-                    channel=GetPixelChannelChannel(image,i);
-                    traits=GetPixelChannelTraits(image,channel);
-                    if ((traits & BlendPixelTrait) == 0)
+                    if ((traits[i] & BlendPixelTrait) == 0)
                       {
                         pixel[i]+=(*k)*pixels[i];
                         gamma[i]=1.0;
@@ -2742,15 +2742,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            channel=GetPixelChannelChannel(image,i);
-            traits=GetPixelChannelTraits(image,channel);
-            morphology_traits=GetPixelChannelTraits(morphology_image,channel);
-            if ((traits == UndefinedPixelTrait) ||
-                (morphology_traits == UndefinedPixelTrait))
+            if ((traits[i] == UndefinedPixelTrait) ||
+                (morphology_traits[i] == UndefinedPixelTrait))
               continue;
             if (GetPixelReadMask(image,p+center) == 0)
               {
-                SetPixelChannel(morphology_image,channel,p[center+i],q);
+                SetPixelChannel(morphology_image,channel[i],p[center+i],q);
                 continue;
               }
             if (fabs(pixel[i]-p[center+i]) > MagickEpsilon)
@@ -2758,7 +2755,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             gamma[i]=PerceptibleReciprocal(gamma[i]);
             if (count[i] != 0)
               gamma[i]*=(double) kernel->height*kernel->width/count[i];
-            SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma[i]*
+            SetPixelChannel(morphology_image,channel[i],ClampToQuantum(gamma[i]*
               pixel[i]),q);
           }
           p+=GetPixelChannels(image);
@@ -2791,6 +2788,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   /*
     Normal handling of horizontal or rectangular kernels (row by row).
   */
+  width=image->columns+kernel->width-1;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     magick_threads(image,morphology_image,image->rows,1)
