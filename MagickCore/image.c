@@ -1148,11 +1148,16 @@ MagickExport ImageInfo *DestroyImageInfo(ImageInfo *image_info)
 */
 MagickExport void DisassociateImageStream(Image *image)
 {
+  unsigned char
+    *data;
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  (void) DetachBlob(image->blob);
+  data=DetachBlob(image->blob);
+  if (data != (unsigned char *) NULL)
+    data=(unsigned char *) RelinquishMagickMemory(data);
 }
 
 /*
