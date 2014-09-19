@@ -2554,32 +2554,25 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     *image_view,
     *morphology_view;
 
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
   OffsetInfo
     offset;
 
-  PixelChannel
-    channel[MaxPixelChannels];
-
-  PixelTrait
-    morphology_traits[MaxPixelChannels],
-    traits[MaxPixelChannels];
-
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   size_t
     *changes,
     changed,
     width;
 
-  ssize_t
-    y;
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2591,8 +2584,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   assert(exception->signature == MagickSignature);
   status=MagickTrue;
   progress=0;
-  offset.x=0;
-  offset.y=0;
+  image_view=AcquireVirtualCacheView(image,exception);
+  morphology_view=AcquireAuthenticCacheView(morphology_image,exception);
+  width=image->columns+kernel->width-1;
+  offset.x=0.0;
+  offset.y=0.0;
   switch (method)
   {
     case ConvolveMorphology:
@@ -2619,7 +2615,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     }
     default:
     {
-      assert("not a primitive morphology method" != (char *) NULL);
+      assert("Not a Primitive Morphology Method" != (char *) NULL);
       break;
     }
   }
@@ -2630,31 +2626,26 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     changes[i]=0;
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    channel[i]=GetPixelChannelChannel(image,i);
-    traits[i]=GetPixelChannelTraits(image,channel[i]);
-    morphology_traits[i]=GetPixelChannelTraits(morphology_image,channel[i]);
-  }
-  image_view=AcquireVirtualCacheView(image,exception);
-  morphology_view=AcquireAuthenticCacheView(morphology_image,exception);
   if ((method == ConvolveMorphology) && (kernel->width == 1))
     {
-      const int
-        id = GetOpenMPThreadId();
-
-      ssize_t
+      register ssize_t
         x;
 
       /*
-        Optimized 1-D vertical (column-based) convolution kernel.
-      */
+        Special handling (for speed) of vertical (blur) kernels.  This performs
+        its handling in columns rather than in rows.  This is only done
+        for convolve as it is the only method that generates very large 1-D
+        vertical kernels (such as a 'BlurKernel')
+     */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        magick_threads(image,morphology_image,image->columns,1)
+     #pragma omp parallel for schedule(static,4) shared(progress,status) \
+       magick_threads(image,morphology_image,image->columns,1)
 #endif
       for (x=0; x < (ssize_t) image->columns; x++)
       {
+        const int
+          id = GetOpenMPThreadId();
+
         register const Quantum
           *restrict p;
 
@@ -2681,74 +2672,92 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         center=(ssize_t) GetPixelChannels(image)*offset.y;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          double
-            gamma[MaxPixelChannels],
-            pixel[MaxPixelChannels];
-
-          register const MagickRealType
-            *restrict k;
-
-          register const Quantum
-            *restrict pixels;
-
           register ssize_t
             i;
 
-          size_t
-            count[MaxPixelChannels];
-
-          ssize_t
-            v;
-
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            pixel[i]=bias;
-            gamma[i]=0.0;
-            count[i]=0;
-          }
-          pixels=p;
-          k=(&kernel->values[kernel->width*kernel->height-1]);
-          for (v=0; v < (ssize_t) kernel->height; v++)
-          {
+            double
+              alpha,
+              gamma,
+              pixel;
+
+            PixelChannel
+              channel;
+
+            PixelTrait
+              morphology_traits,
+              traits;
+
+            register const MagickRealType
+              *restrict k;
+
+            register const Quantum
+              *restrict pixels;
+
             register ssize_t
               u;
 
-            for (u=0; u < (ssize_t) kernel->width; u++)
-            {
-              if (IfNaN(*k) == MagickFalse)
-                for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-                {
-                  double
-                    alpha;
+            size_t
+              count;
 
-                  alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-                  if ((traits[i] & BlendPixelTrait) == 0)
-                    alpha=1.0;
-                  pixel[i]+=alpha*(*k)*pixels[i];
-                  gamma[i]+=alpha*(*k);
-                  count[i]++;
-                }
-              k--;
-              pixels+=GetPixelChannels(image);
-            }
-          }
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-          {
-            if ((traits[i] == UndefinedPixelTrait) ||
-                (morphology_traits[i] == UndefinedPixelTrait))
+            ssize_t
+              v;
+
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
+            morphology_traits=GetPixelChannelTraits(morphology_image,channel);
+            if ((traits == UndefinedPixelTrait) ||
+                (morphology_traits == UndefinedPixelTrait))
               continue;
             if (GetPixelReadMask(image,p+center) == 0)
               {
-                SetPixelChannel(morphology_image,channel[i],p[center+i],q);
+                SetPixelChannel(morphology_image,channel,p[center+i],q);
                 continue;
               }
-            if (fabs(pixel[i]-p[center+i]) > MagickEpsilon)
+            k=(&kernel->values[kernel->width*kernel->height-1]);
+            pixels=p;
+            pixel=bias;
+            gamma=0.0;
+            count=0;
+            if ((morphology_traits & BlendPixelTrait) == 0)
+              for (v=0; v < (ssize_t) kernel->height; v++)
+              {
+                for (u=0; u < (ssize_t) kernel->width; u++)
+                {
+                  if (IfNaN(*k) == MagickFalse)
+                    {
+                      pixel+=(*k)*pixels[i];
+                      gamma+=(*k);
+                      count++;
+                    }
+                  k--;
+                  pixels+=GetPixelChannels(image);
+                }
+              }
+            else
+              for (v=0; v < (ssize_t) kernel->height; v++)
+              {
+                for (u=0; u < (ssize_t) kernel->width; u++)
+                {
+                  if (IfNaN(*k) == MagickFalse)
+                    {
+                      alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+                      pixel+=alpha*(*k)*pixels[i];
+                      gamma+=alpha*(*k);
+                      count++;
+                    }
+                  k--;
+                  pixels+=GetPixelChannels(image);
+                }
+              }
+            if (fabs(pixel-p[center+i]) > MagickEpsilon)
               changes[id]++;
-            gamma[i]=PerceptibleReciprocal(gamma[i]);
-            if (count[i] != 0)
-              gamma[i]*=(double) kernel->height*kernel->width/count[i];
-            SetPixelChannel(morphology_image,channel[i],ClampToQuantum(gamma[i]*
-              pixel[i]),q);
+            gamma=PerceptibleReciprocal(gamma);
+            if (count != 0)
+              gamma*=(double) kernel->height*kernel->width/count;
+            SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
+              pixel),q);
           }
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(morphology_image);
@@ -2780,7 +2789,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   /*
     Normal handling of horizontal or rectangular kernels (row by row).
   */
-  width=image->columns+kernel->width-1;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     magick_threads(image,morphology_image,image->rows,1)
@@ -2891,23 +2899,25 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
                Weighted Average of pixels using reflected kernel
 
-               For correct working of this operation for asymetrical
-               kernels, the kernel needs to be applied in its reflected form.
-               That is its values needs to be reversed.
+               For correct working of this operation for asymetrical kernels,
+               the kernel needs to be applied in its reflected form.  That is
+               its values needs to be reversed.
 
                Correlation is actually the same as this but without reflecting
-               the kernel, and thus 'lower-level' that Convolution.  However
-               as Convolution is the more common method used, and it does not
+               the kernel, and thus 'lower-level' that Convolution.  However as
+               Convolution is the more common method used, and it does not
                really cost us much in terms of processing to use a reflected
                kernel, so it is Convolution that is implemented.
 
-               Correlation will have its kernel reflected before calling
-               this function to do a Convolve.
+               Correlation will have its kernel reflected before calling this
+               function to do a Convolve.
 
                For more details of Correlation vs Convolution see
                  http://www.cs.umd.edu/~djacobs/CMSC426/Convolution.pdf
             */
             k=(&kernel->values[kernel->width*kernel->height-1]);
+            count=0;
+            gamma=0.0;
             if ((morphology_traits & BlendPixelTrait) == 0)
               {
                 /*
@@ -2918,7 +2928,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   for (u=0; u < (ssize_t) kernel->width; u++)
                   {
                     if (IfNaN(*k) == MagickFalse)
-                      pixel+=(*k)*pixels[i];
+                      {
+                        pixel+=(*k)*pixels[i];
+                        gamma+=(*k);
+                        count++;
+                      }
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
@@ -2929,8 +2943,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
               Alpha blending.
             */
-            count=0;
-            gamma=0.0;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
@@ -4120,7 +4132,7 @@ MagickExport Image *MorphologyImage(const Image *image,
    * This is done BEFORE the ShowKernelInfo() function is called so that
    * users can see the results of the 'option:convolve:scale' option.
    */
-  if ((method == ConvolveMorphology) || (method == CorrelateMorphology)) {
+  if ( method == ConvolveMorphology || method == CorrelateMorphology ) {
       const char
         *artifact;
 
