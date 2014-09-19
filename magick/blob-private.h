@@ -124,9 +124,11 @@ extern MagickExport unsigned short
 extern MagickExport void
   AttachBlob(BlobInfo *,const void *,const size_t),
   GetBlobInfo(BlobInfo *),
-  GetBlobPrivate(Image *),
   MSBOrderLong(unsigned char *,const size_t),
   MSBOrderShort(unsigned char *,const size_t);
+
+extern MagickPrivate void
+  GetBlobPrivate(Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
