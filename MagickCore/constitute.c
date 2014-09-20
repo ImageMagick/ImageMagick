@@ -1036,6 +1036,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
          }
     }
   (void) SyncImageProfiles(image);
+  DisassociateImageStream(image);
   option=GetImageOption(image_info,"delegate:bimodal");
   if ((IfMagickTrue(IsStringTrue(option))) &&
       (write_info->page == (char *) NULL) &&
@@ -1062,7 +1063,6 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     }
   status=MagickFalse;
   temporary=MagickFalse;
-  DisassociateImageStream(image);
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetMagickSeekableStream(magick_info) != MagickFalse))
     {
