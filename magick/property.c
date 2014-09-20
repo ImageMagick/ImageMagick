@@ -37,7 +37,6 @@
 %
 */
 
-
 /*
   Include declarations.
 */
@@ -1583,7 +1582,7 @@ static MagickBooleanType SkipXMPValue(const char *value)
 
   while(*value != '\0')
   {
-    if (!isspace((int) ((const char) *value)))
+    if (!isspace((int) ((unsigned char) *value)))
       return(MagickFalse);
     value++;
   }
