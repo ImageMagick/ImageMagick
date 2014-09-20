@@ -601,6 +601,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     const StringInfo
       *profile;
 
+    DisassociateImageStream(next);
     next->taint=MagickFalse;
     GetPathComponent(magick_filename,MagickPath,magick_path);
     if (*magick_path == '\0' && *next->magick == '\0')

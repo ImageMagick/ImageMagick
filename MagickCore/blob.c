@@ -725,7 +725,7 @@ MagickExport unsigned char *DetachBlob(BlobInfo *blob_info)
 %
 %  The format of the DisassociateBlob method is:
 %
-%      MagickBooleanType DisassociateBlob(const Image *image)
+%      void DisassociateBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
