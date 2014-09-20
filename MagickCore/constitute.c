@@ -601,7 +601,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     const StringInfo
       *profile;
 
-    DisassociateImageStream(next);
     next->taint=MagickFalse;
     GetPathComponent(magick_filename,MagickPath,magick_path);
     if (*magick_path == '\0' && *next->magick == '\0')
@@ -1063,6 +1062,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     }
   status=MagickFalse;
   temporary=MagickFalse;
+  DisassociateImageStream(image);
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetMagickSeekableStream(magick_info) != MagickFalse))
     {
