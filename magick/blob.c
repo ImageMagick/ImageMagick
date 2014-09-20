@@ -610,6 +610,57 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D i s a s s o c i a t e B l o b                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DisassociateBlob() disassociates the image stream.  It checks if the
+%  blob of the specified image is referenced by other images. If the reference
+%  count is higher then 1 a new blob is assigned to the specified image.
+%
+%  The format of the DisassociateImageStream method is:
+%
+%      MagickBooleanType DisassociateImageStream(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickPrivate void DisassociateBlob(Image *image)
+{
+  BlobInfo
+    *blob;
+
+  MagickBooleanType
+    clone;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->signature == MagickSignature);
+  clone=MagickFalse;
+  LockSemaphoreInfo(image->blob->semaphore);
+  assert(image->blob->reference_count >= 0);
+  if (image->blob->reference_count > 1)
+    clone=MagickTrue;
+  UnlockSemaphoreInfo(image->blob->semaphore);
+  if (clone == MagickFalse)
+    return;
+  blob=CloneBlobInfo(image->blob);
+  DestroyBlob(image);
+  image->blob=blob;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y B l o b                                                     %
 %                                                                             %
 %                                                                             %
