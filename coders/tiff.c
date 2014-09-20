@@ -3104,25 +3104,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 }
           }
       }
-    switch (image->endian)
-    {
-      case LSBEndian:
-      {
-        endian=FILLORDER_LSB2MSB;
-        break;
-      }
-      case MSBEndian:
-      {
-        endian=FILLORDER_MSB2LSB;
-        break;
-      }
-      case UndefinedEndian:
-      default:
-      {
-        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian);
-        break;
-      }
-    }
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian);
     if ((compress_tag == COMPRESSION_CCITTFAX3) &&
         (photometric != PHOTOMETRIC_MINISWHITE))
       {
