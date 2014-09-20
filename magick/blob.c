@@ -1293,57 +1293,6 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
   blob_info->semaphore=AllocateSemaphoreInfo();
   blob_info->signature=MagickSignature;
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t B l o b P r i v a t e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetBlobPrivate() checks if the blob of the specified image is referenced by
-%  other images. If the reference_count is higher then 1 a new blob is assigned
-%  to the specified image.
-%
-%  The format of the GetBlobError method is:
-%
-%       void GetBlobPrivate(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-*/
-MagickPrivate void GetBlobPrivate(Image *image)
-{
-  BlobInfo
-    *blob;
-
-  MagickBooleanType
-    clone;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(image->blob != (BlobInfo *) NULL);
-  assert(image->blob->signature == MagickSignature);
-  clone=MagickFalse;
-  LockSemaphoreInfo(image->blob->semaphore);
-  assert(image->blob->reference_count >= 0);
-  if (image->blob->reference_count > 1)
-    clone=MagickTrue;
-  UnlockSemaphoreInfo(image->blob->semaphore);
-  if (clone == MagickFalse)
-    return;
-  blob=CloneBlobInfo(image->blob);
-  DestroyBlob(image);
-  image->blob=blob;
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
