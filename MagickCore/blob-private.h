@@ -58,7 +58,6 @@ extern MagickPrivate StreamHandler
 
 extern MagickPrivate void
   GetBlobInfo(BlobInfo *),
-  GetBlobPrivate(Image *),
   SetBlobExempt(Image *,const MagickBooleanType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
