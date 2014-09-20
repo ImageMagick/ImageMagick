@@ -598,6 +598,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     const StringInfo
       *profile;
 
+    DisassociateImageStream(next);
     next->taint=MagickFalse;
     GetPathComponent(magick_filename,MagickPath,magick_path);
     if (*magick_path == '\0' && *next->magick == '\0')
@@ -1000,7 +1001,6 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   exception=(&image->exception);
   sans_exception=AcquireExceptionInfo();
   write_info=CloneImageInfo(image_info);
-  GetBlobPrivate(image);
   (void) CopyMagickString(write_info->filename,image->filename,MaxTextExtent);
   if (*write_info->magick == '\0')
     (void) CopyMagickString(write_info->magick,image->magick,MaxTextExtent);
@@ -1287,7 +1287,6 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   write_info=CloneImageInfo(image_info);
   images=GetFirstImageInList(images);
-  GetBlobPrivate(images);
   if (filename != (const char *) NULL)
     for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
       (void) CopyMagickString(p->filename,filename,MaxTextExtent);
