@@ -620,9 +620,9 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
 %  blob of the specified image is referenced by other images. If the reference
 %  count is higher then 1 a new blob is assigned to the specified image.
 %
-%  The format of the DisassociateImageStream method is:
+%  The format of the DisassociateBlob method is:
 %
-%      MagickBooleanType DisassociateImageStream(const Image *image)
+%      MagickBooleanType DisassociateBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
