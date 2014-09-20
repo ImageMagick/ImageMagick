@@ -1154,7 +1154,7 @@ MagickExport ImageInfo *DestroyImageInfo(ImageInfo *image_info)
 %
 %  The format of the DisassociateImageStream method is:
 %
-%      MagickBooleanType DisassociateImageStream(const Image *image)
+%      void DisassociateImageStream(const Image *image)
 %
 %  A description of each parameter follows:
 %
