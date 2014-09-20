@@ -1150,29 +1150,11 @@ MagickExport ImageInfo *DestroyImageInfo(ImageInfo *image_info)
 */
 MagickExport void DisassociateImageStream(Image *image)
 {
-  BlobInfo
-    *blob;
-
-  MagickBooleanType
-    clone;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(image->blob != (BlobInfo *) NULL);
-  assert(image->blob->signature == MagickSignature);
-  clone=MagickFalse;
-  LockSemaphoreInfo(image->blob->semaphore);
-  assert(image->blob->reference_count >= 0);
-  if (image->blob->reference_count > 1)
-    clone=MagickTrue;
-  UnlockSemaphoreInfo(image->blob->semaphore);
-  if (clone == MagickFalse)
-    return;
-  blob=CloneBlobInfo(image->blob);
-  DestroyBlob(image);
-  image->blob=blob;
+  DisassociateBlob(image);
 }
 
 /*
