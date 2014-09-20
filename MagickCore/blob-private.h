@@ -57,6 +57,7 @@ extern MagickPrivate StreamHandler
   GetBlobStreamHandler(const Image *);
 
 extern MagickPrivate void
+  DisassociateBlob(Image *),
   GetBlobInfo(BlobInfo *),
   SetBlobExempt(Image *,const MagickBooleanType);
 
