@@ -664,15 +664,15 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               {
                 byte=(size_t) ReadBlobByte(image);
                 for (bit=0; bit < 8; bit++)
-                  SetPixelOpacity(q+x+bit,(((byte & (0x80 >> bit)) !=
-                    0) ? TransparentOpacity : OpaqueOpacity));
+                  SetPixelOpacity(q+x+bit,(((byte & (0x80 >> bit)) != 0) ?
+                    TransparentOpacity : OpaqueOpacity));
               }
               if ((image->columns % 8) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
                   for (bit=0; bit < (image->columns % 8); bit++)
-                    SetPixelOpacity(q+x+bit,(((byte & (0x80 >> bit)) !=
-                      0) ? TransparentOpacity : OpaqueOpacity));
+                    SetPixelOpacity(q+x+bit,(((byte & (0x80 >> bit)) != 0) ?
+                      TransparentOpacity : OpaqueOpacity));
                 }
               if ((image->columns % 32) != 0)
                 for (x=0; x < (ssize_t) ((32-(image->columns % 32))/8); x++)
