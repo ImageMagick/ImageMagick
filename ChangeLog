@@ -1,3 +1,6 @@
+2014-09-21  6.8.9-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.9-8, SVN revision 16502.
+
 2014-09-16  6.8.9-8 Cristy  <quetzlzacatenango@image...>
   * JPEG library version >= 80 is thread safe (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=25495).
