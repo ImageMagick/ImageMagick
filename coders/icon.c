@@ -484,15 +484,15 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               {
                 byte=(size_t) ReadBlobByte(image);
                 for (bit=0; bit < 8; bit++)
-                  SetPixelIndex(indexes+x+bit,
-                    ((byte & (0x80 >> bit)) != 0 ? 0x01 : 0x00));
+                  SetPixelIndex(indexes+x+bit,((byte & (0x80 >> bit)) != 0 ?
+                    0x01 : 0x00));
               }
               if ((image->columns % 8) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
                   for (bit=0; bit < (image->columns % 8); bit++)
-                    SetPixelIndex(indexes+x+bit,
-                      ((byte & (0x80 >> bit)) != 0 ? 0x01 : 0x00));
+                    SetPixelIndex(indexes+x+bit,((byte & (0x80 >> bit)) != 0 ?
+                      0x01 : 0x00));
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
