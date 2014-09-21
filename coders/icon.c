@@ -411,7 +411,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "   bpp    = %.20g",(double) icon_info.bits_per_pixel);
           }
-      if (icon_info.bits_per_pixel <= 16)
+      if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel <= 16U))
         {
           image->storage_class=PseudoClass;
           image->colors=icon_info.number_colors;
