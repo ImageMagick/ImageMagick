@@ -109,7 +109,7 @@
 %
 */
 WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
-     int argc,char **argv,int index)
+  int argc,char **argv,int index)
 {
   ScriptTokenInfo
     *token_info;
@@ -245,6 +245,8 @@ RestoreMSCWarning
 
       /* Process non-specific Option */
       CLIOption(cli_wand, option, arg1, arg2);
+      (void) fflush(stdout);
+      (void) fflush(stderr);
 
 DisableMSCWarning(4127)
     } while (0); /* break block to next option */
@@ -291,6 +293,8 @@ loop_exit:
       CLIWandException(OptionFatalError,"ScriptIsBinary","");
       break;
   }
+  (void) fflush(stdout);
+  (void) fflush(stderr);
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(CommandEvent,GetMagickModule(),
          "Script End \"%s\"", filename);
@@ -327,8 +331,8 @@ loop_exit:
 %
 %  The format of the ProcessCommandOptions method is:
 %
-%    int ProcessCommandOptions(MagickCLI *cli_wand,
-%           int argc,char **argv,int index)
+%    int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
+%      int index)
 %
 %  A description of each parameter follows:
 %
@@ -468,6 +472,8 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
 
       /* Process standard image option */
       CLIOption(cli_wand, option, arg1, arg2);
+      (void) fflush(stdout);
+      (void) fflush(stderr);
 
 DisableMSCWarning(4127)
     } while (0); /* break block to next option */
@@ -520,6 +526,8 @@ RestoreMSCWarning
 
   cli_wand->command=(const OptionInfo *)NULL;
   CLIOption(cli_wand,"-write",option);
+  (void) fflush(stdout);
+  (void) fflush(stderr);
   return(argc);
 }
 
