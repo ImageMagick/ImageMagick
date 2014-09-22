@@ -472,8 +472,6 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
 
       /* Process standard image option */
       CLIOption(cli_wand, option, arg1, arg2);
-      (void) fflush(stdout);
-      (void) fflush(stderr);
 
 DisableMSCWarning(4127)
     } while (0); /* break block to next option */
@@ -526,8 +524,6 @@ RestoreMSCWarning
 
   cli_wand->command=(const OptionInfo *)NULL;
   CLIOption(cli_wand,"-write",option);
-  (void) fflush(stdout);
-  (void) fflush(stderr);
   return(argc);
 }
 
