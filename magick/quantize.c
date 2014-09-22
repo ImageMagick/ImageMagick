@@ -3107,9 +3107,15 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
   }
   for (span=cube_info->colors; cube_info->colors > cube_info->maximum_colors; )
   {
+    size_t
+      colors;
+
     cube_info->pruning_threshold=cube_info->next_threshold;
     cube_info->next_threshold=cube_info->root->quantize_error-1;
+    colors=cube_info->colors;
     cube_info->colors=0;
+    if (cube_info->colors >= colors)
+      PruneLevel(image,cube_info,cube_info->root);
     Reduce(image,cube_info,cube_info->root);
     offset=(MagickOffsetType) span-cube_info->colors;
     proceed=SetImageProgress(image,ReduceImageTag,offset,span-
