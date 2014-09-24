@@ -203,9 +203,9 @@ namespace Magick
     double _skewness;
     double _standardDeviation;
     double _sum;
-    double _sumSquared;
     double _sumCubed;
     double _sumFourthPower;
+    double _sumSquared;
     double _variance;
   };
 

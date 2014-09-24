@@ -324,7 +324,10 @@ Magick::Quantum Magick::Color::quantumRed(void) const
 }
 
 Magick::Color::Color(PixelInfo* rep_,PixelType pixelType_)
-  : _pixel(rep_),_pixelOwn(false),_isValid(true),_pixelType(pixelType_)
+  : _pixel(rep_),
+    _isValid(true),
+    _pixelOwn(false),
+    _pixelType(pixelType_)
 {
 }
 
