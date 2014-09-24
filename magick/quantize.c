@@ -831,6 +831,9 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       node_info=cube_info->root;
       for (level=1; level <= MaxTreeDepth; level++)
       {
+        double
+          distance;
+
         bisect*=0.5;
         id=ColorToNodeId(cube_info,&pixel,index);
         mid.red+=(id & 1) != 0 ? bisect : -bisect;
@@ -862,9 +865,11 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         error.blue=QuantumScale*(pixel.blue-mid.blue);
         if (cube_info->associate_alpha != MagickFalse)
           error.opacity=QuantumScale*(pixel.opacity-mid.opacity);
-        node_info->quantize_error+=count*sqrt((double) (error.red*error.red+
-          error.green*error.green+error.blue*error.blue+
-          error.opacity*error.opacity));
+        distance=(double) (error.red*error.red+error.green*error.green+
+          error.blue*error.blue+error.opacity*error.opacity);
+        if (IsNaN(distance) != MagickFalse)
+          distance=0.0;
+        node_info->quantize_error+=count*sqrt(distance);
         cube_info->root->quantize_error+=node_info->quantize_error;
         index--;
       }
@@ -924,6 +929,9 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       node_info=cube_info->root;
       for (level=1; level <= cube_info->depth; level++)
       {
+        double
+          distance;
+
         bisect*=0.5;
         id=ColorToNodeId(cube_info,&pixel,index);
         mid.red+=(id & 1) != 0 ? bisect : -bisect;
@@ -955,9 +963,11 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         error.blue=QuantumScale*(pixel.blue-mid.blue);
         if (cube_info->associate_alpha != MagickFalse)
           error.opacity=QuantumScale*(pixel.opacity-mid.opacity);
-        node_info->quantize_error+=count*sqrt((double) (error.red*error.red+
-          error.green*error.green+error.blue*error.blue+
-          error.opacity*error.opacity));
+        distance=(double) (error.red*error.red+error.green*error.green+
+          error.blue*error.blue+error.opacity*error.opacity);
+        if (IsNaN(distance) != MagickFalse)
+          distance=0.0;
+        node_info->quantize_error+=count*sqrt(distance);
         cube_info->root->quantize_error+=node_info->quantize_error;
         index--;
       }
