@@ -2880,8 +2880,12 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) != 0)
-        SetPixelAlpha(image,alpha,q);
+      if (GetPixelReadMask(image,q) == 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
+      SetPixelAlpha(image,alpha,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
