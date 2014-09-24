@@ -15,8 +15,8 @@
 using namespace std;
 
 Magick::ChannelMoments::ChannelMoments(void)
-  : _huInvariants(8),
-    _channel(SyncPixelChannel),
+  : _channel(SyncPixelChannel),
+    _huInvariants(8),
     _centroidX(0.0),
     _centroidY(0.0),
     _ellipseAxisX(0.0),
@@ -28,8 +28,8 @@ Magick::ChannelMoments::ChannelMoments(void)
 }
 
 Magick::ChannelMoments::ChannelMoments(const ChannelMoments &channelMoments_)
-  : _huInvariants(channelMoments_._huInvariants),
-    _channel(channelMoments_._channel),
+  : _channel(channelMoments_._channel),
+    _huInvariants(channelMoments_._huInvariants),
     _centroidX(channelMoments_._centroidX),
     _centroidY(channelMoments_._centroidY),
     _ellipseAxisX(channelMoments_._ellipseAxisX),
@@ -99,8 +99,8 @@ bool Magick::ChannelMoments::isValid() const
 
 Magick::ChannelMoments::ChannelMoments(const PixelChannel channel_,
   const MagickCore::ChannelMoments *channelMoments_)
-  : _huInvariants(),
-    _channel(channel_),
+  : _channel(channel_),
+    _huInvariants(),
     _centroidX(channelMoments_->centroid.x),
     _centroidY(channelMoments_->centroid.y),
     _ellipseAxisX(channelMoments_->ellipse_axis.x),
