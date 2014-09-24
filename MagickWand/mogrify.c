@@ -5134,7 +5134,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"UnrecognizedListType",argv[i]);
             status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
               argv+j,exception);
-            return(status != 0 ? MagickFalse : MagickTrue);
+            return(status == 0 ? MagickTrue : MagickFalse);
           }
         if (LocaleCompare("log",option+1) == 0)
           {
