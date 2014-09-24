@@ -258,7 +258,10 @@ void Magick::Color::isValid(bool valid_)
 }
 
 Magick::Color::Color(PixelPacket *rep_,PixelType pixelType_)
-  : _pixel(rep_),_pixelOwn(false),_isValid(true),_pixelType(pixelType_)
+  : _pixel(rep_),
+    _isValid(true),
+    _pixelOwn(false),
+    _pixelType(pixelType_)
 {
 }
 
