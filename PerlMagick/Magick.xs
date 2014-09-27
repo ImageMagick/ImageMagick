@@ -552,6 +552,8 @@ static struct
     { "MeanShift", { {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
       {"distance", RealReference} } },
+    { "Kuwahara", { {"geometry", StringReference}, {"radius", RealReference},
+      {"sigma", RealReference}, {"channel", MagickChannelOptions} } },
   };
 
 static SplayTreeInfo
@@ -7454,6 +7456,8 @@ Mogrify(ref,...)
     HoughLineImage     = 284
     MeanShift          = 285
     MeanShiftImage     = 286
+    Kuwahara           = 287
+    KuwaharaImage      = 288
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10940,6 +10944,35 @@ Mogrify(ref,...)
             geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
+        case 144:  /* Kuwahara */
+        {
+          if (attribute_flag[0] != 0)
+            {
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry_info);
+              if ((flags & SigmaValue) == 0)
+                geometry_info.sigma=1.0;
+            }
+          if (attribute_flag[1] != 0)
+            geometry_info.rho=argument_list[1].real_reference;
+          if (attribute_flag[2] != 0)
+            geometry_info.sigma=argument_list[2].real_reference;
+          if (attribute_flag[3] != 0)
+            channel=(ChannelType) argument_list[3].integer_reference;
+          image=KuwaharaImageChannel(image,channel,geometry_info.rho,
+            geometry_info.sigma,exception);
+          break;
+        }
+        case 7:  /* Chop */
+        {
+          if (attribute_flag[5] != 0)
+            image->gravity=(GravityType) argument_list[5].integer_reference;
+          if (attribute_flag[0] != 0)
+            flags=ParseGravityGeometry(image,argument_list[0].string_reference,
+              &geometry,exception);
+          if (attribute_flag[1] != 0)
+            geometry.width=argument_list[1].integer_reference;
+          if (attribute_flag[2] != 0)
       }
       if (next != (Image *) NULL)
         (void) CatchImageException(next);

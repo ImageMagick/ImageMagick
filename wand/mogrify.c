@@ -1908,6 +1908,19 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             draw_info->kerning=geometry_info.rho;
             break;
           }
+        if (LocaleCompare("kuwahara",option+1) == 0)
+          {
+            /*
+              Edge preserving blur.
+            */
+            (void) SyncImageSettings(mogrify_info,*image);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=1.0;
+            mogrify_image=KuwaharaImageChannel(*image,channel,geometry_info.rho,
+              geometry_info.sigma,exception);
+            break;
+          }
         break;
       }
       case 'l':
@@ -3439,6 +3452,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-identify            identify the format and characteristics of the image",
       "-ift                 implements the inverse discrete Fourier transform (DFT)",
       "-implode amount      implode image pixels about the center",
+      "-kuwahara geometry   edge preserving blur",
       "-lat geometry        local adaptive thresholding",
       "-layers method       optimize, merge,  or compare image layers",
       "-level value         adjust the level of image contrast",
@@ -5070,6 +5084,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           {
             if (*option == '+')
               break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("kuwahara",option+1) == 0)
+          {
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);

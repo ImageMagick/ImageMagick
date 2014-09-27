@@ -2200,6 +2200,82 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     K u w a h a r a I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  KuwaharaImage() is an edge perserving blur.
+%
+%  The format of the KuwaharaImage method is:
+%
+%      Image *KuwaharaImage(const Image *image,const double radius,
+%        const double sigma,ExceptionInfo *exception)
+%      Image *KuwaharaImageChannel(const Image *image,const ChannelType channel,
+%        const double radius,const double sigma,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel type.
+%
+%    o radius: the radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: the standard deviation of the Gaussian, in pixels.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+MagickExport Image *KuwaharaImage(const Image *image,const double radius,
+  const double sigma,ExceptionInfo *exception)
+{
+  Image
+    *kuwahara_image;
+
+  kuwahara_image=KuwaharaImageChannel(image,DefaultChannels,radius,sigma,
+    exception);
+  return(kuwahara_image);
+}
+
+MagickExport Image *KuwaharaImageChannel(const Image *image,
+  const ChannelType channel,const double radius,const double sigma,
+  ExceptionInfo *exception)
+{
+  char
+    geometry[MaxTextExtent];
+
+  KernelInfo
+    *kernel_info;
+
+  Image
+    *kuwahara_image = NULL;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  (void) FormatLocaleString(geometry,MaxTextExtent,
+    "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
+  kernel_info=AcquireKernelInfo(geometry);
+  if (kernel_info == (KernelInfo *) NULL)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  kuwahara_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
+    UndefinedCompositeOp,0.0,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  return(kuwahara_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     P r e v i e w I m a g e                                                 %
 %                                                                             %
 %                                                                             %
