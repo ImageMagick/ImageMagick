@@ -1672,9 +1672,9 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   storage_class=image->storage_class;
   if (image_info->compression == JPEGCompression)
     storage_class=DirectClass;
-  if ((storage_class == DirectClass) || (image->alpha_trait == BlendPixelTrait))
+  if (storage_class == DirectClass)
     {
-      pixmap.component_count=image->alpha_trait ? 4 : 3;
+      pixmap.component_count=image->alpha_trait == BlendPixelTrait ? 4 : 3;
       pixmap.pixel_type=16;
       pixmap.bits_per_pixel=32;
       pixmap.pack_type=0x04;
@@ -1685,8 +1685,8 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     Allocate memory.
   */
   bytes_per_line=image->columns;
-  if ((storage_class == DirectClass) || (image->alpha_trait == BlendPixelTrait))
-    bytes_per_line*=image->alpha_trait ? 4 : 3;
+  if (storage_class == DirectClass)
+    bytes_per_line*=image->alpha_trait == BlendPixelTrait ? 4 : 3;
   buffer=(unsigned char *) AcquireQuantumMemory(PictInfoSize,sizeof(*buffer));
   packed_scanline=(unsigned char *) AcquireQuantumMemory((size_t)
    (row_bytes+MaxCount),sizeof(*packed_scanline));
@@ -1909,7 +1909,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     Write picture data.
   */
   count=0;
-  if ((storage_class == PseudoClass) && (image->alpha_trait != BlendPixelTrait))
+  if (storage_class == PseudoClass)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,exception);
