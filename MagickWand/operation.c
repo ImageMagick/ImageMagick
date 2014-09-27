@@ -2550,6 +2550,24 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
+    case 'k':
+    {
+      if (LocaleCompare("kuwahara",option+1) == 0)
+        {
+          /*
+            Edge preserving blur.
+          */
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=1.0;
+          new_image=KuwaharaImage(_image,geometry_info.rho,geometry_info.sigma,
+           _exception);
+          break;
+        }
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
+    }
     case 'l':
     {
       if (LocaleCompare("lat",option+1) == 0)

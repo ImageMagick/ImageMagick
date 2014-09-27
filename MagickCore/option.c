@@ -478,6 +478,8 @@ static const OptionInfo
     { "-interword-spacing", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+kerning", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-kerning", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
+    { "+kuwahara", 0L, DeprecateOptionFlag, MagickTrue },
+    { "-kuwahara", 1L, SimpleOperatorFlag, MagickFalse },
     { "+label", 0L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-label", 1L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "+lat", 1L, DeprecateOptionFlag, MagickTrue },

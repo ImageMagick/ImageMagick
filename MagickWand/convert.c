@@ -226,6 +226,7 @@ static MagickBooleanType ConvertUsage(void)
       "-identify            identify the format and characteristics of the image",
       "-ift                 implements the inverse discrete Fourier transform (DFT)",
       "-implode amount      implode image pixels about the center",
+      "-kuwahara geometry   edge preserving blur",
       "-lat geometry        local adaptive thresholding",
       "-level value         adjust the level of image contrast",
       "-level-colors color,color",
@@ -1871,6 +1872,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
       case 'k':
       {
         if (LocaleCompare("kerning",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("kuwahara",option+1) == 0)
           {
             if (*option == '+')
               break;
