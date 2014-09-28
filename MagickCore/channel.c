@@ -5,7 +5,7 @@
 %                                                                             %
 %               CCCC  H   H   AAA   N   N  N   N  EEEEE   L                   %
 %              C      H   H  A   A  NN  N  NN  N  E       L                   %
-%              C      HHHHH  AAAAA  N N N  N N N  RRR     L                   %
+%              C      HHHHH  AAAAA  N N N  N N N  EEE     L                   %
 %              C      H   H  A   A  N  NN  N  NN  E       L                   %
 %               CCCC  H   H  A   A  N   N  N   N  EEEEE   LLLLL               %
 %                                                                             %
