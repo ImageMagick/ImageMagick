@@ -367,7 +367,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->number_scenes != 0)
     jp2_status=opj_get_decoded_tile(jp2_codec,jp2_stream,jp2_image,
       (unsigned int) image_info->scene);
-  else
+  else if (image->ping == MagickFalse)
     {
       jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
       if (jp2_status != 0)
@@ -417,6 +417,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         jp2_image->icc_profile_len);
       if (profile != (StringInfo *) NULL)
         SetImageProfile(image,"icc",profile,exception);
+    }
+  if (image->ping != MagickFalse)
+    {
+      opj_destroy_codec(jp2_codec);
+      opj_image_destroy(jp2_image);
+      opj_destroy_cstr_index(&codestream_index);
+      return(GetFirstImageInList(image));
     }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
