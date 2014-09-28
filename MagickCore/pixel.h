@@ -60,7 +60,7 @@ typedef enum
   RGBChannels = 0x0200,      /* set alpha from grayscale mask in RGB */
   GrayChannels = 0x0400,
   SyncChannels = 0x20000,    /* channels modified as a single unit */
-  DefaultChannels = ((AllChannels | SyncChannels) &~ AlphaChannel)
+  DefaultChannels = AllChannels
 } ChannelType;  /* must correspond to PixelChannel */
 
 typedef enum
