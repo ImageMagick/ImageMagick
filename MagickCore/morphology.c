@@ -2710,8 +2710,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             if ((traits == UndefinedPixelTrait) ||
                 (morphology_traits == UndefinedPixelTrait))
               continue;
-            if (((morphology_traits & CopyPixelTrait) != 0) ||
-                (GetPixelReadMask(image,p+center) == 0))
+            if (GetPixelReadMask(image,p+center) == 0)
               {
                 SetPixelChannel(morphology_image,channel,p[center+i],q);
                 continue;
@@ -2866,8 +2865,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         if ((traits == UndefinedPixelTrait) ||
             (morphology_traits == UndefinedPixelTrait))
           continue;
-        if (((morphology_traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(image,p+center) == 0))
+        if (GetPixelReadMask(image,p+center) == 0)
           {
             SetPixelChannel(morphology_image,channel,p[center+i],q);
             continue;
