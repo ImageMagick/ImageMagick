@@ -6086,8 +6086,8 @@ MagickExport void SetPixelChannelMask(Image *image,
     i;
 
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08x]", \
-      image->filename,channel_mask); \
+    (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08x]",
+      image->filename,channel_mask);
   image->channel_mask=channel_mask;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
