@@ -1467,7 +1467,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  width=GetOptimalKernelWidth1D(radius,0.5);
+  width=GetOptimalKernelWidth1D(radius,sigma);
   image_view=AcquireVirtualCacheView(image,exception);
   kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
