@@ -2287,7 +2287,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       return((Image *) NULL);
     }
   /*
-    Kiwahara image.
+    Edge preserving blur image.
   */
   status=MagickTrue;
   progress=0;
@@ -2301,11 +2301,14 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 #endif
   for (y=0; y < (ssize_t) kuwahara_image->rows; y++)
   {
+    register IndexPacket
+      *restrict kuwahara_indexes;
+
     register PixelPacket
       *restrict q;
 
     register ssize_t
-      i, 
+      i,
       x;
 
     if (status == MagickFalse)
@@ -2317,10 +2320,18 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         status=MagickFalse;
         continue;
       }
+    kuwahara_indexes=GetCacheViewAuthenticIndexQueue(kuwahara_view);
     for (x=0; x < (ssize_t) kuwahara_image->columns; x++)
     {
+      const IndexPacket
+        *restrict indexes[4];
+
       const PixelPacket
         *restrict p[4];
+
+      DoublePixelPacket
+        optimal_variance,
+        pixel;
 
       for (i=0; i < 4; i++)
       {
@@ -2361,12 +2372,131 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           width,width,exception);
         if (p[i] == (const PixelPacket *) NULL)
           break;
+        indexes[i]=GetCacheViewVirtualIndexQueue(image_view[i]);
       }
       if (i < 4)
         {
           status=MagickFalse;
           break;
         }
+      optimal_variance.red=MagickMaximumValue;
+      optimal_variance.green=MagickMaximumValue;
+      optimal_variance.blue=MagickMaximumValue;
+      optimal_variance.opacity=MagickMaximumValue;
+      optimal_variance.index=MagickMaximumValue;
+      pixel.red=0.0;
+      pixel.green=0.0;
+      pixel.blue=0.0;
+      pixel.opacity=0.0;
+      pixel.index=0.0;
+      for (i=0; i < 4; i++)
+      {
+        DoublePixelPacket
+          max,
+          mean,
+          min,
+          variance;
+
+        ssize_t
+          z;
+
+        max.red=(-MagickMaximumValue);
+        min.red=MagickMaximumValue;
+        mean.red=0.0;
+        max.green=(-MagickMaximumValue);
+        min.green=MagickMaximumValue;
+        mean.green=0.0;
+        max.blue=(-MagickMaximumValue);
+        min.blue=MagickMaximumValue;
+        mean.blue=0.0;
+        max.index=(-MagickMaximumValue);
+        min.index=MagickMaximumValue;
+        mean.index=0.0;
+        max.opacity=(-MagickMaximumValue);
+        min.opacity=MagickMaximumValue;
+        mean.opacity=0.0;
+        for (z=0; z < (ssize_t) (width*width); z++)
+        {
+          if ((double) p[i][z].red > max.red)
+            max.red=(double) p[i][z].red;
+          if ((double) p[i][z].red < min.red)
+            min.red=(double) p[i][z].red;
+          mean.red+=(double) p[i][z].red;
+          if ((double) p[i][z].green > max.green)
+            max.green=(double) p[i][z].green;
+          if ((double) p[i][z].green < min.green)
+            min.green=(double) p[i][z].green;
+          mean.green+=(double) p[i][z].green;
+          if ((double) p[i][z].blue > max.blue)
+            max.blue=(double) p[i][z].blue;
+          if ((double) p[i][z].blue < min.blue)
+            min.blue=(double) p[i][z].blue;
+          mean.blue+=(double) p[i][z].blue;
+          if ((channel & OpacityChannel) != 0)
+            {
+              if ((double) p[i][z].opacity > max.opacity)
+                max.opacity=(double) p[i][z].opacity;
+              if ((double) p[i][z].opacity < min.opacity)
+                min.opacity=(double) p[i][z].opacity;
+              mean.opacity+=(double) p[i][z].opacity;
+            }
+          if (((channel & IndexChannel) != 0) &&
+              (image->colorspace == CMYKColorspace))
+            {
+              if ((double) indexes[i][z] > max.index)
+                max.index=(double) indexes[i][z];
+              if ((double) indexes[i][z] < min.index)
+                min.index=(double) indexes[i][z];
+              mean.index+=(double) indexes[i][z];
+            }
+        }
+        mean.red/=(double) (width*width);
+        mean.green/=(double) (width*width);
+        mean.blue/=(double) (width*width);
+        mean.opacity/=(double) (width*width);
+        mean.index/=(double) (width*width);
+        variance.red=max.red-min.red;
+        variance.green=max.green-min.green;
+        variance.blue=max.blue-min.blue;
+        variance.opacity=max.opacity-min.opacity;
+        variance.index=max.index-min.index;
+        if (variance.red < optimal_variance.red)
+          {
+            optimal_variance.red=variance.red;
+            pixel.red=mean.red;
+          }
+        if (variance.green < optimal_variance.green)
+          {
+            optimal_variance.green=variance.green;
+            pixel.green=mean.green;
+          }
+        if (variance.blue < optimal_variance.blue)
+          {
+            optimal_variance.blue=variance.blue;
+            pixel.blue=mean.blue;
+          }
+        if (variance.opacity < optimal_variance.opacity)
+          {
+            optimal_variance.opacity=variance.opacity;
+            pixel.opacity=mean.opacity;
+          }
+        if (variance.index < optimal_variance.index)
+          {
+            optimal_variance.index=variance.index;
+            pixel.index=mean.index;
+          }
+      }
+      if ((channel & RedChannel) != 0)
+        SetPixelRed(q,ClampToQuantum(pixel.red));
+      if ((channel & GreenChannel) != 0)
+        SetPixelGreen(q,ClampToQuantum(pixel.green));
+      if ((channel & BlueChannel) != 0)
+        SetPixelBlue(q,ClampToQuantum(pixel.blue));
+      if ((channel & OpacityChannel) != 0)
+        SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace))
+        SetPixelIndex(kuwahara_indexes+x,ClampToQuantum(pixel.index));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(kuwahara_view,exception) == MagickFalse)
