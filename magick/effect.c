@@ -2246,7 +2246,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 #define KiwaharaImageTag  "Kiwahara/Image"
 
   CacheView
-    *image_view,
+    *image_view[4],
     *kuwahara_view;
 
   Image
@@ -2257,6 +2257,9 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 
   MagickOffsetType
     progress;
+
+  register ssize_t
+    i;
 
   size_t
     width;
@@ -2288,8 +2291,9 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  width=GetOptimalKernelWidth1D(radius,0.5);
-  image_view=AcquireVirtualCacheView(image,exception);
+  width=GetOptimalKernelWidth1D(radius,sigma);
+  for (i=0; i < 4; i++)
+    image_view[i]=AcquireVirtualCacheView(image,exception);
   kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -2301,6 +2305,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       *restrict q;
 
     register ssize_t
+      i, 
       x;
 
     if (status == MagickFalse)
@@ -2314,6 +2319,54 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       }
     for (x=0; x < (ssize_t) kuwahara_image->columns; x++)
     {
+      const PixelPacket
+        *restrict p[4];
+
+      for (i=0; i < 4; i++)
+      {
+        ssize_t
+          x_offset,
+          y_offset;
+
+        x_offset=x;
+        y_offset=y;
+        switch (i)
+        {
+          case 0:
+          {
+            x_offset=x-(ssize_t) width/2L;
+            y_offset=y-(ssize_t) width/2L;
+            break;
+          }
+          case 1:
+          {
+            x_offset=x;
+            y_offset=y-(ssize_t) width/2L;
+            break;
+          }
+          case 2:
+          {
+            x_offset=x-(ssize_t) width/2L;
+            y_offset=y;
+            break;
+          }
+          case 3:
+          {
+            x_offset=x;
+            y_offset=y;
+            break;
+          }
+        }
+        p[i]=GetCacheViewVirtualPixels(image_view[i],x_offset,y_offset,
+          width,width,exception);
+        if (p[i] == (const PixelPacket *) NULL)
+          break;
+      }
+      if (i < 4)
+        {
+          status=MagickFalse;
+          break;
+        }
       q++;
     }
     if (SyncCacheViewAuthenticPixels(kuwahara_view,exception) == MagickFalse)
@@ -2332,7 +2385,8 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       }
   }
   kuwahara_view=DestroyCacheView(kuwahara_view);
-  image_view=DestroyCacheView(image_view);
+  for (i=0; i < 4; i++)
+    image_view[i]=DestroyCacheView(image_view[i]);
   if (status == MagickFalse)
     kuwahara_image=DestroyImage(kuwahara_image);
   return(kuwahara_image);
