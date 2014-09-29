@@ -1500,6 +1500,10 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
       const Quantum
         *restrict p[4];
 
+      double
+        optimal_variance[MaxPixelChannels],
+        value[MaxPixelChannels];
+
       for (i=0; i < 4; i++)
       { 
         ssize_t
@@ -1545,6 +1549,28 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           status=MagickFalse;
           break;
         }
+      for (i=0; i < 4; i++)
+      {
+        double
+          max[MaxPixelChannels],
+          mean[MaxPixelChannels],
+          min[MaxPixelChannels],
+          variance[MaxPixelChannels];
+
+        ssize_t
+          j,
+          z;
+
+        for (j=0; j < MaxPixelChannels; j++)
+        {
+          max[j]=(-MagickMaximumValue);
+          min[j]=MagickMaximumValue;
+          mean[j]=0.0;
+        }
+        for (z=0; z < (ssize_t) (width*width); z++)
+        {
+        }
+      }
       q+=GetPixelChannels(kuwahara_image);
     }
     if (SyncCacheViewAuthenticPixels(kuwahara_view,exception) == MagickFalse)
