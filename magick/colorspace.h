@@ -57,7 +57,8 @@ typedef enum
   HSIColorspace,
   HSVColorspace,            /* alias for HSB */
   HCLpColorspace,
-  YDbDrColorspace
+  YDbDrColorspace,
+  xyYColorspace
 } ColorspaceType;
 
 extern MagickExport MagickBooleanType
