@@ -2330,7 +2330,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         *restrict p[4];
 
       DoublePixelPacket
-        optimal_variance,
+        min_variance,
         pixel;
 
       for (i=0; i < 4; i++)
@@ -2379,11 +2379,11 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      optimal_variance.red=MagickMaximumValue;
-      optimal_variance.green=MagickMaximumValue;
-      optimal_variance.blue=MagickMaximumValue;
-      optimal_variance.opacity=MagickMaximumValue;
-      optimal_variance.index=MagickMaximumValue;
+      min_variance.red=MagickMaximumValue;
+      min_variance.green=MagickMaximumValue;
+      min_variance.blue=MagickMaximumValue;
+      min_variance.opacity=MagickMaximumValue;
+      min_variance.index=MagickMaximumValue;
       pixel.red=0.0;
       pixel.green=0.0;
       pixel.blue=0.0;
@@ -2460,29 +2460,29 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         variance.blue=max.blue-min.blue;
         variance.opacity=max.opacity-min.opacity;
         variance.index=max.index-min.index;
-        if (variance.red < optimal_variance.red)
+        if (variance.red < min_variance.red)
           {
-            optimal_variance.red=variance.red;
+            min_variance.red=variance.red;
             pixel.red=mean.red;
           }
-        if (variance.green < optimal_variance.green)
+        if (variance.green < min_variance.green)
           {
-            optimal_variance.green=variance.green;
+            min_variance.green=variance.green;
             pixel.green=mean.green;
           }
-        if (variance.blue < optimal_variance.blue)
+        if (variance.blue < min_variance.blue)
           {
-            optimal_variance.blue=variance.blue;
+            min_variance.blue=variance.blue;
             pixel.blue=mean.blue;
           }
-        if (variance.opacity < optimal_variance.opacity)
+        if (variance.opacity < min_variance.opacity)
           {
-            optimal_variance.opacity=variance.opacity;
+            min_variance.opacity=variance.opacity;
             pixel.opacity=mean.opacity;
           }
-        if (variance.index < optimal_variance.index)
+        if (variance.index < min_variance.index)
           {
-            optimal_variance.index=variance.index;
+            min_variance.index=variance.index;
             pixel.index=mean.index;
           }
       }
