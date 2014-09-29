@@ -1423,29 +1423,97 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-  char
-    geometry[MaxTextExtent];
+#define KuwaharaImageTag  "Kuwahara/Image"
 
-  KernelInfo
-    *kernel_info;
+  CacheView
+    *image_view,
+    *kuwahara_view;
 
   Image
     *kuwahara_image;
 
-  assert(image != (const Image *) NULL);
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  size_t
+    width;
+
+  ssize_t
+    y;
+
+  /*
+    Initialize kuwahara image attributes.
+  */
+  assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  (void) FormatLocaleString(geometry,MaxTextExtent,
-    "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
-  kernel_info=AcquireKernelInfo(geometry);
-  if (kernel_info == (KernelInfo *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  kuwahara_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
-  kernel_info=DestroyKernelInfo(kernel_info);
+  kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
+  if (kuwahara_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(kuwahara_image,DirectClass,exception) == MagickFalse)
+    {
+      kuwahara_image=DestroyImage(kuwahara_image);
+      return((Image *) NULL);
+    }
+  /*
+    Kuwahara image.
+  */
+  status=MagickTrue;
+  progress=0;
+  width=GetOptimalKernelWidth1D(radius,0.5);
+  image_view=AcquireVirtualCacheView(image,exception);
+  kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,kuwahara_image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(kuwahara_view,0,y,kuwahara_image->columns,1,
+      exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      q+=GetPixelChannels(kuwahara_image);
+    }
+    if (SyncCacheViewAuthenticPixels(kuwahara_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_KuwaharaImage)
+#endif
+        proceed=SetImageProgress(image,KuwaharaImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  kuwahara_view=DestroyCacheView(kuwahara_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    kuwahara_image=DestroyImage(kuwahara_image);
   return(kuwahara_image);
 }
 
