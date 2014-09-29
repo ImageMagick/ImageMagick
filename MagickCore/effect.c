@@ -1501,11 +1501,14 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         *restrict p[4];
 
       double
-        optimal_variance[MaxPixelChannels],
-        value[MaxPixelChannels];
+        min_variance[MaxPixelChannels],
+        pixel[MaxPixelChannels];
+
+      ssize_t
+        j;
 
       for (i=0; i < 4; i++)
-      { 
+      {
         ssize_t
           x_offset,
           y_offset;
@@ -1513,27 +1516,27 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         x_offset=x;
         y_offset=y;
         switch (i)
-        { 
+        {
           case 0:
-          { 
+          {
             x_offset=x-(ssize_t) width/2L;
             y_offset=y-(ssize_t) width/2L;
             break;
           }
           case 1:
-          { 
+          {
             x_offset=x;
             y_offset=y-(ssize_t) width/2L;
             break;
           }
           case 2:
-          { 
+          {
             x_offset=x-(ssize_t) width/2L;
             y_offset=y;
             break;
           }
           case 3:
-          { 
+          {
             x_offset=x;
             y_offset=y;
             break;
@@ -1549,6 +1552,11 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           status=MagickFalse;
           break;
         }
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+      {
+        min_variance[j]=0.0;
+        pixel[j]=0.0;
+      }
       for (i=0; i < 4; i++)
       {
         double
@@ -1558,10 +1566,9 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           variance[MaxPixelChannels];
 
         ssize_t
-          j,
           z;
 
-        for (j=0; j < MaxPixelChannels; j++)
+        for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
         {
           max[j]=(-MagickMaximumValue);
           min[j]=MagickMaximumValue;
@@ -1569,8 +1576,29 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         }
         for (z=0; z < (ssize_t) (width*width); z++)
         {
+          for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+          {
+            if ((double) p[i][j] > max[j])
+              max[j]=(double) p[i][j];
+            if ((double) p[i][j] < min[j])
+              min[j]=(double) p[i][j];
+            mean[j]+=(double) p[i][j];
+          }
+          p[i]+=GetPixelChannels(image);
+        }
+        for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+        {
+          mean[j]/=(double) (width*width);
+          variance[j]=max[j]-min[j];
+          if (variance[j] < min_variance[j])
+            {
+              min_variance[j]=variance[j];
+              pixel[j]=mean[j];
+            }
         }
       }
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+        q[j]=ClampToQuantum(pixel[j]);
       q+=GetPixelChannels(kuwahara_image);
     }
     if (SyncCacheViewAuthenticPixels(kuwahara_view,exception) == MagickFalse)
