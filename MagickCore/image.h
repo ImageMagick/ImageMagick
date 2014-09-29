@@ -32,9 +32,11 @@ typedef enum
 {
   UndefinedAlphaChannel,
   ActivateAlphaChannel,
+  AssociateAlphaChannel,
   BackgroundAlphaChannel,
   CopyAlphaChannel,
   DeactivateAlphaChannel,
+  DisassociateAlphaChannel,
   ExtractAlphaChannel,
   OpaqueAlphaChannel,
   RemoveAlphaChannel,
