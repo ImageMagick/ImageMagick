@@ -1,3 +1,7 @@
+2014-09-30  6.8.9-9 Cristy  <quetzlzacatenango@image...>
+  * Support xyY colorspace (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=26324).
+
 2014-09-21  6.8.9-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-8, SVN revision 16502.
 

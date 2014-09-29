@@ -157,6 +157,20 @@ static void ConvertRGBToLuv(const Quantum red,const Quantum green,
   ConvertXYZToLuv(X,Y,Z,L,u,v);
 }
 
+static void ConvertRGBToxyY(const Quantum red,const Quantum green,
+  const Quantum blue,double *low_x,double *low_y,double *cap_Y)
+{
+  double
+    X,
+    Y,
+    Z;
+
+  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
+  *low_x=X/(X+Y+Z);
+  *low_y=Y/(X+Y+Z);
+  *cap_Y=Y;
+}
+
 static void ConvertRGBToYPbPr(const Quantum red,const Quantum green,
   const Quantum blue,double *Y,double *Pb,double *Pr)
 {
@@ -194,7 +208,6 @@ static void ConvertRGBToYIQ(const Quantum red,const Quantum green,
   *I=QuantumScale*(0.595716*red-0.274453*green-0.321263*blue)+0.5;
   *Q=QuantumScale*(0.211456*red-0.522591*green+0.311135*blue)+0.5;
 }
-
 
 MagickExport MagickBooleanType RGBTransformImage(Image *image,
   const ColorspaceType colorspace)
@@ -377,6 +390,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
     case LCHuvColorspace:
     case LMSColorspace:
     case LuvColorspace:
+    case xyYColorspace:
     case XYZColorspace:
     case YCbCrColorspace:
     case YDbDrColorspace:
@@ -500,6 +514,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             case LuvColorspace:
             {
               ConvertRGBToLuv(red,green,blue,&X,&Y,&Z);
+              break;
+            }
+            case xyYColorspace:
+            {
+              ConvertRGBToxyY(red,green,blue,&X,&Y,&Z);
               break;
             }
             case XYZColorspace:
@@ -1131,7 +1150,7 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
     }
   else
     if ((IsRGBColorspace(colorspace) != MagickFalse) ||
-        (colorspace == XYZColorspace))
+        (colorspace == XYZColorspace) || (colorspace == xyYColorspace))
       image->gamma=1.0;
     else
       {
@@ -1316,6 +1335,20 @@ static inline void ConvertLabToRGB(const double L,const double a,
     Z;
 
   ConvertLabToXYZ(100.0*L,255.0*(a-0.5),255.0*(b-0.5),&X,&Y,&Z);
+  ConvertXYZToRGB(X,Y,Z,red,green,blue);
+}
+
+static inline void ConvertxyYToRGB(const double low_x,const double low_y,
+  const double cap_Y,Quantum *red,Quantum *green,Quantum *blue)
+{
+  double
+    X,
+    Y,
+    Z;
+
+  X=cap_Y/low_y*low_x;
+  Y=cap_Y;
+  Z=cap_Y/low_y*(1.0-low_x-low_y);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -1786,6 +1819,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
     case LCHuvColorspace:
     case LMSColorspace:
     case LuvColorspace:
+    case xyYColorspace:
     case XYZColorspace:
     case YCbCrColorspace:
     case YDbDrColorspace:
@@ -1909,6 +1943,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             case LuvColorspace:
             {
               ConvertLuvToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
+            case xyYColorspace:
+            {
+              ConvertxyYToRGB(X,Y,Z,&red,&green,&blue);
               break;
             }
             case XYZColorspace:
