@@ -49,6 +49,7 @@ typedef enum
   scRGBColorspace,         /* ??? */
   sRGBColorspace,          /* Default: non-linear sRGB colorspace */
   TransparentColorspace,
+  xyYColorspace,
   XYZColorspace,           /* IEEE Color Reference colorspace */
   YCbCrColorspace,
   YCCColorspace,

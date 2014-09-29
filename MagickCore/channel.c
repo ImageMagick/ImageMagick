@@ -857,9 +857,9 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 %    o image: the image.
 %
 %    o alpha_type:  The alpha channel type: ActivateAlphaChannel,
-%      CopyAlphaChannel, DeactivateAlphaChannel, ExtractAlphaChannel,
-%      OpaqueAlphaChannel, SetAlphaChannel, ShapeAlphaChannel, and
-%      TransparentAlphaChannel.
+%      AssociateAlphaChannel, CopyAlphaChannel, DeactivateAlphaChannel,
+%      DisassociateAlphaChannel,  ExtractAlphaChannel, OpaqueAlphaChannel,
+%      SetAlphaChannel, ShapeAlphaChannel, and TransparentAlphaChannel.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -930,8 +930,14 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
 MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   const AlphaChannelOption alpha_type,ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -945,20 +951,76 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image->alpha_trait=BlendPixelTrait;
       break;
     }
+    case AssociateAlphaChannel:
+    {
+      /*
+        Associate alpha.
+      */
+      status=SetImageStorageClass(image,DirectClass,exception);
+      if (status == MagickFalse)
+        break;
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        magick_threads(image,image,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        register Quantum
+          *restrict q;
+
+        register ssize_t
+          x;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            Sa;
+  
+          register ssize_t
+            i;
+  
+          if (GetPixelReadMask(image,q) == 0)
+            {
+              q+=GetPixelChannels(image);
+              continue;
+            }
+          Sa=QuantumScale*GetPixelAlpha(image,q);
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
+            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            if ((traits & UpdatePixelTrait) == 0)
+              continue;
+            q[i]=ClampToQuantum(Sa*q[i]);
+          }
+          q+=GetPixelChannels(image);
+        }
+        if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      image->alpha_trait=CopyPixelTrait;
+      return(status);
+    }
     case BackgroundAlphaChannel:
     {
-      CacheView
-        *image_view;
-
-      ssize_t
-        y;
-
       /*
         Set transparent pixels to background color.
       */
       if (image->alpha_trait != BlendPixelTrait)
         break;
-      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+      status=SetImageStorageClass(image,DirectClass,exception);
+      if (status == MagickFalse)
         break;
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1015,6 +1077,69 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image->alpha_trait=CopyPixelTrait;
       break;
     }
+    case DisassociateAlphaChannel:
+    {
+      /*
+        Disassociate alpha.
+      */
+      status=SetImageStorageClass(image,DirectClass,exception);
+      if (status == MagickFalse)
+        break;
+      image->alpha_trait=BlendPixelTrait;
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        magick_threads(image,image,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        register Quantum
+          *restrict q;
+
+        register ssize_t
+          x;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            gamma, 
+            Sa;
+
+          register ssize_t
+            i;
+
+          if (GetPixelReadMask(image,q) == 0)
+            {
+              q+=GetPixelChannels(image);
+              continue;
+            }
+          Sa=QuantumScale*GetPixelAlpha(image,q);
+          gamma=PerceptibleReciprocal(Sa);
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
+            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            if ((traits & UpdatePixelTrait) == 0)
+              continue;
+            q[i]=ClampToQuantum(gamma*q[i]);
+          }
+          q+=GetPixelChannels(image);
+        }
+        if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      return(status);
+    }
     case ExtractAlphaChannel:
     {
       status=CompositeImage(image,image,AlphaCompositeOp,MagickTrue,0,0,
@@ -1029,18 +1154,13 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case RemoveAlphaChannel:
     {
-      CacheView
-        *image_view;
-
-      ssize_t
-        y;
-
       /*
         Remove transparency.
       */
       if (image->alpha_trait != BlendPixelTrait)
         break;
-      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+      status=SetImageStorageClass(image,DirectClass,exception);
+      if (status == MagickFalse)
         break;
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

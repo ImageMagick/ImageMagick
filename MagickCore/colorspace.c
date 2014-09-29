@@ -167,6 +167,20 @@ static void ConvertRGBToLuv(const double red,const double green,
   ConvertXYZToLuv(X,Y,Z,L,u,v);
 }
 
+static void ConvertRGBToxyY(const double red,const double green,
+  const double blue,double *low_x,double *low_y,double *cap_Y)
+{
+  double
+    X,
+    Y,
+    Z;
+
+  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
+  *low_x=X/(X+Y+Z);
+  *low_y=Y/(X+Y+Z);
+  *cap_Y=Y;
+}
+
 static void ConvertRGBToYDbDr(const double red,const double green,
   const double blue,double *Y,double *Db,double *Dr)
 {
@@ -375,6 +389,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
     case LCHuvColorspace:
     case LMSColorspace:
     case LuvColorspace:
+    case xyYColorspace:
     case XYZColorspace:
     case YCbCrColorspace:
     case YDbDrColorspace:
@@ -496,6 +511,11 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             case LuvColorspace:
             {
               ConvertRGBToLuv(red,green,blue,&X,&Y,&Z);
+              break;
+            }
+            case xyYColorspace:
+            {
+              ConvertRGBToxyY(red,green,blue,&X,&Y,&Z);
               break;
             }
             case XYZColorspace:
@@ -1076,7 +1096,7 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
     }
   else
     if ((IsRGBColorspace(colorspace) != MagickFalse) ||
-        (colorspace == XYZColorspace))
+        (colorspace == XYZColorspace) || (colorspace == xyYColorspace))
       image->gamma=1.000;
     else
       {
@@ -1258,6 +1278,20 @@ static inline void ConvertLabToRGB(const double L,const double a,
     Z;
 
   ConvertLabToXYZ(100.0*L,255.0*(a-0.5),255.0*(b-0.5),&X,&Y,&Z);
+  ConvertXYZToRGB(X,Y,Z,red,green,blue);
+}
+
+static inline void ConvertxyYToRGB(const double low_x,const double low_y,
+  const double cap_Y,double *red,double *green,double *blue)
+{
+  double
+    X,
+    Y,
+    Z;
+
+  X=cap_Y/low_y*low_x;
+  Y=cap_Y;
+  Z=cap_Y/low_y*(1.0-low_x-low_y);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -1718,6 +1752,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
     case LCHuvColorspace:
     case LMSColorspace:
     case LuvColorspace:
+    case xyYColorspace:
     case XYZColorspace:
     case YCbCrColorspace:
     case YDbDrColorspace:
@@ -1839,6 +1874,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             case LuvColorspace:
             {
               ConvertLuvToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
+            case xyYColorspace:
+            {
+              ConvertxyYToRGB(X,Y,Z,&red,&green,&blue);
               break;
             }
             case XYZColorspace:
