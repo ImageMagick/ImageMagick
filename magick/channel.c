@@ -631,9 +631,10 @@ MagickExport Image *SeparateImages(const Image *image,const ChannelType channel,
 %    o image: the image.
 %
 %    o alpha_type:  The alpha channel type: ActivateAlphaChannel,
-%      CopyAlphaChannel, Disassociate, DeactivateAlphaChannel,
-%      ExtractAlphaChannel, OpaqueAlphaChannel, ResetAlphaChannel,
-%      SetAlphaChannel, ShapeAlphaChannel, and TransparentAlphaChannel.
+%      AssociateAlphaChannel, CopyAlphaChannel, Disassociate,
+%      DeactivateAlphaChannel, ExtractAlphaChannel, OpaqueAlphaChannel,
+%      ResetAlphaChannel, SetAlphaChannel, ShapeAlphaChannel, and
+%      TransparentAlphaChannel.
 %
 */
 MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
