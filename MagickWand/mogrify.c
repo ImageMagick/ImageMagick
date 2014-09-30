@@ -3406,7 +3406,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-implode amount      implode image pixels about the center",
       "-interpolative-resize geometry",
       "                     resize image using interpolation",
-      "-kuwahara geometry   edge preserving blur",
+      "-kuwahara geometry   edge preserving noise reduction filter",
       "-lat geometry        local adaptive thresholding",
       "-level value         adjust the level of image contrast",
       "-level-colors color,color",

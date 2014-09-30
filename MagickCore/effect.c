@@ -1466,7 +1466,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   /*
-    Kuwahara image.
+    Edge preserving noise reduction filter.
   */
   status=MagickTrue;
   progress=0;
