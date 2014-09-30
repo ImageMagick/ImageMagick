@@ -1543,7 +1543,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           }
         }
         p[i]=GetCacheViewVirtualPixels(image_view[i],x_offset,y_offset,
-          width/2,width/2,exception);
+          width,width,exception);
         if (p[i] == (const Quantum *) NULL)
           break;
       }
