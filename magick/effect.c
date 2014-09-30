@@ -2329,8 +2329,10 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       const PixelPacket
         *restrict p[4];
 
+      double
+        min_variance;
+
       DoublePixelPacket
-        min_variance,
         pixel;
 
       for (i=0; i < 4; i++)
@@ -2379,11 +2381,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      min_variance.red=MagickMaximumValue;
-      min_variance.green=MagickMaximumValue;
-      min_variance.blue=MagickMaximumValue;
-      min_variance.opacity=MagickMaximumValue;
-      min_variance.index=MagickMaximumValue;
+      min_variance=MagickMaximumValue;
       pixel.red=0.0;
       pixel.green=0.0;
       pixel.blue=0.0;
@@ -2391,99 +2389,53 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       pixel.index=0.0;
       for (i=0; i < 4; i++)
       {
-        DoublePixelPacket
+        double
           max,
-          mean,
           min,
           variance;
+
+        DoublePixelPacket
+          mean;
 
         ssize_t
           z;
 
-        max.red=(-MagickMaximumValue);
-        min.red=MagickMaximumValue;
+        max=(-MagickMaximumValue);
+        min=MagickMaximumValue;
         mean.red=0.0;
-        max.green=(-MagickMaximumValue);
-        min.green=MagickMaximumValue;
         mean.green=0.0;
-        max.blue=(-MagickMaximumValue);
-        min.blue=MagickMaximumValue;
         mean.blue=0.0;
-        max.index=(-MagickMaximumValue);
-        min.index=MagickMaximumValue;
-        mean.index=0.0;
-        max.opacity=(-MagickMaximumValue);
-        min.opacity=MagickMaximumValue;
         mean.opacity=0.0;
+        mean.index=0.0;
         for (z=0; z < (ssize_t) (((width/2L)+1)*((width/2L)+1)); z++)
         {
-          if ((double) p[i][z].red > max.red)
-            max.red=(double) p[i][z].red;
-          if ((double) p[i][z].red < min.red)
-            min.red=(double) p[i][z].red;
+          double
+            luma;
+
+          luma=GetPixelLuma(image,p[i]+z);
+          if (luma > max)
+            max=luma;
+          if (luma < min)
+            min=luma;
           mean.red+=(double) p[i][z].red;
-          if ((double) p[i][z].green > max.green)
-            max.green=(double) p[i][z].green;
-          if ((double) p[i][z].green < min.green)
-            min.green=(double) p[i][z].green;
           mean.green+=(double) p[i][z].green;
-          if ((double) p[i][z].blue > max.blue)
-            max.blue=(double) p[i][z].blue;
-          if ((double) p[i][z].blue < min.blue)
-            min.blue=(double) p[i][z].blue;
           mean.blue+=(double) p[i][z].blue;
           if ((channel & OpacityChannel) != 0)
-            {
-              if ((double) p[i][z].opacity > max.opacity)
-                max.opacity=(double) p[i][z].opacity;
-              if ((double) p[i][z].opacity < min.opacity)
-                min.opacity=(double) p[i][z].opacity;
-              mean.opacity+=(double) p[i][z].opacity;
-            }
+            mean.opacity+=(double) p[i][z].opacity;
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            {
-              if ((double) indexes[i][z] > max.index)
-                max.index=(double) indexes[i][z];
-              if ((double) indexes[i][z] < min.index)
-                min.index=(double) indexes[i][z];
-              mean.index+=(double) indexes[i][z];
-            }
+            mean.index+=(double) indexes[i][z];
         }
         mean.red/=(double) (((width/2L)+1)*((width/2L)+1));
         mean.green/=(double) (((width/2L)+1)*((width/2L)+1));
         mean.blue/=(double) (((width/2L)+1)*((width/2L)+1));
         mean.opacity/=(double) (((width/2L)+1)*((width/2L)+1));
         mean.index/=(double) (((width/2L)+1)*((width/2L)+1));
-        variance.red=max.red-min.red;
-        variance.green=max.green-min.green;
-        variance.blue=max.blue-min.blue;
-        variance.opacity=max.opacity-min.opacity;
-        variance.index=max.index-min.index;
-        if (variance.red < min_variance.red)
+        variance=max-min;
+        if (variance < min_variance)
           {
-            min_variance.red=variance.red;
-            pixel.red=mean.red;
-          }
-        if (variance.green < min_variance.green)
-          {
-            min_variance.green=variance.green;
-            pixel.green=mean.green;
-          }
-        if (variance.blue < min_variance.blue)
-          {
-            min_variance.blue=variance.blue;
-            pixel.blue=mean.blue;
-          }
-        if (variance.opacity < min_variance.opacity)
-          {
-            min_variance.opacity=variance.opacity;
-            pixel.opacity=mean.opacity;
-          }
-        if (variance.index < min_variance.index)
-          {
-            min_variance.index=variance.index;
-            pixel.index=mean.index;
+            min_variance=variance;
+            pixel=mean;
           }
       }
       if ((channel & RedChannel) != 0)
