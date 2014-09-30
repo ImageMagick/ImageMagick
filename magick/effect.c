@@ -2400,8 +2400,8 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         ssize_t
           z;
 
-        max=(-MagickMaximumValue);
-        min=MagickMaximumValue;
+        max=GetPixelLuma(image,p[0]);
+        min=GetPixelLuma(image,p[0]);
         mean.red=0.0;
         mean.green=0.0;
         mean.blue=0.0;
