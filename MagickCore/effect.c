@@ -1401,7 +1401,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  KuwaharaImage() is an edge perserving blur.
+%  KuwaharaImage() is an edge preserving noise reduction filter.
 %
 %  The format of the KuwaharaImage method is:
 %
