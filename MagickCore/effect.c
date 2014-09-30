@@ -1501,7 +1501,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         *restrict p[4];
 
       double
-        min_variance[MaxPixelChannels],
+        min_variance,
         pixel[MaxPixelChannels];
 
       ssize_t
@@ -1552,50 +1552,46 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           status=MagickFalse;
           break;
         }
+      min_variance=0.0;
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-      {
-        min_variance[j]=0.0;
         pixel[j]=0.0;
-      }
       for (i=0; i < 4; i++)
       {
         double
-          max[MaxPixelChannels],
+          max,
           mean[MaxPixelChannels],
-          min[MaxPixelChannels],
-          variance[MaxPixelChannels];
+          min,
+          variance;
 
         ssize_t
           z;
 
+        max=(-MagickMaximumValue);
+        min=MagickMaximumValue;
         for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-        {
-          max[j]=(-MagickMaximumValue);
-          min[j]=MagickMaximumValue;
           mean[j]=0.0;
-        }
         for (z=0; z < (ssize_t) (((width/2L)+1)*((width/2L)+1)); z++)
         {
+          double
+            luma;
+
+          luma=GetPixelLuma(image,p[i]);
+          if (luma > max)
+            max=luma;
+          if (luma < min)
+            min=luma;
           for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-          {
-            if ((double) p[i][j] > max[j])
-              max[j]=(double) p[i][j];
-            if ((double) p[i][j] < min[j])
-              min[j]=(double) p[i][j];
             mean[j]+=(double) p[i][j];
-          }
           p[i]+=GetPixelChannels(image);
         }
-        for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-        {
           mean[j]/=(double) (((width/2L)+1)*((width/2L)+1));
-          variance[j]=max[j]-min[j];
-          if (variance[j] < min_variance[j])
-            {
-              min_variance[j]=variance[j];
+        variance=max-min;
+        if (variance < min_variance)
+          {
+            min_variance=variance;
+            for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
               pixel[j]=mean[j];
-            }
-        }
+          }
       }
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
         q[j]=ClampToQuantum(pixel[j]);
