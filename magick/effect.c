@@ -2369,7 +2369,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           }
         }
         p[i]=GetCacheViewVirtualPixels(image_view[i],x_offset,y_offset,
-          width/2,width/2,exception);
+          width,width,exception);
         if (p[i] == (const PixelPacket *) NULL)
           break;
         indexes[i]=GetCacheViewVirtualIndexQueue(image_view[i]);
