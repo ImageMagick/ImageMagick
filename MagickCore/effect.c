@@ -1519,19 +1519,19 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         {
           case 0:
           {
-            x_offset=x-(ssize_t) width/2L;
-            y_offset=y-(ssize_t) width/2L;
+            x_offset=x-width/2L-1;
+            y_offset=y-width/2L-1;
             break;
           }
           case 1:
           {
             x_offset=x;
-            y_offset=y-(ssize_t) width/2L;
+            y_offset=y-width/2L-1;
             break;
           }
           case 2:
           {
-            x_offset=x-(ssize_t) width/2L;
+            x_offset=x-width/2L-1;
             y_offset=y;
             break;
           }
@@ -1543,7 +1543,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           }
         }
         p[i]=GetCacheViewVirtualPixels(image_view[i],x_offset,y_offset,
-          width,width,exception);
+          (width/2L)+1,(width/2L)+1,exception);
         if (p[i] == (const Quantum *) NULL)
           break;
       }
@@ -1574,7 +1574,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           min[j]=MagickMaximumValue;
           mean[j]=0.0;
         }
-        for (z=0; z < (ssize_t) (width*width); z++)
+        for (z=0; z < (ssize_t) (((width/2L)+1)*((width/2L)+1)); z++)
         {
           for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
           {
@@ -1588,7 +1588,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         }
         for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
         {
-          mean[j]/=(double) (width*width);
+          mean[j]/=(double) (((width/2L)+1)*((width/2L)+1));
           variance[j]=max[j]-min[j];
           if (variance[j] < min_variance[j])
             {
