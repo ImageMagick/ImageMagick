@@ -2204,7 +2204,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  KuwaharaImage() is an edge perserving blur.
+%  KuwaharaImage() is an edge preserving noise reduction filter.
 %
 %  The format of the KuwaharaImage method is:
 %
@@ -2287,7 +2287,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       return((Image *) NULL);
     }
   /*
-    Edge preserving blur image.
+    Edge preserving noise reduction filter.
   */
   status=MagickTrue;
   progress=0;
