@@ -1566,8 +1566,8 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         ssize_t
           z;
 
-        max=(-MagickMaximumValue);
-        min=MagickMaximumValue;
+        max=GetPixelLuma(image,p[0]);
+        min=GetPixelLuma(image,p[0]);
         for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
           mean[j]=0.0;
         for (z=0; z < (ssize_t) (((width/2L)+1)*((width/2L)+1)); z++)
@@ -1584,6 +1584,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
             mean[j]+=(double) p[i][j];
           p[i]+=GetPixelChannels(image);
         }
+        for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
           mean[j]/=(double) (((width/2L)+1)*((width/2L)+1));
         variance=max-min;
         if (variance < min_variance)
