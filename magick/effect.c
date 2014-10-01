@@ -2353,19 +2353,19 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         {
           case 0:
           {
-            x_offset=x-((ssize_t) width/2L)-1;
-            y_offset=y-((ssize_t) width/2L)-1;
+            x_offset=x-((ssize_t) width/2L);
+            y_offset=y-((ssize_t) width/2L);
             break;
           }
           case 1:
           {
             x_offset=x;
-            y_offset=y-((ssize_t) width/2L)-1;
+            y_offset=y-((ssize_t) width/2L);
             break;
           }
           case 2:
           {
-            x_offset=x-((ssize_t) width/2L)-1;
+            x_offset=x-((ssize_t) width/2L);
             y_offset=y;
             break;
           }
@@ -2378,7 +2378,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           }
         }
         p[i]=GetCacheViewVirtualPixels(image_view[i],x_offset,y_offset,
-          (width/2L)+1,(width/2L)+1,exception);
+          width/2L,width/2L,exception);
         if (p[i] == (const PixelPacket *) NULL)
           break;
         indexes[i]=GetCacheViewVirtualIndexQueue(image_view[i]);
@@ -2406,7 +2406,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         max=GetPixelLuma(image,p[0]);
         min=GetPixelLuma(image,p[0]);
         (void) ResetMagickMemory(&mean,0,sizeof(mean));
-        for (z=0; z < (ssize_t) (((width/2L)+1)*((width/2L)+1)); z++)
+        for (z=0; z < (ssize_t) ((width/2L)*(width/2L)); z++)
         {
           double
             luma;
@@ -2425,11 +2425,11 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             mean.index+=(double) indexes[i][z];
         }
-        mean.red/=(double) (((width/2L)+1)*((width/2L)+1));
-        mean.green/=(double) (((width/2L)+1)*((width/2L)+1));
-        mean.blue/=(double) (((width/2L)+1)*((width/2L)+1));
-        mean.opacity/=(double) (((width/2L)+1)*((width/2L)+1));
-        mean.index/=(double) (((width/2L)+1)*((width/2L)+1));
+        mean.red/=(double) ((width/2L)*(width/2L));
+        mean.green/=(double) ((width/2L)*(width/2L));
+        mean.blue/=(double) ((width/2L)*(width/2L));
+        mean.opacity/=(double) ((width/2L)*(width/2L));
+        mean.index/=(double) ((width/2L)*(width/2L));
         variance=max-min;
         if (variance < min_variance)
           {
