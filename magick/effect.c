@@ -2278,7 +2278,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   gaussian_image=BlurImage(image,radius,sigma,exception);
-  if (gaussian_image != (Image *) NULL)
+  if (gaussian_image == (Image *) NULL)
     return((Image *) NULL);
   kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
@@ -2388,11 +2388,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           break;
         }
       min_variance=MagickMaximumValue;
-      pixel.red=0.0;
-      pixel.green=0.0;
-      pixel.blue=0.0;
-      pixel.opacity=0.0;
-      pixel.index=0.0;
+      (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
       for (i=0; i < 4; i++)
       {
         double
@@ -2408,11 +2404,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 
         max=GetPixelLuma(image,p[0]);
         min=GetPixelLuma(image,p[0]);
-        mean.red=0.0;
-        mean.green=0.0;
-        mean.blue=0.0;
-        mean.opacity=0.0;
-        mean.index=0.0;
+        (void) ResetMagickMemory(&mean,0,sizeof(mean));
         for (z=0; z < (ssize_t) (((width/2L)+1)*((width/2L)+1)); z++)
         {
           double
