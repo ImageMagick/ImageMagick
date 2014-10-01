@@ -6094,11 +6094,14 @@ MagickExport void SetPixelChannelMask(Image *image,
     PixelChannel channel=GetPixelChannelChannel(image,i);
     SetPixelChannelTraits(image,channel,
       GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
-      image->alpha_trait != BlendPixelTrait || (channel == AlphaPixelChannel) ?
-      UpdatePixelTrait : (PixelTrait) (UpdatePixelTrait | image->alpha_trait));
+      (image->alpha_trait == BlendPixelTrait) &&
+      (channel != AlphaPixelChannel) ?  (PixelTrait)
+      (UpdatePixelTrait | BlendPixelTrait) : UpdatePixelTrait);
   }
   if (image->storage_class == PseudoClass)
     SetPixelChannelTraits(image,IndexPixelChannel,CopyPixelTrait);
+  if (image->alpha_trait != BlendPixelTrait)
+    SetPixelChannelTraits(image,AlphaPixelChannel,image->alpha_trait);
   if (image->read_mask != MagickFalse)
     SetPixelChannelTraits(image,ReadMaskPixelChannel,CopyPixelTrait);
   if (image->write_mask != MagickFalse)
