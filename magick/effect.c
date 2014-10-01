@@ -2341,8 +2341,6 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           x_offset,
           y_offset;
 
-        x_offset=x;
-        y_offset=y;
         switch (i)
         {
           case 0:
@@ -2364,6 +2362,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
             break;
           }
           case 3:
+          default:
           {
             x_offset=x;
             y_offset=y;
