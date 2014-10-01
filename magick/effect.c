@@ -2290,6 +2290,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   if (SetImageStorageClass(kuwahara_image,DirectClass) == MagickFalse)
     {
       InheritException(exception,&kuwahara_image->exception);
+      gaussian_image=DestroyImage(gaussian_image);
       kuwahara_image=DestroyImage(kuwahara_image);
       return((Image *) NULL);
     }
