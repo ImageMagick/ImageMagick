@@ -1513,8 +1513,6 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           x_offset,
           y_offset;
 
-        x_offset=x;
-        y_offset=y;
         switch (i)
         {
           case 0:
@@ -1536,6 +1534,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
             break;
           }
           case 3:
+          default:
           {
             x_offset=x;
             y_offset=y;
