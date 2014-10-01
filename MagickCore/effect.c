@@ -1430,6 +1430,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
     *kuwahara_view;
 
   Image
+    *gaussian_image,
     *kuwahara_image;
 
   MagickBooleanType
@@ -1456,12 +1457,19 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  gaussian_image=BlurImage(image,radius,sigma,exception);
+  if (gaussian_image != (Image *) NULL)
+    return((Image *) NULL);
   kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (kuwahara_image == (Image *) NULL)
-    return((Image *) NULL);
+    {
+      gaussian_image=DestroyImage(gaussian_image);
+      return((Image *) NULL);
+    }
   if (SetImageStorageClass(kuwahara_image,DirectClass,exception) == MagickFalse)
     {
+      gaussian_image=DestroyImage(gaussian_image);
       kuwahara_image=DestroyImage(kuwahara_image);
       return((Image *) NULL);
     }
@@ -1472,7 +1480,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   progress=0;
   width=GetOptimalKernelWidth1D(radius,sigma);
   for (i=0; i < 4; i++)
-    image_view[i]=AcquireVirtualCacheView(image,exception);
+    image_view[i]=AcquireVirtualCacheView(gaussian_image,exception);
   kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -1615,6 +1623,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   kuwahara_view=DestroyCacheView(kuwahara_view);
   for (i=0; i < 4; i++)
     image_view[i]=DestroyCacheView(image_view[i]);
+  gaussian_image=DestroyImage(gaussian_image);
   if (status == MagickFalse)
     kuwahara_image=DestroyImage(kuwahara_image);
   return(kuwahara_image);
