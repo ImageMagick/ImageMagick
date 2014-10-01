@@ -101,6 +101,7 @@ static const OptionInfo
     { "Background", BackgroundAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Copy", CopyAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Deactivate", DeactivateAlphaChannel, UndefinedOptionFlag, MagickFalse },
+    { "Discrete", DiscreteAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Disassociate", DisassociateAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Extract", ExtractAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Off", DeactivateAlphaChannel, UndefinedOptionFlag, MagickFalse },

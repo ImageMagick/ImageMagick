@@ -1140,6 +1140,11 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image_view=DestroyCacheView(image_view);
       return(status);
     }
+    case DiscreteAlphaChannel:
+    {
+      image->alpha_trait=UpdatePixelTrait;
+      break;
+    }
     case ExtractAlphaChannel:
     {
       status=CompositeImage(image,image,AlphaCompositeOp,MagickTrue,0,0,
