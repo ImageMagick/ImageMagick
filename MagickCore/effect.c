@@ -1525,19 +1525,19 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         {
           case 0:
           {
-            x_offset=x-(ssize_t) width/2L-1;
-            y_offset=y-(ssize_t) width/2L-1;
+            x_offset=x-((ssize_t) width/2L)-1;
+            y_offset=y-((ssize_t) width/2L)-1;
             break;
           }
           case 1:
           {
             x_offset=x;
-            y_offset=y-(ssize_t) width/2L-1;
+            y_offset=y-((ssize_t) width/2L)-1;
             break;
           }
           case 2:
           {
-            x_offset=x-(ssize_t) width/2L-1;
+            x_offset=x-((ssize_t) width/2L)-1;
             y_offset=y;
             break;
           }
