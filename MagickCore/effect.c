@@ -1458,7 +1458,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   gaussian_image=BlurImage(image,radius,sigma,exception);
-  if (gaussian_image != (Image *) NULL)
+  if (gaussian_image == (Image *) NULL)
     return((Image *) NULL);
   kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
