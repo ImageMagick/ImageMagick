@@ -36,6 +36,7 @@ typedef enum
   BackgroundAlphaChannel,
   CopyAlphaChannel,
   DeactivateAlphaChannel,
+  DiscreteAlphaChannel,
   DisassociateAlphaChannel,
   ExtractAlphaChannel,
   OpaqueAlphaChannel,
