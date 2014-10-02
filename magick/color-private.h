@@ -101,8 +101,7 @@ static inline Quantum MagickPixelIntensityToQuantum(
     0.072186*pixel->blue));
 }
 
-static inline MagickRealType MagickPixelLuma(
-  const MagickPixelPacket *pixel)
+static inline MagickRealType MagickPixelLuma(const MagickPixelPacket *pixel)
 {
   MagickRealType
     blue,
