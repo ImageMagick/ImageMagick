@@ -1420,6 +1420,17 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline MagickRealType GetMeanLuma(const Image *restrict image,
+  const double *restrict pixel)
+{
+  if (image->colorspace == GRAYColorspace)
+    return((MagickRealType) pixel[image->channel_map[GrayPixelChannel].offset]);
+  return(0.212656f*pixel[image->channel_map[RedPixelChannel].offset]+
+    0.715158f*pixel[image->channel_map[GreenPixelChannel].offset]+
+    0.072186f*pixel[image->channel_map[BluePixelChannel].offset]);  /* Rec709 */
+}
+
 MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
@@ -1564,36 +1575,39 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         pixel[j]=0.0;
       for (i=0; i < 4; i++)
       {
+        const Quantum
+          *restrict k;
+
         double
-          max,
           mean[MaxPixelChannels],
-          min,
           variance;
 
         ssize_t
           z;
 
-        max=GetPixelLuma(image,p[0]);
-        min=GetPixelLuma(image,p[0]);
         for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
           mean[j]=0.0;
+        k=p[i];
+        for (z=0; z < (ssize_t) ((width/2L)*(width/2L)); z++)
+        {
+          for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+            mean[j]+=(double) k[j];
+          k+=GetPixelChannels(image);
+        }
+        for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+          mean[j]/=(double) ((width/2L)*(width/2L));
+        k=p[i];
+        variance=0.0;
         for (z=0; z < (ssize_t) ((width/2L)*(width/2L)); z++)
         {
           double
             luma;
 
-          luma=GetPixelLuma(image,p[i]);
-          if (luma > max)
-            max=luma;
-          if (luma < min)
-            min=luma;
-          for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-            mean[j]+=(double) p[i][j];
-          p[i]+=GetPixelChannels(image);
+          luma=GetPixelLuma(image,k);
+          variance+=(luma-GetMeanLuma(gaussian_image,mean))*
+            (luma-GetMeanLuma(gaussian_image,mean));
+          k+=GetPixelChannels(image);
         }
-        for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-          mean[j]/=(double) ((width/2L)*(width/2L));
-        variance=max-min;
         if (variance < min_variance)
           {
             min_variance=variance;
