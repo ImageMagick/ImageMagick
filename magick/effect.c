@@ -2340,7 +2340,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       double
         min_variance;
 
-      DoublePixelPacket
+      MagickPixelPacket
         pixel;
 
       for (i=0; i < 4; i++)
@@ -2393,29 +2393,17 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       for (i=0; i < 4; i++)
       {
         double
-          max,
-          min,
           variance;
 
-        DoublePixelPacket
+        MagickPixelPacket
           mean;
 
         ssize_t
           z;
 
-        max=GetPixelLuma(image,p[0]);
-        min=GetPixelLuma(image,p[0]);
-        (void) ResetMagickMemory(&mean,0,sizeof(mean));
+        GetMagickPixelPacket(image,&mean);
         for (z=0; z < (ssize_t) ((width/2L)*(width/2L)); z++)
         {
-          double
-            luma;
-
-          luma=GetPixelLuma(image,p[i]+z);
-          if (luma > max)
-            max=luma;
-          if (luma < min)
-            min=luma;
           mean.red+=(double) p[i][z].red;
           mean.green+=(double) p[i][z].green;
           mean.blue+=(double) p[i][z].blue;
@@ -2430,7 +2418,15 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         mean.blue/=(double) ((width/2L)*(width/2L));
         mean.opacity/=(double) ((width/2L)*(width/2L));
         mean.index/=(double) ((width/2L)*(width/2L));
-        variance=max-min;
+        variance=0.0;
+        for (z=0; z < (ssize_t) ((width/2L)*(width/2L)); z++)
+        {
+          double
+            luma;
+
+          luma=GetPixelLuma(image,p[i]+z);
+          variance+=(luma-MagickPixelLuma(&mean))*(luma-MagickPixelLuma(&mean));
+        }
         if (variance < min_variance)
           {
             min_variance=variance;
