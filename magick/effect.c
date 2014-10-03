@@ -2353,19 +2353,19 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         {
           case 0:
           {
-            x_offset=x-((ssize_t) width/2L);
-            y_offset=y-((ssize_t) width/2L);
+            x_offset=x-((ssize_t) (width+1)/2L);
+            y_offset=y-((ssize_t) (width+1)/2L);
             break;
           }
           case 1:
           {
             x_offset=x;
-            y_offset=y-((ssize_t) width/2L);
+            y_offset=y-((ssize_t) (width+1)/2L);
             break;
           }
           case 2:
           {
-            x_offset=x-((ssize_t) width/2L);
+            x_offset=x-((ssize_t) (width+1)/2L);
             y_offset=y;
             break;
           }
@@ -2378,7 +2378,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           }
         }
         p[i]=GetCacheViewVirtualPixels(image_view[i],x_offset,y_offset,
-          width/2L,width/2L,exception);
+          (width+1)/2,(width+1)/2,exception);
         if (p[i] == (const PixelPacket *) NULL)
           break;
         indexes[i]=GetCacheViewVirtualIndexQueue(image_view[i]);
