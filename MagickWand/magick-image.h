@@ -87,6 +87,7 @@ extern WandExport MagickBooleanType
   MagickAnimateImages(MagickWand *,const char *),
   MagickAutoGammaImage(MagickWand *),
   MagickAutoLevelImage(MagickWand *),
+  MagickAutoOrientImage(MagickWand *),
   MagickBlackThresholdImage(MagickWand *,const PixelWand *),
   MagickBlueShiftImage(MagickWand *,const double),
   MagickBlurImage(MagickWand *,const double,const double),
