@@ -387,7 +387,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
                 for (y = 0; y < imsy; ++y) {
                     (void) CopyMagickMemory(dmbuf + dmsx * y, imbuf + imsx * y, imsx);
                 }
-                (void) RelinquishMagickMemory(imbuf);
+                imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
                 imsx = dmsx;
                 imsy = dmsy;
                 imbuf = dmbuf;
@@ -461,7 +461,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
                 for (y = 0; y < imsy; ++y) {
                     (void) CopyMagickMemory(dmbuf + dmsx * y, imbuf + imsx * y, imsx);
                 }
-                (void) RelinquishMagickMemory(imbuf);
+                imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
                 imsx = dmsx;
                 imsy = dmsy;
                 imbuf = dmbuf;
@@ -542,7 +542,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
         for (y = 0; y < dmsy; ++y) {
             (void) CopyMagickMemory(dmbuf + dmsx * y, imbuf + imsx * y, dmsx);
         }
-        (void) RelinquishMagickMemory(imbuf);
+        imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
         imsx = dmsx;
         imsy = dmsy;
         imbuf = dmbuf;
@@ -1044,17 +1044,17 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   */
   if (sixel_decode((unsigned char *)sixel_buffer, &sixel_pixels, &image->columns, &image->rows, &sixel_palette, &image->colors) == MagickFalse)
     {
-      sixel_buffer=(char *)RelinquishMagickMemory(sixel_buffer);
+      sixel_buffer=(char *) RelinquishMagickMemory(sixel_buffer);
       ThrowReaderException(CorruptImageError,"CorruptImage");
     }
-  sixel_buffer=(char *)RelinquishMagickMemory(sixel_buffer);
+  sixel_buffer=(char *) RelinquishMagickMemory(sixel_buffer);
   image->depth=24;
   image->storage_class=PseudoClass;
 
   if (AcquireImageColormap(image,image->colors) == MagickFalse)
     {
-      sixel_pixels=(unsigned char *)RelinquishMagickMemory(sixel_pixels);
-      sixel_palette=(unsigned char *)RelinquishMagickMemory(sixel_palette);
+      sixel_pixels=(unsigned char *) RelinquishMagickMemory(sixel_pixels);
+      sixel_palette=(unsigned char *) RelinquishMagickMemory(sixel_palette);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   for (i = 0; i < image->colors; ++i) {
@@ -1086,16 +1086,16 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       }
       if (y < (ssize_t) image->rows)
         {
-          sixel_pixels=(unsigned char *)RelinquishMagickMemory(sixel_pixels);
-          sixel_palette=(unsigned char *)RelinquishMagickMemory(sixel_palette);
+          sixel_pixels=(unsigned char *) RelinquishMagickMemory(sixel_pixels);
+          sixel_palette=(unsigned char *) RelinquishMagickMemory(sixel_palette);
           ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
         }
     }
   /*
     Relinquish resources.
   */
-  sixel_pixels=(unsigned char *)RelinquishMagickMemory(sixel_pixels);
-  sixel_palette=(unsigned char *)RelinquishMagickMemory(sixel_palette);
+  sixel_pixels=(unsigned char *) RelinquishMagickMemory(sixel_pixels);
+  sixel_palette=(unsigned char *) RelinquishMagickMemory(sixel_palette);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
