@@ -2436,8 +2436,9 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
             k=i;
           }
       }
-      (void) InterpolateMagickPixelPacket(gaussian_image,image_view[k],
-        UndefinedInterpolatePixel,((double) width-1.0)/2.0,((double) width-1.0)/        2.0,&pixel,exception);
+      (void) InterpolateMagickPixelPacket(gaussian_image,image_view[0],
+        UndefinedInterpolatePixel,quadrant[k].x+(width-1.0)/2.0,quadrant[k].y+
+        (width-1.0)/2.0,&pixel,exception);
       SetPixelPacket(kuwahara_image,&pixel,q,kuwahara_indexes+x);
       q++;
     }
