@@ -1610,9 +1610,9 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
             l=i;
           }
       }
-      status=InterpolatePixelChannels(gaussian_image,image_view[l],
-        kuwahara_image,UndefinedInterpolatePixel,((double) width-1.0)/2.0,
-        ((double) width-1.0)/2.0,q,exception);
+      status=InterpolatePixelChannels(gaussian_image,image_view[0],
+        kuwahara_image,UndefinedInterpolatePixel,quadrant[k].x+(width-1.0)/2.0,
+        quadrant[k].y+(width-1.0)/2.0,q,exception);
       q+=GetPixelChannels(kuwahara_image);
     }
     if (SyncCacheViewAuthenticPixels(kuwahara_view,exception) == MagickFalse)
