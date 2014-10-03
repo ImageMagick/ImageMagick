@@ -789,6 +789,49 @@ WandExport MagickBooleanType MagickAutoLevelImage(MagickWand *wand)
   status=AutoLevelImage(wand->images,wand->exception);
   return(status);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k A u t o O r i e n t I m a g e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickAutoOrientImage() adjusts an image so that its orientation is suitable
+$  for viewing (i.e. top-left orientation).
+%
+%  The format of the MagickAutoOrientImage method is:
+%
+%      MagickBooleanType MagickAutoOrientImage(MagickWand *image)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport MagickBooleanType MagickAutoOrientImage(MagickWand *wand)
+{
+
+  Image
+    *orient_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  orient_image=AutoOrientImage(wand->images,wand->images->orientation,
+    wand->exception);
+  if (orient_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,orient_image);
+  return(MagickTrue);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
