@@ -287,6 +287,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterSCTImage();
   (void) RegisterSFWImage();
   (void) RegisterSGIImage();
+  (void) RegisterSixelImage();
   (void) RegisterSTEGANOImage();
   (void) RegisterSUNImage();
   (void) RegisterSVGImage();
@@ -474,6 +475,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterSCTImage();
   UnregisterSFWImage();
   UnregisterSGIImage();
+  UnregisterSixelImage();
   UnregisterSTEGANOImage();
   UnregisterSUNImage();
   UnregisterSVGImage();

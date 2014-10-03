@@ -1,3 +1,6 @@
+2014-10-03  6.8.9-9 Dirk Lemstra <dirk@snakeware...>
+  * Added sixel coder created by Hayaki Saito (@kefir_).
+
 2014-09-30  6.8.9-9 Cristy  <quetzlzacatenango@image...>
   * Support xyY colorspace (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=26324).
