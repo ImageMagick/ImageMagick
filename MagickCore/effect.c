@@ -1570,7 +1570,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           status=MagickFalse;
           break;
         }
-      min_variance=0.0;
+      min_variance=MagickMaximumValue;
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
         pixel[j]=0.0;
       for (i=0; i < 4; i++)
