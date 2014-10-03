@@ -2299,7 +2299,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  width=GetOptimalKernelWidth1D(radius,sigma);
+  width=(size_t) radius+1;
   for (i=0; i < 4; i++)
     image_view[i]=AcquireVirtualCacheView(gaussian_image,exception);
   kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
@@ -2353,19 +2353,19 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         {
           case 0:
           {
-            x_offset=x-((ssize_t) (width+1)/2L);
-            y_offset=y-((ssize_t) (width+1)/2L);
+            x_offset=x-(ssize_t) width;
+            y_offset=y-(ssize_t) width;
             break;
           }
           case 1:
           {
             x_offset=x;
-            y_offset=y-((ssize_t) (width+1)/2L);
+            y_offset=y-(ssize_t) width;
             break;
           }
           case 2:
           {
-            x_offset=x-((ssize_t) (width+1)/2L);
+            x_offset=x-(ssize_t) width;
             y_offset=y;
             break;
           }
@@ -2378,7 +2378,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           }
         }
         p[i]=GetCacheViewVirtualPixels(image_view[i],x_offset,y_offset,
-          (width+1)/2,(width+1)/2,exception);
+          width,width,exception);
         if (p[i] == (const PixelPacket *) NULL)
           break;
         indexes[i]=GetCacheViewVirtualIndexQueue(image_view[i]);
@@ -2402,7 +2402,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           z;
 
         GetMagickPixelPacket(image,&mean);
-        for (z=0; z < (ssize_t) ((width/2L)*(width/2L)); z++)
+        for (z=0; z < (ssize_t) (width*width); z++)
         {
           mean.red+=(double) p[i][z].red;
           mean.green+=(double) p[i][z].green;
@@ -2413,13 +2413,13 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             mean.index+=(double) indexes[i][z];
         }
-        mean.red/=(double) ((width/2L)*(width/2L));
-        mean.green/=(double) ((width/2L)*(width/2L));
-        mean.blue/=(double) ((width/2L)*(width/2L));
-        mean.opacity/=(double) ((width/2L)*(width/2L));
-        mean.index/=(double) ((width/2L)*(width/2L));
+        mean.red/=(double) (width*width);
+        mean.green/=(double) (width*width);
+        mean.blue/=(double) (width*width);
+        mean.opacity/=(double) (width*width);
+        mean.index/=(double) (width*width);
         variance=0.0;
-        for (z=0; z < (ssize_t) ((width/2L)*(width/2L)); z++)
+        for (z=0; z < (ssize_t) (width*width); z++)
         {
           double
             luma;
