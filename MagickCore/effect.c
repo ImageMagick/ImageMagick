@@ -1468,7 +1468,8 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  gaussian_image=BlurImage(image,1.0,sigma,exception);
+  width=(size_t) radius+1;
+  gaussian_image=BlurImage(image,(double) width,sigma,exception);
   if (gaussian_image == (Image *) NULL)
     return((Image *) NULL);
   kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
@@ -1489,7 +1490,6 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  width=(size_t) radius+1;
   for (i=0; i < 4; i++)
     image_view[i]=AcquireVirtualCacheView(gaussian_image,exception);
   kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
@@ -1520,48 +1520,45 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         *restrict p[4];
 
       double
-        min_variance,
-        pixel[MaxPixelChannels];
+        min_variance;
 
       ssize_t
-        j;
+        j,
+        l;
+
+      RectangleInfo
+        quadrant[4];
 
       for (i=0; i < 4; i++)
       {
-        ssize_t
-          x_offset,
-          y_offset;
-
+        quadrant[i].width=width;
+        quadrant[i].height=width;
+        quadrant[i].x=x;
+        quadrant[i].y=y;
         switch (i)
         {
           case 0:
           {
-            x_offset=x-(ssize_t) (width-1);
-            y_offset=y-(ssize_t) (width-1);
+            quadrant[i].x=x-(ssize_t) (width-1);
+            quadrant[i].y=y-(ssize_t) (width-1);
             break;
           }
           case 1:
           {
-            x_offset=x;
-            y_offset=y-(ssize_t) (width-1);
+            quadrant[i].y=y-(ssize_t) (width-1);
             break;
           }
           case 2:
           {
-            x_offset=x-(ssize_t) (width-1);
-            y_offset=y;
+            quadrant[i].x=x-(ssize_t) (width-1);
             break;
           }
           case 3:
           default:
-          {
-            x_offset=x;
-            y_offset=y;
             break;
-          }
         }
-        p[i]=GetCacheViewVirtualPixels(image_view[i],x_offset,y_offset,
-          width,width,exception);
+        p[i]=GetCacheViewVirtualPixels(image_view[i],quadrant[i].x,
+          quadrant[i].y,quadrant[i].width,quadrant[i].height,exception);
         if (p[i] == (const Quantum *) NULL)
           break;
       }
@@ -1571,8 +1568,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           break;
         }
       min_variance=MagickMaximumValue;
-      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-        pixel[j]=0.0;
+      l=0;
       for (i=0; i < 4; i++)
       {
         const Quantum
@@ -1611,12 +1607,12 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         if (variance < min_variance)
           {
             min_variance=variance;
-            for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-              pixel[j]=mean[j];
+            l=i;
           }
       }
-      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-        q[j]=ClampToQuantum(pixel[j]);
+      status=InterpolatePixelChannels(gaussian_image,image_view[l],
+        kuwahara_image,UndefinedInterpolatePixel,((double) width-1.0)/2.0,
+        ((double) width-1.0)/2.0,q,exception);
       q+=GetPixelChannels(kuwahara_image);
     }
     if (SyncCacheViewAuthenticPixels(kuwahara_view,exception) == MagickFalse)
