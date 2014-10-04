@@ -45,6 +45,8 @@ typedef struct _ChannelStatistics
     skewness;
 } ChannelStatistics;
 
+#undef I
+
 typedef struct _ChannelMoments
 {
   double
