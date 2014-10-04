@@ -1635,35 +1635,35 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     /*
       Compute Hu invariant moments.
     */
-    channel_moments[channel].I[0]=M20[channel]+M02[channel];
-    channel_moments[channel].I[1]=(M20[channel]-M02[channel])*
+    channel_moments[channel].invariant[0]=M20[channel]+M02[channel];
+    channel_moments[channel].invariant[1]=(M20[channel]-M02[channel])*
       (M20[channel]-M02[channel])+4.0*M11[channel]*M11[channel];
-    channel_moments[channel].I[2]=(M30[channel]-3.0*M12[channel])*
+    channel_moments[channel].invariant[2]=(M30[channel]-3.0*M12[channel])*
       (M30[channel]-3.0*M12[channel])+(3.0*M21[channel]-M03[channel])*
       (3.0*M21[channel]-M03[channel]);
-    channel_moments[channel].I[3]=(M30[channel]+M12[channel])*
+    channel_moments[channel].invariant[3]=(M30[channel]+M12[channel])*
       (M30[channel]+M12[channel])+(M21[channel]+M03[channel])*
       (M21[channel]+M03[channel]);
-    channel_moments[channel].I[4]=(M30[channel]-3.0*M12[channel])*
+    channel_moments[channel].invariant[4]=(M30[channel]-3.0*M12[channel])*
       (M30[channel]+M12[channel])*((M30[channel]+M12[channel])*
       (M30[channel]+M12[channel])-3.0*(M21[channel]+M03[channel])*
       (M21[channel]+M03[channel]))+(3.0*M21[channel]-M03[channel])*
       (M21[channel]+M03[channel])*(3.0*(M30[channel]+M12[channel])*
       (M30[channel]+M12[channel])-(M21[channel]+M03[channel])*
       (M21[channel]+M03[channel]));
-    channel_moments[channel].I[5]=(M20[channel]-M02[channel])*
+    channel_moments[channel].invariant[5]=(M20[channel]-M02[channel])*
       ((M30[channel]+M12[channel])*(M30[channel]+M12[channel])-
       (M21[channel]+M03[channel])*(M21[channel]+M03[channel]))+
       4.0*M11[channel]*(M30[channel]+M12[channel])*(M21[channel]+M03[channel]);
-    channel_moments[channel].I[6]=(3.0*M21[channel]-M03[channel])*
+    channel_moments[channel].invariant[6]=(3.0*M21[channel]-M03[channel])*
       (M30[channel]+M12[channel])*((M30[channel]+M12[channel])*
       (M30[channel]+M12[channel])-3.0*(M21[channel]+M03[channel])*
       (M21[channel]+M03[channel]))-(M30[channel]-3*M12[channel])*
       (M21[channel]+M03[channel])*(3.0*(M30[channel]+M12[channel])*
       (M30[channel]+M12[channel])-(M21[channel]+M03[channel])*
       (M21[channel]+M03[channel]));
-    channel_moments[channel].I[7]=M11[channel]*((M30[channel]+M12[channel])*
-      (M30[channel]+M12[channel])-(M03[channel]+M21[channel])*
+    channel_moments[channel].invariant[7]=M11[channel]*((M30[channel]+
+      M12[channel])*(M30[channel]+M12[channel])-(M03[channel]+M21[channel])*
       (M03[channel]+M21[channel]))-(M20[channel]-M02[channel])*
       (M30[channel]+M12[channel])*(M03[channel]+M21[channel]);
   }
@@ -1750,7 +1750,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(
   for (channel=0; channel <= MaxPixelChannels; channel++)
     for (i=0; i < MaximumNumberOfImageMoments; i++)
       perceptual_hash[channel].srgb_hu_phash[i]=
-        (-MagickLog10(moments[channel].I[i]));
+        (-MagickLog10(moments[channel].invariant[i]));
   moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   /*
     Blur then transform to HCLp colorspace.
@@ -1781,7 +1781,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(
   for (channel=0; channel <= MaxPixelChannels; channel++)
     for (i=0; i < MaximumNumberOfImageMoments; i++)
       perceptual_hash[channel].hclp_hu_phash[i]=
-        (-MagickLog10(moments[channel].I[i]));
+        (-MagickLog10(moments[channel].invariant[i]));
   moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   return(perceptual_hash);
 }
