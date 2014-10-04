@@ -553,7 +553,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
     *pheight = imsy;
     *ncolors = max_color_index + 1;
     *palette = (unsigned char *) AcquireQuantumMemory(*ncolors,4);
-    for (n = 0; n < *ncolors; ++n) {
+    for (n = 0; n < (ssize_t) *ncolors; ++n) {
         (*palette)[n * 4 + 0] = sixel_palet[n] >> 16 & 0xff;
         (*palette)[n * 4 + 1] = sixel_palet[n] >> 8 & 0xff;
         (*palette)[n * 4 + 2] = sixel_palet[n] & 0xff;
@@ -1057,7 +1057,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       sixel_palette=(unsigned char *) RelinquishMagickMemory(sixel_palette);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (i = 0; i < image->colors; ++i) {
+  for (i = 0; i < (ssize_t) image->colors; ++i) {
     image->colormap[i].red   = ScaleCharToQuantum(sixel_palette[i * 4 + 0]);
     image->colormap[i].green = ScaleCharToQuantum(sixel_palette[i * 4 + 1]);
     image->colormap[i].blue  = ScaleCharToQuantum(sixel_palette[i * 4 + 2]);
