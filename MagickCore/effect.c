@@ -1460,7 +1460,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
     y;
 
   /*
-    Initialize kuwahara image attributes.
+    Initialize Kuwahara image attributes.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1468,7 +1468,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=(size_t) radius+1;
+  width=(size_t) (radius/2.0)+1;
   gaussian_image=BlurImage(image,(double) width,sigma,exception);
   if (gaussian_image == (Image *) NULL)
     return((Image *) NULL);
