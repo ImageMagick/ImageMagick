@@ -2208,10 +2208,10 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
 %
 %  The format of the KuwaharaImage method is:
 %
-%      Image *KuwaharaImage(const Image *image,const double radius,
+%      Image *KuwaharaImage(const Image *image,const double width,
 %        const double sigma,ExceptionInfo *exception)
 %      Image *KuwaharaImageChannel(const Image *image,const ChannelType channel,
-%        const double radius,const double sigma,ExceptionInfo *exception)
+%        const double width,const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2219,8 +2219,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
 %
 %    o channel: the channel type.
 %
-%    o radius: the radius of the Gaussian, in pixels, not counting the center
-%      pixel.
+%    o width: the square window width.
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
@@ -2228,19 +2227,19 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
 %
 */
 
-MagickExport Image *KuwaharaImage(const Image *image,const double radius,
+MagickExport Image *KuwaharaImage(const Image *image,const double width,
   const double sigma,ExceptionInfo *exception)
 {
   Image
     *kuwahara_image;
 
-  kuwahara_image=KuwaharaImageChannel(image,DefaultChannels,radius,sigma,
+  kuwahara_image=KuwaharaImageChannel(image,DefaultChannels,width,sigma,
     exception);
   return(kuwahara_image);
 }
 
 MagickExport Image *KuwaharaImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
+  const ChannelType channel,const double width,const double sigma,
   ExceptionInfo *exception)
 {
 #define KiwaharaImageTag  "Kiwahara/Image"
@@ -2248,6 +2247,9 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   CacheView
     *image_view[4],
     *kuwahara_view;
+
+  double
+    radius;
 
   Image
     *gaussian_image,
@@ -2262,14 +2264,11 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   register ssize_t
     i;
 
-  size_t
-    width;
-
   ssize_t
     y;
 
   /*
-    Initialize Kuwahara image attributes.
+    Initialize kuwahara image attributes.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2277,8 +2276,8 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=(size_t) (radius/2.0)+1;
-  gaussian_image=BlurImage(image,(double) width,sigma,exception);
+  radius=(double) (width-1.0)/2.0;
+  gaussian_image=BlurImage(image,radius,sigma,exception);
   if (gaussian_image == (Image *) NULL)
     return((Image *) NULL);
   kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
@@ -2303,7 +2302,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   for (i=0; i < 4; i++)
     image_view[i]=AcquireVirtualCacheView(gaussian_image,exception);
   kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MMAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     magick_threads(image,kuwahara_image,kuwahara_image->rows,1)
 #endif
@@ -2351,27 +2350,27 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 
       for (i=0; i < 4; i++)
       {
-        quadrant[i].width=width;
-        quadrant[i].height=width;
+        quadrant[i].width=(size_t) radius;
+        quadrant[i].height=(size_t) radius;
         quadrant[i].x=x;
         quadrant[i].y=y;
         switch (i)
         {
           case 0:
           {
-            quadrant[i].x=x-(ssize_t) (width-1);
-            quadrant[i].y=y-(ssize_t) (width-1);
+            quadrant[i].x=x-(ssize_t) (radius-1.0);
+            quadrant[i].y=y-(ssize_t) (radius-1.0);
             break;
           }
           case 1:
           {
             quadrant[i].x=x;
-            quadrant[i].y=y-(ssize_t) (width-1);
+            quadrant[i].y=y-(ssize_t) (radius-1.0);
             break;
           }
           case 2:
           {
-            quadrant[i].x=x-(ssize_t) (width-1);
+            quadrant[i].x=x-(ssize_t) (radius-1.0);
             quadrant[i].y=y;
             break;
           }
@@ -2405,7 +2404,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           z;
 
         GetMagickPixelPacket(image,&mean);
-        for (z=0; z < (ssize_t) (width*width); z++)
+        for (z=0; z < (ssize_t) (radius*radius); z++)
         {
           mean.red+=(double) p[i][z].red;
           mean.green+=(double) p[i][z].green;
@@ -2416,13 +2415,13 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             mean.index+=(double) indexes[i][z];
         }
-        mean.red/=(double) (width*width);
-        mean.green/=(double) (width*width);
-        mean.blue/=(double) (width*width);
-        mean.opacity/=(double) (width*width);
-        mean.index/=(double) (width*width);
+        mean.red/=(double) (radius*radius);
+        mean.green/=(double) (radius*radius);
+        mean.blue/=(double) (radius*radius);
+        mean.opacity/=(double) (radius*radius);
+        mean.index/=(double) (radius*radius);
         variance=0.0;
-        for (z=0; z < (ssize_t) (width*width); z++)
+        for (z=0; z < (ssize_t) (radius*radius); z++)
         {
           double
             luma;
