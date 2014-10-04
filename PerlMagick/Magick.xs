@@ -10963,16 +10963,6 @@ Mogrify(ref,...)
             geometry_info.sigma,exception);
           break;
         }
-        case 7:  /* Chop */
-        {
-          if (attribute_flag[5] != 0)
-            image->gravity=(GravityType) argument_list[5].integer_reference;
-          if (attribute_flag[0] != 0)
-            flags=ParseGravityGeometry(image,argument_list[0].string_reference,
-              &geometry,exception);
-          if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
-          if (attribute_flag[2] != 0)
       }
       if (next != (Image *) NULL)
         (void) CatchImageException(next);
