@@ -2561,7 +2561,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & (RhoValue|SigmaValue)) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
-            geometry_info.sigma=1.0;
+            geometry_info.sigma=geometry_info.rho-0.5;
           new_image=KuwaharaImage(_image,geometry_info.rho,geometry_info.sigma,
            _exception);
           break;
