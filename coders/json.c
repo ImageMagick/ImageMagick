@@ -414,7 +414,7 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
     GetMagickPrecision(),channel_moments[channel].ellipse_intensity);
   for (i=0; i < 8; i++)
     n+=FormatLocaleFile(file,"      I%.20g: %.*g\n",i+1.0,GetMagickPrecision(),
-      channel_moments[channel].I[i]);
+      channel_moments[channel].invariant[i]);
   return(n);
 }
 

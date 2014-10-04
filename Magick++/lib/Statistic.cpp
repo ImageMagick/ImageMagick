@@ -113,7 +113,7 @@ Magick::ChannelMoments::ChannelMoments(const PixelChannel channel_,
     i;
 
   for (i=0; i<8; i++)
-    _huInvariants.push_back(channelMoments_->I[i]);
+    _huInvariants.push_back(channelMoments_->invariant[i]);
 }
 
 Magick::ChannelPerceptualHash::ChannelPerceptualHash(void)

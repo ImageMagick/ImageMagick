@@ -47,7 +47,7 @@ typedef struct _ChannelStatistics
 typedef struct _ChannelMoments
 {
   double
-    I[MaximumNumberOfImageMoments+1];
+     invariant[MaximumNumberOfImageMoments+1];
 
   PointInfo
     centroid,
