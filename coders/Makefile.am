@@ -171,6 +171,7 @@ MAGICK_CODER_SRCS = \
 	coders/sct.c \
 	coders/sfw.c \
 	coders/sgi.c \
+	coders/sixel.c \
 	coders/stegano.c \
 	coders/sun.c \
 	coders/svg.c \
@@ -295,6 +296,7 @@ coders_LTLIBRARIES = \
 	coders/sct.la \
 	coders/sfw.la \
 	coders/sgi.la \
+	coders/sixel.la \
 	coders/stegano.la \
 	coders/sun.la \
 	coders/svg.la \
@@ -877,6 +879,12 @@ coders_rle_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_rle_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_rle_la_LIBADD       = $(MAGICKCORE_LIBS)
 
+# SCR coder module
+coders_scr_la_SOURCES      = coders/scr.c
+coders_scr_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_scr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_scr_la_LIBADD       = $(MAGICKCORE_LIBS)
+
 # SCT coder module
 coders_sct_la_SOURCES      = coders/sct.c
 coders_sct_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
@@ -907,11 +915,11 @@ coders_sun_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_sun_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_sun_la_LIBADD       = $(MAGICKCORE_LIBS)
 
-# SCR coder module
-coders_scr_la_SOURCES      = coders/scr.c
-coders_scr_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
-coders_scr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_scr_la_LIBADD       = $(MAGICKCORE_LIBS)
+# SIXEL coder module
+coders_sixel_la_SOURCES      = coders/sixel.c
+coders_sixel_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_sixel_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_sixel_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # SVG coder module
 coders_svg_la_SOURCES      = coders/svg.c
