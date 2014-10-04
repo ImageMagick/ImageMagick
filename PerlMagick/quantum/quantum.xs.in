@@ -10951,7 +10951,7 @@ Mogrify(ref,...)
               flags=ParseGeometry(argument_list[0].string_reference,
                 &geometry_info);
               if ((flags & SigmaValue) == 0)
-                geometry_info.sigma=1.0;
+                geometry_info.sigma=geometry_info.rho-0.5;
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].real_reference;
