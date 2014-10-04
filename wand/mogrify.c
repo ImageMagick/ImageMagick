@@ -1916,7 +1916,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
-              geometry_info.sigma=1.0;
+              geometry_info.sigma=geometry_info.rho-0.5;
             mogrify_image=KuwaharaImageChannel(*image,channel,geometry_info.rho,
               geometry_info.sigma,exception);
             break;
