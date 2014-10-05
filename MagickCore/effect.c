@@ -1405,14 +1405,14 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 %
 %  The format of the KuwaharaImage method is:
 %
-%      Image *KuwaharaImage(const Image *image,const double width,
+%      Image *KuwaharaImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o width: the square window width.
+%    o radius: the square window radius.
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
@@ -1430,7 +1430,7 @@ static inline MagickRealType GetMeanLuma(const Image *restrict image,
     0.072186f*pixel[image->channel_map[BluePixelChannel].offset]);  /* Rec709 */
 }
 
-MagickExport Image *KuwaharaImage(const Image *image,const double width,
+MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
 #define KuwaharaImageTag  "Kuwahara/Image"
@@ -1453,7 +1453,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double width,
     i;
 
   size_t
-    radius;
+    width;
 
   ssize_t
     y;
@@ -1467,8 +1467,8 @@ MagickExport Image *KuwaharaImage(const Image *image,const double width,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  radius=(size_t) width/2;
-  gaussian_image=BlurImage(image,(double) radius,sigma,exception);
+  width=(size_t) radius+1;
+  gaussian_image=BlurImage(image,radius,sigma,exception);
   if (gaussian_image == (Image *) NULL)
     return((Image *) NULL);
   kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
@@ -1530,26 +1530,26 @@ MagickExport Image *KuwaharaImage(const Image *image,const double width,
 
       for (i=0; i < 4; i++)
       {
-        quadrant[i].width=radius;
-        quadrant[i].height=radius;
+        quadrant[i].width=width;
+        quadrant[i].height=width;
         quadrant[i].x=x;
         quadrant[i].y=y;
         switch (i)
         {
           case 0:
           {
-            quadrant[i].x=x-(ssize_t) (radius-1);
-            quadrant[i].y=y-(ssize_t) (radius-1);
+            quadrant[i].x=x-(ssize_t) (width-1);
+            quadrant[i].y=y-(ssize_t) (width-1);
             break;
           }
           case 1:
           {
-            quadrant[i].y=y-(ssize_t) (radius-1);
+            quadrant[i].y=y-(ssize_t) (width-1);
             break;
           }
           case 2:
           {
-            quadrant[i].x=x-(ssize_t) (radius-1);
+            quadrant[i].x=x-(ssize_t) (width-1);
             break;
           }
           case 3:
@@ -1583,17 +1583,17 @@ MagickExport Image *KuwaharaImage(const Image *image,const double width,
         for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
           mean[j]=0.0;
         k=p[i];
-        for (z=0; z < (ssize_t) (radius*radius); z++)
+        for (z=0; z < (ssize_t) (width*width); z++)
         {
           for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
             mean[j]+=(double) k[j];
           k+=GetPixelChannels(image);
         }
         for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-          mean[j]/=(double) (radius*radius);
+          mean[j]/=(double) (width*width);
         k=p[i];
         variance=0.0;
-        for (z=0; z < (ssize_t) (radius*radius); z++)
+        for (z=0; z < (ssize_t) (width*width); z++)
         {
           double
             luma;
