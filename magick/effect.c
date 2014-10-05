@@ -2426,7 +2426,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           double
             luma;
 
-          luma=GetPixelLuma(image,p[i]+z);
+          luma=GetPixelLuma(gaussian_image,p[i]+z);
           variance+=(luma-MagickPixelLuma(&mean))*(luma-MagickPixelLuma(&mean));
         }
         if (variance < min_variance)

@@ -2133,7 +2133,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
     *p;
 
   *beta=0.0;
-  if (exception->severity != UndefinedException)
+  if (exception->severity >= ErrorException)
     return(0.0);
   while (isspace((int) ((unsigned char) *expression)) != 0)
     expression++;
@@ -2177,9 +2177,8 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
           if (*beta == 0.0)
             {
-              if (exception->severity == UndefinedException)
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  OptionError,"DivideByZero","`%s'",expression);
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"DivideByZero","`%s'",expression);
               return(0.0);
             }
           return(alpha/(*beta));
