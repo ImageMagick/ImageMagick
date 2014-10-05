@@ -2364,14 +2364,12 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           }
           case 1:
           {
-            quadrant[i].x=x;
             quadrant[i].y=y-(ssize_t) (width-1);
             break;
           }
           case 2:
           {
             quadrant[i].x=x-(ssize_t) (width-1);
-            quadrant[i].y=y;
             break;
           }
           case 3:
