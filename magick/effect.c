@@ -2399,19 +2399,19 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           mean;
 
         ssize_t
-          z;
+          n;
 
         GetMagickPixelPacket(image,&mean);
-        for (z=0; z < (ssize_t) (width*width); z++)
+        for (n=0; n < (ssize_t) (width*width); n++)
         {
-          mean.red+=(double) p[i][z].red;
-          mean.green+=(double) p[i][z].green;
-          mean.blue+=(double) p[i][z].blue;
+          mean.red+=(double) p[i][n].red;
+          mean.green+=(double) p[i][n].green;
+          mean.blue+=(double) p[i][n].blue;
           if ((channel & OpacityChannel) != 0)
-            mean.opacity+=(double) p[i][z].opacity;
+            mean.opacity+=(double) p[i][n].opacity;
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            mean.index+=(double) indexes[i][z];
+            mean.index+=(double) indexes[i][n];
         }
         mean.red/=(double) (width*width);
         mean.green/=(double) (width*width);
@@ -2419,12 +2419,12 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         mean.opacity/=(double) (width*width);
         mean.index/=(double) (width*width);
         variance=0.0;
-        for (z=0; z < (ssize_t) (width*width); z++)
+        for (n=0; n < (ssize_t) (width*width); n++)
         {
           double
             luma;
 
-          luma=GetPixelLuma(gaussian_image,p[i]+z);
+          luma=GetPixelLuma(gaussian_image,p[i]+n);
           variance+=(luma-MagickPixelLuma(&mean))*(luma-MagickPixelLuma(&mean));
         }
         if (variance < min_variance)
