@@ -1771,32 +1771,30 @@ static inline unsigned short ReadProfileShort(const EndianType endian,
   return((unsigned short) (value & 0xffff));
 }
 
-static inline size_t ReadProfileLong(const EndianType endian,
+static inline unsigned int ReadProfileLong(const EndianType endian,
   unsigned char *buffer)
 {
-  size_t
+  unsigned int
     value;
 
   if (endian == LSBEndian)
     {
-      value=(size_t) ((buffer[3] << 24) | (buffer[2] << 16) |
+      value=(unsigned int) ((buffer[3] << 24) | (buffer[2] << 16) |
         (buffer[1] << 8 ) | (buffer[0]));
-      return((size_t) (value & 0xffffffff));
+      return((unsigned int) (value & 0xffffffff));
     }
-  value=(size_t) ((buffer[0] << 24) | (buffer[1] << 16) |
+  value=(unsigned int) ((buffer[0] << 24) | (buffer[1] << 16) |
     (buffer[2] << 8) | buffer[3]);
-  return((size_t) (value & 0xffffffff));
+  return((unsigned int) (value & 0xffffffff));
 }
 
-static inline size_t ReadProfileMSBLong(unsigned char **p,
-  size_t *length)
+static inline unsigned int ReadProfileMSBLong(unsigned char **p,size_t *length)
 {
-  size_t
+  unsigned int
     value;
 
   if (*length < 4)
     return(0);
-
   value=ReadProfileLong(MSBEndian,*p);
   (*length)-=4;
   *p+=4;
@@ -1811,7 +1809,6 @@ static inline unsigned short ReadProfileMSBShort(unsigned char **p,
 
   if (*length < 2)
     return(0);
-
   value=ReadProfileShort(MSBEndian,*p);
   (*length)-=2;
   *p+=2;
@@ -1861,8 +1858,10 @@ static void WriteProfileShort(const EndianType endian,
 static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
 {
   size_t
-    count,
     length;
+
+  ssize_t
+    count;
 
   unsigned char
     *p;
@@ -1872,7 +1871,7 @@ static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
 
   length=GetStringInfoLength(profile);
   p=GetStringInfoDatum(profile);
-  while(length != 0)
+  while (length != 0)
   {
     if (ReadProfileByte(&p,&length) != 0x38)
       continue;
@@ -1885,16 +1884,16 @@ static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
     if (length < 7)
       return(MagickFalse);
     id=ReadProfileMSBShort(&p,&length);
-    count=ReadProfileByte(&p,&length);
+    count=(ssize_t) ReadProfileByte(&p,&length);
     if (count > length)
       return(MagickFalse);
     p+=count;
     if ((*p & 0x01) == 0)
-      p++;
-    count=ReadProfileMSBLong(&p,&length);
+      (void) ReadProfileByte(&p,&length);
+    count=(ssize_t) ReadProfileMSBLong(&p,&length);
     if (count > length)
       return(MagickFalse);
-    if (id == 0x3ED && count == 16)
+    if ((id == 0x3ED) && (count == 16))
       {
         if (image->units == PixelsPerCentimeterResolution)
           WriteProfileLong(MSBEndian, (unsigned int) (image->resolution.x*2.54*
