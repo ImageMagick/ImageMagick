@@ -2219,7 +2219,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
 %
 %    o channel: the channel type.
 %
-%    o width: the square window width.
+%    o radius: the square window radius.
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
@@ -2227,19 +2227,19 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
 %
 */
 
-MagickExport Image *KuwaharaImage(const Image *image,const double width,
+MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   Image
     *kuwahara_image;
 
-  kuwahara_image=KuwaharaImageChannel(image,DefaultChannels,width,sigma,
+  kuwahara_image=KuwaharaImageChannel(image,DefaultChannels,radius,sigma,
     exception);
   return(kuwahara_image);
 }
 
 MagickExport Image *KuwaharaImageChannel(const Image *image,
-  const ChannelType channel,const double width,const double sigma,
+  const ChannelType channel,const double radius,const double sigma,
   ExceptionInfo *exception)
 {
 #define KuwaharaImageTag  "Kiwahara/Image"
@@ -2262,13 +2262,13 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
     i;
 
   size_t
-    radius;
+    width;
 
   ssize_t
     y;
 
   /*
-    Initialize kuwahara image attributes.
+    Initialize Kuwahara image attributes.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2276,8 +2276,8 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  radius=(ssize_t) width/2;
-  gaussian_image=BlurImage(image,(double) radius,sigma,exception);
+  width=(size_t) radius+1;
+  gaussian_image=BlurImage(image,radius,sigma,exception);
   if (gaussian_image == (Image *) NULL)
     return((Image *) NULL);
   kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
@@ -2350,27 +2350,27 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 
       for (i=0; i < 4; i++)
       {
-        quadrant[i].width=radius;
-        quadrant[i].height=radius;
+        quadrant[i].width=width;
+        quadrant[i].height=width;
         quadrant[i].x=x;
         quadrant[i].y=y;
         switch (i)
         {
           case 0:
           {
-            quadrant[i].x=x-(ssize_t) (radius-1);
-            quadrant[i].y=y-(ssize_t) (radius-1);
+            quadrant[i].x=x-(ssize_t) (width-1);
+            quadrant[i].y=y-(ssize_t) (width-1);
             break;
           }
           case 1:
           {
             quadrant[i].x=x;
-            quadrant[i].y=y-(ssize_t) (radius-1);
+            quadrant[i].y=y-(ssize_t) (width-1);
             break;
           }
           case 2:
           {
-            quadrant[i].x=x-(ssize_t) (radius-1);
+            quadrant[i].x=x-(ssize_t) (width-1);
             quadrant[i].y=y;
             break;
           }
@@ -2404,7 +2404,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           z;
 
         GetMagickPixelPacket(image,&mean);
-        for (z=0; z < (ssize_t) (radius*radius); z++)
+        for (z=0; z < (ssize_t) (width*width); z++)
         {
           mean.red+=(double) p[i][z].red;
           mean.green+=(double) p[i][z].green;
@@ -2415,13 +2415,13 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             mean.index+=(double) indexes[i][z];
         }
-        mean.red/=(double) (radius*radius);
-        mean.green/=(double) (radius*radius);
-        mean.blue/=(double) (radius*radius);
-        mean.opacity/=(double) (radius*radius);
-        mean.index/=(double) (radius*radius);
+        mean.red/=(double) (width*width);
+        mean.green/=(double) (width*width);
+        mean.blue/=(double) (width*width);
+        mean.opacity/=(double) (width*width);
+        mean.index/=(double) (width*width);
         variance=0.0;
-        for (z=0; z < (ssize_t) (radius*radius); z++)
+        for (z=0; z < (ssize_t) (width*width); z++)
         {
           double
             luma;
