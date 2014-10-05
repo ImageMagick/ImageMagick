@@ -1885,13 +1885,13 @@ static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
       return(MagickFalse);
     id=ReadProfileMSBShort(&p,&length);
     count=(ssize_t) ReadProfileByte(&p,&length);
-    if (count > length)
+    if (count > (ssize_t) length)
       return(MagickFalse);
     p+=count;
     if ((*p & 0x01) == 0)
       (void) ReadProfileByte(&p,&length);
     count=(ssize_t) ReadProfileMSBLong(&p,&length);
-    if (count > length)
+    if (count > (ssize_t) length)
       return(MagickFalse);
     if ((id == 0x3ED) && (count == 16))
       {
