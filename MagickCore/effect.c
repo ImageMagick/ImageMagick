@@ -1439,9 +1439,6 @@ MagickExport Image *KuwaharaImage(const Image *image,const double width,
     *image_view[4],
     *kuwahara_view;
 
-  double
-    radius;
-
   Image
     *gaussian_image,
     *kuwahara_image;
@@ -1455,6 +1452,9 @@ MagickExport Image *KuwaharaImage(const Image *image,const double width,
   register ssize_t
     i;
 
+  size_t
+    radius;
+
   ssize_t
     y;
 
@@ -1467,8 +1467,8 @@ MagickExport Image *KuwaharaImage(const Image *image,const double width,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  radius=(double) (width-1.0)/2.0;
-  gaussian_image=BlurImage(image,radius,sigma,exception);
+  radius=(size_t) width/2;
+  gaussian_image=BlurImage(image,(double) radius,sigma,exception);
   if (gaussian_image == (Image *) NULL)
     return((Image *) NULL);
   kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
@@ -1530,26 +1530,26 @@ MagickExport Image *KuwaharaImage(const Image *image,const double width,
 
       for (i=0; i < 4; i++)
       {
-        quadrant[i].width=(size_t) radius;
-        quadrant[i].height=(size_t) radius;
+        quadrant[i].width=radius;
+        quadrant[i].height=radius;
         quadrant[i].x=x;
         quadrant[i].y=y;
         switch (i)
         {
           case 0:
           {
-            quadrant[i].x=x-(ssize_t) (radius-1.0);
-            quadrant[i].y=y-(ssize_t) (radius-1.0);
+            quadrant[i].x=x-(ssize_t) (radius-1);
+            quadrant[i].y=y-(ssize_t) (radius-1);
             break;
           }
           case 1:
           {
-            quadrant[i].y=y-(ssize_t) (radius-1.0);
+            quadrant[i].y=y-(ssize_t) (radius-1);
             break;
           }
           case 2:
           {
-            quadrant[i].x=x-(ssize_t) (radius-1.0);
+            quadrant[i].x=x-(ssize_t) (radius-1);
             break;
           }
           case 3:
