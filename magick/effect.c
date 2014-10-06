@@ -2356,7 +2356,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         register const PixelPacket
           *restrict k;
 
-        ssize_t
+        register ssize_t
           n;
 
         quadrant.x=x;
