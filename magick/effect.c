@@ -2245,6 +2245,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 #define KuwaharaImageTag  "Kiwahara/Image"
 
   CacheView
+    *gaussian_view,
     *image_view[4],
     *kuwahara_view;
 
@@ -2301,6 +2302,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   progress=0;
   for (i=0; i < 4; i++)
     image_view[i]=AcquireVirtualCacheView(gaussian_image,exception);
+  gaussian_view=AcquireVirtualCacheView(gaussian_image,exception);
   kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -2346,7 +2348,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         quadrant[4];
 
       ssize_t
-        k;
+        m;
 
       for (i=0; i < 4; i++)
       {
@@ -2388,10 +2390,16 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           break;
         }
       min_variance=MagickMaximumValue;
-      k=0;
+      m=0;
       (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
       for (i=0; i < 4; i++)
       {
+        const IndexPacket
+          *gaussian_indexes;
+
+        const PixelPacket
+          *k;
+
         double
           variance;
 
@@ -2402,16 +2410,19 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           n;
 
         GetMagickPixelPacket(image,&mean);
+        k=p[i];
+        gaussian_indexes=indexes[i];
         for (n=0; n < (ssize_t) (width*width); n++)
         {
-          mean.red+=(double) p[i][n].red;
-          mean.green+=(double) p[i][n].green;
-          mean.blue+=(double) p[i][n].blue;
+          mean.red+=(double) k->red;
+          mean.green+=(double) k->green;
+          mean.blue+=(double) k->blue;
           if ((channel & OpacityChannel) != 0)
-            mean.opacity+=(double) p[i][n].opacity;
+            mean.opacity+=(double) k->opacity;
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            mean.index+=(double) indexes[i][n];
+            mean.index+=(double) gaussian_indexes[n];
+          k++;
         }
         mean.red/=(double) (width*width);
         mean.green/=(double) (width*width);
@@ -2419,23 +2430,25 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         mean.opacity/=(double) (width*width);
         mean.index/=(double) (width*width);
         variance=0.0;
+        k=p[i];
         for (n=0; n < (ssize_t) (width*width); n++)
         {
           double
             luma;
 
-          luma=GetPixelLuma(gaussian_image,p[i]+n);
+          luma=GetPixelLuma(image,k);
           variance+=(luma-MagickPixelLuma(&mean))*(luma-MagickPixelLuma(&mean));
+          k++;
         }
         if (variance < min_variance)
           {
             min_variance=variance;
-            k=i;
+            m=i;
           }
       }
-      (void) InterpolateMagickPixelPacket(gaussian_image,image_view[0],
-        UndefinedInterpolatePixel,(double) quadrant[k].x+quadrant[k].width/2.0,
-        (double) quadrant[k].y+quadrant[k].height/2.0,&pixel,exception);
+      (void) InterpolateMagickPixelPacket(gaussian_image,gaussian_view,
+        UndefinedInterpolatePixel,(double) quadrant[m].x+quadrant[m].width/2.0,
+        (double) quadrant[m].y+quadrant[m].height/2.0,&pixel,exception);
       SetPixelPacket(kuwahara_image,&pixel,q,kuwahara_indexes+x);
       q++;
     }
@@ -2455,6 +2468,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       }
   }
   kuwahara_view=DestroyCacheView(kuwahara_view);
+  gaussian_view=DestroyCacheView(gaussian_view);
   for (i=0; i < 4; i++)
     image_view[i]=DestroyCacheView(image_view[i]);
   gaussian_image=DestroyImage(gaussian_image);
