@@ -2245,8 +2245,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 #define KuwaharaImageTag  "Kiwahara/Image"
 
   CacheView
-    *gaussian_view,
-    *image_view[4],
+    *image_view,
     *kuwahara_view;
 
   Image
@@ -2258,9 +2257,6 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 
   MagickOffsetType
     progress;
-
-  register ssize_t
-    i;
 
   size_t
     width;
@@ -2300,9 +2296,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  for (i=0; i < 4; i++)
-    image_view[i]=AcquireVirtualCacheView(gaussian_image,exception);
-  gaussian_view=AcquireVirtualCacheView(gaussian_image,exception);
+  image_view=AcquireVirtualCacheView(gaussian_image,exception);
   kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -2317,7 +2311,6 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       *restrict q;
 
     register ssize_t
-      i,
       x;
 
     if (status == MagickFalse)
@@ -2332,12 +2325,6 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
     kuwahara_indexes=GetCacheViewAuthenticIndexQueue(kuwahara_view);
     for (x=0; x < (ssize_t) kuwahara_image->columns; x++)
     {
-      const IndexPacket
-        *restrict indexes[4];
-
-      const PixelPacket
-        *restrict p[4];
-
       double
         min_variance;
 
@@ -2345,60 +2332,20 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         pixel;
 
       RectangleInfo
-        quadrant[4];
+        quadrant,
+        target;
 
-      ssize_t
-        m;
+      register ssize_t
+        i;
 
-      for (i=0; i < 4; i++)
-      {
-        quadrant[i].width=width;
-        quadrant[i].height=width;
-        quadrant[i].x=x;
-        quadrant[i].y=y;
-        switch (i)
-        {
-          case 0:
-          {
-            quadrant[i].x=x-(ssize_t) (width-1);
-            quadrant[i].y=y-(ssize_t) (width-1);
-            break;
-          }
-          case 1:
-          {
-            quadrant[i].y=y-(ssize_t) (width-1);
-            break;
-          }
-          case 2:
-          {
-            quadrant[i].x=x-(ssize_t) (width-1);
-            break;
-          }
-          case 3:
-          default:
-            break;
-        }
-        p[i]=GetCacheViewVirtualPixels(image_view[i],quadrant[i].x,
-          quadrant[i].y,quadrant[i].width,quadrant[i].height,exception);
-        if (p[i] == (const PixelPacket *) NULL)
-          break;
-        indexes[i]=GetCacheViewVirtualIndexQueue(image_view[i]);
-      }
-      if (i < 4)
-        {
-          status=MagickFalse;
-          break;
-        }
       min_variance=MagickMaximumValue;
-      m=0;
-      (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+      SetGeometry(gaussian_image,&target);
+      quadrant.width=width;
+      quadrant.height=width;
       for (i=0; i < 4; i++)
       {
-        const IndexPacket
-          *gaussian_indexes;
-
         const PixelPacket
-          *k;
+          *restrict p;
 
         double
           variance;
@@ -2406,31 +2353,53 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         MagickPixelPacket
           mean;
 
+        register const PixelPacket
+          *restrict k;
+
         ssize_t
           n;
 
+        quadrant.x=x;
+        quadrant.y=y;
+        switch (i)
+        {
+          case 0:
+          {
+            quadrant.x=x-(ssize_t) (width-1);
+            quadrant.y=y-(ssize_t) (width-1);
+            break;
+          }
+          case 1:
+          {
+            quadrant.y=y-(ssize_t) (width-1);
+            break;
+          }
+          case 2:
+          {
+            quadrant.x=x-(ssize_t) (width-1);
+            break;
+          }
+          default:
+            break;
+        }
+        p=GetCacheViewVirtualPixels(image_view,quadrant.x,quadrant.y,
+          quadrant.width,quadrant.height,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
         GetMagickPixelPacket(image,&mean);
-        k=p[i];
-        gaussian_indexes=indexes[i];
+        k=p;
         for (n=0; n < (ssize_t) (width*width); n++)
         {
           mean.red+=(double) k->red;
           mean.green+=(double) k->green;
           mean.blue+=(double) k->blue;
-          if ((channel & OpacityChannel) != 0)
-            mean.opacity+=(double) k->opacity;
-          if (((channel & IndexChannel) != 0) &&
-              (image->colorspace == CMYKColorspace))
-            mean.index+=(double) gaussian_indexes[n];
           k++;
         }
         mean.red/=(double) (width*width);
         mean.green/=(double) (width*width);
         mean.blue/=(double) (width*width);
-        mean.opacity/=(double) (width*width);
-        mean.index/=(double) (width*width);
+        k=p;
         variance=0.0;
-        k=p[i];
         for (n=0; n < (ssize_t) (width*width); n++)
         {
           double
@@ -2443,12 +2412,17 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
         if (variance < min_variance)
           {
             min_variance=variance;
-            m=i;
+            target=quadrant;
           }
       }
-      (void) InterpolateMagickPixelPacket(gaussian_image,gaussian_view,
-        UndefinedInterpolatePixel,(double) quadrant[m].x+quadrant[m].width/2.0,
-        (double) quadrant[m].y+quadrant[m].height/2.0,&pixel,exception);
+      if (i < 4)
+        {
+          status=MagickFalse;
+          break;
+        }
+      (void) InterpolateMagickPixelPacket(gaussian_image,image_view,
+        UndefinedInterpolatePixel,(double) target.x+target.width/2.0,
+        (double) target.y+target.height/2.0,&pixel,exception);
       SetPixelPacket(kuwahara_image,&pixel,q,kuwahara_indexes+x);
       q++;
     }
@@ -2468,9 +2442,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       }
   }
   kuwahara_view=DestroyCacheView(kuwahara_view);
-  gaussian_view=DestroyCacheView(gaussian_view);
-  for (i=0; i < 4; i++)
-    image_view[i]=DestroyCacheView(image_view[i]);
+  image_view=DestroyCacheView(image_view);
   gaussian_image=DestroyImage(gaussian_image);
   if (status == MagickFalse)
     kuwahara_image=DestroyImage(kuwahara_image);
