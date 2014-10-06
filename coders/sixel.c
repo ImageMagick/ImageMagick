@@ -1246,11 +1246,9 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,Image *imag
                 opacity=i;
                 continue;
               }
-            alpha=(Quantum) TransparentOpacity-(MagickRealType)
-              image->colormap[i].opacity;
-            beta=(Quantum) TransparentOpacity-(MagickRealType)
-              image->colormap[opacity].opacity;
-            if (alpha < beta)
+            alpha=image->colormap[i].opacity;
+            beta=image->colormap[opacity].opacity;
+            if (alpha > beta)
               opacity=i;
           }
       if (opacity == -1)
@@ -1264,11 +1262,9 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,Image *imag
                     opacity=i;
                     continue;
                   }
-                alpha=(Quantum) TransparentOpacity-(MagickRealType)
-                  image->colormap[i].opacity;
-                beta=(Quantum) TransparentOpacity-(MagickRealType)
-                  image->colormap[opacity].opacity;
-                if (alpha < beta)
+                alpha=image->colormap[i].opacity;
+                beta=image->colormap[opacity].opacity;
+                if (alpha > beta)
                   opacity=i;
               }
         }
