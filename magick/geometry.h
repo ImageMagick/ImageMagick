@@ -149,8 +149,8 @@ extern MagickExport MagickStatusType
     ExceptionInfo *);
 
 extern MagickExport void
-  GravityAdjustGeometry(const size_t,const size_t,
-    const GravityType,RectangleInfo *),
+  GravityAdjustGeometry(const size_t,const size_t,const GravityType,
+    RectangleInfo *),
   SetGeometry(const Image *,RectangleInfo *),
   SetGeometryInfo(GeometryInfo *);
 
