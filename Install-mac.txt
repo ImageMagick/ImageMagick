@@ -7,7 +7,7 @@ Mac OS X-specific Build instructions
   
     $magick> sudo port -v install freetype +bytecode
     $magick> sudo port -v install librsvg
-    $magick> sudo port -v install +graphviz +gs +wmf +jbig +jpeg2 +lcms
+    $magick> sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms
   
   This installs many of the delegate libraries ImageMagick will utilize such as
   JPEG and FreeType.
