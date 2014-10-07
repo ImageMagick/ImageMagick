@@ -206,6 +206,7 @@ static const CoderMapInfo
     { "ROSE", "MAGICK" },
     { "RW2", "DNG" },
     { "SHTML", "HTML" },
+    { "SIX", "SIXEL" },
     { "SPARSE-COLOR", "TXT" },
     { "SR2", "DNG" },
     { "SRF", "DNG" },
