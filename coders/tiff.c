@@ -902,7 +902,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     tiff_status;
 
   MagickBooleanType
-    associated_alpha,
     debug,
     status;
 
@@ -1272,11 +1271,11 @@ RestoreMSCWarning
       default:
         break;
     }
-    associated_alpha=MagickFalse;
     tiff_status=TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
       &sample_info);
     if (tiff_status == 1)
       {
+        (void) SetImageProperty(image,"tiff:alpha","unspecified",exception);
         if (extra_samples == 0)
           {
             if ((samples_per_pixel == 4) && (photometric == PHOTOMETRIC_RGB))
@@ -1287,17 +1286,16 @@ RestoreMSCWarning
           {
             image->alpha_trait=BlendPixelTrait;
             if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
-              SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
+              {
+                SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
+                (void) SetImageProperty(image,"tiff:alpha","associated",
+                  exception);
+              }
+            else if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
+              (void) SetImageProperty(image,"tiff:alpha","unassociated",
+                exception);
           }
       }
-    option=GetImageOption(image_info,"tiff:alpha");
-    if (option != (const char *) NULL)
-      associated_alpha=LocaleCompare(option,"associated") == 0 ? MagickTrue :
-        MagickFalse;
-    if (image->alpha_trait == BlendPixelTrait)
-      (void) SetImageProperty(image,"tiff:alpha",
-        associated_alpha != MagickFalse ? "associated" : "unassociated",
-        exception);
     if ((photometric == PHOTOMETRIC_PALETTE) &&
         (pow(2.0,1.0*bits_per_sample) <= MaxColormapSize))
       {
@@ -3161,9 +3159,13 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         extra_samples=1;
         sample_info[0]=EXTRASAMPLE_UNASSALPHA;
         option=GetImageOption(image_info,"tiff:alpha");
-        if ((option != (const char *) NULL) &&
-            (LocaleCompare(option,"associated") == 0))
-          sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
+        if (option != (const char *) NULL)
+          {
+            if (LocaleCompare(option,"associated") == 0)
+              sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
+            else if (LocaleCompare(option,"unspecified") == 0)
+              sample_info[0]=EXTRASAMPLE_UNSPECIFIED;
+          }
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
           &samples_per_pixel);
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
