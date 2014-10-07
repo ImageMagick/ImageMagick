@@ -15,7 +15,7 @@
 %                              Software Design                                %
 %                               Hayaki Saito                                  %
 %                              September 2014                                 %
-%                     Based on kmiya@culti's sixel decoder                    %
+%                    Based on kmiya's sixel (2014-03-28)                      %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization      %
@@ -106,7 +106,6 @@ typedef struct sixel_output {
      * 1: 8bit terminal */
     unsigned char has_8bit_control;
 
-    unsigned char conv_palette[256];
     int save_pixel;
     int save_count;
     int active_palette;
@@ -654,7 +653,7 @@ static int sixel_put_node(sixel_output_t *const context, int x,
         /* designate palette index */
         if (context->active_palette != np->color) {
             nwrite = sprintf((char *)context->buffer + context->pos,
-                             "#%d", context->conv_palette[np->color]);
+                             "#%d", np->color);
             sixel_advance(context, nwrite);
             context->active_palette = np->color;
         }
@@ -703,9 +702,6 @@ static MagickBooleanType sixel_encode_impl(unsigned char *pixels, int width,int 
         return (MagickFalse);
     }
     (void) ResetMagickMemory(map, 0, len);
-    for (n = 0; n < (ssize_t) ncolors; n++) {
-        context->conv_palette[n] = n;
-    }
 
     if (context->has_8bit_control) {
         nwrite = sprintf((char *)context->buffer, "\x90" "0;0;0" "q");
@@ -727,7 +723,7 @@ static MagickBooleanType sixel_encode_impl(unsigned char *pixels, int width,int 
         for (n = 0; n < ncolors; n++) {
             /* DECGCI Graphics Color Introducer  # Pc ; Pu; Px; Py; Pz */
             nwrite = sprintf((char *)context->buffer + context->pos, "#%d;2;%d;%d;%d",
-                             context->conv_palette[n],
+                             n,
                              (palette[n * 3 + 0] * 100 + 127) / 255,
                              (palette[n * 3 + 1] * 100 + 127) / 255,
                              (palette[n * 3 + 2] * 100 + 127) / 255);
