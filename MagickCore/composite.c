@@ -684,6 +684,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       */
       if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+      SetPixelAlphaTraits(image,CopyPixelTrait);
       break;
     }
     case BlurCompositeOp:
