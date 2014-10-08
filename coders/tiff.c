@@ -2326,6 +2326,9 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
 static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   Image *image)
 {
+  ExceptionInfo
+    *exception;
+
   Image
     *images,
     *next,
@@ -2347,11 +2350,11 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   /*
     Create pyramid-encoded TIFF image.
   */
+  exception=(&image->exception);
   images=NewImageList();
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    AppendImageToList(&images,CloneImage(next,0,0,MagickFalse,
-      &image->exception));
+    AppendImageToList(&images,CloneImage(next,0,0,MagickTrue,exception));
     columns=next->columns;
     rows=next->rows;
     resolution.x=next->x_resolution;
@@ -2363,7 +2366,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       resolution.x/=2.0;
       resolution.y/=2.0;
       pyramid_image=ResizeImage(next,columns,rows,image->filter,image->blur,
-        &image->exception);
+        exception);
       if (pyramid_image == (Image *) NULL)
         break;
       pyramid_image->x_resolution=resolution.x;
