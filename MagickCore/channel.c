@@ -1074,6 +1074,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case DeactivateAlphaChannel:
     {
+      if (image->alpha_trait == UndefinedPixelTrait)
+        status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=CopyPixelTrait;
       break;
     }
