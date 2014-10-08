@@ -3013,7 +3013,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     if ((double) pixels[i] > pixel)
                       pixel=(double) pixels[i];
-                    count++;
                   }
                 k--;
                 pixels+=GetPixelChannels(image);
