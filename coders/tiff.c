@@ -2354,7 +2354,13 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   images=NewImageList();
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    AppendImageToList(&images,CloneImage(next,0,0,MagickFalse,exception));
+    Image
+      *clone_image;
+
+    clone_image=CloneImage(next,0,0,MagickFalse,exception);
+    clone_image->previous=NewImageList();
+    clone_image->next=NewImageList();
+    AppendImageToList(&images,clone_image);
     columns=next->columns;
     rows=next->rows;
     resolution.x=next->x_resolution;
