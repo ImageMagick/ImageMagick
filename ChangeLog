@@ -6,6 +6,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=26324).
   * Reduce noise while preserving edges with the -kuwahara option.
   * Off-by-one count when parsing an 8BIM profile.
+  * Locale.c won't build if uselocale found but strtod_l isn't (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26362).
 
 2014-09-21  6.8.9-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-8, SVN revision 16502.
