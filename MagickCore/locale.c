@@ -357,7 +357,7 @@ MagickPrivate ssize_t FormatLocaleFileList(FILE *file,
 #endif
   }
 #else
-#if defined(MAGICKCORE_HAVE_USELOCALE)
+#if defined(MAGICKCORE_HAVE_USELOCALE) && defined(MAGICKCORE_HAVE_STRTOD_L)
   {
     locale_t
       locale,
@@ -448,7 +448,7 @@ MagickPrivate ssize_t FormatLocaleStringList(char *restrict string,
 #endif
   }
 #elif defined(MAGICKCORE_HAVE_VSNPRINTF)
-#if defined(MAGICKCORE_HAVE_USELOCALE)
+#if defined(MAGICKCORE_HAVE_USELOCALE) && defined(MAGICKCORE_HAVE_STRTOD_L)
   {
     locale_t
       locale,
