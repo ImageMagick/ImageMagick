@@ -886,30 +886,6 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   return(i != 0 ? MagickTrue : MagickFalse);
 }
 
-static char *SanitizeDelegateCommand(const char *command)
-{
-  char
-    *sanitize_command;
-
-  const char
-    *q;
-
-  register char
-    *p;
-
-  static char
-    whitelist[] =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
-      ".@&;<>|/\\\'\":%=~";
-
-  sanitize_command=AcquireString(command);
-  p=sanitize_command;
-  q=sanitize_command+strlen(sanitize_command);
-  for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
-    *p='_';
-  return(sanitize_command);
-}
-
 MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   Image *image,const char *decode,const char *encode,ExceptionInfo *exception)
 {
@@ -1111,16 +1087,11 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     command=InterpretImageProperties(image_info,image,commands[i]);
     if (command != (char *) NULL)
       {
-        char
-          *sanitize_command;
-
         /*
           Execute delegate.
         */
-        sanitize_command=SanitizeDelegateCommand(command);
         status=SystemCommand(delegate_info->spawn,image_info->verbose,
-          sanitize_command,exception) != 0 ? MagickTrue : MagickFalse;
-        sanitize_command=DestroyString(sanitize_command);        
+          command,exception) != 0 ? MagickTrue : MagickFalse;
         if (delegate_info->spawn != MagickFalse)
           {
             ssize_t
