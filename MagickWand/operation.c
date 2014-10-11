@@ -5010,7 +5010,7 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
 
     assert( LocaleCompare(cli_wand->command->mnemonic,option) == 0 );
 
-    /* depreciated options */
+    /* deprecated options */
     if ( (option_type & DeprecateOptionFlag) != 0 )
       CLIWandExceptionBreak(OptionError,"DeprecatedOptionNoCode",option);
 
