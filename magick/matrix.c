@@ -440,21 +440,21 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %
 %  The format of the GaussJordanElimination method is:
 %
-%      MagickBooleanType GaussJordanElimination(double **matrix,double **vectors,
-%        const size_t rank,const size_t number_vectors)
+%      MagickBooleanType GaussJordanElimination(double **matrix,
+%        double **vectors,const size_t rank,const size_t number_vectors)
 %
 %  A description of each parameter follows:
 %
 %    o matrix: the matrix to be reduced, as an 'array of row pointers'.
 %
 %    o vectors: the additional matrix argumenting the matrix for row reduction.
-%             Producing an 'array of column vectors'.
+%      Producing an 'array of column vectors'.
 %
-%    o rank:  The size of the matrix (both rows and columns).
-%             Also represents the number terms that need to be solved.
+%    o rank:  The size of the matrix (both rows and columns).  Also represents
+%      the number terms that need to be solved.
 %
 %    o number_vectors: Number of vectors columns, argumenting the above matrix.
-%             Usally 1, but can be more for more complex equation solving.
+%      Usually 1, but can be more for more complex equation solving.
 %
 %  Note that the 'matrix' is given as a 'array of row pointers' of rank size.
 %  That is values can be assigned as   matrix[row][column]   where 'row' is
@@ -476,20 +476,19 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %     ...
 %     GaussJordanElimination(matrix, &coefficents, 8UL, 1UL);
 %
-%  However by specifing more 'columns' (as an 'array of vector columns',
-%  you can use this function to solve a set of 'separable' equations.
+%  However by specifing more 'columns' (as an 'array of vector columns', you
+%  can use this function to solve a set of 'separable' equations.
 %
 %  For example a distortion function where    u = U(x,y)   v = V(x,y)
 %  And the functions U() and V() have separate coefficents, but are being
 %  generated from a common x,y->u,v  data set.
 %
-%  Another example is generation of a color gradient from a set of colors
-%  at specific coordients, such as a list    x,y -> r,g,b,a
-%  (Reference to be added - Anthony)
+%  Another example is generation of a color gradient from a set of colors at
+%  specific coordients, such as a list x,y -> r,g,b,a.
 %
 %  You can also use the 'vectors' to generate an inverse of the given 'matrix'
 %  though as a 'column first array' rather than a 'row first array'. For
-%  details see    http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
+%  details see  http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
 %
 */
 MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
