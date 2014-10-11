@@ -442,8 +442,8 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %
 %  The format of the GaussJordanElimination method is:
 %
-%      MagickBooleanType GaussJordanElimination(double **matrix,double **vectors,
-%        const size_t rank,const size_t number_vectors)
+%      MagickBooleanType GaussJordanElimination(double **matrix,
+%        double **vectors,const size_t rank,const size_t number_vectors)
 %
 %  A description of each parameter follows:
 %
@@ -485,13 +485,12 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %  And the functions U() and V() have separate coefficents, but are being
 %  generated from a common x,y->u,v  data set.
 %
-%  Another example is generation of a color gradient from a set of colors
-%  at specific coordients, such as a list    x,y -> r,g,b,a
-%  (Reference to be added - Anthony)
+%  Another example is generation of a color gradient from a set of colors at
+%  specific coordients, such as a list x,y -> r,g,b,a.
 %
 %  You can also use the 'vectors' to generate an inverse of the given 'matrix'
 %  though as a 'column first array' rather than a 'row first array'. For
-%  details see    http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
+%  details see http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
 %
 */
 MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
