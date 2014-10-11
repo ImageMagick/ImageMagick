@@ -2974,8 +2974,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) SetImageBackgroundColor(image);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
             cairo_surface=cairo_image_surface_create_for_data(pixels,
-              CAIRO_FORMAT_ARGB32,(int) image->columns,(int) image->rows,
-              4*(int) image->columns);
+              CAIRO_FORMAT_ARGB32,(int) image->columns,(int) image->rows, (int)
+              stride);
             if (cairo_surface == (cairo_surface_t *) NULL)
               {
                 pixel_info=RelinquishVirtualMemory(pixel_info);
