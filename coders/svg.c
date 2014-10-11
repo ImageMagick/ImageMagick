@@ -2954,10 +2954,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (image_info->ping == MagickFalse)
           {
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
             size_t
               stride;
 
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
             stride=4*image->columns;
 #if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
             stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
