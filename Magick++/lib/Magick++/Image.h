@@ -1022,6 +1022,9 @@ namespace Magick
     void inverseFourierTransform(const Image &phase_);
     void inverseFourierTransform(const Image &phase_,const bool magnitude_);
 
+    // An edge preserving noise reduction filter.
+    void kuwahara(const double radius=0.0,const double sigma=1.0);
+
     // Level image. Adjust the levels of the image by scaling the
     // colors falling between specified white and black points to the
     // full available quantum range. The parameters provided represent

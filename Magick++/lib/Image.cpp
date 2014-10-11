@@ -3234,6 +3234,17 @@ void Magick::Image::inverseFourierTransform(const Image &phase_,
   ThrowPPException;
 }
 
+void Magick::Image::kuwahara(const double radius,const double sigma)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=KuwaharaImage(constImage(),radius,sigma,exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
 void Magick::Image::level(const double black_point,const double white_point,
   const double gamma)
 {
