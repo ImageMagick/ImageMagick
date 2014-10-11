@@ -31,7 +31,7 @@ extern "C" {
        "'%s' '%s'",option, arg)
 
 #define CLIWandWarnReplaced(message) \
-  if ( (cli_wand->process_flags & ProcessWarnDepreciated) != 0 ) \
+  if ( (cli_wand->process_flags & ProcessWarnDeprecated) != 0 ) \
     (void) CLIThrowException(cli_wand,GetMagickModule(),OptionWarning, \
        "ReplacedOption", "'%s', use \"%s\"",option,message)
 
@@ -70,7 +70,7 @@ typedef enum
   ProcessExitOption           = 0x0100,  /* allow '-exit' use */
   ProcessScriptOption         = 0x0200,  /* allow '-script' use */
   ProcessReadOption           = 0x0400,  /* allow '-read' use */
-  ProcessWarnDepreciated      = 0x0800,  /* warn about depreciated options */
+  ProcessWarnDeprecated       = 0x0800,  /* warn about deprecated options */
 
   /* Option Processing Flags */
   ProcessOneOptionOnly        = 0x4000,  /* Process one option only */
