@@ -244,7 +244,7 @@ static MagickBooleanType InvokePostscriptDelegate(
   if (status != 0)
     {
       SetArgsStart(command,args_start);
-      if (status == -101) // quit
+      if (status == -101) /* quit */
         (void) FormatLocaleString(output,MaxTextExtent,
           "[ghostscript library]%s: %s",args_start,errors);
       else
