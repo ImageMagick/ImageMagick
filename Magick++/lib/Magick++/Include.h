@@ -350,6 +350,7 @@ namespace Magick
   using MagickCore::YIQColorspace;
   using MagickCore::YPbPrColorspace;
   using MagickCore::YUVColorspace;
+  using MagickCore::xyYColorspace;
 
   // Command options
   using MagickCore::CommandOption;
