@@ -1100,7 +1100,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           Execute delegate.
         */
         status=IsMagickTrue(SystemCommand(delegate_info->spawn,
-          image_info->verbose,command,exception) != 0);
+          image_info->verbose,command,(char *) NULL,exception) != 0);
         if (IfMagickTrue(delegate_info->spawn))
           {
             ssize_t

@@ -2845,7 +2845,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             GetDelegateCommands(delegate_info),image->filename,filename,density,
             background,opacity,unique);
           status=SystemCommand(MagickFalse,image_info->verbose,command,
-            exception);
+            (char *) NULL,exception);
           (void) RelinquishUniqueFileResource(unique);
           if (status == 0)
             {

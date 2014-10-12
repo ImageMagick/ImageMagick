@@ -131,7 +131,7 @@ extern MagickPrivate int
   NTSetSearchPath(const char *),
   NTSyncMemory(void *,size_t,int),
   NTUnmapMemory(void *,size_t),
-  NTSystemCommand(const char *);
+  NTSystemCommand(const char *,char *);
 
 extern MagickPrivate ssize_t
   NTSystemConfiguration(int),

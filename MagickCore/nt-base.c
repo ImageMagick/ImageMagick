@@ -2133,13 +2133,36 @@ MagickPrivate int NTSyncMemory(void *address,size_t length,int flags)
 %    o command: This string is the command to execute.
 %
 */
-MagickPrivate int NTSystemCommand(const char *command)
+MagickPrivate int NTSystemCommand(const char *command,char *output)
 {
+#define CleanupOutputHandles \
+  if (read_output != (HANDLE) NULL) \
+    { \
+       CloseHandle(read_output); \
+       read_output=(HANDLE) NULL; \
+       CloseHandle(write_output); \
+       write_output=(HANDLE) NULL; \
+    }
+
+#define CopyLastError \
+  if (output != (char *) NULL) \
+    { \
+      error=NTGetLastError(); \
+      if (error != (char *) NULL) \
+        { \
+          CopyMagickString(output,error,MaxTextExtent); \
+          error=DestroyString(error); \
+        } \
+    }
+
   char
+    *error,
     local_command[MaxTextExtent];
 
   DWORD
-    child_status;
+    bytes_read,
+    child_status,
+    size;
 
   int
     status;
@@ -2147,8 +2170,15 @@ MagickPrivate int NTSystemCommand(const char *command)
   MagickBooleanType
     asynchronous;
 
+  HANDLE
+    read_output,
+    write_output;
+
   PROCESS_INFORMATION
     process_info;
+
+  SECURITY_ATTRIBUTES
+    sa;
 
   STARTUPINFO
     startup_info;
@@ -2166,26 +2196,68 @@ MagickPrivate int NTSystemCommand(const char *command)
       startup_info.wShowWindow=SW_SHOWDEFAULT;
     }
   else
-    if (command[strlen(command)-1] == '|')
-      local_command[strlen(command)-1]='\0';
-    else
-      startup_info.wShowWindow=SW_HIDE;
+    {
+      if (command[strlen(command)-1] == '|')
+        local_command[strlen(command)-1]='\0';
+      else
+        startup_info.wShowWindow=SW_HIDE;
+      read_output=(HANDLE) NULL;
+      if (output != (char *) NULL)
+        {
+          sa.nLength=sizeof(SECURITY_ATTRIBUTES);
+          sa.bInheritHandle=TRUE;
+          sa.lpSecurityDescriptor=NULL;
+          if (CreatePipe(&read_output,&write_output,NULL,0))
+            {
+              if (SetHandleInformation(write_output,HANDLE_FLAG_INHERIT,
+                  HANDLE_FLAG_INHERIT))
+                {
+                  startup_info.dwFlags|=STARTF_USESTDHANDLES;
+                  startup_info.hStdOutput=write_output;
+                  startup_info.hStdError=write_output;
+                }
+              else
+                CleanupOutputHandles;
+            }
+          else
+            read_output=(HANDLE) NULL;
+        }
+    }
   status=CreateProcess((LPCTSTR) NULL,local_command,(LPSECURITY_ATTRIBUTES)
-    NULL,(LPSECURITY_ATTRIBUTES) NULL,(BOOL) FALSE,(DWORD)
+    NULL,(LPSECURITY_ATTRIBUTES) NULL,(BOOL) TRUE,(DWORD)
     NORMAL_PRIORITY_CLASS,(LPVOID) NULL,(LPCSTR) NULL,&startup_info,
     &process_info);
   if (status == 0)
-    return(-1);
+    {
+      CopyLastError;
+      CleanupOutputHandles;
+      return(-1);
+    }
   if (asynchronous != MagickFalse)
     return(status == 0);
   status=WaitForSingleObject(process_info.hProcess,INFINITE);
   if (status != WAIT_OBJECT_0)
-    return(status);
+    {
+      CopyLastError;
+      CleanupOutputHandles;
+      return(status);
+    }
   status=GetExitCodeProcess(process_info.hProcess,&child_status);
   if (status == 0)
-    return(-1);
+    {
+      CopyLastError;
+      CleanupOutputHandles;
+      return(-1);
+    }
   CloseHandle(process_info.hProcess);
   CloseHandle(process_info.hThread);
+  if (read_output != (HANDLE) NULL)
+    if (PeekNamedPipe(read_output,(LPVOID) NULL,0,(LPDWORD) NULL,&size,
+          (LPDWORD) NULL))
+      if ((size > 0) && (ReadFile(read_output,output,MaxTextExtent-1,
+          &bytes_read,NULL))) 
+        output[bytes_read]='\0';
+  CleanupOutputHandles;
   return((int) child_status);
 }
 

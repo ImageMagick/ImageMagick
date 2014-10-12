@@ -1914,6 +1914,8 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
 %
 %    o command: this string is the command to execute.
 %
+%    o output: an optional buffer to store the output from stderr/stdout.
+%
 %    o exception: return any errors here.
 %
 */
@@ -1930,7 +1932,7 @@ static char *SanitizeSystemCommand(const char *command)
     *p;
 
   static char
-    whitelist[] = 
+    whitelist[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
       ".@&;<>()|/\\\'\":%=~";
 
@@ -1943,7 +1945,8 @@ static char *SanitizeSystemCommand(const char *command)
 }
 
 MagickExport int SystemCommand(const MagickBooleanType asynchronous,
-  const MagickBooleanType verbose,const char *command,ExceptionInfo *exception)
+  const MagickBooleanType verbose,const char *command,char *output,
+  ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -1993,6 +1996,8 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
   sanitize_command=SanitizeSystemCommand(command);
   if (asynchronous != MagickFalse)
     (void) ConcatenateMagickString(sanitize_command,"&",MaxTextExtent);
+  if (output != (char *) NULL)
+    *output='\0';
 #if defined(MAGICKCORE_POSIX_SUPPORT)
 #if !defined(MAGICKCORE_HAVE_EXECVP)
   status=system(sanitize_command);
@@ -2041,7 +2046,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
     }
 #endif
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  status=NTSystemCommand(sanitize_command);
+  status=NTSystemCommand(sanitize_command,output);
 #elif defined(macintosh)
   status=MACSystemCommand(sanitize_command);
 #elif defined(vms)
@@ -2050,8 +2055,12 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
 #  error No suitable system() method.
 #endif
   if (status < 0)
-    (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-      "FailedToExecuteCommand","`%s' (%d)",command,status);
+    if ((output != (char *) NULL) && (*output != '\0'))
+      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+        "FailedToExecuteCommand","`%s' (%s)",command,output);
+    else
+      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+        "FailedToExecuteCommand","`%s' (%d)",command,status);
   sanitize_command=DestroyString(sanitize_command);
   for (i=0; i < (ssize_t) number_arguments; i++)
     arguments[i]=DestroyString(arguments[i]);
