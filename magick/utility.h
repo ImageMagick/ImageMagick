@@ -42,7 +42,9 @@ extern MagickExport char
 
 extern MagickExport int
   SystemCommand(const MagickBooleanType,const MagickBooleanType,const char *,
-    ExceptionInfo *);
+    ExceptionInfo *),
+  SystemCommandWithOutput(const MagickBooleanType,const MagickBooleanType,
+    const char *,char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   AcquireUniqueFilename(char *),
