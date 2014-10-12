@@ -284,6 +284,8 @@ namespace Magick
   using MagickCore::TransparentAlphaChannel;
   using MagickCore::FlattenAlphaChannel;
   using MagickCore::RemoveAlphaChannel;
+  using MagickCore::AssociateAlphaChannel;
+  using MagickCore::DisassociateAlphaChannel;
 
   // Image class types
   using MagickCore::ClassType;
