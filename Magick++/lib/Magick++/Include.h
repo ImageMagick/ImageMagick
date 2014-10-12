@@ -342,6 +342,7 @@ namespace Magick
   using MagickCore::scRGBColorspace;
   using MagickCore::sRGBColorspace;
   using MagickCore::TransparentColorspace;
+  using MagickCore::xyYColorspace;
   using MagickCore::XYZColorspace;
   using MagickCore::YCbCrColorspace;
   using MagickCore::YCCColorspace;
