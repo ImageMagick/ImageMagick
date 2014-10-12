@@ -2055,12 +2055,14 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
 #  error No suitable system() method.
 #endif
   if (status < 0)
-    if ((output != (char *) NULL) && (*output != '\0'))
-      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-        "FailedToExecuteCommand","`%s' (%s)",command,output);
-    else
-      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-        "FailedToExecuteCommand","`%s' (%d)",command,status);
+    {
+      if ((output != (char *) NULL) && (*output != '\0'))
+        (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+          "FailedToExecuteCommand","`%s' (%s)",command,output);
+      else
+        (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+          "FailedToExecuteCommand","`%s' (%d)",command,status);
+    }
   sanitize_command=DestroyString(sanitize_command);
   for (i=0; i < (ssize_t) number_arguments; i++)
     arguments[i]=DestroyString(arguments[i]);
