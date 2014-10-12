@@ -3244,14 +3244,28 @@ void Magick::Image::inverseFourierTransform(const Image &phase_,
   ThrowPPException;
 }
 
-void Magick::Image::kuwahara(const double radius,const double sigma)
+void Magick::Image::kuwahara(const double radius_,const double sigma_)
 {
   MagickCore::Image
     *newImage;
 
   GetPPException;
-  newImage=KuwaharaImage(constImage(),radius,sigma,exceptionInfo);
+  newImage=KuwaharaImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
+  ThrowPPException;
+}
+
+void Magick::Image::kuwaharaChannel(const ChannelType channel_,
+  const double radius_,const double sigma_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  SetPPChannelMask(channel_);
+  newImage=KuwaharaImage(constImage(),radius_,sigma_,exceptionInfo);
+  replaceImage(newImage);
+  RestorePPChannelMask;
   ThrowPPException;
 }
 
