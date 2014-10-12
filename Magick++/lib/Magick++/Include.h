@@ -274,9 +274,12 @@ namespace Magick
   using MagickCore::AlphaChannelOption;
   using MagickCore::UndefinedAlphaChannel;
   using MagickCore::ActivateAlphaChannel;
+  using MagickCore::AssociateAlphaChannel;
   using MagickCore::BackgroundAlphaChannel;
   using MagickCore::CopyAlphaChannel;
   using MagickCore::DeactivateAlphaChannel;
+  using MagickCore::DiscreteAlphaChannel;
+  using MagickCore::DisassociateAlphaChannel;
   using MagickCore::ExtractAlphaChannel;
   using MagickCore::OpaqueAlphaChannel;
   using MagickCore::RemoveAlphaChannel;
