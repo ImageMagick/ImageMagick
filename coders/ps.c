@@ -141,7 +141,8 @@ static int MagickDLLCall PostscriptDelegateMessage(void *handle,
 #endif
 
 static MagickBooleanType InvokePostscriptDelegate(
-  const MagickBooleanType verbose,const char *command,ExceptionInfo *exception)
+  const MagickBooleanType verbose,const char *command,char *output,
+  ExceptionInfo *exception)
 {
   int
     status;
@@ -162,7 +163,7 @@ static MagickBooleanType InvokePostscriptDelegate(
 
 #define ExecuteGhostscriptCommand(command,status) \
 { \
-  status=SystemCommand(MagickFalse,verbose,command,exception); \
+  status=SystemCommand(MagickFalse,verbose,command,output,exception); \
   if (status == 0) \
     return(MagickTrue); \
   if (status < 0) \
@@ -240,17 +241,23 @@ static MagickBooleanType InvokePostscriptDelegate(
   for (i=0; i < (ssize_t) argc; i++)
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
-  if ((status != 0) && (status != -101))
+  if (status != 0)
     {
       SetArgsStart(command,args_start);
-      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-        "PostscriptDelegateFailed","`[ghostscript library]%s': %s",args_start,
-        errors);
-      if (errors != (char *) NULL)
-        errors=DestroyString(errors);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Ghostscript returns status %d, exit code %d",status,code);
-      return(MagickFalse);
+      if (status == -101) // quit
+        (void) FormatLocaleString(output,MaxTextExtent,
+          "[ghostscript library]%s: %s",args_start,errors);
+      else
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            DelegateError,"PostscriptDelegateFailed",
+            "`[ghostscript library]%s': %s",args_start,errors);
+          if (errors != (char *) NULL)
+            errors=DestroyString(errors);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Ghostscript returns status %d, exit code %d",status,code);
+          return(MagickFalse);
+        }
     }
   if (errors != (char *) NULL)
     errors=DestroyString(errors);
@@ -402,6 +409,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     geometry[MaxTextExtent],
     input_filename[MaxTextExtent],
     options[MaxTextExtent],
+    output[MaxTextExtent],
     postscript_filename[MaxTextExtent];
 
   const char
@@ -849,14 +857,16 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
     postscript_filename,input_filename);
-  status=InvokePostscriptDelegate(read_info->verbose,command,exception);
+  *output='\0';
+  status=InvokePostscriptDelegate(read_info->verbose,command,output,exception);
   (void) InterpretImageFilename(image_info,image,filename,1,
     read_info->filename,exception);
   if ((status == MagickFalse) ||
       (IsPostscriptRendered(read_info->filename) == MagickFalse))
     {
       (void) ConcatenateMagickString(command," -c showpage",MaxTextExtent);
-      status=InvokePostscriptDelegate(read_info->verbose,command,exception);
+      status=InvokePostscriptDelegate(read_info->verbose,command,output,
+        exception);
     }
   (void) RelinquishUniqueFileResource(postscript_filename);
   (void) RelinquishUniqueFileResource(input_filename);
@@ -889,6 +899,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   read_info=DestroyImageInfo(read_info);
   if (postscript_image == (Image *) NULL)
     {
+      if (*output != '\0')
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          DelegateError,"PostscriptDelegateFailed","`%s'",output);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
