@@ -274,7 +274,7 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
     errors=DestroyString(errors);
   return(MagickTrue);
 #else
-  status=SystemCommand(MagickFalse,verbose,command,output,exception);
+  status=SystemCommand(MagickFalse,verbose,command,exception);
   return(status == 0 ? MagickTrue : MagickFalse);
 #endif
 }
