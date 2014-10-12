@@ -185,11 +185,11 @@ static MagickBooleanType IsBoundsCleared(const Image *image1,
       break;
     for (x=0; x < (ssize_t) bounds->width; x++)
     {
-      if ((GetPixelAlpha(image1,p) <= (Quantum) (QuantumRange/2)) &&
-          (GetPixelAlpha(image1,q) > (Quantum) (QuantumRange/2)))
+      if ((GetPixelAlpha(image1,p) >= (Quantum) (QuantumRange/2)) &&
+          (GetPixelAlpha(image2,q) < (Quantum) (QuantumRange/2)))
         break;
       p+=GetPixelChannels(image1);
-      q++;
+      q+=GetPixelChannels(image2);
     }
     if (x < (ssize_t) bounds->width)
       break;
@@ -625,7 +625,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
       p+=GetPixelChannels(image1);
-      q++;
+      q+=GetPixelChannels(image2);
     }
     if (y < (ssize_t) image1->rows)
       break;
@@ -656,7 +656,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
       p+=GetPixelChannels(image1);
-      q++;
+      q+=GetPixelChannels(image2);
     }
     if (y < (ssize_t) image1->rows)
       break;
@@ -676,7 +676,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
       p+=GetPixelChannels(image1);
-      q++;
+      q+=GetPixelChannels(image2);
     }
     if (x < (ssize_t) image1->columns)
       break;
@@ -696,7 +696,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
       p+=GetPixelChannels(image1);
-      q++;
+      q+=GetPixelChannels(image2);
     }
     if (x < (ssize_t) image1->columns)
       break;
