@@ -2132,6 +2132,8 @@ MagickPrivate int NTSyncMemory(void *address,size_t length,int flags)
 %
 %    o command: This string is the command to execute.
 %
+%    o output: an optional buffer to store the output from stderr/stdout.
+%
 */
 MagickPrivate int NTSystemCommand(const char *command,char *output)
 {
