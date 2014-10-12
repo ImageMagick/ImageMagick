@@ -1291,9 +1291,10 @@ RestoreMSCWarning
                 (void) SetImageProperty(image,"tiff:alpha","associated",
                   exception);
               }
-            else if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
-              (void) SetImageProperty(image,"tiff:alpha","unassociated",
-                exception);
+            else
+              if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
+                (void) SetImageProperty(image,"tiff:alpha","unassociated",
+                  exception);
           }
       }
     if ((photometric == PHOTOMETRIC_PALETTE) &&
@@ -3169,8 +3170,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           {
             if (LocaleCompare(option,"associated") == 0)
               sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
-            else if (LocaleCompare(option,"unspecified") == 0)
-              sample_info[0]=EXTRASAMPLE_UNSPECIFIED;
+            else
+              if (LocaleCompare(option,"unspecified") == 0)
+                sample_info[0]=EXTRASAMPLE_UNSPECIFIED;
           }
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
           &samples_per_pixel);
