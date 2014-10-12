@@ -263,7 +263,7 @@ static MagickBooleanType InvokePostscriptDelegate(
     errors=DestroyString(errors);
   return(MagickTrue);
 #else
-  status=SystemCommand(MagickFalse,verbose,command,exception);
+  status=SystemCommand(MagickFalse,verbose,command,output,exception);
   return(status == 0 ? MagickTrue : MagickFalse);
 #endif
 }
