@@ -2065,6 +2065,9 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   MagickBooleanType
     status;
 
+  PixelInfo
+    background;
+
   ssize_t
     y;
 
@@ -2080,6 +2083,9 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   if ((image->background_color.alpha_trait == BlendPixelTrait) &&
       (image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
+  background=image->background_color;
+  if (image->colorspace == CMYKColorspace)
+    ConvertRGBToCMYK(&background);
   /*
     Set image background color.
   */
@@ -2103,7 +2109,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfoPixel(image,&image->background_color,q);
+      SetPixelInfoPixel(image,&background,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
