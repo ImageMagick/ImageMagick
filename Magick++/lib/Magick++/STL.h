@@ -2666,12 +2666,9 @@ namespace Magick
     MagickCore::Image
       *images;
 
-    MagickCore::ImageInfo
-      *imageInfo;
-
     GetPPException;
-    images=MagickCore::BlobToImage(imageInfo,blob_.data(),blob_.length(),
-      exceptionInfo);
+    images=MagickCore::BlobToImage(options.imageInfo(),blob_.data(),
+      blob_.length(),exceptionInfo);
     insertImages(sequence_,images);
     ThrowPPException;
   }
