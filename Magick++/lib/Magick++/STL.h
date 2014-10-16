@@ -2628,7 +2628,6 @@ namespace Magick
   }
 
   // Read images into existing container (appending to container)
-  // FIXME: need a way to specify options like size, depth, and density.
   template<class Container>
   void readImages(Container *sequence_,const std::string &imageSpec_,
     ReadOptions &options)
@@ -2661,12 +2660,9 @@ namespace Magick
     MagickCore::Image
       *images;
 
-    MagickCore::ImageInfo
-      *imageInfo;
-
     GetPPException;
-    images=MagickCore::BlobToImage(imageInfo,blob_.data(),blob_.length(),
-      exceptionInfo);
+    images=MagickCore::BlobToImage(options.imageInfo(),blob_.data(),
+      blob_.length(),exceptionInfo);
     insertImages(sequence_,images);
     ThrowPPException;
   }
