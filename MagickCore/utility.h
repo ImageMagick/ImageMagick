@@ -38,10 +38,6 @@ typedef enum
 extern MagickExport char
   *Base64Encode(const unsigned char *,const size_t,size_t *);
 
-extern MagickExport int
-  SystemCommand(const MagickBooleanType,const MagickBooleanType,const char *,
-    char *,ExceptionInfo *);
-
 extern MagickExport MagickBooleanType
   AcquireUniqueFilename(char *),
   AcquireUniqueSymbolicLink(const char *,char *),

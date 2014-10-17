@@ -173,7 +173,8 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
 
 #define ExecuteGhostscriptCommand(command,status) \
 { \
-  status=SystemCommand(MagickFalse,verbose,command,output,exception); \
+  status=SystemCommandWidthOutput(MagickFalse,verbose,command,output, \
+    exception); \
   if (status == 0) \
     return(MagickTrue); \
   if (status < 0) \
@@ -273,7 +274,7 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
     errors=DestroyString(errors);
   return(MagickTrue);
 #else
-  status=SystemCommand(MagickFalse,verbose,command,output,exception);
+  status=ExternalDelegateCommand(MagickFalse,verbose,command,output,exception);
   return(status == 0 ? MagickTrue : MagickFalse);
 #endif
 }
