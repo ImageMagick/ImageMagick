@@ -311,8 +311,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,
     read_info->filename,input_filename);
-  status=SystemCommand(MagickFalse,read_info->verbose,command,exception) != 0 ?
-    MagickTrue : MagickFalse;
+  status=ExternalDelegateCommand(MagickFalse,read_info->verbose,command,
+    (char *) NULL,exception) != 0 ? MagickTrue : MagickFalse;
   image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   (void) RelinquishUniqueFileResource(input_filename);

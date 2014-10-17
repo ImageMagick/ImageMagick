@@ -7037,6 +7037,50 @@ MagickExport MagickBooleanType SyncImagePixels(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S y s t e m C o m m a n d                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SystemCommand() executes the specified command and waits until it
+%  terminates.  The returned value is the exit status of the command.
+%
+%  The format of the SystemCommand method is:
+%
+%      int SystemCommand(const MagickBooleanType asynchronous,
+%        const MagickBooleanType verbose,const char *command,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o asynchronous: a value other than 0 executes the parent program
+%      concurrently with the new child process.
+%
+%    o verbose: a value other than 0 prints the executed command before it is
+%      invoked.
+%
+%    o command: this string is the command to execute.
+%
+%    o exception: return any errors here.
+%
+*/
+MagickExport int SystemCommand(const MagickBooleanType asynchronous,
+  const MagickBooleanType verbose,const char *command,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  status=ExternalDelegateCommand(asynchronous,verbose,command,(char *) NULL,
+    exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  T e m p o r a r y F i l e n a m e                                          %
 %                                                                             %
 %                                                                             %
