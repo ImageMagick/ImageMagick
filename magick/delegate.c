@@ -270,7 +270,6 @@ static void *DestroyDelegate(void *delegate_info)
   return((void *) NULL);
 }
 
-
 MagickExport void DelegateComponentTerminus(void)
 {
   if (delegate_semaphore == (SemaphoreInfo *) NULL)
@@ -280,6 +279,193 @@ MagickExport void DelegateComponentTerminus(void)
     delegate_cache=DestroyLinkedList(delegate_cache,DestroyDelegate);
   UnlockSemaphoreInfo(delegate_semaphore);
   DestroySemaphoreInfo(&delegate_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   E x t e r n a l D e l e g a t e C o m m a n d                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ExternalDelegateCommand() executes the specified command and waits until it
+%  terminates.  The returned value is the exit status of the command.
+%
+%  The format of the ExternalDelegateCommand method is:
+%
+%      int ExternalDelegateCommand(const MagickBooleanType asynchronous,
+%        const MagickBooleanType verbose,const char *command,
+%        char *message,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o asynchronous: a value other than 0 executes the parent program
+%      concurrently with the new child process.
+%
+%    o verbose: a value other than 0 prints the executed command before it is
+%      invoked.
+%
+%    o command: this string is the command to execute.
+%
+%    o message: an option buffer to receive any message posted to stdout or
+%      stderr.
+%
+%    o exception: return any errors here.
+%
+*/
+
+static char *SanitizeDelegateCommand(const char *command)
+{
+  char
+    *sanitize_command;
+
+  const char
+    *q;
+
+  register char
+    *p;
+
+  static char
+    whitelist[] =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
+      ".@&;<>()|/\\\'\":%=~";
+
+  sanitize_command=AcquireString(command);
+  p=sanitize_command;
+  q=sanitize_command+strlen(sanitize_command);
+  for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
+    *p='_';
+  return(sanitize_command);
+}
+
+MagickPrivate int ExternalDelegateCommand(const MagickBooleanType asynchronous,
+  const MagickBooleanType verbose,const char *command,char *message,
+  ExceptionInfo *exception)
+{
+  char
+    **arguments,
+    *sanitize_command;
+
+  int
+    number_arguments,
+    status;
+
+  PolicyDomain
+    domain;
+
+  PolicyRights
+    rights;
+
+  register ssize_t
+    i;
+
+  status=(-1);
+  arguments=StringToArgv(command,&number_arguments);
+  if (arguments == (char **) NULL)
+    return(status);
+  if (*arguments[1] == '\0')
+    {
+      for (i=0; i < (ssize_t) number_arguments; i++)
+        arguments[i]=DestroyString(arguments[i]);
+      arguments=(char **) RelinquishMagickMemory(arguments);
+      return(-1);
+    }
+  rights=ExecutePolicyRights;
+  domain=DelegatePolicyDomain;
+  if (IsRightsAuthorized(domain,rights,arguments[1]) == MagickFalse)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",arguments[1]);
+      for (i=0; i < (ssize_t) number_arguments; i++)
+        arguments[i]=DestroyString(arguments[i]);
+      arguments=(char **) RelinquishMagickMemory(arguments);
+      return(-1);
+    }
+  if (verbose != MagickFalse)
+    {
+      (void) FormatLocaleFile(stderr,"%s\n",command);
+      (void) fflush(stderr);
+    }
+  sanitize_command=SanitizeDelegateCommand(command);
+  if (asynchronous != MagickFalse)
+    (void) ConcatenateMagickString(sanitize_command,"&",MaxTextExtent);
+  if (message != (char *) NULL)
+    *message='\0';
+#if defined(MAGICKCORE_POSIX_SUPPORT)
+#if !defined(MAGICKCORE_HAVE_EXECVP)
+  status=system(sanitize_command);
+#else
+  if ((asynchronous != MagickFalse) ||
+      (strpbrk(sanitize_command,"&;<>|") != (char *) NULL))
+    status=system(sanitize_command);
+  else
+    {
+      pid_t
+        child_pid;
+
+      /*
+        Call application directly rather than from a shell.
+      */
+      child_pid=(pid_t) fork();
+      if (child_pid == (pid_t) -1)
+        status=system(sanitize_command);
+      else
+        if (child_pid == 0)
+          {
+            status=execvp(arguments[1],arguments+1);
+            _exit(1);
+          }
+        else
+          {
+            int
+              child_status;
+
+            pid_t
+              pid;
+
+            child_status=0;
+            pid=(pid_t) waitpid(child_pid,&child_status,0);
+            if (pid == -1)
+              status=(-1);
+            else
+              {
+                if (WIFEXITED(child_status) != 0)
+                  status=WEXITSTATUS(child_status);
+                else
+                  if (WIFSIGNALED(child_status))
+                    status=(-1);
+              }
+          }
+    }
+#endif
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  status=NTSystemCommand(sanitize_command,message);
+#elif defined(macintosh)
+  status=MACSystemCommand(sanitize_command);
+#elif defined(vms)
+  status=system(sanitize_command);
+#else
+#  error No suitable system() method.
+#endif
+  if (status < 0)
+    {
+      if ((message != (char *) NULL) && (*message != '\0'))
+        (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+          "FailedToExecuteCommand","`%s' (%s)",command,message);
+      else
+        (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+          "FailedToExecuteCommand","`%s' (%d)",command,status);
+    }
+  sanitize_command=DestroyString(sanitize_command);
+  for (i=0; i < (ssize_t) number_arguments; i++)
+    arguments[i]=DestroyString(arguments[i]);
+  arguments=(char **) RelinquishMagickMemory(arguments);
+  return(status);
 }
 
 /*
@@ -1090,8 +1276,8 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         /*
           Execute delegate.
         */
-        status=SystemCommand(delegate_info->spawn,image_info->verbose,
-          command,exception) != 0 ? MagickTrue : MagickFalse;
+        status=ExternalDelegateCommand(delegate_info->spawn,image_info->verbose,
+          command,(char *) NULL,exception) != 0 ? MagickTrue : MagickFalse;
         if (delegate_info->spawn != MagickFalse)
           {
             ssize_t
