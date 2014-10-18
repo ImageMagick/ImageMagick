@@ -64,7 +64,7 @@ typedef struct _GhostInfo
       int(MagickDLLCall *)(void *,const char *,int));
 } GhostInfo;
 
-extern MagickPrivate int
+extern MagickExport int
   ExternalDelegateCommand(const MagickBooleanType,const MagickBooleanType,
     const char *,char *,ExceptionInfo *);
 
