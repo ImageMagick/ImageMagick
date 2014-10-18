@@ -8,6 +8,8 @@
   * Off-by-one count when parsing an 8BIM profile.
   * Locale.c won't build if uselocale found but strtod_l isn't (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26362).
+  * OpenCL no longer benchmarks are run on every initialization (patch
+    submitted by Jan Steffens).
 
 2014-09-21  6.8.9-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-8, SVN revision 16502.
