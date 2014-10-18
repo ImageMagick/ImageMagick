@@ -32,10 +32,10 @@ typedef struct _DelegateInfo
     *decode,
     *encode,
     *commands;
-                                                                                
+
   ssize_t
     mode;
-                                                                                
+
   MagickBooleanType
     thread_support,
     spawn,
@@ -43,7 +43,7 @@ typedef struct _DelegateInfo
 
   SemaphoreInfo
     *semaphore;
-                                                                                
+
   size_t
     signature;
 } DelegateInfo;
