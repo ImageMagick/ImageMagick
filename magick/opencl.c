@@ -2259,7 +2259,7 @@ ds_status AccelerateScoreRelease(void* score) {
 
 ds_status canWriteProfileToFile(const char *path)
 {
-  FILE* profileFile = fopen(path, "wb");
+  FILE* profileFile = fopen(path, "ab");
 
   if (profileFile==NULL)
     return DS_FILE_ERROR;
