@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #define MaximumNumberOfImageMoments  8
+#define MaximumNumberOfPerceptualHashes  7
 
 typedef struct _ChannelStatistics
 {
