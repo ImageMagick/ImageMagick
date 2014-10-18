@@ -32,15 +32,15 @@ typedef struct _DelegateInfo
     *decode,
     *encode,
     *commands;
-                                                                                
+
   ssize_t
     mode;
-                                                                                
+
   MagickBooleanType
     thread_support,
     spawn,
     stealth;
-                                                                                
+
   struct _DelegateInfo
     *previous,
     *next;  /* deprecated, use GetDelegateInfoList() */
