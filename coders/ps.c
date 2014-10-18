@@ -163,7 +163,7 @@ static MagickBooleanType InvokePostscriptDelegate(
 
 #define ExecuteGhostscriptCommand(command,status) \
 { \
-  status=SystemCommandWidthOutput(MagickFalse,verbose,command,output, \
+  status=ExternalDelegateCommand(MagickFalse,verbose,command,output, \
     exception); \
   if (status == 0) \
     return(MagickTrue); \
