@@ -152,7 +152,7 @@ static int MagickDLLCall PDFDelegateMessage(void *handle,const char *message,
 #endif
 
 static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
-  const char *command,char *output,ExceptionInfo *exception)
+  const char *command,char *message,ExceptionInfo *exception)
 {
   int
     status;
@@ -173,7 +173,7 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
 
 #define ExecuteGhostscriptCommand(command,status) \
 { \
-  status=ExternalDelegateCommand(MagickFalse,verbose,command,output, \
+  status=ExternalDelegateCommand(MagickFalse,verbose,command,message, \
     exception); \
   if (status == 0) \
     return(MagickTrue); \
@@ -256,7 +256,7 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
     {
       SetArgsStart(command,args_start);
       if (status == -101) /* quit */
-        (void) FormatLocaleString(output,MaxTextExtent,
+        (void) FormatLocaleString(message,MaxTextExtent,
           "[ghostscript library]%s: %s",args_start,errors);
       else
         {
@@ -274,7 +274,7 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
     errors=DestroyString(errors);
   return(MagickTrue);
 #else
-  status=ExternalDelegateCommand(MagickFalse,verbose,command,output,exception);
+  status=ExternalDelegateCommand(MagickFalse,verbose,command,message,exception);
   return(status == 0 ? MagickTrue : MagickFalse);
 #endif
 }
@@ -376,8 +376,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
     input_filename[MaxTextExtent],
+    message[MaxTextExtent],
     options[MaxTextExtent],
-    output[MaxTextExtent],
     postscript_filename[MaxTextExtent];
 
   const char
@@ -736,8 +736,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
     postscript_filename,input_filename);
-  *output='\0';
-  status=InvokePDFDelegate(read_info->verbose,command,output,exception);
+  *message='\0';
+  status=InvokePDFDelegate(read_info->verbose,command,message,exception);
   (void) RelinquishUniqueFileResource(postscript_filename);
   (void) RelinquishUniqueFileResource(input_filename);
   pdf_image=(Image *) NULL;
@@ -768,9 +768,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   read_info=DestroyImageInfo(read_info);
   if (pdf_image == (Image *) NULL)
     {
-      if (*output != '\0')
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          DelegateError,"PDFDelegateFailed","`%s'",output);
+      if (*message != '\0')
+        (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+          "PDFDelegateFailed","`%s'",message);
       image=DestroyImage(image);
       return((Image *) NULL);
     }
