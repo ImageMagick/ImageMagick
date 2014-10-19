@@ -286,6 +286,8 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/version.c \
 	MagickCore/version.h \
 	MagickCore/version-private.h \
+	MagickCore/vision.c \
+	MagickCore/vision.h \
 	MagickCore/vms.h \
 	MagickCore/widget.c \
 	MagickCore/widget.h \
@@ -407,6 +409,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/type.h \
 	MagickCore/utility.h \
 	MagickCore/version.h \
+	MagickCore/vision.h \
 	MagickCore/widget.h \
 	MagickCore/xml-tree.h \
 	MagickCore/xwindow.h

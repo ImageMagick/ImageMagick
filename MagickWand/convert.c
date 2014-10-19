@@ -181,6 +181,8 @@ static MagickBooleanType ConvertUsage(void)
       "-brightness-contrast geometry",
       "                     improve brightness / contrast of the image",
       "-canny geometry      detect edges in the image",
+      "-connected-components connectivity",
+      "                     connected-components uniquely labeled",
       "-cdl filename        color correct with a color decision list",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
@@ -1126,6 +1128,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("concurrent",option+1) == 0)
           break;
+        if (LocaleCompare("connected-component",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("contrast",option+1) == 0)
           break;
         if (LocaleCompare("contrast-stretch",option+1) == 0)

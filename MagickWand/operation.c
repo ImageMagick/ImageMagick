@@ -2096,6 +2096,14 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
                     _exception);
           break;
         }
+      if (LocaleCompare("connected-components",option+1) == 0)
+        {
+          if (IfMagickFalse(IsGeometry(arg1)))
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          new_image=ConnectedComponentsImage(_image,StringToInteger(arg1),
+           _exception);
+          break;
+        }
       if (LocaleCompare("contrast",option+1) == 0)
         {
           CLIWandWarnReplaced(IfNormalOp?"-level":"+level");
