@@ -136,6 +136,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   assert(exception->signature == MagickSignature);
   component_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
+ThrowImageException(OptionWarning,
+  "Connected component labeling available in next release...")
+return(component_image);
   if (component_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(component_image,DirectClass) == MagickFalse)
