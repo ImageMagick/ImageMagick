@@ -5006,13 +5006,16 @@ MagickExport MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
       (MaskPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
     return(MagickFalse);
   if (nexus_info->authentic_pixel_cache != MagickFalse)
-    return(MagickTrue);
+    {
+      image->taint=MagickTrue;
+      return(MagickTrue);
+    }
   assert(cache_info->signature == MagickSignature);
   status=WritePixelCachePixels(cache_info,nexus_info,exception);
   if ((cache_info->active_index_channel != MagickFalse) &&
       (WritePixelCacheIndexes(cache_info,nexus_info,exception) == MagickFalse))
     return(MagickFalse);
-  if (status == MagickFalse)
+  if (status != MagickFalse)
     image->taint=MagickTrue;
   return(status);
 }
