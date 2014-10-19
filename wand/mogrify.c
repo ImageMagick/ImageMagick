@@ -1183,6 +1183,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             InheritException(exception,&(*image)->exception);
             break;
           }
+        if (LocaleCompare("connected-components",option+1) == 0)
+          {
+            (void) SyncImageSettings(mogrify_info,*image);
+            mogrify_image=ConnectedComponentsImage(*image,
+              StringToInteger(argv[i+1]),exception);
+            break;
+          }
         if (LocaleCompare("contrast",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image);
@@ -3411,6 +3418,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-clip-path id        clip along a named path from the 8BIM profile",
       "-colorize value      colorize the image with the fill color",
       "-color-matrix matrix apply color correction to the image",
+      "-connected-components connectivity",
+      "                     connected-components uniquely labeled",
       "-contrast            enhance or reduce the image contrast",
       "-contrast-stretch geometry",
       "                     improve contrast by `stretching' the intensity range",
@@ -4336,6 +4345,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("concurrent",option+1) == 0)
           break;
+        if (LocaleCompare("connected-components",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("contrast",option+1) == 0)
           break;
         if (LocaleCompare("contrast-stretch",option+1) == 0)

@@ -153,6 +153,7 @@ extern "C" {
 #include "magick/type.h"
 #include "magick/utility.h"
 #include "magick/version.h"
+#include "magick/vision.h"
 #include "magick/xml-tree.h"
 #include "magick/xwindow.h"
 

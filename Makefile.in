@@ -1506,42 +1506,42 @@ am__magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_D
 	magick/threshold.c magick/threshold.h magick/type.c \
 	magick/type.h magick/utility.c magick/utility.h \
 	magick/utility-private.h magick/version.c magick/version.h \
-	magick/version-private.h magick/vms.h magick/widget.c \
-	magick/widget.h magick/xml-tree.c magick/xml-tree.h \
-	magick/xml-tree-private.h magick/xwindow.c magick/xwindow.h \
-	magick/nt-feature.c magick/nt-base.c coders/aai.c coders/art.c \
-	coders/avs.c coders/bgr.c coders/bmp.c coders/braille.c \
-	coders/cals.c coders/caption.c coders/cin.c coders/cip.c \
-	coders/clip.c coders/cmyk.c coders/cut.c coders/dcm.c \
-	coders/dds.c coders/debug.c coders/dib.c coders/dng.c \
-	coders/dot.c coders/dpx.c coders/fax.c coders/fd.c \
-	coders/fits.c coders/gif.c coders/gradient.c coders/gray.c \
-	coders/hald.c coders/hdr.c coders/histogram.c coders/hrz.c \
-	coders/html.c coders/icon.c coders/info.c coders/inline.c \
-	coders/ipl.c coders/jnx.c coders/json.c coders/label.c \
-	coders/mac.c coders/magick.c coders/map.c coders/mask.c \
-	coders/mat.c coders/matte.c coders/meta.c coders/miff.c \
-	coders/mono.c coders/mpc.c coders/mpeg.c coders/mpr.c \
-	coders/msl.c coders/mtv.c coders/mvg.c coders/null.c \
-	coders/otb.c coders/palm.c coders/pango.c coders/pattern.c \
-	coders/pcd.c coders/pcl.c coders/pcx.c coders/pdb.c \
-	coders/pdf.c coders/pes.c coders/pict.c coders/pix.c \
-	coders/plasma.c coders/pnm.c coders/preview.c coders/ps.c \
-	coders/ps2.c coders/ps3.c coders/psd.c coders/pwp.c \
-	coders/raw.c coders/rgb.c coders/rgf.c coders/rla.c \
-	coders/rle.c coders/scr.c coders/screenshot.c coders/sct.c \
-	coders/sfw.c coders/sgi.c coders/sixel.c coders/stegano.c \
-	coders/sun.c coders/svg.c coders/tga.c coders/thumbnail.c \
-	coders/tile.c coders/tim.c coders/ttf.c coders/txt.c \
-	coders/uil.c coders/url.c coders/uyvy.c coders/vicar.c \
-	coders/vid.c coders/viff.c coders/vips.c coders/wbmp.c \
-	coders/wpg.c coders/xbm.c coders/xc.c coders/xcf.c \
-	coders/xpm.c coders/xps.c coders/ycbcr.c coders/yuv.c \
-	coders/dps.c coders/djvu.c coders/exr.c coders/fpx.c \
-	coders/clipboard.c coders/emf.c coders/jbig.c coders/jpeg.c \
-	coders/jp2.c coders/png.c coders/ept.c coders/tiff.c \
-	coders/webp.c coders/wmf.c coders/x.c coders/xwd.c \
-	filters/analyze.c
+	magick/version-private.h magick/vision.c magick/vision.h \
+	magick/vms.h magick/widget.c magick/widget.h magick/xml-tree.c \
+	magick/xml-tree.h magick/xml-tree-private.h magick/xwindow.c \
+	magick/xwindow.h magick/nt-feature.c magick/nt-base.c \
+	coders/aai.c coders/art.c coders/avs.c coders/bgr.c \
+	coders/bmp.c coders/braille.c coders/cals.c coders/caption.c \
+	coders/cin.c coders/cip.c coders/clip.c coders/cmyk.c \
+	coders/cut.c coders/dcm.c coders/dds.c coders/debug.c \
+	coders/dib.c coders/dng.c coders/dot.c coders/dpx.c \
+	coders/fax.c coders/fd.c coders/fits.c coders/gif.c \
+	coders/gradient.c coders/gray.c coders/hald.c coders/hdr.c \
+	coders/histogram.c coders/hrz.c coders/html.c coders/icon.c \
+	coders/info.c coders/inline.c coders/ipl.c coders/jnx.c \
+	coders/json.c coders/label.c coders/mac.c coders/magick.c \
+	coders/map.c coders/mask.c coders/mat.c coders/matte.c \
+	coders/meta.c coders/miff.c coders/mono.c coders/mpc.c \
+	coders/mpeg.c coders/mpr.c coders/msl.c coders/mtv.c \
+	coders/mvg.c coders/null.c coders/otb.c coders/palm.c \
+	coders/pango.c coders/pattern.c coders/pcd.c coders/pcl.c \
+	coders/pcx.c coders/pdb.c coders/pdf.c coders/pes.c \
+	coders/pict.c coders/pix.c coders/plasma.c coders/pnm.c \
+	coders/preview.c coders/ps.c coders/ps2.c coders/ps3.c \
+	coders/psd.c coders/pwp.c coders/raw.c coders/rgb.c \
+	coders/rgf.c coders/rla.c coders/rle.c coders/scr.c \
+	coders/screenshot.c coders/sct.c coders/sfw.c coders/sgi.c \
+	coders/sixel.c coders/stegano.c coders/sun.c coders/svg.c \
+	coders/tga.c coders/thumbnail.c coders/tile.c coders/tim.c \
+	coders/ttf.c coders/txt.c coders/uil.c coders/url.c \
+	coders/uyvy.c coders/vicar.c coders/vid.c coders/viff.c \
+	coders/vips.c coders/wbmp.c coders/wpg.c coders/xbm.c \
+	coders/xc.c coders/xcf.c coders/xpm.c coders/xps.c \
+	coders/ycbcr.c coders/yuv.c coders/dps.c coders/djvu.c \
+	coders/exr.c coders/fpx.c coders/clipboard.c coders/emf.c \
+	coders/jbig.c coders/jpeg.c coders/jp2.c coders/png.c \
+	coders/ept.c coders/tiff.c coders/webp.c coders/wmf.c \
+	coders/x.c coders/xwd.c filters/analyze.c
 am__objects_1 = magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-accelerate.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-annotate.lo \
@@ -1630,6 +1630,7 @@ am__objects_1 = magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_S
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-type.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-utility.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.lo \
+	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xml-tree.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwindow.lo
@@ -4363,6 +4364,8 @@ MAGICK_BASE_SRCS = \
 	magick/version.c \
 	magick/version.h \
 	magick/version-private.h \
+	magick/vision.c \
+	magick/vision.h \
 	magick/vms.h \
 	magick/widget.c \
 	magick/widget.h \
@@ -4478,6 +4481,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/type.h \
 	magick/utility.h \
 	magick/version.h \
+	magick/vision.h \
 	magick/widget.h \
 	magick/xml-tree.h \
 	magick/xwindow.h
@@ -6282,6 +6286,8 @@ magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-utilit
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xml-tree.lo:  \
@@ -7349,6 +7355,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-type.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-utility.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xml-tree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwindow.Plo@am__quote@
@@ -8908,6 +8915,13 @@ magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-versio
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='magick/version.c' object='magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.lo `test -f 'magick/version.c' || echo '$(srcdir)/'`magick/version.c
+
+magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo: magick/vision.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.Tpo -c -o magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo `test -f 'magick/vision.c' || echo '$(srcdir)/'`magick/vision.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.Tpo magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='magick/vision.c' object='magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo `test -f 'magick/vision.c' || echo '$(srcdir)/'`magick/vision.c
 
 magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo: magick/widget.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.Tpo -c -o magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo `test -f 'magick/widget.c' || echo '$(srcdir)/'`magick/widget.c
