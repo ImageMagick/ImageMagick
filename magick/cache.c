@@ -1576,7 +1576,6 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
       /*
         Ensure the image matches the pixel cache morphology.
       */
-      image->taint=MagickTrue;
       image->type=UndefinedType;
       if (ValidatePixelCacheMorphology(image) == MagickFalse)
         {
@@ -5013,6 +5012,8 @@ MagickExport MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
   if ((cache_info->active_index_channel != MagickFalse) &&
       (WritePixelCacheIndexes(cache_info,nexus_info,exception) == MagickFalse))
     return(MagickFalse);
+  if (status == MagickFalse)
+    image->taint=MagickTrue;
   return(status);
 }
 
