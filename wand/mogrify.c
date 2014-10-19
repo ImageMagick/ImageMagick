@@ -3331,8 +3331,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   quantize_info=DestroyQuantizeInfo(quantize_info);
   draw_info=DestroyDrawInfo(draw_info);
   mogrify_info=DestroyImageInfo(mogrify_info);
-  status=(MagickStatusType) ((*image)->exception.severity ==
-    UndefinedException ? 1 : 0);
+  status=(MagickStatusType) (exception->severity < ErrorException ? 1 : 0);
   return(status == 0 ? MagickFalse : MagickTrue);
 }
 
