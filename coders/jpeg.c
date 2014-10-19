@@ -2200,7 +2200,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     jpeg_info.data_precision=8;
   else
     jpeg_info.data_precision=BITS_IN_JSAMPLE;
-  jpeg_info.density_unit=(UINT8) 1;
+  jpeg_info.X_density=72;
+  jpeg_info.Y_density=72;
+  jpeg_info.density_unit=1;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Image resolution: %.20g,%.20g",floor(image->resolution.x+0.5),
