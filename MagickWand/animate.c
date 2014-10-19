@@ -1433,7 +1433,6 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
       */
       animate_image=XAnimateImages(display,&resource_info,argv,argc,image,
         exception);
-      status&=animate_image != (Image *) NULL;
       while (animate_image != (Image *) NULL)
       {
         image=animate_image;

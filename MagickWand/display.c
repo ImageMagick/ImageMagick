@@ -551,7 +551,6 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 display_image->delay=resource_info.delay;
               nexus=XDisplayImage(display,&resource_info,argv,argc,
                 &display_image,&state,exception);
-              status&=nexus != (Image *) NULL;
               if (nexus == (Image *) NULL)
                 break;
               while ((nexus != (Image *) NULL) && ((state & ExitState) == 0))
