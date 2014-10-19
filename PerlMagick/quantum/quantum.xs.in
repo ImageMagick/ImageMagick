@@ -555,6 +555,7 @@ static struct
       {"double", RealReference} } },
     { "Kuwahara", { {"geometry", StringReference}, {"radius", RealReference},
       {"sigma", RealReference}, {"channel", MagickChannelOptions} } },
+    { "ConnectedComponents", { {"connectivity", IntegerReference} } },
   };
 
 static SplayTreeInfo
@@ -7547,6 +7548,8 @@ Mogrify(ref,...)
     MeanShiftImage     = 283
     Kuwahara           = 284
     KuwaharaImage      = 285
+    ConnectedComponent = 286
+    ConnectedComponentImage = 287
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11213,6 +11216,17 @@ Mogrify(ref,...)
             exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
+          break;
+        }
+        case 142:  /* ConnectedComponent */
+        {
+          size_t
+            connectivity;
+
+          connectivity=4;
+          if (attribute_flag[0] != 0)
+            connectivity=argument_list[0].integer_reference;
+          image=ConnectedComponentsImage(image,connectivity,exception);
           break;
         }
       }

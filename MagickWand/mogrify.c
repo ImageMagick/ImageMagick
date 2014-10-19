@@ -1194,6 +1194,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               MagickFalse,argv[i+1]);
             break;
           }
+        if (LocaleCompare("connected-component",option+1) == 0)
+          {
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            mogrify_image=ConnectedComponentsImage(*image,
+              StringToInteger(argv[i+1]),exception);
+            break;
+          }
         if (LocaleCompare("contrast",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
@@ -3354,6 +3361,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-brightness-contrast geometry",
       "                     improve brightness / contrast of the image",
       "-canny geometry      detect edges in the image",
+      "-connected-components connectivity",
+      "                     connected-components uniquely labeled",
       "-cdl filename        color correct with a color decision list",
       "-charcoal geometry   simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
@@ -4285,6 +4294,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("concurrent",option+1) == 0)
           break;
+        if (LocaleCompare("connected-components",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("contrast",option+1) == 0)
           break;
         if (LocaleCompare("contrast-stretch",option+1) == 0)

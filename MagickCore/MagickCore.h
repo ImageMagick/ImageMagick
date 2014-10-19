@@ -154,6 +154,7 @@ extern "C" {
 #include "MagickCore/type.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
+#include "MagickCore/vision.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xwindow.h"
 

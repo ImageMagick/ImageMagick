@@ -533,7 +533,8 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	MagickCore/utility.c MagickCore/utility.h \
 	MagickCore/utility-private.h MagickCore/version.c \
 	MagickCore/version.h MagickCore/version-private.h \
-	MagickCore/vms.h MagickCore/widget.c MagickCore/widget.h \
+	MagickCore/vision.c MagickCore/vision.h MagickCore/vms.h \
+	MagickCore/widget.c MagickCore/widget.h \
 	MagickCore/widget-private.h MagickCore/xml-tree.c \
 	MagickCore/xml-tree.h MagickCore/xml-tree-private.h \
 	MagickCore/xwindow.c MagickCore/xwindow.h \
@@ -658,6 +659,7 @@ am__objects_1 = MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGI
 	MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-type.lo \
 	MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-utility.lo \
 	MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.lo \
+	MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo \
 	MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo \
 	MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xml-tree.lo \
 	MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwindow.lo
@@ -4387,6 +4389,8 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/version.c \
 	MagickCore/version.h \
 	MagickCore/version-private.h \
+	MagickCore/vision.c \
+	MagickCore/vision.h \
 	MagickCore/vms.h \
 	MagickCore/widget.c \
 	MagickCore/widget.h \
@@ -4503,6 +4507,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/type.h \
 	MagickCore/utility.h \
 	MagickCore/version.h \
+	MagickCore/vision.h \
 	MagickCore/widget.h \
 	MagickCore/xml-tree.h \
 	MagickCore/xwindow.h
@@ -5776,6 +5781,9 @@ MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_l
 	MagickCore/$(am__dirstamp) \
 	MagickCore/$(DEPDIR)/$(am__dirstamp)
 MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.lo:  \
+	MagickCore/$(am__dirstamp) \
+	MagickCore/$(DEPDIR)/$(am__dirstamp)
+MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo:  \
 	MagickCore/$(am__dirstamp) \
 	MagickCore/$(DEPDIR)/$(am__dirstamp)
 MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo:  \
@@ -7271,6 +7279,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-type.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-utility.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xml-tree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwindow.Plo@am__quote@
@@ -8205,6 +8214,13 @@ MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_l
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickCore/version.c' object='MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-version.lo `test -f 'MagickCore/version.c' || echo '$(srcdir)/'`MagickCore/version.c
+
+MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo: MagickCore/vision.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo -MD -MP -MF MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.Tpo -c -o MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo `test -f 'MagickCore/vision.c' || echo '$(srcdir)/'`MagickCore/vision.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.Tpo MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickCore/vision.c' object='MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-vision.lo `test -f 'MagickCore/vision.c' || echo '$(srcdir)/'`MagickCore/vision.c
 
 MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo: MagickCore/widget.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo -MD -MP -MF MagickCore/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.Tpo -c -o MagickCore/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-widget.lo `test -f 'MagickCore/widget.c' || echo '$(srcdir)/'`MagickCore/widget.c
