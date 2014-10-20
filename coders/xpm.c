@@ -175,7 +175,7 @@ static inline size_t MagickMin(const size_t x,const size_t y)
   return(y);
 }
 
-static char *ParseXPMColor(char *color)
+static char *ParseXPMColor(char *color,MagickBooleanType search_start)
 {
 #define NumberTargets  6
 
@@ -192,34 +192,56 @@ static char *ParseXPMColor(char *color)
   static const char
     *targets[NumberTargets] = { "c ", "g ", "g4 ", "m ", "b ", "s " };
 
-  for (i=0; i < NumberTargets; i++)
-  {
-    p=color;
-    for (q=targets[i]; *p != '\0'; p++)
+  if (search_start != MagickFalse)
     {
-      if (*p == '\n')
-        break;
-      if (*p != *q)
-        continue;
-      if (isspace((int) ((unsigned char) (*(p-1)))) == 0)
-        continue;
-      r=p;
-      for ( ; ; )
+      for (i=0; i < NumberTargets; i++)
       {
-        if (*q == '\0')
-          return(p);
-        if (*r++ != *q++)
-          break;
+        p=color;
+        for (q=targets[i]; *p != '\0'; p++)
+        {
+          if (*p == '\n')
+            break;
+          if (*p != *q)
+            continue;
+          if (isspace((int) ((unsigned char) (*(p-1)))) == 0)
+            continue;
+          r=p;
+          for ( ; ; )
+          {
+            if (*q == '\0')
+              return(p);
+            if (*r++ != *q++)
+              break;
+          }
+          q=targets[i];
+        }
       }
-      q=targets[i];
+      return((char *) NULL);
     }
-  }
-  return((char *) NULL);
+  else
+    {
+      for (p=color+1; *p != '\0'; p++)
+      {
+        if (*p == '\n')
+          break;
+        if (isspace((int) ((unsigned char) (*(p-1)))) == 0)
+          continue;
+        if (isspace((int) ((unsigned char) (*p))) != 0)
+          continue;
+        for (i=0; i < NumberTargets; i++)
+        {
+          if (*p == *targets[i] && *(p+1) == *(targets[i+1]))
+            return(p);
+        }
+      }
+      return(p);
+    }
 }
 
 static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
+    *grey,
     key[MaxTextExtent],
     target[MaxTextExtent],
     *xpm_buffer;
@@ -232,9 +254,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   register char
+    *next,
     *p,
-    *q,
-    *next;
+    *q;
 
   register ssize_t
     x;
@@ -359,7 +381,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Parse color.
     */
     (void) CopyMagickString(target,"gray",MaxTextExtent);
-    q=ParseXPMColor(p+width);
+    q=ParseXPMColor(p+width,MagickTrue);
     if (q != (char *) NULL)
       {
         while ((isspace((int) ((unsigned char) *q)) == 0) && (*q != '\0'))
@@ -369,11 +391,14 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             MaxTextExtent));
         else
           (void) CopyMagickString(target,q,MaxTextExtent);
-        q=ParseXPMColor(target);
+        q=ParseXPMColor(target,MagickFalse);
         if (q != (char *) NULL)
           *q='\0';
       }
     StripString(target);
+    grey=strstr(target,"grey");
+    if (grey != (char *) NULL)
+      target[2]='a';
     if (LocaleCompare(target,"none") == 0)
       {
         image->storage_class=DirectClass;
