@@ -342,7 +342,7 @@ static char *SanitizeDelegateCommand(const char *command)
   return(sanitize_command);
 }
 
-MagickPrivate int ExternalDelegateCommand(const MagickBooleanType asynchronous,
+MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
   const MagickBooleanType verbose,const char *command,char *message,
   ExceptionInfo *exception)
 {
