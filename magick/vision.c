@@ -122,7 +122,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   MagickOffsetType
     progress;
 
+  MatrixInfo
+    *equivalence;
+
   ssize_t
+    n,
     y;
 
   /*
@@ -136,9 +140,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   assert(exception->signature == MagickSignature);
   component_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
-ThrowImageException(OptionWarning,
-  "Connected component labeling available in next release...")
-return(component_image);
   if (component_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(component_image,DirectClass) == MagickFalse)
@@ -147,8 +148,17 @@ return(component_image);
       component_image=DestroyImage(component_image);
       return((Image *) NULL);
     }
+  equivalence=AcquireMatrixInfo(image->columns,image->rows,sizeof(ssize_t),
+    exception);
+  if (equivalence == (MatrixInfo *) NULL)
+    { 
+      component_image=DestroyImage(component_image);
+      return(MagickFalse);
+    }
+  for (n=0; n < (ssize_t) (image->columns*image->rows); n++)
+    SetMatrixElement(equivalence,n,1,&n);
   /*
-    ConnectedComponents image.
+    Connected components image.
   */
   status=MagickTrue;
   progress=0;
@@ -160,6 +170,9 @@ return(component_image);
 #endif
   for (y=0; y < (ssize_t) component_image->rows; y++)
   {
+    register const PixelPacket
+      *restrict p;
+
     register PixelPacket
       *restrict q;
 
@@ -168,15 +181,18 @@ return(component_image);
 
     if (status == MagickFalse)
       continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(component_view,0,y,component_image->columns,
       1,exception);
-    if (q == (PixelPacket *) NULL)
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
         status=MagickFalse;
         continue;
       }
     for (x=0; x < (ssize_t) component_image->columns; x++)
     {
+      *q=(*p);
+      p++;
       q++;
     }
     if (SyncCacheViewAuthenticPixels(component_view,exception) == MagickFalse)
@@ -197,6 +213,7 @@ return(component_image);
   }
   component_view=DestroyCacheView(component_view);
   image_view=DestroyCacheView(image_view);
+  equivalence=DestroyMatrixInfo(equivalence);
   if (status == MagickFalse)
     component_image=DestroyImage(component_image);
   return(component_image);
