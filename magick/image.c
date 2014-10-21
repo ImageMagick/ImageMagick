@@ -801,6 +801,12 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  if ((image->columns == 0) || (image->rows == 0))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "NegativeOrZeroImageSize","`%s'",image->filename);
+      return((Image *) NULL);
+    }
   clone_image=(Image *) AcquireMagickMemory(sizeof(*clone_image));
   if (clone_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
