@@ -2497,6 +2497,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
         ((double) (start+n)-bisect+0.5));
       density+=contribution[n].weight;
     }
+    if (n == 0)
+      continue;
     if ((density != 0.0) && (density != 1.0))
       {
         register ssize_t
@@ -2710,6 +2712,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
         ((double) (start+n)-bisect+0.5));
       density+=contribution[n].weight;
     }
+    if (n == 0)
+      continue;
     if ((density != 0.0) && (density != 1.0))
       {
         register ssize_t
