@@ -231,7 +231,7 @@ static char *ParseXPMColor(char *color,MagickBooleanType search_start)
           continue;
         for (i=0; i < NumberTargets; i++)
         {
-          if (*p == *targets[i] && *(p+1) == *(targets[i+1]))
+          if (*p == *targets[i] && *(p+1) == *(targets[i]+1))
             return(p);
         }
       }
@@ -405,7 +405,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     StripString(target);
     grey=strstr(target,"grey");
     if (grey != (char *) NULL)
-      target[2]='a';
+      grey[2]='a';
     if (LocaleCompare(target,"none") == 0)
       {
         image->storage_class=DirectClass;
