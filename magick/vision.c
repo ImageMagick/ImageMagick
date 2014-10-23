@@ -37,7 +37,7 @@
 */
 
 #include "magick/studio.h"
-#include "magick/accelerate.h"
+#include "magick/artifact.h"
 #include "magick/blob.h"
 #include "magick/cache-view.h"
 #include "magick/color.h"
@@ -74,6 +74,7 @@
 #include "magick/signature-private.h"
 #include "magick/string_.h"
 #include "magick/thread-private.h"
+#include "magick/token.h"
 #include "magick/vision.h"
 
 /*
@@ -112,6 +113,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   CacheView
     *image_view,
     *component_view;
+
+  const char
+    *artifact;
 
   Image
     *component_image;
@@ -326,6 +330,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       }
   }
   component_view=DestroyCacheView(component_view);
+  artifact=GetImageArtifact(image,"connected-components:verbose");
+  if (IsMagickTrue(artifact))
+    {
+      puts("Future...");
+    }
   equivalences=DestroyMatrixInfo(equivalences);
   if (status == MagickFalse)
     component_image=DestroyImage(component_image);
