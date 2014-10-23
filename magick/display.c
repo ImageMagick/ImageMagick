@@ -3752,7 +3752,7 @@ static MagickBooleanType XColorEditImage(Display *display,
                     break;
                   for (x=0; x < (int) (*image)->columns; x++)
                   {
-                    if (IsColorSimilar(*image,q,&target))
+                    if (IsColorSimilar(*image,q,&target) != MagickFalse)
                       {
                         q->red=ScaleShortToQuantum(color.red);
                         q->green=ScaleShortToQuantum(color.green);
@@ -3767,7 +3767,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             else
               {
                 for (i=0; i < (ssize_t) (*image)->colors; i++)
-                  if (IsColorSimilar(*image,(*image)->colormap+i,&target))
+                  if (IsColorSimilar(*image,(*image)->colormap+i,&target) != MagickFalse)
                     {
                       (*image)->colormap[i].red=ScaleShortToQuantum(color.red);
                       (*image)->colormap[i].green=ScaleShortToQuantum(

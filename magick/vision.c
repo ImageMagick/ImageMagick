@@ -123,9 +123,16 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     progress;
 
   MatrixInfo
-    *equivalence;
+    *equivalences;
+
+  size_t
+    connections,
+    size;
 
   ssize_t
+    connect4[2][2] = { { 0, -1 }, { -1, 0 } },
+    connect8[4][2] = { { -1, -1 }, { 0, -1 }, { 1, -1 }, { -1, 0 } },
+    i,
     n,
     y;
 
@@ -142,37 +149,143 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     exception);
   if (component_image == (Image *) NULL)
     return((Image *) NULL);
+  component_image->depth=MAGICKCORE_QUANTUM_DEPTH;
   if (SetImageStorageClass(component_image,DirectClass) == MagickFalse)
     {
       InheritException(exception,&component_image->exception);
       component_image=DestroyImage(component_image);
       return((Image *) NULL);
     }
-  equivalence=AcquireMatrixInfo(image->columns,image->rows,sizeof(ssize_t),
-    exception);
-  if (equivalence == (MatrixInfo *) NULL)
-    { 
+  /*
+    Initialize connected components equivalences.
+  */
+  size=image->columns*image->rows;
+  if (image->columns != (size/image->rows))
+    {
       component_image=DestroyImage(component_image);
-      return(MagickFalse);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  equivalences=AcquireMatrixInfo(image->columns*image->rows,1,sizeof(ssize_t),
+    exception);
+  if (equivalences == (MatrixInfo *) NULL)
+    {
+      component_image=DestroyImage(component_image);
+      return((Image *) NULL);
     }
   for (n=0; n < (ssize_t) (image->columns*image->rows); n++)
-    SetMatrixElement(equivalence,n,1,&n);
+    (void) SetMatrixElement(equivalences,n,0,&n);
   /*
-    Connected components image.
+    Find connected components.
   */
   status=MagickTrue;
   progress=0;
+  connections=2;
+  if (connectivity > 4)
+    connections=4;
   image_view=AcquireVirtualCacheView(image,exception);
+  for (n=0; n < (ssize_t) connections; n++)
+  {
+    register ssize_t
+      i;
+
+    ssize_t
+      dx,
+      dy;
+
+    dx=connect4[n][0];
+    dy=connect4[n][1];
+    if (connectivity > 4)
+      {
+        dx=connect8[n][0];
+        dy=connect8[n][1];
+      }
+    for (y=0; y < (ssize_t) image->rows; y++)
+    {
+      register const PixelPacket
+        *restrict p;
+
+      register ssize_t
+        x;
+
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        break;
+      i=y*image->columns;
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        PixelPacket
+          neighbor;
+
+        status=GetOneCacheViewVirtualPixel(image_view,x+dx,y+dy,&neighbor,
+          exception);
+        if (IsColorSimilar(image,p,&neighbor) != MagickFalse)
+          {
+            ssize_t
+              label,
+              root,
+              rx,
+              ry;
+
+            /*
+              Find root.
+            */
+            rx=dy*image->columns+dx+i;
+            (void) GetMatrixElement(equivalences,rx,0,&label);
+            while (label != rx)
+            {
+              rx=label;
+              (void) GetMatrixElement(equivalences,rx,0,&label);
+            }
+            ry=i;
+            (void) GetMatrixElement(equivalences,ry,0,&label);
+            while (label != ry)
+            {
+              ry=label;
+              (void) GetMatrixElement(equivalences,ry,0,&label);
+            }
+            if (ry < rx)
+              {
+                (void) SetMatrixElement(equivalences,rx,0,&ry);
+                root=ry;
+              }
+            else
+              {
+                (void) SetMatrixElement(equivalences,ry,0,&rx);
+                root=rx;
+              }
+            /*
+              Compress path.
+            */
+            rx=dy*image->columns+dx+i;
+            while (rx != root)
+            {
+              (void) GetMatrixElement(equivalences,rx,0,&label);
+              (void) SetMatrixElement(equivalences,rx,0,&root);
+              rx=label;
+            }
+            ry=i;
+            while (ry != root)
+            {
+              (void) GetMatrixElement(equivalences,ry,0,&label);
+              (void) SetMatrixElement(equivalences,ry,0,&root);
+              ry=label;
+            }
+            (void) SetMatrixElement(equivalences,i,0,&root);
+          }
+        i++;
+        p++;
+      }
+    }
+  }
+  image_view=DestroyCacheView(image_view);
+  /*
+    Label connected components.
+  */
+  i=0;
+  n=0;
   component_view=AcquireAuthenticCacheView(component_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,component_image,component_image->rows,1)
-#endif
   for (y=0; y < (ssize_t) component_image->rows; y++)
   {
-    register const PixelPacket
-      *restrict p;
-
     register PixelPacket
       *restrict q;
 
@@ -181,19 +294,34 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(component_view,0,y,component_image->columns,
       1,exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
       }
     for (x=0; x < (ssize_t) component_image->columns; x++)
     {
-      *q=(*p);
-      p++;
+      ssize_t
+        label;
+
+      (void) GetMatrixElement(equivalences,i,0,&label);
+      if (label == i)
+        {
+          label=n++;
+          (void) SetMatrixElement(equivalences,i,0,&label);
+        }
+      else
+        {
+          (void) GetMatrixElement(equivalences,label,0,&label);
+          (void) SetMatrixElement(equivalences,i,0,&label);
+        }
+      q->red=(Quantum) label;
+      q->green=q->red;
+      q->blue=q->red;
       q++;
+      i++;
     }
     if (SyncCacheViewAuthenticPixels(component_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -202,9 +330,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_ConnectedComponentsImage)
-#endif
         proceed=SetImageProgress(image,ConnectedComponentsImageTag,progress++,
           image->rows);
         if (proceed == MagickFalse)
@@ -212,8 +337,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       }
   }
   component_view=DestroyCacheView(component_view);
-  image_view=DestroyCacheView(image_view);
-  equivalence=DestroyMatrixInfo(equivalence);
+  equivalences=DestroyMatrixInfo(equivalences);
   if (status == MagickFalse)
     component_image=DestroyImage(component_image);
   return(component_image);
