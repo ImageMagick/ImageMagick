@@ -3066,8 +3066,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 Minimize(min.opacity,
                             QuantumRange-(double) k_pixels[u].opacity);
                 if ( image->colorspace == CMYKColorspace)
-                  Minimize(min.index,(double) GetPixelIndex(
-                    k_indexes+u));
+                  Minimize(min.index,(double) GetPixelIndex(k_indexes+u));
               }
               k_pixels += virt_width;
               k_indexes += virt_width;
