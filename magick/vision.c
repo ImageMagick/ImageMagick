@@ -89,7 +89,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ConnectedComponentsImage() returns the connected-components of the image
-%  uniquely labeled.  Choose from 4 or 8-way connectivity.
+%  uniquely objected.  Choose from 4 or 8-way connectivity.
 %
 %  The format of the ConnectedComponentsImage method is:
 %
@@ -105,6 +105,57 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static void ConnectedComponentsStatistics(const MatrixInfo *objects,
+  const size_t number_objects,ExceptionInfo *exception)
+{
+  typedef struct _CCStatistic
+  {
+    ssize_t
+      area;
+  } CCStatistic;
+
+  CCStatistic
+    statistic;
+
+  MatrixInfo
+    *statistics;
+
+  register ssize_t
+    i;
+
+  size_t
+    extent;
+
+  statistics=AcquireMatrixInfo(number_objects,1,sizeof(CCStatistic),exception);
+  if (statistics == (MatrixInfo *) NULL)
+    return;
+  (void) NullMatrix(statistics);
+  extent=GetMatrixColumns(objects)*GetMatrixRows(objects);
+  for (i=0; i < (ssize_t) extent; i++)
+  {
+    ssize_t
+      object;
+
+    (void) GetMatrixElement(objects,i,0,&object);
+    (void) GetMatrixElement(statistics,object,0,&statistic);
+    statistic.area++;
+    (void) SetMatrixElement(statistics,object,0,&statistic);
+  }
+  (void) fprintf(stdout,
+    "Connected components (id bounding-box centroid area):\n");
+  for (i=0; i < (ssize_t) number_objects; i++)
+  {
+    (void) GetMatrixElement(statistics,i,0,&statistic);
+    (void) fprintf(stdout,
+      "  %.20g: %.20gx%.20g%+.20g%+.20g %.20gx%.20g %.20g\n",(double) i,
+      0.0,0.0,0.0,0.0,0.0,0.0,(double) statistic.area);
+    /* WxH+X+Y is the bounding box relative to the upper left corner *
+    /* Cx,Xy is the centroid */
+  }
+  statistics=DestroyMatrixInfo(statistics);
+}
+
 MagickExport Image *ConnectedComponentsImage(const Image *image,
   const size_t connectivity,ExceptionInfo *exception)
 {
@@ -218,7 +269,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         if (IsColorSimilar(image,p,neighbor) != MagickFalse)
           {
             ssize_t
-              label,
+              object,
               root,
               rx,
               ry;
@@ -227,16 +278,16 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
               Find root.
             */
             ry=offset;
-            (void) GetMatrixElement(equivalences,ry,0,&label);
-            while (ry != label) {
-              ry=label;
-              (void) GetMatrixElement(equivalences,ry,0,&label);
+            (void) GetMatrixElement(equivalences,ry,0,&object);
+            while (ry != object) {
+              ry=object;
+              (void) GetMatrixElement(equivalences,ry,0,&object);
             }
             rx=offset+dy*image->columns+dx;
-            (void) GetMatrixElement(equivalences,rx,0,&label);
-            while (rx != label) {
-              rx=label;
-              (void) GetMatrixElement(equivalences,rx,0,&label);
+            (void) GetMatrixElement(equivalences,rx,0,&object);
+            while (rx != object) {
+              rx=object;
+              (void) GetMatrixElement(equivalences,rx,0,&object);
             }
             if (ry < rx)
               {
@@ -253,15 +304,15 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             */
             ry=offset;
             while (ry != root) {
-              (void) GetMatrixElement(equivalences,ry,0,&label);
+              (void) GetMatrixElement(equivalences,ry,0,&object);
               (void) SetMatrixElement(equivalences,ry,0,&root);
-              ry=label;
+              ry=object;
             }
             rx=offset+dy*image->columns+dx;
             while (rx != root) {
-              (void) GetMatrixElement(equivalences,rx,0,&label);
+              (void) GetMatrixElement(equivalences,rx,0,&object);
               (void) SetMatrixElement(equivalences,rx,0,&root);
-              rx=label;
+              rx=object;
             }
             (void) SetMatrixElement(equivalences,offset,0,&root);
           }
@@ -297,20 +348,20 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     for (x=0; x < (ssize_t) component_image->columns; x++)
     {
       ssize_t
-        label;
+        object;
 
-      (void) GetMatrixElement(equivalences,offset,0,&label);
-      if (label == offset)
+      (void) GetMatrixElement(equivalences,offset,0,&object);
+      if (object == offset)
         {
-          label=n++;
-          (void) SetMatrixElement(equivalences,offset,0,&label);
+          object=n++;
+          (void) SetMatrixElement(equivalences,offset,0,&object);
         }
       else
         {
-          (void) GetMatrixElement(equivalences,label,0,&label);
-          (void) SetMatrixElement(equivalences,offset,0,&label);
+          (void) GetMatrixElement(equivalences,object,0,&object);
+          (void) SetMatrixElement(equivalences,offset,0,&object);
         }
-      q->red=(Quantum) (label > QuantumRange ? QuantumRange : label);
+      q->red=(Quantum) (object > QuantumRange ? QuantumRange : object);
       q->green=q->red;
       q->blue=q->red;
       q++;
@@ -332,9 +383,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   component_view=DestroyCacheView(component_view);
   artifact=GetImageArtifact(image,"connected-components:verbose");
   if (IsMagickTrue(artifact))
-    {
-      puts("Future...");
-    }
+    ConnectedComponentsStatistics(equivalences,n,exception);
   equivalences=DestroyMatrixInfo(equivalences);
   if (status == MagickFalse)
     component_image=DestroyImage(component_image);
