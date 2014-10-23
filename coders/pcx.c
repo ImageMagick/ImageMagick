@@ -221,6 +221,13 @@ static inline size_t MagickMin(const size_t x,const size_t y)
 
 static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define ThrowPCXException(severity,tag) \
+  { \
+    scanline=(unsigned char *) RelinquishMagickMemory(scanline); \
+    pixel_info=RelinquishVirtualMemory(pixel_info); \
+    ThrowReaderException(severity,tag); \
+  }
+
   Image
     *image;
 
@@ -265,7 +272,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned char
     packet,
-    *pcx_colormap,
+    pcx_colormap[768],
     *pixels,
     *scanline;
 
@@ -318,7 +325,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (offset < 0)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
-  pcx_colormap=(unsigned char *) NULL;
   count=ReadBlob(image,1,&pcx_info.identifier);
   for (id=1; id < 1024; id++)
   {
@@ -357,10 +363,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->resolution.x=(double) pcx_info.horizontal_resolution;
     image->resolution.y=(double) pcx_info.vertical_resolution;
     image->colors=16;
-    pcx_colormap=(unsigned char *) AcquireQuantumMemory(256UL,
-      3*sizeof(*pcx_colormap));
-    if (pcx_colormap == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     count=ReadBlob(image,3*image->colors,pcx_colormap);
     pcx_info.reserved=(unsigned char) ReadBlobByte(image);
     pcx_info.planes=(unsigned char) ReadBlobByte(image);
@@ -394,6 +396,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read image data.
     */
     pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line*pcx_info.planes;
+    if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) >
+        (pcx_packets*8U))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
       pcx_info.bytes_per_line),MagickMax(8,pcx_info.planes)*sizeof(*scanline));
     pixel_info=AcquireVirtualMemory(pcx_packets,sizeof(*pixels));
@@ -416,7 +421,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         packet=(unsigned char) ReadBlobByte(image);
         if (EOFBlob(image) != MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          ThrowPCXException(CorruptImageError,"UnexpectedEndOfFile");
         *p++=packet;
         pcx_packets--;
       }
@@ -425,7 +430,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         packet=(unsigned char) ReadBlobByte(image);
         if (EOFBlob(image) != MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          ThrowPCXException(CorruptImageError,"UnexpectedEndOfFile");
         if ((packet & 0xc0) != 0xc0)
           {
             *p++=packet;
@@ -435,7 +440,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count=(ssize_t) (packet & 0x3f);
         packet=(unsigned char) ReadBlobByte(image);
         if (EOFBlob(image) != MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          ThrowPCXException(CorruptImageError,"UnexpectedEndOfFile");
         for ( ; count != 0; count--)
         {
           *p++=packet;
@@ -455,7 +460,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Initialize image colormap.
           */
           if (image->colors > 256)
-            ThrowReaderException(CorruptImageError,"ColormapExceeds256Colors");
+            ThrowPCXException(CorruptImageError,"ColormapExceeds256Colors");
           if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
             {
               /*
@@ -484,7 +489,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->colormap[i].blue=ScaleCharToQuantum(*p++);
                 }
             }
-          pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
         }
     /*
       Convert PCX raster image to pixel packets.
@@ -639,8 +643,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->storage_class == PseudoClass)
       (void) SyncImage(image,exception);
-    if (pcx_colormap != (unsigned char *) NULL)
-      pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
     scanline=(unsigned char *) RelinquishMagickMemory(scanline);
     pixel_info=RelinquishVirtualMemory(pixel_info);
     if (EOFBlob(image) != MagickFalse)
