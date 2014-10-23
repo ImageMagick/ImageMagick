@@ -106,7 +106,7 @@
 %
 */
 
-static void ConnectedComponentsStatistics(const MatrixInfo *objects,
+static void ConnectedComponentsStatistics(const Image *image,
   const size_t number_objects,ExceptionInfo *exception)
 {
   typedef struct _CCStatistic
@@ -124,24 +124,10 @@ static void ConnectedComponentsStatistics(const MatrixInfo *objects,
   register ssize_t
     i;
 
-  size_t
-    extent;
-
   statistics=AcquireMatrixInfo(number_objects,1,sizeof(CCStatistic),exception);
   if (statistics == (MatrixInfo *) NULL)
     return;
   (void) NullMatrix(statistics);
-  extent=GetMatrixColumns(objects)*GetMatrixRows(objects);
-  for (i=0; i < (ssize_t) extent; i++)
-  {
-    ssize_t
-      object;
-
-    (void) GetMatrixElement(objects,i,0,&object);
-    (void) GetMatrixElement(statistics,object,0,&statistic);
-    statistic.area++;
-    (void) SetMatrixElement(statistics,object,0,&statistic);
-  }
   (void) fprintf(stdout,
     "Connected components (id bounding-box centroid area):\n");
   for (i=0; i < (ssize_t) number_objects; i++)
@@ -150,7 +136,7 @@ static void ConnectedComponentsStatistics(const MatrixInfo *objects,
     (void) fprintf(stdout,
       "  %.20g: %.20gx%.20g%+.20g%+.20g %.20gx%.20g %.20g\n",(double) i,
       0.0,0.0,0.0,0.0,0.0,0.0,(double) statistic.area);
-    /* WxH+X+Y is the bounding box relative to the upper left corner *
+    /* WxH+X+Y is the bounding box relative to the upper left corner */
     /* Cx,Xy is the centroid */
   }
   statistics=DestroyMatrixInfo(statistics);
@@ -382,9 +368,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   }
   component_view=DestroyCacheView(component_view);
   artifact=GetImageArtifact(image,"connected-components:verbose");
-  if (IsMagickTrue(artifact))
-    ConnectedComponentsStatistics(equivalences,n,exception);
   equivalences=DestroyMatrixInfo(equivalences);
+  if (IsMagickTrue(artifact))
+    ConnectedComponentsStatistics(component_image,n,exception);
   if (status == MagickFalse)
     component_image=DestroyImage(component_image);
   return(component_image);
