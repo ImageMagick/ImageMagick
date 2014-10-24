@@ -214,8 +214,7 @@ MagickExport DrawInfo *AcquireDrawInfo(void)
   GetDrawInfo((ImageInfo *) NULL,draw_info);
   return(draw_info);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -350,8 +349,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->debug=IsEventLogging();
   return(clone_info);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -664,8 +662,7 @@ static PolygonInfo *ConvertPathToPolygon(
     LogPolygonInfo(polygon_info);
   return(polygon_info);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -806,8 +803,7 @@ static PathInfo *ConvertPrimitiveToPath(
     LogPathInfo(path_info);
   return(path_info);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -874,8 +870,7 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
   draw_info=(DrawInfo *) RelinquishMagickMemory(draw_info);
   return(draw_info);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -912,8 +907,7 @@ static size_t DestroyEdge(PolygonInfo *polygon_info,
       (size_t) (polygon_info->number_edges-edge)*sizeof(*polygon_info->edges));
   return(polygon_info->number_edges);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -947,8 +941,7 @@ static PolygonInfo *DestroyPolygonInfo(PolygonInfo *polygon_info)
   polygon_info->edges=(EdgeInfo *) RelinquishMagickMemory(polygon_info->edges);
   return((PolygonInfo *) RelinquishMagickMemory(polygon_info));
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1258,8 +1251,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1397,8 +1389,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   (void) DrawPrimitive(image,clone_info,primitive_info);
   clone_info=DestroyDrawInfo(clone_info);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1480,8 +1471,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
   return(status != 0 ? MagickTrue : MagickFalse);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3192,8 +3182,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       keyword);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3511,8 +3500,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3597,8 +3585,7 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end pattern-path");
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4065,8 +4052,7 @@ RestoreMSCWarning
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    end draw-polygon");
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4639,8 +4625,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"  end draw-primitive");
   return(status != 0 ? MagickTrue : MagickFalse);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4749,8 +4734,7 @@ static MagickBooleanType DrawStrokePolygon(Image *image,
       "    end draw-stroke-polygon");
   return(status != 0 ? MagickTrue : MagickFalse);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4782,8 +4766,7 @@ MagickExport void GetAffineMatrix(AffineMatrix *affine_matrix)
   affine_matrix->sx=1.0;
   affine_matrix->sy=1.0;
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4931,8 +4914,7 @@ static inline double Permutate(const ssize_t n,const ssize_t k)
     r/=i;
   return(r);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
