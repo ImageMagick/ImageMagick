@@ -108,6 +108,9 @@
 
 typedef struct _CCObject
 {
+  ssize_t
+    id;
+
   RectangleInfo
     bounding_box;
 
@@ -162,6 +165,7 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
   (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
   for (i=0; i < (ssize_t) number_objects; i++)
   {
+    object[i].id=i;
     object[i].bounding_box.x=(ssize_t) image->columns;
     object[i].bounding_box.y=(ssize_t) image->rows;
   }
@@ -224,8 +228,8 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
     if (status == MagickFalse)
       break;
     (void) fprintf(stdout,
-      "  %.20g: %.20gx%.20g%+.20g%+.20g %.20gx%.20g %.20g\n",(double) i,
-      (double) object[i].bounding_box.width,(double)
+      "  %.20g: %.20gx%.20g%+.20g%+.20g %.20gx%.20g %.20g\n",(double)
+      object[i].id,(double) object[i].bounding_box.width,(double)
       object[i].bounding_box.height,(double) object[i].bounding_box.x,
       (double) object[i].bounding_box.y,object[i].centroid.x,
       object[i].centroid.y,(double) object[i].area);
