@@ -3420,7 +3420,8 @@ MagickExport MagickBooleanType SyncImage(Image *image)
 
   MagickBooleanType
     range_exception,
-    status;
+    status,
+    taint;
 
   ssize_t
     y;
@@ -3433,6 +3434,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     return(MagickFalse);
   range_exception=MagickFalse;
   status=MagickTrue;
+  taint=image->taint;
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3476,6 +3478,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
       status=MagickFalse;
   }
   image_view=DestroyCacheView(image_view);
+  image->taint=taint;
   if ((image->ping == MagickFalse) && (range_exception != MagickFalse))
     (void) ThrowMagickException(&image->exception,GetMagickModule(),
       CorruptImageError,"InvalidColormapIndex","`%s'",image->filename);
