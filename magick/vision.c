@@ -199,9 +199,6 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
         object[i].bounding_box.y=y;
       if (y > (ssize_t) object[i].bounding_box.height)
         object[i].bounding_box.height=(size_t) y;
-      object[i].m00=(double) p->red;
-      object[i].m10=(double) x*p->red;
-      object[i].m01=(double) y*p->red;
       object[i].area++;
       p++;
     }
@@ -210,16 +207,40 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
   {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
-    if (object[i].m00 < MagickEpsilon)
+  }
+  for (i=0; i < (ssize_t) number_objects; i++)
+  {
+    for (y=0; y < (ssize_t) object[i].bounding_box.height; y++)
+    {
+      register const PixelPacket
+        *restrict p;
+
+      register ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(image_view,object[i].bounding_box.x,
+        object[i].bounding_box.y+y,object[i].bounding_box.width,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      for (x=0; x < (ssize_t) object[i].bounding_box.width; x++)
       {
-        object[i].centroid.x=(double) image->columns/2.0;
-        object[i].centroid.y=(double) image->rows/2.0;
+        if ((ssize_t) p->red == i)
+          {
+            object[i].centroid.x+=x;
+            object[i].centroid.y+=y;
+          }
+        p++;
       }
-    else
-      {
-        object[i].centroid.x=object[i].m10/object[i].m00;
-        object[i].centroid.y=object[i].m01/object[i].m00;
-      }
+    }
+    object[i].centroid.x=(double) object[i].bounding_box.x+object[i].centroid.x/
+      (object[i].bounding_box.width*object[i].bounding_box.height);
+    object[i].centroid.y=(double) object[i].bounding_box.y+object[i].centroid.y/
+      (object[i].bounding_box.width*object[i].bounding_box.height);
   }
   image_view=DestroyCacheView(image_view);
   qsort((void *) object,number_objects,sizeof(*object),CCObjectCompare);
@@ -228,7 +249,7 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
     if (status == MagickFalse)
       break;
     (void) fprintf(stdout,
-      "  %.20g: %.20gx%.20g%+.20g%+.20g %.20gx%.20g %.20g\n",(double)
+      "  %.20g: %.20gx%.20g%+.20g%+.20g %+.1f,%+.1f %.20g\n",(double)
       object[i].id,(double) object[i].bounding_box.width,(double)
       object[i].bounding_box.height,(double) object[i].bounding_box.x,
       (double) object[i].bounding_box.y,object[i].centroid.x,
@@ -300,7 +321,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     }
   equivalences=AcquireMatrixInfo(size,1,sizeof(ssize_t),exception);
   if (equivalences == (MatrixInfo *) NULL)
-    { 
+    {
       component_image=DestroyImage(component_image);
       return((Image *) NULL);
     }
@@ -316,7 +337,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   {
     ssize_t
       connect4[2][2] = { { -1,  0 }, {  0, -1 } },
-      connect8[4][2] = { { -1, -1 }, { -1,  0 }, { -1,  1 }, {  0, -1 } }, 
+      connect8[4][2] = { { -1, -1 }, { -1,  0 }, { -1,  1 }, {  0, -1 } },
       dx,
       dy;
 
@@ -438,12 +459,12 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       offset=y*image->columns+x;
       status=GetMatrixElement(equivalences,offset,0,&object);
       if (object == offset)
-        { 
+        {
           object=n++;
           status=SetMatrixElement(equivalences,offset,0,&object);
         }
       else
-        { 
+        {
           status=GetMatrixElement(equivalences,object,0,&object);
           status=SetMatrixElement(equivalences,offset,0,&object);
         }
