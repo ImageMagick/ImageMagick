@@ -2618,7 +2618,7 @@ if ( i == 0 && j == 0 ) {
               /* derivatives...  (see Anthony Thyssen's personal notes) */
               ScaleFilter( resample_filter[id],
                     cx*cx, 0.0, s.y*cx/coeff[1], cx );
-#if 1
+#if 0
 /*if ( i == 0 && j == 0 )*/
 if ( d.x == 0.5 && d.y == 0.5 ) {
   fprintf(stderr, "x=%lf  y=%lf  u=%lf  v=%lf\n", d.x*coeff[1], d.y, s.x, s.y);
