@@ -8071,7 +8071,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
 
   /* Respect the -depth option */
-  if (image->depth < MAGICKCORE_QUANTUM_DEPTH)
+  if (image->depth < 4)
     {
        register PixelPacket
          *r;
