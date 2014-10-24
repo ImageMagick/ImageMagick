@@ -4703,7 +4703,6 @@ static inline MagickBooleanType IsAuthenticPixelCache(
   MagickOffsetType
     offset;
 
- 
   /*
     Does nexus pixels point directly to in-core cache pixels or is it buffered?
   */
