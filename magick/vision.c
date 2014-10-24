@@ -169,7 +169,7 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
     object[i].bounding_box.x=(ssize_t) image->columns;
     object[i].bounding_box.y=(ssize_t) image->rows;
   }
-  (void) fprintf(stdout,"Objects (id bounding-box centroid area):\n");
+  (void) fprintf(stdout,"Objects (id: bounding-box centroid area):\n");
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
