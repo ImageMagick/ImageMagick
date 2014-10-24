@@ -810,7 +810,9 @@ typedef struct _MngInfo
     ping_exclude_zTXt,
     ping_preserve_colormap,
   /* Added at version 6.8.5-7 */
-    ping_preserve_iCCP;
+    ping_preserve_iCCP,
+  /* Added at version 6.8.9-9 */
+    ping_exclude_tIME;
 
 } MngInfo;
 #endif /* VER */
@@ -1840,6 +1842,24 @@ static int read_vpag_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 }
 #endif
 
+#if defined(PNG_tIME_SUPPORTED)
+static void read_tIME_chunk(Image *image,png_struct *ping,png_info *info)
+{
+  png_timep
+    time;
+
+  if (png_get_tIME(ping,info,&time))
+    {
+      char
+        timestamp[21];
+
+      FormatLocaleString(timestamp,21,"%04d-%02d-%02dT%02d:%02d:%02dZ",
+        time->year,time->month,time->day,time->hour,time->minute,time->second);
+      SetImageProperty(image,"png:tIME",timestamp);
+    }
+}
+#endif
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1875,7 +1895,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 {
   /* Read one PNG image */
 
-  /* To do: Read the tIME chunk into the date:modify property */
   /* To do: Read the tEXt/Creation Time chunk into the date:create property */
 
   Image
@@ -1982,7 +2001,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     112,  67,  65,  76, (png_byte) '\0',   /* pCAL */
     115,  67,  65,  76, (png_byte) '\0',   /* sCAL */
     115,  80,  76,  84, (png_byte) '\0',   /* sPLT */
+#if !defined(PNG_tIME_SUPPORTED)
     116,  73,  77,  69, (png_byte) '\0',   /* tIME */
+#endif
 #ifdef PNG_APNG_SUPPORTED /* libpng was built with APNG patch; */
                           /* ignore the APNG chunks */
      97,  99,  84,  76, (png_byte) '\0',   /* acTL */
@@ -3009,6 +3030,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (int) number_colors);
          (void) SetImageProperty(image,"png:PLTE.number_colors",msg);
        }
+
+#if defined(PNG_tIME_SUPPORTED)
+     read_tIME_chunk(image,ping,ping_info);
+#endif
    }
 
   /*
@@ -3613,8 +3638,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             value=DestroyString(value);
           }
       }
-      num_text_total += num_text;
-    }
+    num_text_total += num_text;
+  }
 
 #ifdef MNG_OBJECT_BUFFERS
   /*
@@ -3811,6 +3836,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (double) image->page.x,(double) image->page.y);
          (void) SetImageProperty(image,"png:oFFs",msg);
        }
+#endif
+
+#if defined(PNG_tIME_SUPPORTED)
+     read_tIME_chunk(image,ping,end_info);
 #endif
 
      if ((image->page.width != 0 && image->page.width != image->columns) ||
@@ -7676,6 +7705,49 @@ static MagickBooleanType Magick_png_write_chunk_from_profile(Image *image,
    return(MagickTrue);
 }
 
+#if defined(PNG_tIME_SUPPORTED)
+static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
+  const char *date)
+{
+  unsigned int
+    day,
+    hour,
+    minute,
+    month,
+    second,
+    year;
+
+  png_time
+    ptime;
+
+  time_t
+    ttime;
+
+  if (date != (const char *) NULL)
+    {
+      if (sscanf(date,"%d-%d-%dT%d:%d:%dZ",&year,&month,&day,&hour,&minute,
+          &second) != 6)
+        {
+          (void) ThrowMagickException(&image->exception,GetMagickModule(),CoderError,
+            "Invalid date format specified for png:tIME","`%s'",
+            image->filename);
+          return;
+        }
+      ptime.year=(png_uint_16) year;
+      ptime.month=(png_byte) month;
+      ptime.day=(png_byte) day;
+      ptime.hour=(png_byte) hour;
+      ptime.minute=(png_byte) minute;
+      ptime.second=(png_byte) second;
+    }
+  else
+  {
+    time(&ttime);
+    png_convert_from_time_t(&ptime,ttime);
+  }
+  png_set_tIME(ping,info,&ptime);
+}
+#endif
 
 /* Write one PNG image */
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
@@ -7753,6 +7825,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_pHYs,
     ping_exclude_sRGB,
     ping_exclude_tEXt,
+    ping_exclude_tIME,
     /* ping_exclude_tRNS, */
     ping_exclude_vpAg,
     ping_exclude_zCCP, /* hex-encoded iCCP */
@@ -7901,6 +7974,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_exclude_pHYs=mng_info->ping_exclude_pHYs;
   ping_exclude_sRGB=mng_info->ping_exclude_sRGB;
   ping_exclude_tEXt=mng_info->ping_exclude_tEXt;
+  ping_exclude_tIME=mng_info->ping_exclude_tIME;
   /* ping_exclude_tRNS=mng_info->ping_exclude_tRNS; */
   ping_exclude_vpAg=mng_info->ping_exclude_vpAg;
   ping_exclude_zCCP=mng_info->ping_exclude_zCCP; /* hex-encoded iCCP in zTXt */
@@ -10551,6 +10625,24 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 #endif
 
+#if defined(PNG_tIME_SUPPORTED)
+  if (ping_exclude_tIME == MagickFalse)
+    {
+      const char
+        *timestamp;
+
+      timestamp=GetImageOption(image_info,"png:tIME");
+      if (timestamp != (const char *) NULL)
+        write_tIME_chunk(image,ping,ping_info,timestamp);
+      else
+        {
+          if (image->taint == MagickFalse)
+            timestamp=GetImageProperty(image,"png:tIME");
+          write_tIME_chunk(image,ping,ping_info,timestamp);
+        }
+    }
+#endif
+
   if (mng_info->need_blob != MagickFalse)
   {
     if (OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception) ==
@@ -11602,6 +11694,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
   mng_info->ping_exclude_pHYs=MagickFalse;
   mng_info->ping_exclude_sRGB=MagickFalse;
   mng_info->ping_exclude_tEXt=MagickFalse;
+  mng_info->ping_exclude_tIME=MagickFalse;
   mng_info->ping_exclude_tRNS=MagickFalse;
   mng_info->ping_exclude_vpAg=MagickFalse;
   mng_info->ping_exclude_zCCP=MagickFalse; /* hex-encoded iCCP in zTXt */
@@ -11810,6 +11903,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
         mng_info->ping_exclude_oFFs=excluding;
         mng_info->ping_exclude_pHYs=excluding;
         mng_info->ping_exclude_sRGB=excluding;
+        mng_info->ping_exclude_tIME=excluding;
         mng_info->ping_exclude_tEXt=excluding;
         mng_info->ping_exclude_tRNS=excluding;
         mng_info->ping_exclude_vpAg=excluding;
@@ -11839,6 +11933,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
         mng_info->ping_exclude_sRGB=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
         mng_info->ping_exclude_tEXt=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_tIME=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
         mng_info->ping_exclude_tRNS=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
@@ -11884,6 +11980,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
 
     if (IsOptionMember("text",value) != MagickFalse)
       mng_info->ping_exclude_tEXt=excluding;
+
+    if (IsOptionMember("time",value) != MagickFalse)
+      mng_info->ping_exclude_tIME=excluding;
 
     if (IsOptionMember("trns",value) != MagickFalse)
       mng_info->ping_exclude_tRNS=excluding;
@@ -11938,6 +12037,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
     if (mng_info->ping_exclude_tEXt != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    tEXt");
+    if (mng_info->ping_exclude_tIME != MagickFalse)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    tIME");
     if (mng_info->ping_exclude_tRNS != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    tRNS");
