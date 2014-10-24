@@ -106,26 +106,45 @@
 %
 */
 
+typedef struct _CCObject
+{
+  RectangleInfo
+    bounding_box;
+
+  double
+    m00,
+    m01,
+    m10;
+
+  PointInfo
+    centroid;
+
+  ssize_t
+    area;
+} CCObject;
+
+static int CCObjectCompare(const void *x,const void *y)
+{
+  CCObject
+    *p,
+    *q;
+
+  p=(CCObject *) x;
+  q=(CCObject *) y;
+  return((int) (q->area-(ssize_t) p->area));
+}
+
 static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
   const size_t number_objects,ExceptionInfo *exception)
 {
-  typedef struct _CCStatistic
-  {
-    ssize_t
-      area;
-  } CCStatistic;
-
   CacheView
     *image_view;
 
-  CCStatistic
-    statistic;
+  CCObject
+    *object;
 
   MagickBooleanType
     status;
-
-  MatrixInfo
-    *statistics;
 
   register ssize_t
     i;
@@ -133,12 +152,20 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
   ssize_t
     y;
 
-  statistics=AcquireMatrixInfo(number_objects,1,sizeof(CCStatistic),exception);
-  if (statistics == (MatrixInfo *) NULL)
-    return(MagickFalse);
-  (void) NullMatrix(statistics);
-  (void) fprintf(stdout,
-    "Connected components (id bounding-box centroid area):\n");
+  object=(CCObject *) AcquireQuantumMemory(number_objects,sizeof(*object));
+  if (object == (CCObject *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
+  for (i=0; i < (ssize_t) number_objects; i++)
+  {
+    object[i].bounding_box.x=(ssize_t) image->columns;
+    object[i].bounding_box.y=(ssize_t) image->rows;
+  }
+  (void) fprintf(stdout,"Objects (id bounding-box centroid area):\n");
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -159,40 +186,52 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      status=GetMatrixElement(statistics,(ssize_t) p->red,0,&statistic);
-      statistic.area++;
-      status=SetMatrixElement(statistics,(ssize_t) p->red,0,&statistic);
+      i=(ssize_t) p->red;
+      if (x < object[i].bounding_box.x)
+        object[i].bounding_box.x=x;
+      if (x > (ssize_t) object[i].bounding_box.width)
+        object[i].bounding_box.width=(size_t) x;
+      if (y < object[i].bounding_box.y)
+        object[i].bounding_box.y=y;
+      if (y > (ssize_t) object[i].bounding_box.height)
+        object[i].bounding_box.height=(size_t) y;
+      object[i].m00=(double) p->red;
+      object[i].m10=(double) x*p->red;
+      object[i].m01=(double) y*p->red;
+      object[i].area++;
       p++;
     }
   }
+  for (i=0; i < (ssize_t) number_objects; i++)
+  {
+    object[i].bounding_box.width-=(object[i].bounding_box.x-1);
+    object[i].bounding_box.height-=(object[i].bounding_box.y-1);
+    if (object[i].m00 < MagickEpsilon)
+      {
+        object[i].centroid.x=(double) image->columns/2.0;
+        object[i].centroid.y=(double) image->rows/2.0;
+      }
+    else
+      {
+        object[i].centroid.x=object[i].m10/object[i].m00;
+        object[i].centroid.y=object[i].m01/object[i].m00;
+      }
+  }
   image_view=DestroyCacheView(image_view);
+  qsort((void *) object,number_objects,sizeof(*object),CCObjectCompare);
   for (i=0; i < (ssize_t) number_objects; i++)
   {
     if (status == MagickFalse)
       break;
-    status=GetMatrixElement(statistics,i,0,&statistic);
     (void) fprintf(stdout,
       "  %.20g: %.20gx%.20g%+.20g%+.20g %.20gx%.20g %.20g\n",(double) i,
-      0.0,0.0,0.0,0.0,0.0,0.0,(double) statistic.area);
-    /* WxH+X+Y is the bounding box relative to the upper left corner */
-    /* Cx,Xy is the centroid */
+      (double) object[i].bounding_box.width,(double)
+      object[i].bounding_box.height,(double) object[i].bounding_box.x,
+      (double) object[i].bounding_box.y,object[i].centroid.x,
+      object[i].centroid.y,(double) object[i].area);
   }
-  statistics=DestroyMatrixInfo(statistics);
+  object=(CCObject *) RelinquishMagickMemory(object);
   return(status);
-}
-
-static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
 }
 
 MagickExport Image *ConnectedComponentsImage(const Image *image,
@@ -224,7 +263,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
   ssize_t
     n,
-    offset,
     y;
 
   /*
@@ -276,17 +314,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       connect4[2][2] = { { -1,  0 }, {  0, -1 } },
       connect8[4][2] = { { -1, -1 }, { -1,  0 }, { -1,  1 }, {  0, -1 } }, 
       dx,
-      dy,
-      start,
-      stop;
+      dy;
 
     if (status == MagickFalse)
       continue;
     dy=connectivity > 4 ? connect8[n][0] : connect4[n][0];
     dx=connectivity > 4 ? connect8[n][1] : connect4[n][1];
-    start=MagickMax(0,-dy);
-    stop=MagickMin((ssize_t) image->rows,(ssize_t) image->rows-dy);
-    for (y=start; y < stop; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const PixelPacket
         *restrict p;
@@ -294,81 +328,76 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       register ssize_t
         x;
 
-      ssize_t
-        offset,
-        start,
-        stop;
-
       if (status == MagickFalse)
         continue;
-      p=GetCacheViewVirtualPixels(image_view,-1,y-1,image->columns+2,3,
+      p=GetCacheViewVirtualPixels(image_view,0,y-1,image->columns,3,
         exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
           continue;
         }
-      start=MagickMax(0,-dx);
-      stop=MagickMin((ssize_t) image->columns,(ssize_t) image->columns-dx);
-      p+=image->columns+start+3;
-      offset=y*image->columns+start;
-      for (x=start; x < stop; x++)
+      p+=image->columns;
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
-        const PixelPacket
-          *neighbor;
+        ssize_t
+          neighbor_offset,
+          object,
+          ox,
+          oy,
+          pixel_offset,
+          root;
 
-        neighbor=p+dy*(image->columns+2)+dx;
-        if (IsColorSimilar(image,p,neighbor) != MagickFalse)
+        /*
+          Is neighbor an authentic pixel and a different color than the pixel?
+        */
+        neighbor_offset=dy*image->columns+dx;
+        if (((x+dx) < 0) || ((x+dx) >= (ssize_t) image->columns) ||
+            ((y+dy) < 0) || ((y+dy) >= (ssize_t) image->rows) ||
+            (IsColorSimilar(image,p,p+neighbor_offset) == MagickFalse))
           {
-            ssize_t
-              object,
-              root,
-              rx,
-              ry;
-
-            /*
-              Find root.
-            */
-            rx=offset;
-            status=GetMatrixElement(equivalences,rx,0,&object);
-            while (object != rx) {
-              rx=object;
-              status=GetMatrixElement(equivalences,rx,0,&object);
-            }
-            ry=offset+dy*image->columns+dx;
-            status=GetMatrixElement(equivalences,ry,0,&object);
-            while (object != ry) {
-              ry=object;
-              status=GetMatrixElement(equivalences,ry,0,&object);
-            }
-            if (rx < ry)
-              {
-                status=SetMatrixElement(equivalences,ry,0,&rx);
-                root=rx;
-              }
-            else
-              {
-                status=SetMatrixElement(equivalences,rx,0,&ry);
-                root=ry;
-              }
-            /*
-              Compress path.
-            */
-            rx=offset;
-            status=GetMatrixElement(equivalences,rx,0,&object);
-            while (object != root) {
-              status=GetMatrixElement(equivalences,rx,0,&object);
-              status=SetMatrixElement(equivalences,rx,0,&root);
-            }
-            ry=offset+dy*image->columns+dx;
-            status=GetMatrixElement(equivalences,ry,0,&object);
-            while (object != root) {
-              status=GetMatrixElement(equivalences,ry,0,&object);
-              status=SetMatrixElement(equivalences,ry,0,&root);
-            }
-            status=SetMatrixElement(equivalences,offset,0,&root);
+            p++;
+            continue;
           }
-        offset++;
+        /*
+          Resolve this equivalence.
+        */
+        pixel_offset=y*image->columns+x;
+        ox=pixel_offset;
+        status=GetMatrixElement(equivalences,ox,0,&object);
+        while (object != ox) {
+          ox=object;
+          status=GetMatrixElement(equivalences,ox,0,&object);
+        }
+        oy=pixel_offset+neighbor_offset;
+        status=GetMatrixElement(equivalences,oy,0,&object);
+        while (object != oy) {
+          oy=object;
+          status=GetMatrixElement(equivalences,oy,0,&object);
+        }
+        if (ox < oy)
+          {
+            status=SetMatrixElement(equivalences,oy,0,&ox);
+            root=ox;
+          }
+        else
+          {
+            status=SetMatrixElement(equivalences,ox,0,&oy);
+            root=oy;
+          }
+        ox=pixel_offset;
+        status=GetMatrixElement(equivalences,ox,0,&object);
+        while (object != root) {
+          status=GetMatrixElement(equivalences,ox,0,&object);
+          status=SetMatrixElement(equivalences,ox,0,&root);
+        }
+        oy=pixel_offset+neighbor_offset;
+        status=GetMatrixElement(equivalences,oy,0,&object);
+        while (object != root) {
+          status=GetMatrixElement(equivalences,oy,0,&object);
+          status=SetMatrixElement(equivalences,oy,0,&root);
+        }
+        status=SetMatrixElement(equivalences,y*image->columns+x,0,&root);
         p++;
       }
     }
@@ -377,7 +406,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   /*
     Label connected components.
   */
-  offset=0;
   n=0;
   component_view=AcquireAuthenticCacheView(component_image,exception);
   for (y=0; y < (ssize_t) component_image->rows; y++)
@@ -400,8 +428,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     for (x=0; x < (ssize_t) component_image->columns; x++)
     {
       ssize_t
-        object;
+        object,
+        offset;
 
+      offset=y*image->columns+x;
       status=GetMatrixElement(equivalences,offset,0,&object);
       if (object == offset)
         { 
@@ -418,7 +448,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       q->green=q->red;
       q->blue=q->red;
       q++;
-      offset++;
     }
     if (SyncCacheViewAuthenticPixels(component_view,exception) == MagickFalse)
       status=MagickFalse;
