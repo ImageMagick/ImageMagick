@@ -8181,7 +8181,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
 
   /* Respect the -depth option */
-  if (image->depth < MAGICKCORE_QUANTUM_DEPTH)
+  if (image->depth < 4)
     {
        register Quantum
          *r;
@@ -8216,7 +8216,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              }
            }
          }
-
        else if (image->depth > 1)
          {
            /* Scale to 2-bit */
