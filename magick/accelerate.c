@@ -6706,7 +6706,7 @@ static Image* ComputeMotionBlurImage(const Image *image,
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(cl_float4), &biasPixel);
 
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(ChannelType), &channel);
-  matte = (image->matte == MagickTrue)?1:0;
+  matte = (image->matte != MagickFalse)?1:0;
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(unsigned int), &matte);
   if (clStatus != CL_SUCCESS)
   {
