@@ -114,11 +114,6 @@ typedef struct _CCObject
   RectangleInfo
     bounding_box;
 
-  double
-    m00,
-    m01,
-    m10;
-
   PointInfo
     centroid;
 
@@ -238,9 +233,9 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
       }
     }
     object[i].centroid.x=(double) object[i].bounding_box.x+object[i].centroid.x/
-      (object[i].bounding_box.width*object[i].bounding_box.height);
+      object[i].area;
     object[i].centroid.y=(double) object[i].bounding_box.y+object[i].centroid.y/
-      (object[i].bounding_box.width*object[i].bounding_box.height);
+      object[i].area;
   }
   image_view=DestroyCacheView(image_view);
   qsort((void *) object,number_objects,sizeof(*object),CCObjectCompare);
