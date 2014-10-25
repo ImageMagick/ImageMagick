@@ -362,9 +362,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         ssize_t
           neighbor_offset,
           object,
+          offset,
           ox,
           oy,
-          pixel_offset,
           root;
 
         /*
@@ -381,14 +381,14 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         /*
           Resolve this equivalence.
         */
-        pixel_offset=y*image->columns+x;
-        ox=pixel_offset;
+        offset=y*image->columns+x;
+        ox=offset;
         status=GetMatrixElement(equivalences,ox,0,&object);
         while (object != ox) {
           ox=object;
           status=GetMatrixElement(equivalences,ox,0,&object);
         }
-        oy=pixel_offset+neighbor_offset;
+        oy=offset+neighbor_offset;
         status=GetMatrixElement(equivalences,oy,0,&object);
         while (object != oy) {
           oy=object;
@@ -404,13 +404,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             status=SetMatrixElement(equivalences,ox,0,&oy);
             root=oy;
           }
-        ox=pixel_offset;
+        ox=offset;
         status=GetMatrixElement(equivalences,ox,0,&object);
         while (object != root) {
           status=GetMatrixElement(equivalences,ox,0,&object);
           status=SetMatrixElement(equivalences,ox,0,&root);
         }
-        oy=pixel_offset+neighbor_offset;
+        oy=offset+neighbor_offset;
         status=GetMatrixElement(equivalences,oy,0,&object);
         while (object != root) {
           status=GetMatrixElement(equivalences,oy,0,&object);
