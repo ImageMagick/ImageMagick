@@ -356,7 +356,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           status=MagickFalse;
           continue;
         }
-      p+=image->columns;
+      p+=image->columns*GetPixelChannels(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         PixelInfo
@@ -366,17 +366,17 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         ssize_t
           neighbor_offset,
           object,
+          offset,
           ox,
           oy,
-          pixel_offset,
           root;
 
         /*
           Is neighbor an authentic pixel and a different color than the pixel?
         */
+        GetPixelInfoPixel(image,p,&pixel);
         neighbor_offset=dy*(image->columns*GetPixelChannels(image))+dx*
           GetPixelChannels(image);
-        GetPixelInfoPixel(image,p,&pixel);
         GetPixelInfoPixel(image,p+neighbor_offset,&target);
         if (((x+dx) < 0) || ((x+dx) >= (ssize_t) image->columns) ||
             ((y+dy) < 0) || ((y+dy) >= (ssize_t) image->rows) ||
@@ -388,14 +388,15 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         /*
           Resolve this equivalence.
         */
-        pixel_offset=y*image->columns+x;
-        ox=pixel_offset;
+        offset=y*image->columns+x;
+        neighbor_offset=dy*image->columns+dx;
+        ox=offset;
         status=GetMatrixElement(equivalences,ox,0,&object);
         while (object != ox) {
           ox=object;
           status=GetMatrixElement(equivalences,ox,0,&object);
         }
-        oy=pixel_offset+neighbor_offset;
+        oy=offset+neighbor_offset;
         status=GetMatrixElement(equivalences,oy,0,&object);
         while (object != oy) {
           oy=object;
@@ -411,13 +412,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             status=SetMatrixElement(equivalences,ox,0,&oy);
             root=oy;
           }
-        ox=pixel_offset;
+        ox=offset;
         status=GetMatrixElement(equivalences,ox,0,&object);
         while (object != root) {
           status=GetMatrixElement(equivalences,ox,0,&object);
           status=SetMatrixElement(equivalences,ox,0,&root);
         }
-        oy=pixel_offset+neighbor_offset;
+        oy=offset+neighbor_offset;
         status=GetMatrixElement(equivalences,oy,0,&object);
         while (object != root) {
           status=GetMatrixElement(equivalences,oy,0,&object);
