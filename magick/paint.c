@@ -109,7 +109,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   const MagickPixelPacket *target,const ssize_t x_offset,const ssize_t y_offset,
   const MagickBooleanType invert)
 {
-#define MaxStacksize  131072UL
+#define MaxStacksize  262144UL
 #define PushSegmentStack(up,left,right,delta) \
 { \
   if (s >= (segment_stack+MaxStacksize)) \
