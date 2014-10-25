@@ -2273,6 +2273,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  (void) channel;
   width=(size_t) radius+1;
   gaussian_image=BlurImage(image,radius,sigma,exception);
   if (gaussian_image == (Image *) NULL)
