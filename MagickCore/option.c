@@ -324,6 +324,8 @@ static const OptionInfo
     { "-compress", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+concurrent", 0L, DeprecateOptionFlag, MagickTrue },
     { "-concurrent", 0L, GenesisOptionFlag, MagickFalse },
+    { "+connected-component", 1L, DeprecateOptionFlag, MagickTrue },
+    { "-connected-component", 1L, SimpleOperatorFlag, MagickFalse },
     { "-contrast", 0L, ReplacedOptionFlag | SimpleOperatorFlag, MagickTrue },
     { "+contrast", 0L, ReplacedOptionFlag | SimpleOperatorFlag, MagickTrue },
     { "+contrast-stretch", 1L, DeprecateOptionFlag, MagickTrue },
