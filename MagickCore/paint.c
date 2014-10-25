@@ -111,7 +111,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   const ssize_t y_offset,const MagickBooleanType invert,
   ExceptionInfo *exception)
 {
-#define MaxStacksize  131072UL
+#define MaxStacksize  262144UL
 #define PushSegmentStack(up,left,right,delta) \
 { \
   if (s >= (segment_stack+MaxStacksize)) \
