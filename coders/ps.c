@@ -438,6 +438,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickBooleanType
     cmyk,
+    fitPage,
     skip,
     status;
 
@@ -782,6 +783,32 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       page.height=(size_t) ceil((double) ((hires_bounds.y2-hires_bounds.y1)*
         resolution.y/delta.y)-0.5);
     }
+  fitPage=MagickFalse;
+  option=GetImageOption(image_info,"eps:fit-page");
+  if (option != (char *) NULL)
+  {
+    char
+      *geometry;
+
+    MagickStatusType
+      flags;
+
+    geometry=GetPageGeometry(option);
+    flags=ParseMetaGeometry(geometry,&page.x,&page.y,&page.width,&page.height);
+    if (flags == NoValue)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "InvalidGeometry","`%s'",option);
+        image=DestroyImage(image);
+        return((Image *) NULL);
+      }
+    page.width=(size_t) ceil((double) (page.width*image->x_resolution/delta.x)
+      -0.5);
+    page.height=(size_t) ceil((double) (page.height*image->y_resolution/
+      delta.y) -0.5);
+    geometry=DestroyString(geometry);
+    fitPage=MagickTrue;
+  }
   (void) CloseBlob(image);
   if (IssRGBCompatibleColorspace(image_info->colorspace) != MagickFalse)
     cmyk=MagickFalse;
@@ -847,10 +874,15 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
-  option=GetImageOption(image_info,"eps:use-cropbox");
-  if ((*image_info->magick == 'E') && ((option == (const char *) NULL) ||
-      (IsMagickTrue(option) != MagickFalse)))
-    (void) ConcatenateMagickString(options,"-dEPSCrop ",MaxTextExtent);
+  if (*image_info->magick == 'E')
+    {
+      option=GetImageOption(image_info,"eps:use-cropbox");
+      if ((option == (const char *) NULL) ||
+          (IsStringTrue(option) != MagickFalse))
+        (void) ConcatenateMagickString(options,"-dEPSCrop ",MaxTextExtent);
+      if (fitPage != MagickFalse)
+        (void) ConcatenateMagickString(options,"-dEPSFitPage ",MaxTextExtent);
+    }
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(filename);
   (void) RelinquishUniqueFileResource(filename);
