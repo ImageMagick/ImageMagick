@@ -2187,6 +2187,8 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
 
   if (command == (char *) NULL)
     return(-1);
+  read_output=(HANDLE) NULL;
+  write_output=(HANDLE) NULL;
   GetStartupInfo(&startup_info);
   startup_info.dwFlags=STARTF_USESHOWWINDOW;
   startup_info.wShowWindow=SW_SHOWMINNOACTIVE;
