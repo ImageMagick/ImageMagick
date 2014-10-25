@@ -2614,7 +2614,7 @@ static const DicomInfo
     { 0xfffe, 0xe000, "!!", "Item" },
     { 0xfffe, 0xe00d, "!!", "Item Delimitation Item" },
     { 0xfffe, 0xe0dd, "!!", "Sequence Delimitation Item" },
-    { 0xffff, 0xffff, "xs", "" }
+    { 0xffff, 0xffff, "xs", (char *) NULL }
   };
 
 
@@ -3434,17 +3434,20 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if ((group == (ssize_t) dicom_info[i].group) &&
               (element == (ssize_t) dicom_info[i].element))
             break;
-        attribute=AcquireString("dcm:");
-        (void) ConcatenateString(&attribute,dicom_info[i].description);
-        for (i=0; i < (ssize_t) MagickMax(length,4); i++)
-          if (isprint((int) data[i]) == MagickFalse)
-            break;
-        if ((i == (ssize_t) length) || (length > 4))
+        if (dicom_info[i].description != (char *) NULL)
           {
-            (void) SubstituteString(&attribute," ","");
-            (void) SetImageProperty(image,attribute,(char *) data);
+            attribute=AcquireString("dcm:");
+            (void) ConcatenateString(&attribute,dicom_info[i].description);
+            for (i=0; i < (ssize_t) MagickMax(length,4); i++)
+              if (isprint((int) data[i]) == MagickFalse)
+                break;
+            if ((i == (ssize_t) length) || (length > 4))
+              {
+                (void) SubstituteString(&attribute," ","");
+                (void) SetImageProperty(image,attribute,(char *) data);
+              }
+            attribute=DestroyString(attribute);
           }
-        attribute=DestroyString(attribute);
       }
     if (image_info->verbose != MagickFalse)
       {
