@@ -1168,7 +1168,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   /* Call OpenCL version */
   status=AccelerateContrastStretchImageChannel(image,channel,black_point,
     white_point,&image->exception);
-  if (status == MagickTrue)
+  if (status != MagickFalse)
     return status;
   histogram=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*histogram));
@@ -2438,7 +2438,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
 
   /* call opencl version */
   status = AccelerateGrayscaleImage(image, method, &image->exception);
-  if (status == MagickTrue)
+  if (status != MagickFalse)
     return status;
 
   status=MagickTrue;
