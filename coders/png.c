@@ -3319,7 +3319,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
               quantum|=(*p++);
 
-              *r=(unsigned short) ScaleShortToQuantum(quantum);
+              *r=ScaleShortToQuantum(quantum);
               r++;
 
               if (ping_color_type == 4)
@@ -3330,7 +3330,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     quantum=0;
 
                   quantum|=(*p++);
-                  alpha=(unsigned short) ScaleShortToQuantum(quantum);
+                  alpha=ScaleShortToQuantum(quantum);
                   SetPixelAlpha(q,alpha);
                   if (alpha != QuantumRange-OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
@@ -13063,7 +13063,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
          if (need_defi && final_delay > 2 && (final_delay != 4) &&
             (final_delay != 5) && (final_delay != 10) && (final_delay != 20) &&
             (final_delay != 25) && (final_delay != 50) && (final_delay !=
-               1UL*image->ticks_per_second))
+               1L*image->ticks_per_second))
            mng_info->need_fram=MagickTrue;  /* make it exact; cannot be VLC */
        }
 
