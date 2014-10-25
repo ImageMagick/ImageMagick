@@ -1,5 +1,8 @@
 2014-10-03  6.8.9-9 Dirk Lemstra <dirk@snakeware...>
   * Added sixel coder created by Hayaki Saito (@kefir_).
+  * Fixed buffer overflow in PCX and DCM coder (bug report from Hanno Böck).
+  * Added support for reading/writing the tIME chunk in the PNG coder.
+  * Added eps:fit-page option to the PS coder to set -dEPSFitPage.
 
 2014-09-30  6.8.9-9 Cristy  <quetzlzacatenango@image...>
   * Support xyY colorspace (reference
