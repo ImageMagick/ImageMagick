@@ -194,6 +194,8 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
         object[i].bounding_box.y=y;
       if (y > (ssize_t) object[i].bounding_box.height)
         object[i].bounding_box.height=(size_t) y;
+      object[i].centroid.x+=x;
+      object[i].centroid.y+=y;
       object[i].area++;
       p+=GetPixelChannels(image);
     }
@@ -202,40 +204,8 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
   {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
-  }
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
-    for (y=0; y < (ssize_t) object[i].bounding_box.height; y++)
-    {
-      register const Quantum
-        *restrict p;
-
-      register ssize_t
-        x;
-
-      if (status == MagickFalse)
-        continue;
-      p=GetCacheViewVirtualPixels(image_view,object[i].bounding_box.x,
-        object[i].bounding_box.y+y,object[i].bounding_box.width,1,exception);
-      if (p == (const Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      for (x=0; x < (ssize_t) object[i].bounding_box.width; x++)
-      {
-        if ((ssize_t) *p == i)
-          {
-            object[i].centroid.x+=x;
-            object[i].centroid.y+=y;
-          }
-        p++;
-      }
-    }
-    object[i].centroid.x=(double) object[i].bounding_box.x+object[i].centroid.x/
-      object[i].area;
-    object[i].centroid.y=(double) object[i].bounding_box.y+object[i].centroid.y/
-      object[i].area;
+    object[i].centroid.x=object[i].centroid.x/object[i].area;
+    object[i].centroid.y=object[i].centroid.y/object[i].area;
   }
   image_view=DestroyCacheView(image_view);
   qsort((void *) object,number_objects,sizeof(*object),CCObjectCompare);
