@@ -1357,7 +1357,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
     *image;
 
   image=(Image *) png_get_io_ptr(png_ptr);
-  if (length)
+  if (length != 0)
     {
       png_size_t
         check;
@@ -1411,7 +1411,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
     length--;
     i++;
   }
-  if (length)
+  if (length != 0)
     {
       check=(png_size_t) ReadBlob(image,(size_t) length,(char *) data);
 
@@ -1469,7 +1469,7 @@ static void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
     *image;
 
   image=(Image *) png_get_io_ptr(png_ptr);
-  if (length)
+  if (length != 0)
     {
       png_size_t
         check;
@@ -4237,7 +4237,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     p=NULL;
     chunk=(unsigned char *) NULL;
 
-    if (length)
+    if (length != 0)
       {
         chunk=(unsigned char *) AcquireQuantumMemory(length,sizeof(*chunk));
 
@@ -4301,7 +4301,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               }
           }
 
-        if (length)
+        if (length != 0)
           chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
@@ -4409,7 +4409,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
         (void) WriteBlob(color_image,length,chunk);
 
-        if (length)
+        if (length != 0)
           chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
@@ -4437,7 +4437,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               crc32(crc32(0,data,4),chunk,(uInt) length));
           }
 
-        if (length)
+        if (length != 0)
           chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
@@ -4456,7 +4456,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             (void) WriteBlob(alpha_image,length,chunk);
           }
 
-        if (length)
+        if (length != 0)
           chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
@@ -4466,7 +4466,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         read_JSEP=MagickTrue;
 
-        if (length)
+        if (length != 0)
           chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
@@ -4554,7 +4554,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               }
           }
 
-        if (length)
+        if (length != 0)
           chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
@@ -4582,14 +4582,14 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     if (memcmp(type,mng_iCCP,4) == 0)
       {
         /* To do: */
-        if (length)
+        if (length != 0)
           chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
       }
 #endif
 
-    if (length)
+    if (length != 0)
       chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
     if (memcmp(type,mng_IEND,4))
@@ -5102,7 +5102,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=NULL;
         chunk=(unsigned char *) NULL;
 
-        if (length)
+        if (length != 0)
           {
             chunk=(unsigned char *) AcquireQuantumMemory(length,sizeof(*chunk));
 
@@ -5147,7 +5147,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (memcmp(type,mng_IEND,4) == 0)
               skip_to_iend=MagickFalse;
 
-            if (length)
+            if (length != 0)
               chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             if (logging != MagickFalse)
@@ -5243,7 +5243,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               repeat=0;
 
 
-            if (length)
+            if (length != 0)
               repeat=p[0];
 
             if (repeat == 3)
@@ -5419,7 +5419,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mng_info->global_plte[i].blue=i;
             }
 
-            if (length)
+            if (length != 0)
               mng_info->global_plte_length=256;
 #endif
             else
@@ -5497,7 +5497,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read global sRGB.
             */
-            if (length)
+            if (length != 0)
               {
                 mng_info->global_srgb_intent=
                   Magick_RenderingIntent_from_PNG_RenderingIntent(p[0]);
@@ -5517,7 +5517,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read global iCCP.
             */
-            if (length)
+            if (length != 0)
               chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             continue;
@@ -5537,7 +5537,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             frame_timeout=default_frame_timeout;
             fb=default_fb;
 
-            if (length)
+            if (length != 0)
               if (p[0])
                 mng_info->framing_mode=p[0];
 
@@ -5734,7 +5734,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
                 }
 
-            if (length)
+            if (length != 0)
               chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             continue;
@@ -5762,7 +5762,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               }
 
-            if (length)
+            if (length != 0)
               chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             continue;
@@ -6154,7 +6154,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             )
           {
             /* Not an IHDR or JHDR chunk */
-            if (length)
+            if (length != 0)
               chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             continue;
@@ -8022,7 +8022,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   (void) ConcatenateMagickString(zlib_runv,
          zlib_version,32);
 
-  if (logging)
+  if (logging != MagickFalse)
     {
        LogMagickEvent(CoderEvent,GetMagickModule(),"    IM version     = %s",
            im_vers);
@@ -10625,7 +10625,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if (ping_have_bKGD != MagickFalse)
         {
           png_set_bKGD(ping,ping_info,&ping_background);
-          if (logging)
+          if (logging != MagickFalse)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                    "    Setting up bKGD chunk");
@@ -10651,7 +10651,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              ping_pHYs_y_resolution,
              ping_pHYs_unit_type);
 
-          if (logging)
+          if (logging != MagickFalse)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                    "    Setting up pHYs chunk");
@@ -12191,7 +12191,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   length=0;
 
-  if (transparent)
+  if (transparent != 0)
     {
       jng_color_type=14;
 
@@ -12241,7 +12241,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           "    JNG Quality           = %d",(int) jng_quality);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    JNG Color Type        = %d",jng_color_type);
-        if (transparent)
+        if (transparent != 0)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    JNG Alpha Compression = %d",jng_alpha_compression_method);
@@ -12252,7 +12252,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           }
     }
 
-  if (transparent)
+  if (transparent != 0)
     {
       if (jng_alpha_compression_method==0)
         {
@@ -12366,7 +12366,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
      Write leading ancillary chunks
   */
 
-  if (transparent)
+  if (transparent != 0)
   {
     /*
       Write JNG bKGD chunk
@@ -12536,7 +12536,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
     }
 
 
-  if (transparent)
+  if (transparent != 0)
     {
       if (jng_alpha_compression_method==0)
         {
