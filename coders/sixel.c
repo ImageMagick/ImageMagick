@@ -672,8 +672,8 @@ static int sixel_put_node(sixel_output_t *const context, int x,
     return x;
 }
 
-static MagickBooleanType sixel_encode_impl(unsigned char *pixels, int width,int height,
-                  unsigned char *palette, int ncolors, int keycolor,
+static MagickBooleanType sixel_encode_impl(unsigned char *pixels, size_t width,size_t height,
+                  unsigned char *palette, size_t ncolors, int keycolor,
                   sixel_output_t *context)
 {
 #define RelinquishNodesAndMap \
@@ -859,7 +859,7 @@ static MagickBooleanType sixel_encode_impl(unsigned char *pixels, int width,int 
 
     /* flush buffer */
     if (context->pos > 0) {
-        WriteBlob(context->image,context->pos,context->buffer);
+        (void) WriteBlob(context->image,context->pos,context->buffer);
     }
 
     RelinquishNodesAndMap;
@@ -1242,8 +1242,8 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,Image *imag
                 opacity=i;
                 continue;
               }
-            alpha=image->colormap[i].opacity;
-            beta=image->colormap[opacity].opacity;
+            alpha=(MagickRealType) image->colormap[i].opacity;
+            beta=(MagickRealType) image->colormap[opacity].opacity;
             if (alpha > beta)
               opacity=i;
           }
@@ -1258,8 +1258,8 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,Image *imag
                     opacity=i;
                     continue;
                   }
-                alpha=image->colormap[i].opacity;
-                beta=image->colormap[opacity].opacity;
+                alpha=(MagickRealType) image->colormap[i].opacity;
+                beta=(MagickRealType) image->colormap[opacity].opacity;
                 if (alpha > beta)
                   opacity=i;
               }
@@ -1291,7 +1291,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,Image *imag
     (void) GetVirtualPixels(image,0,y,image->columns,1,exception);
     indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
-      sixel_pixels[y * image->columns + x] = ((ssize_t) GetPixelIndex(indexes + x));
+      sixel_pixels[y * image->columns + x] = (unsigned char) ((ssize_t) GetPixelIndex(indexes + x));
   }
   status = sixel_encode_impl(sixel_pixels, image->columns, image->rows,
                           sixel_palette, image->colors, -1,
