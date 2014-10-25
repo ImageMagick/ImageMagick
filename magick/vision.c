@@ -350,8 +350,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
       if (status == MagickFalse)
         continue;
-      p=GetCacheViewVirtualPixels(image_view,0,y-1,image->columns,3,
-        exception);
+      p=GetCacheViewVirtualPixels(image_view,0,y-1,image->columns,3,exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
