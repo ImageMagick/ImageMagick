@@ -712,7 +712,7 @@ static MagickBooleanType sixel_encode_impl(unsigned char *pixels, size_t width,s
         return (MagickFalse);
     }
     sixel_advance(context, nwrite);
-    nwrite = sprintf((char *)context->buffer + context->pos, "\"1;1;%d;%d", width, height);
+    nwrite = sprintf((char *)context->buffer + context->pos, "\"1;1;%d;%d", (int) width, (int) height);
     if (nwrite <= 0) {
         RelinquishNodesAndMap;
         return (MagickFalse);
