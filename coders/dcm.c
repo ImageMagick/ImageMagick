@@ -3065,9 +3065,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               count=ReadBlob(image,(size_t) quantum*length,data);
               if (count != (ssize_t) (quantum*length))
                 {
-                  (void) FormatLocaleFile(stdout,"count=%d quantum=%d "
-                    "length=%d group=%d\n",(int) count,(int) quantum,(int)
-                    length,(int) group);
+                  if (image_info->verbose != MagickFalse)
+                    (void) FormatLocaleFile(stdout,"count=%d quantum=%d "
+                      "length=%d group=%d\n",(int) count,(int) quantum,(int)
+                      length,(int) group);
                    ThrowReaderException(CorruptImageError,
                      "InsufficientImageDataInFile");
                 }
