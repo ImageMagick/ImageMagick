@@ -672,8 +672,8 @@ static int sixel_put_node(sixel_output_t *const context, int x,
     return x;
 }
 
-static MagickBooleanType sixel_encode_impl(unsigned char *pixels, int width,int height,
-                  unsigned char *palette, int ncolors, int keycolor,
+static MagickBooleanType sixel_encode_impl(unsigned char *pixels, size_t width,size_t height,
+                  unsigned char *palette, size_t ncolors, int keycolor,
                   sixel_output_t *context)
 {
 #define RelinquishNodesAndMap \
