@@ -839,10 +839,10 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
         Set tile size.
       */
       flags=ParseAbsoluteGeometry(image_info->extract,&geometry);
-      parameters.cp_tdx=(ssize_t) geometry.width;
-      parameters.cp_tdy=(ssize_t) geometry.width;
+      parameters.cp_tdx=(int) geometry.width;
+      parameters.cp_tdy=(int) geometry.width;
       if ((flags & HeightValue) != 0)
-        parameters.cp_tdy=(ssize_t) geometry.height;
+        parameters.cp_tdy=(int) geometry.height;
       if ((flags & XValue) != 0)
         parameters.cp_tx0=geometry.x;
       if ((flags & YValue) != 0)
@@ -937,8 +937,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   ResetMagickMemory(jp2_info,0,sizeof(jp2_info));
   for (i=0; i < (ssize_t) channels; i++)
   {
-    jp2_info[i].prec=image->depth;
-    jp2_info[i].bpp=image->depth;
+    jp2_info[i].prec=(unsigned int) image->depth;
+    jp2_info[i].bpp=(unsigned int) image->depth;
     if ((image->depth == 1) &&
         ((LocaleCompare(image_info->magick,"JPT") == 0) ||
          (LocaleCompare(image_info->magick,"JP2") == 0)))
@@ -949,18 +949,18 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     jp2_info[i].sgnd=0;
     jp2_info[i].dx=parameters.subsampling_dx;
     jp2_info[i].dy=parameters.subsampling_dy;
-    jp2_info[i].w=image->columns;
-    jp2_info[i].h=image->rows;
+    jp2_info[i].w=(unsigned int) image->columns;
+    jp2_info[i].h=(unsigned int) image->rows;
   }
   jp2_image=opj_image_create(channels,jp2_info,jp2_colorspace);
   if (jp2_image == (opj_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
   jp2_image->x0=parameters.image_offset_x0;
   jp2_image->y0=parameters.image_offset_y0;
-  jp2_image->x1=2*parameters.image_offset_x0+(image->columns-1)*
-    parameters.subsampling_dx+1;
-  jp2_image->y1=2*parameters.image_offset_y0+(image->rows-1)*
-    parameters.subsampling_dx+1;
+  jp2_image->x1=(unsigned int) (2*parameters.image_offset_x0+(image->columns-1)*
+    parameters.subsampling_dx+1);
+  jp2_image->y1=(unsigned int) (2*parameters.image_offset_y0+(image->rows-1)*
+    parameters.subsampling_dx+1);
   if ((image->depth == 12) &&
       ((image->columns == 2048) || (image->rows == 1080) ||
        (image->columns == 4096) || (image->rows == 2160)))
