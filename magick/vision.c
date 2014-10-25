@@ -100,7 +100,7 @@
 %
 %    o image: the image.
 %
-%    o connectivity: how many neighbors to visit.
+%    o connectivity: how many neighbors to visit, choose from 4 or 8.
 %
 %    o exception: return any errors or warnings in this structure.
 %
