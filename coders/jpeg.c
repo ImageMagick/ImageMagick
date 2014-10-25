@@ -1125,7 +1125,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     image->units=PixelsPerCentimeterResolution;
   number_pixels=(MagickSizeType) image->columns*image->rows;
   option=GetImageOption(image_info,"jpeg:size");
-  if (option != (const char *) NULL)
+  if ((option != (const char *) NULL) &&
+      (jpeg_info.out_color_space != JCS_YCbCr))
     {
       double
         scale_factor;
