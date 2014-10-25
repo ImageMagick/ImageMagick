@@ -348,7 +348,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       opj_destroy_codec(jp2_codec);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
-  jp2_status=0;
+  jp2_status=1;
   if ((image->columns != 0) && (image->rows != 0))
     {
       /*
