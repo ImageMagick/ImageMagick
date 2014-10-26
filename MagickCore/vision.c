@@ -220,11 +220,16 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
   {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
-    object[i].color.red=object[i].color.red/object[i].area;
-    object[i].color.green=object[i].color.green/object[i].area;
-    object[i].color.blue=object[i].color.blue/object[i].area;
-    object[i].color.alpha=object[i].color.alpha/object[i].area;
-    object[i].color.black=object[i].color.black/object[i].area;
+    object[i].color.red=(MagickRealType) (object[i].color.red/
+      object[i].area);
+    object[i].color.green=(MagickRealType) (object[i].color.green/
+      object[i].area);
+    object[i].color.blue=(MagickRealType) (object[i].color.blue/
+      object[i].area);
+    object[i].color.alpha=(MagickRealType) (object[i].color.alpha/
+      object[i].area);
+    object[i].color.black=(MagickRealType) (object[i].color.black/
+      object[i].area);
     object[i].centroid.x=object[i].centroid.x/object[i].area;
     object[i].centroid.y=object[i].centroid.y/object[i].area;
   }
@@ -336,11 +341,16 @@ static MagickBooleanType MergeConnectedComponents(const Image *image,
   {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
-    object[i].color.red=object[i].color.red/object[i].area;
-    object[i].color.green=object[i].color.green/object[i].area;
-    object[i].color.blue=object[i].color.blue/object[i].area;
-    object[i].color.alpha=object[i].color.alpha/object[i].area;
-    object[i].color.black=object[i].color.black/object[i].area;
+    object[i].color.red=(MagickRealType) (object[i].color.red/
+      object[i].area);
+    object[i].color.green=(MagickRealType) (object[i].color.green/
+      object[i].area);
+    object[i].color.blue=(MagickRealType) (object[i].color.blue/
+      object[i].area);
+    object[i].color.alpha=(MagickRealType) (object[i].color.alpha/
+      object[i].area);
+    object[i].color.black=(MagickRealType) (object[i].color.black/
+      object[i].area);
     object[i].centroid.x=object[i].centroid.x/object[i].area;
     object[i].centroid.y=object[i].centroid.y/object[i].area;
   }
@@ -613,7 +623,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   artifact=GetImageArtifact(image,"connected-components:area-threshold");
   if (artifact != (const char *) NULL)
     area_threshold=StringToDouble(artifact,(char **) NULL);
-  if (area_threshold > 0.0);
+  if (area_threshold > 0.0)
     status=MergeConnectedComponents(image,component_image,(size_t) n,
       area_threshold,exception);
   if (status == MagickFalse)
