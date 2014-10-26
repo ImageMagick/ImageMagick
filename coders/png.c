@@ -3030,11 +3030,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (int) number_colors);
          (void) SetImageProperty(image,"png:PLTE.number_colors",msg);
        }
+   }
 
 #if defined(PNG_tIME_SUPPORTED)
-     read_tIME_chunk(image,ping,ping_info);
+   read_tIME_chunk(image,ping,ping_info);
 #endif
-   }
 
   /*
     Read image scanlines.
@@ -7728,7 +7728,8 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
       if (sscanf(date,"%d-%d-%dT%d:%d:%dZ",&year,&month,&day,&hour,&minute,
           &second) != 6)
         {
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),CoderError,
+          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+            CoderError,
             "Invalid date format specified for png:tIME","`%s'",
             image->filename);
           return;
@@ -10631,15 +10632,21 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       const char
         *timestamp;
 
-      timestamp=GetImageOption(image_info,"png:tIME");
-      if (timestamp != (const char *) NULL)
-        write_tIME_chunk(image,ping,ping_info,timestamp);
+      if (image->taint == MagickFalse)
+        {
+          timestamp=GetImageOption(image_info,"png:tIME");
+
+          if (timestamp == (const char *) NULL)
+            timestamp=GetImageProperty(image,"png:tIME");
+        }
+
       else
         {
-          if (image->taint == MagickFalse)
-            timestamp=GetImageProperty(image,"png:tIME");
-          write_tIME_chunk(image,ping,ping_info,timestamp);
+            timestamp=GetImageProperty(image,"date:modify");
         }
+
+      if (timestamp != (const char *) NULL)
+          write_tIME_chunk(image,ping,ping_info,timestamp);
     }
 #endif
 
