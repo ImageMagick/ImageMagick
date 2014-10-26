@@ -10642,7 +10642,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
       else
         {
-            timestamp=GetImageProperty(image,"date:modify");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  Reset tIME in tainted image");
+
+          timestamp=GetImageProperty(image,"date:modify");
         }
 
       if (timestamp != (const char *) NULL)
