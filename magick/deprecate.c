@@ -7068,7 +7068,7 @@ MagickExport MagickBooleanType SyncImagePixels(Image *image)
 MagickExport int SystemCommand(const MagickBooleanType asynchronous,
   const MagickBooleanType verbose,const char *command,ExceptionInfo *exception)
 {
-  MagickBooleanType
+  int
     status;
 
   status=ExternalDelegateCommand(asynchronous,verbose,command,(char *) NULL,
