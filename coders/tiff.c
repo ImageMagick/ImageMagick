@@ -105,6 +105,17 @@
 /*
   Typedef declarations.
 */
+typedef enum
+{
+  ReadSingleSampleMethod,
+  ReadRGBAMethod,
+  ReadCMYKAMethod,
+  ReadYCCKMethod,
+  ReadStripMethod,
+  ReadTileMethod,
+  ReadGenericMethod
+} TIFFMethodType;
+
 #if defined(MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY)
 typedef struct _ExifInfo
 {
@@ -426,6 +437,16 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline unsigned char ClampYCC(double value)
+{
+  value=255.0-value;
+  if (value < 0.0)
+    return((unsigned char)0);
+  if (value > 255.0)
+    return((unsigned char)255);
+  return((unsigned char)(value));
+}
 
 static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
 {
@@ -868,6 +889,78 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
   return(count);
 }
 
+static TIFFMethodType GetJpegMethod(Image* image,TIFF *tiff,uint16 photometric,
+  uint16 bits_per_sample,uint16 samples_per_pixel)
+{
+#define BUFFER_SIZE 2048
+
+  MagickOffsetType
+    position,
+    offset;
+
+  register size_t
+    i;
+
+  TIFFMethodType
+    method;
+
+  uint64
+    **value;
+
+  unsigned char
+    buffer[BUFFER_SIZE];
+
+  unsigned short
+    length;
+
+  /* only support 8 bit for now */
+  if (photometric != PHOTOMETRIC_SEPARATED || bits_per_sample != 8 ||
+      samples_per_pixel != 4)
+    return(ReadGenericMethod);
+  /* Search for Adobe APP14 JPEG Marker */
+  if (!TIFFGetField(tiff,TIFFTAG_STRIPOFFSETS,&value))
+    return(ReadRGBAMethod);
+  position=TellBlob(image);
+  offset=(MagickOffsetType)value[0];
+  if (SeekBlob(image,offset,SEEK_SET) != offset)
+    return(ReadRGBAMethod);
+  method=ReadRGBAMethod;
+  if (ReadBlob(image,BUFFER_SIZE,buffer) == BUFFER_SIZE)
+    {
+      for (i=0; i < BUFFER_SIZE; i++)
+      {
+        while (i < BUFFER_SIZE)
+        {
+          if (buffer[i++] == 255)
+           break;
+        }
+        while (i < BUFFER_SIZE)
+        {
+          if (buffer[++i] != 255)
+           break;
+        }
+        if (buffer[i++] == 216) /* JPEG_MARKER_SOI */
+          continue;
+        length=(unsigned short) (((unsigned int) (buffer[i] << 8) |
+          (unsigned int) buffer[i+1]) & 0xffff);
+        if (i+(size_t) length >= BUFFER_SIZE)
+          break;
+        if (buffer[i-1] == 238) /* JPEG_MARKER_APP0+14 */
+          {
+            if (length != 14)
+              break;
+            /* 0 == CMYK, 1 == YCbCr, 2 = YCCK */
+            if (buffer[i+13] == 2)
+              method=ReadYCCKMethod;
+            break;
+          }
+        i+=(size_t) length;
+      }
+    }
+  SeekBlob(image,position,SEEK_SET);
+  return(method);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
@@ -875,16 +968,6 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  typedef enum
-  {
-    ReadSingleSampleMethod,
-    ReadRGBAMethod,
-    ReadCMYKAMethod,
-    ReadStripMethod,
-    ReadTileMethod,
-    ReadGenericMethod
-  } TIFFMethodType;
-
   const char
     *option;
 
@@ -918,7 +1001,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     i;
 
   size_t
-    length,
     pad;
 
   ssize_t
@@ -1340,7 +1422,8 @@ RestoreMSCWarning
         (interlace == PLANARCONFIG_SEPARATE) && (bits_per_sample < 64))
       method=ReadGenericMethod;
     if (image->compression == JPEGCompression)
-      method=ReadGenericMethod;
+      method=GetJpegMethod(image,tiff,photometric,bits_per_sample,
+        samples_per_pixel);
     if (TIFFIsTiled(tiff) != MagickFalse)
       method=ReadTileMethod;
     quantum_info->endian=LSBEndian;
@@ -1442,9 +1525,8 @@ RestoreMSCWarning
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
-          length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
-          (void) length;
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           if (image->previous == (Image *) NULL)
@@ -1500,7 +1582,7 @@ RestoreMSCWarning
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
-          length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1555,11 +1637,64 @@ RestoreMSCWarning
                 case 4: quantum_type=AlphaQuantum; break;
                 default: quantum_type=UndefinedQuantum; break;
               }
-            length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
               quantum_type,pixels,exception);
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
           }
+          if (image->previous == (Image *) NULL)
+            {
+              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
+              if (status == MagickFalse)
+                break;
+            }
+        }
+        break;
+      }
+      case ReadYCCKMethod:
+      {
+        pixels=GetQuantumPixels(quantum_info);
+        for (y=0; y < (ssize_t) image->rows; y++)
+        {
+          int
+            status;
+
+          register IndexPacket
+            *indexes;
+
+          register PixelPacket
+            *restrict q;
+
+          register ssize_t
+            x;
+
+          unsigned char
+            *p;
+
+          status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
+          if (status == -1)
+            break;
+          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          if (q == (PixelPacket *) NULL)
+            break;
+          indexes=GetAuthenticIndexQueue(image);
+          p=pixels;
+          for (x=0; x < (ssize_t) image->columns; x++)
+          {
+            SetPixelCyan(q,ScaleCharToQuantum(ClampYCC((double) *p+
+              (1.402*(double) *(p+2))-179.456)));
+            SetPixelMagenta(q,ScaleCharToQuantum(ClampYCC((double) *p-
+              (0.34414*(double) *(p+1))-(0.71414*(double ) *(p+2))+
+              135.45984)));
+            SetPixelYellow(q,ScaleCharToQuantum(ClampYCC((double) *p+
+              (1.772*(double) *(p+1))-226.816)));
+            SetPixelBlack(indexes+x,ScaleCharToQuantum((unsigned char)*(p+3)));
+            q++;
+            p+=4;
+          }
+          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            break;
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
