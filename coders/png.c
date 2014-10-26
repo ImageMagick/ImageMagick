@@ -3103,11 +3103,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) SetImageProperty(image,"png:PLTE.number_colors",msg,
             exception);
        }
-
-#if defined(PNG_tIME_SUPPORTED)
-     read_tIME_chunk(image,ping,ping_info,exception);
-#endif
    }
+#if defined(PNG_tIME_SUPPORTED)
+   read_tIME_chunk(image,ping,ping_info,exception);
+#endif
+
 
   /*
     Read image scanlines.
@@ -10690,18 +10690,27 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       const char
         *timestamp;
 
-      timestamp=GetImageOption(image_info,"png:tIME");
-      if (timestamp != (const char *) NULL)
-        write_tIME_chunk(image,ping,ping_info,timestamp,exception);
+      if (image->taint == MagickFalse)
+        {
+          timestamp=GetImageOption(image_info,"png:tIME");
+
+          if (timestamp == (const char *) NULL)
+            timestamp=GetImageProperty(image,"png:tIME",exception);
+        }
+
       else
         {
-          if (image->taint == MagickFalse)
-            timestamp=GetImageProperty(image,"png:tIME",exception);
-          write_tIME_chunk(image,ping,ping_info,timestamp,exception);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  Reset tIME in tainted image");
+
+          timestamp=GetImageProperty(image,"date:modify",exception);
         }
+
+      if (timestamp != (const char *) NULL)
+          write_tIME_chunk(image,ping,ping_info,timestamp,exception);
     }
 #endif
-
+  
   if (mng_info->need_blob != MagickFalse)
   {
     if (OpenBlob(image_info,image,WriteBinaryBlobMode,exception) ==
