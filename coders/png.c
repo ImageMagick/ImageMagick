@@ -8092,13 +8092,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       if (image->storage_class == UndefinedClass)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    storage_class=UndefinedClass");
+          "    image->storage_class=UndefinedClass");
       if (image->storage_class == DirectClass)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    storage_class=DirectClass");
+          "    image->storage_class=DirectClass");
       if (image->storage_class == PseudoClass)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    storage_class=PseudoClass");
+          "    image->storage_class=PseudoClass");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(), image->taint ?
+          "    image->taint=MagickFalse":
+          "    image->taint=MagickTrue");
     }
 
   if (image->storage_class == PseudoClass &&
@@ -10644,7 +10647,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "  Reset tIME in tainted image");
-
           timestamp=GetImageProperty(image,"date:modify");
         }
 
