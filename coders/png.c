@@ -8100,8 +8100,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    image->storage_class=PseudoClass");
       (void) LogMagickEvent(CoderEvent,GetMagickModule(), image->taint ?
-          "    image->taint=MagickFalse":
-          "    image->taint=MagickTrue");
+          "    image->taint=MagickTrue":
+          "    image->taint=MagickFalse");
     }
 
   if (image->storage_class == PseudoClass &&
