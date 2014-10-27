@@ -156,6 +156,9 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
   ssize_t
     y;
 
+  /*
+    Collect statistics on unique objects.
+  */
   object=(CCObject *) AcquireQuantumMemory(number_objects,sizeof(*object));
   if (object == (CCObject *) NULL)
     {
@@ -232,15 +235,20 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
       object[i].area);
     object[i].color.blue=(MagickRealType) (object[i].color.blue/
       object[i].area);
-    object[i].color.opacity=(MagickRealType) (object[i].color.opacity/
-      object[i].area);
-    object[i].color.index=(MagickRealType) (object[i].color.index/
-      object[i].area);
+    if (image->matte != MagickFalse)
+      object[i].color.opacity=(MagickRealType) (object[i].color.opacity/
+        object[i].area);
+    if (image->colorspace == CMYKColorspace)
+      object[i].color.index=(MagickRealType) (object[i].color.index/
+        object[i].area);
     object[i].centroid.x=object[i].centroid.x/object[i].area;
     object[i].centroid.y=object[i].centroid.y/object[i].area;
   }
   component_view=DestroyCacheView(component_view);
   image_view=DestroyCacheView(image_view);
+  /*
+    Report statistics on unique objects.
+  */
   qsort((void *) object,number_objects,sizeof(*object),CCObjectCompare);
   (void) fprintf(stdout,
     "Objects (id: bounding-box centroid area mean-color):\n");
@@ -253,7 +261,7 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
       break;
     GetColorTuple(&object[i].color,MagickFalse,mean_color);
     (void) fprintf(stdout,
-      "  %.20g: %.20gx%.20g%+.20g%+.20g %+.1f,%+.1f %.20g %s\n",(double)
+      "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
       object[i].id,(double) object[i].bounding_box.width,(double)
       object[i].bounding_box.height,(double) object[i].bounding_box.x,
       (double) object[i].bounding_box.y,object[i].centroid.x,
@@ -263,12 +271,10 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
   return(status);
 }
 
-static MagickBooleanType MergeConnectedComponents(const Image *image,
-  const Image *component_image,const size_t number_objects,
-  ExceptionInfo *exception)
+static MagickBooleanType MergeConnectedComponents(Image *image,
+  const size_t number_objects,ExceptionInfo *exception)
 {
   CacheView
-    *component_view,
     *image_view;
 
   CCObject
@@ -283,6 +289,9 @@ static MagickBooleanType MergeConnectedComponents(const Image *image,
   ssize_t
     y;
 
+  /*
+    Collect statistics on unique objects.
+  */
   object=(CCObject *) AcquireQuantumMemory(number_objects,sizeof(*object));
   if (object == (CCObject *) NULL)
     {
@@ -296,19 +305,13 @@ static MagickBooleanType MergeConnectedComponents(const Image *image,
     object[i].id=i;
     object[i].bounding_box.x=(ssize_t) image->columns;
     object[i].bounding_box.y=(ssize_t) image->rows;
-    GetMagickPixelPacket(image,&object[i].color);
   }
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
-  component_view=AcquireVirtualCacheView(component_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p,
-      *restrict q;
-
-    register const IndexPacket
-      *indexes;
+      *restrict p;
 
     register ssize_t
       x;
@@ -316,17 +319,14 @@ static MagickBooleanType MergeConnectedComponents(const Image *image,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewVirtualPixels(component_view,0,y,component_image->columns,1,
-      exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
+    if (p == (const PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      i=(ssize_t) q->red;
+      i=(ssize_t) p->red;
       if (x < object[i].bounding_box.x)
         object[i].bounding_box.x=x;
       if (x > (ssize_t) object[i].bounding_box.width)
@@ -335,57 +335,21 @@ static MagickBooleanType MergeConnectedComponents(const Image *image,
         object[i].bounding_box.y=y;
       if (y > (ssize_t) object[i].bounding_box.height)
         object[i].bounding_box.height=(size_t) y;
-      object[i].color.red+=p->red;
-      object[i].color.green+=p->green;
-      object[i].color.blue+=p->blue;
-      if (image->matte != MagickFalse)
-        object[i].color.opacity+=p->opacity;
-      if (image->colorspace == CMYKColorspace)
-        object[i].color.index+=indexes[x];
-      object[i].centroid.x+=x;
-      object[i].centroid.y+=y;
-      object[i].area++;
       p++;
-      q++;
     }
   }
   for (i=0; i < (ssize_t) number_objects; i++)
   {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
-    object[i].color.red=(MagickRealType) (object[i].color.red/
-      object[i].area);
-    object[i].color.green=(MagickRealType) (object[i].color.green/
-      object[i].area);
-    object[i].color.blue=(MagickRealType) (object[i].color.blue/
-      object[i].area);
-    object[i].color.opacity=(MagickRealType) (object[i].color.opacity/
-      object[i].area);
-    object[i].color.index=(MagickRealType) (object[i].color.index/
-      object[i].area);
-    object[i].centroid.x=object[i].centroid.x/object[i].area;
-    object[i].centroid.y=object[i].centroid.y/object[i].area;
   }
-  component_view=DestroyCacheView(component_view);
-  image_view=DestroyCacheView(image_view);
-  qsort((void *) object,number_objects,sizeof(*object),CCObjectCompare);
-  (void) fprintf(stdout,
-    "Objects (id: bounding-box centroid area mean-color):\n");
+  /*
+    Merge objects below area threshold.
+  */
   for (i=0; i < (ssize_t) number_objects; i++)
   {
-    char
-      mean_color[MaxTextExtent];
-
-    if (status == MagickFalse)
-      break;
-    GetColorTuple(&object[i].color,MagickFalse,mean_color);
-    (void) fprintf(stdout,
-      "  %.20g: %.20gx%.20g%+.20g%+.20g %+.1f,%+.1f %.20g %s\n",(double)
-      object[i].id,(double) object[i].bounding_box.width,(double)
-      object[i].bounding_box.height,(double) object[i].bounding_box.x,
-      (double) object[i].bounding_box.y,object[i].centroid.x,
-      object[i].centroid.y,(double) object[i].area,mean_color);
   }
+  image_view=DestroyCacheView(image_view);
   object=(CCObject *) RelinquishMagickMemory(object);
   return(status);
 }
@@ -631,8 +595,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   if (artifact != (const char *) NULL)
     area_threshold=StringToDouble(artifact,(char **) NULL);
   if (area_threshold > 0.0)
-    status=MergeConnectedComponents(image,component_image,(size_t) n,
-      exception);
+    status=MergeConnectedComponents(component_image,(size_t) n,exception);
   if (status == MagickFalse)
     component_image=DestroyImage(component_image);
   return(component_image);
