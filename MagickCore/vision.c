@@ -121,8 +121,9 @@ typedef struct _CCObject
   PointInfo
     centroid;
 
-  ssize_t
-    area;
+  size_t
+    area,
+    census;
 } CCObject;
 
 static int CCObjectCompare(const void *x,const void *y)
@@ -328,6 +329,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         object[i].bounding_box.y=y;
       if (y > (ssize_t) object[i].bounding_box.height)
         object[i].bounding_box.height=(size_t) y;
+      object[i].area++;
       p+=GetPixelChannels(image);
     }
   }
@@ -343,6 +345,82 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
   for (i=0; i < (ssize_t) number_objects; i++)
   {
+    RectangleInfo
+      bounding_box;
+
+    register ssize_t
+      j;
+
+    size_t
+      census,
+      id;
+
+    if (status == MagickFalse)
+      continue;
+    if ((double) object[i].area >= area_threshold)
+      continue;
+    for (j=0; j < (ssize_t) number_objects; j++)
+      object[j].census=0;
+    bounding_box=object[i].bounding_box;
+    for (y=0; y < (ssize_t) bounding_box.height+2; y++)
+    {
+      register const Quantum
+        *restrict p;
+
+      register ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(image_view,bounding_box.x-1,bounding_box.y+y-
+        1,bounding_box.width+2,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width+2; x++)
+      {
+        j=(ssize_t) *p;
+        if (j != i)
+          object[j].census++;
+        p+=GetPixelChannels(image);
+      }
+    }
+    census=0;
+    id=0;
+    for (j=0; j < (ssize_t) number_objects; j++)
+      if (census < object[j].census)
+        {
+          census=object[j].census;
+          id=(size_t) j;
+        }
+    for (y=0; y < (ssize_t) bounding_box.height; y++)
+    {
+      register Quantum
+        *restrict q;
+
+      register ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      q=GetCacheViewAuthenticPixels(image_view,bounding_box.x,bounding_box.y+y,
+        bounding_box.width,1,exception);
+      if (q == (Quantum *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width; x++)
+      {
+        if ((ssize_t) *q == i)
+          *q=(Quantum) id;
+        q+=GetPixelChannels(image);
+      }
+      if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+        status=MagickFalse;
+    }
   }
   image_view=DestroyCacheView(image_view);
   object=(CCObject *) RelinquishMagickMemory(object);
