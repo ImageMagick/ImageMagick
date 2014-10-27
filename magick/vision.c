@@ -121,8 +121,9 @@ typedef struct _CCObject
   PointInfo
     centroid;
 
-  ssize_t
-    area;
+  size_t
+    area,
+    census;
 } CCObject;
 
 static int CCObjectCompare(const void *x,const void *y)
@@ -272,7 +273,8 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
 }
 
 static MagickBooleanType MergeConnectedComponents(Image *image,
-  const size_t number_objects,ExceptionInfo *exception)
+  const size_t number_objects,const double area_threshold,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -335,6 +337,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         object[i].bounding_box.y=y;
       if (y > (ssize_t) object[i].bounding_box.height)
         object[i].bounding_box.height=(size_t) y;
+      object[i].area++;
       p++;
     }
   }
@@ -350,6 +353,86 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
   for (i=0; i < (ssize_t) number_objects; i++)
   {
+    RectangleInfo
+      bounding_box;
+
+    register ssize_t
+      j;
+
+    size_t
+      census,
+      id;
+
+    if (status == MagickFalse)
+      continue;
+    if ((double) object[i].area >= area_threshold)
+      continue;
+    for (j=0; j < (ssize_t) number_objects; j++)
+      object[j].census=0;
+    bounding_box=object[i].bounding_box;
+    for (y=0; y < (ssize_t) bounding_box.height+2; y++)
+    {
+      register const PixelPacket
+        *restrict p;
+
+      register ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(image_view,bounding_box.x-1,bounding_box.y+y-
+        1,bounding_box.width+2,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width+2; x++)
+      {
+        j=(ssize_t) p->red;
+        if (j != i)
+          object[j].census++;
+        p++;
+      }
+    }
+    census=0;
+    id=0;
+    for (j=0; j < (ssize_t) number_objects; j++)
+      if (census < object[j].census)
+        {
+          census=object[j].census;
+          id=(size_t) j;
+        }
+    for (y=0; y < (ssize_t) bounding_box.height; y++)
+    {
+      register PixelPacket
+        *restrict q;
+
+      register ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      q=GetCacheViewAuthenticPixels(image_view,bounding_box.x,bounding_box.y+y,
+        bounding_box.width,1,exception);
+      if (q == (PixelPacket *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width; x++)
+      {
+        if ((ssize_t) q->red == i)
+          {
+            q->red=(Quantum) id;
+            q->green=q->red;
+            q->blue=q->red;
+          }
+        q++;
+      }
+      if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+        status=MagickFalse;
+    }
   }
   image_view=DestroyCacheView(image_view);
   object=(CCObject *) RelinquishMagickMemory(object);
@@ -552,23 +635,23 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     for (x=0; x < (ssize_t) component_image->columns; x++)
     {
       ssize_t
-        object,
+        id,
         offset;
 
       offset=y*image->columns+x;
-      status=GetMatrixElement(equivalences,offset,0,&object);
-      if (object == offset)
+      status=GetMatrixElement(equivalences,offset,0,&id);
+      if (id == offset)
         {
-          object=n++;
-          status=SetMatrixElement(equivalences,offset,0,&object);
+          id=n++;
+          status=SetMatrixElement(equivalences,offset,0,&id);
         }
       else
         {
-          status=GetMatrixElement(equivalences,object,0,&object);
-          status=SetMatrixElement(equivalences,offset,0,&object);
+          status=GetMatrixElement(equivalences,id,0,&id);
+          status=SetMatrixElement(equivalences,offset,0,&id);
         }
-      q->red=(Quantum) (object > (ssize_t) QuantumRange ? (ssize_t)
-        QuantumRange : object);
+      q->red=(Quantum) (id > (ssize_t) QuantumRange ? (ssize_t) QuantumRange :
+        id);
       q->green=q->red;
       q->blue=q->red;
       q++;
@@ -597,7 +680,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   if (artifact != (const char *) NULL)
     area_threshold=StringToDouble(artifact,(char **) NULL);
   if (area_threshold > 0.0)
-    status=MergeConnectedComponents(component_image,(size_t) n,exception);
+    status=MergeConnectedComponents(component_image,(size_t) n,area_threshold,
+      exception);
   if (status == MagickFalse)
     component_image=DestroyImage(component_image);
   return(component_image);
