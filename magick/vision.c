@@ -338,6 +338,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
       p++;
     }
   }
+  image_view=DestroyCacheView(image_view);
   for (i=0; i < (ssize_t) number_objects; i++)
   {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
@@ -346,6 +347,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
   /*
     Merge objects below area threshold.
   */
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (i=0; i < (ssize_t) number_objects; i++)
   {
   }
