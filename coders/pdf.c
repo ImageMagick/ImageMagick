@@ -813,6 +813,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   do
   {
     (void) CopyMagickString(pdf_image->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(pdf_image->magick,image->magick,MaxTextExtent);
     pdf_image->page=page;
     (void) CloneImageProfiles(pdf_image,image);
     (void) CloneImageProperties(pdf_image,image);
