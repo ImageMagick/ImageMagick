@@ -904,7 +904,11 @@ static TIFFMethodType GetJpegMethod(Image* image,TIFF *tiff,uint16 photometric,
   TIFFMethodType
     method;
 
+#if defined(TIFF_VERSION_BIG)
   uint64
+#else
+  uint32
+#endif
     **value;
 
   unsigned char
