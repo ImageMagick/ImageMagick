@@ -971,6 +971,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   do
   {
     (void) CopyMagickString(postscript_image->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(postscript_image->magick,image->magick,
+      MaxTextExtent);
     if (columns != 0)
       postscript_image->magick_columns=columns;
     if (rows != 0)
