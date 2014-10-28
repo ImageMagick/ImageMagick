@@ -410,7 +410,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((image->columns == 0) || (image->rows == 0))
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
-    if (max_value > 4294967295)
+    if ((max_value == 0) || (max_value > 4294967295))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     for (depth=1; GetQuantumRange(depth) < max_value; depth++) ;
     image->depth=depth;
