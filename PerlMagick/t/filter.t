@@ -75,7 +75,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Despeckle.miff', 'Despec
 testFilterCompare('input.miff',  q//, 'reference/filter/Draw.miff', 'Draw', q/fill=>'none',stroke=>'gold',primitive=>'circle',points=>'60,90 60,120',strokewidth=>2/, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Edge.miff', 'Edge', q//, 0.3, 1.01);
+testFilterCompare('input.miff',  q//, 'reference/filter/Edge.miff', 'Edge', q//, 0.31, 1.01);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Emboss.miff', 'Emboss', q/'0x1'/, 0.2, 1.0);
@@ -144,7 +144,7 @@ testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Opaque.miff', '
 testFilterCompare('input.miff',  q//, 'reference/filter/Quantize.miff', 'Quantize', q//, 0.2, 0.7);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/RadialBlur.miff', 'RadialBlur', q/10/, 0.0, 0.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/RadialBlur.miff', 'RadialBlur', q/10/, 0.004, 0.4);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Raise.miff', 'Raise', q/'10x10'/, 0.0, 0.0);
@@ -198,7 +198,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Threshold.miff', 'Thresh
 testFilterCompare('input.miff',  q//, 'reference/filter/Trim.miff', 'Trim', q//, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/UnsharpMask.miff', 'UnsharpMask', q/'5x2+1'/, 0.0003, 0.4);
+testFilterCompare('input.miff',  q//, 'reference/filter/UnsharpMask.miff', 'UnsharpMask', q/'5x2+1'/, 0.004, 0.4);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Wave.miff', 'Wave', q/'25x150'/, 0.0, 0.0);
