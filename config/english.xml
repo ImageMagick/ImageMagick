@@ -1012,6 +1012,9 @@
           <message name="MemoryAllocationFailed">
             memory allocation failed
           </message>
+          <message name="TooManyObjects">
+            too many objects
+          </message>
           <message name="UnableToAcquireString">
             unable to acquire string
           </message>
