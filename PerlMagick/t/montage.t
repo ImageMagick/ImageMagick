@@ -133,8 +133,8 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
-  'f33ede0769eb18a0c6bef1fc0dbf9facfda5937f7cd0b5a200a7b4090c907af7',
-  'f33ede0769eb18a0c6bef1fc0dbf9facfda5937f7cd0b5a200a7b4090c907af7',
+  'c11cd69581fa7b53d2da1a17eba4715ecc52e740597346b6bad4d4685f9d9e97',
+  'c11cd69581fa7b53d2da1a17eba4715ecc52e740597346b6bad4d4685f9d9e97',
   '2d9b191eea778b1d1d98f9d997558f96e6f6d273a1d92787c9f70866b4382cd4');
 
 #
@@ -144,7 +144,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
-  '141676dc76f19de34180b7939de27db0226e4c1940fed4fa594ce4d0864eef24');
+  'd89507476082c152500231b5bfde97462cda6d8c39a6b462e67328173f94890f');
 
 #
 # 14) Test Un-bordered, Un-framed Montage
