@@ -1006,6 +1006,9 @@
           <message name="MemoryAllocationFailed">
             Échec allocation mémoire
           </message>
+          <message name="TooManyObjects">
+            too many objects
+          </message>
           <message name="UnableToAcquireString">
             échec acquisition de la chaine
           </message>
