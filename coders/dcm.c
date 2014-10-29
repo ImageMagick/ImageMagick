@@ -3085,16 +3085,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 sequence=MagickTrue;
                 continue;
               }
-
     if (((group << 16) | element) == 0xFFFEE0DD)
       {
         sequence=MagickFalse;
         continue;
       }
-
     if (sequence != MagickFalse)
       continue;
-
     switch (group)
     {
       case 0x0002:
