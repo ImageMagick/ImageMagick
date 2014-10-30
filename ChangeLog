@@ -1,6 +1,8 @@
 2014-10-29  6.8.9-10 Cristy  <quetzlzacatenango@image...>
   * EXIF directory offsets must be greater than 0 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26456).
+  * Check for zero-sized rendered SV@sG image (bug report from
+    Vladimir Davydov).
 
 2014-10-26  6.8.9-10 Dirk Lemstra <dirk@snakeware...>
   * Added support for reading jpeg compressed YCCK tiff files (reference

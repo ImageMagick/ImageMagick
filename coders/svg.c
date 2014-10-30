@@ -2826,6 +2826,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           int
             status;
 
+          struct stat
+            attributes;
+
           /*
             Our best hope for compliance to the SVG standard.
           */
@@ -2846,7 +2849,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           status=ExternalDelegateCommand(MagickFalse,image_info->verbose,
             command,(char *) NULL,exception);
           (void) RelinquishUniqueFileResource(unique);
-          if (status == 0)
+          if ((status == 0) && (stat(filename,&attributes) == 0) &&
+              (attributes.st_size != 0))
             {
               ImageInfo
                 *read_info;
