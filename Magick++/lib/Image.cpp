@@ -1320,7 +1320,7 @@ void Magick::Image::resolutionUnits(
 
 Magick::ResolutionType Magick::Image::resolutionUnits(void) const
 {
-  return(constOptions()->resolutionUnits());
+  return(static_cast<Magick::ResolutionType>(constImage()->units));
 }
 
 size_t Magick::Image::rows(void) const
