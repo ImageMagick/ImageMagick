@@ -861,9 +861,6 @@ std::string Magick::Image::formatExpression(const std::string expression)
   char
     *text;
 
-  std::string
-    text_string;
-
   modifyImage();
   text=InterpretImageProperties(imageInfo(),image(),expression.c_str());
   std::string text_string(text);
