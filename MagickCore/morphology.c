@@ -378,7 +378,8 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   return(kernel);
 }
 
-static KernelInfo *ParseKernelName(const char *kernel_string)
+static KernelInfo *ParseKernelName(const char *kernel_string,
+  ExceptionInfo *exception)
 {
   char
     token[MaxTextExtent];
@@ -473,7 +474,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
       break;
   }
 
-  kernel = AcquireKernelBuiltIn((KernelInfoType)type, &args);
+  kernel = AcquireKernelBuiltIn((KernelInfoType)type, &args, exception);
   if ( kernel == (KernelInfo *) NULL )
     return(kernel);
 
@@ -490,13 +491,15 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
   return(kernel);
 }
 
-MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
+MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
+  ExceptionInfo *exception)
 {
   KernelInfo
     *kernel,
     *new_kernel;
 
   char
+    *kernel_cache,
     token[MaxTextExtent];
 
   const char
@@ -505,8 +508,15 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   if (kernel_string == (const char *) NULL)
     return(ParseKernelArray(kernel_string));
   p=kernel_string;
+  kernel_cache=(char *) NULL;
+  if (*kernel_string == '@')
+    {
+      kernel_cache=FileToString(kernel_string+1,~0UL,exception);
+      if (kernel_cache == (char *) NULL)
+        return((KernelInfo *) NULL);
+      p=(const char *) kernel_cache;
+    }    
   kernel=NULL;
-
   while (GetMagickToken(p,NULL,token), *token != '\0')
   {
     /* ignore extra or multiple ';' kernel separators */
@@ -514,7 +524,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       {
         /* tokens starting with alpha is a Named kernel */
         if (isalpha((int) ((unsigned char) *token)) != 0)
-          new_kernel=ParseKernelName(p);
+          new_kernel=ParseKernelName(p,exception);
         else /* otherwise a user defined kernel array */
           new_kernel=ParseKernelArray(p);
 
@@ -539,9 +549,10 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       break;
     p++;
   }
+  if (kernel_cache != (char *) NULL)
+    kernel_cache=DestroyString(kernel_cache);
   return(kernel);
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -946,7 +957,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 */
 
 MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
-   const GeometryInfo *args)
+  const GeometryInfo *args,ExceptionInfo *exception)
 {
   KernelInfo
     *kernel;
@@ -1436,10 +1447,12 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
           case 10:
-            kernel=AcquireKernelInfo("FreiChen:11;FreiChen:12;FreiChen:13;FreiChen:14;FreiChen:15;FreiChen:16;FreiChen:17;FreiChen:18;FreiChen:19");
+          {
+            kernel=AcquireKernelInfo("FreiChen:11;FreiChen:12;FreiChen:13;FreiChen:14;FreiChen:15;FreiChen:16;FreiChen:17;FreiChen:18;FreiChen:19",exception);
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             break;
+          }
           case 1:
           case 11:
             kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
@@ -1742,7 +1755,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         }
       case EdgesKernel:
         {
-          kernel=AcquireKernelInfo("ThinSE:482");
+          kernel=AcquireKernelInfo("ThinSE:482",exception);
           if (kernel == (KernelInfo *) NULL)
             return(kernel);
           kernel->type = type;
@@ -1751,7 +1764,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         }
       case CornersKernel:
         {
-          kernel=AcquireKernelInfo("ThinSE:87");
+          kernel=AcquireKernelInfo("ThinSE:87",exception);
           if (kernel == (KernelInfo *) NULL)
             return(kernel);
           kernel->type = type;
@@ -1796,7 +1809,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             case 0:
             default:
               /* set of kernels to find all end of lines */
-              return(AcquireKernelInfo("LineEnds:1>;LineEnds:2>"));
+              return(AcquireKernelInfo("LineEnds:1>;LineEnds:2>",exception));
             case 1:
               /* kernel for 4-connected line ends - no rotation */
               kernel=ParseKernelArray("3: 0,0,-  0,1,1  0,0,-");
@@ -1826,7 +1839,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             case 0:
             default:
               /* set of kernels to find all line junctions */
-              return(AcquireKernelInfo("LineJunctions:1@;LineJunctions:2>"));
+              return(AcquireKernelInfo("LineJunctions:1@;LineJunctions:2>",exception));
             case 1:
               /* Y Junction */
               kernel=ParseKernelArray("3: 1,-,1  -,1,-  -,1,-");
@@ -1948,7 +1961,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               /* Traditional Skeleton...
               ** A cyclically rotated single kernel
               */
-              kernel=AcquireKernelInfo("ThinSE:482");
+              kernel=AcquireKernelInfo("ThinSE:482",exception);
               if (kernel == (KernelInfo *) NULL)
                 return(kernel);
               kernel->type = type;
@@ -1959,7 +1972,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               ** Corners of the traditional method made more forgiving,
               ** but the retain the same cyclic order.
               */
-              kernel=AcquireKernelInfo("ThinSE:482; ThinSE:87x90;");
+              kernel=AcquireKernelInfo("ThinSE:482; ThinSE:87x90;",exception);
               if (kernel == (KernelInfo *) NULL)
                 return(kernel);
               if (kernel->next == (KernelInfo *) NULL)
@@ -1974,8 +1987,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               ** by Dan S. Bloomberg, available on Leptonica, Selected Papers,
               **   http://www.leptonica.com/papers/conn.pdf
               */
-              kernel=AcquireKernelInfo(
-                            "ThinSE:41; ThinSE:42; ThinSE:43");
+              kernel=AcquireKernelInfo("ThinSE:41; ThinSE:42; ThinSE:43",
+                exception);
               if (kernel == (KernelInfo *) NULL)
                 return(kernel);
               kernel->type = type;

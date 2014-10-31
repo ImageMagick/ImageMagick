@@ -791,7 +791,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   (void) FormatLocaleString(geometry,MaxTextExtent,
     "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
-  kernel_info=AcquireKernelInfo(geometry);
+  kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   blur_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
@@ -1192,7 +1192,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth1D(radius,0.5);
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  kernel_info=AcquireKernelInfo((const char *) NULL,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
@@ -1283,7 +1283,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth1D(radius,sigma);
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  kernel_info=AcquireKernelInfo((const char *) NULL,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
@@ -1381,7 +1381,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   (void) FormatLocaleString(geometry,MaxTextExtent,"gaussian:%.20gx%.20g",
     radius,sigma);
-  kernel_info=AcquireKernelInfo(geometry);
+  kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   blur_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
@@ -3346,7 +3346,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  kernel_info=AcquireKernelInfo((const char *) NULL,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));

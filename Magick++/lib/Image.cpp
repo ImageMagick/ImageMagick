@@ -2351,7 +2351,7 @@ void Magick::Image::colorMatrix(const size_t order_,
     *kernel_info;
 
   GetPPException;
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  kernel_info=AcquireKernelInfo((const char *) NULL,exceptionInfo);
   if (kernel_info != (KernelInfo *) NULL)
     {
       kernel_info->width=order_;
@@ -2534,7 +2534,7 @@ void Magick::Image::convolve(const size_t order_,const double *kernel_)
     *kernel_info;
 
   GetPPException;
-  kernel_info=AcquireKernelInfo((const char *) NULL);
+  kernel_info=AcquireKernelInfo((const char *) NULL,exceptionInfo);
   kernel_info->width=order_;
   kernel_info->height=order_;
   kernel_info->values=(MagickRealType *) AcquireAlignedMemory(order_,
@@ -3455,11 +3455,10 @@ void Magick::Image::morphology(const MorphologyMethod method_,
   MagickCore::Image
     *newImage;
 
-  kernel=AcquireKernelInfo(kernel_.c_str());
-  if (kernel == (KernelInfo *)NULL)
-    throwExceptionExplicit(OptionError,"Unable to parse kernel.");
-
   GetPPException;
+  kernel=AcquireKernelInfo(kernel_.c_str(),exceptionInfo);
+  if (kernel == (KernelInfo *) NULL)
+    throwExceptionExplicit(OptionError,"Unable to parse kernel.");
   newImage=MorphologyImage(constImage(),method_,iterations_,kernel,
     exceptionInfo);
   replaceImage(newImage);
@@ -3498,11 +3497,11 @@ void Magick::Image::morphologyChannel(const ChannelType channel_,
   MagickCore::Image
     *newImage;
 
-  kernel=AcquireKernelInfo(kernel_.c_str());
-  if (kernel == (KernelInfo *)NULL)
-    throwExceptionExplicit(OptionError,"Unable to parse kernel.");
 
   GetPPException;
+  kernel=AcquireKernelInfo(kernel_.c_str(),exceptionInfo);
+  if (kernel == (KernelInfo *)NULL)
+    throwExceptionExplicit(OptionError,"Unable to parse kernel.");
   SetPPChannelMask(channel_);
   newImage=MorphologyImage(constImage(),method_,iterations_,kernel,
     exceptionInfo);

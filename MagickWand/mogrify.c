@@ -1146,7 +1146,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               *kernel;
 
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            kernel=AcquireKernelInfo(argv[i+1]);
+            kernel=AcquireKernelInfo(argv[i+1],exception);
             if (kernel == (KernelInfo *) NULL)
               break;
             /* FUTURE: check on size of the matrix */
@@ -1242,7 +1242,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               *kernel_info;
 
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            kernel_info=AcquireKernelInfo(argv[i+1]);
+            kernel_info=AcquireKernelInfo(argv[i+1],exception);
             if (kernel_info == (KernelInfo *) NULL)
               break;
             /* kernel_info->bias=(*image)->bias; -- FUTURE: check this path! */
@@ -2225,7 +2225,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               GetMagickToken(p,&p,token);
             if ((*p != '\0'))
               iterations=(ssize_t) StringToLong(p);
-            kernel=AcquireKernelInfo(argv[i+2]);
+            kernel=AcquireKernelInfo(argv[i+2],exception);
             if (kernel == (KernelInfo *) NULL)
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
@@ -4211,7 +4211,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            kernel_info=AcquireKernelInfo(argv[i]);
+            kernel_info=AcquireKernelInfo(argv[i],exception);
             if (kernel_info == (KernelInfo *) NULL)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
@@ -4324,7 +4324,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            kernel_info=AcquireKernelInfo(argv[i]);
+            kernel_info=AcquireKernelInfo(argv[i],exception);
             if (kernel_info == (KernelInfo *) NULL)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
@@ -5333,7 +5333,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            kernel_info=AcquireKernelInfo(argv[i]);
+            kernel_info=AcquireKernelInfo(argv[i],exception);
             if (kernel_info == (KernelInfo *) NULL)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);

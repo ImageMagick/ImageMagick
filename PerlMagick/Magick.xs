@@ -9546,7 +9546,7 @@ Mogrify(ref,...)
               size_t
                 order;
 
-              kernel=AcquireKernelInfo((const char *) NULL);
+              kernel=AcquireKernelInfo((const char *) NULL,exception);
               if (kernel == (KernelInfo *) NULL)
                 break;
               av=(AV *) argument_list[0].array_reference;
@@ -9574,7 +9574,8 @@ Mogrify(ref,...)
               argument_list[2].string_reference);
           if (attribute_flag[3] != 0)
             {
-              kernel=AcquireKernelInfo(argument_list[3].string_reference);
+              kernel=AcquireKernelInfo(argument_list[3].string_reference,
+                exception);
               if (kernel == (KernelInfo *) NULL)
                 break;
             }
@@ -10473,7 +10474,7 @@ Mogrify(ref,...)
             color_matrix[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (ssize_t) (order*order); j++)
             color_matrix[j]=0.0;
-          kernel_info=AcquireKernelInfo((const char *) NULL);
+          kernel_info=AcquireKernelInfo((const char *) NULL,exception);
           if (kernel_info == (KernelInfo *) NULL)
             break;
           kernel_info->width=order;
@@ -10995,7 +10996,7 @@ Mogrify(ref,...)
 
           if (attribute_flag[0] == 0)
             break;
-          kernel=AcquireKernelInfo(argument_list[0].string_reference);
+          kernel=AcquireKernelInfo(argument_list[0].string_reference,exception);
           if (kernel == (KernelInfo *) NULL)
             break;
           if (attribute_flag[1] != 0)

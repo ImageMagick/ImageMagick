@@ -130,8 +130,9 @@ typedef struct _KernelInfo
 } KernelInfo;
 
 extern MagickExport KernelInfo
-  *AcquireKernelInfo(const char *),
-  *AcquireKernelBuiltIn(const KernelInfoType,const GeometryInfo *),
+  *AcquireKernelInfo(const char *,ExceptionInfo *),
+  *AcquireKernelBuiltIn(const KernelInfoType,const GeometryInfo *,
+    ExceptionInfo *),
   *CloneKernelInfo(const KernelInfo *),
   *DestroyKernelInfo(KernelInfo *);
 
