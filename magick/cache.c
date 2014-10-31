@@ -3484,14 +3484,7 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
   count=WritePixelCacheRegion(cache_info,extent,1,(const unsigned char *) "");
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
   if (cache_info->synchronize != MagickFalse)
-    {
-      int
-        status;
-
-      status=posix_fallocate(cache_info->file,offset+1,extent-offset);
-      if (status != 0)
-        return(MagickFalse);
-    }
+    (void) posix_fallocate(cache_info->file,offset+1,extent-offset);
 #endif
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
