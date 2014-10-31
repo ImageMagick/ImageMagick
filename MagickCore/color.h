@@ -71,7 +71,6 @@ extern MagickExport const ColorInfo
   **GetColorInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  IsEquivalentAlpha(const Image *,const PixelInfo *,const PixelInfo *),
   IsEquivalentImage(const Image *,const Image *,ssize_t *x,ssize_t *y,
     ExceptionInfo *),
   ListColorInfo(FILE *,ExceptionInfo *),

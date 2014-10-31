@@ -25,7 +25,9 @@ extern "C" {
 #endif
 
 extern MagickPrivate MagickBooleanType
-  ColorComponentGenesis(void);
+  ColorComponentGenesis(void),
+  IsEquivalentAlpha(const Image *,const PixelInfo *,const PixelInfo *),
+  IsEquivalentIntensity(const Image *,const PixelInfo *,const PixelInfo *);
 
 extern MagickPrivate void
   ColorComponentTerminus(void);
