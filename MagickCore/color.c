@@ -1629,7 +1629,7 @@ static MagickBooleanType IsColorCacheInstantiated(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s A l p h a S i m i l a r                                               %
++   I s E q u i v a l e n t A l p h a                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1661,7 +1661,7 @@ static inline double MagickMax(const double x,const double y)
   return(y);
 }
 
-MagickExport MagickBooleanType IsEquivalentAlpha(const Image *image,
+MagickPrivate MagickBooleanType IsEquivalentAlpha(const Image *image,
   const PixelInfo *p,const PixelInfo *q)
 {
   double
@@ -1688,7 +1688,7 @@ MagickExport MagickBooleanType IsEquivalentAlpha(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s I m a g e S i m i l a r                                               %
++   I s E q u i v a l e n t I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1807,6 +1807,54 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
   if (IfMagickFalse(status))
     return(status);
   return(IsMagickTrue(y < (ssize_t) image->rows));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I s E q u i v a l e n t I n t e n s i t y                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsEquivalentIntensity() returns true if the distance between two intensity
+%  values is less than the specified distance in a linear color space.
+%
+%  The format of the IsEquivalentIntensity method is:
+%
+%      void IsEquivalentIntensity(const Image *image,const PixelInfo *p,
+%        const PixelInfo *q)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o p: Pixel p.
+%
+%    o q: Pixel q.
+%
+*/
+MagickPrivate MagickBooleanType IsEquivalentIntensity(const Image *image,
+  const PixelInfo *p,const PixelInfo *q)
+{
+  double
+    fuzz,
+    pixel;
+
+  register double
+    distance;
+
+  if (GetPixelInfoIntensity(p) == GetPixelInfoIntensity(q))
+    return(MagickTrue);
+  fuzz=MagickMax(image->fuzz,MagickSQ1_2)*MagickMax(image->fuzz,MagickSQ1_2);
+  pixel=GetPixelInfoIntensity(p)-GetPixelInfoIntensity(q);
+  distance=pixel*pixel;
+  if (distance > fuzz)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 /*

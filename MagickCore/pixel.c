@@ -5834,7 +5834,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsFuzzyEquivalencePixel() returns MagickTrue if the distance between two
-%  pixels is less than the specified distance in a linear three (or four)u
+%  pixels is less than the specified distance in a linear three (or four)
 %  dimensional color space.
 %
 %  The format of the IsFuzzyEquivalencePixel method is:
