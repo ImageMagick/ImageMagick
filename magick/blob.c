@@ -3834,15 +3834,8 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
         image->blob->file_info.file);
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
       if (image->blob->synchronize != MagickFalse)
-        {
-          int
-            status;
-
-          status=posix_fallocate(fileno(image->blob->file_info.file),offset,
-            extent-offset);
-          if (status != 0)
-            return(MagickFalse);
-        }
+        (void) posix_fallocate(fileno(image->blob->file_info.file),offset,
+          extent-offset);
 #endif
       offset=SeekBlob(image,offset,SEEK_SET);
       if (count != 1)
@@ -3884,15 +3877,12 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
           if (image->blob->synchronize != MagickFalse)
             {
               int
-                file,
-                status;
+                file;
 
               file=fileno(image->blob->file_info.file);
               if ((file == -1) || (offset < 0))
                 return(MagickFalse);
-              status=posix_fallocate(file,offset,extent-offset);
-              if (status != 0)
-                return(MagickFalse);
+              (void) posix_fallocate(file,offset,extent-offset);
             }
 #endif
           offset=SeekBlob(image,offset,SEEK_SET);
