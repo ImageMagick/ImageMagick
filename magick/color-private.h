@@ -27,6 +27,9 @@
 extern "C" {
 #endif
 
+extern MagickPrivate MagickBooleanType
+  IsIntensitySimilar(const Image *,const PixelPacket *,const PixelPacket *);
+
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)
 {

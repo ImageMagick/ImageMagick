@@ -561,7 +561,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         neighbor_offset=dy*image->columns+dx;
         if (((x+dx) < 0) || ((x+dx) >= (ssize_t) image->columns) ||
             ((y+dy) < 0) || ((y+dy) >= (ssize_t) image->rows) ||
-            (IsColorSimilar(image,p,p+neighbor_offset) == MagickFalse))
+            (IsIntensitySimilar(image,p,p+neighbor_offset) == MagickFalse))
           {
             p++;
             continue;
