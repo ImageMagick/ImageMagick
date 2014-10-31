@@ -3,6 +3,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26456).
   * Check for zero-sized rendered SV@sG image (bug report from
     Vladimir Davydov).
+  * Accept morphology kernels from files (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=26466).
 
 2014-10-26  6.8.9-10 Dirk Lemstra <dirk@snakeware...>
   * Added support for reading jpeg compressed YCCK tiff files (reference

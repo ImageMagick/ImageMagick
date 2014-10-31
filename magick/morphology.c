@@ -129,7 +129,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
     kernel=kernel->next;
   return(kernel);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -496,6 +496,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
     *new_kernel;
 
   char
+    *kernel_cache,
     token[MaxTextExtent];
 
   const char
@@ -504,6 +505,16 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   if (kernel_string == (const char *) NULL)
     return(ParseKernelArray(kernel_string));
   p=kernel_string;
+  kernel_cache=(char *) NULL;
+  if (*kernel_string == '@')
+    {
+      ExceptionInfo *exception=AcquireExceptionInfo();
+      kernel_cache=FileToString(kernel_string+1,~0UL,exception);
+      exception=DestroyExceptionInfo(exception);
+      if (kernel_cache == (char *) NULL)
+        return((KernelInfo *) NULL);
+      p=(const char *) kernel_cache;
+    }
   kernel=NULL;
 
   while (GetMagickToken(p,NULL,token), *token != '\0')
@@ -538,11 +549,11 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
       break;
     p++;
   }
+  if (kernel_cache != (char *) NULL)
+    kernel_cache=DestroyString(kernel_cache);
   return(kernel);
 }
-
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -944,7 +955,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %    fractional results, and as such scaling is vital even for binary shapes.
 %
 */
-
 MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
    const GeometryInfo *args)
 {
