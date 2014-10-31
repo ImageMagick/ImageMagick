@@ -195,14 +195,7 @@ static MagickBooleanType SetMatrixExtent(MatrixInfo *restrict matrix_info,
   count=WriteMatrixElements(matrix_info,extent,1,(const unsigned char *) "");
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
   if (matrix_info->synchronize != MagickFalse)
-    {
-      int
-        status;
-
-      status=posix_fallocate(matrix_info->file,offset+1,extent-offset);
-      if (status != 0)
-        return(MagickFalse);
-    }
+    (void) posix_fallocate(matrix_info->file,offset+1,extent-offset);
 #endif
 #if defined(SIGBUS)
   (void) signal(SIGBUS,MatrixSignalHandler);
