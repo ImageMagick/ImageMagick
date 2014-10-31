@@ -252,6 +252,8 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
 
     if (status == MagickFalse)
       break;
+    if (object[i].area < MagickEpsilon)
+      continue;
     GetColorTuple(&object[i].color,MagickFalse,mean_color);
     (void) fprintf(stdout,
       "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
@@ -556,7 +558,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         GetPixelInfoPixel(image,p+neighbor_offset,&target);
         if (((x+dx) < 0) || ((x+dx) >= (ssize_t) image->columns) ||
             ((y+dy) < 0) || ((y+dy) >= (ssize_t) image->rows) ||
-            (IsEquivalentIntensity(image,&pixel,&target) == MagickFalse))
+            (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse))
           {
             p+=GetPixelChannels(image);
             continue;
@@ -670,16 +672,16 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       component_image=DestroyImage(component_image);
       ThrowImageException(ResourceLimitError,"TooManyObjects");
     }
-  artifact=GetImageArtifact(image,"connected-components:verbose");
-  if (IsStringTrue(artifact) != MagickFalse)
-    status=ConnectedComponentsStatistics(image,component_image,(size_t) n,
-      exception);
   artifact=GetImageArtifact(image,"connected-components:area-threshold");
   area_threshold=0.0;
   if (artifact != (const char *) NULL)
     area_threshold=StringToDouble(artifact,(char **) NULL);
   if (area_threshold > 0.0)
     status=MergeConnectedComponents(component_image,(size_t) n,area_threshold,
+      exception);
+  artifact=GetImageArtifact(image,"connected-components:verbose");
+  if (IsStringTrue(artifact) != MagickFalse)
+    status=ConnectedComponentsStatistics(image,component_image,(size_t) n,
       exception);
   if (status == MagickFalse)
     component_image=DestroyImage(component_image);
