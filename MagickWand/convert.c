@@ -1028,7 +1028,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
-            kernel_info=AcquireKernelInfo(argv[i]);
+            kernel_info=AcquireKernelInfo(argv[i],exception);
             if (kernel_info == (KernelInfo *) NULL)
               ThrowConvertInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
@@ -1158,7 +1158,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
-            kernel_info=AcquireKernelInfo(argv[i]);
+            kernel_info=AcquireKernelInfo(argv[i],exception);
             if (kernel_info == (KernelInfo *) NULL)
               ThrowConvertInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
@@ -2183,7 +2183,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
-            kernel_info=AcquireKernelInfo(argv[i]);
+            kernel_info=AcquireKernelInfo(argv[i],exception);
             if (kernel_info == (KernelInfo *) NULL)
               ThrowConvertInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);

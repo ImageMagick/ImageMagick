@@ -283,7 +283,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   */
   (void) FormatLocaleString(geometry,MaxTextExtent,
     "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
-  kernel_info=AcquireKernelInfo(geometry);
+  kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   edge_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
