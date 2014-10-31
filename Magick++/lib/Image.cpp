@@ -929,9 +929,6 @@ std::string Magick::Image::formatExpression(const std::string expression)
   char
     *text;
 
-  std::string
-    text_string;
-
   GetPPException;
   text=InterpretImageProperties(imageInfo(),image(),expression.c_str(),
     exceptionInfo);
