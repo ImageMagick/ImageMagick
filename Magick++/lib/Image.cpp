@@ -862,16 +862,15 @@ std::string Magick::Image::formatExpression(const std::string expression)
     *text;
 
   std::string
-    result;
+    text_string;
 
+  modifyImage();
   text=InterpretImageProperties(imageInfo(),image(),expression.c_str());
+  std::string text_string(text);
   if (text != (char *) NULL)
-    {
-      result=std::string(text);
-      text=DestroyString(text);
-    }
+    text=DestroyString(text);
   throwImageException();
-  return(result);
+  return(text_string);
 }
 
 double Magick::Image::gamma(void) const
