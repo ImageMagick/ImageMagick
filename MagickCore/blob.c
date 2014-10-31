@@ -3827,15 +3827,12 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
       if (image->blob->synchronize != MagickFalse)
         {
           int
-            file,
-            status;
+            file;
 
           file=fileno(image->blob->file_info.file);
           if ((file == -1) || (offset < 0))
             return(MagickFalse);
-          status=posix_fallocate(file,offset,extent-offset);
-          if (status != 0)
-            return(MagickFalse);
+          (void) posix_fallocate(file,offset,extent-offset);
         }
 #endif
       offset=SeekBlob(image,offset,SEEK_SET);
@@ -3878,15 +3875,12 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
           if (image->blob->synchronize != MagickFalse)
             {
               int
-                file,
-                status;
+                file;
 
               file=fileno(image->blob->file_info.file);
               if ((file == -1) || (offset < 0))
                 return(MagickFalse);
-              status=posix_fallocate(file,offset,extent-offset);
-              if (status != 0)
-                return(MagickFalse);
+              (void) posix_fallocate(file,offset,extent-offset);
             }
 #endif
           offset=SeekBlob(image,offset,SEEK_SET);
