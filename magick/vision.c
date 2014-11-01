@@ -137,59 +137,6 @@ static int CCObjectCompare(const void *x,const void *y)
   return((int) (q->area-(ssize_t) p->area));
 }
 
-static MagickBooleanType GrayscaleConnectedComponents(Image *image,
-  const size_t number_objects,ExceptionInfo *exception)
-{
-  CacheView
-    *image_view;
-
-  MagickBooleanType
-    status;
-
-  ssize_t
-    y;
-
-  /*
-    Grayscale image.
-  */
-  if (number_objects > 255)
-    ThrowBinaryException(ResourceLimitError,"TooManyObjects",image->filename);
-  status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(image,image,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register PixelPacket
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      SetPixelRed(q,ScaleCharToQuantum(GetPixelRed(q)));
-      SetPixelGreen(q,ScaleCharToQuantum(GetPixelGreen(q)));
-      SetPixelBlue(q,ScaleCharToQuantum(GetPixelBlue(q)));
-      q++;
-    }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      status=MagickFalse;
-  }
-  image_view=DestroyCacheView(image_view);
-  return(status);
-}
-
 static MagickBooleanType MergeConnectedComponents(Image *image,
   const size_t number_objects,const double area_threshold,
   ExceptionInfo *exception)
@@ -731,9 +678,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       component_image=DestroyImage(component_image);
       ThrowImageException(ResourceLimitError,"TooManyObjects");
     }
-  artifact=GetImageArtifact(image,"connected-components:grayscale");
-  if (IsMagickTrue(artifact) != MagickFalse)
-    status=GrayscaleConnectedComponents(component_image,n,exception);
   artifact=GetImageArtifact(image,"connected-components:area-threshold");
   area_threshold=0.0;
   if (artifact != (const char *) NULL)
