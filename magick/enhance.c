@@ -4028,7 +4028,6 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
           image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
       }
     }
-
   /*
     Negate image.
   */
