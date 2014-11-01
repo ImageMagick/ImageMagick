@@ -70,6 +70,7 @@
 #include "MagickCore/pixel-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
+#include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/string_.h"
@@ -137,51 +138,32 @@ static int CCObjectCompare(const void *x,const void *y)
   return((int) (q->area-(ssize_t) p->area));
 }
 
-static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
-  const Image *component_image,const size_t number_objects,
-  ExceptionInfo *exception)
+static MagickBooleanType GrayscaleConnectedComponents(Image *image,
+  const size_t number_objects,ExceptionInfo *exception)
 {
   CacheView
-    *component_view,
     *image_view;
-
-  CCObject
-    *object;
 
   MagickBooleanType
     status;
-
-  register ssize_t
-    i;
 
   ssize_t
     y;
 
   /*
-    Collect statistics on unique objects.
+    Grayscale image.
   */
-  object=(CCObject *) AcquireQuantumMemory(number_objects,sizeof(*object));
-  if (object == (CCObject *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return(MagickFalse);
-    }
-  (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
-    object[i].id=i;
-    object[i].bounding_box.x=(ssize_t) component_image->columns;
-    object[i].bounding_box.y=(ssize_t) component_image->rows;
-    GetPixelInfo(image,&object[i].color);
-  }
+  if (number_objects > 255)
+    ThrowBinaryException(ResourceLimitError,"TooManyObjects",image->filename);
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);
-  component_view=AcquireVirtualCacheView(component_image,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(image,image,image->rows,1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
-      *restrict p,
+    register Quantum
       *restrict q;
 
     register ssize_t
@@ -189,80 +171,23 @@ static MagickBooleanType ConnectedComponentsStatistics(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewVirtualPixels(component_view,0,y,component_image->columns,1,
-      exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      i=(ssize_t) *q;
-      if (x < object[i].bounding_box.x)
-        object[i].bounding_box.x=x;
-      if (x > (ssize_t) object[i].bounding_box.width)
-        object[i].bounding_box.width=(size_t) x;
-      if (y < object[i].bounding_box.y)
-        object[i].bounding_box.y=y;
-      if (y > (ssize_t) object[i].bounding_box.height)
-        object[i].bounding_box.height=(size_t) y;
-      object[i].color.red+=GetPixelRed(image,p);
-      object[i].color.green+=GetPixelGreen(image,p);
-      object[i].color.blue+=GetPixelBlue(image,p);
-      object[i].color.alpha+=GetPixelAlpha(image,p);
-      object[i].color.black+=GetPixelBlack(image,p);
-      object[i].centroid.x+=x;
-      object[i].centroid.y+=y;
-      object[i].area++;
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(component_image);
+      SetPixelRed(image,ScaleCharToQuantum(GetPixelRed(image,q)),q);
+      SetPixelGreen(image,ScaleCharToQuantum(GetPixelGreen(image,q)),q);
+      SetPixelBlue(image,ScaleCharToQuantum(GetPixelBlue(image,q)),q);
+      q+=GetPixelChannels(image);
     }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
   }
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
-    object[i].bounding_box.width-=(object[i].bounding_box.x-1);
-    object[i].bounding_box.height-=(object[i].bounding_box.y-1);
-    object[i].color.red=(MagickRealType) (object[i].color.red/
-      object[i].area);
-    object[i].color.green=(MagickRealType) (object[i].color.green/
-      object[i].area);
-    object[i].color.blue=(MagickRealType) (object[i].color.blue/
-      object[i].area);
-    object[i].color.alpha=(MagickRealType) (object[i].color.alpha/
-      object[i].area);
-    object[i].color.black=(MagickRealType) (object[i].color.black/
-      object[i].area);
-    object[i].centroid.x=object[i].centroid.x/object[i].area;
-    object[i].centroid.y=object[i].centroid.y/object[i].area;
-  }
-  component_view=DestroyCacheView(component_view);
   image_view=DestroyCacheView(image_view);
-  /*
-    Report statistics on unique objects.
-  */
-  qsort((void *) object,number_objects,sizeof(*object),CCObjectCompare);
-  (void) fprintf(stdout,
-    "Objects (id: bounding-box centroid area mean-color):\n");
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
-    char
-      mean_color[MaxTextExtent];
-
-    if (status == MagickFalse)
-      break;
-    if (object[i].area < MagickEpsilon)
-      continue;
-    GetColorTuple(&object[i].color,MagickFalse,mean_color);
-    (void) fprintf(stdout,
-      "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
-      object[i].id,(double) object[i].bounding_box.width,(double)
-      object[i].bounding_box.height,(double) object[i].bounding_box.x,
-      (double) object[i].bounding_box.y,object[i].centroid.x,
-      object[i].centroid.y,(double) object[i].area,mean_color);
-  }
-  object=(CCObject *) RelinquishMagickMemory(object);
   return(status);
 }
 
@@ -425,6 +350,135 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     }
   }
   image_view=DestroyCacheView(image_view);
+  object=(CCObject *) RelinquishMagickMemory(object);
+  return(status);
+}
+
+static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
+  const Image *component_image,const size_t number_objects,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *component_view,
+    *image_view;
+
+  CCObject
+    *object;
+
+  MagickBooleanType
+    status;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    y;
+
+  /*
+    Collect statistics on unique objects.
+  */
+  object=(CCObject *) AcquireQuantumMemory(number_objects,sizeof(*object));
+  if (object == (CCObject *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
+  for (i=0; i < (ssize_t) number_objects; i++)
+  {
+    object[i].id=i;
+    object[i].bounding_box.x=(ssize_t) component_image->columns;
+    object[i].bounding_box.y=(ssize_t) component_image->rows;
+    GetPixelInfo(image,&object[i].color);
+  }
+  status=MagickTrue;
+  image_view=AcquireVirtualCacheView(image,exception);
+  component_view=AcquireVirtualCacheView(component_image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *restrict p,
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewVirtualPixels(component_view,0,y,component_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      i=(ssize_t) *q;
+      if (x < object[i].bounding_box.x)
+        object[i].bounding_box.x=x;
+      if (x > (ssize_t) object[i].bounding_box.width)
+        object[i].bounding_box.width=(size_t) x;
+      if (y < object[i].bounding_box.y)
+        object[i].bounding_box.y=y;
+      if (y > (ssize_t) object[i].bounding_box.height)
+        object[i].bounding_box.height=(size_t) y;
+      object[i].color.red+=GetPixelRed(image,p);
+      object[i].color.green+=GetPixelGreen(image,p);
+      object[i].color.blue+=GetPixelBlue(image,p);
+      object[i].color.alpha+=GetPixelAlpha(image,p);
+      object[i].color.black+=GetPixelBlack(image,p);
+      object[i].centroid.x+=x;
+      object[i].centroid.y+=y;
+      object[i].area++;
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(component_image);
+    }
+  }
+  for (i=0; i < (ssize_t) number_objects; i++)
+  {
+    object[i].bounding_box.width-=(object[i].bounding_box.x-1);
+    object[i].bounding_box.height-=(object[i].bounding_box.y-1);
+    object[i].color.red=(MagickRealType) (object[i].color.red/
+      object[i].area);
+    object[i].color.green=(MagickRealType) (object[i].color.green/
+      object[i].area);
+    object[i].color.blue=(MagickRealType) (object[i].color.blue/
+      object[i].area);
+    object[i].color.alpha=(MagickRealType) (object[i].color.alpha/
+      object[i].area);
+    object[i].color.black=(MagickRealType) (object[i].color.black/
+      object[i].area);
+    object[i].centroid.x=object[i].centroid.x/object[i].area;
+    object[i].centroid.y=object[i].centroid.y/object[i].area;
+  }
+  component_view=DestroyCacheView(component_view);
+  image_view=DestroyCacheView(image_view);
+  /*
+    Report statistics on unique objects.
+  */
+  qsort((void *) object,number_objects,sizeof(*object),CCObjectCompare);
+  (void) fprintf(stdout,
+    "Objects (id: bounding-box centroid area mean-color):\n");
+  for (i=0; i < (ssize_t) number_objects; i++)
+  {
+    char
+      mean_color[MaxTextExtent];
+
+    if (status == MagickFalse)
+      break;
+    if (object[i].area < MagickEpsilon)
+      continue;
+    GetColorTuple(&object[i].color,MagickFalse,mean_color);
+    (void) fprintf(stdout,
+      "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
+      object[i].id,(double) object[i].bounding_box.width,(double)
+      object[i].bounding_box.height,(double) object[i].bounding_box.x,
+      (double) object[i].bounding_box.y,object[i].centroid.x,
+      object[i].centroid.y,(double) object[i].area,mean_color);
+  }
   object=(CCObject *) RelinquishMagickMemory(object);
   return(status);
 }
@@ -672,6 +726,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       component_image=DestroyImage(component_image);
       ThrowImageException(ResourceLimitError,"TooManyObjects");
     }
+  artifact=GetImageArtifact(image,"connected-components:grayscale");
+  if (IsStringTrue(artifact) != MagickFalse)
+    status=GrayscaleConnectedComponents(component_image,n,exception);
   artifact=GetImageArtifact(image,"connected-components:area-threshold");
   area_threshold=0.0;
   if (artifact != (const char *) NULL)
@@ -681,7 +738,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       exception);
   artifact=GetImageArtifact(image,"connected-components:verbose");
   if (IsStringTrue(artifact) != MagickFalse)
-    status=ConnectedComponentsStatistics(image,component_image,(size_t) n,
+    status=StatisticsComponentsStatistics(image,component_image,(size_t) n,
       exception);
   if (status == MagickFalse)
     component_image=DestroyImage(component_image);
