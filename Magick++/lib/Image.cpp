@@ -929,12 +929,17 @@ std::string Magick::Image::formatExpression(const std::string expression)
   char
     *text;
 
+  std::string
+    text_string;
+
   GetPPException;
   text=InterpretImageProperties(imageInfo(),image(),expression.c_str(),
     exceptionInfo);
-  std::string text_string(text);
   if (text != (char *) NULL)
-    text=DestroyString(text);
+    {
+      text_string=std::string(text);
+      text=DestroyString(text);
+    }
   ThrowPPException;
   return(text_string);
 }
