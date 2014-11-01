@@ -9,6 +9,8 @@
 2014-10-26  6.8.9-10 Dirk Lemstra <dirk@snakeware...>
   * Added support for reading jpeg compressed YCCK tiff files (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24412).
+  * Fixed reading DICOM files with big endian transfer syntax (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26448).
 
 2014-10-25  6.8.9-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-9, SVN revision 16819.

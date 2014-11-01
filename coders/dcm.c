@@ -2861,14 +2861,16 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
-    element,
-    group,
     scene,
     window_center,
     y;
 
   unsigned char
     *data;
+
+  unsigned short
+    group,
+    element;
 
   /*
     Open image file.
@@ -2888,6 +2890,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   image->depth=8UL;
+  image->endian=LSBEndian;
   /*
     Read DCM preamble.
   */
@@ -2943,18 +2946,25 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read a group.
     */
     image->offset=(ssize_t) TellBlob(image);
-    group=(ssize_t) ReadBlobLSBShort(image);
-    element=(ssize_t) ReadBlobLSBShort(image);
+    group=ReadBlobLSBShort(image);
+    element=ReadBlobLSBShort(image);
+    if ((group != 0x0002) && (image->endian == MSBEndian))
+    {
+      group=(group << 8) | ((group >> 8) & 0xFF);
+      element=(element << 8) | ((element >> 8) & 0xFF);
+    }
     quantum=0;
     /*
       Find corresponding VR for this group and element.
     */
     for (i=0; dicom_info[i].group < 0xffff; i++)
-      if ((group == (ssize_t) dicom_info[i].group) &&
-          (element == (ssize_t) dicom_info[i].element))
+      if ((group == dicom_info[i].group) &&
+          (element == dicom_info[i].element))
         break;
     (void) CopyMagickString(implicit_vr,dicom_info[i].vr,MaxTextExtent);
     count=ReadBlob(image,2,(unsigned char *) explicit_vr);
+    if (count != 2)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     /*
       Check for "explicitness", but meta-file headers always explicit.
     */
@@ -2989,10 +2999,20 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     datum=0;
     if (quantum == 4)
-      datum=(int) ReadBlobLSBLong(image);
+      {
+        if (group == 0x0002)
+          datum=(int) ReadBlobLSBLong(image);
+        else
+          datum=(int) ReadBlobLong(image);
+      }
     else
       if (quantum == 2)
-        datum=(int) ReadBlobLSBShort(image);
+        {
+          if (group == 0x0002)
+            datum=(int) ReadBlobLSBShort(image);
+          else
+            datum=(int) ReadBlobShort(image);
+        }
     quantum=0;
     length=1;
     if (datum != 0)
@@ -3029,8 +3049,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (use_explicit == MagickFalse)
           explicit_vr[0]='\0';
         for (i=0; dicom_info[i].description != (char *) NULL; i++)
-          if ((group == (ssize_t) dicom_info[i].group) &&
-              (element == (ssize_t) dicom_info[i].element))
+          if ((group == dicom_info[i].group) &&
+              (element == dicom_info[i].element))
             break;
         (void) FormatLocaleFile(stdout,"0x%04lX %4ld %s-%s (0x%04lx,0x%04lx)",
           (unsigned long) image->offset,(long) length,implicit_vr,
@@ -3053,14 +3073,23 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       datum=(int) ReadBlobByte(image);
     else
       if ((length == 1) && (quantum == 2))
-        datum=(int) ReadBlobLSBShort(image);
+        {
+          if (group == 0x0002)
+            datum=(int) ReadBlobLSBShort(image);
+          else
+            datum=(int) ReadBlobShort(image);
+        }
       else
         if ((length == 1) && (quantum == 4))
-          datum=(int) ReadBlobLSBLong(image);
+          {
+            if (group == 0x0002)
+              datum=(int) ReadBlobLSBLong(image);
+            else
+              datum=(int) ReadBlobLong(image);
+          }
         else
           if ((quantum != 0) && (length != 0))
             {
-              data=(unsigned char *) NULL;
               if (~length >= 1)
                 data=(unsigned char *) AcquireQuantumMemory(length+1,quantum*
                   sizeof(*data));
@@ -3087,11 +3116,17 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
     if (((group << 16) | element) == 0xFFFEE0DD)
       {
+        if (data != (unsigned char *) NULL)
+          data=(unsigned char *) RelinquishMagickMemory(data);
         sequence=MagickFalse;
         continue;
       }
     if (sequence != MagickFalse)
-      continue;
+      {
+        if (data != (unsigned char *) NULL)
+          data=(unsigned char *) RelinquishMagickMemory(data);
+        continue;
+      }
     switch (group)
     {
       case 0x0002:
@@ -3426,8 +3461,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *attribute;
 
         for (i=0; dicom_info[i].description != (char *) NULL; i++)
-          if ((group == (ssize_t) dicom_info[i].group) &&
-              (element == (ssize_t) dicom_info[i].element))
+          if ((group == dicom_info[i].group) &&
+              (element == dicom_info[i].element))
             break;
         if (dicom_info[i].description != (char *) NULL)
           {
