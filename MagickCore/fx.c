@@ -2730,7 +2730,16 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     case 'r':
     {
       if (LocaleNCompare(expression,"rand",4) == 0)
-        return((double) GetPseudoRandomValue(fx_info->random_info));
+        {
+          double
+            alpha;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_FxEvaluateSubexpression)
+#endif
+          alpha=GetPseudoRandomValue(fx_info->random_info);
+          return(alpha);
+        }
       if (LocaleNCompare(expression,"round",5) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
