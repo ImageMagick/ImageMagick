@@ -653,7 +653,7 @@ yum install ImageMagick-perl
 
   <tr>
     <td valign="top">Chop</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i></td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}</td>
     <td valign="top">chop an image</td>
   </tr>
 
@@ -727,6 +727,13 @@ yum install ImageMagick-perl
     <td valign="top">Composite</td>
     <td valign="top">image=&gt;<i>image-handle</i>, compose=&gt;{Undefined, Add, Atop, Blend, Bumpmap, Clear, ColorBurn, ColorDodge, Colorize, CopyBlack, CopyBlue, CopyCMYK, Cyan, CopyGreen, Copy, CopyMagenta, CopyOpacity, CopyRed, RGB, CopyYellow, Darken, Dst, Difference, Displace, Dissolve, DstAtop, DstIn, DstOut, DstOver, Dst, Exclusion, HardLight, Hue, In, Lighten, Luminize, Minus, Modulate, Multiply, None, Out, Overlay, Over, Plus, ReplaceCompositeOp, Saturate, Screen, SoftLight, Src, SrcAtop, SrcIn, SrcOut, SrcOver, Src, Subtract, Threshold, Xor }, mask=&gt;<i>image-handle</i>, geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}, opacity=&gt;<i>integer</i>, tile=&gt;{True, False}, rotate=&gt;<i>double</i>, color=&gt;<i><a href="color.html">color name</a></i>, blend=&gt;<i>geometry</i>, interpolate=&gt;{undefined, average, bicubic, bilinear, filter, integer, mesh, nearest-neighbor, spline}</td>
     <td valign="top">composite one image onto another.  Use the rotate parameter in concert with the tile parameter.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">ConnectedComponents</td>
+    <td valign="top">connectivity=&gt;<i>integer</i>,</td>
+    <td valign="top">connected-components uniquely labeled, choose from 4 or 8 w
+ay connectivity.</td>
   </tr>
 
   <tr>
@@ -943,6 +950,12 @@ yum install ImageMagick-perl
     <td valign="top">InverseDiscreteFourierTransform</td>
     <td valign="top">magnitude=&gt;{True, False}</td>
     <td valign="top">implements the inverse discrete Fourier transform (DFT)</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Kuwahara</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">edge preserving noise reduction filter</td>
   </tr>
 
   <tr>
@@ -2735,4 +2748,4 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 25th July 2014 04:16 -->
+<!-- Magick Cache 2nd November 2014 12:37 -->

@@ -315,7 +315,7 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.8.9-5 2014-04-11 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.8.9-9 2014-10-25 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -1562,4 +1562,4 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 25th July 2014 04:05 -->
+<!-- Magick Cache 2nd November 2014 14:55 -->

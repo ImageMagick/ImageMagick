@@ -291,7 +291,7 @@
 
 <p>After you write your MagickCore program, compile it like this:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cc -o core `pkg-config --cflags --libs MagickCore` core.c</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cc -o core core.c `pkg-config --cflags --libs MagickCore`</span></p>
 <p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
 <p>Here is a example program that utilizes the MagickCore API to get you started, <a href="../source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
@@ -500,4 +500,4 @@ int main(int argc,char **argv)
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 25th July 2014 04:08 -->
+<!-- Magick Cache 2nd November 2014 14:27 -->
