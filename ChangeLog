@@ -1,3 +1,6 @@
+2014-11-01  6.8.9-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.9-10, SVN revision 16901.
+
 2014-10-29  6.8.9-10 Cristy  <quetzlzacatenango@image...>
   * EXIF directory offsets must be greater than 0 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26456).
