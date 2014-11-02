@@ -3094,7 +3094,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 continue;
               }
 
-    if (((group << 16) | element) == 0xFFFEE0DD)
+    if ((unsigned int) ((group << 16) | element) == 0xFFFEE0DD)
       {
         if (data != (unsigned char *) NULL)
           data=(unsigned char *) RelinquishMagickMemory(data);
