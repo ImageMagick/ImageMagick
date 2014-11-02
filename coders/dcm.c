@@ -2760,7 +2760,7 @@ static int ReadDCMByte(DCMStreamInfo *stream_info,Image *image)
   return(ReadBlobByte(image));
 }
 
-static unsigned short ReadDCMLSBShort(DCMStreamInfo *stream_info,Image *image)
+static unsigned short ReadDCMShort(DCMStreamInfo *stream_info,Image *image)
 {
   int
     shift;
@@ -2773,21 +2773,6 @@ static unsigned short ReadDCMLSBShort(DCMStreamInfo *stream_info,Image *image)
   shift=image->depth < 16 ? 4 : 8;
   value=ReadDCMByte(stream_info,image) | (unsigned short)
     (ReadDCMByte(stream_info,image) << shift);
-  return(value);
-}
-
-static unsigned short ReadDCMMSBShort(DCMStreamInfo *stream_info,Image *image)
-{
-  int
-    shift;
-  unsigned short
-    value;
-
-  if (image->compression != RLECompression)
-    return(ReadBlobMSBShort(image));
-  shift=image->depth < 16 ? 4 : 8;
-  value=(ReadDCMByte(stream_info,image) << shift) | (unsigned short)
-    ReadDCMByte(stream_info,image);
   return(value);
 }
 
@@ -2944,17 +2929,16 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     group=ReadBlobLSBShort(image);
     element=ReadBlobLSBShort(image);
     if ((group != 0x0002) && (image->endian == MSBEndian))
-    {
-      group=(group << 8) | ((group >> 8) & 0xFF);
-      element=(element << 8) | ((element >> 8) & 0xFF);
-    }
+      {
+        group=(unsigned short) ((group << 8) | ((group >> 8) & 0xFF));
+        element=(unsigned short) ((element << 8) | ((element >> 8) & 0xFF));
+      }
     quantum=0;
     /*
       Find corresponding VR for this group and element.
     */
     for (i=0; dicom_info[i].group < 0xffff; i++)
-      if ((group == dicom_info[i].group) &&
-          (element == dicom_info[i].element))
+      if ((group == dicom_info[i].group) && (element == dicom_info[i].element))
         break;
     (void) CopyMagickString(implicit_vr,dicom_info[i].vr,MaxTextExtent);
     count=ReadBlob(image,2,(unsigned char *) explicit_vr);
@@ -3048,8 +3032,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (element == dicom_info[i].element))
             break;
         (void) FormatLocaleFile(stdout,"0x%04lX %4ld %s-%s (0x%04lx,0x%04lx)",
-          (unsigned long) image->offset,(long) length,implicit_vr,
-          explicit_vr,(unsigned long) group,(unsigned long) element);
+          (unsigned long) image->offset,(long) length,implicit_vr,explicit_vr,
+          (unsigned long) group,(unsigned long) element);
         if (dicom_info[i].description != (char *) NULL)
           (void) FormatLocaleFile(stdout," %s",dicom_info[i].description);
         (void) FormatLocaleFile(stdout,": ");
@@ -3156,7 +3140,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MaxTextExtent);
             if (image_info->verbose != MagickFalse)
               (void) FormatLocaleFile(stdout,"transfer_syntax=%s\n",
-                (const char*) transfer_syntax);
+                (const char *) transfer_syntax);
             if (strncmp(transfer_syntax,"1.2.840.10008.1.2",17) == 0)
               {
                 int
@@ -3212,7 +3196,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Samples per pixel.
             */
-            samples_per_pixel=datum;
+            samples_per_pixel=(size_t) datum;
             break;
           }
           case 0x0004:
@@ -3249,7 +3233,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Image rows.
             */
-            height=datum;
+            height=(size_t) datum;
             break;
           }
           case 0x0011:
@@ -3257,7 +3241,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Image columns.
             */
-            width=datum;
+            width=(size_t) datum;
             break;
           }
           case 0x0100:
@@ -3265,7 +3249,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Bits allocated.
             */
-            bits_allocated=datum;
+            bits_allocated=(size_t) datum;
             bytes_per_pixel=1;
             if (datum > 8)
               bytes_per_pixel=2;
@@ -3280,7 +3264,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Bits stored.
             */
-            significant_bits=datum;
+            significant_bits=(size_t) datum;
             bytes_per_pixel=1;
             if (significant_bits > 8)
               bytes_per_pixel=2;
@@ -3303,7 +3287,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Pixel representation.
             */
-            signed_data=datum;
+            signed_data=(size_t) datum;
             break;
           }
           case 0x1050:
@@ -3312,7 +3296,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Visible pixel range: center.
             */
             if (data != (unsigned char *) NULL)
-              window_center=StringToLong((char *) data);
+              window_center=(ssize_t) StringToLong((char *) data);
             break;
           }
           case 0x1051:
@@ -3421,7 +3405,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < (ssize_t) colors; i++)
             {
               if (image->endian == MSBEndian)
-                index=(unsigned short) ((*p << 8) | *(p+1)); else
+                index=(unsigned short) ((*p << 8) | *(p+1));
+              else
                 index=(unsigned short) (*p | (*(p+1) << 8));
               bluemap[i]=(int) index;
               p+=2;
@@ -3559,7 +3544,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (stream_info->offsets == (ssize_t *) NULL)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
-            stream_info->offsets[i]=(int) ReadBlobLSBLong(image);
+            stream_info->offsets[i]=(ssize_t) ((int) ReadBlobLSBLong(image));
           offset=TellBlob(image);
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             stream_info->offsets[i]+=offset;
@@ -3691,7 +3676,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (stream_info->offsets == (ssize_t *) NULL)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
-            stream_info->offsets[i]=(int) ReadBlobLSBLong(image);
+            stream_info->offsets[i]=(ssize_t) ((int) ReadBlobLSBLong(image));
           offset=TellBlob(image);
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             stream_info->offsets[i]+=offset;
@@ -3721,7 +3706,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             index=redmap[i];
             if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
               index=(int) scale[index];
-            image->colormap[i].red=index;
+            image->colormap[i].red=(MagickRealType) index;
           }
         if (greenmap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
@@ -3729,7 +3714,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             index=greenmap[i];
             if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
               index=(int) scale[index];
-            image->colormap[i].green=index;
+            image->colormap[i].green=(MagickRealType) index;
           }
         if (bluemap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
@@ -3737,7 +3722,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             index=bluemap[i];
             if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
               index=(int) scale[index];
-            image->colormap[i].blue=index;
+            image->colormap[i].blue=(MagickRealType) index;
           }
         if (graymap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
@@ -3745,9 +3730,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             index=graymap[i];
             if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
               index=(int) scale[index];
-            image->colormap[i].red=index;
-            image->colormap[i].green=index;
-            image->colormap[i].blue=index;
+            image->colormap[i].red=(MagickRealType) index;
+            image->colormap[i].green=(MagickRealType) index;
+            image->colormap[i].blue=(MagickRealType) index;
           }
       }
     if (image->compression == RLECompression)
@@ -3773,7 +3758,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             depth=8;
           }
         for (i=0; i < 15; i++)
-          stream_info->segments[i]=(int) ReadBlobLSBLong(image);
+          stream_info->segments[i]=(ssize_t) ((int) ReadBlobLSBLong(image));
         stream_info->remaining-=64;
       }
     if ((samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
@@ -3876,16 +3861,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     ReadDCMByte(stream_info,image);
                 else
                   if ((bits_allocated != 12) || (significant_bits != 12))
-                    {
-                      if (image->endian == MSBEndian)
-                        pixel_value=(int) (polarity != MagickFalse ? (max_value-
-                          ReadDCMMSBShort(stream_info,image)) :
-                          ReadDCMMSBShort(stream_info,image));
-                      else
-                        pixel_value=(int) (polarity != MagickFalse ? (max_value-
-                          ReadDCMLSBShort(stream_info,image)) :
-                          ReadDCMLSBShort(stream_info,image));
-                    }
+                    pixel_value=(int) (polarity != MagickFalse ? (max_value-
+                      ReadDCMShort(stream_info,image)) :
+                      ReadDCMShort(stream_info,image));
                   else
                     {
                       if ((i & 0x01) != 0)
@@ -3893,12 +3871,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           byte;
                       else
                         {
-                          if (image->endian == MSBEndian)
-                            pixel_value=(int) ReadDCMMSBShort(stream_info,
-                              image);
-                          else
-                            pixel_value=(int) ReadDCMLSBShort(stream_info,
-                              image);
+                          pixel_value=(int) ReadDCMShort(stream_info,image);
                           byte=(int) (pixel_value & 0x0f);
                           pixel_value>>=4;
                         }
@@ -3916,10 +3889,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       window_max,
                       window_min;
 
-                    window_min=(ssize_t) ceil(window_center-(window_width-1)/
-                      2.0-0.5);
-                    window_max=(ssize_t) floor(window_center+(window_width-1)/
-                      2.0+0.5);
+                    window_min=(ssize_t) ceil((double) window_center-
+                      (window_width-1.0)/2.0-0.5);
+                    window_max=(ssize_t) floor((double) window_center+
+                      (window_width-1.0)/2.0+0.5);
                     if ((ssize_t) pixel_value <= window_min)
                       index=0;
                     else
@@ -3932,33 +3905,24 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 index&=mask;
                 index=(int) ConstrainColormapIndex(image,(size_t) index,
                   exception);
-                SetPixelIndex(image,index,q);
-                pixel.red=1UL*image->colormap[index].red;
-                pixel.green=1UL*image->colormap[index].green;
-                pixel.blue=1UL*image->colormap[index].blue;
+                SetPixelIndex(image,(Quantum) index,q);
+                pixel.red=(unsigned int) image->colormap[index].red;
+                pixel.green=(unsigned int) image->colormap[index].green;
+                pixel.blue=(unsigned int) image->colormap[index].blue;
               }
             else
               {
                 if (bytes_per_pixel == 1)
                   {
-                    pixel.red=(size_t) ReadDCMByte(stream_info,image);
-                    pixel.green=(size_t) ReadDCMByte(stream_info,image);
-                    pixel.blue=(size_t) ReadDCMByte(stream_info,image);
+                    pixel.red=(unsigned int) ReadDCMByte(stream_info,image);
+                    pixel.green=(unsigned int) ReadDCMByte(stream_info,image);
+                    pixel.blue=(unsigned int) ReadDCMByte(stream_info,image);
                   }
                 else
                   {
-                    if (image->endian == MSBEndian)
-                      {
-                        pixel.red=ReadDCMMSBShort(stream_info,image);
-                        pixel.green=ReadDCMMSBShort(stream_info,image);
-                        pixel.blue=ReadDCMMSBShort(stream_info,image);
-                      }
-                    else
-                      {
-                        pixel.red=ReadDCMLSBShort(stream_info,image);
-                        pixel.green=ReadDCMLSBShort(stream_info,image);
-                        pixel.blue=ReadDCMLSBShort(stream_info,image);
-                      }
+                    pixel.red=ReadDCMShort(stream_info,image);
+                    pixel.green=ReadDCMShort(stream_info,image);
+                    pixel.blue=ReadDCMShort(stream_info,image);
                   }
                 pixel.red&=mask;
                 pixel.green&=mask;
@@ -3970,9 +3934,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     pixel.blue=scale[pixel.blue];
                   }
               }
-            SetPixelRed(image,pixel.red,q);
-            SetPixelGreen(image,pixel.green,q);
-            SetPixelBlue(image,pixel.blue,q);
+            SetPixelRed(image,(Quantum) pixel.red,q);
+            SetPixelGreen(image,(Quantum) pixel.green,q);
+            SetPixelBlue(image,(Quantum) pixel.blue,q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -4005,14 +3969,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   else
                     if ((bits_allocated != 12) || (significant_bits != 12))
                       {
-                        if (image->endian == MSBEndian)
-                          pixel_value=(int) (polarity != MagickFalse ?
-                            (max_value-ReadDCMMSBShort(stream_info,image)) :
-                            ReadDCMMSBShort(stream_info,image));
-                        else
-                          pixel_value=(int) (polarity != MagickFalse ?
-                            (max_value-ReadDCMLSBShort(stream_info,image)) :
-                            ReadDCMLSBShort(stream_info,image));
+                        pixel_value=(int) (polarity != MagickFalse ? (max_value-                            ReadDCMShort(stream_info,image)) :
+                            ReadDCMShort(stream_info,image));
                         if (signed_data == 1)
                           pixel_value=((signed short) pixel_value);
                       }
@@ -4023,12 +3981,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             byte;
                         else
                           {
-                            if (image->endian == MSBEndian)
-                              pixel_value=(int) ReadDCMMSBShort(stream_info,
-                                image);
-                            else
-                              pixel_value=(int) ReadDCMLSBShort(stream_info,
-                                image);
+                            pixel_value=(int) ReadDCMShort(stream_info,
+                              image);
                             byte=(int) (pixel_value & 0x0f);
                             pixel_value>>=4;
                           }
@@ -4046,10 +4000,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         window_max,
                         window_min;
 
-                      window_min=(ssize_t) ceil(window_center-(window_width-1)/
-                        2.0-0.5);
-                      window_max=(ssize_t) floor(window_center+(window_width-1)/
-                        2.0+0.5);
+                      window_min=(ssize_t) ceil((double) window_center-
+                        (window_width-1.0)/2.0-0.5);
+                      window_max=(ssize_t) floor((double) window_center+
+                        (window_width-1.0)/2.0+0.5);
                       if ((ssize_t) pixel_value <= window_min)
                         index=0;
                       else
@@ -4062,34 +4016,25 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index&=mask;
                   index=(int) ConstrainColormapIndex(image,(size_t) index,
                     exception);
-                  SetPixelIndex(image,(((size_t) GetPixelIndex(image,q)) |
-                    (((size_t) index) << 8)),q);
-                  pixel.red=1UL*image->colormap[index].red;
-                  pixel.green=1UL*image->colormap[index].green;
-                  pixel.blue=1UL*image->colormap[index].blue;
+                  SetPixelIndex(image,(Quantum) (((size_t)
+                    GetPixelIndex(image,q)) | (((size_t) index) << 8)),q);
+                  pixel.red=(unsigned int) image->colormap[index].red;
+                  pixel.green=(unsigned int) image->colormap[index].green;
+                  pixel.blue=(unsigned int) image->colormap[index].blue;
                 }
               else
                 {
                   if (bytes_per_pixel == 1)
                     {
-                      pixel.red=(size_t) ReadDCMByte(stream_info,image);
-                      pixel.green=(size_t) ReadDCMByte(stream_info,image);
-                      pixel.blue=(size_t) ReadDCMByte(stream_info,image);
+                      pixel.red=(unsigned int) ReadDCMByte(stream_info,image);
+                      pixel.green=(unsigned int) ReadDCMByte(stream_info,image);
+                      pixel.blue=(unsigned int) ReadDCMByte(stream_info,image);
                     }
                   else
                     {
-                      if (image->endian == MSBEndian)
-                        {
-                          pixel.red=ReadDCMMSBShort(stream_info,image);
-                          pixel.green=ReadDCMMSBShort(stream_info,image);
-                          pixel.blue=ReadDCMMSBShort(stream_info,image);
-                        }
-                      else
-                        {
-                          pixel.red=ReadDCMLSBShort(stream_info,image);
-                          pixel.green=ReadDCMLSBShort(stream_info,image);
-                          pixel.blue=ReadDCMLSBShort(stream_info,image);
-                        }
+                      pixel.red=ReadDCMShort(stream_info,image);
+                      pixel.green=ReadDCMShort(stream_info,image);
+                      pixel.blue=ReadDCMShort(stream_info,image);
                     }
                   pixel.red&=mask;
                   pixel.green&=mask;
@@ -4101,11 +4046,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       pixel.blue=scale[pixel.blue];
                     }
                 }
-              SetPixelRed(image,(((size_t) GetPixelRed(image,q)) |
+              SetPixelRed(image,(Quantum) (((size_t) GetPixelRed(image,q)) |
                 (((size_t) pixel.red) << 8)),q);
-              SetPixelGreen(image,(((size_t) GetPixelGreen(image,q)) |
+              SetPixelGreen(image,(Quantum) (((size_t) GetPixelGreen(image,q)) |
                 (((size_t) pixel.green) << 8)),q);
-              SetPixelBlue(image,(((size_t) GetPixelBlue(image,q)) |
+              SetPixelBlue(image,(Quantum) (((size_t) GetPixelBlue(image,q)) |
                 (((size_t) pixel.blue) << 8)),q);
               q+=GetPixelChannels(image);
             }

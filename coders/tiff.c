@@ -969,7 +969,8 @@ static TIFFMethodType GetJpegMethod(Image* image,TIFF *tiff,uint16 photometric,
 }
 #endif
 
-static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadTIFFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   const char
     *option;
