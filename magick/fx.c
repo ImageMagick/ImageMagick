@@ -313,11 +313,9 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-
   noise_image=AccelerateAddNoiseImage(image,channel,noise_type,exception);
   if (noise_image != (Image *) NULL)
     return(noise_image);
-
   noise_image=CloneImage(image,0,0,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
@@ -2756,7 +2754,16 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
     case 'r':
     {
       if (LocaleNCompare(expression,"rand",4) == 0)
-        return(GetPseudoRandomValue(fx_info->random_info));
+        {
+          double
+            alpha;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp critical (MagickCore_FxEvaluateSubexpression)
+#endif
+          alpha=GetPseudoRandomValue(fx_info->random_info);
+          return(alpha);
+        }
       if (LocaleNCompare(expression,"round",5) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
