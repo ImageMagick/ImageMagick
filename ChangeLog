@@ -1,5 +1,5 @@
 2014-11-01  6.8.9-10 Cristy  <quetzlzacatenango@image...>
-  * New version 6.8.9-10, SVN revision 16903.
+  * New version 6.8.9-10, SVN revision 16910.
 
 2014-10-29  6.8.9-10 Cristy  <quetzlzacatenango@image...>
   * EXIF directory offsets must be greater than 0 (reference
@@ -8,6 +8,8 @@
     Vladimir Davydov).
   * Accept morphology kernels from files (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=26466).
+  * Don't optimize JPEG compression by default (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26482).
 
 2014-10-26  6.8.9-10 Dirk Lemstra <dirk@snakeware...>
   * Added support for reading jpeg compressed YCCK tiff files (reference
