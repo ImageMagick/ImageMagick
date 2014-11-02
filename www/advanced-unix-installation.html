@@ -252,7 +252,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.9-5</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.9-9</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span></p>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -604,7 +604,7 @@ Options used to compile and link:
 	<div class="doc-section">
 	  <p><a href="download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvzf ImageMagick-6.8.9-5.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.9-5</span></p>	  <p>Configure ImageMagick:</p>
+		<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvzf ImageMagick-6.8.9-9.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.9-9</span></p>	  <p>Configure ImageMagick:</p>
 	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>./configure --prefix=/opt --with-quantum-depth=16 \ <br/>
 		--disable-dependency-tracking --with-x=yes \ <br/>
 		--x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \ <br/>
@@ -624,7 +624,7 @@ Options used to compile and link:
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar jxvf ImageMagick-6.8.9-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.9-5</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p></div>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar jxvf ImageMagick-6.8.9-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.9-9</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p></div>
 
 <h2><a id="problems"></a>Dealing with Unexpected Problems</h2>
 <div class="doc-section">
@@ -683,4 +683,4 @@ Options used to compile and link:
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 25th July 2014 04:05 -->
+<!-- Magick Cache 2nd November 2014 14:20 -->

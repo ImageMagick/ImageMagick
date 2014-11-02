@@ -490,6 +490,7 @@ identify -verbose -mask r mask.png statue.tif
 <p>The IntegerPixel storage type is removed (use LongPixel instead) and LongLongPixel is added</p>
 <p>Image signatures have changed to account for variable pixel channels.</p>
 <p>All color packet structures, PixelPacket, LongPacket, and DoublePacket, are consolidated to a single color structure, PixelInfo.</p>
+<p>The ChannelMoments structure member <code>I</code> is now <code>invariant</code>.  <code>I</code> conflicts with the <code>complex.h</code> header.</p>
 </div>
 <h2><a id="headers"></a>Header Files</h2>
 <div class="doc-section">
@@ -578,6 +579,16 @@ be applied to expand the one channel into separate RGB (or other) channels.
 </dl>
 
 <h3>Behavorial Changes</h3>
+<p>Image settings are applied to each image on the command line.  To associate a setting with a particular image, use parenthesis to remove ambiguity.  In this example we assign a unique page offset to each image:</p>
+<pre class="text">
+convert \( -page +10+20 first.png \) \( -page +100+200 second.png \) ...
+</pre>
+
+<p>By default, image operations such as convolution blends alpha with each channel.  To convolve each channel independently, deactivate the alpha channel as follows:</p>
+<pre class="text">
+convert ... -alpha discrete -blur 0x1 ...
+</pre>
+<p>To just copy the alpha values, use <code>-alpha off</code>.</p>
 <p>Some options have changed in ImageMagick version 7.  These include:</p>
 <dl>
 <dt>-combine</dt>
@@ -719,7 +730,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 
 <dl>
 <dt>-affinity</dt>
-<dd>Replaced by <code>-affinity</code>.</dd>
+<dd>Replaced by <code>-remap</code>.</dd>
 <dt>-maximum</dt>
 <dd>Replaced by <code>-evaluate-sequence Max</code>.</dd>
 <dt>-median</dt>
@@ -804,4 +815,4 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 25th July 2014 06:18 -->
+<!-- Magick Cache 2nd November 2014 12:40 -->

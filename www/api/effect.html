@@ -229,7 +229,7 @@
 <div class="main">
 
 <h1>Module effect Methods</h1>
-<p class="navigation-index">[<a href="effect.html#AdaptiveBlurImage">AdaptiveBlurImage</a> &#8226; <a href="effect.html#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &#8226; <a href="effect.html#BlurImage">BlurImage</a> &#8226; <a href="effect.html#ConvolveImage">ConvolveImage</a> &#8226; <a href="effect.html#DespeckleImage">DespeckleImage</a> &#8226; <a href="effect.html#EdgeImage">EdgeImage</a> &#8226; <a href="effect.html#EmbossImage">EmbossImage</a> &#8226; <a href="effect.html#FilterImage">FilterImage</a> &#8226; <a href="effect.html#GaussianBlurImage">GaussianBlurImage</a> &#8226; <a href="effect.html#MotionBlurImage">MotionBlurImage</a> &#8226; <a href="effect.html#PreviewImage">PreviewImage</a> &#8226; <a href="effect.html#RotationalBlurImage">RotationalBlurImage</a> &#8226; <a href="effect.html#SelectiveBlurImage">SelectiveBlurImage</a> &#8226; <a href="effect.html#ShadeImage">ShadeImage</a> &#8226; <a href="effect.html#SharpenImage">SharpenImage</a> &#8226; <a href="effect.html#SpreadImage">SpreadImage</a> &#8226; <a href="effect.html#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
+<p class="navigation-index">[<a href="effect.html#AdaptiveBlurImage">AdaptiveBlurImage</a> &#8226; <a href="effect.html#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &#8226; <a href="effect.html#BlurImage">BlurImage</a> &#8226; <a href="effect.html#ConvolveImage">ConvolveImage</a> &#8226; <a href="effect.html#DespeckleImage">DespeckleImage</a> &#8226; <a href="effect.html#EdgeImage">EdgeImage</a> &#8226; <a href="effect.html#EmbossImage">EmbossImage</a> &#8226; <a href="effect.html#FilterImage">FilterImage</a> &#8226; <a href="effect.html#GaussianBlurImage">GaussianBlurImage</a> &#8226; <a href="effect.html#MotionBlurImage">MotionBlurImage</a> &#8226; <a href="effect.html#KuwaharaImage">KuwaharaImage</a> &#8226; <a href="effect.html#PreviewImage">PreviewImage</a> &#8226; <a href="effect.html#RotationalBlurImage">RotationalBlurImage</a> &#8226; <a href="effect.html#SelectiveBlurImage">SelectiveBlurImage</a> &#8226; <a href="effect.html#ShadeImage">ShadeImage</a> &#8226; <a href="effect.html#SharpenImage">SharpenImage</a> &#8226; <a href="effect.html#SpreadImage">SpreadImage</a> &#8226; <a href="effect.html#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="AdaptiveBlurImage">AdaptiveBlurImage</a></h2>
 <div class="doc-section">
@@ -532,6 +532,38 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="KuwaharaImage">KuwaharaImage</a></h2>
+<div class="doc-section">
+
+<p>KuwaharaImage() is an edge preserving noise reduction filter.</p>
+
+<p>The format of the KuwaharaImage method is:</p>
+
+<pre class="code">
+  Image *KuwaharaImage(const Image *image,const double width,
+    const double sigma,ExceptionInfo *exception)
+  Image *KuwaharaImageChannel(const Image *image,const ChannelType channel,
+    const double width,const double sigma,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>radius</h5>
+<p>the square window radius.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="PreviewImage">PreviewImage</a></h2>
 <div class="doc-section">
 
@@ -769,4 +801,4 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 25th July 2014 04:05 -->
+<!-- Magick Cache 2nd November 2014 12:39 -->
