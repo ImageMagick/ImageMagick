@@ -979,7 +979,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
   /* create processing kernel */
   {
     (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
-    kernel=AcquireKernelInfo(geometry);
+    kernel=AcquireKernelInfo(geometry,exception);
     if (kernel == (KernelInfo *) NULL)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "MemoryAllocationFailed.",".");
@@ -2132,7 +2132,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,
   /* create the blur kernel */
   {
     (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
-    kernel=AcquireKernelInfo(geometry);
+    kernel=AcquireKernelInfo(geometry,exception);
     if (kernel == (KernelInfo *) NULL)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireKernelInfo failed.",".");
@@ -2493,7 +2493,7 @@ static Image *ComputeUnsharpMaskImageSection(const Image *image,
   /* create the blur kernel */
   {
     (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
-    kernel=AcquireKernelInfo(geometry);
+    kernel=AcquireKernelInfo(geometry,exception);
     if (kernel == (KernelInfo *) NULL)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireKernelInfo failed.",".");
@@ -2869,7 +2869,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
   /* create the blur kernel */
   {
     (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
-    kernel=AcquireKernelInfo(geometry);
+    kernel=AcquireKernelInfo(geometry,exception);
     if (kernel == (KernelInfo *) NULL)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireKernelInfo failed.",".");
