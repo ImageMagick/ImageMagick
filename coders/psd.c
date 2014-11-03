@@ -697,8 +697,6 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
         SetPixelRed(image,pixel,q);
         if (channels == 1)
           SetPixelGray(image,pixel,q);
-        else
-          SetPixelRed(image,pixel,q);
         if (image->storage_class == PseudoClass)
           {
             if (packet_size == 1)
