@@ -689,7 +689,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
     {
       case -1:
       {
-        SetPixelAlpha(image,pixel,q);
+        SetPixelOpacity(image,pixel,q);
         break;
       }
       case 0:
@@ -732,7 +732,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
       case 1:
       {
         if (image->storage_class == PseudoClass)
-          SetPixelAlpha(image,pixel,q);
+          SetPixelOpacity(image,pixel,q);
         else
           SetPixelGreen(image,pixel,q);
         break;
@@ -740,7 +740,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
       case 2:
       {
         if (image->storage_class == PseudoClass)
-          SetPixelAlpha(image,pixel,q);
+          SetPixelOpacity(image,pixel,q);
         else
           SetPixelBlue(image,pixel,q);
         break;
@@ -751,7 +751,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
           SetPixelBlack(image,pixel,q);
         else
           if (image->alpha_trait == BlendPixelTrait)
-            SetPixelAlpha(image,pixel,q);
+            SetPixelOpacity(image,pixel,q);
         break;
       }
       case 4:
@@ -760,7 +760,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
             (channels > 3))
           break;
         if (image->alpha_trait == BlendPixelTrait)
-          SetPixelAlpha(image,pixel,q);
+          SetPixelOpacity(image,pixel,q);
         break;
       }
       default:
