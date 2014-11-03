@@ -756,7 +756,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       }
       if (image->alpha_trait == BlendPixelTrait)
-        (void) FormatLocaleFile(file,"    alpha: %.20g-bit\n",(double)
+        (void) FormatLocaleFile(file,"    Alpha: %.20g-bit\n",(double)
           channel_statistics[AlphaPixelChannel].depth);
       scale=1.0;
       if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
