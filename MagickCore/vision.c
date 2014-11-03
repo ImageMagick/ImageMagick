@@ -388,16 +388,11 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
   {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
-    object[i].color.red=(MagickRealType) (object[i].color.red/
-      object[i].area);
-    object[i].color.green=(MagickRealType) (object[i].color.green/
-      object[i].area);
-    object[i].color.blue=(MagickRealType) (object[i].color.blue/
-      object[i].area);
-    object[i].color.alpha=(MagickRealType) (object[i].color.alpha/
-      object[i].area);
-    object[i].color.black=(MagickRealType) (object[i].color.black/
-      object[i].area);
+    object[i].color.red=ClampToQuantum(object[i].color.red/object[i].area);
+    object[i].color.green=ClampToQuantum(object[i].color.green/object[i].area);
+    object[i].color.blue=ClampToQuantum(object[i].color.blue/object[i].area);
+    object[i].color.alpha=ClampToQuantum(object[i].color.alpha/object[i].area);
+    object[i].color.black=ClampToQuantum(object[i].color.black/object[i].area);
     object[i].centroid.x=object[i].centroid.x/object[i].area;
     object[i].centroid.y=object[i].centroid.y/object[i].area;
   }
