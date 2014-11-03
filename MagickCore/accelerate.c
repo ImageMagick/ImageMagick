@@ -1327,7 +1327,7 @@ static Image* ComputeBlurImageSection(const Image* image,
   /* create processing kernel */
   {
     (void) FormatLocaleString(geometry,MaxTextExtent,"blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
-    kernel=AcquireKernelInfo(geometry);
+    kernel=AcquireKernelInfo(geometry,exception);
     if (kernel == (KernelInfo *) NULL)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "MemoryAllocationFailed.",".");
