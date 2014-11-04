@@ -2894,7 +2894,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         register const guchar
           *p;
-
 #endif
 
         GError
