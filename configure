@@ -3703,7 +3703,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=16921:16936M
+MAGICK_SVN_REVISION=16921:16940M
 
 
 # Substitute library versioning
@@ -26627,7 +26627,9 @@ $as_echo "" >&6; }
   passed=0
   ac_fn_c_check_header_mongrel "$LINENO" "jemalloc/jemalloc.h" "ac_cv_header_jemalloc_jemalloc_h" "$ac_includes_default"
 if test "x$ac_cv_header_jemalloc_jemalloc_h" = xyes; then :
-  passed=`expr $passed + 1`,failed=`expr $failed + 1`
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
 fi
 
 
@@ -26668,7 +26670,9 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jemalloc_malloc_stats_print" >&5
 $as_echo "$ac_cv_lib_jemalloc_malloc_stats_print" >&6; }
 if test "x$ac_cv_lib_jemalloc_malloc_stats_print" = xyes; then :
-  passed=`expr $passed + 1`,failed=`expr $failed + 1`
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
 fi
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if jemalloc memory allocation library is complete" >&5
