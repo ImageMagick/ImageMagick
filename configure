@@ -869,7 +869,9 @@ CCMALLOCDelegate
 UMEM_LIBS
 HasUMEM_FALSE
 HasUMEM_TRUE
-has_jemalloc
+JEMALLOC_LIBS
+HasJEMALLOC_FALSE
+HasJEMALLOC_TRUE
 GOMP_LIBS
 WITH_MAGICK_PLUS_PLUS_FALSE
 WITH_MAGICK_PLUS_PLUS_TRUE
@@ -1163,10 +1165,9 @@ with_magick_plus_plus
 with_package_release_name
 with_perl
 with_perl_options
+with_jemalloc
 with_umem
 with_libstdc
-with_jemalloc_prefix
-with_jemalloc
 with_bzlib
 with_x
 with_zlib
@@ -1936,11 +1937,9 @@ Optional Packages:
   --with-perl-options=OPTIONS
                           options to pass on command-line when generating
                           PerlMagick build file
+  --with-jemalloc         enable jemalloc memory allocation library support
   --with-umem             enable umem memory allocation library support
   --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
-  --with-jemalloc-prefix=PREFIX
-                          Specify the jemalloc prefix [default=""]
-  --with-jemalloc=DIR     use a specific jemalloc library
   --without-bzlib         disable BZLIB support
   --with-x                use the X Window System
   --without-zlib          disable ZLIB support
@@ -3704,7 +3703,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=16921:16931M
+MAGICK_SVN_REVISION=16921:16936M
 
 
 # Substitute library versioning
@@ -21634,6 +21633,19 @@ fi
 
 
 
+# Enable jemalloc, object-caching memory allocation library.
+
+# Check whether --with-jemalloc was given.
+if test "${with_jemalloc+set}" = set; then :
+  withval=$with_jemalloc; with_jemalloc=$withval
+else
+  with_jemalloc='no'
+fi
+
+if test "$with_jemalloc" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jemalloc=$with_jemalloc "
+fi
+
 # Enable umem, object-caching memory allocation library.
 
 # Check whether --with-umem was given.
@@ -26602,81 +26614,26 @@ fi
 
 
 #
-# Check for jemalloc().
+# Check for jemalloc.
 #
-
-
-# Check whether --with-jemalloc-prefix was given.
-if test "${with_jemalloc_prefix+set}" = set; then :
-  withval=$with_jemalloc_prefix;
-  jemalloc_prefix="$withval"
-
-else
-
-  if test "`uname -s`" = "Darwin"; then
-    jemalloc_prefix="je_"
-  else
-    jemalloc_prefix=""
-  fi
-
-
+have_jemalloc='no'
+JEMALLOC_LIBS=''
+if test "$with_jemalloc" != 'no'; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JEMALLOC support " >&5
+$as_echo_n "checking for JEMALLOC support ... " >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+  failed=0
+  passed=0
+  ac_fn_c_check_header_mongrel "$LINENO" "jemalloc/jemalloc.h" "ac_cv_header_jemalloc_jemalloc_h" "$ac_includes_default"
+if test "x$ac_cv_header_jemalloc_jemalloc_h" = xyes; then :
+  passed=`expr $passed + 1`,failed=`expr $failed + 1`
 fi
 
 
-cat >>confdefs.h <<_ACEOF
-#define prefix_jemalloc ${jemalloc_prefix}
-_ACEOF
-
-
-enable_jemalloc=no
-
-# Check whether --with-jemalloc was given.
-if test "${with_jemalloc+set}" = set; then :
-  withval=$with_jemalloc;
-  if test "$withval" != "no"; then
-    if test "x${enable_tcmalloc}" = "xyes"; then
-      as_fn_error $? "Cannot compile with both jemalloc and tcmalloc" "$LINENO" 5
-    fi
-    enable_jemalloc=yes
-    jemalloc_base_dir="$withval"
-    case "$withval" in
-      yes)
-        jemalloc_base_dir="/usr"
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking checking for jemalloc includes standard directories" >&5
-$as_echo_n "checking checking for jemalloc includes standard directories... " >&6; }
-	;;
-      *":"*)
-        jemalloc_include="`echo $withval |sed -e 's/:.*$//'`"
-        jemalloc_ldflags="`echo $withval |sed -e 's/^.*://'`"
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking checking for jemalloc includes in $jemalloc_include libs in $jemalloc_ldflags" >&5
-$as_echo_n "checking checking for jemalloc includes in $jemalloc_include libs in $jemalloc_ldflags... " >&6; }
-        ;;
-      *)
-        jemalloc_include="$withval/include"
-        jemalloc_ldflags="$withval/lib"
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking checking for jemalloc includes in $withval" >&5
-$as_echo_n "checking checking for jemalloc includes in $withval... " >&6; }
-        ;;
-    esac
-  fi
-
-fi
-
-
-has_jemalloc=0
-if test "$enable_jemalloc" != "no"; then
-  jemalloc_have_headers=0
-  jemalloc_have_libs=0
-  if test "$jemalloc_base_dir" != "/usr"; then
-    CFLAGS="${CFLAGS} -I${jemalloc_include}"
-    LDFLAGS="${LDFLAGS} -L${jemalloc_ldflags}"
-    LIBTOOL_LINK_FLAGS="${LIBTOOL_LINK_FLAGS} -R${jemalloc_ldflags}"
-  fi
-  func="${jemalloc_prefix}malloc_stats_print"
-  as_ac_Lib=`$as_echo "ac_cv_lib_jemalloc_${func}" | $as_tr_sh`
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ${func} in -ljemalloc" >&5
-$as_echo_n "checking for ${func} in -ljemalloc... " >&6; }
-if eval \${$as_ac_Lib+:} false; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for malloc_stats_print in -ljemalloc" >&5
+$as_echo_n "checking for malloc_stats_print in -ljemalloc... " >&6; }
+if ${ac_cv_lib_jemalloc_malloc_stats_print+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -26690,60 +26647,61 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char ${func} ();
+char malloc_stats_print ();
 int
 main ()
 {
-return ${func} ();
+return malloc_stats_print ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  eval "$as_ac_Lib=yes"
+  ac_cv_lib_jemalloc_malloc_stats_print=yes
 else
-  eval "$as_ac_Lib=no"
+  ac_cv_lib_jemalloc_malloc_stats_print=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-eval ac_res=\$$as_ac_Lib
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
-  jemalloc_have_libs=1
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jemalloc_malloc_stats_print" >&5
+$as_echo "$ac_cv_lib_jemalloc_malloc_stats_print" >&6; }
+if test "x$ac_cv_lib_jemalloc_malloc_stats_print" = xyes; then :
+  passed=`expr $passed + 1`,failed=`expr $failed + 1`
 fi
 
-  if test "$jemalloc_have_libs" != "0"; then
-    for ac_header in jemalloc/jemalloc.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "jemalloc/jemalloc.h" "ac_cv_header_jemalloc_jemalloc_h" "$ac_includes_default"
-if test "x$ac_cv_header_jemalloc_jemalloc_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_JEMALLOC_JEMALLOC_H 1
-_ACEOF
- jemalloc_have_headers=1
-fi
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if jemalloc memory allocation library is complete" >&5
+$as_echo_n "checking if jemalloc memory allocation library is complete... " >&6; }
+  if test $passed -gt 0; then
+    if test $failed -gt 0; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+      have_jemalloc='no (failed tests)'
+    else
+      JEMALLOC_LIBS='-ljemalloc'
+      LIBS="$JEMALLOC_LIBS $LIBS"
 
-done
+$as_echo "#define HasJEMALLOC 1" >>confdefs.h
 
-  fi
-  if test "$jemalloc_have_headers" != "0"; then
-    has_jemalloc=1
-    LIBS="${LIBS} -ljemalloc"
-
-$as_echo "#define has_jemalloc 1" >>confdefs.h
-
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+      have_jemalloc='yes'
+    fi
   else
-    as_fn_error $? "Couldn't find a jemalloc installation" "$LINENO" 5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
   fi
 fi
-
-
-if test "x$jemalloc_have_libs" != "x0"; then :
-  JE_LIBS="-ljemalloc"
+ if test "$have_jemalloc" = 'yes'; then
+  HasJEMALLOC_TRUE=
+  HasJEMALLOC_FALSE='#'
+else
+  HasJEMALLOC_TRUE='#'
+  HasJEMALLOC_FALSE=
 fi
+
+
 
 #
 # Check for umem.
@@ -36072,9 +36030,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JE_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $OPENJPEG_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JE_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $OPENJPEG_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 
 
@@ -36322,6 +36280,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${WITH_MAGICK_PLUS_PLUS_TRUE}" && test -z "${WITH_MAGICK_PLUS_PLUS_FALSE}"; then
   as_fn_error $? "conditional \"WITH_MAGICK_PLUS_PLUS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HasJEMALLOC_TRUE}" && test -z "${HasJEMALLOC_FALSE}"; then
+  as_fn_error $? "conditional \"HasJEMALLOC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HasUMEM_TRUE}" && test -z "${HasUMEM_FALSE}"; then

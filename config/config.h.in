@@ -242,9 +242,6 @@
 /* Define to 1 if you have the `j1' function. */
 #undef HAVE_J1
 
-/* Define to 1 if you have the <jemalloc/jemalloc.h> header file. */
-#undef HAVE_JEMALLOC_JEMALLOC_H
-
 /* Define if you have the <lcms2.h> header file. */
 #undef HAVE_LCMS2_H
 
@@ -709,6 +706,9 @@
 /* Whether hdri is enabled or not */
 #undef HDRI_ENABLE_OBSOLETE_IN_H
 
+/* Define if you have jemalloc memory allocation library */
+#undef HasJEMALLOC
+
 /* Define if you have umem memory allocation library */
 #undef HasUMEM
 
@@ -1053,9 +1053,6 @@
 /* Define to `int' if <sys/types.h> doesn't define. */
 #undef gid_t
 
-/* Link/compile against jemalloc */
-#undef has_jemalloc
-
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
@@ -1097,9 +1094,6 @@
 
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
-
-/* jemalloc prefix */
-#undef prefix_jemalloc
 
 /* Define to the equivalent of the C99 'restrict' keyword, or to
    nothing if this is not supported.  Do not define if restrict is
