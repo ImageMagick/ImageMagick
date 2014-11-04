@@ -47,6 +47,7 @@
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/cache.h"
+#include "magick/colorspace-private.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/geometry.h"
@@ -101,6 +102,62 @@ MagickExport MagickPixelPacket *CloneMagickPixelPacket(
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *clone_pixel=(*pixel);
   return(clone_pixel);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o n f o r m M a g i c k P i x e l P a c k e t                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConformMagickPixelPacket() ensures the pixel conforms with the colorspace
+%  and alpha attribute of the image.
+%
+%  The format of the ConformMagickPixelPacket method is:
+%
+%      void *ConformMagickPixelPacket((Image *image,MagickPixelPacket *pixel,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: the pixel info.
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport void ConformMagickPixelPacket(Image *image,
+  MagickPixelPacket *pixel,ExceptionInfo *exception)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(pixel != (const MagickPixelPacket *) NULL);
+
+  if (image->colorspace == CMYKColorspace)
+    {
+      if (IssRGBCompatibleColorspace(pixel->colorspace))
+        ConvertRGBToCMYK(pixel);
+    }
+  else
+    if (pixel->colorspace == CMYKColorspace)
+      {
+        if (IssRGBCompatibleColorspace(image->colorspace))
+          ConvertCMYKToRGB(pixel);
+      }
+#if 0
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsMagickPixelPacketGray(pixel) == MagickFalse))
+    /* TODO: Add this method. */
+    SetMagickPixelPacketGray(pixel);
+#endif
+  if ((pixel->matte != MagickFalse) && (image->matte == MagickFalse))
+    (void) SetImageOpacity(image,OpaqueOpacity);
 }
 
 /*

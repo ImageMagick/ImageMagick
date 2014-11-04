@@ -27,6 +27,16 @@
 extern "C" {
 #endif
 
+static inline void ConvertCMYKToRGB(MagickPixelPacket *pixel)
+{
+  pixel->red=((QuantumRange-(QuantumScale*pixel->red*(QuantumRange-
+    pixel->index)+pixel->index)));
+  pixel->green=((QuantumRange-(QuantumScale*pixel->green*(QuantumRange-
+    pixel->index)+pixel->index)));
+  pixel->blue=((QuantumRange-(QuantumScale*pixel->blue*(QuantumRange-
+    pixel->index)+pixel->index)));
+}
+
 static inline void ConvertRGBToCMYK(MagickPixelPacket *pixel)
 {
   MagickRealType
