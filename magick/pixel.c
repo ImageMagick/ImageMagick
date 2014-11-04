@@ -139,6 +139,8 @@ MagickExport void ConformMagickPixelPacket(Image *image,
   assert(image->signature == MagickSignature);
   assert(pixel != (const MagickPixelPacket *) NULL);
 
+  (void) exception;
+
   if (image->colorspace == CMYKColorspace)
     {
       if (IssRGBCompatibleColorspace(pixel->colorspace))
