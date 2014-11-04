@@ -371,9 +371,6 @@
 #define MAGICKCORE_HAVE_J1 1
 #endif
 
-/* Define to 1 if you have the <jemalloc/jemalloc.h> header file. */
-/* #undef HAVE_JEMALLOC_JEMALLOC_H */
-
 /* Define if you have the <lcms2.h> header file. */
 #ifndef MAGICKCORE_HAVE_LCMS2_H
 #define MAGICKCORE_HAVE_LCMS2_H 1
@@ -1084,6 +1081,9 @@
 #define MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H 0
 #endif
 
+/* Define if you have jemalloc memory allocation library */
+/* #undef HasJEMALLOC */
+
 /* Define if you have umem memory allocation library */
 /* #undef HasUMEM */
 
@@ -1552,9 +1552,6 @@
 /* Define to `int' if <sys/types.h> doesn't define. */
 /* #undef gid_t */
 
-/* Link/compile against jemalloc */
-/* #undef has_jemalloc */
-
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
@@ -1596,11 +1593,6 @@
 
 /* Define to `int' if <sys/types.h> does not define. */
 /* #undef pid_t */
-
-/* jemalloc prefix */
-#ifndef _magickcore_prefix_jemalloc
-#define _magickcore_prefix_jemalloc 
-#endif
 
 /* Define to the equivalent of the C99 'restrict' keyword, or to
    nothing if this is not supported.  Do not define if restrict is
