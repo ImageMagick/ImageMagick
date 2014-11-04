@@ -1445,8 +1445,8 @@ if test "$with_jemalloc" != 'no'; then
   AC_MSG_RESULT()
   failed=0
   passed=0
-  AC_CHECK_HEADER([jemalloc/jemalloc.h],[passed=`expr $passed + 1`,failed=`expr $failed + 1`])
-  AC_CHECK_LIB(jemalloc,[malloc_stats_print],[passed=`expr $passed + 1`,failed=`expr $failed + 1`],)
+  AC_CHECK_HEADER([jemalloc/jemalloc.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+  AC_CHECK_LIB(jemalloc,[malloc_stats_print],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],)
   AC_MSG_CHECKING(if jemalloc memory allocation library is complete)
   if test $passed -gt 0; then
     if test $failed -gt 0; then
