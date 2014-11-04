@@ -786,13 +786,8 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsPixelInfoGray(fill) == MagickFalse))
-    (void) SetImageColorspace(image,sRGBColorspace,exception);
-  conform_fill=(*fill);
-  ConformPixelInfo(image,&conform_fill,exception);
-  conform_target=(*target);
-  ConformPixelInfo(image,&conform_target,exception);
+  ConformPixelInfo(image,fill,&conform_fill,exception);
+  ConformPixelInfo(image,target,&conform_target,exception);
   /*
     Make image color opaque.
   */

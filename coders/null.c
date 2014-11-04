@@ -126,11 +126,9 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
+  ConformPixelInfo(image,&image->background_color,&background,exception);
   image->alpha_trait=BlendPixelTrait;
-  GetPixelInfo(image,&background);
   background.alpha=(double) TransparentAlpha;
-  if (image->colorspace == CMYKColorspace)
-    ConvertRGBToCMYK(&background);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
