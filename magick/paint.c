@@ -820,9 +820,9 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
   if ((fill->opacity != OpaqueOpacity) && (image->matte == MagickFalse))
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   conform_fill=(*fill);
-  ConformPixelInfo(image,&conform_fill,exception);
+  ConformMagickPixelPacket(image,&conform_fill,exception);
   conform_target=(*target);
-  ConformPixelInfo(image,&conform_target,exception);
+  ConformMagickPixelPacket(image,&conform_target,exception);
   /*
     Make image color opaque.
   */
