@@ -817,8 +817,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsMagickGray(fill) == MagickFalse))
     (void) SetImageColorspace(image,sRGBColorspace);
-  if ((fill->opacity != OpaqueOpacity) && (image->matte == MagickFalse))
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+  exception=(&image->exception);
   conform_fill=(*fill);
   ConformMagickPixelPacket(image,&conform_fill,exception);
   conform_target=(*target);
@@ -828,7 +827,6 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
