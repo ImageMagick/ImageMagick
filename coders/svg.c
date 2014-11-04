@@ -2819,8 +2819,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             background[MaxTextExtent],
             command[MaxTextExtent],
             density[MaxTextExtent],
-            filename[MaxTextExtent],
+            input_filename[MaxTextExtent],
             opacity[MaxTextExtent],
+            output_filename[MaxTextExtent],
             unique[MaxTextExtent];
 
           int
@@ -2832,7 +2833,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Our best hope for compliance to the SVG standard.
           */
-          (void) AcquireUniqueFilename(filename);
+          status=AcquireUniqueSymbolicLink(image->filename,input_filename);
+          (void) AcquireUniqueFilename(output_filename);
           (void) AcquireUniqueFilename(unique);
           (void) FormatLocaleString(density,MaxTextExtent,"%.20g,%.20g",
             image->x_resolution,image->y_resolution);
@@ -2843,12 +2845,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             100.0*QuantumScale*image->background_color.blue);
           (void) FormatLocaleString(opacity,MaxTextExtent,"%.20g",QuantumScale*
             (QuantumRange-image->background_color.opacity));
-          (void) FormatLocaleString(command,MaxTextExtent,
-            GetDelegateCommands(delegate_info),image->filename,filename,density,
-              background,opacity,unique);
+          (void) FormatLocaleString(command,MaxTextExtent,GetDelegateCommands(
+            delegate_info),input_filename,output_filename,density,background,
+            opacity,unique);
           status=ExternalDelegateCommand(MagickFalse,image_info->verbose,
             command,(char *) NULL,exception);
           (void) RelinquishUniqueFileResource(unique);
+          (void) RelinquishUniqueFileResource(input_filename);
           if ((status == 0) && (stat(filename,&attributes) == 0) &&
               (attributes.st_size != 0))
             {
@@ -2856,15 +2859,15 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 *read_info;
 
               read_info=CloneImageInfo(image_info);
-              (void) CopyMagickString(read_info->filename,filename,
+              (void) CopyMagickString(read_info->filename,output_filename,
                 MaxTextExtent);
               image=ReadImage(read_info,exception);
               read_info=DestroyImageInfo(read_info);
-              (void) RelinquishUniqueFileResource(filename);
+              (void) RelinquishUniqueFileResource(output_filename);
               if (image != (Image *) NULL)
                 return(image);
             }
-          (void) RelinquishUniqueFileResource(filename);
+          (void) RelinquishUniqueFileResource(output_filename);
         }
       {
 #if defined(MAGICKCORE_RSVG_DELEGATE)
