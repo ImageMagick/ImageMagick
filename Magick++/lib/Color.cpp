@@ -81,6 +81,8 @@ Magick::Color::Color(const Quantum red_,const Quantum green_,
     _pixelOwn(true),
     _pixelType(RGBPixel)
 {
+  initPixel();
+
   quantumAlpha(OpaqueAlpha);
   quantumBlack(0);
   quantumBlue(blue_);
@@ -95,6 +97,8 @@ Magick::Color::Color(const Quantum red_,const Quantum green_,
     _pixelOwn(true),
     _pixelType(RGBAPixel)
 {
+  initPixel();
+
   quantumAlpha(alpha_);
   quantumBlack(0);
   quantumBlue(blue_);
@@ -224,10 +228,10 @@ Magick::Color::operator std::string() const
   if (!isValid())
     return std::string("none");
 
-  pixel.colorspace=(_pixelType == RGBAPixel || _pixelType == RGBAPixel) ?
+  pixel.colorspace=(_pixelType == RGBPixel || _pixelType == RGBAPixel) ?
     RGBColorspace : CMYKColorspace;
-  pixel.alpha_trait=_pixelType == RGBAPixel ? BlendPixelTrait :
-    UndefinedPixelTrait;
+  pixel.alpha_trait=(_pixelType == RGBAPixel || _pixelType == CMYKAPixel) ?
+    BlendPixelTrait : UndefinedPixelTrait;
   pixel.depth=MAGICKCORE_QUANTUM_DEPTH;
   pixel.alpha=_pixel->alpha;
   pixel.alpha_trait=_pixel->alpha_trait;
@@ -338,6 +342,7 @@ Magick::Color::Color(PixelType pixelType_)
     _pixelOwn(true),
     _pixelType(pixelType_)
 {
+  initPixel();
 }
 
 Magick::Color::Color(PixelInfo* rep_,PixelType pixelType_)
@@ -375,12 +380,9 @@ double Magick::Color::scaleQuantumToDouble(const Magick::Quantum quantum_)
 
 void Magick::Color::initPixel()
 {
-  _pixel->alpha=OpaqueAlpha;
-  _pixel->alpha_trait=UndefinedPixelTrait;
-  _pixel->black=0;
-  _pixel->blue=0;
-  _pixel->green=0;
-  _pixel->red=0;
+  MagickCore::GetPixelInfo((MagickCore::Image *) NULL, _pixel);
+  if (_pixelType == CMYKPixel || _pixelType == CMYKAPixel)
+    _pixel->colorspace=CMYKColorspace;
 }
 
 void Magick::Color::setPixelType(const PixelInfo &color_)
