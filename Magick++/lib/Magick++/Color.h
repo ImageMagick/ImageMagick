@@ -44,6 +44,10 @@ namespace Magick
     Color(const Quantum red_,const Quantum green_,const Quantum blue_,
       const Quantum alpha_);
 
+    // Construct Color using the specified CMYKA values
+    Color(const Quantum cyan_,const Quantum magenta_,const Quantum yellow_,
+      const Quantum black_,const Quantum alpha_);
+
     // Construct Color using the specified color string
     Color(const char *color_);
 
