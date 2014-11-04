@@ -1933,7 +1933,7 @@ Optional Packages:
   --with-perl-options=OPTIONS
                           options to pass on command-line when generating
                           PerlMagick build file
-  --with-jemalloc             enable jemalloc memory allocation library support
+  --with-jemalloc         enable jemalloc memory allocation library support
   --with-umem             enable umem memory allocation library support
   --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
   --without-bzlib         disable BZLIB support
@@ -3699,7 +3699,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=6.9.0-0
 
-MAGICK_SVN_REVISION=16938M
+MAGICK_SVN_REVISION=16938:16939M
 
 
 # Substitute library versioning
@@ -26644,7 +26644,9 @@ $as_echo "" >&6; }
   passed=0
   ac_fn_c_check_header_mongrel "$LINENO" "jemalloc/jemalloc.h" "ac_cv_header_jemalloc_jemalloc_h" "$ac_includes_default"
 if test "x$ac_cv_header_jemalloc_jemalloc_h" = xyes; then :
-  passed=`expr $passed + 1`,failed=`expr $failed + 1`
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
 fi
 
 
@@ -26685,7 +26687,9 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jemalloc_malloc_stats_print" >&5
 $as_echo "$ac_cv_lib_jemalloc_malloc_stats_print" >&6; }
 if test "x$ac_cv_lib_jemalloc_malloc_stats_print" = xyes; then :
-  passed=`expr $passed + 1`,failed=`expr $failed + 1`
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
 fi
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if jemalloc memory allocation library is complete" >&5
