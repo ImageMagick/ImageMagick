@@ -77,10 +77,6 @@ namespace Magick
     // Return color specification string
     operator std::string() const;
 
-    // Alpha level (range 0.0=0 to 1.0=QuantumRange)
-    void alpha(const double alpha_);
-    double alpha(void) const;
-
     // Does object contain valid color?
     void isValid(const bool valid_);
     bool isValid(void) const;
@@ -89,15 +85,19 @@ namespace Magick
     void quantumAlpha(const Quantum alpha_);
     Quantum quantumAlpha(void) const;
 
-    // Blue color (range 0 to QuantumRange)
+    // Black color (range 0 to QuantumRange)
+    void quantumBlack(const Quantum black_);
+    Quantum quantumBlack(void) const;
+
+    // Blue/Yellow color (range 0 to QuantumRange)
     void quantumBlue(const Quantum blue_);
     Quantum quantumBlue(void) const;
 
-    // Green color (range 0 to QuantumRange)
+    // Green/Magenta color (range 0 to QuantumRange)
     void quantumGreen(const Quantum green_);
     Quantum quantumGreen(void) const;
 
-    // Red color (range 0 to QuantumRange)
+    // Red/Cyan color (range 0 to QuantumRange)
     void quantumRed(const Quantum red_);
     Quantum quantumRed(void) const;
 
@@ -106,9 +106,15 @@ namespace Magick
     // PixelType specifies the interpretation of PixelInfo members
     // CYMKPixel:
     //   Cyan     = red
-    //   Yellow   = green
-    //   Magenta  = blue
-    //   Black(K) = alpha
+    //   Magenta  = green
+    //   Yellow   = blue
+    //   Black(K) = black
+    // CYMKPixel:
+    //   Cyan     = red
+    //   Magenta  = green
+    //   Yellow   = blue
+    //   Black(K) = black
+    //   Alpha    = alpha
     // RGBPixel:
     //   Red      = red;
     //   Green    = green;
@@ -120,7 +126,8 @@ namespace Magick
     //   Alpha    = alpha;
     enum PixelType
     {
-      CYMKPixel,
+      CMYKPixel,
+      CMYKAPixel,
       RGBPixel,
       RGBAPixel
     };
@@ -128,6 +135,9 @@ namespace Magick
     // Constructor to construct with PixelInfo*
     // Used to point Color at a pixel in an image
     Color(PixelInfo *rep_,PixelType pixelType_);
+
+    // Constructor to construct with PixelType
+    Color(PixelType pixelType_);
 
     // Set pixel
     // Used to point Color at a pixel in an image
@@ -155,6 +165,59 @@ namespace Magick
 
     // Common initializer for PixelInfo representation
     void initPixel();
+
+    // Sets the pixel type using the specified PixelInfo.
+    void setPixelType(const PixelInfo &color_);
+  };
+
+  class MagickPPExport ColorCMYK: public Color
+  {
+  public:
+
+    // Default constructor
+    ColorCMYK(void);
+
+    // Copy constructor
+    ColorCMYK(const Color &color_);
+
+    // Construct ColorCMYK using the specified CMYK values
+    ColorCMYK(const double cyan_,const double magenta_,const double yellow_,
+      const double black_);
+
+    // Construct ColorCMYK using the specified CMYKA values
+    ColorCMYK(const double cyan_,const double magenta_,const double yellow_,
+      const double black_,const double alpha_);
+
+    // Destructor
+    ~ColorCMYK(void);
+
+    // Assignment operator from base class
+    ColorCMYK& operator=(const Color& color_);
+
+    // Alpha level (range 0 to 1.0)
+    void alpha(const double alpha_);
+    double alpha(void) const;
+
+    // Black/Key color (range 0 to 1.0)
+    void black(const double black_);
+    double black(void) const;
+
+    // Black/Key color (range 0.0 to 1.0)
+    void cyan(const double cyan_);
+    double cyan(void) const;
+
+    // Magenta color (range 0 to 1.0)
+    void magenta(const double magenta_);
+    double magenta(void) const;
+
+    // Yellow color (range 0 to 1.0)
+    void yellow(const double yellow_);
+    double yellow(void) const;
+
+  protected:
+
+    // Constructor to construct with PixelInfo*
+    ColorCMYK(PixelInfo *rep_,PixelType pixelType_);
   };
 
   //
@@ -277,12 +340,12 @@ namespace Magick
     // Copy constructor
     ColorRGB(const Color &color_);
 
-    // Construct ColorRGBA using the specified RGB values
+    // Construct ColorRGB using the specified RGB values
     ColorRGB(const double red_,const double green_,const double blue_);
 
-    // Construct ColorRGBA using the specified RGBA values
+    // Construct ColorRGB using the specified RGBA values
     ColorRGB(const double red_,const double green_,const double blue_,
-      const double alpha);
+      const double alpha_);
 
     // Destructor
     ~ColorRGB(void);
@@ -290,11 +353,15 @@ namespace Magick
     // Assignment operator from base class
     ColorRGB& operator=(const Color& color_);
 
+    // Alpha level (range 0 to 1.0)
+    void alpha(const double alpha_);
+    double alpha(void) const;
+
     // Blue color (range 0.0 to 1.0)
     void blue(const double blue_);
     double blue(void) const;
 
-    // Green color (range 0 to QuantumRange)
+    // Green color (range 0 to 1.0)
     void green(const double green_);
     double green(void) const;
 
