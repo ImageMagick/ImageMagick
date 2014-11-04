@@ -360,9 +360,7 @@ void Magick::Image::alphaColor(const Color &alphaColor_)
 
 Magick::Color Magick::Image::alphaColor(void) const
 {
-  return(Color(ClampToQuantum(constImage()->matte_color.red),
-    ClampToQuantum(constImage()->matte_color.green),
-    ClampToQuantum(constImage()->matte_color.blue)));
+  return(Color(constImage()->matte_color));
 }
 
 void Magick::Image::antiAlias(const bool flag_)
@@ -2286,7 +2284,6 @@ void Magick::Image::colorize(const unsigned int alphaRed_,
     *newImage;
 
   PixelInfo
-    pixel,
     target;
 
   if (!penColor_.isValid())
@@ -2295,12 +2292,7 @@ void Magick::Image::colorize(const unsigned int alphaRed_,
   FormatLocaleString(blend,MaxTextExtent,"%u/%u/%u",alphaRed_,alphaGreen_,
     alphaBlue_);
 
-  GetPixelInfo(image(),&target);
-  pixel=static_cast<PixelInfo>(penColor_);
-  target.red=pixel.red;
-  target.green=pixel.green;
-  target.blue=pixel.blue;
-  target.alpha=pixel.alpha;
+  target=static_cast<PixelInfo>(penColor_);
   GetPPException;
   newImage=ColorizeImage(image(),blend,&target,exceptionInfo);
   replaceImage(newImage);
@@ -2861,16 +2853,11 @@ void Magick::Image::floodFillAlpha(const ssize_t x_,const ssize_t y_,
   const unsigned int alpha_,const bool invert_)
 {
   PixelInfo
-    pixel,
     target;
 
   modifyImage();
 
-  GetPixelInfo(constImage(),&target);
-  pixel=static_cast<PixelInfo>(pixelColor(x_,y_));
-  target.red=pixel.red;
-  target.green=pixel.green;
-  target.blue=pixel.blue;
+  target=static_cast<PixelInfo>(pixelColor(x_,y_));
   target.alpha=alpha_;
   GetPPException;
   SetPPChannelMask(AlphaChannel);
@@ -2884,16 +2871,11 @@ void Magick::Image::floodFillAlpha(const ssize_t x_,const ssize_t y_,
   const unsigned int alpha_,const Color &target_,const bool invert_)
 {
   PixelInfo
-    pixel,
     target;
 
   modifyImage();
 
-  GetPixelInfo(constImage(),&target);
-  pixel=static_cast<PixelInfo>(target_);
-  target.red=pixel.red;
-  target.green=pixel.green;
-  target.blue=pixel.blue;
+  target=static_cast<PixelInfo>(target_);
   target.alpha=alpha_;
   GetPPException;
   SetPPChannelMask(AlphaChannel);
@@ -3295,25 +3277,12 @@ void Magick::Image::levelColors(const Color &blackColor_,
 {
   PixelInfo
     black,
-    pixel,
     white;
 
   modifyImage();
 
-  GetPixelInfo(image(),&black);
-  pixel=static_cast<PixelInfo>(blackColor_);
-  black.red=pixel.red;
-  black.green=pixel.green;
-  black.blue=pixel.blue;
-  black.alpha=pixel.alpha;
-
-  GetPixelInfo(image(),&white);
-  pixel=static_cast<PixelInfo>(whiteColor_);
-  white.red=pixel.red;
-  white.green=pixel.green;
-  white.blue=pixel.blue;
-  white.alpha=pixel.alpha;
-
+  black=static_cast<PixelInfo>(blackColor_);
+  white=static_cast<PixelInfo>(whiteColor_);
   GetPPException;
   (void) LevelImageColors(image(),&black,&white,invert_ == true ?
     MagickTrue : MagickFalse,exceptionInfo);
@@ -3325,25 +3294,12 @@ void Magick::Image::levelColorsChannel(const ChannelType channel_,
 {
   PixelInfo
     black,
-    pixel,
     white;
 
   modifyImage();
 
-  GetPixelInfo(image(),&black);
-  pixel=static_cast<PixelInfo>(blackColor_);
-  black.red=pixel.red;
-  black.green=pixel.green;
-  black.blue=pixel.blue;
-  black.alpha=pixel.alpha;
-
-  GetPixelInfo(image(),&white);
-  pixel=static_cast<PixelInfo>(whiteColor_);
-  white.red=pixel.red;
-  white.green=pixel.green;
-  white.blue=pixel.blue;
-  white.alpha=pixel.alpha;
-
+  black=static_cast<PixelInfo>(blackColor_);
+  white=static_cast<PixelInfo>(whiteColor_);
   GetPPException;
   SetPPChannelMask(channel_);
   (void) LevelImageColors(image(),&black,&white,invert_ == true ?
