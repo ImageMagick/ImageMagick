@@ -194,8 +194,8 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
 %
 %  The format of the ConformPixelInfo method is:
 %
-%      void *ConformPixelInfo((Image *image,PixelInfo *pixel,
-%        ExceptionInfo *exception)
+%      void *ConformPixelInfo((Image *image,const PixelInfo *source,
+%        PixelInfo *destination,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
