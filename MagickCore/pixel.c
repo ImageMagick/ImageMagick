@@ -199,38 +199,45 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
 %
 %  A description of each parameter follows:
 %
-%    o pixel: the pixel info.
-%
 %    o image: the image.
+%
+%    o source: the source pixel info.
+%
+%    o destination: the destination pixel info.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport void ConformPixelInfo(Image *image,PixelInfo *pixel,
-  ExceptionInfo *exception)
+MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
+  PixelInfo *destination,ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(pixel != (const PixelInfo *) NULL);
+  assert(destination != (const PixelInfo *) NULL);
 
+  *destination=(*source);
   if (image->colorspace == CMYKColorspace)
     {
-      if (IssRGBCompatibleColorspace(pixel->colorspace))
-        ConvertRGBToCMYK(pixel);
+      if (IssRGBCompatibleColorspace(destination->colorspace))
+        ConvertRGBToCMYK(destination);
     }
   else
-    if (pixel->colorspace == CMYKColorspace)
+    if (destination->colorspace == CMYKColorspace)
       {
         if (IssRGBCompatibleColorspace(image->colorspace))
-          ConvertCMYKToRGB(pixel);
+          ConvertCMYKToRGB(destination);
       }
 #if 0
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsPixelInfoGray(pixel) == MagickFalse))
+      (IsPixelInfoGray(destination) == MagickFalse))
     /* TODO: Add this method. */
-    SetPixelInfoGray(pixel);
+    SetPixelInfoGray(destination);
+#else
+  if ((IsPixelInfoGray(&image->background_color) == MagickFalse) &&
+      (IsGrayColorspace(image->colorspace) != MagickFalse))
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
 #endif
-  if ((pixel->alpha_trait == BlendPixelTrait) &&
+  if ((destination->alpha_trait == BlendPixelTrait) &&
       (image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
 }

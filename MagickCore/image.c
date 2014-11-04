@@ -2083,15 +2083,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   assert(image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if ((IsPixelInfoGray(&image->background_color) == MagickFalse) &&
-      (IsGrayColorspace(image->colorspace) != MagickFalse))
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  if ((image->background_color.alpha_trait == BlendPixelTrait) &&
-      (image->alpha_trait != BlendPixelTrait))
-    (void) SetImageAlpha(image,OpaqueAlpha,exception);
-  background=image->background_color;
-  if (image->colorspace == CMYKColorspace)
-    ConvertRGBToCMYK(&background);
+  ConformPixelInfo(image,&image->background_color,&background,exception);
   /*
     Set image background color.
   */
