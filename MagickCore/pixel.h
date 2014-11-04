@@ -244,8 +244,9 @@ extern MagickExport MagickRealType
   EncodePixelGamma(const MagickRealType) magick_hot_spot;
 
 extern MagickExport void
-  InitializePixelChannelMap(Image *),
+  ConformPixelInfo(Image *,PixelInfo *,ExceptionInfo *),
   GetPixelInfo(const Image *,PixelInfo *),
+  InitializePixelChannelMap(Image *),
   SetPixelChannelMask(Image *,const ChannelType);
 
 #if defined(__cplusplus) || defined(c_plusplus)

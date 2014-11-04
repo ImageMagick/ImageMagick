@@ -728,7 +728,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  OpaquePaintImage() changes any pixel that matches color with the color
-%  defined by fill.
+%  defined by fill argument.
 %
 %  By default color must match a particular pixel color exactly.  However, in
 %  many cases two colors may differ by a small amount.  Fuzz defines how much
@@ -738,9 +738,9 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %
 %  The format of the OpaquePaintImage method is:
 %
-%      MagickBooleanType OpaquePaintImage(Image *image,
-%        const PixelInfo *target,const PixelInfo *fill,
-%        const MagickBooleanType invert,ExceptionInfo *exception)
+%      MagickBooleanType OpaquePaintImage(Image *image,const PixelInfo *target,
+%        const PixelInfo *fill,const MagickBooleanType invert,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -771,6 +771,8 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     progress;
 
   PixelInfo
+    conform_fill,
+    conform_target,
     zero;
 
   ssize_t
@@ -787,9 +789,10 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelInfoGray(fill) == MagickFalse))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
-  if ((fill->alpha_trait == BlendPixelTrait) &&
-      (image->alpha_trait != BlendPixelTrait))
-    (void) SetImageAlpha(image,OpaqueAlpha,exception);
+  conform_fill=(*fill);
+  ConformPixelInfo(image,&conform_fill,exception);
+  conform_target=(*target);
+  ConformPixelInfo(image,&conform_target,exception);
   /*
     Make image color opaque.
   */
@@ -824,8 +827,8 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       GetPixelInfoPixel(image,q,&pixel);
-      if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
-        SetPixelInfoPixel(image,fill,q);
+      if (IsFuzzyEquivalencePixelInfo(&pixel,&conform_target) != invert)
+        SetPixelInfoPixel(image,&conform_fill,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
