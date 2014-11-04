@@ -44,6 +44,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache-private.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -158,11 +159,11 @@ MagickExport PixelChannelMap *ClonePixelChannelMap(PixelChannelMap *channel_map)
 %
 %  The format of the ClonePixelInfo method is:
 %
-%      PixelInfo *ClonePixelInfo(const PixelInfo *pixel_info)
+%      PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
 %
 %  A description of each parameter follows:
 %
-%    o pixel_info: the pixel info.
+%    o pixel: the pixel info.
 %
 */
 MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
@@ -175,6 +176,63 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *pixel_info=(*pixel);
   return(pixel_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o n f o r m P i x e l I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConformPixelInfo() ensures the pixel conforms with the colorspace and alpha
+%  attribute of the image.
+%
+%  The format of the ConformPixelInfo method is:
+%
+%      void *ConformPixelInfo((Image *image,PixelInfo *pixel,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: the pixel info.
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport void ConformPixelInfo(Image *image,PixelInfo *pixel,
+  ExceptionInfo *exception)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(pixel != (const PixelInfo *) NULL);
+
+  if (image->colorspace == CMYKColorspace)
+    {
+      if (IssRGBCompatibleColorspace(pixel->colorspace))
+        ConvertRGBToCMYK(pixel);
+    }
+  else
+    if (pixel->colorspace == CMYKColorspace)
+      {
+        if (IssRGBCompatibleColorspace(image->colorspace))
+          ConvertCMYKToRGB(pixel);
+      }
+#if 0
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsPixelInfoGray(pixel) == MagickFalse))
+    /* TODO: Add this method. */
+    SetPixelInfoGray(pixel);
+#endif
+  if ((pixel->alpha_trait == BlendPixelTrait) &&
+      (image->alpha_trait != BlendPixelTrait))
+    (void) SetImageAlpha(image,OpaqueAlpha,exception);
 }
 
 /*
@@ -4420,7 +4478,6 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     y_offset;
 
   assert(image != (Image *) NULL);
-  assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image_view != (CacheView *) NULL);
   status=MagickTrue;
@@ -4841,7 +4898,6 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
   PixelInterpolateMethod
     interpolate;
 
-  assert(source != (Image *) NULL);
   assert(source != (Image *) NULL);
   assert(source->signature == MagickSignature);
   assert(source_view != (CacheView *) NULL);
