@@ -332,7 +332,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
 	$(top_srcdir)/m4/ax_pthread.m4 \
 	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/cxx_have_std_libs.m4 \
-	$(top_srcdir)/m4/framework.m4 \
+	$(top_srcdir)/m4/framework.m4 $(top_srcdir)/m4/jemalloc.m4 \
 	$(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
@@ -2858,6 +2858,7 @@ docdir = $(DOCUMENTATION_PATH)
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 ghostscript_font_dir = @ghostscript_font_dir@
+has_jemalloc = @has_jemalloc@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
