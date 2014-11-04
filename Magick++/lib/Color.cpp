@@ -95,7 +95,7 @@ Magick::Color::Color(const Quantum red_,const Quantum green_,
   : _pixel(new PixelInfo),
     _isValid(true),
     _pixelOwn(true),
-    _pixelType(RGBAPixel)
+    _pixelType(RGBPixel)
 {
   initPixel();
 
@@ -104,6 +104,26 @@ Magick::Color::Color(const Quantum red_,const Quantum green_,
   quantumBlue(blue_);
   quantumGreen(green_);
   quantumRed(red_);
+  if (alpha_ != OpaqueAlpha)
+    _pixelType=RGBAPixel;
+}
+
+Magick::Color::Color(const Quantum cyan_,const Quantum magenta_,
+  const Quantum yellow_,const Quantum black_,const Quantum alpha_)
+  : _pixel(new PixelInfo),
+    _isValid(true),
+    _pixelOwn(true),
+    _pixelType(CMYKPixel)
+{
+  initPixel();
+
+  quantumAlpha(alpha_);
+  quantumBlack(black_);
+  quantumBlue(yellow_);
+  quantumGreen(magenta_);
+  quantumRed(cyan_);
+  if (alpha_ != OpaqueAlpha)
+    _pixelType=CMYKAPixel;
 }
 
 Magick::Color::Color(const char *color_)
