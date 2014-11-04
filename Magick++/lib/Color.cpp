@@ -269,6 +269,11 @@ bool Magick::Color::isValid(void) const
   return(_isValid);
 }
 
+Magick::Color::PixelType Magick::Color::pixelType() const
+{
+  return(_pixelType);
+}
+
 void Magick::Color::isValid(bool valid_)
 {
   if ((valid_ && isValid()) || (!valid_ && !isValid()))

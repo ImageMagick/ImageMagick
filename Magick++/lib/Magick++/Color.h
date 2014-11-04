@@ -34,6 +34,35 @@ namespace Magick
   {
   public:
 
+    // PixelType specifies the interpretation of PixelInfo members
+    // CYMKPixel:
+    //   Cyan     = red
+    //   Magenta  = green
+    //   Yellow   = blue
+    //   Black(K) = black
+    // CYMKPixel:
+    //   Cyan     = red
+    //   Magenta  = green
+    //   Yellow   = blue
+    //   Black(K) = black
+    //   Alpha    = alpha
+    // RGBPixel:
+    //   Red      = red;
+    //   Green    = green;
+    //   Blue     = blue;
+    // RGBAPixel:
+    //   Red      = red;
+    //   Green    = green;
+    //   Blue     = blue;
+    //   Alpha    = alpha;
+    enum PixelType
+    {
+      CMYKPixel,
+      CMYKAPixel,
+      RGBPixel,
+      RGBAPixel
+    };
+
     // Default constructor
     Color(void);
 
@@ -85,6 +114,9 @@ namespace Magick
     void isValid(const bool valid_);
     bool isValid(void) const;
 
+    // Returns pixel type of the color
+    Magick::Color::PixelType pixelType(void) const;
+
     // Alpha level (range OpaqueAlpha=0 to TransparentAlpha=QuantumRange)
     void quantumAlpha(const Quantum alpha_);
     Quantum quantumAlpha(void) const;
@@ -106,35 +138,6 @@ namespace Magick
     Quantum quantumRed(void) const;
 
   protected:
-
-    // PixelType specifies the interpretation of PixelInfo members
-    // CYMKPixel:
-    //   Cyan     = red
-    //   Magenta  = green
-    //   Yellow   = blue
-    //   Black(K) = black
-    // CYMKPixel:
-    //   Cyan     = red
-    //   Magenta  = green
-    //   Yellow   = blue
-    //   Black(K) = black
-    //   Alpha    = alpha
-    // RGBPixel:
-    //   Red      = red;
-    //   Green    = green;
-    //   Blue     = blue;
-    // RGBAPixel:
-    //   Red      = red;
-    //   Green    = green;
-    //   Blue     = blue;
-    //   Alpha    = alpha;
-    enum PixelType
-    {
-      CMYKPixel,
-      CMYKAPixel,
-      RGBPixel,
-      RGBAPixel
-    };
 
     // Constructor to construct with PixelInfo*
     // Used to point Color at a pixel in an image
