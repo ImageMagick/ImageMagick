@@ -799,6 +799,8 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
     progress;
 
   MagickPixelPacket
+    conform_fill,
+    conform_target,
     zero;
 
   ssize_t
@@ -817,6 +819,10 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
     (void) SetImageColorspace(image,sRGBColorspace);
   if ((fill->opacity != OpaqueOpacity) && (image->matte == MagickFalse))
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+  conform_fill=(*fill);
+  ConformPixelInfo(image,&conform_fill,exception);
+  conform_target=(*target);
+  ConformPixelInfo(image,&conform_target,exception);
   /*
     Make image color opaque.
   */
@@ -856,19 +862,19 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetMagickPixelPacket(image,q,indexes+x,&pixel);
-      if (IsMagickColorSimilar(&pixel,target) != invert)
+      if (IsMagickColorSimilar(&pixel,&conform_target) != invert)
         {
           if ((channel & RedChannel) != 0)
-            SetPixelRed(q,ClampToQuantum(fill->red));
+            SetPixelRed(q,ClampToQuantum(conform_fill.red));
           if ((channel & GreenChannel) != 0)
-            SetPixelGreen(q,ClampToQuantum(fill->green));
+            SetPixelGreen(q,ClampToQuantum(conform_fill.green));
           if ((channel & BlueChannel) != 0)
-            SetPixelBlue(q,ClampToQuantum(fill->blue));
+            SetPixelBlue(q,ClampToQuantum(conform_fill.blue));
           if ((channel & OpacityChannel) != 0)
-            SetPixelOpacity(q,ClampToQuantum(fill->opacity));
+            SetPixelOpacity(q,ClampToQuantum(conform_fill.opacity));
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            SetPixelIndex(indexes+x,ClampToQuantum(fill->index));
+            SetPixelIndex(indexes+x,ClampToQuantum(conform_fill.index));
         }
       q++;
     }

@@ -182,6 +182,7 @@ extern MagickExport MagickRealType
     magick_hot_spot;
 
 extern MagickExport void
+  ConformPixelInfo(Image *,MagickPixelPacket *,ExceptionInfo *),
   GetMagickPixelPacket(const Image *,MagickPixelPacket *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

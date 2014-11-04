@@ -1316,16 +1316,6 @@ static inline ssize_t RoundToYCC(const MagickRealType value)
   return((ssize_t) (value+0.5));
 }
 
-static inline void ConvertCMYKToRGB(MagickPixelPacket *pixel)
-{
-  pixel->red=((QuantumRange-(QuantumScale*pixel->red*
-    (QuantumRange-pixel->index)+pixel->index)));
-  pixel->green=((QuantumRange-(QuantumScale*pixel->green*
-    (QuantumRange-pixel->index)+pixel->index)));
-  pixel->blue=((QuantumRange-(QuantumScale*pixel->blue*
-    (QuantumRange-pixel->index)+pixel->index)));
-}
-
 static inline void ConvertLabToRGB(const double L,const double a,
   const double b,Quantum *red,Quantum *green,Quantum *blue)
 {
