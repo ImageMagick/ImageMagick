@@ -1032,6 +1032,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (IsImageGray(image,exception) != MagickFalse)
+    (void) SetImageColorspace(image,GRAYColorspace,exception);
   number_channels=GetPixelChannels(image);
   black=(double *) AcquireQuantumMemory(number_channels,sizeof(*black));
   white=(double *) AcquireQuantumMemory(number_channels,sizeof(*white));
@@ -1056,8 +1058,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   /*
     Form histogram.
   */
-  if (IsImageGray(image,exception) != MagickFalse)
-    (void) SetImageColorspace(image,GRAYColorspace,exception);
   status=MagickTrue;
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*number_channels*
     sizeof(*histogram));
