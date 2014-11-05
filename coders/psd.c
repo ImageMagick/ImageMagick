@@ -1032,6 +1032,7 @@ static MagickStatusType ReadPSDChannelZip(Image *image,const size_t channels,c
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   return(status);
 }
+#endif
 
 static MagickStatusType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
   const LayerInfo* layer_info,const size_t channel,
