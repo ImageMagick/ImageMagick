@@ -296,6 +296,14 @@ ModuleExport size_t RegisterDNGImage(void)
   entry->description=ConstantString("Epson RAW Format");
   entry->module=ConstantString("DNG");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("IIQ");
+  entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->blob_support=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->format_type=ExplicitFormatType;
+  entry->description=ConstantString("Phase One Raw Image Format");
+  entry->module=ConstantString("DNG");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("KDC");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->blob_support=MagickFalse;
@@ -454,6 +462,8 @@ ModuleExport void UnregisterDNGImage(void)
   (void) UnregisterMagickInfo("MEF");
   (void) UnregisterMagickInfo("K25");
   (void) UnregisterMagickInfo("KDC");
+  (void) UnregisterMagickInfo("IIQ");
+  (void) UnregisterMagickInfo("ERF");
   (void) UnregisterMagickInfo("DCR");
   (void) UnregisterMagickInfo("CRW");
   (void) UnregisterMagickInfo("CR2");
