@@ -2163,7 +2163,6 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->adjoin=MagickFalse;
   entry->format_type=ImplicitFormatType;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
   entry->description=ConstantString("Raw CCITT Group4");
   entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
@@ -2175,7 +2174,6 @@ ModuleExport size_t RegisterTIFFImage(void)
 #endif
   entry->endian_support=MagickTrue;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
   entry->description=ConstantString("Pyramid encoded TIFF");
   entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
@@ -2188,7 +2186,6 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->endian_support=MagickTrue;
   entry->seekable_stream=MagickTrue;
   entry->stealth=MagickTrue;
-  entry->thread_support=NoThreadSupport;
   entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -2203,7 +2200,6 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->magick=(IsImageFormatHandler *) IsTIFF;
   entry->endian_support=MagickTrue;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
   entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -2218,7 +2214,6 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->adjoin=MagickFalse;
   entry->endian_support=MagickTrue;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
   entry->description=ConstantString("Tagged Image File Format (64-bit)");
   if (*version != '\0')
     entry->version=ConstantString(version);
