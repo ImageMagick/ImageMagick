@@ -120,45 +120,54 @@ MagickExport MagickPixelPacket *CloneMagickPixelPacket(
 %
 %  The format of the ConformMagickPixelPacket method is:
 %
-%      void *ConformMagickPixelPacket((Image *image,MagickPixelPacket *pixel,
+%      void *ConformMagickPixelPacket(Image *image,
+%        const MagickPixelPacket *source,MagickPixelPacket *destination,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o pixel: the pixel info.
-%
 %    o image: the image.
+%
+%    o source: the source magick pixel packet.
+%
+%    o destination: the destination magick pixel packet.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport void ConformMagickPixelPacket(Image *image,
-  MagickPixelPacket *pixel,ExceptionInfo *exception)
+  const MagickPixelPacket *source,MagickPixelPacket *destination,
+  ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(pixel != (const MagickPixelPacket *) NULL);
+  assert(destination != (const MagickPixelPacket *) NULL);
 
   (void) exception;
 
+  *destination=(*source);
   if (image->colorspace == CMYKColorspace)
     {
-      if (IssRGBCompatibleColorspace(pixel->colorspace))
-        ConvertRGBToCMYK(pixel);
+      if (IssRGBCompatibleColorspace(destination->colorspace))
+        ConvertRGBToCMYK(destination);
     }
   else
-    if (pixel->colorspace == CMYKColorspace)
+    if (destination->colorspace == CMYKColorspace)
       {
         if (IssRGBCompatibleColorspace(image->colorspace))
-          ConvertCMYKToRGB(pixel);
+          ConvertCMYKToRGB(destination);
       }
 #if 0
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsMagickPixelPacketGray(pixel) == MagickFalse))
+      (IsMagickGray(destination) == MagickFalse))
     /* TODO: Add this method. */
-    SetMagickPixelPacketGray(pixel);
+    SetMagickPixelPacketGray(destination);
+#else
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsMagickGray(destination) == MagickFalse))
+    (void) TransformImageColorspace(image,sRGBColorspace);
 #endif
-  if ((pixel->matte != MagickFalse) && (image->matte == MagickFalse))
+  if ((destination->matte != MagickFalse) && (image->matte == MagickFalse))
     (void) SetImageOpacity(image,OpaqueOpacity);
 }
 
