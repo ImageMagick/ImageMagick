@@ -1661,7 +1661,7 @@ static void MagickPNGErrorHandler(png_struct *ping,png_const_charp message)
   exception=error_info->exception;
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  libpng-%s error: %s", PNG_LIBPNG_VER_STRING,message);
+    "  libpng-%s error: %s", png_get_libpng_ver(NULL),message);
 
   (void) ThrowMagickException(exception,GetMagickModule(),CoderError,message,
     "`%s'",image->filename);
@@ -1694,7 +1694,7 @@ static void MagickPNGWarningHandler(png_struct *ping,png_const_charp message)
   image=error_info->image;
   exception=error_info->exception;
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  libpng-%s warning: %s", PNG_LIBPNG_VER_STRING,message);
+    "  libpng-%s warning: %s", png_get_libpng_ver(NULL),message);
 
   (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
     message,"`%s'",image->filename);
@@ -2149,11 +2149,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #ifdef PNG_USER_MEM_SUPPORTED
  error_info.image=image;
  error_info.exception=exception;
- ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING,&error_info,
+ ping=png_create_read_struct_2(png_get_libpng_ver(NULL),&error_info,
    MagickPNGErrorHandler,MagickPNGWarningHandler, NULL,
    (png_malloc_ptr) Magick_png_malloc,(png_free_ptr) Magick_png_free);
 #else
-  ping=png_create_read_struct(PNG_LIBPNG_VER_STRING,&error_info,
+  ping=png_create_read_struct(png_get_libpng_ver(NULL),&error_info,
     MagickPNGErrorHandler,MagickPNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
@@ -9329,12 +9329,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #ifdef PNG_USER_MEM_SUPPORTED
  error_info.image=image;
  error_info.exception=exception;
-  ping=png_create_write_struct_2(PNG_LIBPNG_VER_STRING,&error_info,
+  ping=png_create_write_struct_2(png_get_libpng_ver(NULL),&error_info,
     MagickPNGErrorHandler,MagickPNGWarningHandler,(void *) NULL,
     (png_malloc_ptr) Magick_png_malloc,(png_free_ptr) Magick_png_free);
 
 #else
-  ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,&error_info,
+  ping=png_create_write_struct(png_get_libpng_ver(NULL),&error_info,
     MagickPNGErrorHandler,MagickPNGWarningHandler);
 
 #endif
