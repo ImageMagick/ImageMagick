@@ -9257,12 +9257,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     Allocate the PNG structures
   */
 #ifdef PNG_USER_MEM_SUPPORTED
-  ping=png_create_write_struct_2(PNG_LIBPNG_VER_STRING,image,
+  ping=png_create_write_struct_2(png_get_libpng_ver(NULL),image,
     MagickPNGErrorHandler,MagickPNGWarningHandler,(void *) NULL,
     (png_malloc_ptr) Magick_png_malloc,(png_free_ptr) Magick_png_free);
 
 #else
-  ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,image,
+  ping=png_create_write_struct(png_get_libpng_ver(NULL),image,
     MagickPNGErrorHandler,MagickPNGWarningHandler);
 
 #endif
