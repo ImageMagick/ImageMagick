@@ -2130,8 +2130,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
               black_point*=(double) _image->columns*_image->rows/100.0;
               white_point*=(double) _image->columns*_image->rows/100.0;
             }
-          white_point=(double) _image->columns*_image->rows-
-            white_point;
+          white_point=(double) _image->columns*_image->rows-white_point;
           (void) ContrastStretchImage(_image,black_point,white_point,
             _exception);
           break;
