@@ -1,3 +1,6 @@
+2014-11-05  6.9.0-0 Glenn Randers-Pehrson <glennrp@image...>
+  * Use png_get_libpng_ver() instead of PNG_LIBPNG_VER_STRING in coders/png.c
+
 2014-11-03  6.9.0-0 Cristy  <quetzlzacatenango@image...>
   * Check for zero-sized rendered SVG image (bug report from
     Vladimir Davydov).

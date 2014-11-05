@@ -1640,7 +1640,7 @@ static void MagickPNGErrorHandler(png_struct *ping,png_const_charp message)
 
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  libpng-%s error: %s", PNG_LIBPNG_VER_STRING,message);
+      "  libpng-%s error: %s", png_get_libpng_ver(NULL),message);
 
   (void) ThrowMagickException(&image->exception,GetMagickModule(),CoderError,
     message,"`%s'",image->filename);
@@ -1666,7 +1666,7 @@ static void MagickPNGWarningHandler(png_struct *ping,png_const_charp message)
   image=(Image *) png_get_error_ptr(ping);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  libpng-%s warning: %s", PNG_LIBPNG_VER_STRING,message);
+      "  libpng-%s warning: %s", png_get_libpng_ver(NULL),message);
 
   (void) ThrowMagickException(&image->exception,GetMagickModule(),CoderWarning,
     message,"`%s'",image->filename);
@@ -2113,11 +2113,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     Allocate the PNG structures
   */
 #ifdef PNG_USER_MEM_SUPPORTED
- ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING, image,
+ ping=png_create_read_struct_2(png_get_libpng_ver(NULL), image,
    MagickPNGErrorHandler,MagickPNGWarningHandler, NULL,
    (png_malloc_ptr) Magick_png_malloc,(png_free_ptr) Magick_png_free);
 #else
-  ping=png_create_read_struct(PNG_LIBPNG_VER_STRING,image,
+  ping=png_create_read_struct(png_get_libpng_ver(NULL),image,
     MagickPNGErrorHandler,MagickPNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
