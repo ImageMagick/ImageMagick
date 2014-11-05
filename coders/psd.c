@@ -913,12 +913,11 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
   return(status);
 }
 
-static MagickStatusType ReadPSDChannelZip(Image *image,
-  const size_t channels,const ssize_t type,
-  const PSDCompressionType compression,const size_t compact_size,
-  ExceptionInfo *exception)
-{
 #ifdef MAGICKCORE_ZLIB_DELEGATE
+static MagickStatusType ReadPSDChannelZip(Image *image,const size_t channels,
+  const ssize_t type,const PSDCompressionType compression,
+  const size_t compact_size,ExceptionInfo *exception)
+{
   MagickStatusType
     status;
 
@@ -1026,15 +1025,6 @@ static MagickStatusType ReadPSDChannelZip(Image *image,
   compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   return(status);
-#else
-  magick_unreferenced(image);
-  magick_unreferenced(channels);
-  magick_unreferenced(type);
-  magick_unreferenced(compression);
-  magick_unreferenced(compact_size);
-  magick_unreferenced(exception);
-  return(MagickFalse);
-#endif
 }
 
 static MagickStatusType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
