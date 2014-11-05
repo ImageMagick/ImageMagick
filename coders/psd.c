@@ -920,8 +920,8 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
 }
 
 #ifdef MAGICKCORE_ZLIB_DELEGATE
-static MagickStatusType ReadPSDChannelZip(Image *image,const size_t channels,c
-  onst ssize_t type,const PSDCompressionType compression,
+static MagickStatusType ReadPSDChannelZip(Image *image,const size_t channels,
+  const ssize_t type,const PSDCompressionType compression,
   const size_t compact_size,ExceptionInfo *exception)
 {
   MagickStatusType
