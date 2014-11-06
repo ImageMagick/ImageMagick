@@ -2149,11 +2149,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #ifdef PNG_USER_MEM_SUPPORTED
  error_info.image=image;
  error_info.exception=exception;
- ping=png_create_read_struct_2(png_get_libpng_ver(NULL),&error_info,
+ ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING,&error_info,
    MagickPNGErrorHandler,MagickPNGWarningHandler, NULL,
    (png_malloc_ptr) Magick_png_malloc,(png_free_ptr) Magick_png_free);
 #else
-  ping=png_create_read_struct(png_get_libpng_ver(NULL),&error_info,
+  ping=png_create_read_struct(PNG_LIBPNG_VER_STRING,&error_info,
     MagickPNGErrorHandler,MagickPNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
@@ -9329,12 +9329,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #ifdef PNG_USER_MEM_SUPPORTED
  error_info.image=image;
  error_info.exception=exception;
-  ping=png_create_write_struct_2(png_get_libpng_ver(NULL),&error_info,
+  ping=png_create_write_struct_2(PNG_LIBPNG_VER_STRING,&error_info,
     MagickPNGErrorHandler,MagickPNGWarningHandler,(void *) NULL,
     (png_malloc_ptr) Magick_png_malloc,(png_free_ptr) Magick_png_free);
 
 #else
-  ping=png_create_write_struct(png_get_libpng_ver(NULL),&error_info,
+  ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,&error_info,
     MagickPNGErrorHandler,MagickPNGWarningHandler);
 
 #endif
