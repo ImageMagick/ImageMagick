@@ -192,6 +192,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       ThrowFileException(exception,BlobError,"UnableToOpenBlob",
         ImfErrorMessage());
+      if (LocaleCompare(image_info->filename,read_info->filename) != 0)
+        (void) RelinquishUniqueFileResource(read_info->filename);
       read_info=DestroyImageInfo(read_info);
       return((Image *) NULL);
     }
@@ -215,6 +217,9 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (scanline == (ImfRgba *) NULL)
     {
       (void) ImfCloseInputFile(file);
+      if (LocaleCompare(image_info->filename,read_info->filename) != 0)
+        (void) RelinquishUniqueFileResource(read_info->filename);
+      read_info=DestroyImageInfo(read_info);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -424,15 +429,18 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
   ImfDeleteHeader(hdr_info);
   if (file == (ImfOutputFile *) NULL)
     {
+      (void) RelinquishUniqueFileResource(write_info->filename);
+      write_info=DestroyImageInfo(write_info);
       ThrowFileException(exception,BlobError,"UnableToOpenBlob",
         ImfErrorMessage());
-      write_info=DestroyImageInfo(write_info);
       return(MagickFalse);
     }
   scanline=(ImfRgba *) AcquireQuantumMemory(image->columns,sizeof(*scanline));
   if (scanline == (ImfRgba *) NULL)
     {
       (void) ImfCloseOutputFile(file);
+      (void) RelinquishUniqueFileResource(write_info->filename);
+      write_info=DestroyImageInfo(write_info);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
   ResetMagickMemory(scanline,0,image->columns*sizeof(*scanline));
