@@ -1392,10 +1392,6 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
             (*width)++;
             (*height)++;
           }
-          while (((*width+1)*(*height)) <= area)
-            (*width)++;
-          while (((*width)*(*height+1)) <= area)
-            (*height)++;
         }
       former_width=(*width);
       former_height=(*height);
