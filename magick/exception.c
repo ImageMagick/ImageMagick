@@ -630,6 +630,7 @@ MagickExport void InheritException(ExceptionInfo *exception,
   assert(exception->signature == MagickSignature);
   assert(relative != (ExceptionInfo *) NULL);
   assert(relative->signature == MagickSignature);
+  assert(exception != relative);
   if (relative->exceptions == (void *) NULL)
     return;
   LockSemaphoreInfo(relative->semaphore);
