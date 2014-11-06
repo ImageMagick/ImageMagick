@@ -3577,34 +3577,32 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         unsigned int
           tag;
 
+        tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
+        length=(size_t) ReadBlobLSBLong(image);
+        if (tag == 0xFFFEE0DD)
+          break; /* sequence delimiter tag */
+        if (tag != 0xFFFEE000)
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         file=(FILE *) NULL;
         unique_file=AcquireUniqueFileResource(filename);
         if (unique_file != -1)
           file=fdopen(unique_file,"wb");
-        if ((unique_file == -1) || (file == (FILE *) NULL))
+        if (file == (FILE *) NULL)
           {
+            (void) RelinquishUniqueFileResource(filename);
             ThrowFileException(exception,FileOpenError,
               "UnableToCreateTemporaryFile",filename);
             break;
-          }
-        tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
-        length=(size_t) ReadBlobLSBLong(image);
-        if (tag == 0xFFFEE0DD)
-          {
-            (void) fclose(file);
-            break; /* sequence delimiter tag */
-          }
-        if (tag != 0xFFFEE000)
-          {
-            (void) fclose(file);
-            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           }
         for ( ; length != 0; length--)
         {
           c=ReadBlobByte(image);
           if (c == EOF)
-            ThrowFileException(exception,CorruptImageError,
-              "UnexpectedEndOfFile",image->filename);
+            {
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           (void) fputc(c,file);
         }
         (void) fclose(file);
