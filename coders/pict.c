@@ -1385,6 +1385,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           {
             if (file != (FILE *) NULL)
               (void) fclose(file);
+            (void) RelinquishUniqueFileResource(read_info->filename);
             (void) CopyMagickString(image->filename,read_info->filename,
               MaxTextExtent);
             ThrowFileException(exception,FileOpenError,
@@ -1398,6 +1399,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         if (ReadRectangle(image,&frame) == MagickFalse)
           {
             (void) fclose(file);
+            (void) RelinquishUniqueFileResource(read_info->filename);
             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           }
         for (i=0; i < 122; i++)

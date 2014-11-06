@@ -191,7 +191,10 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (c == EOF)
       break;
     if (LocaleNCompare((char *) (magick+12),"SFW94A",6) != 0)
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      {
+        (void) RelinquishUniqueFileResource(read_info->filename);
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     /*
       Dump SFW image to a temporary file.
     */
@@ -200,6 +203,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       file=fdopen(unique_file,"wb");
     if ((unique_file == -1) || (file == (FILE *) NULL))
       {
+        (void) RelinquishUniqueFileResource(read_info->filename);
         ThrowFileException(exception,FileOpenError,"UnableToWriteFile",
           image->filename);
         image=DestroyImageList(image);
