@@ -4634,8 +4634,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            ((traits & CopyPixelTrait) != 0))
+        if ((traits == UndefinedPixelTrait) || ((traits & CopyPixelTrait) != 0))
           continue;
         if ((double) q[i] > threshold)
           q[i]=QuantumRange-q[i];
