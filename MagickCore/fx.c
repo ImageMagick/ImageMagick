@@ -4344,7 +4344,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetPixelChannelMask(shadow_image,channel_mask);
+  SetPixelChannelMask(shadow_image,channel_mask);
   if (shadow_image->page.width == 0)
     shadow_image->page.width=shadow_image->columns;
   if (shadow_image->page.height == 0)
@@ -4632,7 +4632,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
-        if ((traits == UndefinedPixelTrait) || ((traits & CopyPixelTrait) != 0))
+        if ((traits & UpdatePixelTrait) == 0)
           continue;
         if ((double) q[i] > threshold)
           q[i]=QuantumRange-q[i];

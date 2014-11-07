@@ -604,27 +604,17 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("channel",option+1) == 0)
-        {
-          parse=ParseChannelOption(ArgOption("Default"));
-          if (parse < 0)
-            CLIWandExceptArgBreak(OptionError,"UnrecognizedChannelType",
-                 option,arg1);
-          _image_info->channel=(ChannelType) parse;
-          (void) SetImageOption(_image_info,option+1,arg1);
-          break;
-        }
       if (LocaleCompare("colorspace",option+1) == 0)
         {
           /* Setting used for new images via AquireImage()
              But also used as a SimpleImageOperator
              Undefined colorspace means don't modify images on
              read or as a operation */
-          parse = ParseCommandOption(MagickColorspaceOptions,MagickFalse,
-                        ArgOption("undefined"));
+          parse=ParseCommandOption(MagickColorspaceOptions,MagickFalse,
+             ArgOption("undefined"));
           if (parse < 0)
-            CLIWandExceptArgBreak(OptionError,"UnrecognizedColorspace",
-                                    option,arg1);
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedColorspace",option,
+              arg1);
           _image_info->colorspace=(ColorspaceType) parse;
           break;
         }
@@ -1949,6 +1939,20 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             break;
           (void) ColorDecisionListImage(_image,color_correction_collection,
             _exception);
+          break;
+        }
+      if (LocaleCompare("channel",option+1) == 0)
+        {
+          if (IfPlusOp)
+            {
+              SetPixelChannelMask(_image,DefaultChannels);
+              break;
+            }
+          parse=ParseChannelOption(arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedIntensityMethod",
+              option,arg1);
+          SetPixelChannelMask(_image,(ChannelType) parse);
           break;
         }
       if (LocaleCompare("charcoal",option+1) == 0)

@@ -23,7 +23,6 @@ Image Settings:
   \-bordercolor color   border color
   \-caption string      assign a caption to an image
   \-cdl filename        color correct with a color decision list
-  \-channel type        apply option to select image channels
   \-colors value        preferred number of colors in the image
   \-colorspace type     alternate image colorspace
   \-comment string      annotate image with comment
@@ -134,6 +133,7 @@ Image Operators:
   \-brightness-contrast geometry
                        improve brightness / contrast of the image
   \-canny geometry      detect edges in the image
+  \-channel mask        set the image channel mask
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
   \-clamp               keep pixel values in range (0-QuantumRange)

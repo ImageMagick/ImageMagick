@@ -22,7 +22,6 @@ Image Settings:
   \-bordercolor color   border color
   \-caption string      assign a caption to an image
   \-cdl filename        color correct with a color decision list
-  \-channel type        apply option to select image channels
   \-colors value        preferred number of colors in the image
   \-colorspace type     alternate image colorspace
   \-comment string      annotate image with comment
@@ -114,6 +113,7 @@ Image Operators:
                        force all pixels below the threshold into black
   \-blur geometry       reduce image noise and reduce detail levels
   \-border geometry     surround image with a border of color
+  \-channel mask        set the image channel mask
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
   \-clip                clip along the first path from the 8BIM profile

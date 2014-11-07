@@ -1019,6 +1019,21 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               exception);
             break;
           }
+        if (LocaleCompare("channel",option+1) == 0)
+          {
+            ChannelType
+              channel;
+
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            if (*option == '+')
+              {
+                SetPixelChannelMask(*image,DefaultChannels);
+                break;
+              }
+            channel=(ChannelType) ParseChannelOption(argv[i+1]);
+            SetPixelChannelMask(*image,channel);
+            break;
+          }
         if (LocaleCompare("charcoal",option+1) == 0)
           {
             /*
@@ -1042,16 +1057,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             (void) ParseGravityGeometry(*image,argv[i+1],&geometry,exception);
             mogrify_image=ChopImage(*image,&geometry,exception);
-            break;
-          }
-        if (LocaleCompare("perceptible",option+1) == 0)
-          {
-            /*
-              Perceptible image.
-            */
-            (void) SyncImageSettings(mogrify_info,*image,exception);
-            (void) PerceptibleImage(*image,StringToDouble(argv[i+1],
-              (char **) NULL),exception);
             break;
           }
         if (LocaleCompare("clip",option+1) == 0)
@@ -2324,6 +2329,16 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               geometry_info.sigma,exception);
             break;
           }
+        if (LocaleCompare("perceptible",option+1) == 0)
+          {
+            /*
+              Perceptible image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            (void) PerceptibleImage(*image,StringToDouble(argv[i+1],
+              (char **) NULL),exception);
+            break;
+          }
         if (LocaleCompare("pointsize",option+1) == 0)
           {
             if (*option == '+')
@@ -3362,6 +3377,7 @@ static MagickBooleanType MogrifyUsage(void)
       "                     improve brightness / contrast of the image",
       "-canny geometry      detect edges in the image",
       "-cdl filename        color correct with a color decision list",
+      "-channel mask        set the image channel mask",
       "-charcoal geometry   simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
       "-clamp               keep pixel values in range (0-QuantumRange)",
@@ -3548,7 +3564,6 @@ static MagickBooleanType MogrifyUsage(void)
       "-blue-primary point  chromaticity blue primary point",
       "-bordercolor color   border color",
       "-caption string      assign a caption to an image",
-      "-channel type        apply option to select image channels",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
@@ -6520,18 +6535,6 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
                 (void) DeleteImageOption(image_info,option+1);
                 break;
               }
-            (void) SetImageOption(image_info,option+1,argv[i+1]);
-            break;
-          }
-        if (LocaleCompare("channel",option+1) == 0)
-          {
-            if (*option == '+')
-              {
-                image_info->channel=DefaultChannels;
-                (void) SetImageOption(image_info,option+1,"default");
-                break;
-              }
-            image_info->channel=(ChannelType) ParseChannelOption(argv[i+1]);
             (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
