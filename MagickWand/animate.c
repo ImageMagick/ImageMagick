@@ -112,6 +112,7 @@ static MagickBooleanType AnimateUsage(void)
     },
     *operators[]=
     {
+      "-channel mask        set the image channel mask",
       "-colors value        preferred number of colors in the image",
       "-crop geometry       preferred size and location of the cropped image",
       "-extract geometry    extract area from image",
@@ -132,7 +133,6 @@ static MagickBooleanType AnimateUsage(void)
       "-authenticate password",
       "                     decipher image with this password",
       "-backdrop            display image centered on a backdrop",
-      "-channel type        apply option to select image channels",
       "-colormap type       Shared or Private",
       "-colorspace type     alternate image colorspace",
       "-decipher filename   convert cipher pixels to plain pixels",

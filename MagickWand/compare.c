@@ -88,6 +88,7 @@ static MagickBooleanType CompareUsage(void)
   static const char
     *miscellaneous[]=
     {
+      "-channel mask        set the image channel mask",
       "-debug events        display copious debugging information",
       "-help                print program options",
       "-list type           print a list of supported option arguments",
@@ -100,7 +101,6 @@ static MagickBooleanType CompareUsage(void)
       "                     transparent, extract, background, or shape",
       "-authenticate password",
       "                     decipher image with this password",
-      "-channel type        apply option to select image channels",
       "-colorspace type     alternate image colorspace",
       "-compose operator    set image composite operator",
       "-compress type       type of pixel compression when writing the image",

@@ -107,6 +107,7 @@ static MagickBooleanType IdentifyUsage(void)
     },
     *operators[]=
     {
+      "-channel mask        set the image channel mask",
       "-grayscale method    convert image to grayscale",
       "-negate              replace every pixel with its complementary color ",
       (char *) NULL
@@ -118,7 +119,6 @@ static MagickBooleanType IdentifyUsage(void)
       "-antialias           remove pixel-aliasing",
       "-authenticate password",
       "                     decipher image with this password",
-      "-channel type        apply option to select image channels",
       "-clip                clip along the first path from the 8BIM profile",
       "-clip-mask filename  associate a clip mask with the image",
       "-clip-path id        clip along a named path from the 8BIM profile",

@@ -3483,9 +3483,6 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&image->border_color,
       exception);
-  option=GetImageOption(image_info,"channel");
-  if (option != (const char *) NULL)
-    (void) SetPixelChannelMask(image,(ChannelType) ParseChannelOption(option));
   /* FUTURE: do not sync compose to per-image compose setting here */
   option=GetImageOption(image_info,"compose");
   if (option != (const char *) NULL)
