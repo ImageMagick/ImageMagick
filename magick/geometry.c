@@ -1253,8 +1253,6 @@ static inline size_t MagickMax(const size_t x,
 MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
   ssize_t *y,size_t *width,size_t *height)
 {
-#define GeometryEpsilon  (1.0e-9)
-
   GeometryInfo
     geometry_info;
 
@@ -1381,7 +1379,7 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
         Geometry is a maximum area in pixels.
       */
       (void) ParseGeometry(geometry,&geometry_info);
-      area=geometry_info.rho+GeometryEpsilon;
+      area=geometry_info.rho+sqrt(MagickEpsilon);
       distance=sqrt((double) former_width*former_height);
       scale.x=former_width/(distance/sqrt(area));
       scale.y=former_height/(distance/sqrt(area));
