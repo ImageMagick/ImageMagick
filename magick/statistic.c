@@ -700,12 +700,16 @@ MagickExport Image *EvaluateImages(const Image *images,
         if (op == RootMeanSquareEvaluateOperator)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            evaluate_pixel[x].red=sqrt(evaluate_pixel[x].red/number_images);
-            evaluate_pixel[x].green=sqrt(evaluate_pixel[x].green/number_images);
-            evaluate_pixel[x].blue=sqrt(evaluate_pixel[x].blue/number_images);
-            evaluate_pixel[x].opacity=sqrt(evaluate_pixel[x].opacity/
+            evaluate_pixel[x].red=sqrt((double) evaluate_pixel[x].red/
               number_images);
-            evaluate_pixel[x].index=sqrt(evaluate_pixel[x].index/number_images);
+            evaluate_pixel[x].green=sqrt((double) evaluate_pixel[x].green/
+              number_images);
+            evaluate_pixel[x].blue=sqrt((double) evaluate_pixel[x].blue/
+              number_images);
+            evaluate_pixel[x].opacity=sqrt((double) evaluate_pixel[x].opacity/
+              number_images);
+            evaluate_pixel[x].index=sqrt((double) evaluate_pixel[x].index/
+              number_images);
           }
         if (op == MultiplyEvaluateOperator)
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -2180,6 +2184,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   double
     area;
 
+  MagickPixelPacket
+    *histogram;
+
   QuantumAny
     range;
 
@@ -2201,8 +2208,18 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   length=CompositeChannels+1UL;
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(length,
     sizeof(*channel_statistics));
-  if (channel_statistics == (ChannelStatistics *) NULL)
-    return(channel_statistics);
+  histogram=(MagickPixelPacket *) AcquireQuantumMemory(65536,
+    sizeof(*histogram));
+  if ((channel_statistics == (ChannelStatistics *) NULL) ||
+      (histogram == (MagickPixelPacket *) NULL))
+    {
+      if (histogram != (MagickPixelPacket *) NULL)
+        histogram=(MagickPixelPacket *) RelinquishMagickMemory(histogram);
+      if (channel_statistics != (ChannelStatistics *) NULL)
+        channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+          channel_statistics);
+      return(channel_statistics);
+    }
   (void) ResetMagickMemory(channel_statistics,0,length*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
@@ -2211,6 +2228,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].maxima=(-MagickMaximumValue);
     channel_statistics[i].minima=MagickMaximumValue;
   }
+  (void) ResetMagickMemory(histogram,0,65536*sizeof(*histogram));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -2317,6 +2335,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         GetPixelBlue(p)*GetPixelBlue(p);
       channel_statistics[BlueChannel].sum_fourth_power+=(double)
         GetPixelBlue(p)*GetPixelBlue(p)*GetPixelBlue(p)*GetPixelBlue(p);
+      histogram[ScaleQuantumToShort(GetPixelBlue(p))].red++;
+      histogram[ScaleQuantumToShort(GetPixelGreen(p))].green++;
+      histogram[ScaleQuantumToShort(GetPixelBlue(p))].blue++;
       if (image->matte != MagickFalse)
         {
           if ((double) GetPixelOpacity(p) < channel_statistics[OpacityChannel].minima)
@@ -2333,6 +2354,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
           channel_statistics[OpacityChannel].sum_fourth_power+=(double)
             GetPixelOpacity(p)*GetPixelOpacity(p)*GetPixelOpacity(p)*
             GetPixelOpacity(p);
+          histogram[ScaleQuantumToShort(GetPixelOpacity(p))].opacity++;
         }
       if (image->colorspace == CMYKColorspace)
         {
@@ -2351,6 +2373,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
           channel_statistics[BlackChannel].sum_fourth_power+=(double)
             GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x)*
             GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x);
+          histogram[ScaleQuantumToShort(GetPixelIndex(indexes+x))].index++;
         }
       x++;
       p++;
@@ -2371,6 +2394,30 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].variance=channel_statistics[i].sum_squared;
     channel_statistics[i].standard_deviation=sqrt(
       channel_statistics[i].variance-(mean*mean));
+  }
+  for (i=0; i < 65536; i++)
+  {
+    histogram[i].red/=area;
+    channel_statistics[RedChannel].entropy+=-histogram[i].red*
+      MagickLog10(histogram[i].red)/MagickLog10(65536);
+    histogram[i].green/=area;
+    channel_statistics[GreenChannel].entropy+=-histogram[i].green*
+      MagickLog10(histogram[i].green)/MagickLog10(65536);;
+    histogram[i].blue/=area;
+    channel_statistics[BlueChannel].entropy+=-histogram[i].blue*
+      MagickLog10(histogram[i].blue)/MagickLog10(65536);;
+    if (image->matte != MagickFalse)
+      {
+        histogram[i].opacity/=area;
+        channel_statistics[OpacityChannel].entropy+=-histogram[i].opacity*
+          MagickLog10(histogram[i].opacity)/MagickLog10(65536);;
+      }
+    if (image->colorspace == CMYKColorspace)
+      {
+        histogram[i].index/=area;
+        channel_statistics[IndexChannel].entropy+=-histogram[i].index*
+          MagickLog10(histogram[i].index)/MagickLog10(65536);;
+      }
   }
   for (i=0; i < (ssize_t) CompositeChannels; i++)
   {
@@ -2397,6 +2444,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[CompositeChannels].standard_deviation+=
       channel_statistics[i].variance-channel_statistics[i].mean*
       channel_statistics[i].mean;
+    channel_statistics[CompositeChannels].entropy+=
+      channel_statistics[i].entropy;
   }
   channels=3;
   if (image->matte != MagickFalse)
@@ -2413,6 +2462,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     sqrt(channel_statistics[CompositeChannels].standard_deviation/channels);
   channel_statistics[CompositeChannels].kurtosis/=channels;
   channel_statistics[CompositeChannels].skewness/=channels;
+  channel_statistics[CompositeChannels].entropy/=channels;
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
   {
     if (channel_statistics[i].standard_deviation == 0.0)
@@ -2433,6 +2483,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics[i].standard_deviation*
       channel_statistics[i].standard_deviation)-3.0;
   }
+  histogram=(MagickPixelPacket *) RelinquishMagickMemory(histogram);
   if (y < (ssize_t) image->rows)
     channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
       channel_statistics);
