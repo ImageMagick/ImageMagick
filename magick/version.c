@@ -554,5 +554,6 @@ MagickExport void ListMagickVersion(FILE *file)
     GetMagickVersion((size_t *) NULL));
   (void) FormatLocaleFile(file,"Copyright: %s\n",GetMagickCopyright());
   (void) FormatLocaleFile(file,"Features: %s\n",GetMagickFeatures());
-  (void) FormatLocaleFile(file,"Delegates: %s\n\n",GetMagickDelegates());
+  (void) FormatLocaleFile(file,"Delegates (built-in): %s\n\n",
+    GetMagickDelegates());
 }
