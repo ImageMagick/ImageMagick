@@ -2208,7 +2208,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   length=CompositeChannels+1UL;
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(length,
     sizeof(*channel_statistics));
-  histogram=(MagickPixelPacket *) AcquireQuantumMemory(65536,
+  histogram=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1U,
     sizeof(*histogram));
   if ((channel_statistics == (ChannelStatistics *) NULL) ||
       (histogram == (MagickPixelPacket *) NULL))
@@ -2228,7 +2228,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].maxima=(-MagickMaximumValue);
     channel_statistics[i].minima=MagickMaximumValue;
   }
-  (void) ResetMagickMemory(histogram,0,65536*sizeof(*histogram));
+  (void) ResetMagickMemory(histogram,0,(MaxMap+1U)*sizeof(*histogram));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -2335,9 +2335,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         GetPixelBlue(p)*GetPixelBlue(p);
       channel_statistics[BlueChannel].sum_fourth_power+=(double)
         GetPixelBlue(p)*GetPixelBlue(p)*GetPixelBlue(p)*GetPixelBlue(p);
-      histogram[ScaleQuantumToShort(GetPixelBlue(p))].red++;
-      histogram[ScaleQuantumToShort(GetPixelGreen(p))].green++;
-      histogram[ScaleQuantumToShort(GetPixelBlue(p))].blue++;
+      histogram[ScaleQuantumToMap(GetPixelBlue(p))].red++;
+      histogram[ScaleQuantumToMap(GetPixelGreen(p))].green++;
+      histogram[ScaleQuantumToMap(GetPixelBlue(p))].blue++;
       if (image->matte != MagickFalse)
         {
           if ((double) GetPixelOpacity(p) < channel_statistics[OpacityChannel].minima)
@@ -2354,7 +2354,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
           channel_statistics[OpacityChannel].sum_fourth_power+=(double)
             GetPixelOpacity(p)*GetPixelOpacity(p)*GetPixelOpacity(p)*
             GetPixelOpacity(p);
-          histogram[ScaleQuantumToShort(GetPixelOpacity(p))].opacity++;
+          histogram[ScaleQuantumToMap(GetPixelOpacity(p))].opacity++;
         }
       if (image->colorspace == CMYKColorspace)
         {
@@ -2373,7 +2373,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
           channel_statistics[BlackChannel].sum_fourth_power+=(double)
             GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x)*
             GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x);
-          histogram[ScaleQuantumToShort(GetPixelIndex(indexes+x))].index++;
+          histogram[ScaleQuantumToMap(GetPixelIndex(indexes+x))].index++;
         }
       x++;
       p++;
@@ -2395,28 +2395,28 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].standard_deviation=sqrt(
       channel_statistics[i].variance-(mean*mean));
   }
-  for (i=0; i < 65536; i++)
+  for (i=0; i < (MaxMap+1U); i++)
   {
     histogram[i].red/=area;
     channel_statistics[RedChannel].entropy+=-histogram[i].red*
-      MagickLog10(histogram[i].red)/MagickLog10(65536);
+      MagickLog10(histogram[i].red)/MagickLog10(MaxMap+1.0);
     histogram[i].green/=area;
     channel_statistics[GreenChannel].entropy+=-histogram[i].green*
-      MagickLog10(histogram[i].green)/MagickLog10(65536);;
+      MagickLog10(histogram[i].green)/MagickLog10(MaxMap+1.0);
     histogram[i].blue/=area;
     channel_statistics[BlueChannel].entropy+=-histogram[i].blue*
-      MagickLog10(histogram[i].blue)/MagickLog10(65536);;
+      MagickLog10(histogram[i].blue)/MagickLog10(MaxMap+1.0);
     if (image->matte != MagickFalse)
       {
         histogram[i].opacity/=area;
         channel_statistics[OpacityChannel].entropy+=-histogram[i].opacity*
-          MagickLog10(histogram[i].opacity)/MagickLog10(65536);;
+          MagickLog10(histogram[i].opacity)/MagickLog10(MaxMap+1.0);
       }
     if (image->colorspace == CMYKColorspace)
       {
         histogram[i].index/=area;
         channel_statistics[IndexChannel].entropy+=-histogram[i].index*
-          MagickLog10(histogram[i].index)/MagickLog10(65536);;
+          MagickLog10(histogram[i].index)/MagickLog10(MaxMap+1.0);
       }
   }
   for (i=0; i < (ssize_t) CompositeChannels; i++)
