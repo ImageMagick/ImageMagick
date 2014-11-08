@@ -42,7 +42,8 @@ typedef struct _ChannelStatistics
     variance,
     standard_deviation,
     kurtosis,
-    skewness;
+    skewness,
+    entropy;
 } ChannelStatistics;
 
 typedef struct _ChannelMoments

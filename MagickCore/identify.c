@@ -407,7 +407,7 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
 #define StatisticsFormat "    %s:\n      min: " QuantumFormat  \
   " (%g)\n      max: " QuantumFormat " (%g)\n"  \
   "      mean: %g (%g)\n      standard deviation: %g (%g)\n"  \
-  "      kurtosis: %g\n      skewness: %g\n"
+  "      kurtosis: %g\n      skewness: %g\n      entropy: %g\n"
 
   ssize_t
     n;
@@ -420,7 +420,8 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
     channel_statistics[channel].mean/(double) QuantumRange,scale*
     channel_statistics[channel].standard_deviation,
     channel_statistics[channel].standard_deviation/(double) QuantumRange,
-    channel_statistics[channel].kurtosis,channel_statistics[channel].skewness);
+    channel_statistics[channel].kurtosis,channel_statistics[channel].skewness,
+    channel_statistics[channel].entropy);
   return(n);
 }
 
