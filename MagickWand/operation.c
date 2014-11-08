@@ -1632,7 +1632,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 %
 %  The format of the WandSimpleOperatorImages method is:
 %
-%    void CLISimpleOperatorImages(MagickCLI *cli_wand,const char *option,
+%    MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,const char *option,
 %      const char *arg1, const char *arg2,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2029,7 +2029,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             for (x=0; x < (ssize_t) mask_image->columns; x++)
             {
               if (mask_image->alpha_trait != BlendPixelTrait)
-                SetPixelAlpha(mask_image,GetPixelIntensity(mask_image,q),q);
+                SetPixelAlpha(mask_image,(Quantum)
+                  GetPixelIntensity(mask_image,q),q);
               SetPixelGray(mask_image,GetPixelAlpha(mask_image,q),q);
               q+=GetPixelChannels(mask_image);
             }
@@ -2105,8 +2106,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          new_image=ConnectedComponentsImage(_image,StringToInteger(arg1),
-           _exception);
+          new_image=ConnectedComponentsImage(_image,(size_t)
+            StringToInteger(arg1),_exception);
           break;
         }
       if (LocaleCompare("contrast",option+1) == 0)
@@ -2254,8 +2255,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (args == (double *)NULL )
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
 
-          new_image=DistortImage(_image,(DistortImageMethod) parse,count,args,
-               IsPlusOp,_exception);
+          new_image=DistortImage(_image,(DistortImageMethod) parse,(size_t)
+             count,args,IsPlusOp,_exception);
           args=(double *) RelinquishMagickMemory(args);
           break;
         }
@@ -2415,7 +2416,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (args == (double *)NULL )
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
 
-          (void) FunctionImage(_image,(MagickFunction)parse,count,args,
+          (void) FunctionImage(_image,(MagickFunction)parse,(size_t) count,args,
                _exception);
           args=(double *) RelinquishMagickMemory(args);
           break;
@@ -2462,7 +2463,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("gaussian",option+1) == 0)
         {
           CLIWandWarnReplaced("-gaussian-blur");
-          CLISimpleOperatorImage(cli_wand,"-gaussian-blur",arg1,NULL,exception);
+          (void) CLISimpleOperatorImage(cli_wand,"-gaussian-blur",arg1,NULL,exception);
         }
       if (LocaleCompare("geometry",option+1) == 0)
         {
@@ -2721,7 +2722,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("map",option+1) == 0)
         {
           CLIWandWarnReplaced("-remap");
-          CLISimpleOperatorImage(cli_wand,"-remap",NULL,NULL,exception);
+          (void) CLISimpleOperatorImage(cli_wand,"-remap",NULL,NULL,exception);
           break;
         }
       if (LocaleCompare("mask",option+1) == 0)
@@ -2768,14 +2769,14 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("median",option+1) == 0)
         {
           CLIWandWarnReplaced("-statistic Median");
-          CLISimpleOperatorImage(cli_wand,"-statistic","Median",arg1,exception);
+          (void) CLISimpleOperatorImage(cli_wand,"-statistic","Median",arg1,exception);
           break;
         }
       if (LocaleCompare("mode",option+1) == 0)
         {
           /* FUTURE: note this is also a special "montage" option */
           CLIWandWarnReplaced("-statistic Mode");
-          CLISimpleOperatorImage(cli_wand,"-statistic","Mode",arg1,exception);
+          (void) CLISimpleOperatorImage(cli_wand,"-statistic","Mode",arg1,exception);
           break;
         }
       if (LocaleCompare("modulate",option+1) == 0)
@@ -2861,7 +2862,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfNormalOp)
             {
               CLIWandWarnReplaced("-statistic NonPeak");
-              CLISimpleOperatorImage(cli_wand,"-statistic","NonPeak",arg1,exception);
+              (void) CLISimpleOperatorImage(cli_wand,"-statistic","NonPeak",arg1,exception);
               break;
             }
           parse=ParseCommandOption(MagickNoiseOptions,MagickFalse,arg1);
@@ -3058,7 +3059,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("recolor",option+1) == 0)
         {
           CLIWandWarnReplaced("-color-matrix");
-          CLISimpleOperatorImage(cli_wand,"-color-matrix",arg1,NULL,exception);
+          (void) CLISimpleOperatorImage(cli_wand,"-color-matrix",arg1,NULL,exception);
         }
       if (LocaleCompare("remap",option+1) == 0)
         {
@@ -3567,7 +3568,7 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
 #else
   MagickResetIterator(&cli_wand->wand);
   while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
-    CLISimpleOperatorImage(cli_wand, option, arg1, arg2,exception);
+    (void) CLISimpleOperatorImage(cli_wand, option, arg1, arg2,exception);
   MagickResetIterator(&cli_wand->wand);
 #endif
   return(MagickTrue);
@@ -3681,7 +3682,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
       if (LocaleCompare("average",option+1) == 0)
         {
           CLIWandWarnReplaced("-evaluate-sequence Mean");
-          CLIListOperatorImages(cli_wand,"-evaluate-sequence","Mean",NULL);
+          (void) CLIListOperatorImages(cli_wand,"-evaluate-sequence","Mean",NULL);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -3865,7 +3866,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
       if (LocaleCompare("deconstruct",option+1) == 0)
         {
           CLIWandWarnReplaced("-layer CompareAny");
-          CLIListOperatorImages(cli_wand,"-layer","CompareAny",NULL);
+          (void) CLIListOperatorImages(cli_wand,"-layer","CompareAny",NULL);
           break;
         }
       if (LocaleCompare("delete",option+1) == 0)
@@ -3930,7 +3931,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
       if (LocaleCompare("flatten",option+1) == 0)
         {
           /* REDIRECTED to use -layers flatten instead */
-          CLIListOperatorImages(cli_wand,"-layers",option+1,NULL);
+          (void) CLIListOperatorImages(cli_wand,"-layers",option+1,NULL);
           break;
         }
       if (LocaleCompare("fx",option+1) == 0)
@@ -4186,7 +4187,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
       if (LocaleCompare("mosaic",option+1) == 0)
         {
           /* REDIRECTED to use -layers mosaic instead */
-          CLIListOperatorImages(cli_wand,"-layers",option+1,NULL);
+          (void) CLIListOperatorImages(cli_wand,"-layers",option+1,NULL);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -4205,7 +4206,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           args = StringToArrayOfDoubles(arg2,&count,_exception);
           if (args == (double *)NULL )
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
-          new_images=PolynomialImage(_images,count >> 1,args,_exception);
+          new_images=PolynomialImage(_images,(size_t) (count >> 1),args,_exception);
           args=(double *) RelinquishMagickMemory(args);
           break;
         }
@@ -4572,7 +4573,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
             option,GetExceptionMessage(errno));
 
       /* loop over expanded filename list, and read then all in */
-      for (i=0; i<argc; i++) {
+      for (i=0; i < (ssize_t) argc; i++) {
         Image *
           new_images;
         if (IfMagickTrue(_image_info->ping))
@@ -5034,7 +5035,7 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
       What happens if not enough arguments were supplied?
     */
     { size_t
-        count = cli_wand->command->type;
+        count = (size_t) cli_wand->command->type;
 
       va_list
         operands;
@@ -5062,8 +5063,8 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
     /* FUTURE: this is temporary - get 'settings' to handle distribution of
       settings to images attributes,proprieties,artifacts */
     if ( cli_wand->wand.images != (Image *)NULL )
-      SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
-          cli_wand->wand.exception);
+      (void) SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
+        cli_wand->wand.exception);
 
     if ( (option_type & SettingOptionFlags) != 0 ) {
       CLISettingOptionInfo(cli_wand, option, arg1, arg2);
@@ -5087,13 +5088,13 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
          cli_wand->wand.images != (Image *)NULL) /* temp hack */
       {
         ExceptionInfo *exception=AcquireExceptionInfo();
-        CLISimpleOperatorImages(cli_wand, option, arg1, arg2,exception);
+        (void) CLISimpleOperatorImages(cli_wand, option, arg1, arg2,exception);
         exception=DestroyExceptionInfo(exception);
       }
 
     /* Operators that work on the image list as a whole */
     if ( (option_type & ListOperatorFlag) != 0 )
-      CLIListOperatorImages(cli_wand, option, arg1, arg2);
+      (void) CLIListOperatorImages(cli_wand, option, arg1, arg2);
 
 DisableMSCWarning(4127)
   } while (0);  /* end Break code block */
