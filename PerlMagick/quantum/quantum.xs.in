@@ -13954,6 +13954,9 @@ Statistics(ref,...)
   (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
     channel_statistics[channel].skewness); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
+  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+    channel_statistics[channel].entropy); \
+  PUSHs(sv_2mortal(newSVpv(message,0))); \
 }
 
     AV
