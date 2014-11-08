@@ -712,7 +712,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   blend_percentage.green=geometry_info.rho;
   blend_percentage.blue=geometry_info.rho;
   blend_percentage.black=geometry_info.rho;
-  blend_percentage.alpha=geometry_info.rho;
+  blend_percentage.alpha=(MagickRealType) TransparentAlpha;
   if ((flags & SigmaValue) != 0)
     blend_percentage.green=geometry_info.sigma;
   if ((flags & XiValue) != 0)
@@ -1495,9 +1495,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
         case IndexPixelChannel:
           return(0.0);
         case IntensityPixelChannel:
-        {
           return(QuantumScale*GetPixelInfoIntensity(&pixel));
-        }
         default:
           break;
       }
