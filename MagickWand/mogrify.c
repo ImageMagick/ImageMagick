@@ -1115,7 +1115,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               for (x=0; x < (ssize_t) mask_image->columns; x++)
               {
                 if (mask_image->alpha_trait != BlendPixelTrait)
-                  SetPixelAlpha(mask_image,GetPixelIntensity(mask_image,q),q);
+                  SetPixelAlpha(mask_image,(Quantum)
+                    GetPixelIntensity(mask_image,q),q);
                 SetPixelRed(mask_image,GetPixelAlpha(mask_image,q),q);
                 SetPixelGreen(mask_image,GetPixelAlpha(mask_image,q),q);
                 SetPixelBlue(mask_image,GetPixelAlpha(mask_image,q),q);
@@ -1203,7 +1204,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
             mogrify_image=ConnectedComponentsImage(*image,
-              StringToInteger(argv[i+1]),exception);
+              (size_t) StringToInteger(argv[i+1]),exception);
             break;
           }
         if (LocaleCompare("contrast",option+1) == 0)
