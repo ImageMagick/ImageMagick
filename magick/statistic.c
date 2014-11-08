@@ -2395,7 +2395,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].standard_deviation=sqrt(
       channel_statistics[i].variance-(mean*mean));
   }
-  for (i=0; i < (MaxMap+1U); i++)
+  for (i=0; i < (ssize_t) (MaxMap+1U); i++)
   {
     histogram[i].red/=area;
     channel_statistics[RedChannel].entropy+=-histogram[i].red*
