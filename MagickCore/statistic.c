@@ -2051,6 +2051,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     register ssize_t
       j;
 
+    PixelTrait traits=GetPixelChannelTraits(image,i);
     area=PerceptibleReciprocal(channel_statistics[i].area);
     channel_statistics[i].sum*=area;
     channel_statistics[i].sum_squared*=area;
@@ -2061,15 +2062,16 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     channel_statistics[i].standard_deviation=sqrt(
       channel_statistics[i].variance-(channel_statistics[i].mean*
       channel_statistics[i].mean));
-    for (j=0; j < (ssize_t) (MaxMap+1U); j++)
-    {
-      double
-        count;
+    if (traits == UpdatePixelTrait)
+      for (j=0; j < (ssize_t) (MaxMap+1U); j++)
+      {
+        double
+          count;
 
-      count=histogram[GetPixelChannels(image)*j+i]*area;
-      channel_statistics[i].entropy+=-count*MagickLog10(count)/
-        MagickLog10(MaxMap+1.0);
-    }
+        count=histogram[GetPixelChannels(image)*j+i]*area;
+        channel_statistics[i].entropy+=-count*MagickLog10(count)/
+          MagickLog10(MaxMap+1.0);
+      }
   }
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
