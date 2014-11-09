@@ -462,7 +462,8 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 %                                                                             %
 %   G r a v i t y A d j u s t G e o m e t r y                                 %
 %                                                                             %
-%                                                                             % %                                                                             %
+%                                                                             %
+%                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GravityAdjustGeometry() adjusts the offset of a region with regard to the
