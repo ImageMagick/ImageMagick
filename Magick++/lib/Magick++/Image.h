@@ -746,6 +746,9 @@ namespace Magick
     void composite(const Image &compositeImage_,const ::ssize_t xOffset_,
       const ::ssize_t yOffset_,const CompositeOperator compose_=InCompositeOp);
 
+    // Determines the connected-components of the image
+    void connectedComponents(const size_t connectivity_);
+
     // Contrast image (enhance intensity differences in image)
     void contrast(const size_t sharpen_);
 
