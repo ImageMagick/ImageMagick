@@ -2757,6 +2757,17 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'e':
     {
+      if (LocaleCompare("entropy",property) == 0)
+        {
+          double
+            entropy;
+
+          (void) GetImageChannelEntropy(image,image_info->channel,&entropy,
+            &image->exception);
+          (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
+            GetMagickPrecision(),entropy);
+          break;
+        }
       if (LocaleCompare("extension",property) == 0)
         {
           GetPathComponent(image->magick_filename,ExtensionPath,value);
