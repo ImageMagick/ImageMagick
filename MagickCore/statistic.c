@@ -1151,9 +1151,12 @@ MagickExport MagickBooleanType GetImageEntropy(const Image *image,
       channel_statistics[i].entropy;
     area++;
   }
-  channel_statistics[CompositePixelChannel].entropy/=area;
-  channel_statistics[CompositePixelChannel].standard_deviation=
-    sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
+  if (area > MagickEpsilon)
+    {
+      channel_statistics[CompositePixelChannel].entropy/=area;
+      channel_statistics[CompositePixelChannel].standard_deviation=
+        sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
+    }
   *entropy=channel_statistics[CompositePixelChannel].entropy;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
@@ -1413,9 +1416,12 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
       channel_statistics[i].mean;
     area++;
   }
-  channel_statistics[CompositePixelChannel].mean/=area;
-  channel_statistics[CompositePixelChannel].standard_deviation=
-    sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
+  if (area > MagickEpsilon)
+    {
+      channel_statistics[CompositePixelChannel].mean/=area;
+      channel_statistics[CompositePixelChannel].standard_deviation=
+        sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
+    }
   *mean=channel_statistics[CompositePixelChannel].mean;
   *standard_deviation=
     channel_statistics[CompositePixelChannel].standard_deviation;
