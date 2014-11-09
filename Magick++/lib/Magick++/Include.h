@@ -1056,6 +1056,7 @@ namespace Magick
   using MagickCore::ConfigureError;
   using MagickCore::ConfigureFatalError;
   using MagickCore::ConfigureWarning;
+  using MagickCore::ConnectedComponentsImage;
   using MagickCore::ConstituteImage;
   using MagickCore::ContrastImage;
   using MagickCore::ContrastStretchImageChannel;
