@@ -1569,8 +1569,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[BlueChannel].mean;
       channels++;
     }
-  if (((channel & OpacityChannel) != 0) &&
-      (image->matte != MagickFalse))
+  if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
     {
       channel_statistics[CompositeChannels].mean+=
         channel_statistics[OpacityChannel].mean;
@@ -1580,8 +1579,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[OpacityChannel].mean;
       channels++;
     }
-  if (((channel & IndexChannel) != 0) &&
-      (image->colorspace == CMYKColorspace))
+  if (((channel & IndexChannel) != 0) && (image->colorspace == CMYKColorspace))
     {
       channel_statistics[CompositeChannels].mean+=
         channel_statistics[BlackChannel].mean;
