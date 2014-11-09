@@ -149,6 +149,9 @@ namespace Magick
     // Depth
     size_t depth() const;
 
+    // Entropy
+    double entropy() const;
+
     // Does object contain valid channel statistics?
     bool isValid() const;
 
@@ -196,6 +199,7 @@ namespace Magick
     PixelChannel _channel;
     double _area;
     size_t _depth;
+    double _entropy;
     double _kurtosis;
     double _maxima;
     double _mean;
