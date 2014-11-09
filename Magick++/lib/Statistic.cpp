@@ -279,6 +279,7 @@ Magick::ChannelStatistics::ChannelStatistics(void)
   : _channel(SyncPixelChannel),
     _area(0.0),
     _depth(0.0),
+    _entropy(0.0),
     _kurtosis(0.0),
     _maxima(0.0),
     _mean(0.0),
@@ -298,6 +299,7 @@ Magick::ChannelStatistics::ChannelStatistics(
   : _channel(channelStatistics_._channel),
     _area(channelStatistics_._area),
     _depth(channelStatistics_._depth),
+    _entropy(channelStatistics_._entropy),
     _kurtosis(channelStatistics_._kurtosis),
     _maxima(channelStatistics_._maxima),
     _mean(channelStatistics_._mean),
@@ -329,6 +331,11 @@ Magick::PixelChannel Magick::ChannelStatistics::channel() const
 size_t Magick::ChannelStatistics::depth() const
 {
   return(_depth);
+}
+
+double Magick::ChannelStatistics::entropy() const
+{
+  return(_entropy);
 }
 
 bool Magick::ChannelStatistics::isValid() const
@@ -396,6 +403,7 @@ Magick::ChannelStatistics::ChannelStatistics(const PixelChannel channel_,
   : _channel(channel_),
     _area(channelStatistics_->area),
     _depth(channelStatistics_->depth),
+    _entropy(channelStatistics_->entropy),
     _kurtosis(channelStatistics_->kurtosis),
     _maxima(channelStatistics_->maxima),
     _mean(channelStatistics_->mean),
