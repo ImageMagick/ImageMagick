@@ -2066,7 +2066,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       double
         count;
 
-      count=histogram[GetPixelChannels(image)*j+i]/area;
+      count=histogram[GetPixelChannels(image)*j+i]*area;
       channel_statistics[i].entropy+=-count*MagickLog10(count)/
         MagickLog10(MaxMap+1.0);
     }
