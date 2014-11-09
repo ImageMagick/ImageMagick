@@ -1095,6 +1095,76 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e E n t r o p y                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageEntropy() returns the entropy of one or more image channels.
+%
+%  The format of the GetImageEntropy method is:
+%
+%      MagickBooleanType GetImageEntropy(const Image *image,double *entropy,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o entropy: the average entropy of the selected channels.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType GetImageEntropy(const Image *image,
+  double *entropy,ExceptionInfo *exception)
+{
+  double
+    area;
+
+  ChannelStatistics
+    *channel_statistics;
+
+  register ssize_t
+    i;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  channel_statistics=GetImageStatistics(image,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    return(MagickFalse);
+  area=0.0;
+  channel_statistics[CompositePixelChannel].entropy=0.0;
+  channel_statistics[CompositePixelChannel].standard_deviation=0.0;
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel channel=GetPixelChannelChannel(image,i);
+    PixelTrait traits=GetPixelChannelTraits(image,channel);
+    if (traits == UndefinedPixelTrait)
+      continue;
+    if ((traits & UpdatePixelTrait) == 0)
+      continue;
+    channel_statistics[CompositePixelChannel].entropy+=
+      channel_statistics[i].entropy;
+    area++;
+  }
+  channel_statistics[CompositePixelChannel].entropy/=area;
+  channel_statistics[CompositePixelChannel].standard_deviation=
+    sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
+  *entropy=channel_statistics[CompositePixelChannel].entropy;
+  channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    channel_statistics);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e E x t r e m a                                             %
 %                                                                             %
 %                                                                             %
