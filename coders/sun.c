@@ -511,7 +511,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bytes_per_pixel;
 
           bytes_per_pixel=3;
-          if (image->alpha_trait == BlendPixelTrait)
+          if (image->alpha_trait != UndefinedPixelTrait)
             bytes_per_pixel++;
           length=image->rows*((bytes_per_line*image->columns)+
             image->columns % 2);
@@ -526,7 +526,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (image->alpha_trait == BlendPixelTrait)
+              if (image->alpha_trait != UndefinedPixelTrait)
                 SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
               if (sun_info.type == RT_STANDARD)
                 {
@@ -781,9 +781,9 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
         /*
           Full color SUN raster.
         */
-        sun_info.depth=(unsigned int) image->alpha_trait == BlendPixelTrait ?
+        sun_info.depth=(unsigned int) image->alpha_trait != UndefinedPixelTrait ?
           32U : 24U;
-        sun_info.length=(unsigned int) ((image->alpha_trait == BlendPixelTrait ?
+        sun_info.length=(unsigned int) ((image->alpha_trait != UndefinedPixelTrait ?
           4 : 3)*number_pixels);
         sun_info.length+=sun_info.length & 0x01 ? (unsigned int) image->rows :
           0;
@@ -844,7 +844,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
           Allocate memory for pixels.
         */
         bytes_per_pixel=3;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           bytes_per_pixel++;
         length=image->columns;
         pixels=(unsigned char *) AcquireQuantumMemory(length,4*sizeof(*pixels));
@@ -861,7 +861,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
           q=pixels;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
             *q++=ScaleQuantumToChar(GetPixelRed(image,p));
             *q++=ScaleQuantumToChar(GetPixelGreen(image,p));

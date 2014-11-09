@@ -388,7 +388,7 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image,
         *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
         *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
         *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-        *q=ScaleQuantumToChar((Quantum) (image->alpha_trait == BlendPixelTrait ?
+        *q=ScaleQuantumToChar((Quantum) (image->alpha_trait != UndefinedPixelTrait ?
           GetPixelAlpha(image,p) : OpaqueAlpha));
         if (*q == 255)
           *q=254;

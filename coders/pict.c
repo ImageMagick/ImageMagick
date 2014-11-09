@@ -1104,7 +1104,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 tile_image->resolution.x=(double) pixmap.horizontal_resolution;
                 tile_image->resolution.y=(double) pixmap.vertical_resolution;
                 tile_image->units=PixelsPerInchResolution;
-                if (tile_image->alpha_trait == BlendPixelTrait)
+                if (tile_image->alpha_trait != UndefinedPixelTrait)
                   image->alpha_trait=tile_image->alpha_trait;
               }
             if ((code != 0x9a) && (code != 0x9b))
@@ -1222,7 +1222,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                           (unsigned char) ((j & 0x1f) << 3)),q);
                       }
                     else
-                      if (tile_image->alpha_trait != BlendPixelTrait)
+                      if (tile_image->alpha_trait == UndefinedPixelTrait)
                         {
                           if (p > (pixels+extent+2*image->columns))
                             ThrowReaderException(CorruptImageError,
@@ -1676,7 +1676,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     storage_class=DirectClass;
   if (storage_class == DirectClass)
     {
-      pixmap.component_count=image->alpha_trait == BlendPixelTrait ? 4 : 3;
+      pixmap.component_count=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
       pixmap.pixel_type=16;
       pixmap.bits_per_pixel=32;
       pixmap.pack_type=0x04;
@@ -1688,7 +1688,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   */
   bytes_per_line=image->columns;
   if (storage_class == DirectClass)
-    bytes_per_line*=image->alpha_trait == BlendPixelTrait ? 4 : 3;
+    bytes_per_line*=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
   buffer=(unsigned char *) AcquireQuantumMemory(PictInfoSize,sizeof(*buffer));
   packed_scanline=(unsigned char *) AcquireQuantumMemory((size_t)
    (row_bytes+MaxCount),sizeof(*packed_scanline));
@@ -1960,7 +1960,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
           red=scanline;
           green=scanline+image->columns;
           blue=scanline+2*image->columns;
-          if (image->alpha_trait == BlendPixelTrait)
+          if (image->alpha_trait != UndefinedPixelTrait)
             {
               opacity=scanline;
               red=scanline+image->columns;
@@ -1972,7 +1972,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
             *red++=ScaleQuantumToChar(GetPixelRed(image,p));
             *green++=ScaleQuantumToChar(GetPixelGreen(image,p));
             *blue++=ScaleQuantumToChar(GetPixelBlue(image,p));
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               *opacity++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
             p+=GetPixelChannels(image);
           }

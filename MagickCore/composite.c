@@ -568,8 +568,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   (void) SetImageColorspace(composite_image,image->colorspace,exception);
-  if ((image->alpha_trait == BlendPixelTrait) &&
-      (composite_image->alpha_trait != BlendPixelTrait))
+  if ((image->alpha_trait != UndefinedPixelTrait) &&
+      (composite_image->alpha_trait == UndefinedPixelTrait))
     (void) SetImageAlphaChannel(composite_image,SetAlphaChannel,exception);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
@@ -682,7 +682,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Modify destination outside the overlaid region and require an alpha
         channel to exist, to add transparency.
       */
-      if (image->alpha_trait != BlendPixelTrait)
+      if (image->alpha_trait == UndefinedPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       SetPixelAlphaTraits(image,CopyPixelTrait);
       break;
@@ -1559,7 +1559,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case CopyAlphaCompositeOp:
               {
                 pixel=QuantumRange*Sa;
-                if (composite_image->alpha_trait != BlendPixelTrait)
+                if (composite_image->alpha_trait == UndefinedPixelTrait)
                   pixel=GetPixelIntensity(composite_image,p);
                 break;
               }
@@ -2353,8 +2353,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   status=MagickTrue;
   if ((image->compose != CopyCompositeOp) &&
       ((image->compose != OverCompositeOp) ||
-       (image->alpha_trait == BlendPixelTrait) ||
-       (texture_image->alpha_trait == BlendPixelTrait)))
+       (image->alpha_trait != UndefinedPixelTrait) ||
+       (texture_image->alpha_trait != UndefinedPixelTrait)))
     {
       /*
         Tile texture onto the image background.

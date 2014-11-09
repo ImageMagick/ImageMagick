@@ -754,7 +754,7 @@ WandExport char *PixelGetColorAsNormalizedString(const PixelWand *wand)
   if (wand->pixel.colorspace == CMYKColorspace)
     (void) FormatLocaleString(color+strlen(color),MaxTextExtent,",%g",
       (double) (QuantumScale*wand->pixel.black));
-  if (wand->pixel.alpha_trait == BlendPixelTrait)
+  if (wand->pixel.alpha_trait != UndefinedPixelTrait)
     (void) FormatLocaleString(color+strlen(color),MaxTextExtent,",%g",
       (double) (QuantumScale*wand->pixel.alpha));
   return(ConstantString(color));

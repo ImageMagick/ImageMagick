@@ -9851,7 +9851,7 @@ WandExport MagickBooleanType MagickSetImageMatte(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  if ((wand->images->alpha_trait != BlendPixelTrait) && IsMagickTrue(matte))
+  if ((wand->images->alpha_trait == UndefinedPixelTrait) && IsMagickTrue(matte))
     (void) SetImageAlpha(wand->images,OpaqueAlpha,wand->exception);
   wand->images->alpha_trait=matte != MagickFalse ? BlendPixelTrait :
     UndefinedPixelTrait;

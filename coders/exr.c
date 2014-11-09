@@ -457,7 +457,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
       scanline[x].g=half_quantum;
       ImfFloatToHalf(QuantumScale*GetPixelBlue(image,p),&half_quantum);
       scanline[x].b=half_quantum;
-      if (image->alpha_trait != BlendPixelTrait)
+      if (image->alpha_trait == UndefinedPixelTrait)
         ImfFloatToHalf(1.0,&half_quantum);
       else
         ImfFloatToHalf(QuantumScale*GetPixelAlpha(image,p),&half_quantum);

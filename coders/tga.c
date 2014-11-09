@@ -463,7 +463,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
             pixel.green=(MagickRealType) ScaleAnyToQuantum((1UL*(k & 0x03)
               << 3)+(1UL*(j & 0xe0) >> 5),range);
             pixel.blue=(MagickRealType) ScaleAnyToQuantum(1UL*(j & 0x1f),range);
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               pixel.alpha=(MagickRealType) ((k & 0x80) == 0 ? (Quantum)
                 OpaqueAlpha : (Quantum) TransparentAlpha); 
             if (image->storage_class == PseudoClass)
@@ -503,7 +503,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
       SetPixelRed(image,ClampToQuantum(pixel.red),q);
       SetPixelGreen(image,ClampToQuantum(pixel.green),q);
       SetPixelBlue(image,ClampToQuantum(pixel.blue),q);
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(image);
     }
@@ -673,7 +673,7 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
           (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(image,
             p)));
           (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(image,p)));
-          if (image->alpha_trait == BlendPixelTrait)
+          if (image->alpha_trait != UndefinedPixelTrait)
             (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(image,
               p)));
         }
@@ -754,7 +754,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   if ((image_info->type != TrueColorType) &&
       (image_info->type != TrueColorMatteType) &&
       (image_info->type != PaletteType) &&
-      (image->alpha_trait != BlendPixelTrait) &&
+      (image->alpha_trait == UndefinedPixelTrait) &&
       (IsImageGray(image,exception) != MagickFalse))
     tga_info.image_type=compression == RLECompression ? TGARLEMonochrome :
       TGAMonochrome;
@@ -767,7 +767,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         tga_info.image_type=compression == RLECompression ? TGARLERGB :
           TGARGB;
         tga_info.bits_per_pixel=24;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           {
             tga_info.bits_per_pixel=32;
             tga_info.attributes=8;  /* # of alpha bits */
@@ -865,7 +865,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
                     (GetPixelRed(image,p+(i*channels)) !=
                      GetPixelRed(image,p+((i-1)*channels))))
                   break;
-                if ((image->alpha_trait == BlendPixelTrait) &&
+                if ((image->alpha_trait != UndefinedPixelTrait) &&
                     (GetPixelAlpha(image,p+(i*channels)) !=
                      GetPixelAlpha(image,p+(i-1)*channels)))
                   break;

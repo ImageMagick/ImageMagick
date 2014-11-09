@@ -3776,7 +3776,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         BlendPixelTrait : UndefinedPixelTrait;
 
 #if 0  /* I'm not sure what's wrong here but it does not work. */
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
     {
       if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
         (void) SetImageType(image,GrayscaleMatteType,exception);
@@ -4701,7 +4701,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                exception);
              q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
-             if (image->alpha_trait == BlendPixelTrait)
+             if (image->alpha_trait != UndefinedPixelTrait)
                for (x=(ssize_t) image->columns; x != 0; x--)
                {
                   SetPixelAlpha(image,GetPixelRed(jng_image,s),q);
@@ -6549,7 +6549,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define QM Quantum
 #endif
 
-                if (image->alpha_trait == BlendPixelTrait)
+                if (image->alpha_trait != UndefinedPixelTrait)
                    (void) SetImageBackgroundColor(large_image,exception);
 
                 else
@@ -6688,7 +6688,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                  ((ssize_t) (m*2))
                                  +GetPixelBlue(image,pixels)))),q);
 
-                              if (image->alpha_trait == BlendPixelTrait)
+                              if (image->alpha_trait != UndefinedPixelTrait)
                                  SetPixelAlpha(large_image, ((QM) (((ssize_t)
                                     (2*i*(GetPixelAlpha(image,n)
                                     -GetPixelAlpha(image,pixels)+m))
@@ -6845,7 +6845,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                  -GetPixelBlue(image,pixels))+m)
                                  /((ssize_t) (m*2))+
                                  GetPixelBlue(image,pixels)),q);
-                              if (image->alpha_trait == BlendPixelTrait)
+                              if (image->alpha_trait != UndefinedPixelTrait)
                                  SetPixelAlpha(image,(QM) ((2*i*(
                                    GetPixelAlpha(image,n)
                                    -GetPixelAlpha(image,pixels))+m)
@@ -8385,7 +8385,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (mng_info->write_png_colortype &&
      (mng_info->write_png_colortype > 4 || (mng_info->write_png_depth >= 8 &&
      mng_info->write_png_colortype < 4 &&
-     image->alpha_trait != BlendPixelTrait)))
+     image->alpha_trait == UndefinedPixelTrait)))
   {
      /* Avoid the expensive BUILD_PALETTE operation if we're sure that we
       * are not going to need the result.
@@ -8394,7 +8394,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         mng_info->write_png_colortype == 5)
        ping_have_color=MagickFalse;
 
-     if (image->alpha_trait == BlendPixelTrait)
+     if (image->alpha_trait != UndefinedPixelTrait)
        {
          number_transparent = 2;
          number_semitransparent = 1;
@@ -8530,7 +8530,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
        for (x=0; x < (ssize_t) image->columns; x++)
        {
-           if (image->alpha_trait != BlendPixelTrait ||
+           if (image->alpha_trait == UndefinedPixelTrait ||
               GetPixelAlpha(image,q) == OpaqueAlpha)
              {
                if (number_opaque < 259)
@@ -8834,7 +8834,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               {
                 for (i=0; i< (ssize_t) image_colors; i++)
                 {
-                  if ((image->alpha_trait != BlendPixelTrait ||
+                  if ((image->alpha_trait == UndefinedPixelTrait ||
                       image->colormap[i].alpha == GetPixelAlpha(image,q)) &&
                       image->colormap[i].red == GetPixelRed(image,q) &&
                       image->colormap[i].green == GetPixelGreen(image,q) &&
@@ -9301,7 +9301,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   quantum_info = (QuantumInfo *) NULL;
   number_colors=0;
   image_colors=(int) image->colors;
-  image_matte=image->alpha_trait == BlendPixelTrait ? MagickTrue : MagickFalse;
+  image_matte=image->alpha_trait != UndefinedPixelTrait ? MagickTrue : MagickFalse;
 
   if (mng_info->write_png_colortype < 5)
     mng_info->IsPalette=image->storage_class == PseudoClass &&
@@ -9750,7 +9750,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
       if (ping_color_type == PNG_COLOR_TYPE_GRAY)
         {
-          if (image->alpha_trait != BlendPixelTrait && ping_have_non_bw == MagickFalse)
+          if (image->alpha_trait == UndefinedPixelTrait && ping_have_non_bw == MagickFalse)
              ping_bit_depth=1;
         }
 
@@ -10426,7 +10426,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         "Cannot write image with defined png:bit-depth or png:color-type.");
     }
 
-  if (image_matte != MagickFalse && image->alpha_trait != BlendPixelTrait)
+  if (image_matte != MagickFalse && image->alpha_trait == UndefinedPixelTrait)
     {
       /* Add an opaque matte channel */
       image->alpha_trait = BlendPixelTrait;
@@ -11613,7 +11613,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_depth = 8;
       image->depth = 8;
 
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         (void) SetImageType(image,TrueColorMatteType,exception);
 
       else
@@ -11639,7 +11639,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_depth = 16;
       image->depth = 16;
 
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         (void) SetImageType(image,TrueColorMatteType,exception);
 
       else
@@ -12184,7 +12184,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   status=MagickTrue;
   transparent=image_info->type==GrayscaleMatteType ||
-     image_info->type==TrueColorMatteType || image->alpha_trait == BlendPixelTrait;
+     image_info->type==TrueColorMatteType || image->alpha_trait != UndefinedPixelTrait;
 
   jng_alpha_sample_depth = 0;
 
@@ -12896,7 +12896,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
            "    Scene: %.20g\n,   Image depth: %.20g",
            (double) scene++, (double) p->depth);
 
-        if (p->alpha_trait == BlendPixelTrait)
+        if (p->alpha_trait != UndefinedPixelTrait)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "      Matte: True");
 
@@ -12990,11 +12990,11 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
         if (next_image->page.x || next_image->page.y)
           need_defi=MagickTrue;
 
-        if (next_image->alpha_trait == BlendPixelTrait)
+        if (next_image->alpha_trait != UndefinedPixelTrait)
           need_matte=MagickTrue;
 
         if ((int) next_image->dispose >= BackgroundDispose)
-          if ((next_image->alpha_trait == BlendPixelTrait) ||
+          if ((next_image->alpha_trait != UndefinedPixelTrait) ||
                next_image->page.x || next_image->page.y ||
               ((next_image->columns < mng_info->page.width) &&
                (next_image->rows < mng_info->page.height)))
@@ -13014,7 +13014,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
         /*
           check for global palette possibility.
         */
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
            need_local_plte=MagickTrue;
 
         if (need_local_plte == 0)
@@ -13367,7 +13367,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        Write MNG BACK chunk and global bKGD chunk, if the image is transparent
        or does not cover the entire frame.
      */
-     if (write_mng && ((image->alpha_trait == BlendPixelTrait) ||
+     if (write_mng && ((image->alpha_trait != UndefinedPixelTrait) ||
          image->page.x > 0 || image->page.y > 0 || (image->page.width &&
          (image->page.width+image->page.x < mng_info->page.width))
          || (image->page.height && (image->page.height+image->page.y

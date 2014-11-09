@@ -219,7 +219,7 @@ static Image *SparseColorOption(const Image *image,
       (image->colorspace == CMYKColorspace))
     number_colors++;
   if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-      image->alpha_trait == BlendPixelTrait)
+      image->alpha_trait != UndefinedPixelTrait)
     number_colors++;
 
   /*
@@ -298,7 +298,7 @@ static Image *SparseColorOption(const Image *image,
           (image->colorspace == CMYKColorspace))
         sparse_arguments[x++] = QuantumScale*color.black;
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          image->alpha_trait == BlendPixelTrait)
+          image->alpha_trait != UndefinedPixelTrait)
         sparse_arguments[x++] = QuantumScale*color.alpha;
     }
     else {
@@ -338,7 +338,7 @@ static Image *SparseColorOption(const Image *image,
         token[0] = ','; /* used this token - get another */
       }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          image->alpha_trait == BlendPixelTrait)
+          image->alpha_trait != UndefinedPixelTrait)
         {
         while ( token[0] == ',' ) GetMagickToken(p,&p,token);
         if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
@@ -2028,7 +2028,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
               break;
             for (x=0; x < (ssize_t) mask_image->columns; x++)
             {
-              if (mask_image->alpha_trait != BlendPixelTrait)
+              if (mask_image->alpha_trait == UndefinedPixelTrait)
                 SetPixelAlpha(mask_image,(Quantum)
                   GetPixelIntensity(mask_image,q),q);
               SetPixelGray(mask_image,GetPixelAlpha(mask_image,q),q);
