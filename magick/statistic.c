@@ -1223,21 +1223,20 @@ MagickExport MagickBooleanType GetImageChannelEntropy(const Image *image,
         channel_statistics[BlueChannel].entropy;
       channels++;
     }
-  if (((channel & OpacityChannel) != 0) &&
-      (image->matte != MagickFalse))
+  if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
     {
       channel_statistics[CompositeChannels].entropy+=
         channel_statistics[OpacityChannel].entropy;
       channels++;
     }
-  if (((channel & IndexChannel) != 0) &&
-      (image->colorspace == CMYKColorspace))
+  if (((channel & IndexChannel) != 0) && (image->colorspace == CMYKColorspace))
     {
       channel_statistics[CompositeChannels].entropy+=
         channel_statistics[BlackChannel].entropy;
       channels++;
     }
-  channel_statistics[CompositeChannels].entropy/=channels;
+  if (channels != 0)
+    channel_statistics[CompositeChannels].entropy/=channels;
   *entropy=channel_statistics[CompositeChannels].entropy;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
@@ -1592,7 +1591,8 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[BlackChannel].mean;
       channels++;
     }
-  channel_statistics[CompositeChannels].mean/=channels;
+  if (channels != 0)
+    channel_statistics[CompositeChannels].mean/=channels;
   channel_statistics[CompositeChannels].standard_deviation=
     sqrt(channel_statistics[CompositeChannels].standard_deviation/channels);
   *mean=channel_statistics[CompositeChannels].mean;
