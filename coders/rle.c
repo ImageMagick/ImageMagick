@@ -293,7 +293,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Allocate RLE pixels.
     */
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
       number_planes++;
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if ((number_pixels*number_planes) != (size_t) (number_pixels*number_planes))
@@ -314,7 +314,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=pixels;
         for (i=0; i < (ssize_t) number_pixels; i++)
         {
-          if (image->alpha_trait != BlendPixelTrait)
+          if (image->alpha_trait == UndefinedPixelTrait)
             for (j=0; j < (ssize_t) number_planes; j++)
               *p++=background_color[j];
           else
@@ -452,7 +452,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,ScaleCharToQuantum(*p++),q);
             SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
             SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
             q+=GetPixelChannels(image);
           }
@@ -497,7 +497,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p++;
             }
         p=pixels;
-        if (image->alpha_trait != BlendPixelTrait)
+        if (image->alpha_trait == UndefinedPixelTrait)
           {
             /*
               Convert raster image to PseudoClass pixel packets.

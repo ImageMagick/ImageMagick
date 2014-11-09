@@ -626,7 +626,7 @@ MagickExport MagickBooleanType GetImageAlphaChannel(const Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  return(image->alpha_trait == BlendPixelTrait ? MagickTrue : MagickFalse);
+  return(image->alpha_trait != UndefinedPixelTrait ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1017,7 +1017,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Set transparent pixels to background color.
       */
-      if (image->alpha_trait != BlendPixelTrait)
+      if (image->alpha_trait == UndefinedPixelTrait)
         break;
       status=SetImageStorageClass(image,DirectClass,exception);
       if (status == MagickFalse)
@@ -1164,7 +1164,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Remove transparency.
       */
-      if (image->alpha_trait != BlendPixelTrait)
+      if (image->alpha_trait == UndefinedPixelTrait)
         break;
       status=SetImageStorageClass(image,DirectClass,exception);
       if (status == MagickFalse)
@@ -1207,7 +1207,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case SetAlphaChannel:
     {
-      if (image->alpha_trait != BlendPixelTrait)
+      if (image->alpha_trait == UndefinedPixelTrait)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       break;
     }

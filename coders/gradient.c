@@ -169,8 +169,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if ((start_color.alpha_trait != BlendPixelTrait) &&
-      (stop_color.alpha_trait != BlendPixelTrait))
+  if ((start_color.alpha_trait == UndefinedPixelTrait) &&
+      (stop_color.alpha_trait == UndefinedPixelTrait))
     (void) SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
   return(GetFirstImageInList(image));
 }

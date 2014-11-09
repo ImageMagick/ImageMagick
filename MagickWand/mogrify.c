@@ -482,7 +482,7 @@ static Image *SparseColorOption(const Image *image,
       (image->colorspace == CMYKColorspace))
     number_colors++;
   if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-      (image->alpha_trait == BlendPixelTrait))
+      (image->alpha_trait != UndefinedPixelTrait))
     number_colors++;
 
   /*
@@ -585,7 +585,7 @@ static Image *SparseColorOption(const Image *image,
             (image->colorspace == CMYKColorspace))
           sparse_arguments[x++] = QuantumScale*color.black;
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-            (image->alpha_trait == BlendPixelTrait))
+            (image->alpha_trait != UndefinedPixelTrait))
           sparse_arguments[x++] = QuantumScale*color.alpha;
       }
       else {
@@ -625,7 +625,7 @@ static Image *SparseColorOption(const Image *image,
           token[0] = ','; /* used this token - get another */
         }
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-            (image->alpha_trait == BlendPixelTrait))
+            (image->alpha_trait != UndefinedPixelTrait))
           {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
@@ -1114,7 +1114,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 break;
               for (x=0; x < (ssize_t) mask_image->columns; x++)
               {
-                if (mask_image->alpha_trait != BlendPixelTrait)
+                if (mask_image->alpha_trait == UndefinedPixelTrait)
                   SetPixelAlpha(mask_image,(Quantum)
                     GetPixelIntensity(mask_image,q),q);
                 SetPixelRed(mask_image,GetPixelAlpha(mask_image,q),q);
@@ -2527,7 +2527,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   Composite region.
                 */
                 (void) CompositeImage(region_image,*image,
-                   region_image->alpha_trait == BlendPixelTrait ?
+                   region_image->alpha_trait != UndefinedPixelTrait ?
                    CopyCompositeOp : OverCompositeOp,MagickTrue,
                    region_geometry.x,region_geometry.y,exception);
                 *image=DestroyImage(*image);
@@ -3280,7 +3280,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       */
       (void) SyncImageSettings(mogrify_info,*image,exception);
       (void) CompositeImage(region_image,*image,
-         region_image->alpha_trait == BlendPixelTrait ? CopyCompositeOp :
+         region_image->alpha_trait != UndefinedPixelTrait ? CopyCompositeOp :
          OverCompositeOp,MagickTrue,region_geometry.x,region_geometry.y,
          exception);
       *image=DestroyImage(*image);

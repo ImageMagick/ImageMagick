@@ -1220,7 +1220,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                 *q++=ScaleQuantumToChar(GetPixelBlue(next,p));
                 *q++=ScaleQuantumToChar(GetPixelGreen(next,p));
                 *q++=ScaleQuantumToChar(GetPixelRed(next,p));
-                if (next->alpha_trait != BlendPixelTrait)
+                if (next->alpha_trait == UndefinedPixelTrait)
                   *q++=ScaleQuantumToChar(QuantumRange);
                 else
                   *q++=ScaleQuantumToChar(GetPixelAlpha(next,p));
@@ -1314,7 +1314,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           for (x=0; x < (ssize_t) next->columns; x++)
           {
             byte<<=1;
-            if ((next->alpha_trait == BlendPixelTrait) &&
+            if ((next->alpha_trait != UndefinedPixelTrait) &&
                 (GetPixelAlpha(next,p) == (Quantum) TransparentAlpha))
               byte|=0x01;
             bit++;

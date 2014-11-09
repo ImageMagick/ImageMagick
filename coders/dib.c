@@ -833,7 +833,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
           SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
           SetPixelRed(image,ScaleCharToQuantum(*p++),q);
-          if (image->alpha_trait == BlendPixelTrait)
+          if (image->alpha_trait != UndefinedPixelTrait)
             SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
           q+=GetPixelChannels(image);
         }
@@ -1193,7 +1193,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
           *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
           *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
           *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-          if (image->alpha_trait == BlendPixelTrait)
+          if (image->alpha_trait != UndefinedPixelTrait)
             *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
           p+=GetPixelChannels(image);
         }
