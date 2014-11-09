@@ -2493,6 +2493,17 @@ void Magick::Image::composite(const Image &compositeImage_,
   ThrowPPException;
 }
 
+void Magick::Image::connectedComponents(const size_t connectivity_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=ConnectedComponentsImage(constImage(),connectivity_,exceptionInfo);
+  replaceImage(newImage);
+  ThrowPPException;
+}
+
 void Magick::Image::contrast(const size_t sharpen_)
 {
   modifyImage();
