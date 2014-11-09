@@ -148,6 +148,7 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   FunctionImage(Image *,const MagickFunction,const size_t,const double *,
     ExceptionInfo *),
+  GetImageEntropy(const Image *,double *,ExceptionInfo *),
   GetImageExtrema(const Image *,size_t *,size_t *,ExceptionInfo *),
   GetImageMean(const Image *,double *,double *,ExceptionInfo *),
   GetImageKurtosis(const Image *,double *,double *,ExceptionInfo *),

@@ -2683,6 +2683,17 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
     }
     case 'e':
     {
+      if (LocaleCompare("entropy",property) == 0)
+        {
+          double
+            entropy;
+
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          (void) GetImageEntropy(image,&entropy,exception);
+          (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
+            GetMagickPrecision(),entropy);
+          break;
+        }
       if (LocaleCompare("extension",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
