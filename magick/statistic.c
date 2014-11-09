@@ -1152,6 +1152,103 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e C h a n n e l E n t r o p y                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageChannelEntropy() returns the entropy of one or more image channels.
+%
+%  The format of the GetImageChannelEntropy method is:
+%
+%      MagickBooleanType GetImageChannelEntropy(const Image *image,
+%        const ChannelType channel,double *entropy,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel.
+%
+%    o entropy: the average entropy of the selected channels.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+MagickExport MagickBooleanType GetImageEntropy(const Image *image,
+  double *entropy,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  status=GetImageChannelEntropy(image,CompositeChannels,entropy,exception);
+  return(status);
+}
+
+MagickExport MagickBooleanType GetImageChannelEntropy(const Image *image,
+  const ChannelType channel,double *entropy,ExceptionInfo *exception)
+{
+  ChannelStatistics
+    *channel_statistics;
+
+  size_t
+    channels;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  channel_statistics=GetImageChannelStatistics(image,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    return(MagickFalse);
+  channels=0;
+  channel_statistics[CompositeChannels].entropy=0.0;
+  if ((channel & RedChannel) != 0)
+    {
+      channel_statistics[CompositeChannels].entropy+=
+        channel_statistics[RedChannel].entropy;
+      channels++;
+    }
+  if ((channel & GreenChannel) != 0)
+    {
+      channel_statistics[CompositeChannels].entropy+=
+        channel_statistics[GreenChannel].entropy;
+      channels++;
+    }
+  if ((channel & BlueChannel) != 0)
+    {
+      channel_statistics[CompositeChannels].entropy+=
+        channel_statistics[BlueChannel].entropy;
+      channels++;
+    }
+  if (((channel & OpacityChannel) != 0) &&
+      (image->matte != MagickFalse))
+    {
+      channel_statistics[CompositeChannels].entropy+=
+        channel_statistics[OpacityChannel].entropy;
+      channels++;
+    }
+  if (((channel & IndexChannel) != 0) &&
+      (image->colorspace == CMYKColorspace))
+    {
+      channel_statistics[CompositeChannels].entropy+=
+        channel_statistics[BlackChannel].entropy;
+      channels++;
+    }
+  channel_statistics[CompositeChannels].entropy/=channels;
+  *entropy=channel_statistics[CompositeChannels].entropy;
+  channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    channel_statistics);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t I m a g e C h a n n e l E x t r e m a                               %
 %                                                                             %
 %                                                                             %
@@ -1183,7 +1280,12 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
 MagickExport MagickBooleanType GetImageExtrema(const Image *image,
   size_t *minima,size_t *maxima,ExceptionInfo *exception)
 {
-  return(GetImageChannelExtrema(image,CompositeChannels,minima,maxima,exception));
+  MagickBooleanType
+    status;
+
+  status=GetImageChannelExtrema(image,CompositeChannels,minima,maxima,
+    exception);
+  return(status);
 }
 
 MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
