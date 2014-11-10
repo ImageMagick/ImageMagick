@@ -2435,7 +2435,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         GetPixelBlue(p)*GetPixelBlue(p);
       channel_statistics[BlueChannel].sum_fourth_power+=(double)
         GetPixelBlue(p)*GetPixelBlue(p)*GetPixelBlue(p)*GetPixelBlue(p);
-      histogram[ScaleQuantumToMap(GetPixelBlue(p))].red++;
+      histogram[ScaleQuantumToMap(GetPixelRed(p))].red++;
       histogram[ScaleQuantumToMap(GetPixelGreen(p))].green++;
       histogram[ScaleQuantumToMap(GetPixelBlue(p))].blue++;
       if (image->matte != MagickFalse)
