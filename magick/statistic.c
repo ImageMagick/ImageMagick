@@ -1223,20 +1223,21 @@ MagickExport MagickBooleanType GetImageChannelEntropy(const Image *image,
         channel_statistics[BlueChannel].entropy;
       channels++;
     }
-  if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
+  if (((channel & OpacityChannel) != 0) &&
+      (image->matte != MagickFalse))
     {
       channel_statistics[CompositeChannels].entropy+=
         channel_statistics[OpacityChannel].entropy;
       channels++;
     }
-  if (((channel & IndexChannel) != 0) && (image->colorspace == CMYKColorspace))
+  if (((channel & IndexChannel) != 0) &&
+      (image->colorspace == CMYKColorspace))
     {
       channel_statistics[CompositeChannels].entropy+=
         channel_statistics[BlackChannel].entropy;
       channels++;
     }
-  if (channels != 0)
-    channel_statistics[CompositeChannels].entropy/=channels;
+  channel_statistics[CompositeChannels].entropy/=channels;
   *entropy=channel_statistics[CompositeChannels].entropy;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
@@ -1569,7 +1570,8 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[BlueChannel].mean;
       channels++;
     }
-  if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
+  if (((channel & OpacityChannel) != 0) &&
+      (image->matte != MagickFalse))
     {
       channel_statistics[CompositeChannels].mean+=
         channel_statistics[OpacityChannel].mean;
@@ -1579,7 +1581,8 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[OpacityChannel].mean;
       channels++;
     }
-  if (((channel & IndexChannel) != 0) && (image->colorspace == CMYKColorspace))
+  if (((channel & IndexChannel) != 0) &&
+      (image->colorspace == CMYKColorspace))
     {
       channel_statistics[CompositeChannels].mean+=
         channel_statistics[BlackChannel].mean;
@@ -1589,8 +1592,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[BlackChannel].mean;
       channels++;
     }
-  if (channels != 0)
-    channel_statistics[CompositeChannels].mean/=channels;
+  channel_statistics[CompositeChannels].mean/=channels;
   channel_statistics[CompositeChannels].standard_deviation=
     sqrt(channel_statistics[CompositeChannels].standard_deviation/channels);
   *mean=channel_statistics[CompositeChannels].mean;
@@ -2285,6 +2287,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     area;
 
   MagickPixelPacket
+    channel_count,
     *histogram;
 
   QuantumAny
@@ -2329,6 +2332,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].minima=MagickMaximumValue;
   }
   (void) ResetMagickMemory(histogram,0,(MaxMap+1U)*sizeof(*histogram));
+  (void) ResetMagickMemory(&channel_count,0,sizeof(channel_count));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -2497,15 +2501,28 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   }
   for (i=0; i < (ssize_t) (MaxMap+1U); i++)
   {
+    if (histogram[i].red > 0.0)
+      channel_count.red++;
+    if (histogram[i].green > 0.0)
+      channel_count.green++;
+    if (histogram[i].blue > 0.0)
+      channel_count.blue++;
+    if ((image->matte != MagickFalse) && (histogram[i].red > 0.0))
+      channel_count.opacity++;
+    if ((image->colorspace == CMYKColorspace) && (histogram[i].red > 0.0))
+      channel_count.index++;
+  }
+  for (i=0; i < (ssize_t) (MaxMap+1U); i++)
+  {
     histogram[i].red/=area;
     channel_statistics[RedChannel].entropy+=-histogram[i].red*
-      MagickLog10(histogram[i].red)/MagickLog10(MaxMap+1.0);
+      MagickLog10(histogram[i].red)/MagickLog10(channel_count.red);
     histogram[i].green/=area;
     channel_statistics[GreenChannel].entropy+=-histogram[i].green*
-      MagickLog10(histogram[i].green)/MagickLog10(MaxMap+1.0);
+      MagickLog10(histogram[i].green)/MagickLog10(channel_count.green);
     histogram[i].blue/=area;
     channel_statistics[BlueChannel].entropy+=-histogram[i].blue*
-      MagickLog10(histogram[i].blue)/MagickLog10(MaxMap+1.0);
+      MagickLog10(histogram[i].blue)/MagickLog10(channel_count.blue);
     if (image->matte != MagickFalse)
       {
         histogram[i].opacity/=area;
