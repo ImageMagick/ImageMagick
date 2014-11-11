@@ -2258,6 +2258,23 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     jpeg_info.optimize_coding=IsStringTrue(option) != MagickFalse ? TRUE :
       FALSE;
+  else
+    {
+      MagickSizeType
+        length;
+
+      length=(MagickSizeType) jpeg_info.input_components*image->columns*
+        image->rows*sizeof(JSAMPLE);
+      if (length == (MagickSizeType) ((size_t) length))
+        {
+          /*
+            Perform optimization only if available memory resources permit it.
+          */
+          status=AcquireMagickResource(MemoryResource,length);
+          RelinquishMagickResource(MemoryResource,length);
+          jpeg_info.optimize_coding=status == MagickFalse ? FALSE : TRUE;
+        }
+    }
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if ((LocaleCompare(image_info->magick,"PJPEG") == 0) ||
       (image_info->interlace != NoInterlace))
