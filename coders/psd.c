@@ -2328,14 +2328,17 @@ static void WriteResolutionResourceBlock(Image *image)
   unsigned short
     units;
 
-  x_resolution=65536.0*image->resolution.x+0.5;
-  y_resolution=65536.0*image->resolution.y+0.5;
-  units=1;
   if (image->units == PixelsPerCentimeterResolution)
     {
-      x_resolution=2.54*65536.0*image->resolution.x*0.5;
+      x_resolution=2.54*65536.0*image->resolution.x+0.5;
       y_resolution=2.54*65536.0*image->resolution.y+0.5;
       units=2;
+    }
+  else
+    {
+      x_resolution=65536.0*image->resolution.x+0.5;
+      y_resolution=65536.0*image->resolution.y+0.5;
+      units=1;
     }
   (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
   (void) WriteBlobMSBShort(image,0x03ED);
@@ -2539,6 +2542,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
     {
       (void) WriteBlobMSBShort(image,(unsigned short) (image->storage_class ==
         PseudoClass ? 8 : image->depth > 8 ? 16 : 8));
+
       if (((image_info->colorspace != UndefinedColorspace) ||
            (image->colorspace != CMYKColorspace)) &&
           (image_info->colorspace != CMYKColorspace))
