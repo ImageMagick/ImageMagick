@@ -2311,14 +2311,17 @@ static void WriteResolutionResourceBlock(Image *image)
   unsigned short
     units;
 
-  x_resolution=65536.0*image->x_resolution+0.5;
-  y_resolution=65536.0*image->y_resolution+0.5;
-  units=1;
   if (image->units == PixelsPerCentimeterResolution)
     {
-      x_resolution=2.54*65536.0*image->x_resolution*0.5;
+      x_resolution=2.54*65536.0*image->x_resolution+0.5;
       y_resolution=2.54*65536.0*image->y_resolution+0.5;
       units=2;
+    }
+  else
+    {
+      x_resolution=65536.0*image->x_resolution+0.5;
+      y_resolution=65536.0*image->y_resolution+0.5;
+      units=1;
     }
   (void) WriteBlob(image,4,(const unsigned char *) "8BIM");
   (void) WriteBlobMSBShort(image,0x03ED);
