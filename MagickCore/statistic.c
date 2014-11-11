@@ -2122,7 +2122,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
     double
-      area;
+      area,
+      number_bins;
 
     register ssize_t
       j;
@@ -2137,6 +2138,10 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     channel_statistics[i].standard_deviation=sqrt(
       channel_statistics[i].variance-(channel_statistics[i].mean*
       channel_statistics[i].mean));
+    number_bins=0.0;
+    for (j=0; j < (ssize_t) (MaxMap+1U); j++)
+      if (histogram[GetPixelChannels(image)*j+i] > 0.0)
+        number_bins++;
     for (j=0; j < (ssize_t) (MaxMap+1U); j++)
     {
       double
@@ -2144,7 +2149,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
       count=histogram[GetPixelChannels(image)*j+i]*area;
       channel_statistics[i].entropy+=-count*MagickLog10(count)/
-        MagickLog10(MaxMap+1.0);
+        MagickLog10(number_bins);
     }
   }
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
