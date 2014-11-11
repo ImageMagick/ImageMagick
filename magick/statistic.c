@@ -2516,24 +2516,24 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   {
     histogram[i].red/=area;
     channel_statistics[RedChannel].entropy+=-histogram[i].red*
-      MagickLog10(histogram[i].red)/MagickLog10(count.red);
+      MagickLog10(histogram[i].red)/MagickLog10((double) count.red);
     histogram[i].green/=area;
     channel_statistics[GreenChannel].entropy+=-histogram[i].green*
-      MagickLog10(histogram[i].green)/MagickLog10(count.green);
+      MagickLog10(histogram[i].green)/MagickLog10((double) count.green);
     histogram[i].blue/=area;
     channel_statistics[BlueChannel].entropy+=-histogram[i].blue*
-      MagickLog10(histogram[i].blue)/MagickLog10(count.blue);
+      MagickLog10(histogram[i].blue)/MagickLog10((double) count.blue);
     if (image->matte != MagickFalse)
       {
         histogram[i].opacity/=area;
         channel_statistics[OpacityChannel].entropy+=-histogram[i].opacity*
-          MagickLog10(histogram[i].opacity)/MagickLog10(MaxMap+1.0);
+          MagickLog10(histogram[i].opacity)/MagickLog10((double) count.opacity);
       }
     if (image->colorspace == CMYKColorspace)
       {
         histogram[i].index/=area;
         channel_statistics[IndexChannel].entropy+=-histogram[i].index*
-          MagickLog10(histogram[i].index)/MagickLog10(MaxMap+1.0);
+          MagickLog10(histogram[i].index)/MagickLog10((double) count.index);
       }
   }
   for (i=0; i < (ssize_t) CompositeChannels; i++)
