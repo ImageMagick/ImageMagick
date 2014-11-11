@@ -2287,7 +2287,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     area;
 
   MagickPixelPacket
-    nonzero_bins,
+    count,
     *histogram;
 
   QuantumAny
@@ -2332,7 +2332,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].minima=MagickMaximumValue;
   }
   (void) ResetMagickMemory(histogram,0,(MaxMap+1U)*sizeof(*histogram));
-  (void) ResetMagickMemory(&nonzero_bins,0,sizeof(nonzero_bins));
+  (void) ResetMagickMemory(&count,0,sizeof(count));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -2502,27 +2502,27 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   for (i=0; i < (ssize_t) (MaxMap+1U); i++)
   {
     if (histogram[i].red > 0.0)
-      nonzero_bins.red++;
+      count.red++;
     if (histogram[i].green > 0.0)
-      nonzero_bins.green++;
+      count.green++;
     if (histogram[i].blue > 0.0)
-      nonzero_bins.blue++;
+      count.blue++;
     if ((image->matte != MagickFalse) && (histogram[i].red > 0.0))
-      nonzero_bins.opacity++;
+      count.opacity++;
     if ((image->colorspace == CMYKColorspace) && (histogram[i].red > 0.0))
-      nonzero_bins.index++;
+      count.index++;
   }
   for (i=0; i < (ssize_t) (MaxMap+1U); i++)
   {
     histogram[i].red/=area;
     channel_statistics[RedChannel].entropy+=-histogram[i].red*
-      MagickLog10(histogram[i].red)/MagickLog10(nonzero_bins.red);
+      MagickLog10(histogram[i].red)/MagickLog10(count.red);
     histogram[i].green/=area;
     channel_statistics[GreenChannel].entropy+=-histogram[i].green*
-      MagickLog10(histogram[i].green)/MagickLog10(nonzero_bins.green);
+      MagickLog10(histogram[i].green)/MagickLog10(count.green);
     histogram[i].blue/=area;
     channel_statistics[BlueChannel].entropy+=-histogram[i].blue*
-      MagickLog10(histogram[i].blue)/MagickLog10(nonzero_bins.blue);
+      MagickLog10(histogram[i].blue)/MagickLog10(count.blue);
     if (image->matte != MagickFalse)
       {
         histogram[i].opacity/=area;
