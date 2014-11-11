@@ -2287,7 +2287,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     area;
 
   MagickPixelPacket
-    count,
+    number_bins,
     *histogram;
 
   QuantumAny
@@ -2332,7 +2332,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     channel_statistics[i].minima=MagickMaximumValue;
   }
   (void) ResetMagickMemory(histogram,0,(MaxMap+1U)*sizeof(*histogram));
-  (void) ResetMagickMemory(&count,0,sizeof(count));
+  (void) ResetMagickMemory(&number_bins,0,sizeof(number_bins));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -2502,38 +2502,40 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   for (i=0; i < (ssize_t) (MaxMap+1U); i++)
   {
     if (histogram[i].red > 0.0)
-      count.red++;
+      number_bins.red++;
     if (histogram[i].green > 0.0)
-      count.green++;
+      number_bins.green++;
     if (histogram[i].blue > 0.0)
-      count.blue++;
+      number_bins.blue++;
     if ((image->matte != MagickFalse) && (histogram[i].red > 0.0))
-      count.opacity++;
+      number_bins.opacity++;
     if ((image->colorspace == CMYKColorspace) && (histogram[i].red > 0.0))
-      count.index++;
+      number_bins.index++;
   }
   for (i=0; i < (ssize_t) (MaxMap+1U); i++)
   {
     histogram[i].red/=area;
     channel_statistics[RedChannel].entropy+=-histogram[i].red*
-      MagickLog10(histogram[i].red)/MagickLog10((double) count.red);
+      MagickLog10(histogram[i].red)/MagickLog10((double) number_bins.red);
     histogram[i].green/=area;
     channel_statistics[GreenChannel].entropy+=-histogram[i].green*
-      MagickLog10(histogram[i].green)/MagickLog10((double) count.green);
+      MagickLog10(histogram[i].green)/MagickLog10((double) number_bins.green);
     histogram[i].blue/=area;
     channel_statistics[BlueChannel].entropy+=-histogram[i].blue*
-      MagickLog10(histogram[i].blue)/MagickLog10((double) count.blue);
+      MagickLog10(histogram[i].blue)/MagickLog10((double) number_bins.blue);
     if (image->matte != MagickFalse)
       {
         histogram[i].opacity/=area;
         channel_statistics[OpacityChannel].entropy+=-histogram[i].opacity*
-          MagickLog10(histogram[i].opacity)/MagickLog10((double) count.opacity);
+          MagickLog10(histogram[i].opacity)/MagickLog10((double)
+          number_bins.opacity);
       }
     if (image->colorspace == CMYKColorspace)
       {
         histogram[i].index/=area;
         channel_statistics[IndexChannel].entropy+=-histogram[i].index*
-          MagickLog10(histogram[i].index)/MagickLog10((double) count.index);
+          MagickLog10(histogram[i].index)/MagickLog10((double)
+          number_bins.index);
       }
   }
   for (i=0; i < (ssize_t) CompositeChannels; i++)
