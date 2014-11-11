@@ -515,6 +515,17 @@ static const char *ModeToString(PSDImageType type)
   }
 }
 
+static void NegateCMYK(Image *image,ExceptionInfo *exception)
+{
+  ChannelType
+    channel_mask;
+
+  channel_mask=SetImageChannelMask(image,(ChannelType)(AllChannels &~
+    AlphaChannel));
+  NegateImage(image,MagickFalse,exception);
+  (void) SetImageChannelMask(image,channel_mask);
+}
+
 static MagickBooleanType ParseImageResourceBlocks(Image *image,
   const unsigned char *blocks,size_t length,
   MagickBooleanType *has_merged_image,ExceptionInfo *exception)
@@ -689,7 +700,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
     {
       case -1:
       {
-        SetPixelOpacity(image,pixel,q);
+        SetPixelAlpha(image,pixel,q);
         break;
       }
       case 0:
@@ -732,7 +743,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
       case 1:
       {
         if (image->storage_class == PseudoClass)
-          SetPixelOpacity(image,pixel,q);
+          SetPixelAlpha(image,pixel,q);
         else
           SetPixelGreen(image,pixel,q);
         break;
@@ -740,7 +751,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
       case 2:
       {
         if (image->storage_class == PseudoClass)
-          SetPixelOpacity(image,pixel,q);
+          SetPixelAlpha(image,pixel,q);
         else
           SetPixelBlue(image,pixel,q);
         break;
@@ -751,7 +762,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
           SetPixelBlack(image,pixel,q);
         else
           if (image->alpha_trait != UndefinedPixelTrait)
-            SetPixelOpacity(image,pixel,q);
+            SetPixelAlpha(image,pixel,q);
         break;
       }
       case 4:
@@ -760,7 +771,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
             (channels > 3))
           break;
         if (image->alpha_trait != UndefinedPixelTrait)
-          SetPixelOpacity(image,pixel,q);
+          SetPixelAlpha(image,pixel,q);
         break;
       }
       default:
@@ -1146,6 +1157,7 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
     layer_info->image->compression=ConvertPSDCompression(compression);
     if (layer_info->channel_info[j].type == -1)
       layer_info->image->alpha_trait=BlendPixelTrait;
+
     status=ReadPSDChannel(layer_info->image,psd_info,layer_info,j,
       compression,exception);
 
@@ -1157,7 +1169,7 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
     status=CorrectPSDOpacity(layer_info,exception);
 
   if (status != MagickFalse && layer_info->image->colorspace == CMYKColorspace)
-   (void) NegateImage(layer_info->image,MagickFalse,exception);
+   (void) NegateCMYK(layer_info->image,exception);
 
   return(status);
 }
@@ -1556,7 +1568,7 @@ static MagickStatusType ReadPSDMergedImage(Image* image,
   }
 
   if (image->colorspace == CMYKColorspace)
-    (void) NegateImage(image,MagickFalse,exception);
+    (void) NegateCMYK(image,exception);
 
   if (offsets != (MagickOffsetType *) NULL)
     offsets=(MagickOffsetType *) RelinquishMagickMemory(offsets);
@@ -2230,7 +2242,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
     else
       {
         if (next_image->colorspace == CMYKColorspace)
-          (void) NegateImage(next_image,MagickFalse,exception);
+          (void) NegateCMYK(next_image,exception);
         if (next_image->compression == RLECompression)
           {
             /*
@@ -2274,7 +2286,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             MagickFalse,exception);
         (void) SetImageProgress(image,SaveImagesTag,5,6);
         if (next_image->colorspace == CMYKColorspace)
-          (void) NegateImage(next_image,MagickFalse,exception);
+          (void) NegateCMYK(next_image,exception);
       }
   if (next_image->compression == RLECompression)
     compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
