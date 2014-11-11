@@ -27,7 +27,7 @@ extern "C" {
 */
 #define MagickPackageName "ImageMagick"
 #define MagickCopyright  "Copyright (C) 1999-2014 ImageMagick Studio LLC"
-#define MagickSVNRevision  "17025:17026"
+#define MagickSVNRevision  "17030M"
 #define MagickLibVersion  0x690
 #define MagickLibVersionText  "6.9.0"
 #define MagickLibVersionNumber  2,0,0

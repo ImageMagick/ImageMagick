@@ -21,7 +21,7 @@ If you have problems, you may need to regenerate the build system entirely.
 To do so, use the procedure documented by the package, typically 'autoreconf'.])])
 
 # longlong.m4 serial 17
-dnl Copyright (C) 1999-2007, 2009-2013 Free Software Foundation, Inc.
+dnl Copyright (C) 1999-2007, 2009-2014 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
