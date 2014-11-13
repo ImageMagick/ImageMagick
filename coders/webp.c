@@ -554,9 +554,8 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   picture.use_argb=1;
   if (image->quality != UndefinedCompressionQuality)
     configure.quality=(float) image->quality;
-  else
-    if (image->quality >= 100)
-      configure.lossless=1;
+  if (image->quality >= 100)
+    configure.lossless=1;
   value=GetImageOption(image_info,"webp:lossless");
   if (value != (char *) NULL)
     configure.lossless=(int) ParseCommandOption(MagickBooleanOptions,
@@ -628,13 +627,13 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   if (value != (char *) NULL)
     configure.partition_limit=StringToInteger(value);
 #if WEBP_DECODER_ABI_VERSION >= 0x0201
-  value=GetImageOption(image_info,"webp:low-memory");
-  if (value != (char *) NULL)
-    configure.low_memory=(int) ParseCommandOption(MagickBooleanOptions,
-      MagickFalse,value);
   value=GetImageOption(image_info,"webp:emulate-jpeg-size");
   if (value != (char *) NULL)
     configure.emulate_jpeg_size=(int) ParseCommandOption(MagickBooleanOptions,
+      MagickFalse,value);
+  value=GetImageOption(image_info,"webp:low-memory");
+  if (value != (char *) NULL)
+    configure.low_memory=(int) ParseCommandOption(MagickBooleanOptions,
       MagickFalse,value);
   value=GetImageOption(image_info,"webp:thread-level");
   if (value != (char *) NULL)
@@ -749,6 +748,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       (void) ThrowMagickException(&image->exception,GetMagickModule(),
         CorruptImageError,(char *) message,"`%s'",image->filename);
     }
+  picture.argb=(uint32_t *) NULL;
   WebPPictureFree(&picture);
   pixel_info=RelinquishVirtualMemory(pixel_info);
   (void) CloseBlob(image);
