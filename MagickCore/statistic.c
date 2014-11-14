@@ -2039,7 +2039,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,GetPixelChannels(image)*
+  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
     sizeof(*histogram));
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
     MaxPixelChannels+1,sizeof(*channel_statistics));
@@ -2061,7 +2061,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     channel_statistics[i].maxima=(-MagickMaximumValue);
     channel_statistics[i].minima=MagickMaximumValue;
   }
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
+  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*MaxPixelChannels*
     sizeof(*histogram));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
