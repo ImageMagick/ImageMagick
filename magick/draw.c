@@ -3455,8 +3455,8 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
                     repeat=gradient->radius-fmod(-repeat,gradient->radius);
                   else
                     repeat=fmod(offset,gradient->radius);
-                  antialias=repeat+1.0 > gradient->radius ?
-                    MagickTrue : MagickFalse;
+                  antialias=repeat+1.0 > gradient->radius ? MagickTrue :
+                    MagickFalse;
                   offset=repeat/gradient->radius;
                 }
             }

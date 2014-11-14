@@ -164,6 +164,9 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     }
   (void) QueryMagickColor(colorname,&stop_pixel,exception);
   (void) SetImageColorspace(image,start_pixel.colorspace);
+  image->matte=start_pixel.matte;
+  if (stop_pixel.matte != MagickFalse)
+    image->matte=MagickTrue;
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color);
   if (status == MagickFalse)
@@ -171,8 +174,6 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if ((start_pixel.matte == MagickFalse) && (stop_pixel.matte == MagickFalse))
-    (void) SetImageAlphaChannel(image,DeactivateAlphaChannel);
   return(GetFirstImageInList(image));
 }
 
