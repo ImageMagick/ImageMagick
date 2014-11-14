@@ -132,6 +132,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  (void) SetImageOpacity(image,(Quantum) TransparentOpacity,exception);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   icc_color=MagickFalse;
   if (LocaleCompare(colorname,"icc") == 0)
@@ -160,6 +161,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImage(image);
       return((Image *) NULL);
     }
+  image->alpha_trait=start_color.alpha_trait;
   if (stop_color.alpha_trait != UndefinedPixelTrait)
     image->alpha_trait=stop_color.alpha_trait;
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
