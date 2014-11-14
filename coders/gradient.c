@@ -132,7 +132,6 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageAlpha(image,(Quantum) TransparentAlpha,exception);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   icc_color=MagickFalse;
   if (LocaleCompare(colorname,"icc") == 0)
@@ -161,6 +160,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImage(image);
       return((Image *) NULL);
     }
+  if (stop_color.alpha_trait != UndefinedPixelTrait)
+    image->alpha_trait=stop_color.alpha_trait;
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color,
     exception);
@@ -169,9 +170,6 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if ((start_color.alpha_trait == UndefinedPixelTrait) &&
-      (stop_color.alpha_trait == UndefinedPixelTrait))
-    (void) SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
   return(GetFirstImageInList(image));
 }
 
