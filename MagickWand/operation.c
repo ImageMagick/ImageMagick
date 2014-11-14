@@ -4830,7 +4830,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
           *new_images;
 
         if (*option == '+')
-          arg1="-1";
+          arg1=AcquireString("-1");
         if (IfMagickFalse(IsSceneGeometry(arg1,MagickFalse)))
           CLIWandExceptionBreak(OptionError,"InvalidArgument",option);
         if ( cli_wand->image_list_stack == (Stack *)NULL)
