@@ -3241,6 +3241,11 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
             SetPixelChannel(shade_image,channel,center[i],q);
             continue;
           }
+        if ((traits & UpdatePixelTrait) == 0)
+          {
+            SetPixelChannel(shade_image,channel,center[i],q);
+            continue;
+          }
         if (gray != MagickFalse)
           {
             SetPixelChannel(shade_image,channel,ClampToQuantum(shade),q);
