@@ -1,3 +1,6 @@
+2014-11-16  6.9.0-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.0-0, SVN revision 17067.
+
 2014-11-03  6.9.0-0 Cristy  <quetzlzacatenango@image...>
   * Check for zero-sized rendered SVG image (bug report from
     Vladimir Davydov).
