@@ -166,16 +166,14 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     return(MagickFalse);
   }
   (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
+  for (i=0; i < (ssize_t) number_objects; i++) {
     object[i].id=i;
     object[i].bounding_box.x=(ssize_t) image->columns;
     object[i].bounding_box.y=(ssize_t) image->rows;
   }
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
+  for (y=0; y < (ssize_t) image->rows; y++) {
     register const PixelPacket
       *restrict p;
 
@@ -189,8 +187,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
       status=MagickFalse;
       continue;
     }
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
+    for (x=0; x < (ssize_t) image->columns; x++) {
       i=(ssize_t) p->red;
       if (x < object[i].bounding_box.x)
         object[i].bounding_box.x=x;
@@ -205,8 +202,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     }
   }
   image_view=DestroyCacheView(image_view);
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
+  for (i=0; i < (ssize_t) number_objects; i++) {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
   }
@@ -214,8 +210,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     Merge objects below area threshold.
   */
   image_view=AcquireAuthenticCacheView(image,exception);
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
+  for (i=0; i < (ssize_t) number_objects; i++) {
     RectangleInfo
       bounding_box;
 
@@ -233,8 +228,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     for (j=0; j < (ssize_t) number_objects; j++)
       object[j].census=0;
     bounding_box=object[i].bounding_box;
-    for (y=0; y < (ssize_t) bounding_box.height+2; y++)
-    {
+    for (y=0; y < (ssize_t) bounding_box.height+2; y++) {
       register const PixelPacket
         *restrict p;
 
@@ -249,8 +243,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         status=MagickFalse;
         continue;
       }
-      for (x=0; x < (ssize_t) bounding_box.width+2; x++)
-      {
+      for (x=0; x < (ssize_t) bounding_box.width+2; x++) {
         j=(ssize_t) p->red;
         if (j != i)
           object[j].census++;
@@ -264,8 +257,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         census=object[j].census;
         id=(size_t) j;
       }
-    for (y=0; y < (ssize_t) bounding_box.height; y++)
-    {
+    for (y=0; y < (ssize_t) bounding_box.height; y++) {
       register PixelPacket
         *restrict q;
 
@@ -280,8 +272,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         status=MagickFalse;
         continue;
       }
-      for (x=0; x < (ssize_t) bounding_box.width; x++)
-      {
+      for (x=0; x < (ssize_t) bounding_box.width; x++) {
         if ((ssize_t) q->red == i) {
           q->red=(Quantum) id;
           q->green=q->red;
@@ -328,8 +319,7 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
     return(MagickFalse);
   }
   (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
+  for (i=0; i < (ssize_t) number_objects; i++) {
     object[i].id=i;
     object[i].bounding_box.x=(ssize_t) image->columns;
     object[i].bounding_box.y=(ssize_t) image->rows;
@@ -338,8 +328,7 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
   component_view=AcquireVirtualCacheView(component_image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
+  for (y=0; y < (ssize_t) image->rows; y++) {
     register const PixelPacket
       *restrict p,
       *restrict q;
@@ -361,8 +350,7 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
       continue;
     }
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
+    for (x=0; x < (ssize_t) image->columns; x++) {
       i=(ssize_t) q->red;
       if (x < object[i].bounding_box.x)
         object[i].bounding_box.x=x;
@@ -386,8 +374,7 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
       q++;
     }
   }
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
+  for (i=0; i < (ssize_t) number_objects; i++) {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
     object[i].color.red=ClampToQuantum(object[i].color.red/object[i].area);
@@ -410,8 +397,7 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
   qsort((void *) object,number_objects,sizeof(*object),CCObjectCompare);
   (void) fprintf(stdout,
     "Objects (id: bounding-box centroid area mean-color):\n");
-  for (i=0; i < (ssize_t) number_objects; i++)
-  {
+  for (i=0; i < (ssize_t) number_objects; i++) {
     char
       mean_color[MaxTextExtent];
 
@@ -505,8 +491,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   status=MagickTrue;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
-  for (n=0; n < (ssize_t) (connectivity > 4 ? 4 : 2); n++)
-  {
+  for (n=0; n < (ssize_t) (connectivity > 4 ? 4 : 2); n++) {
     ssize_t
       connect4[2][2] = { { -1,  0 }, {  0, -1 } },
       connect8[4][2] = { { -1, -1 }, { -1,  0 }, { -1,  1 }, {  0, -1 } },
@@ -517,8 +502,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       continue;
     dy=connectivity > 4 ? connect8[n][0] : connect4[n][0];
     dx=connectivity > 4 ? connect8[n][1] : connect4[n][1];
-    for (y=0; y < (ssize_t) image->rows; y++)
-    {
+    for (y=0; y < (ssize_t) image->rows; y++) {
       register const PixelPacket
         *restrict p;
 
@@ -533,8 +517,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         continue;
       }
       p+=image->columns;
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
+      for (x=0; x < (ssize_t) image->columns; x++) {
         ssize_t
           neighbor_offset,
           object,
@@ -599,8 +582,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   */
   n=0;
   component_view=AcquireAuthenticCacheView(component_image,exception);
-  for (y=0; y < (ssize_t) component_image->rows; y++)
-  {
+  for (y=0; y < (ssize_t) component_image->rows; y++) {
     register PixelPacket
       *restrict q;
 
@@ -615,8 +597,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       status=MagickFalse;
       continue;
     }
-    for (x=0; x < (ssize_t) component_image->columns; x++)
-    {
+    for (x=0; x < (ssize_t) component_image->columns; x++) {
       ssize_t
         id,
         offset;
