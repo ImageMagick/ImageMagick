@@ -1151,7 +1151,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     {
       status=CompositeImage(image,image,AlphaCompositeOp,MagickTrue,0,0,
         exception);
-      image->alpha_trait=CopyPixelTrait;
+      image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case OpaqueAlphaChannel:
