@@ -1268,13 +1268,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if (image->storage_class != DirectClass)
         (void) SetImageStorageClass(image,DirectClass);
       if (image->matte == MagickFalse)
-        if ((draw_info->fill.opacity != OpaqueOpacity) ||
-            ((draw_info->fill_pattern != (Image *) NULL) &&
-             (draw_info->fill_pattern->matte != MagickFalse)) ||
-            (draw_info->stroke.opacity != TransparentOpacity) ||
-            ((draw_info->stroke_pattern != (Image *) NULL) &&
-             (draw_info->stroke_pattern->matte != MagickFalse)))
-         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
     }
   direction=1.0;
   if (draw_info->direction == RightToLeftDirection)
