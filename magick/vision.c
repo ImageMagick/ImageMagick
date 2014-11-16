@@ -160,12 +160,11 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     Collect statistics on unique objects.
   */
   object=(CCObject *) AcquireQuantumMemory(number_objects,sizeof(*object));
-  if (object == (CCObject *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return(MagickFalse);
-    }
+  if (object == (CCObject *) NULL) {
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+    return(MagickFalse);
+  }
   (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
   for (i=0; i < (ssize_t) number_objects; i++)
   {
@@ -186,11 +185,10 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
+    if (p == (const PixelPacket *) NULL) {
+      status=MagickFalse;
+      continue;
+    }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       i=(ssize_t) p->red;
@@ -247,11 +245,10 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         continue;
       p=GetCacheViewVirtualPixels(image_view,bounding_box.x-1,bounding_box.y+y-
         1,bounding_box.width+2,1,exception);
-      if (p == (const PixelPacket *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
+      if (p == (const PixelPacket *) NULL) {
+        status=MagickFalse;
+        continue;
+      }
       for (x=0; x < (ssize_t) bounding_box.width+2; x++)
       {
         j=(ssize_t) p->red;
@@ -263,11 +260,10 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     census=0;
     id=0;
     for (j=0; j < (ssize_t) number_objects; j++)
-      if (census < object[j].census)
-        {
-          census=object[j].census;
-          id=(size_t) j;
-        }
+      if (census < object[j].census) {
+        census=object[j].census;
+        id=(size_t) j;
+      }
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
       register PixelPacket
@@ -280,19 +276,17 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         continue;
       q=GetCacheViewAuthenticPixels(image_view,bounding_box.x,bounding_box.y+y,
         bounding_box.width,1,exception);
-      if (q == (PixelPacket *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
+      if (q == (PixelPacket *) NULL) {
+        status=MagickFalse;
+        continue;
+      }
       for (x=0; x < (ssize_t) bounding_box.width; x++)
       {
-        if ((ssize_t) q->red == i)
-          {
-            q->red=(Quantum) id;
-            q->green=q->red;
-            q->blue=q->red;
-          }
+        if ((ssize_t) q->red == i) {
+          q->red=(Quantum) id;
+          q->green=q->red;
+          q->blue=q->red;
+        }
         q++;
       }
       if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -328,12 +322,11 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
     Collect statistics on unique objects.
   */
   object=(CCObject *) AcquireQuantumMemory(number_objects,sizeof(*object));
-  if (object == (CCObject *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return(MagickFalse);
-    }
+  if (object == (CCObject *) NULL) {
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+    return(MagickFalse);
+  }
   (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
   for (i=0; i < (ssize_t) number_objects; i++)
   {
@@ -362,11 +355,11 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(component_view,0,y,component_image->columns,1,
       exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
+    if ((p == (const PixelPacket *) NULL) ||
+        (q == (const PixelPacket *) NULL)) {
+      status=MagickFalse;
+      continue;
+    }
     indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -487,26 +480,23 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     return((Image *) NULL);
   component_image->depth=MAGICKCORE_QUANTUM_DEPTH;
   component_image->colorspace=GRAYColorspace;
-  if (SetImageStorageClass(component_image,DirectClass) == MagickFalse)
-    {
-      component_image=DestroyImage(component_image);
-      return((Image *) NULL);
-    }
+  if (SetImageStorageClass(component_image,DirectClass) == MagickFalse) {
+    component_image=DestroyImage(component_image);
+    return((Image *) NULL);
+  }
   /*
     Initialize connected components equivalences.
   */
   size=image->columns*image->rows;
-  if (image->columns != (size/image->rows))
-    {
-      component_image=DestroyImage(component_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
+  if (image->columns != (size/image->rows)) {
+    component_image=DestroyImage(component_image);
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  }
   equivalences=AcquireMatrixInfo(size,1,sizeof(ssize_t),exception);
-  if (equivalences == (MatrixInfo *) NULL)
-    {
-      component_image=DestroyImage(component_image);
-      return((Image *) NULL);
-    }
+  if (equivalences == (MatrixInfo *) NULL) {
+    component_image=DestroyImage(component_image);
+    return((Image *) NULL);
+  }
   for (n=0; n < (ssize_t) (image->columns*image->rows); n++)
     status=SetMatrixElement(equivalences,n,0,&n);
   /*
@@ -538,11 +528,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       if (status == MagickFalse)
         continue;
       p=GetCacheViewVirtualPixels(image_view,0,y-1,image->columns,3,exception);
-      if (p == (const PixelPacket *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
+      if (p == (const PixelPacket *) NULL) {
+        status=MagickFalse;
+        continue;
+      }
       p+=image->columns;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
@@ -560,11 +549,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         neighbor_offset=dy*image->columns+dx;
         if (((x+dx) < 0) || ((x+dx) >= (ssize_t) image->columns) ||
             ((y+dy) < 0) || ((y+dy) >= (ssize_t) image->rows) ||
-            (IsColorSimilar(image,p,p+neighbor_offset) == MagickFalse))
-          {
-            p++;
-            continue;
-          }
+            (IsColorSimilar(image,p,p+neighbor_offset) == MagickFalse)) {
+          p++;
+          continue;
+        }
         /*
           Resolve this equivalence.
         */
@@ -581,16 +569,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           oy=object;
           status=GetMatrixElement(equivalences,oy,0,&object);
         }
-        if (ox < oy)
-          {
-            status=SetMatrixElement(equivalences,oy,0,&ox);
-            root=ox;
-          }
-        else
-          {
-            status=SetMatrixElement(equivalences,ox,0,&oy);
-            root=oy;
-          }
+        if (ox < oy) {
+          status=SetMatrixElement(equivalences,oy,0,&ox);
+          root=ox;
+        } else {
+          status=SetMatrixElement(equivalences,ox,0,&oy);
+          root=oy;
+        }
         ox=offset;
         status=GetMatrixElement(equivalences,ox,0,&object);
         while (object != root) {
@@ -626,11 +611,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       continue;
     q=QueueCacheViewAuthenticPixels(component_view,0,y,component_image->columns,
       1,exception);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
+    if (q == (PixelPacket *) NULL) {
+      status=MagickFalse;
+      continue;
+    }
     for (x=0; x < (ssize_t) component_image->columns; x++)
     {
       ssize_t
@@ -639,16 +623,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
       offset=y*image->columns+x;
       status=GetMatrixElement(equivalences,offset,0,&id);
-      if (id == offset)
-        {
-          id=n++;
-          status=SetMatrixElement(equivalences,offset,0,&id);
-        }
-      else
-        {
-          status=GetMatrixElement(equivalences,id,0,&id);
-          status=SetMatrixElement(equivalences,offset,0,&id);
-        }
+      if (id == offset) {
+        id=n++;
+        status=SetMatrixElement(equivalences,offset,0,&id);
+      } else {
+        status=GetMatrixElement(equivalences,id,0,&id);
+        status=SetMatrixElement(equivalences,offset,0,&id);
+      }
       q->red=(Quantum) (id > (ssize_t) QuantumRange ? (ssize_t) QuantumRange :
         id);
       q->green=q->red;
@@ -657,24 +638,22 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     }
     if (SyncCacheViewAuthenticPixels(component_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL) {
+      MagickBooleanType
+        proceed;
 
-        proceed=SetImageProgress(image,ConnectedComponentsImageTag,progress++,
-          image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
+      proceed=SetImageProgress(image,ConnectedComponentsImageTag,progress++,
+        image->rows);
+      if (proceed == MagickFalse)
+        status=MagickFalse;
+    }
   }
   component_view=DestroyCacheView(component_view);
   equivalences=DestroyMatrixInfo(equivalences);
-  if (n > QuantumRange)
-    {
-      component_image=DestroyImage(component_image);
-      ThrowImageException(ResourceLimitError,"TooManyObjects");
-    }
+  if (n > QuantumRange) {
+    component_image=DestroyImage(component_image);
+    ThrowImageException(ResourceLimitError,"TooManyObjects");
+  }
   artifact=GetImageArtifact(image,"connected-components:area-threshold");
   area_threshold=0.0;
   if (artifact != (const char *) NULL)
