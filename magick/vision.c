@@ -161,8 +161,8 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
   */
   object=(CCObject *) AcquireQuantumMemory(number_objects,sizeof(*object));
   if (object == (CCObject *) NULL) {
-    (void) ThrowMagickException(exception,GetMagickModule(),
-      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+    (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+      "MemoryAllocationFailed","`%s'",image->filename);
     return(MagickFalse);
   }
   (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
@@ -323,8 +323,8 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
   */
   object=(CCObject *) AcquireQuantumMemory(number_objects,sizeof(*object));
   if (object == (CCObject *) NULL) {
-    (void) ThrowMagickException(exception,GetMagickModule(),
-      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+    (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+      "MemoryAllocationFailed","`%s'",image->filename);
     return(MagickFalse);
   }
   (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
