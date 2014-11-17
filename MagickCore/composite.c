@@ -682,7 +682,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Modify destination outside the overlaid region and require an alpha
         channel to exist, to add transparency.
       */
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       SetPixelAlphaTraits(image,CopyPixelTrait);
       break;
