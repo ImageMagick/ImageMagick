@@ -34,13 +34,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-    20071202 TS * rewrote RLE decoder - old version could cause buffer overflows
-                * failure of RLE decoding now thows error RLEDecoderError
-                * fixed bug in RLE decoding - now all rows are decoded, not just
-      the first one
-    * fixed bug in reader - record offsets now handled correctly
-    * fixed bug in reader - only bits 0..2 indicate compression type
-                * in writer: now using image color count instead of depth
+%   20071202 TS * rewrote RLE decoder - old version could cause buffer overflows
+%               * failure of RLE decoding now thows error RLEDecoderError
+%               * fixed bug in RLE decoding - now all rows are decoded, not just
+%     the first one
+%   * fixed bug in reader - record offsets now handled correctly
+%   * fixed bug in reader - only bits 0..2 indicate compression type
+%               * in writer: now using image color count instead of depth
 */
 
 /*
@@ -268,7 +268,7 @@ static MagickBooleanType IsPDB(const unsigned char *magick,const size_t length)
 static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   unsigned char
-    attributes, /* TS */
+    attributes,
     tag[3];
 
   Image
@@ -300,13 +300,13 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     bits_per_pixel,
-    num_pad_bytes, /* TS */
+    num_pad_bytes,
     one,
     packets;
 
   ssize_t
     count,
-    img_offset, /* TS */
+    img_offset,
     comment_offset = 0,
     y;
 
@@ -355,7 +355,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read record header.
   */
-  img_offset=(int) ReadBlobMSBLong(image); /* TS */
+  img_offset=(ssize_t) ((int) ReadBlobMSBLong(image));
   attributes=(unsigned char) ReadBlobByte(image);
   (void) attributes;
   count=ReadBlob(image,3,(unsigned char *) tag);
@@ -363,7 +363,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"CorruptImage");
   if (pdb_info.number_records > 1)
     {
-      comment_offset=(int) ReadBlobMSBLong(image);
+      comment_offset=(ssize_t) ((int) ReadBlobMSBLong(image));
       attributes=(unsigned char) ReadBlobByte(image);
       count=ReadBlob(image,3,(unsigned char *) tag);
       if (count != 3  ||  memcmp(tag,"\x6f\x80\x01",3) != 0)
@@ -376,7 +376,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   count=ReadBlob(image,32,(unsigned char *) pdb_image.name);
   pdb_image.version=ReadBlobByte(image);
-  pdb_image.type=ReadBlobByte(image);
+  pdb_image.type=(unsigned char) ReadBlobByte(image);
   pdb_image.reserved_1=ReadBlobMSBLong(image);
   pdb_image.note=ReadBlobMSBLong(image);
   pdb_image.x_last=(short) ReadBlobMSBShort(image);
@@ -408,7 +408,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
-  switch (pdb_image.version & 7) /* TS */
+  switch (pdb_image.version & 0x07)
   {
     case 0:
     {
@@ -420,7 +420,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       image->compression=RLECompression;
       if (!DecodeImage(image, pixels, packets * image -> rows))
-        ThrowReaderException( CorruptImageError, "RLEDecoderError" ); /* TS */
+        ThrowReaderException( CorruptImageError, "RLEDecoderError" );
       break;
     }
     default:
@@ -533,7 +533,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
-  if (pdb_info.number_records > 1) /* TS */
+  if (pdb_info.number_records > 1)
     {
       char
         *comment;
@@ -742,16 +742,16 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   if (status == MagickFalse)
     return(status);
   (void) TransformImageColorspace(image,sRGBColorspace);
-  if (image -> colors <= 2  ||  GetImageType( image, &image -> exception ) == BilevelType) { /* TS */
-    bits_per_pixel = 1;
-  } else if (image -> colors <= 4) {
-    bits_per_pixel = 2;
-  } else if (image -> colors <= 8) {
-    bits_per_pixel = 3;
+  if ((image -> colors <= 2 ) ||
+      (GetImageType(image,&image->exception ) == BilevelType)) {
+    bits_per_pixel=1;
+  } else if (image->colors <= 4) {
+    bits_per_pixel=2;
+  } else if (image->colors <= 8) {
+    bits_per_pixel=3;
   } else {
-    bits_per_pixel = 4;
+    bits_per_pixel=4;
   }
-
   (void) ResetMagickMemory(pdb_info.name,0,32);
   (void) CopyMagickString(pdb_info.name,image_info->filename,32);
   pdb_info.attributes=0;
@@ -801,7 +801,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   if (image->columns % 16)
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
-  packets=(bits_per_pixel*image->columns/8)*image->rows;
+  packets=(bits_per_pixel*image->columns/8+4)*image->rows;
   runlength=(unsigned char *) AcquireQuantumMemory(2UL*packets,
     sizeof(*runlength));
   if (runlength == (unsigned char *) NULL)
@@ -834,7 +834,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
       break;
     (void) ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
       GrayQuantum,scanline,&image->exception);
-    for (x=0; x < pdb_image.width; x++)
+    for (x=0; x < (ssize_t) pdb_image.width; x++)
     {
       if (x < (ssize_t) image->columns)
         buffer[literal+repeat]|=(0xff-scanline[x*packet_size]) >>
@@ -882,7 +882,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
       }
     }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -893,8 +893,8 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   /*
     Write the Image record header.
   */
-  (void) WriteBlobMSBLong(image,(unsigned int)
-    (TellBlob(image)+8*pdb_info.number_records));
+  (void) WriteBlobMSBLong(image,(unsigned int) (TellBlob(image)+8*
+    pdb_info.number_records));
   (void) WriteBlobByte(image,0x40);
   (void) WriteBlobByte(image,0x6f);
   (void) WriteBlobByte(image,0x80);

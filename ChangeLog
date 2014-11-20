@@ -1,6 +1,10 @@
 2014-11-20  6.9.0-1 Glenn Randers-Pehrson <glennrp@image...>
   * Don't handle a "previous" image in the JNG decoder.
 
+2014-11-20  6.9.0-1 Cristy  <quetzlzacatenango@image...>
+  * Fix double free / invalid read when converting jpg to pdb (thanks to
+    Hanno).
+
 2014-11-16  6.9.0-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-0, SVN revision 17067.
 
