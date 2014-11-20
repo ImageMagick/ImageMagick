@@ -3545,7 +3545,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             k=(&kernel->values[kernel->width*kernel->y+kernel->x-1]);
-            pixels=q-offset.x*GetPixelChannels(image);
+            pixels=q;
             for (u=offset.x+1; u < (ssize_t) kernel->width; u++)
             {
               if ((IfNaN(*k) == MagickFalse) &&
@@ -3577,7 +3577,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               pixels+=(image->columns-1)*GetPixelChannels(image);
             }
             k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
-            pixels=q-offset.x*GetPixelChannels(image);
+            pixels=q;
             for (u=offset.x+1; u < (ssize_t) kernel->width; u++)
             {
               if ((IfNaN(*k) == MagickFalse) &&
