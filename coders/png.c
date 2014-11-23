@@ -2380,7 +2380,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     {
       image->rendering_intent=UndefinedIntent;
       intent=Magick_RenderingIntent_to_PNG_RenderingIntent(UndefinedIntent);
-      image->gamma=1.000;
       (void) ResetMagickMemory(&image->chromaticity,0,
         sizeof(image->chromaticity));
     }
