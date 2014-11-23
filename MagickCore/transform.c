@@ -1748,8 +1748,8 @@ MagickExport Image *SpliceImage(const Image *image,
   if ((IsPixelInfoGray(&splice_image->background_color) == MagickFalse) &&
       (IsGrayColorspace(splice_image->colorspace) != MagickFalse))
     (void) SetImageColorspace(splice_image,sRGBColorspace,exception);
-  if ((splice_image->background_color.alpha_trait != UndefinedPixelTrait) &&
-      (splice_image->alpha_trait == UndefinedPixelTrait))
+  if ((splice_image->background_color.alpha_trait == BlendPixelTrait) &&
+      (splice_image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(splice_image,OpaqueAlpha,exception);
   (void) SetImageBackgroundColor(splice_image,exception);
   /*

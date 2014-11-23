@@ -166,7 +166,7 @@ static inline size_t ColorToNodeId(const Image *image,
     ((ScaleQuantumToChar(ClampToQuantum(pixel->red)) >> index) & 0x01) |
     ((ScaleQuantumToChar(ClampToQuantum(pixel->green)) >> index) & 0x01) << 1 |
     ((ScaleQuantumToChar(ClampToQuantum(pixel->blue)) >> index) & 0x01) << 2);
-  if (image->alpha_trait != UndefinedPixelTrait)
+  if (image->alpha_trait == BlendPixelTrait)
     id|=((ScaleQuantumToChar(ClampToQuantum(pixel->alpha)) >> index) &
       0x01) << 3;
   return(id);
@@ -342,7 +342,7 @@ static void DefineImageHistogram(const Image *image,NodeInfo *node_info,
   /*
     Traverse any children.
   */
-  number_children=image->alpha_trait == UndefinedPixelTrait ? 8UL : 16UL;
+  number_children=image->alpha_trait != BlendPixelTrait ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
       DefineImageHistogram(image,node_info->child[i],histogram);
@@ -441,7 +441,7 @@ static void DestroyColorCube(const Image *image,NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  number_children=image->alpha_trait == UndefinedPixelTrait ? 8UL : 16UL;
+  number_children=image->alpha_trait != BlendPixelTrait ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
       DestroyColorCube(image,node_info->child[i]);
@@ -1142,7 +1142,7 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
         ConcatenateColorComponent(&pixel,BlackPixelChannel,X11Compliance,
           tuple);
       }
-    if (pixel.alpha_trait != UndefinedPixelTrait)
+    if (pixel.alpha_trait == BlendPixelTrait)
       {
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
         ConcatenateColorComponent(&pixel,AlphaPixelChannel,X11Compliance,
@@ -1215,7 +1215,7 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
   /*
     Traverse any children.
   */
-  number_children=unique_image->alpha_trait == UndefinedPixelTrait ? 8UL : 16UL;
+  number_children=unique_image->alpha_trait != BlendPixelTrait ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
       UniqueColorsToImage(unique_image,unique_view,cube_info,

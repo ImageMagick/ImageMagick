@@ -8008,7 +8008,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) SetImageType(*image,(*image)->alpha_trait == UndefinedPixelTrait ?
+      (void) SetImageType(*image,(*image)->alpha_trait != BlendPixelTrait ?
         GrayscaleType : GrayscaleMatteType,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (IfMagickTrue(windows->image.orphan) )
@@ -9163,7 +9163,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       Image
         *matte_image;
 
-      if ((*image)->alpha_trait == UndefinedPixelTrait)
+      if ((*image)->alpha_trait != BlendPixelTrait)
         {
           XNoticeWidget(display,windows,
             "Image does not have any matte information",(*image)->filename);
@@ -10096,7 +10096,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           continue;
         if (IfMagickFalse(SetImageStorageClass(*image,DirectClass,exception)) )
           return(MagickFalse);
-        if ((*image)->alpha_trait == UndefinedPixelTrait)
+        if ((*image)->alpha_trait != BlendPixelTrait)
           (void) SetImageAlphaChannel(*image,OpaqueAlphaChannel,exception);
         image_view=AcquireAuthenticCacheView(*image,exception);
         switch (method)

@@ -1496,7 +1496,7 @@ RestoreMSCWarning
           }
         quantum_type=IndexQuantum;
         pad=(size_t) MagickMax((size_t) samples_per_pixel-1,0);
-        if (image->alpha_trait != UndefinedPixelTrait)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             if (image->storage_class != PseudoClass)
               {
@@ -1558,7 +1558,7 @@ RestoreMSCWarning
         */
         pad=(size_t) MagickMax((size_t) samples_per_pixel-3,0);
         quantum_type=RGBQuantum;
-        if (image->alpha_trait != UndefinedPixelTrait)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             quantum_type=RGBAQuantum;
             pad=(size_t) MagickMax((size_t) samples_per_pixel-4,0);
@@ -1567,7 +1567,7 @@ RestoreMSCWarning
           {
             pad=(size_t) MagickMax((size_t) samples_per_pixel-4,0);
             quantum_type=CMYKQuantum;
-            if (image->alpha_trait != UndefinedPixelTrait)
+            if (image->alpha_trait == BlendPixelTrait)
               {
                 quantum_type=CMYKAQuantum;
                 pad=(size_t) MagickMax((size_t) samples_per_pixel-5,0);
@@ -1751,7 +1751,7 @@ RestoreMSCWarning
               (TIFFGetG(*p))),q);
             SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
               (TIFFGetB(*p))),q);
-            if (image->alpha_trait != UndefinedPixelTrait)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 (TIFFGetA(*p))),q);
             p++;
@@ -1836,7 +1836,7 @@ RestoreMSCWarning
               x);
             for (row=rows_remaining; row > 0; row--)
             {
-              if (image->alpha_trait != UndefinedPixelTrait)
+              if (image->alpha_trait == BlendPixelTrait)
                 for (column=columns_remaining; column > 0; column--)
                 {
                   SetPixelRed(image,ScaleCharToQuantum((unsigned char)
@@ -1934,7 +1934,7 @@ RestoreMSCWarning
               TIFFGetG(*p)),q);
             SetPixelBlue(image,ScaleCharToQuantum((unsigned char) TIFFGetB(*p)),
               q);
-            if (image->alpha_trait != UndefinedPixelTrait)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 TIFFGetA(*p)),q);
             p--;
@@ -3228,7 +3228,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                   PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                 if ((image_info->depth == 0) &&
-                    (image->alpha_trait == UndefinedPixelTrait) &&
+                    (image->alpha_trait != BlendPixelTrait) &&
                     (IsImageMonochrome(image,exception) != MagickFalse))
                   {
                     status=SetQuantumDepth(image,quantum_info,1);
@@ -3283,7 +3283,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
     (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,endian);
     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,quantum_info->depth);
-    if (image->alpha_trait != UndefinedPixelTrait)
+    if (image->alpha_trait == BlendPixelTrait)
       {
         uint16
           extra_samples,
@@ -3562,7 +3562,7 @@ RestoreMSCWarning
           default:
           {
             quantum_type=RGBQuantum;
-            if (image->alpha_trait != UndefinedPixelTrait)
+            if (image->alpha_trait == BlendPixelTrait)
               quantum_type=RGBAQuantum;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
@@ -3650,7 +3650,7 @@ RestoreMSCWarning
                 if (status == MagickFalse)
                   break;
               }
-            if (image->alpha_trait != UndefinedPixelTrait)
+            if (image->alpha_trait == BlendPixelTrait)
               for (y=0; y < (ssize_t) image->rows; y++)
               {
                 register const Quantum
@@ -3681,7 +3681,7 @@ RestoreMSCWarning
           CMYK TIFF image.
         */
         quantum_type=CMYKQuantum;
-        if (image->alpha_trait != UndefinedPixelTrait)
+        if (image->alpha_trait == BlendPixelTrait)
           quantum_type=CMYKAQuantum;
         if (image->colorspace != CMYKColorspace)
           (void) TransformImageColorspace(image,CMYKColorspace,exception);
@@ -3746,7 +3746,7 @@ RestoreMSCWarning
           Convert PseudoClass packets to contiguous grayscale scanlines.
         */
         quantum_type=IndexQuantum;
-        if (image->alpha_trait != UndefinedPixelTrait)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             if (photometric != PHOTOMETRIC_PALETTE)
               quantum_type=GrayAlphaQuantum;

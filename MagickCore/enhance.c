@@ -411,7 +411,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   }
   image_view=DestroyCacheView(image_view);
   clut_map=(PixelInfo *) RelinquishMagickMemory(clut_map);
-  if ((clut_image->alpha_trait != UndefinedPixelTrait) &&
+  if ((clut_image->alpha_trait == BlendPixelTrait) &&
       ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0))
     (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
   return(status);
@@ -2195,7 +2195,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   assert(hald_image->signature == MagickSignature);
   if( IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
     return(MagickFalse);
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if (image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   /*
     Hald clut image.
@@ -2283,7 +2283,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,ClampToQuantum(pixel.black),q);
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->alpha_trait != UndefinedPixelTrait))
+          (image->alpha_trait == BlendPixelTrait))
         SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(image);
     }
@@ -2726,7 +2726,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
           (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->alpha_trait != UndefinedPixelTrait))
+          (image->alpha_trait == BlendPixelTrait))
         {
           channel_mask=SetImageChannelMask(image,AlphaChannel);
           status&=LevelImage(image,black_color->alpha,white_color->alpha,1.0,
@@ -2766,7 +2766,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
           (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->alpha_trait != UndefinedPixelTrait))
+          (image->alpha_trait == BlendPixelTrait))
         {
           channel_mask=SetImageChannelMask(image,AlphaChannel);
           status&=LevelizeImage(image,black_color->alpha,white_color->alpha,1.0,

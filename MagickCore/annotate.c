@@ -1292,7 +1292,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       if (image->storage_class != DirectClass)
         (void) SetImageStorageClass(image,DirectClass,exception);
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     }
   direction=1.0;
@@ -1819,9 +1819,9 @@ static MagickBooleanType RenderPostscript(Image *image,
       /*
         Render fill color.
       */
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-      if (annotate_image->alpha_trait == UndefinedPixelTrait)
+      if (annotate_image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(annotate_image,OpaqueAlphaChannel,
           exception);
       fill_color=draw_info->fill;

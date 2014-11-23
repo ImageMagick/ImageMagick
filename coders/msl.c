@@ -1952,7 +1952,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         }
                       (void) SetImageArtifact(msl_info->image[n],
                                             "compose:args",value);
-                      if (composite_image->alpha_trait == UndefinedPixelTrait)
+                      if (composite_image->alpha_trait != BlendPixelTrait)
                         (void) SetImageAlpha(composite_image,OpaqueAlpha,
                           exception);
                       composite_view=AcquireAuthenticCacheView(composite_image,exception);

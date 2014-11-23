@@ -2892,7 +2892,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       filter_type=PointFilter;
     else
       if ((image->storage_class == PseudoClass) ||
-          (image->alpha_trait != UndefinedPixelTrait) ||
+          (image->alpha_trait == BlendPixelTrait) ||
           ((x_factor*y_factor) > 1.0))
         filter_type=MitchellFilter;
   resize_filter=AcquireResizeFilter(image,filter_type,MagickFalse,exception);
@@ -3697,7 +3697,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   if (thumbnail_image == (Image *) NULL)
     return(thumbnail_image);
   (void) ParseAbsoluteGeometry("0x0+0+0",&thumbnail_image->page);
-  if (thumbnail_image->alpha_trait == UndefinedPixelTrait)
+  if (thumbnail_image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(thumbnail_image,OpaqueAlphaChannel,exception);
   thumbnail_image->depth=8;
   thumbnail_image->interlace=NoInterlace;

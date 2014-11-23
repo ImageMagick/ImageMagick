@@ -1017,7 +1017,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
                   thread_status;
 
                 thread_status=MagickTrue;
-                if (image->alpha_trait != UndefinedPixelTrait)
+                if (image->alpha_trait == BlendPixelTrait)
                   thread_status=ForwardFourierTransformChannel(image,
                     AlphaPixelChannel,modulus,fourier_image,exception);
                 if (thread_status == MagickFalse)
@@ -1584,7 +1584,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
               thread_status;
 
             thread_status=MagickTrue;
-            if (magnitude_image->alpha_trait != UndefinedPixelTrait)
+            if (magnitude_image->alpha_trait == BlendPixelTrait)
               thread_status=InverseFourierTransformChannel(magnitude_image,
                 phase_image,AlphaPixelChannel,modulus,fourier_image,exception);
             if (thread_status == MagickFalse)

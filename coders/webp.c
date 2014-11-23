@@ -667,7 +667,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      *q++=(uint32_t) (image->alpha_trait != UndefinedPixelTrait ?
+      *q++=(uint32_t) (image->alpha_trait == BlendPixelTrait ?
         ScaleQuantumToChar(GetPixelAlpha(image,p)) << 24 : 0xff000000) |
         (ScaleQuantumToChar(GetPixelRed(image,p)) << 16) |
         (ScaleQuantumToChar(GetPixelGreen(image,p)) << 8) |
