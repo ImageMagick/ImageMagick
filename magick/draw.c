@@ -2885,7 +2885,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       }
       case RoundRectanglePrimitive:
       {
-        length*=5+8*BezierQuantum;
+        length*=16*BezierQuantum+5;
         break;
       }
       case BezierPrimitive:
