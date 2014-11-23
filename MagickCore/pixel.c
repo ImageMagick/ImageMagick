@@ -237,8 +237,8 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
       (IsGrayColorspace(image->colorspace) != MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
 #endif
-  if ((destination->alpha_trait != UndefinedPixelTrait) &&
-      (image->alpha_trait == UndefinedPixelTrait))
+  if ((destination->alpha_trait == BlendPixelTrait) &&
+      (image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
 }
 
@@ -4316,7 +4316,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
   (void) ResetMagickMemory(image->channel_map,0,MaxPixelChannels*
     sizeof(*image->channel_map));
   trait=UpdatePixelTrait;
-  if (image->alpha_trait != UndefinedPixelTrait)
+  if (image->alpha_trait == BlendPixelTrait)
     trait=(PixelTrait) (trait | BlendPixelTrait);
   n=0;
   if (image->colorspace == GRAYColorspace)
@@ -4333,7 +4333,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
     }
   if (image->colorspace == CMYKColorspace)
     SetPixelChannelAttributes(image,BlackPixelChannel,trait,n++);
-  if (image->alpha_trait != UndefinedPixelTrait)
+  if (image->alpha_trait == BlendPixelTrait)
     SetPixelChannelAttributes(image,AlphaPixelChannel,CopyPixelTrait,n++);
   if (image->storage_class == PseudoClass)
     SetPixelChannelAttributes(image,IndexPixelChannel,CopyPixelTrait,n++);
@@ -5421,7 +5421,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
 static inline void AlphaBlendPixelInfo(const Image *image,
   const Quantum *pixel,PixelInfo *pixel_info,double *alpha)
 {
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if (image->alpha_trait != BlendPixelTrait)
     {
       *alpha=1.0;
       pixel_info->red=(double) GetPixelRed(image,pixel);
@@ -5931,7 +5931,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
     destination->fuzz,(MagickRealType) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
-  if (source->alpha_trait != UndefinedPixelTrait)
+  if (source->alpha_trait == BlendPixelTrait)
     {
       /*
         Transparencies are involved - set alpha distance
@@ -6049,14 +6049,14 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
       MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
-  if ((p->alpha_trait != UndefinedPixelTrait) ||
-      (q->alpha_trait != UndefinedPixelTrait))
+  if ((p->alpha_trait == BlendPixelTrait) ||
+      (q->alpha_trait == BlendPixelTrait))
     {
       /*
         Transparencies are involved - set alpha distance.
       */
-      pixel=(p->alpha_trait != UndefinedPixelTrait ? p->alpha : OpaqueAlpha)-
-        (q->alpha_trait != UndefinedPixelTrait ? q->alpha : OpaqueAlpha);
+      pixel=(p->alpha_trait == BlendPixelTrait ? p->alpha : OpaqueAlpha)-
+        (q->alpha_trait == BlendPixelTrait ? q->alpha : OpaqueAlpha);
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);
@@ -6064,9 +6064,9 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
         Generate a alpha scaling factor to generate a 4D cone on colorspace.
         If one color is transparent, distance has no color component.
       */
-      if (p->alpha_trait != UndefinedPixelTrait)
+      if (p->alpha_trait == BlendPixelTrait)
         scale=(QuantumScale*p->alpha);
-      if (q->alpha_trait != UndefinedPixelTrait)
+      if (q->alpha_trait == BlendPixelTrait)
         scale*=(QuantumScale*q->alpha);
       if (scale <= MagickEpsilon )
         return(MagickTrue);

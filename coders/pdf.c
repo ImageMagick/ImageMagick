@@ -1190,7 +1190,7 @@ RestoreMSCWarning
   if (image_info->compression == JPEG2000Compression)
     version=(size_t) MagickMax(version,5);
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
-    if (next->alpha_trait != UndefinedPixelTrait)
+    if (next->alpha_trait == BlendPixelTrait)
       version=(size_t) MagickMax(version,4);
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     version=(size_t) MagickMax(version,6);
@@ -1326,7 +1326,7 @@ RestoreMSCWarning
       case Group4Compression:
       {
         if ((IsImageMonochrome(image,exception) == MagickFalse) ||
-            (image->alpha_trait != UndefinedPixelTrait))
+            (image->alpha_trait == BlendPixelTrait))
           compression=RLECompression;
         break;
       }
@@ -1659,7 +1659,7 @@ RestoreMSCWarning
       (compression == FaxCompression) || (compression == Group4Compression) ?
       1 : 8);
     (void) WriteBlobString(image,buffer);
-    if (image->alpha_trait != UndefinedPixelTrait)
+    if (image->alpha_trait == BlendPixelTrait)
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,"/SMask %.20g 0 R\n",
           (double) object+7);
@@ -2522,7 +2522,7 @@ RestoreMSCWarning
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
-    if (image->alpha_trait == UndefinedPixelTrait)
+    if (image->alpha_trait != BlendPixelTrait)
       (void) WriteBlobString(image,">>\n");
     else
       {

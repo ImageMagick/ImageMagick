@@ -1963,7 +1963,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info,
               SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
               SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
               SetPixelAlpha(image,ScaleCharToQuantum(colors.a[code]),q);
-              if (colors.a[code] && (image->alpha_trait == UndefinedPixelTrait))
+              if (colors.a[code] && (image->alpha_trait != BlendPixelTrait))
                 image->alpha_trait=BlendPixelTrait;  /* Correct matte */
               q+=GetPixelChannels(image);
             }
@@ -2649,7 +2649,7 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
   pixelFormat=DDPF_FOURCC;
   compression=FOURCC_DXT5;
 
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if (image->alpha_trait != BlendPixelTrait)
     compression=FOURCC_DXT1;
 
   if (LocaleCompare(image_info->magick,"dxt1") == 0)
@@ -2742,7 +2742,7 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
       caps=caps | (unsigned int) (DDSCAPS_MIPMAP | DDSCAPS_COMPLEX);
     }
 
-  if (format != DDPF_FOURCC && image->alpha_trait != UndefinedPixelTrait)
+  if (format != DDPF_FOURCC && image->alpha_trait == BlendPixelTrait)
     format=format | DDPF_ALPHAPIXELS;
 
   (void) WriteBlob(image,4,(unsigned char *) "DDS ");
@@ -2776,7 +2776,7 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
   else
     {
       (void) WriteBlobLSBLong(image,0x00);
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           (void) WriteBlobLSBLong(image,32);
           (void) WriteBlobLSBLong(image,0xff0000);
@@ -3096,7 +3096,7 @@ static void WriteUncompressed(Image *image, ExceptionInfo *exception)
       (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelBlue(image,p)));
       (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(image,p)));
       (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(image,p)));
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(image,p)));
       p+=GetPixelChannels(image);
     }

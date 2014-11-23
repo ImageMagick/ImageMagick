@@ -208,7 +208,7 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
       MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
-    if (image->alpha_trait != UndefinedPixelTrait)
+    if (image->alpha_trait == BlendPixelTrait)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
     (void) FormatLocaleString(buffer,MaxTextExtent,
       "# ImageMagick pixel debugging: %.20g,%.20g,%.20g,%s\n",(double)
@@ -238,7 +238,7 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
               (double) pixel.black);
             (void) ConcatenateMagickString(tuple,black,MaxTextExtent);
           }
-        if (pixel.alpha_trait != UndefinedPixelTrait)
+        if (pixel.alpha_trait == BlendPixelTrait)
           {
             char
               alpha[MaxTextExtent];

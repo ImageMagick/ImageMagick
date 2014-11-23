@@ -489,7 +489,7 @@ MagickExport Image *AppendImages(const Image *images,
   next=GetNextImageInList(images);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    if (next->alpha_trait != UndefinedPixelTrait)
+    if (next->alpha_trait == BlendPixelTrait)
       alpha_trait=BlendPixelTrait;
     number_images++;
     if (stack != MagickFalse)
@@ -3168,7 +3168,7 @@ MagickExport Image *SmushImages(const Image *images,
   next=GetNextImageInList(image);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    if (next->alpha_trait != UndefinedPixelTrait)
+    if (next->alpha_trait == BlendPixelTrait)
       alpha_trait=BlendPixelTrait;
     number_images++;
     if (stack != MagickFalse)

@@ -934,7 +934,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           channels=1;
           jp2_colorspace=OPJ_CLRSPC_GRAY;
         }
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         channels++;
     }
   parameters.tcp_mct=channels == 3 ? 1 : 0;

@@ -251,7 +251,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                 SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
                 SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
                 SetPixelAlpha(image,OpaqueAlpha,q);
-                if (image->alpha_trait != UndefinedPixelTrait)
+                if (image->alpha_trait == BlendPixelTrait)
                   SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
                 p+=GetPixelChannels(canvas_image);
                 q+=GetPixelChannels(image);
@@ -306,7 +306,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                 "UnexpectedEndOfFile",image->filename);
               break;
             }
-          for (i=0; i < (ssize_t) (image->alpha_trait != UndefinedPixelTrait ? 4 : 3); i++)
+          for (i=0; i < (ssize_t) (image->alpha_trait == BlendPixelTrait ? 4 : 3); i++)
           {
             quantum_type=quantum_types[i];
             q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
@@ -549,7 +549,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
-        if (image->alpha_trait != UndefinedPixelTrait)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
@@ -833,7 +833,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
-        if (image->alpha_trait != UndefinedPixelTrait)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             (void) CloseBlob(image);
             AppendImageFormat("A",image->filename);
@@ -1108,7 +1108,7 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
     */
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
     if ((LocaleCompare(image_info->magick,"BGRA") == 0) &&
-        (image->alpha_trait == UndefinedPixelTrait))
+        (image->alpha_trait != BlendPixelTrait))
       (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)

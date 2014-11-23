@@ -549,7 +549,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
       }
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) PrintChannelLocations(file,image,AlphaPixelChannel,"Alpha",
           type,max_locations,channel_statistics);
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
@@ -756,7 +756,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
       }
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) FormatLocaleFile(file,"    Alpha: %.20g-bit\n",(double)
           channel_statistics[AlphaPixelChannel].depth);
       scale=1.0;
@@ -801,7 +801,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
       }
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/
           scale,channel_statistics);
       if (colorspace != GRAYColorspace)
@@ -849,7 +849,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
       }
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) PrintChannelMoments(file,AlphaPixelChannel,"Alpha",scale,
           channel_moments);
       if (colorspace != GRAYColorspace)
@@ -870,7 +870,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         channel_phash);
       (void) PrintChannelPerceptualHash(file,BluePixelChannel,"Blue, Luma",
         channel_phash);
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) PrintChannelPerceptualHash(file,AlphaPixelChannel,"Alpha, Alpha",
           channel_phash);
       channel_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(
@@ -912,7 +912,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
       }
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) PrintChannelFeatures(file,AlphaPixelChannel,"Alpha",
           channel_features);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
@@ -925,7 +925,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           GetMagickPrecision(),100.0*GetImageTotalInkDensity(image,exception)/
           (double) QuantumRange);
       x=0;
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           register const Quantum
             *p;
@@ -1015,7 +1015,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                 ConcatenateColorComponent(&pixel,BlackPixelChannel,
                   X11Compliance,tuple);
               }
-            if (pixel.alpha_trait != UndefinedPixelTrait)
+            if (pixel.alpha_trait == BlendPixelTrait)
               {
                 (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
                 ConcatenateColorComponent(&pixel,AlphaPixelChannel,

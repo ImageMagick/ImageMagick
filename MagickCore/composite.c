@@ -568,8 +568,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   (void) SetImageColorspace(composite_image,image->colorspace,exception);
-  if ((image->alpha_trait != UndefinedPixelTrait) &&
-      (composite_image->alpha_trait == UndefinedPixelTrait))
+  if ((image->alpha_trait == BlendPixelTrait) &&
+      (composite_image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlphaChannel(composite_image,SetAlphaChannel,exception);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
@@ -2353,8 +2353,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   status=MagickTrue;
   if ((image->compose != CopyCompositeOp) &&
       ((image->compose != OverCompositeOp) ||
-       (image->alpha_trait != UndefinedPixelTrait) ||
-       (texture_image->alpha_trait != UndefinedPixelTrait)))
+       (image->alpha_trait == BlendPixelTrait) ||
+       (texture_image->alpha_trait == BlendPixelTrait)))
     {
       /*
         Tile texture onto the image background.

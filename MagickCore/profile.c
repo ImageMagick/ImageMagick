@@ -1236,19 +1236,19 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             {
               case cmsSigRgbData:
               {
-                image->type=image->alpha_trait == UndefinedPixelTrait ?
+                image->type=image->alpha_trait != BlendPixelTrait ?
                   TrueColorType : TrueColorMatteType;
                 break;
               }
               case cmsSigCmykData:
               {
-                image->type=image->alpha_trait == UndefinedPixelTrait ?
+                image->type=image->alpha_trait != BlendPixelTrait ?
                   ColorSeparationType : ColorSeparationMatteType;
                 break;
               }
               case cmsSigGrayData:
               {
-                image->type=image->alpha_trait == UndefinedPixelTrait ?
+                image->type=image->alpha_trait != BlendPixelTrait ?
                   GrayscaleType : GrayscaleMatteType;
                 break;
               }

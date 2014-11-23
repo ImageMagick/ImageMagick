@@ -755,7 +755,7 @@ static inline void SetAssociatedAlpha(const Image *image,CubeInfo *cube_info)
   MagickBooleanType
     associate_alpha;
 
-  associate_alpha=image->alpha_trait != UndefinedPixelTrait ? MagickTrue :
+  associate_alpha=image->alpha_trait == BlendPixelTrait ? MagickTrue :
     MagickFalse;
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
@@ -2246,7 +2246,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=1UL*GetPixelIndex(image,p);
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
           beta=(double) (QuantumScale*image->colormap[index].alpha);
@@ -2447,7 +2447,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,PosterizePixel(GetPixelBlack(image,q)),q);
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->alpha_trait != UndefinedPixelTrait))
+          (image->alpha_trait == BlendPixelTrait))
         SetPixelAlpha(image,PosterizePixel(GetPixelAlpha(image,q)),q);
       q+=GetPixelChannels(image);
     }
@@ -2750,7 +2750,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     maximum_colors=MaxColormapSize;
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if (image->alpha_trait != BlendPixelTrait)
     {
       if ((image->columns*image->rows) <= maximum_colors)
         (void) DirectToColormapImage(image,exception);
@@ -2774,7 +2774,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         colors>>=2;
       if ((quantize_info->dither_method != NoDitherMethod) && (depth > 2))
         depth--;
-      if ((image->alpha_trait != UndefinedPixelTrait) && (depth > 5))
+      if ((image->alpha_trait == BlendPixelTrait) && (depth > 5))
         depth--;
       if (IsImageGray(image,exception) != MagickFalse)
         depth=MaxTreeDepth;

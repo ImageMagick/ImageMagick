@@ -697,7 +697,7 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   alpha_trait=image->alpha_trait;
   (void) CompositeImage(image,annotate_image,
-    annotate_image->alpha_trait != UndefinedPixelTrait ? OverCompositeOp :
+    annotate_image->alpha_trait == BlendPixelTrait ? OverCompositeOp :
     CopyCompositeOp,MagickTrue,(ssize_t) x,(ssize_t) y,exception);
   image->alpha_trait=alpha_trait;
   annotate_image=DestroyImage(annotate_image);
@@ -5728,7 +5728,7 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
   window->ximage=ximage;
   matte_image=(XImage *) NULL;
   if ((window->shape != MagickFalse) && (window->image != (Image *) NULL))
-    if ((window->image->alpha_trait != UndefinedPixelTrait) &&
+    if ((window->image->alpha_trait == BlendPixelTrait) &&
         ((int) width <= XDisplayWidth(display,window->screen)) &&
         ((int) height <= XDisplayHeight(display,window->screen)))
       {
@@ -5914,7 +5914,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
   if ((window->immutable == MagickFalse) &&
-      (image->storage_class == DirectClass) && (image->alpha_trait != UndefinedPixelTrait))
+      (image->storage_class == DirectClass) && (image->alpha_trait == BlendPixelTrait))
     {
       char
         size[MaxTextExtent];
@@ -6530,7 +6530,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
   if ((window->immutable != MagickFalse) &&
-      (image->storage_class == DirectClass) && (image->alpha_trait != UndefinedPixelTrait))
+      (image->storage_class == DirectClass) && (image->alpha_trait == BlendPixelTrait))
     {
       char
         size[MaxTextExtent];
@@ -7514,7 +7514,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
       (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
       ConcatenateColorComponent(&pixel,BlackPixelChannel,X11Compliance,tuple);
     }
-  if (pixel.alpha_trait != UndefinedPixelTrait)
+  if (pixel.alpha_trait == BlendPixelTrait)
     {
       (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
       ConcatenateColorComponent(&pixel,AlphaPixelChannel,X11Compliance,tuple);
@@ -7771,7 +7771,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
       number_colors=(unsigned int) (map_info->base_pixel+
         (map_info->red_max+1)*(map_info->green_max+1)*(map_info->blue_max+1));
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
-        if ((image->alpha_trait == UndefinedPixelTrait) &&
+        if ((image->alpha_trait != BlendPixelTrait) &&
             (resource_info->color_recovery == MagickFalse) &&
             (resource_info->quantize_info->dither_method != NoDitherMethod) &&
             (number_colors < MaxColormapSize))

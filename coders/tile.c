@@ -118,7 +118,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     ThrowReaderException(OptionError,"MustSpecifyAnImageName");
   image->colorspace=tile_image->colorspace;
   image->alpha_trait=tile_image->alpha_trait;
-  if (image->alpha_trait != UndefinedPixelTrait)
+  if (image->alpha_trait == BlendPixelTrait)
     (void) SetImageBackgroundColor(image,exception);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   if (LocaleCompare(tile_image->magick,"PATTERN") == 0)

@@ -229,7 +229,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
         Convert DirectClass to PseudoClass image.
       */
       matte_image=(unsigned char *) NULL;
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           /*
             Map all the transparent pixels.

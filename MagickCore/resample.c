@@ -545,7 +545,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   pixel->red = pixel->green = pixel->blue = 0.0;
   if (pixel->colorspace == CMYKColorspace)
     pixel->black = 0.0;
-  if (pixel->alpha_trait != UndefinedPixelTrait)
+  if (pixel->alpha_trait == BlendPixelTrait)
     pixel->alpha = 0.0;
 
   /*
@@ -610,7 +610,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
         pixel->alpha  += weight*GetPixelAlpha(resample_filter->image,pixels);
         divisor_m += weight;
 
-        if (pixel->alpha_trait != UndefinedPixelTrait)
+        if (pixel->alpha_trait == BlendPixelTrait)
           weight *= QuantumScale*((double) GetPixelAlpha(resample_filter->image,pixels));
         pixel->red   += weight*GetPixelRed(resample_filter->image,pixels);
         pixel->green += weight*GetPixelGreen(resample_filter->image,pixels);

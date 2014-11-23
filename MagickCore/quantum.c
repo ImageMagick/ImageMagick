@@ -514,24 +514,24 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   quantum_type=RGBQuantum;
-  if (image->alpha_trait != UndefinedPixelTrait)
+  if (image->alpha_trait == BlendPixelTrait)
     quantum_type=RGBAQuantum;
   if (image->colorspace == CMYKColorspace)
     {
       quantum_type=CMYKQuantum;
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         quantum_type=CMYKAQuantum;
     }
   if (IsImageGray(image,exception) != MagickFalse)
     {
       quantum_type=GrayQuantum;
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         quantum_type=GrayAlphaQuantum;
     }
   if (image->storage_class == PseudoClass)
     {
       quantum_type=IndexQuantum;
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == BlendPixelTrait)
         quantum_type=IndexAlphaQuantum;
     }
   return(quantum_type);
