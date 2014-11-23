@@ -272,6 +272,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((ximage->depth < 0) || (ximage->width < 0) || (ximage->height < 0) ||
       (ximage->bitmap_pad < 0) || (ximage->bytes_per_line < 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if ((ximage->width > 65535) || (ximage->height > 65535))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((ximage->bits_per_pixel > 32) || (ximage->bitmap_unit > 32))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   x_status=XInitImage(ximage);
