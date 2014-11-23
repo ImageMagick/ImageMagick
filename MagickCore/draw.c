@@ -172,7 +172,8 @@ static void
     const double,const MagickBooleanType,const MagickBooleanType),
   TraceBezier(PrimitiveInfo *,const size_t),
   TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
+  TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,
+    const PointInfo),
   TraceLine(PrimitiveInfo *,const PointInfo,const PointInfo),
   TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
   TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
@@ -2842,7 +2843,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
       case RoundRectanglePrimitive:
       {
-        length*=5+8*BezierQuantum;
+        length*=16*BezierQuantum+5;
         break;
       }
       case BezierPrimitive:
