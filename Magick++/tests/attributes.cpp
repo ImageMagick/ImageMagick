@@ -1270,7 +1270,7 @@ int main( int /*argc*/, char ** argv)
     //
 
     if ( image.signature() != "b89bff8473dd6fe2302bcfd365e7d20daf7bd97ad667fe42d1a87469fce0d138" &&
-	 image.signature() != "8610fd1c5ef905c05bf75438aaab8729d3e1277b8ec1e86927777bd3382702e5" &&
+	 image.signature() != "5caa527c00cf9e59345de4aaef4f0c2312d1955c2f391ccafa98f8e11370e6e0" &&
    image.signature() != "b891ddb1d32cd45c6329180e5bd733eebb8dd06c401a9c721841ec43e4a662f8")
       {
 	++failures;
