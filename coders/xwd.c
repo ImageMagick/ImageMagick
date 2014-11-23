@@ -275,6 +275,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((ximage->depth < 0) || (ximage->width < 0) || (ximage->height < 0) ||
       (ximage->bitmap_pad < 0) || (ximage->bytes_per_line < 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if ((ximage->width > 65535) || (ximage->height > 65535))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((ximage->bits_per_pixel > 32) || (ximage->bitmap_unit > 32))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   x_status=XInitImage(ximage);
@@ -407,14 +409,12 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               index=(IndexPacket) ((pixel >> red_shift) & red_mask);
-              SetPixelRed(q,ScaleShortToQuantum(colors[(ssize_t)
-                index].red));
+              SetPixelRed(q,ScaleShortToQuantum(colors[(ssize_t) index].red));
               index=(IndexPacket) ((pixel >> green_shift) & green_mask);
               SetPixelGreen(q,ScaleShortToQuantum(colors[(ssize_t)
                 index].green));
               index=(IndexPacket) ((pixel >> blue_shift) & blue_mask);
-              SetPixelBlue(q,ScaleShortToQuantum(colors[(ssize_t)
-                index].blue));
+              SetPixelBlue(q,ScaleShortToQuantum(colors[(ssize_t) index].blue));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -436,18 +436,15 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               color=(pixel >> red_shift) & red_mask;
               if (red_mask != 0)
                 color=(color*65535UL)/red_mask;
-              SetPixelRed(q,ScaleShortToQuantum((unsigned short)
-                color));
+              SetPixelRed(q,ScaleShortToQuantum((unsigned short) color));
               color=(pixel >> green_shift) & green_mask;
               if (green_mask != 0)
                 color=(color*65535UL)/green_mask;
-              SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
-                color));
+              SetPixelGreen(q,ScaleShortToQuantum((unsigned short) color));
               color=(pixel >> blue_shift) & blue_mask;
               if (blue_mask != 0)
                 color=(color*65535UL)/blue_mask;
-              SetPixelBlue(q,ScaleShortToQuantum((unsigned short)
-                color));
+              SetPixelBlue(q,ScaleShortToQuantum((unsigned short) color));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)

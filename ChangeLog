@@ -6,6 +6,8 @@
 2014-11-20  6.9.0-1 Cristy  <quetzlzacatenango@image...>
   * Fix double free / invalid read when converting jpg to pdb (thanks to
     Hanno).
+  * Maximum XWD image size is 64Kx64K (thanks to Hanno).
+  * Maximum DPX number of elements is 8 (thanks to Hanno).
 
 2014-11-16  6.9.0-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-0, SVN revision 17067.
