@@ -7882,7 +7882,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     /*
                       Set a blending mask for the composition.
                     */
-                    /* POSIBLE ERROR; what if image->mask already set */
+                    if (image->mask != (Image *) NULL)
+                      image->mask=DestroyImage(image->mask);
                     image->mask=mask_image;
                     (void) NegateImage(image->mask,MagickFalse);
                   }
@@ -7890,7 +7891,10 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             (void) CompositeImageChannel(image,channel,image->compose,
               composite_image,geometry.x,geometry.y);
             if (mask_image != (Image *) NULL)
-              mask_image=image->mask=DestroyImage(image->mask);
+              {
+                image->mask=DestroyImage(image->mask);
+                mask_image=image->mask;
+              }
             composite_image=DestroyImage(composite_image);
             InheritException(exception,&image->exception);
             *images=DestroyImageList(*images);

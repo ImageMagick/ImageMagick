@@ -1186,6 +1186,10 @@ MagickExport Image *ExtentImage(const Image *image,
   assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  if ((image->columns == geometry->width) && 
+      (image->rows == geometry->height) &&
+      (geometry->x == 0) && (geometry->y == 0))
+    return(CloneImage(image,0,0,MagickTrue,exception));
   extent_image=CloneImage(image,geometry->width,geometry->height,MagickTrue,
     exception);
   if (extent_image == (Image *) NULL)
