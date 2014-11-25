@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-#  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -33,7 +33,7 @@
 #  Top-Level Makefile for building ImageMagick.
 #
 
-#  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -49,7 +49,7 @@
 #
 #  Makefile for building ImageMagick m4 macros.
 
-#  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -65,7 +65,7 @@
 #
 #  Makefile for Magick ImageMagick configuration files.
 
-#  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -81,7 +81,7 @@
 #
 #  Makefile for building ImageMagick Coder library.
 
-#  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -98,7 +98,7 @@
 #  Makefile for building the MagickCore API.
 # 
 
-#  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -114,7 +114,7 @@
 #
 #  Makefile for building ImageMagick filter modules.
 
-#  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -139,7 +139,7 @@
 
 # AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
 
-#  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -155,7 +155,7 @@
 #
 #  Makefile for building ImageMagick utilities.
 
-#  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -4995,7 +4995,7 @@ UTILITIES_EXTRA_DIST = \
 
 UTILITIES_CLEANFILES = 
 
-# Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+# Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
 # dedicated to making software imaging solutions freely available.
 #
 # You may not use this file except in compliance with the License.

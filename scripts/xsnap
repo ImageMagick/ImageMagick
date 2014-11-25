@@ -7,7 +7,7 @@ exec wish "$0" "$@"
 #
 #  Software design, Cristy (magick@dupont.com), March 1996
 #
-#  Copyright (C) 1999-2014 ImageMagick Studio LLC, a non-profit organization
+#  Copyright (C) 1999-2015 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  This software and documentation is provided "as is," and the copyright
