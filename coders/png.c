@@ -3935,8 +3935,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
-    *image,
-    *previous;
+    *image;
 
   MagickBooleanType
     have_mng_structure,
@@ -3996,21 +3995,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   mng_info->image=image;
   have_mng_structure=MagickTrue;
 
-  previous=image;
   image=ReadOnePNGImage(mng_info,image_info,exception);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
 
   if (image == (Image *) NULL)
     {
-      if (previous != (Image *) NULL)
-        {
-          if (previous->signature != MagickSignature)
-            ThrowReaderException(CorruptImageError,"CorruptImage");
-
-          (void) CloseBlob(previous);
-          (void) DestroyImageList(previous);
-        }
-
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "exit ReadPNGImage() with error");
