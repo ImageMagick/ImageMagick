@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ extern "C" {
   Define declarations.
 */
 #define MagickPackageName "ImageMagick"
-#define MagickCopyright  "Copyright (C) 1999-2014 ImageMagick Studio LLC"
-#define MagickSVNRevision  "17086:17087"
+#define MagickCopyright  "Copyright (C) 1999-2015 ImageMagick Studio LLC"
+#define MagickSVNRevision  "17086:17096M"
 #define MagickLibVersion  0x690
 #define MagickLibVersionText  "6.9.0"
 #define MagickLibVersionNumber  2,0,0
@@ -48,7 +48,7 @@ extern "C" {
 #define MagickppLibAddendum  "-1"
 #define MagickppLibInterface  5
 #define MagickppLibMinInterface  5
-#define MagickReleaseDate  "2014-11-23"
+#define MagickReleaseDate  "2014-11-25"
 #define MagickChangeDate   "20141120"
 #define MagickFeatures "DPC OpenMP"
 #define MagickDelegates "bzlib djvu mpeg fftw fpx fontconfig freetype jbig jng jpeg lcms lzma openexr pango png ps tiff webp x xml zlib"
