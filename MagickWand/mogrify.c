@@ -7786,34 +7786,12 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             mask_image=RemoveFirstImageFromList(images);
             if (mask_image != (Image *) NULL)
               {
-                if ((image->compose == DisplaceCompositeOp) ||
-                    (image->compose == DistortCompositeOp))
+                if ((image->compose != DisplaceCompositeOp) &&
+                    (image->compose != DistortCompositeOp))
+                  status&=SetImageMask(composite_image,mask_image,exception);
+                else
                   status&=CompositeImage(composite_image,mask_image,
                     CopyGreenCompositeOp,MagickTrue,0,0,exception);
-                else
-                  {
-                    Image
-                      *image;
-
-                    RectangleInfo
-                      composite_geometry;
-
-                    composite_geometry.width=mask_image->columns;
-                    composite_geometry.height=mask_image->rows;
-                    composite_geometry.x=(-geometry.x);
-                    composite_geometry.y=(-geometry.y);
-                    geometry.x=0;
-                    geometry.y=0;
-                    image=ExtentImage(composite_image,&composite_geometry,
-                     exception);
-                    if (image != (Image *) NULL)
-                      {
-                        composite_image=DestroyImage(composite_image);
-                        composite_image=image;
-                      }
-                    status&=CompositeImage(composite_image,mask_image,
-                      IntensityCompositeOp,MagickTrue,0,0,exception);
-                  }
                 mask_image=DestroyImage(mask_image);
               }
             (void) CompositeImage(image,composite_image,image->compose,

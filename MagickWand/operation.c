@@ -3825,33 +3825,12 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           mask_image=RemoveFirstImageFromList(&_images);
           if (mask_image != (Image *) NULL)
             {
-              if ((compose == DisplaceCompositeOp) ||
-                  (compose == DistortCompositeOp))
+              if ((compose != DisplaceCompositeOp) &&
+                  (compose != DistortCompositeOp))
+                status&=SetImageMask(source_image,mask_image,_exception);
+              else
                 status&=CompositeImage(source_image,mask_image,
                   CopyGreenCompositeOp,MagickTrue,0,0,_exception);
-              else
-                {
-                  Image
-                    *image;
-
-                  RectangleInfo
-                    source_geometry;
-
-                  source_geometry.width=mask_image->columns;
-                  source_geometry.height=mask_image->rows;
-                  source_geometry.x=(-geometry.x);
-                  source_geometry.y=(-geometry.y);
-                  geometry.x=0;
-                  geometry.y=0;
-                  image=ExtentImage(source_image,&source_geometry,_exception);
-                  if (image != (Image *) NULL)
-                    {
-                      source_image=DestroyImage(source_image);
-                      source_image=image;
-                    }
-                  status&=CompositeImage(source_image,mask_image,
-                    IntensityCompositeOp,MagickTrue,0,0,_exception);
-                }
               mask_image=DestroyImage(mask_image);
             }
           status&=CompositeImage(new_images,source_image,compose,clip_to_self,
