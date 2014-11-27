@@ -153,6 +153,7 @@ static const CoderMapInfo
     { "JPM", "JP2" },
     { "J2C", "JP2" },
     { "J2K", "JP2" },
+    { "JPE", "JPEG" },
     { "JPG", "JPEG" },
     { "JPX", "JP2" },
     { "K", "RAW" },
