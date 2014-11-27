@@ -1514,6 +1514,22 @@ ModuleExport size_t RegisterJPEGImage(void)
 #if defined(JPEG_LIB_VERSION)
   (void) FormatLocaleString(version,MaxTextExtent,"%d",JPEG_LIB_VERSION);
 #endif
+  entry=SetMagickInfo("JPE");
+#if JPEG_LIB_VERSION < 80
+  entry->thread_support=NoThreadSupport;
+#endif
+#if defined(MAGICKCORE_JPEG_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
+  entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
+#endif
+  entry->magick=(IsImageFormatHandler *) IsJPEG;
+  entry->adjoin=MagickFalse;
+  entry->description=ConstantString(description);
+  if (*version != '\0')
+    entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/jpeg");
+  entry->module=ConstantString("JPEG");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPEG");
 #if JPEG_LIB_VERSION < 80
   entry->thread_support=NoThreadSupport;
@@ -1588,6 +1604,7 @@ ModuleExport void UnregisterJPEGImage(void)
   (void) UnregisterMagickInfo("PJPG");
   (void) UnregisterMagickInfo("JPEG");
   (void) UnregisterMagickInfo("JPG");
+  (void) UnregisterMagickInfo("JPE");
 }
 
 
