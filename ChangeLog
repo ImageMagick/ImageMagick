@@ -12,6 +12,8 @@
   * Maximum DPX number of elements is 8 (thanks to Hanno).
   * Transient problem with SVG (reference
       http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26587).
+  * Numerous buffer overflow fixes (thanks to Gynvael Coldwind and
+    Mateusz Jurczyk of the Google Security Team)
 
 2014-11-16  6.9.0-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-0, SVN revision 17067.
