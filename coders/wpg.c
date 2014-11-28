@@ -920,8 +920,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   */
 
   Image
-    *image,
-    *rotated_image;
+    *image;
 
   unsigned int
     status;
@@ -1151,30 +1150,46 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   /* flop command */
                   if(BitmapHeader2.RotAngle & 0x8000)
                     {
-                      rotated_image = FlopImage(image, exception);
-                      rotated_image->blob = image->blob;
-                      DuplicateBlob(rotated_image,image);
-                      (void) RemoveLastImageFromList(&image);
-                      AppendImageToList(&image,rotated_image);
+                      Image
+                        *flop_image;
+
+                      flop_image = FlopImage(image, exception);
+                      if (flop_image != (Image *) NULL) {
+                        flop_image->blob = image->blob;
+                        DuplicateBlob(flop_image,image);
+                        (void) RemoveLastImageFromList(&image);
+                        AppendImageToList(&image,flop_image);
+                      }
                     }
                   /* flip command */
                   if(BitmapHeader2.RotAngle & 0x2000)
                     {
-                      rotated_image = FlipImage(image, exception);
-                      rotated_image->blob = image->blob;
-                      DuplicateBlob(rotated_image,image);
-                      (void) RemoveLastImageFromList(&image);
-                      AppendImageToList(&image,rotated_image);
+                      Image
+                        *flip_image;
+
+                      flip_image = FlipImage(image, exception);
+                      if (flip_image != (Image *) NULL) {
+                        flip_image->blob = image->blob;
+                        DuplicateBlob(flip_image,image);
+                        (void) RemoveLastImageFromList(&image);
+                        AppendImageToList(&image,flip_image);
+                      }
                     }
 
       /* rotate command */
                   if(BitmapHeader2.RotAngle & 0x0FFF)
                     {
-                      rotated_image = RotateImage(image, (BitmapHeader2.RotAngle & 0x0FFF), exception);
-                      rotated_image->blob = image->blob;
-                      DuplicateBlob(rotated_image,image);
-                      (void) RemoveLastImageFromList(&image);
-                      AppendImageToList(&image,rotated_image);
+                      Image
+                        *rotate_image;
+
+                      rotate_image=RotateImage(image,(BitmapHeader2.RotAngle &
+                        0x0FFF), exception);
+                      if (rotate_image != (Image *) NULL) {
+                        rotate_image->blob = image->blob;
+                        DuplicateBlob(rotate_image,image);
+                        (void) RemoveLastImageFromList(&image);
+                        AppendImageToList(&image,rotate_image);
+                      }
                     }
                 }
 
@@ -1327,12 +1342,17 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 }
 
               if(CTM[0][0]<0 && !image_info->ping)
-    {    /*?? RotAngle=360-RotAngle;*/
-      rotated_image = FlopImage(image, exception);
-      rotated_image->blob = image->blob;
-      DuplicateBlob(rotated_image,image);
-      (void) RemoveLastImageFromList(&image);
-      AppendImageToList(&image,rotated_image);
+                {    /*?? RotAngle=360-RotAngle;*/
+                  Image
+                    *flop_image;
+
+                  flop_image = FlopImage(image, exception);
+                  if (flop_image != (Image *) NULL) {
+                    flop_image->blob = image->blob;
+                    DuplicateBlob(flop_image,image);
+                    (void) RemoveLastImageFromList(&image);
+                    AppendImageToList(&image,flop_image);
+                  }
                   /* Try to change CTM according to Flip - I am not sure, must be checked.
                      Tx(0,0)=-1;      Tx(1,0)=0;   Tx(2,0)=0;
                      Tx(0,1)= 0;      Tx(1,1)=1;   Tx(2,1)=0;
@@ -1340,19 +1360,24 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                      Tx(1,2)=0;   Tx(2,2)=1; */
                 }
               if(CTM[1][1]<0 && !image_info->ping)
-    {    /*?? RotAngle=360-RotAngle;*/
-      rotated_image = FlipImage(image, exception);
-      rotated_image->blob = image->blob;
-      DuplicateBlob(rotated_image,image);
-      (void) RemoveLastImageFromList(&image);
-      AppendImageToList(&image,rotated_image);
+                {    /*?? RotAngle=360-RotAngle;*/
+                  Image
+                    *flip_image;
+
+                  flip_image = FlipImage(image, exception);
+                  if (flip_image != (Image *) NULL) {
+                    flip_image->blob = image->blob;
+                    DuplicateBlob(flip_image,image);
+                    (void) RemoveLastImageFromList(&image);
+                    AppendImageToList(&image,flip_image);
+                  }
                   /* Try to change CTM according to Flip - I am not sure, must be checked.
                      float_matrix Tx(3,3);
                      Tx(0,0)= 1;   Tx(1,0)= 0;   Tx(2,0)=0;
                      Tx(0,1)= 0;   Tx(1,1)=-1;   Tx(2,1)=0;
                      Tx(0,2)= 0;   Tx(1,2)=(WPG._2Rect.Y_ur+WPG._2Rect.Y_ll);
                      Tx(2,2)=1; */
-    }
+                }
 
 
               /* Allocate next image structure. */
