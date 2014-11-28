@@ -459,12 +459,16 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               index=(IndexPacket) ((pixel >> red_shift) & red_mask);
-              SetPixelRed(q,ScaleShortToQuantum(colors[(ssize_t) index].red));
+              if (index < header.ncolors)
+                SetPixelRed(q,ScaleShortToQuantum(colors[(ssize_t) index].red));
               index=(IndexPacket) ((pixel >> green_shift) & green_mask);
-              SetPixelGreen(q,ScaleShortToQuantum(colors[(ssize_t)
-                index].green));
+              if (index < header.ncolors)
+                SetPixelGreen(q,ScaleShortToQuantum(colors[(ssize_t)
+                  index].green));
               index=(IndexPacket) ((pixel >> blue_shift) & blue_mask);
-              SetPixelBlue(q,ScaleShortToQuantum(colors[(ssize_t) index].blue));
+              if (index < header.ncolors)
+                SetPixelBlue(q,ScaleShortToQuantum(colors[(ssize_t)
+                  index].blue));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
