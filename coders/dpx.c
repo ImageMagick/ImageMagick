@@ -67,6 +67,11 @@
 #include "magick/string-private.h"
 
 /*
+  Define declaration.
+*/
+#define MaxNumberImageElements  8
+
+/*
   Typedef declaration.
 */
 typedef enum
@@ -230,7 +235,7 @@ typedef struct _DPXImageInfo
     lines_per_element;
 
   DPXImageElement
-    image_element[8];
+    image_element[MaxNumberImageElements];
 
   unsigned char
     reserve[52];
@@ -780,6 +785,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read DPX image header.
   */
   dpx.image.orientation=ReadBlobShort(image);
+  if (dpx.image.orientation > 7)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=2;
   if (dpx.image.orientation != (unsigned short) ~0)
     (void) FormatImageProperty(image,"dpx:image.orientation","%d",
@@ -797,7 +804,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case 7: image->orientation=RightBottomOrientation; break;
   }
   dpx.image.number_elements=ReadBlobShort(image);
-  if (dpx.image.number_elements > 8)
+  if (dpx.image.number_elements > MaxNumberImageElements)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=2;
   dpx.image.pixels_per_line=ReadBlobLong(image);
