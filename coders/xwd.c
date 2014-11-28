@@ -523,11 +523,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; i < (ssize_t) image->colors; i++)
         {
           image->colormap[i].red=(MagickRealType) ScaleShortToQuantum(
-            colors[i].red));
+            colors[i].red);
           image->colormap[i].green=(MagickRealType) ScaleShortToQuantum(
-            colors[i].green));
+            colors[i].green);
           image->colormap[i].blue=(MagickRealType) ScaleShortToQuantum(
-            colors[i].blue));
+            colors[i].blue);
         }
         for (y=0; y < (ssize_t) image->rows; y++)
         {
