@@ -568,8 +568,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   (void) SetImageColorspace(composite_image,image->colorspace,exception);
-  if ((image->alpha_trait == BlendPixelTrait) &&
-      (composite_image->alpha_trait != BlendPixelTrait))
+  if (image->alpha_trait == UndefinedPixelTrait)
+    (void) SetImageAlphaChannel(image,SetAlphaChannel,exception);
+  if (composite_image->alpha_trait == UndefinedPixelTrait)
     (void) SetImageAlphaChannel(composite_image,SetAlphaChannel,exception);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
