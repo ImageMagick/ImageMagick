@@ -2932,7 +2932,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             */
             k=(&kernel->values[kernel->width*kernel->height-1]);
             count=0;
-            gamma=0.0;
             if ((morphology_traits & BlendPixelTrait) == 0)
               {
                 /*
@@ -2945,7 +2944,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                     if (IfNaN(*k) == MagickFalse)
                       {
                         pixel+=(*k)*pixels[i];
-                        gamma+=(*k);
                         count++;
                       }
                     k--;
@@ -2958,6 +2956,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
               Alpha blending.
             */
+            gamma=0.0;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
