@@ -643,11 +643,14 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           continue;
         length=extent;
         profile=BlobToStringInfo((const void *) NULL,length);
-        p=GetStringInfoDatum(profile);
-        for (i=0; i < (ssize_t) length; i++)
-          *p++=(unsigned char) ProfileInteger(image,hex_digits);
-        (void) SetImageProfile(image,"8bim",profile);
-        profile=DestroyStringInfo(profile);
+        if (profile != (StringInfo *) NULL)
+          {
+            p=GetStringInfoDatum(profile);
+            for (i=0; i < (ssize_t) length; i++)
+              *p++=(unsigned char) ProfileInteger(image,hex_digits);
+            (void) SetImageProfile(image,"8bim",profile);
+            profile=DestroyStringInfo(profile);
+          }
         continue;
       }
     if (LocaleNCompare(BeginXMPPacket,command,strlen(BeginXMPPacket)) == 0)
