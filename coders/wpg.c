@@ -877,7 +877,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   typedef struct
   {
     unsigned int Width;
-    unsigned int Heigth;
+    unsigned int Height;
     unsigned int Depth;
     unsigned int HorzRes;
     unsigned int VertRes;
@@ -886,7 +886,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   typedef struct
   {
     unsigned int Width;
-    unsigned int Heigth;
+    unsigned int Height;
     unsigned char Depth;
     unsigned char Compression;
   } WPG2BitmapType1;
@@ -899,7 +899,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     unsigned int UpRightX;
     unsigned int UpRightY;
     unsigned int Width;
-    unsigned int Heigth;
+    unsigned int Height;
     unsigned int Depth;
     unsigned int HorzRes;
     unsigned int VertRes;
@@ -1025,7 +1025,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
             {
             case 0x0B: /* bitmap type 1 */
               BitmapHeader1.Width=ReadBlobLSBShort(image);
-              BitmapHeader1.Heigth=ReadBlobLSBShort(image);
+              BitmapHeader1.Height=ReadBlobLSBShort(image);
+              if ((BitmapHeader1.Width == 0) || (BitmapHeader1.Height == 0))
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               BitmapHeader1.Depth=ReadBlobLSBShort(image);
               BitmapHeader1.HorzRes=ReadBlobLSBShort(image);
               BitmapHeader1.VertRes=ReadBlobLSBShort(image);
@@ -1037,7 +1039,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   image->y_resolution=BitmapHeader1.VertRes/470.0;
                 }
               image->columns=BitmapHeader1.Width;
-              image->rows=BitmapHeader1.Heigth;
+              image->rows=BitmapHeader1.Height;
               bpp=BitmapHeader1.Depth;
 
               goto UnpackRaster;
@@ -1075,7 +1077,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               BitmapHeader2.UpRightX=ReadBlobLSBShort(image);
               BitmapHeader2.UpRightY=ReadBlobLSBShort(image);
               BitmapHeader2.Width=ReadBlobLSBShort(image);
-              BitmapHeader2.Heigth=ReadBlobLSBShort(image);
+              BitmapHeader2.Height=ReadBlobLSBShort(image);
+              if ((BitmapHeader2.Width == 0) || (BitmapHeader2.Height == 0))
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               BitmapHeader2.Depth=ReadBlobLSBShort(image);
               BitmapHeader2.HorzRes=ReadBlobLSBShort(image);
               BitmapHeader2.VertRes=ReadBlobLSBShort(image);
@@ -1093,7 +1097,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   image->y_resolution=BitmapHeader2.VertRes/470.0;
                 }
               image->columns=BitmapHeader2.Width;
-              image->rows=BitmapHeader2.Heigth;
+              image->rows=BitmapHeader2.Height;
               bpp=BitmapHeader2.Depth;
 
             UnpackRaster:
@@ -1155,7 +1159,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
                       flop_image = FlopImage(image, exception);
                       if (flop_image != (Image *) NULL) {
-                        flop_image->blob = image->blob;
                         DuplicateBlob(flop_image,image);
                         (void) RemoveLastImageFromList(&image);
                         AppendImageToList(&image,flop_image);
@@ -1169,7 +1172,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
                       flip_image = FlipImage(image, exception);
                       if (flip_image != (Image *) NULL) {
-                        flip_image->blob = image->blob;
                         DuplicateBlob(flip_image,image);
                         (void) RemoveLastImageFromList(&image);
                         AppendImageToList(&image,flip_image);
@@ -1185,7 +1187,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       rotate_image=RotateImage(image,(BitmapHeader2.RotAngle &
                         0x0FFF), exception);
                       if (rotate_image != (Image *) NULL) {
-                        rotate_image->blob = image->blob;
                         DuplicateBlob(rotate_image,image);
                         (void) RemoveLastImageFromList(&image);
                         AppendImageToList(&image,rotate_image);
@@ -1264,7 +1265,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               break;
             case 0x0E:
               Bitmap2Header1.Width=ReadBlobLSBShort(image);
-              Bitmap2Header1.Heigth=ReadBlobLSBShort(image);
+              Bitmap2Header1.Height=ReadBlobLSBShort(image);
+              if ((Bitmap2Header1.Width == 0) || (Bitmap2Header1.Height == 0))
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               Bitmap2Header1.Depth=ReadBlobByte(image);
               Bitmap2Header1.Compression=ReadBlobByte(image);
 
@@ -1291,7 +1294,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   continue;  /*Ignore raster with unknown depth*/
                 }
               image->columns=Bitmap2Header1.Width;
-              image->rows=Bitmap2Header1.Heigth;
+              image->rows=Bitmap2Header1.Height;
 
               if ((image->colors == 0) && (bpp != 24))
                 {
@@ -1348,7 +1351,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
                   flop_image = FlopImage(image, exception);
                   if (flop_image != (Image *) NULL) {
-                    flop_image->blob = image->blob;
                     DuplicateBlob(flop_image,image);
                     (void) RemoveLastImageFromList(&image);
                     AppendImageToList(&image,flop_image);
@@ -1366,7 +1368,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
                   flip_image = FlipImage(image, exception);
                   if (flip_image != (Image *) NULL) {
-                    flip_image->blob = image->blob;
                     DuplicateBlob(flip_image,image);
                     (void) RemoveLastImageFromList(&image);
                     AppendImageToList(&image,flip_image);
