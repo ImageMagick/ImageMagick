@@ -3260,10 +3260,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               }
             }
 
-          if ((image->previous == (Image *) NULL) && (num_passes == 1))
+          if (num_passes == 1)
             {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                  image->rows);
+              status=SetImageProgress(image,LoadImageTag,
+                  (MagickOffsetType) y, image->rows);
 
               if (status == MagickFalse)
                 break;
@@ -3272,7 +3272,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             break;
         }
 
-        if ((image->previous == (Image *) NULL) && (num_passes != 1))
+        if (num_passes != 1)
           {
             status=SetImageProgress(image,LoadImageTag,pass,num_passes);
             if (status == MagickFalse)
@@ -3437,7 +3437,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
 
-        if ((image->previous == (Image *) NULL) && (num_passes == 1))
+        if (num_passes == 1)
           {
             status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
               image->rows);
@@ -3447,7 +3447,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
       }
 
-      if ((image->previous == (Image *) NULL) && (num_passes != 1))
+      if (num_passes != 1)
         {
           status=SetImageProgress(image,LoadImageTag,pass,num_passes);
 
@@ -4217,7 +4217,10 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         type[0],type[1],type[2],type[3],(double) length);
 
     if (length > PNG_UINT_31_MAX || count == 0)
-      ThrowReaderException(CorruptImageError,"CorruptImage");
+      {
+        ThrowReaderException(CorruptImageError,"CorruptImage");
+        return (Image *) NULL;
+      }
 
     p=NULL;
     chunk=(unsigned char *) NULL;
@@ -10877,13 +10880,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 "    Writing row of pixels (1)");
 
           png_write_row(ping,ping_pixels);
+
+          status=SetImageProgress(image,LoadImageTag,
+              (MagickOffsetType) (pass * image->rows + y),
+              num_passes * image->rows);
+          if (status == MagickFalse)
+            break;
         }
-        if (image->previous == (Image *) NULL)
-          {
-            status=SetImageProgress(image,LoadImageTag,pass,num_passes);
-            if (status == MagickFalse)
-              break;
-          }
       }
     }
 
@@ -10938,13 +10941,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   "    Writing row of pixels (2)");
 
             png_write_row(ping,ping_pixels);
-          }
 
-          if (image->previous == (Image *) NULL)
-            {
-              status=SetImageProgress(image,LoadImageTag,pass,num_passes);
-              if (status == MagickFalse)
-                break;
+            status=SetImageProgress(image,LoadImageTag,
+              (MagickOffsetType) (pass * image->rows + y),
+              num_passes * image->rows);
+            if (status == MagickFalse)
+              break;
             }
           }
         }
@@ -11005,6 +11007,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                       "    Writing row of pixels (3)");
 
                 png_write_row(ping,ping_pixels);
+
+                status=SetImageProgress(image,LoadImageTag,
+                  (MagickOffsetType) (pass * image->rows + y),
+                  num_passes * image->rows);
+                if (status == MagickFalse)
+                  break;
               }
             }
 
@@ -11072,15 +11080,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                     }
                   }
                 png_write_row(ping,ping_pixels);
-              }
-            }
 
-            if (image->previous == (Image *) NULL)
-              {
-                status=SetImageProgress(image,LoadImageTag,pass,num_passes);
+                status=SetImageProgress(image,LoadImageTag,
+                  (MagickOffsetType) (pass * image->rows + y),
+                  num_passes * image->rows);
                 if (status == MagickFalse)
                   break;
               }
+            }
           }
         }
     }
