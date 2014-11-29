@@ -47,6 +47,7 @@
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colormap.h"
+#include "magick/colormap-private.h"
 #include "magick/colorspace.h"
 #include "magick/colorspace-private.h"
 #include "magick/exception.h"
@@ -447,18 +448,18 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           if (i < (ssize_t) image->colors)
             {
               image->colormap[i].red=ScaleCharToQuantum((unsigned char) value);
-              image->colormap[i].green=
-                ScaleCharToQuantum((unsigned char) value);
+              image->colormap[i].green=ScaleCharToQuantum((unsigned char)
+                value);
               image->colormap[i].blue=ScaleCharToQuantum((unsigned char) value);
             }
           else
             if (i < (ssize_t) (2*image->colors))
-              image->colormap[i % image->colors].green=
-                ScaleCharToQuantum((unsigned char) value);
+              image->colormap[i % image->colors].green=ScaleCharToQuantum(
+                (unsigned char) value);
             else
               if (i < (ssize_t) (3*image->colors))
-                image->colormap[i % image->colors].blue=
-                  ScaleCharToQuantum((unsigned char) value);
+                image->colormap[i % image->colors].blue=ScaleCharToQuantum(
+                  (unsigned char) value);
         }
         viff_colormap=(unsigned char *) RelinquishMagickMemory(viff_colormap);
         break;
@@ -672,16 +673,21 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               SetPixelBlue(q,ScaleCharToQuantum(*(p+2*number_pixels)));
               if (image->colors != 0)
                 {
-                  SetPixelRed(q,image->colormap[(ssize_t)
-                    GetPixelRed(q)].red);
-                  SetPixelGreen(q,image->colormap[(ssize_t)
-                    GetPixelGreen(q)].green);
-                  SetPixelBlue(q,image->colormap[(ssize_t)
-                    GetPixelBlue(q)].blue);
+                  ssize_t
+                    index;
+
+                  index=(ssize_t) GetPixelRed(q);
+                  SetPixelRed(q,image->colormap[
+                    ConstrainColormapIndex(image,index)].red);
+                  index=(ssize_t) GetPixelGreen(q);
+                  SetPixelGreen(q,image->colormap[
+                    ConstrainColormapIndex(image,index)].green);
+                  index=(ssize_t) GetPixelRed(q);
+                  SetPixelBlue(q,image->colormap[
+                    ConstrainColormapIndex(image,index)].blue);
                 }
-              SetPixelOpacity(q,image->matte != MagickFalse ?
-                QuantumRange-ScaleCharToQuantum(*(p+number_pixels*3)) :
-                OpaqueOpacity);
+              SetPixelOpacity(q,image->matte != MagickFalse ? QuantumRange-
+                ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueOpacity);
               p++;
               q++;
             }
