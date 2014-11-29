@@ -26,14 +26,16 @@
 extern "C" {
 #endif
 
-static inline Quantum ConstrainColormapIndex(Image *image,const size_t index,
+static inline ssize_t ConstrainColormapIndex(Image *image,const ssize_t index,
   ExceptionInfo *exception)
 {
-  if (index < image->colors)
-    return((Quantum) index);
-  (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-    "InvalidColormapIndex","`%s'",image->filename);
-  return((Quantum) 0);
+  if ((index < 0) || (index >= image->colors))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "InvalidColormapIndex","`%s'",image->filename);
+      return(0);
+    }
+  return(index);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
