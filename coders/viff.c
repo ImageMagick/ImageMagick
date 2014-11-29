@@ -47,6 +47,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
+#include "MagickCore/colormap-private.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
@@ -674,12 +675,18 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               SetPixelBlue(image,ScaleCharToQuantum(*(p+2*number_pixels)),q);
               if (image->colors != 0)
                 {
-                  SetPixelRed(image,image->colormap[(ssize_t)
-                    GetPixelRed(image,q)].red,q);
-                  SetPixelGreen(image,image->colormap[(ssize_t)
-                    GetPixelGreen(image,q)].green,q);
-                  SetPixelBlue(image,image->colormap[(ssize_t)
-                    GetPixelBlue(image,q)].blue,q);
+                  ssize_t
+                    index;
+                  
+                  index=(ssize_t) GetPixelRed(image,q);
+                  SetPixelRed(image,image->colormap[
+                    ConstrainColormapIndex(image,index,exception)].red,q);
+                  index=(ssize_t) GetPixelGreen(image,q);
+                  SetPixelGreen(image,image->colormap[
+                    ConstrainColormapIndex(image,index,exception)].green,q);
+                  index=(ssize_t) GetPixelBlue(image,q);
+                  SetPixelBlue(image,image->colormap[
+                    ConstrainColormapIndex(image,index,exception)].blue,q);
                 }
               SetPixelAlpha(image,image->alpha_trait == BlendPixelTrait ?
                 ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueAlpha,q);
