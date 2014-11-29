@@ -402,12 +402,11 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
-  packets=bits_per_pixel*image->columns/8;
+  packets=(bits_per_pixel*image->columns+7)/8;
   pixels=(unsigned char *) AcquireQuantumMemory(packets+256UL,image->rows*
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-
   switch (pdb_image.version & 0x07)
   {
     case 0:
@@ -528,7 +527,6 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     default:
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
-
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -801,7 +799,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   if (image->columns % 16)
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
-  packets=(bits_per_pixel*image->columns/8+4)*image->rows;
+  packets=((bits_per_pixel*image->columns+7)/8)*image->rows;
   runlength=(unsigned char *) AcquireQuantumMemory(2UL*packets,
     sizeof(*runlength));
   if (runlength == (unsigned char *) NULL)
