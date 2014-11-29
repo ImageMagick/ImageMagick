@@ -3827,7 +3827,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             {
               if ((compose != DisplaceCompositeOp) &&
                   (compose != DistortCompositeOp))
-                status&=SetImageMask(source_image,mask_image,_exception);
+                status&=CompositeImage(source_image,mask_image,
+                  IntensityCompositeOp,MagickTrue,0,0,_exception);
               else
                 status&=CompositeImage(source_image,mask_image,
                   CopyGreenCompositeOp,MagickTrue,0,0,_exception);

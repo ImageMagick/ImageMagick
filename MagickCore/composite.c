@@ -592,9 +592,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     {
       if ((x_offset < 0) || (y_offset < 0))
         break;
-      if ((x_offset+(ssize_t) composite_image->columns) >= (ssize_t) image->columns)
+      if ((x_offset+(ssize_t) composite_image->columns) > (ssize_t) image->columns)
         break;
-      if ((y_offset+(ssize_t) composite_image->rows) >= (ssize_t) image->rows)
+      if ((y_offset+(ssize_t) composite_image->rows) > (ssize_t) image->rows)
         break;
       status=MagickTrue;
       composite_view=AcquireVirtualCacheView(composite_image,exception);
@@ -675,9 +675,86 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       composite_image=DestroyImage(composite_image);
       return(status);
     }
+    case IntensityCompositeOp:
+    {
+      if ((x_offset < 0) || (y_offset < 0))
+        break;
+      if ((x_offset+(ssize_t) composite_image->columns) > (ssize_t) image->columns)
+        break;
+      if ((y_offset+(ssize_t) composite_image->rows) > (ssize_t) image->rows)
+        break;
+      status=MagickTrue;
+      composite_view=AcquireVirtualCacheView(composite_image,exception);
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        magick_threads(composite_image,image,composite_image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) composite_image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register const Quantum
+          *p;
+
+        register Quantum
+          *q;
+
+        register ssize_t
+          x;
+
+        if (status == MagickFalse)
+          continue;
+        p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
+          1,exception);
+        q=GetCacheViewAuthenticPixels(image_view,x_offset,y+y_offset,
+          composite_image->columns,1,exception);
+        if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) composite_image->columns; x++)
+        {
+          register ssize_t
+            i;
+
+          if (GetPixelReadMask(composite_image,p) == 0)
+            {
+              p+=GetPixelChannels(composite_image);
+              q+=GetPixelChannels(image);
+              continue;
+            }
+          for (i=0; i < (ssize_t) GetPixelChannels(composite_image); i++)
+            SetPixelAlpha(image,GetPixelIntensity(composite_image,p),q);
+          p+=GetPixelChannels(composite_image);
+          q+=GetPixelChannels(image);
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+        if (image->progress_monitor != (MagickProgressMonitor) NULL)
+          {
+            MagickBooleanType
+              proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+            #pragma omp critical (MagickCore_CompositeImage)
+#endif
+            proceed=SetImageProgress(image,CompositeImageTag,
+              (MagickOffsetType) y,image->rows);
+            if (proceed == MagickFalse)
+              status=MagickFalse;
+          }
+      }
+      composite_view=DestroyCacheView(composite_view);
+      image_view=DestroyCacheView(image_view);
+      composite_image=DestroyImage(composite_image);
+      return(status);
+    }
     case CopyAlphaCompositeOp:
     case ChangeMaskCompositeOp:
-    case IntensityCompositeOp:
     {
       /*
         Modify destination outside the overlaid region and require an alpha
@@ -1291,7 +1368,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case DstAtopCompositeOp:
               case DstInCompositeOp:
               case InCompositeOp:
-              case IntensityCompositeOp:
               case OutCompositeOp:
               case SrcInCompositeOp:
               case SrcOutCompositeOp:
@@ -1466,8 +1542,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if ((compose != IntensityCompositeOp) &&
-            (composite_traits == UndefinedPixelTrait))
+        if (composite_traits == UndefinedPixelTrait)
           continue;
         /*
           Sc: source color.
@@ -1578,11 +1653,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               {
                 pixel=(1.0-Sa)*GetPixelIntensity(composite_image,p) <
                   (1.0-Da)*GetPixelIntensity(image,q) ? Sa : Da;
-                break;
-              }
-              case IntensityCompositeOp:
-              {
-                pixel=GetPixelIntensity(composite_image,p);
                 break;
               }
               case LightenIntensityCompositeOp:
@@ -1736,7 +1806,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             break;
           }
           case CopyAlphaCompositeOp:
-          case IntensityCompositeOp:
           {
             pixel=Dc;
             break;

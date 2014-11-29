@@ -7788,7 +7788,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               {
                 if ((image->compose != DisplaceCompositeOp) &&
                     (image->compose != DistortCompositeOp))
-                  status&=SetImageMask(composite_image,mask_image,exception);
+                  status&=CompositeImage(composite_image,mask_image,
+                    IntensityCompositeOp,MagickTrue,0,0,exception);
                 else
                   status&=CompositeImage(composite_image,mask_image,
                     CopyGreenCompositeOp,MagickTrue,0,0,exception);
