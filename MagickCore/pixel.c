@@ -214,7 +214,6 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(destination != (const PixelInfo *) NULL);
-
   *destination=(*source);
   if (image->colorspace == CMYKColorspace)
     {
@@ -227,16 +226,9 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
         if (IssRGBCompatibleColorspace(image->colorspace))
           ConvertCMYKToRGB(destination);
       }
-#if 0
-  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsPixelInfoGray(destination) == MagickFalse))
-    /* TODO: Add this method. */
-    SetPixelInfoGray(destination);
-#else
   if ((IsPixelInfoGray(&image->background_color) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-#endif
   if ((destination->alpha_trait == BlendPixelTrait) &&
       (image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
@@ -4492,9 +4484,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
   traits=GetPixelChannelTraits(image,channel);
   x_offset=(ssize_t) floor(x);
   y_offset=(ssize_t) floor(y);
-  interpolate = method;
-  if ( interpolate == UndefinedInterpolatePixel )
-    interpolate = image->interpolate;
+  interpolate=method;
+  if (interpolate == UndefinedInterpolatePixel)
+    interpolate=image->interpolate;
   switch (interpolate)
   {
     case AverageInterpolatePixel:  /* nearest 4 neighbours */
@@ -4911,9 +4903,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
   status=MagickTrue;
   x_offset=(ssize_t) floor(x);
   y_offset=(ssize_t) floor(y);
-  interpolate = method;
-  if ( interpolate == UndefinedInterpolatePixel )
-    interpolate = source->interpolate;
+  interpolate=method;
+  if (interpolate == UndefinedInterpolatePixel)
+    interpolate=source->interpolate;
   switch (interpolate)
   {
     case AverageInterpolatePixel:  /* nearest 4 neighbours */
@@ -5476,9 +5468,9 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   status=MagickTrue;
   x_offset=(ssize_t) floor(x);
   y_offset=(ssize_t) floor(y);
-  interpolate = method;
-  if ( interpolate == UndefinedInterpolatePixel )
-    interpolate = image->interpolate;
+  interpolate=method;
+  if (interpolate == UndefinedInterpolatePixel)
+    interpolate=image->interpolate;
   switch (interpolate)
   {
     case AverageInterpolatePixel:  /* nearest 4 neighbours */
@@ -6161,7 +6153,9 @@ MagickExport void SetPixelChannelMask(Image *image,
       (channel != AlphaPixelChannel) ? (PixelTrait)
       (UpdatePixelTrait | BlendPixelTrait) : UpdatePixelTrait);
   }
-  SetPixelChannelTraits(image,AlphaPixelChannel,image->alpha_trait);
+  SetPixelChannelTraits(image,AlphaPixelChannel,
+    GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
+    image->alpha_trait);
   if (image->storage_class == PseudoClass)
     SetPixelChannelTraits(image,IndexPixelChannel,CopyPixelTrait);
   if (image->read_mask != MagickFalse)
