@@ -151,12 +151,16 @@ static int CompareXPMColor(const void *target,const void *source)
   return(strcmp(p,q));
 }
 
-static char *CopyXPMColor(char *destination,const char *source,size_t length)
+static size_t CopyXPMColor(char *destination,const char *source,size_t length)
 {
-  while (length-- && (*source != '\0'))
-    *destination++=(*source++);
+  register char
+    *p;
+
+  p=source;
+  while (length-- && (*p != '\0'))
+    *destination++=(*p++);
   *destination='\0';
-  return(destination-length);
+  return((size_t) (p-source));
 }
 
 static char *NextXPMLine(char *p)
@@ -303,24 +307,26 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   length=MaxTextExtent;
   xpm_buffer=(char *) AcquireQuantumMemory((size_t) length,sizeof(*xpm_buffer));
+  if (xpm_buffer == (char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  *xpm_buffer='\0';
   p=xpm_buffer;
-  if (xpm_buffer != (char *) NULL)
-    while (ReadBlobString(image,p) != (char *) NULL)
-    {
-      if ((*p == '#') && ((p == xpm_buffer) || (*(p-1) == '\n')))
-        continue;
-      if ((*p == '}') && (*(p+1) == ';'))
-        break;
-      p+=strlen(p);
-      if ((size_t) (p-xpm_buffer+MaxTextExtent) < length)
-        continue;
-      length<<=1;
-      xpm_buffer=(char *) ResizeQuantumMemory(xpm_buffer,length+MaxTextExtent,
-        sizeof(*xpm_buffer));
-      if (xpm_buffer == (char *) NULL)
-        break;
-      p=xpm_buffer+strlen(xpm_buffer);
-    }
+  while (ReadBlobString(image,p) != (char *) NULL)
+  {
+    if ((*p == '#') && ((p == xpm_buffer) || (*(p-1) == '\n')))
+      continue;
+    if ((*p == '}') && (*(p+1) == ';'))
+      break;
+    p+=strlen(p);
+    if ((size_t) (p-xpm_buffer+MaxTextExtent) < length)
+      continue;
+    length<<=1;
+    xpm_buffer=(char *) ResizeQuantumMemory(xpm_buffer,length+MaxTextExtent,
+      sizeof(*xpm_buffer));
+    if (xpm_buffer == (char *) NULL)
+      break;
+    p=xpm_buffer+strlen(xpm_buffer);
+  }
   if (xpm_buffer == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   /*
@@ -429,12 +435,11 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          (void) CopyXPMColor(key,p,(size_t) width);
+          p+=CopyXPMColor(key,p,MagickMin(width,MaxTextExtent));
           j=(ssize_t) GetValueFromSplayTree(xpm_colors,key);
           if (image->storage_class == PseudoClass)
-            SetPixelIndex(image,j,r);
+            SetPixelIndex(image,(Quantum) j,r);
           SetPixelInfoPixel(image,image->colormap+j,r);
-          p+=width;
           r+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -732,7 +737,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
         for (x=0; x < (ssize_t) picon->columns; x++)
         {
           if (GetPixelAlpha(image,q) == (Quantum) TransparentAlpha)
-            SetPixelIndex(picon,picon->colors,q);
+            SetPixelIndex(picon,(Quantum) picon->colors,q);
           q+=GetPixelChannels(picon);
         }
         if (SyncAuthenticPixels(picon,exception) == MagickFalse)

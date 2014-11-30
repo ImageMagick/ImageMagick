@@ -29,7 +29,7 @@ extern "C" {
 static inline ssize_t ConstrainColormapIndex(Image *image,const ssize_t index,
   ExceptionInfo *exception)
 {
-  if ((index < 0) || (index >= image->colors))
+  if ((index < 0) || (index >= (ssize_t) image->colors))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "InvalidColormapIndex","`%s'",image->filename);
