@@ -153,7 +153,7 @@ static void PNMComment(Image *image,ExceptionInfo *exception)
     Read comment.
   */
   comment=AcquireString(GetImageProperty(image,"comment",exception));
-  extent=strlen(comment);
+  extent=MaxTextExtent;
   p=comment+strlen(comment);
   for (c='#'; (c != EOF) && (c != (int) '\n'); p++)
   {
