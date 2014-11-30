@@ -305,10 +305,18 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sun_info.type=ReadBlobMSBLong(image);
     sun_info.maptype=ReadBlobMSBLong(image);
     sun_info.maplength=ReadBlobMSBLong(image);
-    image->columns=sun_info.width;
-    image->rows=sun_info.height;
+    if ((sun_info.type != RT_STANDARD) && (sun_info.type != RT_ENCODED) &&
+        (sun_info.type != RT_FORMAT_RGB))
+      ThrowReaderException(CoderError,"ImproperImageHeader");
+    if ((sun_info.maptype == RMT_NONE) && (sun_info.maplength != 0))
+      ThrowReaderException(CoderError,"ImproperImageHeader");
     if ((sun_info.depth == 0) || (sun_info.depth > 32))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if ((sun_info.maptype != RMT_NONE) && (sun_info.maptype != RMT_EQUAL_RGB) &&
+        (sun_info.maptype != RMT_RAW))
+      ThrowReaderException(CoderError,"ColormapTypeNotSupported");
+    image->columns=sun_info.width;
+    image->rows=sun_info.height;
     image->depth=sun_info.depth <= 8 ? sun_info.depth :
       MAGICKCORE_QUANTUM_DEPTH;
     if (sun_info.depth < 24)
@@ -353,14 +361,23 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         count=ReadBlob(image,image->colors,sun_colormap);
+        if (count != (ssize_t) image->colors)
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         for (i=0; i < (ssize_t) image->colors; i++)
-          image->colormap[i].red=ScaleCharToQuantum(sun_colormap[i]);
+          image->colormap[i].red=(MagickRealType) ScaleCharToQuantum(
+            sun_colormap[i]);
         count=ReadBlob(image,image->colors,sun_colormap);
+        if (count != (ssize_t) image->colors)
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         for (i=0; i < (ssize_t) image->colors; i++)
-          image->colormap[i].green=ScaleCharToQuantum(sun_colormap[i]);
+          image->colormap[i].green=(MagickRealType) ScaleCharToQuantum(
+            sun_colormap[i]);
         count=ReadBlob(image,image->colors,sun_colormap);
+        if (count != (ssize_t) image->colors)
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         for (i=0; i < (ssize_t) image->colors; i++)
-          image->colormap[i].blue=ScaleCharToQuantum(sun_colormap[i]);
+          image->colormap[i].blue=(MagickRealType) ScaleCharToQuantum(
+            sun_colormap[i]);
         sun_colormap=(unsigned char *) RelinquishMagickMemory(sun_colormap);
         break;
       }
@@ -377,13 +394,15 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         count=ReadBlob(image,sun_info.maplength,sun_colormap);
+        if (count != (ssize_t) sun_info.maplength)
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         sun_colormap=(unsigned char *) RelinquishMagickMemory(sun_colormap);
         break;
       }
       default:
         ThrowReaderException(CoderError,"ColormapTypeNotSupported");
     }
-    image->alpha_trait=sun_info.depth == 32 ? BlendPixelTrait : 
+    image->alpha_trait=sun_info.depth == 32 ? BlendPixelTrait :
       UndefinedPixelTrait;
     image->columns=sun_info.width;
     image->rows=sun_info.height;
@@ -404,7 +423,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     count=(ssize_t) ReadBlob(image,sun_info.length,sun_data);
-    if ((count == 0) && (sun_info.type != RT_ENCODED))
+    if (count != (ssize_t) sun_info.length)
       ThrowReaderException(CorruptImageError,"UnableToReadImageData");
     sun_pixels=sun_data;
     bytes_per_line=0;
@@ -430,8 +449,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           bytes_per_line*sizeof(*sun_pixels));
         if (sun_pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) DecodeImage(sun_data,sun_info.length,sun_pixels,
-          bytes_per_line*height);
+        (void) DecodeImage(sun_data,sun_info.length,sun_pixels,bytes_per_line*
+          height);
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
       }
     /*
@@ -448,16 +467,18 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           for (bit=7; bit >= 0; bit--)
           {
-            SetPixelIndex(image,((*p) & (0x01 << bit) ? 0x00 : 0x01),q);
+            SetPixelIndex(image,(Quantum) ((*p) & (0x01 << bit) ? 0x00 : 0x01),
+              q);
             q+=GetPixelChannels(image);
           }
           p++;
         }
         if ((image->columns % 8) != 0)
           {
-            for (bit=7; bit >= (ssize_t) (8-(image->columns % 8)); bit--)
+            for (bit=7; bit >= (int) (8-(image->columns % 8)); bit--)
             {
-              SetPixelIndex(image,(*p) & (0x01 << bit) ? 0x00 : 0x01,q);
+              SetPixelIndex(image,(Quantum) ((*p) & (0x01 << bit) ? 0x00 :
+                0x01),q);
               q+=GetPixelChannels(image);
             }
             p++;
@@ -542,12 +563,12 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (image->colors != 0)
                 {
-                  SetPixelRed(image,image->colormap[(ssize_t)
-                    GetPixelRed(image,q)].red,q);
-                  SetPixelGreen(image,image->colormap[(ssize_t)
-                    GetPixelGreen(image,q)].green,q);
-                  SetPixelBlue(image,image->colormap[(ssize_t)
-                    GetPixelBlue(image,q)].blue,q);
+                  SetPixelRed(image,ClampToQuantum(image->colormap[(ssize_t)
+                    GetPixelRed(image,q)].red),q);
+                  SetPixelGreen(image,ClampToQuantum(image->colormap[(ssize_t)
+                    GetPixelGreen(image,q)].green),q);
+                  SetPixelBlue(image,ClampToQuantum(image->colormap[(ssize_t)
+                    GetPixelBlue(image,q)].blue),q);
                 }
               q+=GetPixelChannels(image);
             }
@@ -769,7 +790,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
       ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
     sun_info.width=(unsigned int) image->columns;
     sun_info.height=(unsigned int) image->rows;
-    sun_info.type=(unsigned int) 
+    sun_info.type=(unsigned int)
       (image->storage_class == DirectClass ? RT_FORMAT_RGB : RT_STANDARD);
     sun_info.maptype=RMT_NONE;
     sun_info.maplength=0;
@@ -934,13 +955,13 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
           */
           for (i=0; i < (ssize_t) image->colors; i++)
             (void) WriteBlobByte(image,ScaleQuantumToChar(
-              image->colormap[i].red));
+              ClampToQuantum(image->colormap[i].red)));
           for (i=0; i < (ssize_t) image->colors; i++)
             (void) WriteBlobByte(image,ScaleQuantumToChar(
-              image->colormap[i].green));
+              ClampToQuantum(image->colormap[i].green)));
           for (i=0; i < (ssize_t) image->colors; i++)
             (void) WriteBlobByte(image,ScaleQuantumToChar(
-              image->colormap[i].blue));
+              ClampToQuantum(image->colormap[i].blue)));
           /*
             Convert PseudoClass packet to SUN colormapped pixel.
           */
