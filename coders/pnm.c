@@ -155,7 +155,7 @@ static void PNMComment(Image *image)
     Read comment.
   */
   comment=AcquireString(GetImageProperty(image,"comment"));
-  extent=strlen(comment);
+  extent=MaxTextExtent;
   p=comment+strlen(comment);
   for (c='#'; (c != EOF) && (c != (int) '\n'); p++)
   {
