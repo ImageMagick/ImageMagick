@@ -645,8 +645,9 @@ MagickExport void SetQuantumAlphaType(QuantumInfo *quantum_info,
 MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
   QuantumInfo *quantum_info,const size_t depth)
 {
-  MagickBooleanType
-    status;
+  size_t
+    extent,
+    quantum;
 
   /*
     Allocate the quantum pixel buffer.
@@ -670,9 +671,11 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
     }
   if (quantum_info->pixels != (unsigned char **) NULL)
     DestroyQuantumPixels(quantum_info);
-  status=AcquireQuantumPixels(quantum_info,(6+quantum_info->pad)*image->columns*
-    ((quantum_info->depth+7)/8));  /* allow for CMYKA + RLE byte + pad */
-  return(status);
+  quantum=(quantum_info->pad+6)*(quantum_info->depth+7)/8;
+  extent=image->columns*quantum;
+  if (quantum != (extent/image->columns))
+    return(MagickFalse);
+  return(AcquireQuantumPixels(quantum_info,extent));
 }
 
 /*
