@@ -253,6 +253,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   size_t
+    bytes_per_line,
     length;
 
   ssize_t
@@ -265,9 +266,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     *sun_data,
     *sun_pixels;
-
-  unsigned int
-    bytes_per_line;
 
   /*
     Open image file.
