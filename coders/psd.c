@@ -1740,7 +1740,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  reading image resource blocks - %.20g bytes",(double)
           ((MagickOffsetType) length));
-      blocks=(unsigned char *) AcquireQuantumMemory((size_t) length,
+      blocks=(unsigned char *) AcquireQuantumMemory((size_t) length+16,
         sizeof(*blocks));
       if (blocks == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
