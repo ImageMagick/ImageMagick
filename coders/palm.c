@@ -329,7 +329,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     bytes_per_row=ReadBlobMSBShort(image);
     flags=ReadBlobMSBShort(image);
     bits_per_pixel=(size_t) ReadBlobByte(image);
-    if (bits_per_pixel > 16)
+    if ((bits_per_pixel == 0) || (bits_per_pixel > 16))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     version=(size_t) ReadBlobByte(image);
     (void) version;
