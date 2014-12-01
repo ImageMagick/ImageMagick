@@ -153,7 +153,7 @@ static int CompareXPMColor(const void *target,const void *source)
 
 static size_t CopyXPMColor(char *destination,const char *source,size_t length)
 {
-  register char
+  register const char
     *p;
 
   p=source;
