@@ -1709,10 +1709,16 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
         }
       else
         {
+          size_t
+            number_colors;
+
           /*
             Read PSD raster colormap.
           */
-          if (AcquireImageColormap(image,(size_t) (length/3),exception) == MagickFalse)
+          number_colors=length/3;
+          if (number_colors > 65536)
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) image->colors; i++)
             image->colormap[i].red=ScaleCharToQuantum((unsigned char)
