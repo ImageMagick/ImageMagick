@@ -308,9 +308,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sun_info.maplength=ReadBlobMSBLong(image);
     if ((sun_info.type != RT_STANDARD) && (sun_info.type != RT_ENCODED) &&
         (sun_info.type != RT_FORMAT_RGB))
-      ThrowReaderException(CoderError,"ImproperImageHeader");
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((sun_info.maptype == RMT_NONE) && (sun_info.maplength != 0))
-      ThrowReaderException(CoderError,"ImproperImageHeader");
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((sun_info.depth == 0) || (sun_info.depth > 32))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((sun_info.maptype != RMT_NONE) && (sun_info.maptype != RMT_EQUAL_RGB) &&

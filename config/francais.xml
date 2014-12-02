@@ -116,6 +116,9 @@
         <message name="ImageDoesNotHaveAAlphaChannel">
           l'image n'a pas de canal de transparence
         </message>
+        <message name="ImproperImageHeader">
+          En-tête d'image incorrect
+        </message>
         <message name="ImageIsNotTiled">
           l'image n'a pas tiled
         </message>
@@ -254,9 +257,6 @@
           </message>
           <message name="ImageTypeNotSupported">
             type d'image non supporté
-          </message>
-          <message name="ImproperImageHeader">
-            En-tête d'image incorrect
           </message>
           <message name="InsufficientImageDataInFile">
             Pas assez de données d'image dans le fichier
