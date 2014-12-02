@@ -803,7 +803,7 @@ static MagickStatusType ReadPSDChannelRaw(Image *image,const size_t channels,
        "      layer data is RAW");
 
   row_size=GetPSDRowSize(image);
-  pixels=(unsigned char *) AcquireQuantumMemory(row_size,sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(8*row_size,sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -872,7 +872,7 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
        "      layer data is RLE compressed");
 
   row_size=GetPSDRowSize(image);
-  pixels=(unsigned char *) AcquireQuantumMemory(row_size,sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(8*row_size,sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
