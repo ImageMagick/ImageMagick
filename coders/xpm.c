@@ -165,7 +165,7 @@ static size_t CopyXPMColor(char *destination,const char *source,size_t length)
 
 static char *NextXPMLine(char *p)
 {
-  assert(p != (char*)NULL);
+  assert(p != (char *)NULL);
   p=strchr(p,'\n');
   if (p != (char *) NULL)
     p++;
@@ -222,24 +222,21 @@ static char *ParseXPMColor(char *color,MagickBooleanType search_start)
       }
       return((char *) NULL);
     }
-  else
+  for (p=color+1; *p != '\0'; p++)
+  {
+    if (*p == '\n')
+      break;
+    if (isspace((int) ((unsigned char) (*(p-1)))) == 0)
+      continue;
+    if (isspace((int) ((unsigned char) (*p))) != 0)
+      continue;
+    for (i=0; i < NumberTargets; i++)
     {
-      for (p=color+1; *p != '\0'; p++)
-      {
-        if (*p == '\n')
-          break;
-        if (isspace((int) ((unsigned char) (*(p-1)))) == 0)
-          continue;
-        if (isspace((int) ((unsigned char) (*p))) != 0)
-          continue;
-        for (i=0; i < NumberTargets; i++)
-        {
-          if (*p == *targets[i] && *(p+1) == *(targets[i]+1))
-            return(p);
-        }
-      }
-      return(p);
+      if ((*p == *targets[i]) && (*(p+1) == *(targets[i]+1)))
+        return(p);
     }
+  }
+  return(p);
 }
 
 static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -377,7 +374,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->depth=1;
   next=NextXPMLine(xpm_buffer);
-  for (j=0; (j < (ssize_t) image->colors) && (next != (char*) NULL); j++)
+  for (j=0; (j < (ssize_t) image->colors) && (next != (char *) NULL); j++)
   {
     p=next;
     next=NextXPMLine(p);
