@@ -534,8 +534,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           bytes_per_pixel=3;
           if (image->alpha_trait == BlendPixelTrait)
             bytes_per_pixel++;
-          length=image->rows*((bytes_per_line*image->columns)+
-            image->columns % 2);
+          if (bytes_per_line == 0)
+            bytes_per_line=bytes_per_pixel*image->columns;
+          length=image->rows*(bytes_per_line+image->columns % 2);
           if (((sun_info.type == RT_ENCODED) &&
                (length > (bytes_per_line*image->rows))) ||
               ((sun_info.type != RT_ENCODED) && (length > sun_info.length)))
