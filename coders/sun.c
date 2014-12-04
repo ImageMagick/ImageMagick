@@ -524,8 +524,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           bytes_per_pixel=3;
           if (image->matte != MagickFalse)
             bytes_per_pixel++;
-          if (bytes_per_line == 0)
-            bytes_per_line=bytes_per_pixel*image->columns;
           length=image->rows*((bytes_per_line*image->columns)+image->columns %
             2);
           if (((sun_info.type == RT_ENCODED) &&
