@@ -734,20 +734,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       }
       case TIFF_SHORT:
       {
-        if (exif_info[i].variable_length != 0)
-          {
-            int
-              tiff_status;
-
-            uint16
-              *shorty;
-
-            tiff_status=TIFFGetField(tiff,exif_info[i].tag,&sans,&shorty,&sans,
-              &sans);
-            if (tiff_status == 1)
-              (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty[0]);
-          }
-        else
+        if (exif_info[i].variable_length == 0)
           {
             uint16
               shorty;
@@ -755,6 +742,23 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
             shorty=0;
             if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans,&sans) == 1)
               (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty);
+          }
+        else
+          { 
+            int
+              tiff_status;
+            
+            uint16
+              *shorty;
+            
+            uint16
+              shorty_num;
+            
+            tiff_status=TIFFGetField(tiff,exif_info[i].tag,&shorty_num,&shorty,
+              &sans,&sans); 
+            if (tiff_status == 1)
+              (void) FormatLocaleString(value,MaxTextExtent,"%d",
+                shorty_num != 0 ? shorty[0] : 0);
           }
         break;
       }
