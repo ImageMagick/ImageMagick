@@ -1,3 +1,6 @@
+2014-12-04  6.9.0-1 Alexey Dolgavin <dolgavin.alexey@gmail...>
+  * Fix ImageMagick crashes while read EXIF from TIFF
+
 2014-11-20  6.9.0-1 Glenn Randers-Pehrson <glennrp@image...>
   * Don't handle a "previous" image in the PNG or JNG decoder.
   * Don't override gamma with 1.0 when reading a grayscale PNG image (reference
