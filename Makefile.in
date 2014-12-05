@@ -263,6 +263,7 @@ DIST_COMMON = $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am \
 	$(top_srcdir)/config/MagickCore.dox.in \
 	$(top_srcdir)/config/MagickWand.dox.in \
 	$(top_srcdir)/config/Magick++.dox.in \
+	$(top_srcdir)/config/type-apple.xml.in \
 	$(top_srcdir)/config/type-dejavu.xml.in \
 	$(top_srcdir)/config/type-ghostscript.xml.in \
 	$(top_srcdir)/config/type-windows.xml.in \
@@ -347,13 +348,14 @@ CONFIG_HEADER = $(top_builddir)/config/config.h
 CONFIG_CLEAN_FILES = common.shi config/configure.xml \
 	config/delegates.xml config/ImageMagick.rdf \
 	config/MagickCore.dox config/MagickWand.dox \
-	config/Magick++.dox config/type-dejavu.xml \
-	config/type-ghostscript.xml config/type-windows.xml \
-	config/type.xml ImageMagick.spec Magick++/bin/Magick++-config \
-	magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc \
-	Magick++/lib/Magick++.pc magick/Magick-config \
-	magick/MagickCore-config magick/MagickCore.pc magick/version.h \
-	magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm \
+	config/Magick++.dox config/type-apple.xml \
+	config/type-dejavu.xml config/type-ghostscript.xml \
+	config/type-windows.xml config/type.xml ImageMagick.spec \
+	Magick++/bin/Magick++-config magick/ImageMagick.pc \
+	Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc \
+	magick/Magick-config magick/MagickCore-config \
+	magick/MagickCore.pc magick/version.h magick.sh \
+	PerlMagick/check.sh PerlMagick/default/Magick.pm \
 	PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL \
 	PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm \
 	PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap \
@@ -2842,6 +2844,7 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+apple_font_dir = @apple_font_dir@
 ax_pthread_config = @ax_pthread_config@
 bindir = @bindir@
 build = @build@
@@ -5207,6 +5210,8 @@ config/MagickCore.dox: $(top_builddir)/config.status $(top_srcdir)/config/Magick
 config/MagickWand.dox: $(top_builddir)/config.status $(top_srcdir)/config/MagickWand.dox.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/Magick++.dox: $(top_builddir)/config.status $(top_srcdir)/config/Magick++.dox.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+config/type-apple.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-apple.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/type-dejavu.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-dejavu.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
