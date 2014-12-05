@@ -1543,21 +1543,6 @@ fi
 dnl ===========================================================================
 
 #
-# Set Apple font directory.
-#
-AC_ARG_WITH([apple-font-dir],
-    [AC_HELP_STRING([--with-apple-font-dir=DIR],
-                    [Apple font directory])],
-    [with_apple_font_dir=$withval],
-    [with_apple_font_dir='default'])
-
-if test "$with_apple_font_dir" != 'default'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-apple-font-dir=$with_apple_font_dir "
-fi
-
-dnl ===========================================================================
-
-#
 # Check for BZLIB
 #
 
@@ -1754,6 +1739,21 @@ if test "$enable_profiling" = 'yes'; then
     LIBS="$LIB_DL $LIBS"
 fi
 AC_SUBST(LIB_DL)
+
+dnl ===========================================================================
+
+#
+# Set Apple font directory.
+#
+AC_ARG_WITH([apple-font-dir],
+    [AC_HELP_STRING([--with-apple-font-dir=DIR],
+                    [Apple font directory])],
+    [with_apple_font_dir=$withval],
+    [with_apple_font_dir='default'])
+
+if test "$with_apple_font_dir" != 'default'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-apple-font-dir=$with_apple_font_dir "
+fi
 
 dnl ===========================================================================
 
