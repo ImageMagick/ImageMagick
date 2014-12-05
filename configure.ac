@@ -43,6 +43,7 @@ AC_CONFIG_FILES([\
     config/MagickCore.dox \
     config/MagickWand.dox \
     config/Magick++.dox \
+    config/type-apple.xml \
     config/type-dejavu.xml \
     config/type-ghostscript.xml \
     config/type-windows.xml \
@@ -1542,6 +1543,21 @@ fi
 dnl ===========================================================================
 
 #
+# Set Apple font directory.
+#
+AC_ARG_WITH([apple-font-dir],
+    [AC_HELP_STRING([--with-apple-font-dir=DIR],
+                    [Apple font directory])],
+    [with_apple_font_dir=$withval],
+    [with_apple_font_dir='default'])
+
+if test "$with_apple_font_dir" != 'default'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-apple-font-dir=$with_apple_font_dir "
+fi
+
+dnl ===========================================================================
+
+#
 # Check for BZLIB
 #
 
@@ -2889,10 +2905,11 @@ dnl ===========================================================================
 #
 AC_ARG_WITH([windows-font-dir],
     [AC_HELP_STRING([--with-windows-font-dir=DIR],
-                    [directory containing MS-Windows fonts])],
-                    [with_windows_font_dir=$withval],
-                    [with_windows_font_dir=''])
-if test "$with_windows_font_dir" != '' ; then
+                    [Windows font directory])],
+    [with_windows_font_dir=$withval],
+    [with_windows_font_dir='default'])
+
+if test "$with_windows_font_dir" != 'default'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-windows-font-dir=$with_windows_font_dir "
 fi
 
@@ -3365,6 +3382,27 @@ have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then hav
 #
 type_include_files=''
 
+# Apple fonts.
+AC_MSG_CHECKING(for Apple fonts directory)
+apple_font_dir=''
+if test "${with_apple_font_dir}" != 'default'; then
+  apple_font_dir="${with_apple_font_dir}/"
+else
+  for font_dir in '/Library/Fonts/'; do
+    if test -f "${font_dir}Arial.ttf"; then
+      apple_font_dir="${font_dir}"
+      break 1
+    fi
+  done
+fi
+if test "${apple_font_dir}x" != 'x'; then
+  type_include_files="${type_include_files} "'<include file="type-apple.xml" />'
+  AC_MSG_RESULT([$apple_font_dir])
+else
+  AC_MSG_RESULT([not found!]);
+fi
+AC_SUBST(apple_font_dir)
+
 # Dejavu fonts.
 AC_MSG_CHECKING(for Dejavu fonts directory)
 dejavu_font_dir=''
@@ -3385,27 +3423,6 @@ else
   AC_MSG_RESULT([not found!]);
 fi
 AC_SUBST(dejavu_font_dir)
-
-# Windows
-windows_font_dir=''
-if test "$with_windows_font_dir" != "no" && test -n "$with_windows_font_dir"; then
-   windows_font_dir="${with_windows_font_dir}/"
-fi
-if test "${windows_font_dir}x" != 'x'; then
-    if test -f '/usr/X11R6/lib/X11/fonts/truetype/arial.ttf'; then
-      windows_font_dir='/usr/X11R6/lib/X11/fonts/truetype/'
-    fi
-    if test -f '/usr/X11R7/lib/X11/fonts/truetype/arial.ttf'; then
-      windows_font_dir='/usr/X11R7/lib/X11/fonts/truetype/'
-    fi
-    if test -f '/usr/share/fonts/msttcore/arial.ttf'; then
-      windows_font_dir='/usr/share/fonts/msttcore/truetype/'
-    fi
-fi
-if test "${windows_font_dir}x" != 'x'; then
-  type_include_files="$type_include_files "'<include file="type-windows.xml" />'
-fi
-AC_SUBST(windows_font_dir)
 
 # Ghostscript
 AC_MSG_CHECKING(for Ghostscript fonts directory)
@@ -3451,6 +3468,27 @@ case "${build_os}" in
     PSDelegate=`$WinPathScript "$PSDelegate" 1`
     ;;
 esac
+
+# Windows fonts.
+AC_MSG_CHECKING(for Windows fonts directory)
+windows_font_dir=''
+if test "${with_windows_font_dir}" != 'default'; then
+  windows_font_dir="${with_windows_font_dir}/"
+else
+  for font_dir in '/usr/X11R6/lib/X11/fonts/truetype/' '/usr/X11R7/lib/X11/fonts/truetype/' '/usr/share/fonts/msttcore/'; do
+    if test -f "${font_dir}arial.ttf"; then
+      windows_font_dir="${font_dir}"
+      break 1
+    fi
+  done
+fi
+if test "${windows_font_dir}x" != 'x'; then
+  type_include_files="${type_include_files} "'<include file="type-windows.xml" />'
+  AC_MSG_RESULT([$windows_font_dir])
+else
+  AC_MSG_RESULT([not found!]);
+fi
+AC_SUBST(windows_font_dir)
 
 AC_SUBST(type_include_files)
 
@@ -4049,6 +4087,11 @@ if test "${ghostscript_font_dir}x" != 'x'; then
     result_ghostscript_font_dir=$ghostscript_font_dir
 fi
 
+result_apple_font_dir='none'
+if test "${apple_font_dir}x" != 'x'; then
+    result_apple_font_dir=${apple_font_dir}
+fi
+
 result_windows_font_dir='none'
 if test "${windows_font_dir}x" != 'x'; then
     result_windows_font_dir=${windows_font_dir}
@@ -4073,20 +4116,15 @@ High Dynamic Range Imagery
 
 Install documentation:		$wantdocs
 
-Delegate Configuration:
+Delegate Library Configuration:
 BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
 Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
-Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
 DJVU              --with-djvu=$with_djvu		$have_djvu
 DPS               --with-dps=$with_dps		$have_dps
 FFTW              --with-fftw=$with_fftw		$have_fftw
 FlashPIX          --with-fpx=$with_fpx		$have_fpx
 FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
 FreeType          --with-freetype=$with_freetype		$have_freetype
-GhostPCL          None				$PCLDelegate ($PCLVersion)
-GhostXPS          None				$XPSDelegate ($XPSVersion)
-Ghostscript       None				$PSDelegate ($GSVersion)
-Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
 Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
 Graphviz          --with-gvc=$with_gvc		$have_gvc
 JBIG              --with-jbig=$with_jbig		$have_jbig
@@ -4106,11 +4144,21 @@ PNG               --with-png=$with_png		$have_png
 RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
 WEBP              --with-webp=$with_webp		$have_webp
-Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 WMF               --with-wmf=$with_wmf		$have_wmf
 X11               --with-x=$with_x			$have_x
 XML               --with-xml=$with_xml		$have_xml
 ZLIB              --with-zlib=$with_zlib		$have_zlib
+
+Delegate Program Configuration:
+GhostPCL          None				$PCLDelegate ($PCLVersion)
+GhostXPS          None				$XPSDelegate ($XPSVersion)
+Ghostscript       None				$PSDelegate ($GSVersion)
+
+Font Configuration:
+Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
+Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
+Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
+Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 
 X11 Configuration:
       X_CFLAGS        = $X_CFLAGS
