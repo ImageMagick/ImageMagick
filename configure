@@ -1166,10 +1166,10 @@ with_perl_options
 with_jemalloc
 with_umem
 with_libstdc
-with_apple_font_dir
 with_bzlib
 with_x
 with_zlib
+with_apple_font_dir
 with_autotrace
 with_dps
 with_dejavu_font_dir
@@ -1938,11 +1938,11 @@ Optional Packages:
   --with-jemalloc         enable jemalloc memory allocation library support
   --with-umem             enable umem memory allocation library support
   --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
-  --with-apple-font-dir=DIR
-                          Apple font directory
   --without-bzlib         disable BZLIB support
   --with-x                use the X Window System
   --without-zlib          disable ZLIB support
+  --with-apple-font-dir=DIR
+                          Apple font directory
   --with-autotrace        enable autotrace support
   --without-dps           disable Display Postscript support
   --with-dejavu-font-dir=DIR
@@ -3703,7 +3703,7 @@ MAGICK_PATCHLEVEL_VERSION=1
 
 MAGICK_VERSION=6.9.0-1
 
-MAGICK_SVN_REVISION=17156:17157M
+MAGICK_SVN_REVISION=17156:17159M
 
 
 # Substitute library versioning
@@ -26986,23 +26986,6 @@ fi
 
 
 #
-# Set Apple font directory.
-#
-
-# Check whether --with-apple-font-dir was given.
-if test "${with_apple_font_dir+set}" = set; then :
-  withval=$with_apple_font_dir; with_apple_font_dir=$withval
-else
-  with_apple_font_dir='default'
-fi
-
-
-if test "$with_apple_font_dir" != 'default'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-apple-font-dir=$with_apple_font_dir "
-fi
-
-
-#
 # Check for BZLIB
 #
 
@@ -28525,6 +28508,23 @@ fi
     LIBS="$LIB_DL $LIBS"
 fi
 
+
+
+#
+# Set Apple font directory.
+#
+
+# Check whether --with-apple-font-dir was given.
+if test "${with_apple_font_dir+set}" = set; then :
+  withval=$with_apple_font_dir; with_apple_font_dir=$withval
+else
+  with_apple_font_dir='default'
+fi
+
+
+if test "$with_apple_font_dir" != 'default'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-apple-font-dir=$with_apple_font_dir "
+fi
 
 
 #
