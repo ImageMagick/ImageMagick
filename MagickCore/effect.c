@@ -2973,7 +2973,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
                 luminance_pixels+=GetPixelChannels(luminance_image);
               }
               pixels+=(image->columns-1)*GetPixelChannels(image);
-              luminance_pixels+=luminance_image->columns*
+              luminance_pixels+=(luminance_image->columns-1)*
                 GetPixelChannels(luminance_image);
             }
             if (fabs((double) gamma) < MagickEpsilon)
@@ -3001,7 +3001,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
             luminance_pixels+=GetPixelChannels(luminance_image);
           }
           pixels+=(image->columns-1)*GetPixelChannels(image);
-          luminance_pixels+=luminance_image->columns*
+          luminance_pixels+=(luminance_image->columns-1)*
             GetPixelChannels(luminance_image);
         }
         if (fabs((double) gamma) < MagickEpsilon)
