@@ -2483,6 +2483,13 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
     *image_view,
     *radial_view;
 
+  double
+    blur_radius,
+    *cos_theta,
+    offset,
+    *sin_theta,
+    theta;
+
   Image
     *blur_image;
 
@@ -2491,13 +2498,6 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
 
   MagickOffsetType
     progress;
-
-  double
-    blur_radius,
-    *cos_theta,
-    offset,
-    *sin_theta,
-    theta;
 
   PointInfo
     blur_center;
@@ -2972,9 +2972,9 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
                 pixels+=GetPixelChannels(image);
                 luminance_pixels+=GetPixelChannels(luminance_image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
-              luminance_pixels+=(luminance_image->columns-1)*
-                GetPixelChannels(luminance_image);
+              pixels+=GetPixelChannels(image)*image->columns;
+              luminance_pixels+=GetPixelChannels(luminance_image)*
+                luminance_image->columns;
             }
             if (fabs((double) gamma) < MagickEpsilon)
               {
@@ -3000,9 +3000,9 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
             pixels+=GetPixelChannels(image);
             luminance_pixels+=GetPixelChannels(luminance_image);
           }
-          pixels+=(image->columns-1)*GetPixelChannels(image);
-          luminance_pixels+=(luminance_image->columns-1)*
-            GetPixelChannels(luminance_image);
+          pixels+=GetPixelChannels(image)*image->columns;
+          luminance_pixels+=GetPixelChannels(luminance_image)*
+            luminance_image->columns;
         }
         if (fabs((double) gamma) < MagickEpsilon)
           {
