@@ -243,7 +243,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     args;
 
   kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
-  if (kernel == (KernelInfo *)NULL)
+  if (kernel == (KernelInfo *) NULL)
     return(kernel);
   (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
   kernel->minimum = kernel->maximum = kernel->angle = 0.0;
@@ -402,7 +402,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
   GetMagickToken(kernel_string,&p,token);
   type=ParseCommandOption(MagickKernelOptions,MagickFalse,token);
   if ( type < 0 || type == UserDefinedKernel )
-    return((KernelInfo *)NULL);  /* not a valid named kernel */
+    return((KernelInfo *) NULL);  /* not a valid named kernel */
 
   while (((isspace((int) ((unsigned char) *p)) != 0) ||
           (*p == ',') || (*p == ':' )) && (*p != '\0') && (*p != ';'))
@@ -976,7 +976,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
   switch(type) {
     case UndefinedKernel:    /* These should not call this function */
     case UserDefinedKernel:
-      assert("Should not call this function" != (char *)NULL);
+      assert("Should not call this function" != (char *) NULL);
       break;
     case LaplacianKernel:   /* Named Descrete Convolution Kernels */
     case SobelKernel:       /* these are defined using other kernels */
@@ -3884,7 +3884,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
   count = 0;      /* number of low-level morphology primitives performed */
   if ( iterations == 0 )
-    return((Image *)NULL);   /* null operation - nothing to do! */
+    return((Image *) NULL);   /* null operation - nothing to do! */
 
   kernel_limit = (size_t) iterations;
   if ( iterations < 0 )  /* negative interations = infinite (well alomst) */
@@ -4379,7 +4379,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
         bias=StringToDoubleInterval(artifact,(double) QuantumRange+1.0);
 
       artifact = GetImageArtifact(image,"convolve:scale");
-      if ( artifact != (const char *)NULL ) {
+      if ( artifact != (const char *) NULL ) {
         if ( curr_kernel == kernel )
           curr_kernel = CloneKernelInfo(kernel);
         if (curr_kernel == (KernelInfo *) NULL) {

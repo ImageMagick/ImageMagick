@@ -198,7 +198,7 @@ MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
 
 MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
 {
-  if (clEnv != (MagickCLEnv)NULL)
+  if (clEnv != (MagickCLEnv) NULL)
   {
     DestroySemaphoreInfo(&clEnv->lock);
     RelinquishMagickMemory(clEnv);
@@ -2726,7 +2726,7 @@ MagickPrivate cl_kernel AcquireOpenCLKernel(
   magick_unreferenced(program);
   magick_unreferenced(kernelName);
 
-  return (cl_kernel)NULL;
+  return (cl_kernel) NULL;
 }
 
 MagickPrivate MagickBooleanType RelinquishOpenCLKernel(

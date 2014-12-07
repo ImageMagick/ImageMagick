@@ -2268,7 +2268,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *value='\0';
-  string=(char *)NULL;
+  string=(char *) NULL;
   switch (letter)
   {
     case 'b':
@@ -2674,7 +2674,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       (void) SetImageArtifact(image,"get-property",string);
       return(GetImageArtifact(image,"get-property"));
     }
-  return((char *)NULL);
+  return((char *) NULL);
 }
 
 MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
@@ -3121,7 +3121,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       (void) SetImageArtifact(image,"get-property", string);
       return(GetImageArtifact(image,"get-property"));
     }
-  return((char *)NULL);
+  return((char *) NULL);
 }
 
 /*
@@ -3220,7 +3220,7 @@ DisableMSCWarning(4127) \
        interpret_text=(char *) ResizeQuantumMemory(interpret_text, \
              extent+MaxTextExtent,sizeof(*interpret_text)); \
        if (interpret_text == (char *) NULL) \
-         return((char *)NULL); \
+         return((char *) NULL); \
        q=interpret_text+strlen(interpret_text); \
    } } while (0)  /* no trailing ; */ \
 RestoreMSCWarning
@@ -3234,7 +3234,7 @@ DisableMSCWarning(4127) \
        interpret_text=(char *) ResizeQuantumMemory(interpret_text, \
              extent+MaxTextExtent,sizeof(*interpret_text)); \
        if (interpret_text == (char *) NULL) \
-         return((char *)NULL); \
+         return((char *) NULL); \
        q=interpret_text+strlen(interpret_text); \
       } \
      (void) CopyMagickString(q,(string),extent); \
@@ -3251,7 +3251,7 @@ DisableMSCWarning(4127) \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text, \
               extent+MaxTextExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
-        return((char *)NULL); \
+        return((char *) NULL); \
       q=interpret_text+strlen(interpret_text); \
      } \
      q+=FormatLocaleString(q,extent,"%s=%s\n",(key),(value)); \
@@ -3443,7 +3443,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         (void) ThrowMagickException(&image->exception,GetMagickModule(),
             OptionError,"UnbalancedBraces","\"%%[%s\"",pattern);
         interpret_text=DestroyString(interpret_text);
-        return((char *)NULL);
+        return((char *) NULL);
       }
 
       /*

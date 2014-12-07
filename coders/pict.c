@@ -473,7 +473,8 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
     return((unsigned char *) NULL);
   *extent=row_bytes*image->rows*sizeof(*pixels);
   (void) ResetMagickMemory(pixels,0,*extent);
-  scanline=(unsigned char *) AcquireQuantumMemory(row_bytes,sizeof(*scanline));
+  scanline=(unsigned char *) AcquireQuantumMemory(row_bytes,2*
+    sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   if (bytes_per_line < 8)
