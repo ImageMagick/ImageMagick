@@ -113,7 +113,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,4.032);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#ff0000");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -128,7 +128,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,9);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#00ff00");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -157,7 +157,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,2.016);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#000080");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -172,7 +172,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,3.024);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#000080");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -203,7 +203,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,3.024);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#ff8000");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -218,7 +218,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,12.02);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#4000c2");
         DrawSetStrokeColor(picasso,color);
         (void) PixelSetColor(color,"none");
@@ -232,7 +232,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,9);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#4000c2");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -253,7 +253,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,9);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#4000c2");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -275,7 +275,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,9);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#4000c2");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -298,7 +298,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,5.976);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#4000c2");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -319,7 +319,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,5.976);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#4000c2");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);
@@ -387,7 +387,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetStrokeWidth(picasso,5.904);
         DrawSetStrokeLineCap(picasso,RoundCap);
         DrawSetStrokeLineJoin(picasso,RoundJoin);
-        (void) DrawSetStrokeDashArray(picasso,0,(const double *)NULL);
+        (void) DrawSetStrokeDashArray(picasso,0,(const double *) NULL);
         (void) PixelSetColor(color,"#4000c2");
         DrawSetStrokeColor(picasso,color);
         DrawSetFillRule(picasso,EvenOddRule);

@@ -6717,7 +6717,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       else if (LocaleCompare((const char *) tag,"stegano") == 0)
       {
         Image *
-          watermark = (Image*)NULL;
+          watermark = (Image*) NULL;
 
         if (msl_info->image[n] == (Image *) NULL)
           {
@@ -6782,7 +6782,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       else if (LocaleCompare((const char *) tag,"stereo") == 0)
       {
         Image *
-          stereoImage = (Image*)NULL;
+          stereoImage = (Image*) NULL;
 
         if (msl_info->image[n] == (Image *) NULL)
           {

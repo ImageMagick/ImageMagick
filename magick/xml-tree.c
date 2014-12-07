@@ -1921,7 +1921,7 @@ static const char
   {
     "rdf:Bag",
     "rdf:Seq",
-    (const char *)NULL
+    (const char *) NULL
   };
 
 static inline MagickBooleanType IsSkipTag(const char *tag)

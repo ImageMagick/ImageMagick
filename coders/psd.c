@@ -50,6 +50,7 @@
 #include "magick/cache.h"
 #include "magick/channel.h"
 #include "magick/colormap.h"
+#include "magick/colormap-private.h"
 #include "magick/colorspace.h"
 #include "magick/colorspace-private.h"
 #include "magick/constitute.h"
@@ -711,7 +712,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,const size_t channels,
             else
               SetPixelIndex(indexes+x,ScaleQuantumToShort(pixel))
             SetPixelRGBO(q,image->colormap+(ssize_t)
-              GetPixelIndex(indexes+x));
+              ConstrainColormapIndex(image,GetPixelIndex(indexes+x)));
             if (image->depth == 1)
               {
                 ssize_t
@@ -799,7 +800,7 @@ static MagickStatusType ReadPSDChannelRaw(Image *image,const size_t channels,
        "      layer data is RAW");
 
   row_size=GetPSDRowSize(image);
-  pixels=(unsigned char *) AcquireQuantumMemory(8*row_size,sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(row_size,8*sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -868,7 +869,7 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
        "      layer data is RLE compressed");
 
   row_size=GetPSDRowSize(image);
-  pixels=(unsigned char *) AcquireQuantumMemory(8*row_size,sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(row_size,8*sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -884,7 +885,8 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
       ThrowBinaryException(CoderError,"InvalidLength",
         image->filename);
     }
-  compact_pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  compact_pixels=(unsigned char *) AcquireQuantumMemory(length,8*
+    sizeof(*pixels));
   if (compact_pixels == (unsigned char *) NULL)
     {
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);

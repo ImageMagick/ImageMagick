@@ -196,7 +196,7 @@ static int stringnicmp(const char *p,const char *q,size_t n)
 
 static int convertHTMLcodes(char *s, int len)
 {
-  if (len <=0 || s==(char*)NULL || *s=='\0')
+  if (len <=0 || s==(char*) NULL || *s=='\0')
     return 0;
 
   if (s[1] == '#')
@@ -326,7 +326,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
   dataset = 0;
   recnum = 0;
   line = (char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*line));
-  name = token = (char *)NULL;
+  name = token = (char *) NULL;
   savedpos = 0;
   token_info=AcquireTokenInfo();
   while (super_fgets(&line,&inputlen,ifile)!=NULL)
@@ -602,7 +602,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
   dataset = 0;
   recnum = 0;
   line=(char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*line));
-  name = token = (char *)NULL;
+  name = token = (char *) NULL;
   savedpos = 0;
   token_info=AcquireTokenInfo();
   while (super_fgets_w(&line,&inputlen,ifile) != NULL)
@@ -991,7 +991,7 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
         /* APP0 is in each and every JPEG, so when we hit APP0 we insert our new APP13! */
         jpeg_skip_variable(ifile, ofile);
 
-        if (iptc != (Image *)NULL)
+        if (iptc != (Image *) NULL)
           {
             char
               psheader[] = "\xFF\xED\0\0Photoshop 3.0\0" "8BIM\x04\x04\0\0\0\0";

@@ -166,7 +166,7 @@ static size_t CopyXPMColor(char *destination,const char *source,size_t length)
 
 static char *NextXPMLine(char *p)
 {
-  assert(p != (char *)NULL);
+  assert(p != (char *) NULL);
   p=strchr(p,'\n');
   if (p != (char *) NULL)
     p++;
@@ -396,6 +396,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         while ((isspace((int) ((unsigned char) *q)) == 0) && (*q != '\0'))
           q++;
+        if ((next-q) < 0)
+          break;
         if (next != (char *) NULL)
           (void) CopyXPMColor(target,q,MagickMin((size_t) (next-q),
             MaxTextExtent));
