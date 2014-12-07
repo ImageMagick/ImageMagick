@@ -39,7 +39,7 @@ int main(int argc, char **argv)
                      "(", "rose:", "-rotate", "-90", ")",
                      "+append", "show:", NULL };
 
-    for(arg_count = 0; args[arg_count] != (char *)NULL; arg_count++);
+    for(arg_count = 0; args[arg_count] != (char *) NULL; arg_count++);
 
     (void) MagickImageCommand(image_info, arg_count, args, NULL, exception);
 

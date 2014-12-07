@@ -1588,7 +1588,7 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
   if (length == 0)
     return((DIR *) NULL);
   if(wcsncat(file_specification,(const wchar_t*) DirectorySeparator,
-       MaxTextExtent-wcslen(file_specification)-1) == (wchar_t*)NULL)
+       MaxTextExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
     return((DIR *) NULL);
   entry=(DIR *) AcquireMagickMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
@@ -1599,7 +1599,7 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
       if(wcsncat(file_specification,L"*.*",
-        MaxTextExtent-wcslen(file_specification)-1) == (wchar_t*)NULL)
+        MaxTextExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
         {
           entry=(DIR *) RelinquishMagickMemory(entry);
           return((DIR *) NULL);

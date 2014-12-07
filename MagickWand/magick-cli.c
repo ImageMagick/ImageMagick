@@ -125,7 +125,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
     *arg1,
     *arg2;
 
-  assert(filename != (char *)NULL ); /* at least one argument - script name */
+  assert(filename != (char *) NULL ); /* at least one argument - script name */
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
   if (IfMagickTrue(cli_wand->wand.debug))
@@ -148,7 +148,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
     cli_wand->filename=filename;
 
   /* Process Options from Script */
-  option = arg1 = arg2 = (char*)NULL;
+  option = arg1 = arg2 = (char*) NULL;
 DisableMSCWarning(4127)
   while (1) {
 RestoreMSCWarning
@@ -183,7 +183,7 @@ RestoreMSCWarning
 #endif
         if ( IfMagickFalse(IsCommandOption(option))) {
           /* non-option -- treat as a image read */
-          cli_wand->command=(const OptionInfo *)NULL;
+          cli_wand->command=(const OptionInfo *) NULL;
           CLIOption(cli_wand,"-read",option);
           break; /* next option */
         }
@@ -197,7 +197,7 @@ RestoreMSCWarning
         CloneString(&arg1,token_info->token);
       }
       else
-        CloneString(&arg1,(char *)NULL);
+        CloneString(&arg1,(char *) NULL);
 
       if ( count >= 2 ) {
         if( IfMagickFalse(GetScriptToken(token_info)) )
@@ -205,7 +205,7 @@ RestoreMSCWarning
         CloneString(&arg2,token_info->token);
       }
       else
-        CloneString(&arg2,(char *)NULL);
+        CloneString(&arg2,(char *) NULL);
 
       /*
         Process Options
@@ -270,9 +270,9 @@ loop_exit:
   switch( token_info->status ) {
     case TokenStatusOK:
     case TokenStatusEOF:
-      if (cli_wand->image_list_stack != (Stack *)NULL)
+      if (cli_wand->image_list_stack != (Stack *) NULL)
         CLIWandException(OptionError,"UnbalancedParenthesis", "(eof)");
-      else if (cli_wand->image_info_stack != (Stack *)NULL)
+      else if (cli_wand->image_info_stack != (Stack *) NULL)
         CLIWandException(OptionError,"UnbalancedBraces", "(eof)");
       break;
     case TokenStatusBadQuotes:
@@ -302,9 +302,9 @@ loop_exit:
   /* Clean up */
   token_info = DestroyScriptTokenInfo(token_info);
 
-  CloneString(&option,(char *)NULL);
-  CloneString(&arg1,(char *)NULL);
-  CloneString(&arg2,(char *)NULL);
+  CloneString(&option,(char *) NULL);
+  CloneString(&arg1,(char *) NULL);
+  CloneString(&arg2,(char *) NULL);
 
   return;
 }
@@ -369,9 +369,9 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
     option_type;
 
   assert(argc>=index); /* you may have no arguments left! */
-  assert(argv != (char **)NULL);
-  assert(argv[index] != (char *)NULL);
-  assert(argv[argc-1] != (char *)NULL);
+  assert(argv != (char **) NULL);
+  assert(argv[index] != (char *) NULL);
+  assert(argv[argc-1] != (char *) NULL);
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
 
@@ -417,7 +417,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
         if ( IfMagickFalse(IsCommandOption(option)) ) {
           if ( (cli_wand->process_flags & ProcessImplictRead) != 0 ) {
             /* non-option -- treat as a image read */
-            cli_wand->command=(const OptionInfo *)NULL;
+            cli_wand->command=(const OptionInfo *) NULL;
             CLIOption(cli_wand,"-read",option);
             break; /* next option */
           }
@@ -447,8 +447,8 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
         break; /* next option - not that their is any! */
       }
 
-      arg1 = ( count >= 1 ) ? argv[i+1] : (char *)NULL;
-      arg2 = ( count >= 2 ) ? argv[i+2] : (char *)NULL;
+      arg1 = ( count >= 1 ) ? argv[i+1] : (char *) NULL;
+      arg2 = ( count >= 2 ) ? argv[i+2] : (char *) NULL;
 
       /*
         Process Known Options
@@ -498,9 +498,9 @@ RestoreMSCWarning
   cli_wand->line=i;
 
   /* check that stacks are empty - or cause exception */
-  if (cli_wand->image_list_stack != (Stack *)NULL)
+  if (cli_wand->image_list_stack != (Stack *) NULL)
     CLIWandException(OptionError,"UnbalancedParenthesis", "(end of cli)");
-  else if (cli_wand->image_info_stack != (Stack *)NULL)
+  else if (cli_wand->image_info_stack != (Stack *) NULL)
     CLIWandException(OptionError,"UnbalancedBraces", "(end of cli)");
   if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
     return(argc);
@@ -522,7 +522,7 @@ RestoreMSCWarning
     return(argc);
   }
 
-  cli_wand->command=(const OptionInfo *)NULL;
+  cli_wand->command=(const OptionInfo *) NULL;
   CLIOption(cli_wand,"-write",option);
   return(argc);
 }
@@ -684,7 +684,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
   size_t
     len;
 
-  assert(image_info != (ImageInfo *)NULL);
+  assert(image_info != (ImageInfo *) NULL);
 
   /* For specific OS command line requirements */
   ReadCommandlLine(argc,&argv);
@@ -796,9 +796,9 @@ Magick_Command_Cleanup:
 
   /* recover original image_info and clean up stacks
      FUTURE: "-reset stacks" option  */
-  while (cli_wand->image_list_stack != (Stack *)NULL)
+  while (cli_wand->image_list_stack != (Stack *) NULL)
     CLIOption(cli_wand,")");
-  while (cli_wand->image_info_stack != (Stack *)NULL)
+  while (cli_wand->image_info_stack != (Stack *) NULL)
     CLIOption(cli_wand,"}");
 
   /* assert we have recovered the original structures */
@@ -834,8 +834,8 @@ Magick_Command_Exit:
          "\"%s\"",argv[0]);
 
   /* Destroy the special CLI Wand */
-  cli_wand->wand.image_info = (ImageInfo *)NULL; /* not these */
-  cli_wand->wand.exception = (ExceptionInfo *)NULL;
+  cli_wand->wand.image_info = (ImageInfo *) NULL; /* not these */
+  cli_wand->wand.exception = (ExceptionInfo *) NULL;
   cli_wand=DestroyMagickCLI(cli_wand);
 
   return(IsMagickTrue(exception->severity < ErrorException));

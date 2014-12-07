@@ -1014,8 +1014,8 @@ static Image *OptimizeLayerFrames(const Image *image,
     Compute the bounding box of changes for each pair of images.
   */
   i=1;
-  bgnd_image=(Image *)NULL;
-  dup_image=(Image *)NULL;
+  bgnd_image=(Image *) NULL;
+  dup_image=(Image *) NULL;
   dup_bounds.width=0;
   dup_bounds.height=0;
   dup_bounds.x=0;
@@ -1268,7 +1268,7 @@ static Image *OptimizeLayerFrames(const Image *image,
         if ( disposals[i-1] != PreviousDispose )
           prev_image=DestroyImage(prev_image);
         if ( disposals[i-1] == BackgroundDispose )
-          prev_image=bgnd_image,  bgnd_image=(Image *)NULL;
+          prev_image=bgnd_image,  bgnd_image=(Image *) NULL;
         if (bgnd_image != (Image *) NULL)
           bgnd_image=DestroyImage(bgnd_image);
         if ( disposals[i-1] == NoneDispose )

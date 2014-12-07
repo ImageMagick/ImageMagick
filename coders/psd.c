@@ -50,6 +50,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/channel.h"
 #include "MagickCore/colormap.h"
+#include "MagickCore/colormap-private.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
@@ -715,7 +716,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
             else
               SetPixelIndex(image,ScaleQuantumToShort(pixel),q);
             SetPixelInfoPixel(image,image->colormap+(ssize_t)
-              GetPixelIndex(image,q),q);
+              ConstrainColormapIndex(image,GetPixelIndex(image,q),exception),q);
             if (image->depth == 1)
               {
                 ssize_t
@@ -803,7 +804,7 @@ static MagickStatusType ReadPSDChannelRaw(Image *image,const size_t channels,
        "      layer data is RAW");
 
   row_size=GetPSDRowSize(image);
-  pixels=(unsigned char *) AcquireQuantumMemory(8*row_size,sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(row_size,8*sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -872,7 +873,7 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
        "      layer data is RLE compressed");
 
   row_size=GetPSDRowSize(image);
-  pixels=(unsigned char *) AcquireQuantumMemory(8*row_size,sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(row_size,8*sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -889,7 +890,8 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
         image->filename);
     }
 
-  compact_pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  compact_pixels=(unsigned char *) AcquireQuantumMemory(length,
+    8*sizeof(*pixels));
   if (compact_pixels == (unsigned char *) NULL)
     {
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);

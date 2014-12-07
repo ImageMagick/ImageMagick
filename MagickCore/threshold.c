@@ -1143,12 +1143,12 @@ MagickBooleanType ListThresholdMapFile(FILE *file,const char *xml,
     *threshold,
     *thresholds;
 
-  assert( xml != (char *)NULL );
-  assert( file != (FILE *)NULL );
+  assert( xml != (char *) NULL );
+  assert( file != (FILE *) NULL );
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Loading threshold map file \"%s\" ...",filename);
   thresholds=NewXMLTree(xml,exception);
-  if ( thresholds == (XMLTreeInfo *)NULL )
+  if ( thresholds == (XMLTreeInfo *) NULL )
     return(MagickFalse);
   (void) FormatLocaleFile(file,"%-16s %-12s %s\n","Map","Alias","Description");
   (void) FormatLocaleFile(file,

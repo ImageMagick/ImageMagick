@@ -335,7 +335,7 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 
   matrix=(double **) AcquireQuantumMemory(number_rows,sizeof(*matrix));
   if (matrix == (double **) NULL)
-    return((double **)NULL);
+    return((double **) NULL);
   for (i=0; i < (ssize_t) number_rows; i++)
   {
     matrix[i]=(double *) AcquireQuantumMemory(size,sizeof(*matrix[i]));

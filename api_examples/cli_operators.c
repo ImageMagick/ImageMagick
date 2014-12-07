@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 
   MagickCoreGenesis(argv[0],MagickFalse);
 
-  cli_wand = AcquireMagickCLI((ImageInfo *)NULL,(ExceptionInfo *)NULL);
+  cli_wand = AcquireMagickCLI((ImageInfo *) NULL,(ExceptionInfo *) NULL);
 
   CLISettingOptionInfo    (cli_wand, "-size", "100x100");
   CLISpecialOperator      (cli_wand, "-read", "xc:red");
