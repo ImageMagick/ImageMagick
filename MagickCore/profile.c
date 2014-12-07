@@ -1191,7 +1191,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               cmsDoTransform(transform[id],source_pixels[id],target_pixels[id],
                 (unsigned int) image->columns);
               p=target_pixels[id];
-              q-=image->columns*GetPixelChannels(image);
+              q-=GetPixelChannels(image)*image->columns;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 if (target_channels == 1)

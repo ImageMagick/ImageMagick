@@ -504,7 +504,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-      p+=image->columns*GetPixelChannels(image);
+      p+=GetPixelChannels(image)*image->columns;
       for (x=0; x < (ssize_t) image->columns; x++) {
         PixelInfo
           pixel,
@@ -522,7 +522,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           Is neighbor an authentic pixel and a different color than the pixel?
         */
         GetPixelInfoPixel(image,p,&pixel);
-        neighbor_offset=dy*(image->columns*GetPixelChannels(image))+dx*
+        neighbor_offset=dy*(GetPixelChannels(image)*image->columns)+dx*
           GetPixelChannels(image);
         GetPixelInfoPixel(image,p+neighbor_offset,&target);
         if (((x+dx) < 0) || ((x+dx) >= (ssize_t) image->columns) ||

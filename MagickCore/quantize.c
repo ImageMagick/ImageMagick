@@ -1545,7 +1545,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
         status=MagickFalse;
         continue;
       }
-    q+=(y & 0x01)*image->columns*GetPixelChannels(image);
+    q+=(y & 0x01)*GetPixelChannels(image)*image->columns;
     cube=(*cube_info);
     current=pixels[id]+(y & 0x01)*image->columns;
     previous=pixels[id]+((y+1) & 0x01)*image->columns;
