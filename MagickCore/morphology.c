@@ -2949,7 +2949,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
-                  pixels+=(image->columns-1)*GetPixelChannels(image);
+                  pixels+=GetPixelChannels(image)*image->columns;
                 }
                 break;
               }
@@ -2971,7 +2971,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             break;
           }
@@ -2998,7 +2998,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k++;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             break;
           }
@@ -3029,7 +3029,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             break;
           }
@@ -3073,7 +3073,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k++;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             pixel-=maximum;
             if (pixel < 0.0)
@@ -3110,7 +3110,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k++;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             break;
           }
@@ -3139,7 +3139,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             break;
           }
@@ -3183,7 +3183,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             break;
           }
@@ -3380,7 +3380,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
             pixels=q-offset.x*GetPixelChannels(image);
@@ -3411,7 +3411,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
             pixels=q-offset.x*GetPixelChannels(image);
@@ -3488,8 +3488,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         status=MagickFalse;
         continue;
       }
-    p+=(image->columns-1)*GetPixelChannels(image);
-    q+=(image->columns-1)*GetPixelChannels(image);
+    p+=GetPixelChannels(image)*image->columns;
+    q+=GetPixelChannels(image)*image->columns;
     center=(ssize_t) (offset.x*GetPixelChannels(image));
     for (x=(ssize_t) image->columns-1; x >= 0; x--)
     {
@@ -3541,7 +3541,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             k=(&kernel->values[kernel->width*kernel->y+kernel->x-1]);
             pixels=q;
@@ -3573,7 +3573,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 k--;
                 pixels+=GetPixelChannels(image);
               }
-              pixels+=(image->columns-1)*GetPixelChannels(image);
+              pixels+=GetPixelChannels(image)*image->columns;
             }
             k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
             pixels=q;
