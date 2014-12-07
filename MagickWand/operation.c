@@ -243,7 +243,7 @@ static Image *SparseColorOption(const Image *image,
     (void) ThrowMagickException(exception,GetMagickModule(),
                OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
                "Invalid number of Arguments");
-    return( (Image *)NULL);
+    return( (Image *) NULL);
   }
 
   /* Allocate and fill in the floating point arguments */
@@ -252,7 +252,7 @@ static Image *SparseColorOption(const Image *image,
   if (sparse_arguments == (double *) NULL) {
     (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
       "MemoryAllocationFailed","%s","SparseColorOption");
-    return( (Image *)NULL);
+    return( (Image *) NULL);
   }
   (void) ResetMagickMemory(sparse_arguments,0,number_arguments*
     sizeof(*sparse_arguments));
@@ -352,10 +352,10 @@ static Image *SparseColorOption(const Image *image,
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
       "InvalidArgument","'%s': %s","sparse-color","Argument Parsing Error");
     sparse_arguments=(double *) RelinquishMagickMemory(sparse_arguments);
-    return( (Image *)NULL);
+    return( (Image *) NULL);
   }
   if ( error )
-    return( (Image *)NULL);
+    return( (Image *) NULL);
 
   /* Call the Sparse Color Interpolation function with the parsed arguments */
   sparse_image=SparseColorImage(image,method,number_arguments,sparse_arguments,
@@ -1735,7 +1735,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     "CLISimpleOperatorImage: \"%s\" \"%s\" \"%s\"\n",option,arg1,arg2);
 #endif
 
-  new_image = (Image *)NULL; /* the replacement image, if not null at end */
+  new_image = (Image *) NULL; /* the replacement image, if not null at end */
   SetGeometryInfo(&geometry_info);
 
   switch (*(option+1))
@@ -2252,7 +2252,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             }
           /* convert argument string into an array of doubles */
           args = StringToArrayOfDoubles(arg2,&count,_exception);
-          if (args == (double *)NULL )
+          if (args == (double *) NULL )
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
 
           new_image=DistortImage(_image,(DistortImageMethod) parse,(size_t)
@@ -2264,7 +2264,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           (void) CloneString(&_draw_info->primitive,arg1);
           (void) DrawImage(_image,_draw_info,_exception);
-          (void) CloneString(&_draw_info->primitive,(char *)NULL);
+          (void) CloneString(&_draw_info->primitive,(char *) NULL);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -2413,7 +2413,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
                  option,arg1);
           /* convert argument string into an array of doubles */
           args = StringToArrayOfDoubles(arg2,&count,_exception);
-          if (args == (double *)NULL )
+          if (args == (double *) NULL )
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
 
           (void) FunctionImage(_image,(MagickFunction)parse,(size_t) count,args,
@@ -3882,7 +3882,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           else
             new_images=DuplicateImages(_images,1,"-1",_exception);
           AppendImageToList(&_images, new_images);
-          new_images=(Image *)NULL;
+          new_images=(Image *) NULL;
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -4184,7 +4184,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
           /* convert argument string into an array of doubles */
           args = StringToArrayOfDoubles(arg2,&count,_exception);
-          if (args == (double *)NULL )
+          if (args == (double *) NULL )
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
           new_images=PolynomialImage(_images,(size_t) (count >> 1),args,_exception);
           args=(double *) RelinquishMagickMemory(args);
@@ -4321,7 +4321,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           new_images=SimilarityImage(base_image,compare_image,metric,0.0,
                &offset,&similarity,_exception);
 
-          if ( new_images != (Image *)NULL ) {
+          if ( new_images != (Image *) NULL ) {
             char
               result[MaxTextExtent];
 
@@ -4612,7 +4612,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
       size=0;
       node=cli_wand->image_list_stack;
-      for ( ; node != (Stack *)NULL; node=node->next)
+      for ( ; node != (Stack *) NULL; node=node->next)
         size++;
       if ( size >= MAX_STACK_DEPTH )
         CLIWandExceptionBreak(OptionError,"ParenthesisNestedTooDeeply",option);
@@ -4643,7 +4643,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
       size=0;
       node=cli_wand->image_info_stack;
-      for ( ; node != (Stack *)NULL; node=node->next)
+      for ( ; node != (Stack *) NULL; node=node->next)
         size++;
       if ( size >= MAX_STACK_DEPTH )
         CLIWandExceptionBreak(OptionError,"CurlyBracesNestedTooDeeply",option);
@@ -4657,7 +4657,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
       cli_wand->image_info_stack = node;
       cli_wand->wand.image_info = CloneImageInfo(cli_wand->wand.image_info);
-      if (cli_wand->wand.image_info == (ImageInfo *)NULL) {
+      if (cli_wand->wand.image_info == (ImageInfo *) NULL) {
         CLIWandException(ResourceLimitFatalError,"MemoryAllocationFailed",
             option);
         cli_wand->wand.image_info = (ImageInfo *)node->data;
@@ -4673,7 +4673,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         *node;
 
       node = (Stack *)cli_wand->image_list_stack;
-      if ( node == (Stack *)NULL)
+      if ( node == (Stack *) NULL)
         CLIWandExceptionBreak(OptionError,"UnbalancedParenthesis",option);
       cli_wand->image_list_stack = node->next;
 
@@ -4683,7 +4683,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
       /* handle respect-parenthesis - of the previous 'pushed' settings */
       node = cli_wand->image_info_stack;
-      if ( node != (Stack *)NULL)
+      if ( node != (Stack *) NULL)
         {
           if (IfMagickTrue(IsStringTrue(GetImageOption(
                 cli_wand->wand.image_info,"respect-parenthesis"))))
@@ -4701,7 +4701,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         *node;
 
       node = (Stack *)cli_wand->image_info_stack;
-      if ( node == (Stack *)NULL)
+      if ( node == (Stack *) NULL)
         CLIWandExceptionBreak(OptionError,"UnbalancedCurlyBraces",option);
       cli_wand->image_info_stack = node->next;
 
@@ -4756,7 +4756,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         if (LocaleNCompare(arg1,"option:",7) == 0)
           {
             /* delete equivelent artifact from all images (if any) */
-            if (_images != (Image *)NULL)
+            if (_images != (Image *) NULL)
               {
                 MagickResetIterator(&cli_wand->wand);
                 while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
@@ -4765,7 +4765,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
               }
             /* now set/delete the global option as needed */
             /* FUTURE: make escapes in a global 'option:' delayed */
-            arg2=(char *)NULL;
+            arg2=(char *) NULL;
             if (IfNormalOp)
               {
                 arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
@@ -4785,7 +4785,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         MagickResetIterator(&cli_wand->wand);
         while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
           {
-            arg2=(char *)NULL;
+            arg2=(char *) NULL;
             if (IfNormalOp)
               {
                 arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
@@ -4813,7 +4813,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
           arg1=AcquireString("-1");
         if (IfMagickFalse(IsSceneGeometry(arg1,MagickFalse)))
           CLIWandExceptionBreak(OptionError,"InvalidArgument",option);
-        if ( cli_wand->image_list_stack == (Stack *)NULL)
+        if ( cli_wand->image_list_stack == (Stack *) NULL)
           CLIWandExceptionBreak(OptionError,"UnableToCloneImage",option);
         new_images = (Image *)cli_wand->image_list_stack->data;
         if (new_images == (Image *) NULL)
@@ -5042,7 +5042,7 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
 
     /* FUTURE: this is temporary - get 'settings' to handle distribution of
       settings to images attributes,proprieties,artifacts */
-    if ( cli_wand->wand.images != (Image *)NULL )
+    if ( cli_wand->wand.images != (Image *) NULL )
       (void) SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
         cli_wand->wand.exception);
 
@@ -5058,14 +5058,14 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
     /* FUTURE: The not a setting part below is a temporary hack due to
     * some options being both a Setting and a Simple operator.
     * Specifically -monitor, -depth, and  -colorspace */
-    if ( cli_wand->wand.images == (Image *)NULL )
+    if ( cli_wand->wand.images == (Image *) NULL )
       if ( ((option_type & (SimpleOperatorFlag|ListOperatorFlag)) != 0 ) &&
           ((option_type & SettingOptionFlags) == 0 ))  /* temp hack */
         CLIWandExceptionBreak(OptionError,"NoImagesFound",option);
 
     /* Operators which loop of individual images, simply */
     if ( (option_type & SimpleOperatorFlag) != 0 &&
-         cli_wand->wand.images != (Image *)NULL) /* temp hack */
+         cli_wand->wand.images != (Image *) NULL) /* temp hack */
       {
         ExceptionInfo *exception=AcquireExceptionInfo();
         (void) CLISimpleOperatorImages(cli_wand, option, arg1, arg2,exception);

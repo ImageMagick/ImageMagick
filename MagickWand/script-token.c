@@ -224,7 +224,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   else {
     token_info->stream=fopen_utf8(filename, "r");
   }
-  if ( token_info->stream == (FILE *)NULL ) {
+  if ( token_info->stream == (FILE *) NULL ) {
     token_info=(ScriptTokenInfo *) RelinquishMagickMemory(token_info);
     return(token_info);
   }
@@ -233,7 +233,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   token_info->length=INITAL_TOKEN_LENGTH;
   token_info->token=(char *) AcquireMagickMemory(token_info->length);
 
-  token_info->status=(token_info->token != (char *)NULL)
+  token_info->status=(token_info->token != (char *) NULL)
                       ? TokenStatusOK : TokenStatusMemoryFailed;
   token_info->signature=WandSignature;
 
@@ -343,7 +343,7 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
       token_info->length *= 4; \
     token_info->token = (char *) \
          ResizeMagickMemory(token_info->token, token_info->length); \
-    if ( token_info->token == (char *)NULL ) { \
+    if ( token_info->token == (char *) NULL ) { \
       token_info->status=TokenStatusMemoryFailed; \
       break; \
     } \
@@ -393,7 +393,7 @@ RestoreMSCWarning
            ( token_info->curr_column==1 && (c == ':' || c == '@' ) ) )
         state=IN_COMMENT;
     /* whitespace token separator character */
-    if (strchr(" \n\r\t",c) != (char *)NULL) {
+    if (strchr(" \n\r\t",c) != (char *) NULL) {
       switch (state) {
         case IN_TOKEN:
           token_info->token[offset]='\0';

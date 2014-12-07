@@ -100,11 +100,11 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   (void) FormatLocaleString(cli_wand->wand.name,MaxTextExtent,
            "%s-%.20g","MagickWandCLI", (double) cli_wand->wand.id);
   cli_wand->wand.images=NewImageList();
-  if ( image_info == (ImageInfo *)NULL)
+  if ( image_info == (ImageInfo *) NULL)
     cli_wand->wand.image_info=AcquireImageInfo();
   else
     cli_wand->wand.image_info=image_info;
-  if ( exception == (ExceptionInfo *)NULL)
+  if ( exception == (ExceptionInfo *) NULL)
     cli_wand->wand.exception=AcquireExceptionInfo();
   else
     cli_wand->wand.exception=exception;
@@ -115,9 +115,9 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->draw_info=CloneDrawInfo(cli_wand->wand.image_info,(DrawInfo *) NULL);
   cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
   cli_wand->process_flags=MagickCommandOptionFlags;  /* assume "magick" CLI */
-  cli_wand->command=(const OptionInfo *)NULL;     /* no option at this time */
-  cli_wand->image_list_stack=(Stack *)NULL;
-  cli_wand->image_info_stack=(Stack *)NULL;
+  cli_wand->command=(const OptionInfo *) NULL;     /* no option at this time */
+  cli_wand->image_list_stack=(Stack *) NULL;
+  cli_wand->image_info_stack=(Stack *) NULL;
 
   /* default exception location...
      EG: sprintf(locaiton, filename, line, column);
@@ -170,14 +170,14 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
     cli_wand->draw_info=DestroyDrawInfo(cli_wand->draw_info);
   if (cli_wand->quantize_info != (QuantizeInfo *) NULL )
     cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
-  while(cli_wand->image_list_stack != (Stack *)NULL)
+  while(cli_wand->image_list_stack != (Stack *) NULL)
     {
       node=cli_wand->image_list_stack;
       cli_wand->image_list_stack=node->next;
       (void) DestroyImageList((Image *)node->data);
       (void) RelinquishMagickMemory(node);
     }
-  while(cli_wand->image_info_stack != (Stack *)NULL)
+  while(cli_wand->image_info_stack != (Stack *) NULL)
     {
       node=cli_wand->image_info_stack;
       cli_wand->image_info_stack=node->next;
@@ -195,7 +195,7 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
   RelinquishWandId(cli_wand->wand.id);
   cli_wand->wand.signature=(~WandSignature);
 
-  return((MagickCLI *)NULL);
+  return((MagickCLI *) NULL);
 }
 
 /*

@@ -2126,7 +2126,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
       case PS_SOLID:
       default:
         {
-          (void) DrawSetStrokeDashArray(WmfDrawingWand,0,(double *)NULL);
+          (void) DrawSetStrokeDashArray(WmfDrawingWand,0,(double *) NULL);
           break;
         }
       }

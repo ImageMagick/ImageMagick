@@ -499,7 +499,7 @@ static Image *SparseColorOption(const Image *image,
         (void) ThrowMagickException(exception,GetMagickModule(),
             OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
             "Color arg given, when colors are coming from image");
-        return( (Image *)NULL);
+        return( (Image *) NULL);
       }
       x += number_colors;  /* color argument */
     }
@@ -522,7 +522,7 @@ static Image *SparseColorOption(const Image *image,
     (void) ThrowMagickException(exception,GetMagickModule(),
                OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
                "Invalid number of Arguments");
-    return( (Image *)NULL);
+    return( (Image *) NULL);
   }
 
   /* Allocate and fill in the floating point arguments */
@@ -531,7 +531,7 @@ static Image *SparseColorOption(const Image *image,
   if (sparse_arguments == (double *) NULL) {
     (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
       "MemoryAllocationFailed","%s","SparseColorOption");
-    return( (Image *)NULL);
+    return( (Image *) NULL);
   }
   (void) ResetMagickMemory(sparse_arguments,0,number_arguments*
     sizeof(*sparse_arguments));
@@ -640,10 +640,10 @@ static Image *SparseColorOption(const Image *image,
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
       "InvalidArgument","'%s': %s","sparse-color","Argument Parsing Error");
     sparse_arguments=(double *) RelinquishMagickMemory(sparse_arguments);
-    return( (Image *)NULL);
+    return( (Image *) NULL);
   }
   if ( error )
-    return( (Image *)NULL);
+    return( (Image *) NULL);
 
   /* Call the Interpolation function with the parsed arguments */
   sparse_image=SparseColorImage(image,method,number_arguments,sparse_arguments,
@@ -741,7 +741,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
     if ((i+count) >= (ssize_t) argc)
       break;
     status=MogrifyImageInfo(mogrify_info,(int) count+1,argv+i,exception);
-    mogrify_image=(Image *)NULL;
+    mogrify_image=(Image *) NULL;
     switch (*(option+1))
     {
       case 'a':

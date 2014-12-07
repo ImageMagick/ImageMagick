@@ -887,7 +887,7 @@ RestoreMSCWarning
       for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
       {
         q=GetAuthenticPixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1,exception);
-        if (q == (Quantum *)NULL)
+        if (q == (Quantum *) NULL)
   {
     if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
@@ -1050,7 +1050,7 @@ done_reading:
     */
     p=image;
     image=NULL;
-    while (p != (Image *)NULL)
+    while (p != (Image *) NULL)
       {
         Image *tmp=p;
         if ((p->rows == 0) || (p->columns == 0)) {
