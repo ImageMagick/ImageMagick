@@ -503,7 +503,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   signature_info=AcquireSignatureInfo();
-  signature=AcquireStringInfo(image->columns*GetPixelChannels(image)*
+  signature=AcquireStringInfo(GetPixelChannels(image)*image->columns*
     sizeof(pixel));
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -517,7 +517,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    SetStringInfoLength(signature,image->columns*GetPixelChannels(image)*
+    SetStringInfoLength(signature,GetPixelChannels(image)*image->columns*
       sizeof(pixel));
     pixels=GetStringInfoDatum(signature);
     q=pixels;

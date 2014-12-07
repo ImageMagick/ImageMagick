@@ -6560,7 +6560,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     "    Magnify the rows to %.20g",(double) large_image->rows);
                 m=(ssize_t) mng_info->magn_mt;
                 yy=0;
-                length=(size_t) image->columns*GetPixelChannels(image);
+                length=(size_t) GetPixelChannels(image)*image->columns;
                 next=(Quantum *) AcquireQuantumMemory(length,sizeof(*next));
                 prev=(Quantum *) AcquireQuantumMemory(length,sizeof(*prev));
 
