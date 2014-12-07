@@ -465,7 +465,7 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
 
   ldblk=(ssize_t) ((bpp*image->columns+7)/8);
   BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t) ldblk,
-    sizeof(*BImgBuff));
+    4*sizeof(*BImgBuff));
   if(BImgBuff==NULL) return(-2);
 
   while(y<(ssize_t) image->rows)
