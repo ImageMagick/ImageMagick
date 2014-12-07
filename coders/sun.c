@@ -254,6 +254,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     bytes_per_line,
+    extent,
     length;
 
   ssize_t
@@ -303,6 +304,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sun_info.type=ReadBlobMSBLong(image);
     sun_info.maptype=ReadBlobMSBLong(image);
     sun_info.maplength=ReadBlobMSBLong(image);
+    extent=sun_info.height*sun_info.width;
     if ((sun_info.height != 0) && (sun_info.width != extent/sun_info.height))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((sun_info.type != RT_STANDARD) && (sun_info.type != RT_ENCODED) &&
