@@ -122,9 +122,6 @@
         <message name="ImageIsNotTiled">
           image is not tiled
         </message>
-        <message name="ImproperImageHeader">
-          improper image header
-        </message>
         <message name="IrregularChannelGeometryNotSupported">
           irregular channel geometry not supported
         </message>
@@ -257,6 +254,9 @@
           </message>
           <message name="ImageTypeNotSupported">
             image type not supported
+          </message>
+          <message name="ImproperImageHeader">
+            improper image header
           </message>
           <message name="InsufficientImageDataInFile">
             insufficient image data in file
