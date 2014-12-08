@@ -1298,7 +1298,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelBlue(q,ScaleShortToQuantum((unsigned short) blue));
             SetPixelOpacity(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
-              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short) opacity));
+              SetPixelOpacity(q,ScaleShortToQuantum((unsigned short) opacity));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
