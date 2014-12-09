@@ -389,8 +389,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
         alpha,
         Da,
         Dc,
+        Dca,
         Sa,
-        Sc;
+        Sc,
+        Sca;
 
       register ssize_t
         i;
@@ -453,7 +455,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
         }
       Sa=QuantumScale*GetPixelAlpha(composite_image,p);
       Da=QuantumScale*GetPixelAlpha(image,q);
-      alpha=Sa*(-Da)+Sa+Da;
+      alpha=Sa+Da-Sa*Da;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
@@ -485,8 +487,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
         */
         Sc=(MagickRealType) GetPixelChannel(composite_image,channel,p);
         Dc=(MagickRealType) q[i];
+        Sca=QuantumScale*Sa*Sc;
+        Dca=QuantumScale*Da*Dc;
         gamma=PerceptibleReciprocal(alpha);
-        q[i]=ClampToQuantum(gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc));
+        q[i]=ClampToQuantum(QuantumRange*gamma*(Sca+Dca*(1.0-Sa)));
       }
       p+=GetPixelChannels(composite_image);
       channels=GetPixelChannels(composite_image);
@@ -1489,7 +1493,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         case OverCompositeOp:
         case SrcOverCompositeOp:
         {
-          alpha=Sa*(-Da)+Sa+Da;
+          alpha=Sa+Da-Sa*Da;
           break;
         }
         case BlendCompositeOp:
@@ -2163,7 +2167,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case OverCompositeOp:
           case SrcOverCompositeOp:
           {
-            pixel=QuantumRange*gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc);
+            pixel=QuantumRange*gamma*(Sca+Dca*(1.0-Sa));
             break;
           }
           case OverlayCompositeOp:
