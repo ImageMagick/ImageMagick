@@ -535,7 +535,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bytes_per_line,
     green,
     length,
-    opacity,
     red;
 
   ssize_t
@@ -1146,6 +1145,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case 16:
       {
         size_t
+          alpha,
           pixel;
 
         /*
@@ -1187,16 +1187,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               blue|=((blue & 0xe000) >> 5);
             if (quantum_bits.blue <= 8)
               blue|=((blue & 0xff00) >> 8);
-            opacity=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
+            alpha=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
             if (quantum_bits.alpha <= 8)
-              opacity|=((opacity & 0xff00) >> 8);
+              alpha|=((alpha & 0xff00) >> 8);
             SetPixelRed(image,ScaleShortToQuantum((unsigned short) red),q);
             SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
             if (image->alpha_trait == BlendPixelTrait)
-              SetPixelAlpha(image,ScaleShortToQuantum((unsigned short) opacity),
-                q);
+              SetPixelAlpha(image,ScaleShortToQuantum((unsigned short) alpha),q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1261,6 +1260,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
           size_t
+            alpha,
             pixel;
 
           p=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1282,16 +1282,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             if (quantum_bits.blue == 8)
               blue|=(blue >> 8);
-            opacity=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
+            alpha=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
             if (quantum_bits.alpha == 8)
-              opacity|=(opacity >> 8);
+              alpha|=(alpha >> 8);
             SetPixelRed(image,ScaleShortToQuantum((unsigned short) red),q);
             SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelOpacity(image,OpaqueAlpha,q);
             if (image->alpha_trait == BlendPixelTrait)
-              SetPixelOpacity(image,ScaleShortToQuantum((unsigned short)
-                opacity),q);
+              SetPixelAlpha(image,ScaleShortToQuantum((unsigned short) alpha),q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
