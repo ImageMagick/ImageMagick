@@ -538,7 +538,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bytes_per_line,
     green,
     length,
-    opacity,
     red;
 
   ssize_t
@@ -1155,6 +1154,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case 16:
       {
         size_t
+          alpha,
           pixel;
 
         /*
@@ -1196,15 +1196,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               blue|=((blue & 0xe000) >> 5);
             if (quantum_bits.blue <= 8)
               blue|=((blue & 0xff00) >> 8);
-            opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
+            alpha=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
             if (quantum_bits.opacity <= 8)
-              opacity|=((opacity & 0xff00) >> 8);
+              alpha|=((alpha & 0xff00) >> 8);
             SetPixelRed(q,ScaleShortToQuantum((unsigned short) red));
             SetPixelGreen(q,ScaleShortToQuantum((unsigned short) green));
             SetPixelBlue(q,ScaleShortToQuantum((unsigned short) blue));
             SetPixelOpacity(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
-              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short) opacity));
+              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short) alpha));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1269,6 +1269,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
           size_t
+            alpha,
             pixel;
 
           p=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1290,15 +1291,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             if (quantum_bits.blue == 8)
               blue|=(blue >> 8);
-            opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
+            alpha=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
             if (quantum_bits.opacity == 8)
-              opacity|=(opacity >> 8);
+              alpha|=(alpha >> 8);
             SetPixelRed(q,ScaleShortToQuantum((unsigned short) red));
             SetPixelGreen(q,ScaleShortToQuantum((unsigned short) green));
             SetPixelBlue(q,ScaleShortToQuantum((unsigned short) blue));
-            SetPixelOpacity(q,OpaqueOpacity);
+            SetPixelAlpha(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
-              SetPixelOpacity(q,ScaleShortToQuantum((unsigned short) opacity));
+              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short) alpha));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1857,7 +1858,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(GetPixelBlue(p));
             *q++=ScaleQuantumToChar(GetPixelGreen(p));
             *q++=ScaleQuantumToChar(GetPixelRed(p));
-            *q++=ScaleQuantumToChar(GetPixelOpacity(p));
+            *q++=ScaleQuantumToChar(GetPixelAlpha(p));
             p++;
           }
           if (image->previous == (Image *) NULL)
