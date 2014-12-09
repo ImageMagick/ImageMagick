@@ -1857,8 +1857,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(GetPixelBlue(p));
             *q++=ScaleQuantumToChar(GetPixelGreen(p));
             *q++=ScaleQuantumToChar(GetPixelRed(p));
-            *q++=ScaleQuantumToChar((Quantum) (QuantumRange-
-              GetPixelOpacity(p)));
+            *q++=ScaleQuantumToChar(GetPixelOpacity(p));
             p++;
           }
           if (image->previous == (Image *) NULL)
