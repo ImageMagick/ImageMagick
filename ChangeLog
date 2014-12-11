@@ -5,7 +5,7 @@
   * Don't handle a "previous" image in the PNG or JNG decoder.
   * Don't override gamma with 1.0 when reading a grayscale PNG image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26576).
-  * Update progress monitor for every PNG row instead pass (reference
+  * Update progress monitor for every PNG row instead of every pass (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=26589).
 
 2014-11-20  6.9.0-1 Cristy  <quetzlzacatenango@image...>
