@@ -69,6 +69,8 @@
 -->
 <delegatemap>
   <delegate decode="autotrace" stealth="True" command="&quot;@ConvertDelegate@&quot; &quot;%i&quot; &quot;pnm:%u&quot;\n&quot;@AutotraceDecodeDelegate@&quot; -input-format pnm -output-format svg -output-file &quot;%o&quot; &quot;%u&quot;"/>
+  <delegate decode="bpg" command="&quot;@BPGDecodeDelegate@&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="png" encode="bpg" command="&quot;@BPGEncodeDelegate@&quot; -b 16 -o &quot;%o.png&quot; &quot;%i&quot; mv &quot;%o.png&quot; &quot;%o&quot;"/>
   <delegate decode="blender" command="&quot;@BlenderDecodeDelegate@&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;@ConvertDelegate@&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
   <delegate decode="browse" stealth="True" spawn="True" command="&quot;@BrowseDelegate@&quot; http://www.imagemagick.org/; rm &quot;%i&quot;"/>
   <delegate decode="cdr" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
