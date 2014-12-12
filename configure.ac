@@ -3246,6 +3246,8 @@ AC_MSG_RESULT([-------------------------------------------------------------])
 AC_MSG_CHECKING([for ImageMagick delegate programs])
 AC_MSG_RESULT([])
 AutotraceDecodeDelegateDefault='autotrace'
+BPGDecodeDelegateDefault='bpgdec'
+BPGEncodeDelegateDefault='bpgenc'
 BlenderDecodeDelegateDefault='blender'
 BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='xdg-open'
@@ -3300,6 +3302,8 @@ ZipDelegateDefault='gzip'
 
 # Search for delegates
 AC_PATH_PROG(AutotraceDecodeDelegate, "$AutotraceDecodeDelegateDefault", "$AutotraceDecodeDelegateDefault")
+AC_PATH_PROG(BGPDecodeDelegate, "$BPGDecodeDelegateDefault", "$BPGDecodeDelegateDefault")
+AC_PATH_PROG(BGPEncodeDelegate, "$BPGEncodeDelegateDefault", "$BPGEncodeDelegateDefault")
 AC_PATH_PROG(BlenderDecodeDelegate, "$BlenderDecodeDelegateDefault", "$BlenderDecodeDelegateDefault")
 AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
 AC_PATH_PROGS(BrowseDelegate, "$BrowseDelegateDefault" google-chrome firefox konqueror mozilla lynx, "$BrowseDelegateDefault")
@@ -3499,6 +3503,8 @@ if test "$with_frozenpaths" != 'yes'; then
   # Re-set delegate definitions to default (no paths)
   AutotraceDecodeDelegate="$AutotraceDecodeDelegateDefault"
   BlenderDecodeDelegate="$BlenderDecodeDelegateDefault"
+  BPGDecodeDelegate="$BPGDecodeDelegateDefault"
+  BPGEncodeDelegate="$BPGEncodeDelegateDefault"
   BZIPDelegate="$BZIPDelegateDefault"
   BrowseDelegate="$BrowseDelegateDefault"
   CatDelegate="$CatDelegateDefault"
@@ -3547,6 +3553,8 @@ fi
 
 # Delegate substitutions
 AC_SUBST(AutotraceDecodeDelegate)
+AC_SUBST(BPGDecodeDelegate)
+AC_SUBST(BPGEncodeDelegate)
 AC_SUBST(BlenderDecodeDelegate)
 AC_SUBST(BZIPDelegate)
 AC_SUBST(BrowseDelegate)
