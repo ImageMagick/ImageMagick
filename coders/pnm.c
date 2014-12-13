@@ -181,12 +181,12 @@ static void PNMComment(Image *image)
   comment=DestroyString(comment);
 }
 
-static size_t PNMInteger(Image *image,const unsigned int base)
+static unsigned int PNMInteger(Image *image,const unsigned int base)
 {
   int
     c;
 
-  size_t
+  unsigned int
     value;
 
   /*
@@ -201,14 +201,14 @@ static size_t PNMInteger(Image *image,const unsigned int base)
       PNMComment(image);
   } while (isdigit(c) == MagickFalse);
   if (base == 2)
-    return((size_t) (c-(int) '0'));
+    return((unsigned int) (c-(int) '0'));
   /*
     Evaluate number.
   */
   value=0;
   do
   {
-    if (value > (INT_MAX/10))
+    if (value > (unsigned int) (INT_MAX/10))
       break;
     value*=10;
     value+=c-(int) '0';
