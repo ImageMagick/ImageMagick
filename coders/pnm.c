@@ -179,13 +179,13 @@ static void PNMComment(Image *image,ExceptionInfo *exception)
   comment=DestroyString(comment);
 }
 
-static size_t PNMInteger(Image *image,const unsigned int base,
+static ssize_t PNMInteger(Image *image,const unsigned int base,
   ExceptionInfo *exception)
 {
   int
     c;
 
-  size_t
+  ssize_t
     value;
 
   /*
@@ -207,6 +207,8 @@ static size_t PNMInteger(Image *image,const unsigned int base,
   value=0;
   do
   {
+    if (value > (INT_MAX/10))
+      break;
     value*=10;
     value+=c-(int) '0';
     c=ReadBlobByte(image);
@@ -286,8 +288,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           PBM, PGM, PPM, and PNM.
         */
-        image->columns=PNMInteger(image,10,exception);
-        image->rows=PNMInteger(image,10,exception);
+        image->columns=(size_t) PNMInteger(image,10,exception);
+        image->rows=(size_t) PNMInteger(image,10,exception);
         if ((format == 'f') || (format == 'F'))
           {
             char
@@ -301,7 +303,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((format == '1') || (format == '4'))
               max_value=1;  /* bitmap */
             else
-              max_value=PNMInteger(image,10,exception);
+              max_value=(QuantumAny) PNMInteger(image,10,exception);
           }
       }
     else
@@ -482,7 +484,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            intensity=ScaleAnyToQuantum(PNMInteger(image,10,exception),max_value);
+            intensity=ScaleAnyToQuantum(PNMInteger(image,10,exception),
+              max_value);
             SetPixelGray(image,intensity,q);
             q+=GetPixelChannels(image);
           }
