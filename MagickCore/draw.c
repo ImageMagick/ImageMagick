@@ -5540,8 +5540,8 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
           }
           if (strchr("CcSs",last_attribute) == (char *) NULL)
             {
-              points[0]=points[2];
-              points[1]=points[3];
+              points[0]=point;
+              points[1]=point;
             }
           for (i=0; i < 4; i++)
             (q+i)->point=points[i];
