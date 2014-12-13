@@ -179,13 +179,13 @@ static void PNMComment(Image *image,ExceptionInfo *exception)
   comment=DestroyString(comment);
 }
 
-static ssize_t PNMInteger(Image *image,const unsigned int base,
+static unsigned int PNMInteger(Image *image,const unsigned int base,
   ExceptionInfo *exception)
 {
   int
     c;
 
-  ssize_t
+  unsigned int
     value;
 
   /*
@@ -200,14 +200,14 @@ static ssize_t PNMInteger(Image *image,const unsigned int base,
       PNMComment(image,exception);
   } while (isdigit(c) == MagickFalse);
   if (base == 2)
-    return((size_t) (c-(int) '0'));
+    return((unsigned int) (c-(int) '0'));
   /*
     Evaluate number.
   */
   value=0;
   do
   {
-    if (value > (INT_MAX/10))
+    if (value > (unsigned int) (INT_MAX/10))
       break;
     value*=10;
     value+=c-(int) '0';
@@ -464,7 +464,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case '2':
       {
-        size_t
+        Quantum
           intensity;
 
         /*
@@ -520,7 +520,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            double
+            Quantum
               pixel;
 
             pixel=ScaleAnyToQuantum(PNMInteger(image,10,exception),max_value);
