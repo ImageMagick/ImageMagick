@@ -208,6 +208,8 @@ static size_t PNMInteger(Image *image,const unsigned int base)
   value=0;
   do
   {
+    if (value > (INT_MAX/10))
+      break;
     value*=10;
     value+=c-(int) '0';
     c=ReadBlobByte(image);
