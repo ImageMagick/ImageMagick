@@ -835,9 +835,8 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
   if (type == UndefinedType)
     return(MagickFalse);
   ((Image *) image)->colorspace=GRAYColorspace;
-  status=SyncImagePixelCache((Image *) image,exception);
   if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
-    return(status);
+    return(MagickFalse);
   ((Image *) image)->type=type;
   return(MagickTrue);
 }
