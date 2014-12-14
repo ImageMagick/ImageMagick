@@ -46,6 +46,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/geometry.h"
@@ -112,6 +113,8 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   QuantumInfo
     *quantum_info;
 
+  if (SyncImagePixelCache(image,&image->exception) == MagickFalse)
+    return(MagickFalse);
   quantum_info=(QuantumInfo *) AcquireMagickMemory(sizeof(*quantum_info));
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -137,7 +140,7 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireQuantumPixels() allocates the unsigned char structure.
+%  AcquireQuantumPixels() allocates the pixel staging areas.
 %
 %  The format of the AcquireQuantumPixels method is:
 %
@@ -172,7 +175,12 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
     quantum_info->pixels[i]=(unsigned char *) AcquireQuantumMemory(extent+1,
       sizeof(**quantum_info->pixels));
     if (quantum_info->pixels[i] == (unsigned char *) NULL)
-      return(MagickFalse);
+      {
+        while (--i >= 0)
+          quantum_info->pixels[i]=(unsigned char *) RelinquishMagickMemory(
+            quantum_info->pixels[i]);
+        return(MagickFalse);
+      }
     (void) ResetMagickMemory(quantum_info->pixels[i],0,(extent+1)*
       sizeof(**quantum_info->pixels));
     quantum_info->pixels[i][extent]=QuantumSignature;
