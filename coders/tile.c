@@ -95,6 +95,9 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   ImageInfo
     *read_info;
 
+  MagickBooleanType
+    status;
+
   /*
     Initialize Image structure.
   */
@@ -115,6 +118,12 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   image=AcquireImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   if (*image_info->filename == '\0')
     ThrowReaderException(OptionError,"MustSpecifyAnImageName");
   image->colorspace=tile_image->colorspace;

@@ -22,6 +22,8 @@
     Mateusz Jurczyk of the Google Security Team).
   * Additional PNM sanity checks (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26682).
+  * The SetImageBias() biad value is no longer ignored (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25732).
 
 2014-11-16  6.9.0-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-0, SVN revision 17067.

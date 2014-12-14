@@ -507,6 +507,12 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       y=0;
       (void) GetGeometry(image_info->size,&x,&y,&image->columns,&image->rows);
     }
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   if (image_info->page != (char *) NULL)
     {
       char

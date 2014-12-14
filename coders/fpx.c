@@ -352,6 +352,12 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       FPX_ClearSystem();
       return(GetFirstImageInList(image));
     }
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   /*
     Allocate memory for the image and pixel buffer.
   */

@@ -307,6 +307,12 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(image);
     }
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
   pixel.opacity=(Quantum) OpaqueOpacity;
   if (tga_info.colormap_type != 0)

@@ -874,6 +874,12 @@ RestoreMSCWarning
       image->rows = temp;
       goto done_reading; /* !!!!!! BAD  !!!! */
     }
+    status=SetImageExtent(image,image->columns,image->rows);
+    if (status == MagickFalse)
+      {
+        InheritException(exception,&image->exception);
+        return(DestroyImageList(image));
+      }
 
   /* ----- Load raster data ----- */
     BImgBuff = (unsigned char *) AcquireQuantumMemory((size_t) (ldblk),sizeof(unsigned char));    /* Ldblk was set in the check phase */

@@ -3689,6 +3689,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=(size_t) width;
     image->rows=(size_t) height;
     image->depth=depth;
+    status=SetImageExtent(image,image->columns,image->rows);
+    if (status == MagickFalse)
+      {
+        InheritException(exception,&image->exception);
+        break;
+      }
     image->colorspace=RGBColorspace;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
       {
