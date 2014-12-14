@@ -907,7 +907,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     exception);
   if (convolve_image == (Image *) NULL)
     convolve_image=MorphologyApply(image,channel,ConvolveMorphology,1,
-      kernel_info,UndefinedCompositeOp,image->bias,exception);
+      kernel_info,UndefinedCompositeOp,0.0,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(convolve_image);
 }
