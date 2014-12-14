@@ -3097,6 +3097,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   if (image->storage_class == DirectClass)
     {
+      QuantumInfo
+        *quantum_info;
+
+      quantum_info=AcquireQuantumInfo(image_info,image);
+
+      if (quantum_info == (QuantumInfo *) NULL)
+        png_error(ping,"Failed to allocate quantum_info");
+
+      (void) SetQuantumEndian(image,quantum_info,MSBEndian);
+
       for (pass=0; pass < num_passes; pass++)
       {
         /*
@@ -3128,16 +3138,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
           else
           {
-            QuantumInfo
-              *quantum_info;
-
-            quantum_info=AcquireQuantumInfo(image_info,image);
-
-            if (quantum_info == (QuantumInfo *) NULL)
-              png_error(ping,"Failed to allocate quantum_info");
-
-            (void) SetQuantumEndian(image,quantum_info,MSBEndian);
-
             if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY)
               (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 GrayQuantum,ping_pixels+row_offset,exception);
@@ -3158,7 +3158,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 RGBQuantum,ping_pixels+row_offset,exception);
 
-            quantum_info=DestroyQuantumInfo(quantum_info);
           }
 
           if (found_transparent_pixel == MagickFalse)
@@ -3219,6 +3218,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
           }
       }
+      quantum_info=DestroyQuantumInfo(quantum_info);
     }
 
   else /* image->storage_class != DirectClass */
