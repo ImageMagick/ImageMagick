@@ -1,3 +1,6 @@
+2014-12-14  6.9.0-1 Dirk Lemstra <dirk@snakeware...>
+  * Added support for reading EXR files to the Windows distribution.
+
 2014-12-04  6.9.0-1 Alexey Dolgavin <dolgavin.alexey@gmail...>
   * Fix ImageMagick crashes while read EXIF from TIFF
 
