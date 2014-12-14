@@ -145,6 +145,9 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   /*
     Accumulate UYVY, then unpack into two pixels.
   */

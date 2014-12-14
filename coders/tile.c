@@ -94,6 +94,9 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   ImageInfo
     *read_info;
 
+  MagickBooleanType
+    status;
+
   /*
     Initialize Image structure.
   */
@@ -116,6 +119,9 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
   if (*image_info->filename == '\0')
     ThrowReaderException(OptionError,"MustSpecifyAnImageName");
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   image->colorspace=tile_image->colorspace;
   image->alpha_trait=tile_image->alpha_trait;
   if (image->alpha_trait == BlendPixelTrait)

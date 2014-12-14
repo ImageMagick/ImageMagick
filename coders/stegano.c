@@ -166,6 +166,9 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   /*
     Get hidden watermark from low-order bits of image.
   */

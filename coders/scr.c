@@ -156,6 +156,9 @@ static Image *ReadSCRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   image->columns = 256;
   image->rows = 192;
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   count=ReadBlob(image,6144,(unsigned char *) zxscr);
   (void) count;
   count=ReadBlob(image,768,(unsigned char *) zxattr);

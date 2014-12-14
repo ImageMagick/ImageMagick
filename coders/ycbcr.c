@@ -148,6 +148,9 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
   image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   SetImageColorspace(image,YCbCrColorspace,exception);
   if (image_info->interlace != PartitionInterlace)
     {
@@ -204,6 +207,9 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
     SetImageColorspace(image,YCbCrColorspace,exception);
     switch (image_info->interlace)
     {

@@ -717,11 +717,14 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=cin.image.channel[0].bits_per_pixel;
   image->columns=cin.image.channel[0].pixels_per_line;
   image->rows=cin.image.channel[0].lines_per_image;
-  if (image_info->ping)
+  if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
       return(image);
     }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   /*
     Convert CIN raster image to pixel packets.
   */

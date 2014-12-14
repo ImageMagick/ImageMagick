@@ -516,7 +516,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   (void) ResetMagickMemory(&dib_info,0,sizeof(dib_info));
   dib_info.size=ReadBlobLSBLong(image);
-  if (dib_info.size!=40)
+  if (dib_info.size != 40)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /*
     Microsoft Windows 3.X DIB image file.
@@ -570,6 +570,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((geometry.height != 0) && (geometry.height < image->rows))
           image->rows=geometry.height;
     }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   if (image->storage_class == PseudoClass)
     {
       size_t

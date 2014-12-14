@@ -144,6 +144,9 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   quantum=image->depth <= 8 ? 1 : 2;
   interlace=image_info->interlace;
   horizontal_factor=2;
@@ -211,6 +214,9 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
     if (interlace == PartitionInterlace)
       {
         AppendImageFormat("Y",image->filename);

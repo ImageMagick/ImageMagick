@@ -124,6 +124,9 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   if (*image_info->filename == '\0')
     pixel=image->background_color;

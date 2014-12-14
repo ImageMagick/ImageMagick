@@ -182,6 +182,9 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   /*
     Convert bi-level image to pixel packets.
   */
