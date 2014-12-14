@@ -162,7 +162,7 @@ extern MagickExport QuantumFormatType
   GetQuantumFormat(const QuantumInfo *);
 
 extern MagickExport QuantumInfo
-  *AcquireQuantumInfo(const ImageInfo *,Image *),
+  *AcquireQuantumInfo(const ImageInfo *,Image *,ExceptionInfo *),
   *DestroyQuantumInfo(QuantumInfo *);
 
 extern MagickExport QuantumType

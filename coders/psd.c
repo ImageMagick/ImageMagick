@@ -2095,7 +2095,7 @@ static void WritePackbitsLength(const PSDInfo *psd_info,
     next_image->depth=16;
   packet_size=next_image->depth > 8UL ? 2UL : 1UL;
   (void) packet_size;
-  quantum_info=AcquireQuantumInfo(image_info,image);
+  quantum_info=AcquireQuantumInfo(image_info,image,exception);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) next_image->rows; y++)
   {
@@ -2148,7 +2148,7 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
     MagickTrue : MagickFalse;
   packet_size=next_image->depth > 8UL ? 2UL : 1UL;
   (void) packet_size;
-  quantum_info=AcquireQuantumInfo(image_info,image);
+  quantum_info=AcquireQuantumInfo(image_info,image,exception);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) next_image->rows; y++)
   {

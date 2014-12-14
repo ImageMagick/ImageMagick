@@ -3923,8 +3923,8 @@ void Magick::Image::readPixels(const Magick::QuantumType quantum_,
   QuantumInfo
     *quantum_info;
 
-  quantum_info=AcquireQuantumInfo(imageInfo(),image());
   GetPPException;
+  quantum_info=AcquireQuantumInfo(imageInfo(),image(), exceptionInfo);
   ImportQuantumPixels(image(),(MagickCore::CacheView *) NULL,quantum_info,
     quantum_,source_,exceptionInfo);
   quantum_info=DestroyQuantumInfo(quantum_info);
@@ -4758,8 +4758,8 @@ void Magick::Image::writePixels(const Magick::QuantumType quantum_,
   QuantumInfo
     *quantum_info;
 
-  quantum_info=AcquireQuantumInfo(imageInfo(),image());
   GetPPException;
+  quantum_info=AcquireQuantumInfo(imageInfo(),image(), exceptionInfo);
   ExportQuantumPixels(image(),(MagickCore::CacheView *) NULL,quantum_info,
     quantum_,destination_, exceptionInfo);
   quantum_info=DestroyQuantumInfo(quantum_info);
