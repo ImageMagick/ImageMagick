@@ -791,9 +791,6 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
   ImageType
     type;
 
-  MagickBooleanType
-    status;
-
   register ssize_t
     x;
 
