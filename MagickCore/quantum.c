@@ -95,8 +95,7 @@ static void
 %
 %  The format of the AcquireQuantumInfo method is:
 %
-%      QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,Image *image,
-%        ExceptionInfo *exception)
+%      QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -104,11 +103,9 @@ static void
 %
 %    o image: the image.
 %
-%    o exception: return any errors or warnings in this structure.
-%
 */
 MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
-  Image *image,ExceptionInfo *exception)
+  Image *image)
 {
   MagickBooleanType
     status;
@@ -123,8 +120,6 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   GetQuantumInfo(image_info,quantum_info);
   if (image == (const Image *) NULL)
     return(quantum_info);
-  if (SyncImagePixelCache(image,exception) == MagickFalse)
-    return(DestroyQuantumInfo(quantum_info));
   status=SetQuantumDepth(image,quantum_info,image->depth);
   quantum_info->endian=image->endian;
   if (status == MagickFalse)

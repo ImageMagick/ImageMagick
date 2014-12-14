@@ -839,7 +839,7 @@ RestoreMSCWarning
     (void) sample_size;
     image->columns = MATLAB_HDR.SizeX;
     image->rows = MATLAB_HDR.SizeY;    
-    quantum_info=AcquireQuantumInfo(clone_info,image,exception);
+    quantum_info=AcquireQuantumInfo(clone_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     one=1;
@@ -1270,7 +1270,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
     /*
       Store image data.
     */
-    quantum_info=AcquireQuantumInfo(image_info,image,exception);
+    quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=GetQuantumPixels(quantum_info);

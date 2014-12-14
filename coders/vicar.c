@@ -291,7 +291,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   */
   (void) SetImageColorspace(image,GRAYColorspace,exception);
   quantum_type=GrayQuantum;
-  quantum_info=AcquireQuantumInfo(image_info,image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
@@ -472,7 +472,7 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
     Write VICAR pixels.
   */
   image->depth=8;
-  quantum_info=AcquireQuantumInfo(image_info,image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);

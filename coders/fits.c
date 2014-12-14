@@ -658,7 +658,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   */
   image->depth=GetImageQuantumDepth(image,MagickFalse);
   image->endian=MSBEndian;
-  quantum_info=AcquireQuantumInfo(image_info,image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   offset=0;

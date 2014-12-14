@@ -157,7 +157,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   (void) SetImageVirtualPixelMethod(canvas_image,BlackVirtualPixelMethod,
     exception);
   quantum_type=GrayQuantum;
-  quantum_info=AcquireQuantumInfo(image_info,canvas_image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,canvas_image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
@@ -415,7 +415,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
     */
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
     quantum_type=GrayQuantum;
-    quantum_info=AcquireQuantumInfo(image_info,image,exception);
+    quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=GetQuantumPixels(quantum_info);

@@ -3156,7 +3156,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Convert PNG pixels to pixel packets.
   */
-  quantum_info=AcquireQuantumInfo(image_info,image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,image);
 
   if (quantum_info == (QuantumInfo *) NULL)
      png_error(ping,"Failed to allocate quantum_info");
@@ -10809,7 +10809,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /*
     Initialize image scanlines.
   */
-  quantum_info=AcquireQuantumInfo(image_info,image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     png_error(ping,"Memory allocation for quantum_info failed");
   quantum_info->format=UndefinedQuantumFormat;

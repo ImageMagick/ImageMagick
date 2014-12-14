@@ -652,7 +652,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   /*
     Convert cipher pixels to plain pixels.
   */
-  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image,exception);
+  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
   if (quantum_info == (QuantumInfo *) NULL)
     {
       aes_info=DestroyAESInfo(aes_info);
@@ -872,7 +872,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   /*
     Convert plain pixels to cipher pixels.
   */
-  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image,exception);
+  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
   if (quantum_info == (QuantumInfo *) NULL)
     {
       aes_info=DestroyAESInfo(aes_info);

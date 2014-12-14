@@ -161,7 +161,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
     exception);
   (void) SetImageVirtualPixelMethod(canvas_image,BlackVirtualPixelMethod,
     exception);
-  quantum_info=AcquireQuantumInfo(image_info,canvas_image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,canvas_image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
@@ -1110,7 +1110,7 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
     if ((LocaleCompare(image_info->magick,"BGRA") == 0) &&
         (image->alpha_trait != BlendPixelTrait))
       (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-    quantum_info=AcquireQuantumInfo(image_info,image,exception);
+    quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=GetQuantumPixels(quantum_info);
