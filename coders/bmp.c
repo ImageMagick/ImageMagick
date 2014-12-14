@@ -1288,7 +1288,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,ScaleShortToQuantum((unsigned short) red),q);
             SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
-            SetPixelOpacity(image,OpaqueAlpha,q);
+            SetPixelAlpha(image,OpaqueAlpha,q);
             if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,ScaleShortToQuantum((unsigned short) alpha),q);
             q+=GetPixelChannels(image);
