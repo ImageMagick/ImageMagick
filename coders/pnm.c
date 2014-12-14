@@ -1930,9 +1930,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         (void) SetImageType(image,BilevelType);
         image->depth=1;
-        quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
+        quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         quantum_info->min_is_white=MagickTrue;
         pixels=GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
@@ -1969,9 +1970,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
         (void) WriteBlobString(image,buffer);
-        quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
+        quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         quantum_info->min_is_white=MagickTrue;
         pixels=GetQuantumPixels(quantum_info);
         extent=GetQuantumExtent(image,quantum_info,GrayQuantum);
@@ -2083,9 +2085,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
         (void) WriteBlobString(image,buffer);
-        quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
+        quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         pixels=GetQuantumPixels(quantum_info);
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
@@ -2178,7 +2181,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         if (image->depth > 32)
           image->depth=32;
-        quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
+        quantum_info=AcquireQuantumInfo(image_info,image);
+        if (quantum_info == (QuantumInfo *) NULL)
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         pixels=GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
         {

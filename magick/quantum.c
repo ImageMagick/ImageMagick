@@ -113,8 +113,6 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   QuantumInfo
     *quantum_info;
 
-  if (SyncImagePixelCache(image,&image->exception) == MagickFalse)
-    return(MagickFalse);
   quantum_info=(QuantumInfo *) AcquireMagickMemory(sizeof(*quantum_info));
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -122,6 +120,8 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   GetQuantumInfo(image_info,quantum_info);
   if (image == (const Image *) NULL)
     return(quantum_info);
+  if (SyncImagePixelCache(image,&image->exception) == MagickFalse)
+    return(DestroyQuantumInfo(quantum_info));
   status=SetQuantumDepth(image,quantum_info,image->depth);
   quantum_info->endian=image->endian;
   if (status == MagickFalse)
