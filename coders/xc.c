@@ -132,6 +132,12 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   status=QueryMagickColor((char *) image_info->filename,&color,exception);
   if (status == MagickFalse)

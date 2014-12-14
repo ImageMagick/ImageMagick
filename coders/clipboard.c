@@ -136,7 +136,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
     bitmapH=(HBITMAP) GetClipboardData(CF_BITMAP);
     hPal=(HPALETTE) GetClipboardData(CF_PALETTE);
     CloseClipboard();
-    if ( bitmapH == NULL )
+    if (bitmapH == NULL)
       ThrowReaderException(CoderError,"NoBitmapOnClipboard");
     {
       BITMAPINFO
@@ -163,8 +163,14 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
       GetObject(bitmapH,sizeof(BITMAP),(LPSTR) &bitmap);
       if ((image->columns == 0) || (image->rows == 0))
         {
-          image->rows=bitmap.bmHeight;
           image->columns=bitmap.bmWidth;
+          image->rows=bitmap.bmHeight;
+        }
+      status=SetImageExtent(image,image->columns,image->rows);
+      if (status == MagickFalse)
+        {
+          InheritException(exception,&image->exception);
+          return(DestroyImageList(image));
         }
       /*
         Initialize the bitmap header info.

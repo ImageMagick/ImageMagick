@@ -315,9 +315,15 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     SetHeaderFromIPL(image, &ipl_info);
 
-  if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    status=SetImageExtent(image,image->columns,image->rows);
+    if (status == MagickFalse)
+      {
+        InheritException(exception,&image->exception);
+        return(DestroyImageList(image));
+      }
 /*
    printf("Length: %.20g, Memory size: %.20g\n", (double) length,(double)
      image->depth);

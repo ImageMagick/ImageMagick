@@ -99,6 +99,9 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   Image
     *image;
 
+  MagickBooleanType
+    status;
+
   MagickPixelPacket
     background;
 
@@ -129,6 +132,12 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   image->matte=MagickTrue;
   GetMagickPixelPacket(image,&background);
   background.opacity=(MagickRealType) TransparentOpacity;

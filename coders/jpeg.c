@@ -1263,6 +1263,12 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     jpeg_info.output_components*sizeof(*jpeg_pixels));
   if (memory_info == (MemoryInfo *) NULL)

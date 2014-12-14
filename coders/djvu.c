@@ -418,7 +418,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                 if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
                                         break;
                         }
-                if (!image->ping)
+                if (image->ping == MagickFalse)
                   SyncImage(image);
         } else {
 #if DEBUG
@@ -577,6 +577,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
   Image *image;
   int logging;
   int tag;
+  MagickBooleanType status;
 
         /* so, we know that the page is there! Get its dimension, and  */
 
@@ -667,6 +668,12 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
                 image->matte = MagickTrue;
                 /* is this useful? */
         }
+        status=SetImageExtent(image,image->columns,image->rows);
+        if (status == MagickFalse)
+          {
+            InheritException(exception,&image->exception);
+            return(DestroyImageList(image));
+          }
 #if DEBUG
         printf("now filling %.20g x %.20g\n",(double) image->columns,(double)
           image->rows);
