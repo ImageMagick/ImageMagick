@@ -9615,13 +9615,17 @@ WandExport MagickBooleanType MagickSetImageBackgroundColor(MagickWand *wand,
 WandExport MagickBooleanType MagickSetImageBias(MagickWand *wand,
   const double bias)
 {
+  char
+    option[MaxTextExtent];
+
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  wand->images->bias=bias;
+  (void) FormatLocaleString(option,MaxTextExtent,"%+g",bias);
+  (void) SetImageOption(wand->image_info,"bias",option);
   return(MagickTrue);
 }
 
