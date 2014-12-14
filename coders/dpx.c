@@ -1206,7 +1206,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     status=MagickTrue;
     row=0;
-    quantum_info=AcquireQuantumInfo(image_info,image,exception);
+    quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     SetQuantumQuantum(quantum_info,32);
@@ -1945,7 +1945,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   /*
     Convert pixel packets to DPX raster image.
   */
-  quantum_info=AcquireQuantumInfo(image_info,image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,image);
   SetQuantumQuantum(quantum_info,32);
   SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
     MagickTrue : MagickFalse);

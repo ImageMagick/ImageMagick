@@ -1327,7 +1327,7 @@ RestoreMSCWarning
     /*
       Allocate memory for the image and pixel buffer.
     */
-    quantum_info=AcquireQuantumInfo(image_info,image,exception);
+    quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       {
         TIFFClose(tiff);
@@ -3075,7 +3075,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    quantum_info=AcquireQuantumInfo(image_info,image,exception);
+    quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if ((image->storage_class != PseudoClass) && (image->depth >= 32) &&

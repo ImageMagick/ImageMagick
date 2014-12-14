@@ -1244,7 +1244,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     /*
       Allocate image pixels.
     */
-    quantum_info=AcquireQuantumInfo(image_info,image,exception);
+    quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     if (quantum_format != UndefinedQuantumFormat)
@@ -1976,7 +1976,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     else
       if (IsGrayColorspace(image->colorspace) == MagickFalse)
         (void) SetImageColorspace(image,GRAYColorspace,exception);
-    quantum_info=AcquireQuantumInfo(image_info,image,exception);
+    quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if ((image->storage_class != PseudoClass) && (image->depth >= 32) &&

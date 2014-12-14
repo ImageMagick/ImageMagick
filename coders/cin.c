@@ -725,7 +725,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert CIN raster image to pixel packets.
   */
-  quantum_info=AcquireQuantumInfo(image_info,image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   quantum_info->quantum=32;
@@ -1183,7 +1183,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   /*
     Convert pixel packets to CIN raster image.
   */
-  quantum_info=AcquireQuantumInfo(image_info,image,exception);
+  quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   quantum_info->quantum=32;
