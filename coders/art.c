@@ -150,7 +150,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Convert bi-level image to pixel packets.
   */
   SetImageColorspace(image,GRAYColorspace,exception);
-  quantum_info=AcquireQuantumInfo(image_info,image);
+  quantum_info=AcquireQuantumInfo(image_info,image,exception);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
@@ -319,7 +319,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobLSBShort(image,(unsigned short) image->columns);
   (void) WriteBlobLSBShort(image,0);
   (void) WriteBlobLSBShort(image,(unsigned short) image->rows);
-  quantum_info=AcquireQuantumInfo(image_info,image);
+  quantum_info=AcquireQuantumInfo(image_info,image,exception);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

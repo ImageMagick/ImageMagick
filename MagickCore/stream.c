@@ -1251,13 +1251,14 @@ MagickExport Image *StreamImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   read_info=CloneImageInfo(image_info);
   stream_info->image_info=image_info;
-  stream_info->quantum_info=AcquireQuantumInfo(image_info,(Image *) NULL);
+  stream_info->quantum_info=AcquireQuantumInfo(image_info,(Image *) NULL,
+    exception);
   stream_info->exception=exception;
   read_info->client_data=(void *) stream_info;
   image=ReadStream(read_info,&WriteStreamImage,exception);
   read_info=DestroyImageInfo(read_info);
   stream_info->quantum_info=DestroyQuantumInfo(stream_info->quantum_info);
-  stream_info->quantum_info=AcquireQuantumInfo(image_info,image);
+  stream_info->quantum_info=AcquireQuantumInfo(image_info,image,exception);
   if (stream_info->quantum_info == (QuantumInfo *) NULL)
     image=DestroyImage(image);
   return(image);

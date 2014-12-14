@@ -928,7 +928,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   /*
     Initialize FlashPix image description.
   */
-  quantum_info=AcquireQuantumInfo(image_info,image);
+  quantum_info=AcquireQuantumInfo(image_info,image,exception);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);

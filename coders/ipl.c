@@ -321,7 +321,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
    printf("Length: %.20g, Memory size: %.20g\n", (double) length,(double)
      image->depth);
 */
-     quantum_info=AcquireQuantumInfo(image_info,image);
+     quantum_info=AcquireQuantumInfo(image_info,image,exception);
      if (quantum_info == (QuantumInfo *) NULL)
        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
      status=SetQuantumFormat(image,quantum_info,quantum_format);
@@ -540,7 +540,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
   scene=0;
   
 
-  quantum_info=AcquireQuantumInfo(image_info, image);
+  quantum_info=AcquireQuantumInfo(image_info,image,exception);
   if ((quantum_info->format == UndefinedQuantumFormat) &&
       (IsHighDynamicRangeImage(image,exception) != MagickFalse))
     SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);

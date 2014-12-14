@@ -823,7 +823,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   /*
     Convert to GRAY raster scanline.
   */
-  quantum_info=AcquireQuantumInfo(image_info,image);
+  quantum_info=AcquireQuantumInfo(image_info,image,exception);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   bits=8/(int) bits_per_pixel-1;  /* start at most significant bits */
