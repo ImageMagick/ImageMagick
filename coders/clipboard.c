@@ -163,9 +163,12 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
       GetObject(bitmapH,sizeof(BITMAP),(LPSTR) &bitmap);
       if ((image->columns == 0) || (image->rows == 0))
         {
-          image->rows=bitmap.bmHeight;
           image->columns=bitmap.bmWidth;
+          image->rows=bitmap.bmHeight;
         }
+      status=SetImageExtent(image,image->columns,image->rows,exception);
+      if (status == MagickFalse)
+        return(DestroyImageList(image));
       /*
         Initialize the bitmap header info.
       */

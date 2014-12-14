@@ -378,6 +378,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
         (image->resolution.y == 0.0 ? 90.0 : image->resolution.y)+45.0)/90.0+
         0.5));
     }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   /*
     Render markup.
   */

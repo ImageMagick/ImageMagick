@@ -2565,6 +2565,9 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  MagickBooleanType
+    status;
+
   unsigned long
     wmf_options_flags = 0;
 
@@ -2857,6 +2860,9 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           "leave ReadWMFImage()");
       return(GetFirstImageInList(image));
     }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
        "  Creating canvas image with size %lux%lu",(unsigned long) image->rows,

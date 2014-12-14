@@ -1658,6 +1658,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
   image->depth=psd_info.depth;
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
       image=DestroyImageList(image);

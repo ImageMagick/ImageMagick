@@ -227,6 +227,9 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
     delta.x)+0.5);
   image->rows=(size_t) floor((((double) page.height*image->resolution.y)/
     delta.y)+0.5);
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   image->page.x=0;
   image->page.y=0;
   texture=(Image *) NULL;
@@ -433,6 +436,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=height;
     for (depth=1; (GetQuantumRange(depth)+1) < max_value; depth++) ;
     image->depth=depth;
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
     LocaleLower(colorspace);
     i=(ssize_t) strlen(colorspace)-1;
     image->alpha_trait=UndefinedPixelTrait;

@@ -304,19 +304,22 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   /* Thats all we need if we are pinging. */
   if (image_info->ping != MagickFalse)
-  {
-    (void) CloseBlob(image);
-    return(GetFirstImageInList(image));
-  }
+    {
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
+    }
   length=image->columns;
   quantum_type=GetQuantumType(image,exception);
  do
   {
     SetHeaderFromIPL(image, &ipl_info);
 
-  if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
 /*
    printf("Length: %.20g, Memory size: %.20g\n", (double) length,(double)
      image->depth);

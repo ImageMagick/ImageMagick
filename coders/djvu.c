@@ -575,6 +575,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
   Image *image;
   int logging;
   int tag;
+  MagickBooleanType status;
 
         /* so, we know that the page is there! Get its dimension, and  */
 
@@ -665,6 +666,9 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
                 image->alpha_trait = BlendPixelTrait;
                 /* is this useful? */
         }
+        status=SetImageExtent(image,image->columns,image->rows,exception);
+        if (status == MagickFalse)
+          return(DestroyImageList(image));
 #if DEBUG
         printf("now filling %.20g x %.20g\n",(double) image->columns,(double)
           image->rows);

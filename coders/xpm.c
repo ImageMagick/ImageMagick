@@ -424,6 +424,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read image pixels.
       */
+      status=SetImageExtent(image,image->columns,image->rows,exception);
+      if (status == MagickFalse)
+        return(DestroyImageList(image));
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         p=NextXPMLine(p);
