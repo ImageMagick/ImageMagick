@@ -183,27 +183,53 @@ MagickExport void AnnotateComponentTerminus(void)
 %  any of the following bits of information about the image by embedding
 %  the appropriate special characters:
 %
-%    %b   file size in bytes.
-%    %c   comment.
-%    %d   directory in which the image resides.
-%    %e   extension of the image file.
-%    %f   original filename of the image.
-%    %h   height of image.
-%    %i   filename of the image.
-%    %k   number of unique colors.
-%    %l   image label.
-%    %m   image file format.
-%    %n   number of images in a image sequence.
-%    %o   output image filename.
-%    %p   page number of the image.
-%    %q   image depth (8 or 16).
-%    %q   image depth (8 or 16).
-%    %s   image scene number.
-%    %t   image filename without any extension.
-%    %u   a unique temporary filename.
-%    %w   image width.
-%    %x   x resolution of the image.
-%    %y   y resolution of the image.
+%    \n   newline
+%    \r   carriage return
+%    <    less-than character.
+%    >    greater-than character.
+%    &    ampersand character.
+%    %%   a percent sign
+%    %b   file size of image read in
+%    %c   comment meta-data property
+%    %d   directory component of path
+%    %e   filename extension or suffix
+%    %f   filename (including suffix)
+%    %g   layer canvas page geometry   (equivalent to "%Wx%H%X%Y")
+%    %h   current image height in pixels
+%    %i   image filename (note: becomes output filename for "info:")
+%    %k   CALCULATED: number of unique colors
+%    %l   label meta-data property
+%    %m   image file format (file magic)
+%    %n   number of images in current image sequence
+%    %o   output filename  (used for delegates)
+%    %p   index of image in current image list
+%    %q   quantum depth (compile-time constant)
+%    %r   image class and colorspace
+%    %s   scene number (from input unless re-assigned)
+%    %t   filename without directory or extension (suffix)
+%    %u   unique temporary filename (used for delegates)
+%    %w   current width in pixels
+%    %x   x resolution (density)
+%    %y   y resolution (density)
+%    %z   image depth (as read in unless modified, image save depth)
+%    %A   image transparency channel enabled (true/false)
+%    %C   image compression type
+%    %D   image GIF dispose method
+%    %G   original image size (%wx%h; before any resizes)
+%    %H   page (canvas) height
+%    %M   Magick filename (original file exactly as given,  including read mods)
+%    %O   page (canvas) offset ( = %X%Y )
+%    %P   page (canvas) size ( = %Wx%H )
+%    %Q   image compression quality ( 0 = default )
+%    %S   ?? scenes ??
+%    %T   image time delay (in centi-seconds)
+%    %U   image resolution units
+%    %W   page (canvas) width
+%    %X   page (canvas) x offset (including sign)
+%    %Y   page (canvas) y offset (including sign)
+%    %Z   unique filename (used for delegates)
+%    %@   CALCULATED: trim bounding box (without actually trimming)
+%    %#   CALCULATED: 'signature' hash of image values
 %
 %  The format of the AnnotateImage method is:
 %
