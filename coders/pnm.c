@@ -205,7 +205,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base,
     Evaluate number.
   */
   value=0;
-  do
+  while (isdigit(c) != 0) {
   {
     if (value > (unsigned int) (INT_MAX/10))
       break;
@@ -216,7 +216,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base,
     c=ReadBlobByte(image);
     if (c == EOF)
       return(0);
-  } while (isdigit(c) != 0);
+  }
   return(value);
 }
 
