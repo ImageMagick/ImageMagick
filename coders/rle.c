@@ -40,11 +40,11 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/property.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
 #include "magick/colormap.h"
+#include "magick/colormap-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -57,6 +57,7 @@
 #include "magick/pixel-accessor.h"
 #include "magick/quantum-private.h"
 #include "magick/pixel.h"
+#include "magick/property.h"
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/module.h"
@@ -123,6 +124,14 @@ static MagickBooleanType IsRLE(const unsigned char *magick,const size_t length)
 %
 %
 */
+
+static inline size_t MagickMax(const size_t x,const size_t y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
 static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define SkipLinesOp  0x01
@@ -307,8 +316,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if ((number_pixels*number_planes) != (size_t) (number_pixels*number_planes))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    pixel_info=AcquireVirtualMemory(image->columns,image->rows*number_planes*
-      sizeof(*pixels));
+    pixel_info=AcquireVirtualMemory(image->columns,image->rows*
+      MagickMax(number_planes,4)*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
@@ -543,9 +552,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelRed(q,image->colormap[*p++].red);
-                SetPixelGreen(q,image->colormap[*p++].green);
-                SetPixelBlue(q,image->colormap[*p++].blue);
+                SetPixelRed(q,image->colormap[(ssize_t)
+                  ConstrainColormapIndex(image,*p++)].red);
+                SetPixelGreen(q,image->colormap[(ssize_t)
+                  ConstrainColormapIndex(image,*p++)].green);
+                SetPixelBlue(q,image->colormap[(ssize_t)
+                  ConstrainColormapIndex(image,*p++)].blue);
                 SetPixelAlpha(q,ScaleCharToQuantum(*p++));
                 q++;
               }
