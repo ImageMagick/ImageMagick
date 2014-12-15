@@ -147,7 +147,7 @@ static unsigned int XBMInteger(Image *image,short int *hex_digits)
     c=ReadBlobByte(image);
     if (c == EOF)
       return(0);
-  } while (hex_digits[c] < 0);
+  } while ((c == ' ') || (c == '\t') || (c == '\n') || (c == '\r'));
   /*
     Evaluate number.
   */
@@ -162,6 +162,8 @@ static unsigned int XBMInteger(Image *image,short int *hex_digits)
       break;
     value+=hex_digits[c];
     c=ReadBlobByte(image);
+    if (c == EOF)
+      return(0);
   } while (hex_digits[c] >= 0);
   return(value);
 }
