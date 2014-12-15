@@ -3552,7 +3552,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     packet_size+=sizeof(IndexPacket);
   length=number_pixels*packet_size;
   columns=(size_t) (length/cache_info->rows/packet_size);
-  if (cache_info->columns != columns)
+  if ((cache_info->columns != columns) || ((ssize_t) cache_info->columns < 0) ||
+      ((ssize_t) cache_info->rows < 0))
     ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
       image->filename);
   cache_info->length=length;
