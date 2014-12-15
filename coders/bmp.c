@@ -860,8 +860,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=(size_t) MagickAbsoluteValue(bmp_info.height);
     image->depth=bmp_info.bits_per_pixel <= 8 ? bmp_info.bits_per_pixel : 8;
     image->alpha_trait=((bmp_info.alpha_mask != 0) &&
-      (bmp_info.compression == BI_BITFIELDS)) ||
-      (bmp_info.bits_per_pixel == 32) ? BlendPixelTrait : UndefinedPixelTrait;
+      (bmp_info.compression == BI_BITFIELDS)) ? BlendPixelTrait :
+      UndefinedPixelTrait;
     if (bmp_info.bits_per_pixel < 16)
       {
         size_t
@@ -970,6 +970,32 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (bmp_info.compression == BI_RGB)
       {
+        /*
+          We should ignore the alpha value in BMP3 files but there have been
+          reports about 32 bit files with alpha. We do a quick check to see if
+          the alpha channel contains a value that is not zero (default value).
+          If we find a non zero value we asume the program that wrote the file
+          wants to use the alpha channel.
+        */
+        if ((image->alpha_trait != BlendPixelTrait) && (bmp_info.size == 40) &&
+            (bmp_info.bits_per_pixel == 32))
+          {
+            bytes_per_line=4*(image->columns);
+            for (y=(ssize_t) image->rows-1; y >= 0; y--)
+            {
+              p=pixels+(image->rows-y-1)*bytes_per_line;
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                if (*(p+3) != 0)
+                  {
+                    image->alpha_trait=BlendPixelTrait;
+                    y=-1;
+                    break;
+                  }
+                p+=4;
+              }
+            }
+          }
         bmp_info.alpha_mask=image->alpha_trait == BlendPixelTrait ?
           0xff000000U : 0U;
         bmp_info.red_mask=0x00ff0000U;
@@ -1190,15 +1216,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               blue|=((blue & 0xe000) >> 5);
             if (quantum_bits.blue <= 8)
               blue|=((blue & 0xff00) >> 8);
-            alpha=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
-            if (quantum_bits.alpha <= 8)
-              alpha|=((alpha & 0xff00) >> 8);
             SetPixelRed(image,ScaleShortToQuantum((unsigned short) red),q);
             SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
             if (image->alpha_trait == BlendPixelTrait)
-              SetPixelAlpha(image,ScaleShortToQuantum((unsigned short) alpha),q);
+              {
+                alpha=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
+                if (quantum_bits.alpha <= 8)
+                  alpha|=((alpha & 0xff00) >> 8);
+                SetPixelAlpha(image,ScaleShortToQuantum(
+                  (unsigned short) alpha),q);
+              }
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1285,15 +1314,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             if (quantum_bits.blue == 8)
               blue|=(blue >> 8);
-            alpha=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
-            if (quantum_bits.alpha == 8)
-              alpha|=(alpha >> 8);
             SetPixelRed(image,ScaleShortToQuantum((unsigned short) red),q);
             SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
             if (image->alpha_trait == BlendPixelTrait)
-              SetPixelAlpha(image,ScaleShortToQuantum((unsigned short) alpha),q);
+              {
+                alpha=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
+                if (quantum_bits.alpha == 8)
+                  alpha|=(alpha >> 8);
+                SetPixelAlpha(image,ScaleShortToQuantum(
+                  (unsigned short) alpha),q);
+              }
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
