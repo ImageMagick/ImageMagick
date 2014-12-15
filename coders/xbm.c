@@ -152,8 +152,7 @@ static unsigned int XBMInteger(Image *image,short int *hex_digits)
     Evaluate number.
   */
   value=0;
-  do
-  { 
+  while (hex_digits[c] >= 0) { 
     if (value > (unsigned int) (INT_MAX/10))
       break;
     value*=16;
@@ -164,7 +163,7 @@ static unsigned int XBMInteger(Image *image,short int *hex_digits)
     c=ReadBlobByte(image);
     if (c == EOF)
       return(0);
-  } while (hex_digits[c] >= 0);
+  }
   return(value);
 }
 
