@@ -211,7 +211,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
     if (value > (unsigned int) (INT_MAX/10))
       break;
     value*=10;
-    if (value > (INT_MAX-c))
+    if (value > (INT_MAX-(c-(int) '0')))
       break;
     value+=c-(int) '0';
     c=ReadBlobByte(image);
