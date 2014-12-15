@@ -2154,7 +2154,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   }
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
-    PixelTrait traits=GetPixelChannelTraits(image,i);
+    PixelTrait traits=GetPixelChannelTraits(image,(PixelChannel) i);
     if ((traits & UpdatePixelTrait) == 0)
       continue;
     channel_statistics[CompositePixelChannel].area+=channel_statistics[i].area;
