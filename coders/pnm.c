@@ -215,8 +215,6 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
       break;
     value+=c-(int) '0';
     c=ReadBlobByte(image);
-    if (c == EOF)
-      return(value);
   } while (isdigit(c) != MagickFalse);
   return(value);
 }
