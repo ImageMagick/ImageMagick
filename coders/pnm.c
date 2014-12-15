@@ -206,7 +206,6 @@ static unsigned int PNMInteger(Image *image,const unsigned int base,
   */
   value=0;
   while (isdigit(c) != 0) {
-  {
     if (value > (unsigned int) (INT_MAX/10))
       break;
     value*=10;
