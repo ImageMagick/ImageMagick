@@ -24,6 +24,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26682).
   * The SetImageBias() biad value is no longer ignored (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25732).
+  * Area crop now returns the expected number of tiles (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26701).
 
 2014-11-16  6.9.0-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-0, SVN revision 17067.
