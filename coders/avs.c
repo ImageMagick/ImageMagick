@@ -369,7 +369,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for pixels.
     */
-    pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->columns,
+    pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
       4*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");

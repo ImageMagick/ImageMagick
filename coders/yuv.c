@@ -202,7 +202,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     scanline=(unsigned char *) AcquireQuantumMemory((size_t) 2UL*
       image->columns+2UL,quantum*sizeof(*scanline));
   else
-    scanline=(unsigned char *) AcquireQuantumMemory((size_t) image->columns,
+    scanline=(unsigned char *) AcquireQuantumMemory(image->columns,
       quantum*sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");

@@ -1290,7 +1290,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,Image *imag
     Define SIXEL pixels.
   */
   output = sixel_output_create(image);
-  sixel_pixels =(unsigned char *) AcquireQuantumMemory((size_t) image->columns * image->rows,1);
+  sixel_pixels =(unsigned char *) AcquireQuantumMemory(image->columns * image->rows,1);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     (void) GetVirtualPixels(image,0,y,image->columns,1,exception);
