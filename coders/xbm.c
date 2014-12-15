@@ -131,33 +131,38 @@ static MagickBooleanType IsXBM(const unsigned char *magick,const size_t length)
 %
 */
 
-static int XBMInteger(Image *image,short int *hex_digits)
-{
+static unsigned int XBMInteger(Image *image,short int *hex_digits)
+{ 
   int
-    c,
-    flag,
+    c;
+  
+  unsigned int
     value;
-
-  value=0;
-  flag=0;
-  for ( ; ; )
-  {
+  
+  /*
+    Skip any leading whitespace.
+  */
+  do
+  { 
     c=ReadBlobByte(image);
     if (c == EOF)
-      {
-        value=(-1);
-        break;
-      }
-    c&=0xff;
-    if (isxdigit(c) != MagickFalse)
-      {
-        value=(int) ((size_t) value << 4)+hex_digits[c];
-        flag++;
-        continue;
-      }
-    if ((hex_digits[c]) < 0 && (flag != 0))
+      return(0);
+  } while (hex_digits[c] < 0);
+  /*
+    Evaluate number.
+  */
+  value=0;
+  do
+  { 
+    if (value > (unsigned int) (INT_MAX/10))
       break;
-  }
+    value*=16;
+    c&=0xff;
+    if (value > (INT_MAX-hex_digits[c]))
+      break;
+    value+=hex_digits[c];
+    c=ReadBlobByte(image);
+  } while (hex_digits[c] >= 0);
   return(value);
 }
 
@@ -189,23 +194,21 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   short int
     hex_digits[256];
 
-  size_t
-    bit,
-    byte,
-    bytes_per_line,
-    length,
-    padding,
-    value,
-    version;
-
   ssize_t
     y;
 
   unsigned char
     *data;
 
-  unsigned long
+  unsigned int
+    bit,
+    byte,
+    bytes_per_line,
     height,
+    length,
+    padding,
+    value,
+    version,
     width;
 
   /*
@@ -231,12 +234,12 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   width=0;
   height=0;
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %s %lu",name,&width) == 2)
+    if (sscanf(buffer,"#define %s %u",name,&width) == 2)
       if ((strlen(name) >= 6) &&
           (LocaleCompare(name+strlen(name)-6,"_width") == 0))
         break;
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %s %lu",name,&height) == 2)
+    if (sscanf(buffer,"#define %s %u",name,&height) == 2)
       if ((strlen(name) >= 7) &&
           (LocaleCompare(name+strlen(name)-7,"_height") == 0))
         break;
@@ -345,7 +348,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (version == 10)
     for (i=0; i < (ssize_t) (bytes_per_line*image->rows); (i+=2))
     {
-      value=(size_t) XBMInteger(image,hex_digits);
+      value=XBMInteger(image,hex_digits);
       *p++=(unsigned char) value;
       if ((padding == 0) || (((i+2) % bytes_per_line) != 0))
         *p++=(unsigned char) (value >> 8);
@@ -353,7 +356,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     for (i=0; i < (ssize_t) (bytes_per_line*image->rows); i++)
     {
-      value=(size_t) XBMInteger(image,hex_digits);
+      value=XBMInteger(image,hex_digits);
       *p++=(unsigned char) value;
     }
   /*
