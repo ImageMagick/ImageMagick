@@ -108,6 +108,9 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   Image
     *image;
 
+  MagickBooleanType
+    status;
+
   register ssize_t
     x;
 
