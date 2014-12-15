@@ -164,7 +164,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert MTV raster image to pixel packets.
     */
-    pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->columns,
+    pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
       3UL*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -370,7 +370,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
       Allocate memory for pixels.
     */
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-    pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->columns,
+    pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
       3UL*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
