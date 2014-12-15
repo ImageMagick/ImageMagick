@@ -868,8 +868,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=(size_t) MagickAbsoluteValue(bmp_info.height);
     image->depth=bmp_info.bits_per_pixel <= 8 ? bmp_info.bits_per_pixel : 8;
     image->matte=((bmp_info.alpha_mask != 0) &&
-      (bmp_info.compression == BI_BITFIELDS)) || 
-       (bmp_info.bits_per_pixel == 32) ? MagickTrue : MagickFalse;
+      (bmp_info.compression == BI_BITFIELDS)) ? MagickTrue : MagickFalse;
     if (bmp_info.bits_per_pixel < 16)
       {
         size_t
@@ -981,6 +980,32 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (bmp_info.compression == BI_RGB)
       {
+        /*
+          We should ignore the alpha value in BMP3 files but there have been
+          reports about 32 bit files with alpha. We do a quick check to see if
+          the alpha channel contains a value that is not zero (default value).
+          If we find a non zero value we asume the program that wrote the file
+          wants to use the alpha channel.
+        */
+        if ((image->matte == MagickFalse) && (bmp_info.size == 40) &&
+            (bmp_info.bits_per_pixel == 32))
+          {
+            bytes_per_line=4*(image->columns);
+            for (y=(ssize_t) image->rows-1; y >= 0; y--)
+            {
+              p=pixels+(image->rows-y-1)*bytes_per_line;
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                if (*(p+3) != 0)
+                  {
+                    image->matte=MagickTrue;
+                    y=-1;
+                    break;
+                  }
+                p+=4;
+              }
+            }
+          }
         bmp_info.alpha_mask=image->matte != MagickFalse ? 0xff000000U : 0U;
         bmp_info.red_mask=0x00ff0000U;
         bmp_info.green_mask=0x0000ff00U;
@@ -1202,15 +1227,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               blue|=((blue & 0xe000) >> 5);
             if (quantum_bits.blue <= 8)
               blue|=((blue & 0xff00) >> 8);
-            alpha=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
-            if (quantum_bits.opacity <= 8)
-              alpha|=((alpha & 0xff00) >> 8);
             SetPixelRed(q,ScaleShortToQuantum((unsigned short) red));
             SetPixelGreen(q,ScaleShortToQuantum((unsigned short) green));
             SetPixelBlue(q,ScaleShortToQuantum((unsigned short) blue));
             SetPixelOpacity(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
-              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short) alpha));
+              {
+                alpha=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
+                if (quantum_bits.opacity <= 8)
+                  alpha|=((alpha & 0xff00) >> 8);
+                SetPixelAlpha(q,ScaleShortToQuantum((unsigned short) alpha));
+              }
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1297,15 +1324,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             if (quantum_bits.blue == 8)
               blue|=(blue >> 8);
-            alpha=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
-            if (quantum_bits.opacity == 8)
-              alpha|=(alpha >> 8);
             SetPixelRed(q,ScaleShortToQuantum((unsigned short) red));
             SetPixelGreen(q,ScaleShortToQuantum((unsigned short) green));
             SetPixelBlue(q,ScaleShortToQuantum((unsigned short) blue));
             SetPixelAlpha(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
-              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short) alpha));
+              {
+                alpha=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
+                if (quantum_bits.opacity == 8)
+                  alpha|=(alpha >> 8);
+                SetPixelAlpha(q,ScaleShortToQuantum((unsigned short) alpha));
+              }
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
