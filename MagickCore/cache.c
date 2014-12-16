@@ -524,7 +524,7 @@ static MagickBooleanType ClonePixelCacheRepository(
           (clone_info->metacontent_extent != 0))
         (void) memcpy(clone_info->metacontent,cache_info->metacontent,
           cache_info->columns*cache_info->rows*clone_info->metacontent_extent*
-          sizeof(*cache_info->metacontent));
+          sizeof(unsigned char));
       return(MagickTrue);
     }
   /*
