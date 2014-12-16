@@ -519,8 +519,10 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       }
     if (flags & PALM_HAS_TRANSPARENCY_FLAG)
       {
+        ssize_t index=ConstrainColormapIndex(image,(mask-transparentIndex),
+          exception);
         if (bits_per_pixel != 16)
-          transpix=image->colormap[mask-transparentIndex];
+          transpix=image->colormap[index];
         (void) TransparentPaintImage(image,&transpix,(Quantum) TransparentAlpha,
           MagickFalse,exception);
       }
