@@ -1254,11 +1254,15 @@ static int ColorInfoCompare(const void *x,const void *y)
     **p,
     **q;
 
+  int
+    cmp;
+
   p=(const ColorInfo **) x,
   q=(const ColorInfo **) y;
-  if (LocaleCompare((*p)->path,(*q)->path) == 0)
+  cmp=LocaleCompare((*p)->path,(*q)->path);
+  if (cmp == 0)
     return(LocaleCompare((*p)->name,(*q)->name));
-  return(LocaleCompare((*p)->path,(*q)->path));
+  return(cmp);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

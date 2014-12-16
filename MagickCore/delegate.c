@@ -708,9 +708,13 @@ static int DelegateInfoCompare(const void *x,const void *y)
     **p,
     **q;
 
+  int
+    cmp;
+
   p=(const DelegateInfo **) x,
   q=(const DelegateInfo **) y;
-  if (LocaleCompare((*p)->path,(*q)->path) == 0)
+  cmp=LocaleCompare((*p)->path,(*q)->path);
+  if (cmp == 0)
     {
       if ((*p)->decode == (char *) NULL)
         if (((*p)->encode != (char *) NULL) &&
@@ -720,7 +724,7 @@ static int DelegateInfoCompare(const void *x,const void *y)
           ((*q)->decode != (char *) NULL))
         return(strcmp((*p)->decode,(*q)->decode));
     }
-  return(LocaleCompare((*p)->path,(*q)->path));
+  return(cmp);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
