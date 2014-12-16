@@ -1181,6 +1181,8 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
           100.0));
       if (resource_info.thread_limit > GetOpenMPMaximumThreads())
         resource_info.thread_limit=GetOpenMPMaximumThreads();
+      else if (resource_info.thread_limit == 0)
+        resource_info.thread_limit=1;
       break;
     }
     case ThrottleResource:
