@@ -824,7 +824,7 @@ namespace Magick
     void draw(const Drawable &drawable_);
 
     // Draw on image using a drawable list
-    void draw(const std::list<Magick::Drawable> &drawable_);
+    void draw(const std::vector<Magick::Drawable> &drawable_);
 
     // Edge image (hilight edges in image)
     void edge(const double radius_=0.0);

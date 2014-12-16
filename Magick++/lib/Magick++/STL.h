@@ -2209,7 +2209,7 @@ namespace Magick
     MagickCore::Image
       *image;
 
-    std::list<ChannelType>
+    std::vector<ChannelType>
       channelMask;
 
     GetPPException;

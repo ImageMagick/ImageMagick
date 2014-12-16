@@ -21,7 +21,7 @@
 
 #include <functional>
 #include <string>
-#include <list>
+#include <vector>
 #include <utility>
 #include "Magick++/Color.h"
 #include "Magick++/Geometry.h"
@@ -80,7 +80,7 @@ namespace Magick
     double _y;
   };
 
-  typedef std::list<Magick::Coordinate> CoordinateList;
+  typedef std::vector<Magick::Coordinate> CoordinateList;
 
 #if defined(MagickDLLExplicitTemplate)
 
@@ -88,7 +88,7 @@ namespace Magick
   std::allocator<Magick::Coordinate>;
 
 //   MagickDrawableExtern template class MagickPPExport
-//   std::list<Magick::Coordinate, std::allocator<Magick::Coordinate> >;
+//   std::vector<Magick::Coordinate, std::allocator<Magick::Coordinate> >;
 
 #endif // MagickDLLExplicitTemplate
 
@@ -174,7 +174,7 @@ namespace Magick
   extern MagickPPExport int operator <= ( const Drawable& left_,
                                         const Drawable& right_ );
 
-  typedef std::list<Magick::Drawable> DrawableList;
+  typedef std::vector<Magick::Drawable> DrawableList;
 
 #if defined(MagickDLLExplicitTemplate)
 
@@ -182,7 +182,7 @@ namespace Magick
   std::allocator<Magick::Drawable>;
 
 //   MagickDrawableExtern template class MagickPPExport
-//   std::list<Magick::Drawable, std::allocator<Magick::Drawable> >;
+//   std::vector<Magick::Drawable, std::allocator<Magick::Drawable> >;
 
 #endif // MagickDLLExplicitTemplate
 
@@ -254,7 +254,7 @@ extern MagickPPExport int operator >= ( const VPath& left_,
 extern MagickPPExport int operator <= ( const VPath& left_,
                                       const VPath& right_ );
 
-typedef std::list<Magick::VPath> VPathList;
+typedef std::vector<Magick::VPath> VPathList;
 
 #if defined(MagickDLLExplicitTemplate)
 
@@ -262,7 +262,7 @@ MagickDrawableExtern template class MagickPPExport
 std::allocator<Magick::VPath>;
 
 // MagickDrawableExtern template class MagickPPExport
-// std::list<Magick::VPath, std::allocator<Magick::VPath> >;
+// std::vector<Magick::VPath, std::allocator<Magick::VPath> >;
 
 #endif // MagickDLLExplicitTemplate
 
@@ -2301,7 +2301,7 @@ extern MagickPPExport int operator >= ( const PathArcArgs& left_,
 extern MagickPPExport int operator <= ( const PathArcArgs& left_,
                                       const PathArcArgs& right_ );
 
-typedef std::list<Magick::PathArcArgs> PathArcArgsList;
+typedef std::vector<Magick::PathArcArgs> PathArcArgsList;
 
 #if defined(MagickDLLExplicitTemplate)
 
@@ -2309,7 +2309,7 @@ MagickDrawableExtern template class MagickPPExport
 std::allocator<Magick::PathArcArgs>;
 
 // MagickDrawableExtern template class MagickPPExport
-// std::list<Magick::PathArcArgs, std::allocator<Magick::PathArcArgs> >;
+// std::vector<Magick::PathArcArgs, std::allocator<Magick::PathArcArgs> >;
 
 #endif // MagickDLLExplicitTemplate
 
@@ -2475,7 +2475,7 @@ extern MagickPPExport int operator >= ( const PathCurvetoArgs& left_,
 extern MagickPPExport int operator <= ( const PathCurvetoArgs& left_,
                                       const PathCurvetoArgs& right_ );
 
-typedef std::list<Magick::PathCurvetoArgs> PathCurveToArgsList;
+typedef std::vector<Magick::PathCurvetoArgs> PathCurveToArgsList;
 
 #if defined(MagickDLLExplicitTemplate)
 
@@ -2483,7 +2483,7 @@ MagickDrawableExtern template class MagickPPExport
 std::allocator<Magick::PathCurvetoArgs>;
 
 // MagickDrawableExtern template class MagickPPExport
-// std::list<Magick::PathCurvetoArgs, std::allocator<Magick::PathCurvetoArgs> >;
+// std::vector<Magick::PathCurvetoArgs, std::allocator<Magick::PathCurvetoArgs> >;
 
 #endif // MagickDLLExplicitTemplate
 
@@ -2656,7 +2656,7 @@ extern MagickPPExport int operator >= ( const PathQuadraticCurvetoArgs& left_,
 extern MagickPPExport int operator <= ( const PathQuadraticCurvetoArgs& left_,
                                       const PathQuadraticCurvetoArgs& right_ );
 
-typedef std::list<Magick::PathQuadraticCurvetoArgs> PathQuadraticCurvetoArgsList;
+typedef std::vector<Magick::PathQuadraticCurvetoArgs> PathQuadraticCurvetoArgsList;
 
 #if defined(MagickDLLExplicitTemplate)
 
@@ -2664,7 +2664,7 @@ MagickDrawableExtern template class MagickPPExport
 std::allocator<Magick::PathQuadraticCurvetoArgs>;
 
 // MagickDrawableExtern template class MagickPPExport
-// std::list<Magick::PathQuadraticCurvetoArgs, std::allocator<Magick::PathQuadraticCurvetoArgs> >;
+// std::vector<Magick::PathQuadraticCurvetoArgs, std::allocator<Magick::PathQuadraticCurvetoArgs> >;
 
 #endif // MagickDLLExplicitTemplate
 
