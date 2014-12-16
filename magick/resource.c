@@ -1037,7 +1037,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
         100.0));
       limit=DestroyString(limit);
     }
-  (void) SetMagickResourceLimit(ThrottleResource,0);
+  (void) SetMagickResourceLimit(ThrottleResource,MagickResourceInfinity);
   limit=GetEnvironmentValue("MAGICK_THROTTLE_LIMIT");
   if (limit != (char *) NULL)
     {
