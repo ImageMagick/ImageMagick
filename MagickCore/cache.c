@@ -471,29 +471,6 @@ MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
 %
 */
 
-static inline void CopyPixels(Quantum *destination,const Quantum *source,
-  const MagickSizeType number_pixels)
-{
-#if !defined(MAGICKCORE_OPENMP_SUPPORT) || (MAGICKCORE_QUANTUM_DEPTH <= 8)
-  (void) memcpy(destination,source,(size_t) number_pixels*sizeof(*source));
-#else
-  {
-    register MagickOffsetType
-      i;
-
-    if ((number_pixels*sizeof(*source)) < MagickMaxBufferExtent)
-      {
-        (void) memcpy(destination,source,(size_t) number_pixels*
-          sizeof(*source));
-        return;
-      }
-    #pragma omp parallel for
-    for (i=0; i < (MagickOffsetType) number_pixels; i++)
-      destination[i]=source[i];
-  }
-#endif
-}
-
 static inline MagickSizeType MagickMin(const MagickSizeType x,
   const MagickSizeType y)
 {
@@ -540,13 +517,14 @@ static MagickBooleanType ClonePixelCacheRepository(
       (memcmp(cache_info->channel_map,clone_info->channel_map,length) == 0) &&
       (cache_info->metacontent_extent == clone_info->metacontent_extent))
     {
-      CopyPixels(clone_info->pixels,cache_info->pixels,cache_info->columns*
-        cache_info->number_channels*cache_info->rows);
+      (void) memcpy(clone_info->pixels,cache_info->pixels,cache_info->columns*
+        cache_info->number_channels*cache_info->rows*
+        sizeof(*cache_info->pixels));
       if ((cache_info->metacontent_extent != 0) &&
           (clone_info->metacontent_extent != 0))
         (void) memcpy(clone_info->metacontent,cache_info->metacontent,
           cache_info->columns*cache_info->rows*clone_info->metacontent_extent*
-          sizeof(cache_info->metacontent));
+          sizeof(*cache_info->metacontent));
       return(MagickTrue);
     }
   /*
