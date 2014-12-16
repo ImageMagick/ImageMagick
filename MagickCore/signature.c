@@ -264,12 +264,6 @@ MagickPrivate void FinalizeSignature(SignatureInfo *signature_info)
     *q++=(unsigned char) (*p & 0xff);
     p++;
   }
-  /*
-    Reset working registers.
-  */
-  count=0;
-  high_order=0;
-  low_order=0;
 }
 
 /*
@@ -828,10 +822,4 @@ MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
   }
   (void) CopyMagickMemory(GetStringInfoDatum(signature_info->message),p,n);
   signature_info->offset=n;
-  /*
-    Reset working registers.
-  */
-  i=0;
-  n=0;
-  length=0;
 }
