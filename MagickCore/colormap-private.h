@@ -26,16 +26,17 @@
 extern "C" {
 #endif
 
-static inline ssize_t ConstrainColormapIndex(Image *image,const ssize_t index,
+static inline ssize_t ConstrainColormapIndex(Image *image,const size_t index,
   ExceptionInfo *exception)
 {
-  if ((index < 0) || (index >= (ssize_t) image->colors))
+  if ((index < 0) || (index >= (ssize_t) image->colors) ||
+      ((ssize_t) index < 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "InvalidColormapIndex","`%s'",image->filename);
       return(0);
     }
-  return(index);
+  return((ssize_t) index);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
