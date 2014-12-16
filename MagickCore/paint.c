@@ -319,6 +319,11 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       start=x;
     } while (x <= x2);
   }
+  status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(floodplane_image,image,floodplane_image->rows,1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -333,10 +338,15 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     /*
       Tile fill color onto floodplane.
     */
+    if (status == MagickFalse)
+      continue;
     p=GetCacheViewVirtualPixels(floodplane_view,0,y,image->columns,1,exception);
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (GetPixelGray(floodplane_image,p) != 0)
@@ -348,13 +358,13 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      break;
+      status=MagickFalse;
   }
   floodplane_view=DestroyCacheView(floodplane_view);
   image_view=DestroyCacheView(image_view);
   segment_info=RelinquishVirtualMemory(segment_info);
   floodplane_image=DestroyImage(floodplane_image);
-  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 /*
