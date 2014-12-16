@@ -29,7 +29,7 @@ extern "C" {
 static inline IndexPacket ConstrainColormapIndex(Image *image,
   const size_t index)
 {
-  if ((index < image->colors) && ((ssize_t) index < 0))
+  if ((index < image->colors) || ((ssize_t) index < 0))
     return((IndexPacket) index);
   (void) ThrowMagickException(&image->exception,GetMagickModule(),
     CorruptImageError,"InvalidColormapIndex","`%s'",image->filename);
