@@ -63,6 +63,7 @@
 #include "magick/profile.h"
 #include "magick/quantum.h"
 #include "magick/quantum-private.h"
+#include "magick/resource_.h"
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
@@ -1057,10 +1058,6 @@ static void CompressClusterFit(const size_t count,
     gridrcp,
     half,
     onethird_onethird2,
-    part0,
-    part1,
-    part2,
-    part3,
     pointsWeights[16],
     two,
     twonineths,
@@ -1075,11 +1072,10 @@ static void CompressClusterFit(const size_t count,
     besti = 0,
     bestj = 0,
     bestk = 0,
-    iterationIndex,
-    i,
-    j,
-    k,
-    kmin;
+    iterationIndex;
+
+  ssize_t
+    i;
 
   unsigned char
     *o,
@@ -1114,11 +1110,29 @@ static void CompressClusterFit(const size_t count,
 
   for (iterationIndex = 0;;)
   {
-    VectorInit(part0,0.0f);
-    for (i=0; i < count; i++)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,1) \
+    num_threads(GetMagickResourceLimit(ThreadResource))
+#endif
+    for (i=0; i < (ssize_t) count; i++)
     {
+      DDSVector4
+        part0,
+        part1,
+        part2;
+
+      size_t
+        ii,
+        j,
+        k,
+        kmin;
+
+      VectorInit(part0,0.0f);
+      for(ii=0; ii < (size_t) i; ii++)
+        VectorAdd(pointsWeights[ii],part0,&part0);
+
       VectorInit(part1,0.0f);
-      for (j=i;;)
+      for (j=(size_t) i;;)
       {
         if (j == 0)
           {
@@ -1143,7 +1157,8 @@ static void CompressClusterFit(const size_t count,
             betax_sum,
             e1,
             e2,
-            factor;
+            factor,
+            part3;
 
           float
             error;
@@ -1202,15 +1217,23 @@ static void CompressClusterFit(const size_t count,
           error = e2.x + e2.y + e2.z;
 
           if (error < bestError)
-          {
-            VectorCopy43(a,start);
-            VectorCopy43(b,end);
-            bestError = error;
-            besti = i;
-            bestj = j;
-            bestk = k;
-            bestIteration = iterationIndex;
-          }
+            {
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+              #pragma omp critical (DDS_CompressClusterFit)
+#endif
+              {
+                if (error < bestError)
+                  {
+                    VectorCopy43(a,start);
+                    VectorCopy43(b,end);
+                    bestError = error;
+                    besti = i;
+                    bestj = j;
+                    bestk = k;
+                    bestIteration = iterationIndex;
+                  }
+              }
+            }
 
           if (k == count)
             break;
@@ -1225,8 +1248,6 @@ static void CompressClusterFit(const size_t count,
         VectorAdd(pointsWeights[j],part1,&part1);
         j++;
       }
-
-      VectorAdd(pointsWeights[i],part0,&part0);
     }
 
     if (bestIteration != iterationIndex)
