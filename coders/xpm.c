@@ -158,7 +158,7 @@ static size_t CopyXPMColor(char *destination,const char *source,size_t length)
     *p;
 
   p=source;
-  while (length-- && (*p != '\0'))
+  while (--length && (*p != '\0'))
     *destination++=(*p++);
   *destination='\0';
   return((size_t) (p-source));
