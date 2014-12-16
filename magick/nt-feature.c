@@ -261,7 +261,7 @@ MagickExport MagickBooleanType NTIsMagickConflict(const char *magick)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   N T A c q u i r e T y pe C a c h e                                        %
+%   N T A c q u i r e T y p e C a c h e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
