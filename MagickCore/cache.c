@@ -1603,6 +1603,30 @@ MagickExport CacheType GetImagePixelCacheType(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline MagickBooleanType CopyPixel(const Image *image,const Quantum *source,
+  Quantum *destination)
+{
+  register ssize_t
+    i;
+
+  if (source == (const Quantum *) NULL)
+    {
+      destination[RedPixelChannel]=ClampToQuantum(image->background_color.red);
+      destination[GreenPixelChannel]=ClampToQuantum(image->background_color.green);
+      destination[BluePixelChannel]=ClampToQuantum(image->background_color.blue);
+      destination[BlackPixelChannel]=ClampToQuantum(image->background_color.black);
+      destination[AlphaPixelChannel]=ClampToQuantum(image->background_color.alpha);
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel channel=GetPixelChannelChannel(image,i);
+    destination[channel]=source[i];
+  }
+  return(MagickTrue);
+}
+
 MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
   const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
@@ -1611,9 +1635,6 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
 
   register Quantum
     *restrict q;
-
-  register ssize_t
-    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1626,21 +1647,7 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
     return(cache_info->methods.get_one_authentic_pixel_from_handler(image,x,y,
       pixel,exception));
   q=GetAuthenticPixelsCache(image,x,y,1UL,1UL,exception);
-  if (q == (Quantum *) NULL)
-    {
-      pixel[RedPixelChannel]=ClampToQuantum(image->background_color.red);
-      pixel[GreenPixelChannel]=ClampToQuantum(image->background_color.green);
-      pixel[BluePixelChannel]=ClampToQuantum(image->background_color.blue);
-      pixel[BlackPixelChannel]=ClampToQuantum(image->background_color.black);
-      pixel[AlphaPixelChannel]=ClampToQuantum(image->background_color.alpha);
-      return(MagickFalse);
-    }
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
-    pixel[channel]=q[i];
-  }
-  return(MagickTrue);
+  return(CopyPixel(image,q,pixel));
 }
 
 /*
@@ -1686,9 +1693,6 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
   register Quantum
     *restrict q;
 
-  register ssize_t
-    i;
-
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
@@ -1698,21 +1702,7 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   q=GetAuthenticPixelCacheNexus(image,x,y,1UL,1UL,cache_info->nexus_info[id],
     exception);
-  if (q == (Quantum *) NULL)
-    {
-      pixel[RedPixelChannel]=ClampToQuantum(image->background_color.red);
-      pixel[GreenPixelChannel]=ClampToQuantum(image->background_color.green);
-      pixel[BluePixelChannel]=ClampToQuantum(image->background_color.blue);
-      pixel[BlackPixelChannel]=ClampToQuantum(image->background_color.black);
-      pixel[AlphaPixelChannel]=ClampToQuantum(image->background_color.alpha);
-      return(MagickFalse);
-    }
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
-    pixel[channel]=q[i];
-  }
-  return(MagickTrue);
+  return(CopyPixel(image,q,pixel));
 }
 
 /*
@@ -1758,9 +1748,6 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
   const Quantum
     *p;
 
-  register ssize_t
-    i;
-
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
@@ -1774,21 +1761,7 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
   assert(id < (int) cache_info->number_threads);
   p=GetVirtualPixelsFromNexus(image,GetPixelCacheVirtualMethod(image),x,y,
     1UL,1UL,cache_info->nexus_info[id],exception);
-  if (p == (const Quantum *) NULL)
-    {
-      pixel[RedPixelChannel]=ClampToQuantum(image->background_color.red);
-      pixel[GreenPixelChannel]=ClampToQuantum(image->background_color.green);
-      pixel[BluePixelChannel]=ClampToQuantum(image->background_color.blue);
-      pixel[BlackPixelChannel]=ClampToQuantum(image->background_color.black);
-      pixel[AlphaPixelChannel]=ClampToQuantum(image->background_color.alpha);
-      return(MagickFalse);
-    }
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
-    pixel[channel]=p[i];
-  }
-  return(MagickTrue);
+  return(CopyPixel(image,p,pixel));
 }
 
 /*
@@ -1838,9 +1811,6 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
   const Quantum
     *p;
 
-  register ssize_t
-    i;
-
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
@@ -1850,21 +1820,7 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
     cache_info->nexus_info[id],exception);
-  if (p == (const Quantum *) NULL)
-    {
-      pixel[RedPixelChannel]=ClampToQuantum(image->background_color.red);
-      pixel[GreenPixelChannel]=ClampToQuantum(image->background_color.green);
-      pixel[BluePixelChannel]=ClampToQuantum(image->background_color.blue);
-      pixel[BlackPixelChannel]=ClampToQuantum(image->background_color.black);
-      pixel[AlphaPixelChannel]=ClampToQuantum(image->background_color.alpha);
-      return(MagickFalse);
-    }
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
-    pixel[channel]=p[i];
-  }
-  return(MagickTrue);
+  return(CopyPixel(image,p,pixel));
 }
 
 /*
