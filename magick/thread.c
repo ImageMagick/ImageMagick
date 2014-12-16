@@ -87,7 +87,7 @@ MagickExport MagickBooleanType MagickCreateThreadKey(MagickThreadKey *key)
 %
 %  MagickDeleteThreadKey() deletes a thread key.
 %
-%  The format of the AcquireAESInfo method is:
+%  The format of the MagickDeleteThreadKey method is:
 %
 %      MagickBooleanType MagickDeleteThreadKey(MagickThreadKey key)
 %
