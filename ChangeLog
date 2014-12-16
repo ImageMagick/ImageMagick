@@ -1,7 +1,9 @@
 2014-12-14  6.9.0-1 Dirk Lemstra <dirk@snakeware...>
   * Added support for reading EXR files to the Windows distribution.
-  * Fixed enabling alpha in 32 bit bmp files (reference
+  * Fixed enabling alpha in 32-bit BMP files (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26662).
+  * Added support for writing 16-bit TGA files (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=26693).
 
 2014-12-04  6.9.0-1 Alexey Dolgavin <dolgavin.alexey@gmail...>
   * Fix ImageMagick crashes while read EXIF from TIFF.
