@@ -61,7 +61,7 @@ namespace Magick
     Geometry& operator=(const Geometry& Geometry_);
 
     // Set via geometry string
-    const Geometry& operator=(const std::string &geometry_ );
+    const Geometry& operator=(const std::string &geometry_);
 
     // Return geometry string
     operator std::string() const;
@@ -135,6 +135,68 @@ namespace Magick
     bool _less;        // Resize only if smaller than geometry (<)
     bool _fillArea;    // Resize the image based on the smallest fitting dimension (^)
     bool _limitPixels; // Resize using a pixel area count limit (@)
+  };
+
+  class MagickPPExport Point;
+
+  // Compare two Point objects
+  MagickPPExport int operator ==
+    (const Magick::Point& left_,const Magick::Point& right_);
+  MagickPPExport int operator !=
+    (const Magick::Point& left_,const Magick::Point& right_);
+
+  class MagickPPExport Point
+  {
+  public:
+
+    // Default constructor
+    Point();
+
+    // Construct Geometry from specified string
+    Point(const char *point_);
+
+    // Copy constructor
+    Point(const Point &point_);
+
+    // Construct Point from specified string
+    Point(const std::string &point_);
+
+    // Construct Point from specified x and y
+    Point(double x_,double y_);
+
+    // Construct Point from specified x y
+    Point(double xy_);
+
+    // Destructor
+    ~Point(void);
+
+    // Set via point string
+    const Point& operator=(const char *point_);
+
+    // Set via double value
+    const Point& operator=(double xy_);
+
+    // Assignment operator
+    Point& operator=(const Point& point_);
+
+    // Set via point string
+    const Point& operator=(const std::string &point_);
+
+    // Return point string
+    operator std::string() const;
+
+    // Does object contain valid point?
+    bool isValid() const;
+
+    // X offset from origin
+    double x(void) const;
+
+    // Y offset from origin
+    double y(void) const;
+
+  private:
+    double _x;
+    double _y;
   };
 } // namespace Magick
 

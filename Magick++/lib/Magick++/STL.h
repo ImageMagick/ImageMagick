@@ -1444,12 +1444,12 @@ namespace Magick
   class MagickPPExport densityImage : public std::unary_function<Image&,void>
   {
   public:
-    densityImage( const Geometry &geomery_ );
+    densityImage( const Point &point_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    Geometry _geomery;
+    Point _point;
   };
 
   // Image depth (bits allocated to red/green/blue components)

@@ -47,10 +47,10 @@ int main(int argc,char **argv)
   };
 
   {
-    Geometry density;
     Geometry geometry;
-    Geometry resample;
     Magick::FilterTypes filter(LanczosFilter);
+    Point density;
+    Point resample;
     ResizeAlgorithm resize_algorithm=Zoom;
 
     int argv_index=1;
@@ -160,9 +160,9 @@ int main(int argc,char **argv)
         {
           geometry =
             Geometry(static_cast<size_t>
-                     (image.columns()*((double)resample.width()/density.width())+0.5),
+                     (image.columns()*((double)resample.x()/density.x())+0.5),
                      static_cast<size_t>
-                     (image.rows()*((double)resample.height()/density.height())+0.5));
+                     (image.rows()*((double)resample.y()/density.y())+0.5));
           image.density(resample);
         }
       switch (resize_algorithm)

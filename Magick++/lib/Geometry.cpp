@@ -148,13 +148,13 @@ Magick::Geometry::~Geometry(void)
 {
 }
 
-const Magick::Geometry& Magick::Geometry::operator=(const char * geometry_)
+const Magick::Geometry& Magick::Geometry::operator=(const char *geometry_)
 {
   *this=std::string(geometry_);
   return(*this);
 }
 
-Magick::Geometry& Magick::Geometry::operator=(const Geometry& geometry_)
+Magick::Geometry& Magick::Geometry::operator=(const Geometry &geometry_)
 {
   // If not being set to ourself
   if (this != &geometry_)
@@ -477,4 +477,141 @@ inline void Magick::Geometry::yOff(::ssize_t yOff_)
 ::ssize_t Magick::Geometry::yOff(void) const
 {
   return(_yOff);
+}
+
+MagickPPExport int Magick::operator == (const Magick::Point& left_,
+  const Magick::Point& right_)
+{
+  return((left_.x() == right_.x()) &&
+    (left_.y() == right_.y()));
+}
+
+MagickPPExport int Magick::operator != (const Magick::Point& left_,
+  const Magick::Point& right_)
+{
+  return(!(left_ == right_));
+}
+
+Magick::Point::Point(void)
+  : _x(0.0),
+    _y(0.0)
+{
+}
+
+Magick::Point::Point(const char *point_)
+  : _x(0.0),
+    _y(0.0)
+{
+  *this=point_; // Use assignment operator
+}
+
+Magick::Point::Point(const Point &point_)
+  : _x(point_._x),
+    _y(point_._y)
+{
+}
+
+Magick::Point::Point(const std::string &point_)
+  : _x(0.0),
+    _y(0.0)
+{
+  *this=point_; // Use assignment operator
+}
+
+Magick::Point::Point(double x_,double y_)
+  : _x(x_),
+    _y(y_)
+{
+}
+
+Magick::Point::Point(double xy_)
+  : _x(xy_),
+    _y(xy_)
+{
+}
+
+Magick::Point::~Point(void)
+{
+}
+
+const Magick::Point& Magick::Point::operator=(const char *point_)
+{
+  MagickCore::GeometryInfo
+    geometry_info;
+
+  MagickCore::MagickStatusType
+    flags;
+
+  flags=ParseGeometry(point_,&geometry_info);
+  _x=geometry_info.rho;
+  _y=geometry_info.sigma;
+  if ((flags & MagickCore::SigmaValue) == 0)
+    _y=_x;
+  return(*this);
+}
+
+const Magick::Point& Magick::Point::operator=(const double xy_)
+{
+  _x=xy_;
+  _y=xy_;
+  return(*this);
+}
+
+Magick::Point& Magick::Point::operator=(const Point &point_)
+{
+  // If not being set to ourself
+  if (this != &point_)
+    {
+      _x=point_._x;
+      _y=point_._y;
+    }
+  return(*this);
+}
+
+const Magick::Point& Magick::Point::operator=(const std::string &point_)
+{
+  *this=point_.c_str();
+  return(*this);
+}
+
+Magick::Point::operator std::string() const
+{
+  char
+    buffer[MaxTextExtent];
+
+  string
+    point;
+
+  if (_x < 0.0)
+    point+='-';
+  else
+    point+='+';
+
+  FormatLocaleString(buffer,MaxTextExtent,"%.20g",_x);
+  point+=buffer;
+
+  if (_y < 0.0)
+    point+='-';
+  else
+    point+='+';
+
+  FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _y);
+  point+=buffer;
+
+  return(point);
+}
+
+bool Magick::Point::isValid(void) const
+{
+  return(_x > 0.0);
+}
+
+double Magick::Point::x(void) const
+{
+  return(_x);
+}
+
+double Magick::Point::y(void) const
+{
+  return(_y);
 }

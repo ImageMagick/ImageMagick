@@ -45,7 +45,7 @@ int main( int /*argc*/, char ** argv)
     base.draw( DrawableLine( 300,100, 300,500 ) );
     base.draw( DrawableLine( 100,300, 500,300 ) );
     base.draw( DrawableRectangle( 100,100, 500,500 ) );
-    base.density( Geometry(72,72) );
+    base.density( Point(72,72) );
     base.strokeColor(Color());
     base.fillColor("#600");
     base.fontPointsize( 30 );

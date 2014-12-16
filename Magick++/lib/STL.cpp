@@ -1314,13 +1314,13 @@ void Magick::compressTypeImage::operator()( Magick::Image &image_ ) const
 }
 
 // Vertical and horizontal resolution in pixels of the image
-Magick::densityImage::densityImage( const Geometry &geomery_ )
-  : _geomery( geomery_ )
+Magick::densityImage::densityImage( const Point &point_ )
+  : _point( point_ )
 {
 }
 void Magick::densityImage::operator()( Magick::Image &image_ ) const
 {
-  image_.density( _geomery );
+  image_.density( _point );
 }
 
 // Image depth (bits allocated to red/green/blue components)

@@ -173,20 +173,20 @@ bool Magick::Options::debug(void) const
   return(false);
 }
 
-void Magick::Options::density(const Magick::Geometry &density_)
+void Magick::Options::density(const Magick::Point &density_)
 {
-  if ( !density_.isValid() )
+  if (!density_.isValid())
     _imageInfo->density=(char *) RelinquishMagickMemory(_imageInfo->density);
   else
     Magick::CloneString(&_imageInfo->density,density_);
 }
 
-Magick::Geometry Magick::Options::density(void) const
+Magick::Point Magick::Options::density(void) const
 {
   if (_imageInfo->density)
-    return(Geometry(_imageInfo->density));
+    return(Point(_imageInfo->density));
 
-  return(Geometry());
+  return(Point());
 }
 
 void Magick::Options::depth(size_t depth_)

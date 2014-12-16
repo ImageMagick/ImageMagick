@@ -80,8 +80,8 @@ namespace Magick
     bool debug(void) const;
 
     // Vertical and horizontal resolution in pixels of the image
-    void density(const Geometry &geomery_);
-    Geometry density(void) const;
+    void density(const Point &density_);
+    Point density(void) const;
 
     // Image depth (8 or 16)
     void depth(size_t depth_);
