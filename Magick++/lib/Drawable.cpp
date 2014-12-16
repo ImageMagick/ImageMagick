@@ -2280,10 +2280,10 @@ Magick::VPathBase* Magick::PathMovetoRel::copy() const
 }
 
 #if defined(EXPLICIT_TEMPLATE_INSTANTIATION)
-// template class std::list<Magick::Coordinate>;
-// template class std::list<const Magick::Drawable>;
-// template class std::list<const Magick::PathArcArgs>;
-// template class std::list<const Magick::PathCurvetoArgs>;
-// template class std::list<const Magick::PathQuadraticCurvetoArgs>;
-// template class std::list<const Magick::VPath>;
+// template class std::vector<Magick::Coordinate>;
+// template class std::vector<const Magick::Drawable>;
+// template class std::vector<const Magick::PathArcArgs>;
+// template class std::vector<const Magick::PathCurvetoArgs>;
+// template class std::vector<const Magick::PathQuadraticCurvetoArgs>;
+// template class std::vector<const Magick::VPath>;
 #endif

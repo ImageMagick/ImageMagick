@@ -326,7 +326,7 @@ Magick::drawImage::drawImage( const Magick::Drawable &drawable_ )
 {
   _drawableList.push_back( drawable_ );
 }
-Magick::drawImage::drawImage( const std::list<Magick::Drawable> &drawable_ )
+Magick::drawImage::drawImage( const std::vector<Magick::Drawable> &drawable_ )
   : _drawableList( drawable_ )
 {
 }
