@@ -1216,9 +1216,10 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
       count=ReadBlob(image,4,(unsigned char *) type);
       if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
         {
-          if (DiscardBlobBytes(image,(MagickSizeType) (size-quantum-8)) == MagickFalse)
-            ThrowFileException(exception,CorruptImageError,
-              "UnexpectedEndOfFile",image->filename);
+          if (DiscardBlobBytes(image,(MagickSizeType) (size-quantum-8)) ==
+              MagickFalse)
+            ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+              image->filename);
         }
       else
         {
@@ -1226,9 +1227,10 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
           if ((count != 0) && (LocaleNCompare(type,"Lr16",4) == 0))
             size=GetPSDSize(psd_info,image);
           else
-            if (DiscardBlobBytes(image,(MagickSizeType) (size-quantum-12)) == MagickFalse)
-              ThrowFileException(exception,CorruptImageError,
-                "UnexpectedEndOfFile",image->filename);
+            if (DiscardBlobBytes(image,(MagickSizeType) (size-quantum-12)) ==
+                MagickFalse)
+              ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+                image->filename);
         }
     }
   status=MagickTrue;
@@ -1258,7 +1260,8 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
           "  image contains %.20g layers",(double) number_layers);
 
       if (number_layers == 0)
-        return(MagickFalse);
+        ThrowBinaryException(CorruptImageError,"InvalidNumberOfLayers",
+          image->filename);
 
       layer_info=(LayerInfo *) AcquireQuantumMemory((size_t) number_layers,
         sizeof(*layer_info));
@@ -1293,7 +1296,7 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
           {
             layer_info=DestroyLayerInfo(layer_info,number_layers);
             ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
-            image->filename);
+              image->filename);
           }
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1372,8 +1375,8 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
                 if (DiscardBlobBytes(image,(MagickSizeType) (length-16)) == MagickFalse)
                   {
                     layer_info=DestroyLayerInfo(layer_info,number_layers);
-                    ThrowFileException(exception,CorruptImageError,
-                      "UnexpectedEndOfFile",image->filename);
+                    ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+                      image->filename);
                   }
               }
             length=ReadBlobMSBLong(image);
@@ -1799,6 +1802,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
           MagickTrue)
         {
           (void) CloseBlob(image);
+          image=DestroyImageList(image);
           return((Image *) NULL);
         }
 
