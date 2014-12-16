@@ -682,27 +682,27 @@ bool Magick::Image::debug(void) const
   return(constOptions()->debug());
 }
 
-void Magick::Image::density(const Geometry &density_)
+void Magick::Image::density(const Point &density_)
 {
   modifyImage();
   options()->density(density_);
   if (density_.isValid())
     {
-      image()->resolution.x=density_.width();
-      if (density_.height() != 0)
-        image()->resolution.y=density_.height();
+      image()->resolution.x=density_.x();
+      if (density_.y() != 0.0)
+        image()->resolution.y=density_.y();
       else
-        image()->resolution.y=density_.width();
+        image()->resolution.y=density_.x();
     }
   else
     {
       // Reset to default
-      image()->resolution.x=0;
-      image()->resolution.y=0;
+      image()->resolution.x=0.0;
+      image()->resolution.y=0.0;
     }
 }
 
-Magick::Geometry Magick::Image::density(void) const
+Magick::Point Magick::Image::density(void) const
 {
   if (isValid())
     {
@@ -711,12 +711,12 @@ Magick::Geometry Magick::Image::density(void) const
         y_resolution=72;
 
       if (constImage()->resolution.x > 0.0)
-        x_resolution=static_cast<ssize_t>(constImage()->resolution.x + 0.5);
+        x_resolution=constImage()->resolution.x;
 
       if (constImage()->resolution.y > 0.0)
-        y_resolution=static_cast<ssize_t>(constImage()->resolution.y + 0.5);
+        y_resolution=constImage()->resolution.y;
 
-      return(Geometry(x_resolution,y_resolution));
+      return(Point(x_resolution,y_resolution));
     }
 
   return(constOptions()->density());

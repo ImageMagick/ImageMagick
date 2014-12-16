@@ -538,7 +538,7 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test defaults
-      if ( image.density() != Geometry(72,72) )
+      if ( image.density() != Point(72) )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -546,7 +546,7 @@ int main( int /*argc*/, char ** argv)
 	}
       
       // Test set/get
-      Geometry density(150,75);
+      Point density(150,75);
       image.density(density);
       if ( image.density() != density )
 	{
