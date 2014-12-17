@@ -326,6 +326,16 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
   const unsigned char *compact_pixels,const ssize_t depth,
   const size_t number_pixels,unsigned char *pixels)
 {
+#define CheckNumberCompactPixels \
+  if (packets == 0) \
+    return(i); \
+  packets--
+
+#define CheckNumberPixels(count) \
+  if (((ssize_t) i + count) > (ssize_t) number_pixels) \
+    return(i); \
+  i+=count
+
   int
     pixel;
 
@@ -342,23 +352,22 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
   packets=(ssize_t) number_compact_pixels;
   for (i=0; (packets > 1) && (i < (ssize_t) number_pixels); )
   {
+    CheckNumberCompactPixels;
     length=(size_t) (*compact_pixels++);
-    packets--;
     if (length == 128)
       continue;
     if (length > 128)
       {
         length=256-length+1;
-        if (((ssize_t) length+i) > (ssize_t) number_pixels)
-          length=number_pixels-(size_t) i;
+        CheckNumberCompactPixels;
         pixel=(*compact_pixels++);
-        packets--;
         for (j=0; j < (ssize_t) length; j++)
         {
           switch (depth)
           {
             case 1:
             {
+              CheckNumberPixels(8);
               *pixels++=(pixel >> 7) & 0x01 ? 0U : 255U;
               *pixels++=(pixel >> 6) & 0x01 ? 0U : 255U;
               *pixels++=(pixel >> 5) & 0x01 ? 0U : 255U;
@@ -367,29 +376,28 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
               *pixels++=(pixel >> 2) & 0x01 ? 0U : 255U;
               *pixels++=(pixel >> 1) & 0x01 ? 0U : 255U;
               *pixels++=(pixel >> 0) & 0x01 ? 0U : 255U;
-              i+=8;
-              break;
-            }
-            case 4:
-            {
-              *pixels++=(unsigned char) ((pixel >> 4) & 0xff);
-              *pixels++=(unsigned char) ((pixel & 0x0f) & 0xff);
-              i+=2;
               break;
             }
             case 2:
             {
+              CheckNumberPixels(4);
               *pixels++=(unsigned char) ((pixel >> 6) & 0x03);
               *pixels++=(unsigned char) ((pixel >> 4) & 0x03);
               *pixels++=(unsigned char) ((pixel >> 2) & 0x03);
               *pixels++=(unsigned char) ((pixel & 0x03) & 0x03);
-              i+=4;
+              break;
+            }
+            case 4:
+            {
+              CheckNumberPixels(2);
+              *pixels++=(unsigned char) ((pixel >> 4) & 0xff);
+              *pixels++=(unsigned char) ((pixel & 0x0f) & 0xff);
               break;
             }
             default:
             {
+              CheckNumberPixels(1);
               *pixels++=(unsigned char) pixel;
-              i++;
               break;
             }
           }
@@ -397,14 +405,13 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
         continue;
       }
     length++;
-    if (((ssize_t) length+i) > (ssize_t) number_pixels)
-      length=number_pixels-(size_t) i;
     for (j=0; j < (ssize_t) length; j++)
     {
       switch (depth)
       {
         case 1:
         {
+          CheckNumberPixels(8);
           *pixels++=(*compact_pixels >> 7) & 0x01 ? 0U : 255U;
           *pixels++=(*compact_pixels >> 6) & 0x01 ? 0U : 255U;
           *pixels++=(*compact_pixels >> 5) & 0x01 ? 0U : 255U;
@@ -413,32 +420,32 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
           *pixels++=(*compact_pixels >> 2) & 0x01 ? 0U : 255U;
           *pixels++=(*compact_pixels >> 1) & 0x01 ? 0U : 255U;
           *pixels++=(*compact_pixels >> 0) & 0x01 ? 0U : 255U;
-          i+=8;
-          break;
-        }
-        case 4:
-        {
-          *pixels++=(*compact_pixels >> 4) & 0xff;
-          *pixels++=(*compact_pixels & 0x0f) & 0xff;
-          i+=2;
           break;
         }
         case 2:
         {
+          CheckNumberPixels(4);
           *pixels++=(*compact_pixels >> 6) & 0x03;
           *pixels++=(*compact_pixels >> 4) & 0x03;
           *pixels++=(*compact_pixels >> 2) & 0x03;
           *pixels++=(*compact_pixels & 0x03) & 0x03;
-          i+=4;
+          break;
+        }
+        case 4:
+        {
+          CheckNumberPixels(2);
+          *pixels++=(*compact_pixels >> 4) & 0xff;
+          *pixels++=(*compact_pixels & 0x0f) & 0xff;
           break;
         }
         default:
         {
+          CheckNumberPixels(1);
           *pixels++=(*compact_pixels);
-          i++;
           break;
         }
       }
+      CheckNumberCompactPixels;
       compact_pixels++;
     }
   }
@@ -802,7 +809,7 @@ static MagickStatusType ReadPSDChannelRaw(Image *image,const size_t channels,
        "      layer data is RAW");
 
   row_size=GetPSDRowSize(image);
-  pixels=(unsigned char *) AcquireQuantumMemory(row_size,8*sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(row_size,sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -871,7 +878,7 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
        "      layer data is RLE compressed");
 
   row_size=GetPSDRowSize(image);
-  pixels=(unsigned char *) AcquireQuantumMemory(row_size,8*sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(row_size,sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -881,14 +888,7 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
     if ((MagickOffsetType) length < offsets[y])
       length=(size_t) offsets[y];
 
-  if (length > row_size + 256) // arbitrary number
-    {
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
-      ThrowBinaryException(CoderError,"InvalidLength",
-        image->filename);
-    }
-  compact_pixels=(unsigned char *) AcquireQuantumMemory(length,8*
-    sizeof(*pixels));
+  compact_pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
   if (compact_pixels == (unsigned char *) NULL)
     {
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
