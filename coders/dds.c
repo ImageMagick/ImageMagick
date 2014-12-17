@@ -2772,8 +2772,8 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
   (void) WriteBlob(image,4,(unsigned char *) "DDS ");
   (void) WriteBlobLSBLong(image,124);
   (void) WriteBlobLSBLong(image,flags);
-  (void) WriteBlobLSBLong(image,image->rows);
-  (void) WriteBlobLSBLong(image,image->columns);
+  (void) WriteBlobLSBLong(image,(unsigned int) image->rows);
+  (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
 
   if (compression == FOURCC_DXT1)
     (void) WriteBlobLSBLong(image,
