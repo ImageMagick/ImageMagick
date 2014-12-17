@@ -966,11 +966,10 @@ static const OptionInfo
   },
   DisposeOptions[] =
   {
-    { "Undefined", UndefinedDispose, UndefinedOptionFlag, MagickTrue },
+    { "Undefined", UndefinedDispose, UndefinedOptionFlag, MagickFalse },
     { "Background", BackgroundDispose, UndefinedOptionFlag, MagickFalse },
     { "None", NoneDispose, UndefinedOptionFlag, MagickFalse },
     { "Previous", PreviousDispose, UndefinedOptionFlag, MagickFalse },
-    { "Undefined", UndefinedDispose, UndefinedOptionFlag, MagickFalse },
     { "0", UndefinedDispose, UndefinedOptionFlag, MagickFalse },
     { "1", NoneDispose, UndefinedOptionFlag, MagickFalse },
     { "2", BackgroundDispose, UndefinedOptionFlag, MagickFalse },
