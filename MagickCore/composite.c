@@ -1372,9 +1372,10 @@ if (0)
               case SrcInCompositeOp:
               case SrcOutCompositeOp:
               {
-                pixel=(MagickRealType) q[i];
                 if (channel == AlphaPixelChannel)
                   pixel=(MagickRealType) TransparentAlpha;
+                else
+                  pixel=(MagickRealType) q[i];
                 break;
               }
               case ClearCompositeOp:
@@ -1383,23 +1384,19 @@ if (0)
               case SrcCompositeOp:
               {
                 if (channel == AlphaPixelChannel)
-                  {
-                    pixel=(MagickRealType) TransparentAlpha;
-                    break;
-                  }
-                pixel=0.0;
+                  pixel=(MagickRealType) TransparentAlpha;
+                else
+                  pixel=0.0;
                 break;
               }
               case BlendCompositeOp:
               case DissolveCompositeOp:
               {
                 if (channel == AlphaPixelChannel)
-                  {
-                    pixel=destination_dissolve*GetPixelAlpha(composite_image,
-                      source);
-                    break;
-                  }
-                pixel=(MagickRealType) source[channel];
+                  pixel=destination_dissolve*GetPixelAlpha(composite_image,
+                    source);
+                else
+                  pixel=(MagickRealType) source[channel];
                 break;
               }
               default:
