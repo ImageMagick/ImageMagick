@@ -112,6 +112,9 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_DB_bzlib_.lib")
 #        endif
 #        pragma comment(lib, "CORE_DB_coders_.lib")
+#        if defined(MAGICKCORE_OPENEXR_DELEGATE)
+#          pragma comment(lib, "CORE_DB_exr_.lib")
+#        endif
 #        if defined(MAGICKCORE_LQR_DELEGATE)
 #          pragma comment(lib, "CORE_DB_ffi_.lib")
 #        endif
@@ -174,6 +177,9 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_RL_bzlib_.lib")
 #        endif
 #        pragma comment(lib, "CORE_RL_coders_.lib")
+#        if defined(MAGICKCORE_OPENEXR_DELEGATE)
+#          pragma comment(lib, "CORE_RL_exr_.lib")
+#        endif
 #        if defined(MAGICKCORE_LQR_DELEGATE)
 #          pragma comment(lib, "CORE_RL_ffi_.lib")
 #        endif
