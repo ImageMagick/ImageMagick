@@ -1193,7 +1193,7 @@ namespace Magick
     void reduceNoise(const double order_);
 
     // Resize image in terms of its pixel size.
-    void resample(const Geometry &geometry_);
+    void resample(const Point &density_);
 
     // Resize image to specified size.
     void resize(const Geometry &geometry_);
