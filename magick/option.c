@@ -2221,7 +2221,7 @@ MagickExport const char *CommandOptionToMnemonic(const CommandOption option,
     if (type == option_info[i].type)
       break;
   if (option_info[i].mnemonic == (const char *) NULL)
-    return("undefined");
+    return("unrecognized");
   return(option_info[i].mnemonic);
 }
 
