@@ -135,7 +135,7 @@ static MagickBooleanType IsPNM(const unsigned char *magick,const size_t extent)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static void PNMComment(Image *image,ExceptionInfo *exception)
+static int PNMComment(Image *image,ExceptionInfo *exception)
 {
   int
     c;
@@ -174,9 +174,10 @@ static void PNMComment(Image *image,ExceptionInfo *exception)
       }
   }
   if (comment == (char *) NULL)
-    return;
+    return(c);
   (void) SetImageProperty(image,"comment",comment,exception);
   comment=DestroyString(comment);
+  return(c);
 }
 
 static unsigned int PNMInteger(Image *image,const unsigned int base,
@@ -197,7 +198,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base,
     if (c == EOF)
       return(0);
     if (c == (int) '#')
-      PNMComment(image,exception);
+      c=PNMComment(image,exception);
   } while ((c == ' ') || (c == '\t') || (c == '\n') || (c == '\r'));
   if (base == 2)
     return((unsigned int) (c-(int) '0'));
@@ -331,7 +332,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Comment.
               */
-              PNMComment(image,exception);
+              c=PNMComment(image,exception);
               c=ReadBlobByte(image);
               while (isspace((int) ((unsigned char) c)) != 0)
                 c=ReadBlobByte(image);
