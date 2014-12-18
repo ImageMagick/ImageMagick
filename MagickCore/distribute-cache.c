@@ -331,6 +331,7 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
       (void) CopyMagickString(server_info->hostname,hostname,MaxTextExtent);
       server_info->debug=IsEventLogging();
     }
+  hostname=DestroyString(hostname);
   return(server_info);
 }
 
