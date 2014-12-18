@@ -137,7 +137,7 @@ static MagickBooleanType IsPNM(const unsigned char *magick,const size_t extent)
 %
 */
 
-static void PNMComment(Image *image)
+static int PNMComment(Image *image)
 {
   int
     c;
@@ -176,9 +176,10 @@ static void PNMComment(Image *image)
       }
   }
   if (comment == (char *) NULL)
-    return;
+    return(c);
   (void) SetImageProperty(image,"comment",comment);
   comment=DestroyString(comment);
+  return(c);
 }
 
 static unsigned int PNMInteger(Image *image,const unsigned int base)
@@ -198,7 +199,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
     if (c == EOF)
       return(0);
     if (c == (int) '#')
-      PNMComment(image);
+      c=PNMComment(image);
   } while ((c == ' ') || (c == '\t') || (c == '\n') || (c == '\r'));
   if (base == 2)
     return((unsigned int) (c-(int) '0'));
