@@ -135,6 +135,7 @@ static MagickBooleanType IsPNM(const unsigned char *magick,const size_t extent)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 static int PNMComment(Image *image,ExceptionInfo *exception)
 {
   int
