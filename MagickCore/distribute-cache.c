@@ -323,12 +323,14 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   session_key=0;
   server_info->file=ConnectPixelCacheServer(hostname,server_info->port,
     &session_key,exception);
-  server_info->session_key=session_key;
-  (void) CopyMagickString(server_info->hostname,hostname,MaxTextExtent);
-  hostname=DestroyString(hostname);
   if (server_info->file == -1)
     server_info=DestroyDistributeCacheInfo(server_info);
-  server_info->debug=IsEventLogging();
+  else
+    {
+      server_info->session_key=session_key;
+      (void) CopyMagickString(server_info->hostname,hostname,MaxTextExtent);
+      server_info->debug=IsEventLogging();
+    }
   return(server_info);
 }
 
@@ -395,12 +397,11 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 */
 
 static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
-  int magick_unused(file),const size_t session_key)
+  const size_t session_key)
 {
   /*
     Destroy distributed pixel cache.
   */
-  magick_unreferenced(file);
   return(DeleteNodeFromSplayTree(registry,(const void *) session_key));
 }
 
@@ -839,7 +840,7 @@ static void *DistributePixelCacheClient(void *socket)
       }
       case 'd':
       {
-        status=DestroyDistributeCache(registry,client_socket,session_key);
+        status=DestroyDistributeCache(registry,session_key);
         break;
       }
       default:
