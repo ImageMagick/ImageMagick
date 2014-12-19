@@ -228,9 +228,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=ReadBlobLSBShort(image);
     flags=(MagickStatusType) ReadBlobByte(image);
     image->matte=flags & 0x04 ? MagickTrue : MagickFalse;
-    number_planes=1UL*ReadBlobByte(image);
-    bits_per_pixel=1UL*ReadBlobByte(image);
-    number_colormaps=1UL*ReadBlobByte(image);
+    number_planes=(size_t) ReadBlobByte(image);
+    bits_per_pixel=(size_t) ReadBlobByte(image);
+    number_colormaps=(size_t) ReadBlobByte(image);
     map_length=(unsigned char) ReadBlobByte(image);
     if (map_length >= 64)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -451,7 +451,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < (ssize_t) number_pixels; i++)
               for (x=0; x < (ssize_t) number_planes; x++)
               {
-                index=ConstrainColormapIndex(image,x*map_length+(*p & mask));
+                index=ConstrainColormapIndex(image,(size_t) (x*map_length+
+                  (*p & mask)));
                 *p=colormap[index];
                 p++;
               }
