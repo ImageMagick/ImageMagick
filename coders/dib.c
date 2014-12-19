@@ -159,6 +159,10 @@ static MagickBooleanType DecodeImage(Image *image,
 #define BI_RLE8  1
 #define BI_RLE4  2
 #define BI_BITFIELDS  3
+#undef BI_JPEG
+#define BI_JPEG  4
+#undef BI_PNG
+#define BI_PNG  5
 #endif
 
   int
@@ -525,6 +529,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   dib_info.height=(short) ReadBlobLSBLong(image);
   dib_info.planes=ReadBlobLSBShort(image);
   dib_info.bits_per_pixel=ReadBlobLSBShort(image);
+  if (dib_info.bits_per_pixel > 32)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   dib_info.compression=ReadBlobLSBLong(image);
   dib_info.image_size=ReadBlobLSBLong(image);
   dib_info.x_pixels=ReadBlobLSBLong(image);
@@ -538,11 +544,44 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dib_info.green_mask=ReadBlobLSBLong(image);
       dib_info.blue_mask=ReadBlobLSBLong(image);
     }
-  image->alpha_trait=dib_info.bits_per_pixel == 32 ? BlendPixelTrait :
-    UndefinedPixelTrait;
+  if (dib_info.width <= 0)
+    ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
+  if (dib_info.height == 0)
+    ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
+  if (dib_info.planes != 1)
+    ThrowReaderException(CorruptImageError,"StaticPlanesValueNotEqualToOne");
+  if ((dib_info.bits_per_pixel != 1) && (dib_info.bits_per_pixel != 4) &&
+      (dib_info.bits_per_pixel != 8) && (dib_info.bits_per_pixel != 16) &&
+      (dib_info.bits_per_pixel != 24) && (dib_info.bits_per_pixel != 32))
+    ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
+  if (dib_info.bits_per_pixel < 16 &&
+      dib_info.number_colors > (1U << dib_info.bits_per_pixel))
+    ThrowReaderException(CorruptImageError,"UnrecognizedNumberOfColors");
+  if ((dib_info.compression == 1) && (dib_info.bits_per_pixel != 8))
+    ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
+  if ((dib_info.compression == 2) && (dib_info.bits_per_pixel != 4))
+    ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
+  if ((dib_info.compression == 3) && (dib_info.bits_per_pixel < 16))
+    ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
+  switch (dib_info.compression)
+  {
+    case BI_RGB:
+    case BI_RLE8:
+    case BI_RLE4:
+    case BI_BITFIELDS:
+      break;
+    case BI_JPEG:
+      ThrowReaderException(CoderError,"JPEGCompressNotSupported");
+    case BI_PNG:
+      ThrowReaderException(CoderError,"PNGCompressNotSupported");
+    default:
+      ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression");
+  }
   image->columns=(size_t) MagickAbsoluteValue(dib_info.width);
   image->rows=(size_t) MagickAbsoluteValue(dib_info.height);
   image->depth=8;
+  image->alpha_trait=dib_info.bits_per_pixel == 32 ? BlendPixelTrait :
+    UndefinedPixelTrait;
   if ((dib_info.number_colors != 0) || (dib_info.bits_per_pixel < 16))
     {
       size_t
