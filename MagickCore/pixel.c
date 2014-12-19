@@ -6150,7 +6150,7 @@ MagickExport void SetPixelChannelMask(Image *image,
     if (channel == AlphaPixelChannel)
       SetPixelChannelTraits(image,channel,
         GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
-        image->alpha_trait &~ BlendPixelTrait);
+        image->alpha_trait);
     else
       SetPixelChannelTraits(image,channel,
         GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
