@@ -428,6 +428,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     } while (((opcode & 0x3f) != EOFOp) && (opcode != EOF));
     if (number_colormaps != 0)
       {
+        IndexPacket
+          index;
+
         MagickStatusType
           mask;
 
@@ -439,7 +442,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (number_colormaps == 1)
           for (i=0; i < (ssize_t) number_pixels; i++)
           {
-            *p=colormap[*p & mask];
+            index=ConstrainColormapIndex(image,*p & mask);
+            *p=colormap[index];
             p++;
           }
         else
@@ -447,7 +451,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < (ssize_t) number_pixels; i++)
               for (x=0; x < (ssize_t) number_planes; x++)
               {
-                *p=colormap[x*map_length+(*p & mask)];
+                index=ConstrainColormapIndex(image,x*map_length+(*p & mask));
+                *p=colormap[index];
                 p++;
               }
       }
