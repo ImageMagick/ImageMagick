@@ -183,28 +183,17 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
 Magick::Image::Image(const Geometry &size_,const Color &color_)
   : _imgRef(new ImageRef)
 {
-  try
-  {
-    read(size_,color_);
-  }
-  catch(const Warning &/*warning_*/)
-  {
-    // FIXME: need a way to report warnings in constructor
-  }
-  catch(const Error & /*error_*/)
-  {
-    // Release resources
-    delete _imgRef;
-    throw;
-  }
-}
+  // xc: prefix specifies an X11 color string
+  std::string imageSpec("xc:");
+  imageSpec+=color_;
 
-Magick::Image::Image(const Geometry &size_,const std::string &imageSpec_)
-  : _imgRef(new ImageRef)
-{
   try
   {
-    read(size_,imageSpec_);
+    // Set image size
+    size(size_);
+
+    // Initialize, Allocate and Read images
+    read(imageSpec);
   }
   catch(const Warning &/*warning_*/)
   {
@@ -3896,14 +3885,6 @@ void Magick::Image::read(const Blob &blob_,const Geometry &size_,
   // Set explicit image format
   fileName(magick_ + ':');
   read(blob_);
-}
-
-void Magick::Image::read(const Geometry &size_,const Color &color_)
-{
-  // xc: prefix specifies an X11 color string
-  std::string imageSpec("xc:");
-  imageSpec+=color_;
-  read(size_,imageSpec);
 }
 
 void Magick::Image::read(const Geometry &size_,const std::string &imageSpec_)
