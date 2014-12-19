@@ -2200,7 +2200,7 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %    Rec709Luminance  0.212656R + 0.715158G + 0.072186B
 %    Brightness       max(R', G', B')
 %    Lightness        (min(R', G', B') + max(R', G', B')) / 2.0
-% 
+%
 %    MS               (R^2 + G^2 + B^2) / 3.0
 %    RMS              sqrt((R^2 + G^2 + B^2) / 3.0
 %    Average          (R + G + B') / 3.0
@@ -6147,15 +6147,16 @@ MagickExport void SetPixelChannelMask(Image *image,
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel channel=GetPixelChannelChannel(image,i);
-    SetPixelChannelTraits(image,channel,
-      GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
-      (image->alpha_trait == BlendPixelTrait) &&
-      (channel != AlphaPixelChannel) ? (PixelTrait)
-      (UpdatePixelTrait | BlendPixelTrait) : UpdatePixelTrait);
+    if (channel == AlphaPixelChannel)
+      SetPixelChannelTraits(image,channel,
+        GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
+        image->alpha_trait &~ BlendPixelTrait);
+    else
+      SetPixelChannelTraits(image,channel,
+        GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
+        (image->alpha_trait == BlendPixelTrait) ? (PixelTrait)
+        (UpdatePixelTrait | BlendPixelTrait) : UpdatePixelTrait);
   }
-  SetPixelChannelTraits(image,AlphaPixelChannel,
-    GetChannelBit(channel_mask,AlphaPixelChannel) == 0 ? CopyPixelTrait :
-    image->alpha_trait);
   if (image->storage_class == PseudoClass)
     SetPixelChannelTraits(image,IndexPixelChannel,CopyPixelTrait);
   if (image->read_mask != MagickFalse)

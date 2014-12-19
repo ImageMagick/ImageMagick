@@ -225,9 +225,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=ReadBlobLSBShort(image);
     flags=(MagickStatusType) ReadBlobByte(image);
     image->alpha_trait=flags & 0x04 ? BlendPixelTrait : UndefinedPixelTrait;
-    number_planes=1UL*ReadBlobByte(image);
-    bits_per_pixel=1UL*ReadBlobByte(image);
-    number_colormaps=1UL*ReadBlobByte(image);
+    number_planes=(size_t) ReadBlobByte(image);
+    bits_per_pixel=(size_t) ReadBlobByte(image);
+    number_colormaps=(size_t) ReadBlobByte(image);
     map_length=(unsigned char) ReadBlobByte(image);
     if (map_length >= 64)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -425,6 +425,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickStatusType
           mask;
 
+        ssize_t
+          index;
+
         /*
           Apply colormap affineation to image.
         */
@@ -433,7 +436,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (number_colormaps == 1)
           for (i=0; i < (ssize_t) number_pixels; i++)
           {
-            *p=colormap[*p & mask];
+            index=ConstrainColormapIndex(image,(ssize_t) (*p & mask),exception);
+            *p=colormap[index];
             p++;
           }
         else
@@ -441,7 +445,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < (ssize_t) number_pixels; i++)
               for (x=0; x < (ssize_t) number_planes; x++)
               {
-                *p=colormap[x*map_length+(*p & mask)];
+                index=ConstrainColormapIndex(image,(ssize_t) (x*map_length+
+                  (*p & mask)),exception);
+                *p=colormap[index];
                 p++;
               }
       }
@@ -495,17 +501,23 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Pseudocolor.
             */
-            image->colormap[i].red=ScaleCharToQuantum((unsigned char) i);
-            image->colormap[i].green=ScaleCharToQuantum((unsigned char) i);
-            image->colormap[i].blue=ScaleCharToQuantum((unsigned char) i);
+            image->colormap[i].red=(MagickRealType)
+              ScaleCharToQuantum((unsigned char) i);
+            image->colormap[i].green=(MagickRealType)
+              ScaleCharToQuantum((unsigned char) i);
+            image->colormap[i].blue=(MagickRealType)
+              ScaleCharToQuantum((unsigned char) i);
           }
         else
           if (number_colormaps > 1)
             for (i=0; i < (ssize_t) image->colors; i++)
             {
-              image->colormap[i].red=ScaleCharToQuantum(*p);
-              image->colormap[i].green=ScaleCharToQuantum(*(p+map_length));
-              image->colormap[i].blue=ScaleCharToQuantum(*(p+map_length*2));
+              image->colormap[i].red=(MagickRealType)
+                ScaleCharToQuantum(*p);
+              image->colormap[i].green=(MagickRealType)
+                ScaleCharToQuantum(*(p+map_length));
+              image->colormap[i].blue=(MagickRealType)
+                ScaleCharToQuantum(*(p+map_length*2));
               p++;
             }
         p=pixels;
@@ -548,12 +560,15 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelRed(image,image->colormap[(ssize_t)
-                  ConstrainColormapIndex(image,*p++,exception)].red,q);
-                SetPixelGreen(image,image->colormap[(ssize_t)
-                  ConstrainColormapIndex(image,*p++,exception)].green,q);
-                SetPixelBlue(image,image->colormap[(ssize_t)
-                  ConstrainColormapIndex(image,*p++,exception)].blue,q);
+                SetPixelRed(image,ClampToQuantum(image->colormap[(ssize_t)
+                  ConstrainColormapIndex(image,(ssize_t) *p++,exception)].red),
+                  q);
+                SetPixelGreen(image,ClampToQuantum(image->colormap[(ssize_t)
+                  ConstrainColormapIndex(image,(ssize_t) *p++,exception)].green),
+                  q);
+                SetPixelBlue(image,ClampToQuantum(image->colormap[(ssize_t)
+                  ConstrainColormapIndex(image,(ssize_t) *p++,exception)].blue),
+                  q);
                 SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
                 q+=GetPixelChannels(image);
               }
