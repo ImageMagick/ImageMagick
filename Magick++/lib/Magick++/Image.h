@@ -105,9 +105,6 @@ namespace Magick
     // Construct a blank image canvas of specified size and color
     Image(const Geometry &size_,const Color &color_);
 
-    // Construct image of specified size from image file or image specification
-    Image(const Geometry &size_,const std::string &imageSpec_);
-
     // Copy constructor
     Image(const Image &image_);
 
@@ -1240,9 +1237,6 @@ namespace Magick
     // in-memory BLOB
     void read(const Blob &blob_,const Geometry &size_,
       const std::string &magick_);
-
-    // Read a blank image canvas of specified size and color
-    void read(const Geometry &size_,const Color &color_);
 
     // Read single image frame of specified size into current object
     void read(const Geometry &size_,const std::string &imageSpec_);
