@@ -267,7 +267,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
   if (image->storage_class == PseudoClass)
     {
       if (tga_info.colormap_type != 0)
-        image->colors=tga_info.colormap_length;
+        image->colors=tga_info.colormap_index+tga_info.colormap_length;
       else
         {
           size_t
@@ -322,7 +322,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
       */
       if (AcquireImageColormap(image,image->colors) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      for (i=0; i < (ssize_t) image->colors; i++)
+      for (i=0; i < (ssize_t) tga_info.colormap_index; i++)
+        image->colormap[i]=pixel;
+      for ( ; i < (ssize_t) image->colors; i++)
       {
         switch (tga_info.colormap_size)
         {
@@ -671,15 +673,14 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
             green,
             value;
 
-            green=(unsigned char) ScaleQuantumToAny(ClampToQuantum(
-              GetPixelGreen(p)),range);
-            value=((unsigned char) ScaleQuantumToAny(ClampToQuantum(
-              GetPixelBlue(p)),range)) | ((green & 0x07) << 5);
+            green=(unsigned char) ScaleQuantumToAny(GetPixelGreen(p),range);
+            value=((unsigned char) ScaleQuantumToAny(GetPixelBlue(p),range)) |
+              ((green & 0x07) << 5);
             (void) WriteBlobByte(image,value);
-            value=(((image->matte != MagickFalse) && (ClampToQuantum(
-              GetPixelAlpha(p)) < midpoint)) ? 80 : 0) |
-              ((unsigned char) ScaleQuantumToAny(ClampToQuantum(
-              GetPixelRed(p)),range) << 2) | ((green & 0x18) >> 3);
+            value=(unsigned char) (((image->matte != MagickFalse) && 
+              (GetPixelAlpha(p) < midpoint)) ? 80 : 0) | ((unsigned char)
+              ScaleQuantumToAny(GetPixelRed(p),range) << 2) |
+              ((green & 0x18) >> 3));
             (void) WriteBlobByte(image,value);
         }
       else
@@ -846,20 +847,20 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
       {
         if (image_info->depth == 5)
           {
-            green=(unsigned char) ScaleQuantumToAny(ClampToQuantum(
-              image->colormap[i].green),range);
-            *q++=((unsigned char) ScaleQuantumToAny(ClampToQuantum(
-              image->colormap[i].blue),range)) | ((green & 0x07) << 5);
-            *q++=(((image->matte != MagickFalse) && (ClampToQuantum(
-              image->colormap[i].opacity) > midpoint)) ? 80 : 0) |
-              ((unsigned char) ScaleQuantumToAny(ClampToQuantum(
-              image->colormap[i].red),range) << 2) | ((green & 0x18) >> 3);
+            green=(unsigned char) ScaleQuantumToAny(image->colormap[i].green,
+              range);
+            *q++=((unsigned char) ScaleQuantumToAny(image->colormap[i].blue,
+              range)) | ((green & 0x07) << 5);
+            *q++=(((image->matte != MagickFalse) && (
+              (double) image->colormap[i].opacity > midpoint)) ? 80 : 0) |
+              ((unsigned char) ScaleQuantumToAny(image->colormap[i].red,
+              range) << 2) | ((green & 0x18) >> 3);
           }
         else
           {
-            *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue));
-            *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green));
-            *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red));
+            *q++=ScaleQuantumToChar(image->colormap[i].blue);
+            *q++=ScaleQuantumToChar(image->colormap[i].green);
+            *q++=ScaleQuantumToChar(image->colormap[i].red);
           }
       }
       (void) WriteBlob(image,(size_t) ((tga_info.colormap_size/8)*
@@ -930,7 +931,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
             }
           if (i >= 3)
             {
-              WriteBlobByte(image,(unsigned char) ((i-1) | 0x80));
+              (void) WriteBlobByte(image,(unsigned char) ((i-1) | 0x80));
               WriteTGAPixel(image,tga_info.image_type,indexes,p,range,
                 midpoint);
               p+=i;
