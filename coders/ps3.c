@@ -466,7 +466,7 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(image->alpha_trait == BlendPixelTrait);
+  assert(image->alpha_trait != UndefinedPixelTrait);
   status=MagickTrue;
   /*
     Note BeginData DSC comment for update later.
@@ -894,7 +894,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     case Group4Compression:
     { 
       if ((IsImageMonochrome(image,exception) == MagickFalse) ||
-          (image->alpha_trait == BlendPixelTrait))
+          (image->alpha_trait != UndefinedPixelTrait))
         compression=RLECompression;
       break;
     }
@@ -1166,7 +1166,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     /*
       Image mask.
     */
-    if ((image->alpha_trait == BlendPixelTrait) &&
+    if ((image->alpha_trait != UndefinedPixelTrait) &&
         (WritePS3MaskImage(image_info,image,compression,exception) == MagickFalse))
       {
         (void) CloseBlob(image);
@@ -1240,7 +1240,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     /*
       Masked image?
     */
-    (void) WriteBlobString(image,image->alpha_trait == BlendPixelTrait ?
+    (void) WriteBlobString(image,image->alpha_trait != UndefinedPixelTrait ?
       "true\n" : "false\n");
     /*
       Render with imagemask operator?

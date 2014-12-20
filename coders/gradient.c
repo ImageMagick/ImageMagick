@@ -162,7 +162,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   image->alpha_trait=start_color.alpha_trait;
-  if (stop_color.alpha_trait == BlendPixelTrait)
+  if (stop_color.alpha_trait != UndefinedPixelTrait)
     image->alpha_trait=stop_color.alpha_trait;
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color,

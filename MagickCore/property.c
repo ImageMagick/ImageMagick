@@ -2414,7 +2414,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       (void) FormatLocaleString(value,MaxTextExtent,"%s %s %s",
         CommandOptionToMnemonic(MagickClassOptions,(ssize_t) image->storage_class),
         CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace),
-        image->alpha_trait == BlendPixelTrait ? "Alpha" : "");
+        image->alpha_trait != UndefinedPixelTrait ? "Alpha" : "");
       break;
     }
     case 's': /* Image scene number */
@@ -2692,7 +2692,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
             image->colorspace));
           LocaleLower(value);
-          if( image->alpha_trait == BlendPixelTrait )
+          if( image->alpha_trait != UndefinedPixelTrait )
             (void) ConcatenateMagickString(value,"a",MaxTextExtent);
           break;
         }

@@ -229,8 +229,8 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
   if ((IsPixelInfoGray(&image->background_color) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  if ((destination->alpha_trait == BlendPixelTrait) &&
-      (image->alpha_trait != BlendPixelTrait))
+  if ((destination->alpha_trait != UndefinedPixelTrait) &&
+      (image->alpha_trait == UndefinedPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
 }
 
@@ -4308,7 +4308,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
   (void) ResetMagickMemory(image->channel_map,0,MaxPixelChannels*
     sizeof(*image->channel_map));
   trait=UpdatePixelTrait;
-  if (image->alpha_trait == BlendPixelTrait)
+  if (image->alpha_trait != UndefinedPixelTrait)
     trait=(PixelTrait) (trait | BlendPixelTrait);
   n=0;
   if (image->colorspace == GRAYColorspace)
@@ -4325,7 +4325,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
     }
   if (image->colorspace == CMYKColorspace)
     SetPixelChannelAttributes(image,BlackPixelChannel,trait,n++);
-  if (image->alpha_trait == BlendPixelTrait)
+  if (image->alpha_trait != UndefinedPixelTrait)
     SetPixelChannelAttributes(image,AlphaPixelChannel,CopyPixelTrait,n++);
   if (image->storage_class == PseudoClass)
     SetPixelChannelAttributes(image,IndexPixelChannel,CopyPixelTrait,n++);
@@ -5413,7 +5413,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
 static inline void AlphaBlendPixelInfo(const Image *image,
   const Quantum *pixel,PixelInfo *pixel_info,double *alpha)
 {
-  if (image->alpha_trait != BlendPixelTrait)
+  if (image->alpha_trait == UndefinedPixelTrait)
     {
       *alpha=1.0;
       pixel_info->red=(double) GetPixelRed(image,pixel);
@@ -5923,7 +5923,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
     destination->fuzz,(MagickRealType) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
-  if (source->alpha_trait == BlendPixelTrait)
+  if (source->alpha_trait != UndefinedPixelTrait)
     {
       /*
         Transparencies are involved - set alpha distance
@@ -6041,14 +6041,14 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
       MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
-  if ((p->alpha_trait == BlendPixelTrait) ||
-      (q->alpha_trait == BlendPixelTrait))
+  if ((p->alpha_trait != UndefinedPixelTrait) ||
+      (q->alpha_trait != UndefinedPixelTrait))
     {
       /*
         Transparencies are involved - set alpha distance.
       */
-      pixel=(p->alpha_trait == BlendPixelTrait ? p->alpha : OpaqueAlpha)-
-        (q->alpha_trait == BlendPixelTrait ? q->alpha : OpaqueAlpha);
+      pixel=(p->alpha_trait != UndefinedPixelTrait ? p->alpha : OpaqueAlpha)-
+        (q->alpha_trait != UndefinedPixelTrait ? q->alpha : OpaqueAlpha);
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);
@@ -6056,9 +6056,9 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
         Generate a alpha scaling factor to generate a 4D cone on colorspace.
         If one color is transparent, distance has no color component.
       */
-      if (p->alpha_trait == BlendPixelTrait)
+      if (p->alpha_trait != UndefinedPixelTrait)
         scale=(QuantumScale*p->alpha);
-      if (q->alpha_trait == BlendPixelTrait)
+      if (q->alpha_trait != UndefinedPixelTrait)
         scale*=(QuantumScale*q->alpha);
       if (scale <= MagickEpsilon )
         return(MagickTrue);
@@ -6147,15 +6147,27 @@ MagickExport void SetPixelChannelMask(Image *image,
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel channel=GetPixelChannelChannel(image,i);
+    if (GetChannelBit(channel_mask,channel) == 0)
+      {
+        SetPixelChannelTraits(image,channel,CopyPixelTrait);
+        continue;
+      }
     if (channel == AlphaPixelChannel)
-      SetPixelChannelTraits(image,channel,
-        GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
-        image->alpha_trait);
-    else
-      SetPixelChannelTraits(image,channel,
-        GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
-        (image->alpha_trait == BlendPixelTrait) ? (PixelTrait)
-        (UpdatePixelTrait | BlendPixelTrait) : UpdatePixelTrait);
+      {
+        if ((image->alpha_trait & CopyPixelTrait) != 0)
+          {
+            SetPixelChannelTraits(image,channel,CopyPixelTrait);
+            continue;
+          }
+        SetPixelChannelTraits(image,channel,UpdatePixelTrait);
+        continue;
+      }
+    if (image->alpha_trait != UndefinedPixelTrait)
+      {
+        SetPixelChannelTraits(image,channel,UpdatePixelTrait | BlendPixelTrait);
+        continue;
+      }
+    SetPixelChannelTraits(image,channel,UpdatePixelTrait);
   }
   if (image->storage_class == PseudoClass)
     SetPixelChannelTraits(image,IndexPixelChannel,CopyPixelTrait);

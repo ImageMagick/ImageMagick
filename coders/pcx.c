@@ -629,7 +629,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,ScaleCharToQuantum(*r++),q);
             SetPixelGreen(image,ScaleCharToQuantum(*r++),q);
             SetPixelBlue(image,ScaleCharToQuantum(*r++),q);
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum(*r++),q);
           }
         q+=GetPixelChannels(image);
@@ -962,7 +962,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
         pcx_info.planes=3;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           pcx_info.planes++;
       }
     pcx_info.bytes_per_line=(unsigned short) (((size_t) image->columns*

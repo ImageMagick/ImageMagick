@@ -39,6 +39,8 @@ typedef enum
   DiscreteAlphaChannel,
   DisassociateAlphaChannel,
   ExtractAlphaChannel,
+  OffAlphaChannel,
+  OnAlphaChannel,
   OpaqueAlphaChannel,
   RemoveAlphaChannel,
   SetAlphaChannel,

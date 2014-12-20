@@ -691,7 +691,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                   SetPixelBlue(image,image->colormap[
                     ConstrainColormapIndex(image,index,exception)].blue,q);
                 }
-              SetPixelAlpha(image,image->alpha_trait == BlendPixelTrait ?
+              SetPixelAlpha(image,image->alpha_trait != UndefinedPixelTrait ?
                 ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueAlpha,q);
               p++;
               q+=GetPixelChannels(image);
@@ -1094,7 +1094,7 @@ RestoreMSCWarning
             *q=ScaleQuantumToChar(GetPixelRed(image,p));
             *(q+number_pixels)=ScaleQuantumToChar(GetPixelGreen(image,p));
             *(q+number_pixels*2)=ScaleQuantumToChar(GetPixelBlue(image,p));
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               *(q+number_pixels*3)=ScaleQuantumToChar((Quantum)
                 (GetPixelAlpha(image,p)));
             p+=GetPixelChannels(image);

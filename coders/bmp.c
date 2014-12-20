@@ -974,7 +974,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           If we find a non zero value we asume the program that wrote the file
           wants to use the alpha channel.
         */
-        if ((image->alpha_trait != BlendPixelTrait) && (bmp_info.size == 40) &&
+        if ((image->alpha_trait == UndefinedPixelTrait) && (bmp_info.size == 40) &&
             (bmp_info.bits_per_pixel == 32))
           {
             bytes_per_line=4*(image->columns);
@@ -993,7 +993,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             }
           }
-        bmp_info.alpha_mask=image->alpha_trait == BlendPixelTrait ?
+        bmp_info.alpha_mask=image->alpha_trait != UndefinedPixelTrait ?
           0xff000000U : 0U;
         bmp_info.red_mask=0x00ff0000U;
         bmp_info.green_mask=0x0000ff00U;
@@ -1217,7 +1217,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               {
                 alpha=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
                 if (quantum_bits.alpha <= 8)
@@ -1315,7 +1315,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               {
                 alpha=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
                 if (quantum_bits.alpha == 8)
@@ -1625,7 +1625,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         if (image_info->compression == RLECompression)
           bmp_info.bits_per_pixel=8;
         bmp_info.number_colors=1U << bmp_info.bits_per_pixel;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           (void) SetImageStorageClass(image,DirectClass,exception);
         else
           if ((size_t) bmp_info.number_colors < image->colors)
@@ -1648,9 +1648,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         */
         bmp_info.number_colors=0;
         bmp_info.bits_per_pixel=(unsigned short)
-          ((type > 3) && (image->alpha_trait == BlendPixelTrait) ? 32 : 24);
+          ((type > 3) && (image->alpha_trait != UndefinedPixelTrait) ? 32 : 24);
         bmp_info.compression=(unsigned int) ((type > 3) &&
-          (image->alpha_trait == BlendPixelTrait) ?  BI_BITFIELDS : BI_RGB);
+          (image->alpha_trait != UndefinedPixelTrait) ?  BI_BITFIELDS : BI_RGB);
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
@@ -1661,7 +1661,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     if (type == 2)
       bmp_info.size=12;
     else
-      if ((type == 3) || ((image->alpha_trait != BlendPixelTrait) &&
+      if ((type == 3) || ((image->alpha_trait == UndefinedPixelTrait) &&
           (have_color_info == MagickFalse)))
         {
           type=3;
@@ -1949,7 +1949,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
             "   Storage class=PseudoClass");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "   Image depth=%.20g",(double) image->depth);
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Matte=True");
         else
@@ -2023,7 +2023,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobLSBLong(image,bmp_info.number_colors);
         (void) WriteBlobLSBLong(image,bmp_info.colors_important);
       }
-    if ((type > 3) && ((image->alpha_trait == BlendPixelTrait) ||
+    if ((type > 3) && ((image->alpha_trait != UndefinedPixelTrait) ||
         (have_color_info != MagickFalse)))
       {
         /*

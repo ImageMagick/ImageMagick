@@ -105,7 +105,7 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
 
   if (bounds->x < 0)
     return;
-  if (image->alpha_trait != BlendPixelTrait)
+  if (image->alpha_trait == UndefinedPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   for (y=0; y < (ssize_t) bounds->height; y++)
   {
@@ -328,7 +328,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     previous=coalesce_image;
     coalesce_image=GetNextImageInList(coalesce_image);
     (void) CompositeImage(coalesce_image,next,
-      next->alpha_trait == BlendPixelTrait ? OverCompositeOp : CopyCompositeOp,
+      next->alpha_trait != UndefinedPixelTrait ? OverCompositeOp : CopyCompositeOp,
       MagickTrue,next->page.x,next->page.y,exception);
     (void) CloneImageProfiles(coalesce_image,next);
     (void) CloneImageProperties(coalesce_image,next);
@@ -423,7 +423,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
         return((Image *) NULL);
       }
     (void) CompositeImage(current_image,next,
-      next->alpha_trait == BlendPixelTrait ? OverCompositeOp : CopyCompositeOp,
+      next->alpha_trait != UndefinedPixelTrait ? OverCompositeOp : CopyCompositeOp,
       MagickTrue,next->page.x,next->page.y,exception);
     /*
       Handle Background dispose: image is displayed for the delay period.
@@ -531,8 +531,8 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
   if (method == CompareAnyLayer)
     return((MagickBooleanType)(IsFuzzyEquivalencePixelInfo(p,q) == MagickFalse));
 
-  o1 = (p->alpha_trait == BlendPixelTrait) ? p->alpha : OpaqueAlpha;
-  o2 = (q->alpha_trait == BlendPixelTrait) ? q->alpha : OpaqueAlpha;
+  o1 = (p->alpha_trait != UndefinedPixelTrait) ? p->alpha : OpaqueAlpha;
+  o2 = (q->alpha_trait != UndefinedPixelTrait) ? q->alpha : OpaqueAlpha;
   /*
     Pixel goes from opaque to transprency.
   */
@@ -1494,7 +1494,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
         dispose_image=DestroyImage(dispose_image);
         return;
       }
-    (void) CompositeImage(current_image,next,next->alpha_trait == BlendPixelTrait ?
+    (void) CompositeImage(current_image,next,next->alpha_trait != UndefinedPixelTrait ?
       OverCompositeOp : CopyCompositeOp,MagickTrue,next->page.x,next->page.y,
       exception);
     /*

@@ -651,11 +651,11 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   (void) WriteBlobLong(image,(unsigned int) image->columns);
   (void) WriteBlobLong(image,(unsigned int) image->rows);
   (void) SetImageStorageClass(image,DirectClass,exception);
-  channels=image->alpha_trait == BlendPixelTrait ? 4 : 3;
+  channels=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
   if (IsImageGray(image,exception) != MagickFalse)
-    channels=image->alpha_trait == BlendPixelTrait ? 2 : 1;
+    channels=image->alpha_trait != UndefinedPixelTrait ? 2 : 1;
   else if (image->colorspace == CMYKColorspace)
-    channels=image->alpha_trait == BlendPixelTrait ? 5 : 4;
+    channels=image->alpha_trait != UndefinedPixelTrait ? 5 : 4;
   (void) WriteBlobLong(image,channels);
   (void) WriteBlobLong(image,0);
   if (image->depth == 16)

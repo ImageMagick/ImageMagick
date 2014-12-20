@@ -849,7 +849,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       }
     else
       if ((image->storage_class == DirectClass) || (image->colors > 256) ||
-          (compression == JPEGCompression) || (image->alpha_trait == BlendPixelTrait))
+          (compression == JPEGCompression) || (image->alpha_trait != UndefinedPixelTrait))
         {
           (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n0\n%d\n",
             (double) image->columns,(double) image->rows,(int)
@@ -899,7 +899,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((image->alpha_trait == BlendPixelTrait) &&
+                  if ((image->alpha_trait != UndefinedPixelTrait) &&
                       (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha))
                     {
                       *q++=ScaleQuantumToChar(QuantumRange);
@@ -953,7 +953,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((image->alpha_trait == BlendPixelTrait) &&
+                  if ((image->alpha_trait != UndefinedPixelTrait) &&
                       (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha))
                     {
                       Ascii85Encode(image,ScaleQuantumToChar((Quantum)

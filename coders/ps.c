@@ -1167,7 +1167,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
 {
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
-  if ((image->alpha_trait == BlendPixelTrait) && \
+  if ((image->alpha_trait != UndefinedPixelTrait) && \
       (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha)) \
     { \
       q=PopHexPixel(hex_digits,0xff,q); \
@@ -2005,7 +2005,7 @@ RestoreMSCWarning
       }
     else
       if ((image->storage_class == DirectClass) ||
-          (image->colors > 256) || (image->alpha_trait == BlendPixelTrait))
+          (image->colors > 256) || (image->alpha_trait != UndefinedPixelTrait))
         {
           /*
             Dump DirectClass image.
@@ -2090,7 +2090,7 @@ RestoreMSCWarning
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((image->alpha_trait == BlendPixelTrait) &&
+                  if ((image->alpha_trait != UndefinedPixelTrait) &&
                       (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha))
                     {
                       q=PopHexPixel(hex_digits,0xff,q);

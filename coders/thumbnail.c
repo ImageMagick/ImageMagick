@@ -205,7 +205,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
     length,exception);
   if (thumbnail_image == (Image *) NULL)
     return(MagickFalse);
-  (void) SetImageType(thumbnail_image,thumbnail_image->alpha_trait != BlendPixelTrait ?
+  (void) SetImageType(thumbnail_image,thumbnail_image->alpha_trait == UndefinedPixelTrait ?
     TrueColorType : TrueColorMatteType,exception);
   (void) CopyMagickString(thumbnail_image->filename,image->filename,
     MaxTextExtent);
