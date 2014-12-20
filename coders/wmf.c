@@ -1697,7 +1697,7 @@ static void ipa_udata_set(wmfAPI * API, wmfUserData_t * userdata)
 
 }
 
-static void ipa_udata_free(wmfAPI * API, wmfUserData_t * userdata)
+static void ipa_udata_free(wmfAPI *API, wmfUserData_t *userdata)
 {
   (void) API;
   (void) userdata;
@@ -1705,14 +1705,7 @@ static void ipa_udata_free(wmfAPI * API, wmfUserData_t * userdata)
 
 }
 
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
-static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_apply)
+static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
