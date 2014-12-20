@@ -41,9 +41,9 @@ static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   red=(MagickRealType) p->red;
   green=(MagickRealType) p->green;
   blue=(MagickRealType) p->blue;
-  if ((fabs(red-q->red) < MagickEpsilon) &&
-      (fabs(green-q->green) < MagickEpsilon) &&
-      (fabs(blue-q->blue) < MagickEpsilon))
+  if ((fabs((double) (red-q->red)) < MagickEpsilon) &&
+      (fabs((double) (green-q->green)) < MagickEpsilon) &&
+      (fabs((double) (blue-q->blue)) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -52,26 +52,26 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
   const MagickPixelPacket *q)
 {
   if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
-      (fabs(p->opacity-OpaqueOpacity) >= MagickEpsilon))
+      (fabs((double) (p->opacity-OpaqueOpacity)) >= MagickEpsilon))
     return(MagickFalse);
   if ((q->matte != MagickFalse) && (p->matte == MagickFalse) &&
-      (fabs(q->opacity-OpaqueOpacity)) >= MagickEpsilon)
+      (fabs((double) (q->opacity-OpaqueOpacity))) >= MagickEpsilon)
     return(MagickFalse);
   if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
     {
-      if (fabs(p->opacity-q->opacity) >= MagickEpsilon)
+      if (fabs((double) (p->opacity-q->opacity)) >= MagickEpsilon)
         return(MagickFalse);
-      if (fabs(p->opacity-TransparentOpacity) < MagickEpsilon)
+      if (fabs((double) (p->opacity-TransparentOpacity)) < MagickEpsilon)
         return(MagickTrue);
     }
-  if (fabs(p->red-q->red) >= MagickEpsilon)
+  if (fabs((double) (p->red-q->red)) >= MagickEpsilon)
     return(MagickFalse);
-  if (fabs(p->green-q->green) >= MagickEpsilon)
+  if (fabs((double) (p->green-q->green)) >= MagickEpsilon)
     return(MagickFalse);
-  if (fabs(p->blue-q->blue) >= MagickEpsilon)
+  if (fabs((double) (p->blue-q->blue)) >= MagickEpsilon)
     return(MagickFalse);
   if ((p->colorspace == CMYKColorspace) &&
-      (fabs(p->index-q->index) >= MagickEpsilon))
+      (fabs((double) (p->index-q->index)) >= MagickEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -81,8 +81,8 @@ static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
   if ((pixel->colorspace != GRAYColorspace) &&
       (pixel->colorspace != RGBColorspace))
     return(MagickFalse);
-  if ((fabs(pixel->red-pixel->green) < MagickEpsilon) &&
-      (fabs(pixel->green-pixel->blue) < MagickEpsilon))
+  if ((fabs((double) (pixel->red-pixel->green)) < MagickEpsilon) &&
+      (fabs((double) (pixel->green-pixel->blue)) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
