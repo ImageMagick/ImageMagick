@@ -254,10 +254,11 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     census=0;
     id=0;
     for (j=0; j < (ssize_t) number_objects; j++)
-      if (census < object[j].census) {
+      if ((object[j].area < object[i].area) && (census < object[j].census)) {
         census=object[j].census;
         id=(size_t) j;
       }
+    object[id].area+=object[i].area;
     for (y=0; y < (ssize_t) bounding_box.height; y++) {
       register Quantum
         *restrict q;
