@@ -742,7 +742,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       if (image->colorspace == CMYKColorspace)
         grays[ScaleQuantumToMap(GetPixelBlack(image,p))].black=
           ScaleQuantumToMap(GetPixelBlack(image,p));
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         grays[ScaleQuantumToMap(GetPixelAlpha(image,p))].alpha=
           ScaleQuantumToMap(GetPixelAlpha(image,p));
       p+=GetPixelChannels(image);
@@ -768,7 +768,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     if (image->colorspace == CMYKColorspace)
       if (grays[i].black != ~0U)
         grays[gray.black++].black=grays[i].black;
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
       if (grays[i].alpha != ~0U)
         grays[gray.alpha++].alpha=grays[i].alpha;
   }
@@ -783,7 +783,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   if (image->colorspace == CMYKColorspace)
     if (gray.black > number_grays)
       number_grays=gray.black;
-  if (image->alpha_trait == BlendPixelTrait)
+  if (image->alpha_trait != UndefinedPixelTrait)
     if (gray.alpha > number_grays)
       number_grays=gray.alpha;
   cooccurrence=(ChannelStatistics **) AcquireQuantumMemory(number_grays,
@@ -985,7 +985,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
             cooccurrence[u][v].direction[i].black++;
             cooccurrence[v][u].direction[i].black++;
           }
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           {
             u=0;
             v=0;
@@ -1074,7 +1074,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         cooccurrence[x][y].direction[i].blue*=normalize;
         if (image->colorspace == CMYKColorspace)
           cooccurrence[x][y].direction[i].black*=normalize;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           cooccurrence[x][y].direction[i].alpha*=normalize;
       }
     }
@@ -1114,7 +1114,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
           channel_features[BlackPixelChannel].angular_second_moment[i]+=
             cooccurrence[x][y].direction[i].black*
             cooccurrence[x][y].direction[i].black;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           channel_features[AlphaPixelChannel].angular_second_moment[i]+=
             cooccurrence[x][y].direction[i].alpha*
             cooccurrence[x][y].direction[i].alpha;
@@ -1126,7 +1126,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         sum[y].direction[i].blue+=cooccurrence[x][y].direction[i].blue;
         if (image->colorspace == CMYKColorspace)
           sum[y].direction[i].black+=cooccurrence[x][y].direction[i].black;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           sum[y].direction[i].alpha+=cooccurrence[x][y].direction[i].alpha;
         correlation.direction[i].red+=x*y*cooccurrence[x][y].direction[i].red;
         correlation.direction[i].green+=x*y*
@@ -1136,7 +1136,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           correlation.direction[i].black+=x*y*
             cooccurrence[x][y].direction[i].black;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           correlation.direction[i].alpha+=x*y*
             cooccurrence[x][y].direction[i].alpha;
         /*
@@ -1151,7 +1151,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           channel_features[BlackPixelChannel].inverse_difference_moment[i]+=
             cooccurrence[x][y].direction[i].black/((y-x)*(y-x)+1);
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           channel_features[AlphaPixelChannel].inverse_difference_moment[i]+=
             cooccurrence[x][y].direction[i].alpha/((y-x)*(y-x)+1);
         /*
@@ -1166,7 +1166,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           density_xy[y+x+2].direction[i].black+=
             cooccurrence[x][y].direction[i].black;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           density_xy[y+x+2].direction[i].alpha+=
             cooccurrence[x][y].direction[i].alpha;
         /*
@@ -1185,7 +1185,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
           channel_features[BlackPixelChannel].entropy[i]-=
             cooccurrence[x][y].direction[i].black*
             MagickLog10(cooccurrence[x][y].direction[i].black);
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           channel_features[AlphaPixelChannel].entropy[i]-=
             cooccurrence[x][y].direction[i].alpha*
             MagickLog10(cooccurrence[x][y].direction[i].alpha);
@@ -1195,7 +1195,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         density_x[x].direction[i].red+=cooccurrence[x][y].direction[i].red;
         density_x[x].direction[i].green+=cooccurrence[x][y].direction[i].green;
         density_x[x].direction[i].blue+=cooccurrence[x][y].direction[i].blue;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           density_x[x].direction[i].alpha+=
             cooccurrence[x][y].direction[i].alpha;
         if (image->colorspace == CMYKColorspace)
@@ -1207,7 +1207,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           density_y[y].direction[i].black+=
             cooccurrence[x][y].direction[i].black;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           density_y[y].direction[i].alpha+=
             cooccurrence[x][y].direction[i].alpha;
       }
@@ -1222,7 +1222,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
           mean.direction[i].black+=y*sum[y].direction[i].black;
           sum_squares.direction[i].black+=y*y*sum[y].direction[i].black;
         }
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         {
           mean.direction[i].alpha+=y*sum[y].direction[i].alpha;
           sum_squares.direction[i].alpha+=y*y*sum[y].direction[i].alpha;
@@ -1256,7 +1256,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         (mean.direction[i].black*mean.direction[i].black))*sqrt(
         sum_squares.direction[i].black-(mean.direction[i].black*
         mean.direction[i].black)));
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
       channel_features[AlphaPixelChannel].correlation[i]=
         (correlation.direction[i].alpha-mean.direction[i].alpha*
         mean.direction[i].alpha)/(sqrt(sum_squares.direction[i].alpha-
@@ -1290,7 +1290,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       if (image->colorspace == CMYKColorspace)
         channel_features[BlackPixelChannel].sum_average[i]+=
           x*density_xy[x].direction[i].black;
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         channel_features[AlphaPixelChannel].sum_average[i]+=
           x*density_xy[x].direction[i].alpha;
       /*
@@ -1309,7 +1309,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         channel_features[BlackPixelChannel].sum_entropy[i]-=
           density_xy[x].direction[i].black*
           MagickLog10(density_xy[x].direction[i].black);
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         channel_features[AlphaPixelChannel].sum_entropy[i]-=
           density_xy[x].direction[i].alpha*
           MagickLog10(density_xy[x].direction[i].alpha);
@@ -1333,7 +1333,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
           (x-channel_features[BlackPixelChannel].sum_entropy[i])*
           (x-channel_features[BlackPixelChannel].sum_entropy[i])*
           density_xy[x].direction[i].black;
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         channel_features[AlphaPixelChannel].sum_variance[i]+=
           (x-channel_features[AlphaPixelChannel].sum_entropy[i])*
           (x-channel_features[AlphaPixelChannel].sum_entropy[i])*
@@ -1371,7 +1371,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           variance.direction[i].black+=(y-mean.direction[i].black+1)*
             (y-mean.direction[i].black+1)*cooccurrence[x][y].direction[i].black;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           variance.direction[i].alpha+=(y-mean.direction[i].alpha+1)*
             (y-mean.direction[i].alpha+1)*
             cooccurrence[x][y].direction[i].alpha;
@@ -1387,7 +1387,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           density_xy[MagickAbsoluteValue(y-x)].direction[i].black+=
             cooccurrence[x][y].direction[i].black;
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           density_xy[MagickAbsoluteValue(y-x)].direction[i].alpha+=
             cooccurrence[x][y].direction[i].alpha;
         /*
@@ -1402,7 +1402,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         if (image->colorspace == CMYKColorspace)
           entropy_xy.direction[i].black-=cooccurrence[x][y].direction[i].black*
             MagickLog10(cooccurrence[x][y].direction[i].black);
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           entropy_xy.direction[i].alpha-=
             cooccurrence[x][y].direction[i].alpha*MagickLog10(
             cooccurrence[x][y].direction[i].alpha);
@@ -1417,7 +1417,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
           entropy_xy1.direction[i].black-=(
             cooccurrence[x][y].direction[i].black*MagickLog10(
             density_x[x].direction[i].black*density_y[y].direction[i].black));
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           entropy_xy1.direction[i].alpha-=(
             cooccurrence[x][y].direction[i].alpha*MagickLog10(
             density_x[x].direction[i].alpha*density_y[y].direction[i].alpha));
@@ -1434,7 +1434,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
           entropy_xy2.direction[i].black-=(density_x[x].direction[i].black*
             density_y[y].direction[i].black*MagickLog10(
             density_x[x].direction[i].black*density_y[y].direction[i].black));
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           entropy_xy2.direction[i].alpha-=(density_x[x].direction[i].alpha*
             density_y[y].direction[i].alpha*MagickLog10(
             density_x[x].direction[i].alpha*density_y[y].direction[i].alpha));
@@ -1449,7 +1449,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     if (image->colorspace == CMYKColorspace)
       channel_features[BlackPixelChannel].variance_sum_of_squares[i]=
         variance.direction[i].black;
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
       channel_features[AlphaPixelChannel].variance_sum_of_squares[i]=
         variance.direction[i].alpha;
   }
@@ -1477,7 +1477,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       variance.direction[i].blue+=density_xy[x].direction[i].blue;
       if (image->colorspace == CMYKColorspace)
         variance.direction[i].black+=density_xy[x].direction[i].black;
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         variance.direction[i].alpha+=density_xy[x].direction[i].alpha;
       sum_squares.direction[i].red+=density_xy[x].direction[i].red*
         density_xy[x].direction[i].red;
@@ -1488,7 +1488,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       if (image->colorspace == CMYKColorspace)
         sum_squares.direction[i].black+=density_xy[x].direction[i].black*
           density_xy[x].direction[i].black;
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         sum_squares.direction[i].alpha+=density_xy[x].direction[i].alpha*
           density_xy[x].direction[i].alpha;
       /*
@@ -1507,7 +1507,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         channel_features[BlackPixelChannel].difference_entropy[i]-=
           density_xy[x].direction[i].black*
           MagickLog10(density_xy[x].direction[i].black);
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         channel_features[AlphaPixelChannel].difference_entropy[i]-=
           density_xy[x].direction[i].alpha*
           MagickLog10(density_xy[x].direction[i].alpha);
@@ -1523,7 +1523,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       if (image->colorspace == CMYKColorspace)
         entropy_x.direction[i].black-=(density_x[x].direction[i].black*
           MagickLog10(density_x[x].direction[i].black));
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         entropy_x.direction[i].alpha-=(density_x[x].direction[i].alpha*
           MagickLog10(density_x[x].direction[i].alpha));
       entropy_y.direction[i].red-=(density_y[x].direction[i].red*
@@ -1535,7 +1535,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       if (image->colorspace == CMYKColorspace)
         entropy_y.direction[i].black-=(density_y[x].direction[i].black*
           MagickLog10(density_y[x].direction[i].black));
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         entropy_y.direction[i].alpha-=(density_y[x].direction[i].alpha*
           MagickLog10(density_y[x].direction[i].alpha));
     }
@@ -1559,7 +1559,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         (((double) number_grays*number_grays*sum_squares.direction[i].black)-
         (variance.direction[i].black*variance.direction[i].black))/
         ((double) number_grays*number_grays*number_grays*number_grays);
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
       channel_features[AlphaPixelChannel].difference_variance[i]=
         (((double) number_grays*number_grays*sum_squares.direction[i].alpha)-
         (variance.direction[i].alpha*variance.direction[i].alpha))/
@@ -1584,7 +1584,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         (entropy_xy.direction[i].black-entropy_xy1.direction[i].black)/
         (entropy_x.direction[i].black > entropy_y.direction[i].black ?
          entropy_x.direction[i].black : entropy_y.direction[i].black);
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
       channel_features[AlphaPixelChannel].measure_of_correlation_1[i]=
         (entropy_xy.direction[i].alpha-entropy_xy1.direction[i].alpha)/
         (entropy_x.direction[i].alpha > entropy_y.direction[i].alpha ?
@@ -1602,7 +1602,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       channel_features[BlackPixelChannel].measure_of_correlation_2[i]=
         (sqrt(fabs(1.0-exp(-2.0*(entropy_xy2.direction[i].black-
         entropy_xy.direction[i].black)))));
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
       channel_features[AlphaPixelChannel].measure_of_correlation_2[i]=
         (sqrt(fabs(1.0-exp(-2.0*(entropy_xy2.direction[i].alpha-
         entropy_xy.direction[i].alpha)))));
@@ -1645,7 +1645,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
               pixel.direction[i].blue+=cooccurrence[x][y].direction[i].blue;
               if (image->colorspace == CMYKColorspace)
                 pixel.direction[i].black+=cooccurrence[x][y].direction[i].black;
-              if (image->alpha_trait == BlendPixelTrait)
+              if (image->alpha_trait != UndefinedPixelTrait)
                 pixel.direction[i].alpha+=
                   cooccurrence[x][y].direction[i].alpha;
             }
@@ -1665,7 +1665,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
             Q[z][y].direction[i].black+=cooccurrence[z][x].direction[i].black*
               cooccurrence[y][x].direction[i].black/
               density_x[z].direction[i].black/density_y[x].direction[i].black;
-          if (image->alpha_trait == BlendPixelTrait)
+          if (image->alpha_trait != UndefinedPixelTrait)
             Q[z][y].direction[i].alpha+=
               cooccurrence[z][x].direction[i].alpha*
               cooccurrence[y][x].direction[i].alpha/
@@ -1682,7 +1682,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       if (image->colorspace == CMYKColorspace)
         channel_features[BlackPixelChannel].contrast[i]+=z*z*
           pixel.direction[i].black;
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         channel_features[AlphaPixelChannel].contrast[i]+=z*z*
           pixel.direction[i].alpha;
     }
@@ -1699,7 +1699,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     if (image->colorspace == CMYKColorspace)
       channel_features[BlackPixelChannel].maximum_correlation_coefficient[i]=
         sqrt((double) -1.0);
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
       channel_features[AlphaPixelChannel].maximum_correlation_coefficient[i]=
         sqrt((double) -1.0);
   }

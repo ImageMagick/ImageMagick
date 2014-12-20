@@ -455,7 +455,7 @@ static Image *ComputeConvolveImage(const Image* image,
     filterHeight = (unsigned int) kernel->height;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterWidth);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterHeight);
-    matte = (image->alpha_trait != BlendPixelTrait)?1:0;
+    matte = (image->alpha_trait == UndefinedPixelTrait)?1:0;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&matte);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&channel);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++, (localGroupSize[0] + kernel->width-1)*(localGroupSize[1] + kernel->height-1)*sizeof(CLPixelPacket),NULL);
@@ -501,7 +501,7 @@ static Image *ComputeConvolveImage(const Image* image,
     filterHeight = (unsigned int) kernel->height;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterWidth);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterHeight);
-    matte = (image->alpha_trait != BlendPixelTrait)?1:0;
+    matte = (image->alpha_trait == UndefinedPixelTrait)?1:0;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&matte);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&channel);
     if (clStatus != CL_SUCCESS)
@@ -1844,7 +1844,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,
   clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_float4), &biasPixel);
   clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(ChannelType), &channel);
 
-  matte = (image->alpha_trait != BlendPixelTrait)?1:0;
+  matte = (image->alpha_trait == UndefinedPixelTrait)?1:0;
   clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(unsigned int), &matte);
 
   clStatus=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_float2), &blurCenter);
@@ -3660,14 +3660,14 @@ static Image *ComputeResizeImage(const Image* image,
       goto cleanup;
     }
     
-    status = resizeHorizontalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, (image->alpha_trait != BlendPixelTrait)?1:0
+    status = resizeHorizontalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, (image->alpha_trait == UndefinedPixelTrait)?1:0
           , tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows
           , resizeFilter, cubicCoefficientsBuffer
           , xFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
     
-    status = resizeVerticalFilter(tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows, (image->alpha_trait != BlendPixelTrait)?1:0
+    status = resizeVerticalFilter(tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows, (image->alpha_trait == UndefinedPixelTrait)?1:0
        , filteredImageBuffer, (unsigned int) resizedColumns, (unsigned int) resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
@@ -3684,14 +3684,14 @@ static Image *ComputeResizeImage(const Image* image,
       goto cleanup;
     }
 
-    status = resizeVerticalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, (image->alpha_trait != BlendPixelTrait)?1:0
+    status = resizeVerticalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, (image->alpha_trait == UndefinedPixelTrait)?1:0
        , tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
 
-    status = resizeHorizontalFilter(tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows, (image->alpha_trait != BlendPixelTrait)?1:0
+    status = resizeHorizontalFilter(tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows, (image->alpha_trait == UndefinedPixelTrait)?1:0
        , filteredImageBuffer, (unsigned int) resizedColumns, (unsigned int) resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , xFactor, clEnv, queue, exception);
@@ -5769,7 +5769,7 @@ static Image *ComputeDespeckleImage(const Image *image,
   clStatus |=clEnv->library->clSetKernelArg(hullPass1,2,sizeof(unsigned int),(void *)&imageWidth);
   imageHeight = (unsigned int) image->rows;
   clStatus |=clEnv->library->clSetKernelArg(hullPass1,3,sizeof(unsigned int),(void *)&imageHeight);
-  matte = (image->alpha_trait != BlendPixelTrait)?0:1;
+  matte = (image->alpha_trait == UndefinedPixelTrait)?0:1;
   clStatus |=clEnv->library->clSetKernelArg(hullPass1,6,sizeof(int),(void *)&matte);
   if (clStatus != CL_SUCCESS)
   {
@@ -5783,7 +5783,7 @@ static Image *ComputeDespeckleImage(const Image *image,
   clStatus |=clEnv->library->clSetKernelArg(hullPass2,2,sizeof(unsigned int),(void *)&imageWidth);
   imageHeight = (unsigned int) image->rows;
   clStatus |=clEnv->library->clSetKernelArg(hullPass2,3,sizeof(unsigned int),(void *)&imageHeight);
-  matte = (image->alpha_trait != BlendPixelTrait)?0:1;
+  matte = (image->alpha_trait == UndefinedPixelTrait)?0:1;
   clStatus |=clEnv->library->clSetKernelArg(hullPass2,6,sizeof(int),(void *)&matte);
   if (clStatus != CL_SUCCESS)
   {
@@ -6723,7 +6723,7 @@ static Image* ComputeMotionBlurImage(const Image *image,
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(cl_float4), &biasPixel);
 
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(ChannelType), &channel);
-  matte = (image->alpha_trait != BlendPixelTrait)?1:0;
+  matte = (image->alpha_trait == UndefinedPixelTrait)?1:0;
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(unsigned int), &matte);
   if (clStatus != CL_SUCCESS)
   {
@@ -6991,7 +6991,7 @@ static MagickBooleanType ComputeCompositeImage(Image *image,
   status = LaunchCompositeKernel(clEnv,queue,imageBuffer,
            (unsigned int) image->columns,
            (unsigned int) image->rows,
-           (unsigned int) (image->alpha_trait != BlendPixelTrait) ? 1 : 0,
+           (unsigned int) (image->alpha_trait == UndefinedPixelTrait) ? 1 : 0,
            channel, compose, compositeImageBuffer,
            (unsigned int) compositeImage->columns,
            (unsigned int) compositeImage->rows,

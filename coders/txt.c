@@ -476,7 +476,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           case GRAYColorspace:
           {
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               {
                 count=(ssize_t) sscanf(text,"%ld,%ld: (%lf%*[%,]%lf%*[%,]",
                   &x_offset,&y_offset,&red,&alpha);
@@ -492,7 +492,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           case CMYKColorspace:
           {
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               {
                 count=(ssize_t) sscanf(text,
                   "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
@@ -506,7 +506,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           default:
           {
-            if (image->alpha_trait == BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               {
                 count=(ssize_t) sscanf(text,
                   "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
@@ -722,7 +722,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
       MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
-    if (image->alpha_trait == BlendPixelTrait)
+    if (image->alpha_trait != UndefinedPixelTrait)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
     compliance=NoCompliance;
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
@@ -787,7 +787,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             ConcatenateColorComponent(&pixel,BlackPixelChannel,compliance,
               tuple);
           }
-        if (pixel.alpha_trait == BlendPixelTrait)
+        if (pixel.alpha_trait != UndefinedPixelTrait)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
             ConcatenateColorComponent(&pixel,AlphaPixelChannel,compliance,

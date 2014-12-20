@@ -701,8 +701,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) ||
       (IsPixelInfoGray(colorize) != MagickFalse))
     (void) SetImageColorspace(colorize_image,sRGBColorspace,exception);
-  if ((colorize_image->alpha_trait != BlendPixelTrait) &&
-      (colorize->alpha_trait == BlendPixelTrait))
+  if ((colorize_image->alpha_trait == UndefinedPixelTrait) &&
+      (colorize->alpha_trait != UndefinedPixelTrait))
     (void) SetImageAlpha(colorize_image,OpaqueAlpha,exception);
   if (blend == (const char *) NULL)
     return(colorize_image);
@@ -993,7 +993,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
           GetPixelGreen(image,p)+ColorMatrix[v][2]*GetPixelBlue(image,p);
         if (image->colorspace == CMYKColorspace)
           sum+=ColorMatrix[v][3]*GetPixelBlack(image,p);
-        if (image->alpha_trait == BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           sum+=ColorMatrix[v][4]*GetPixelAlpha(image,p);
         sum+=QuantumRange*ColorMatrix[v][5];
         switch (v)
@@ -1487,7 +1487,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           double
             alpha;
 
-          if (pixel.alpha_trait != BlendPixelTrait)
+          if (pixel.alpha_trait == UndefinedPixelTrait)
             return(1.0);
           alpha=(double) (QuantumScale*pixel.alpha);
           return(alpha);
@@ -4292,7 +4292,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   clone_image=DestroyImage(clone_image);
   if (border_image == (Image *) NULL)
     return((Image *) NULL);
-  if (border_image->alpha_trait != BlendPixelTrait)
+  if (border_image->alpha_trait == UndefinedPixelTrait)
     (void) SetImageAlphaChannel(border_image,OpaqueAlphaChannel,exception);
   /*
     Shadow image.
@@ -4323,7 +4323,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
     background_color.alpha_trait=BlendPixelTrait;
     for (x=0; x < (ssize_t) border_image->columns; x++)
     {
-      if (border_image->alpha_trait == BlendPixelTrait)
+      if (border_image->alpha_trait != UndefinedPixelTrait)
         background_color.alpha=GetPixelAlpha(border_image,q)*alpha/100.0;
       SetPixelInfoPixel(border_image,&background_color,q);
       q+=GetPixelChannels(border_image);

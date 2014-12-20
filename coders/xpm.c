@@ -691,7 +691,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   if (picon->storage_class == PseudoClass)
     {
       (void) CompressImageColormap(picon,exception);
-      if (picon->alpha_trait == BlendPixelTrait)
+      if (picon->alpha_trait != UndefinedPixelTrait)
         transparent=MagickTrue;
     }
   else
@@ -699,7 +699,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
       /*
         Convert DirectClass to PseudoClass picon.
       */
-      if (picon->alpha_trait == BlendPixelTrait)
+      if (picon->alpha_trait != UndefinedPixelTrait)
         {
           /*
             Map all the transparent pixels.
@@ -915,7 +915,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   opacity=(-1);
-  if (image->alpha_trait != BlendPixelTrait)
+  if (image->alpha_trait == UndefinedPixelTrait)
     {
       if ((image->storage_class == DirectClass) || (image->colors > 256))
         (void) SetImageType(image,PaletteType,exception);

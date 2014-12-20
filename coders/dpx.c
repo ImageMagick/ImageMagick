@@ -1623,17 +1623,17 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
         case YCbCrColorspace:
         {
           dpx.image.image_element[i].descriptor=CbYCr444ComponentType;
-          if (image->alpha_trait == BlendPixelTrait)
+          if (image->alpha_trait != UndefinedPixelTrait)
             dpx.image.image_element[i].descriptor=CbYCrA4444ComponentType;
           break;
         }
         default:
         {
           dpx.image.image_element[i].descriptor=RGBComponentType;
-          if (image->alpha_trait == BlendPixelTrait)
+          if (image->alpha_trait != UndefinedPixelTrait)
             dpx.image.image_element[i].descriptor=RGBAComponentType;
           if ((image_info->type != TrueColorType) &&
-              (image->alpha_trait != BlendPixelTrait) &&
+              (image->alpha_trait == UndefinedPixelTrait) &&
               (IsImageGray(image,exception) != MagickFalse))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
@@ -1953,20 +1953,20 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
     MagickTrue : MagickFalse);
   quantum_type=RGBQuantum;
-  if (image->alpha_trait == BlendPixelTrait)
+  if (image->alpha_trait != UndefinedPixelTrait)
     quantum_type=RGBAQuantum;
   if (image->colorspace == YCbCrColorspace)
     {
       quantum_type=CbYCrQuantum;
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         quantum_type=CbYCrAQuantum;
       if ((horizontal_factor == 2) || (vertical_factor == 2))
         quantum_type=CbYCrYQuantum;
     }
-  extent=GetBytesPerRow(image->columns,image->alpha_trait == BlendPixelTrait ?
+  extent=GetBytesPerRow(image->columns,image->alpha_trait != UndefinedPixelTrait ?
     4UL : 3UL,image->depth,MagickTrue);
   if ((image_info->type != TrueColorType) &&
-      (image->alpha_trait != BlendPixelTrait) &&
+      (image->alpha_trait == UndefinedPixelTrait) &&
       (IsImageGray(image,exception) != MagickFalse))
     {
       quantum_type=GrayQuantum;

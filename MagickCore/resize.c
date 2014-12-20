@@ -1506,16 +1506,14 @@ MagickPrivate double *GetResizeFilterCoefficient(
   return((double *) resize_filter->coefficient);
 }
 
-MagickPrivate double GetResizeFilterBlur(
-  const ResizeFilter *resize_filter)
+MagickPrivate double GetResizeFilterBlur(const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
   assert(resize_filter->signature == MagickSignature);
   return(resize_filter->blur);
 }
 
-MagickPrivate double GetResizeFilterScale(
-  const ResizeFilter *resize_filter)
+MagickPrivate double GetResizeFilterScale(const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
   assert(resize_filter->signature == MagickSignature);
@@ -1546,8 +1544,7 @@ MagickPrivate ResizeWeightingFunctionType GetResizeFilterWindowWeightingType(
   return(resize_filter->windowWeightingType);
 }
 
-MagickPrivate double GetResizeFilterSupport(
-  const ResizeFilter *resize_filter)
+MagickPrivate double GetResizeFilterSupport(const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
   assert(resize_filter->signature == MagickSignature);
@@ -2892,7 +2889,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       filter_type=PointFilter;
     else
       if ((image->storage_class == PseudoClass) ||
-          (image->alpha_trait == BlendPixelTrait) ||
+          (image->alpha_trait != UndefinedPixelTrait) ||
           ((x_factor*y_factor) > 1.0))
         filter_type=MitchellFilter;
   resize_filter=AcquireResizeFilter(image,filter_type,MagickFalse,exception);
@@ -3177,7 +3174,6 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
 
   double
     alpha,
-    gamma,
     pixel[CompositePixelChannel],
     *scale_scanline,
     *scanline,
@@ -3457,11 +3453,10 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                   scanline[x*GetPixelChannels(image)+offset]),q);
                 continue;
               }
-            alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
-              GetPixelChannelChannel(image,AlphaPixelChannel)];
-            gamma=PerceptibleReciprocal(alpha);
-            SetPixelChannel(scale_image,channel,ClampToQuantum(gamma*scanline[
-              x*GetPixelChannels(image)+offset]),q);
+            alpha=QuantumScale*scanline[x*GetPixelChannels(scale_image)+
+              GetPixelChannelChannel(scale_image,AlphaPixelChannel)];
+            SetPixelChannel(scale_image,channel,ClampToQuantum(scanline[
+              x*GetPixelChannels(scale_image)+offset]),q);
           }
           q+=GetPixelChannels(scale_image);
         }
@@ -3496,7 +3491,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               PixelTrait traits=GetPixelChannelTraits(image,channel);
               if (traits == UndefinedPixelTrait)
                 continue;
-              pixel[i]+=span.x*scanline[x*GetPixelChannels(image)+i];
+              pixel[i]+=span.x*scanline[x*GetPixelChannels(scale_image)+i];
               scale_scanline[n*MaxPixelChannels+channel]=pixel[i];
             }
             scale.x-=span.x;
@@ -3513,14 +3508,14 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                 next_column=MagickFalse;
               }
             for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-              pixel[i]+=scale.x*scanline[x*GetPixelChannels(image)+i];
+              pixel[i]+=scale.x*scanline[x*GetPixelChannels(scale_image)+i];
             span.x-=scale.x;
           }
       }
       if (span.x > 0)
         {
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-            pixel[i]+=span.x*scanline[(x-1)*GetPixelChannels(image)+i];
+            pixel[i]+=span.x*scanline[(x-1)*GetPixelChannels(scale_image)+i];
         }
       if ((next_column == MagickFalse) &&
           ((ssize_t) n < (ssize_t) scale_image->columns))
@@ -3672,7 +3667,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   if (thumbnail_image == (Image *) NULL)
     return(thumbnail_image);
   (void) ParseAbsoluteGeometry("0x0+0+0",&thumbnail_image->page);
-  if (thumbnail_image->alpha_trait != BlendPixelTrait)
+  if (thumbnail_image->alpha_trait == UndefinedPixelTrait)
     (void) SetImageAlphaChannel(thumbnail_image,OpaqueAlphaChannel,exception);
   thumbnail_image->depth=8;
   thumbnail_image->interlace=NoInterlace;

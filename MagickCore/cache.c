@@ -4706,8 +4706,8 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
     {
       case BackgroundVirtualPixelMethod:
       {
-        if ((image->background_color.alpha_trait == BlendPixelTrait) &&
-            (image->alpha_trait != BlendPixelTrait))
+        if ((image->background_color.alpha_trait != UndefinedPixelTrait) &&
+            (image->alpha_trait == UndefinedPixelTrait))
           (void) SetCacheAlphaChannel(image,OpaqueAlpha,exception);
         if ((IsPixelInfoGray(&image->background_color) == MagickFalse) &&
             (IsGrayColorspace(image->colorspace) != MagickFalse))
@@ -4716,7 +4716,7 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
       }
       case TransparentVirtualPixelMethod:
       {
-        if (image->alpha_trait != BlendPixelTrait)
+        if (image->alpha_trait == UndefinedPixelTrait)
           (void) SetCacheAlphaChannel(image,OpaqueAlpha,exception);
         break;
       }
