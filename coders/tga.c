@@ -264,7 +264,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
   if (image->storage_class == PseudoClass)
     {
       if (tga_info.colormap_type != 0)
-        image->colors=tga_info.colormap_length;
+        image->colors=tga_info.colormap_index+tga_info.colormap_length;
       else
         {
           size_t
@@ -316,7 +316,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
       */
       if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      for (i=0; i < (ssize_t) image->colors; i++)
+      for (i=0; i < (ssize_t) tga_info.colormap_index; i++)
+        image->colormap[i]=pixel;
+      for ( ; i < (ssize_t) image->colors; i++)
       {
         switch (tga_info.colormap_size)
         {
@@ -435,7 +437,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
             index=(Quantum) ReadBlobByte(image);
             if (tga_info.colormap_type != 0)
               pixel=image->colormap[(ssize_t) ConstrainColormapIndex(image,
-                1UL*index,exception)];
+                (ssize_t) index,exception)];
             else
               {
                 pixel.red=(MagickRealType) ScaleCharToQuantum((unsigned char)
@@ -470,7 +472,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
               pixel.alpha=(MagickRealType) ((k & 0x80) == 0 ? (Quantum)
                 OpaqueAlpha : (Quantum) TransparentAlpha); 
             if (image->storage_class == PseudoClass)
-              index=ConstrainColormapIndex(image,((size_t) k << 8)+j,exception);
+              index=(Quantum) ConstrainColormapIndex(image,((ssize_t) (k << 8))+
+                j,exception);
             break;
           }
           case 24:
@@ -675,16 +678,15 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
             green,
             value;
 
-            green=(unsigned char) ScaleQuantumToAny(ClampToQuantum(
-              GetPixelGreen(image,p)),range);
-            value=((unsigned char) ScaleQuantumToAny(ClampToQuantum(
-              GetPixelBlue(image,p)),range)) | ((green & 0x07) << 5);
-            (void) WriteBlobByte(image,value);
-            value=(((image->alpha_trait != UndefinedPixelTrait) && (ClampToQuantum(
-              GetPixelAlpha(image,p)) < midpoint)) ? 80 : 0) |
-              ((unsigned char) ScaleQuantumToAny(ClampToQuantum(
-              GetPixelRed(image,p)),range) << 2) | ((green & 0x18) >> 3);
-            (void) WriteBlobByte(image,value);
+          green=(unsigned char) ScaleQuantumToAny(GetPixelGreen(image,p),range);
+          value=((unsigned char) ScaleQuantumToAny(GetPixelBlue(image,p),
+            range)) | ((green & 0x07) << 5);
+          (void) WriteBlobByte(image,value);
+          value=(((image->alpha_trait != UndefinedPixelTrait) &&
+            ((double) GetPixelAlpha(image,p) < midpoint)) ?
+            80 : 0) | ((unsigned char) ScaleQuantumToAny(GetPixelRed(image,p),
+            range) << 2) | ((green & 0x18) >> 3);
+          (void) WriteBlobByte(image,value);
         }
       else
         {
@@ -860,8 +862,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
               image->colormap[i].green),range);
             *q++=((unsigned char) ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].blue),range)) | ((green & 0x07) << 5);
-            *q++=(((image->alpha_trait != UndefinedPixelTrait) && (ClampToQuantum(
-              image->colormap[i].alpha) < midpoint)) ? 80 : 0) |
+            *q++=(((image->alpha_trait != UndefinedPixelTrait) && ((double)
+              ClampToQuantum(image->colormap[i].alpha) < midpoint)) ? 80 : 0) |
               ((unsigned char) ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].red),range) << 2) | ((green & 0x18) >> 3);
           }
@@ -945,7 +947,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
             }
           if (i >= 3)
             {
-              WriteBlobByte(image,(unsigned char) ((i-1) | 0x80));
+              (void) WriteBlobByte(image,(unsigned char) ((i-1) | 0x80));
               WriteTGAPixel(image,tga_info.image_type,p,range,midpoint);
               p+=(i*channels);
             }
