@@ -340,7 +340,10 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'Y':
             case 'y':
             {
-              if (strcmp(keyword,"Y") == 0)
+              char
+                target[] = "Y";
+
+              if (strcmp(keyword,target) == 0)
                 {
                   int
                     height,
