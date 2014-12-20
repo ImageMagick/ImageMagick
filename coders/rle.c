@@ -178,7 +178,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     map_length,
     number_colormaps,
     number_planes,
-    one;
+    one,
+    offset,
+    pixel_info_length;
 
   ssize_t
     count,
@@ -310,8 +312,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if ((number_pixels*number_planes) != (size_t) (number_pixels*number_planes))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    pixel_info=AcquireVirtualMemory(image->columns,image->rows*
-      MagickMax(number_planes,4)*sizeof(*pixels));
+    pixel_info_length=image->columns*image->rows*MagickMax(number_planes,4);
+    pixel_info=AcquireVirtualMemory(pixel_info_length,sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
@@ -379,9 +381,17 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           operand=ReadBlobByte(image);
           if (opcode & 0x40)
             operand=(int) ReadBlobLSBShort(image);
-          p=pixels+((image->rows-y-1)*image->columns*number_planes)+
-            x*number_planes+plane;
+          offset=((image->rows-y-1)*image->columns*number_planes)+x*
+            number_planes+plane;
           operand++;
+          if (offset+((size_t) operand*number_planes) > pixel_info_length)
+            {
+              if (number_colormaps != 0)
+                colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+              pixel_info=RelinquishVirtualMemory(pixel_info);
+              ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+            }
+          p=pixels+offset;
           for (i=0; i < (ssize_t) operand; i++)
           {
             pixel=(unsigned char) ReadBlobByte(image);
@@ -402,9 +412,17 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             operand=(int) ReadBlobLSBShort(image);
           pixel=(unsigned char) ReadBlobByte(image);
           (void) ReadBlobByte(image);
+          offset=((image->rows-y-1)*image->columns*number_planes)+x*
+            number_planes+plane;
           operand++;
-          p=pixels+((image->rows-y-1)*image->columns*number_planes)+
-            x*number_planes+plane;
+          if (offset+((size_t) operand*number_planes) > pixel_info_length)
+            {
+              if (number_colormaps != 0)
+                colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+              pixel_info=RelinquishVirtualMemory(pixel_info);
+              ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+            }
+          p=pixels+offset;
           for (i=0; i < (ssize_t) operand; i++)
           {
             if ((y < (ssize_t) image->rows) &&
