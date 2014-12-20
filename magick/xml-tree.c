@@ -1521,12 +1521,16 @@ static char *ParseEntities(char *xml,char **entities,int state)
   }
   if (state == '*')
     {
+     
       /*
         Normalize spaces for non-CDATA attributes.
       */
       for (xml=p; *xml != '\0'; xml++)
       {
-        i=(ssize_t) strspn(xml," ");
+        char
+          accept[] = " ";
+
+        i=(ssize_t) strspn(xml,accept);
         if (i != 0)
           (void) CopyMagickMemory(xml,xml+i,strlen(xml+i)+1);
         while ((*xml != '\0') && (*xml != ' '))
