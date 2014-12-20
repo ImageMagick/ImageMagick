@@ -677,7 +677,7 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
             value=((unsigned char) ScaleQuantumToAny(GetPixelBlue(p),range)) |
               ((green & 0x07) << 5);
             (void) WriteBlobByte(image,value);
-            value=(unsigned char) (((image->matte != MagickFalse) && 
+            value=(unsigned char) ((((image->matte != MagickFalse) && 
               (GetPixelAlpha(p) < midpoint)) ? 80 : 0) | ((unsigned char)
               ScaleQuantumToAny(GetPixelRed(p),range) << 2) |
               ((green & 0x18) >> 3));
