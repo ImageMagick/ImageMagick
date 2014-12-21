@@ -70,6 +70,8 @@
 typedef struct _ResourceInfo
 {
   MagickOffsetType
+    width,
+    height,
     area,
     memory,
     map,
@@ -80,6 +82,8 @@ typedef struct _ResourceInfo
     time;
 
   MagickSizeType
+    width_limit,
+    height_limit,
     area_limit,
     memory_limit,
     map_limit,
@@ -99,6 +103,8 @@ static RandomInfo
 static ResourceInfo
   resource_info =
   {
+    MagickULLConstant(0),              /* initial width */
+    MagickULLConstant(0),              /* initial height */
     MagickULLConstant(0),              /* initial area */
     MagickULLConstant(0),              /* initial memory */
     MagickULLConstant(0),              /* initial map */
@@ -107,6 +113,8 @@ static ResourceInfo
     MagickULLConstant(0),              /* initial thread */
     MagickULLConstant(0),              /* initial throttle */
     MagickULLConstant(0),              /* initial time */
+    MagickULLConstant(100000000),      /* width limit */
+    MagickULLConstant(100000000),      /* height limit */
     MagickULLConstant(3072)*1024*1024, /* area limit */
     MagickULLConstant(1536)*1024*1024, /* memory limit */
     MagickULLConstant(3072)*1024*1024, /* map limit */
@@ -171,6 +179,30 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
   LockSemaphoreInfo(resource_semaphore);
   switch (type)
   {
+    case WidthResource:
+    {
+      resource_info.width=(MagickOffsetType) size;
+      limit=resource_info.width_limit;
+      status=(resource_info.width_limit == MagickResourceInfinity) ||
+        (size < limit) ? MagickTrue : MagickFalse;
+      (void) FormatMagickSize((MagickSizeType) resource_info.width,MagickFalse,
+        resource_current);
+      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,
+        resource_limit);
+      break;
+    }
+    case HeightResource:
+    {
+      resource_info.height=(MagickOffsetType) size;
+      limit=resource_info.height_limit;
+      status=(resource_info.height_limit == MagickResourceInfinity) ||
+        (size < limit) ? MagickTrue : MagickFalse;
+      (void) FormatMagickSize((MagickSizeType) resource_info.height,MagickFalse,
+        resource_current);
+      (void) FormatMagickSize(resource_info.height_limit,MagickFalse,
+        resource_limit);
+      break;
+    }
     case AreaResource:
     {
       resource_info.area=(MagickOffsetType) size;
@@ -552,6 +584,16 @@ MagickExport MagickSizeType GetMagickResource(const ResourceType type)
   LockSemaphoreInfo(resource_semaphore);
   switch (type)
   {
+    case WidthResource:
+    {
+      resource=(MagickSizeType) resource_info.width;
+      break;
+    }
+    case HeightResource:
+    {
+      resource=(MagickSizeType) resource_info.height;
+      break;
+    }
     case AreaResource:
     {
       resource=(MagickSizeType) resource_info.area;
@@ -632,6 +674,16 @@ MagickExport MagickSizeType GetMagickResourceLimit(const ResourceType type)
   LockSemaphoreInfo(resource_semaphore);
   switch (type)
   {
+    case WidthResource:
+    {
+      resource=resource_info.width_limit;
+      break;
+    }
+    case HeightResource:
+    {
+      resource=resource_info.height_limit;
+      break;
+    }
     case AreaResource:
     {
       resource=resource_info.area_limit;
@@ -710,9 +762,11 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   char
     area_limit[MaxTextExtent],
     disk_limit[MaxTextExtent],
+    height_limit[MaxTextExtent],
     map_limit[MaxTextExtent],
     memory_limit[MaxTextExtent],
-    time_limit[MaxTextExtent];
+    time_limit[MaxTextExtent],
+    width_limit[MaxTextExtent];
 
   magick_unreferenced(exception);
 
@@ -721,6 +775,8 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
+  (void) FormatMagickSize(resource_info.width_limit,MagickFalse,width_limit);
+  (void) FormatMagickSize(resource_info.height_limit,MagickFalse,height_limit);
   (void) FormatMagickSize(resource_info.area_limit,MagickFalse,area_limit);
   (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,memory_limit);
   (void) FormatMagickSize(resource_info.map_limit,MagickTrue,map_limit);
@@ -731,16 +787,20 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   if (resource_info.time_limit != MagickResourceInfinity)
     (void) FormatLocaleString(time_limit,MaxTextExtent,"%.20g",(double)
       ((MagickOffsetType) resource_info.time_limit));
-  (void) FormatLocaleFile(file,"  File       Area     Memory        Map"
-    "       Disk   Thread  Throttle       Time\n");
-  (void) FormatLocaleFile(file,
-    "--------------------------------------------------------"
-    "------------------------\n");
-  (void) FormatLocaleFile(file,"%6g %10s %10s %10s %10s %8g  %8g %10s\n",
-    (double) ((MagickOffsetType) resource_info.file_limit),area_limit,
-    memory_limit,map_limit,disk_limit,(double) ((MagickOffsetType)
-    resource_info.thread_limit),(double) ((MagickOffsetType)
-    resource_info.throttle_limit),time_limit);
+  (void) FormatLocaleFile(file,"Resource limits:\n");
+  (void) FormatLocaleFile(file,"  Width: %s\n",width_limit);
+  (void) FormatLocaleFile(file,"  Height: %s\n",height_limit);
+  (void) FormatLocaleFile(file,"  Area: %s\n",area_limit);
+  (void) FormatLocaleFile(file,"  Memory: %s\n",memory_limit);
+  (void) FormatLocaleFile(file,"  Map: %s\n",map_limit);
+  (void) FormatLocaleFile(file,"  Disk: %s\n",disk_limit);
+  (void) FormatLocaleFile(file,"  File: %.20g\n",(double) ((MagickOffsetType)
+    resource_info.file_limit));
+  (void) FormatLocaleFile(file,"  Thread: %.20g\n",(double) ((MagickOffsetType)
+    resource_info.thread_limit));
+  (void) FormatLocaleFile(file,"  Throttle: %.20g\n",(double)
+    ((MagickOffsetType) resource_info.throttle_limit));
+  (void) FormatLocaleFile(file,"  Time: %s\n",time_limit);
   (void) fflush(file);
   UnlockSemaphoreInfo(resource_semaphore);
   return(MagickTrue);
@@ -785,6 +845,24 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
   LockSemaphoreInfo(resource_semaphore);
   switch (type)
   {
+    case WidthResource:
+    {
+      resource_info.width=(MagickOffsetType) size;
+      (void) FormatMagickSize((MagickSizeType) resource_info.width,MagickFalse,
+        resource_current);
+      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,
+        resource_limit);
+      break;
+    }
+    case HeightResource:
+    {
+      resource_info.height=(MagickOffsetType) size;
+      (void) FormatMagickSize((MagickSizeType) resource_info.height,MagickFalse,
+        resource_current);
+      (void) FormatMagickSize(resource_info.height_limit,MagickFalse,
+        resource_limit);
+      break;
+    }
     case AreaResource:
     {
       resource_info.area=(MagickOffsetType) size;
@@ -972,6 +1050,20 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
 #if defined(PixelCacheThreshold)
   memory=PixelCacheThreshold;
 #endif
+  limit=GetEnvironmentValue("MAGICK_WIDTH_LIMIT");
+  if (limit != (char *) NULL)
+    {
+      (void) SetMagickResourceLimit(WidthResource,StringToSizeType(limit,
+        100.0));
+      limit=DestroyString(limit);
+    }
+  limit=GetEnvironmentValue("MAGICK_HEIGHT_LIMIT");
+  if (limit != (char *) NULL)
+    {
+      (void) SetMagickResourceLimit(HeightResource,StringToSizeType(limit,
+        100.0));
+      limit=DestroyString(limit);
+    }
   (void) SetMagickResourceLimit(AreaResource,2*memory);
   limit=GetEnvironmentValue("MAGICK_AREA_LIMIT");
   if (limit != (char *) NULL)
@@ -1132,6 +1224,24 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
   value=(char *) NULL;
   switch (type)
   {
+    case WidthResource:
+    {
+      resource_info.width_limit=limit;
+      value=GetPolicyValue("width");
+      if (value != (char *) NULL)
+        resource_info.width_limit=MagickMin(limit,StringToSizeType(value,
+          100.0));
+      break;
+    }
+    case HeightResource:
+    {
+      resource_info.height_limit=limit;
+      value=GetPolicyValue("height");
+      if (value != (char *) NULL)
+        resource_info.height_limit=MagickMin(limit,StringToSizeType(value,
+          100.0));
+      break;
+    }
     case AreaResource:
     {
       resource_info.area_limit=limit;
