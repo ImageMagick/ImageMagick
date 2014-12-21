@@ -2182,6 +2182,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_set_benign_errors(ping, 1);
 #endif
 
+#ifdef PNG_SET_USER_LIMITS_SUPPORTED
+  /* Reject images with more than 10 million rows or columns */
+  png_set_user_limits(ping, 10000000L, 10000000L);
+#endif /* PNG_SET_USER_LIMITS_SUPPORTED */
+
   /*
     Prepare PNG for reading.
   */
