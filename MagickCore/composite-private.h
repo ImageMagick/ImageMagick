@@ -74,7 +74,7 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
     traits=GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
-    if (fabs(alpha-TransparentAlpha) < MagickEpsilon)
+    if (fabs((double) (alpha-TransparentAlpha)) < MagickEpsilon)
       {
         composite[i]=q[i];
         continue;
@@ -130,7 +130,7 @@ static inline void CompositePixelInfoOver(const PixelInfo *p,
   /*
     Compose pixel p over pixel q with the given opacities.
   */
-  if (fabs(alpha-TransparentAlpha) < MagickEpsilon)
+  if (fabs((double) (alpha-TransparentAlpha)) < MagickEpsilon)
     {
       *composite=(*p);
       return;

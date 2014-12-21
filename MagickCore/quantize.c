@@ -2251,20 +2251,20 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
           alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
           beta=(double) (QuantumScale*image->colormap[index].alpha);
         }
-      distance=fabs(alpha*GetPixelRed(image,p)-beta*
-        image->colormap[index].red);
+      distance=fabs((double) (alpha*GetPixelRed(image,p)-beta*
+        image->colormap[index].red));
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
-      distance=fabs(alpha*GetPixelGreen(image,p)-beta*
-        image->colormap[index].green);
+      distance=fabs((double) (alpha*GetPixelGreen(image,p)-beta*
+        image->colormap[index].green));
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
-      distance=fabs(alpha*GetPixelBlue(image,p)-beta*
-        image->colormap[index].blue);
+      distance=fabs((double) (alpha*GetPixelBlue(image,p)-beta*
+        image->colormap[index].blue));
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
