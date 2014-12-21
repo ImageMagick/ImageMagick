@@ -1972,9 +1972,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             }
             default:
             {
-              red=QuantumRange*X;
-              green=QuantumRange*Y;
-              blue=QuantumRange*Z;
+              red=ClampToQuantum(QuantumRange*X);
+              green=ClampToQuantum(QuantumRange*Y);
+              blue=ClampToQuantum(QuantumRange*Z);
               break;
             }
           }

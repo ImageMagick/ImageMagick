@@ -475,15 +475,15 @@ static inline void CompositeDifference(const MagickPixelPacket *p,
   }
   else { /* handle channels as separate grayscale channels */
     if ( (channel & AlphaChannel) != 0 )
-      composite->opacity=QuantumRange-fabs(p->opacity - q->opacity);
+      composite->opacity=QuantumRange-fabs((double) (p->opacity-q->opacity));
     if ( (channel & RedChannel) != 0 )
-      composite->red=fabs(p->red - q->red);
+      composite->red=fabs((double) (p->red-q->red));
     if ( (channel & GreenChannel) != 0 )
-      composite->green=fabs(p->green - q->green);
+      composite->green=fabs((double) (p->green-q->green));
     if ( (channel & BlueChannel) != 0 )
-      composite->blue=fabs(p->blue - q->blue);
+      composite->blue=fabs((double) (p->blue-q->blue));
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
-      composite->index=fabs(p->index - q->index);
+      composite->index=fabs((double) (p->index-q->index));
   }
 }
 

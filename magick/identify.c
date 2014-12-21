@@ -351,22 +351,24 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       {
         case RedChannel:
         {
-          match=fabs((double) p->red-target) < 0.5 ? MagickTrue : MagickFalse;
+          match=fabs((double) (p->red-target)) < 0.5 ? MagickTrue : MagickFalse;
           break;
         }
         case GreenChannel:
         {
-          match=fabs((double) p->green-target) < 0.5 ? MagickTrue : MagickFalse;
+          match=fabs((double) (p->green-target)) < 0.5 ? MagickTrue :
+            MagickFalse;
           break;
         }
         case BlueChannel:
         {
-          match=fabs((double) p->blue-target) < 0.5 ? MagickTrue : MagickFalse;
+          match=fabs((double) (p->blue-target)) < 0.5 ? MagickTrue :
+            MagickFalse;
           break;
         }
         case AlphaChannel:
         {
-          match=fabs((double) p->opacity-target) < 0.5 ? MagickTrue :
+          match=fabs((double) (p->opacity-target)) < 0.5 ? MagickTrue :
             MagickFalse;
           break;
         }
