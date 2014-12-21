@@ -28,11 +28,13 @@ typedef enum
   AreaResource,
   DiskResource,
   FileResource,
+  HeightResource,
   MapResource,
   MemoryResource,
   ThreadResource,
   ThrottleResource,
-  TimeResource
+  TimeResource,
+  WidthResource
 } ResourceType;
 
 #define MagickResourceInfinity  MagickULLConstant(~0)

@@ -1601,10 +1601,12 @@ static const OptionInfo
     { "Area", AreaResource, UndefinedOptionFlag, MagickFalse },
     { "Disk", DiskResource, UndefinedOptionFlag, MagickFalse },
     { "File", FileResource, UndefinedOptionFlag, MagickFalse },
+    { "Height", HeightResource, UndefinedOptionFlag, MagickFalse },
     { "Map", MapResource, UndefinedOptionFlag, MagickFalse },
     { "Memory", MemoryResource, UndefinedOptionFlag, MagickFalse },
     { "Thread", ThreadResource, UndefinedOptionFlag, MagickFalse },
     { "Time", TimeResource, UndefinedOptionFlag, MagickFalse },
+    { "Width", WidthResource, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedResource, UndefinedOptionFlag, MagickFalse }
   },
   SparseColorOptions[] =
