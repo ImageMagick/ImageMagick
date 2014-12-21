@@ -265,7 +265,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read image colormaps.
         */
         colormap=(unsigned char *) AcquireQuantumMemory(number_colormaps,
-          map_length*sizeof(*colormap));
+          3*map_length*sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         p=colormap;
