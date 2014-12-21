@@ -1546,18 +1546,18 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
       /*
         SVG requires color depths > 8 expressed as percentages.
       */
-      status=IsMagickTrue(fabs(color.red-SVGCompliant(color.red))
-           < MagickEpsilon);
-      status&=IsMagickTrue(fabs(color.green-SVGCompliant(color.green))
-           < MagickEpsilon);
-      status&=IsMagickTrue(fabs(color.blue-SVGCompliant(color.blue))
-           < MagickEpsilon);
+      status=IsMagickTrue(fabs((double) (color.red-
+        SVGCompliant(color.red))) < MagickEpsilon);
+      status&=IsMagickTrue(fabs((double) (color.green-
+        SVGCompliant(color.green))) < MagickEpsilon);
+      status&=IsMagickTrue(fabs((double) (color.blue-
+        SVGCompliant(color.blue))) < MagickEpsilon);
       if (color.colorspace-CMYKColorspace)
-        status&=IsMagickTrue(fabs(color.black-SVGCompliant(color.black))
-             < MagickEpsilon);
+        status&=IsMagickTrue(fabs((double) (color.black-
+          SVGCompliant(color.black))) < MagickEpsilon);
       if (color.alpha_trait != UndefinedPixelTrait)
-        status&=IsMagickTrue(fabs(color.alpha-SVGCompliant(color.alpha))
-             < MagickEpsilon);
+        status&=IsMagickTrue(fabs((double) (color.alpha-
+          SVGCompliant(color.alpha))) < MagickEpsilon);
       if (IfMagickTrue(status))
         color.depth=8;
     }
@@ -2587,10 +2587,10 @@ MagickExport MagickBooleanType QueryColorname(
   while (p != (const ColorInfo *) NULL)
   {
     if (((p->compliance & compliance) != 0) &&
-        ((fabs(p->color.red-color->red) < MagickEpsilon)) &&
-         (fabs(p->color.green-color->green) < MagickEpsilon) &&
-         (fabs(p->color.blue-color->blue) < MagickEpsilon) &&
-         (fabs(p->color.alpha-alpha) < MagickEpsilon))
+        ((fabs((double) (p->color.red-color->red)) < MagickEpsilon)) &&
+         (fabs((double) (p->color.green-color->green)) < MagickEpsilon) &&
+         (fabs((double) (p->color.blue-color->blue)) < MagickEpsilon) &&
+         (fabs((double) (p->color.alpha-alpha)) < MagickEpsilon))
       {
         (void) CopyMagickString(name,p->name,MaxTextExtent);
         break;

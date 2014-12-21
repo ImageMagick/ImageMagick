@@ -1590,21 +1590,21 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         (entropy_x.direction[i].alpha > entropy_y.direction[i].alpha ?
          entropy_x.direction[i].alpha : entropy_y.direction[i].alpha);
     channel_features[RedPixelChannel].measure_of_correlation_2[i]=
-      (sqrt(fabs(1.0-exp(-2.0*(entropy_xy2.direction[i].red-
+      (sqrt(fabs(1.0-exp(-2.0*(double) (entropy_xy2.direction[i].red-
       entropy_xy.direction[i].red)))));
     channel_features[GreenPixelChannel].measure_of_correlation_2[i]=
-      (sqrt(fabs(1.0-exp(-2.0*(entropy_xy2.direction[i].green-
+      (sqrt(fabs(1.0-exp(-2.0*(double) (entropy_xy2.direction[i].green-
       entropy_xy.direction[i].green)))));
     channel_features[BluePixelChannel].measure_of_correlation_2[i]=
-      (sqrt(fabs(1.0-exp(-2.0*(entropy_xy2.direction[i].blue-
+      (sqrt(fabs(1.0-exp(-2.0*(double) (entropy_xy2.direction[i].blue-
       entropy_xy.direction[i].blue)))));
     if (image->colorspace == CMYKColorspace)
       channel_features[BlackPixelChannel].measure_of_correlation_2[i]=
-        (sqrt(fabs(1.0-exp(-2.0*(entropy_xy2.direction[i].black-
+        (sqrt(fabs(1.0-exp(-2.0*(double) (entropy_xy2.direction[i].black-
         entropy_xy.direction[i].black)))));
     if (image->alpha_trait != UndefinedPixelTrait)
       channel_features[AlphaPixelChannel].measure_of_correlation_2[i]=
-        (sqrt(fabs(1.0-exp(-2.0*(entropy_xy2.direction[i].alpha-
+        (sqrt(fabs(1.0-exp(-2.0*(double) (entropy_xy2.direction[i].alpha-
         entropy_xy.direction[i].alpha)))));
   }
   /*

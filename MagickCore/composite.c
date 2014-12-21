@@ -900,7 +900,7 @@ if (0)
               p+=GetPixelChannels(composite_image);
               continue;
             }
-          if (fabs(angle_range) > MagickEpsilon)
+          if (fabs((double) angle_range) > MagickEpsilon)
             {
               MagickRealType
                 angle;
@@ -1611,12 +1611,12 @@ if (0)
               case LuminizeCompositeOp:
               case SaturateCompositeOp:
               {
-                if (fabs(QuantumRange*Sa-TransparentAlpha) < MagickEpsilon)
+                if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
                   {
                     pixel=QuantumRange*Da;
                     break;
                   }
-                if (fabs(QuantumRange*Da-TransparentAlpha) < MagickEpsilon)
+                if (fabs((double) (QuantumRange*Da-TransparentAlpha)) < MagickEpsilon)
                   {
                     pixel=QuantumRange*Sa;
                     break;
@@ -1660,7 +1660,7 @@ if (0)
               }
               case ModulateCompositeOp:
               {
-                if (fabs(QuantumRange*Sa-TransparentAlpha) < MagickEpsilon)
+                if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
                   {
                     pixel=QuantumRange*Da;
                     break;
@@ -1728,7 +1728,7 @@ if (0)
           }
           case BumpmapCompositeOp:
           {
-            if (fabs(QuantumRange*Sa-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Dc;
                 break;
@@ -1779,12 +1779,12 @@ if (0)
           }
           case ColorizeCompositeOp:
           {
-            if (fabs(QuantumRange*Sa-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Dc;
                 break;
               }
-            if (fabs(QuantumRange*Da-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Da-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Sc;
                 break;
@@ -1870,12 +1870,13 @@ if (0)
           }
           case DivideDstCompositeOp:
           {
-            if ((fabs(Sca) < MagickEpsilon) && (fabs(Dca) < MagickEpsilon))
+            if ((fabs((double) Sca) < MagickEpsilon) &&
+                (fabs((double) Dca) < MagickEpsilon))
               {
                 pixel=QuantumRange*(Sca*(1.0-Da)+Dca*(1.0-Sa));
                 break;
               }
-            if (fabs(Dca) < MagickEpsilon)
+            if (fabs((double) Dca) < MagickEpsilon)
               {
                 pixel=QuantumRange*(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
                 break;
@@ -1885,12 +1886,13 @@ if (0)
           }
           case DivideSrcCompositeOp:
           {
-            if ((fabs(Dca) < MagickEpsilon) && (fabs(Sca) < MagickEpsilon))
+            if ((fabs((double) Dca) < MagickEpsilon) &&
+                (fabs((double) Sca) < MagickEpsilon))
               {
                 pixel=QuantumRange*(Dca*(1.0-Sa)+Sca*(1.0-Da));
                 break;
               }
-            if (fabs(Sca) < MagickEpsilon)
+            if (fabs((double) Sca) < MagickEpsilon)
               {
                 pixel=QuantumRange*(Da*Sa+Dca*(1.0-Sa)+Sca*(1.0-Da));
                 break;
@@ -1955,12 +1957,12 @@ if (0)
           }
           case HueCompositeOp:
           {
-            if (fabs(QuantumRange*Sa-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Dc;
                 break;
               }
-            if (fabs(QuantumRange*Da-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Da-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Sc;
                 break;
@@ -2035,12 +2037,12 @@ if (0)
           }
           case LuminizeCompositeOp:
           {
-            if (fabs(QuantumRange*Sa-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Dc;
                 break;
               }
-            if (fabs(QuantumRange*Da-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Da-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Sc;
                 break;
@@ -2105,7 +2107,7 @@ if (0)
             ssize_t
               offset;
 
-            if (fabs(QuantumRange*Sa-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Dc;
                 break;
@@ -2184,7 +2186,7 @@ if (0)
 
               http://www.pegtop.net/delphi/articles/blendmodes/softlight.htm.
             */
-            if (fabs(Da) < MagickEpsilon)
+            if (fabs((double) Da) < MagickEpsilon)
               {
                 pixel=QuantumRange*(Sca);
                 break;
@@ -2221,12 +2223,12 @@ if (0)
           }
           case SaturateCompositeOp:
           {
-            if (fabs(QuantumRange*Sa-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Dc;
                 break;
               }
-            if (fabs(QuantumRange*Da-TransparentAlpha) < MagickEpsilon)
+            if (fabs((double) (QuantumRange*Da-TransparentAlpha)) < MagickEpsilon)
               {
                 pixel=Sc;
                 break;
@@ -2296,7 +2298,8 @@ if (0)
 
                 f(Sc,Dc) = (2*Sc < 1) ? 1-(1-Dc)/(2*Sc) : Dc/(2*(1-Sc))
             */
-            if ((fabs(Sa) < MagickEpsilon) || (fabs(Sca-Sa) < MagickEpsilon))
+            if ((fabs((double) Sa) < MagickEpsilon) ||
+                (fabs((double) (Sca-Sa)) < MagickEpsilon))
               {
                 pixel=QuantumRange*(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
                 break;
