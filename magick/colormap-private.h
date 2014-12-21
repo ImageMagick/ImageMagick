@@ -36,6 +36,20 @@ static inline IndexPacket ConstrainColormapIndex(Image *image,
   return((IndexPacket) 0);
 }
 
+static inline MagickBooleanType IsValidColormapIndex(Image *image,
+  const ssize_t index,IndexPacket *target,ExceptionInfo *exception)
+{
+  if ((index < 0) || (index >= (ssize_t) image->colors))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "InvalidColormapIndex","`%s'",image->filename);
+      *target=(IndexPacket) 0;
+      return(MagickFalse);
+    }
+  *target=(Quantum) index;
+  return(MagickTrue);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
