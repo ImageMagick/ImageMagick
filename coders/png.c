@@ -2185,8 +2185,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
   /* Reject images with too many rows or columns */
   png_set_user_limits(ping,
-    (png_uint_32) MagickMin(0x7fffffff,GetMagickResourceLimit(WidthResource)),
-    (png_uint_32) MagickMin(0x7fffffff,GetMagickResourceLimit(HeightResource)));
+    (png_uint_32) MagickMin(0x7fffffffL,
+        GetMagickResourceLimit(WidthResource)),
+    (png_uint_32) MagickMin(0x7fffffffL,
+        GetMagickResourceLimit(HeightResource)));
 #endif /* PNG_SET_USER_LIMITS_SUPPORTED */
 
   /*
