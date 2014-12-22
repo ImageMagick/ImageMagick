@@ -1409,7 +1409,7 @@ MagickExport double InterpretSiPrefixValue(const char *restrict string,
                 }
             }
         }
-      if (*q == 'B')
+      if ((*q == 'B') || (*q == 'P'))
         q++;
     }
   if (sentinal != (char **) NULL)
