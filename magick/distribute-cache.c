@@ -801,7 +801,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
   random_info=DestroyRandomInfo(random_info);
   exception=AcquireExceptionInfo();
   registry=NewSplayTree((int (*)(const void *,const void *)) NULL,
-    (void *(*)(SOCKET_TYPE *)) NULL,RelinquishImageRegistry);
+    (void *(*)(void *)) NULL,RelinquishImageRegistry);
   client_socket=(*(int *) socket);
   count=dpc_send(client_socket,DPCSessionKeyLength,GetStringInfoDatum(secret));
   secret=DestroyStringInfo(secret);
