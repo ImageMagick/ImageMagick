@@ -787,7 +787,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
       ((MagickOffsetType) resource_info.time_limit));
   (void) FormatLocaleFile(file,"Resource limits:\n");
   (void) FormatLocaleFile(file,"  Width: %s\n",width_limit);
-  (void) FormatLocaleFile(file,"  Height: %s\n",heigth_limit);
+  (void) FormatLocaleFile(file,"  Height: %s\n",height_limit);
   (void) FormatLocaleFile(file,"  Area: %s\n",area_limit);
   (void) FormatLocaleFile(file,"  Memory: %s\n",memory_limit);
   (void) FormatLocaleFile(file,"  Map: %s\n",map_limit);
