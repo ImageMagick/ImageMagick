@@ -161,6 +161,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MemoryInfo
     *pixel_info;
 
+  Quantum
+    index;
+
   register ssize_t
     x;
 
@@ -443,19 +446,19 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickStatusType
           mask;
 
-        ssize_t
-          index;
-
         /*
           Apply colormap affineation to image.
         */
         mask=(MagickStatusType) (map_length-1);
         p=pixels;
+        x=(ssize_t) number_planes;
         if (number_colormaps == 1)
           for (i=0; i < (ssize_t) number_pixels; i++)
           {
-            index=ConstrainColormapIndex(image,(ssize_t) (*p & mask),exception);
-            *p=colormap[index];
+            if (IsValidColormapIndex(image,*p & mask,&index,exception) ==
+                MagickFalse)
+              break;
+            *p=colormap[(ssize_t) index];
             p++;
           }
         else
@@ -463,11 +466,18 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < (ssize_t) number_pixels; i++)
               for (x=0; x < (ssize_t) number_planes; x++)
               {
-                index=ConstrainColormapIndex(image,(ssize_t) (x*map_length+
-                  (*p & mask)),exception);
-                *p=colormap[index];
+                if (IsValidColormapIndex(image,(size_t) (x*map_length+
+                    (*p & mask)),&index,exception) == MagickFalse)
+                  break;
+                *p=colormap[(ssize_t) index];
                 p++;
               }
+        if ((i < (ssize_t) number_pixels) || (x < (ssize_t) number_planes))
+          {
+            colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
+            ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+          }
       }
     /*
       Initialize image structure.
@@ -578,18 +588,26 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
+                if (IsValidColormapIndex(image,(ssize_t) *p++,&index,
+                    exception) == MagickFalse)
+                  break;
                 SetPixelRed(image,ClampToQuantum(image->colormap[(ssize_t)
-                  ConstrainColormapIndex(image,(ssize_t) *p++,exception)].red),
-                  q);
+                  index].red),q);
+                if (IsValidColormapIndex(image,(ssize_t) *p++,&index,
+                    exception) == MagickFalse)
+                  break;
                 SetPixelGreen(image,ClampToQuantum(image->colormap[(ssize_t)
-                  ConstrainColormapIndex(image,(ssize_t) *p++,exception)].green),
-                  q);
+                  index].green),q);
+                if (IsValidColormapIndex(image,(ssize_t) *p++,&index,
+                    exception) == MagickFalse)
+                  break;
                 SetPixelBlue(image,ClampToQuantum(image->colormap[(ssize_t)
-                  ConstrainColormapIndex(image,(ssize_t) *p++,exception)].blue),
-                  q);
+                  index].blue),q);
                 SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
                 q+=GetPixelChannels(image);
               }
+              if (x < (ssize_t) image->columns)
+                break;
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
               if (image->previous == (Image *) NULL)
