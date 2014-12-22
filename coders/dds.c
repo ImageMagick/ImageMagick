@@ -1269,13 +1269,13 @@ static void CompressClusterFit(const size_t count,
 
   o = order + (16*bestIteration);
 
-  for (i=0; i < besti; i++)
+  for (i=0; i < (ssize_t) besti; i++)
     unordered[o[i]] = 0;
-  for (i=besti; i < bestj; i++)
+  for (i=besti; i < (ssize_t) bestj; i++)
     unordered[o[i]] = 2;
-  for (i=bestj; i < bestk; i++)
+  for (i=bestj; i < (ssize_t) bestk; i++)
     unordered[o[i]] = 3;
-  for (i=bestk; i < count; i++)
+  for (i=bestk; i < (ssize_t) count; i++)
     unordered[o[i]] = 1;
 
   RemapIndices(map,unordered,indices);

@@ -1047,9 +1047,7 @@
 /* #undef HAVE__ALIGNED_MALLOC */
 
 /* Define to 1 if the system has the type `_Bool'. */
-#ifndef MAGICKCORE_HAVE__BOOL
-#define MAGICKCORE_HAVE__BOOL 1
-#endif
+/* #undef HAVE__BOOL */
 
 /* Define to 1 if you have the `_exit' function. */
 #ifndef MAGICKCORE_HAVE__EXIT
