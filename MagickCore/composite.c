@@ -762,7 +762,6 @@ if (0)
       */
       if (image->alpha_trait == UndefinedPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-      SetPixelAlphaTraits(image,CopyPixelTrait);
       break;
     }
     case BlurCompositeOp:
@@ -1594,11 +1593,9 @@ if (0)
                   }
                 equivalent=IsFuzzyEquivalencePixel(composite_image,p,image,q);
                 if (equivalent != MagickFalse)
-                  {
-                    pixel=(MagickRealType) TransparentAlpha;
-                    break;
-                  }
-                pixel=(MagickRealType) OpaqueAlpha;
+                  pixel=(MagickRealType) TransparentAlpha;
+                else
+                  pixel=(MagickRealType) OpaqueAlpha;
                 break;
               }
               case ClearCompositeOp:
@@ -1631,9 +1628,10 @@ if (0)
               }
               case CopyAlphaCompositeOp:
               {
-                pixel=QuantumRange*Sa;
-                if (composite_image->alpha_trait == UndefinedPixelTrait)
+                if (Sa == 1.0)
                   pixel=GetPixelIntensity(composite_image,p);
+                else
+                  pixel=QuantumRange*Sa;
                 break;
               }
               case CopyCompositeOp:
