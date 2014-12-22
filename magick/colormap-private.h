@@ -46,7 +46,7 @@ static inline MagickBooleanType IsValidColormapIndex(Image *image,
       *target=(IndexPacket) 0;
       return(MagickFalse);
     }
-  *target=(Quantum) index;
+  *target=(IndexPacket) index;
   return(MagickTrue);
 }
 
