@@ -830,7 +830,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   LockSemaphoreInfo(resource_semaphore);
   (void) FormatPixelSize(resource_info.width_limit,MagickFalse,width_limit);
   (void) FormatPixelSize(resource_info.height_limit,MagickFalse,height_limit);
-  (void) FormatMagickSize(resource_info.area_limit,MagickFalse,area_limit);
+  (void) FormatPixelSize(resource_info.area_limit,MagickFalse,area_limit);
   (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,memory_limit);
   (void) FormatMagickSize(resource_info.map_limit,MagickTrue,map_limit);
   (void) CopyMagickString(disk_limit,"unlimited",MaxTextExtent);
