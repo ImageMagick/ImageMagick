@@ -756,6 +756,59 @@ MagickExport MagickSizeType GetMagickResourceLimit(const ResourceType type)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static ssize_t FormatPixelSize(const MagickSizeType size,
+  const MagickBooleanType bi,char *format)
+{
+  const char
+    **units;
+
+  double
+    bytes,
+    length;
+
+  register ssize_t
+    i,
+    j;
+
+  ssize_t
+    count;
+
+  static const char
+    *bi_units[] =
+    {
+      "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi", (char *) NULL
+    },
+    *traditional_units[] =
+    {
+      "", "K", "M", "G", "T", "P", "E", "Z", "Y", (char *) NULL
+    };
+
+  bytes=1000.0;
+  units=traditional_units;
+  if (bi != MagickFalse)
+    {
+      bytes=1024.0;
+      units=bi_units;
+    }
+#if defined(_MSC_VER) && (_MSC_VER == 1200)
+  length=(double) ((MagickOffsetType) size);
+#else
+  length=(double) size;
+#endif
+  for (i=0; (length >= bytes) && (units[i+1] != (const char *) NULL); i++)
+    length/=bytes;
+  count=0;
+  for (j=2; j < 12; j++)
+  {
+    count=FormatLocaleString(format,MaxTextExtent,"%.*g%sP",(int) (i+j),length,
+      units[i]);
+    if (strchr(format,'+') == (char *) NULL)
+      break;
+  }
+  return(count);
+}
+
 MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   ExceptionInfo *magick_unused(exception))
 {
@@ -775,8 +828,8 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
-  (void) FormatMagickSize(resource_info.width_limit,MagickFalse,width_limit);
-  (void) FormatMagickSize(resource_info.height_limit,MagickFalse,height_limit);
+  (void) FormatPixelSize(resource_info.width_limit,MagickFalse,width_limit);
+  (void) FormatPixelSize(resource_info.height_limit,MagickFalse,height_limit);
   (void) FormatMagickSize(resource_info.area_limit,MagickFalse,area_limit);
   (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,memory_limit);
   (void) FormatMagickSize(resource_info.map_limit,MagickTrue,map_limit);
