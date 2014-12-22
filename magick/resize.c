@@ -3555,7 +3555,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         for (x=0; x < (ssize_t) scale_image->columns; x++)
         {
           if (scale_image->matte != MagickFalse)
-            alpha=QuantumScale*(QuantumRange-s->opacity);
+            alpha=QuantumScale*GetPixelAlpha(s);
           alpha=PerceptibleReciprocal(alpha);
           SetPixelRed(q,ClampToQuantum(alpha*s->red));
           SetPixelGreen(q,ClampToQuantum(alpha*s->green));
