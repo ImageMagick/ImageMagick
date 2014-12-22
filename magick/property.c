@@ -2324,11 +2324,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       /*
         Image size read in - in bytes.
       */
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-        ((MagickOffsetType) image->extent));
-      if (image->extent != (MagickSizeType) ((size_t) image->extent))
-        (void) FormatMagickSize(image->extent,MagickFalse,value);
-      ConcatenateMagickString(value,"B",MaxTextExtent);
+      (void) FormatMagickSize(image->extent,MagickFalse,value);
       break;
     }
     case 'c':
@@ -3047,11 +3043,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       if (LocaleCompare("size",property) == 0)
         {
-          char
-            format[MaxTextExtent];
-
-          (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
-          (void) FormatLocaleString(value,MaxTextExtent,"%sB",format);
+          (void) FormatMagickSize(GetBlobSize(image),MagickFalse,value);
           break;
         }
       if (LocaleCompare("skewness",property) == 0)
