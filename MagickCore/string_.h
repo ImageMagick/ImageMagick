@@ -78,7 +78,8 @@ extern MagickExport size_t
   GetStringInfoLength(const StringInfo *);
 
 extern MagickExport ssize_t
-  FormatMagickSize(const MagickSizeType,const MagickBooleanType,char *),
+  FormatMagickSize(const MagickSizeType,const MagickBooleanType,const char *,
+    char *),
   FormatMagickTime(const time_t,const size_t,char *);
 
 extern MagickExport StringInfo

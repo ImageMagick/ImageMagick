@@ -1064,7 +1064,8 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
 %
 %  The format of the FormatMagickSize method is:
 %
-%      ssize_t FormatMagickSize(const MagickSizeType size,char *format)
+%      ssize_t FormatMagickSize(const MagickSizeType size,const char *suffix,
+^        char *format)
 %
 %  A description of each parameter follows:
 %
@@ -1072,11 +1073,13 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
 %
 %    o bi:  use power of two rather than power of ten.
 %
+%    o suffix:  append suffix, typically B or P.
+%
 %    o format:  human readable format.
 %
 */
 MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
-  const MagickBooleanType bi,char *format)
+  const MagickBooleanType bi,const char *suffix,char *format)
 {
   const char
     **units;
@@ -1119,8 +1122,12 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
   count=0;
   for (j=2; j < 12; j++)
   {
-    count=FormatLocaleString(format,MaxTextExtent,"%.*g%sB",(int) (i+j),length,
-      units[i]);
+    if (suffix == (const char *) NULL)
+      count=FormatLocaleString(format,MaxTextExtent,"%.*g%s",(int) (i+j),
+        length,units[i]);
+    else
+      count=FormatLocaleString(format,MaxTextExtent,"%.*g%s%s",(int) (i+j),
+        length,units[i],suffix);
     if (strchr(format,'+') == (char *) NULL)
       break;
   }
@@ -1410,7 +1417,7 @@ MagickExport double InterpretSiPrefixValue(const char *restrict string,
                 }
             }
         }
-      if (*q == 'B')
+      if ((*q == 'B') || (*q == 'P'))
         q++;
     }
   if (sentinal != (char **) NULL)
