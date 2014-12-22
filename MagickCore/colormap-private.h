@@ -42,7 +42,7 @@ static inline MagickBooleanType IsValidColormapIndex(Image *image,
   const ssize_t index,Quantum *target,ExceptionInfo *exception)
 { 
   if ((index < 0) || (index >= (ssize_t) image->colors))
-    { 
+    {
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "InvalidColormapIndex","`%s'",image->filename);
       *target=(Quantum) 0;
