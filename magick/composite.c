@@ -2832,12 +2832,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         case CopyOpacityCompositeOp:
         {
           if (source.matte == MagickFalse)
-            {
-              composite.opacity=(MagickRealType) (QuantumRange-
-                MagickPixelIntensityToQuantum(&source));
-              break;
-            }
-          composite.opacity=source.opacity;
+            composite.opacity=(MagickRealType) (QuantumRange-
+              MagickPixelIntensityToQuantum(&source));
+          else
+            composite.opacity=source.opacity;
           break;
         }
         case CopyBlackCompositeOp:
