@@ -1375,7 +1375,7 @@ MagickExport void MagickCoreTerminus(void)
   TypeComponentTerminus();
   ColorComponentTerminus();
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  NTGhostscriptUnLoadDLL();
+  NTWindowsTerminus();
 #endif
   MagicComponentTerminus();
   DelegateComponentTerminus();
