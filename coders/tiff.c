@@ -526,7 +526,7 @@ static MagickBooleanType ReadProfile(Image *image,const char *name,
     return(MagickFalse);
   if ((LocaleCompare(name,"icc") != 0) && (LocaleCompare(name,"xmp") != 0))
     {
-      if (strstr((char *)datum,"8BIM") == (char *) NULL)
+      if (strstr((char *) datum,"8BIM") == (char *) NULL)
         return(MagickFalse);
     }
   profile=BlobToStringInfo(datum,(size_t) length);
