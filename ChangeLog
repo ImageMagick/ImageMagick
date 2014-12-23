@@ -39,6 +39,8 @@
   * Clang does not support __alloc_size__, fix fabs() (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26739).
   * Support width and height resource limits.
+  * Don't read TIFF profiles when pinging (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=26670).
 
 2014-11-16  6.9.0-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-0, SVN revision 17067.
