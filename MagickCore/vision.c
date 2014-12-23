@@ -266,7 +266,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     census=0;
     id=0;
     for (j=0; j < (ssize_t) number_objects; j++)
-      if ((object[j].area < object[i].area) && (census < object[j].census))
+      if (census < object[j].census)
         {
           census=object[j].census;
           id=(size_t) j;
