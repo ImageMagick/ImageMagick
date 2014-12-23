@@ -1215,7 +1215,8 @@ RestoreMSCWarning
       SetImageColorspace(image,CMYKColorspace);
     if (photometric == PHOTOMETRIC_CIELAB)
       SetImageColorspace(image,LabColorspace);
-    TIFFGetProfiles(tiff,image);
+    if (image_info->ping == MagickFalse)
+      TIFFGetProfiles(tiff,image);
     TIFFGetProperties(tiff,image);
     option=GetImageOption(image_info,"tiff:exif-properties");
     if ((option == (const char *) NULL) ||
