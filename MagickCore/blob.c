@@ -3709,11 +3709,11 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
           image->blob->eof=MagickFalse;
           break;
         }
+      if (image->blob->mapped != MagickFalse)
+        return(-1);
       if (image->blob->offset < (MagickOffsetType)
           ((off_t) image->blob->extent))
         break;
-      if (image->blob->mapped != MagickFalse)
-        return(-1);
       image->blob->extent=(size_t) (image->blob->offset+image->blob->quantum);
       image->blob->quantum<<=1;
       image->blob->data=(unsigned char *) ResizeQuantumMemory(image->blob->data,
