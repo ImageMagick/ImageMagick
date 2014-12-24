@@ -17,7 +17,7 @@ void Magick::ResourceLimits::area(const MagickSizeType limit_)
 
 MagickCore::MagickSizeType Magick::ResourceLimits::area(void)
 {
-  return GetMagickResourceLimit(AreaResource);
+  return(GetMagickResourceLimit(AreaResource));
 }
 
 void Magick::ResourceLimits::disk(const MagickSizeType limit_)
@@ -27,7 +27,27 @@ void Magick::ResourceLimits::disk(const MagickSizeType limit_)
 
 MagickCore::MagickSizeType Magick::ResourceLimits::disk(void)
 {
-  return GetMagickResourceLimit(DiskResource);
+  return(GetMagickResourceLimit(DiskResource));
+}
+
+void Magick::ResourceLimits::file(const MagickSizeType limit_)
+{
+  (void) SetMagickResourceLimit(FileResource,limit_);
+}
+
+MagickCore::MagickSizeType Magick::ResourceLimits::file(void)
+{
+  return(GetMagickResourceLimit(FileResource));
+}
+
+void Magick::ResourceLimits::height(const MagickSizeType limit_)
+{
+  (void) SetMagickResourceLimit(HeightResource,limit_);
+}
+
+MagickCore::MagickSizeType Magick::ResourceLimits::height(void)
+{
+  return(GetMagickResourceLimit(HeightResource));
 }
 
 void Magick::ResourceLimits::map(const MagickSizeType limit_)
@@ -37,7 +57,7 @@ void Magick::ResourceLimits::map(const MagickSizeType limit_)
 
 MagickCore::MagickSizeType Magick::ResourceLimits::map(void)
 {
-  return GetMagickResourceLimit(MapResource);
+  return(GetMagickResourceLimit(MapResource));
 }
 
 void Magick::ResourceLimits::memory(const MagickSizeType limit_)
@@ -47,7 +67,7 @@ void Magick::ResourceLimits::memory(const MagickSizeType limit_)
 
 MagickCore::MagickSizeType Magick::ResourceLimits::memory(void)
 {
-  return GetMagickResourceLimit(MemoryResource);
+  return(GetMagickResourceLimit(MemoryResource));
 }
 
 void Magick::ResourceLimits::thread(const MagickSizeType limit_)
@@ -57,7 +77,27 @@ void Magick::ResourceLimits::thread(const MagickSizeType limit_)
 
 MagickCore::MagickSizeType Magick::ResourceLimits::thread(void)
 {
-  return GetMagickResourceLimit(ThreadResource);
+  return(GetMagickResourceLimit(ThreadResource));
+}
+
+void Magick::ResourceLimits::throttle(const MagickSizeType limit_)
+{
+  (void) SetMagickResourceLimit(ThrottleResource,limit_);
+}
+
+MagickCore::MagickSizeType Magick::ResourceLimits::throttle(void)
+{
+  return(GetMagickResourceLimit(ThrottleResource));
+}
+
+void Magick::ResourceLimits::width(const MagickSizeType limit_)
+{
+  (void) SetMagickResourceLimit(WidthResource,limit_);
+}
+
+MagickCore::MagickSizeType Magick::ResourceLimits::width(void)
+{
+  return(GetMagickResourceLimit(WidthResource));
 }
 
 Magick::ResourceLimits::ResourceLimits()
