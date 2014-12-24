@@ -3719,20 +3719,22 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
         if (image->blob->mapped != MagickFalse)
           return(-1);
         else
-          {
-            image->blob->extent=(size_t) (image->blob->offset+
-              image->blob->quantum);
-            image->blob->quantum<<=1;
-            image->blob->data=(unsigned char *) ResizeQuantumMemory(
-              image->blob->data,image->blob->extent+1,
-              sizeof(*image->blob->data));
-            (void) SyncBlob(image);
-            if (image->blob->data == (unsigned char *) NULL)
-              {
-                (void) DetachBlob(image->blob);
-                return(-1);
-              }
-          }
+          if (image->blob->offset >= (MagickOffsetType)
+              ((off_t) image->blob->extent))
+            {
+              image->blob->extent=(size_t) (image->blob->offset+
+                image->blob->quantum);
+              image->blob->quantum<<=1;
+              image->blob->data=(unsigned char *) ResizeQuantumMemory(
+                image->blob->data,image->blob->extent+1,
+                sizeof(*image->blob->data));
+              (void) SyncBlob(image);
+              if (image->blob->data == (unsigned char *) NULL)
+                {
+                  (void) DetachBlob(image->blob);
+                  return(-1);
+                }
+            }
       break;
     }
   }
