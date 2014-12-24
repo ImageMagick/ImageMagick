@@ -287,6 +287,8 @@ namespace Magick
   using MagickCore::DiscreteAlphaChannel;
   using MagickCore::DisassociateAlphaChannel;
   using MagickCore::ExtractAlphaChannel;
+  using MagickCore::OffAlphaChannel;
+  using MagickCore::OnAlphaChannel;
   using MagickCore::OpaqueAlphaChannel;
   using MagickCore::RemoveAlphaChannel;
   using MagickCore::SetAlphaChannel;
