@@ -1428,6 +1428,8 @@ RestoreMSCWarning
     if (image->compression == JPEGCompression)
       method=GetJpegMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
+    if (image->compression == JBIGCompression)
+      method=ReadStripMethod;
     if (TIFFIsTiled(tiff) != MagickFalse)
       method=ReadTileMethod;
     quantum_info->endian=LSBEndian;
