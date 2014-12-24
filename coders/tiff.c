@@ -1428,7 +1428,7 @@ RestoreMSCWarning
     if (image->compression == JPEGCompression)
       method=GetJpegMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
-    if (image->compression == JBIGCompression)
+    if (compress_tag == COMPRESSION_JBIG)
       method=ReadStripMethod;
     if (TIFFIsTiled(tiff) != MagickFalse)
       method=ReadTileMethod;
