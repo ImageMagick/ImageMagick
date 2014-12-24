@@ -943,11 +943,17 @@ namespace Magick
   
   // Resource types
   using MagickCore::ResourceType;
+  using MagickCore::UndefinedResource;
   using MagickCore::AreaResource;
   using MagickCore::DiskResource;
+  using MagickCore::FileResource;
+  using MagickCore::HeightResource;
   using MagickCore::MapResource;
   using MagickCore::MemoryResource;
   using MagickCore::ThreadResource;
+  using MagickCore::ThrottleResource;
+  using MagickCore::TimeResource;
+  using MagickCore::WidthResource;
 
   // Resolution units
   using MagickCore::ResolutionType;
