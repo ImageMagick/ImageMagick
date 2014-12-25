@@ -365,16 +365,9 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     Compute the absolute difference in pixels between two images.
   */
   status=MagickTrue;
-  if (image->fuzz == 0.0)
-    fuzz=MagickMax(reconstruct_image->fuzz,MagickSQ1_2)*
-      MagickMax(reconstruct_image->fuzz,MagickSQ1_2);
-  else
-    if (reconstruct_image->fuzz == 0.0)
-      fuzz=MagickMax(image->fuzz,MagickSQ1_2)*
-        MagickMax(image->fuzz,MagickSQ1_2);
-    else
-      fuzz=MagickMax(image->fuzz,MagickSQ1_2)*
-        MagickMax(reconstruct_image->fuzz,MagickSQ1_2);
+  fuzz=(double) MagickMax(MagickMax(image->fuzz,reconstruct_image->fuzz),
+    (MagickRealType) MagickSQ1_2);
+  fuzz*=fuzz;
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
