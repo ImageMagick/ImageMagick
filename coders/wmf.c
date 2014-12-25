@@ -1969,13 +1969,6 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
     }
 }
 
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 static void util_set_pen(wmfAPI * API, wmfDC * dc)
 {
   wmf_magick_t
