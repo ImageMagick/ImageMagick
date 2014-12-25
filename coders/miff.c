@@ -186,20 +186,6 @@ static voidpf AcquireZIPMemory(voidpf context,unsigned int items,
 }
 #endif
 
-static inline size_t MagickMax(const size_t x,const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
   size_t *length,PixelPacket *pixel,IndexPacket *index)
 {

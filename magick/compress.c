@@ -365,21 +365,6 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 %    o image: the image.
 %
 */
-
-static inline size_t MagickMax(const size_t x,const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
 {
 #define HashSize  1021

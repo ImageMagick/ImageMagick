@@ -118,14 +118,6 @@ struct _MatrixInfo
 %
 */
 
-static inline MagickSizeType MagickMin(const MagickSizeType x,
-  const MagickSizeType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 #if defined(SIGBUS)
 static void MatrixSignalHandler(int status)
 {

@@ -99,15 +99,6 @@
 %    o colors: the number of colors in the image colormap.
 %
 */
-
-static inline size_t MagickMax(const size_t x,
-  const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickBooleanType AcquireImageColormap(Image *image,
   const size_t colors)
 {

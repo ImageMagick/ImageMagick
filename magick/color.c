@@ -1652,14 +1652,6 @@ static MagickBooleanType IsColorCacheInstantiated(ExceptionInfo *exception)
 %    o q: Pixel q.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   const PixelPacket *p,const PixelPacket *q)
 {
@@ -2425,14 +2417,6 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   const ComplianceType compliance,PixelPacket *color,ExceptionInfo *exception)
 {

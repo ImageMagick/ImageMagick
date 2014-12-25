@@ -23,6 +23,9 @@ extern "C" {
 #endif
 
 #define IsNaN(a) ((a) != (a) ? MagickTrue : MagickFalse)
+#define MagickAbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
+#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
+#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define Magick2PI  6.28318530717958647692528676655900576839433879875020
 #define MagickPHI  1.61803398874989484820458683436563811772030917980576

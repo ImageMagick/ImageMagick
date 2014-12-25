@@ -583,14 +583,6 @@ MagickExport void ClonePixelCacheMethods(Cache clone,const Cache cache)
 %
 */
 
-static inline MagickSizeType MagickMin(const MagickSizeType x,
-  const MagickSizeType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType ClonePixelCacheRepository(
   CacheInfo *restrict clone_info,CacheInfo *restrict cache_info,
   ExceptionInfo *exception)

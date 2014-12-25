@@ -1135,13 +1135,6 @@ MagickExport FxInfo *DestroyFxInfo(FxInfo *fx_info)
 %
 */
 
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 static double FxChannelStatistics(FxInfo *fx_info,const Image *image,
   ChannelType channel,const char *symbol,ExceptionInfo *exception)
 {

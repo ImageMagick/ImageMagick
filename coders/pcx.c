@@ -197,28 +197,6 @@ static MagickBooleanType IsPCX(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline ssize_t MagickAbsoluteValue(const ssize_t x)
-{
-  if (x < 0)
-    return(-x);
-  return(x);
-}
-
-static inline size_t MagickMax(const size_t x,const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define ThrowPCXException(severity,tag) \

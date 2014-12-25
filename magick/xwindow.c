@@ -1116,22 +1116,6 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
 */
-
-static inline int MagickMax(const int x,const int y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline size_t MagickMin(const unsigned int x,
-  const unsigned int y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport XVisualInfo *XBestVisualInfo(Display *display,
   XStandardColormap *map_info,XResourceInfo *resource_info)
 {

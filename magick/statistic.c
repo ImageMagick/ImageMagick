@@ -215,13 +215,6 @@ static int IntensityCompare(const void *x,const void *y)
 }
 #endif
 
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
   const Quantum pixel,const MagickEvaluateOperator op,
   const MagickRealType value)
@@ -3461,13 +3454,6 @@ static inline void InsertPixelList(const Image *image,const PixelPacket *pixel,
     pixel_list->lists[4].nodes[index].count++;
   else
     AddNodePixelList(pixel_list,4,index);
-}
-
-static inline MagickRealType MagickAbsoluteValue(const MagickRealType x)
-{
-  if (x < 0)
-    return(-x);
-  return(x);
 }
 
 static void ResetPixelList(PixelList *pixel_list)
