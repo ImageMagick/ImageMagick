@@ -1878,13 +1878,6 @@ static void InitializeDestination(j_compress_ptr cinfo)
   destination->manager.free_in_buffer=MaxBufferExtent;
 }
 
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static void TerminateDestination(j_compress_ptr cinfo)
 {
   DestinationManager

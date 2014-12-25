@@ -2383,20 +2383,6 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
   return(contribution);
 }
 
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   const Image *image,Image *resize_image,const double x_factor,
   const MagickSizeType span,MagickOffsetType *offset,ExceptionInfo *exception)

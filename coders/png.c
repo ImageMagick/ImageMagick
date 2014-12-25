@@ -1038,14 +1038,6 @@ Magick_RenderingIntentString_from_PNG_RenderingIntent(const int ping_intent)
     }
 }
 
-static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
-{
-  if (x > y)
-    return(x);
-
-  return(y);
-}
-
 static const char *
 Magick_ColorType_from_PNG_ColorType(const int ping_colortype)
 {
@@ -1071,14 +1063,6 @@ Magick_ColorType_from_PNG_ColorType(const int ping_colortype)
     }
 }
 
-
-static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
-{
-  if (x < y)
-    return(x);
-
-  return(y);
-}
 #endif /* PNG_LIBPNG_VER > 10011 */
 #endif /* MAGICKCORE_PNG_DELEGATE */
 

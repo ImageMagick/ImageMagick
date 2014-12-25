@@ -77,15 +77,6 @@
 /*
   Numerous internal routines for image distortions.
 */
-static inline double MagickMin(const double x,const double y)
-{
-  return( x < y ? x : y);
-}
-static inline double MagickMax(const double x,const double y)
-{
-  return( x > y ? x : y);
-}
-
 static inline void AffineArgsToCoefficients(double *affine)
 {
   /* map  external sx,ry,rx,sy,tx,ty  to  internal c0,c2,c4,c1,c3,c5 */

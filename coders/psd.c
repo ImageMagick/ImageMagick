@@ -500,13 +500,6 @@ static inline size_t GetPSDRowSize(Image *image)
     return(image->columns*GetPSDPacketSize(image));
 }
 
-static inline ssize_t MagickAbsoluteValue(const ssize_t x)
-{
-  if (x < 0)
-    return(-x);
-  return(x);
-}
-
 static const char *ModeToString(PSDImageType type)
 {
   switch (type)

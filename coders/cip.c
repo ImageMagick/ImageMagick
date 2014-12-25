@@ -159,14 +159,6 @@ ModuleExport void UnregisterCIPImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {

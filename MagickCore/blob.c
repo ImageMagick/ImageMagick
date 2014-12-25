@@ -235,15 +235,6 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline MagickSizeType MagickMin(const MagickSizeType x,
-  const MagickSizeType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {

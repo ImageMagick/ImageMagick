@@ -708,13 +708,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %
 */
 
-static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -405,12 +405,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  return(x > y ? x : y);
-}
-
 MagickExport MagickBooleanType GradientImage(Image *image,
   const GradientType type,const SpreadMethod method,
   const PixelInfo *start_color,const PixelInfo *stop_color,

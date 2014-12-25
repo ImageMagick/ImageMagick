@@ -1922,23 +1922,6 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline MagickRealType MagickMax(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline MagickRealType MagickMin(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickBooleanType GrayscaleImage(Image *image,
   const PixelIntensityMethod method,ExceptionInfo *exception)
 {

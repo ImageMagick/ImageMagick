@@ -338,13 +338,6 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
 %
 */
 
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
@@ -1680,13 +1673,6 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   if (status == MagickFalse)
     return(0.0);
   return(distortion);
-}
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
 }
 
 MagickExport Image *SimilarityImage(Image *image,const Image *reference,

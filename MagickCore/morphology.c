@@ -89,14 +89,6 @@
 /*
   Other global definitions used by module.
 */
-static inline double MagickMin(const double x,const double y)
-{
-  return( x < y ? x : y);
-}
-static inline double MagickMax(const double x,const double y)
-{
-  return( x > y ? x : y);
-}
 #define Minimize(assign,value) assign=MagickMin(assign,value)
 #define Maximize(assign,value) assign=MagickMax(assign,value)
 

@@ -87,15 +87,6 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline size_t MagickMin(const size_t x,
-  const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
