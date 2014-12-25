@@ -178,22 +178,6 @@
        operations.
 */
 
-static inline MagickRealType MagickMin(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
-static inline MagickRealType MagickMax(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 static void HCLComposite(const MagickRealType hue,const MagickRealType chroma,
   const MagickRealType luma,MagickRealType *red,MagickRealType *green,
   MagickRealType *blue)

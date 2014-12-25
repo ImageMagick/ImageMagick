@@ -609,13 +609,6 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
 %
 */
 
-static inline ssize_t MagickAbsoluteValue(const ssize_t x)
-{
-  if (x < 0)
-    return(-x);
-  return(x);
-}
-
 static inline double MagickLog10(const double x)
 {
 #define Log10Epsilon  (1.0e-11)

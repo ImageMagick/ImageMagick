@@ -2217,23 +2217,6 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %    o pixel: Specifies a pointer to a Quantum structure.
 %
 */
-
-static inline MagickRealType MagickMax(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline MagickRealType MagickMin(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
   const Quantum *restrict pixel)
 {

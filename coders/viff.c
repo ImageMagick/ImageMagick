@@ -841,14 +841,6 @@ ModuleExport void UnregisterVIFFImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {

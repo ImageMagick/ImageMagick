@@ -381,13 +381,6 @@ static inline MagickBooleanType IsPathWritable(const char *path)
   return(MagickTrue);
 }
 
-static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType MonitorProgress(const char *text,
   const MagickOffsetType offset,const MagickSizeType extent,
   void *wand_unused(client_data))

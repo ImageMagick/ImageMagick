@@ -778,14 +778,6 @@ static MagickBooleanType IsPICT(const unsigned char *magick,const size_t length)
 %
 */
 
-static inline size_t MagickMax(const size_t x,
-  const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType ReadRectangle(Image *image,PICTRectangle *rectangle)
 {
   rectangle->top=(short) ReadBlobMSBShort(image);

@@ -366,21 +366,6 @@ ModuleExport void UnregisterMPEGImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType CopyDelegateFile(const char *source,
   const char *destination)
 {

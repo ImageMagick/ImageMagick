@@ -533,14 +533,6 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 %      a maximum of MAGICKCORE_QUANTUM_DEPTH.
 %
 */
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport size_t GetImageQuantumDepth(const Image *image,
   const MagickBooleanType constrain)
 {

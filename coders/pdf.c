@@ -952,20 +952,6 @@ ModuleExport void UnregisterPDFImage(void)
 %
 */
 
-static inline size_t MagickMax(const size_t x,const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static char *EscapeParenthesis(const char *text)
 {
   register char

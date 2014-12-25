@@ -487,20 +487,6 @@ static MagickBooleanType GetIPTCProperty(const Image *image,const char *key,
   return(MagickTrue);
 }
 
-static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static inline int ReadPropertyByte(const unsigned char **p,size_t *length)
 {
   int

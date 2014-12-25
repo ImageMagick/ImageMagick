@@ -847,21 +847,6 @@ MagickPrivate void ConvertLCHuvToRGB(const double luma,const double chroma,
 %      component of the HCL color space.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickPrivate void ConvertRGBToHCL(const double red,const double green,
   const double blue,double *hue,double *chroma,double *luma)
 {

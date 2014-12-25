@@ -285,20 +285,6 @@ static void GetMontageGeometry(char *geometry,const size_t number_images,
     *tiles_per_row=(size_t) ceil((double) number_images/(*tiles_per_column));
 }
 
-static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

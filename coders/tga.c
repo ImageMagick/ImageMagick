@@ -654,14 +654,6 @@ ModuleExport void UnregisterTGAImage(void)
 %    o image:  The image.
 %
 */
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
   const Quantum *p,const QuantumAny range,const double midpoint)
 {

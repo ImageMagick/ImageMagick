@@ -113,13 +113,6 @@ typedef enum
   TransferChannelOp
 } ChannelFx;
 
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType ChannelImage(Image *destination_image,
   const PixelChannel destination_channel,const ChannelFx channel_op,
   const Image *source_image,const PixelChannel source_channel,

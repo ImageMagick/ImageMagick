@@ -164,13 +164,6 @@ static MagickBooleanType IsSGI(const unsigned char *magick,const size_t length)
 %
 */
 
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static MagickBooleanType SGIDecode(const size_t bytes_per_pixel,
   ssize_t number_packets,unsigned char *packets,ssize_t number_pixels,
   unsigned char *pixels)

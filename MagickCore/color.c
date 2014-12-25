@@ -1657,14 +1657,6 @@ static MagickBooleanType IsColorCacheInstantiated(ExceptionInfo *exception)
 %    o q: Pixel q.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 MagickPrivate MagickBooleanType IsEquivalentAlpha(const Image *image,
   const PixelInfo *p,const PixelInfo *q)
 {

@@ -1143,13 +1143,6 @@ ModuleExport void UnregisterPSImage(void)
 %
 */
 
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static inline unsigned char *PopHexPixel(const char **hex_digits,
   const size_t pixel,unsigned char *pixels)
 {
