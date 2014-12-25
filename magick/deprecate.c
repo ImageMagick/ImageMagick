@@ -3553,13 +3553,6 @@ MagickExport void InitializeMagick(const char *path)
 %
 */
 
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 static void BicubicInterpolate(const MagickPixelPacket *pixels,const double dx,
   MagickPixelPacket *pixel)
 {
@@ -7384,14 +7377,6 @@ MagickExport unsigned int TransformColorspace(Image *image,
 %      component of the HSL color space.
 %
 */
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport void TransformHSL(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *saturation,double *lightness)
 {

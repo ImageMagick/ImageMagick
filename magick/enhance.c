@@ -2383,23 +2383,6 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
 %    o channel: the channel.
 %
 */
-
-static inline MagickRealType MagickMax(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline MagickRealType MagickMin(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickBooleanType GrayscaleImage(Image *image,
   const PixelIntensityMethod method)
 {

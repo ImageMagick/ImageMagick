@@ -418,13 +418,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %
 % This provides a good example of making use of the DrawGradientImage
 % function and the gradient structure in draw_info.
+%
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  return(x > y ? x : y);
-}
-
 MagickExport MagickBooleanType GradientImage(Image *image,
   const GradientType type,const SpreadMethod method,
   const PixelPacket *start_color,const PixelPacket *stop_color)

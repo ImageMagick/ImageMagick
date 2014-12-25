@@ -574,14 +574,6 @@ RestoreMSCWarning
 %      a maximum of MAGICKCORE_QUANTUM_DEPTH.
 %
 */
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport size_t GetImageQuantumDepth(const Image *image,
   const MagickBooleanType constrain)
 {

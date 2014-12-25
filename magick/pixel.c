@@ -2154,23 +2154,6 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %    o pixel: Specifies a pointer to a PixelPacket structure.
 %
 */
-
-static inline MagickRealType MagickMax(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline MagickRealType MagickMin(const MagickRealType x,
-  const MagickRealType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickRealType GetPixelIntensity(const Image *image,
   const PixelPacket *restrict pixel)
 {

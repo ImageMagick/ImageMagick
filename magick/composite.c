@@ -139,19 +139,6 @@
 %
 */
 
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 /*
 ** Programmers notes on SVG specification.
 **

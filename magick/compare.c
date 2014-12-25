@@ -1940,13 +1940,6 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   return(similarity_image);
 }
 
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
   const MetricType metric,RectangleInfo *offset,double *similarity_metric,
   ExceptionInfo *exception)
