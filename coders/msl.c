@@ -3278,7 +3278,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           if (*gamma == '\0')
             (void) FormatLocaleString(gamma,MaxTextExtent,"%g,%g,%g",
               (double) pixel.red,(double) pixel.green,(double) pixel.blue);
-          (void) GammaImage(msl_info->image[n],atof(gamma),
+          (void) GammaImage(msl_info->image[n],strtod(gamma,(char **) NULL),
             msl_info->exception);
           break;
         }

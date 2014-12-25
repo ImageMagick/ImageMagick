@@ -712,7 +712,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
   if (property != (const char *) NULL)
     {
       count=FormatLocaleString(header,MaxTextExtent,"EXPOSURE=%g\n",
-        atof(property));
+        strtod(property,(char **) NULL));
       (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
     }
   if (image->gamma != 0.0)

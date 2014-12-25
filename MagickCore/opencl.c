@@ -2000,7 +2000,7 @@ RestoreMSCWarning
         }
         memcpy(tmp,tmpStart,tmpEnd-tmpStart);
         tmp[tmpEnd-tmpStart] = '\0';
-        maxComputeUnits = atoi(tmp);
+        maxComputeUnits = strtol(tmp,(char **) NULL,10);
 
 
         tmpStart = findString(dataStart, contentEnd, DS_TAG_DEVICE_MAX_CLOCK_FREQ);
@@ -2016,7 +2016,7 @@ RestoreMSCWarning
         }
         memcpy(tmp,tmpStart,tmpEnd-tmpStart);
         tmp[tmpEnd-tmpStart] = '\0';
-        maxClockFrequency = atoi(tmp);
+        maxClockFrequency = strtol(tmp,(char **) NULL,10);
 
 
         /* check if this device is on the system */
@@ -2241,7 +2241,8 @@ ds_status AccelerateScoreDeserializer(ds_device* device, const unsigned char* se
     memcpy(s, serializedScore, serializedScoreSize);
     s[serializedScoreSize] = (char)'\0';
     device->score = malloc(sizeof(AccelerateScoreType));
-    *((AccelerateScoreType*)device->score) = (AccelerateScoreType)atof(s);
+    *((AccelerateScoreType*)device->score) = (AccelerateScoreType)
+       strtod(s,(char **) NULL));
     free(s);
     return DS_SUCCESS;
   }
