@@ -1673,7 +1673,8 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
 
   if ((image->fuzz == 0.0) && (image->matte == MagickFalse))
     return(IsColorEqual(p,q));
-  fuzz=MagickMax(image->fuzz,MagickSQ1_2)*MagickMax(image->fuzz,MagickSQ1_2);
+  fuzz=(double) MagickMax(image->fuzz,(MagickRealType) MagickSQ1_2);
+  fuzz*=fuzz;
   scale=1.0;
   distance=0.0;
   if (image->matte != MagickFalse)
@@ -1902,7 +1903,8 @@ MagickPrivate MagickBooleanType IsIntensitySimilar(const Image *image,
 
   if (GetPixelIntensity(image,p) == GetPixelIntensity(image,q))
     return(MagickTrue);
-  fuzz=MagickMax(image->fuzz,MagickSQ1_2)*MagickMax(image->fuzz,MagickSQ1_2);
+  fuzz=MagickMax(image->fuzz,MagickSQ1_2);
+  fuzz*=fuzz;
   pixel=GetPixelIntensity(image,p)-GetPixelIntensity(image,q);
   distance=pixel*pixel;
   if (distance > fuzz)
@@ -1968,12 +1970,9 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
 
   if ((p->fuzz == 0.0) && (q->fuzz == 0.0))
     return(IsMagickColorEqual(p,q));
-  if (p->fuzz == 0.0)
-    fuzz=MagickMax(q->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
-  else if (q->fuzz == 0.0)
-    fuzz=MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(p->fuzz,MagickSQ1_2);
-  else
-    fuzz=MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
+  fuzz=(double) MagickMax(MagickMax(p->fuzz,q->fuzz),(MagickRealType)
+    MagickSQ1_2);
+  fuzz*=fuzz;
   scale=1.0;
   distance=0.0;
   if ((p->matte != MagickFalse) || (q->matte != MagickFalse))
@@ -2085,10 +2084,11 @@ MagickExport MagickBooleanType IsOpacitySimilar(const Image *image,
     return(MagickTrue);
   if (GetPixelOpacity(p) == GetPixelOpacity(q))
     return(MagickTrue);
-  fuzz=MagickMax(image->fuzz,MagickSQ1_2)*MagickMax(image->fuzz,MagickSQ1_2);
+  fuzz=(double) MagickMax(image->fuzz,(MagickRealType) MagickSQ1_2);
+  fuzz*=fuzz;
   pixel=(MagickRealType) GetPixelOpacity(p)-(MagickRealType) GetPixelOpacity(q);
   distance=pixel*pixel;
-  if (distance > fuzz)
+  if (distance > (fuzz*fuzz))
     return(MagickFalse);
   return(MagickTrue);
 }
