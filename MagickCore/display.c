@@ -7828,7 +7828,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) GammaImage(*image,atof(factor),exception);
+      (void) GammaImage(*image,strtod(factor,(char **) NULL),exception);
       XSetCursorState(display,windows,MagickFalse);
       if (IfMagickTrue(windows->image.orphan) )
         break;
