@@ -129,13 +129,6 @@ static void ConvertHSIToRGB(const double hue,const double saturation,
   *blue*=QuantumRange;
 }
 
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static void ConvertRGBToHSI(const double red,const double green,
   const double blue,double *hue,double *saturation,double *intensity)
 {
@@ -157,13 +150,6 @@ static void ConvertRGBToHSI(const double red,const double green,
   *hue=atan2(beta,alpha)*(180.0/MagickPI)/360.0;
   if (*hue < 0.0)
     *hue+=1.0;
-}
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
 }
 
 static void ConvertHSVToRGB(const double hue,const double saturation,
