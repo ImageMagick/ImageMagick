@@ -2242,7 +2242,7 @@ ds_status AccelerateScoreDeserializer(ds_device* device, const unsigned char* se
     s[serializedScoreSize] = (char)'\0';
     device->score = malloc(sizeof(AccelerateScoreType));
     *((AccelerateScoreType*)device->score) = (AccelerateScoreType)
-       strtod(s,(char **) NULL));
+       strtod(s,(char **) NULL);
     free(s);
     return DS_SUCCESS;
   }
