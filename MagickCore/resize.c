@@ -3426,13 +3426,13 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             }
           if (image->alpha_trait != UndefinedPixelTrait)
             {
-              alpha=QuantumScale*scanline[x*GetPixelChannels(scale_image)+
-                GetPixelChannelOffset(scale_image,AlphaPixelChannel)];
+              alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
+                GetPixelChannelOffset(image,AlphaPixelChannel)];
               alpha=PerceptibleReciprocal(alpha);
             }
-          for (i=0; i < (ssize_t) GetPixelChannels(scale_image); i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            channel=GetPixelChannelChannel(scale_image,i);
+            channel=GetPixelChannelChannel(image,i);
             traits=GetPixelChannelTraits(image,channel);
             scale_traits=GetPixelChannelTraits(scale_image,channel);
             if ((traits == UndefinedPixelTrait) ||
@@ -3441,11 +3441,11 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             if ((traits & BlendPixelTrait) == 0)
               {
                 SetPixelChannel(scale_image,channel,ClampToQuantum(
-                  scanline[x*GetPixelChannels(scale_image)+i]),q);
+                  scanline[x*GetPixelChannels(image)+i]),q);
                 continue;
               }
             SetPixelChannel(scale_image,channel,ClampToQuantum(alpha*scanline[
-              x*GetPixelChannels(scale_image)+i]),q);
+              x*GetPixelChannels(image)+i]),q);
           }
           q+=GetPixelChannels(scale_image);
         }
@@ -3522,13 +3522,13 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           }
         if (image->alpha_trait != UndefinedPixelTrait)
           {
-            alpha=QuantumScale*scale_scanline[x*GetPixelChannels(scale_image)+
-              GetPixelChannelOffset(scale_image,AlphaPixelChannel)];
+            alpha=QuantumScale*scale_scanline[x*GetPixelChannels(image)+
+              GetPixelChannelOffset(image,AlphaPixelChannel)];
             alpha=PerceptibleReciprocal(alpha);
           }
-        for (i=0; i < (ssize_t) GetPixelChannels(scale_image); i++)
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
-          PixelChannel channel=GetPixelChannelChannel(scale_image,i);
+          PixelChannel channel=GetPixelChannelChannel(image,i);
           PixelTrait traits=GetPixelChannelTraits(image,channel);
           scale_traits=GetPixelChannelTraits(scale_image,channel);
           if ((traits == UndefinedPixelTrait) ||
@@ -3537,11 +3537,11 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           if ((traits & BlendPixelTrait) == 0)
             {
               SetPixelChannel(scale_image,channel,ClampToQuantum(
-                scale_scanline[x*GetPixelChannels(scale_image)+i]),q);
+                scale_scanline[x*GetPixelChannels(image)+i]),q);
               continue;
             }
           SetPixelChannel(scale_image,channel,ClampToQuantum(alpha*
-            scale_scanline[x*GetPixelChannels(scale_image)+i]),q);
+            scale_scanline[x*GetPixelChannels(image)+i]),q);
         }
         q+=GetPixelChannels(scale_image);
       }
