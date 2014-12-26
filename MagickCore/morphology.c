@@ -2839,6 +2839,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         double
           alpha,
           gamma,
+          intensity,
           maximum,
           minimum,
           pixel;
@@ -3092,10 +3093,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               {
                 if ((IfNaN(*k) == MagickFalse) && (*k >= 0.5))
                   {
-                    if (GetPixelIntensity(image,pixels) < minimum)
+                    intensity=(double) GetPixelIntensity(image,pixels);
+                    if (intensity < minimum)
                       {
                         pixel=(double) pixels[i];
-                        minimum=GetPixelIntensity(image,pixels);
+                        minimum=intensity;
                       }
                     count++;
                   }
@@ -3121,10 +3123,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               {
                 if ((IfNaN(*k) == MagickFalse) && (*k >= 0.5))
                   {
-                    if (GetPixelIntensity(image,pixels) > maximum)
+                    intensity=(double) GetPixelIntensity(image,pixels);
+                    if (intensity > maximum)
                       {
                         pixel=(double) pixels[i];
-                        maximum=GetPixelIntensity(image,pixels);
+                        maximum=intensity;
                       }
                     count++;
                   }
