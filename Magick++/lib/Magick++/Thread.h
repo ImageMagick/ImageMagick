@@ -57,7 +57,7 @@ namespace Magick
     MutexLock& operator=(const MutexLock& original );
 
 #if defined(MAGICKCORE_HAVE_PTHREAD)
-    pthread_mutex_t \ _mutex;
+    pthread_mutex_t _mutex;
 #endif
 #if defined(_MT) && defined(_VISUALC_)
     win32_mutex _mutex;
