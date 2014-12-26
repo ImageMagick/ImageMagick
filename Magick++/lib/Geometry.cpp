@@ -583,17 +583,17 @@ Magick::Point::operator std::string() const
     point;
 
   if (_x < 0.0)
-    point+='-';
+    point+="-";
   else
-    point+='+';
+    point+="+";
 
   FormatLocaleString(buffer,MaxTextExtent,"%.20g",_x);
   point+=buffer;
 
   if (_y < 0.0)
-    point+='x-';
+    point+="x-";
   else
-    point+='x+';
+    point+="x+";
 
   FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _y);
   point+=buffer;
