@@ -550,9 +550,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   (void) SetImageColorspace(composite_image,image->colorspace,exception);
-  if (image->alpha_trait == UndefinedPixelTrait)
-    (void) SetImageAlphaChannel(image,SetAlphaChannel,exception);
-  if (composite_image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait != UndefinedPixelTrait) &&
+      (composite_image->alpha_trait == UndefinedPixelTrait))
     (void) SetImageAlphaChannel(composite_image,SetAlphaChannel,exception);
 if (0)
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
@@ -1522,8 +1521,11 @@ if (0)
           channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (composite_traits == UndefinedPixelTrait)
-          continue;
+        if ((composite_traits == UndefinedPixelTrait) &&
+             (((compose != CopyAlphaCompositeOp) &&
+               (compose != ChangeMaskCompositeOp)) ||
+              (channel != AlphaPixelChannel)))
+            continue;
         /*
           Sc: source color.
           Dc: destination color.
@@ -1612,7 +1614,7 @@ if (0)
               }
               case CopyAlphaCompositeOp:
               {
-                if (Sa == 1.0)
+                if (composite_traits == UndefinedPixelTrait)
                   pixel=GetPixelIntensity(composite_image,p);
                 else
                   pixel=QuantumRange*Sa;
