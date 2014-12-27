@@ -374,14 +374,14 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
           /*
             Write a bitmap byte to the image file.
           */
-          (void) WriteBlobByte(image,byte);
+          (void) WriteBlobByte(image,(unsigned char) byte);
           bit=0;
           byte=0;
         }
       p+=GetPixelChannels(image);
     }
     if (bit != 0)
-      (void) WriteBlobByte(image,byte);
+      (void) WriteBlobByte(image,(unsigned char) byte);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)

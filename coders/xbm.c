@@ -334,8 +334,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (((image->columns % 16) != 0) && ((image->columns % 16) < 9) &&
       (version == 10))
     padding=1;
-  bytes_per_line=(image->columns+7)/8+padding;
-  length=(size_t) image->rows;
+  bytes_per_line=(unsigned int) (image->columns+7)/8+padding;
+  length=(unsigned int) image->rows;
   data=(unsigned char *) AcquireQuantumMemory(length,bytes_per_line*
     sizeof(*data));
   if (data == (unsigned char *) NULL)
