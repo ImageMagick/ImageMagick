@@ -1001,9 +1001,9 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   sans_exception=AcquireExceptionInfo();
   write_info=CloneImageInfo(image_info);
   (void) CopyMagickString(write_info->filename,image->filename,MaxTextExtent);
+  (void) SetImageInfo(write_info,1,sans_exception);
   if (*write_info->magick == '\0')
     (void) CopyMagickString(write_info->magick,image->magick,MaxTextExtent);
-  (void) SetImageInfo(write_info,1,sans_exception);
   (void) CopyMagickString(filename,image->filename,MaxTextExtent);
   (void) CopyMagickString(image->filename,write_info->filename,MaxTextExtent);
   domain=CoderPolicyDomain;
@@ -1276,12 +1276,12 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
     for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
       (void) CopyMagickString(p->filename,filename,MaxTextExtent);
   (void) CopyMagickString(write_info->filename,images->filename,MaxTextExtent);
-  if (*write_info->magick == '\0')
-    (void) CopyMagickString(write_info->magick,images->magick,MaxTextExtent);
   sans_exception=AcquireExceptionInfo();
   (void) SetImageInfo(write_info,(unsigned int) GetImageListLength(images),
     sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
+  if (*write_info->magick == '\0')
+    (void) CopyMagickString(write_info->magick,images->magick,MaxTextExtent);
   p=images;
   for ( ; GetNextImageInList(p) != (Image *) NULL; p=GetNextImageInList(p))
     if (p->scene >= GetNextImageInList(p)->scene)
