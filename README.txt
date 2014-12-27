@@ -53,6 +53,8 @@ Features and Capabilities
         digital film work.
       * Image calculator: apply a mathematical expression to an image or image
         channels.
+      * Connected component labeling: uniquely label connected regions in an
+        image.
       * Discrete Fourier transform: implements the forward and inverse DFT.
       * Perceptual hash: maps visually identical images to the same or similar
         hash-- useful in image retrieval, authentication, indexing, or copy
