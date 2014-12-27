@@ -4825,33 +4825,12 @@ void Magick::Image::modifyImage(void)
   {
     Lock(&_imgRef->_mutexLock);
     if (_imgRef->_refCount == 1)
-      {
-        // De-register image and return
-        _imgRef->id(-1);
-        return;
-      }
+      return;
   }
 
   GetPPException;
   replaceImage(CloneImage(image(),0,0,MagickTrue,exceptionInfo));
   ThrowPPException;
-}
-
-ssize_t Magick::Image::registerId(void)
-{
-  Lock(&_imgRef->_mutexLock);
-  if ( _imgRef->id() < 0)
-    {
-      char
-        id[MaxTextExtent];
-
-      GetPPException;
-      _imgRef->id(_imgRef->id()+1);
-      sprintf(id,"%.20g\n",(double) _imgRef->id());
-      SetImageRegistry(ImageRegistryType,id,image(),exceptionInfo);
-      ThrowPPException;
-    }
-  return(_imgRef->id());
 }
 
 MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
@@ -4873,8 +4852,7 @@ MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
 
     if (_imgRef->_refCount == 1)
       {
-        // We own the image, just replace it, and de-register
-        _imgRef->id(-1);
+        // We own the image, just replace it
         _imgRef->image(image);
       }
     else
@@ -4886,12 +4864,6 @@ MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
   }
 
   return(_imgRef->_image);
-}
-
-void Magick::Image::unregisterId(void)
-{
-  modifyImage();
-  _imgRef->id(-1);
 }
 
 void Magick::Image::read(MagickCore::Image *image,

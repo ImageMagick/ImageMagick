@@ -43,10 +43,6 @@ namespace Magick
     ImageRef(const ImageRef&);
     ImageRef& operator=(const ImageRef&);
 
-    // Retrieve registration id from reference
-    void id(const ::ssize_t id_);
-    ::ssize_t id(void) const;
-
     // Retrieve image from reference
     void image(MagickCore::Image *image_);
     MagickCore::Image *&image(void);
@@ -57,7 +53,6 @@ namespace Magick
 
     MagickCore::Image *_image;    // ImageMagick Image
     Options           *_options;  // User-specified options
-    ::ssize_t         _id;        // Registry ID (-1 if not registered)
     ::ssize_t         _refCount;  // Reference count
     MutexLock         _mutexLock; // Mutex lock
   };
