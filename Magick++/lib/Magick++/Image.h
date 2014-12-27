@@ -1461,14 +1461,8 @@ namespace Magick
     // Prepare to update image (copy if reference > 1)
     void modifyImage(void);
 
-    // Register image with image registry or obtain registration id
-    ::ssize_t registerId(void);
-
     // Replace current image (reference counted)
     MagickCore::Image *replaceImage(MagickCore::Image *replacement_);
-
-    // Unregister image from image registry
-    void unregisterId(void);
 
   private:
 

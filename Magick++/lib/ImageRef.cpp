@@ -17,7 +17,6 @@
 Magick::ImageRef::ImageRef(void)
   : _image(0),
     _options(new Options),
-    _id(-1),
     _refCount(1),
     _mutexLock()
 {
@@ -29,7 +28,6 @@ Magick::ImageRef::ImageRef(void)
 Magick::ImageRef::ImageRef(MagickCore::Image *image_)
   : _image(image_),
     _options(new Options),
-    _id(-1),
     _refCount(1),
     _mutexLock()
 {
@@ -38,7 +36,6 @@ Magick::ImageRef::ImageRef(MagickCore::Image *image_)
 Magick::ImageRef::ImageRef(MagickCore::Image *image_,const Options *options_)
   : _image(image_),
     _options(0),
-    _id(-1),
     _refCount(1),
     _mutexLock()
 {
@@ -47,17 +44,6 @@ Magick::ImageRef::ImageRef(MagickCore::Image *image_,const Options *options_)
 
 Magick::ImageRef::~ImageRef(void)
 {
-  // Unregister image (if still registered)
-  if (_id > -1)
-    {
-      char
-        id[MaxTextExtent];
-
-      sprintf(id,"%.20g",(double) _id);
-      DeleteImageRegistry(id);
-      _id=-1;
-    }
-
   // Deallocate image
   if (_image != (MagickCore::Image*) NULL)
     {
@@ -68,23 +54,6 @@ Magick::ImageRef::~ImageRef(void)
   // Deallocate image options
   delete _options;
   _options=(Options *) NULL;
-}
-
-void Magick::ImageRef::id(const ssize_t id_)
-{
-  if (_id > -1)
-    {
-      char
-        id[MaxTextExtent];
-      sprintf(id,"%.20g",(double) _id);
-      DeleteImageRegistry(id);
-    }
-  _id=id_;
-}
-
-::ssize_t Magick::ImageRef::id(void) const
-{
-  return(_id);
 }
 
 MagickCore::Image *&Magick::ImageRef::image(void)
