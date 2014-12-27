@@ -2387,7 +2387,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               maximum=jpeg_image->quality-1;
             (void) RelinquishUniqueFileResource(jpeg_image->filename);
           }
-          quality=minimum-1;
+          quality=(int)minimum-1;
           jpeg_image=DestroyImage(jpeg_image);
         }
       jpeg_info=DestroyImageInfo(jpeg_info);

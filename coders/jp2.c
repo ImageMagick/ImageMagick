@@ -354,9 +354,10 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Extract an area from the image.
       */
-      jp2_status=opj_set_decode_area(jp2_codec,jp2_image,image->extract_info.x,
-        image->extract_info.y,image->extract_info.x+(ssize_t) image->columns,
-        image->extract_info.y+(ssize_t) image->rows);
+      jp2_status=opj_set_decode_area(jp2_codec,jp2_image,
+        (OPJ_INT32) image->extract_info.x,(OPJ_INT32) image->extract_info.y,
+        (OPJ_INT32) (image->extract_info.x+(ssize_t) image->columns),
+        (OPJ_INT32) (image->extract_info.y+(ssize_t) image->rows));
       if (jp2_status == 0)
         {
           opj_stream_destroy(jp2_stream);
@@ -944,8 +945,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   ResetMagickMemory(jp2_info,0,sizeof(jp2_info));
   for (i=0; i < (ssize_t) channels; i++)
   {
-    jp2_info[i].prec=image->depth;
-    jp2_info[i].bpp=image->depth;
+    jp2_info[i].prec=(OPJ_UINT32) image->depth;
+    jp2_info[i].bpp=(OPJ_UINT32) image->depth;
     if ((image->depth == 1) &&
         ((LocaleCompare(image_info->magick,"JPT") == 0) ||
          (LocaleCompare(image_info->magick,"JP2") == 0)))
@@ -956,10 +957,10 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     jp2_info[i].sgnd=0;
     jp2_info[i].dx=parameters.subsampling_dx;
     jp2_info[i].dy=parameters.subsampling_dy;
-    jp2_info[i].w=image->columns;
-    jp2_info[i].h=image->rows;
+    jp2_info[i].w=(OPJ_UINT32) image->columns;
+    jp2_info[i].h=(OPJ_UINT32) image->rows;
   }
-  jp2_image=opj_image_create(channels,jp2_info,jp2_colorspace);
+  jp2_image=opj_image_create((OPJ_UINT32) channels,jp2_info,jp2_colorspace);
   if (jp2_image == (opj_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
   jp2_image->x0=parameters.image_offset_x0;
