@@ -2431,8 +2431,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
         }
     }
   *extension='\0';
-  if (*image_info->magick == '\0')
-    GetPathComponent(image_info->filename,ExtensionPath,extension);
+  GetPathComponent(image_info->filename,ExtensionPath,extension);
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
   if (*extension != '\0')
     if ((LocaleCompare(extension,"gz") == 0) ||
