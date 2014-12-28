@@ -339,14 +339,14 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pdb_info.modify_number=ReadBlobMSBLong(image);
   pdb_info.application_info=ReadBlobMSBLong(image);
   pdb_info.sort_info=ReadBlobMSBLong(image);
-  count=ReadBlob(image,4,(unsigned char *) pdb_info.type);
-  count=ReadBlob(image,4,(unsigned char *) pdb_info.id);
-  if ((count == 0) || (memcmp(pdb_info.type,"vIMG",4) != 0) ||
-      (memcmp(pdb_info.id,"View",4) != 0))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  (void) ReadBlob(image,4,(unsigned char *) pdb_info.type);
+  (void) ReadBlob(image,4,(unsigned char *) pdb_info.id);
   pdb_info.seed=ReadBlobMSBLong(image);
   pdb_info.next_record=ReadBlobMSBLong(image);
   pdb_info.number_records=(short) ReadBlobMSBShort(image);
+  if ((memcmp(pdb_info.type,"vIMG",4) != 0) ||
+      (memcmp(pdb_info.id,"View",4) != 0))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (pdb_info.next_record != 0)
     ThrowReaderException(CoderError,"MultipleRecordListNotSupported");
   /*
@@ -808,9 +808,9 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   if (image->columns % 16)
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
-  packets=((bits_per_pixel*image->columns+7)/8)*image->rows;
+  packets=((bits_per_pixel*image->columns+7)/8);
   runlength=(unsigned char *) AcquireQuantumMemory(2UL*packets,
-    sizeof(*runlength));
+    image->rows*sizeof(*runlength));
   if (runlength == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   buffer=(unsigned char *) AcquireQuantumMemory(256UL,sizeof(*buffer));
