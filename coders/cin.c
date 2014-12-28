@@ -712,8 +712,6 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) SetImageProfile(image,"dpx:user.data",profile,exception);
       profile=DestroyStringInfo(profile);
     }
-  for ( ; offset < (MagickOffsetType) cin.file.image_offset; offset++)
-    (void) ReadBlobByte(image);
   image->depth=cin.image.channel[0].bits_per_pixel;
   image->columns=cin.image.channel[0].pixels_per_line;
   image->rows=cin.image.channel[0].lines_per_image;
@@ -722,6 +720,17 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloseBlob(image);
       return(image);
     }
+  for ( ; offset < (MagickOffsetType) cin.file.image_offset; offset++)
+  {
+    int
+      c;
+
+    c=ReadBlobByte(image);
+    if (c == EOF)
+      break;
+  }
+  if (offset < (MagickOffsetType) cin.file.image_offset)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
