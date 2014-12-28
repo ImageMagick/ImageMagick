@@ -585,9 +585,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           image=GetFirstImageInList(clones);
         }
     }
-  if (GetBlobError(image) != MagickFalse)
-    ThrowFileException(exception,FileOpenError,
-      "AnErrorHasOccurredReadingFromFile",read_info->filename);
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     char
@@ -1172,9 +1169,6 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             }
         }
     }
-  if (GetBlobError(image) != MagickFalse)
-    ThrowFileException(exception,FileOpenError,
-      "AnErrorHasOccurredWritingToFile",image->filename);
   if (temporary != MagickFalse)
     {
       /*
