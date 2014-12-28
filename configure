@@ -1015,6 +1015,34 @@ MAGICKPP_LIB_VERSION
 MAGICK_LIB_VERSION_NUMBER
 MAGICK_LIB_VERSION_TEXT
 MAGICK_LIB_VERSION
+PACKAGE_VERSION_ADDENDUM
+PACKAGE_RELEASE_DATE
+PACKAGE_LIB_VERSION_NUMBER
+PACKAGE_LIB_VERSION
+PACKAGE_CHANGE_DATE
+PACKAGE_RELEASE
+PACKAGE_PERL_VERSION
+MAGICKPP_LIBRARY_VERSION_INFO
+MAGICKPP_LIBRARY_CURRENT_MIN
+MAGICKPP_LIBRARY_AGE
+MAGICKPP_LIBRARY_REVISION
+MAGICKPP_LIBRARY_CURRENT
+MAGICK_LIBRARY_VERSION_INFO
+MAGICK_LIBRARY_CURRENT_MIN
+MAGICK_LIBRARY_AGE
+MAGICK_LIBRARY_REVISION
+MAGICK_LIBRARY_CURRENT
+MAGICK_SVN_REVISION
+MAGICK_VERSION
+MAGICK_PATCHLEVEL_VERSION
+MAGICK_MICRO_VERSION
+MAGICK_MINOR_VERSION
+MAGICK_MAJOR_VERSION
+MAGICK_TARGET_OS
+MAGICK_TARGET_VENDOR
+MAGICK_TARGET_CPU
+CONFIGURE_ARGS
+DISTCHECK_CONFIG_FLAGS
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -1042,32 +1070,6 @@ am__isrc
 INSTALL_DATA
 INSTALL_SCRIPT
 INSTALL_PROGRAM
-PACKAGE_VERSION_ADDENDUM
-PACKAGE_RELEASE_DATE
-PACKAGE_LIB_VERSION_NUMBER
-PACKAGE_LIB_VERSION
-PACKAGE_CHANGE_DATE
-PACKAGE_RELEASE
-PACKAGE_PERL_VERSION
-MAGICKPP_LIBRARY_VERSION_INFO
-MAGICKPP_LIBRARY_CURRENT_MIN
-MAGICKPP_LIBRARY_AGE
-MAGICKPP_LIBRARY_REVISION
-MAGICKPP_LIBRARY_CURRENT
-MAGICK_LIBRARY_VERSION_INFO
-MAGICK_LIBRARY_CURRENT_MIN
-MAGICK_LIBRARY_AGE
-MAGICK_LIBRARY_REVISION
-MAGICK_LIBRARY_CURRENT
-MAGICK_SVN_REVISION
-MAGICK_VERSION
-MAGICK_PATCHLEVEL_VERSION
-MAGICK_MICRO_VERSION
-MAGICK_MINOR_VERSION
-MAGICK_MAJOR_VERSION
-MAGICK_TARGET_OS
-MAGICK_TARGET_VENDOR
-MAGICK_TARGET_CPU
 target_os
 target_vendor
 target_cpu
@@ -1080,8 +1082,6 @@ build_os
 build_vendor
 build_cpu
 build
-CONFIGURE_ARGS
-DISTCHECK_CONFIG_FLAGS
 target_alias
 host_alias
 build_alias
@@ -3535,29 +3535,6 @@ ac_config_headers="$ac_config_headers config/config.h"
 
 ac_config_commands="$ac_config_commands MagickCore/magick-baseconfig.h"
 
-ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc MagickCore/MagickCore-config MagickCore/MagickCore.pc MagickCore/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 MagickWand/MagickWand-config MagickWand/MagickWand.pc"
-
-
-#
-# Save initial user-tunable values
-#
-USER_LIBS=$LIBS
-for var in CC CFLAGS CPPFLAGS CXX CXXCPP LDFLAGS LIBS ; do
-  eval isset=\${$var+set}
-    if test "$isset" = 'set'; then
-        eval val=$`echo $var`
-        DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS}'${var}=${val}' "
-    fi
-done
-
-
-CONFIGURE_ARGS="$0 ${ac_configure_args}"
-
-
-# Source file containing package/library versioning information.
-. ${srcdir}/version.sh
-
-echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
 # Make sure we can run config.sub.
 $SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
   as_fn_error $? "cannot run $SHELL $ac_aux_dir/config.sub" "$LINENO" 5
@@ -3670,129 +3647,6 @@ test -n "$target_alias" &&
   program_prefix=${target_alias}-
 
 
-
-
-
-MAGICK_TARGET_CPU=$host_cpu
-
-
-cat >>confdefs.h <<_ACEOF
-#define MAGICK_TARGET_CPU $MAGICK_TARGET_CPU
-_ACEOF
-
-
-MAGICK_TARGET_VENDOR=$host_vendor
-
-
-cat >>confdefs.h <<_ACEOF
-#define MAGICK_TARGET_VENDOR $MAGICK_TARGET_VENDOR
-_ACEOF
-
-
-MAGICK_TARGET_OS=$host_os
-
-
-cat >>confdefs.h <<_ACEOF
-#define MAGICK_TARGET_OS $MAGICK_TARGET_OS
-_ACEOF
-
-
-
-# Substitute versioning
-MAGICK_MAJOR_VERSION=7
-
-MAGICK_MINOR_VERSION=0
-
-MAGICK_MICRO_VERSION=0
-
-MAGICK_PATCHLEVEL_VERSION=0
-
-MAGICK_VERSION=7.0.0-0
-
-MAGICK_SVN_REVISION=17236:17250
-
-
-# Substitute library versioning
-MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
-
-MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
-
-
-MAGICKPP_LIBRARY_CURRENT_MIN=`expr $MAGICKPP_LIBRARY_CURRENT - $MAGICKPP_LIBRARY_AGE`
-
-MAGICKPP_LIBRARY_VERSION_INFO=$MAGICKPP_LIBRARY_CURRENT:$MAGICKPP_LIBRARY_REVISION:$MAGICKPP_LIBRARY_AGE
-
-
-
-# Ensure that make can run correctly
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
-$as_echo_n "checking whether build environment is sane... " >&6; }
-# Reject unsafe characters in $srcdir or the absolute working directory
-# name.  Accept space and tab only in the latter.
-am_lf='
-'
-case `pwd` in
-  *[\\\"\#\$\&\'\`$am_lf]*)
-    as_fn_error $? "unsafe absolute working directory name" "$LINENO" 5;;
-esac
-case $srcdir in
-  *[\\\"\#\$\&\'\`$am_lf\ \	]*)
-    as_fn_error $? "unsafe srcdir value: '$srcdir'" "$LINENO" 5;;
-esac
-
-# Do 'set' in a subshell so we don't clobber the current shell's
-# arguments.  Must try -L first in case configure is actually a
-# symlink; some systems play weird games with the mod time of symlinks
-# (eg FreeBSD returns the mod time of the symlink's containing
-# directory).
-if (
-   am_has_slept=no
-   for am_try in 1 2; do
-     echo "timestamp, slept: $am_has_slept" > conftest.file
-     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
-     if test "$*" = "X"; then
-	# -L didn't work.
-	set X `ls -t "$srcdir/configure" conftest.file`
-     fi
-     if test "$*" != "X $srcdir/configure conftest.file" \
-	&& test "$*" != "X conftest.file $srcdir/configure"; then
-
-	# If neither matched, then we have a broken ls.  This can happen
-	# if, for instance, CONFIG_SHELL is bash and it inherits a
-	# broken ls alias from the environment.  This has actually
-	# happened.  Such a system could not be considered "sane".
-	as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
-  alias in your environment" "$LINENO" 5
-     fi
-     if test "$2" = conftest.file || test $am_try -eq 2; then
-       break
-     fi
-     # Just in case.
-     sleep 1
-     am_has_slept=yes
-   done
-   test "$2" = conftest.file
-   )
-then
-   # Ok.
-   :
-else
-   as_fn_error $? "newly created file is older than distributed files!
-Check your system clock" "$LINENO" 5
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-# If we didn't sleep, we still need to ensure time stamps of config.status and
-# generated files are strictly newer.
-am_sleep_pid=
-if grep 'slept: no' conftest.file >/dev/null 2>&1; then
-  ( sleep 1 ) &
-  am_sleep_pid=$!
-fi
-
-rm -f conftest.file
-
-
 am__api_version='1.14'
 
 # Find a good install program.  We prefer a C program (faster),
@@ -3887,6 +3741,73 @@ test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
 test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL}'
 
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
+$as_echo_n "checking whether build environment is sane... " >&6; }
+# Reject unsafe characters in $srcdir or the absolute working directory
+# name.  Accept space and tab only in the latter.
+am_lf='
+'
+case `pwd` in
+  *[\\\"\#\$\&\'\`$am_lf]*)
+    as_fn_error $? "unsafe absolute working directory name" "$LINENO" 5;;
+esac
+case $srcdir in
+  *[\\\"\#\$\&\'\`$am_lf\ \	]*)
+    as_fn_error $? "unsafe srcdir value: '$srcdir'" "$LINENO" 5;;
+esac
+
+# Do 'set' in a subshell so we don't clobber the current shell's
+# arguments.  Must try -L first in case configure is actually a
+# symlink; some systems play weird games with the mod time of symlinks
+# (eg FreeBSD returns the mod time of the symlink's containing
+# directory).
+if (
+   am_has_slept=no
+   for am_try in 1 2; do
+     echo "timestamp, slept: $am_has_slept" > conftest.file
+     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
+     if test "$*" = "X"; then
+	# -L didn't work.
+	set X `ls -t "$srcdir/configure" conftest.file`
+     fi
+     if test "$*" != "X $srcdir/configure conftest.file" \
+	&& test "$*" != "X conftest.file $srcdir/configure"; then
+
+	# If neither matched, then we have a broken ls.  This can happen
+	# if, for instance, CONFIG_SHELL is bash and it inherits a
+	# broken ls alias from the environment.  This has actually
+	# happened.  Such a system could not be considered "sane".
+	as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
+  alias in your environment" "$LINENO" 5
+     fi
+     if test "$2" = conftest.file || test $am_try -eq 2; then
+       break
+     fi
+     # Just in case.
+     sleep 1
+     am_has_slept=yes
+   done
+   test "$2" = conftest.file
+   )
+then
+   # Ok.
+   :
+else
+   as_fn_error $? "newly created file is older than distributed files!
+Check your system clock" "$LINENO" 5
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+# If we didn't sleep, we still need to ensure time stamps of config.status and
+# generated files are strictly newer.
+am_sleep_pid=
+if grep 'slept: no' conftest.file >/dev/null 2>&1; then
+  ( sleep 1 ) &
+  am_sleep_pid=$!
+fi
+
+rm -f conftest.file
 
 test "$program_prefix" != NONE &&
   program_transform_name="s&^&$program_prefix&;$program_transform_name"
@@ -4304,8 +4225,6 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
-
-# Enable support for silent build rules
 # Check whether --enable-silent-rules was given.
 if test "${enable_silent_rules+set}" = set; then :
   enableval=$enable_silent_rules;
@@ -4344,6 +4263,147 @@ else
   AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
 fi
 AM_BACKSLASH='\'
+
+
+#
+# Save initial user-tunable values
+#
+USER_LIBS=$LIBS
+for var in CC CFLAGS CPPFLAGS CXX CXXCPP LDFLAGS LIBS ; do
+  eval isset=\${$var+set}
+    if test "$isset" = 'set'; then
+        eval val=$`echo $var`
+        DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS}'${var}=${val}' "
+    fi
+done
+
+
+CONFIGURE_ARGS="$0 ${ac_configure_args}"
+
+
+# Source file containing package/library versioning information.
+. ${srcdir}/version.sh
+
+echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
+
+MAGICK_TARGET_CPU=$host_cpu
+
+
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_CPU $MAGICK_TARGET_CPU
+_ACEOF
+
+
+MAGICK_TARGET_VENDOR=$host_vendor
+
+
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_VENDOR $MAGICK_TARGET_VENDOR
+_ACEOF
+
+
+MAGICK_TARGET_OS=$host_os
+
+
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_OS $MAGICK_TARGET_OS
+_ACEOF
+
+
+
+# Substitute versioning
+MAGICK_MAJOR_VERSION=7
+
+MAGICK_MINOR_VERSION=0
+
+MAGICK_MICRO_VERSION=0
+
+MAGICK_PATCHLEVEL_VERSION=0
+
+MAGICK_VERSION=7.0.0-0
+
+MAGICK_SVN_REVISION=17466:17491M
+
+
+# Substitute library versioning
+MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
+
+MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
+
+
+MAGICKPP_LIBRARY_CURRENT_MIN=`expr $MAGICKPP_LIBRARY_CURRENT - $MAGICKPP_LIBRARY_AGE`
+
+MAGICKPP_LIBRARY_VERSION_INFO=$MAGICKPP_LIBRARY_CURRENT:$MAGICKPP_LIBRARY_REVISION:$MAGICKPP_LIBRARY_AGE
+
+
+
+# Ensure that make can run correctly
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
+$as_echo_n "checking whether build environment is sane... " >&6; }
+# Reject unsafe characters in $srcdir or the absolute working directory
+# name.  Accept space and tab only in the latter.
+am_lf='
+'
+case `pwd` in
+  *[\\\"\#\$\&\'\`$am_lf]*)
+    as_fn_error $? "unsafe absolute working directory name" "$LINENO" 5;;
+esac
+case $srcdir in
+  *[\\\"\#\$\&\'\`$am_lf\ \	]*)
+    as_fn_error $? "unsafe srcdir value: '$srcdir'" "$LINENO" 5;;
+esac
+
+# Do 'set' in a subshell so we don't clobber the current shell's
+# arguments.  Must try -L first in case configure is actually a
+# symlink; some systems play weird games with the mod time of symlinks
+# (eg FreeBSD returns the mod time of the symlink's containing
+# directory).
+if (
+   am_has_slept=no
+   for am_try in 1 2; do
+     echo "timestamp, slept: $am_has_slept" > conftest.file
+     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
+     if test "$*" = "X"; then
+	# -L didn't work.
+	set X `ls -t "$srcdir/configure" conftest.file`
+     fi
+     if test "$*" != "X $srcdir/configure conftest.file" \
+	&& test "$*" != "X conftest.file $srcdir/configure"; then
+
+	# If neither matched, then we have a broken ls.  This can happen
+	# if, for instance, CONFIG_SHELL is bash and it inherits a
+	# broken ls alias from the environment.  This has actually
+	# happened.  Such a system could not be considered "sane".
+	as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
+  alias in your environment" "$LINENO" 5
+     fi
+     if test "$2" = conftest.file || test $am_try -eq 2; then
+       break
+     fi
+     # Just in case.
+     sleep 1
+     am_has_slept=yes
+   done
+   test "$2" = conftest.file
+   )
+then
+   # Ok.
+   :
+else
+   as_fn_error $? "newly created file is older than distributed files!
+Check your system clock" "$LINENO" 5
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+# If we didn't sleep, we still need to ensure time stamps of config.status and
+# generated files are strictly newer.
+am_sleep_pid=
+if grep 'slept: no' conftest.file >/dev/null 2>&1; then
+  ( sleep 1 ) &
+  am_sleep_pid=$!
+fi
+
+rm -f conftest.file
 
 
 # versioning of library
@@ -5986,7 +6046,10 @@ $as_echo "$ac_cv_safe_to_define___extensions__" >&6; }
 
 
 
-# Check for programs
+# ==============================================================================
+# Find required base packages
+# ==============================================================================
+
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -8853,6 +8916,8 @@ $as_echo "no" >&6; }
 	fi
 
 fi
+
+
 
 # Test for 64-bit build.
 # The cast to long int works around a bug in the HP C Compiler
@@ -36239,6 +36304,29 @@ ac_config_commands="$ac_config_commands PerlMagick/check.sh.in"
 $as_echo "-------------------------------------------------------------" >&6; }
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: Update ImageMagick configuration" >&5
 $as_echo "Update ImageMagick configuration" >&6; }
+
+rm -f magick-version
+
+result_dejavu_font_dir='none'
+if test "${dejavu_font_dir}x" != 'x'; then
+    result_dejavu_font_dir=$dejavu_font_dir
+fi
+
+result_ghostscript_font_dir='none'
+if test "${ghostscript_font_dir}x" != 'x'; then
+    result_ghostscript_font_dir=$ghostscript_font_dir
+fi
+
+result_windows_font_dir='none'
+if test "${windows_font_dir}x" != 'x'; then
+    result_windows_font_dir=${windows_font_dir}
+fi
+
+# ==============================================================================
+# Generate build environment
+# ==============================================================================
+ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc MagickCore/MagickCore-config MagickCore/MagickCore.pc MagickCore/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 MagickWand/MagickWand-config MagickWand/MagickWand.pc"
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -36364,6 +36452,14 @@ else
   am__EXEEXT_FALSE=
 fi
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking that generated files are newer than configure" >&5
+$as_echo_n "checking that generated files are newer than configure... " >&6; }
+   if test -n "$am_sleep_pid"; then
+     # Hide warnings about reused PIDs.
+     wait $am_sleep_pid 2>/dev/null
+   fi
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: done" >&5
+$as_echo "done" >&6; }
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   as_fn_error $? "conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -37549,6 +37645,14 @@ do
   case $ac_config_target in
     "config/config.h") CONFIG_HEADERS="$CONFIG_HEADERS config/config.h" ;;
     "MagickCore/magick-baseconfig.h") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore/magick-baseconfig.h" ;;
+    "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
+    "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
+    "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
+    "magick.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS magick.sh.in" ;;
+    "MagickCore-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore-config.in" ;;
+    "MagickWand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickWand-config.in" ;;
+    "Magick++-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Magick++-config.in" ;;
+    "PerlMagick/check.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS PerlMagick/check.sh.in" ;;
     "common.shi") CONFIG_FILES="$CONFIG_FILES common.shi" ;;
     "config/configure.xml") CONFIG_FILES="$CONFIG_FILES config/configure.xml" ;;
     "config/delegates.xml") CONFIG_FILES="$CONFIG_FILES config/delegates.xml" ;;
@@ -37592,14 +37696,6 @@ do
     "utilities/stream.1") CONFIG_FILES="$CONFIG_FILES utilities/stream.1" ;;
     "MagickWand/MagickWand-config") CONFIG_FILES="$CONFIG_FILES MagickWand/MagickWand-config" ;;
     "MagickWand/MagickWand.pc") CONFIG_FILES="$CONFIG_FILES MagickWand/MagickWand.pc" ;;
-    "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
-    "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
-    "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
-    "magick.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS magick.sh.in" ;;
-    "MagickCore-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore-config.in" ;;
-    "MagickWand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickWand-config.in" ;;
-    "Magick++-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Magick++-config.in" ;;
-    "PerlMagick/check.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS PerlMagick/check.sh.in" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
@@ -39221,186 +39317,180 @@ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
 
-rm -f magick-version
-
-result_dejavu_font_dir='none'
-if test "${dejavu_font_dir}x" != 'x'; then
-    result_dejavu_font_dir=$dejavu_font_dir
-fi
-
-result_ghostscript_font_dir='none'
-if test "${ghostscript_font_dir}x" != 'x'; then
-    result_ghostscript_font_dir=$ghostscript_font_dir
-fi
-
-result_windows_font_dir='none'
-if test "${windows_font_dir}x" != 'x'; then
-    result_windows_font_dir=${windows_font_dir}
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result:
+# ==============================================================================
+# ImageMagick Configuration
+# ==============================================================================
+{ $as_echo "$as_me:${as_lineno-$LINENO}:
+==============================================================================
 ImageMagick is configured as follows. Please verify that this configuration
 matches your expectations.
 
-Host system type: $host
-Build system type: $build
+  Host system type: $host
+  Build system type: $build
 
                   Option                        Value
--------------------------------------------------------------------------------
-Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
-Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
-Module support    --with-modules=$build_modules		$build_modules
-GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
-Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
-High Dynamic Range Imagery
-                  --enable-hdri=$enable_hdri		$enable_hdri
+  ------------------------------------------------------------------------------
+  Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
+  Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
+  Module support    --with-modules=$build_modules		$build_modules
+  GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
+  Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
+  High Dynamic Range Imagery
+                    --enable-hdri=$enable_hdri		$enable_hdri
 
-Delegate Library Configuration:
-BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
-Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
-DJVU              --with-djvu=$with_djvu		$have_djvu
-DPS               --with-dps=$with_dps		$have_dps
-FFTW              --with-fftw=$with_fftw		$have_fftw
-FlashPIX          --with-fpx=$with_fpx		$have_fpx
-FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
-FreeType          --with-freetype=$with_freetype		$have_freetype
-Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
-Graphviz          --with-gvc=$with_gvc		$have_gvc
-JBIG              --with-jbig=$with_jbig		$have_jbig
-JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-JPEG-2000         --with-jp2=$with_jp2		$have_jp2
-LCMS v1           --with-lcms=$with_lcms		$have_lcms
-LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
-LIBJPEG2          --with-openjp2=$with_openjp2	$have_openjp2
-LQR               --with-lqr=$with_lqr		$have_lqr
-LTDL              --with-ltdl=$with_ltdl		$have_ltdl
-LZMA              --with-lzma=$with_lzma		$have_lzma
-Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
-OpenEXR           --with-openexr=$with_openexr		$have_openexr
-PANGO             --with-pango=$with_pango		$have_pango
-PERL              --with-perl=$with_perl		$have_perl
-PNG               --with-png=$with_png		$have_png
-RSVG              --with-rsvg=$with_rsvg		$have_rsvg
-TIFF              --with-tiff=$with_tiff		$have_tiff
-WEBP              --with-webp=$with_webp		$have_webp
-WMF               --with-wmf=$with_wmf		$have_wmf
-X11               --with-x=$with_x			$have_x
-XML               --with-xml=$with_xml		$have_xml
-ZLIB              --with-zlib=$with_zlib		$have_zlib
+  Install documentation:    	$wantdocs
 
-Delegate Program Configuration:
-GhostPCL          None				$PCLDelegate ($PCLVersion)
-GhostXPS          None				$XPSDelegate ($XPSVersion)
-Ghostscript       None				$PSDelegate ($GSVersion)
+  Delegate Library Configuration:
+  BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
+  Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
+  DJVU              --with-djvu=$with_djvu		$have_djvu
+  DPS               --with-dps=$with_dps		$have_dps
+  FFTW              --with-fftw=$with_fftw		$have_fftw
+  FlashPIX          --with-fpx=$with_fpx		$have_fpx
+  FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
+  FreeType          --with-freetype=$with_freetype		$have_freetype
+  Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
+  Graphviz          --with-gvc=$with_gvc		$have_gvc
+  JBIG              --with-jbig=$with_jbig		$have_jbig
+  JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
+  JPEG-2000         --with-jp2=$with_jp2		$have_jp2
+  LCMS v1           --with-lcms=$with_lcms		$have_lcms
+  LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
+  LIBJPEG2          --with-openjp2=$with_openjp2	$have_openjp2
+  LQR               --with-lqr=$with_lqr		$have_lqr
+  LTDL              --with-ltdl=$with_ltdl		$have_ltdl
+  LZMA              --with-lzma=$with_lzma		$have_lzma
+  Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
+  OpenEXR           --with-openexr=$with_openexr		$have_openexr
+  PANGO             --with-pango=$with_pango		$have_pango
+  PERL              --with-perl=$with_perl		$have_perl
+  PNG               --with-png=$with_png		$have_png
+  RSVG              --with-rsvg=$with_rsvg		$have_rsvg
+  TIFF              --with-tiff=$with_tiff		$have_tiff
+  WEBP              --with-webp=$with_webp		$have_webp
+  WMF               --with-wmf=$with_wmf		$have_wmf
+  X11               --with-x=$with_x			$have_x
+  XML               --with-xml=$with_xml		$have_xml
+  ZLIB              --with-zlib=$with_zlib		$have_zlib
 
-Font Configuration:
-Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
-Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
-Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
-Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
+  Delegate Program Configuration:
+  GhostPCL          None				$PCLDelegate ($PCLVersion)
+  GhostXPS          None				$XPSDelegate ($XPSVersion)
+  Ghostscript       None				$PSDelegate ($GSVersion)
 
-X11 Configuration:
-      X_CFLAGS        = $X_CFLAGS
-      X_PRE_LIBS      = $X_PRE_LIBS
-      X_LIBS          = $X_LIBS
-      X_EXTRA_LIBS    = $X_EXTRA_LIBS
+  Font Configuration:
+  Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
+  Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
+  Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
+  Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 
-Options used to compile and link:
-  PREFIX          = $PREFIX_DIR
-  EXEC-PREFIX     = $EXEC_PREFIX_DIR
-  VERSION         = $PACKAGE_VERSION
-  CC              = $CC
-  CFLAGS          = $CFLAGS
-  CPPFLAGS        = $CPPFLAGS
-  PCFLAGS         = $PCFLAGS
-  DEFS            = $DEFS
-  LDFLAGS         = $LDFLAGS
-  LIBS            = $LIBS
-  CXX             = $CXX
-  CXXFLAGS        = $CXXFLAGS
-  FEATURES        = $MAGICK_FEATURES
-  DELEGATES       = $MAGICK_DELEGATES
+  X11 Configuration:
+        X_CFLAGS        = $X_CFLAGS
+        X_PRE_LIBS      = $X_PRE_LIBS
+        X_LIBS          = $X_LIBS
+        X_EXTRA_LIBS    = $X_EXTRA_LIBS
+
+  Options used to compile and link:
+    PREFIX          = $PREFIX_DIR
+    EXEC-PREFIX     = $EXEC_PREFIX_DIR
+    VERSION         = $PACKAGE_VERSION
+    CC              = $CC
+    CFLAGS          = $CFLAGS
+    CPPFLAGS        = $CPPFLAGS
+    PCFLAGS         = $PCFLAGS
+    DEFS            = $DEFS
+    LDFLAGS         = $LDFLAGS
+    LIBS            = $LIBS
+    CXX             = $CXX
+    CXXFLAGS        = $CXXFLAGS
+    FEATURES        = $MAGICK_FEATURES
+    DELEGATES       = $MAGICK_DELEGATES
+==============================================================================
 " >&5
-$as_echo "
+$as_echo "$as_me:
+==============================================================================
 ImageMagick is configured as follows. Please verify that this configuration
 matches your expectations.
 
-Host system type: $host
-Build system type: $build
+  Host system type: $host
+  Build system type: $build
 
                   Option                        Value
--------------------------------------------------------------------------------
-Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
-Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
-Module support    --with-modules=$build_modules		$build_modules
-GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
-Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
-High Dynamic Range Imagery
-                  --enable-hdri=$enable_hdri		$enable_hdri
+  ------------------------------------------------------------------------------
+  Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
+  Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
+  Module support    --with-modules=$build_modules		$build_modules
+  GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
+  Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
+  High Dynamic Range Imagery
+                    --enable-hdri=$enable_hdri		$enable_hdri
 
-Delegate Library Configuration:
-BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
-Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
-DJVU              --with-djvu=$with_djvu		$have_djvu
-DPS               --with-dps=$with_dps		$have_dps
-FFTW              --with-fftw=$with_fftw		$have_fftw
-FlashPIX          --with-fpx=$with_fpx		$have_fpx
-FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
-FreeType          --with-freetype=$with_freetype		$have_freetype
-Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
-Graphviz          --with-gvc=$with_gvc		$have_gvc
-JBIG              --with-jbig=$with_jbig		$have_jbig
-JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-JPEG-2000         --with-jp2=$with_jp2		$have_jp2
-LCMS v1           --with-lcms=$with_lcms		$have_lcms
-LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
-LIBJPEG2          --with-openjp2=$with_openjp2	$have_openjp2
-LQR               --with-lqr=$with_lqr		$have_lqr
-LTDL              --with-ltdl=$with_ltdl		$have_ltdl
-LZMA              --with-lzma=$with_lzma		$have_lzma
-Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
-OpenEXR           --with-openexr=$with_openexr		$have_openexr
-PANGO             --with-pango=$with_pango		$have_pango
-PERL              --with-perl=$with_perl		$have_perl
-PNG               --with-png=$with_png		$have_png
-RSVG              --with-rsvg=$with_rsvg		$have_rsvg
-TIFF              --with-tiff=$with_tiff		$have_tiff
-WEBP              --with-webp=$with_webp		$have_webp
-WMF               --with-wmf=$with_wmf		$have_wmf
-X11               --with-x=$with_x			$have_x
-XML               --with-xml=$with_xml		$have_xml
-ZLIB              --with-zlib=$with_zlib		$have_zlib
+  Install documentation:    	$wantdocs
 
-Delegate Program Configuration:
-GhostPCL          None				$PCLDelegate ($PCLVersion)
-GhostXPS          None				$XPSDelegate ($XPSVersion)
-Ghostscript       None				$PSDelegate ($GSVersion)
+  Delegate Library Configuration:
+  BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
+  Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
+  DJVU              --with-djvu=$with_djvu		$have_djvu
+  DPS               --with-dps=$with_dps		$have_dps
+  FFTW              --with-fftw=$with_fftw		$have_fftw
+  FlashPIX          --with-fpx=$with_fpx		$have_fpx
+  FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
+  FreeType          --with-freetype=$with_freetype		$have_freetype
+  Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
+  Graphviz          --with-gvc=$with_gvc		$have_gvc
+  JBIG              --with-jbig=$with_jbig		$have_jbig
+  JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
+  JPEG-2000         --with-jp2=$with_jp2		$have_jp2
+  LCMS v1           --with-lcms=$with_lcms		$have_lcms
+  LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
+  LIBJPEG2          --with-openjp2=$with_openjp2	$have_openjp2
+  LQR               --with-lqr=$with_lqr		$have_lqr
+  LTDL              --with-ltdl=$with_ltdl		$have_ltdl
+  LZMA              --with-lzma=$with_lzma		$have_lzma
+  Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
+  OpenEXR           --with-openexr=$with_openexr		$have_openexr
+  PANGO             --with-pango=$with_pango		$have_pango
+  PERL              --with-perl=$with_perl		$have_perl
+  PNG               --with-png=$with_png		$have_png
+  RSVG              --with-rsvg=$with_rsvg		$have_rsvg
+  TIFF              --with-tiff=$with_tiff		$have_tiff
+  WEBP              --with-webp=$with_webp		$have_webp
+  WMF               --with-wmf=$with_wmf		$have_wmf
+  X11               --with-x=$with_x			$have_x
+  XML               --with-xml=$with_xml		$have_xml
+  ZLIB              --with-zlib=$with_zlib		$have_zlib
 
-Font Configuration:
-Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
-Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
-Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
-Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
+  Delegate Program Configuration:
+  GhostPCL          None				$PCLDelegate ($PCLVersion)
+  GhostXPS          None				$XPSDelegate ($XPSVersion)
+  Ghostscript       None				$PSDelegate ($GSVersion)
 
-X11 Configuration:
-      X_CFLAGS        = $X_CFLAGS
-      X_PRE_LIBS      = $X_PRE_LIBS
-      X_LIBS          = $X_LIBS
-      X_EXTRA_LIBS    = $X_EXTRA_LIBS
+  Font Configuration:
+  Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
+  Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
+  Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
+  Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 
-Options used to compile and link:
-  PREFIX          = $PREFIX_DIR
-  EXEC-PREFIX     = $EXEC_PREFIX_DIR
-  VERSION         = $PACKAGE_VERSION
-  CC              = $CC
-  CFLAGS          = $CFLAGS
-  CPPFLAGS        = $CPPFLAGS
-  PCFLAGS         = $PCFLAGS
-  DEFS            = $DEFS
-  LDFLAGS         = $LDFLAGS
-  LIBS            = $LIBS
-  CXX             = $CXX
-  CXXFLAGS        = $CXXFLAGS
-  FEATURES        = $MAGICK_FEATURES
-  DELEGATES       = $MAGICK_DELEGATES
-" >&6; }
+  X11 Configuration:
+        X_CFLAGS        = $X_CFLAGS
+        X_PRE_LIBS      = $X_PRE_LIBS
+        X_LIBS          = $X_LIBS
+        X_EXTRA_LIBS    = $X_EXTRA_LIBS
+
+  Options used to compile and link:
+    PREFIX          = $PREFIX_DIR
+    EXEC-PREFIX     = $EXEC_PREFIX_DIR
+    VERSION         = $PACKAGE_VERSION
+    CC              = $CC
+    CFLAGS          = $CFLAGS
+    CPPFLAGS        = $CPPFLAGS
+    PCFLAGS         = $PCFLAGS
+    DEFS            = $DEFS
+    LDFLAGS         = $LDFLAGS
+    LIBS            = $LIBS
+    CXX             = $CXX
+    CXXFLAGS        = $CXXFLAGS
+    FEATURES        = $MAGICK_FEATURES
+    DELEGATES       = $MAGICK_DELEGATES
+==============================================================================
+" >&6;}
