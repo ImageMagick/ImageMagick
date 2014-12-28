@@ -161,7 +161,7 @@ static size_t CopyXPMColor(char *destination,const char *source,size_t length)
     *destination++=(*p++);
   if (length != 0)
     *destination='\0';
-  return((size_t) (p-source-1));
+  return((size_t) (p-source));
 }
 
 static char *NextXPMLine(char *p)
