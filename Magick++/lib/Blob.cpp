@@ -28,51 +28,25 @@ Magick::Blob::Blob(const Magick::Blob& blob_)
   : _blobRef(blob_._blobRef)
 {
   // Increase reference count
-  Lock(&_blobRef->mutexLock);
-  ++_blobRef->refCount;
+  _blobRef->increase();
 }
 
 Magick::Blob::~Blob()
 {
-  bool
-    doDelete;
+  if (_blobRef->decrease() == 0)
+    delete _blobRef;
 
-  doDelete=false;
-  {
-    Lock(&_blobRef->mutexLock);
-    if (--_blobRef->refCount == 0)
-      doDelete=true;
-  }
-
-  if (doDelete)
-    {
-      // Delete old blob reference with associated data
-      delete _blobRef;
-    }
-  _blobRef=0;
+  _blobRef=(Magick::BlobRef *) NULL;
 }
 
 Magick::Blob& Magick::Blob::operator=(const Magick::Blob& blob_)
 {
-  bool
-    doDelete;
-
   if (this != &blob_)
     {
-      {
-        Lock(&blob_._blobRef->mutexLock);
-        ++blob_._blobRef->refCount;
-      }
-      doDelete=false;
-      {
-        Lock(&_blobRef->mutexLock);
-        if (--_blobRef->refCount == 0)
-          doDelete=true;
-      }
-      if (doDelete)
-        {
-          delete _blobRef;
-        }
+      blob_._blobRef->increase();
+      if (_blobRef->decrease() == 0)
+        delete _blobRef;
+      
       _blobRef=blob_._blobRef;
     }
   return(*this);
@@ -130,20 +104,8 @@ size_t Magick::Blob::length(void) const
 
 void Magick::Blob::update(const void* data_,size_t length_)
 {
-  bool
-    doDelete; 
-
-  doDelete=false;
-  {
-    Lock(&_blobRef->mutexLock);
-    if (--_blobRef->refCount == 0)
-      doDelete=true;
-  }
-  if (doDelete)
-    {
-      // Delete old blob reference with associated data
-      delete _blobRef;
-    }
+  if (_blobRef->decrease() == 0)
+    delete _blobRef;
 
   _blobRef=new Magick::BlobRef(data_,length_);
 }
@@ -151,21 +113,10 @@ void Magick::Blob::update(const void* data_,size_t length_)
 void Magick::Blob::updateNoCopy(void* data_,size_t length_,
   Magick::Blob::Allocator allocator_)
 {
-  bool
-    doDelete;
-  
-  doDelete=false;
-  {
-    Lock(&_blobRef->mutexLock);
-    if (--_blobRef->refCount == 0)
-      doDelete=true;
-  }
-  if (doDelete)
-    {
-      // Delete old blob reference with associated data
-      delete _blobRef;
-    }
-  _blobRef=new Magick::BlobRef(0,0);
+  if (_blobRef->decrease() == 0)
+    delete _blobRef;
+
+  _blobRef=new Magick::BlobRef((const void*) NULL,0);
   _blobRef->data=data_;
   _blobRef->length=length_;
   _blobRef->allocator=allocator_;

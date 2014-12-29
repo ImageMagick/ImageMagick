@@ -48,8 +48,8 @@ Magick::MutexLock::MutexLock(void)
   security.bInheritHandle=TRUE;
 
   /* Create the semaphore, with initial value signaled */
-  _mutex.id=::CreateSemaphore(&security,1,MAXSEMLEN,(LPCSTR) NULL);
-  if (_mutex.id != (HANDLE) NULL)
+  _mutex=::CreateSemaphore(&security,1,1,(LPCSTR) NULL);
+  if (_mutex != (HANDLE) NULL)
     return;
   throwExceptionExplicit(OptionError,"mutex initialization failed");
 }
@@ -73,7 +73,7 @@ Magick::MutexLock::~MutexLock(void)
     strerror(sysError));
 #endif
 #if defined(_MT) && defined(_VISUALC_)
-  if (::CloseHandle(_mutex.id) != 0)
+  if (::CloseHandle(_mutex) != 0)
     return;
   throwExceptionExplicit(OptionError,"mutex destruction failed");
 #endif
@@ -92,7 +92,7 @@ void Magick::MutexLock::lock(void)
     strerror(sysError));
 #endif
 #if defined(_MT) && defined(_VISUALC_)
-  if (WaitForSingleObject(_mutex.id,INFINITE) != WAIT_FAILED)
+  if (WaitForSingleObject(_mutex,INFINITE) != WAIT_FAILED)
     return;
   throwExceptionExplicit(OptionError,"mutex lock failed");
 #endif
@@ -111,7 +111,7 @@ void Magick::MutexLock::unlock(void)
     strerror(sysError));
 #endif
 #if defined(_MT) && defined(_VISUALC_)
-  if (ReleaseSemaphore(_mutex.id,1,(LPLONG) NULL) == TRUE)
+  if (ReleaseSemaphore(_mutex,1,(LPLONG) NULL) == TRUE)
     return;
   throwExceptionExplicit(OptionError,"mutex unlock failed");
 #endif

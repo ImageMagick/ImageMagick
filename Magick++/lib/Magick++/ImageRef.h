@@ -11,6 +11,7 @@
 #if !defined(Magick_ImageRef_header)
 #define Magick_ImageRef_header
 
+#include <string>
 #include "Magick++/Include.h"
 #include "Magick++/Thread.h"
 
@@ -23,9 +24,7 @@ namespace Magick
   //
   class MagickPPExport ImageRef
   {
-    friend class Image;
-
-  private:
+  public:
 
     // Construct with null image and default options
     ImageRef(void);
@@ -39,22 +38,41 @@ namespace Magick
     // Destroy image and options
     ~ImageRef(void);
 
-    // Copy constructor and assignment are not supported
-    ImageRef(const ImageRef&);
-    ImageRef& operator=(const ImageRef&);
+    // Decreases reference count and return the new count
+    size_t decrease();
 
     // Retrieve image from reference
-    void image(MagickCore::Image *image_);
     MagickCore::Image *&image(void);
+
+    // Increases reference count
+    void increase();
+
+    // Returns true if the reference count is one
+    bool isOwner();
 
     // Retrieve Options from reference
     void options(Options *options_);
     Options *options(void);
 
+    // Tries to replaces the images with the specified image, returns fails
+    // when this fails
+    bool replaceImage(MagickCore::Image *replacement_);
+
+    // Image signature. Set force_ to true in order to re-calculate
+    // the signature regardless of whether the image data has been
+    // modified.
+    std::string signature(const bool force_=false);
+
+  private:
+
+    // Copy constructor and assignment are not supported
+    ImageRef(const ImageRef&);
+    ImageRef& operator=(const ImageRef&);
+
     MagickCore::Image *_image;    // ImageMagick Image
+    MutexLock         _mutexLock; // Mutex lock
     Options           *_options;  // User-specified options
     ::ssize_t         _refCount;  // Reference count
-    MutexLock         _mutexLock; // Mutex lock
   };
 
 } // end of namespace Magick

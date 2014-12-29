@@ -210,10 +210,7 @@ Magick::Image::Image(const Geometry &size_,const Color &color_)
 Magick::Image::Image(const Image &image_)
   : _imgRef(image_._imgRef)
 {
-  Lock(&_imgRef->_mutexLock);
-
-  // Increase reference count
-  ++_imgRef->_refCount;
+  _imgRef->increase();
 }
 
 Magick::Image::Image(const size_t width_,const size_t height_,
@@ -258,49 +255,23 @@ Magick::Image::Image(const std::string &imageSpec_)
 
 Magick::Image::~Image()
 {
-  bool
-    doDelete=false;
-
-  {
-    Lock(&_imgRef->_mutexLock);
-    if (--_imgRef->_refCount == 0)
-      doDelete=true;
-  }
-
-  if (doDelete)
+  if (_imgRef->decrease() == 0)
     delete _imgRef;
 
-  _imgRef=0;
+  _imgRef=(Magick::ImageRef *) NULL;
 }
 
 Magick::Image& Magick::Image::operator=(const Magick::Image &image_)
 {
-  if(this != &image_)
+  if (this != &image_)
     {
-      bool
-        doDelete=false;
+      image_._imgRef->increase();
+      if (_imgRef->decrease() == 0)
+        delete _imgRef;
 
-      {
-        Lock(&image_._imgRef->_mutexLock);
-        ++image_._imgRef->_refCount;
-      }
-
-      {
-        Lock(&_imgRef->_mutexLock);
-        if (--_imgRef->_refCount == 0)
-          doDelete=true;
-      }
-
-      if (doDelete)
-        {
-          // Delete old image reference with associated image and options.
-          delete _imgRef;
-          _imgRef=0;
-        }
       // Use new image reference
       _imgRef=image_._imgRef;
     }
-
   return(*this);
 }
 
@@ -4254,22 +4225,7 @@ void Magick::Image::sigmoidalContrast(const size_t sharpen_,
 
 std::string Magick::Image::signature(const bool force_) const
 {
-  const char
-    *property;
-
-  Lock(&_imgRef->_mutexLock);
-
-  // Re-calculate image signature if necessary
-  GetPPException;
-  if (force_ || !GetImageProperty(constImage(),"Signature",exceptionInfo) ||
-    constImage()->taint)
-    SignatureImage(const_cast<MagickCore::Image *>(constImage()),
-      exceptionInfo);
-
-  property=GetImageProperty(constImage(),"Signature",exceptionInfo);
-  ThrowPPException;
-
-  return(std::string(property));
+  return(_imgRef->signature());
 }
 
 void Magick::Image::sketch(const double radius_,const double sigma_,
@@ -4822,11 +4778,8 @@ const MagickCore::QuantizeInfo *Magick::Image::constQuantizeInfo(void) const
 
 void Magick::Image::modifyImage(void)
 {
-  {
-    Lock(&_imgRef->_mutexLock);
-    if (_imgRef->_refCount == 1)
-      return;
-  }
+  if (_imgRef->isOwner())
+    return;
 
   GetPPException;
   replaceImage(CloneImage(image(),0,0,MagickTrue,exceptionInfo));
@@ -4839,7 +4792,7 @@ MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
     *image;
 
   if (replacement_)
-    image = replacement_;
+    image=replacement_;
   else
     {
       GetPPException;
@@ -4847,23 +4800,17 @@ MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
       ThrowPPException;
     }
 
-  {
-    Lock(&_imgRef->_mutexLock);
+  // We can replace the image if we own it.
+  if (!_imgRef->replaceImage(image))
+    {
+      // We don't own the image, dereference and replace with new reference
+      if (_imgRef->decrease() == 0)
+        delete _imgRef;
 
-    if (_imgRef->_refCount == 1)
-      {
-        // We own the image, just replace it
-        _imgRef->image(image);
-      }
-    else
-      {
-        // We don't own the image, dereference and replace with copy
-        --_imgRef->_refCount;
-        _imgRef=new ImageRef(image,constOptions());
-      }
-  }
+      _imgRef=new ImageRef(image,constOptions());
+    }
 
-  return(_imgRef->_image);
+  return(image);
 }
 
 void Magick::Image::read(MagickCore::Image *image,
