@@ -726,9 +726,9 @@ static const DDSSingleColourLookup*
 if (min > max) \
   min = max; \
 if (max - min < steps) \
-  max = Min(min + steps, 255); \
+  max = MagickMin(min + steps, 255); \
 if (max - min < steps) \
-  min = Max(min - steps, 0)
+  min = MagickMax(min - steps, 0)
 
 #define Dot(left, right) (left.x*right.x) + (left.y*right.y) + (left.z*right.z)
 
@@ -742,95 +742,34 @@ if (max - min < steps) \
 /*
   Forward declarations
 */
+/*
+  Forward declarations
+*/
 static MagickBooleanType
-  ConstructOrdering(const size_t, const DDSVector4 *, const DDSVector3,
-  DDSVector4 *, DDSVector4 *, unsigned char *, size_t);
-
-static MagickBooleanType
-  ReadDDSInfo(Image *, DDSInfo *);
-
-static void
-  CalculateColors(unsigned short, unsigned short,
-    DDSColors *, MagickBooleanType);
-
-static MagickBooleanType
-  ReadDXT1(Image *, DDSInfo *, ExceptionInfo *);
-
-static MagickBooleanType
-  ReadDXT3(Image *, DDSInfo *, ExceptionInfo *);
-
-static MagickBooleanType
-  ReadDXT5(Image *, DDSInfo *, ExceptionInfo *);
-
-static MagickBooleanType
-  ReadUncompressedRGB(Image *, DDSInfo *, ExceptionInfo *);
-
-static MagickBooleanType
-  ReadUncompressedRGBA(Image *, DDSInfo *, ExceptionInfo *);
+  ConstructOrdering(const size_t,const DDSVector4 *,const DDSVector3,
+    DDSVector4 *, DDSVector4 *, unsigned char *, size_t),
+  ReadDDSInfo(Image *,DDSInfo *),
+  ReadDXT1(Image *,DDSInfo *,ExceptionInfo *),
+  ReadDXT3(Image *,DDSInfo *,ExceptionInfo *),
+  ReadDXT5(Image *,DDSInfo *,ExceptionInfo *),
+  ReadUncompressedRGB(Image *,DDSInfo *,ExceptionInfo *),
+  ReadUncompressedRGBA(Image *,DDSInfo *,ExceptionInfo *),
+  SkipDXTMipmaps(Image *,DDSInfo *,int,ExceptionInfo *),
+  SkipRGBMipmaps(Image *,DDSInfo *,int,ExceptionInfo *),
+  WriteDDSImage(const ImageInfo *,Image *,ExceptionInfo *),
+  WriteMipmaps(Image *,const size_t,const size_t,const size_t,
+    const MagickBooleanType,const MagickBooleanType,ExceptionInfo *);
 
 static void
-  RemapIndices(const ssize_t *, const unsigned char *, unsigned char *);
-
-static void
-  SkipDXTMipmaps(Image *, DDSInfo *, int);
-
-static void
-  SkipRGBMipmaps(Image *, DDSInfo *, int);
-
-static
-  MagickBooleanType WriteDDSImage(const ImageInfo *, Image *, ExceptionInfo *);
-
-static void
-  WriteDDSInfo(Image *, const size_t, const size_t, const size_t);
-
-static void
-  WriteFourCC(Image *, const size_t, const MagickBooleanType,
-    const MagickBooleanType, ExceptionInfo *);
-
-static void
-  WriteImageData(Image *, const size_t, const size_t, const MagickBooleanType,
-  const MagickBooleanType, ExceptionInfo *);
-
-static void
-  WriteIndices(Image *, const DDSVector3, const DDSVector3, unsigned char *);
-
-static MagickBooleanType
-  WriteMipmaps(Image *, const size_t, const size_t, const size_t,
-    const MagickBooleanType, const MagickBooleanType, ExceptionInfo *);
-
-static void
-  WriteSingleColorFit(Image *, const DDSVector4 *, const ssize_t *);
-
-static void
-  WriteUncompressed(Image *, ExceptionInfo *);
-
-static inline size_t Max(size_t one, size_t two)
-{
-  if (one > two)
-    return one;
-  return two;
-}
-
-static inline float MaxF(float one, float two)
-{
-  if (one > two)
-    return one;
-  return two;
-}
-
-static inline size_t Min(size_t one, size_t two)
-{
-  if (one < two)
-    return one;
-  return two;
-}
-
-static inline float MinF(float one, float two)
-{
-  if (one < two)
-    return one;
-  return two;
-}
+  RemapIndices(const ssize_t *,const unsigned char *,unsigned char *),
+  WriteDDSInfo(Image *,const size_t,const size_t,const size_t),
+  WriteFourCC(Image *,const size_t,const MagickBooleanType,
+    const MagickBooleanType,ExceptionInfo *),
+  WriteImageData(Image *,const size_t,const size_t,const MagickBooleanType,
+    const MagickBooleanType,ExceptionInfo *),
+  WriteIndices(Image *,const DDSVector3,const DDSVector3,unsigned char *),
+  WriteSingleColorFit(Image *,const DDSVector4 *,const ssize_t *),
+  WriteUncompressed(Image *,ExceptionInfo *);
 
 static inline void VectorAdd(const DDSVector4 left, const DDSVector4 right,
   DDSVector4 *destination)
@@ -843,17 +782,17 @@ static inline void VectorAdd(const DDSVector4 left, const DDSVector4 right,
 
 static inline void VectorClamp(DDSVector4 *value)
 {
-  value->x = MinF(1.0f,MaxF(0.0f,value->x));
-  value->y = MinF(1.0f,MaxF(0.0f,value->y));
-  value->z = MinF(1.0f,MaxF(0.0f,value->z));
-  value->w = MinF(1.0f,MaxF(0.0f,value->w));
+  value->x = MagickMin(1.0f,MagickMax(0.0f,value->x));
+  value->y = MagickMin(1.0f,MagickMax(0.0f,value->y));
+  value->z = MagickMin(1.0f,MagickMax(0.0f,value->z));
+  value->w = MagickMin(1.0f,MagickMax(0.0f,value->w));
 }
 
 static inline void VectorClamp3(DDSVector3 *value)
 {
-  value->x = MinF(1.0f,MaxF(0.0f,value->x));
-  value->y = MinF(1.0f,MaxF(0.0f,value->y));
-  value->z = MinF(1.0f,MaxF(0.0f,value->z));
+  value->x = MagickMin(1.0f,MagickMax(0.0f,value->x));
+  value->y = MagickMin(1.0f,MagickMax(0.0f,value->y));
+  value->z = MagickMin(1.0f,MagickMax(0.0f,value->z));
 }
 
 static inline void VectorCopy43(const DDSVector4 source,
@@ -1478,7 +1417,7 @@ static void ComputePrincipleComponent(const float *covariance,
     w.z = (row2.z * v.z) + w.z;
     w.w = (row2.w * v.z) + w.w;
 
-    a = 1.0f / MaxF(w.x,MaxF(w.y,w.z));
+    a = 1.0f / MagickMax(w.x,MagickMax(w.y,w.z));
 
     v.x = w.x * a;
     v.y = w.y * a;
@@ -1841,8 +1780,6 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if (n != 0)
       {
-        if (EOFBlob(image) != MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         /* Start a new image */
         AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
@@ -1962,8 +1899,8 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info,
     for (x = 0; x < (ssize_t) dds_info->width; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
-        Min(4, dds_info->height - y),exception);
+      q = QueueAuthenticPixels(image, x, y, MagickMin(4, dds_info->width - x),
+        MagickMin(4, dds_info->height - y),exception);
       
       if (q == (Quantum *) NULL)
         return MagickFalse;
@@ -2000,9 +1937,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info,
     }
   }
   
-  SkipDXTMipmaps(image, dds_info, 8);
-  
-  return MagickTrue;
+  return(SkipDXTMipmaps(image,dds_info,8,exception));
 }
 
 static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info,
@@ -2040,8 +1975,8 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info,
     for (x = 0; x < (ssize_t) dds_info->width; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
-                         Min(4, dds_info->height - y),exception);
+      q = QueueAuthenticPixels(image, x, y, MagickMin(4, dds_info->width - x),
+                         MagickMin(4, dds_info->height - y),exception);
       
       if (q == (Quantum *) NULL)
         return MagickFalse;
@@ -2086,9 +2021,7 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info,
     }
   }
   
-  SkipDXTMipmaps(image, dds_info, 16);
-  
-  return MagickTrue;
+  return(SkipDXTMipmaps(image,dds_info,16,exception));
 }
 
 static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info,
@@ -2130,8 +2063,8 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info,
     for (x = 0; x < (ssize_t) dds_info->width; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
-                         Min(4, dds_info->height - y),exception);
+      q = QueueAuthenticPixels(image, x, y, MagickMin(4, dds_info->width - x),
+                         MagickMin(4, dds_info->height - y),exception);
       
       if (q == (Quantum *) NULL)
         return MagickFalse;
@@ -2187,9 +2120,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info,
     }
   }
   
-  SkipDXTMipmaps(image, dds_info, 16);
-  
-  return MagickTrue;
+  return(SkipDXTMipmaps(image,dds_info,16,exception));
 }
 
 static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info,
@@ -2250,9 +2181,7 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info,
       return MagickFalse;
   }
   
-  SkipRGBMipmaps(image, dds_info, 3);
-  
-  return MagickTrue;
+  return(SkipRGBMipmaps(image,dds_info,3,exception));
 }
 
 static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,
@@ -2344,9 +2273,7 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,
       return MagickFalse;
   }
   
-  SkipRGBMipmaps(image, dds_info, 4);
-  
-  return MagickTrue;
+  return(SkipRGBMipmaps(image,dds_info,4,exception));
 }
 
 /*
@@ -2422,7 +2349,8 @@ static void RemapIndices(const ssize_t *map, const unsigned char *source,
 /*
   Skip the mipmap images for compressed (DXTn) dds files
 */
-static void SkipDXTMipmaps(Image *image, DDSInfo *dds_info, int texel_size)
+static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
+  int texel_size,ExceptionInfo *exception)
 {
   MagickOffsetType
     offset;
@@ -2441,6 +2369,12 @@ static void SkipDXTMipmaps(Image *image, DDSInfo *dds_info, int texel_size)
       && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
           || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
     {
+      if (EOFBlob(image) != MagickFalse)
+        {
+          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
+          return(MagickFalse);
+        }
       w = DIV2(dds_info->width);
       h = DIV2(dds_info->height);
       
@@ -2456,12 +2390,14 @@ static void SkipDXTMipmaps(Image *image, DDSInfo *dds_info, int texel_size)
         h = DIV2(h);
       }
     }
+  return(MagickTrue);
 }
 
 /*
   Skip the mipmap images for uncompressed (RGB or RGBA) dds files
 */
-static void SkipRGBMipmaps(Image *image, DDSInfo *dds_info, int pixel_size)
+static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
+  int pixel_size,ExceptionInfo *exception)
 {
   MagickOffsetType
     offset;
@@ -2480,6 +2416,12 @@ static void SkipRGBMipmaps(Image *image, DDSInfo *dds_info, int pixel_size)
       && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
           || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
     {
+      if (EOFBlob(image) != MagickFalse)
+        {
+          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
+          return(MagickFalse);
+        }
       w = DIV2(dds_info->width);
       h = DIV2(dds_info->height);
       
@@ -2495,6 +2437,7 @@ static void SkipRGBMipmaps(Image *image, DDSInfo *dds_info, int pixel_size)
         h = DIV2(h);
       }
     }
+  return(MagickTrue);
 }
 
 /*
@@ -2778,10 +2721,10 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
 
   if (compression == FOURCC_DXT1)
     (void) WriteBlobLSBLong(image,
-             (unsigned int) (Max(1,(image->columns+3)/4) * 8));
+             (unsigned int) (MagickMax(1,(image->columns+3)/4) * 8));
   else
     (void) WriteBlobLSBLong(image,
-             (unsigned int) (Max(1,(image->columns+3)/4) * 16));
+             (unsigned int) (MagickMax(1,(image->columns+3)/4) * 16));
 
   (void) WriteBlobLSBLong(image,0x00);
   (void) WriteBlobLSBLong(image,(unsigned int) mipmaps+1);
