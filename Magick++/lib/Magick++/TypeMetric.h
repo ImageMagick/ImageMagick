@@ -1,6 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 2001, 2002
+// Copyright Dirk Lemstra 2014
 //
 // TypeMetric Definition
 //
