@@ -1095,18 +1095,26 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetAuthenticIndexQueue(image);
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
-            index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
+            if (IsValidColormapIndex(image,(*p >> 4) & 0x0f,&index,exception)
+                == MagickFalse)
+              break;
             SetPixelIndex(indexes+x,index);
-            index=ConstrainColormapIndex(image,*p & 0x0f);
+            if (IsValidColormapIndex(image,*p & 0x0f,&index,exception) ==
+                MagickFalse)
+              break;
             SetPixelIndex(indexes+x+1,index);
             p++;
           }
           if ((image->columns % 2) != 0)
             {
-              index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
-              SetPixelIndex(indexes+x,index);
+              if (IsValidColormapIndex(image,(*p >> 4) & 0xf,&index,exception)
+                  == MagickFalse)
+                break;
+              SetPixelIndex(indexes+(x++),index);
               p++;
             }
+          if (x < image->columns)
+            break;
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           if (image->previous == (Image *) NULL)
@@ -1137,12 +1145,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetAuthenticIndexQueue(image);
           for (x=(ssize_t) image->columns; x != 0; --x)
           {
-            index=ConstrainColormapIndex(image,*p);
+            if (IsValidColormapIndex(image,*p,&index,exception) == MagickFalse)
+              break;
             SetPixelIndex(indexes,index);
             indexes++;
             p++;
             q++;
           }
+          if (x > 0)
+            break;
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           offset=(MagickOffsetType) (image->rows-y-1);
@@ -1332,6 +1343,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
     pixel_info=RelinquishVirtualMemory(pixel_info);
+    if (y > 0)
+      break;
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
