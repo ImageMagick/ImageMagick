@@ -1040,17 +1040,6 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   */
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     resource_semaphore=AcquireSemaphoreInfo();
-  pagesize=GetMagickPageSize();
-  pages=(-1);
-#if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
-  pages=(ssize_t) sysconf(_SC_PHYS_PAGES);
-#endif
-  memory=(MagickSizeType) pages*pagesize;
-  if ((pagesize <= 0) || (pages <= 0))
-    memory=2048UL*1024UL*1024UL;
-#if defined(PixelCacheThreshold)
-  memory=PixelCacheThreshold;
-#endif
   (void) SetMagickResourceLimit(WidthResource,resource_info.width_limit);
   limit=GetEnvironmentValue("MAGICK_WIDTH_LIMIT");
   if (limit != (char *) NULL)
@@ -1067,6 +1056,17 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         100.0));
       limit=DestroyString(limit);
     }
+  pagesize=GetMagickPageSize();
+  pages=(-1);
+#if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
+  pages=(ssize_t) sysconf(_SC_PHYS_PAGES);
+#endif
+  memory=(MagickSizeType) pages*pagesize;
+  if ((pagesize <= 0) || (pages <= 0))
+    memory=2048UL*1024UL*1024UL;
+#if defined(PixelCacheThreshold)
+  memory=PixelCacheThreshold;
+#endif
   (void) SetMagickResourceLimit(AreaResource,2*memory);
   limit=GetEnvironmentValue("MAGICK_AREA_LIMIT");
   if (limit != (char *) NULL)
