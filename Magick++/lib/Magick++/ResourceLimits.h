@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Dirk Lemstra, 2014
+// Copyright Dirk Lemstra 2014
 //
 // Definition of resource limits.
 //

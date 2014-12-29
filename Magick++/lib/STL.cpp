@@ -1,6 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2002
+// Copyright Dirk Lemstra 2013-2014
 //
 // Implementation of STL classes and functions
 //
