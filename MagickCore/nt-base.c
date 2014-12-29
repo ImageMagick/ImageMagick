@@ -2667,7 +2667,7 @@ MagickPrivate void NTWindowsTerminus(void)
   if (wsaData != (WSADATA *) NULL)
     {
       WSACleanup();
-      (void *) RelinquishMagickMemory((void *) wsaData);
+      wsaData=(WSADATA *) RelinquishMagickMemory((void *) wsaData);
     }
   UnlockSemaphoreInfo(winsock_semaphore);
   RelinquishSemaphoreInfo(&winsock_semaphore);
