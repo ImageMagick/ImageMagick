@@ -1051,7 +1051,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
 #if defined(PixelCacheThreshold)
   memory=PixelCacheThreshold;
 #endif
-  (void) SetMagickResourceLimit(AreaResource,2*memory);
+  (void) SetMagickResourceLimit(WidthResource,resource_info.width_limit);
   limit=GetEnvironmentValue("MAGICK_WIDTH_LIMIT");
   if (limit != (char *) NULL)
     {
@@ -1059,6 +1059,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         100.0));
       limit=DestroyString(limit);
     }
+  (void) SetMagickResourceLimit(HeightResource,resource_info.height_limit);
   limit=GetEnvironmentValue("MAGICK_HEIGHT_LIMIT");
   if (limit != (char *) NULL)
     {
@@ -1066,6 +1067,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         100.0));
       limit=DestroyString(limit);
     }
+  (void) SetMagickResourceLimit(AreaResource,2*memory);
   limit=GetEnvironmentValue("MAGICK_AREA_LIMIT");
   if (limit != (char *) NULL)
     {
