@@ -2369,16 +2369,16 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
   /*
     Only skip mipmaps for textures and cube maps
   */
+  if (EOFBlob(image) != MagickFalse)
+    {
+      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
+      return(MagickFalse);
+    }
   if (dds_info->ddscaps1 & DDSCAPS_MIPMAP
       && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
           || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
     {
-      if (EOFBlob(image) != MagickFalse)
-        {
-          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-            image->filename);
-          return(MagickFalse);
-        }
       w = DIV2(dds_info->width);
       h = DIV2(dds_info->height);
 
@@ -2416,16 +2416,16 @@ static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
   /*
     Only skip mipmaps for textures and cube maps
   */
+  if (EOFBlob(image) != MagickFalse)
+    {
+      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
+      return(MagickFalse);
+    }
   if (dds_info->ddscaps1 & DDSCAPS_MIPMAP
       && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
           || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
     {
-      if (EOFBlob(image) != MagickFalse)
-        {
-          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-            image->filename);
-          return(MagickFalse);
-        }
       w = DIV2(dds_info->width);
       h = DIV2(dds_info->height);
 
