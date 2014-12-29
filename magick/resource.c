@@ -1103,6 +1103,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
 #if defined(PixelCacheThreshold)
   memory=PixelCacheThreshold;
 #endif
+  (void) SetMagickResourceLimit(WidthResource,resource_info.width_limit);
   limit=GetEnvironmentValue("MAGICK_WIDTH_LIMIT");
   if (limit != (char *) NULL)
     {
@@ -1110,6 +1111,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
         100.0));
       limit=DestroyString(limit);
     }
+  (void) SetMagickResourceLimit(HeightResource,resource_info.width_limit);
   limit=GetEnvironmentValue("MAGICK_HEIGHT_LIMIT");
   if (limit != (char *) NULL)
     {
