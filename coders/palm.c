@@ -510,7 +510,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       {
         IndexPacket index=ConstrainColormapIndex(image,(mask-transparentIndex));
         if (bits_per_pixel != 16)
-          SetMagickPixelPacket(image,image->colormap+index,
+          SetMagickPixelPacket(image,image->colormap+(ssize_t) index,
             (const IndexPacket *) NULL,&transpix);
         (void) TransparentPaintImage(image,&transpix,(Quantum)
           TransparentOpacity,MagickFalse);
