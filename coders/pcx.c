@@ -89,7 +89,9 @@ typedef struct _PCXInfo
 
   unsigned short
     bytes_per_line,
-    palette_info;
+    palette_info,
+    horizontal_screensize,
+    vertical_screensize;
 
   unsigned char
     colormap_signature;
@@ -313,7 +315,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify PCX identifier.
     */
     pcx_info.version=(unsigned char) ReadBlobByte(image);
-    if ((count == 0) || (pcx_info.identifier != 0x0a))
+    if ((count != 1) || (pcx_info.identifier != 0x0a))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     pcx_info.encoding=(unsigned char) ReadBlobByte(image);
     bits_per_pixel=ReadBlobByte(image);
@@ -334,14 +336,19 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=(size_t) MagickAbsoluteValue((ssize_t) pcx_info.bottom-
       pcx_info.top)+1UL;
     if ((image->columns == 0) || (image->rows == 0) ||
-        (pcx_info.bits_per_pixel == 0))
+        ((pcx_info.bits_per_pixel != 1) &&
+         (pcx_info.bits_per_pixel != 2) &&
+         (pcx_info.bits_per_pixel != 4) &&
+         (pcx_info.bits_per_pixel != 8)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    image->depth=pcx_info.bits_per_pixel <= 8 ? 8U : MAGICKCORE_QUANTUM_DEPTH;
+    image->depth=pcx_info.bits_per_pixel;
     image->units=PixelsPerInchResolution;
     image->resolution.x=(double) pcx_info.horizontal_resolution;
     image->resolution.y=(double) pcx_info.vertical_resolution;
     image->colors=16;
     count=ReadBlob(image,3*image->colors,pcx_colormap);
+    if (count != (3*image->colors))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     pcx_info.reserved=(unsigned char) ReadBlobByte(image);
     pcx_info.planes=(unsigned char) ReadBlobByte(image);
     if ((pcx_info.bits_per_pixel*pcx_info.planes) >= 64)
@@ -365,7 +372,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     pcx_info.bytes_per_line=ReadBlobLSBShort(image);
     pcx_info.palette_info=ReadBlobLSBShort(image);
-    for (i=0; i < 58; i++)
+    pcx_info.horizontal_screensize=ReadBlobLSBShort(image);
+    pcx_info.vertical_screensize=ReadBlobLSBShort(image);
+    for (i=0; i < 54; i++)
       (void) ReadBlobByte(image);
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
