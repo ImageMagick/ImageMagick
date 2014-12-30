@@ -456,7 +456,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (IsValidColormapIndex(image,*p & mask,&index,exception) ==
                 MagickFalse)
               break;
-            *p=colormap[index];
+            *p=colormap[(ssize_t) index];
             p++;
           }
         else
@@ -467,7 +467,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (IsValidColormapIndex(image,(size_t) (x*map_length+
                     (*p & mask)),&index,exception) == MagickFalse)
                   break;
-                *p=colormap[index];
+                *p=colormap[(ssize_t) index];
                 p++;
               }
         if ((i < (ssize_t) number_pixels) || (x < (ssize_t) number_planes))
