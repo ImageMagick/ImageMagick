@@ -478,7 +478,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) image->columns; x+=4)
+        for (x=0; x < (ssize_t) image->columns-3; x+=4)
         {
           index=ConstrainColormapIndex(image,3UL-((*p >> 6) & 0x03));
           SetPixelIndex(indexes+x,index);
@@ -511,7 +511,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) image->columns; x+=2)
+        for (x=0; x < (ssize_t) image->columns-1; x+=2)
         {
           index=ConstrainColormapIndex(image,15UL-((*p >> 4) & 0x0f));
           SetPixelIndex(indexes+x,index);
