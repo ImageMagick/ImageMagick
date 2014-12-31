@@ -3574,7 +3574,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             "    Reading PNG text chunk");
 
         if (strlen(text[i].key) > 16 &&
-            !memcmp(text[i].key, "Raw profile type ",17))
+            memcmp(text[i].key, "Raw profile type ",17) == 0)
           {
             const char
               *value;
