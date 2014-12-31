@@ -151,7 +151,7 @@ static int CompareXPMColor(const void *target,const void *source)
   return(strcmp(p,q));
 }
 
-static size_t CopyXPMColor(char *destination,const char *source,size_t length)
+static ssize_t CopyXPMColor(char *destination,const char *source,size_t length)
 {
   register const char
     *p;
@@ -161,7 +161,7 @@ static size_t CopyXPMColor(char *destination,const char *source,size_t length)
     *destination++=(*p++);
   if (length != 0)
     *destination='\0';
-  return((size_t) (p-source));
+  return((ssize_t) (p-source));
 }
 
 static char *NextXPMLine(char *p)
@@ -431,13 +431,18 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          p+=CopyXPMColor(key,p,MagickMin(width,MaxTextExtent-1));
+          ssize_t count=CopyXPMColor(key,p,MagickMin(width,MaxTextExtent-1));
+          if (count != (ssize_t) width)
+            break;
           j=(ssize_t) GetValueFromSplayTree(xpm_colors,key);
           if (image->storage_class == PseudoClass)
             SetPixelIndex(image,(Quantum) j,r);
           SetPixelInfoPixel(image,image->colormap+j,r);
+          p+=count;
           r+=GetPixelChannels(image);
         }
+        if (x < (ssize_t) image->columns)
+          break;
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
