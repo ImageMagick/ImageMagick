@@ -606,6 +606,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Convert bitmap scanline.
         */
+        if (image->storage_class != PseudoClass)
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -617,7 +619,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             for (bit=0; bit < 8; bit++)
             {
               quantum=(size_t) ((*p) & (0x01 << bit) ? 0 : 1);
-              SetPixelIndex(indexes+x+bit,quantum);
+              SetPixelRed(q,quantum == 0 ? 0 : QuantumRange);
+              SetPixelGreen(q,quantum == 0 ? 0 : QuantumRange);
+              SetPixelBlue(q,quantum == 0 ? 0 : QuantumRange);
+              if (image->storage_class == PseudoClass)
+                SetPixelIndex(indexes+x+bit,quantum);
              }
             p++;
           }
@@ -626,7 +632,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               for (bit=0; bit < (int) (image->columns % 8); bit++)
               {
                 quantum=(size_t) ((*p) & (0x01 << bit) ? 0 : 1);
-                SetPixelIndex(indexes+x+bit,quantum);
+                SetPixelRed(q,quantum == 0 ? 0 : QuantumRange);
+                SetPixelGreen(q,quantum == 0 ? 0 : QuantumRange);
+                SetPixelBlue(q,quantum == 0 ? 0 : QuantumRange);
+                if (image->storage_class == PseudoClass)
+                  SetPixelIndex(indexes+x+bit,quantum);
               }
               p++;
             }
