@@ -901,6 +901,15 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   image->resolution.x=DefaultResolution;
   image->resolution.y=DefaultResolution;
   image->units=UndefinedResolution;
+  if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+    if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+      {
+        (void) CloseBlob(image);
+        return(GetFirstImageInList(image));
+      }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   /*
     Interpret PICT opcodes.
   */
@@ -910,9 +919,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    status=SetImageExtent(image,image->columns,image->rows,exception);
-    if (status == MagickFalse)
-      return(DestroyImageList(image));
     if ((version == 1) || ((TellBlob(image) % 2) != 0))
       code=ReadBlobByte(image);
     if (version == 2)
