@@ -905,6 +905,18 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   image->x_resolution=DefaultResolution;
   image->y_resolution=DefaultResolution;
   image->units=UndefinedResolution;
+  if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+    if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+      {
+        (void) CloseBlob(image);
+        return(GetFirstImageInList(image));
+      }
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   /*
     Interpret PICT opcodes.
   */
