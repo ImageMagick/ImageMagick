@@ -320,6 +320,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     viff_info.color_space_model=ReadBlobLong(image);
     for (i=0; i < 420; i++)
       (void) ReadBlobByte(image);
+    if (EOFBlob(image) != MagickFalse)
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
     image->columns=viff_info.rows;
     image->rows=viff_info.columns;
     image->depth=viff_info.x_bits_per_pixel <= 8 ? 8UL :
