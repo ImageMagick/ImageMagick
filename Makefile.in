@@ -298,10 +298,11 @@ DIST_COMMON = $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am \
 	$(MagickCoreincarch_HEADERS) $(MagickWandinc_HEADERS) \
 	$(include_HEADERS) $(am__magickppinc_HEADERS_DIST) \
 	$(am__magickpptopinc_HEADERS_DIST) $(noinst_HEADERS) \
-	$(top_srcdir)/config/test-driver ChangeLog config/compile \
-	config/config.guess config/config.sub config/depcomp \
-	config/install-sh config/missing config/mkinstalldirs \
-	config/ltmain.sh $(top_srcdir)/config/compile \
+	$(top_srcdir)/config/test-driver ChangeLog config/ar-lib \
+	config/compile config/config.guess config/config.sub \
+	config/depcomp config/install-sh config/missing \
+	config/mkinstalldirs config/ltmain.sh \
+	$(top_srcdir)/config/ar-lib $(top_srcdir)/config/compile \
 	$(top_srcdir)/config/config.guess \
 	$(top_srcdir)/config/config.sub \
 	$(top_srcdir)/config/install-sh $(top_srcdir)/config/ltmain.sh \
