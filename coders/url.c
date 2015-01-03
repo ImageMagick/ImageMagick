@@ -73,6 +73,7 @@
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
     !(defined(__MINGW32__) || defined(__MINGW64__))
 #  include <urlmon.h>
+#  pragma comment(lib, "urlmon.lib")
 #endif
 
 
