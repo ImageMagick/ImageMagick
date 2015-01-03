@@ -277,7 +277,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Verify VIFF identifier.
     */
-    if ((count == 0) || ((unsigned char) viff_info.identifier != 0xab))
+    if ((count != 1) || ((unsigned char) viff_info.identifier != 0xab))
       ThrowReaderException(CorruptImageError,"NotAVIFFImage");
     /*
       Initialize VIFF image.
