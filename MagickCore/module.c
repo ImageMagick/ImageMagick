@@ -763,9 +763,8 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
     /*
       Search module path.
     */
-    if ((NTGetModulePath("CORE_RL_magick_.dll",path) != MagickFalse) ||
-        (NTGetModulePath("CORE_DB_magick_.dll",path) != MagickFalse) ||
-        (NTGetModulePath("Magick.dll",path) != MagickFalse))
+    if ((NTGetModulePath("CORE_RL_MagickCore_.dll",path) != MagickFalse) ||
+        (NTGetModulePath("CORE_DB_MagickCore_.dll",path) != MagickFalse))
       {
         (void) ConcatenateMagickString(path,DirectorySeparator,MaxTextExtent);
         (void) ConcatenateMagickString(path,filename,MaxTextExtent);
