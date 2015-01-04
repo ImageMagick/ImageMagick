@@ -3823,19 +3823,38 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           GravityAdjustGeometry(new_images->columns,new_images->rows,
             new_images->gravity, &geometry);
           mask_image=RemoveFirstImageFromList(&_images);
-          if (mask_image != (Image *) NULL)
+          if (mask_image == (Image *) NULL)
+            status&=CompositeImage(new_images,source_image,compose,clip_to_self,
+              geometry.x,geometry.y,_exception);
+          else
             {
-              if ((compose != DisplaceCompositeOp) &&
-                  (compose != DistortCompositeOp))
-                status&=CompositeImage(source_image,mask_image,
-                  IntensityCompositeOp,MagickTrue,0,0,_exception);
+              if ((compose == DisplaceCompositeOp) ||
+                  (compose == DistortCompositeOp))
+                {
+                  status&=CompositeImage(source_image,mask_image,
+                    CopyGreenCompositeOp,MagickTrue,0,0,_exception);
+                  status&=CompositeImage(new_images,source_image,compose,
+                    clip_to_self,geometry.x,geometry.y,_exception);
+                }
               else
-                status&=CompositeImage(source_image,mask_image,
-                  CopyGreenCompositeOp,MagickTrue,0,0,_exception);
+                {
+                  Image
+                    *clone_image;
+
+                  clone_image=CloneImage(new_images,0,0,MagickTrue,_exception);
+                  if (clone_image == (Image *) NULL)
+                    break;
+                  status&=CompositeImage(new_images,source_image,compose,
+                    clip_to_self,geometry.x,geometry.y,_exception);
+                  status&=CompositeImage(new_images,mask_image,
+                    CopyAlphaCompositeOp,MagickTrue,0,0,_exception);
+                  status&=CompositeImage(clone_image,new_images,OverCompositeOp,
+                    clip_to_self,geometry.x,geometry.y,_exception);
+                  new_images=DestroyImage(new_images);
+                  new_images=clone_image;
+                }
               mask_image=DestroyImage(mask_image);
             }
-          status&=CompositeImage(new_images,source_image,compose,clip_to_self,
-            geometry.x,geometry.y,_exception);
           source_image=DestroyImage(source_image);
           break;
         }
