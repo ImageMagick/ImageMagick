@@ -139,9 +139,11 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
         case DissolveCompositeOp:
         case ModulateCompositeOp:
         case ThresholdCompositeOp:
+        {
           (void) SetImageArtifact(composite_image,"compose:args",
             composite_options->compose_args);
           break;
+        }
         default:
           break;
       }

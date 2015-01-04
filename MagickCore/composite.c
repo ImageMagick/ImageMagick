@@ -699,18 +699,14 @@ if (0)
           }
         for (x=0; x < (ssize_t) composite_image->columns; x++)
         {
-          register ssize_t
-            i;
-
           if (GetPixelReadMask(composite_image,p) == 0)
             {
               p+=GetPixelChannels(composite_image);
               q+=GetPixelChannels(image);
               continue;
             }
-          for (i=0; i < (ssize_t) GetPixelChannels(composite_image); i++)
-            SetPixelAlpha(image,ClampToQuantum(GetPixelIntensity(
-              composite_image,p)),q);
+          SetPixelAlpha(image,ClampToQuantum(GetPixelIntensity(composite_image,
+            p)),q);
           p+=GetPixelChannels(composite_image);
           q+=GetPixelChannels(image);
         }
