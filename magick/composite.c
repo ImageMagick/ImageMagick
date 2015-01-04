@@ -2790,8 +2790,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             }
           CompositeHCL(destination.red,destination.green,destination.blue,&sans,
             &sans,&luma);
-          CompositeHCL(source.red,source.green,source.blue,&hue,&chroma,
-            &sans);
+          CompositeHCL(source.red,source.green,source.blue,&hue,&chroma,&sans);
           HCLComposite(hue,chroma,luma,&composite.red,
             &composite.green,&composite.blue);
           if (source.opacity < destination.opacity)
