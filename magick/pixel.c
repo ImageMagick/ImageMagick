@@ -2146,7 +2146,7 @@ MagickExport MagickRealType GetMagickPixelIntensity(const Image *image,
     }
     case Rec601LumaPixelIntensityMethod:
     {
-      if (image->colorspace == RGBColorspace)
+      if (pixel->colorspace == RGBColorspace)
         {
           red=EncodePixelGamma(red);
           green=EncodePixelGamma(green);
@@ -2157,7 +2157,7 @@ MagickExport MagickRealType GetMagickPixelIntensity(const Image *image,
     }
     case Rec601LuminancePixelIntensityMethod:
     {
-      if (image->colorspace == sRGBColorspace)
+      if (pixel->colorspace == sRGBColorspace)
         {
           red=DecodePixelGamma(red);
           green=DecodePixelGamma(green);
@@ -2169,7 +2169,7 @@ MagickExport MagickRealType GetMagickPixelIntensity(const Image *image,
     case Rec709LumaPixelIntensityMethod:
     default:
     {
-      if (image->colorspace == RGBColorspace)
+      if (pixel->colorspace == RGBColorspace)
         {
           red=EncodePixelGamma(red);
           green=EncodePixelGamma(green);
@@ -2180,7 +2180,7 @@ MagickExport MagickRealType GetMagickPixelIntensity(const Image *image,
     }
     case Rec709LuminancePixelIntensityMethod:
     {
-      if (image->colorspace == sRGBColorspace)
+      if (pixel->colorspace == sRGBColorspace)
         {
           red=DecodePixelGamma(red);
           green=DecodePixelGamma(green);
