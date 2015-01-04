@@ -228,6 +228,8 @@ extern MagickExport MagickBooleanType
   SetPixelMetaChannels(Image *,const size_t,ExceptionInfo *);
 
 extern MagickExport MagickRealType
+  GetPixelInfoIntensity(const Image *restrict,const PixelInfo *restrict)
+    magick_hot_spot,
   GetPixelIntensity(const Image *restrict,const Quantum *restrict)
     magick_hot_spot;
 

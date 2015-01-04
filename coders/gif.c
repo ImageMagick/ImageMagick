@@ -443,7 +443,7 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
         break;
       index=ConstrainColormapIndex(image,(size_t) c,exception);
       SetPixelIndex(image,index,q);
-      SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
+      SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
       SetPixelAlpha(image,(ssize_t) index == opacity ? TransparentAlpha :
         OpaqueAlpha,q);
       x++;

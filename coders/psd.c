@@ -717,7 +717,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
               SetPixelIndex(image,ScaleQuantumToChar(pixel),q);
             else
               SetPixelIndex(image,ScaleQuantumToShort(pixel),q);
-            SetPixelInfoPixel(image,image->colormap+(ssize_t)
+            SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
               ConstrainColormapIndex(image,GetPixelIndex(image,q),exception),q);
             if (image->depth == 1)
               {
@@ -732,7 +732,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
                 {
                   SetPixelIndex(image,(((unsigned char) pixel) &
                     (0x01 << (7-bit))) != 0 ? 0 : 255,q);
-                  SetPixelInfoPixel(image,image->colormap+(ssize_t)
+                  SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
                     GetPixelIndex(image,q),q);
                   q+=GetPixelChannels(image);
                   x++;

@@ -1006,7 +1006,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
           default: break;
         }
       }
-      SetPixelInfoPixel(color_image,&pixel,q);
+      SetPixelViaPixelInfo(color_image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(color_image);
     }
@@ -1488,7 +1488,13 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
         case IndexPixelChannel:
           return(0.0);
         case IntensityPixelChannel:
-          return(QuantumScale*GetPixelInfoIntensity(&pixel));
+        {
+          Quantum
+            quantum_pixel[MaxPixelChannels];
+
+          SetPixelViaPixelInfo(image,&pixel,quantum_pixel);
+          return(QuantumScale*GetPixelIntensity(image,quantum_pixel));
+        }
         default:
           break;
       }
@@ -1666,7 +1672,13 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
       if (LocaleCompare(symbol,"image.resolution.y") == 0)
         return(image->resolution.y);
       if (LocaleCompare(symbol,"intensity") == 0)
-        return(QuantumScale*GetPixelInfoIntensity(&pixel));
+        {
+          Quantum
+            quantum_pixel[MaxPixelChannels];
+
+          SetPixelViaPixelInfo(image,&pixel,quantum_pixel);
+          return(QuantumScale*GetPixelIntensity(image,quantum_pixel));
+        }
       if (LocaleCompare(symbol,"i") == 0)
         return((double) x);
       break;
@@ -4318,7 +4330,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
     {
       if (border_image->alpha_trait != UndefinedPixelTrait)
         background_color.alpha=GetPixelAlpha(border_image,q)*alpha/100.0;
-      SetPixelInfoPixel(border_image,&background_color,q);
+      SetPixelViaPixelInfo(border_image,&background_color,q);
       q+=GetPixelChannels(border_image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -4776,19 +4788,19 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
           case 0:
           {
             SetPixelRed(stegano_image,SetBit(GetPixelRed(stegano_image,q),j,
-              GetBit(GetPixelInfoIntensity(&pixel),i)),q);
+              GetBit(GetPixelInfoIntensity(stegano_image,&pixel),i)),q);
             break;
           }
           case 1:
           {
             SetPixelGreen(stegano_image,SetBit(GetPixelGreen(stegano_image,q),j,
-              GetBit(GetPixelInfoIntensity(&pixel),i)),q);
+              GetBit(GetPixelInfoIntensity(stegano_image,&pixel),i)),q);
             break;
           }
           case 2:
           {
             SetPixelBlue(stegano_image,SetBit(GetPixelBlue(stegano_image,q),j,
-              GetBit(GetPixelInfoIntensity(&pixel),i)),q);
+              GetBit(GetPixelInfoIntensity(stegano_image,&pixel),i)),q);
             break;
           }
         }
@@ -5280,7 +5292,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       if ((flags & ChiValue) != 0)
         color_vector.alpha=geometry_info.chi;
     }
-  intensity=(double) GetPixelInfoIntensity(tint);
+  intensity=(double) GetPixelInfoIntensity(image,tint);
   color_vector.red=(double) (color_vector.red*tint->red/100.0-intensity);
   color_vector.green=(double) (color_vector.green*tint->green/100.0-intensity);
   color_vector.blue=(double) (color_vector.blue*tint->blue/100.0-intensity);
@@ -5357,7 +5369,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       weight=QuantumScale*GetPixelBlack(image,p)-0.5;
       pixel.black=(double) GetPixelBlack(image,p)+color_vector.black*(1.0-(4.0*
         (weight*weight)));
-      SetPixelInfoPixel(tint_image,&pixel,q);
+      SetPixelViaPixelInfo(tint_image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(tint_image);
     }

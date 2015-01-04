@@ -2486,7 +2486,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
           /*
             Set this pixel to the background color.
           */
-          SetPixelInfoPixel(draw_image,&draw_image->background_color,q);
+          SetPixelViaPixelInfo(draw_image,&draw_image->background_color,q);
           SetPixelAlpha(draw_image,(Quantum) (draw_info->stencil ==
             OpaqueStencil ? TransparentAlpha : OpaqueAlpha),q);
         }
@@ -4474,7 +4474,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
               {
                 index=(Quantum) XGetPixel(ximage,x,y);
                 SetPixelIndex(composite_image,index,q);
-                SetPixelInfoPixel(composite_image,
+                SetPixelViaPixelInfo(composite_image,
                   composite_image->colormap+(ssize_t) index,q);
                 q+=GetPixelChannels(composite_image);
               }
@@ -5953,11 +5953,11 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       foreground=(unsigned char)
         (XPixelIntensity(&window->pixel_info->background_color) <
          XPixelIntensity(&window->pixel_info->foreground_color) ? 0x80 : 0x00);
-      polarity=(unsigned short) ((GetPixelInfoIntensity(
+      polarity=(unsigned short) ((GetPixelInfoIntensity(image,
         &canvas->colormap[0])) < (QuantumRange/2) ? 1 : 0);
       if (canvas->colors == 2)
-        polarity=GetPixelInfoIntensity(&canvas->colormap[0]) <
-          GetPixelInfoIntensity(&canvas->colormap[1]);
+        polarity=GetPixelInfoIntensity(image,&canvas->colormap[0]) <
+          GetPixelInfoIntensity(image,&canvas->colormap[1]);
       for (y=0; y < (int) canvas->rows; y++)
       {
         p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,
@@ -6514,7 +6514,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
   if ((window->immutable != MagickFalse) &&
-      (image->storage_class == DirectClass) && (image->alpha_trait != UndefinedPixelTrait))
+      (image->storage_class == DirectClass) &&
+      (image->alpha_trait != UndefinedPixelTrait))
     {
       char
         size[MaxTextExtent];
@@ -6569,11 +6570,11 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       foreground=(unsigned char)
         (XPixelIntensity(&window->pixel_info->background_color) <
          XPixelIntensity(&window->pixel_info->foreground_color) ?  0x01 : 0x00);
-      polarity=(unsigned short) ((GetPixelInfoIntensity(
+      polarity=(unsigned short) ((GetPixelInfoIntensity(image,
         &canvas->colormap[0])) < (QuantumRange/2) ? 1 : 0);
       if (canvas->colors == 2)
-        polarity=GetPixelInfoIntensity(&canvas->colormap[0]) <
-          GetPixelInfoIntensity(&canvas->colormap[1]);
+        polarity=GetPixelInfoIntensity(image,&canvas->colormap[0]) <
+          GetPixelInfoIntensity(image,&canvas->colormap[1]);
       for (y=0; y < (int) canvas->rows; y++)
       {
         p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,

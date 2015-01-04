@@ -1042,7 +1042,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         {
           if (GetPixelAlpha(image,q) == TransparentAlpha)
             {
-              SetPixelInfoPixel(image,&image->background_color,q);
+              SetPixelViaPixelInfo(image,&image->background_color,q);
               SetPixelChannel(image,AlphaPixelChannel,TransparentAlpha,q);
             }
           q+=GetPixelChannels(image);

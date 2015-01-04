@@ -481,7 +481,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
               ThrowReaderException(CorruptImageError,"CorruptImage");
             index=(Quantum) (mask-(((*ptr) & (mask << bit)) >> bit));
             SetPixelIndex(image,index,q);
-            SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
+            SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
             if (bit)
               bit-=bits_per_pixel;
             else

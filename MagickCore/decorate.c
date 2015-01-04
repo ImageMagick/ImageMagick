@@ -308,14 +308,14 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
             for (x=0; x < (ssize_t) (frame_image->columns-y); x++)
             {
               if (x < y)
-                SetPixelInfoPixel(frame_image,&highlight,q);
+                SetPixelViaPixelInfo(frame_image,&highlight,q);
               else
-                SetPixelInfoPixel(frame_image,&accentuate,q);
+                SetPixelViaPixelInfo(frame_image,&accentuate,q);
               q+=GetPixelChannels(frame_image);
             }
             for ( ; x < (ssize_t) frame_image->columns; x++)
             {
-              SetPixelInfoPixel(frame_image,&shadow,q);
+              SetPixelViaPixelInfo(frame_image,&shadow,q);
               q+=GetPixelChannels(frame_image);
             }
           }
@@ -323,18 +323,18 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           {
             for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
-              SetPixelInfoPixel(frame_image,&highlight,q);
+              SetPixelViaPixelInfo(frame_image,&highlight,q);
               q+=GetPixelChannels(frame_image);
             }
             width=frame_image->columns-2*frame_info->outer_bevel;
             for (x=0; x < (ssize_t) width; x++)
             {
-              SetPixelInfoPixel(frame_image,&matte,q);
+              SetPixelViaPixelInfo(frame_image,&matte,q);
               q+=GetPixelChannels(frame_image);
             }
             for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
-              SetPixelInfoPixel(frame_image,&shadow,q);
+              SetPixelViaPixelInfo(frame_image,&shadow,q);
               q+=GetPixelChannels(frame_image);
             }
           }
@@ -342,12 +342,12 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           {
             for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
-              SetPixelInfoPixel(frame_image,&highlight,q);
+              SetPixelViaPixelInfo(frame_image,&highlight,q);
               q+=GetPixelChannels(frame_image);
             }
             for (x=0; x < (ssize_t) (frame_info->x-bevel_width); x++)
             {
-              SetPixelInfoPixel(frame_image,&matte,q);
+              SetPixelViaPixelInfo(frame_image,&matte,q);
               q+=GetPixelChannels(frame_image);
             }
             width=image->columns+((size_t) frame_info->inner_bevel << 1)-
@@ -355,25 +355,25 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
             for (x=0; x < (ssize_t) width; x++)
             {
               if (x < y)
-                SetPixelInfoPixel(frame_image,&shadow,q);
+                SetPixelViaPixelInfo(frame_image,&shadow,q);
               else
-                SetPixelInfoPixel(frame_image,&trough,q);
+                SetPixelViaPixelInfo(frame_image,&trough,q);
               q+=GetPixelChannels(frame_image);
             }
             for ( ; x < (ssize_t) (image->columns+2*frame_info->inner_bevel); x++)
             {
-              SetPixelInfoPixel(frame_image,&highlight,q);
+              SetPixelViaPixelInfo(frame_image,&highlight,q);
               q+=GetPixelChannels(frame_image);
             }
             width=frame_info->width-frame_info->x-image->columns-bevel_width;
             for (x=0; x < (ssize_t) width; x++)
             {
-              SetPixelInfoPixel(frame_image,&matte,q);
+              SetPixelViaPixelInfo(frame_image,&matte,q);
               q+=GetPixelChannels(frame_image);
             }
             for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
-              SetPixelInfoPixel(frame_image,&shadow,q);
+              SetPixelViaPixelInfo(frame_image,&shadow,q);
               q+=GetPixelChannels(frame_image);
             }
           }
@@ -412,17 +412,17 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       }
     for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
     {
-      SetPixelInfoPixel(frame_image,&highlight,q);
+      SetPixelViaPixelInfo(frame_image,&highlight,q);
       q+=GetPixelChannels(frame_image);
     }
     for (x=0; x < (ssize_t) (frame_info->x-bevel_width); x++)
     {
-      SetPixelInfoPixel(frame_image,&matte,q);
+      SetPixelViaPixelInfo(frame_image,&matte,q);
       q+=GetPixelChannels(frame_image);
     }
     for (x=0; x < (ssize_t) frame_info->inner_bevel; x++)
     {
-      SetPixelInfoPixel(frame_image,&shadow,q);
+      SetPixelViaPixelInfo(frame_image,&shadow,q);
       q+=GetPixelChannels(frame_image);
     }
     /*
@@ -432,7 +432,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         (image->alpha_trait != UndefinedPixelTrait)))
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelInfoPixel(frame_image,&interior,q);
+        SetPixelViaPixelInfo(frame_image,&interior,q);
         q+=GetPixelChannels(frame_image);
       }
     else
@@ -478,18 +478,18 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       }
     for (x=0; x < (ssize_t) frame_info->inner_bevel; x++)
     {
-      SetPixelInfoPixel(frame_image,&highlight,q);
+      SetPixelViaPixelInfo(frame_image,&highlight,q);
       q+=GetPixelChannels(frame_image);
     }
     width=frame_info->width-frame_info->x-image->columns-bevel_width;
     for (x=0; x < (ssize_t) width; x++)
     {
-      SetPixelInfoPixel(frame_image,&matte,q);
+      SetPixelViaPixelInfo(frame_image,&matte,q);
       q+=GetPixelChannels(frame_image);
     }
     for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
     {
-      SetPixelInfoPixel(frame_image,&shadow,q);
+      SetPixelViaPixelInfo(frame_image,&shadow,q);
       q+=GetPixelChannels(frame_image);
     }
     if (SyncCacheViewAuthenticPixels(frame_view,exception) == MagickFalse)
@@ -531,36 +531,36 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           {
             for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
-              SetPixelInfoPixel(frame_image,&highlight,q);
+              SetPixelViaPixelInfo(frame_image,&highlight,q);
               q+=GetPixelChannels(frame_image);
             }
             for (x=0; x < (ssize_t) (frame_info->x-bevel_width); x++)
             {
-              SetPixelInfoPixel(frame_image,&matte,q);
+              SetPixelViaPixelInfo(frame_image,&matte,q);
               q+=GetPixelChannels(frame_image);
             }
             for (x=0; x < y; x++)
             {
-              SetPixelInfoPixel(frame_image,&shadow,q);
+              SetPixelViaPixelInfo(frame_image,&shadow,q);
               q+=GetPixelChannels(frame_image);
             }
             for ( ; x < (ssize_t) (image->columns+2*frame_info->inner_bevel); x++)
             {
               if (x >= (ssize_t) (image->columns+2*frame_info->inner_bevel-y))
-                SetPixelInfoPixel(frame_image,&highlight,q);
+                SetPixelViaPixelInfo(frame_image,&highlight,q);
               else
-                SetPixelInfoPixel(frame_image,&accentuate,q);
+                SetPixelViaPixelInfo(frame_image,&accentuate,q);
               q+=GetPixelChannels(frame_image);
             }
             width=frame_info->width-frame_info->x-image->columns-bevel_width;
             for (x=0; x < (ssize_t) width; x++)
             {
-              SetPixelInfoPixel(frame_image,&matte,q);
+              SetPixelViaPixelInfo(frame_image,&matte,q);
               q+=GetPixelChannels(frame_image);
             }
             for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
-              SetPixelInfoPixel(frame_image,&shadow,q);
+              SetPixelViaPixelInfo(frame_image,&shadow,q);
               q+=GetPixelChannels(frame_image);
             }
           }
@@ -569,18 +569,18 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           {
             for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
-              SetPixelInfoPixel(frame_image,&highlight,q);
+              SetPixelViaPixelInfo(frame_image,&highlight,q);
               q+=GetPixelChannels(frame_image);
             }
             width=frame_image->columns-2*frame_info->outer_bevel;
             for (x=0; x < (ssize_t) width; x++)
             {
-              SetPixelInfoPixel(frame_image,&matte,q);
+              SetPixelViaPixelInfo(frame_image,&matte,q);
               q+=GetPixelChannels(frame_image);
             }
             for (x=0; x < (ssize_t) frame_info->outer_bevel; x++)
             {
-              SetPixelInfoPixel(frame_image,&shadow,q);
+              SetPixelViaPixelInfo(frame_image,&shadow,q);
               q+=GetPixelChannels(frame_image);
             }
           }
@@ -588,15 +588,15 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           {
             for (x=0; x < y; x++)
             {
-              SetPixelInfoPixel(frame_image,&highlight,q);
+              SetPixelViaPixelInfo(frame_image,&highlight,q);
               q+=GetPixelChannels(frame_image);
             }
             for ( ; x < (ssize_t) frame_image->columns; x++)
             {
               if (x >= (ssize_t) (frame_image->columns-y))
-                SetPixelInfoPixel(frame_image,&shadow,q);
+                SetPixelViaPixelInfo(frame_image,&shadow,q);
               else
-                SetPixelInfoPixel(frame_image,&trough,q);
+                SetPixelViaPixelInfo(frame_image,&trough,q);
               q+=GetPixelChannels(frame_image);
             }
           }

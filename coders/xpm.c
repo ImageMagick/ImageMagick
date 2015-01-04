@@ -437,7 +437,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           j=(ssize_t) GetValueFromSplayTree(xpm_colors,key);
           if (image->storage_class == PseudoClass)
             SetPixelIndex(image,(Quantum) j,r);
-          SetPixelInfoPixel(image,image->colormap+j,r);
+          SetPixelViaPixelInfo(image,image->colormap+j,r);
           p+=count;
           r+=GetPixelChannels(image);
         }

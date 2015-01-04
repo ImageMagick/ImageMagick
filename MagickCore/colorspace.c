@@ -309,7 +309,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         {
           GetPixelInfoPixel(image,q,&pixel);
           ConvertRGBToCMYK(&pixel);
-          SetPixelInfoPixel(image,&pixel,q);
+          SetPixelViaPixelInfo(image,&pixel,q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -1654,7 +1654,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         {
           GetPixelInfoPixel(image,q,&pixel);
           ConvertCMYKToRGB(&pixel);
-          SetPixelInfoPixel(image,&pixel,q);
+          SetPixelViaPixelInfo(image,&pixel,q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);

@@ -540,7 +540,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
         if (q == (Quantum *) NULL)
           continue;
-        SetPixelInfoPixel(image,&pixel,q);
+        SetPixelViaPixelInfo(image,&pixel,q);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }

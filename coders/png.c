@@ -8917,7 +8917,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           {
               if (GetPixelAlpha(image,r) < OpaqueAlpha/2)
                 {
-                  SetPixelInfoPixel(image,&image->background_color,r);
+                  SetPixelViaPixelInfo(image,&image->background_color,r);
                   SetPixelAlpha(image,TransparentAlpha,r);
                 }
               else
@@ -9826,7 +9826,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 (ScaleQuantumToShort(image->colormap[0].blue) & mask);
 
               ping_trans_color.gray=(png_uint_16)
-                (ScaleQuantumToShort(GetPixelInfoIntensity(
+                (ScaleQuantumToShort(GetPixelInfoIntensity(image,
                    image->colormap)) & mask);
 
               ping_trans_color.index=(png_byte) 0;
@@ -10096,7 +10096,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          {
 
          ping_background.gray=(png_uint_16) ((maxval/65535.)*
-           (ScaleQuantumToShort(((GetPixelInfoIntensity(
+           (ScaleQuantumToShort(((GetPixelInfoIntensity(image,
            &image->background_color))) +.5)));
 
          if (logging != MagickFalse)
