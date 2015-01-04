@@ -255,7 +255,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
 
       if (GetPixelReadMask(image,p) == 0)
         {
-          SetPixelInfoPixel(highlight_image,&lowlight,r);
+          SetPixelViaPixelInfo(highlight_image,&lowlight,r);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
           r+=GetPixelChannels(highlight_image);
@@ -282,9 +282,9 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
           difference=MagickTrue;
       }
       if (difference == MagickFalse)
-        SetPixelInfoPixel(highlight_image,&lowlight,r);
+        SetPixelViaPixelInfo(highlight_image,&lowlight,r);
       else
-        SetPixelInfoPixel(highlight_image,&highlight,r);
+        SetPixelViaPixelInfo(highlight_image,&highlight,r);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
       r+=GetPixelChannels(highlight_image);

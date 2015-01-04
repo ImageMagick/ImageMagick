@@ -149,7 +149,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     }
   (void) SetImageColorspace(image,start_color.colorspace,exception);
   (void) CopyMagickString(colorname,"white",MaxTextExtent);
-  if (GetPixelInfoIntensity(&start_color) > (Quantum) (QuantumRange/2))
+  if (GetPixelInfoIntensity(image,&start_color) > (Quantum) (QuantumRange/2))
     (void) CopyMagickString(colorname,"black",MaxTextExtent);
   if (icc_color == MagickFalse)
     (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname);

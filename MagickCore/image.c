@@ -585,7 +585,7 @@ MagickExport Image *AppendImages(const Image *images,
             continue;
           }
         GetPixelInfoPixel(image,p,&pixel);
-        SetPixelInfoPixel(append_image,&pixel,q);
+        SetPixelViaPixelInfo(append_image,&pixel,q);
         p+=GetPixelChannels(image);
         q+=GetPixelChannels(append_image);
       }
@@ -1919,7 +1919,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfoPixel(image,background,q);
+      SetPixelViaPixelInfo(image,background,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2107,7 +2107,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfoPixel(image,&background,q);
+      SetPixelViaPixelInfo(image,&background,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2227,7 +2227,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfoPixel(image,color,q);
+      SetPixelViaPixelInfo(image,color,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3369,7 +3369,7 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=PushColormapIndex(image,GetPixelIndex(image,q),&range_exception);
-      SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
+      SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

@@ -3350,8 +3350,8 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(PixelInfo *) x;
   color_2=(PixelInfo *) y;
-  intensity=(ssize_t) (GetPixelInfoIntensity(color_1)-(ssize_t)
-    GetPixelInfoIntensity(color_2));
+  intensity=(ssize_t) (GetPixelInfoIntensity((const Image *) NULL,color_1)-
+    (ssize_t) GetPixelInfoIntensity((const Image *) NULL,color_2));
   return((int) intensity);
 }
 

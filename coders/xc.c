@@ -149,7 +149,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfoPixel(image,&pixel,q);
+      SetPixelViaPixelInfo(image,&pixel,q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

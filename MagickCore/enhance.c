@@ -391,7 +391,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
         ClampToQuantum(pixel.black))].black;
       pixel.alpha=clut_map[ScaleQuantumToMap(
         ClampToQuantum(pixel.alpha))].alpha;
-      SetPixelInfoPixel(image,&pixel,q);
+      SetPixelViaPixelInfo(image,&pixel,q);
       q+=GetPixelChannels(image);
     }
     if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )

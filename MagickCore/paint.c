@@ -352,7 +352,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       if (GetPixelGray(floodplane_image,p) != 0)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color,exception);
-          SetPixelInfoPixel(image,&fill_color,q);
+          SetPixelViaPixelInfo(image,&fill_color,q);
         }
       p+=GetPixelChannels(floodplane_image);
       q+=GetPixelChannels(image);
@@ -827,7 +827,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     {
       GetPixelInfoPixel(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,&conform_target) != invert)
-        SetPixelInfoPixel(image,&conform_fill,q);
+        SetPixelViaPixelInfo(image,&conform_fill,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

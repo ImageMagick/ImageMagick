@@ -1844,11 +1844,11 @@ MagickPrivate MagickBooleanType IsEquivalentIntensity(const Image *image,
   register double
     distance;
 
-  if (GetPixelInfoIntensity(p) == GetPixelInfoIntensity(q))
+  if (GetPixelInfoIntensity(image,p) == GetPixelInfoIntensity(image,q))
     return(MagickTrue);
   fuzz=MagickMax(image->fuzz,MagickSQ1_2);
   fuzz*=fuzz;
-  pixel=GetPixelInfoIntensity(p)-GetPixelInfoIntensity(q);
+  pixel=GetPixelInfoIntensity(image,p)-GetPixelInfoIntensity(image,q);
   distance=pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);

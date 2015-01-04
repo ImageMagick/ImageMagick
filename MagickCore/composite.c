@@ -908,7 +908,7 @@ if (0)
             blur.y2*QuantumScale*GetPixelGreen(composite_image,p) );
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel,exception);
-          SetPixelInfoPixel(destination_image,&pixel,q);
+          SetPixelViaPixelInfo(destination_image,&pixel,q);
           p+=GetPixelChannels(composite_image);
           q+=GetPixelChannels(destination_image);
         }
@@ -1087,7 +1087,7 @@ if (0)
           */
           pixel.alpha=(MagickRealType) QuantumRange*(1.0-(1.0-QuantumScale*
             pixel.alpha)*(1.0-QuantumScale*GetPixelAlpha(composite_image,p)));
-          SetPixelInfoPixel(destination_image,&pixel,q);
+          SetPixelViaPixelInfo(destination_image,&pixel,q);
           p+=GetPixelChannels(composite_image);
           q+=GetPixelChannels(destination_image);
         }

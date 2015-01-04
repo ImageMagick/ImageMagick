@@ -194,15 +194,6 @@ static inline MagickRealType GetPixelInfoChannel(
   }
 }
 
-static inline MagickRealType GetPixelInfoIntensity(
-  const PixelInfo *restrict pixel_info)
-{
-  if (pixel_info->colorspace == GRAYColorspace)
-    return(pixel_info->red);
-  return(0.212656f*pixel_info->red+0.715158f*pixel_info->green+0.072186f*
-    pixel_info->blue);
-}
-
 static inline MagickRealType GetPixelInfoLuma(const PixelInfo *restrict pixel)
 {
   MagickRealType
@@ -696,7 +687,7 @@ static inline void SetPixelIndexTraits(Image *image,const PixelTrait traits)
   image->channel_map[IndexPixelChannel].traits=traits;
 }
 
-static inline void SetPixelInfoPixel(const Image *restrict image,
+static inline void SetPixelViaPixelInfo(const Image *restrict image,
   const PixelInfo *restrict pixel_info,Quantum *restrict pixel)
 {
   pixel[image->channel_map[RedPixelChannel].offset]=
