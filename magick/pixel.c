@@ -2076,6 +2076,134 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t M a g i c k P i x e l I n t e n s i t y                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickPixelIntensity() returns a single sample intensity value from the
+%  red, green, and blue components of a pixel based on the selected method:
+%
+%    Rec601Luma       0.298839R' + 0.586811G' + 0.114350B'
+%    Rec601Luminance  0.298839R + 0.586811G + 0.114350B
+%    Rec709Luma       0.212656R' + 0.715158G' + 0.072186B'
+%    Rec709Luminance  0.212656R + 0.715158G + 0.072186B
+%    Brightness       max(R', G', B')
+%    Lightness        (min(R', G', B') + max(R', G', B')) / 2.0
+%
+%    MS               (R^2 + G^2 + B^2) / 3.0
+%    RMS              sqrt(R^2 + G^2 + B^2) / 3.0
+%    Average          (R + G + B) / 3.0
+%
+%  The format of the GetMagickPixelIntensity method is:
+%
+%      MagickRealType GetMagickPixelIntensity(const Image *image,
+%        const MagickPixelPacket *pixel)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o pixel: Specifies a pointer to a MagickPixelPacket structure.
+%
+*/
+MagickExport MagickRealType GetMagickPixelIntensity(const Image *image,
+  const MagickPixelPacket *restrict pixel)
+{
+  MagickRealType
+    blue,
+    green,
+    intensity,
+    red;
+
+  red=pixel->red;
+  green=pixel->green;
+  blue=pixel->blue;
+  switch (image->intensity)
+  {
+    case AveragePixelIntensityMethod:
+    {
+      intensity=(red+green+blue)/3.0;
+      break;
+    }
+    case BrightnessPixelIntensityMethod:
+    {
+      intensity=MagickMax(MagickMax(red,green),blue);
+      break;
+    }
+    case LightnessPixelIntensityMethod:
+    {
+      intensity=(MagickMin(MagickMin(red,green),blue)+
+        MagickMax(MagickMax(red,green),blue))/2.0;
+      break;
+    }
+    case MSPixelIntensityMethod:
+    {
+      intensity=(MagickRealType) (((double) red*red+green*green+blue*blue)/
+        (3.0*QuantumRange));
+      break;
+    }
+    case Rec601LumaPixelIntensityMethod:
+    {
+      if (image->colorspace == RGBColorspace)
+        {
+          red=EncodePixelGamma(red);
+          green=EncodePixelGamma(green);
+          blue=EncodePixelGamma(blue);
+        }
+      intensity=0.298839*red+0.586811*green+0.114350*blue;
+      break;
+    }
+    case Rec601LuminancePixelIntensityMethod:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
+        }
+      intensity=0.298839*red+0.586811*green+0.114350*blue;
+      break;
+    }
+    case Rec709LumaPixelIntensityMethod:
+    default:
+    {
+      if (image->colorspace == RGBColorspace)
+        {
+          red=EncodePixelGamma(red);
+          green=EncodePixelGamma(green);
+          blue=EncodePixelGamma(blue);
+        }
+      intensity=0.212656*red+0.715158*green+0.072186*blue;
+      break;
+    }
+    case Rec709LuminancePixelIntensityMethod:
+    {
+      if (image->colorspace == sRGBColorspace)
+        {
+          red=DecodePixelGamma(red);
+          green=DecodePixelGamma(green);
+          blue=DecodePixelGamma(blue);
+        }
+      intensity=0.212656*red+0.715158*green+0.072186*blue;
+      break;
+    }
+    case RMSPixelIntensityMethod:
+    {
+      intensity=(MagickRealType) (sqrt((double) red*red+green*green+blue*blue)/
+        sqrt(3.0));
+      break;
+    }
+  }
+  return(intensity);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M a g i c k P i x e l P a c k e t                                   %
 %                                                                             %
 %                                                                             %

@@ -183,6 +183,16 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
   return(ClampToQuantum(intensity));
 }
 
+static inline void SetPixelViaMagickPixel(const Image *restrict image,
+  const MagickPixelPacket *restrict magick_pixel,PixelPacket *restrict pixel)
+{ 
+  pixel->red=ClampToQuantum(magick_pixel->red);
+  pixel->green=ClampToQuantum(magick_pixel->green);
+  pixel->blue=ClampToQuantum(magick_pixel->blue);
+  if (image->matte != MagickFalse)
+    pixel->opacity=ClampToQuantum(magick_pixel->opacity);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
