@@ -1511,9 +1511,7 @@ static double FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
           return(QuantumScale*pixel.index);
         }
         case DefaultChannels:
-        {
-          return(QuantumScale*MagickPixelIntensityToQuantum(&pixel));
-        }
+          return(QuantumScale*GetMagickPixelIntensity(image,&pixel));
         default:
           break;
       }
@@ -1691,7 +1689,7 @@ static double FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
       if (LocaleCompare(symbol,"image.resolution.y") == 0)
         return(image->y_resolution);
       if (LocaleCompare(symbol,"intensity") == 0)
-        return(QuantumScale*MagickPixelIntensityToQuantum(&pixel));
+        return(QuantumScale*GetMagickPixelIntensity(image,&pixel));
       if (LocaleCompare(symbol,"i") == 0)
         return((double) x);
       break;
