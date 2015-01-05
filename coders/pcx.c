@@ -350,7 +350,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->y_resolution=(double) pcx_info.vertical_resolution;
     image->colors=16;
     count=ReadBlob(image,3*image->colors,pcx_colormap);
-    if (count != (3*image->colors))
+    if (count != (3*(ssize_t) image->colors))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     pcx_info.reserved=(unsigned char) ReadBlobByte(image);
     pcx_info.planes=(unsigned char) ReadBlobByte(image);
