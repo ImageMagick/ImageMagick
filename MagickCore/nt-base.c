@@ -940,8 +940,8 @@ MagickPrivate MagickBooleanType NTGetModulePath(const char *module,char *path)
 %
 */
 
-static int NTGetRegistryValue(HKEY root,const char *key,DWORD flags,const char *name,
-  char *value,int *length)
+static int NTGetRegistryValue(HKEY root,const char *key,DWORD flags,
+  const char *name,char *value,int *length)
 {
   BYTE
     byte,
@@ -1404,9 +1404,9 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
     lt_dlsym(ghost_handle,"gsapi_revision"));
   UnlockSemaphoreInfo(ghost_semaphore);
   if ((ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
-      (ghost_info.init_with_args == NULL) || (ghost_info.new_instance == NULL)
-      || (ghost_info.run_string == NULL) || (ghost_info.set_stdio == NULL) ||
-      (ghost_info.revision == NULL))
+      (ghost_info.init_with_args == NULL) ||
+      (ghost_info.new_instance == NULL) || (ghost_info.run_string == NULL) ||
+      (ghost_info.set_stdio == NULL) || (ghost_info.revision == NULL))
     return(FALSE);
   return(TRUE);
 }
