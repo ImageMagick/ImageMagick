@@ -1386,7 +1386,7 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
       return(FALSE);
     }
   (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
-  ghost_info.delete_instance=(void (MagickDLLCall *) (gs_main_instance *)) (
+  ghost_info.delete_instance=(void (MagickDLLCall *)(gs_main_instance *)) (
     lt_dlsym(ghost_handle,"gsapi_delete_instance"));
   ghost_info.exit=(int (MagickDLLCall *)(gs_main_instance*))
     lt_dlsym(ghost_handle,"gsapi_exit");
@@ -1400,11 +1400,13 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
     MagickDLLCall *)(void *,char *,int),int(MagickDLLCall *)(void *,
     const char *,int),int(MagickDLLCall *)(void *,const char *,int)))
     (lt_dlsym(ghost_handle,"gsapi_set_stdio"));
+  ghost_info.revision=(int (MagickDLLCall *)(gsapi_revision_t *,int)) (
+    lt_dlsym(ghost_handle,"gsapi_revision"));
   UnlockSemaphoreInfo(ghost_semaphore);
   if ((ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
       (ghost_info.init_with_args == NULL) || (ghost_info.new_instance == NULL)
-      || (ghost_info.run_string == NULL) || (ghost_info.set_stdio == NULL)
-      )
+      || (ghost_info.run_string == NULL) || (ghost_info.set_stdio == NULL) ||
+      (ghost_info.revision == NULL))
     return(FALSE);
   return(TRUE);
 }

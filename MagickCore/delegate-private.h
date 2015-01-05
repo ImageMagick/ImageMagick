@@ -21,6 +21,14 @@
 #if defined(MAGICKCORE_GS_DELEGATE)
 #include "ghostscript/iapi.h"
 #include "ghostscript/ierrors.h"
+#else
+typedef struct gsapi_revision_s
+{
+  const char *product;
+  const char *copyright;
+  long revision;
+  long revisiondate;
+} gsapi_revision_t;
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -62,6 +70,9 @@ typedef struct _GhostInfo
     (MagickDLLCall *set_stdio)(gs_main_instance *,int(MagickDLLCall *)(void *,
       char *,int),int(MagickDLLCall *)(void *,const char *,int),
       int(MagickDLLCall *)(void *,const char *,int));
+
+  int
+    (MagickDLLCall *revision)(gsapi_revision_t *, int);
 } GhostInfo;
 
 extern MagickPrivate MagickBooleanType
