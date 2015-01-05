@@ -187,6 +187,9 @@ static MagickBooleanType InvokePostscriptDelegate(
   gs_main_instance
     *interpreter;
 
+  gsapi_revision_t
+    revision;
+
   int
     argc,
     code;
@@ -214,12 +217,16 @@ static MagickBooleanType InvokePostscriptDelegate(
   ghost_info_struct.set_stdio=(int (*)(gs_main_instance *,int(*)(void *,char *,
     int),int(*)(void *,const char *,int),int(*)(void *, const char *, int)))
     gsapi_set_stdio;
+  ghost_info_struct.revision=(int (*)(gsapi_revision_t *,int)) gsapi_revision;
 #endif
   if (ghost_info == (GhostInfo *) NULL)
     ExecuteGhostscriptCommand(command,status);
+  if ((ghost_info->revision)(&revision,sizeof(revision)) != 0)
+    revision.revision=0;
   if (verbose != MagickFalse)
     {
-      (void) fputs("[ghostscript library]",stdout);
+      (void) fprintf(stdout,"[ghostscript library %.2f]",
+        (double)revision.revision / 100);
       SetArgsStart(command,args_start);
       (void) fputs(args_start,stdout);
     }
@@ -247,12 +254,14 @@ static MagickBooleanType InvokePostscriptDelegate(
       SetArgsStart(command,args_start);
       if (status == -101) /* quit */
         (void) FormatLocaleString(message,MaxTextExtent,
-          "[ghostscript library]%s: %s",args_start,errors);
+          "[ghostscript library %.2f]%s: %s",(double)revision.revision / 100,
+          args_start,errors);
       else
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             DelegateError,"PostscriptDelegateFailed",
-            "`[ghostscript library]%s': %s",args_start,errors);
+            "`[ghostscript library %.2f]%s': %s",
+            (double)revision.revision / 100,args_start,errors);
           if (errors != (char *) NULL)
             errors=DestroyString(errors);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
