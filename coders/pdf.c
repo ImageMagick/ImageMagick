@@ -235,8 +235,8 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
     revision.revision=0;
   if (verbose != MagickFalse)
     {
-      (void) fprintf(stdout,"[ghostscript library %.2f]",
-        (double)revision.revision / 100);
+      (void) fprintf(stdout,"[ghostscript library %.2f]",(double)
+        revision.revision/100.0);
       SetArgsStart(command,args_start);
       (void) fputs(args_start,stdout);
     }
