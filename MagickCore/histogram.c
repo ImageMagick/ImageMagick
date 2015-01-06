@@ -1290,18 +1290,6 @@ MagickExport Image *UniqueImageColors(const Image *image,
   UniqueColorsToImage(unique_image,unique_view,cube_info,cube_info->root,
     exception);
   unique_view=DestroyCacheView(unique_view);
-  if (cube_info->colors < MaxColormapSize)
-    {
-      QuantizeInfo
-        *quantize_info;
-
-      quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
-      quantize_info->number_colors=MaxColormapSize;
-      quantize_info->dither_method=NoDitherMethod;
-      quantize_info->tree_depth=8;
-      (void) QuantizeImage(quantize_info,unique_image,exception);
-      quantize_info=DestroyQuantizeInfo(quantize_info);
-    }
   cube_info=DestroyCubeInfo(image,cube_info);
   return(unique_image);
 }
