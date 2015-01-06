@@ -1706,14 +1706,14 @@ void Magick::Image::adaptiveSharpenChannel(const ChannelType channel_,
 }
 
 void Magick::Image::adaptiveThreshold(const size_t width_,const size_t height_,
-  const ssize_t offset_)
+   const double bias_=0.0)
 {
 
   MagickCore::Image
     *newImage;
 
   GetPPException;
-  newImage=AdaptiveThresholdImage(constImage(),width_,height_,offset_,
+  newImage=AdaptiveThresholdImage(constImage(),width_,height_,bias_,
     exceptionInfo);
   replaceImage(newImage);
   ThrowPPException;

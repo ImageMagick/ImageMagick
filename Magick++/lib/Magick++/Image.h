@@ -540,9 +540,9 @@ namespace Magick
     // Local adaptive threshold image
     // http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm
     // Width x height define the size of the pixel neighborhood
-    // offset = constant to subtract from pixel neighborhood mean
-    void adaptiveThreshold(const size_t width,const size_t height,
-      const ::ssize_t offset=0);
+    // bias = constant to subtract from pixel neighborhood mean
+    void adaptiveThreshold(const size_t width_,const size_t height_,
+      const double bias_=0.0);
 
     // Add noise to image with specified noise type
     void addNoise(const NoiseType noiseType_);
