@@ -553,7 +553,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -568,7 +567,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->magick=(IsImageFormatHandler *) IsJ2K;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -583,7 +581,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->magick=(IsImageFormatHandler *) IsJ2K;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -598,7 +595,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -613,7 +609,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -628,7 +623,6 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=NoThreadSupport;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
