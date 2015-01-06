@@ -577,7 +577,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Magick: %c%c",
         magick[0],magick[1]);
-    if ((count == 0) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
+    if ((count != 2) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
         (LocaleNCompare((char *) magick,"CI",2) != 0)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     bmp_info.file_size=ReadBlobLSBLong(image);
