@@ -3392,9 +3392,9 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
     /*
       Doubled Percent - or percent at end of string
     */
-    if ( *p == '\0' )
+    if ((*p == '\0') || (*p == '\'') || (*p == '"')
        p--;
-    if ( *p == '%' ) {
+    if (*p == '%') {
         *q++='%';
         continue;
       }
