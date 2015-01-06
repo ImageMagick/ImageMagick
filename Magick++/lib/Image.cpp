@@ -1706,7 +1706,7 @@ void Magick::Image::adaptiveSharpenChannel(const ChannelType channel_,
 }
 
 void Magick::Image::adaptiveThreshold(const size_t width_,const size_t height_,
-   const double bias_=0.0)
+   const double bias_)
 {
 
   MagickCore::Image
