@@ -375,22 +375,35 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
     GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      PixelTrait
+        traits;
+
       if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
       GetPixelInfoPixel(image,q,&pixel);
-      pixel.red=clut_map[ScaleQuantumToMap(
-        ClampToQuantum(pixel.red))].red;
-      pixel.green=clut_map[ScaleQuantumToMap(
-        ClampToQuantum(pixel.green))].green;
-      pixel.blue=clut_map[ScaleQuantumToMap(
-        ClampToQuantum(pixel.blue))].blue;
-      pixel.black=clut_map[ScaleQuantumToMap(
-        ClampToQuantum(pixel.black))].black;
-      pixel.alpha=clut_map[ScaleQuantumToMap(
-        ClampToQuantum(pixel.alpha))].alpha;
+      traits=GetPixelChannelTraits(image,RedPixelChannel);
+      if ((traits & UpdatePixelTrait) != 0)
+        pixel.red=clut_map[ScaleQuantumToMap(ClampToQuantum(
+          pixel.red))].red;
+      traits=GetPixelChannelTraits(image,GreenPixelChannel);
+      if ((traits & UpdatePixelTrait) != 0)
+        pixel.green=clut_map[ScaleQuantumToMap(ClampToQuantum(
+          pixel.green))].green;
+      traits=GetPixelChannelTraits(image,BluePixelChannel);
+      if ((traits & UpdatePixelTrait) != 0)
+        pixel.blue=clut_map[ScaleQuantumToMap(ClampToQuantum(
+          pixel.blue))].blue;
+      traits=GetPixelChannelTraits(image,BlackPixelChannel);
+      if ((traits & UpdatePixelTrait) != 0)
+        pixel.black=clut_map[ScaleQuantumToMap(ClampToQuantum(
+          pixel.black))].black;
+      traits=GetPixelChannelTraits(image,AlphaPixelChannel);
+      if ((traits & UpdatePixelTrait) != 0)
+        pixel.alpha=clut_map[ScaleQuantumToMap(ClampToQuantum(
+          pixel.alpha))].alpha;
       SetPixelViaPixelInfo(image,&pixel,q);
       q+=GetPixelChannels(image);
     }
