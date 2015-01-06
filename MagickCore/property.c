@@ -3271,8 +3271,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
   if (*p == '@') {
      p++;
      if (*p != '-' && IfMagickFalse(IsPathAccessible(p)) ) {
-       (void) ThrowMagickException(exception,GetMagickModule(),
-           OptionError,"UnableToAccessPath","%s",p);
+       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+         "UnableToAccessPath","%s",p);
        return((char *) NULL);
      }
      return(FileToString(p,~0UL,exception));
@@ -3338,13 +3338,12 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
     /*
       Doubled Percent - or percent at end of string
     */
-    if ( *p == '\0' )
-       p--;
-    if ( *p == '%' ) {
+    if ((*p == '\0') || (*p == '\'') || (*p == '"'))
+      p--;
+    if (*p == '%') {
         *q++='%';
         continue;
       }
-
     /*
       Single letter escapes  %c
     */
