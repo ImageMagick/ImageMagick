@@ -423,8 +423,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((sun_info.type != RT_ENCODED) && (sun_info.depth >= 8) &&
         ((number_pixels*((sun_info.depth+7)/8)) > sun_info.length))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    sun_data=(unsigned char *) AcquireQuantumMemory((size_t) sun_info.length,
-      sizeof(*sun_data));
+    bytes_per_line=sun_info.width*sun_info.depth;
+    sun_data=(unsigned char *) AcquireQuantumMemory((size_t) MagickMax(
+      sun_info.length,bytes_per_line*sun_info.width),sizeof(*sun_data));
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     count=(ssize_t) ReadBlob(image,sun_info.length,sun_data);
@@ -441,7 +442,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read run-length encoded raster pixels.
         */
         height=sun_info.height;
-        bytes_per_line=sun_info.width*sun_info.depth;
         if ((height == 0) || (sun_info.width == 0) || (sun_info.depth == 0) ||
             ((bytes_per_line/sun_info.depth) != sun_info.width))
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
