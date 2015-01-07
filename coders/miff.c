@@ -561,6 +561,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             /*
               Get the keyword.
             */
+            length=MaxTextExtent;
             p=keyword;
             do
             {
@@ -592,9 +593,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         break;
                       p=options+strlen(options);
                     }
-                  if (options == (char *) NULL)
-                    ThrowReaderException(ResourceLimitError,
-                      "MemoryAllocationFailed");
                   *p++=(char) c;
                   c=ReadBlobByte(image);
                   if (c == '\\')
@@ -609,7 +607,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   if (*options != '{')
                     if (isspace((int) ((unsigned char) c)) != 0)
                       break;
-                } }
+                }
+                if (options == (char *) NULL)
+                  ThrowReaderException(ResourceLimitError,
+                    "MemoryAllocationFailed");
+              }
             *p='\0';
             if (*options == '{')
               (void) CopyMagickString(options,options+1,strlen(options));
