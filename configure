@@ -4322,7 +4322,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=17521:17537M
+MAGICK_SVN_REVISION=17584:17590M
 
 
 # Substitute library versioning
@@ -35860,7 +35860,7 @@ GSCMYKDevice=pam
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
 GSPSDevice=ps2write
-GSEPSDevice=epswrite
+GSEPSDevice=eps2write
 GSVersion='unknown'
 if test $have_gs = 'yes'; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
