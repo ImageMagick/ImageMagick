@@ -3687,7 +3687,7 @@ GSCMYKDevice=pam
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
 GSPSDevice=ps2write
-GSEPSDevice=epswrite
+GSEPSDevice=eps2write
 GSVersion='unknown'
 if test $have_gs = 'yes'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
