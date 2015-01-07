@@ -463,6 +463,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     i;
 
   size_t
+    compress_extent,
     length,
     packet_size;
 
@@ -1261,11 +1262,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       packet_size+=quantum_info->depth/8;
     if (image->compression == RLECompression)
       packet_size++;
-    length=image->columns;
-    length=MagickMax(MagickMax(BZipMaxExtent(packet_size*image->columns),
-      LZMAMaxExtent(packet_size*image->columns)),ZipMaxExtent(packet_size*
-      image->columns));
-    compress_pixels=(unsigned char *) AcquireQuantumMemory(length,
+    compress_extent=MagickMax(MagickMax(BZipMaxExtent(packet_size*
+      image->columns),LZMAMaxExtent(packet_size*image->columns)),
+      ZipMaxExtent(packet_size*image->columns));
+    compress_pixels=(unsigned char *) AcquireQuantumMemory(compress_extent,
       sizeof(*compress_pixels));
     if (compress_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1403,6 +1403,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 length=(size_t) BZipMaxExtent(packet_size*image->columns);
                 if (version != 0.0)
                   length=(size_t) ReadBlobMSBLong(image);
+                if (length > compress_extent)
+                  ThrowReaderException(CorruptImageError,
+                    "UnableToReadImageData");
                 bzip_info.avail_in=(unsigned int) ReadBlob(image,length,
                   (unsigned char *) bzip_info.next_in);
               }
@@ -1428,6 +1431,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 lzma_info.next_in=compress_pixels;
                 length=(size_t) ReadBlobMSBLong(image);
+                if (length > compress_extent)
+                  ThrowReaderException(CorruptImageError,
+                    "UnableToReadImageData");
                 lzma_info.avail_in=(unsigned int) ReadBlob(image,length,
                   (unsigned char *) lzma_info.next_in);
               }
@@ -1459,6 +1465,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 length=(size_t) ZipMaxExtent(packet_size*image->columns);
                 if (version != 0.0)
                   length=(size_t) ReadBlobMSBLong(image);
+                if (length > compress_extent)
+                  ThrowReaderException(CorruptImageError,
+                    "UnableToReadImageData");
                 zip_info.avail_in=(unsigned int) ReadBlob(image,length,
                   zip_info.next_in);
               }
