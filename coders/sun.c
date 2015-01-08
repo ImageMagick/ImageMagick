@@ -329,7 +329,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         size_t
           one;
 
-        image->storage_class=PseudoClass;
         image->colors=sun_info.maplength;
         one=1;
         if (sun_info.maptype == RMT_NONE)
