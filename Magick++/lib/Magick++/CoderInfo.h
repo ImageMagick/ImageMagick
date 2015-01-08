@@ -42,10 +42,10 @@ namespace Magick
     CoderInfo& operator=(const CoderInfo &coder_);
 
     // Format can read multi-threaded
-    bool canReadMultiThreaded(void) const;
+    bool canReadMultithreaded(void) const;
 
     // Format can write multi-threaded
-    bool canWriteMultiThreaded(void) const;
+    bool canWriteMultithreaded(void) const;
 
     // Format description
     std::string description(void) const;

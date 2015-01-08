@@ -88,12 +88,12 @@ Magick::CoderInfo& Magick::CoderInfo::operator=(const CoderInfo &coder_)
   return(*this);
 }
 
-bool Magick::CoderInfo::canReadMultiThreaded(void) const
+bool Magick::CoderInfo::canReadMultithreaded(void) const
 {
   return((_threadSupport & DecoderThreadSupport) == DecoderThreadSupport);
 }
 
-bool Magick::CoderInfo::canWriteMultiThreaded(void) const
+bool Magick::CoderInfo::canWriteMultithreaded(void) const
 {
   return((_threadSupport & EncoderThreadSupport) == EncoderThreadSupport);
 }
