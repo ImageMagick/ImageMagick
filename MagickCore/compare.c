@@ -141,6 +141,9 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     *image_view,
     *reconstruct_view;
 
+  double
+    fuzz;
+
   const char
     *artifact;
 
@@ -206,6 +209,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     Generate difference image.
   */
   status=MagickTrue;
+  fuzz=GetMaxImageFuzz(image,reconstruct_image);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   highlight_view=AcquireAuthenticCacheView(highlight_image,exception);
@@ -278,8 +282,11 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         distance=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
-        if (fabs(distance) >= MagickEpsilon)
-          difference=MagickTrue;
+        if ((distance*distance) > fuzz)
+          {
+            difference=MagickTrue;
+            break;
+          }
       }
       if (difference == MagickFalse)
         SetPixelViaPixelInfo(highlight_image,&lowlight,r);
@@ -358,9 +365,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     Compute the absolute difference in pixels between two images.
   */
   status=MagickTrue;
-  fuzz=(double) MagickMax(MagickMax(image->fuzz,reconstruct_image->fuzz),
-    (MagickRealType) MagickSQ1_2);
-  fuzz*=fuzz;
+  fuzz=GetMaxImageFuzz(image,reconstruct_image);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -428,15 +433,12 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         distance=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
         if ((distance*distance) > fuzz)
           {
+            channel_distortion[i]++;
             difference=MagickTrue;
-            break;
           }
       }
       if (difference != MagickFalse)
-        {
-          channel_distortion[i]++;
-          channel_distortion[CompositePixelChannel]++;
-        }
+        channel_distortion[CompositePixelChannel]++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
     }

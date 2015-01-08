@@ -19,10 +19,21 @@
 #define _MAGICKCORE_COLOR_PRIVATE_H
 
 #include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+static inline double GetMaxImageFuzz(const Image *a,const Image *b)
+{
+  double
+    fuzz;
+
+  fuzz=(double) MagickMax(MagickMax(a->fuzz,b->fuzz),(MagickRealType)
+    MagickSQ1_2);
+  return(fuzz*fuzz);
+}
 
 extern MagickPrivate MagickBooleanType
   ColorComponentGenesis(void),
