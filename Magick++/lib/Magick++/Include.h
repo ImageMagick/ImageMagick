@@ -271,6 +271,7 @@ namespace Magick
   using MagickCore::Quantum;
   using MagickCore::MagickRealType;
   using MagickCore::MagickSizeType;
+  using MagickCore::MagickStatusType;
 
   // Boolean types
   using MagickCore::MagickBooleanType;
@@ -973,8 +974,17 @@ namespace Magick
   using MagickCore::InverseColorInterpolate;
 
   // Statistic type
+  using MagickCore::StatisticType;
+  using MagickCore::UndefinedStatistic;
+  using MagickCore::GradientStatistic;
+  using MagickCore::MaximumStatistic;
+  using MagickCore::MeanStatistic;
   using MagickCore::MedianStatistic;
+  using MagickCore::MinimumStatistic;
+  using MagickCore::ModeStatistic;
   using MagickCore::NonpeakStatistic;
+  using MagickCore::RootMeanSquareStatistic;
+  using MagickCore::StandardDeviationStatistic;
 
   // StorageType type
   using MagickCore::StorageType;
@@ -1008,6 +1018,12 @@ namespace Magick
   using MagickCore::ItalicStyle;
   using MagickCore::ObliqueStyle;
   using MagickCore::AnyStyle;
+
+  // Thread support type
+  using MagickCore::MagickThreadSupport;
+  using MagickCore::NoThreadSupport;
+  using MagickCore::DecoderThreadSupport;
+  using MagickCore::EncoderThreadSupport;
 
   // Virtual pixel methods
   using MagickCore::VirtualPixelMethod;

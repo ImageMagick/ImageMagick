@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 2001, 2002
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2015
 //
 // CoderInfo implementation
 //
@@ -16,32 +16,35 @@
 using namespace std;
 
 Magick::CoderInfo::CoderInfo(void)
-  : _name(),
-    _description(),
-    _mimeType(),
+  : _description(),
+    _isMultiFrame(false),
     _isReadable(false),
     _isWritable(false),
-    _isMultiFrame(false)
+    _mimeType(),
+    _name(),
+    _threadSupport(NoThreadSupport)
 {
 }
 
 Magick::CoderInfo::CoderInfo(const Magick::CoderInfo &coder_)
+  : _description(coder_._description),
+    _isMultiFrame(coder_._isMultiFrame),
+    _isReadable(coder_._isReadable),
+    _isWritable(coder_._isWritable),
+    _mimeType(coder_._mimeType),
+    _name(coder_._name),
+    _threadSupport(coder_._threadSupport)
 {
-  _name=coder_._name;
-  _description=coder_._description;
-  _mimeType=coder_._mimeType;
-  _isReadable=coder_._isReadable;
-  _isWritable=coder_._isWritable;
-  _isMultiFrame=coder_._isMultiFrame;
 }
 
 Magick::CoderInfo::CoderInfo(const std::string &name_)
-  : _name(),
-    _description(),
-    _mimeType(),
+  : _description(),
+    _isMultiFrame(false),
     _isReadable(false),
     _isWritable(false),
-    _isMultiFrame(false)
+    _mimeType(),
+    _name(),
+    _threadSupport(NoThreadSupport)
 {
   const Magick::MagickInfo
     *magickInfo;
@@ -50,17 +53,18 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
   magickInfo=GetMagickInfo(name_.c_str(),exceptionInfo);
   ThrowPPException;
   if (magickInfo == 0)
-    {
-      throwExceptionExplicit(OptionError,"Coder not found",name_.c_str());
-    }
+    throwExceptionExplicit(OptionError,"Coder not found",name_.c_str());
   else
     {
-      _name=string(magickInfo->name);
       _description=string(magickInfo->description);
+      _isMultiFrame=((magickInfo->adjoin == MagickFalse) ? false : true);
+      _isReadable=((magickInfo->decoder == (MagickCore::DecodeImageHandler *)
+        NULL) ? false : true);
+      _isWritable=((magickInfo->encoder == (MagickCore::EncodeImageHandler *)
+        NULL) ? false : true);
       _mimeType=string(magickInfo->mime_type ? magickInfo->mime_type : "");
-      _isReadable=((magickInfo->decoder == 0) ? false : true);
-      _isWritable=((magickInfo->encoder == 0) ? false : true);
-      _isMultiFrame=((magickInfo->adjoin == 0) ? false : true);
+      _name=string(magickInfo->name);
+      _threadSupport=magickInfo->thread_support;
     }
 }
 
@@ -73,14 +77,25 @@ Magick::CoderInfo& Magick::CoderInfo::operator=(const CoderInfo &coder_)
   // If not being set to ourself
   if (this != &coder_)
     {
-      _name=coder_._name;
       _description=coder_._description;
-      _mimeType=coder_._mimeType;
+      _isMultiFrame=coder_._isMultiFrame;
       _isReadable=coder_._isReadable;
       _isWritable=coder_._isWritable;
-      _isMultiFrame=coder_._isMultiFrame;
+      _mimeType=coder_._mimeType;
+      _name=coder_._name;
+      _threadSupport=coder_._threadSupport;
     }
   return(*this);
+}
+
+bool Magick::CoderInfo::canReadMultiThreaded(void) const
+{
+  return((_threadSupport & DecoderThreadSupport) == DecoderThreadSupport);
+}
+
+bool Magick::CoderInfo::canWriteMultiThreaded(void) const
+{
+  return((_threadSupport & EncoderThreadSupport) == EncoderThreadSupport);
 }
 
 std::string Magick::CoderInfo::description(void) const
