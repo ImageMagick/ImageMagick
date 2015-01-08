@@ -336,21 +336,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colors=one << sun_info.depth;
         if (sun_info.maptype == RMT_EQUAL_RGB)
           image->colors=sun_info.maplength/3;
+        if (AcquireImageColormap(image,image->colors) == MagickFalse)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
     switch (sun_info.maptype)
     {
-      case RMT_NONE:
-      {
-        if (sun_info.depth < 24)
-          {
-            /*
-              Create linear color ramp.
-            */
-            if (AcquireImageColormap(image,image->colors) == MagickFalse)
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          }
-        break;
-      }
       case RMT_EQUAL_RGB:
       {
         unsigned char
@@ -359,8 +349,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read SUN raster colormap.
         */
-        if (AcquireImageColormap(image,image->colors) == MagickFalse)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         sun_colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
           sizeof(*sun_colormap));
         if (sun_colormap == (unsigned char *) NULL)
