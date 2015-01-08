@@ -1628,8 +1628,8 @@ if (0)
               }
               case DarkenIntensityCompositeOp:
               {
-                pixel=(1.0-Sa)*GetPixelIntensity(composite_image,p) <
-                  (1.0-Da)*GetPixelIntensity(image,q) ? Sa : Da;
+                pixel=Sa*GetPixelIntensity(composite_image,p) <
+                  Da*GetPixelIntensity(image,q) ? Sa : Da;
                 break;
               }
               case LightenIntensityCompositeOp:
@@ -1833,8 +1833,8 @@ if (0)
           }
           case DarkenIntensityCompositeOp:
           {
-            pixel=(1.0-Sa)*GetPixelIntensity(composite_image,p) <
-              (1.0-Da)*GetPixelIntensity(image,q) ? Sc : Dc;
+            pixel=Sa*GetPixelIntensity(composite_image,p) <
+              Da*GetPixelIntensity(image,q) ? Sc : Dc;
             break;
           }
           case DifferenceCompositeOp:
@@ -1980,7 +1980,7 @@ if (0)
           }
           case LinearDodgeCompositeOp:
           {
-            pixel=QuantumRange*(Sa*Sc+Da*Dc);
+            pixel=(Sa*Sc+Da*Dc);
             break;
           }
           case LinearLightCompositeOp:
