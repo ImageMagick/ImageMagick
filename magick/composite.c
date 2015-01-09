@@ -2849,12 +2849,12 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           composite.blue=(MagickRealType) QuantumRange-composite.blue;
           composite.index=(MagickRealType) QuantumRange-composite.index;
         }
-      SetPixelRed(q,ClampToQuantum(composite.red));
-      SetPixelGreen(q,ClampToQuantum(composite.green));
-      SetPixelBlue(q,ClampToQuantum(composite.blue));
-      SetPixelOpacity(q,ClampToQuantum(composite.opacity));
+      SetPixelRed(q,ClampPixel(composite.red));
+      SetPixelGreen(q,ClampPixel(composite.green));
+      SetPixelBlue(q,ClampPixel(composite.blue));
+      SetPixelOpacity(q,ClampPixel(composite.opacity));
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(indexes+x,ClampToQuantum(composite.index));
+        SetPixelIndex(indexes+x,ClampPixel(composite.index));
       p++;
       if (p >= (pixels+composite_image->columns))
         p=pixels;

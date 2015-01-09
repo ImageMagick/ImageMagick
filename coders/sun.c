@@ -340,6 +340,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     switch (sun_info.maptype)
     {
+      case RMT_NONE:
+        break;
       case RMT_EQUAL_RGB:
       {
         unsigned char
