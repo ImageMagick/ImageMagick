@@ -809,9 +809,11 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  (void) InterpretImageFilename(image_info,(Image *) NULL,image_info->filename,
-    (int) image_info->scene,filename);
-  if (LocaleCompare(filename,image_info->filename) != 0)
+  read_info=CloneImageInfo(image_info);
+  *read_info->magick='\0';
+  (void) InterpretImageFilename(read_info,(Image *) NULL,read_info->filename,
+    (int) read_info->scene,filename);
+  if (LocaleCompare(filename,read_info->filename) != 0)
     {
       ExceptionInfo
         *sans;
@@ -823,7 +825,6 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       /*
         Images of the form image-%d.png[1-5].
       */
-      read_info=CloneImageInfo(image_info);
       sans=AcquireExceptionInfo();
       (void) SetImageInfo(read_info,0,sans);
       sans=DestroyExceptionInfo(sans);
@@ -847,7 +848,9 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       read_info=DestroyImageInfo(read_info);
       return(images);
     }
-  return(ReadImage(image_info,exception));
+  image=ReadImage(read_info,exception);
+  read_info=DestroyImageInfo(read_info);
+  return(image);
 }
 
 /*
