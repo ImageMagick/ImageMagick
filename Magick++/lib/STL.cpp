@@ -843,6 +843,16 @@ Magick::Geometry Magick::ReadOptions::size(void) const
   return(Geometry());
 }
 
+void Magick::ReadOptions::quiet(const bool quiet_)
+{
+  _quiet=quiet_;
+}
+
+bool Magick::ReadOptions::quiet(void) const
+{
+   return(_quiet);
+}
+
 MagickCore::ImageInfo *Magick::ReadOptions::imageInfo(void)
 {
   return(_imageInfo);
