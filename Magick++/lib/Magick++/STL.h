@@ -2323,7 +2323,7 @@ namespace Magick
     insertImages( fourierImages_, images );
 
     // Report any error
-    ThrowPPException(image_->quiet());
+    ThrowPPException(image_.quiet());
   }
   template <class Container >
   void forwardFourierTransformImage( Container *fourierImages_,
@@ -2342,7 +2342,7 @@ namespace Magick
     insertImages( fourierImages_, images );
 
     // Report any error
-    ThrowPPException(image_->quiet());
+    ThrowPPException(image_.quiet());
   }
 
   // Applies a mathematical expression to a sequence of images.
