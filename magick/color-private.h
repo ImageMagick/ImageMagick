@@ -30,6 +30,16 @@ extern "C" {
 extern MagickPrivate MagickBooleanType
   IsIntensitySimilar(const Image *,const PixelPacket *,const PixelPacket *);
 
+static inline double GetFuzzyColorDistance(const Image *p,const Image *q)
+{
+  double
+    fuzz;
+
+  fuzz=(double) MagickMax(MagickMax(p->fuzz,q->fuzz),(MagickRealType)
+    MagickSQ1_2);
+  return(fuzz*fuzz);
+}
+
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)
 {
