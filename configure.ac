@@ -3751,7 +3751,7 @@ if test $have_gs = 'yes'; then
     if $PSDelegate -q -dBATCH -sDEVICE=$GSPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
         :
     else
-        GSPSDevice=nodevice
+        GSPSDevice=pswrite
     fi
     AC_MSG_RESULT([$GSPSDevice])
 
@@ -3760,7 +3760,7 @@ if test $have_gs = 'yes'; then
     if $PSDelegate -q -dBATCH -sDEVICE=$GSEPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
         :
     else
-        GSEPSDevice=nodevice
+        GSEPSDevice=epswrite
     fi
     AC_MSG_RESULT([$GSEPSDevice])
 fi
@@ -4113,10 +4113,10 @@ AC_MSG_NOTICE([
 ==============================================================================
 ImageMagick is configured as follows. Please verify that this configuration
 matches your expectations.
-  
+
   Host system type: $host
   Build system type: $build
-  
+
                   Option                        Value
   ------------------------------------------------------------------------------
   Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
@@ -4128,7 +4128,7 @@ matches your expectations.
                     --enable-hdri=$enable_hdri		$enable_hdri
 
   Install documentation:    	$wantdocs
-  
+
   Delegate Library Configuration:
   BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
   Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
@@ -4161,24 +4161,24 @@ matches your expectations.
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  
+
   Delegate Program Configuration:
   GhostPCL          None				$PCLDelegate ($PCLVersion)
   GhostXPS          None				$XPSDelegate ($XPSVersion)
   Ghostscript       None				$PSDelegate ($GSVersion)
-  
+
   Font Configuration:
   Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
   Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
   Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
   Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
-  
+
   X11 Configuration:
         X_CFLAGS        = $X_CFLAGS
         X_PRE_LIBS      = $X_PRE_LIBS
         X_LIBS          = $X_LIBS
         X_EXTRA_LIBS    = $X_EXTRA_LIBS
-  
+
   Options used to compile and link:
     PREFIX          = $PREFIX_DIR
     EXEC-PREFIX     = $EXEC_PREFIX_DIR
