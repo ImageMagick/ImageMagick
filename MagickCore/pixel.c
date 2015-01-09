@@ -6036,7 +6036,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
     distance,
     scale;
 
-  fuzz=GetMaxImageFuzz(source,destination);
+  fuzz=GetFuzzyColorDistance(source,destination);
   scale=1.0;
   distance=0.0;
   if (source->alpha_trait != UndefinedPixelTrait)
