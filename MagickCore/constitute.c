@@ -805,11 +805,13 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  (void) SetImageOption(image_info,"filename",filename);
-  (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
-  (void) InterpretImageFilename(image_info,(Image *) NULL,filename,
-    (int) image_info->scene,read_filename,exception);
-  if (LocaleCompare(read_filename,image_info->filename) != 0)
+  read_info=CloneImageInfo(image_info);
+  *read_info->magick='\0';
+  (void) SetImageOption(read_info,"filename",filename);
+  (void) CopyMagickString(read_info->filename,filename,MaxTextExtent);
+  (void) InterpretImageFilename(read_info,(Image *) NULL,filename,
+    (int) read_info->scene,read_filename,exception);
+  if (LocaleCompare(read_filename,read_info->filename) != 0)
     {
       ExceptionInfo
         *sans;
@@ -821,7 +823,6 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
       /*
         Images of the form image-%d.png[1-5].
       */
-      read_info=CloneImageInfo(image_info);
       sans=AcquireExceptionInfo();
       (void) SetImageInfo(read_info,0,sans);
       sans=DestroyExceptionInfo(sans);
@@ -845,7 +846,9 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
       read_info=DestroyImageInfo(read_info);
       return(images);
     }
-  return(ReadImage(image_info,exception));
+  image=ReadImage(read_info,exception);
+  read_info=DestroyImageInfo(read_info);
+  return(image);
 }
 
 /*
