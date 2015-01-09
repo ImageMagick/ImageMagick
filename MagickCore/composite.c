@@ -2305,7 +2305,7 @@ if (0)
             break;
           }
         }
-        q[i]=ClampToQuantum(pixel);
+        q[i]=ClampPixel(pixel);
       }
       p+=GetPixelChannels(composite_image);
       channels=GetPixelChannels(composite_image);
