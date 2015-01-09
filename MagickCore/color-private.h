@@ -25,16 +25,6 @@
 extern "C" {
 #endif
 
-static inline double GetMaxImageFuzz(const Image *a,const Image *b)
-{
-  double
-    fuzz;
-
-  fuzz=(double) MagickMax(MagickMax(a->fuzz,b->fuzz),(MagickRealType)
-    MagickSQ1_2);
-  return(fuzz*fuzz);
-}
-
 extern MagickPrivate MagickBooleanType
   ColorComponentGenesis(void),
   IsEquivalentAlpha(const Image *,const PixelInfo *,const PixelInfo *),
@@ -42,6 +32,16 @@ extern MagickPrivate MagickBooleanType
 
 extern MagickPrivate void
   ColorComponentTerminus(void);
+
+static inline double GetFuzzyColorDistance(const Image *p,const Image *q)
+{
+  double
+    fuzz;
+
+  fuzz=(double) MagickMax(MagickMax(p->fuzz,q->fuzz),(MagickRealType)
+    MagickSQ1_2);
+  return(fuzz*fuzz);
+}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
