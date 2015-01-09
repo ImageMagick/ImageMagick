@@ -19,6 +19,7 @@
 #define _MAGICKCORE_COLOR_PRIVATE_H
 
 #include "magick/image.h"
+#include "magick/image-private.h"
 #include "magick/color.h"
 #include "magick/exception-private.h"
 #include "magick/pixel-accessor.h"
