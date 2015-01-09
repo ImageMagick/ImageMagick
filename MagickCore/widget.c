@@ -313,27 +313,6 @@ static void XDrawBevel(Display *display,const XWindowInfo *window_info,
 %
 */
 
-static inline int MagickAbsoluteValue(const int x)
-{
-  if (x < 0)
-    return(-x);
-  return(x);
-}
-
-static inline int MagickMax(const int x,const int y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline int MagickMin(const int x,const int y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
   const XWidgetInfo *button_info)
 {
