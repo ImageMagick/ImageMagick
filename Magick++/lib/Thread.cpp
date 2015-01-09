@@ -32,7 +32,7 @@ Magick::MutexLock::MutexLock(void)
         ::pthread_mutexattr_destroy(&attr);
         return;
       }
-  throwExceptionExplicit(OptionError,"mutex initialization failed",
+  throwExceptionExplicit(MagickCore::OptionError,"mutex initialization failed",
     strerror(sysError));
 }
 #else
@@ -71,7 +71,7 @@ Magick::MutexLock::~MutexLock(void)
 
   if ((sysError=::pthread_mutex_destroy(&_mutex)) == 0)
     return;
-  throwExceptionExplicit(OptionError,"mutex destruction failed",
+  throwExceptionExplicit(MagickCore::OptionError,"mutex destruction failed",
     strerror(sysError));
 #endif
 #if defined(_MT) && defined(_VISUALC_)
@@ -90,7 +90,7 @@ void Magick::MutexLock::lock(void)
 
   if ((sysError=::pthread_mutex_lock(&_mutex)) == 0)
     return;
-  throwExceptionExplicit(OptionError,"mutex lock failed",
+  throwExceptionExplicit(MagickCore::OptionError,"mutex lock failed",
     strerror(sysError));
 #endif
 #if defined(_MT) && defined(_VISUALC_)
@@ -109,7 +109,7 @@ void Magick::MutexLock::unlock(void)
 
   if ((sysError=::pthread_mutex_unlock(&_mutex)) == 0)
     return;
-  throwExceptionExplicit(OptionError,"mutex unlock failed",
+  throwExceptionExplicit(MagickCore::OptionError,"mutex unlock failed",
     strerror(sysError));
 #endif
 #if defined(_MT) && defined(_VISUALC_)
