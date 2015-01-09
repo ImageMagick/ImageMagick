@@ -4320,7 +4320,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=6.9.0-4
 
-MAGICK_SVN_REVISION=17585:17589M
+MAGICK_SVN_REVISION=17601:17620M
 
 
 # Substitute library versioning
@@ -35958,7 +35958,7 @@ $as_echo_n "checking for gs PS writing device... " >&6; }
     if $PSDelegate -q -dBATCH -sDEVICE=$GSPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
         :
     else
-        GSPSDevice=nodevice
+        GSPSDevice=pswrite
     fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSPSDevice" >&5
 $as_echo "$GSPSDevice" >&6; }
@@ -35969,7 +35969,7 @@ $as_echo_n "checking for gs EPS writing device... " >&6; }
     if $PSDelegate -q -dBATCH -sDEVICE=$GSEPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
         :
     else
-        GSEPSDevice=nodevice
+        GSEPSDevice=epswrite
     fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSEPSDevice" >&5
 $as_echo "$GSEPSDevice" >&6; }

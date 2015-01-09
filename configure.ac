@@ -3750,7 +3750,7 @@ if test $have_gs = 'yes'; then
     if $PSDelegate -q -dBATCH -sDEVICE=$GSPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
         :
     else
-        GSPSDevice=nodevice
+        GSPSDevice=pswrite
     fi
     AC_MSG_RESULT([$GSPSDevice])
 
@@ -3759,7 +3759,7 @@ if test $have_gs = 'yes'; then
     if $PSDelegate -q -dBATCH -sDEVICE=$GSEPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
         :
     else
-        GSEPSDevice=nodevice
+        GSEPSDevice=epswrite
     fi
     AC_MSG_RESULT([$GSEPSDevice])
 fi
