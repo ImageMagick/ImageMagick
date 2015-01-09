@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2004
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Implementation of Blob
 //
@@ -50,7 +50,8 @@ size_t Magick::BlobRef::decrease()
   if (_refCount == 0)
     {
       _mutexLock.unlock();
-      throwExceptionExplicit(OptionError,"Invalid call to decrease");
+      throwExceptionExplicit(MagickCore::OptionError,
+        "Invalid call to decrease");
     }
   count=--_refCount;
   _mutexLock.unlock();

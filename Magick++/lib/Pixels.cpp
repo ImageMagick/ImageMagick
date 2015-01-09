@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2015
 //
 // Pixels Implementation
 //
@@ -25,7 +25,7 @@ Magick::Pixels::Pixels(Magick::Image &image_)
 {
   GetPPException;
     _view=AcquireVirtualCacheView(_image.image(),exceptionInfo),
-  ThrowPPException;
+  ThrowPPException(image_.quiet());
 }
 
 Magick::Pixels::~Pixels(void)
@@ -45,7 +45,7 @@ Magick::Quantum* Magick::Pixels::get(const ssize_t x_,const ssize_t y_,
   GetPPException;
   Quantum* pixels=GetCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
     exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(true);
 
   return pixels;
 }
@@ -61,7 +61,7 @@ const Magick::Quantum* Magick::Pixels::getConst(const ssize_t x_,
   GetPPException;
   const Quantum* pixels=GetCacheViewVirtualPixels(_view,x_,y_,columns_,rows_,
     exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(true);
 
   return pixels;
 }
@@ -84,7 +84,7 @@ Magick::Quantum* Magick::Pixels::set(const ssize_t x_,const ssize_t y_,
   GetPPException;
   Quantum* pixels=QueueCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
     exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(true);
 
   return pixels;
 }
@@ -93,7 +93,7 @@ void Magick::Pixels::sync(void)
 {
   GetPPException;
   SyncCacheViewAuthenticPixels(_view,exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(true);
 }
 
 // Return pixel colormap index array
@@ -183,7 +183,7 @@ void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
       size=sizeof(unsigned short);
       break;
     default:
-      throwExceptionExplicit(OptionError,"Invalid type");
+      throwExceptionExplicit(MagickCore::OptionError,"Invalid type");
       return;
   }
 
@@ -194,9 +194,9 @@ void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
   GetPPException;
   MagickCore::ExportImagePixels(image_.image(),x_,y_,width_,height_,
     map_.c_str(),type_,_data,exceptionInfo);
-  if (exceptionInfo->severity != UndefinedException)
+  if (exceptionInfo->severity != MagickCore::UndefinedException)
     relinquish();
-  ThrowPPException;
+  ThrowPPException(image_.quiet());
 }
 
 void Magick::PixelData::relinquish(void) throw()

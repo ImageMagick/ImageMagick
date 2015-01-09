@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Implementation of thread support
 //
@@ -52,7 +52,8 @@ Magick::MutexLock::MutexLock(void)
   _mutex=::CreateSemaphore(&security,1,1,(LPCSTR) NULL);
   if (_mutex != (HANDLE) NULL)
     return;
-  throwExceptionExplicit(OptionError,"mutex initialization failed");
+  throwExceptionExplicit(MagickCore::OptionError,
+    "mutex initialization failed");
 }
 #else
 // Threads not supported
@@ -76,7 +77,7 @@ Magick::MutexLock::~MutexLock(void)
 #if defined(_MT) && defined(_VISUALC_)
   if (::CloseHandle(_mutex) != 0)
     return;
-  throwExceptionExplicit(OptionError,"mutex destruction failed");
+  throwExceptionExplicit(MagickCore::OptionError,"mutex destruction failed");
 #endif
 }
 
@@ -95,7 +96,7 @@ void Magick::MutexLock::lock(void)
 #if defined(_MT) && defined(_VISUALC_)
   if (WaitForSingleObject(_mutex,INFINITE) != WAIT_FAILED)
     return;
-  throwExceptionExplicit(OptionError,"mutex lock failed");
+  throwExceptionExplicit(MagickCore::OptionError,"mutex lock failed");
 #endif
 }
 
@@ -114,6 +115,6 @@ void Magick::MutexLock::unlock(void)
 #if defined(_MT) && defined(_VISUALC_)
   if (ReleaseSemaphore(_mutex,1,(LPLONG) NULL) == TRUE)
     return;
-  throwExceptionExplicit(OptionError,"mutex unlock failed");
+  throwExceptionExplicit(MagickCore::OptionError,"mutex unlock failed");
 #endif
 }

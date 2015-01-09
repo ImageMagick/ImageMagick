@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2015
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -369,6 +369,10 @@ namespace Magick
     // Quantization tree-depth
     void quantizeTreeDepth(const size_t treeDepth_);
     size_t quantizeTreeDepth(void) const;
+
+    // Suppress all warning messages. Error messages are still reported.
+    void quiet(const bool quiet_);
+    bool quiet(void) const;
 
     // The type of rendering intent
     void renderingIntent(const RenderingIntent renderingIntent_);
@@ -1475,6 +1479,7 @@ namespace Magick
       const PixelInfo *target,const bool invert_);
 
     ImageRef *_imgRef;
+    bool     _quiet;
   };
 
 } // end of namespace Magick
