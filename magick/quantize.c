@@ -453,19 +453,6 @@ static inline void AssociateAlphaPixel(const CubeInfo *cube_info,
   alpha_pixel->opacity=(MagickRealType) GetPixelOpacity(pixel);
 }
 
-static inline Quantum ClampPixel(const MagickRealType value)
-{
-  if (value < 0.0f)
-    return(0);
-  if (value >= (MagickRealType) QuantumRange)
-    return((Quantum) QuantumRange);
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (value+0.5f));
-#else
-  return(value);
-#endif
-}
-
 static inline size_t ColorToNodeId(const CubeInfo *cube_info,
   const RealPixelPacket *pixel,size_t index)
 {
