@@ -209,7 +209,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this a RLE file.
   */
   count=ReadBlob(image,2,(unsigned char *) magick);
-  if ((count == 0) || (memcmp(magick,"\122\314",2) != 0))
+  if ((count != 2) || (memcmp(magick,"\122\314",2) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   do
   {

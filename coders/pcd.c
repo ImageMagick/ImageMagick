@@ -539,7 +539,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   count=ReadBlob(image,3*0x800,header);
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
-  if ((count == 0) ||
+  if ((count != (3*0x800)) ||
       ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && (overview ==0)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   rotate=header[0x0e02] & 0x03;

@@ -547,6 +547,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   bmp_info.ba_offset=0;
   start_position=0;
   count=ReadBlob(image,2,magick);
+  if (count != 2)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   do
   {
     PixelInfo

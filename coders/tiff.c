@@ -2063,7 +2063,7 @@ static void TIFFIgnoreTags(TIFF *tiff)
   i=0;
   p=tags;
   ignore=(TIFFFieldInfo *) AcquireQuantumMemory(count,sizeof(*ignore));
-  // This also sets field_bit to 0 (FIELD_IGNORE)
+  /* This also sets field_bit to 0 (FIELD_IGNORE) */
   ResetMagickMemory(ignore,0,count*sizeof(*ignore));
   while (*p != '\0')
   {

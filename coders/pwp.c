@@ -171,7 +171,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     return((Image *) NULL);
   count=ReadBlob(pwp_image,5,magick);
-  if ((count == 0) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
+  if ((count != 5) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   read_info=CloneImageInfo(image_info);
   (void) SetImageInfoProgressMonitor(read_info,(MagickProgressMonitor) NULL,

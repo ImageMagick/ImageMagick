@@ -1022,7 +1022,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   count=ReadBlob(image,14,(unsigned char *) magick);
-  if ((count == 0) ||
+  if ((count != 14) ||
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   (void) ResetMagickMemory(&doc_info,0,sizeof(XCFDocInfo));

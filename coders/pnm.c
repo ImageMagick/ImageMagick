@@ -1348,9 +1348,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Skip to end of line.
         */
         count=ReadBlob(image,1,(unsigned char *) &format);
-        if (count == 0)
+        if (count != 1)
           break;
-        if ((count != 0) && (format == 'P'))
+        if (format == 'P')
           break;
       } while (format != '\n');
     count=ReadBlob(image,1,(unsigned char *) &format);
