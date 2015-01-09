@@ -417,7 +417,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
           else
             {
               count=ReadBlob(image,1,&runlength);
-              if (count == 0)
+              if (count != 1)
                 ThrowReaderException(CorruptImageError,"UnableToReadImageData");
               flag=runlength & 0x80;
               if (flag != 0)

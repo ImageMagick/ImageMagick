@@ -2553,7 +2553,7 @@ static void WriteCompressed(Image *image, const size_t count,
   ComputeWeightedCovariance(count,points,covariance);
   ComputePrincipleComponent(covariance,&principle);
 
-  if (clusterFit == MagickFalse || count == 0)
+  if ((clusterFit == MagickFalse) || (count == 0))
     CompressRangeFit(count,points,map,principle,metric,&start,&end,indices);
   else
     CompressClusterFit(count,points,map,principle,metric,&start,&end,indices);

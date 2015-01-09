@@ -329,7 +329,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (ssize_t) header.ncolors; i++)
       {
         count=ReadBlob(image,sz_XWDColor,(unsigned char *) &color);
-        if (count == 0)
+        if (count != sz_XWDColor)
           {
             ximage=(XImage *) RelinquishMagickMemory(ximage);
             ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
