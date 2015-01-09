@@ -290,7 +290,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ximage->blue_mask=header.blue_mask;
   if ((ximage->width < 0) || (ximage->height < 0) || (ximage->depth < 0) || 
       (ximage->format < 0) || (ximage->byte_order < 0) ||
-			(ximage->bitmap_bit_order < 0) || (ximage->bitmap_pad < 0) ||
+      (ximage->bitmap_bit_order < 0) || (ximage->bitmap_pad < 0) ||
       (ximage->bytes_per_line < 0))
     {
       ximage=(XImage *) RelinquishMagickMemory(ximage);
@@ -387,11 +387,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
      }
   count=ReadBlob(image,length,(unsigned char *) ximage->data);
-  if (count == 0)
+  if (count != (ssize_t) length)
     {
       ximage->data=DestroyString(ximage->data);
       ximage=(XImage *) RelinquishMagickMemory(ximage);
-      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
     }
   /*
     Convert image to MIFF format.
