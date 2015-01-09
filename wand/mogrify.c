@@ -3858,7 +3858,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           filename=argv[++i];
         (void) SetImageOption(image_info,"filename",filename);
         (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
-        *image_info->magick='\0';
         images=ReadImages(image_info,exception);
         status&=(images != (Image *) NULL) &&
           (exception->severity < ErrorException);
