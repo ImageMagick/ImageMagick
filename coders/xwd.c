@@ -384,11 +384,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   count=ReadBlob(image,length,(unsigned char *) ximage->data);
-  if (count == 0)
+  if (count != length)
     {
       ximage->data=DestroyString(ximage->data);
       ximage=(XImage *) RelinquishMagickMemory(ximage);
-      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
     }
   /*
     Convert image to MIFF format.
